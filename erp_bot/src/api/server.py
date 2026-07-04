@@ -13,9 +13,11 @@ from ..config import (
     BOT_ROOT,
     EMBED_MODEL,
     ERP_PATH,
+    FALCON_DEFAULT_MODE,
     MODEL_NAME,
     OLLAMA_BASE_URL,
 )
+from ..customer import ask_customer
 from ..ingestion import embedder
 from ..vectorstore import chroma_store
 from ..watcher import watcher
@@ -51,12 +53,17 @@ def on_startup():
 class ChatRequest(BaseModel):
     message: str = Field(..., max_length=2000, min_length=1)
     session_id: str
+    mode: str = Field(default=FALCON_DEFAULT_MODE, pattern="^(developer|customer)$")
 
 
 class ChatResponse(BaseModel):
     answer: str
     sources: list[str]
     session_id: str
+    mode: str = FALCON_DEFAULT_MODE
+    intent: str | None = None
+    slots: dict | None = None
+    action: str | None = None
 
 
 @app.get("/status")
@@ -76,6 +83,8 @@ def status() -> dict:
         "indexed_files": chroma_store.get_indexed_file_count(),
         "ollama": ollama_status,
         "watcher": "active",
+        "falcon_mode": FALCON_DEFAULT_MODE,
+        "modes": ["developer", "customer"],
     }
 
 
@@ -88,11 +97,21 @@ def chat(req: ChatRequest) -> ChatResponse:
                 sources=[],
                 session_id=req.session_id,
             )
-        result = agent_builder.ask(req.message, req.session_id)
+        mode = req.mode or FALCON_DEFAULT_MODE
+        if mode == "customer":
+            result = ask_customer(req.message, req.session_id)
+        else:
+            result = agent_builder.ask(req.message, req.session_id)
+            result.setdefault("mode", "developer")
+
         return ChatResponse(
             answer=result["answer"],
-            sources=result["sources"],
+            sources=result.get("sources", []),
             session_id=req.session_id,
+            mode=result.get("mode", mode),
+            intent=result.get("intent"),
+            slots=result.get("slots"),
+            action=result.get("action"),
         )
     except Exception as e:
         return ChatResponse(

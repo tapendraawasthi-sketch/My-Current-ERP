@@ -15,6 +15,17 @@ export function resolveErpBotUrl(): string {
 export const ERP_BOT_URL = resolveErpBotUrl();
 
 const SESSION_KEY = "erp_bot_session_id";
+const MODE_KEY = "falcon_mode";
+
+export function getFalconMode(): FalconMode {
+  const stored = localStorage.getItem(MODE_KEY);
+  if (stored === "customer" || stored === "developer") return stored;
+  return "developer";
+}
+
+export function setFalconMode(mode: FalconMode): void {
+  localStorage.setItem(MODE_KEY, mode);
+}
 
 export function getErpBotSessionId(): string {
   let id = localStorage.getItem(SESSION_KEY);
@@ -25,12 +36,16 @@ export function getErpBotSessionId(): string {
   return id;
 }
 
+export type FalconMode = "developer" | "customer";
+
 export interface ErpBotStatus {
   online: boolean;
   indexedFiles: number;
   model?: string;
   error?: string;
   mode?: "live" | "builtin";
+  falconMode?: FalconMode;
+  modes?: FalconMode[];
 }
 
 export async function checkErpBotStatus(): Promise<ErpBotStatus> {
@@ -43,6 +58,8 @@ export async function checkErpBotStatus(): Promise<ErpBotStatus> {
       indexedFiles: data.indexed_files ?? 0,
       model: data.model,
       mode: data.mode === "builtin" || data.status === "offline" ? "builtin" : "live",
+      falconMode: data.falcon_mode === "customer" ? "customer" : "developer",
+      modes: Array.isArray(data.modes) ? data.modes : ["developer", "customer"],
     };
   } catch (e: any) {
     return { online: false, indexedFiles: 0, error: e?.message || "Unreachable" };
@@ -54,7 +71,8 @@ export async function askErpBot(
   sessionId: string,
   signal?: AbortSignal,
   contextBlock?: string,
-): Promise<{ answer: string; sources: string[] }> {
+  falconMode: FalconMode = getFalconMode(),
+): Promise<{ answer: string; sources: string[]; intent?: string; action?: string }> {
   const payload = contextBlock
     ? `${contextBlock}\n\n--- USER QUESTION ---\n${message}`
     : message;
@@ -62,7 +80,7 @@ export async function askErpBot(
   const resp = await fetch(`${ERP_BOT_URL}/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message: payload, session_id: sessionId }),
+    body: JSON.stringify({ message: payload, session_id: sessionId, mode: falconMode }),
     signal,
   });
   if (!resp.ok) {
@@ -72,5 +90,7 @@ export async function askErpBot(
   return {
     answer: data.answer || "No response generated.",
     sources: Array.isArray(data.sources) ? data.sources : [],
+    intent: data.intent,
+    action: data.action,
   };
 }

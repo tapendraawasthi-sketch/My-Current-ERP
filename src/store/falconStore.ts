@@ -9,7 +9,7 @@ import {
   generateFollowUpSuggestions,
 } from "../lib/falcon/chainOfThought";
 import type { ThoughtStep, QuestionDomain, QuestionIntent } from "../lib/falcon/chainOfThought";
-import { ERP_BOT_URL, askErpBot, checkErpBotStatus, getErpBotSessionId } from "../lib/erpBotClient";
+import { ERP_BOT_URL, askErpBot, checkErpBotStatus, getErpBotSessionId, getFalconMode } from "../lib/erpBotClient";
 import {
   askSmartAssistant,
   askSmartAssistantAsync,
@@ -47,6 +47,16 @@ const WELCOME_MESSAGE = `Hi — I'm **Falcon AI**, your intelligent ERP assistan
 
 I read your ERP's code structure in real-time, so I always give you accurate, up-to-date answers. **Ask me anything!**`;
 
+const CUSTOMER_WELCOME_MESSAGE = `Namaste! Ma **Falcon** — tapai ko digital khata.
+
+**Ke garna sakchu:**
+- Udharo record: "Ram lai 500 udharo diye"
+- Payment log: "Sita ley 500 tirin"
+- Hisab sodhnus: "aja kati kamayo", "Hari ko kati baki cha"
+- Reminder: "Gita lai samjhaideu paisa tirna"
+
+Romanized Nepali, Unicode Nepali, wa English — sabai chalcha. **Ek line ma bhannus!**`;
+
 function toAssistantContext(ctx: FalconContext): SmartAssistantContext {
   return {
     route: ctx.route,
@@ -60,6 +70,25 @@ async function buildSmartReply(
   context: FalconContext,
   history: FalconChatMessage[],
 ): Promise<FalconChatMessage> {
+  const falconMode = getFalconMode();
+
+  if (falconMode === "customer") {
+    const { parseCustomerMessage } = await import("../lib/falcon/customer/customerNlu");
+    const result = parseCustomerMessage(text);
+    return {
+      id: genId(),
+      role: "assistant",
+      content: result.answer,
+      timestamp: new Date(),
+      domain: "erp",
+      suggestions: [
+        "Ram lai 500 udharo diye",
+        "aja kati kamayo",
+        "kasle paisa tirna baki cha",
+      ],
+    };
+  }
+
   const convo = history
     .filter((m) => m.role === "user" || m.role === "assistant")
     .slice(-6)
@@ -205,7 +234,44 @@ export const useFalconStore = create<FalconState>()(
         const status = await checkErpBotStatus();
         set({ botOnline: status.online, indexedFiles: status.indexedFiles });
 
-        if (!status.online) {
+        const falconMode = getFalconMode();
+
+        if (!status.online || falconMode === "customer") {
+          // Customer mode always uses NLU pipeline (works offline; uses erp_bot when online)
+          if (falconMode === "customer" && status.online) {
+            try {
+              const result = await askErpBot(
+                cleanText,
+                getErpBotSessionId(),
+                undefined,
+                undefined,
+                "customer",
+              );
+              set((s) => ({
+                messages: [
+                  ...s.messages,
+                  {
+                    id: genId(),
+                    role: "assistant",
+                    content: result.answer,
+                    timestamp: new Date(),
+                    domain: "erp",
+                    suggestions: [
+                      "Ram lai 500 udharo diye",
+                      "aja kati kamayo",
+                      "kasle paisa tirna baki cha",
+                    ],
+                  },
+                ],
+                isTyping: false,
+                isStreaming: false,
+                currentThinkingSteps: [],
+              }));
+              return;
+            } catch {
+              // fall through to local customer NLU
+            }
+          }
           const smartMsg = await buildSmartReply(cleanText, state.context, state.messages);
           set((s) => ({
             messages: [...s.messages, smartMsg],
@@ -258,6 +324,7 @@ export const useFalconStore = create<FalconState>()(
             getErpBotSessionId(),
             abortController.signal,
             contextBlock,
+            falconMode,
           );
           const followUps = generateFollowUpSuggestions(
             cleanText,

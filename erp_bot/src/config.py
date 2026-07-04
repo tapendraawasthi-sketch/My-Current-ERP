@@ -25,6 +25,11 @@ MAX_CHUNK_CHARS = int(os.getenv("MAX_CHUNK_CHARS", "3000"))
 MAX_AGENT_ITERATIONS = int(os.getenv("MAX_AGENT_ITERATIONS", "12"))
 API_PORT = int(os.getenv("API_PORT", "8765"))
 
+# Falcon mode: "developer" (codebase RAG) or "customer" (Nepali trader khata)
+FALCON_DEFAULT_MODE = os.getenv("FALCON_DEFAULT_MODE", "developer").strip().lower()
+if FALCON_DEFAULT_MODE not in ("developer", "customer"):
+    FALCON_DEFAULT_MODE = "developer"
+
 _chroma_path_env = os.getenv("CHROMA_PATH", "./data/chroma_db")
 CHROMA_PATH = str((BOT_ROOT / _chroma_path_env).resolve())
 

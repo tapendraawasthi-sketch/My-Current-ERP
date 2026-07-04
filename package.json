@@ -20,8 +20,9 @@
     "format": "prettier --write .",
     "postinstall": "echo 'Dependencies installed successfully'",
     "test:intents": "npx tsx scripts/test-falcon-intents.ts",
+    "test:customer-intents": "python3 erp_bot/scripts/test_customer_intents.py",
     "test:web-policy": "npx tsx scripts/test-web-search-policy.ts",
-    "test:falcon": "npm run test:intents && npm run test:web-policy"
+    "test:falcon": "npm run test:intents && npm run test:customer-intents && npm run test:web-policy"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1075.0",
