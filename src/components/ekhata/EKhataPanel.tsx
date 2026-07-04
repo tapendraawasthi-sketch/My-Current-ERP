@@ -17,6 +17,8 @@ const EKhataPanel: React.FC = () => {
     messages,
     pendingCard,
     isLoading,
+    llmOnline,
+    llmModel,
     sendMessage,
     confirmPending,
     cancelPending,
