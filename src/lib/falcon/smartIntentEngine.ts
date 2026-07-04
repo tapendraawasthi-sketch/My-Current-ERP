@@ -2,31 +2,39 @@
 // Falcon AI — Smart Intent Understanding Engine
 // Determines exactly what the user is asking and how to respond
 
-import type { ParsedQuery, UserIntent, EntityType } from "./nlpEngine";
+import type { ParsedQuery, UserIntent } from "./nlpEngine";
 import { parseQuery, extractIntent, isElaborationQuery } from "./nlpEngine";
+import {
+  classifyIntent,
+  getIntentOutputRules,
+  type FalconIntent,
+  type SectionType,
+} from "./intentTaxonomy";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TYPES
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type ResponseStrategy =
-  | "navigation-only"      // Just show the path/menu to reach something
-  | "steps-only"           // Just show numbered steps to perform action
-  | "explanation"          // Explain what something is/does
-  | "troubleshooting"      // Diagnose and solve a problem
-  | "field-specific"       // Answer about a specific field/setting
-  | "comparison"           // Compare two or more things
-  | "calculation"          // Calculate or show formula
-  | "list"                 // List items/options
-  | "shortcut"             // Show keyboard shortcut
-  | "accounting-entry"     // Show journal entry/accounting effect
-  | "validation-rules"     // Show rules/requirements
-  | "greeting"             // Respond to greeting
-  | "comprehensive";       // Full answer with multiple sections
+  | "navigation-only"
+  | "steps-only"
+  | "explanation"
+  | "troubleshooting"
+  | "field-specific"
+  | "comparison"
+  | "calculation"
+  | "list"
+  | "shortcut"
+  | "accounting-entry"
+  | "validation-rules"
+  | "code-analysis"
+  | "greeting"
+  | "comprehensive";
 
 export interface SmartIntent {
   parsed: ParsedQuery;
   userIntent: UserIntent;
+  falconIntent: FalconIntent;
   responseStrategy: ResponseStrategy;
   primaryFocus: string | null;
   secondaryTopics: string[];
@@ -37,246 +45,153 @@ export interface SmartIntent {
   routeContext?: string;
 }
 
-export type SectionType =
-  | "title"
-  | "navigation"
-  | "steps"
-  | "fields"
-  | "accounting-effect"
-  | "validation"
-  | "common-errors"
-  | "shortcuts"
-  | "tips"
-  | "related"
-  | "follow-ups";
-
 export interface ExclusionRule {
   sectionType: SectionType;
   reason: string;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// RESPONSE STRATEGY DETERMINATION
+// RESPONSE STRATEGY FROM UNIFIED TAXONOMY
 // ─────────────────────────────────────────────────────────────────────────────
 
-function determineResponseStrategy(
-  parsed: ParsedQuery,
-  intent: UserIntent,
-  routeContext?: string
-): ResponseStrategy {
-  // Greetings get greeting response
-  if (parsed.isGreeting) {
-    return "greeting";
-  }
+function strategyFromFalconIntent(falconIntent: FalconIntent, parsed: ParsedQuery): ResponseStrategy {
+  if (parsed.isGreeting) return "greeting";
 
-  // Navigation questions ("where is...", "how to open...", "go to...")
-  if (intent.wantsLocation && !intent.wantsSteps && !intent.wantsExplanation) {
-    return "navigation-only";
+  switch (falconIntent) {
+    case "nav":
+    case "action_path":
+      return "navigation-only";
+    case "steps":
+      return "steps-only";
+    case "definition":
+      return "explanation";
+    case "troubleshoot":
+      return "troubleshooting";
+    case "effect":
+      return "accounting-entry";
+    case "code":
+      return "code-analysis";
+    case "general":
+    default:
+      if (parsed.questionType === "compare") return "comparison";
+      if (parsed.questionType === "calculate") return "calculation";
+      if (parsed.questionType === "list") return "list";
+      if (/keyboard|shortcut|hotkey/i.test(parsed.original)) return "shortcut";
+      if (/validation|rules?|required|mandatory/i.test(parsed.original)) return "validation-rules";
+      return "comprehensive";
   }
-
-  // How-to questions without wanting explanation
-  if (intent.wantsSteps && !intent.wantsExplanation && !intent.wantsTroubleshooting) {
-    return "steps-only";
-  }
-
-  // Troubleshooting (errors, problems)
-  if (intent.wantsTroubleshooting) {
-    return "troubleshooting";
-  }
-
-  // What-is questions
-  if (intent.wantsExplanation && !intent.wantsSteps && !intent.wantsLocation) {
-    return "explanation";
-  }
-
-  // Field-specific questions
-  if (intent.specificFields.length > 0 && !intent.wantsSteps) {
-    return "field-specific";
-  }
-
-  // Comparison questions
-  if (parsed.questionType === "compare") {
-    return "comparison";
-  }
-
-  // Calculation questions
-  if (parsed.questionType === "calculate" || intent.primaryAction === "calculate") {
-    return "calculation";
-  }
-
-  // List requests
-  if (parsed.questionType === "list") {
-    return "list";
-  }
-
-  // Shortcut questions
-  if (parsed.entities.some((e) => e.type === "shortcut") ||
-      /keyboard|shortcut|hotkey/i.test(parsed.original)) {
-    return "shortcut";
-  }
-
-  // Accounting entry questions
-  if (/journal\s*entry|accounting\s*entry|debit|credit|ledger\s*entry/i.test(parsed.original)) {
-    return "accounting-entry";
-  }
-
-  // Validation rules questions
-  if (/validation|rules?|required|mandatory|limit|restriction/i.test(parsed.original)) {
-    return "validation-rules";
-  }
-
-  // Default to comprehensive if complex or ambiguous
-  if (parsed.complexity === "complex" || (intent.wantsSteps && intent.wantsExplanation)) {
-    return "comprehensive";
-  }
-
-  // Default based on entity type
-  if (intent.targetType === "voucher") {
-    return intent.wantsLocation ? "navigation-only" : "steps-only";
-  }
-
-  if (intent.targetType === "concept") {
-    return "explanation";
-  }
-
-  return "comprehensive";
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// EXCLUSION RULES — What NOT to include in response
-// ─────────────────────────────────────────────────────────────────────────────
-
 function determineExclusions(
+  falconIntent: FalconIntent,
+  strategy: ResponseStrategy,
+  userIntent: UserIntent,
   parsed: ParsedQuery,
-  intent: UserIntent,
-  strategy: ResponseStrategy
 ): ExclusionRule[] {
-  const exclusions: ExclusionRule[] = [];
+  const rules = getIntentOutputRules(falconIntent);
+  const exclusions: ExclusionRule[] = rules.forbiddenSections.map((sectionType) => ({
+    sectionType,
+    reason: `Intent ${falconIntent} forbids this section`,
+  }));
 
-  // Navigation-only: exclude everything except path
   if (strategy === "navigation-only") {
     exclusions.push(
-      { sectionType: "steps", reason: "User only asked where something is" },
-      { sectionType: "fields", reason: "User only asked where something is" },
-      { sectionType: "accounting-effect", reason: "User only asked where something is" },
-      { sectionType: "validation", reason: "User only asked where something is" },
-      { sectionType: "common-errors", reason: "User only asked where something is" }
+      { sectionType: "steps", reason: "User only asked where/how to reach something" },
+      { sectionType: "fields", reason: "User only asked where/how to reach something" },
+      { sectionType: "accounting-effect", reason: "User only asked where/how to reach something" },
+      { sectionType: "validation", reason: "User only asked where/how to reach something" },
+      { sectionType: "common-errors", reason: "User only asked where/how to reach something" },
+      { sectionType: "tips", reason: "User only asked where/how to reach something" },
     );
   }
 
-  // Steps-only: exclude explanations
-  if (strategy === "steps-only") {
+  if (strategy === "explanation" && falconIntent === "definition") {
     exclusions.push(
-      { sectionType: "accounting-effect", reason: "User wants steps, not accounting theory" }
+      { sectionType: "steps", reason: "Definition intent — no steps" },
+      { sectionType: "navigation", reason: "Definition intent — no path unless asked" },
+      { sectionType: "validation", reason: "Definition intent — no rules dump" },
+      { sectionType: "common-errors", reason: "Definition intent — no error list" },
+      { sectionType: "accounting-effect", reason: "Definition intent — no accounting entry" },
     );
   }
 
-  // Explanation: exclude steps
-  if (strategy === "explanation") {
-    exclusions.push(
-      { sectionType: "steps", reason: "User wants explanation, not how-to" },
-      { sectionType: "validation", reason: "User wants explanation, not rules" }
-    );
+  if (userIntent.specificFields.length > 0) {
+    exclusions.push({
+      sectionType: "fields",
+      reason: "User asked about specific field, not all fields",
+    });
   }
 
-  // If user asked about a specific field, don't explain all fields
-  if (intent.specificFields.length > 0) {
-    exclusions.push(
-      { sectionType: "fields", reason: "User asked about specific field, not all fields" }
-    );
-  }
-
-  // If query is simple, don't add too much
-  if (parsed.complexity === "simple") {
+  if (parsed.complexity === "simple" && falconIntent !== "general") {
     exclusions.push(
       { sectionType: "related", reason: "Simple query doesn't need related topics" },
-      { sectionType: "tips", reason: "Simple query doesn't need tips" }
+      { sectionType: "tips", reason: "Simple query doesn't need tips" },
     );
   }
 
   return exclusions;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// REQUIRED AND OPTIONAL SECTIONS
-// ─────────────────────────────────────────────────────────────────────────────
-
 function determineRequiredSections(strategy: ResponseStrategy): SectionType[] {
   switch (strategy) {
     case "navigation-only":
       return ["navigation"];
-    
     case "steps-only":
       return ["steps"];
-    
     case "explanation":
       return ["title"];
-    
     case "troubleshooting":
       return ["common-errors"];
-    
     case "field-specific":
       return ["fields"];
-    
     case "comparison":
-      return ["title"];
-    
     case "calculation":
-      return ["title"];
-    
     case "list":
       return ["title"];
-    
     case "shortcut":
       return ["shortcuts"];
-    
     case "accounting-entry":
       return ["accounting-effect"];
-    
     case "validation-rules":
       return ["validation"];
-    
+    case "code-analysis":
+      return ["title"];
     case "greeting":
       return [];
-    
     case "comprehensive":
     default:
-      return ["title", "navigation", "steps"];
+      return ["title"];
   }
 }
 
 function determineOptionalSections(
   strategy: ResponseStrategy,
-  intent: UserIntent,
-  parsed: ParsedQuery
+  falconIntent: FalconIntent,
+  parsed: ParsedQuery,
 ): SectionType[] {
-  const optional: SectionType[] = [];
+  if (falconIntent === "definition" || falconIntent === "action_path" || falconIntent === "nav") {
+    return [];
+  }
 
-  // Only add follow-ups for non-simple queries
+  const optional: SectionType[] = [];
   if (parsed.complexity !== "simple") {
     optional.push("follow-ups");
   }
 
   switch (strategy) {
     case "steps-only":
-      optional.push("shortcuts", "tips");
+      optional.push("shortcuts");
       break;
-    
     case "troubleshooting":
       optional.push("steps", "tips");
       break;
-    
     case "comprehensive":
-      optional.push("fields", "accounting-effect", "validation", "shortcuts", "tips", "related");
+      optional.push("navigation", "steps", "fields", "shortcuts", "tips");
       break;
   }
 
   return optional;
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// FOCUS EXTRACTION
-// ─────────────────────────────────────────────────────────────────────────────
 
 const META_FOCUS_WORDS = new Set([
   "detail",
@@ -290,36 +205,32 @@ const META_FOCUS_WORDS = new Set([
   "these",
   "those",
   "them",
+  "a",
+  "an",
+  "the",
 ]);
 
-function extractPrimaryFocus(
-  parsed: ParsedQuery,
-  intent: UserIntent
-): string | null {
-  // Elaboration follow-ups ("give in detail") carry no new topic — resolved from chat context
-  if (isElaborationQuery(parsed.original)) {
-    return null;
-  }
+function extractPrimaryFocus(parsed: ParsedQuery, userIntent: UserIntent): string | null {
+  if (isElaborationQuery(parsed.original)) return null;
 
-  // Use target object if available
-  if (intent.target) {
-    return intent.target;
-  }
+  if (userIntent.target) return userIntent.target;
 
-  // Use first entity
   if (parsed.entities.length > 0) {
+    const primary = parsed.entities.find(
+      (e) => e.type === "voucher" || e.type === "report" || e.type === "master",
+    );
+    if (primary) return primary.normalizedValue;
     return parsed.entities[0].normalizedValue;
   }
 
-  // Try to extract from query patterns
   const focusPatterns = [
+    /(?:make|create|post|record|enter|add|pass|generate|cut|raise|prepare|issue|open|view|access)\s+(?:a\s+|an\s+|the\s+)?([a-z]+(?:\s+[a-z]+)?)/i,
     /(?:about|for|on|in|with)\s+(?:the\s+)?([a-z]+(?:\s+[a-z]+)?)/i,
-    /(?:create|add|make|open|view)\s+(?:a\s+)?([a-z]+(?:\s+[a-z]+)?)/i,
   ];
 
   for (const pattern of focusPatterns) {
     const match = parsed.original.match(pattern);
-    if (match && match[1]) {
+    if (match?.[1]) {
       const candidate = match[1].toLowerCase().replace(/\s+/g, "-");
       const firstWord = candidate.split("-")[0];
       if (!META_FOCUS_WORDS.has(firstWord) && !META_FOCUS_WORDS.has(candidate)) {
@@ -328,88 +239,58 @@ function extractPrimaryFocus(
     }
   }
 
-  return null;
+  return parsed.targetObject;
 }
 
-function extractSecondaryTopics(
-  parsed: ParsedQuery,
-  primaryFocus: string | null
-): string[] {
+function extractSecondaryTopics(parsed: ParsedQuery, primaryFocus: string | null): string[] {
   const secondary: string[] = [];
-
-  // Add entity values that are not the primary focus
   for (const entity of parsed.entities) {
     if (entity.normalizedValue !== primaryFocus) {
       secondary.push(entity.normalizedValue);
     }
   }
-
-  // Add modifiers
   secondary.push(...parsed.modifiers);
-
   return [...new Set(secondary)];
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// CONFIDENCE SCORING
-// ─────────────────────────────────────────────────────────────────────────────
-
 function calculateConfidence(
   parsed: ParsedQuery,
-  intent: UserIntent,
-  strategy: ResponseStrategy
+  userIntent: UserIntent,
+  falconIntent: FalconIntent,
+  strategy: ResponseStrategy,
 ): number {
-  let confidence = 0.5;
+  let confidence = 0.55;
 
-  // Boost for recognized entities
-  confidence += parsed.entities.length * 0.1;
-
-  // Boost for clear action verb
-  if (intent.primaryAction !== "query") {
-    confidence += 0.1;
-  }
-
-  // Boost for clear question type
-  if (parsed.questionType !== "unknown") {
-    confidence += 0.1;
-  }
-
-  // Boost for target identification
-  if (intent.target) {
-    confidence += 0.1;
-  }
-
-  // Slight penalty for complex queries (harder to understand perfectly)
-  if (parsed.complexity === "complex") {
-    confidence -= 0.1;
-  }
-
-  // Penalty for ambiguous strategies
-  if (strategy === "comprehensive") {
-    confidence -= 0.05;
-  }
+  confidence += parsed.entities.length * 0.08;
+  if (userIntent.target) confidence += 0.1;
+  if (falconIntent !== "general") confidence += 0.12;
+  if (parsed.complexity === "complex") confidence -= 0.08;
+  if (strategy === "comprehensive") confidence -= 0.05;
 
   return Math.max(0.2, Math.min(1, confidence));
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MAIN FUNCTION
-// ─────────────────────────────────────────────────────────────────────────────
-
 export function analyzeIntent(query: string, routeContext?: string): SmartIntent {
   const parsed = parseQuery(query);
   const userIntent = extractIntent(parsed);
-  const responseStrategy = determineResponseStrategy(parsed, userIntent, routeContext);
+  const falconIntent = classifyIntent(query);
+  const responseStrategy = strategyFromFalconIntent(falconIntent, parsed);
   const primaryFocus = extractPrimaryFocus(parsed, userIntent);
   const secondaryTopics = extractSecondaryTopics(parsed, primaryFocus);
-  const excludeFromResponse = determineExclusions(parsed, userIntent, responseStrategy);
+  const excludeFromResponse = determineExclusions(
+    falconIntent,
+    responseStrategy,
+    userIntent,
+    parsed,
+  );
   const requiredSections = determineRequiredSections(responseStrategy);
-  const optionalSections = determineOptionalSections(responseStrategy, userIntent, parsed);
-  const confidenceScore = calculateConfidence(parsed, userIntent, responseStrategy);
+  const optionalSections = determineOptionalSections(responseStrategy, falconIntent, parsed);
+  const confidenceScore = calculateConfidence(parsed, userIntent, falconIntent, responseStrategy);
 
   return {
     parsed,
     userIntent,
+    falconIntent,
     responseStrategy,
     primaryFocus,
     secondaryTopics,
@@ -421,63 +302,58 @@ export function analyzeIntent(query: string, routeContext?: string): SmartIntent
   };
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// HELPER FUNCTIONS
-// ─────────────────────────────────────────────────────────────────────────────
-
-export function shouldIncludeSection(
-  intent: SmartIntent,
-  section: SectionType
-): boolean {
-  // Check if excluded
-  if (intent.excludeFromResponse.some((e) => e.sectionType === section)) {
-    return false;
-  }
-
-  // Check if required
-  if (intent.requiredSections.includes(section)) {
-    return true;
-  }
-
-  // Check if optional
+export function shouldIncludeSection(intent: SmartIntent, section: SectionType): boolean {
+  if (intent.excludeFromResponse.some((e) => e.sectionType === section)) return false;
+  if (intent.requiredSections.includes(section)) return true;
   return intent.optionalSections.includes(section);
 }
 
 export function getResponseDirective(intent: SmartIntent): string {
-  const directives: Record<ResponseStrategy, string> = {
-    "navigation-only": "Provide ONLY the menu path/navigation to reach this screen. Do NOT explain what it does or how to use it.",
-    "steps-only": "Provide ONLY the numbered steps to perform this action. Do NOT explain what things mean or provide background.",
-    "explanation": "Explain what this concept/feature means and its purpose. Do NOT provide step-by-step instructions.",
-    "troubleshooting": "Focus on diagnosing the issue and providing a solution. Start with the likely cause and how to fix it.",
-    "field-specific": "Answer ONLY about the specific field(s) asked. Do NOT explain the entire form or all fields.",
-    "comparison": "Compare the items directly, highlighting key differences. Use a structured format.",
-    "calculation": "Show the formula and calculation. Include a worked example with numbers.",
-    "list": "Provide a clean, organized list of the requested items.",
-    "shortcut": "Provide ONLY the keyboard shortcut(s) requested. Be brief and direct.",
-    "accounting-entry": "Show the journal entry with Debit and Credit accounts and amounts. Include the accounting principle.",
-    "validation-rules": "List the specific rules, requirements, or restrictions. Be precise and complete.",
-    "greeting": "Respond warmly but briefly. Mention you can help with ERP questions.",
-    "comprehensive": "Provide a complete answer with context, steps, and tips as needed.",
+  const byFalcon: Record<FalconIntent, string> = {
+    action_path:
+      "Provide ONLY the navigation path and keyboard shortcut. Do NOT explain what the feature is. Do NOT list steps.",
+    nav: "Provide ONLY the menu path/navigation to reach this screen. Do NOT explain what it does.",
+    definition:
+      "Explain what this is in 2–3 sentences maximum. Do NOT include navigation, steps, or rules.",
+    steps: "Provide ONLY numbered steps. No preamble. No definition.",
+    troubleshoot: "Diagnose the issue and provide a fix. No feature definitions.",
+    effect: "Show the DEBIT/CREDIT accounting entry only.",
+    code: "Provide developer format: files, functions, code evidence.",
+    general: "Answer concisely. Only what was asked.",
   };
 
-  return directives[intent.responseStrategy];
+  const directives: Record<ResponseStrategy, string> = {
+    "navigation-only": byFalcon.nav,
+    "steps-only": byFalcon.steps,
+    explanation: byFalcon.definition,
+    troubleshooting: byFalcon.troubleshoot,
+    "field-specific": "Answer ONLY about the specific field(s) asked.",
+    comparison: "Compare items directly with key differences.",
+    calculation: "Show formula and worked example.",
+    list: "Provide a clean organized list.",
+    shortcut: "Provide ONLY keyboard shortcut(s).",
+    "accounting-entry": byFalcon.effect,
+    "validation-rules": "List validation rules only.",
+    "code-analysis": byFalcon.code,
+    greeting: "Respond warmly but briefly.",
+    comprehensive: byFalcon.general,
+  };
+
+  return byFalcon[intent.falconIntent] || directives[intent.responseStrategy];
 }
 
 export function formatIntentSummary(intent: SmartIntent): string {
-  const lines: string[] = [];
-  
-  lines.push(`Strategy: ${intent.responseStrategy}`);
-  lines.push(`Focus: ${intent.primaryFocus || "general"}`);
-  
+  const lines = [
+    `Intent: ${intent.falconIntent}`,
+    `Strategy: ${intent.responseStrategy}`,
+    `Focus: ${intent.primaryFocus || "general"}`,
+  ];
   if (intent.secondaryTopics.length > 0) {
     lines.push(`Context: ${intent.secondaryTopics.join(", ")}`);
   }
-  
   lines.push(`Confidence: ${Math.round(intent.confidenceScore * 100)}%`);
-  
-  if (intent.excludeFromResponse.length > 0) {
-    lines.push(`Excluded: ${intent.excludeFromResponse.map((e) => e.sectionType).join(", ")}`);
-  }
-  
   return lines.join("\n");
 }
+
+// Re-export for consumers
+export type { FalconIntent, SectionType };

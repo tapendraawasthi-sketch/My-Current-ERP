@@ -18,6 +18,7 @@ import {
 } from "./codeStructureParser";
 import { ERP_MODULES, type ERPModuleDoc, type ERPFieldDoc } from "./erpCodeKnowledge";
 import { FALCON_KB } from "./knowledgeBase";
+import { formatNavAnswer, postComposeScope } from "./intentTaxonomy";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TYPES
@@ -31,6 +32,27 @@ export interface ComposedResponse {
   responseType: ResponseStrategy;
   sectionsIncluded: SectionType[];
   matchedModule?: string;
+}
+
+function pickPrimaryShortcut(info: CodeStructureInfo | null): string | undefined {
+  if (!info?.moduleDoc) return undefined;
+
+  const fromAccess = info.moduleDoc.howToAccess.find((a) => /F\d+/i.test(a));
+  if (fromAccess) {
+    const match = fromAccess.match(/F\d+/i);
+    if (match) return match[0].toUpperCase();
+  }
+
+  const shortcuts = info.moduleDoc.keyboardShortcuts || {};
+  const navKey = Object.keys(shortcuts).find((k) => /^F[3-9]$/.test(k));
+  return navKey;
+}
+
+function scopeComposed(intent: SmartIntent, response: ComposedResponse): ComposedResponse {
+  return {
+    ...response,
+    answer: postComposeScope(response.answer, intent.falconIntent),
+  };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -245,54 +267,60 @@ function composeFollowUpsSection(info: CodeStructureInfo): string[] {
 
 function composeNavigationOnlyResponse(intent: SmartIntent): ComposedResponse {
   const focus = intent.primaryFocus;
-  
+
   if (!focus) {
-    return {
+    return scopeComposed(intent, {
       answer: "Please specify what you want to navigate to.",
       confidence: 0.3,
       sources: [],
       suggestions: ["Where is sales invoice?", "How to open parties?"],
       responseType: "navigation-only",
       sectionsIncluded: [],
-    };
+    });
   }
-  
-  const path = getNavigationPath(focus);
+
   const info = getCodeStructureInfo(focus);
-  
-  if (!path && !info) {
+  const rawPath = getNavigationPath(focus);
+  const shortcut = pickPrimaryShortcut(info);
+
+  if (!rawPath && !info) {
     const results = searchModules(focus, 3);
     if (results.length > 0) {
-      const suggestions = results.map((r) => r.entry.menuPath || r.entry.route);
-      return {
-        answer: `Did you mean one of these?\n${suggestions.map((s, i) => `${i + 1}. ${s}`).join("\n")}`,
+      const top = results[0];
+      const path = top.entry.menuPath || top.entry.route;
+      return scopeComposed(intent, {
+        answer: formatNavAnswer(path),
         confidence: 0.5,
-        sources: [],
+        sources: [top.entry.file],
         suggestions: results.map((r) => `Where is ${r.entry.title}?`),
         responseType: "navigation-only",
         sectionsIncluded: ["navigation"],
-      };
+        matchedModule: top.entry.route,
+      });
     }
-    
-    return {
+
+    return scopeComposed(intent, {
       answer: `I couldn't find a screen for "${focus}". Try using a different term.`,
       confidence: 0.2,
       sources: [],
       suggestions: ["Show me all modules", "What screens are available?"],
       responseType: "navigation-only",
       sectionsIncluded: [],
-    };
+    });
   }
-  
-  return {
-    answer: path || `Navigate to: ${info?.menuPath || info?.route}`,
+
+  const path = rawPath || info?.menuPath || info?.route || focus;
+  const answer = formatNavAnswer(path.replace(/^\*\*Location:\*\*\s*/i, ""), shortcut);
+
+  return scopeComposed(intent, {
+    answer,
     confidence: 0.9,
     sources: [info?.filePath || "page-index"],
     suggestions: info ? composeFollowUpsSection(info) : [],
     responseType: "navigation-only",
     sectionsIncluded: ["navigation"],
     matchedModule: info?.route,
-  };
+  });
 }
 
 function composeStepsOnlyResponse(intent: SmartIntent): ComposedResponse {
@@ -364,40 +392,42 @@ function composeStepsOnlyResponse(intent: SmartIntent): ComposedResponse {
 
 function composeExplanationResponse(intent: SmartIntent): ComposedResponse {
   const focus = intent.primaryFocus;
-  
+
   if (!focus) {
-    return {
+    return scopeComposed(intent, {
       answer: "Please specify what you want me to explain.",
       confidence: 0.3,
       sources: [],
       suggestions: ["What is VAT?", "Explain double entry", "What is journal voucher?"],
       responseType: "explanation",
       sectionsIncluded: [],
-    };
+    });
   }
-  
+
   const info = getCodeStructureInfo(focus);
-  
+
   if (info?.moduleDoc) {
-    const lines: string[] = [];
-    lines.push(`**${info.title}**`);
-    lines.push("");
-    lines.push(info.moduleDoc.description);
-    
-    if (info.moduleDoc.purpose) {
-      lines.push("");
-      lines.push(`**Purpose:** ${info.moduleDoc.purpose}`);
-    }
-    
-    return {
-      answer: lines.join("\n"),
+    const title = `**${info.title}**`;
+    const isCompactDefinition =
+      intent.falconIntent === "definition" && intent.parsed.complexity === "simple";
+
+    const answer = isCompactDefinition
+      ? `${title}\n${info.moduleDoc.description}`
+      : intent.falconIntent === "definition"
+        ? `${title}\n${[info.moduleDoc.description, info.moduleDoc.purpose].filter(Boolean).join(" ")}`
+        : [title, "", info.moduleDoc.description, "", info.moduleDoc.purpose ? `**Purpose:** ${info.moduleDoc.purpose}` : ""]
+            .filter(Boolean)
+            .join("\n");
+
+    return scopeComposed(intent, {
+      answer,
       confidence: 0.9,
       sources: [info.filePath],
       suggestions: composeFollowUpsSection(info),
       responseType: "explanation",
       sectionsIncluded: ["title"],
       matchedModule: info.route,
-    };
+    });
   }
   
   // Try KB
@@ -408,7 +438,7 @@ function composeExplanationResponse(intent: SmartIntent): ComposedResponse {
   });
   
   if (kbEntry) {
-    return {
+    return scopeComposed(intent, {
       answer: kbEntry.answer,
       confidence: 0.8,
       sources: [`kb:${kbEntry.id}`],
@@ -416,14 +446,13 @@ function composeExplanationResponse(intent: SmartIntent): ComposedResponse {
       responseType: "explanation",
       sectionsIncluded: ["title"],
       matchedModule: kbEntry.module,
-    };
+    });
   }
-  
-  // Search for any match
+
   const results = searchModules(focus, 1);
   if (results.length > 0 && results[0].moduleDoc) {
     const doc = results[0].moduleDoc;
-    return {
+    return scopeComposed(intent, {
       answer: `**${doc.displayName}**\n\n${doc.description}`,
       confidence: 0.7,
       sources: [results[0].entry.file],
@@ -431,17 +460,82 @@ function composeExplanationResponse(intent: SmartIntent): ComposedResponse {
       responseType: "explanation",
       sectionsIncluded: ["title"],
       matchedModule: results[0].entry.route,
-    };
+    });
   }
-  
-  return {
+
+  return scopeComposed(intent, {
     answer: `I don't have specific information about "${focus}". Could you rephrase or ask about a specific ERP feature?`,
     confidence: 0.2,
     sources: [],
     suggestions: ["What is sales invoice?", "Explain VAT", "What is trial balance?"],
     responseType: "explanation",
     sectionsIncluded: [],
-  };
+  });
+}
+
+function composeCodeAnalysisResponse(intent: SmartIntent): ComposedResponse {
+  const focus = intent.primaryFocus || intent.parsed.original;
+  const info = focus ? getCodeStructureInfo(focus) : null;
+  const results = info ? [] : searchModules(focus, 3);
+
+  if (info) {
+    const lines = [
+      `**Summary:** ${info.moduleDoc?.description || info.subtitle || info.title} is implemented in \`${info.filePath}\`.`,
+      "",
+      "**Files Involved:**",
+      `- \`${info.filePath}\` (page component: ${info.component})`,
+      info.moduleDoc ? `- Route key: \`${info.route}\`` : "",
+      "",
+      "**Key Functions/Components:**",
+      `- **${info.component}** — main UI for ${info.title}`,
+    ].filter(Boolean);
+
+    if (info.moduleDoc?.workflow?.steps?.length) {
+      lines.push(`- Post/save workflow: ${info.moduleDoc.workflow.steps.slice(-1)[0]}`);
+    }
+
+    lines.push("", "**Notes:** Start erp_bot for full cross-file tracing and live code snippets.");
+
+    return scopeComposed(intent, {
+      answer: lines.join("\n"),
+      confidence: 0.75,
+      sources: [info.filePath],
+      suggestions: [`Where is ${info.title}?`, `Steps to use ${info.title}`],
+      responseType: "code-analysis",
+      sectionsIncluded: ["title"],
+      matchedModule: info.route,
+    });
+  }
+
+  if (results.length > 0) {
+    const top = results[0];
+    return scopeComposed(intent, {
+      answer: [
+        `**Summary:** Found ${top.entry.title} in the codebase.`,
+        "",
+        "**Files Involved:**",
+        `- \`${top.entry.file}\``,
+        "",
+        "**Notes:** Start erp_bot for deeper code analysis across store slices and hooks.",
+      ].join("\n"),
+      confidence: 0.6,
+      sources: [top.entry.file],
+      suggestions: [],
+      responseType: "code-analysis",
+      sectionsIncluded: ["title"],
+      matchedModule: top.entry.route,
+    });
+  }
+
+  return scopeComposed(intent, {
+    answer:
+      "I could not locate matching source files offline. Start **erp_bot** (Ollama) for full codebase search and function tracing.",
+    confidence: 0.3,
+    sources: [],
+    suggestions: ["Which file has journal logic?", "How is VAT calculated in code?"],
+    responseType: "code-analysis",
+    sectionsIncluded: [],
+  });
 }
 
 function composeTroubleshootingResponse(intent: SmartIntent): ComposedResponse {
@@ -891,41 +985,66 @@ function composeComprehensiveResponse(intent: SmartIntent): ComposedResponse {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function composeResponse(intent: SmartIntent): ComposedResponse {
+  let response: ComposedResponse;
+
   switch (intent.responseStrategy) {
     case "navigation-only":
-      return composeNavigationOnlyResponse(intent);
-    
+      response = composeNavigationOnlyResponse(intent);
+      break;
+
     case "steps-only":
-      return composeStepsOnlyResponse(intent);
-    
+      response = composeStepsOnlyResponse(intent);
+      break;
+
     case "explanation":
-      return composeExplanationResponse(intent);
-    
+      response = composeExplanationResponse(intent);
+      break;
+
     case "troubleshooting":
-      return composeTroubleshootingResponse(intent);
-    
+      response = composeTroubleshootingResponse(intent);
+      break;
+
     case "field-specific":
-      return composeFieldSpecificResponse(intent);
-    
+      response = composeFieldSpecificResponse(intent);
+      break;
+
     case "shortcut":
-      return composeShortcutResponse(intent);
-    
+      response = composeShortcutResponse(intent);
+      break;
+
     case "accounting-entry":
-      return composeAccountingEntryResponse(intent);
-    
+      response = composeAccountingEntryResponse(intent);
+      break;
+
     case "validation-rules":
-      return composeValidationRulesResponse(intent);
-    
+      response = composeValidationRulesResponse(intent);
+      break;
+
+    case "code-analysis":
+      response = composeCodeAnalysisResponse(intent);
+      break;
+
     case "greeting":
-      return composeGreetingResponse();
-    
+      response = composeGreetingResponse();
+      break;
+
     case "comparison":
     case "calculation":
     case "list":
     case "comprehensive":
     default:
-      return composeComprehensiveResponse(intent);
+      response = composeComprehensiveResponse(intent);
+      break;
   }
+
+  if (!response.answer.includes("Path:") && intent.falconIntent !== "general") {
+    response = {
+      ...response,
+      answer: postComposeScope(response.answer, intent.falconIntent),
+    };
+  }
+
+  return response;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

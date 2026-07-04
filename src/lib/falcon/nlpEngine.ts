@@ -2,6 +2,8 @@
 // Falcon AI — Advanced Natural Language Processing Engine
 // Self-contained, no external APIs, pure TypeScript implementation
 
+import { classifyIntent, type FalconIntent } from "./intentTaxonomy";
+
 // ─────────────────────────────────────────────────────────────────────────────
 // TYPES
 // ─────────────────────────────────────────────────────────────────────────────
@@ -608,6 +610,7 @@ export interface UserIntent {
   primaryAction: ActionVerb | "query" | "navigate" | "greeting";
   target: string | null;
   targetType: EntityType | null;
+  falconIntent: FalconIntent;
   wantsSteps: boolean;
   wantsExplanation: boolean;
   wantsLocation: boolean;
@@ -617,34 +620,29 @@ export interface UserIntent {
 }
 
 export function extractIntent(parsed: ParsedQuery): UserIntent {
-  const primaryAction: ActionVerb | "query" | "navigate" | "greeting" = 
-    parsed.isGreeting ? "greeting" :
-    parsed.actionVerb || 
-    (parsed.questionType === "navigate" ? "navigate" : "query");
-  
-  const target = parsed.targetObject || 
+  const falconIntent = classifyIntent(parsed.original);
+
+  const primaryAction: ActionVerb | "query" | "navigate" | "greeting" =
+    parsed.isGreeting
+      ? "greeting"
+      : parsed.actionVerb || (parsed.questionType === "navigate" ? "navigate" : "query");
+
+  const target =
+    parsed.targetObject ||
     (parsed.entities.length > 0 ? parsed.entities[0].normalizedValue : null);
-  
+
   const targetType = parsed.entities.length > 0 ? parsed.entities[0].type : null;
-  
-  const wantsSteps = 
-    parsed.questionType === "how-to" ||
-    /step|process|procedure|guide|instruction/i.test(parsed.original);
-  
-  const wantsExplanation = 
-    parsed.questionType === "what-is" ||
-    parsed.questionType === "explain" ||
-    parsed.questionType === "why" ||
-    /explain|meaning|definition|tell.*about/i.test(parsed.original);
-  
-  const wantsLocation = 
-    parsed.questionType === "where-is" ||
-    parsed.questionType === "navigate" ||
-    /where|find|locate|open|go\s+to|menu|path/i.test(parsed.original);
-  
-  const wantsTroubleshooting = 
-    parsed.questionType === "troubleshoot" ||
-    parsed.sentiment === "frustrated";
+
+  const wantsSteps = falconIntent === "steps";
+
+  const wantsExplanation =
+    falconIntent === "definition" ||
+    parsed.questionType === "why";
+
+  const wantsLocation = falconIntent === "nav" || falconIntent === "action_path";
+
+  const wantsTroubleshooting =
+    falconIntent === "troubleshoot" || parsed.sentiment === "frustrated";
   
   const specificFields: string[] = [];
   const fieldPatterns = [
@@ -661,6 +659,7 @@ export function extractIntent(parsed: ParsedQuery): UserIntent {
     primaryAction,
     target,
     targetType,
+    falconIntent,
     wantsSteps,
     wantsExplanation,
     wantsLocation,
