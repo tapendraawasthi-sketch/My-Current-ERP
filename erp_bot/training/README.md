@@ -97,7 +97,10 @@ Append exported JSONL to `lora-instruction-dataset.jsonl` for monthly re-trainin
 ## Evaluation
 
 ```bash
-npm run test:ekhata-benchmark
+npm run test:ekhata-benchmark      # 13 audit regression cases
+npm run test:ekhata-corpus-benchmark  # stratified sample from 5190 corpus
+npm run test:ekhata-parser-parity     # TS vs Python intent classifier
+npm run test:ekhata-all               # all of the above + validate
 npm run test:ekhata-ca
-npm run eval:ekhata-lora   # after model deployed
+npm run validate:ekhata-corpus
 ```

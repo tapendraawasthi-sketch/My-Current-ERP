@@ -7,7 +7,7 @@
  *   data/ekhata/lora-instruction-dataset.jsonl      — Alpaca/LLaMA-Factory format
  *   data/ekhata/domain-classifier-dataset.jsonl       — domain routing labels
  */
-import { mkdirSync, readFileSync, writeFileSync } from "fs";
+import { mkdirSync, readFileSync, writeFileSync, existsSync } from "fs";
 import { join } from "path";
 import { CA_ENTRY_TEMPLATES } from "../src/lib/ekhata/caEntryTemplates";
 import { generateCAEntry } from "../src/lib/ekhata/caEntryEngine";
@@ -532,6 +532,53 @@ function generateDomainExamples(entries: GeneratedExample[], qas: GeneratedExamp
   return out;
 }
 
+function loadUserFeedbackExamples(): GeneratedExample[] {
+  const path = join(OUT_DIR, "user-feedback.jsonl");
+  if (!existsSync(path)) return [];
+
+  const out: GeneratedExample[] = [];
+  let id = 0;
+
+  for (const line of readFileSync(path, "utf-8").trim().split("\n")) {
+    if (!line.trim()) continue;
+    try {
+      const row = JSON.parse(line) as {
+        label?: string;
+        narration?: string;
+        correctedNarration?: string;
+        intent?: KhataIntent;
+        amount?: number;
+        party?: string | null;
+        journalLines?: Array<{ account: string; debit: number; credit: number }>;
+      };
+      if (row.label !== "confirmed" || !row.intent || !row.amount) continue;
+
+      const narration = (row.correctedNarration ?? row.narration ?? "").trim();
+      if (!narration) continue;
+
+      out.push({
+        id: `fb-${String(++id).padStart(5, "0")}`,
+        type: "entry",
+        narration,
+        intent: row.intent,
+        amount: row.amount,
+        party: row.party ?? null,
+        output: JSON.stringify({
+          intent: row.intent,
+          amount: row.amount,
+          party: row.party ?? null,
+          journalLines: row.journalLines,
+          source: "user_confirmed",
+        }),
+      });
+    } catch {
+      // skip malformed lines
+    }
+  }
+
+  return out;
+}
+
 function toLoraInstruction(ex: GeneratedExample): Record<string, string> {
   if (ex.type === "entry") {
     return {
@@ -570,7 +617,8 @@ const seedGenerated: GeneratedExample[] = seed.examples.map((ex) => ({
   output: buildEntryOutput(ex.intent, ex.amount, ex.party ?? null, ex.narration),
 }));
 
-const entries = [...seedGenerated, ...generateEntryExamples()];
+const feedbackEntries = loadUserFeedbackExamples();
+const entries = [...seedGenerated, ...generateEntryExamples(), ...feedbackEntries];
 const qas = generateQaExamples();
 const domains = generateDomainExamples(entries, qas);
 const all = [...entries, ...qas, ...domains];
@@ -593,7 +641,7 @@ writeFileSync(
 );
 
 console.log(`Generated ${all.length} training examples:`);
-console.log(`  Entry:   ${entries.length}`);
+console.log(`  Entry:   ${entries.length} (incl. ${feedbackEntries.length} user feedback)`);
 console.log(`  Q&A:     ${qas.length}`);
 console.log(`  Domain:  ${domains.length}`);
 console.log(`Written to ${OUT_DIR}/`);

@@ -15,7 +15,7 @@ def parse_khata_message(text: str) -> dict[str, object]:
             "normalized_text": normalize(text),
         }
 
-    intent = classify(text)
+    intent = classify(normalize(text), raw_text=text)
     entities = extract_entities(text, intent)
 
     return {

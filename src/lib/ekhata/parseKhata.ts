@@ -568,6 +568,12 @@ function classifyIntent(rawText: string, normalizedText: string): KhataIntent | 
   return null;
 }
 
+/** Intent classification only — for parser parity tests (no party/amount gates). */
+export function classifyKhataIntent(rawText: string, preNormalized?: string): KhataIntent | null {
+  const text = (preNormalized ?? normalizeNepaliText(rawText)).trim();
+  return classifyIntent(rawText.trim(), text);
+}
+
 function resolveAmount(text: string): number | null {
   const smart = parseSmartAmount(text);
   if (smart.amount && smart.amount > 0) return smart.amount;
