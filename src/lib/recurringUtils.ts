@@ -7,13 +7,27 @@ import type { RecurringFrequency } from "./db";
 export function computeNextDueDate(fromDate: string, frequency: RecurringFrequency): string {
   const d = new Date(fromDate);
   switch (frequency) {
-    case "daily":        d.setDate(d.getDate() + 1);       break;
-    case "weekly":       d.setDate(d.getDate() + 7);       break;
-    case "fortnightly":  d.setDate(d.getDate() + 14);      break;
-    case "monthly":      d.setMonth(d.getMonth() + 1);     break;
-    case "quarterly":    d.setMonth(d.getMonth() + 3);     break;
-    case "half-yearly":  d.setMonth(d.getMonth() + 6);     break;
-    case "yearly":       d.setFullYear(d.getFullYear()+1); break;
+    case "daily":
+      d.setDate(d.getDate() + 1);
+      break;
+    case "weekly":
+      d.setDate(d.getDate() + 7);
+      break;
+    case "fortnightly":
+      d.setDate(d.getDate() + 14);
+      break;
+    case "monthly":
+      d.setMonth(d.getMonth() + 1);
+      break;
+    case "quarterly":
+      d.setMonth(d.getMonth() + 3);
+      break;
+    case "half-yearly":
+      d.setMonth(d.getMonth() + 6);
+      break;
+    case "yearly":
+      d.setFullYear(d.getFullYear() + 1);
+      break;
   }
   return d.toISOString().slice(0, 10);
 }
@@ -35,19 +49,25 @@ export function daysUntilDue(nextDueDate: string): number {
  */
 export function frequencyLabel(f: RecurringFrequency): string {
   const map: Record<RecurringFrequency, string> = {
-    daily:        "Daily",
-    weekly:       "Weekly",
-    fortnightly:  "Fortnightly",
-    monthly:      "Monthly",
-    quarterly:    "Quarterly",
-    "half-yearly":"Half-Yearly",
-    yearly:       "Yearly",
+    daily: "Daily",
+    weekly: "Weekly",
+    fortnightly: "Fortnightly",
+    monthly: "Monthly",
+    quarterly: "Quarterly",
+    "half-yearly": "Half-Yearly",
+    yearly: "Yearly",
   };
   return map[f] || f;
 }
 
 export const FREQUENCY_OPTIONS: RecurringFrequency[] = [
-  "daily","weekly","fortnightly","monthly","quarterly","half-yearly","yearly"
+  "daily",
+  "weekly",
+  "fortnightly",
+  "monthly",
+  "quarterly",
+  "half-yearly",
+  "yearly",
 ];
 
 /** Common recurring template presets */

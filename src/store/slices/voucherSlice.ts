@@ -79,9 +79,9 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
           if (line.accountId) {
             const acc = await db.accounts.get(line.accountId);
             if (acc) {
-              const newBal = Math.round(
-                ((acc.balance || 0) + (line.debit || 0) - (line.credit || 0)) * 100,
-              ) / 100;
+              const newBal =
+                Math.round(((acc.balance || 0) + (line.debit || 0) - (line.credit || 0)) * 100) /
+                100;
               await db.accounts.update(line.accountId, { balance: newBal });
             }
           }
@@ -105,7 +105,9 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
             recordType: (newVoucher as any).type || "journal",
             after: { voucherNo: (newVoucher as any).voucherNo, totalDebit, totalCredit },
           });
-        } catch { /* audit failure must never block a voucher post */ }
+        } catch {
+          /* audit failure must never block a voucher post */
+        }
       }
 
       set((s) => ({ vouchers: [newVoucher, ...s.vouchers] }));
@@ -124,9 +126,9 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
           if (line.accountId) {
             const acc = await db.accounts.get(line.accountId);
             if (acc) {
-              const reversed = Math.round(
-                ((acc.balance || 0) - (line.debit || 0) + (line.credit || 0)) * 100,
-              ) / 100;
+              const reversed =
+                Math.round(((acc.balance || 0) - (line.debit || 0) + (line.credit || 0)) * 100) /
+                100;
               await db.accounts.update(line.accountId, { balance: reversed });
             }
           }
@@ -144,9 +146,9 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
           if (line.accountId) {
             const acc = await db.accounts.get(line.accountId);
             if (acc) {
-              const newBal = Math.round(
-                ((acc.balance || 0) + (line.debit || 0) - (line.credit || 0)) * 100,
-              ) / 100;
+              const newBal =
+                Math.round(((acc.balance || 0) + (line.debit || 0) - (line.credit || 0)) * 100) /
+                100;
               await db.accounts.update(line.accountId, { balance: newBal });
             }
           }
@@ -233,7 +235,9 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
           before: { voucherNo: original.voucherNo, status: original.status },
           after: { status: "cancelled", reason },
         });
-      } catch { /* non-critical */ }
+      } catch {
+        /* non-critical */
+      }
 
       const allVouchers = await db.vouchers.toArray();
       set({
@@ -633,9 +637,8 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
         if (line.accountId) {
           const acc = await db.accounts.get(line.accountId);
           if (acc) {
-            const newBal = Math.round(
-              ((acc.balance || 0) + (line.debit || 0) - (line.credit || 0)) * 100,
-            ) / 100;
+            const newBal =
+              Math.round(((acc.balance || 0) + (line.debit || 0) - (line.credit || 0)) * 100) / 100;
             await db.accounts.update(line.accountId, { balance: newBal });
           }
         }

@@ -63,7 +63,15 @@ const ReportOptionsModal: React.FC<ReportOptionsModalProps> = ({
   if (!open) return null;
 
   const handleGenerate = () => {
-    onGenerate({ layout, fromDate, toDate, showSecondLevel, branchId, fiscalYearId, monthlyVariant });
+    onGenerate({
+      layout,
+      fromDate,
+      toDate,
+      showSecondLevel,
+      branchId,
+      fiscalYearId,
+      monthlyVariant,
+    });
     onClose();
   };
 

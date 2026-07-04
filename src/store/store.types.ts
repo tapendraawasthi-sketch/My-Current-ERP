@@ -7,8 +7,26 @@ export type AuthStage =
   | "authenticated"; // Valid credentials entered — show full app shell
 
 // Types-only file — no runtime imports here.
-// (DBSalesPerson, DBPriceList are imported below from db via the AppState interface.)
-import type { DBSalesPerson, DBPriceList } from "../lib/db";
+import type {
+  DBSalesPerson,
+  DBPriceList,
+  DBFixedAsset,
+  DBDepreciationEntry,
+  DBSerialNumber,
+  DBPDCEntry,
+  DBSalaryStructure,
+  DBPayrollRun,
+  DBPayrollEntry,
+  DBCostCentre,
+  DBCostCentreAllocation,
+  DBApprovalPolicy,
+  DBApprovalRequest,
+  DBApprovalAction,
+  DBRecurringTemplate,
+  DBRecurringPosting,
+  DBFXGainLossEntry,
+  DBAuditLog,
+} from "../lib/db";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export type UserRole = "admin" | "manager" | "accountant" | "viewer";
@@ -106,6 +124,9 @@ export interface CompanySettings {
   dateFormat?: string;
   fiscalYearStartMonth?: number;
   printBankDetails?: boolean;
+  bankName?: string;
+  bankAccount?: string;
+  bankBranch?: string;
   termsConditions?: string;
   invoiceFooter?: string;
   signatoryName?: string;
@@ -636,24 +657,24 @@ export interface MultiGodownStoreSlice {
   ) => Promise<DBStockTransferVoucher>;
 }
 export interface AppState extends MultiGodownStoreSlice {
-  pdcRegister: any[];
-  salaryStructures: any[];
-  payrollRuns: any[];
-  payrollEntries: any[];
-  fxGainLossEntries: any[];
-  costCentres: any[];
-  costCentreAllocations: any[];
-  approvalPolicies: any[];
-  approvalRequests: any[];
-  approvalActions: any[];
-  recurringPostings: any[];
-  recurringTemplates: any[];
-  fixedAssets: any[];
-  depreciationLedger: any[];
-  serialNumbers: any[];
+  pdcRegister: DBPDCEntry[];
+  salaryStructures: DBSalaryStructure[];
+  payrollRuns: DBPayrollRun[];
+  payrollEntries: DBPayrollEntry[];
+  fxGainLossEntries: DBFXGainLossEntry[];
+  costCentres: DBCostCentre[];
+  costCentreAllocations: DBCostCentreAllocation[];
+  approvalPolicies: DBApprovalPolicy[];
+  approvalRequests: DBApprovalRequest[];
+  approvalActions: DBApprovalAction[];
+  recurringPostings: DBRecurringPosting[];
+  recurringTemplates: DBRecurringTemplate[];
+  fixedAssets: DBFixedAsset[];
+  depreciationLedger: DBDepreciationEntry[];
+  serialNumbers: DBSerialNumber[];
   // DB
   isDbReady: boolean;
-  auditLogs?: any[];
+  auditLogs: DBAuditLog[];
   loadAuditLogs: () => Promise<void>;
   isInitializing: boolean;
   // Auth Stage Machine
@@ -1243,4 +1264,3 @@ export const DEFAULT_TDS_RATES = [
   { id: "tds-8", section: "88", natureOfPayment: "Royalty", rate: 15, threshold: 0 },
   { id: "tds-9", section: "88", natureOfPayment: "Other", rate: 1.5, threshold: 0 },
 ];
-

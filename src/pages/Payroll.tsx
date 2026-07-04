@@ -2,25 +2,65 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useStore } from "../store";
 import {
-  Users, Plus, Edit2, Trash2, FileText, Download,
-  Calculator, CheckCircle, Clock, DollarSign, ChevronDown, ChevronUp, X
+  Users,
+  Plus,
+  Edit2,
+  Trash2,
+  FileText,
+  Download,
+  Calculator,
+  CheckCircle,
+  Clock,
+  DollarSign,
+  ChevronDown,
+  ChevronUp,
+  X,
 } from "lucide-react";
 import * as XLSX from "xlsx";
 import {
-  computeNepalTDS, fmtNPR,
-  EPF_EMPLOYEE_RATE, EPF_EMPLOYER_RATE,
-  SSF_EMPLOYEE_RATE, SSF_EMPLOYER_RATE,
-  CIT_RATE, EXEMPTION_SINGLE, EXEMPTION_MARRIED
+  computeNepalTDS,
+  fmtNPR,
+  EPF_EMPLOYEE_RATE,
+  EPF_EMPLOYER_RATE,
+  SSF_EMPLOYEE_RATE,
+  SSF_EMPLOYER_RATE,
+  CIT_RATE,
+  EXEMPTION_SINGLE,
+  EXEMPTION_MARRIED,
 } from "../lib/nepalTax";
 
 // ─── Tab types ────────────────────────────────────────────────────────────────
 type Tab = "employees" | "salary" | "process" | "register" | "payslip";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
-const MONTHS = ["Shrawan","Bhadra","Ashwin","Kartik","Mangsir","Poush",
-                "Magh","Falgun","Chaitra","Baisakh","Jestha","Ashadh"];
-const MONTHS_EN = ["January","February","March","April","May","June",
-                   "July","August","September","October","November","December"];
+const MONTHS = [
+  "Shrawan",
+  "Bhadra",
+  "Ashwin",
+  "Kartik",
+  "Mangsir",
+  "Poush",
+  "Magh",
+  "Falgun",
+  "Chaitra",
+  "Baisakh",
+  "Jestha",
+  "Ashadh",
+];
+const MONTHS_EN = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 function fmt(n: number) {
   return n.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -29,10 +69,18 @@ function fmt(n: number) {
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function Payroll() {
   const {
-    employees = [], salaryStructures = [], payrollRuns = [], payrollEntries = [],
-    loadPayrollData, addEmployee, updateEmployee, deleteEmployee,
-    addSalaryStructure, processPayroll,
-    currentFiscalYear, companySettings,
+    employees = [],
+    salaryStructures = [],
+    payrollRuns = [],
+    payrollEntries = [],
+    loadPayrollData,
+    addEmployee,
+    updateEmployee,
+    deleteEmployee,
+    addSalaryStructure,
+    processPayroll,
+    currentFiscalYear,
+    companySettings,
   } = useStore();
 
   const [activeTab, setActiveTab] = useState<Tab>("employees");
@@ -48,42 +96,67 @@ export default function Payroll() {
 
   // Employee form state
   const [empForm, setEmpForm] = useState({
-    employeeCode: "", name: "", department: "", designation: "",
-    panNumber: "", bankAccount: "", bankName: "", joiningDate: "",
-    gender: "male", maritalStatus: "single",
-    epfApplicable: true, citApplicable: false, ssfApplicable: false,
+    employeeCode: "",
+    name: "",
+    department: "",
+    designation: "",
+    panNumber: "",
+    bankAccount: "",
+    bankName: "",
+    joiningDate: "",
+    gender: "male",
+    maritalStatus: "single",
+    epfApplicable: true,
+    citApplicable: false,
+    ssfApplicable: false,
     isActive: true,
   });
 
   // Salary form state
   const [salForm, setSalForm] = useState({
-    employeeId: 0, effectiveFrom: new Date().toISOString().slice(0,10),
-    basicSalary: 0, houseRentAllowance: 0, medicalAllowance: 0,
-    transportAllowance: 0, otherAllowances: 0,
-    epfRate: 10, citRate: 10, ssfRate: 1,
+    employeeId: 0,
+    effectiveFrom: new Date().toISOString().slice(0, 10),
+    basicSalary: 0,
+    houseRentAllowance: 0,
+    medicalAllowance: 0,
+    transportAllowance: 0,
+    otherAllowances: 0,
+    epfRate: 10,
+    citRate: 10,
+    ssfRate: 1,
   });
 
-  useEffect(() => { loadPayrollData?.(); }, []);
+  useEffect(() => {
+    loadPayrollData?.();
+  }, []);
 
   // ── Filtered employees ────────────────────────────────────────────────────
-  const filteredEmps = useMemo(() =>
-    employees.filter((e: any) =>
-      e.name?.toLowerCase().includes(searchEmp.toLowerCase()) ||
-      e.employeeCode?.toLowerCase().includes(searchEmp.toLowerCase()) ||
-      e.department?.toLowerCase().includes(searchEmp.toLowerCase())
-    ), [employees, searchEmp]);
+  const filteredEmps = useMemo(
+    () =>
+      employees.filter(
+        (e: any) =>
+          e.name?.toLowerCase().includes(searchEmp.toLowerCase()) ||
+          e.employeeCode?.toLowerCase().includes(searchEmp.toLowerCase()) ||
+          e.department?.toLowerCase().includes(searchEmp.toLowerCase()),
+      ),
+    [employees, searchEmp],
+  );
 
   // ── Current payroll run entries ───────────────────────────────────────────
-  const runEntries = useMemo(() =>
-    selectedRunId
-      ? payrollEntries.filter((e: any) => e.payrollRunId === selectedRunId)
-      : [], [payrollEntries, selectedRunId]);
+  const runEntries = useMemo(
+    () =>
+      selectedRunId ? payrollEntries.filter((e: any) => e.payrollRunId === selectedRunId) : [],
+    [payrollEntries, selectedRunId],
+  );
 
   // ── Payslip data for selected employee ───────────────────────────────────
-  const payslipEntry = useMemo(() =>
-    selectedEmpId && selectedRunId
-      ? runEntries.find((e: any) => e.employeeId === selectedEmpId)
-      : null, [runEntries, selectedEmpId, selectedRunId]);
+  const payslipEntry = useMemo(
+    () =>
+      selectedEmpId && selectedRunId
+        ? runEntries.find((e: any) => e.employeeId === selectedEmpId)
+        : null,
+    [runEntries, selectedEmpId, selectedRunId],
+  );
 
   // ── Save employee ─────────────────────────────────────────────────────────
   const handleSaveEmployee = async () => {
@@ -95,10 +168,22 @@ export default function Payroll() {
     }
     setShowEmpModal(false);
     setEditEmp(null);
-    setEmpForm({ employeeCode:"",name:"",department:"",designation:"",
-      panNumber:"",bankAccount:"",bankName:"",joiningDate:"",
-      gender:"male",maritalStatus:"single",
-      epfApplicable:true,citApplicable:false,ssfApplicable:false,isActive:true });
+    setEmpForm({
+      employeeCode: "",
+      name: "",
+      department: "",
+      designation: "",
+      panNumber: "",
+      bankAccount: "",
+      bankName: "",
+      joiningDate: "",
+      gender: "male",
+      maritalStatus: "single",
+      epfApplicable: true,
+      citApplicable: false,
+      ssfApplicable: false,
+      isActive: true,
+    });
   };
 
   // ── Save salary structure ──────────────────────────────────────────────────
@@ -126,14 +211,21 @@ export default function Payroll() {
     const data = runEntries.map((e: any) => ({
       "Emp Code": employees.find((x: any) => x.id === e.employeeId)?.employeeCode || "",
       "Employee Name": e.employeeName,
-      "Department": e.department,
-      "Basic": e.basicSalary, "HRA": e.houseRentAllowance,
-      "Medical": e.medicalAllowance, "Transport": e.transportAllowance,
-      "Other Allow": e.otherAllowances, "Gross": e.grossSalary,
-      "EPF (Emp)": e.epfEmployee, "CIT": e.citEmployee,
-      "SSF (Emp)": e.ssfEmployee, "TDS": e.tdsAmount,
-      "Total Deductions": e.totalDeductions, "Net Pay": e.netPay,
-      "EPF (Employer)": e.epfEmployer, "SSF (Employer)": e.ssfEmployer,
+      Department: e.department,
+      Basic: e.basicSalary,
+      HRA: e.houseRentAllowance,
+      Medical: e.medicalAllowance,
+      Transport: e.transportAllowance,
+      "Other Allow": e.otherAllowances,
+      Gross: e.grossSalary,
+      "EPF (Emp)": e.epfEmployee,
+      CIT: e.citEmployee,
+      "SSF (Emp)": e.ssfEmployee,
+      TDS: e.tdsAmount,
+      "Total Deductions": e.totalDeductions,
+      "Net Pay": e.netPay,
+      "EPF (Employer)": e.epfEmployer,
+      "SSF (Employer)": e.ssfEmployer,
     }));
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
@@ -144,10 +236,10 @@ export default function Payroll() {
   // ── Tabs UI ───────────────────────────────────────────────────────────────
   const tabs: { id: Tab; label: string; icon: any }[] = [
     { id: "employees", label: "Employees", icon: Users },
-    { id: "salary",    label: "Salary Structure", icon: DollarSign },
-    { id: "process",   label: "Process Payroll", icon: Calculator },
-    { id: "register",  label: "Payroll Register", icon: FileText },
-    { id: "payslip",   label: "Payslip", icon: FileText },
+    { id: "salary", label: "Salary Structure", icon: DollarSign },
+    { id: "process", label: "Process Payroll", icon: Calculator },
+    { id: "register", label: "Payroll Register", icon: FileText },
+    { id: "payslip", label: "Payslip", icon: FileText },
   ];
 
   return (
@@ -162,20 +254,29 @@ export default function Payroll() {
         </div>
         <div className="flex gap-2">
           {activeTab === "employees" && (
-            <button onClick={() => { setEditEmp(null); setShowEmpModal(true); }}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium">
+            <button
+              onClick={() => {
+                setEditEmp(null);
+                setShowEmpModal(true);
+              }}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
+            >
               <Plus className="w-4 h-4" /> Add Employee
             </button>
           )}
           {activeTab === "salary" && (
-            <button onClick={() => setShowSalModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium">
+            <button
+              onClick={() => setShowSalModal(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium"
+            >
               <Plus className="w-4 h-4" /> Add Salary Structure
             </button>
           )}
           {activeTab === "register" && selectedRunId && (
-            <button onClick={exportRegister}
-              className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium">
+            <button
+              onClick={exportRegister}
+              className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium"
+            >
               <Download className="w-4 h-4" /> Export Excel
             </button>
           )}
@@ -185,15 +286,40 @@ export default function Payroll() {
       {/* KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: "Total Employees", value: employees.filter((e: any) => e.isActive).length, color: "blue", icon: Users },
-          { label: "This Month Gross", value: fmt(payrollRuns.slice(-1)[0]?.totalGross || 0), color: "green", icon: DollarSign },
-          { label: "This Month TDS", value: fmt(payrollEntries.filter((e: any) => {
-              const run = payrollRuns.find((r: any) => r.id === e.payrollRunId);
-              return run?.month === new Date().getMonth()+1 && run?.year === new Date().getFullYear();
-            }).reduce((s: number,e: any) => s+e.tdsAmount,0)), color: "orange", icon: Calculator },
+          {
+            label: "Total Employees",
+            value: employees.filter((e: any) => e.isActive).length,
+            color: "blue",
+            icon: Users,
+          },
+          {
+            label: "This Month Gross",
+            value: fmt(payrollRuns.slice(-1)[0]?.totalGross || 0),
+            color: "green",
+            icon: DollarSign,
+          },
+          {
+            label: "This Month TDS",
+            value: fmt(
+              payrollEntries
+                .filter((e: any) => {
+                  const run = payrollRuns.find((r: any) => r.id === e.payrollRunId);
+                  return (
+                    run?.month === new Date().getMonth() + 1 &&
+                    run?.year === new Date().getFullYear()
+                  );
+                })
+                .reduce((s: number, e: any) => s + e.tdsAmount, 0),
+            ),
+            color: "orange",
+            icon: Calculator,
+          },
           { label: "Payroll Runs", value: payrollRuns.length, color: "purple", icon: CheckCircle },
-        ].map(card => (
-          <div key={card.label} className={`bg-${card.color}-50 rounded-xl p-4 border border-${card.color}-200`}>
+        ].map((card) => (
+          <div
+            key={card.label}
+            className={`bg-${card.color}-50 rounded-xl p-4 border border-${card.color}-200`}
+          >
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs text-gray-500">{card.label}</span>
               <card.icon className={`w-4 h-4 text-${card.color}-600`} />
@@ -205,10 +331,16 @@ export default function Payroll() {
 
       {/* Tab Navigation */}
       <div className="flex gap-1 bg-gray-100 rounded-xl p-1">
-        {tabs.map(t => (
-          <button key={t.id} onClick={() => setActiveTab(t.id)}
+        {tabs.map((t) => (
+          <button
+            key={t.id}
+            onClick={() => setActiveTab(t.id)}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-              activeTab === t.id ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:text-gray-800"}`}>
+              activeTab === t.id
+                ? "bg-white text-blue-600 shadow-sm"
+                : "text-gray-600 hover:text-gray-800"
+            }`}
+          >
             <t.icon className="w-4 h-4" /> {t.label}
           </button>
         ))}
@@ -218,15 +350,35 @@ export default function Payroll() {
       {activeTab === "employees" && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="p-4 border-b">
-            <input value={searchEmp} onChange={e=>setSearchEmp(e.target.value)}
+            <input
+              value={searchEmp}
+              onChange={(e) => setSearchEmp(e.target.value)}
               placeholder="Search employees…"
-              className="w-full max-w-sm border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"/>
+              className="w-full max-w-sm border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
           </div>
           <table className="w-full text-sm">
             <thead className="bg-gray-50">
               <tr>
-                {["Code","Name","Department","Designation","PAN","EPF","CIT","SSF","Status","Actions"]
-                  .map(h=><th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{h}</th>)}
+                {[
+                  "Code",
+                  "Name",
+                  "Department",
+                  "Designation",
+                  "PAN",
+                  "EPF",
+                  "CIT",
+                  "SSF",
+                  "Status",
+                  "Actions",
+                ].map((h) => (
+                  <th
+                    key={h}
+                    className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider"
+                  >
+                    {h}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -238,40 +390,61 @@ export default function Payroll() {
                   <td className="px-4 py-3 text-gray-600">{emp.designation}</td>
                   <td className="px-4 py-3 font-mono text-xs">{emp.panNumber}</td>
                   <td className="px-4 py-3">
-                    <span className={`px-2 py-0.5 rounded-full text-xs ${emp.epfApplicable?"bg-green-100 text-green-700":"bg-gray-100 text-gray-500"}`}>
-                      {emp.epfApplicable?"Yes":"No"}
+                    <span
+                      className={`px-2 py-0.5 rounded-full text-xs ${emp.epfApplicable ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}
+                    >
+                      {emp.epfApplicable ? "Yes" : "No"}
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`px-2 py-0.5 rounded-full text-xs ${emp.citApplicable?"bg-blue-100 text-blue-700":"bg-gray-100 text-gray-500"}`}>
-                      {emp.citApplicable?"Yes":"No"}
+                    <span
+                      className={`px-2 py-0.5 rounded-full text-xs ${emp.citApplicable ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-500"}`}
+                    >
+                      {emp.citApplicable ? "Yes" : "No"}
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`px-2 py-0.5 rounded-full text-xs ${emp.ssfApplicable?"bg-purple-100 text-purple-700":"bg-gray-100 text-gray-500"}`}>
-                      {emp.ssfApplicable?"Yes":"No"}
+                    <span
+                      className={`px-2 py-0.5 rounded-full text-xs ${emp.ssfApplicable ? "bg-purple-100 text-purple-700" : "bg-gray-100 text-gray-500"}`}
+                    >
+                      {emp.ssfApplicable ? "Yes" : "No"}
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`px-2 py-0.5 rounded-full text-xs ${emp.isActive?"bg-green-100 text-green-700":"bg-red-100 text-red-700"}`}>
-                      {emp.isActive?"Active":"Inactive"}
+                    <span
+                      className={`px-2 py-0.5 rounded-full text-xs ${emp.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+                    >
+                      {emp.isActive ? "Active" : "Inactive"}
                     </span>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
-                      <button onClick={() => {
-                        setEditEmp(emp);
-                        setEmpForm({ ...emp });
-                        setShowEmpModal(true);
-                      }} className="text-blue-500 hover:text-blue-700"><Edit2 className="w-4 h-4"/></button>
-                      <button onClick={() => deleteEmployee(emp.id!)}
-                        className="text-red-400 hover:text-red-600"><Trash2 className="w-4 h-4"/></button>
+                      <button
+                        onClick={() => {
+                          setEditEmp(emp);
+                          setEmpForm({ ...emp });
+                          setShowEmpModal(true);
+                        }}
+                        className="text-blue-500 hover:text-blue-700"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => deleteEmployee(emp.id!)}
+                        className="text-red-400 hover:text-red-600"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
                   </td>
                 </tr>
               ))}
               {filteredEmps.length === 0 && (
-                <tr><td colSpan={10} className="px-4 py-8 text-center text-gray-400">No employees found. Add your first employee.</td></tr>
+                <tr>
+                  <td colSpan={10} className="px-4 py-8 text-center text-gray-400">
+                    No employees found. Add your first employee.
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
@@ -281,47 +454,69 @@ export default function Payroll() {
       {/* ── SALARY STRUCTURE TAB ─────────────────────────────────────────── */}
       {activeTab === "salary" && (
         <div className="space-y-4">
-          {employees.filter((e: any) => e.isActive).map((emp: any) => {
-            const structs = salaryStructures
-              .filter((s: any) => s.employeeId === emp.id)
-              .sort((a: any,b: any) => b.effectiveFrom.localeCompare(a.effectiveFrom));
-            const latest = structs[0];
-            const gross = latest ? latest.basicSalary + latest.houseRentAllowance + latest.medicalAllowance + latest.transportAllowance + latest.otherAllowances : 0;
-            return (
-              <div key={emp.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <span className="font-semibold text-gray-800">{emp.name}</span>
-                    <span className="text-sm text-gray-500 ml-2">({emp.department})</span>
+          {employees
+            .filter((e: any) => e.isActive)
+            .map((emp: any) => {
+              const structs = salaryStructures
+                .filter((s: any) => s.employeeId === emp.id)
+                .sort((a: any, b: any) => b.effectiveFrom.localeCompare(a.effectiveFrom));
+              const latest = structs[0];
+              const gross = latest
+                ? latest.basicSalary +
+                  latest.houseRentAllowance +
+                  latest.medicalAllowance +
+                  latest.transportAllowance +
+                  latest.otherAllowances
+                : 0;
+              return (
+                <div
+                  key={emp.id}
+                  className="bg-white rounded-xl shadow-sm border border-gray-200 p-4"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <span className="font-semibold text-gray-800">{emp.name}</span>
+                      <span className="text-sm text-gray-500 ml-2">({emp.department})</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      {latest && (
+                        <span className="text-sm font-medium text-green-700">
+                          Gross: {fmt(gross)}
+                        </span>
+                      )}
+                      <button
+                        onClick={() => {
+                          setSalForm({ ...salForm, employeeId: emp.id! });
+                          setShowSalModal(true);
+                        }}
+                        className="flex items-center gap-1 px-3 py-1 bg-green-50 border border-green-200 text-green-700 rounded-lg text-xs hover:bg-green-100"
+                      >
+                        <Plus className="w-3 h-3" /> Revise
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    {latest && <span className="text-sm font-medium text-green-700">Gross: {fmt(gross)}</span>}
-                    <button onClick={() => { setSalForm({...salForm, employeeId: emp.id!}); setShowSalModal(true); }}
-                      className="flex items-center gap-1 px-3 py-1 bg-green-50 border border-green-200 text-green-700 rounded-lg text-xs hover:bg-green-100">
-                      <Plus className="w-3 h-3"/> Revise
-                    </button>
-                  </div>
+                  {latest && (
+                    <div className="grid grid-cols-3 md:grid-cols-6 gap-3 text-xs">
+                      {[
+                        ["Basic", latest.basicSalary],
+                        ["HRA", latest.houseRentAllowance],
+                        ["Medical", latest.medicalAllowance],
+                        ["Transport", latest.transportAllowance],
+                        ["Other", latest.otherAllowances],
+                        ["EPF Rate", latest.epfRate + "%"],
+                      ].map(([l, v]) => (
+                        <div key={l as string} className="bg-gray-50 rounded-lg p-2 text-center">
+                          <div className="text-gray-500">{l}</div>
+                          <div className="font-semibold text-gray-800 mt-0.5">
+                            {typeof v === "number" ? fmt(v) : v}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                {latest && (
-                  <div className="grid grid-cols-3 md:grid-cols-6 gap-3 text-xs">
-                    {[
-                      ["Basic", latest.basicSalary],
-                      ["HRA", latest.houseRentAllowance],
-                      ["Medical", latest.medicalAllowance],
-                      ["Transport", latest.transportAllowance],
-                      ["Other", latest.otherAllowances],
-                      ["EPF Rate", latest.epfRate + "%"],
-                    ].map(([l,v])=>(
-                      <div key={l as string} className="bg-gray-50 rounded-lg p-2 text-center">
-                        <div className="text-gray-500">{l}</div>
-                        <div className="font-semibold text-gray-800 mt-0.5">{typeof v==="number"?fmt(v):v}</div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
       )}
 
@@ -329,21 +524,32 @@ export default function Payroll() {
       {activeTab === "process" && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 max-w-lg">
           <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            <Calculator className="w-5 h-5 text-blue-600"/> Process Monthly Payroll
+            <Calculator className="w-5 h-5 text-blue-600" /> Process Monthly Payroll
           </h2>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Month</label>
-                <select value={payrollMonth} onChange={e=>setPayrollMonth(+e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
-                  {MONTHS_EN.map((m,i)=><option key={m} value={i+1}>{m}</option>)}
+                <select
+                  value={payrollMonth}
+                  onChange={(e) => setPayrollMonth(+e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                >
+                  {MONTHS_EN.map((m, i) => (
+                    <option key={m} value={i + 1}>
+                      {m}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Year</label>
-                <input type="number" value={payrollYear} onChange={e=>setPayrollYear(+e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"/>
+                <input
+                  type="number"
+                  value={payrollYear}
+                  onChange={(e) => setPayrollYear(+e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                />
               </div>
             </div>
             <div className="bg-blue-50 rounded-lg p-4 text-sm text-blue-700 space-y-1">
@@ -356,11 +562,25 @@ export default function Payroll() {
               <div>• Slabs: 1% / 10% / 20% / 30% / 36%</div>
             </div>
             <div className="text-sm text-gray-600">
-              <span className="font-medium text-gray-800">{employees.filter((e: any) => e.isActive).length}</span> active employees will be processed.
+              <span className="font-medium text-gray-800">
+                {employees.filter((e: any) => e.isActive).length}
+              </span>{" "}
+              active employees will be processed.
             </div>
-            <button onClick={handleProcess} disabled={processing}
-              className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center gap-2">
-              {processing ? <><Clock className="w-4 h-4 animate-spin"/> Processing…</> : <><Calculator className="w-4 h-4"/> Run Payroll</>}
+            <button
+              onClick={handleProcess}
+              disabled={processing}
+              className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {processing ? (
+                <>
+                  <Clock className="w-4 h-4 animate-spin" /> Processing…
+                </>
+              ) : (
+                <>
+                  <Calculator className="w-4 h-4" /> Run Payroll
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -371,21 +591,33 @@ export default function Payroll() {
         <div className="space-y-4">
           <div className="flex gap-3 flex-wrap">
             {payrollRuns.map((run: any) => (
-              <button key={run.id} onClick={()=>setSelectedRunId(run.id!)}
+              <button
+                key={run.id}
+                onClick={() => setSelectedRunId(run.id!)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all ${
-                  selectedRunId===run.id
+                  selectedRunId === run.id
                     ? "bg-blue-600 text-white border-blue-600"
-                    : "bg-white text-gray-700 border-gray-300 hover:border-blue-400"}`}>
-                {MONTHS_EN[run.month-1]} {run.year}
-                <span className={`ml-2 text-xs px-1.5 py-0.5 rounded-full ${
-                  run.status==="paid"?"bg-green-100 text-green-700":
-                  run.status==="approved"?"bg-blue-100 text-blue-700":"bg-yellow-100 text-yellow-700"}`}>
+                    : "bg-white text-gray-700 border-gray-300 hover:border-blue-400"
+                }`}
+              >
+                {MONTHS_EN[run.month - 1]} {run.year}
+                <span
+                  className={`ml-2 text-xs px-1.5 py-0.5 rounded-full ${
+                    run.status === "paid"
+                      ? "bg-green-100 text-green-700"
+                      : run.status === "approved"
+                        ? "bg-blue-100 text-blue-700"
+                        : "bg-yellow-100 text-yellow-700"
+                  }`}
+                >
                   {run.status}
                 </span>
               </button>
             ))}
-            {payrollRuns.length===0 && (
-              <div className="text-gray-400 text-sm">No payroll runs yet. Go to Process Payroll tab.</div>
+            {payrollRuns.length === 0 && (
+              <div className="text-gray-400 text-sm">
+                No payroll runs yet. Go to Process Payroll tab.
+              </div>
             )}
           </div>
 
@@ -394,42 +626,112 @@ export default function Payroll() {
               <table className="w-full text-xs whitespace-nowrap">
                 <thead className="bg-gray-50 border-b">
                   <tr>
-                    {["Emp Code","Name","Dept","Basic","HRA","Medical","Transport","Other","Gross",
-                      "EPF(E)","CIT","SSF(E)","TDS","Total Ded.","Net Pay","EPF(ER)","SSF(ER)"]
-                      .map(h=><th key={h} className="px-3 py-2 text-left font-semibold text-gray-500 uppercase">{h}</th>)}
+                    {[
+                      "Emp Code",
+                      "Name",
+                      "Dept",
+                      "Basic",
+                      "HRA",
+                      "Medical",
+                      "Transport",
+                      "Other",
+                      "Gross",
+                      "EPF(E)",
+                      "CIT",
+                      "SSF(E)",
+                      "TDS",
+                      "Total Ded.",
+                      "Net Pay",
+                      "EPF(ER)",
+                      "SSF(ER)",
+                    ].map((h) => (
+                      <th
+                        key={h}
+                        className="px-3 py-2 text-left font-semibold text-gray-500 uppercase"
+                      >
+                        {h}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {runEntries.map((e: any) => (
-                    <tr key={e.id} className="hover:bg-blue-50 cursor-pointer"
-                      onClick={()=>{ setSelectedEmpId(e.employeeId); setActiveTab("payslip"); }}>
-                      <td className="px-3 py-2 font-mono">{employees.find((x: any) => x.id === e.employeeId)?.employeeCode}</td>
+                    <tr
+                      key={e.id}
+                      className="hover:bg-blue-50 cursor-pointer"
+                      onClick={() => {
+                        setSelectedEmpId(e.employeeId);
+                        setActiveTab("payslip");
+                      }}
+                    >
+                      <td className="px-3 py-2 font-mono">
+                        {employees.find((x: any) => x.id === e.employeeId)?.employeeCode}
+                      </td>
                       <td className="px-3 py-2 font-medium">{e.employeeName}</td>
                       <td className="px-3 py-2 text-gray-500">{e.department}</td>
-                      {[e.basicSalary,e.houseRentAllowance,e.medicalAllowance,e.transportAllowance,
-                        e.otherAllowances,e.grossSalary,e.epfEmployee,e.citEmployee,
-                        e.ssfEmployee,e.tdsAmount,e.totalDeductions,e.netPay,
-                        e.epfEmployer,e.ssfEmployer].map((v,i)=>(
-                        <td key={i} className={`px-3 py-2 text-right ${i>=9?"font-semibold":""}`}>{fmt(v)}</td>
+                      {[
+                        e.basicSalary,
+                        e.houseRentAllowance,
+                        e.medicalAllowance,
+                        e.transportAllowance,
+                        e.otherAllowances,
+                        e.grossSalary,
+                        e.epfEmployee,
+                        e.citEmployee,
+                        e.ssfEmployee,
+                        e.tdsAmount,
+                        e.totalDeductions,
+                        e.netPay,
+                        e.epfEmployer,
+                        e.ssfEmployer,
+                      ].map((v, i) => (
+                        <td
+                          key={i}
+                          className={`px-3 py-2 text-right ${i >= 9 ? "font-semibold" : ""}`}
+                        >
+                          {fmt(v)}
+                        </td>
                       ))}
                     </tr>
                   ))}
                   {/* Totals row */}
-                  {runEntries.length > 0 && (() => {
-                    const t = (field: keyof typeof runEntries[0]) =>
-                      runEntries.reduce((s: number, e: any) => s+(e[field] as number||0),0);
-                    return (
-                      <tr className="bg-gray-100 font-bold border-t-2 border-gray-300">
-                        <td colSpan={3} className="px-3 py-2 text-right">TOTAL</td>
-                        {(["basicSalary","houseRentAllowance","medicalAllowance","transportAllowance",
-                          "otherAllowances","grossSalary","epfEmployee","citEmployee",
-                          "ssfEmployee","tdsAmount","totalDeductions","netPay",
-                          "epfEmployer","ssfEmployer"] as any[]).map((f,i)=>(
-                          <td key={i} className="px-3 py-2 text-right">{fmt(t(f))}</td>
-                        ))}
-                      </tr>
-                    );
-                  })()}
+                  {runEntries.length > 0 &&
+                    (() => {
+                      const t = (field: keyof (typeof runEntries)[0]) =>
+                        runEntries.reduce(
+                          (s: number, e: any) => s + ((e[field] as number) || 0),
+                          0,
+                        );
+                      return (
+                        <tr className="bg-gray-100 font-bold border-t-2 border-gray-300">
+                          <td colSpan={3} className="px-3 py-2 text-right">
+                            TOTAL
+                          </td>
+                          {(
+                            [
+                              "basicSalary",
+                              "houseRentAllowance",
+                              "medicalAllowance",
+                              "transportAllowance",
+                              "otherAllowances",
+                              "grossSalary",
+                              "epfEmployee",
+                              "citEmployee",
+                              "ssfEmployee",
+                              "tdsAmount",
+                              "totalDeductions",
+                              "netPay",
+                              "epfEmployer",
+                              "ssfEmployer",
+                            ] as any[]
+                          ).map((f, i) => (
+                            <td key={i} className="px-3 py-2 text-right">
+                              {fmt(t(f))}
+                            </td>
+                          ))}
+                        </tr>
+                      );
+                    })()}
                 </tbody>
               </table>
             </div>
@@ -441,26 +743,52 @@ export default function Payroll() {
       {activeTab === "payslip" && (
         <div className="space-y-4">
           <div className="flex gap-3">
-            <select value={selectedRunId||""} onChange={e=>setSelectedRunId(+e.target.value||null)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+            <select
+              value={selectedRunId || ""}
+              onChange={(e) => setSelectedRunId(+e.target.value || null)}
+              className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+            >
               <option value="">Select Month</option>
-              {payrollRuns.map((r: any) => <option key={r.id} value={r.id}>{MONTHS_EN[r.month-1]} {r.year}</option>)}
+              {payrollRuns.map((r: any) => (
+                <option key={r.id} value={r.id}>
+                  {MONTHS_EN[r.month - 1]} {r.year}
+                </option>
+              ))}
             </select>
-            <select value={selectedEmpId||""} onChange={e=>setSelectedEmpId(+e.target.value||null)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+            <select
+              value={selectedEmpId || ""}
+              onChange={(e) => setSelectedEmpId(+e.target.value || null)}
+              className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+            >
               <option value="">Select Employee</option>
-              {employees.filter((e: any) => e.isActive).map((e: any) => <option key={e.id} value={e.id}>{e.name}</option>)}
+              {employees
+                .filter((e: any) => e.isActive)
+                .map((e: any) => (
+                  <option key={e.id} value={e.id}>
+                    {e.name}
+                  </option>
+                ))}
             </select>
           </div>
 
           {payslipEntry ? (
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-2xl print:shadow-none" id="payslip">
+            <div
+              className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-2xl print:shadow-none"
+              id="payslip"
+            >
               {/* Company Header */}
               <div className="text-center border-b pb-4 mb-6">
-                <h2 className="text-xl font-bold text-gray-800">{companySettings?.name || "Company Name"}</h2>
+                <h2 className="text-xl font-bold text-gray-800">
+                  {companySettings?.name || "Company Name"}
+                </h2>
                 <p className="text-sm text-gray-500">SALARY SLIP</p>
                 <p className="text-sm text-gray-600 font-medium">
-                  {MONTHS_EN[(payrollRuns.find((r: any)=>r.id===selectedRunId)?.month||1)-1]} {payrollRuns.find((r: any)=>r.id===selectedRunId)?.year}
+                  {
+                    MONTHS_EN[
+                      (payrollRuns.find((r: any) => r.id === selectedRunId)?.month || 1) - 1
+                    ]
+                  }{" "}
+                  {payrollRuns.find((r: any) => r.id === selectedRunId)?.year}
                 </p>
               </div>
 
@@ -469,10 +797,19 @@ export default function Payroll() {
                 {[
                   ["Employee Name", payslipEntry.employeeName],
                   ["Department", payslipEntry.department],
-                  ["Designation", employees.find((e: any)=>e.id===payslipEntry.employeeId)?.designation||""],
-                  ["PAN Number", employees.find((e: any)=>e.id===payslipEntry.employeeId)?.panNumber||""],
-                ].map(([l,v])=>(
-                  <div key={l as string}><span className="text-gray-500">{l}: </span><span className="font-medium">{v as string}</span></div>
+                  [
+                    "Designation",
+                    employees.find((e: any) => e.id === payslipEntry.employeeId)?.designation || "",
+                  ],
+                  [
+                    "PAN Number",
+                    employees.find((e: any) => e.id === payslipEntry.employeeId)?.panNumber || "",
+                  ],
+                ].map(([l, v]) => (
+                  <div key={l as string}>
+                    <span className="text-gray-500">{l}: </span>
+                    <span className="font-medium">{v as string}</span>
+                  </div>
                 ))}
               </div>
 
@@ -489,8 +826,11 @@ export default function Payroll() {
                         ["Transport Allowance", payslipEntry.transportAllowance],
                         ["Other Allowances", payslipEntry.otherAllowances],
                         ["Overtime Pay", payslipEntry.overtimePay],
-                      ].map(([l,v])=>(
-                        <tr key={l as string}><td className="py-1 text-gray-600">{l as string}</td><td className="py-1 text-right">{fmt(v as number)}</td></tr>
+                      ].map(([l, v]) => (
+                        <tr key={l as string}>
+                          <td className="py-1 text-gray-600">{l as string}</td>
+                          <td className="py-1 text-right">{fmt(v as number)}</td>
+                        </tr>
                       ))}
                       <tr className="font-bold border-t">
                         <td className="py-1">Gross Salary</td>
@@ -509,8 +849,11 @@ export default function Payroll() {
                         ["SSF (Employee 1%)", payslipEntry.ssfEmployee],
                         ["Income Tax (TDS)", payslipEntry.tdsAmount],
                         ["Other Deductions", payslipEntry.otherDeductions],
-                      ].map(([l,v])=>(
-                        <tr key={l as string}><td className="py-1 text-gray-600">{l as string}</td><td className="py-1 text-right">{fmt(v as number)}</td></tr>
+                      ].map(([l, v]) => (
+                        <tr key={l as string}>
+                          <td className="py-1 text-gray-600">{l as string}</td>
+                          <td className="py-1 text-right">{fmt(v as number)}</td>
+                        </tr>
                       ))}
                       <tr className="font-bold border-t">
                         <td className="py-1">Total Deductions</td>
@@ -524,12 +867,16 @@ export default function Payroll() {
               {/* Net Pay */}
               <div className="mt-6 bg-blue-50 rounded-lg p-4 text-center">
                 <div className="text-sm text-gray-600">NET PAY (Take Home)</div>
-                <div className="text-2xl font-bold text-blue-700 mt-1">{fmt(payslipEntry.netPay)}</div>
+                <div className="text-2xl font-bold text-blue-700 mt-1">
+                  {fmt(payslipEntry.netPay)}
+                </div>
               </div>
 
               {/* Employer Contributions (informational) */}
               <div className="mt-4 bg-gray-50 rounded-lg p-3 text-xs text-gray-600">
-                <div className="font-semibold mb-1">Employer Contributions (not deducted from salary)</div>
+                <div className="font-semibold mb-1">
+                  Employer Contributions (not deducted from salary)
+                </div>
                 <div className="flex gap-6">
                   <span>EPF (Employer 10%): {fmt(payslipEntry.epfEmployer)}</span>
                   <span>SSF (Employer 3.33%): {fmt(payslipEntry.ssfEmployer)}</span>
@@ -538,11 +885,24 @@ export default function Payroll() {
 
               {/* Tax Workings */}
               <div className="mt-4 bg-yellow-50 rounded-lg p-3 text-xs">
-                <div className="font-semibold text-yellow-800 mb-1">TDS Calculation Workings (Annual)</div>
+                <div className="font-semibold text-yellow-800 mb-1">
+                  TDS Calculation Workings (Annual)
+                </div>
                 <div className="space-y-0.5 text-yellow-700">
                   <div>Annualised Gross: {fmt(payslipEntry.annualisedGross)}</div>
-                  <div>Less: EPF + CIT (annual): {fmt((payslipEntry.epfEmployee + payslipEntry.citEmployee)*12)}</div>
-                  <div>Less: Personal Exemption: {fmt(employees.find((e: any)=>e.id===payslipEntry.employeeId)?.maritalStatus==="married"?500000:400000)}</div>
+                  <div>
+                    Less: EPF + CIT (annual):{" "}
+                    {fmt((payslipEntry.epfEmployee + payslipEntry.citEmployee) * 12)}
+                  </div>
+                  <div>
+                    Less: Personal Exemption:{" "}
+                    {fmt(
+                      employees.find((e: any) => e.id === payslipEntry.employeeId)
+                        ?.maritalStatus === "married"
+                        ? 500000
+                        : 400000,
+                    )}
+                  </div>
                   <div>Taxable Income: {fmt(payslipEntry.taxableIncome)}</div>
                   <div>Annual Tax: {fmt(payslipEntry.annualTax)}</div>
                   <div className="font-semibold">Monthly TDS: {fmt(payslipEntry.tdsAmount)}</div>
@@ -550,14 +910,18 @@ export default function Payroll() {
               </div>
 
               <div className="mt-6 flex justify-end">
-                <button onClick={()=>window.print()}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-700 text-white rounded-lg text-sm hover:bg-gray-800">
-                  <FileText className="w-4 h-4"/> Print Payslip
+                <button
+                  onClick={() => window.print()}
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-700 text-white rounded-lg text-sm hover:bg-gray-800"
+                >
+                  <FileText className="w-4 h-4" /> Print Payslip
                 </button>
               </div>
             </div>
           ) : (
-            <div className="text-center text-gray-400 py-12">Select a month and employee to view payslip.</div>
+            <div className="text-center text-gray-400 py-12">
+              Select a month and employee to view payslip.
+            </div>
           )}
         </div>
       )}
@@ -567,62 +931,91 @@ export default function Payroll() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b">
-              <h2 className="text-lg font-semibold">{editEmp?"Edit Employee":"Add Employee"}</h2>
-              <button onClick={()=>setShowEmpModal(false)}><X className="w-5 h-5"/></button>
+              <h2 className="text-lg font-semibold">
+                {editEmp ? "Edit Employee" : "Add Employee"}
+              </h2>
+              <button onClick={() => setShowEmpModal(false)}>
+                <X className="w-5 h-5" />
+              </button>
             </div>
             <div className="p-6 grid grid-cols-2 gap-4">
               {[
-                ["employeeCode","Employee Code","text"],
-                ["name","Full Name","text"],
-                ["department","Department","text"],
-                ["designation","Designation","text"],
-                ["panNumber","PAN Number","text"],
-                ["bankName","Bank Name","text"],
-                ["bankAccount","Bank Account","text"],
-                ["joiningDate","Joining Date","date"],
-              ].map(([field,label,type])=>(
+                ["employeeCode", "Employee Code", "text"],
+                ["name", "Full Name", "text"],
+                ["department", "Department", "text"],
+                ["designation", "Designation", "text"],
+                ["panNumber", "PAN Number", "text"],
+                ["bankName", "Bank Name", "text"],
+                ["bankAccount", "Bank Account", "text"],
+                ["joiningDate", "Joining Date", "date"],
+              ].map(([field, label, type]) => (
                 <div key={field}>
                   <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-                  <input type={type} value={(empForm as any)[field]||""} onChange={e=>setEmpForm({...empForm,[field]:e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"/>
+                  <input
+                    type={type}
+                    value={(empForm as any)[field] || ""}
+                    onChange={(e) => setEmpForm({ ...empForm, [field]: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                  />
                 </div>
               ))}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
-                <select value={empForm.gender} onChange={e=>setEmpForm({...empForm,gender:e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                <select
+                  value={empForm.gender}
+                  onChange={(e) => setEmpForm({ ...empForm, gender: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                >
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                   <option value="other">Other</option>
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Marital Status</label>
-                <select value={empForm.maritalStatus} onChange={e=>setEmpForm({...empForm,maritalStatus:e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Marital Status
+                </label>
+                <select
+                  value={empForm.maritalStatus}
+                  onChange={(e) => setEmpForm({ ...empForm, maritalStatus: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                >
                   <option value="single">Single</option>
                   <option value="married">Married</option>
                 </select>
               </div>
               <div className="col-span-2 flex gap-6 pt-2">
                 {[
-                  ["epfApplicable","EPF Applicable (10%)"],
-                  ["citApplicable","CIT Applicable (10%)"],
-                  ["ssfApplicable","SSF Applicable (1%+3.33%)"],
-                  ["isActive","Active"],
-                ].map(([field,label])=>(
+                  ["epfApplicable", "EPF Applicable (10%)"],
+                  ["citApplicable", "CIT Applicable (10%)"],
+                  ["ssfApplicable", "SSF Applicable (1%+3.33%)"],
+                  ["isActive", "Active"],
+                ].map(([field, label]) => (
                   <label key={field} className="flex items-center gap-2 text-sm cursor-pointer">
-                    <input type="checkbox" checked={!!(empForm as any)[field]}
-                      onChange={e=>setEmpForm({...empForm,[field]:e.target.checked})}
-                      className="w-4 h-4 rounded"/>
+                    <input
+                      type="checkbox"
+                      checked={!!(empForm as any)[field]}
+                      onChange={(e) => setEmpForm({ ...empForm, [field]: e.target.checked })}
+                      className="w-4 h-4 rounded"
+                    />
                     {label}
                   </label>
                 ))}
               </div>
             </div>
             <div className="flex gap-3 p-6 border-t justify-end">
-              <button onClick={()=>setShowEmpModal(false)} className="px-4 py-2 border rounded-lg text-sm">Cancel</button>
-              <button onClick={handleSaveEmployee} className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">Save Employee</button>
+              <button
+                onClick={() => setShowEmpModal(false)}
+                className="px-4 py-2 border rounded-lg text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveEmployee}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700"
+              >
+                Save Employee
+              </button>
             </div>
           </div>
         </div>
@@ -634,47 +1027,84 @@ export default function Payroll() {
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg">
             <div className="flex items-center justify-between p-6 border-b">
               <h2 className="text-lg font-semibold">Add / Revise Salary Structure</h2>
-              <button onClick={()=>setShowSalModal(false)}><X className="w-5 h-5"/></button>
+              <button onClick={() => setShowSalModal(false)}>
+                <X className="w-5 h-5" />
+              </button>
             </div>
             <div className="p-6 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
-                <select value={salForm.employeeId} onChange={e=>setSalForm({...salForm,employeeId:+e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                <select
+                  value={salForm.employeeId}
+                  onChange={(e) => setSalForm({ ...salForm, employeeId: +e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                >
                   <option value={0}>Select Employee</option>
-                  {employees.filter((e: any) => e.isActive).map((e: any) => <option key={e.id} value={e.id}>{e.name}</option>)}
+                  {employees
+                    .filter((e: any) => e.isActive)
+                    .map((e: any) => (
+                      <option key={e.id} value={e.id}>
+                        {e.name}
+                      </option>
+                    ))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Effective From</label>
-                <input type="date" value={salForm.effectiveFrom} onChange={e=>setSalForm({...salForm,effectiveFrom:e.target.value})}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"/>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Effective From
+                </label>
+                <input
+                  type="date"
+                  value={salForm.effectiveFrom}
+                  onChange={(e) => setSalForm({ ...salForm, effectiveFrom: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  ["basicSalary","Basic Salary"],
-                  ["houseRentAllowance","House Rent Allowance"],
-                  ["medicalAllowance","Medical Allowance"],
-                  ["transportAllowance","Transport Allowance"],
-                  ["otherAllowances","Other Allowances"],
-                ].map(([field,label])=>(
+                  ["basicSalary", "Basic Salary"],
+                  ["houseRentAllowance", "House Rent Allowance"],
+                  ["medicalAllowance", "Medical Allowance"],
+                  ["transportAllowance", "Transport Allowance"],
+                  ["otherAllowances", "Other Allowances"],
+                ].map(([field, label]) => (
                   <div key={field}>
                     <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>
-                    <input type="number" value={(salForm as any)[field]||0} onChange={e=>setSalForm({...salForm,[field]:+e.target.value})}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"/>
+                    <input
+                      type="number"
+                      value={(salForm as any)[field] || 0}
+                      onChange={(e) => setSalForm({ ...salForm, [field]: +e.target.value })}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                    />
                   </div>
                 ))}
                 <div className="bg-green-50 rounded-lg p-3 flex flex-col justify-center">
                   <div className="text-xs text-gray-500">Gross Salary</div>
                   <div className="text-lg font-bold text-green-700">
-                    {fmt(salForm.basicSalary+salForm.houseRentAllowance+salForm.medicalAllowance+salForm.transportAllowance+salForm.otherAllowances)}
+                    {fmt(
+                      salForm.basicSalary +
+                        salForm.houseRentAllowance +
+                        salForm.medicalAllowance +
+                        salForm.transportAllowance +
+                        salForm.otherAllowances,
+                    )}
                   </div>
                 </div>
               </div>
             </div>
             <div className="flex gap-3 p-6 border-t justify-end">
-              <button onClick={()=>setShowSalModal(false)} className="px-4 py-2 border rounded-lg text-sm">Cancel</button>
-              <button onClick={handleSaveSalary} className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700">Save Structure</button>
+              <button
+                onClick={() => setShowSalModal(false)}
+                className="px-4 py-2 border rounded-lg text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveSalary}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700"
+              >
+                Save Structure
+              </button>
             </div>
           </div>
         </div>

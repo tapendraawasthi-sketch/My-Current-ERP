@@ -30,12 +30,17 @@ const loadPLOptions = (): PLReportOptions | null => {
   try {
     const raw = localStorage.getItem(PL_STORAGE_KEY);
     return raw ? JSON.parse(raw) : null;
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 };
 
 const savePLOptions = (opts: PLReportOptions) => {
   try {
-    localStorage.setItem(PL_STORAGE_KEY, JSON.stringify({ ...opts, _savedAt: new Date().toISOString() }));
+    localStorage.setItem(
+      PL_STORAGE_KEY,
+      JSON.stringify({ ...opts, _savedAt: new Date().toISOString() }),
+    );
   } catch {}
 };
 
@@ -68,7 +73,8 @@ export default function ProfitLoss() {
       if (stockOverride !== null && stockOverride !== undefined) {
         result.closingStock = stockOverride;
         // Recompute derived figures
-        const tradingDebit = result.purchases.total + result.directExpenses.total + result.openingStock;
+        const tradingDebit =
+          result.purchases.total + result.directExpenses.total + result.openingStock;
         const tradingCredit = result.sales.total + result.directIncome.total + stockOverride;
         result.grossProfit = tradingCredit - tradingDebit;
         result.grossProfitLabel = result.grossProfit >= 0 ? "Gross Profit" : "Gross Loss";
@@ -88,13 +94,16 @@ export default function ProfitLoss() {
     }
   }, []);
 
-  const handleOptionsConfirm = useCallback((newOptions: PLReportOptions) => {
-    setOptions(newOptions);
-    savePLOptions(newOptions);
-    setShowOptionsDialog(false);
-    setDrillState({ level: 0 });
-    runCompute(newOptions, closingStockOverride);
-  }, [runCompute, closingStockOverride]);
+  const handleOptionsConfirm = useCallback(
+    (newOptions: PLReportOptions) => {
+      setOptions(newOptions);
+      savePLOptions(newOptions);
+      setShowOptionsDialog(false);
+      setDrillState({ level: 0 });
+      runCompute(newOptions, closingStockOverride);
+    },
+    [runCompute, closingStockOverride],
+  );
 
   useEffect(() => {
     if (storedPLOpts) {
@@ -106,11 +115,14 @@ export default function ProfitLoss() {
     if (plData) runCompute(options, closingStockOverride);
   }, [options, plData, runCompute, closingStockOverride]);
 
-  const handleClosingStockUpdate = useCallback((value: number) => {
-    setClosingStockOverride(value);
-    runCompute(options, value);
-    toast.success("Closing stock updated.");
-  }, [options, runCompute]);
+  const handleClosingStockUpdate = useCallback(
+    (value: number) => {
+      setClosingStockOverride(value);
+      runCompute(options, value);
+      toast.success("Closing stock updated.");
+    },
+    [options, runCompute],
+  );
 
   const handleDrillDown = useCallback((newState: PLDrillState) => {
     setDrillState(newState);
@@ -220,8 +232,8 @@ export default function ProfitLoss() {
             <p className="text-[13px] font-semibold text-red-700">Computation Error</p>
             <p className="text-[12px] text-red-600 mt-1">{error}</p>
             <p className="text-[11px] text-red-500 mt-1">
-              Tip: Ensure account groups are correctly classified (Sales, Purchase, Direct/Indirect Expenses/Income).
-              Go to Chart of Accounts and verify each account's group type.
+              Tip: Ensure account groups are correctly classified (Sales, Purchase, Direct/Indirect
+              Expenses/Income). Go to Chart of Accounts and verify each account's group type.
             </p>
           </div>
         </div>
@@ -257,29 +269,19 @@ export default function ProfitLoss() {
               pl={plData}
               options={options}
               onDrillDown={handleDrillDown}
-              onClosingStockUpdate={options.updateClosingStock ? handleClosingStockUpdate : undefined}
+              onClosingStockUpdate={
+                options.updateClosingStock ? handleClosingStockUpdate : undefined
+              }
             />
           )}
           {options.variant === "vertical" && (
-            <PLVertical
-              pl={plData}
-              options={options}
-              onDrillDown={handleDrillDown}
-            />
+            <PLVertical pl={plData} options={options} onDrillDown={handleDrillDown} />
           )}
           {options.variant === "monthly-summary" && (
-            <PLMonthlySummary
-              pl={plData}
-              options={options}
-              onDrillDown={handleDrillDown}
-            />
+            <PLMonthlySummary pl={plData} options={options} onDrillDown={handleDrillDown} />
           )}
           {options.variant === "detailed-monthly" && (
-            <PLDetailedMonthly
-              pl={plData}
-              options={options}
-              onDrillDown={handleDrillDown}
-            />
+            <PLDetailedMonthly pl={plData} options={options} onDrillDown={handleDrillDown} />
           )}
         </div>
       )}

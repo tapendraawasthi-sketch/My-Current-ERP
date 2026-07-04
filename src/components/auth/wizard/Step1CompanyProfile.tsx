@@ -25,7 +25,9 @@ const errorClass = "mt-1 text-[11px] text-red-600 flex items-center gap-1";
 const FieldError = ({ msg }: { msg?: string }) =>
   msg ? (
     <p className={errorClass}>
-      <span className="inline-block w-3.5 h-3.5 text-center leading-none font-bold text-red-600">!</span>
+      <span className="inline-block w-3.5 h-3.5 text-center leading-none font-bold text-red-600">
+        !
+      </span>
       {msg}
     </p>
   ) : null;
@@ -108,7 +110,9 @@ export default function Step1CompanyProfile({ data, onChange, errors = {} }: Pro
           >
             <option value="">— Select Province —</option>
             {NEPAL_PROVINCES.map((p) => (
-              <option key={p} value={p}>{p}</option>
+              <option key={p} value={p}>
+                {p}
+              </option>
             ))}
           </select>
         </div>
@@ -208,7 +212,8 @@ export default function Step1CompanyProfile({ data, onChange, errors = {} }: Pro
         className="px-3 py-2 rounded-md text-[11px]"
         style={{ background: "#eff6ff", border: "1px solid #bfdbfe", color: "#1e40af" }}
       >
-        <strong>Tip:</strong> All fields marked with <span className="text-red-600">*</span> are required to proceed.
+        <strong>Tip:</strong> All fields marked with <span className="text-red-600">*</span> are
+        required to proceed.
       </div>
     </div>
   );

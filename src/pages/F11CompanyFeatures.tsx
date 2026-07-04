@@ -119,7 +119,7 @@ const F11CompanyFeatures = () => {
 
   const handleToggle = (field: keyof CompanyFeatures, value: boolean) => {
     setFeatures((prev) => {
-      let newState = { ...prev, [field]: value };
+      const newState = { ...prev, [field]: value };
 
       // Handle auto-dependencies
       if (field === "show_all_features" && value) {

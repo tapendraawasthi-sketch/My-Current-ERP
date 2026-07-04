@@ -72,7 +72,9 @@ export function generateSerialNumberSync(voucherType: string): string {
   };
   const prefix = prefixes[voucherType] || "VCH";
   const ts = Date.now().toString(36).toUpperCase().slice(-6);
-  const rand = Math.floor(Math.random() * 1000).toString().padStart(3, "0");
+  const rand = Math.floor(Math.random() * 1000)
+    .toString()
+    .padStart(3, "0");
   return `${prefix}-${ts}${rand}`;
 }
 
@@ -270,7 +272,10 @@ export function computeProfitLoss(
   // year-starts that carry an opening position are included in the P&L.
   const balances: Record<string, number> = {};
   for (const acc of accounts) {
-    if (!acc.isGroup && (acc.type === "income" || acc.type === "revenue" || acc.type === "expense")) {
+    if (
+      !acc.isGroup &&
+      (acc.type === "income" || acc.type === "revenue" || acc.type === "expense")
+    ) {
       const obDr = Number(acc.openingBalanceDr || 0);
       const obCr = Number(acc.openingBalanceCr || 0);
       const ob = Number(acc.openingBalance || 0);
@@ -278,7 +283,7 @@ export function computeProfitLoss(
       if (obDr || obCr) {
         balances[acc.id] = obCr - obDr;
       } else if (ob) {
-        balances[acc.id] = (acc.type === "expense") ? -ob : ob;
+        balances[acc.id] = acc.type === "expense" ? -ob : ob;
       }
     }
   }

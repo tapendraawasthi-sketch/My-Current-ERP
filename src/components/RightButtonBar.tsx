@@ -34,7 +34,8 @@ const isInputElement = (el: Element | null): boolean => {
   if ((el as HTMLElement).isContentEditable) return true;
   // ARIA roles used by chat UIs, rich text editors, custom inputs
   const role = el.getAttribute("role");
-  if (role === "textbox" || role === "searchbox" || role === "combobox" || role === "spinbutton") return true;
+  if (role === "textbox" || role === "searchbox" || role === "combobox" || role === "spinbutton")
+    return true;
   // Check if inside a Falcon/chat container (any ancestor with data-falcon or id containing falcon/chat)
   let ancestor: Element | null = el;
   while (ancestor) {
@@ -42,10 +43,16 @@ const isInputElement = (el: Element | null): boolean => {
     const cls = ancestor.className?.toLowerCase?.() || "";
     const dataCmp = ancestor.getAttribute("data-component") || "";
     if (
-      id.includes("falcon") || id.includes("chat") || id.includes("ai-input") ||
-      cls.includes("falcon") || cls.includes("chat-input") || cls.includes("ai-chat") ||
-      dataCmp.includes("falcon") || dataCmp.includes("chat")
-    ) return true;
+      id.includes("falcon") ||
+      id.includes("chat") ||
+      id.includes("ai-input") ||
+      cls.includes("falcon") ||
+      cls.includes("chat-input") ||
+      cls.includes("ai-chat") ||
+      dataCmp.includes("falcon") ||
+      dataCmp.includes("chat")
+    )
+      return true;
     ancestor = ancestor.parentElement;
   }
   return false;
@@ -68,27 +75,163 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const { toggleF12, isOpen: f12IsOpen } = useF12Config();
 
-  const buttons: RightBarButton[] = useMemo(() => [
-    { id: "f1", label: "Help", shortcut: "F1", action: () => setCurrentPage("dashboard"), enabled: true, visible: true },
-    { id: "f2", label: "New Sales", shortcut: "F2", action: () => setCurrentPage("billing"), enabled: true, visible: true },
-    { id: "f3", label: "Items", shortcut: "F3", action: () => setCurrentPage("item-master"), enabled: true, visible: true },
-    { id: "f4", label: "Accounts", shortcut: "F4", action: () => setCurrentPage("accounts"), enabled: true, visible: true },
-    { id: "f5", label: "Journal", shortcut: "F5", action: () => setCurrentPage("journal"), enabled: true, visible: true },
-    { id: "f6", label: "Payment", shortcut: "F6", action: () => setCurrentPage("payment"), enabled: true, visible: true },
-    { id: "f7", label: "Receipt", shortcut: "F7", action: () => setCurrentPage("receipt"), enabled: true, visible: true },
-    { id: "f8", label: "Contra", shortcut: "F8", action: () => setCurrentPage("contra"), enabled: true, visible: true },
-    { id: "f9", label: "Sales Invoice", shortcut: "F9", action: () => setCurrentPage("billing"), enabled: true, visible: true },
-    { id: "f10", label: "Purchase", shortcut: "F10", action: () => setCurrentPage("purchase"), enabled: true, visible: true },
-    { id: "f11", label: "Balance Sheet", shortcut: "F11", action: () => setCurrentPage("balance-sheet"), enabled: true, visible: true },
-    { id: "divider1", label: "Quick Reports", shortcut: "", action: () => {}, enabled: false, visible: true },
-    { id: "b", label: "Balance Sheet", shortcut: "B", action: () => setCurrentPage("balance-sheet"), enabled: true, visible: true },
-    { id: "t", label: "Trial Balance", shortcut: "T", action: () => setCurrentPage("trial-balance"), enabled: true, visible: true },
-    { id: "s", label: "Stock Status", shortcut: "S", action: () => setCurrentPage("stock-summary"), enabled: true, visible: true },
-    { id: "l", label: "Ledger", shortcut: "L", action: () => setCurrentPage("ledger"), enabled: true, visible: true },
-    { id: "v", label: "VAT Report", shortcut: "V", action: () => setCurrentPage("vat-reports"), enabled: true, visible: true },
-    { id: "d", label: "Day Book", shortcut: "D", action: () => setCurrentPage("day-book"), enabled: true, visible: true },
-    { id: "g", label: "GST Summary", shortcut: "G", action: () => setCurrentPage("vat-reports"), enabled: true, visible: true },
-  ], [setCurrentPage]);
+  const buttons: RightBarButton[] = useMemo(
+    () => [
+      {
+        id: "f1",
+        label: "Help",
+        shortcut: "F1",
+        action: () => setCurrentPage("dashboard"),
+        enabled: true,
+        visible: true,
+      },
+      {
+        id: "f2",
+        label: "New Sales",
+        shortcut: "F2",
+        action: () => setCurrentPage("billing"),
+        enabled: true,
+        visible: true,
+      },
+      {
+        id: "f3",
+        label: "Items",
+        shortcut: "F3",
+        action: () => setCurrentPage("item-master"),
+        enabled: true,
+        visible: true,
+      },
+      {
+        id: "f4",
+        label: "Accounts",
+        shortcut: "F4",
+        action: () => setCurrentPage("accounts"),
+        enabled: true,
+        visible: true,
+      },
+      {
+        id: "f5",
+        label: "Journal",
+        shortcut: "F5",
+        action: () => setCurrentPage("journal"),
+        enabled: true,
+        visible: true,
+      },
+      {
+        id: "f6",
+        label: "Payment",
+        shortcut: "F6",
+        action: () => setCurrentPage("payment"),
+        enabled: true,
+        visible: true,
+      },
+      {
+        id: "f7",
+        label: "Receipt",
+        shortcut: "F7",
+        action: () => setCurrentPage("receipt"),
+        enabled: true,
+        visible: true,
+      },
+      {
+        id: "f8",
+        label: "Contra",
+        shortcut: "F8",
+        action: () => setCurrentPage("contra"),
+        enabled: true,
+        visible: true,
+      },
+      {
+        id: "f9",
+        label: "Sales Invoice",
+        shortcut: "F9",
+        action: () => setCurrentPage("billing"),
+        enabled: true,
+        visible: true,
+      },
+      {
+        id: "f10",
+        label: "Purchase",
+        shortcut: "F10",
+        action: () => setCurrentPage("purchase"),
+        enabled: true,
+        visible: true,
+      },
+      {
+        id: "f11",
+        label: "Balance Sheet",
+        shortcut: "F11",
+        action: () => setCurrentPage("balance-sheet"),
+        enabled: true,
+        visible: true,
+      },
+      {
+        id: "divider1",
+        label: "Quick Reports",
+        shortcut: "",
+        action: () => {},
+        enabled: false,
+        visible: true,
+      },
+      {
+        id: "b",
+        label: "Balance Sheet",
+        shortcut: "B",
+        action: () => setCurrentPage("balance-sheet"),
+        enabled: true,
+        visible: true,
+      },
+      {
+        id: "t",
+        label: "Trial Balance",
+        shortcut: "T",
+        action: () => setCurrentPage("trial-balance"),
+        enabled: true,
+        visible: true,
+      },
+      {
+        id: "s",
+        label: "Stock Status",
+        shortcut: "S",
+        action: () => setCurrentPage("stock-summary"),
+        enabled: true,
+        visible: true,
+      },
+      {
+        id: "l",
+        label: "Ledger",
+        shortcut: "L",
+        action: () => setCurrentPage("ledger"),
+        enabled: true,
+        visible: true,
+      },
+      {
+        id: "v",
+        label: "VAT Report",
+        shortcut: "V",
+        action: () => setCurrentPage("vat-reports"),
+        enabled: true,
+        visible: true,
+      },
+      {
+        id: "d",
+        label: "Day Book",
+        shortcut: "D",
+        action: () => setCurrentPage("day-book"),
+        enabled: true,
+        visible: true,
+      },
+      {
+        id: "g",
+        label: "GST Summary",
+        shortcut: "G",
+        action: () => setCurrentPage("vat-reports"),
+        enabled: true,
+        visible: true,
+      },
+    ],
+    [setCurrentPage],
+  );
 
   const visibleButtons = useMemo(() => buttons.filter((b) => b.visible), [buttons]);
 
@@ -164,9 +307,7 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
         }
 
         const isHovered = hoveredId === button.id;
-        const bgClass = isHovered && button.enabled
-          ? "bg-[#273148]"
-          : "bg-[#1e2433]";
+        const bgClass = isHovered && button.enabled ? "bg-[#273148]" : "bg-[#1e2433]";
 
         return (
           <button
@@ -200,7 +341,9 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
         }`}
         title="F12: Open screen configuration settings"
       >
-        <span className={`w-8 text-center shrink-0 text-[10px] font-bold ${f12IsOpen ? "text-blue-200" : "text-[#d97706]"}`}>
+        <span
+          className={`w-8 text-center shrink-0 text-[10px] font-bold ${f12IsOpen ? "text-blue-200" : "text-[#d97706]"}`}
+        >
           F12
         </span>
         <span className="flex-1 text-[11px] truncate pr-1 flex items-center gap-1">
@@ -214,12 +357,20 @@ export const RightButtonBar: React.FC<{ onShortcut?: (key: string) => void }> = 
           Nepal Links
         </div>
         <div className="py-1">
-          <a href="https://ird.gov.np" target="_blank" rel="noopener noreferrer"
-            className="text-[#0284c7] hover:text-[#38bdf8] hover:underline text-center py-1 block text-[11px] transition-colors">
+          <a
+            href="https://ird.gov.np"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#0284c7] hover:text-[#38bdf8] hover:underline text-center py-1 block text-[11px] transition-colors"
+          >
             IRD Portal
           </a>
-          <a href="https://etds.ird.gov.np" target="_blank" rel="noopener noreferrer"
-            className="text-[#0284c7] hover:text-[#38bdf8] hover:underline text-center py-1 block text-[11px] transition-colors">
+          <a
+            href="https://etds.ird.gov.np"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#0284c7] hover:text-[#38bdf8] hover:underline text-center py-1 block text-[11px] transition-colors"
+          >
             e-TDS Portal
           </a>
         </div>

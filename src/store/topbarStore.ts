@@ -1,14 +1,7 @@
 import { create } from "zustand";
 
 export type TopbarMenuKey =
-  | "company"
-  | "data"
-  | "exchange"
-  | "import"
-  | "export"
-  | "share"
-  | "print"
-  | "help";
+  "company" | "data" | "exchange" | "import" | "export" | "share" | "print" | "help";
 
 export interface TopbarActiveCompany {
   id: string;

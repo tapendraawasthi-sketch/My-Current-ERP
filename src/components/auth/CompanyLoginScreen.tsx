@@ -114,7 +114,10 @@ export default function CompanyLoginScreen() {
   });
 
   return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: "#f5f6fa" }}>
+    <div
+      className="min-h-screen flex items-center justify-center"
+      style={{ background: "#f5f6fa" }}
+    >
       <div
         className="w-full max-w-sm rounded-xl shadow-lg p-8"
         style={{ background: "#ffffff", border: "1px solid #e5e7eb" }}
@@ -143,7 +146,9 @@ export default function CompanyLoginScreen() {
           </div>
           <div className="min-w-0">
             <div className="font-semibold text-[13px] text-gray-800 truncate">{companyName}</div>
-            <div className="text-[11px] text-gray-500">PAN: {companySettings?.panNumber || "—"}</div>
+            <div className="text-[11px] text-gray-500">
+              PAN: {companySettings?.panNumber || "—"}
+            </div>
           </div>
         </div>
 
@@ -157,7 +162,8 @@ export default function CompanyLoginScreen() {
               className="block text-[11px] font-medium mb-1"
               style={{ color: fieldErrors.username ? "#dc2626" : "#374151" }}
             >
-              Username {fieldErrors.username && <span className="ml-1">— {fieldErrors.username}</span>}
+              Username{" "}
+              {fieldErrors.username && <span className="ml-1">— {fieldErrors.username}</span>}
             </label>
             <input
               ref={usernameRef}
@@ -182,7 +188,8 @@ export default function CompanyLoginScreen() {
               className="block text-[11px] font-medium mb-1"
               style={{ color: fieldErrors.password ? "#dc2626" : "#374151" }}
             >
-              Password {fieldErrors.password && <span className="ml-1">— {fieldErrors.password}</span>}
+              Password{" "}
+              {fieldErrors.password && <span className="ml-1">— {fieldErrors.password}</span>}
             </label>
             <div className="relative">
               <input

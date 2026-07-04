@@ -2,8 +2,14 @@
 // @ts-nocheck
 import { getDB } from "./db";
 import type {
-  BSComputation, BSOptions, BSSection, BSRowData,
-  AccountLedgerReport, LedgerEntry, BSFormat, BSFormatRow,
+  BSComputation,
+  BSOptions,
+  BSSection,
+  BSRowData,
+  AccountLedgerReport,
+  LedgerEntry,
+  BSFormat,
+  BSFormatRow,
 } from "./balanceSheetTypes";
 import { STANDARD_GROUP_SIDES, INCOME_EXPENSE_GROUPS } from "./balanceSheetTypes";
 import * as XLSX from "xlsx";
@@ -16,7 +22,7 @@ const fmt2 = (n: number) =>
 function getGroupSide(
   groupName: string,
   groupType: string,
-  parentName: string
+  parentName: string,
 ): "assets" | "liabilities" | "equity" | null {
   const lname = (groupName || "").toLowerCase().trim();
   const ltype = (groupType || "").toLowerCase().trim();
@@ -44,9 +50,12 @@ function getGroupSide(
   if (ltype === "income" || ltype === "expense") return null;
 
   // Check names with broader keywords
-  if (lname.includes("asset") || lname.includes("receivable") || lname.includes("deposit")) return "assets";
-  if (lname.includes("liability") || lname.includes("payable") || lname.includes("loan")) return "liabilities";
-  if (lname.includes("capital") || lname.includes("reserve") || lname.includes("equity")) return "equity";
+  if (lname.includes("asset") || lname.includes("receivable") || lname.includes("deposit"))
+    return "assets";
+  if (lname.includes("liability") || lname.includes("payable") || lname.includes("loan"))
+    return "liabilities";
+  if (lname.includes("capital") || lname.includes("reserve") || lname.includes("equity"))
+    return "equity";
 
   return null; // exclude from BS
 }
@@ -57,17 +66,26 @@ export async function computeBalanceSheet(options: BSOptions): Promise<BSComputa
   const db = getDB();
 
   const [allAccounts, allVouchers, allInvoices] = await Promise.all([
-    db.table("accounts").toArray().catch(() => []),
-    db.table("vouchers").toArray().catch(() => []),
-    db.table("invoices").toArray().catch(() => []),
+    db
+      .table("accounts")
+      .toArray()
+      .catch(() => []),
+    db
+      .table("vouchers")
+      .toArray()
+      .catch(() => []),
+    db
+      .table("invoices")
+      .toArray()
+      .catch(() => []),
   ]);
 
   // Filter posted vouchers up to toDate
   const vouchers = allVouchers.filter(
-    (v: any) => v.status === "posted" && v.date <= options.toDate
+    (v: any) => v.status === "posted" && v.date <= options.toDate,
   );
   const invoices = allInvoices.filter(
-    (v: any) => v.status === "posted" && v.date <= options.toDate
+    (v: any) => v.status === "posted" && v.date <= options.toDate,
   );
 
   // Build account balance map
@@ -130,8 +148,10 @@ export async function computeBalanceSheet(options: BSOptions): Promise<BSComputa
 
     const target = side === "assets" ? assetsMap : side === "equity" ? equityMap : liabilitiesMap;
     const groupKey = acc.parentId
-      ? (accountMap.get(acc.parentId)?.name || "Ungrouped")
-      : (acc.isGroup ? acc.name : "Ungrouped");
+      ? accountMap.get(acc.parentId)?.name || "Ungrouped"
+      : acc.isGroup
+        ? acc.name
+        : "Ungrouped";
 
     if (!target.has(groupKey)) target.set(groupKey, []);
     target.get(groupKey)!.push(entry);
@@ -154,7 +174,10 @@ export async function computeBalanceSheet(options: BSOptions): Promise<BSComputa
   let closingStockSource: "automatic" | "manual" | "gp-ratio" = "manual";
 
   if (options.stockUpdation === "automatic" || !options.manualClosingStock) {
-    const stockMovements = await db.table("stockMovements").toArray().catch(() => []);
+    const stockMovements = await db
+      .table("stockMovements")
+      .toArray()
+      .catch(() => []);
     let autoStock = 0;
     for (const mov of stockMovements) {
       if (mov.date > options.toDate) continue;
@@ -178,7 +201,7 @@ export async function computeBalanceSheet(options: BSOptions): Promise<BSComputa
   const buildRows = (
     groupMap: Map<string, any[]>,
     side: string,
-    showZero: boolean
+    showZero: boolean,
   ): BSRowData[] => {
     const rows: BSRowData[] = [];
 
@@ -301,11 +324,12 @@ export async function computeBalanceSheet(options: BSOptions): Promise<BSComputa
     (r) =>
       r.caption.toLowerCase().includes("capital") ||
       r.caption.toLowerCase().includes("reserve") ||
-      r.caption.toLowerCase().includes("equity")
+      r.caption.toLowerCase().includes("equity"),
   );
   if (capitalSection) {
     capitalSection.children = [...(capitalSection.children || []), plRow];
-    capitalSection.amount += currentPeriodPL >= 0 ? Math.abs(currentPeriodPL) : -Math.abs(currentPeriodPL);
+    capitalSection.amount +=
+      currentPeriodPL >= 0 ? Math.abs(currentPeriodPL) : -Math.abs(currentPeriodPL);
   } else {
     equityRows.push({
       id: "grp-pl",
@@ -397,12 +421,18 @@ export async function computeBalanceSheet(options: BSOptions): Promise<BSComputa
 export async function getAccountLedger(
   accountId: string,
   fromDate: string,
-  toDate: string
+  toDate: string,
 ): Promise<AccountLedgerReport> {
   const db = getDB();
   const [allVouchers, allAccounts] = await Promise.all([
-    db.table("vouchers").toArray().catch(() => []),
-    db.table("accounts").toArray().catch(() => []),
+    db
+      .table("vouchers")
+      .toArray()
+      .catch(() => []),
+    db
+      .table("accounts")
+      .toArray()
+      .catch(() => []),
   ]);
 
   const acc = allAccounts.find((a: any) => a.id === accountId);
@@ -410,9 +440,7 @@ export async function getAccountLedger(
   const accountCode = acc?.code || "";
 
   // Opening balance before fromDate
-  const beforeVouchers = allVouchers.filter(
-    (v: any) => v.status === "posted" && v.date < fromDate
-  );
+  const beforeVouchers = allVouchers.filter((v: any) => v.status === "posted" && v.date < fromDate);
   let openingDr = Number(acc?.openingBalanceDr || acc?.openingBalance || 0);
   let openingCr = Number(acc?.openingBalanceCr || 0);
 
@@ -428,7 +456,7 @@ export async function getAccountLedger(
 
   // Period vouchers
   const periodVouchers = allVouchers.filter(
-    (v: any) => v.status === "posted" && v.date >= fromDate && v.date <= toDate
+    (v: any) => v.status === "posted" && v.date >= fromDate && v.date <= toDate,
   );
 
   const entries: LedgerEntry[] = [];
@@ -448,7 +476,7 @@ export async function getAccountLedger(
           _narration: l.narration || v.narration || "",
           _voucherId: v.id,
           _particulars: l.accountName || v.narration || v.type || "",
-        }))
+        })),
     )
     .sort((a: any, b: any) => (a._date < b._date ? -1 : a._date > b._date ? 1 : 0));
 

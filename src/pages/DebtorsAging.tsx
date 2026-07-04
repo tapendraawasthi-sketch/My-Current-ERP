@@ -140,9 +140,7 @@ export default function DebtorsAging() {
         const interest = bills.reduce((s, b) => s + Number(b.interest || 0), 0);
 
         // "Current" = not yet overdue (daysOverdue === 0); "0-30" = 1 to 30 days past due.
-        const current = bills
-          .filter((b) => b.daysOverdue === 0)
-          .reduce((s, b) => s + b.balance, 0);
+        const current = bills.filter((b) => b.daysOverdue === 0).reduce((s, b) => s + b.balance, 0);
 
         const d30 = bills
           .filter((b) => b.daysOverdue > 0 && b.daysOverdue <= 30)

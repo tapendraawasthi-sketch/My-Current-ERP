@@ -2,819 +2,955 @@ import type { KBEntry } from "../types";
 
 export const KB_EXTENDED2: KBEntry[] = [
   {
-    id: "ext-265", category: "transactions",
+    id: "ext-265",
+    category: "transactions",
     q: "What are pending document alerts?",
     keywords: ["pending document alerts", "workflow alerts", "dashboard alerts"],
-    a: "The WorkflowAlertsWidget on the dashboard shows: Purchase Orders pending GRN (>7 days), GRNs pending billing, Sales Orders pending dispatch (>7 days), and Delivery Challans pending billing. Each alert links to the relevant report."
+    a: "The WorkflowAlertsWidget on the dashboard shows: Purchase Orders pending GRN (>7 days), GRNs pending billing, Sales Orders pending dispatch (>7 days), and Delivery Challans pending billing. Each alert links to the relevant report.",
   },
   {
-    id: "ext-266", category: "transactions",
+    id: "ext-266",
+    category: "transactions",
     q: "How do I create a quotation?",
     keywords: ["create quotation", "sales quotation", "purchase quotation", "estimate"],
-    a: "Go to Transactions → Quotations. Select customer/supplier, date, validity period. Add items, quantities, rates. Save as Draft or Final. Can be printed/emailed and converted to Sales/Purchase Order."
+    a: "Go to Transactions → Quotations. Select customer/supplier, date, validity period. Add items, quantities, rates. Save as Draft or Final. Can be printed/emailed and converted to Sales/Purchase Order.",
   },
   {
-    id: "ext-267", category: "transactions",
+    id: "ext-267",
+    category: "transactions",
     q: "How do I convert a quotation to an order?",
     keywords: ["convert quotation", "quotation to order"],
-    a: "Open the quotation, click 'Convert to Order'. Items and quantities are pre-filled. Adjust if needed and save as Sales/Purchase Order. The order references the quotation."
+    a: "Open the quotation, click 'Convert to Order'. Items and quantities are pre-filled. Adjust if needed and save as Sales/Purchase Order. The order references the quotation.",
   },
   {
-    id: "ext-268", category: "reports",
+    id: "ext-268",
+    category: "reports",
     q: "How does order outstanding tracking work?",
     keywords: ["order outstanding", "pending order tracking"],
-    a: "Outstanding order reports show orders with pending delivery/receipt quantities, comparing original ordered qty vs delivered/received qty, along with aging of pending orders."
+    a: "Outstanding order reports show orders with pending delivery/receipt quantities, comparing original ordered qty vs delivered/received qty, along with aging of pending orders.",
   },
   {
-    id: "ext-269", category: "masters",
+    id: "ext-269",
+    category: "masters",
     q: "How do I create a budget?",
     keywords: ["create budget", "budget master"],
-    a: "Go to Masters → Budget Master. Select fiscal year, choose accounts or groups to budget. Enter monthly/yearly amounts. Budgets can be set at group or individual ledger level."
+    a: "Go to Masters → Budget Master. Select fiscal year, choose accounts or groups to budget. Enter monthly/yearly amounts. Budgets can be set at group or individual ledger level.",
   },
   {
-    id: "ext-270", category: "reports",
+    id: "ext-270",
+    category: "reports",
     q: "How do I compare budget vs actual?",
     keywords: ["budget vs actual", "budget comparison", "variance"],
-    a: "Go to Reports → Budget vs Actual. Select budget and date range. Shows budget amount, actual amount, variance (Actual - Budget), and variance percentage. Color coded green/red."
+    a: "Go to Reports → Budget vs Actual. Select budget and date range. Shows budget amount, actual amount, variance (Actual - Budget), and variance percentage. Color coded green/red.",
   },
   {
-    id: "ext-271", category: "masters",
+    id: "ext-271",
+    category: "masters",
     q: "How do I enable cost centers?",
     keywords: ["enable cost center", "turn on cost centers"],
-    a: "Go to Company Settings, toggle 'Enable Cost Center Module' to ON. Save settings. Create them in Masters → Cost Centers. The cost center field will then appear on voucher/invoice lines."
+    a: "Go to Company Settings, toggle 'Enable Cost Center Module' to ON. Save settings. Create them in Masters → Cost Centers. The cost center field will then appear on voucher/invoice lines.",
   },
   {
-    id: "ext-272", category: "transactions",
+    id: "ext-272",
+    category: "transactions",
     q: "How do I assign cost centers to transactions?",
     keywords: ["assign cost center", "cost center transaction"],
-    a: "When enabled, each line in vouchers/invoices shows a cost center dropdown. Select the relevant cost center. Cost Center Report then shows expenses/revenues by cost center."
+    a: "When enabled, each line in vouchers/invoices shows a cost center dropdown. Select the relevant cost center. Cost Center Report then shows expenses/revenues by cost center.",
   },
   {
-    id: "ext-273", category: "general",
+    id: "ext-273",
+    category: "general",
     q: "What is a cost center?",
     keywords: ["cost center definition", "department tracking"],
-    a: "A cost center is a tracking dimension for expenses and revenues, such as departments (Sales, Marketing), projects, or branches. Enables granular profitability analysis."
+    a: "A cost center is a tracking dimension for expenses and revenues, such as departments (Sales, Marketing), projects, or branches. Enables granular profitability analysis.",
   },
   {
-    id: "ext-274", category: "transactions",
+    id: "ext-274",
+    category: "transactions",
     q: "How do I create a recurring voucher?",
     keywords: ["create recurring voucher", "automate voucher"],
-    a: "Transactions → Finance → Recurring Vouchers → Add. Select voucher type, enter accounts/amounts. Set frequency (Daily/Weekly/Monthly etc.), start/end dates, and save template."
+    a: "Transactions → Finance → Recurring Vouchers → Add. Select voucher type, enter accounts/amounts. Set frequency (Daily/Weekly/Monthly etc.), start/end dates, and save template.",
   },
   {
-    id: "ext-275", category: "transactions",
+    id: "ext-275",
+    category: "transactions",
     q: "What are common use cases for recurring vouchers?",
     keywords: ["recurring voucher use cases", "monthly entry"],
-    a: "Monthly rent payment, depreciation entries, EMI/loans, subscriptions, salary provisions, utility bills, and insurance premium amortization."
+    a: "Monthly rent payment, depreciation entries, EMI/loans, subscriptions, salary provisions, utility bills, and insurance premium amortization.",
   },
   {
-    id: "ext-276", category: "transactions",
+    id: "ext-276",
+    category: "transactions",
     q: "How do I process recurring vouchers?",
     keywords: ["process recurring voucher", "generate recurring entry"],
-    a: "Go to Recurring Vouchers page. Review vouchers due, select them, and click 'Generate Selected'. Actual entries are created in the Vouchers Register. Templates remain for next time."
+    a: "Go to Recurring Vouchers page. Review vouchers due, select them, and click 'Generate Selected'. Actual entries are created in the Vouchers Register. Templates remain for next time.",
   },
   {
-    id: "ext-277", category: "reports",
+    id: "ext-277",
+    category: "reports",
     q: "What bank reconciliation features are available?",
     keywords: ["bank reconciliation", "bank statement clearing"],
-    a: "Reports → Bank Reconciliation. Select bank, enter statement date and closing balance. Shows book balance, uncleared deposits/payments, and reconciled balance. Mark items as cleared."
+    a: "Reports → Bank Reconciliation. Select bank, enter statement date and closing balance. Shows book balance, uncleared deposits/payments, and reconciled balance. Mark items as cleared.",
   },
   {
-    id: "ext-278", category: "transactions",
+    id: "ext-278",
+    category: "transactions",
     q: "How does PDC (Post-Dated Cheque) management work?",
     keywords: ["pdc management", "post dated cheque"],
-    a: "Tracks Inward/Outward PDCs (cheques with future dates). Status: Pending → Deposited → Cleared → Bounced. Dashboard alerts for cheques due in next 3 days."
+    a: "Tracks Inward/Outward PDCs (cheques with future dates). Status: Pending → Deposited → Cleared → Bounced. Dashboard alerts for cheques due in next 3 days.",
   },
   {
-    id: "ext-279", category: "transactions",
+    id: "ext-279",
+    category: "transactions",
     q: "How do I record a PDC receipt?",
     keywords: ["record pdc", "post dated cheque entry"],
-    a: "Create Receipt Voucher, mode Cheque. Enter details, set PDC flag, enter future date. Posting: Dr PDC Receivable, Cr Customer. On clearance: Contra entry (Dr Bank, Cr PDC Receivable)."
+    a: "Create Receipt Voucher, mode Cheque. Enter details, set PDC flag, enter future date. Posting: Dr PDC Receivable, Cr Customer. On clearance: Contra entry (Dr Bank, Cr PDC Receivable).",
   },
   {
-    id: "ext-280", category: "transactions",
+    id: "ext-280",
+    category: "transactions",
     q: "What is cheque printing?",
     keywords: ["cheque printing", "print cheque"],
-    a: "Select payment voucher, click 'Print Cheque'. Formats cheque with payee name, amount (words/figures), date, bank details. Print on pre-printed stationery. Tracked in cheque register."
+    a: "Select payment voucher, click 'Print Cheque'. Formats cheque with payee name, amount (words/figures), date, bank details. Print on pre-printed stationery. Tracked in cheque register.",
   },
   {
-    id: "ext-281", category: "masters",
+    id: "ext-281",
+    category: "masters",
     q: "How do I record a fixed asset?",
     keywords: ["fixed asset", "record asset"],
-    a: "Company → Fixed Assets → Add asset. Enter name, purchase date, cost, category, depreciation method (Straight Line/WDV), rate, useful life, and save."
+    a: "Company → Fixed Assets → Add asset. Enter name, purchase date, cost, category, depreciation method (Straight Line/WDV), rate, useful life, and save.",
   },
   {
-    id: "ext-282", category: "general",
+    id: "ext-282",
+    category: "general",
     q: "How is depreciation calculated?",
     keywords: ["depreciation calculation", "straight line", "wdv"],
-    a: "Straight Line = (Cost - Salvage) / Useful Life. WDV = Book Value x Dep Rate. Entry: Dr Depreciation Expense, Cr Accumulated Depreciation. Net Book Value = Cost - Accum Dep."
+    a: "Straight Line = (Cost - Salvage) / Useful Life. WDV = Book Value x Dep Rate. Entry: Dr Depreciation Expense, Cr Accumulated Depreciation. Net Book Value = Cost - Accum Dep.",
   },
   {
-    id: "ext-283", category: "transactions",
+    id: "ext-283",
+    category: "transactions",
     q: "How do I record asset disposal?",
     keywords: ["asset disposal", "sell fixed asset"],
-    a: "Edit fixed asset, set status to 'Disposed' or 'Sold'. Enter date and sale price. System calculates P&L on disposal (Sale Price - Book Value) and generates accounting entries."
+    a: "Edit fixed asset, set status to 'Disposed' or 'Sold'. Enter date and sale price. System calculates P&L on disposal (Sale Price - Book Value) and generates accounting entries.",
   },
   {
-    id: "ext-284", category: "masters",
+    id: "ext-284",
+    category: "masters",
     q: "How do I set up payroll?",
     keywords: ["setup payroll", "payroll configuration"],
-    a: "Masters → Payroll configuration. Set up employees, Pay Heads (Earnings/Deductions), Salary Structures, Attendance Types. Link employees to salary structures."
+    a: "Masters → Payroll configuration. Set up employees, Pay Heads (Earnings/Deductions), Salary Structures, Attendance Types. Link employees to salary structures.",
   },
   {
-    id: "ext-285", category: "transactions",
+    id: "ext-285",
+    category: "transactions",
     q: "How do I process monthly payroll?",
     keywords: ["process payroll", "monthly salary process"],
-    a: "Payroll → Salary Process. Select month/year and employees. Enter attendance data. System calculates gross, deductions, and net. Click 'Process' to create salary payment vouchers."
+    a: "Payroll → Salary Process. Select month/year and employees. Enter attendance data. System calculates gross, deductions, and net. Click 'Process' to create salary payment vouchers.",
   },
   {
-    id: "ext-286", category: "masters",
+    id: "ext-286",
+    category: "masters",
     q: "What salary components are supported?",
     keywords: ["salary components", "pay heads", "earnings deductions"],
-    a: "Earnings: Basic, HRA, DA, Conveyance, Allowances, Bonus. Deductions: PF, ESI, Professional Tax, TDS, Loan Recovery. Each can be fixed amount or % of basic, taxable or non-taxable."
+    a: "Earnings: Basic, HRA, DA, Conveyance, Allowances, Bonus. Deductions: PF, ESI, Professional Tax, TDS, Loan Recovery. Each can be fixed amount or % of basic, taxable or non-taxable.",
   },
   {
-    id: "ext-287", category: "general",
+    id: "ext-287",
+    category: "general",
     q: "How does multi-currency work?",
     keywords: ["multi currency", "foreign currency"],
-    a: "Enable in settings. Define currencies and exchange rates. Assign to ledgers. Transactions record foreign amount, exchange rate, and base (NPR) equivalent. Gain/loss calculated on settlement."
+    a: "Enable in settings. Define currencies and exchange rates. Assign to ledgers. Transactions record foreign amount, exchange rate, and base (NPR) equivalent. Gain/loss calculated on settlement.",
   },
   {
-    id: "ext-288", category: "transactions",
+    id: "ext-288",
+    category: "transactions",
     q: "How do I record a foreign currency transaction?",
     keywords: ["foreign currency transaction", "usd entry"],
-    a: "Enable multi-currency for ledger. Create invoice/voucher, enter amount in foreign currency. System shows NPR equivalent. On payment, exchange difference creates gain/loss P&L entry."
+    a: "Enable multi-currency for ledger. Create invoice/voucher, enter amount in foreign currency. System shows NPR equivalent. On payment, exchange difference creates gain/loss P&L entry.",
   },
   {
-    id: "ext-289", category: "masters",
+    id: "ext-289",
+    category: "masters",
     q: "How are exchange rates managed?",
     keywords: ["exchange rates", "currency rates"],
-    a: "Currency master stores rates (can update manually). Rate effective dates track changes. Transactions use rate effective on transaction date. Open balances revalued at period end."
+    a: "Currency master stores rates (can update manually). Rate effective dates track changes. Transactions use rate effective on transaction date. Open balances revalued at period end.",
   },
   {
-    id: "ext-290", category: "masters",
+    id: "ext-290",
+    category: "masters",
     q: "How does the Schemes/Offers system work?",
     keywords: ["schemes", "offers", "promotional pricing"],
-    a: "Create in Scheme Master (Buy X get Y, qty/value discount). Link to items/categories, set dates. Auto-applies on sales invoices. Shown separately in invoice."
+    a: "Create in Scheme Master (Buy X get Y, qty/value discount). Link to items/categories, set dates. Auto-applies on sales invoices. Shown separately in invoice.",
   },
   {
-    id: "ext-291", category: "masters",
+    id: "ext-291",
+    category: "masters",
     q: "What are Standard Narrations?",
     keywords: ["standard narrations", "narration templates"],
-    a: "Pre-defined narration templates in Standard Narration Master. Quick-select when creating vouchers. Saves time and ensures consistent descriptions."
+    a: "Pre-defined narration templates in Standard Narration Master. Quick-select when creating vouchers. Saves time and ensures consistent descriptions.",
   },
   {
-    id: "ext-292", category: "masters",
+    id: "ext-292",
+    category: "masters",
     q: "How do Bill Sundries work in detail?",
     keywords: ["bill sundries detail", "sundry charge setup"],
-    a: "Configured in Bill Sundry Master. Define name, type (+/-), default ledger, applicability (sales/purchase), calculation (% or fixed), and VAT applicability."
+    a: "Configured in Bill Sundry Master. Define name, type (+/-), default ledger, applicability (sales/purchase), calculation (% or fixed), and VAT applicability.",
   },
   {
-    id: "ext-293", category: "masters",
+    id: "ext-293",
+    category: "masters",
     q: "How does the Price List Master work?",
     keywords: ["price list master", "tiered pricing"],
-    a: "Defines tiered pricing (Wholesale, Retail, etc.). Set selling price per item. Link price list to parties. Correct price auto-loads during sales based on customer. Supports date ranges."
+    a: "Defines tiered pricing (Wholesale, Retail, etc.). Set selling price per item. Link price list to parties. Correct price auto-loads during sales based on customer. Supports date ranges.",
   },
   {
-    id: "ext-294", category: "masters",
+    id: "ext-294",
+    category: "masters",
     q: "What is the Voucher Type Master?",
     keywords: ["voucher type master", "voucher numbering setup"],
-    a: "Configures voucher type names, aliases, numbering series (prefix + counter), default narrations, print settings, auto-reference creation, and default save behavior."
+    a: "Configures voucher type names, aliases, numbering series (prefix + counter), default narrations, print settings, auto-reference creation, and default save behavior.",
   },
   {
-    id: "ext-295", category: "masters",
+    id: "ext-295",
+    category: "masters",
     q: "How does the Sale Type Master work?",
     keywords: ["sale type master", "local interstate sale"],
-    a: "Categorizes sales for reporting (Local, Interstate, Export). Each can have different tax treatment. Linked to tax categories. Used in VAT/GST reports."
+    a: "Categorizes sales for reporting (Local, Interstate, Export). Each can have different tax treatment. Linked to tax categories. Used in VAT/GST reports.",
   },
   {
-    id: "ext-296", category: "masters",
+    id: "ext-296",
+    category: "masters",
     q: "What is the Inventory Configuration page?",
     keywords: ["inventory configuration", "stock settings"],
-    a: "Settings for: Stock valuation method, allow negative stock, default warehouse, auto-generate item codes, batch/serial tracking, and stock journal auto-posting."
+    a: "Settings for: Stock valuation method, allow negative stock, default warehouse, auto-generate item codes, batch/serial tracking, and stock journal auto-posting.",
   },
   {
-    id: "ext-297", category: "masters",
+    id: "ext-297",
+    category: "masters",
     q: "What is the Accounts Configuration page?",
     keywords: ["accounts configuration", "accounting settings"],
-    a: "Settings for: Default cash/bank/sales/purchase/VAT accounts, auto-create bill references, rounding preferences, and voucher numbering settings."
+    a: "Settings for: Default cash/bank/sales/purchase/VAT accounts, auto-create bill references, rounding preferences, and voucher numbering settings.",
   },
   {
-    id: "ext-298", category: "general",
+    id: "ext-298",
+    category: "general",
     q: "What does the main Dashboard show?",
     keywords: ["dashboard contents", "kpi cards"],
-    a: "Quick Stats (Vouchers/Invoices today), KPI Cards (Sales, Outstanding, Cash/Bank, VAT), Widgets (Stock, Parties), and Alerts (Overdue, Reorder, PDC, Approvals, Near-Expiry)."
+    a: "Quick Stats (Vouchers/Invoices today), KPI Cards (Sales, Outstanding, Cash/Bank, VAT), Widgets (Stock, Parties), and Alerts (Overdue, Reorder, PDC, Approvals, Near-Expiry).",
   },
   {
-    id: "ext-299", category: "general",
+    id: "ext-299",
+    category: "general",
     q: "What alerts appear on the dashboard?",
     keywords: ["dashboard alerts", "overdue items below reorder"],
-    a: "Overdue Receivables (Danger), Items Below Reorder (Warning), PDC Due (Info), Pending Approvals (Warning), Near-Expiry Batches (Danger)."
+    a: "Overdue Receivables (Danger), Items Below Reorder (Warning), PDC Due (Info), Pending Approvals (Warning), Near-Expiry Batches (Danger).",
   },
   {
-    id: "ext-300", category: "general",
+    id: "ext-300",
+    category: "general",
     q: "What is the Financial Dashboard?",
     keywords: ["financial dashboard", "financial kpi"],
-    a: "Alternative dashboard for financial metrics: Revenue/expense trends, cash flow summary, top customers/suppliers, key ratios, and graphical charts."
+    a: "Alternative dashboard for financial metrics: Revenue/expense trends, cash flow summary, top customers/suppliers, key ratios, and graphical charts.",
   },
   {
-    id: "ext-301", category: "general",
+    id: "ext-301",
+    category: "general",
     q: "How do notifications work?",
     keywords: ["notifications", "bell icon"],
-    a: "Header bell icon shows unread count. Notifications for system events. Click to view title/message and mark as read. Stored in Zustand store."
+    a: "Header bell icon shows unread count. Notifications for system events. Click to view title/message and mark as read. Stored in Zustand store.",
   },
   {
-    id: "ext-302", category: "general",
+    id: "ext-302",
+    category: "general",
     q: "How does the global search work in detail?",
     keywords: ["global search", "ctrl k search"],
-    a: "Press Ctrl+K or /. Searches Accounts, Parties, Vouchers, Invoices, Items, and Pages. Grouped by category. Use Arrow keys to navigate, Enter to select, Esc to close."
+    a: "Press Ctrl+K or /. Searches Accounts, Parties, Vouchers, Invoices, Items, and Pages. Grouped by category. Use Arrow keys to navigate, Enter to select, Esc to close.",
   },
   {
-    id: "ext-303", category: "general",
+    id: "ext-303",
+    category: "general",
     q: "How does list filtering work?",
     keywords: ["list filtering", "search bar"],
-    a: "Search bar for text search. Category/Type/Status toggles. Date filters. 'Clear filters' button. Results update in real-time. Pagination adjusts automatically."
+    a: "Search bar for text search. Category/Type/Status toggles. Date filters. 'Clear filters' button. Results update in real-time. Pagination adjusts automatically.",
   },
   {
-    id: "ext-304", category: "general",
+    id: "ext-304",
+    category: "general",
     q: "How does pagination work?",
     keywords: ["pagination", "page controls"],
-    a: "Shows Current/Total pages, total records, page size selector (10, 25, 50, 100), Prev/Next buttons, jump to page. Resets to page 1 when filters change."
+    a: "Shows Current/Total pages, total records, page size selector (10, 25, 50, 100), Prev/Next buttons, jump to page. Resets to page 1 when filters change.",
   },
   {
-    id: "ext-305", category: "general",
+    id: "ext-305",
+    category: "general",
     q: "How does the green theme work in detail?",
     keywords: ["green theme", "css variables", "colors"],
-    a: "Uses CSS variables in :root for background (#e4f1d9), cards (#ebf5e2), muted/hover (#d4eabd, #c9deb5), borders/text (#000000). Applied globally to UI elements."
+    a: "Uses CSS variables in :root for background (#e4f1d9), cards (#ebf5e2), muted/hover (#d4eabd, #c9deb5), borders/text (#000000). Applied globally to UI elements.",
   },
   {
-    id: "ext-306", category: "general",
+    id: "ext-306",
+    category: "general",
     q: "What components are exempted from the green theme?",
     keywords: ["dark theme components", "theme exemption"],
-    a: "TopMenuBar, Top Menu Dropdowns, RightButtonBar (Shortcut Sidebar), and Sidebar keep their dark theme backgrounds (#1e2433). Excluded via CSS rules."
+    a: "TopMenuBar, Top Menu Dropdowns, RightButtonBar (Shortcut Sidebar), and Sidebar keep their dark theme backgrounds (#1e2433). Excluded via CSS rules.",
   },
   {
-    id: "ext-307", category: "general",
+    id: "ext-307",
+    category: "general",
     q: "How does the dark/light theme toggle work?",
     keywords: ["theme toggle", "dark mode"],
-    a: "Toggle via header icon (moon/sun). Stored in ThemeContext, applied via CSS classes. Mostly affects the green theme intensity; dark-themed components remain consistent."
+    a: "Toggle via header icon (moon/sun). Stored in ThemeContext, applied via CSS classes. Mostly affects the green theme intensity; dark-themed components remain consistent.",
   },
   {
-    id: "ext-308", category: "general",
+    id: "ext-308",
+    category: "general",
     q: "What font system does Sutra ERP use?",
     keywords: ["font system", "typography", "font size"],
-    a: "Primary font: Inter (Google Fonts). Monospace for amounts. Sizes: Page titles 15px, table headers 10px uppercase, labels 11px, body 12px, badge 10px, amounts 13px."
+    a: "Primary font: Inter (Google Fonts). Monospace for amounts. Sizes: Page titles 15px, table headers 10px uppercase, labels 11px, body 12px, badge 10px, amounts 13px.",
   },
   {
-    id: "ext-309", category: "general",
+    id: "ext-309",
+    category: "general",
     q: "How do I deploy Sutra ERP?",
     keywords: ["deployment", "hosting", "vercel", "render"],
-    a: "Frontend: Vercel (Vite build, SPA fallback). Backend (Optional): Render (Node API, Postgres, Redis). Static: npm run build, upload dist folder to any static host."
+    a: "Frontend: Vercel (Vite build, SPA fallback). Backend (Optional): Render (Node API, Postgres, Redis). Static: npm run build, upload dist folder to any static host.",
   },
   {
-    id: "ext-310", category: "general",
+    id: "ext-310",
+    category: "general",
     q: "What environment variables are needed?",
     keywords: ["environment variables", "env setup"],
-    a: "DATABASE_URL, REDIS_URL, NODE_ENV, PORT, API_URL, API_SECRET_KEY, NEXT_PUBLIC_API_URL, JWT_SECRET, SENDGRID_API_KEY, AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET."
+    a: "DATABASE_URL, REDIS_URL, NODE_ENV, PORT, API_URL, API_SECRET_KEY, NEXT_PUBLIC_API_URL, JWT_SECRET, SENDGRID_API_KEY, AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET.",
   },
   {
-    id: "ext-311", category: "general",
+    id: "ext-311",
+    category: "general",
     q: "How does the SPA fallback work?",
     keywords: ["spa fallback", "client side routing"],
-    a: "Vercel rewrites all routes to /index.html. For static hosting, a _redirects file or custom Node server serves index.html for non-file routes to support React routing."
+    a: "Vercel rewrites all routes to /index.html. For static hosting, a _redirects file or custom Node server serves index.html for non-file routes to support React routing.",
   },
   {
-    id: "ext-312", category: "general",
+    id: "ext-312",
+    category: "general",
     q: "What build optimizations are configured?",
     keywords: ["build optimizations", "vite build"],
-    a: "Vite build outputs to dist/. No sourcemaps in production. Code splitting into chunks (react, ui, db, pdf, xlsx, tanstack). Backend modules excluded from bundle."
+    a: "Vite build outputs to dist/. No sourcemaps in production. Code splitting into chunks (react, ui, db, pdf, xlsx, tanstack). Backend modules excluded from bundle.",
   },
   {
-    id: "ext-313", category: "general",
+    id: "ext-313",
+    category: "general",
     q: "How does Zustand state management work?",
     keywords: ["zustand", "state management"],
-    a: "Single store (src/store/index.ts) with slices pattern for auth, accounts, vouchers, etc. Actions for CRUD. useStore() hook for reactive access in components."
+    a: "Single store (src/store/index.ts) with slices pattern for auth, accounts, vouchers, etc. Actions for CRUD. useStore() hook for reactive access in components.",
   },
   {
-    id: "ext-314", category: "general",
+    id: "ext-314",
+    category: "general",
     q: "How does Dexie.js (IndexedDB) work?",
     keywords: ["dexie.js", "indexeddb API"],
-    a: "Promise-based API for IndexedDB. Tables defined in src/lib/db.ts. Operations: toArray, put, add, delete, update. useLiveQuery() for reactive queries. Supports transactions."
+    a: "Promise-based API for IndexedDB. Tables defined in src/lib/db.ts. Operations: toArray, put, add, delete, update. useLiveQuery() for reactive queries. Supports transactions.",
   },
   {
-    id: "ext-315", category: "general",
+    id: "ext-315",
+    category: "general",
     q: "What is the database schema?",
     keywords: ["database schema", "dexie tables"],
-    a: "Key tables include: accounts, parties, items, vouchers, invoices, stockMovements, warehouses, users, companySettings, fiscalYears. Each stores standard JSON objects."
+    a: "Key tables include: accounts, parties, items, vouchers, invoices, stockMovements, warehouses, users, companySettings, fiscalYears. Each stores standard JSON objects.",
   },
   {
-    id: "ext-316", category: "general",
+    id: "ext-316",
+    category: "general",
     q: "How does the routing work?",
     keywords: ["routing", "custom router"],
-    a: "Custom routing (no React Router). currentPage state in Zustand acts as route. App.tsx uses switch/case to render components. SPA without URL changes."
+    a: "Custom routing (no React Router). currentPage state in Zustand acts as route. App.tsx uses switch/case to render components. SPA without URL changes.",
   },
   {
-    id: "ext-317", category: "general",
+    id: "ext-317",
+    category: "general",
     q: "How does component architecture work?",
     keywords: ["component architecture", "folder structure"],
-    a: "src/pages/ (full pages), src/components/ (reusable), src/components/ui/ (primitives like Button, Modal), src/components/auth/ (login), src/hooks/, src/lib/."
+    a: "src/pages/ (full pages), src/components/ (reusable), src/components/ui/ (primitives like Button, Modal), src/components/auth/ (login), src/hooks/, src/lib/.",
   },
   {
-    id: "ext-318", category: "general",
+    id: "ext-318",
+    category: "general",
     q: "What UI components are available?",
     keywords: ["ui components", "reusable ui"],
-    a: "Button, Input, Select, Modal, Badge, Table, Pagination, Card, ConfirmDialog, NepaliDatePicker, PartySelect, AccountSelect, ItemSelect, ActionToolbar, DualDate."
+    a: "Button, Input, Select, Modal, Badge, Table, Pagination, Card, ConfirmDialog, NepaliDatePicker, PartySelect, AccountSelect, ItemSelect, ActionToolbar, DualDate.",
   },
   {
-    id: "ext-319", category: "general",
+    id: "ext-319",
+    category: "general",
     q: "How do modals work?",
     keywords: ["modals", "dialogs"],
-    a: "isOpen prop controls visibility. Full-screen overlay, backdrop blur. Title bar with close. Sizes: sm, md, lg, xl. Footer for actions, scrollable body. z-index 50."
+    a: "isOpen prop controls visibility. Full-screen overlay, backdrop blur. Title bar with close. Sizes: sm, md, lg, xl. Footer for actions, scrollable body. z-index 50.",
   },
   {
-    id: "ext-320", category: "general",
+    id: "ext-320",
+    category: "general",
     q: "How does the ConfirmDialog work?",
     keywords: ["confirm dialog", "yes no modal"],
-    a: "Specialized modal for confirmations (delete, discard changes). Title, message, Confirm button, Cancel button, onConfirm/onClose callbacks."
+    a: "Specialized modal for confirmations (delete, discard changes). Title, message, Confirm button, Cancel button, onConfirm/onClose callbacks.",
   },
   {
-    id: "ext-321", category: "general",
+    id: "ext-321",
+    category: "general",
     q: "What button variants are available?",
     keywords: ["button variants", "button sizes"],
-    a: "Variants: primary (blue), outline, secondary (gray), ghost, danger (red), success (green). Sizes: xs, sm, md, lg. Supports icons, loading spinner, disabled state, full width."
+    a: "Variants: primary (blue), outline, secondary (gray), ghost, danger (red), success (green). Sizes: xs, sm, md, lg. Supports icons, loading spinner, disabled state, full width.",
   },
   {
-    id: "ext-322", category: "general",
+    id: "ext-322",
+    category: "general",
     q: "How does the Nepali calendar work in Sutra?",
     keywords: ["nepali calendar", "bikram sambat", "bs date"],
-    a: "Uses nepali-date-converter. NepaliDatePicker for selection. Format: DD Month YYYY (e.g. 15 Ashadh 2081). Vouchers store both BS/AD dates. Fiscal year aligns with BS."
+    a: "Uses nepali-date-converter. NepaliDatePicker for selection. Format: DD Month YYYY (e.g. 15 Ashadh 2081). Vouchers store both BS/AD dates. Fiscal year aligns with BS.",
   },
   {
-    id: "ext-323", category: "general",
+    id: "ext-323",
+    category: "general",
     q: "What Nepali provinces are available?",
     keywords: ["nepali provinces", "province list"],
-    a: "Koshi, Madhesh, Bagmati, Gandaki, Lumbini, Karnali, Sudurpashchim. Used in party addresses and company registration."
+    a: "Koshi, Madhesh, Bagmati, Gandaki, Lumbini, Karnali, Sudurpashchim. Used in party addresses and company registration.",
   },
   {
-    id: "ext-324", category: "general",
+    id: "ext-324",
+    category: "general",
     q: "How does the IRD (Inland Revenue Department) integration work?",
     keywords: ["ird integration", "nepal tax compliance"],
-    a: "PAN validation (9-digit), VAT tracking, VAT reports for IRD filing, TDS certificates (Nepal tax sections), CBMS (e-billing) integration, IRD province tracking."
+    a: "PAN validation (9-digit), VAT tracking, VAT reports for IRD filing, TDS certificates (Nepal tax sections), CBMS (e-billing) integration, IRD province tracking.",
   },
   {
-    id: "ext-325", category: "general",
+    id: "ext-325",
+    category: "general",
     q: "What Nepal tax sections are supported for TDS?",
     keywords: ["tds sections", "nepal tds"],
-    a: "Section 88 for: Service contract, House rent, Consultancy fees, Commission, Contract payments, Dividends/interest. Each has defined TDS rates."
+    a: "Section 88 for: Service contract, House rent, Consultancy fees, Commission, Contract payments, Dividends/interest. Each has defined TDS rates.",
   },
   {
-    id: "ext-326", category: "general",
+    id: "ext-326",
+    category: "general",
     q: "How are Nepali amounts displayed?",
     keywords: ["nepali amount format", "currency display"],
-    a: "Currency symbol: Rs. (configurable). Indian numbering format (commas for Lakh/Crore). Amount in words format ('One Lakh...'). money() and formatCurrency() utils."
+    a: "Currency symbol: Rs. (configurable). Indian numbering format (commas for Lakh/Crore). Amount in words format ('One Lakh...'). money() and formatCurrency() utils.",
   },
   {
-    id: "ext-327", category: "general",
+    id: "ext-327",
+    category: "general",
     q: "How does the Nepali date display work in the header?",
     keywords: ["header date display", "today date bs"],
-    a: "Header shows both BS Date ('15 Ashadh 2081') and AD Date ('Fri, Jun 28, 2024'). Updated daily, hidden on mobile screens."
+    a: "Header shows both BS Date ('15 Ashadh 2081') and AD Date ('Fri, Jun 28, 2024'). Updated daily, hidden on mobile screens.",
   },
   {
-    id: "ext-328", category: "general",
+    id: "ext-328",
+    category: "general",
     q: "What is the Nepali fiscal year structure?",
     keywords: ["nepali fiscal year", "bs fy"],
-    a: "Runs Shrawan 1 to Ashadh end (mid-July). Label format: '2081/82'. FiscalYear page manages creation/status. Active FY used as default for transactions."
+    a: "Runs Shrawan 1 to Ashadh end (mid-July). Label format: '2081/82'. FiscalYear page manages creation/status. Active FY used as default for transactions.",
   },
   {
-    id: "ext-329", category: "reports",
+    id: "ext-329",
+    category: "reports",
     q: "What is the Physical Stock page?",
     keywords: ["physical stock page", "stock counting"],
-    a: "Handles stock-taking process. Enter physical counts per item/warehouse. System calculates variances (surplus/shortage) compared to book stock, and posts batch adjustments."
+    a: "Handles stock-taking process. Enter physical counts per item/warehouse. System calculates variances (surplus/shortage) compared to book stock, and posts batch adjustments.",
   },
   {
-    id: "ext-330", category: "reports",
+    id: "ext-330",
+    category: "reports",
     q: "What is the Stock Ledger Report?",
     keywords: ["stock ledger report", "item movement history"],
-    a: "Shows item-wise movement history: date, ref, type, In/Out qty, rate, value, running balance. Filterable by item, warehouse, date range."
+    a: "Shows item-wise movement history: date, ref, type, In/Out qty, rate, value, running balance. Filterable by item, warehouse, date range.",
   },
   {
-    id: "ext-331", category: "reports",
+    id: "ext-331",
+    category: "reports",
     q: "What is the Sales Analysis Report?",
     keywords: ["sales analysis report", "sales metrics"],
-    a: "Provides sales by item (qty/value/margin), by customer, by period. Comparative analysis, top-selling items, slow-moving items. Filterable."
+    a: "Provides sales by item (qty/value/margin), by customer, by period. Comparative analysis, top-selling items, slow-moving items. Filterable.",
   },
   {
-    id: "ext-332", category: "reports",
+    id: "ext-332",
+    category: "reports",
     q: "What is the Stock Summary Report?",
     keywords: ["stock summary report", "inventory valuation"],
-    a: "Shows opening, inward, outward, closing stock per item (qty/value). Warehouse breakdown. Valuation at cost or selling price, low stock indicators."
+    a: "Shows opening, inward, outward, closing stock per item (qty/value). Warehouse breakdown. Valuation at cost or selling price, low stock indicators.",
   },
   {
-    id: "ext-333", category: "reports",
+    id: "ext-333",
+    category: "reports",
     q: "What is the Party Statement page?",
     keywords: ["party statement page", "customer ledger"],
-    a: "All transactions for a party in date order. Opening balance, invoices (Dr/Cr), payments, running balance, closing balance. Date range filter, export/print."
+    a: "All transactions for a party in date order. Opening balance, invoices (Dr/Cr), payments, running balance, closing balance. Date range filter, export/print.",
   },
   {
-    id: "ext-334", category: "reports",
+    id: "ext-334",
+    category: "reports",
     q: "What is the General Ledger page?",
     keywords: ["general ledger page", "account transactions"],
-    a: "Select ledger, choose dates. Shows all debits/credits, opening/closing balances. Each entry shows date, voucher, description, dr/cr, running balance. Drill-down available."
+    a: "Select ledger, choose dates. Shows all debits/credits, opening/closing balances. Each entry shows date, voucher, description, dr/cr, running balance. Drill-down available.",
   },
   {
-    id: "ext-335", category: "reports",
+    id: "ext-335",
+    category: "reports",
     q: "What is the Aging Report page?",
     keywords: ["aging report page", "outstanding aging"],
-    a: "Displays outstanding amounts by age bucket (0-30, 31-60, 61-90, 91-180, 180+ days). Filter by party type. Party-wise breakdown. For credit control."
+    a: "Displays outstanding amounts by age bucket (0-30, 31-60, 61-90, 91-180, 180+ days). Filter by party type. Party-wise breakdown. For credit control.",
   },
   {
-    id: "ext-336", category: "reports",
+    id: "ext-336",
+    category: "reports",
     q: "What is the Outstanding Receivables/Payables page?",
     keywords: ["outstanding receivables page", "unpaid invoices report"],
-    a: "Shows all unpaid invoices. Party, invoice no, date, original amount, paid amount, outstanding, days overdue. Total outstanding. Navigate to party statement."
+    a: "Shows all unpaid invoices. Party, invoice no, date, original amount, paid amount, outstanding, days overdue. Total outstanding. Navigate to party statement.",
   },
   {
-    id: "ext-337", category: "reports",
+    id: "ext-337",
+    category: "reports",
     q: "What is the Cash Flow Statement page?",
     keywords: ["cash flow statement page", "cash movements"],
-    a: "Shows cash movements categorized as: Operating, Investing, Financing. Opening balance, Net cash flow, Closing balance based on cash/bank account movements."
+    a: "Shows cash movements categorized as: Operating, Investing, Financing. Opening balance, Net cash flow, Closing balance based on cash/bank account movements.",
   },
   {
-    id: "ext-338", category: "reports",
+    id: "ext-338",
+    category: "reports",
     q: "What is the Ratio Analysis page?",
     keywords: ["ratio analysis page", "financial ratios report"],
-    a: "Calculates Liquidity, Solvency, Profitability, and Efficiency ratios. Compares with previous period. Interpretation guidelines provided."
+    a: "Calculates Liquidity, Solvency, Profitability, and Efficiency ratios. Compares with previous period. Interpretation guidelines provided.",
   },
   {
-    id: "ext-339", category: "reports",
+    id: "ext-339",
+    category: "reports",
     q: "What is the Interest Calculation page?",
     keywords: ["interest calculation page", "overdue interest"],
-    a: "Calculates interest on overdue balances. Select party, rate, date range. Computes Interest = Amount x Rate x Days / 365. Can post interest as debit note/journal."
+    a: "Calculates interest on overdue balances. Select party, rate, date range. Computes Interest = Amount x Rate x Days / 365. Can post interest as debit note/journal.",
   },
   {
-    id: "ext-340", category: "reports",
+    id: "ext-340",
+    category: "reports",
     q: "What is the Day Book page?",
     keywords: ["day book page", "daily transactions"],
-    a: "Chronological transaction register. All vouchers/invoices by date. Filterable by date range/type. Daily totals. Export to Excel."
+    a: "Chronological transaction register. All vouchers/invoices by date. Filterable by date range/type. Daily totals. Export to Excel.",
   },
   {
-    id: "ext-341", category: "masters",
+    id: "ext-341",
+    category: "masters",
     q: "What is the Bill Sundry Master?",
     keywords: ["bill sundry master page", "configure sundries"],
-    a: "Manages sundry charges/deductions (+/-). Linked ledger account, applicability (sales/purchase), calculation method (%/fixed), VAT applicability, auto-apply settings."
+    a: "Manages sundry charges/deductions (+/-). Linked ledger account, applicability (sales/purchase), calculation method (%/fixed), VAT applicability, auto-apply settings.",
   },
   {
-    id: "ext-342", category: "masters",
+    id: "ext-342",
+    category: "masters",
     q: "What is the Sale Type Master?",
     keywords: ["sale type master page", "sales categories"],
-    a: "Defines sale categories (Local, Interstate, Export), tax treatment, default for parties, used in VAT reports, linked to tax categories."
+    a: "Defines sale categories (Local, Interstate, Export), tax treatment, default for parties, used in VAT reports, linked to tax categories.",
   },
   {
-    id: "ext-343", category: "masters",
+    id: "ext-343",
+    category: "masters",
     q: "What is the Purchase Type Master?",
     keywords: ["purchase type master page", "purchase categories"],
-    a: "Defines purchase categories (Local, Interstate, Import), tax treatment (VAT/reverse charge/exempt), default for suppliers, used in reports."
+    a: "Defines purchase categories (Local, Interstate, Import), tax treatment (VAT/reverse charge/exempt), default for suppliers, used in reports.",
   },
   {
-    id: "ext-344", category: "masters",
+    id: "ext-344",
+    category: "masters",
     q: "What is the Tax Category Master?",
     keywords: ["tax category master page", "vat categories"],
-    a: "Manages tax categories (Regular, Composition, SEZ), VAT rate, input tax credit eligibility, default for party types."
+    a: "Manages tax categories (Regular, Composition, SEZ), VAT rate, input tax credit eligibility, default for party types.",
   },
   {
-    id: "ext-345", category: "masters",
+    id: "ext-345",
+    category: "masters",
     q: "What is the Voucher Type Master?",
     keywords: ["voucher type master page", "voucher configuration"],
-    a: "Configures voucher names, numbering series, default narration, print settings, auto-reference creation, and default save behavior."
+    a: "Configures voucher names, numbering series, default narration, print settings, auto-reference creation, and default save behavior.",
   },
   {
-    id: "ext-346", category: "masters",
+    id: "ext-346",
+    category: "masters",
     q: "What is the Standard Narration Master?",
     keywords: ["standard narration master page"],
-    a: "Stores pre-defined narration text templates, code/name, category grouping. Used for quick-select in voucher forms."
+    a: "Stores pre-defined narration text templates, code/name, category grouping. Used for quick-select in voucher forms.",
   },
   {
-    id: "ext-347", category: "masters",
+    id: "ext-347",
+    category: "masters",
     q: "What is the Scheme Master?",
     keywords: ["scheme master page", "promotions configuration"],
-    a: "Manages promotional offers (Buy X Get Y, qty/value discounts). Item/category applicability, validity dates, auto-apply on sales invoices."
+    a: "Manages promotional offers (Buy X Get Y, qty/value discounts). Item/category applicability, validity dates, auto-apply on sales invoices.",
   },
   {
-    id: "ext-348", category: "masters",
+    id: "ext-348",
+    category: "masters",
     q: "What is the Misc Masters page?",
     keywords: ["misc masters page"],
-    a: "Contains auxiliary configuration like Material Centres (for production) and Bill of Material (BOM) definitions."
+    a: "Contains auxiliary configuration like Material Centres (for production) and Bill of Material (BOM) definitions.",
   },
   {
-    id: "ext-349", category: "general",
+    id: "ext-349",
+    category: "general",
     q: "What is the recommended workflow for daily operations?",
     keywords: ["daily workflow", "best practices day"],
-    a: "Open POS session, create sales/purchases, record payments/receipts, enter journal adjustments, review Day Book, check Trial Balance, close POS, take backup."
+    a: "Open POS session, create sales/purchases, record payments/receipts, enter journal adjustments, review Day Book, check Trial Balance, close POS, take backup.",
   },
   {
-    id: "ext-350", category: "general",
+    id: "ext-350",
+    category: "general",
     q: "How do I handle opening balances for a new company?",
     keywords: ["opening balances new company", "setup opening"],
-    a: "Setup COA ledgers with opening balances. Enter parties/balances. Enter items/stock/rates. Create opening balance journal to ensure Trial Balance matches before starting transactions."
+    a: "Setup COA ledgers with opening balances. Enter parties/balances. Enter items/stock/rates. Create opening balance journal to ensure Trial Balance matches before starting transactions.",
   },
   {
-    id: "ext-351", category: "general",
+    id: "ext-351",
+    category: "general",
     q: "How do I correct a mistake in a posted voucher?",
     keywords: ["correct mistake", "edit posted voucher"],
-    a: "NEVER edit posted directly. Create reversal journal and then correct entry, OR cancel original (if allowed). Add clear narration. Audit trail maintains integrity."
+    a: "NEVER edit posted directly. Create reversal journal and then correct entry, OR cancel original (if allowed). Add clear narration. Audit trail maintains integrity.",
   },
   {
-    id: "ext-352", category: "general",
+    id: "ext-352",
+    category: "general",
     q: "How do I handle year-end closing?",
     keywords: ["year end closing", "fiscal year transition"],
-    a: "Verify TB/P&L/Balance Sheet. Create year-end journals: Close income/expenses to P&L, transfer net profit to Capital. Set FY to 'Closed'. Create new FY, carry forward balances."
+    a: "Verify TB/P&L/Balance Sheet. Create year-end journals: Close income/expenses to P&L, transfer net profit to Capital. Set FY to 'Closed'. Create new FY, carry forward balances.",
   },
   {
-    id: "ext-353", category: "general",
+    id: "ext-353",
+    category: "general",
     q: "How does month-end processing work?",
     keywords: ["month end processing"],
-    a: "Process recurring vouchers, verify bank reconciliation, review outstanding reports, generate TB/P&L/VAT reports, file VAT, take monthly backup."
+    a: "Process recurring vouchers, verify bank reconciliation, review outstanding reports, generate TB/P&L/VAT reports, file VAT, take monthly backup.",
   },
   {
-    id: "ext-354", category: "general",
+    id: "ext-354",
+    category: "general",
     q: "How many records can Sutra ERP handle?",
     keywords: ["performance limits", "max records"],
-    a: "Local IndexedDB limits depend on browser storage. Can handle thousands of masters and tens of thousands of transactions. For very large datasets, use PostgreSQL backend deployment."
+    a: "Local IndexedDB limits depend on browser storage. Can handle thousands of masters and tens of thousands of transactions. For very large datasets, use PostgreSQL backend deployment.",
   },
   {
-    id: "ext-355", category: "general",
+    id: "ext-355",
+    category: "general",
     q: "How can I improve performance with large datasets?",
     keywords: ["improve performance", "slow data loading"],
-    a: "Use filters, export/archive old data, close old fiscal years, limit list sizes via pagination, clear old POS sessions. Use backend deployment if local gets too slow."
+    a: "Use filters, export/archive old data, close old fiscal years, limit list sizes via pagination, clear old POS sessions. Use backend deployment if local gets too slow.",
   },
   {
-    id: "ext-356", category: "general",
+    id: "ext-356",
+    category: "general",
     q: "How does data caching work?",
     keywords: ["data caching", "indexeddb persistent storage"],
-    a: "IndexedDB persists data locally. Zustand store holds active data in memory. useLiveQuery reactively updates UI. No server round-trips needed (offline-capable)."
+    a: "IndexedDB persists data locally. Zustand store holds active data in memory. useLiveQuery reactively updates UI. No server round-trips needed (offline-capable).",
   },
   {
-    id: "ext-357", category: "general",
+    id: "ext-357",
+    category: "general",
     q: "Can I use multiple browser tabs?",
     keywords: ["multiple tabs", "browser tabs"],
-    a: "Supported, but each tab has own Dexie instance. Writes in one tab may not immediately reflect in another. Recommend single tab for data entry, multiple for reports."
+    a: "Supported, but each tab has own Dexie instance. Writes in one tab may not immediately reflect in another. Recommend single tab for data entry, multiple for reports.",
   },
   {
-    id: "ext-358", category: "general",
+    id: "ext-358",
+    category: "general",
     q: "How are passwords stored?",
     keywords: ["password storage", "security"],
-    a: "Local IndexedDB: stored as entered (dev mode). Backend production: hashed. Validation requires min 6 chars, letters+numbers. Failed login tracking enforced."
+    a: "Local IndexedDB: stored as entered (dev mode). Backend production: hashed. Validation requires min 6 chars, letters+numbers. Failed login tracking enforced.",
   },
   {
-    id: "ext-359", category: "general",
+    id: "ext-359",
+    category: "general",
     q: "How does the login lockout work?",
     keywords: ["login lockout", "failed login security"],
-    a: "Failed attempts tracked per company in localStorage. 5 consecutive failures locks account for 30 seconds (shows countdown timer). Successful login resets counter."
+    a: "Failed attempts tracked per company in localStorage. 5 consecutive failures locks account for 30 seconds (shows countdown timer). Successful login resets counter.",
   },
   {
-    id: "ext-360", category: "general",
+    id: "ext-360",
+    category: "general",
     q: "How does session management work?",
     keywords: ["session management", "logout mechanism"],
-    a: "Login sets isAuthenticated=true. Logout clears sessionStorage and reloads. Local mode has no auto-timeout. Backend deployment uses JWT-based session timeouts."
+    a: "Login sets isAuthenticated=true. Logout clears sessionStorage and reloads. Local mode has no auto-timeout. Backend deployment uses JWT-based session timeouts.",
   },
   {
-    id: "ext-361", category: "general",
+    id: "ext-361",
+    category: "general",
     q: "How are user permissions enforced?",
     keywords: ["user permissions", "role based access"],
-    a: "Role-based (admin, accountant, manager, operator). Gateway/menus filter items based on role. UI toggles visibility. Admin-only: users, settings, factory reset."
+    a: "Role-based (admin, accountant, manager, operator). Gateway/menus filter items based on role. UI toggles visibility. Admin-only: users, settings, factory reset.",
   },
   {
-    id: "ext-362", category: "general",
+    id: "ext-362",
+    category: "general",
     q: "The app shows a blank white screen. What should I do?",
     keywords: ["blank white screen", "app crash"],
-    a: "Hard refresh. Clear cache/site data. Check browser console (F12) for errors. Try different browser. Ensure IndexedDB not blocked. Last resort: clear IndexedDB from dev tools."
+    a: "Hard refresh. Clear cache/site data. Check browser console (F12) for errors. Try different browser. Ensure IndexedDB not blocked. Last resort: clear IndexedDB from dev tools.",
   },
   {
-    id: "ext-363", category: "general",
+    id: "ext-363",
+    category: "general",
     q: "Data is not saving. What's wrong?",
     keywords: ["data not saving", "save error"],
-    a: "Check toast validation errors, required fields, browser console. Verify IndexedDB available and disk space not full. Refresh and re-enter."
+    a: "Check toast validation errors, required fields, browser console. Verify IndexedDB available and disk space not full. Refresh and re-enter.",
   },
   {
-    id: "ext-364", category: "general",
+    id: "ext-364",
+    category: "general",
     q: "I can't find an invoice/party/item I created.",
     keywords: ["missing data", "can't find record"],
-    a: "Clear all filters, verify correct register/list, check draft status filter, check fiscal year. Review audit log for creation/deletion events."
+    a: "Clear all filters, verify correct register/list, check draft status filter, check fiscal year. Review audit log for creation/deletion events.",
   },
   {
-    id: "ext-365", category: "general",
+    id: "ext-365",
+    category: "general",
     q: "The Trial Balance doesn't balance. How do I find the error?",
     keywords: ["troubleshoot trial balance", "find unbalanced error"],
-    a: "Review Day Book for unbalanced journals. Verify opening balances, cancelled vouchers without reversal. Run TB for different dates to isolate. Check duplicate entries."
+    a: "Review Day Book for unbalanced journals. Verify opening balances, cancelled vouchers without reversal. Run TB for different dates to isolate. Check duplicate entries.",
   },
   {
-    id: "ext-366", category: "general",
+    id: "ext-366",
+    category: "general",
     q: "Stock quantities don't match physical count.",
     keywords: ["troubleshoot stock mismatch"],
-    a: "Review Stock Ledger. Check draft/unposted invoices, stock transfers, cancelled invoices. Use Physical Stock page to record variances and create stock journal."
+    a: "Review Stock Ledger. Check draft/unposted invoices, stock transfers, cancelled invoices. Use Physical Stock page to record variances and create stock journal.",
   },
   {
-    id: "ext-367", category: "general",
+    id: "ext-367",
+    category: "general",
     q: "VAT calculation seems wrong.",
     keywords: ["troubleshoot vat calculation"],
-    a: "Check item's taxable status (VAT checkbox), line VAT rate, exempt lines, bill discount applying to taxable base. Review invoice VAT computation display."
+    a: "Check item's taxable status (VAT checkbox), line VAT rate, exempt lines, bill discount applying to taxable base. Review invoice VAT computation display.",
   },
   {
-    id: "ext-368", category: "general",
+    id: "ext-368",
+    category: "general",
     q: "POS barcode scanner not working.",
     keywords: ["troubleshoot pos scanner", "barcode reader"],
-    a: "Ensure cursor is in barcode input field. Scanner in keyboard emulation mode. Manually type code to test. Search by code/name instead. Check connection."
+    a: "Ensure cursor is in barcode input field. Scanner in keyboard emulation mode. Manually type code to test. Search by code/name instead. Check connection.",
   },
   {
-    id: "ext-369", category: "general",
+    id: "ext-369",
+    category: "general",
     q: "Print preview shows incomplete data.",
     keywords: ["troubleshoot print preview"],
-    a: "Ensure data loaded. Check jsPDF errors in console. Increase window size before printing. Verify all fields have values. Refresh page."
+    a: "Ensure data loaded. Check jsPDF errors in console. Increase window size before printing. Verify all fields have values. Refresh page.",
   },
   {
-    id: "ext-370", category: "masters",
+    id: "ext-370",
+    category: "masters",
     q: "How do I change the company name after setup?",
     keywords: ["change company name", "edit company settings"],
-    a: "Go to Company Settings. Update Company Name (English/Nepali) and other details. Save. Changes reflect everywhere immediately."
+    a: "Go to Company Settings. Update Company Name (English/Nepali) and other details. Save. Changes reflect everywhere immediately.",
   },
   {
-    id: "ext-371", category: "masters",
+    id: "ext-371",
+    category: "masters",
     q: "How do I change the fiscal year?",
     keywords: ["change fiscal year", "switch fy"],
-    a: "Go to Fiscal Year page. Create new if needed. Set it as 'Open', close the previous one. New transactions use active FY, reports can access closed ones."
+    a: "Go to Fiscal Year page. Create new if needed. Set it as 'Open', close the previous one. New transactions use active FY, reports can access closed ones.",
   },
   {
-    id: "ext-372", category: "masters",
+    id: "ext-372",
+    category: "masters",
     q: "How do I change the default warehouse?",
     keywords: ["change default warehouse"],
-    a: "Go to Warehouses page. Edit warehouse, check 'Default' checkbox, save. Auto-selects in forms."
+    a: "Go to Warehouses page. Edit warehouse, check 'Default' checkbox, save. Auto-selects in forms.",
   },
   {
-    id: "ext-373", category: "masters",
+    id: "ext-373",
+    category: "masters",
     q: "How do I add a custom field to ledgers?",
     keywords: ["add custom field ledger", "optional fields"],
-    a: "Chart of Accounts → Master Configuration. Optional/Additional Fields section → Add Optional Field. Define name, type, mandatory flag. Appears in ledger forms."
+    a: "Chart of Accounts → Master Configuration. Optional/Additional Fields section → Add Optional Field. Define name, type, mandatory flag. Appears in ledger forms.",
   },
   {
-    id: "ext-374", category: "masters",
+    id: "ext-374",
+    category: "masters",
     q: "How do I customize invoice numbering?",
     keywords: ["customize invoice numbering", "change invoice prefix"],
-    a: "Voucher Type Master → select invoice type. Configure prefix, digits, starting number. Or just set the Trading Prefix in Company Settings."
+    a: "Voucher Type Master → select invoice type. Configure prefix, digits, starting number. Or just set the Trading Prefix in Company Settings.",
   },
   {
-    id: "ext-375", category: "general",
+    id: "ext-375",
+    category: "general",
     q: "How does Falcon AI generate answers?",
     keywords: ["falcon ai answers", "how falcon works"],
-    a: "Falcon analyzes screen context and queries a local knowledge base (read-only) to provide step-by-step guidance. Suggests follow-ups. No data modification."
+    a: "Falcon analyzes screen context and queries a local knowledge base (read-only) to provide step-by-step guidance. Suggests follow-ups. No data modification.",
   },
   {
-    id: "ext-376", category: "general",
+    id: "ext-376",
+    category: "general",
     q: "What happens when I rate a Falcon answer?",
     keywords: ["rate falcon answer", "like dislike feedback"],
-    a: "Thumbs up/down feedback is stored in chat history. Visually shown (green/red). Used to improve future responses."
+    a: "Thumbs up/down feedback is stored in chat history. Visually shown (green/red). Used to improve future responses.",
   },
   {
-    id: "ext-377", category: "general",
+    id: "ext-377",
+    category: "general",
     q: "Can Falcon perform actions in the ERP?",
     keywords: ["falcon actions", "can falcon edit data"],
-    a: "No. Strictly read-only. Cannot create/edit/delete data, navigate pages, run reports, or post transactions. Provides guidance only."
+    a: "No. Strictly read-only. Cannot create/edit/delete data, navigate pages, run reports, or post transactions. Provides guidance only.",
   },
   {
-    id: "ext-378", category: "general",
+    id: "ext-378",
+    category: "general",
     q: "How do I clear Falcon chat history?",
     keywords: ["clear falcon history"],
-    a: "Open panel, click trash icon in header. Clears localStorage chat history. Welcome message re-appears."
+    a: "Open panel, click trash icon in header. Clears localStorage chat history. Welcome message re-appears.",
   },
   {
-    id: "ext-379", category: "general",
+    id: "ext-379",
+    category: "general",
     q: "What quick prompts does Falcon suggest?",
     keywords: ["falcon quick prompts", "chatbot suggestions"],
-    a: "Ready-made queries: 'How do I create a sales invoice?', 'How do I make a journal entry?', 'Check Profit & Loss', 'Use POS day close', etc."
+    a: "Ready-made queries: 'How do I create a sales invoice?', 'How do I make a journal entry?', 'Check Profit & Loss', 'Use POS day close', etc.",
   },
   {
-    id: "ext-380", category: "masters",
+    id: "ext-380",
+    category: "masters",
     q: "How does production/BOM management work?",
     keywords: ["production management", "bill of materials flow"],
-    a: "Define BOM (raw materials for finished product). Create Production Voucher. BOM auto-fills raw materials. Posting decreases raw materials, increases finished goods, calculates cost."
+    a: "Define BOM (raw materials for finished product). Create Production Voucher. BOM auto-fills raw materials. Posting decreases raw materials, increases finished goods, calculates cost.",
   },
   {
-    id: "ext-381", category: "masters",
+    id: "ext-381",
+    category: "masters",
     q: "How does serial number tracking work?",
     keywords: ["serial number tracking", "warranty tracking"],
-    a: "Each unit has unique serial. Entered during purchase/GRN, selected during sales. Stock ledger shows serial details. Useful for warranty/service tracking."
+    a: "Each unit has unique serial. Entered during purchase/GRN, selected during sales. Stock ledger shows serial details. Useful for warranty/service tracking.",
   },
   {
-    id: "ext-382", category: "reports",
+    id: "ext-382",
+    category: "reports",
     q: "What is the Advanced Tax Compliance page?",
     keywords: ["advanced tax compliance", "tax reporting"],
-    a: "Comprehensive tax reporting: TDS/TCS detailed reports, deductions by section, party-wise summary, certificate generation, filing-ready export formats."
+    a: "Comprehensive tax reporting: TDS/TCS detailed reports, deductions by section, party-wise summary, certificate generation, filing-ready export formats.",
   },
   {
-    id: "ext-383", category: "masters",
+    id: "ext-383",
+    category: "masters",
     q: "What is the Credit Limit Manager?",
     keywords: ["credit limit manager", "party credit limit"],
-    a: "Tracks party credit limits and credit period (days). Monitor outstanding vs limit. Alerts/blocks sales when exceeded. Dashboard widget for at-risk parties."
+    a: "Tracks party credit limits and credit period (days). Monitor outstanding vs limit. Alerts/blocks sales when exceeded. Dashboard widget for at-risk parties.",
   },
   {
-    id: "ext-384", category: "transactions",
+    id: "ext-384",
+    category: "transactions",
     q: "What is the Bank Statement Import feature?",
     keywords: ["bank statement import", "auto reconciliation"],
-    a: "Upload bank CSV/Excel. System maps to bank ledger. Auto-reconciliation suggestions match payments/receipts. Flag unmatched items."
+    a: "Upload bank CSV/Excel. System maps to bank ledger. Auto-reconciliation suggestions match payments/receipts. Flag unmatched items.",
   },
   {
-    id: "ext-385", category: "reports",
+    id: "ext-385",
+    category: "reports",
     q: "How does the Party Reconciliation feature work?",
     keywords: ["party reconciliation", "confirm balances"],
-    a: "Select party/date. System shows books vs party's statement. Mark matched items, identify discrepancies, generate report for year-end confirmation."
+    a: "Select party/date. System shows books vs party's statement. Mark matched items, identify discrepancies, generate report for year-end confirmation.",
   },
   {
-    id: "ext-386", category: "reports",
+    id: "ext-386",
+    category: "reports",
     q: "What is the Exception Reports feature?",
     keywords: ["exception reports", "anomaly detection"],
-    a: "Highlights anomalies: Duplicate invoice nos, large transactions, outside business hours, negative stock, unbalanced vouchers, missing document nos, audit modifications."
+    a: "Highlights anomalies: Duplicate invoice nos, large transactions, outside business hours, negative stock, unbalanced vouchers, missing document nos, audit modifications.",
   },
   {
-    id: "ext-387", category: "reports",
+    id: "ext-387",
+    category: "reports",
     q: "What is the Statistics Report?",
     keywords: ["statistics report", "trend analysis"],
-    a: "Analysis: Monthly/yearly trends, revenue growth, expense patterns, seasonal trends, customer concentration, item velocity, comparative analysis."
+    a: "Analysis: Monthly/yearly trends, revenue growth, expense patterns, seasonal trends, customer concentration, item velocity, comparative analysis.",
   },
   {
-    id: "ext-388", category: "reports",
+    id: "ext-388",
+    category: "reports",
     q: "What is the Price History & Rates page?",
     keywords: ["price history page", "historical rates"],
-    a: "Tracks historical purchase/sales rates for items. Date-wise changes, supplier-wise/customer-wise rates. Useful for pricing strategy."
+    a: "Tracks historical purchase/sales rates for items. Date-wise changes, supplier-wise/customer-wise rates. Useful for pricing strategy.",
   },
   {
-    id: "ext-389", category: "reports",
+    id: "ext-389",
+    category: "reports",
     q: "What is the Sales & Purchase Analysis report?",
     keywords: ["sales purchase analysis", "comparative margins"],
-    a: "Combined analysis: Sales vs Purchase comparison. Gross margins by item/category/party. Volume trends, top/bottom performers."
+    a: "Combined analysis: Sales vs Purchase comparison. Gross margins by item/category/party. Volume trends, top/bottom performers.",
   },
   {
-    id: "ext-390", category: "masters",
+    id: "ext-390",
+    category: "masters",
     q: "What is the Approval Workflow page?",
     keywords: ["approval workflow page", "bulk approve"],
-    a: "Centralized management: All pending approvals. Filter by type/date/submitter. Bulk approve/reject, view history, delegation settings."
+    a: "Centralized management: All pending approvals. Filter by type/date/submitter. Bulk approve/reject, view history, delegation settings.",
   },
   {
-    id: "ext-391", category: "general",
+    id: "ext-391",
+    category: "general",
     q: "How does the date field validation work?",
     keywords: ["date validation", "future date check"],
-    a: "Date required, usually cannot be future, must be in active FY. BS validated against calendar, AD converted. Backdating restricted by period lock."
+    a: "Date required, usually cannot be future, must be in active FY. BS validated against calendar, AD converted. Backdating restricted by period lock.",
   },
   {
-    id: "ext-392", category: "general",
+    id: "ext-392",
+    category: "general",
     q: "How does number input validation work?",
     keywords: ["number validation", "negative qty rate"],
-    a: "Qty > 0, Rates >= 0, Discount % 0-100. Amounts auto-calculated (rounded to 2). Negative stock allowed only if enabled in settings."
+    a: "Qty > 0, Rates >= 0, Discount % 0-100. Amounts auto-calculated (rounded to 2). Negative stock allowed only if enabled in settings.",
   },
   {
-    id: "ext-393", category: "general",
+    id: "ext-393",
+    category: "general",
     q: "How does the auto-calculation of invoice totals work?",
     keywords: ["invoice auto calculation", "totals math formula"],
-    a: "Line Gross = Qty x Rate. Line Discount applied. Taxable = Gross - Discount. VAT = Taxable x 13%. Line Total = Taxable + VAT. Sum lines, add sundries. Final = Round(Exact)."
+    a: "Line Gross = Qty x Rate. Line Discount applied. Taxable = Gross - Discount. VAT = Taxable x 13%. Line Total = Taxable + VAT. Sum lines, add sundries. Final = Round(Exact).",
   },
   {
-    id: "ext-394", category: "general",
+    id: "ext-394",
+    category: "general",
     q: "How does the balance indicator work?",
     keywords: ["balance indicator", "journal balance check"],
-    a: "For journal vouchers: Green (Balanced) or Red (Unbalanced). Difference = Total Debit - Total Credit (<0.005 tolerance). Posting blocked if unbalanced."
+    a: "For journal vouchers: Green (Balanced) or Red (Unbalanced). Difference = Total Debit - Total Credit (<0.005 tolerance). Posting blocked if unbalanced.",
   },
   {
-    id: "ext-395", category: "general",
+    id: "ext-395",
+    category: "general",
     q: "How does the 'Save & New' workflow work?",
     keywords: ["save and new", "batch data entry"],
-    a: "Click 'Save & New' to save current record and reset form to empty for next entry (retaining context like date/party). Faster batch data entry."
+    a: "Click 'Save & New' to save current record and reset form to empty for next entry (retaining context like date/party). Faster batch data entry.",
   },
   {
-    id: "ext-396", category: "reports",
+    id: "ext-396",
+    category: "reports",
     q: "How do I generate a Balance Sheet for a specific date?",
     keywords: ["generate balance sheet", "as on date"],
-    a: "Reports → Financial → Balance Sheet. Select 'As on Date'. Shows Assets/Liabilities as of that date. Total Assets = Total Liabilities. T-format or vertical view."
+    a: "Reports → Financial → Balance Sheet. Select 'As on Date'. Shows Assets/Liabilities as of that date. Total Assets = Total Liabilities. T-format or vertical view.",
   },
   {
-    id: "ext-397", category: "reports",
+    id: "ext-397",
+    category: "reports",
     q: "How do I generate P&L for a period?",
     keywords: ["generate profit loss", "period p&l"],
-    a: "Reports → Financial → P&L. Select From/To Dates. Shows Income, Expense, Gross/Net Profit. Drill-down to ledger details."
+    a: "Reports → Financial → P&L. Select From/To Dates. Shows Income, Expense, Gross/Net Profit. Drill-down to ledger details.",
   },
   {
-    id: "ext-398", category: "reports",
+    id: "ext-398",
+    category: "reports",
     q: "How does Trial Balance generation work?",
     keywords: ["generate trial balance"],
-    a: "Reports → Financial → Trial Balance. Select date range. Shows opening, debits/credits, closing balances for all ledgers. Totals must match."
+    a: "Reports → Financial → Trial Balance. Select date range. Shows opening, debits/credits, closing balances for all ledgers. Totals must match.",
   },
   {
-    id: "ext-399", category: "reports",
+    id: "ext-399",
+    category: "reports",
     q: "How do I filter reports by party?",
     keywords: ["filter report party", "party dropdown filter"],
-    a: "Look for Party dropdown in report filters. Select specific party or 'All Parties'. Available in Party Statement, Outstanding, Aging, Interest Calculation."
+    a: "Look for Party dropdown in report filters. Select specific party or 'All Parties'. Available in Party Statement, Outstanding, Aging, Interest Calculation.",
   },
   {
-    id: "ext-400", category: "reports",
+    id: "ext-400",
+    category: "reports",
     q: "How do I compare periods in reports?",
     keywords: ["compare periods", "report variance comparison"],
-    a: "Some reports offer 'Compare with' option (e.g. P&L, Sales Analysis, Statistics). Shows current period, previous period, and variance."
-  }
+    a: "Some reports offer 'Compare with' option (e.g. P&L, Sales Analysis, Statistics). Shows current period, previous period, and variance.",
+  },
 ];

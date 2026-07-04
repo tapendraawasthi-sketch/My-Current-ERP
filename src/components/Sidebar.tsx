@@ -55,93 +55,96 @@ const menuGroups: MenuGroup[] = [
   {
     title: "Home",
     items: [
-      { label: "Dashboard",        page: "dashboard",           icon: LayoutDashboard },
+      { label: "Dashboard", page: "dashboard", icon: LayoutDashboard },
       { label: "Financial Dashboard", page: "financial-dashboard", icon: BarChart2 },
     ],
   },
   {
     title: "Transactions",
     items: [
-      { label: "Sales Invoice",     page: "billing",             icon: TrendingUp },
-      { label: "Purchase Invoice",  page: "purchase",            icon: TrendingDown },
-      { label: "Sales Return",      page: "sales-return",        icon: RefreshCw },
-      { label: "Purchase Return",   page: "purchase-return",     icon: RefreshCw },
-      { label: "Receipt",           page: "receipt",             icon: Receipt },
-      { label: "Payment",           page: "payment",             icon: Banknote },
-      { label: "Journal",           page: "journal",             icon: FileText },
-      { label: "Contra",            page: "contra",              icon: ArrowLeftRight },
-      { label: "Debit Note",        page: "debit-note",          icon: FileText },
-      { label: "Credit Note",       page: "credit-note",         icon: FileText },
-      { label: "Delivery Challan",  page: "delivery-challan",    icon: Truck },
-      { label: "Goods Receipt Note",page: "goods-receipt",       icon: Archive },
-      { label: "Sales Order",       page: "sales-order",         icon: ClipboardList },
-      { label: "Purchase Order",    page: "purchase-order",      icon: ClipboardList },
+      { label: "Sales Invoice", page: "billing", icon: TrendingUp },
+      { label: "Purchase Invoice", page: "purchase", icon: TrendingDown },
+      { label: "Sales Return", page: "sales-return", icon: RefreshCw },
+      { label: "Purchase Return", page: "purchase-return", icon: RefreshCw },
+      { label: "Receipt", page: "receipt", icon: Receipt },
+      { label: "Payment", page: "payment", icon: Banknote },
+      { label: "Journal", page: "journal", icon: FileText },
+      { label: "Contra", page: "contra", icon: ArrowLeftRight },
+      { label: "Debit Note", page: "debit-note", icon: FileText },
+      { label: "Credit Note", page: "credit-note", icon: FileText },
+      { label: "Delivery Challan", page: "delivery-challan", icon: Truck },
+      { label: "Goods Receipt Note", page: "goods-receipt", icon: Archive },
+      { label: "Sales Order", page: "sales-order", icon: ClipboardList },
+      { label: "Purchase Order", page: "purchase-order", icon: ClipboardList },
     ],
   },
   {
     title: "Books & Reports",
     items: [
-      { label: "Day Book",                  page: "day-book",                  icon: BookMarked },
-      { label: "General Ledger",            page: "ledger",                    icon: BookOpen },
-      { label: "Trial Balance",             page: "trial-balance",             icon: Scale },
-      { label: "Profit & Loss",             page: "profit-loss",               icon: TrendingUp },
-      { label: "Balance Sheet",             page: "balance-sheet",             icon: PieChart },
-      { label: "Cash Flow",                 page: "cash-flow",                 icon: Activity },
-      { label: "Party Statement",           page: "party-statement",           icon: Users },
-      { label: "Outstanding Receivables",   page: "outstanding-receivables",   icon: TrendingUp },
-      { label: "Outstanding Payables",      page: "outstanding-payables",      icon: TrendingDown },
-      { label: "Aging Report",              page: "aging-report",              icon: Calendar },
-      { label: "VAT Reports",               page: "vat-reports",               icon: FileText },
-      { label: "Ratio Analysis",            page: "ratio-analysis",            icon: PieChart },
-      { label: "Budget vs Actual",          page: "budget-vs-actual",          icon: BarChart2 },
-      { label: "Income & Expenditure",      page: "income-expenditure",        icon: BookOpen },
-      { label: "Interest Calculation",      page: "interest-calculation",      icon: Calculator },
+      { label: "Day Book", page: "day-book", icon: BookMarked },
+      { label: "General Ledger", page: "ledger", icon: BookOpen },
+      { label: "Trial Balance", page: "trial-balance", icon: Scale },
+      { label: "Profit & Loss", page: "profit-loss", icon: TrendingUp },
+      { label: "Balance Sheet", page: "balance-sheet", icon: PieChart },
+      { label: "Cash Flow", page: "cash-flow", icon: Activity },
+      { label: "Party Statement", page: "party-statement", icon: Users },
+      { label: "Outstanding Receivables", page: "outstanding-receivables", icon: TrendingUp },
+      { label: "Outstanding Payables", page: "outstanding-payables", icon: TrendingDown },
+      { label: "Aging Report", page: "aging-report", icon: Calendar },
+      { label: "VAT Reports", page: "vat-reports", icon: FileText },
+      { label: "Ratio Analysis", page: "ratio-analysis", icon: PieChart },
+      { label: "Budget vs Actual", page: "budget-vs-actual", icon: BarChart2 },
+      { label: "Income & Expenditure", page: "income-expenditure", icon: BookOpen },
+      { label: "Interest Calculation", page: "interest-calculation", icon: Calculator },
     ],
   },
   {
     title: "Inventory",
     items: [
-      { label: "Item Master",      page: "item-master",      icon: Package },
-      { label: "Item Groups",      page: "item-groups",      icon: Layers },
-      { label: "Stock Summary",    page: "stock-summary",    icon: Package },
-      { label: "Stock Ledger",     page: "stock-ledger",     icon: BookOpen },
-      { label: "Stock Transfer",   page: "stock-transfer",   icon: ArrowLeftRight },
-      { label: "Stock Journal",    page: "stock-journal",    icon: FileText },
-      { label: "Physical Stock",   page: "physical-stock",   icon: Archive },
+      { label: "Item Master", page: "item-master", icon: Package },
+      { label: "Item Groups", page: "item-groups", icon: Layers },
+      { label: "Stock Summary", page: "stock-summary", icon: Package },
+      { label: "Stock Ledger", page: "stock-ledger", icon: BookOpen },
+      { label: "Stock Transfer", page: "stock-transfer", icon: ArrowLeftRight },
+      { label: "Stock Journal", page: "stock-journal", icon: FileText },
+      { label: "Physical Stock", page: "physical-stock", icon: Archive },
       { label: "Batch Management", page: "batch-management", icon: Layers },
-      { label: "Warehouses",       page: "warehouses",       icon: Building2 },
+      { label: "Warehouses", page: "warehouses", icon: Building2 },
     ],
   },
   {
     title: "Masters",
     items: [
-      { label: "Chart of Accounts", page: "accounts",           icon: BookOpen },
-      { label: "Parties",           page: "parties",            icon: Users },
-      { label: "Units",             page: "units",              icon: Calculator },
-      { label: "Price Lists",       page: "price-lists",        icon: Tags },
-      { label: "Cost Centers",      page: "cost-centers",       icon: Map },
-      { label: "Narrations",        page: "standard-narration", icon: ScrollText },
-      { label: "Bill Sundries",     page: "bill-sundry",        icon: Tags },
-      { label: "Fiscal Year",       page: "fiscal-year",        icon: Calendar },
-      { label: "Budget Master",     page: "budget",             icon: Wallet },
-      { label: "Fixed Assets",      page: "fixed-assets",       icon: Building2 },
-      { label: "Payroll",           page: "payroll",            icon: Wallet },
-      { label: "PDC Management",    page: "pdc-management",     icon: CreditCard },
+      { label: "Chart of Accounts", page: "accounts", icon: BookOpen },
+      { label: "Parties", page: "parties", icon: Users },
+      { label: "Units", page: "units", icon: Calculator },
+      { label: "Price Lists", page: "price-lists", icon: Tags },
+      { label: "Cost Centers", page: "cost-centers", icon: Map },
+      { label: "Narrations", page: "standard-narration", icon: ScrollText },
+      { label: "Bill Sundries", page: "bill-sundry", icon: Tags },
+      { label: "Fiscal Year", page: "fiscal-year", icon: Calendar },
+      { label: "Budget Master", page: "budget", icon: Wallet },
+      { label: "Fixed Assets", page: "fixed-assets", icon: Building2 },
+      { label: "Payroll", page: "payroll", icon: Wallet },
+      { label: "PDC Management", page: "pdc-management", icon: CreditCard },
     ],
   },
   {
     title: "Administration",
     items: [
-      { label: "Audit Log",              page: "audit-log",              icon: ShieldCheck },
-      { label: "Users",                  page: "users",                  icon: Users },
-      { label: "Accounts Config",        page: "accounts-configuration", icon: Settings },
-      { label: "Inventory Config",       page: "inventory-config",       icon: Settings },
-      { label: "Recurring Vouchers",     page: "recurring-vouchers",     icon: Repeat },
+      { label: "Audit Log", page: "audit-log", icon: ShieldCheck },
+      { label: "Users", page: "users", icon: Users },
+      { label: "Accounts Config", page: "accounts-configuration", icon: Settings },
+      { label: "Inventory Config", page: "inventory-config", icon: Settings },
+      { label: "Recurring Vouchers", page: "recurring-vouchers", icon: Repeat },
     ],
   },
 ];
 
-const SidebarTooltip: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => {
+const SidebarTooltip: React.FC<{ label: string; children: React.ReactNode }> = ({
+  label,
+  children,
+}) => {
   const [show, setShow] = useState(false);
   return (
     <div
@@ -151,34 +154,38 @@ const SidebarTooltip: React.FC<{ label: string; children: React.ReactNode }> = (
     >
       {children}
       {show && (
-        <div style={{
-          position: "absolute",
-          left: "calc(100% + 8px)",
-          top: "50%",
-          transform: "translateY(-50%)",
-          background: "#1e2433",
-          color: "#ffffff",
-          fontSize: 11,
-          fontWeight: 600,
-          padding: "4px 10px",
-          borderRadius: 4,
-          whiteSpace: "nowrap",
-          pointerEvents: "none",
-          zIndex: 100,
-          boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
-        }}>
-          {label}
-          <div style={{
+        <div
+          style={{
             position: "absolute",
-            left: -4,
+            left: "calc(100% + 8px)",
             top: "50%",
             transform: "translateY(-50%)",
-            width: 0,
-            height: 0,
-            borderTop: "4px solid transparent",
-            borderBottom: "4px solid transparent",
-            borderRight: "4px solid #1e2433",
-          }} />
+            background: "#1e2433",
+            color: "#ffffff",
+            fontSize: 11,
+            fontWeight: 600,
+            padding: "4px 10px",
+            borderRadius: 4,
+            whiteSpace: "nowrap",
+            pointerEvents: "none",
+            zIndex: 100,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+          }}
+        >
+          {label}
+          <div
+            style={{
+              position: "absolute",
+              left: -4,
+              top: "50%",
+              transform: "translateY(-50%)",
+              width: 0,
+              height: 0,
+              borderTop: "4px solid transparent",
+              borderBottom: "4px solid transparent",
+              borderRight: "4px solid #1e2433",
+            }}
+          />
         </div>
       )}
     </div>
@@ -324,7 +331,7 @@ const Sidebar: React.FC<{ collapsed: boolean; setCollapsed: (b: boolean) => void
                 <div className="mt-0.5 mb-1 px-1 space-y-0.5">
                   {groupItems.map(({ item, count }, index) => {
                     const active = isActive(item.page);
-                    
+
                     const btn = (
                       <button
                         key={index}
@@ -337,12 +344,21 @@ const Sidebar: React.FC<{ collapsed: boolean; setCollapsed: (b: boolean) => void
                           style={{ color: active ? "#1557b0" : "#94a3b8", flexShrink: 0 }}
                         />
                         {!collapsed && (
-                          <div style={{ display: "flex", flex: 1, alignItems: "center", justifyContent: "space-between" }}>
+                          <div
+                            style={{
+                              display: "flex",
+                              flex: 1,
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                            }}
+                          >
                             <span>{item.label}</span>
                             {count !== undefined && count > 0 && (
                               <span
                                 className={`text-[9px] font-bold px-1.5 py-0.5 rounded-sm ${
-                                  active ? "bg-white/20 text-[#1557b0]" : "bg-[#2d3748] text-gray-300"
+                                  active
+                                    ? "bg-white/20 text-[#1557b0]"
+                                    : "bg-[#2d3748] text-gray-300"
                                 }`}
                               >
                                 {count}
@@ -358,9 +374,7 @@ const Sidebar: React.FC<{ collapsed: boolean; setCollapsed: (b: boolean) => void
                         {btn}
                       </SidebarTooltip>
                     ) : (
-                      <React.Fragment key={index}>
-                        {btn}
-                      </React.Fragment>
+                      <React.Fragment key={index}>{btn}</React.Fragment>
                     );
                   })}
                 </div>

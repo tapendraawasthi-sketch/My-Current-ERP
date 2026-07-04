@@ -112,10 +112,7 @@ export default function Step4AdminAccount({ data, onChange, errors = {} }: Props
           </div>
           {strength && (
             <div className="mt-1.5">
-              <div
-                className="h-1 rounded-full overflow-hidden"
-                style={{ background: "#e5e7eb" }}
-              >
+              <div className="h-1 rounded-full overflow-hidden" style={{ background: "#e5e7eb" }}>
                 <div
                   className="h-1 rounded-full transition-all duration-300"
                   style={{ width: strength.width, background: strength.color }}
@@ -152,9 +149,11 @@ export default function Step4AdminAccount({ data, onChange, errors = {} }: Props
               {showPassword.confirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
-          {data.confirmPassword && data.password === data.confirmPassword && !errors.confirmPassword && (
-            <p className="mt-1 text-[11px] text-green-600">✓ Passwords match</p>
-          )}
+          {data.confirmPassword &&
+            data.password === data.confirmPassword &&
+            !errors.confirmPassword && (
+              <p className="mt-1 text-[11px] text-green-600">✓ Passwords match</p>
+            )}
           <FieldError msg={errors.confirmPassword} />
         </div>
       </div>
@@ -163,7 +162,8 @@ export default function Step4AdminAccount({ data, onChange, errors = {} }: Props
         className="px-3 py-2 rounded-md text-[11px]"
         style={{ background: "#eff6ff", border: "1px solid #bfdbfe", color: "#1e40af" }}
       >
-        <strong>Note:</strong> This account will have full admin access. You can add more users after setup.
+        <strong>Note:</strong> This account will have full admin access. You can add more users
+        after setup.
       </div>
     </div>
   );

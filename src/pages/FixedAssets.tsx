@@ -12,27 +12,18 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
-import {
-  Plus,
-  Download,
-  Edit2,
-  Trash2,
-  Calculator,
-  X,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react";
+import { Plus, Download, Edit2, Trash2, Calculator, X, ChevronDown, ChevronUp } from "lucide-react";
 
 // ─── Nepal IT Act WDV Rates ───────────────────────────────────────────────────
 const NEPAL_DEPRECIATION_RATES: Record<string, { method: "slm" | "wdv"; rate: number }> = {
-  "Building":              { method: "slm", rate: 5 },
-  "Furniture & Fixtures":  { method: "wdv", rate: 25 },
-  "Computers & Software":  { method: "wdv", rate: 40 },
-  "Vehicles":              { method: "wdv", rate: 20 },
-  "Plant & Machinery":     { method: "wdv", rate: 15 },
-  "Office Equipment":      { method: "wdv", rate: 25 },
-  "Intangibles":           { method: "slm", rate: 10 },
-  "Other Assets":          { method: "wdv", rate: 15 },
+  Building: { method: "slm", rate: 5 },
+  "Furniture & Fixtures": { method: "wdv", rate: 25 },
+  "Computers & Software": { method: "wdv", rate: 40 },
+  Vehicles: { method: "wdv", rate: 20 },
+  "Plant & Machinery": { method: "wdv", rate: 15 },
+  "Office Equipment": { method: "wdv", rate: 25 },
+  Intangibles: { method: "slm", rate: 10 },
+  "Other Assets": { method: "wdv", rate: 15 },
 };
 
 const CATEGORIES = Object.keys(NEPAL_DEPRECIATION_RATES);
@@ -47,26 +38,15 @@ const computeWDV = (openingNBV: number, rate: number): number => {
   return (openingNBV * rate) / 100;
 };
 
-const computeDepreciation = (
-  asset: any,
-  openingNBV: number
-): number => {
+const computeDepreciation = (asset: any, openingNBV: number): number => {
   if (asset.depreciationMethod === "slm") {
-    return computeSLM(
-      asset.purchaseCost,
-      asset.residualValue || 0,
-      asset.usefulLifeYears || 1
-    );
+    return computeSLM(asset.purchaseCost, asset.residualValue || 0, asset.usefulLifeYears || 1);
   }
   return computeWDV(openingNBV, asset.wdvRate || 15);
 };
 
 // Calculate NBV at a given date considering all depreciation entries
-const computeNBV = (
-  asset: any,
-  depreciationEntries: any[],
-  asOfDate: string
-): number => {
+const computeNBV = (asset: any, depreciationEntries: any[], asOfDate: string): number => {
   const assetEntries = depreciationEntries
     .filter((e) => e.assetId === asset.id && e.date <= asOfDate)
     .sort((a, b) => a.date.localeCompare(b.date));
@@ -87,12 +67,10 @@ const fmt = (n: number) =>
 
 const inputCls =
   "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full";
-const labelCls =
-  "text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1";
+const labelCls = "text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1";
 const thCls =
   "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200 whitespace-nowrap";
-const tdCls =
-  "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
+const tdCls = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const amtCls = `${tdCls} font-mono text-right`;
 
 // ─── Empty form state ─────────────────────────────────────────────────────────
@@ -115,18 +93,18 @@ const emptyAsset = () => ({
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function FixedAssets() {
   const store = useStore() as any;
-  const fixedAssets: any[]         = store.fixedAssets || [];
-  const depreciationLedger: any[]  = store.depreciationLedger || [];
-  const currentFiscalYear          = store.currentFiscalYear;
-  const companySettings            = store.companySettings;
+  const fixedAssets: any[] = store.fixedAssets || [];
+  const depreciationLedger: any[] = store.depreciationLedger || [];
+  const currentFiscalYear = store.currentFiscalYear;
+  const companySettings = store.companySettings;
 
-  const [showModal,    setShowModal]    = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [showDeprModal, setShowDeprModal] = useState(false);
-  const [editingId,    setEditingId]    = useState<string | null>(null);
-  const [form,         setForm]         = useState(emptyAsset());
-  const [selectedId,   setSelectedId]   = useState<string | null>(null);
-  const [activeTab,    setActiveTab]    = useState<"register" | "schedule" | "disposal">("register");
-  const [filterCat,    setFilterCat]    = useState("ALL");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [form, setForm] = useState(emptyAsset());
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"register" | "schedule" | "disposal">("register");
+  const [filterCat, setFilterCat] = useState("ALL");
 
   const fyEnd = currentFiscalYear?.endDate || new Date().toISOString().split("T")[0];
 
@@ -145,9 +123,7 @@ export default function FixedAssets() {
         depreciationMethod: defaults.method,
         wdvRate: defaults.rate,
         usefulLifeYears:
-          defaults.method === "slm"
-            ? Math.round(100 / defaults.rate)
-            : f.usefulLifeYears,
+          defaults.method === "slm" ? Math.round(100 / defaults.rate) : f.usefulLifeYears,
       }));
     } else {
       setForm((f) => ({ ...f, category: cat }));
@@ -208,7 +184,7 @@ export default function FixedAssets() {
 
     // Check if depreciation already posted for this FY
     const alreadyPosted = depreciationLedger.some(
-      (e) => e.assetId === asset.id && e.fiscalYear === fyName
+      (e) => e.assetId === asset.id && e.fiscalYear === fyName,
     );
     if (alreadyPosted) {
       toast.error(`Depreciation already posted for ${asset.name} in FY ${fyName}`);
@@ -226,27 +202,20 @@ export default function FixedAssets() {
       closingNBV: Math.max(asset.residualValue || 0, nbv - deprAmt),
     });
 
-    toast.success(
-      `Depreciation posted: Rs. ${fmt(deprAmt)} for ${asset.name}`
-    );
+    toast.success(`Depreciation posted: Rs. ${fmt(deprAmt)} for ${asset.name}`);
   };
 
   // ── Post depreciation for ALL active assets ───────────────────────────────
   const postAllDepreciation = async () => {
-    if (
-      !confirm(
-        `Post depreciation for ALL active assets for FY ending ${fyEnd}?`
-      )
-    )
-      return;
+    if (!confirm(`Post depreciation for ALL active assets for FY ending ${fyEnd}?`)) return;
 
     let count = 0;
     for (const asset of fixedAssets.filter((a) => a.isActive && !a.disposalDate)) {
       const nbv = computeNBV(asset, depreciationLedger, fyEnd);
       const deprAmt = computeDepreciation(asset, nbv);
-      const fyName  = currentFiscalYear?.name || fyEnd.slice(0, 4);
+      const fyName = currentFiscalYear?.name || fyEnd.slice(0, 4);
       const already = depreciationLedger.some(
-        (e) => e.assetId === asset.id && e.fiscalYear === fyName
+        (e) => e.assetId === asset.id && e.fiscalYear === fyName,
       );
       if (!already && deprAmt > 0) {
         await store.saveDepreciationEntry({
@@ -267,19 +236,16 @@ export default function FixedAssets() {
 
   // ── Filtered assets ────────────────────────────────────────────────────────
   const filtered = useMemo(
-    () =>
-      fixedAssets.filter(
-        (a) => filterCat === "ALL" || a.category === filterCat
-      ),
-    [fixedAssets, filterCat]
+    () => fixedAssets.filter((a) => filterCat === "ALL" || a.category === filterCat),
+    [fixedAssets, filterCat],
   );
 
   // ── Asset schedule (with computed values) ─────────────────────────────────
   const scheduleRows = useMemo(() => {
     return filtered.map((asset) => {
-      const nbv       = computeNBV(asset, depreciationLedger, fyEnd);
-      const deprAmt   = computeDepreciation(asset, nbv);
-      const fyName    = currentFiscalYear?.name || fyEnd.slice(0, 4);
+      const nbv = computeNBV(asset, depreciationLedger, fyEnd);
+      const deprAmt = computeDepreciation(asset, nbv);
+      const fyName = currentFiscalYear?.name || fyEnd.slice(0, 4);
 
       const totalDeprSoFar = depreciationLedger
         .filter((e) => e.assetId === asset.id)
@@ -287,47 +253,43 @@ export default function FixedAssets() {
 
       return {
         ...asset,
-        openingGrossBlock:   asset.purchaseCost,
-        openingNBV:          nbv,
+        openingGrossBlock: asset.purchaseCost,
+        openingNBV: nbv,
         depreciationForYear: deprAmt,
-        closingNBV:          Math.max(asset.residualValue || 0, nbv - deprAmt),
-        accumulatedDepr:     totalDeprSoFar,
-        netBookValue:        nbv,
-        isFullyDepreciated:  nbv <= (asset.residualValue || 0),
+        closingNBV: Math.max(asset.residualValue || 0, nbv - deprAmt),
+        accumulatedDepr: totalDeprSoFar,
+        netBookValue: nbv,
+        isFullyDepreciated: nbv <= (asset.residualValue || 0),
       };
     });
   }, [filtered, depreciationLedger, fyEnd, currentFiscalYear]);
 
   // ── Summary totals ─────────────────────────────────────────────────────────
   const totals = {
-    grossBlock:     scheduleRows.reduce((s, r) => s + r.purchaseCost, 0),
-    accumDepr:      scheduleRows.reduce((s, r) => s + r.accumulatedDepr, 0),
-    netBlock:       scheduleRows.reduce((s, r) => s + r.netBookValue, 0),
-    deprThisYear:   scheduleRows.reduce((s, r) => s + r.depreciationForYear, 0),
+    grossBlock: scheduleRows.reduce((s, r) => s + r.purchaseCost, 0),
+    accumDepr: scheduleRows.reduce((s, r) => s + r.accumulatedDepr, 0),
+    netBlock: scheduleRows.reduce((s, r) => s + r.netBookValue, 0),
+    deprThisYear: scheduleRows.reduce((s, r) => s + r.depreciationForYear, 0),
   };
 
   // ── Export ─────────────────────────────────────────────────────────────────
   const exportSchedule = () => {
     const data = scheduleRows.map((r) => ({
-      "Asset Name":           r.name,
-      "Code":                 r.code || "",
-      "Category":             r.category,
-      "Purchase Date":        r.purchaseDate,
-      "Gross Block (Cost)":   r.purchaseCost,
-      "Method":               r.depreciationMethod.toUpperCase(),
-      "Rate %":               r.depreciationMethod === "wdv" ? r.wdvRate : Math.round(100 / r.usefulLifeYears),
-      "Accum. Depreciation":  r.accumulatedDepr,
-      "Opening NBV":          r.openingNBV,
-      "Depr This Year":       r.depreciationForYear,
-      "Closing NBV":          r.closingNBV,
-      "Residual Value":       r.residualValue,
+      "Asset Name": r.name,
+      Code: r.code || "",
+      Category: r.category,
+      "Purchase Date": r.purchaseDate,
+      "Gross Block (Cost)": r.purchaseCost,
+      Method: r.depreciationMethod.toUpperCase(),
+      "Rate %": r.depreciationMethod === "wdv" ? r.wdvRate : Math.round(100 / r.usefulLifeYears),
+      "Accum. Depreciation": r.accumulatedDepr,
+      "Opening NBV": r.openingNBV,
+      "Depr This Year": r.depreciationForYear,
+      "Closing NBV": r.closingNBV,
+      "Residual Value": r.residualValue,
     }));
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(
-      wb,
-      XLSX.utils.json_to_sheet(data),
-      "Fixed Asset Schedule"
-    );
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(data), "Fixed Asset Schedule");
     XLSX.writeFile(wb, `FixedAssets_${fyEnd}.xlsx`);
   };
 
@@ -337,12 +299,9 @@ export default function FixedAssets() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">
-            Fixed Assets Register
-          </h1>
+          <h1 className="text-[15px] font-semibold text-gray-800">Fixed Assets Register</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
-            {companySettings?.name || "Company"} — Nepal IT Act
-            Depreciation
+            {companySettings?.name || "Company"} — Nepal IT Act Depreciation
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -386,8 +345,8 @@ export default function FixedAssets() {
             {tab === "register"
               ? "Asset Register"
               : tab === "schedule"
-              ? "Depreciation Schedule"
-              : "Disposal Register"}
+                ? "Depreciation Schedule"
+                : "Disposal Register"}
           </button>
         ))}
       </div>
@@ -409,8 +368,7 @@ export default function FixedAssets() {
           </button>
         ))}
         <span className="ml-auto text-[11px] text-gray-500">
-          {filtered.length} assets • Gross Block: Rs.{" "}
-          {fmt(totals.grossBlock)} • Net Block: Rs.{" "}
+          {filtered.length} assets • Gross Block: Rs. {fmt(totals.grossBlock)} • Net Block: Rs.{" "}
           {fmt(totals.netBlock)}
         </span>
       </div>
@@ -418,15 +376,12 @@ export default function FixedAssets() {
       {/* KPI summary */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
         {[
-          { label: "Gross Block",        value: totals.grossBlock,    color: "text-gray-800" },
-          { label: "Accum. Depreciation",value: totals.accumDepr,     color: "text-red-600" },
-          { label: "Net Block (NBV)",     value: totals.netBlock,      color: "text-[#1557b0]" },
-          { label: "Depr. This Year",     value: totals.deprThisYear,  color: "text-amber-700" },
+          { label: "Gross Block", value: totals.grossBlock, color: "text-gray-800" },
+          { label: "Accum. Depreciation", value: totals.accumDepr, color: "text-red-600" },
+          { label: "Net Block (NBV)", value: totals.netBlock, color: "text-[#1557b0]" },
+          { label: "Depr. This Year", value: totals.deprThisYear, color: "text-amber-700" },
         ].map((kpi) => (
-          <div
-            key={kpi.label}
-            className="bg-white border border-gray-200 rounded-lg p-3"
-          >
+          <div key={kpi.label} className="bg-white border border-gray-200 rounded-lg p-3">
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
               {kpi.label}
             </p>
@@ -459,10 +414,7 @@ export default function FixedAssets() {
               <tbody>
                 {scheduleRows.length === 0 && (
                   <tr>
-                    <td
-                      colSpan={10}
-                      className="px-4 py-10 text-center text-[12px] text-gray-400"
-                    >
+                    <td colSpan={10} className="px-4 py-10 text-center text-[12px] text-gray-400">
                       No assets added yet. Click "Add Asset" to begin.
                     </td>
                   </tr>
@@ -473,18 +425,10 @@ export default function FixedAssets() {
                     className={`hover:bg-gray-50 ${!row.isActive ? "opacity-50" : ""}`}
                   >
                     <td className={tdCls}>
-                      <div className="font-medium text-gray-800">
-                        {row.name}
-                      </div>
-                      {row.code && (
-                        <div className="text-[10px] text-gray-400">
-                          {row.code}
-                        </div>
-                      )}
+                      <div className="font-medium text-gray-800">{row.name}</div>
+                      {row.code && <div className="text-[10px] text-gray-400">{row.code}</div>}
                       {row.serialNo && (
-                        <div className="text-[10px] text-gray-400">
-                          S/N: {row.serialNo}
-                        </div>
+                        <div className="text-[10px] text-gray-400">S/N: {row.serialNo}</div>
                       )}
                     </td>
                     <td className={tdCls}>
@@ -509,9 +453,7 @@ export default function FixedAssets() {
                     </td>
                     <td className={`${amtCls} text-amber-700`}>
                       {row.isFullyDepreciated ? (
-                        <span className="text-[10px] text-gray-400">
-                          Fully depr.
-                        </span>
+                        <span className="text-[10px] text-gray-400">Fully depr.</span>
                       ) : (
                         fmt(row.depreciationForYear)
                       )}
@@ -568,8 +510,7 @@ export default function FixedAssets() {
       {activeTab === "schedule" && (
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
           <div className="px-4 py-3 bg-[#f5f6fa] border-b border-gray-200 text-[11px] text-gray-600">
-            Fixed Asset Schedule as per Nepal IT Act — FY ending{" "}
-            {fyEnd}
+            Fixed Asset Schedule as per Nepal IT Act — FY ending {fyEnd}
           </div>
           <div className="overflow-x-auto">
             <table className="w-full" style={{ minWidth: 1100 }}>
@@ -589,9 +530,7 @@ export default function FixedAssets() {
               <tbody>
                 {scheduleRows.map((row) => (
                   <tr key={row.id} className="hover:bg-gray-50">
-                    <td className={`${tdCls} font-medium text-gray-800`}>
-                      {row.name}
-                    </td>
+                    <td className={`${tdCls} font-medium text-gray-800`}>{row.name}</td>
                     <td className={tdCls}>{row.category}</td>
                     <td className={tdCls}>
                       <span className="font-semibold uppercase text-[11px]">
@@ -607,9 +546,7 @@ export default function FixedAssets() {
                     </td>
                     <td className={amtCls}>{fmt(row.openingNBV)}</td>
                     <td className="px-3 py-2.5 text-[12px] font-mono text-right border-b border-gray-100 text-amber-700">
-                      {row.isFullyDepreciated
-                        ? "—"
-                        : fmt(row.depreciationForYear)}
+                      {row.isFullyDepreciated ? "—" : fmt(row.depreciationForYear)}
                     </td>
                     <td className="px-3 py-2.5 text-[12px] font-mono text-right border-b border-gray-100 font-semibold text-[#1557b0]">
                       {fmt(row.closingNBV)}
@@ -620,10 +557,7 @@ export default function FixedAssets() {
 
                 {scheduleRows.length === 0 && (
                   <tr>
-                    <td
-                      colSpan={9}
-                      className="px-4 py-10 text-center text-[12px] text-gray-400"
-                    >
+                    <td colSpan={9} className="px-4 py-10 text-center text-[12px] text-gray-400">
                       No assets found.
                     </td>
                   </tr>
@@ -634,22 +568,15 @@ export default function FixedAssets() {
               {scheduleRows.length > 0 && (
                 <tfoot>
                   <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold">
-                    <td
-                      colSpan={3}
-                      className="px-3 py-2.5 text-[12px] font-bold text-gray-800"
-                    >
+                    <td colSpan={3} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
                       TOTAL
                     </td>
-                    <td className={amtCls}>
-                      {fmt(totals.grossBlock)}
-                    </td>
+                    <td className={amtCls}>{fmt(totals.grossBlock)}</td>
                     <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-right border-b border-gray-100 text-red-600">
                       {fmt(totals.accumDepr)}
                     </td>
                     <td className={amtCls}>
-                      {fmt(
-                        scheduleRows.reduce((s, r) => s + r.openingNBV, 0)
-                      )}
+                      {fmt(scheduleRows.reduce((s, r) => s + r.openingNBV, 0))}
                     </td>
                     <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-right border-b border-gray-100 text-amber-700">
                       {fmt(totals.deprThisYear)}
@@ -658,12 +585,7 @@ export default function FixedAssets() {
                       {fmt(totals.netBlock)}
                     </td>
                     <td className={amtCls}>
-                      {fmt(
-                        scheduleRows.reduce(
-                          (s, r) => s + (r.residualValue || 0),
-                          0
-                        )
-                      )}
+                      {fmt(scheduleRows.reduce((s, r) => s + (r.residualValue || 0), 0))}
                     </td>
                   </tr>
                 </tfoot>
@@ -693,34 +615,26 @@ export default function FixedAssets() {
               <tbody>
                 {scheduleRows.filter((r) => !!r.disposalDate).length === 0 && (
                   <tr>
-                    <td
-                      colSpan={8}
-                      className="px-4 py-10 text-center text-[12px] text-gray-400"
-                    >
-                      No disposed assets found. Edit an asset and set a
-                      disposal date to record disposal.
+                    <td colSpan={8} className="px-4 py-10 text-center text-[12px] text-gray-400">
+                      No disposed assets found. Edit an asset and set a disposal date to record
+                      disposal.
                     </td>
                   </tr>
                 )}
                 {scheduleRows
                   .filter((r) => !!r.disposalDate)
                   .map((row) => {
-                    const gainLoss =
-                      (row.disposalAmount || 0) - row.netBookValue;
+                    const gainLoss = (row.disposalAmount || 0) - row.netBookValue;
                     return (
                       <tr key={row.id} className="hover:bg-gray-50">
-                        <td className={`${tdCls} font-medium`}>
-                          {row.name}
-                        </td>
+                        <td className={`${tdCls} font-medium`}>{row.name}</td>
                         <td className={tdCls}>{row.category}</td>
                         <td className={amtCls}>{fmt(row.purchaseCost)}</td>
                         <td className="px-3 py-2.5 text-[12px] font-mono text-right border-b border-gray-100 text-red-600">
                           {fmt(row.accumulatedDepr)}
                         </td>
                         <td className={amtCls}>{fmt(row.netBookValue)}</td>
-                        <td className={amtCls}>
-                          {fmt(row.disposalAmount || 0)}
-                        </td>
+                        <td className={amtCls}>{fmt(row.disposalAmount || 0)}</td>
                         <td
                           className={`${amtCls} font-semibold ${gainLoss >= 0 ? "text-green-700" : "text-red-600"}`}
                         >
@@ -763,15 +677,11 @@ export default function FixedAssets() {
                   .slice(0, 50)
                   .map((entry) => (
                     <tr key={entry.id} className="hover:bg-gray-50">
-                      <td className={`${tdCls} font-medium`}>
-                        {entry.assetName}
-                      </td>
+                      <td className={`${tdCls} font-medium`}>{entry.assetName}</td>
                       <td className={tdCls}>{entry.fiscalYear}</td>
                       <td className={tdCls}>{entry.date}</td>
                       <td className={tdCls}>
-                        <span className="uppercase font-semibold text-[11px]">
-                          {entry.method}
-                        </span>
+                        <span className="uppercase font-semibold text-[11px]">{entry.method}</span>
                       </td>
                       <td className={amtCls}>{fmt(entry.openingNBV)}</td>
                       <td className="px-3 py-2.5 text-[12px] font-mono text-right border-b border-gray-100 text-red-600 font-semibold">
@@ -812,9 +722,7 @@ export default function FixedAssets() {
                   <input
                     className={inputCls}
                     value={form.name}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, name: e.target.value }))
-                    }
+                    onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
                     placeholder="e.g. Office Computer - HP"
                   />
                 </div>
@@ -823,9 +731,7 @@ export default function FixedAssets() {
                   <input
                     className={inputCls}
                     value={form.code}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, code: e.target.value }))
-                    }
+                    onChange={(e) => setForm((f) => ({ ...f, code: e.target.value }))}
                     placeholder="e.g. FA-001"
                   />
                 </div>
@@ -959,15 +865,11 @@ export default function FixedAssets() {
                       Rs.{" "}
                       {fmt(
                         form.depreciationMethod === "slm"
-                          ? computeSLM(
-                              form.purchaseCost,
-                              form.residualValue,
-                              form.usefulLifeYears
-                            )
+                          ? computeSLM(form.purchaseCost, form.residualValue, form.usefulLifeYears)
                           : computeWDV(
                               form.purchaseCost - (form.residualValue || 0),
-                              form.wdvRate || 0
-                            )
+                              form.wdvRate || 0,
+                            ),
                       )}{" "}
                       / yr
                     </div>
@@ -982,9 +884,7 @@ export default function FixedAssets() {
                   <input
                     className={inputCls}
                     value={form.location}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, location: e.target.value }))
-                    }
+                    onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))}
                     placeholder="e.g. Head Office"
                   />
                 </div>
@@ -993,9 +893,7 @@ export default function FixedAssets() {
                   <input
                     className={inputCls}
                     value={form.serialNo}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, serialNo: e.target.value }))
-                    }
+                    onChange={(e) => setForm((f) => ({ ...f, serialNo: e.target.value }))}
                     placeholder="Serial / Asset Tag"
                   />
                 </div>
@@ -1004,9 +902,7 @@ export default function FixedAssets() {
                   <input
                     className={inputCls}
                     value={form.supplier}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, supplier: e.target.value }))
-                    }
+                    onChange={(e) => setForm((f) => ({ ...f, supplier: e.target.value }))}
                     placeholder="Supplier name"
                   />
                 </div>
@@ -1070,14 +966,10 @@ export default function FixedAssets() {
                 <input
                   type="checkbox"
                   checked={form.isActive}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, isActive: e.target.checked }))
-                  }
+                  onChange={(e) => setForm((f) => ({ ...f, isActive: e.target.checked }))}
                   className="h-4 w-4 accent-[#1557b0]"
                 />
-                <span className="text-[12px] text-gray-700 font-medium">
-                  Asset is Active
-                </span>
+                <span className="text-[12px] text-gray-700 font-medium">Asset is Active</span>
               </label>
             </div>
 

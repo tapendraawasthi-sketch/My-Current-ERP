@@ -10,21 +10,21 @@ interface MenuItem {
 }
 
 const PAGE_SHORTCUTS: Record<string, string> = {
-  "balance-sheet":         "Ctrl+B",
-  "trial-balance":         "Ctrl+T",
-  "ledger":                "Ctrl+L",
-  "vat-reports":           "Ctrl+G",
-  "users":                 "Ctrl+U",
-  "billing":               "F9",
-  "purchase":              "F10",
-  "journal":               "F5",
-  "payment":               "F6",
-  "receipt":               "F7",
-  "contra":                "F8",
-  "day-book":              "D",
-  "accounts":              "F4",
-  "items":                 "F3",
-  "profit-loss":           "Ctrl+P",
+  "balance-sheet": "Ctrl+B",
+  "trial-balance": "Ctrl+T",
+  ledger: "Ctrl+L",
+  "vat-reports": "Ctrl+G",
+  users: "Ctrl+U",
+  billing: "F9",
+  purchase: "F10",
+  journal: "F5",
+  payment: "F6",
+  receipt: "F7",
+  contra: "F8",
+  "day-book": "D",
+  accounts: "F4",
+  items: "F3",
+  "profit-loss": "Ctrl+P",
 };
 
 const MENU_TREE: { title: string; items: MenuItem[] }[] = [
@@ -218,7 +218,7 @@ const BusyMenuBar: React.FC = () => {
   const [openMenu, setOpenMenu] = useState<number | null>(null);
   const [openSub, setOpenSub] = useState<string | null>(null);
   const barRef = useRef<HTMLDivElement>(null);
-  
+
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollBottom, setScrollBottom] = useState(999);
   const dropdownScrollRef = useRef<HTMLDivElement>(null);
@@ -343,19 +343,21 @@ const BusyMenuBar: React.FC = () => {
           <span>{item.label}</span>
 
           {item.page && PAGE_SHORTCUTS[item.page] && (
-            <span style={{
-              fontSize: 9,
-              fontWeight: 700,
-              color: "#9ca3af",
-              background: "#f3f4f6",
-              border: "1px solid #e5e7eb",
-              borderRadius: 3,
-              padding: "1px 5px",
-              fontFamily: "monospace",
-              flexShrink: 0,
-              marginLeft: 8,
-              whiteSpace: "nowrap",
-            }}>
+            <span
+              style={{
+                fontSize: 9,
+                fontWeight: 700,
+                color: "#9ca3af",
+                background: "#f3f4f6",
+                border: "1px solid #e5e7eb",
+                borderRadius: 3,
+                padding: "1px 5px",
+                fontFamily: "monospace",
+                flexShrink: 0,
+                marginLeft: 8,
+                whiteSpace: "nowrap",
+              }}
+            >
               {PAGE_SHORTCUTS[item.page]}
             </span>
           )}
@@ -393,7 +395,16 @@ const BusyMenuBar: React.FC = () => {
             </button>
 
             {isOpen && (
-              <div style={{ position: "absolute", left: 0, top: "100%", width: 224, zIndex: 50, marginTop: 0 }}>
+              <div
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  top: "100%",
+                  width: 224,
+                  zIndex: 50,
+                  marginTop: 0,
+                }}
+              >
                 <div style={{ position: "relative" }}>
                   <div
                     className="overflow-y-auto"
@@ -412,31 +423,35 @@ const BusyMenuBar: React.FC = () => {
                     ref={dropdownScrollRef}
                   >
                     {scrollTop > 4 && (
-                      <div style={{
-                        position: "sticky",
-                        top: 0,
-                        height: 20,
-                        background: "linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 100%)",
-                        zIndex: 2,
-                        pointerEvents: "none",
-                        marginBottom: -20,
-                      }} />
+                      <div
+                        style={{
+                          position: "sticky",
+                          top: 0,
+                          height: 20,
+                          background:
+                            "linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 100%)",
+                          zIndex: 2,
+                          pointerEvents: "none",
+                          marginBottom: -20,
+                        }}
+                      />
                     )}
 
-                    <div style={{ padding: "4px 0" }}>
-                      {renderItems(section.items)}
-                    </div>
+                    <div style={{ padding: "4px 0" }}>{renderItems(section.items)}</div>
 
                     {scrollBottom > 4 && (
-                      <div style={{
-                        position: "sticky",
-                        bottom: 0,
-                        height: 20,
-                        background: "linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 100%)",
-                        zIndex: 2,
-                        pointerEvents: "none",
-                        marginTop: -20,
-                      }} />
+                      <div
+                        style={{
+                          position: "sticky",
+                          bottom: 0,
+                          height: 20,
+                          background:
+                            "linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 100%)",
+                          zIndex: 2,
+                          pointerEvents: "none",
+                          marginTop: -20,
+                        }}
+                      />
                     )}
                   </div>
                 </div>

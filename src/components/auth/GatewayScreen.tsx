@@ -14,7 +14,13 @@ function formatLoginDate(isoString: string): string {
 
 // Inline logotype — no external dependency, no cartoon icons
 const SutraLogotype: React.FC<{ size?: number }> = ({ size = 44 }) => (
-  <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 48 48"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <rect width="48" height="48" rx="10" fill="#1557b0" />
     <path
       d="M30 13C30 13 28 11 24 11C19 11 16 13.5 16 17C16 20.5 19 22 24 23C29 24 32 25.5 32 29C32 32.5 29 37 24 37C19 37 16 35 16 35"
@@ -24,8 +30,24 @@ const SutraLogotype: React.FC<{ size?: number }> = ({ size = 44 }) => (
       strokeLinejoin="round"
       fill="none"
     />
-    <line x1="13" y1="41" x2="35" y2="41" stroke="rgba(255,255,255,0.45)" strokeWidth="1.5" strokeLinecap="round" />
-    <line x1="16" y1="44.5" x2="32" y2="44.5" stroke="rgba(255,255,255,0.25)" strokeWidth="1" strokeLinecap="round" />
+    <line
+      x1="13"
+      y1="41"
+      x2="35"
+      y2="41"
+      stroke="rgba(255,255,255,0.45)"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+    <line
+      x1="16"
+      y1="44.5"
+      x2="32"
+      y2="44.5"
+      stroke="rgba(255,255,255,0.25)"
+      strokeWidth="1"
+      strokeLinecap="round"
+    />
   </svg>
 );
 
@@ -45,7 +67,10 @@ export default function GatewayScreen() {
   const companyName = companySettings?.companyNameEn || companySettings?.name || "My Company";
 
   return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: "#f5f6fa" }}>
+    <div
+      className="min-h-screen flex items-center justify-center"
+      style={{ background: "#f5f6fa" }}
+    >
       <div
         style={{
           width: "100%",
@@ -100,7 +125,16 @@ export default function GatewayScreen() {
               {(companyName.charAt(0) || "C").toUpperCase()}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              <div
+                style={{
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: "#111827",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
                 {companyName}
               </div>
               <div style={{ fontSize: 11, color: "#6b7280", marginTop: 2 }}>
@@ -131,14 +165,20 @@ export default function GatewayScreen() {
                 flexShrink: 0,
                 transition: "background 150ms ease",
               }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#0f4a96"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#1557b0"; }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = "#0f4a96";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = "#1557b0";
+              }}
             >
               Open <ChevronRight size={13} />
             </button>
           </div>
         ) : (
-          <div style={{ padding: "24px 16px", textAlign: "center", fontSize: 12, color: "#9ca3af" }}>
+          <div
+            style={{ padding: "24px 16px", textAlign: "center", fontSize: 12, color: "#9ca3af" }}
+          >
             Loading company data…
           </div>
         )}
@@ -156,8 +196,12 @@ export default function GatewayScreen() {
               cursor: "pointer",
               transition: "color 150ms ease",
             }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#0f4a96"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#1557b0"; }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.color = "#0f4a96";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.color = "#1557b0";
+            }}
           >
             + Create New Company
           </button>

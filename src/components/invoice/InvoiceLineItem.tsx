@@ -75,12 +75,13 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
           onUpdate({ itemId: "", itemName: "", itemCode: "", unit: "", hsnCode: "" });
           return;
         }
-        const itemRate = type === "sales" ? Number(it.salesRate || 0) : Number(it.purchaseRate || 0);
+        const itemRate =
+          type === "sales" ? Number(it.salesRate || 0) : Number(it.purchaseRate || 0);
         if (itemRate === 0) {
           // We still add the item but notify user
           setTimeout(() => {
-            const event = new CustomEvent("sutra-warn", { 
-              detail: `Item "${it.name}" has no ${type === "sales" ? "selling" : "purchase"} price configured.` 
+            const event = new CustomEvent("sutra-warn", {
+              detail: `Item "${it.name}" has no ${type === "sales" ? "selling" : "purchase"} price configured.`,
             });
             window.dispatchEvent(event);
           }, 0);
@@ -223,10 +224,12 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
             type="checkbox"
             className="h-3.5 w-3.5 accent-indigo-600"
             checked={!!line.isTaxable}
-            onChange={(e) => onUpdate({ 
-              isTaxable: e.target.checked,
-              vatRate: e.target.checked ? (line.vatRate || 13) : 0
-            })}
+            onChange={(e) =>
+              onUpdate({
+                isTaxable: e.target.checked,
+                vatRate: e.target.checked ? line.vatRate || 13 : 0,
+              })
+            }
             disabled={readOnly}
           />
         </td>

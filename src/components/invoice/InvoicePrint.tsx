@@ -351,9 +351,30 @@ export default function InvoicePrint({
                       Bank Payment Details:
                     </p>
                     <div className="grid grid-cols-3 gap-1">
-                      {company.bankName && <><span className="text-[#000000]">Bank:</span><span className="col-span-2 font-medium text-[#000000]">{company.bankName}</span></>}
-                      {company.bankAccount && <><span className="text-[#000000]">Account:</span><span className="col-span-2 font-mono font-bold text-[#000000]">{company.bankAccount}</span></>}
-                      {company.bankBranch && <><span className="text-[#000000]">Branch:</span><span className="col-span-2 font-medium text-[#000000]">{company.bankBranch}</span></>}
+                      {company.bankName && (
+                        <>
+                          <span className="text-[#000000]">Bank:</span>
+                          <span className="col-span-2 font-medium text-[#000000]">
+                            {company.bankName}
+                          </span>
+                        </>
+                      )}
+                      {company.bankAccount && (
+                        <>
+                          <span className="text-[#000000]">Account:</span>
+                          <span className="col-span-2 font-mono font-bold text-[#000000]">
+                            {company.bankAccount}
+                          </span>
+                        </>
+                      )}
+                      {company.bankBranch && (
+                        <>
+                          <span className="text-[#000000]">Branch:</span>
+                          <span className="col-span-2 font-medium text-[#000000]">
+                            {company.bankBranch}
+                          </span>
+                        </>
+                      )}
                     </div>
                   </div>
                 )}

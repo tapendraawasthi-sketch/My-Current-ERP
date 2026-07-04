@@ -1,7 +1,10 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { useStore } from "../store/useStore";
 import ReportShell from "../components/reports/ReportShell";
-import AccountTreeRenderer, { ReportDepth, ReportNode } from "../components/reports/AccountTreeRenderer";
+import AccountTreeRenderer, {
+  ReportDepth,
+  ReportNode,
+} from "../components/reports/AccountTreeRenderer";
 import ReportOptionsModal, { ReportOptions } from "../components/reports/ReportOptionsModal";
 import LedgerDrillPanel from "../components/reports/LedgerDrillPanel";
 import RebuildBalancesAction from "../components/reports/RebuildBalancesAction";
@@ -24,11 +27,7 @@ function buildPLTree(
       id: account.id,
       name: account.name,
       code: account.code,
-      level: account.isGroup
-        ? account.level === "subgroup"
-          ? "subgroup"
-          : "group"
-        : "ledger",
+      level: account.isGroup ? (account.level === "subgroup" ? "subgroup" : "group") : "ledger",
       balance,
       isGroup: !!account.isGroup,
       children,
@@ -72,8 +71,14 @@ const IncomeExpenditureAccount: React.FC = () => {
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.altKey && e.key.toLowerCase() === "e") { e.preventDefault(); handleExport(); }
-      if (e.altKey && e.key.toLowerCase() === "p") { e.preventDefault(); window.print(); }
+      if (e.altKey && e.key.toLowerCase() === "e") {
+        e.preventDefault();
+        handleExport();
+      }
+      if (e.altKey && e.key.toLowerCase() === "p") {
+        e.preventDefault();
+        window.print();
+      }
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
@@ -103,7 +108,8 @@ const IncomeExpenditureAccount: React.FC = () => {
     [accounts],
   );
   const ieExpenseAccounts = useMemo(
-    () => accounts.filter((a) => String(a.type ?? "").toLowerCase() === "expense" && isIEAccount(a)),
+    () =>
+      accounts.filter((a) => String(a.type ?? "").toLowerCase() === "expense" && isIEAccount(a)),
     [accounts],
   );
 
@@ -145,7 +151,9 @@ const IncomeExpenditureAccount: React.FC = () => {
       ...incomeTree.map((n) => ({ name: n.name, balance: n.balance })),
       ...expenseTree.map((n) => ({ name: n.name, balance: n.balance })),
     ];
-    const csv = ["Name,Balance", ...rows.map((r) => `"${r.name}",${r.balance.toFixed(dp)}`)].join("\n");
+    const csv = ["Name,Balance", ...rows.map((r) => `"${r.name}",${r.balance.toFixed(dp)}`)].join(
+      "\n",
+    );
     const a = document.createElement("a");
     a.href = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
     a.download = `IncomeExpenditure_${reportOptions.toDate}.csv`;
@@ -177,7 +185,10 @@ const IncomeExpenditureAccount: React.FC = () => {
         title="Income & Expenditure Account"
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        onGenerate={(opts) => { setReportOptions(opts); setModalOpen(false); }}
+        onGenerate={(opts) => {
+          setReportOptions(opts);
+          setModalOpen(false);
+        }}
         showBranchSelector={branches.length > 0}
         fiscalYears={fiscalYears}
         currentFiscalYear={currentFiscalYear ?? {}}
@@ -202,20 +213,25 @@ const IncomeExpenditureAccount: React.FC = () => {
 
           return (
             <div className="space-y-4">
-              <div style={{
-                textAlign: "center",
-                padding: "16px 0 12px",
-                borderBottom: "1px solid #e5e7eb",
-                marginBottom: 16,
-              }}>
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "16px 0 12px",
+                  borderBottom: "1px solid #e5e7eb",
+                  marginBottom: 16,
+                }}
+              >
                 <div style={{ fontSize: 15, fontWeight: 700, color: "#111827" }}>
-                  {useStore.getState().companySettings?.companyNameEn || useStore.getState().companySettings?.name || "Company Name"}
+                  {useStore.getState().companySettings?.companyNameEn ||
+                    useStore.getState().companySettings?.name ||
+                    "Company Name"}
                 </div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "#374151", marginTop: 3 }}>
                   Income &amp; Expenditure Account
                 </div>
                 <div style={{ fontSize: 11, color: "#6b7280", marginTop: 4 }}>
-                  For the period from {formatADToBS(reportOptions.fromDate)} to {formatADToBS(reportOptions.toDate)}
+                  For the period from {formatADToBS(reportOptions.fromDate)} to{" "}
+                  {formatADToBS(reportOptions.toDate)}
                 </div>
                 <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 2 }}>
                   ({reportOptions.fromDate} to {reportOptions.toDate})
@@ -272,22 +288,39 @@ const IncomeExpenditureAccount: React.FC = () => {
               {/* Surplus / Deficit */}
               <table className="w-full">
                 <tbody>
-                  <tr style={{
-                    background: surplus >= 0 ? "#f0fdf4" : "#fef2f2",
-                    borderTop: "2px solid #d1d5db",
-                    boxShadow: `inset 0 -4px 0 0 ${surplus >= 0 ? "#86efac" : "#fca5a5"}, inset 0 -7px 0 0 ${surplus >= 0 ? "#f0fdf4" : "#fef2f2"}, inset 0 -8px 0 0 ${surplus >= 0 ? "#86efac" : "#fca5a5"}`,
-                  }}>
+                  <tr
+                    style={{
+                      background: surplus >= 0 ? "#f0fdf4" : "#fef2f2",
+                      borderTop: "2px solid #d1d5db",
+                      boxShadow: `inset 0 -4px 0 0 ${surplus >= 0 ? "#86efac" : "#fca5a5"}, inset 0 -7px 0 0 ${surplus >= 0 ? "#f0fdf4" : "#fef2f2"}, inset 0 -8px 0 0 ${surplus >= 0 ? "#86efac" : "#fca5a5"}`,
+                    }}
+                  >
                     <td style={{ padding: "12px 16px" }}>
                       <div style={{ fontWeight: 700, fontSize: 13, color: "#111827" }}>
                         {surplus >= 0 ? "Surplus for the Period" : "Deficit for the Period"}
                       </div>
-                      <div style={{ fontSize: 10, color: "#9ca3af", fontStyle: "italic", marginTop: 2 }}>
+                      <div
+                        style={{
+                          fontSize: 10,
+                          color: "#9ca3af",
+                          fontStyle: "italic",
+                          marginTop: 2,
+                        }}
+                      >
                         {surplus >= 0
                           ? "Transferred to Corpus / General Fund"
                           : "Charged to Corpus / General Fund"}
                       </div>
                     </td>
-                    <td className="num-cell-bold" style={{ color: surplus >= 0 ? "#059669" : "#dc2626", fontSize: 14, padding: "12px 16px", textAlign: "right" }}>
+                    <td
+                      className="num-cell-bold"
+                      style={{
+                        color: surplus >= 0 ? "#059669" : "#dc2626",
+                        fontSize: 14,
+                        padding: "12px 16px",
+                        textAlign: "right",
+                      }}
+                    >
                       {Math.abs(surplus).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                     </td>
                   </tr>

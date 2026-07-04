@@ -8,7 +8,7 @@ import { CalendarDays, RefreshCw, ChevronDown } from "lucide-react";
 
 export interface DateRange {
   fromDate: string; // AD "YYYY-MM-DD"
-  toDate: string;   // AD "YYYY-MM-DD"
+  toDate: string; // AD "YYYY-MM-DD"
 }
 
 interface Props {
@@ -25,12 +25,14 @@ interface Props {
 const todayStr = () => new Date().toISOString().split("T")[0];
 
 const daysAgo = (n: number) => {
-  const d = new Date(); d.setDate(d.getDate() - n);
+  const d = new Date();
+  d.setDate(d.getDate() - n);
   return d.toISOString().split("T")[0];
 };
 
 const monthStart = () => {
-  const d = new Date(); d.setDate(1);
+  const d = new Date();
+  d.setDate(1);
   return d.toISOString().split("T")[0];
 };
 
@@ -45,34 +47,56 @@ const fyDates = () => {
   const today = new Date();
   const y = today.getFullYear();
   const m = today.getMonth() + 1;
-  const fyStart = (m < 4 || (m === 4 && today.getDate() < 14)) ? y - 1 : y;
+  const fyStart = m < 4 || (m === 4 && today.getDate() < 14) ? y - 1 : y;
   return { start: `${fyStart}-04-14`, end: `${fyStart + 1}-04-13` };
 };
 
 const PRESETS = [
-  { label: "Today",       from: todayStr,    to: todayStr },
+  { label: "Today", from: todayStr, to: todayStr },
   { label: "Last 7 Days", from: () => daysAgo(6), to: todayStr },
-  { label: "Last 30 Days",from: () => daysAgo(29), to: todayStr },
-  { label: "This Month",  from: monthStart,  to: todayStr },
-  { label: "This Quarter",from: quarterStart, to: todayStr },
-  { label: "This FY",     from: () => fyDates().start, to: () => fyDates().end },
-  { label: "Last FY",     from: () => { const {start} = fyDates(); const y = Number(start.slice(0,4))-1; return `${y}-04-14`; }, to: () => { const {start} = fyDates(); const y = Number(start.slice(0,4))-1; return `${y+1}-04-13`; } },
+  { label: "Last 30 Days", from: () => daysAgo(29), to: todayStr },
+  { label: "This Month", from: monthStart, to: todayStr },
+  { label: "This Quarter", from: quarterStart, to: todayStr },
+  { label: "This FY", from: () => fyDates().start, to: () => fyDates().end },
+  {
+    label: "Last FY",
+    from: () => {
+      const { start } = fyDates();
+      const y = Number(start.slice(0, 4)) - 1;
+      return `${y}-04-14`;
+    },
+    to: () => {
+      const { start } = fyDates();
+      const y = Number(start.slice(0, 4)) - 1;
+      return `${y + 1}-04-13`;
+    },
+  },
 ];
 
 // ── Component ─────────────────────────────────────────────────────────────────
 const ReportDateRangePicker: React.FC<Props> = ({
-  value, onChange, onGenerate, generating = false,
-  label = "Report Period", showPresets = true, compact = false,
+  value,
+  onChange,
+  onGenerate,
+  generating = false,
+  label = "Report Period",
+  showPresets = true,
+  compact = false,
 }) => {
   const [activePreset, setActivePreset] = useState<string | null>(null);
 
-  const applyPreset = useCallback((p: typeof PRESETS[0]) => {
-    setActivePreset(p.label);
-    onChange({ fromDate: p.from(), toDate: p.to() });
-  }, [onChange]);
+  const applyPreset = useCallback(
+    (p: (typeof PRESETS)[0]) => {
+      setActivePreset(p.label);
+      onChange({ fromDate: p.from(), toDate: p.to() });
+    },
+    [onChange],
+  );
 
   return (
-    <div className={`bg-white border border-gray-200 rounded-lg shadow-sm ${compact ? "p-3" : "p-4"}`}>
+    <div
+      className={`bg-white border border-gray-200 rounded-lg shadow-sm ${compact ? "p-3" : "p-4"}`}
+    >
       {/* Header */}
       {label && (
         <div className="flex items-center gap-2 mb-3">
@@ -85,7 +109,7 @@ const ReportDateRangePicker: React.FC<Props> = ({
       {/* Preset chips */}
       {showPresets && (
         <div className="flex flex-wrap gap-1.5 mb-3">
-          {PRESETS.map(p => (
+          {PRESETS.map((p) => (
             <button
               key={p.label}
               type="button"
@@ -108,7 +132,10 @@ const ReportDateRangePicker: React.FC<Props> = ({
         <NepaliDatePicker
           label="From Date"
           value={value.fromDate}
-          onChange={date => { setActivePreset(null); onChange({ ...value, fromDate: date }); }}
+          onChange={(date) => {
+            setActivePreset(null);
+            onChange({ ...value, fromDate: date });
+          }}
           maxDate={value.toDate || undefined}
           placeholder="Select start date (BS)"
           required
@@ -116,7 +143,10 @@ const ReportDateRangePicker: React.FC<Props> = ({
         <NepaliDatePicker
           label="To Date"
           value={value.toDate}
-          onChange={date => { setActivePreset(null); onChange({ ...value, toDate: date }); }}
+          onChange={(date) => {
+            setActivePreset(null);
+            onChange({ ...value, toDate: date });
+          }}
           minDate={value.fromDate || undefined}
           placeholder="Select end date (BS)"
           required
@@ -147,10 +177,15 @@ const ReportDateRangePicker: React.FC<Props> = ({
                 font-medium rounded-md flex items-center gap-1.5
                 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
             >
-              {generating
-                ? <><RefreshCw className="h-3.5 w-3.5 animate-spin" /> Generating...</>
-                : <><CalendarDays className="h-3.5 w-3.5" /> Generate Report</>
-              }
+              {generating ? (
+                <>
+                  <RefreshCw className="h-3.5 w-3.5 animate-spin" /> Generating...
+                </>
+              ) : (
+                <>
+                  <CalendarDays className="h-3.5 w-3.5" /> Generate Report
+                </>
+              )}
             </button>
           )}
         </div>

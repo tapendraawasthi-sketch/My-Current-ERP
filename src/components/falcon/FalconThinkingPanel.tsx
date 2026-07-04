@@ -32,7 +32,7 @@ interface StepData {
 export interface FalconThinkingPanelProps {
   steps: StepData[];
   domain?: string;
-  category?: string;     // backward-compat alias for domain
+  category?: string; // backward-compat alias for domain
   isLive?: boolean;
   defaultExpanded?: boolean;
 }
@@ -53,11 +53,27 @@ function resolveStepIcon(step: StepData): {
       NonNullable<StepData["phase"]>,
       { Icon: React.ComponentType<any>; circleCls: string; iconCls: string }
     > = {
-      analyze:   { Icon: Search,       circleCls: "bg-blue-100 border-blue-300",   iconCls: "text-blue-600" },
-      retrieve:  { Icon: BookOpen,     circleCls: "bg-green-100 border-green-300", iconCls: "text-green-600" },
-      construct: { Icon: PenLine,      circleCls: "bg-orange-100 border-orange-300",iconCls: "text-orange-600" },
-      verify:    { Icon: CheckCircle,  circleCls: "bg-purple-100 border-purple-300",iconCls: "text-purple-600" },
-      suggest:   { Icon: Lightbulb,    circleCls: "bg-yellow-100 border-yellow-300",iconCls: "text-yellow-600" },
+      analyze: { Icon: Search, circleCls: "bg-blue-100 border-blue-300", iconCls: "text-blue-600" },
+      retrieve: {
+        Icon: BookOpen,
+        circleCls: "bg-green-100 border-green-300",
+        iconCls: "text-green-600",
+      },
+      construct: {
+        Icon: PenLine,
+        circleCls: "bg-orange-100 border-orange-300",
+        iconCls: "text-orange-600",
+      },
+      verify: {
+        Icon: CheckCircle,
+        circleCls: "bg-purple-100 border-purple-300",
+        iconCls: "text-purple-600",
+      },
+      suggest: {
+        Icon: Lightbulb,
+        circleCls: "bg-yellow-100 border-yellow-300",
+        iconCls: "text-yellow-600",
+      },
     };
     return map[step.phase];
   }
@@ -65,38 +81,51 @@ function resolveStepIcon(step: StepData): {
   // Title-based fallback
   const t = step.title.toLowerCase();
   if (t.includes("search") || t.includes("web"))
-    return { Icon: Globe,      circleCls: "bg-teal-100 border-teal-300",     iconCls: "text-teal-600" };
+    return { Icon: Globe, circleCls: "bg-teal-100 border-teal-300", iconCls: "text-teal-600" };
   if (t.includes("analyz"))
-    return { Icon: Search,     circleCls: "bg-blue-100 border-blue-300",     iconCls: "text-blue-600" };
+    return { Icon: Search, circleCls: "bg-blue-100 border-blue-300", iconCls: "text-blue-600" };
   if (t.includes("retriev") || t.includes("knowledge"))
-    return { Icon: BookOpen,   circleCls: "bg-green-100 border-green-300",   iconCls: "text-green-600" };
+    return {
+      Icon: BookOpen,
+      circleCls: "bg-green-100 border-green-300",
+      iconCls: "text-green-600",
+    };
   if (t.includes("construct") || t.includes("building") || t.includes("response"))
-    return { Icon: PenLine,    circleCls: "bg-orange-100 border-orange-300", iconCls: "text-orange-600" };
+    return {
+      Icon: PenLine,
+      circleCls: "bg-orange-100 border-orange-300",
+      iconCls: "text-orange-600",
+    };
   if (t.includes("verify") || t.includes("check") || t.includes("accur"))
-    return { Icon: CheckCircle,circleCls: "bg-purple-100 border-purple-300", iconCls: "text-purple-600" };
+    return {
+      Icon: CheckCircle,
+      circleCls: "bg-purple-100 border-purple-300",
+      iconCls: "text-purple-600",
+    };
   if (t.includes("suggest") || t.includes("follow"))
-    return { Icon: Lightbulb,  circleCls: "bg-yellow-100 border-yellow-300", iconCls: "text-yellow-600" };
+    return {
+      Icon: Lightbulb,
+      circleCls: "bg-yellow-100 border-yellow-300",
+      iconCls: "text-yellow-600",
+    };
 
   return { Icon: Brain, circleCls: "bg-gray-100 border-gray-300", iconCls: "text-gray-500" };
 }
 
 /** Map domain or category string to a badge. */
-function resolveDomainBadge(
-  domain?: string,
-  category?: string,
-): { text: string; cls: string } {
+function resolveDomainBadge(domain?: string, category?: string): { text: string; cls: string } {
   const key = (domain || category || "general").toLowerCase();
   if (key.includes("erp"))
-    return { text: "🏢 ERP Expert Mode",   cls: "bg-blue-50 text-blue-700 border-blue-200" };
+    return { text: "🏢 ERP Expert Mode", cls: "bg-blue-50 text-blue-700 border-blue-200" };
   if (key.includes("account") || key.includes("financ") || key.includes("explain"))
-    return { text: "📊 Finance Mode",       cls: "bg-green-50 text-green-700 border-green-200" };
+    return { text: "📊 Finance Mode", cls: "bg-green-50 text-green-700 border-green-200" };
   if (key.includes("web") || key.includes("search") || key.includes("event"))
-    return { text: "🌐 Web Search Mode",   cls: "bg-orange-50 text-orange-700 border-orange-200" };
+    return { text: "🌐 Web Search Mode", cls: "bg-orange-50 text-orange-700 border-orange-200" };
   if (key.includes("math") || key.includes("calc"))
-    return { text: "🧮 Calculator Mode",   cls: "bg-teal-50 text-teal-700 border-teal-200" };
+    return { text: "🧮 Calculator Mode", cls: "bg-teal-50 text-teal-700 border-teal-200" };
   if (key.includes("code") || key.includes("program"))
-    return { text: "💻 Code Mode",          cls: "bg-violet-50 text-violet-700 border-violet-200" };
-  return   { text: "💡 General Knowledge", cls: "bg-purple-50 text-purple-700 border-purple-200" };
+    return { text: "💻 Code Mode", cls: "bg-violet-50 text-violet-700 border-violet-200" };
+  return { text: "💡 General Knowledge", cls: "bg-purple-50 text-purple-700 border-purple-200" };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -224,7 +253,9 @@ export const FalconThinkingPanel: React.FC<FalconThinkingPanelProps> = ({
             <Brain className="h-3.5 w-3.5 text-gray-400 flex-shrink-0" />
           )}
           <span className="text-[11px] font-semibold text-gray-600">
-            {expanded ? "Hide reasoning" : `▶ View reasoning (${steps.length} step${steps.length !== 1 ? "s" : ""})`}
+            {expanded
+              ? "Hide reasoning"
+              : `▶ View reasoning (${steps.length} step${steps.length !== 1 ? "s" : ""})`}
           </span>
           {/* Progress indicator */}
           {isLive && (

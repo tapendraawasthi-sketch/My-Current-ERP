@@ -188,7 +188,7 @@ export interface AccountLedgerReport {
 export const STANDARD_GROUP_SIDES: Record<string, "assets" | "liabilities" | "equity"> = {
   // Assets
   "fixed assets": "assets",
-  "investments": "assets",
+  investments: "assets",
   "current assets": "assets",
   "loans & advances (asset)": "assets",
   "misc. expenses (asset)": "assets",
@@ -205,7 +205,7 @@ export const STANDARD_GROUP_SIDES: Record<string, "assets" | "liabilities" | "eq
   "suspense a/c": "liabilities",
   "sundry creditors": "liabilities",
   "duties & taxes": "liabilities",
-  "provisions": "liabilities",
+  provisions: "liabilities",
   "bank od accounts": "liabilities",
   // Equity
   "capital account": "equity",
@@ -214,6 +214,11 @@ export const STANDARD_GROUP_SIDES: Record<string, "assets" | "liabilities" | "eq
 };
 
 export const INCOME_EXPENSE_GROUPS = [
-  "sales accounts", "purchase accounts", "direct expenses", "direct income",
-  "indirect expenses", "indirect income", "manufacturing expenses",
+  "sales accounts",
+  "purchase accounts",
+  "direct expenses",
+  "direct income",
+  "indirect expenses",
+  "indirect income",
+  "manufacturing expenses",
 ];

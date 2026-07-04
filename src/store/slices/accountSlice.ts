@@ -74,8 +74,7 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
       .filter(
         (inv: any) =>
           inv.status === "posted" &&
-          (inv.partyAccountId === id ||
-            (inv.lines || []).some((l: any) => l.accountId === id)),
+          (inv.partyAccountId === id || (inv.lines || []).some((l: any) => l.accountId === id)),
       )
       .count();
     if (invoiceCount > 0) {

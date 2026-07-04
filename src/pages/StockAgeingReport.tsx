@@ -132,8 +132,8 @@ export default function StockAgeingReport() {
           row.item.name.toLowerCase().includes(searchTerm.toLowerCase()),
       )
       .sort((a, b) => {
-        let aValue = a[sortBy];
-        let bValue = b[sortBy];
+        const aValue = a[sortBy];
+        const bValue = b[sortBy];
 
         if (sortDirection === "asc") {
           return aValue > bValue ? 1 : -1;

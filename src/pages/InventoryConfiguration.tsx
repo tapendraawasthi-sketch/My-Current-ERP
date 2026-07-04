@@ -41,8 +41,7 @@ export default function InventoryConfiguration() {
     }
   };
 
-  const toggle = (key: keyof typeof cfg) =>
-    setCfg((p) => ({ ...p, [key]: !p[key] }));
+  const toggle = (key: keyof typeof cfg) => setCfg((p) => ({ ...p, [key]: !p[key] }));
 
   const inp =
     "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";

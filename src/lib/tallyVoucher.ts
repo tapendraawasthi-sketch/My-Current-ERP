@@ -18,15 +18,7 @@ export type TallyType =
 
 // ─── Bank allocation ─────────────────────────────────────────────────────────
 export type BankMode =
-  | "Cheque/DD"
-  | "EFT"
-  | "NEFT"
-  | "RTGS"
-  | "IMPS"
-  | "UPI"
-  | "Debit Card"
-  | "Credit Card"
-  | "Others";
+  "Cheque/DD" | "EFT" | "NEFT" | "RTGS" | "IMPS" | "UPI" | "Debit Card" | "Credit Card" | "Others";
 
 export type BankReconciliationStatus = "Not Reconciled" | "Reconciled";
 

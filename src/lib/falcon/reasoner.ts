@@ -98,10 +98,7 @@ const kbExactMatchStrategy = {
     return true; // always tries
   },
 
-  execute(
-    input: FalconReasoningInput,
-    kb: KBEntry[]
-  ): FalconReasoningResult | null {
+  execute(input: FalconReasoningInput, kb: KBEntry[]): FalconReasoningResult | null {
     let bestEntry: KBEntry | null = null;
     let highestScore = 0;
 
@@ -142,10 +139,7 @@ const kbMultiSynthesisStrategy = {
     return input.tokens.length >= 5 || input.entities.length >= 2;
   },
 
-  execute(
-    input: FalconReasoningInput,
-    kb: KBEntry[]
-  ): FalconReasoningResult | null {
+  execute(input: FalconReasoningInput, kb: KBEntry[]): FalconReasoningResult | null {
     const entries = findTopKEntries(input, kb, 4);
     if (entries.length === 0) return null;
 
@@ -176,10 +170,7 @@ const comparisonReasoningStrategy = {
     return input.intent === "compare";
   },
 
-  execute(
-    input: FalconReasoningInput,
-    kb: KBEntry[]
-  ): FalconReasoningResult | null {
+  execute(input: FalconReasoningInput, kb: KBEntry[]): FalconReasoningResult | null {
     let termA = "";
     let termB = "";
 
@@ -227,7 +218,7 @@ const comparisonReasoningStrategy = {
       const entriesA = findTopKEntries(inputA, kb, 1);
       const entriesB = findTopKEntries(inputB, kb, 1);
       const combined = [...entriesA, ...entriesB].filter(
-        (e, i, arr) => arr.findIndex((x) => x.id === e.id) === i
+        (e, i, arr) => arr.findIndex((x) => x.id === e.id) === i,
       );
       if (combined.length > 0) {
         const synth = synthesizeAnswer(combined, input);
@@ -264,10 +255,7 @@ const troubleshootReasoningStrategy = {
     return input.intent === "troubleshoot" || input.intent === "why";
   },
 
-  execute(
-    input: FalconReasoningInput,
-    kb: KBEntry[]
-  ): FalconReasoningResult | null {
+  execute(input: FalconReasoningInput, kb: KBEntry[]): FalconReasoningResult | null {
     // First try workflow rules
     const workflowResult = composeWorkflowAnswer(input.normalizedQuery, input.tokens);
     if (workflowResult) return { ...workflowResult, confidence: 78 };
@@ -293,10 +281,7 @@ const accountingPrincipleReasoningStrategy = {
     return input.intent === "what_is" || input.intent === "definition";
   },
 
-  execute(
-    input: FalconReasoningInput,
-    kb: KBEntry[]
-  ): FalconReasoningResult | null {
+  execute(input: FalconReasoningInput, kb: KBEntry[]): FalconReasoningResult | null {
     // First try KB with a slightly lower threshold
     let bestEntry: KBEntry | null = null;
     let highestScore = 0;
@@ -353,10 +338,7 @@ const contextFollowupStrategy = {
     return FOLLOWUP_PATTERNS.some((p) => input.normalizedQuery.includes(p));
   },
 
-  execute(
-    input: FalconReasoningInput,
-    kb: KBEntry[]
-  ): FalconReasoningResult | null {
+  execute(input: FalconReasoningInput, kb: KBEntry[]): FalconReasoningResult | null {
     const history = input.conversationHistory;
 
     // Find last assistant and user messages
@@ -467,10 +449,7 @@ const navigationReasoningStrategy = {
     return input.intent === "navigate" || input.intent === "where";
   },
 
-  execute(
-    input: FalconReasoningInput,
-    kb: KBEntry[]
-  ): FalconReasoningResult | null {
+  execute(input: FalconReasoningInput, kb: KBEntry[]): FalconReasoningResult | null {
     const resolved: Array<{ canonical: string; path: string }> = [];
     const unresolved: string[] = [];
 
@@ -495,12 +474,11 @@ const navigationReasoningStrategy = {
     // Build the navigation answer
     let answer = "";
     if (resolved.length > 0) {
-      const navLines = resolved
-        .map((r) => `**${r.canonical}** → ${r.path}`)
-        .join("\n\n");
-      answer = resolved.length === 1
-        ? `To open **${resolved[0].canonical}**, go to:\n\n📍 ${resolved[0].path}`
-        : `Here are the navigation paths:\n\n${navLines}`;
+      const navLines = resolved.map((r) => `**${r.canonical}** → ${r.path}`).join("\n\n");
+      answer =
+        resolved.length === 1
+          ? `To open **${resolved[0].canonical}**, go to:\n\n📍 ${resolved[0].path}`
+          : `Here are the navigation paths:\n\n${navLines}`;
     }
 
     // Append first sentence of top KB entry for extra context
@@ -542,10 +520,7 @@ const generalFallbackStrategy = {
     return true;
   },
 
-  execute(
-    input: FalconReasoningInput,
-    kb: KBEntry[]
-  ): FalconReasoningResult {
+  execute(input: FalconReasoningInput, kb: KBEntry[]): FalconReasoningResult {
     const suggestions = findTopKEntries(input, kb, 3).map((e) => e.q);
 
     const entityNames = input.entities.map((e) => e.canonical).join(", ");
@@ -570,10 +545,7 @@ type AnyStrategy = {
   name: string;
   priority: number;
   canHandle(input: FalconReasoningInput): boolean;
-  execute(
-    input: FalconReasoningInput,
-    kb: KBEntry[]
-  ): FalconReasoningResult | null;
+  execute(input: FalconReasoningInput, kb: KBEntry[]): FalconReasoningResult | null;
 };
 
 const STRATEGIES: AnyStrategy[] = [

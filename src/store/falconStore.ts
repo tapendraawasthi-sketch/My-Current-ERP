@@ -128,11 +128,7 @@ export interface FalconState {
 // FALLBACK RESPONSE (no API key)
 // ─────────────────────────────────────────────────────────────────────────────
 
-function buildFallbackResponse(
-  query: string,
-  domain: QuestionDomain,
-  route?: string,
-): string {
+function buildFallbackResponse(query: string, domain: QuestionDomain, route?: string): string {
   const routeCtx = route ? ` You appear to be on the **${route}** page.` : "";
 
   if (domain === "greeting") {
@@ -195,9 +191,7 @@ export const useFalconStore = create<FalconState>()(
       toggleShowThinking: () => set((s) => ({ showThinking: !s.showThinking })),
       rateMessage: (id, rating) =>
         set((s) => ({
-          messages: s.messages.map((m) =>
-            m.id === id ? { ...m, feedback: rating } : m,
-          ),
+          messages: s.messages.map((m) => (m.id === id ? { ...m, feedback: rating } : m)),
         })),
       clearHistory: () =>
         set({
@@ -216,7 +210,12 @@ export const useFalconStore = create<FalconState>()(
         }),
       cancelStream: () => {
         abortActive();
-        set({ isTyping: false, isStreaming: false, currentThinkingSteps: [], streamingContent: "" });
+        set({
+          isTyping: false,
+          isStreaming: false,
+          currentThinkingSteps: [],
+          streamingContent: "",
+        });
       },
 
       // ── sendMessage — The Core Action ─────────────────────────────────────
@@ -293,9 +292,7 @@ export const useFalconStore = create<FalconState>()(
           webSearchResults: webSearchResults,
           companyName: state.context.companyName,
           userName: state.context.userName,
-          conversationTurnCount: Math.floor(
-            state.messages.filter((m) => m.role === "user").length,
-          ),
+          conversationTurnCount: Math.floor(state.messages.filter((m) => m.role === "user").length),
           hasApiKey: !!state.apiKey,
         });
 
@@ -400,9 +397,7 @@ export const useFalconStore = create<FalconState>()(
             }
             set((s) => ({
               messages: s.messages.map((m) =>
-                m.id === assistantId
-                  ? { ...m, content: errorMsg, isStreaming: false }
-                  : m,
+                m.id === assistantId ? { ...m, content: errorMsg, isStreaming: false } : m,
               ),
               isTyping: false,
               isStreaming: false,
@@ -440,9 +435,7 @@ export const useFalconStore = create<FalconState>()(
                   // Real-time update of the streaming message
                   set((s) => ({
                     messages: s.messages.map((m) =>
-                      m.id === assistantId
-                        ? { ...m, content: fullContent }
-                        : m,
+                      m.id === assistantId ? { ...m, content: fullContent } : m,
                     ),
                     streamingContent: fullContent,
                   }));
@@ -483,14 +476,12 @@ export const useFalconStore = create<FalconState>()(
           const errorContent = isAbort
             ? "_(Response cancelled by user)_"
             : err?.message?.includes("Failed to fetch")
-            ? "❌ **Network error.** Please check your internet connection and try again."
-            : `❌ **Error:** ${err?.message || "An unexpected error occurred."}`;
+              ? "❌ **Network error.** Please check your internet connection and try again."
+              : `❌ **Error:** ${err?.message || "An unexpected error occurred."}`;
 
           set((s) => ({
             messages: s.messages.map((m) =>
-              m.id === assistantId
-                ? { ...m, content: errorContent, isStreaming: false }
-                : m,
+              m.id === assistantId ? { ...m, content: errorContent, isStreaming: false } : m,
             ),
             isTyping: false,
             isStreaming: false,
