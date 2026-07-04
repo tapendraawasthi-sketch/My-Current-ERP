@@ -11,10 +11,13 @@ const EKhataPanel: React.FC = () => {
     messages,
     pendingCard,
     isLoading,
+    llmOnline,
+    llmModel,
     sendMessage,
     confirmPending,
     cancelPending,
     clearHistory,
+    refreshLlmStatus,
   } = useEKhataStore();
   const closeFalcon = useFalconStore((state) => state.closePanel);
 
@@ -29,9 +32,10 @@ const EKhataPanel: React.FC = () => {
   useEffect(() => {
     if (isOpen) {
       closeFalcon();
+      refreshLlmStatus();
       setTimeout(() => inputRef.current?.focus(), 100);
     }
-  }, [isOpen, closeFalcon]);
+  }, [isOpen, closeFalcon, refreshLlmStatus]);
 
   const handleSend = useCallback(async () => {
     const text = input.trim();
@@ -52,7 +56,11 @@ const EKhataPanel: React.FC = () => {
         <BookOpen className="h-4 w-4 flex-shrink-0" />
         <div className="flex-1 min-w-0">
           <span className="font-bold text-[13px] tracking-tight">e-KHATA</span>
-          <p className="text-[10px] text-emerald-100">Nepali / Romanized ledger entries</p>
+          <p className="text-[10px] text-emerald-100">
+            {llmOnline
+              ? `Ollama LLM · ${llmModel ?? "local"}`
+              : "Offline parser · start Ollama for full chat"}
+          </p>
         </div>
         <button
           type="button"
@@ -173,7 +181,9 @@ const EKhataPanel: React.FC = () => {
             <Send className="h-3.5 w-3.5" />
           </button>
         </div>
-        <p className="mt-1 text-[10px] text-gray-400">Ctrl+Shift+K to toggle · Saves to your ledger</p>
+        <p className="mt-1 text-[10px] text-gray-400">
+          Ctrl+Shift+K · {llmOnline ? "Ollama AI + khata" : "Offline mode"} · Saves to ledger
+        </p>
       </div>
     </div>
   );

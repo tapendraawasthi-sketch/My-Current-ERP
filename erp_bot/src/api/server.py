@@ -18,7 +18,8 @@ from ..config import (
 )
 from ..ingestion import embedder
 from ..vectorstore import chroma_store
-from ..watcher import watcher
+from ..khata import khata_chat
+from ..khata.khata_chat import clear_session as khata_clear_session
 
 app = FastAPI(title="ERP AI Chatbot")
 
@@ -59,6 +60,20 @@ class ChatResponse(BaseModel):
     session_id: str
 
 
+class KhataChatRequest(BaseModel):
+    message: str = Field(..., max_length=4000, min_length=1)
+    session_id: str = Field(..., min_length=1)
+    balance: dict | None = None
+
+
+class KhataChatResponse(BaseModel):
+    kind: str
+    reply: str
+    card: dict | None = None
+    session_id: str
+    engine: str = "ollama"
+
+
 @app.get("/status")
 def status() -> dict:
     try:
@@ -76,6 +91,7 @@ def status() -> dict:
         "indexed_files": chroma_store.get_indexed_file_count(),
         "ollama": ollama_status,
         "watcher": "active",
+        "khata_llm": ollama_status == "connected",
     }
 
 
@@ -100,6 +116,39 @@ def chat(req: ChatRequest) -> ChatResponse:
             sources=[],
             session_id=req.session_id,
         )
+
+
+@app.post("/khata/chat", response_model=KhataChatResponse)
+def khata_chat_endpoint(req: KhataChatRequest) -> KhataChatResponse:
+    try:
+        result = khata_chat(
+            req.message,
+            req.session_id,
+            req.balance,
+        )
+        return KhataChatResponse(
+            kind=result.get("kind", "chat"),
+            reply=result.get("reply", ""),
+            card=result.get("card"),
+            session_id=result.get("session_id", req.session_id),
+            engine=result.get("engine", "ollama"),
+        )
+    except Exception as e:
+        return KhataChatResponse(
+            kind="chat",
+            reply=f"e-Khata error: {e}",
+            card=None,
+            session_id=req.session_id,
+            engine="error",
+        )
+
+
+@app.post("/khata/clear_session")
+def khata_clear_session_endpoint(payload: dict) -> dict:
+    sid = str(payload.get("session_id", "")).strip()
+    if sid:
+        khata_clear_session(sid)
+    return {"status": "ok", "session_id": sid or None}
 
 
 @app.post("/reindex")

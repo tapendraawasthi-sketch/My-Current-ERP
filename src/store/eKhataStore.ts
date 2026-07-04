@@ -5,7 +5,11 @@ import {
   replyGreeting,
   replySaved,
 } from "../lib/ekhata/conversationEngine";
-import { processEKhataMessage } from "../lib/ekhata/processMessage";
+import {
+  checkEKhataLlmStatus,
+  processEKhataMessageAsync,
+} from "../lib/ekhata/processMessage";
+import { resetEKhataSession } from "../lib/ekhata/ekhataLlmClient";
 import type { EKhataChatMessage, KhataConfirmationCard } from "../lib/ekhata/types";
 import { useStore } from "./useStore";
 
@@ -13,7 +17,18 @@ function genId(): string {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
-const WELCOME = replyGreeting();
+function buildWelcome(llmOnline: boolean, model?: string): string {
+  const base = replyGreeting();
+  if (llmOnline) {
+    return (
+      `${base}\n\n🟢 **Ollama LLM connected** (${model ?? "local model"}) — aba tapai sanga Nepali ma kura garna ra khas prashna sodhna milcha. API key chaina.`
+    );
+  }
+  return (
+    `${base}\n\n🟡 **Offline mode** — rule-based parser matra. Full AI chat ko lagi:\n` +
+    "`ollama serve` → `cd erp_bot && python scripts/start.py`"
+  );
+}
 
 function getKhataBalance() {
   const accounts = useStore.getState().accounts ?? [];
@@ -28,11 +43,14 @@ function getKhataBalance() {
 export interface EKhataState {
   isOpen: boolean;
   isLoading: boolean;
+  llmOnline: boolean;
+  llmModel?: string;
   messages: EKhataChatMessage[];
   pendingCard: KhataConfirmationCard | null;
   openPanel: () => void;
   closePanel: () => void;
   togglePanel: () => void;
+  refreshLlmStatus: () => Promise<void>;
   sendMessage: (text: string) => Promise<void>;
   confirmPending: () => Promise<void>;
   cancelPending: () => void;
@@ -42,11 +60,13 @@ export interface EKhataState {
 export const useEKhataStore = create<EKhataState>((set, get) => ({
   isOpen: false,
   isLoading: false,
+  llmOnline: false,
+  llmModel: undefined,
   messages: [
     {
       id: "welcome",
       role: "assistant",
-      text: WELCOME,
+      text: buildWelcome(false),
       timestamp: new Date(),
     },
   ],
@@ -55,6 +75,25 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
   openPanel: () => set({ isOpen: true }),
   closePanel: () => set({ isOpen: false }),
   togglePanel: () => set((s) => ({ isOpen: !s.isOpen })),
+
+  refreshLlmStatus: async () => {
+    const status = await checkEKhataLlmStatus();
+    set({
+      llmOnline: status.khataLlm,
+      llmModel: status.model,
+      messages:
+        get().messages.length === 1 && get().messages[0]?.id === "welcome"
+          ? [
+              {
+                id: "welcome",
+                role: "assistant",
+                text: buildWelcome(status.khataLlm, status.model),
+                timestamp: new Date(),
+              },
+            ]
+          : get().messages,
+    });
+  },
 
   sendMessage: async (text: string) => {
     const trimmed = text.trim();
@@ -70,9 +109,11 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
     }));
 
     try {
-      const result = processEKhataMessage(trimmed, { balance: getKhataBalance() });
+      const result = await processEKhataMessageAsync(trimmed, {
+        balance: getKhataBalance(),
+      });
 
-      if (result.kind === "chat") {
+      if (result.kind === "entry" && result.card) {
         set((s) => ({
           messages: [
             ...s.messages,
@@ -83,7 +124,9 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
               timestamp: new Date(),
             },
           ],
+          pendingCard: result.card ?? null,
           isLoading: false,
+          llmOnline: result.engine === "ollama" || result.engine === "hybrid" || get().llmOnline,
         }));
         return;
       }
@@ -98,7 +141,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
             timestamp: new Date(),
           },
         ],
-        pendingCard: result.card ?? null,
+        pendingCard: null,
         isLoading: false,
       }));
     } catch (error) {
@@ -172,16 +215,19 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
     }));
   },
 
-  clearHistory: () =>
+  clearHistory: () => {
+    resetEKhataSession();
+    const { llmOnline, llmModel } = get();
     set({
       messages: [
         {
           id: "welcome",
           role: "assistant",
-          text: WELCOME,
+          text: buildWelcome(llmOnline, llmModel),
           timestamp: new Date(),
         },
       ],
       pendingCard: null,
-    }),
+    });
+  },
 }));

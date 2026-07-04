@@ -8,6 +8,7 @@ import EKhataPanel from "./EKhataPanel";
 const EKhataProvider: React.FC = () => {
   const isAuthenticated = useStore((state) => state.isAuthenticated);
   const isDbReady = useStore((state) => state.isDbReady);
+  const refreshLlmStatus = useEKhataStore((state) => state.refreshLlmStatus);
   const closeFalcon = useFalconStore((state) => state.closePanel);
 
   useEffect(() => {
@@ -21,6 +22,12 @@ const EKhataProvider: React.FC = () => {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [closeFalcon]);
+
+  useEffect(() => {
+    if (isAuthenticated && isDbReady) {
+      refreshLlmStatus();
+    }
+  }, [isAuthenticated, isDbReady, refreshLlmStatus]);
 
   if (!isAuthenticated || !isDbReady) {
     return null;
