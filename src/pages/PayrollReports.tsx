@@ -18,7 +18,7 @@ const outlineButtonCls =
 const smallOutlineButtonCls =
   "inline-flex h-7 items-center gap-1 rounded-md border border-gray-300 bg-white px-2.5 text-[11px] font-medium text-gray-700 hover:bg-gray-50";
 const sectionCls = "overflow-hidden rounded-md border border-gray-200 bg-white";
-const amountCellCls = "px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right";
+const amountCellCls = "number-cell";
 const tabs = [
   { id: "ssf", label: "SSF Portal Export" },
   { id: "pf", label: "PF Contribution Schedule" },
@@ -429,7 +429,7 @@ export default function PayrollReports() {
         />
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
+          <table className="data-table w-full">
             <thead>
               <tr className="bg-[#f5f6fa] border-b border-gray-200">
                 <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
@@ -518,7 +518,7 @@ export default function PayrollReports() {
         />
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
+          <table className="data-table w-full">
             <thead>
               <tr className="bg-[#f5f6fa] border-b border-gray-200">
                 <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
@@ -594,7 +594,7 @@ export default function PayrollReports() {
         />
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
+          <table className="data-table w-full">
             <thead>
               <tr className="bg-[#f5f6fa] border-b border-gray-200">
                 <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
@@ -657,7 +657,7 @@ export default function PayrollReports() {
         />
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
+          <table className="data-table w-full">
             <thead>
               <tr className="bg-[#f5f6fa] border-b border-gray-200">
                 <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">

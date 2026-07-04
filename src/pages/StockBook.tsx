@@ -32,7 +32,8 @@ function toBSDisplay(dateStr: string): string {
 const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const thR = `${th} text-right`;
 const td = "px-3 py-2.5 text-[12px] text-gray-700";
-const tdR = `${td} font-mono text-right`;
+const tdR = `${td} number-cell`;
+const tdRB = `${td} number-cell-bold`;
 const btnPrimary =
   "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md";
 const btnOutline =
@@ -43,32 +44,16 @@ const labelCls = "text-[11px] font-medium text-gray-600";
 
 function typeBadge(movementType: string, voucherType: string, inQty: number) {
   if (movementType === "opening") {
-    return (
-      <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 text-blue-700">
-        {voucherType}
-      </span>
-    );
+    return <span className="status-pill status-pill-active">{voucherType}</span>;
   }
   if (inQty > 0) {
-    return (
-      <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-green-100 text-green-700">
-        {voucherType}
-      </span>
-    );
+    return <span className="status-pill status-pill-posted">{voucherType}</span>;
   }
-  return (
-    <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-amber-100 text-amber-700">
-      {voucherType}
-    </span>
-  );
+  return <span className="status-pill status-pill-pending">{voucherType}</span>;
 }
 
 const Amt = ({ v, cls = "" }: { v: number; cls?: string }) =>
-  v !== 0 ? (
-    <span className={`font-mono text-right ${cls}`}>{formatNumber(v)}</span>
-  ) : (
-    <span className="text-gray-300">-</span>
-  );
+  v !== 0 ? <span className={`number-cell ${cls}`}>{formatNumber(v)}</span> : <span className="text-gray-300">-</span>;
 
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -247,7 +232,7 @@ const StockBook: React.FC = () => {
               <div className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
                 {cell.label}
               </div>
-              <div className="text-[15px] font-mono font-semibold text-gray-800 mt-1">
+              <div className="text-[12px] number-cell-bold text-gray-800 mt-1">
                 {formatNumber(cell.val)}
               </div>
             </div>
@@ -269,28 +254,28 @@ const StockBook: React.FC = () => {
           />
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse" style={{ minWidth: 1100 }}>
+            <table className="data-table w-full" style={{ minWidth: 1100 }}>
               <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                  <th className={th}>Date (BS)</th>
-                  <th className={th}>Voucher no.</th>
-                  <th className={th}>Voucher type</th>
-                  <th className={thR}>In qty</th>
-                  <th className={thR}>In rate</th>
-                  <th className={thR}>In value</th>
-                  <th className={thR}>Out qty</th>
-                  <th className={thR}>Out rate</th>
-                  <th className={thR}>Out value</th>
-                  <th className={thR}>Bal qty</th>
-                  <th className={thR}>Bal rate</th>
-                  <th className={thR}>Bal value</th>
+                <tr>
+                  <th>Date (BS)</th>
+                  <th>Voucher no.</th>
+                  <th>Voucher type</th>
+                  <th className="th-right">In qty</th>
+                  <th className="th-right">In rate</th>
+                  <th className="th-right">In value</th>
+                  <th className="th-right">Out qty</th>
+                  <th className="th-right">Out rate</th>
+                  <th className="th-right">Out value</th>
+                  <th className="th-right">Bal qty</th>
+                  <th className="th-right">Bal rate</th>
+                  <th className="th-right">Bal value</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredRows.map((row) => (
                   <tr key={row.movementId} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className={`${td} font-mono whitespace-nowrap`}>{toBSDisplay(row.date)}</td>
-                    <td className={`${td} font-mono`}>{row.voucherNo}</td>
+                    <td className={`${td} whitespace-nowrap`}>{toBSDisplay(row.date)}</td>
+                    <td className={td}>{row.voucherNo}</td>
                     <td className={td}>{typeBadge(row.type, row.voucherType, row.inQty)}</td>
                     <td className={tdR}>
                       <Amt v={row.inQty} />
@@ -310,13 +295,13 @@ const StockBook: React.FC = () => {
                     <td className={tdR}>
                       <Amt v={row.outValue} />
                     </td>
-                    <td className={`${tdR} font-semibold`}>
-                      <Amt v={row.balQty} cls={row.balQty < 0 ? "text-red-700" : ""} />
+                    <td className={tdRB}>
+                      <Amt v={row.balQty} cls={row.balQty < 0 ? "number-cell-neg" : ""} />
                     </td>
                     <td className={tdR}>
                       <Amt v={row.balRate} />
                     </td>
-                    <td className={`${tdR} font-semibold`}>
+                    <td className={tdRB}>
                       <Amt v={row.balValue} />
                     </td>
                   </tr>
@@ -327,15 +312,15 @@ const StockBook: React.FC = () => {
                   <td colSpan={3} className={`${td} font-semibold text-gray-800`}>
                     Period totals / closing stock
                   </td>
-                  <td className={tdR}>{formatNumber(totals.inQty)}</td>
+                  <td className={`${td} number-cell-bold`}>{formatNumber(totals.inQty)}</td>
                   <td className={tdR} />
-                  <td className={tdR}>{formatNumber(totals.inValue)}</td>
-                  <td className={tdR}>{formatNumber(totals.outQty)}</td>
+                  <td className={`${td} number-cell-bold`}>{formatNumber(totals.inValue)}</td>
+                  <td className={`${td} number-cell-bold`}>{formatNumber(totals.outQty)}</td>
                   <td className={tdR} />
-                  <td className={tdR}>{formatNumber(totals.outValue)}</td>
-                  <td className={tdR}>{result ? formatNumber(result.closingQty) : "-"}</td>
-                  <td className={tdR}>{result ? formatNumber(result.weightedAvgRate) : "-"}</td>
-                  <td className={tdR}>{result ? formatNumber(result.closingValue) : "-"}</td>
+                  <td className={`${td} number-cell-bold`}>{formatNumber(totals.outValue)}</td>
+                  <td className={`${td} number-cell-bold`}>{result ? formatNumber(result.closingQty) : "-"}</td>
+                  <td className={`${td} number-cell-bold`}>{result ? formatNumber(result.weightedAvgRate) : "-"}</td>
+                  <td className={`${td} number-cell-bold`}>{result ? formatNumber(result.closingValue) : "-"}</td>
                 </tr>
               </tfoot>
             </table>

@@ -170,7 +170,7 @@ const DataTable: React.FC<DataTableProps> = ({
                   key={col.key}
                   className={`px-3 py-2.5 text-[12px] text-gray-700 ${
                     col.align === "right"
-                      ? "text-right font-mono"
+                      ? "number-cell"
                       : col.align === "center"
                         ? "text-center"
                         : ""
@@ -550,7 +550,7 @@ const VatReports: React.FC = () => {
           <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Output VAT (sales)
           </p>
-          <p className="text-[14px] font-semibold text-[#1557b0] mt-0.5 font-mono">
+          <p className="text-[12px] number-cell-bold text-[#1557b0] mt-0.5">
             {fmtVat(vatSummary.outputVat)}
           </p>
           <p className="text-[11px] text-gray-500 mt-0.5">
@@ -561,7 +561,7 @@ const VatReports: React.FC = () => {
           <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Input VAT (purchases)
           </p>
-          <p className="text-[14px] font-semibold text-green-700 mt-0.5 font-mono">
+          <p className="text-[12px] number-cell-bold text-green-700 mt-0.5">
             {fmtVat(vatSummary.inputVat)}
           </p>
           <p className="text-[11px] text-gray-500 mt-0.5">
@@ -577,7 +577,7 @@ const VatReports: React.FC = () => {
             {vatSummary.netVat >= 0 ? "Net VAT payable to IRD" : "Net VAT refundable"}
           </p>
           <p
-            className={`text-[14px] font-semibold mt-0.5 font-mono ${
+            className={`text-[12px] number-cell-bold mt-0.5 ${
               vatSummary.netVat >= 0 ? "text-red-700" : "text-green-700"
             }`}
           >
@@ -659,10 +659,10 @@ const VatReports: React.FC = () => {
                     <td className="px-3 py-2.5 text-[12px] text-gray-700 pl-8">
                       Annex A — Sales to VAT registered buyers
                     </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                    <td className="number-cell">
                       {money(annexATotal.taxable)}
                     </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                    <td className="number-cell">
                       {money(annexATotal.vat)}
                     </td>
                   </tr>
@@ -670,19 +670,19 @@ const VatReports: React.FC = () => {
                     <td className="px-3 py-2.5 text-[12px] text-gray-700 pl-8">
                       Annex B — Retail sales (non-VAT registered)
                     </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                    <td className="number-cell">
                       {money(annexBTotal.taxable)}
                     </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                    <td className="number-cell">
                       {money(annexBTotal.vat)}
                     </td>
                   </tr>
                   <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
                     <td className="px-3 py-2.5 text-gray-800 pl-8">Total output VAT</td>
-                    <td className="px-3 py-2.5 text-right font-mono text-gray-800">
+                    <td className="number-cell-bold">
                       {money(vatSummary.outputTaxable)}
                     </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-gray-800">
+                    <td className="number-cell-bold">
                       {money(vatSummary.outputVat)}
                     </td>
                   </tr>
@@ -699,19 +699,19 @@ const VatReports: React.FC = () => {
                     <td className="px-3 py-2.5 text-[12px] text-gray-700 pl-8">
                       Annex C — Local purchases
                     </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                    <td className="number-cell">
                       {money(annexCTotal.taxable)}
                     </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                    <td className="number-cell">
                       {money(annexCTotal.vat)}
                     </td>
                   </tr>
                   <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
                     <td className="px-3 py-2.5 text-gray-800 pl-8">Total input VAT</td>
-                    <td className="px-3 py-2.5 text-right font-mono text-gray-800">
+                    <td className="number-cell-bold">
                       {money(vatSummary.inputTaxable)}
                     </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-gray-800">
+                    <td className="number-cell-bold">
                       {money(vatSummary.inputVat)}
                     </td>
                   </tr>
@@ -732,7 +732,7 @@ const VatReports: React.FC = () => {
                     </td>
                     <td className="px-3 py-2.5" />
                     <td
-                      className={`px-3 py-2.5 text-right font-mono ${
+                      className={`number-cell-bold ${
                         vatSummary.netVat >= 0 ? "text-red-800" : "text-green-800"
                       }`}
                     >
@@ -783,16 +783,16 @@ const VatReports: React.FC = () => {
                   <td colSpan={5} className="px-3 py-2.5 text-gray-800">
                     Total
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-gray-800">
+                  <td className="number-cell-bold">
                     {money(annexATotal.taxable)}
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-gray-800">
+                  <td className="number-cell-bold">
                     {money(annexATotal.exempt)}
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-gray-800">
+                  <td className="number-cell-bold">
                     {money(annexATotal.vat)}
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-gray-800">
+                  <td className="number-cell-bold">
                     {money(annexATotal.total)}
                   </td>
                 </tr>
@@ -839,16 +839,16 @@ const VatReports: React.FC = () => {
                   <td colSpan={4} className="px-3 py-2.5 text-gray-800">
                     Total
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-gray-800">
+                  <td className="number-cell-bold">
                     {money(annexBTotal.taxable)}
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-gray-800">
+                  <td className="number-cell-bold">
                     {money(annexBTotal.exempt)}
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-gray-800">
+                  <td className="number-cell-bold">
                     {money(annexBTotal.vat)}
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-gray-800">
+                  <td className="number-cell-bold">
                     {money(annexBTotal.total)}
                   </td>
                 </tr>
@@ -895,13 +895,13 @@ const VatReports: React.FC = () => {
                   <td colSpan={5} className="px-3 py-2.5 text-gray-800">
                     Total
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-gray-800">
+                  <td className="number-cell-bold">
                     {money(annexCTotal.taxable)}
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-gray-800">
+                  <td className="number-cell-bold">
                     {money(annexCTotal.vat)}
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-gray-800">
+                  <td className="number-cell-bold">
                     {money(annexCTotal.total)}
                   </td>
                 </tr>

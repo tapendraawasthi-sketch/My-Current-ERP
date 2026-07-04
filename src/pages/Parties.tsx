@@ -82,58 +82,47 @@ export default function Parties() {
       </div>
 
       {/* Table */}
-      <div className="rounded-lg border border-gray-200 bg-white overflow-hidden shadow-sm">
-        <table className="w-full text-left border-collapse">
+      <div className="rounded-md border border-gray-200 bg-white overflow-hidden">
+        <table className="data-table w-full">
           <thead>
-            <tr className="bg-[#f5f6fa] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                Code
-              </th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                Name
-              </th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                Type
-              </th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                PAN / VAT
-              </th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                Contact
-              </th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                Balance
-              </th>
-              <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                Actions
-              </th>
+            <tr>
+              <th>Code</th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>PAN / VAT</th>
+              <th>Contact</th>
+              <th className="th-right">Balance</th>
+              <th className="th-center">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          <tbody>
             {filteredParties.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-3 py-10 text-center text-gray-500 text-[12px]">
-                  <Users className="h-8 w-8 mx-auto mb-2 opacity-30" />
-                  {searchTerm
-                    ? "No parties match your search."
-                    : "No parties found. Create your first party."}
+                <td colSpan={7}>
+                  <div className="empty-state">
+                    <Users className="empty-state-icon h-8 w-8 mx-auto opacity-30" />
+                    <p className="empty-state-title">
+                      {searchTerm ? "No parties match your search" : "No parties found"}
+                    </p>
+                    <p className="empty-state-sub">
+                      {searchTerm ? "Try a different search term." : "Create your first party."}
+                    </p>
+                  </div>
                 </td>
               </tr>
             ) : (
               filteredParties.map((p) => (
-                <tr key={p.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-3 py-2.5 font-mono text-[11px] text-gray-700">
-                    {p.code || "—"}
-                  </td>
-                  <td className="px-3 py-2.5 font-medium text-gray-700 text-[12px]">{p.name}</td>
-                  <td className="px-3 py-2.5">
+                <tr key={p.id}>
+                  <td className="text-[12px] text-gray-700">{p.code || "—"}</td>
+                  <td className="font-medium text-gray-700 text-[12px]">{p.name}</td>
+                  <td>
                     <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
+                      className={`badge ${
                         p.type === PartyType.CUSTOMER
-                          ? "bg-blue-100 text-blue-700 border border-blue-200"
+                          ? "badge-customer"
                           : p.type === PartyType.SUPPLIER
-                            ? "bg-purple-100 text-purple-700 border border-purple-200"
-                            : "bg-gray-100 text-gray-700 border border-gray-200"
+                            ? "badge-supplier"
+                            : "badge-both"
                       }`}
                     >
                       {p.type === PartyType.CUSTOMER
@@ -143,13 +132,9 @@ export default function Parties() {
                           : "Both"}
                     </span>
                   </td>
-                  <td className="px-3 py-2.5 text-[12px] font-mono text-gray-700">
-                    {p.pan || p.vatNo || "—"}
-                  </td>
-                  <td className="px-3 py-2.5 text-[12px] text-gray-700">
-                    {p.phone || p.email || "—"}
-                  </td>
-                  <td className="px-3 py-2.5 text-[12px] text-right font-mono font-medium text-gray-700">
+                  <td className="text-[12px] text-gray-700">{p.pan || p.vatNo || "—"}</td>
+                  <td className="text-[12px] text-gray-700">{p.phone || p.email || "—"}</td>
+                  <td className="number-cell">
                     {Number(p.balance || 0).toLocaleString(undefined, {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
