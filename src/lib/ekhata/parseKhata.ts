@@ -1,4 +1,6 @@
 import type { KhataConfirmationCard, KhataIntent, KhataParseResult } from "./types";
+import { WORD_TO_NUMBER } from "./nepaliLanguage";
+import { normalizeNepaliText } from "./normalizeNepali";
 
 const CLARIFYING_QUESTION = "Aaple diye ki unle diye?";
 
@@ -13,30 +15,6 @@ const NEPALI_DIGIT_MAP: Record<string, string> = {
   "७": "7",
   "८": "8",
   "९": "9",
-};
-
-const WORD_TO_NUMBER: Record<string, number> = {
-  ek: 1,
-  dui: 2,
-  tin: 3,
-  char: 4,
-  panch: 5,
-  chha: 6,
-  saat: 7,
-  aath: 8,
-  nau: 9,
-  das: 10,
-  bis: 20,
-  tis: 30,
-  chaalis: 40,
-  pachaas: 50,
-  saath: 60,
-  sattar: 70,
-  assi: 80,
-  nabbe: 90,
-  saya: 100,
-  hajar: 1000,
-  lakh: 100000,
 };
 
 const PARTY_STOPWORDS = new Set([
@@ -301,8 +279,9 @@ function classifyIntent(text: string): KhataIntent | null {
   return null;
 }
 
-export function parseKhataMessage(rawText: string): KhataParseResult {
-  const text = rawText.trim();
+export function parseKhataMessage(rawText: string, preNormalized?: string): KhataParseResult {
+  const text = (preNormalized ?? normalizeNepaliText(rawText)).trim();
+  const displayText = rawText.trim();
   if (!text) {
     return { clarifying_question: "Ke transaction ho? Thora clear lekhnus." };
   }
@@ -321,14 +300,14 @@ export function parseKhataMessage(rawText: string): KhataParseResult {
     return { clarifying_question: "Rakam kati ho? Number lekhnus." };
   }
 
-  const party = extractParty(text);
+  const party = extractParty(displayText);
   const card: KhataConfirmationCard = {
     intent,
     party: party ?? null,
     amount,
     item: extractItem(text, intent),
     date: extractDate(text),
-    raw_text: text,
+    raw_text: displayText,
   };
 
   return { card };

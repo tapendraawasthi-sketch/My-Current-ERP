@@ -21,7 +21,8 @@
     "postinstall": "echo 'Dependencies installed successfully'",
     "test:intents": "npx tsx scripts/test-falcon-intents.ts",
     "test:web-policy": "npx tsx scripts/test-web-search-policy.ts",
-    "test:falcon": "npm run test:intents && npm run test:web-policy"
+    "test:falcon": "npm run test:intents && npm run test:web-policy",
+    "test:ekhata": "npx tsx scripts/test-ekhata-language.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1075.0",

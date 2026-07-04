@@ -1,6 +1,11 @@
 import { create } from "zustand";
 import { confirmKhataEntry } from "../lib/ekhata/confirmKhata";
-import { parseKhataMessage } from "../lib/ekhata/parseKhata";
+import {
+  replyCancel,
+  replyGreeting,
+  replySaved,
+} from "../lib/ekhata/conversationEngine";
+import { processEKhataMessage } from "../lib/ekhata/processMessage";
 import type { EKhataChatMessage, KhataConfirmationCard } from "../lib/ekhata/types";
 import { useStore } from "./useStore";
 
@@ -8,8 +13,17 @@ function genId(): string {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
-const WELCOME =
-  "Namaste! **e-Khata** ma Nepali/Romanized bhasa ma entry garnus.\n\n**Udharo:** `Ram lai 500 udhaar diye`\n**Payment:** `Shyam le 200 tiryo`\n**Cash sale:** `aaja 200 ko nagad bikri vayo`\n**Purchase:** `aja sabji kineko 1000`\n\nConfirm garnu agadi card dekhincha.";
+const WELCOME = replyGreeting();
+
+function getKhataBalance() {
+  const accounts = useStore.getState().accounts ?? [];
+  const debt = accounts.find((a) => a.code === "KH-DEBT");
+  const cred = accounts.find((a) => a.code === "KH-CRED");
+  return {
+    udhaarOut: Math.max(0, debt?.balance ?? 0),
+    udhaarIn: Math.max(0, cred?.balance ?? 0),
+  };
+}
 
 export interface EKhataState {
   isOpen: boolean;
@@ -56,16 +70,16 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
     }));
 
     try {
-      const result = parseKhataMessage(trimmed);
+      const result = processEKhataMessage(trimmed, { balance: getKhataBalance() });
 
-      if (result.clarifying_question) {
+      if (result.kind === "chat") {
         set((s) => ({
           messages: [
             ...s.messages,
             {
               id: genId(),
               role: "assistant",
-              text: result.clarifying_question!,
+              text: result.reply,
               timestamp: new Date(),
             },
           ],
@@ -74,21 +88,19 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
         return;
       }
 
-      if (result.card) {
-        set((s) => ({
-          messages: [
-            ...s.messages,
-            {
-              id: genId(),
-              role: "assistant",
-              text: "Yo transaction confirm garnu hunchha?",
-              timestamp: new Date(),
-            },
-          ],
-          pendingCard: result.card,
-          isLoading: false,
-        }));
-      }
+      set((s) => ({
+        messages: [
+          ...s.messages,
+          {
+            id: genId(),
+            role: "assistant",
+            text: result.reply,
+            timestamp: new Date(),
+          },
+        ],
+        pendingCard: result.card ?? null,
+        isLoading: false,
+      }));
     } catch (error) {
       set((s) => ({
         messages: [
@@ -124,7 +136,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
           {
             id: genId(),
             role: "assistant",
-            text: `Transaction saved ✓ (${voucherNo})`,
+            text: replySaved(voucherNo),
             timestamp: new Date(),
           },
         ],
@@ -153,7 +165,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
         {
           id: genId(),
           role: "assistant",
-          text: "Ok, kei gardina.",
+          text: replyCancel(),
           timestamp: new Date(),
         },
       ],
