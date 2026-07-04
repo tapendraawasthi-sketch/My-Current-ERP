@@ -35,10 +35,10 @@ function money(v) {
   return v < 0 ? `(${s})` : s;
 }
 
-export default function JobWorkRegister() {
+export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: string }) {
   const { parties, items, accounts, vouchers, companySettings, addVoucher } = useStore();
 
-  const [activeTab, setActiveTab] = useState("out");
+  const [activeTab, setActiveTab] = useState(defaultTab);
   const [jobWorkOrders, setJobWorkOrders] = useState([]);
   const [editingOrder, setEditingOrder] = useState(null);
 

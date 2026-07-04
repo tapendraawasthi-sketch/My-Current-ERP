@@ -6,6 +6,7 @@ import { useStore } from "../store/useStore";
 import { Calculator, FileSpreadsheet, RefreshCw, Download, TrendingUp } from "lucide-react";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
+import { mergeSystemConfiguration, getInterestRateForDays } from "../lib/systemConfiguration";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -54,9 +55,10 @@ function generateLocalSerial(prefix: string, count: number): string {
 
 const InterestCalculation: React.FC = () => {
   const { parties, companySettings } = useStore();
+  const interestSlabs = mergeSystemConfiguration(companySettings?.systemConfiguration).interestSlabs;
 
   const [asOfDate, setAsOfDate] = useState(todayISO());
-  const [interestRate, setInterestRate] = useState(18); // % per annum
+  const [interestRate, setInterestRate] = useState(18); // fallback % per annum when no slab matches
   const [minDaysOverdue, setMinDaysOverdue] = useState(30);
   const [direction, setDirection] = useState<"receivable" | "payable">("receivable");
   const [searchTerm, setSearchTerm] = useState("");
@@ -111,8 +113,8 @@ const InterestCalculation: React.FC = () => {
 
       if (daysOverdue < minDaysOverdue) continue;
 
-      // Daily interest = (outstanding × annualRate%) / 365
-      const dailyRate = interestRate / 100 / 365;
+      const rowRate = getInterestRateForDays(daysOverdue, interestSlabs) || interestRate;
+      const dailyRate = rowRate / 100 / 365;
       const interestAmount = parseFloat((outstanding * dailyRate * daysOverdue).toFixed(2));
 
       const partyId = inv.partyId ?? "unknown";
@@ -130,14 +132,14 @@ const InterestCalculation: React.FC = () => {
         originalAmount,
         outstandingAmount: parseFloat(outstanding.toFixed(2)),
         daysOverdue,
-        interestRate,
+        interestRate: rowRate,
         interestAmount,
         totalWithInterest: parseFloat((outstanding + interestAmount).toFixed(2)),
       });
     }
 
     return rows.sort((a, b) => b.daysOverdue - a.daysOverdue);
-  }, [invoices, payments, asOfDate, interestRate, minDaysOverdue, parties]);
+  }, [invoices, payments, asOfDate, interestRate, minDaysOverdue, parties, interestSlabs]);
 
   // ── Filter ────────────────────────────────────────────────────────────────
   const filteredRows = useMemo<InterestRow[]>(() => {

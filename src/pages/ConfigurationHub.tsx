@@ -1,92 +1,112 @@
 // @ts-nocheck
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
-import { Sliders, Calendar, Plus, Edit2, Trash2, X, Save } from "lucide-react";
-
-const BORDER = "1px solid #000";
-const BG_HEADER = "#D4EABD";
-const BG_ROW_ALT = "#F5FAF0";
-const INPUT_STYLE: React.CSSProperties = {
-  width: "100%",
-  padding: "5px 8px",
-  border: BORDER,
-  borderRadius: 3,
-  fontSize: 12,
-  background: "#fff",
-  outline: "none",
-};
-const BTN = (bg: string): React.CSSProperties => ({
-  padding: "5px 14px",
-  background: bg,
-  border: BORDER,
-  borderRadius: 3,
-  fontSize: 12,
-  fontWeight: 600,
-  cursor: "pointer",
-  color: bg === "#fff" ? "#000" : "#fff",
-});
+import { Sliders, Calendar, Plus, Edit2, Trash2, X, Save, ArrowLeft } from "lucide-react";
+import toast from "react-hot-toast";
+import {
+  DEFAULT_SYSTEM_CONFIGURATION,
+  mergeSystemConfiguration,
+  type SystemConfiguration,
+} from "../lib/systemConfiguration";
 
 const CONFIG_SECTIONS = [
-  {
-    id: "party-dashboard",
-    label: "Party Dashboard Configuration",
-    desc: "Configure what data shows on party dashboards.",
-  },
-  {
-    id: "email",
-    label: "Email Configuration",
-    desc: "SMTP server, sender email, SSL/TLS settings for automated email dispatch.",
-  },
-  {
-    id: "whatsapp-sms",
-    label: "WhatsApp/SMS API Configuration",
-    desc: "Third-party API keys, sender ID, gateway URL for automated messaging.",
-  },
-  {
-    id: "backup",
-    label: "Backup Configuration",
-    desc: "Auto-backup folder, frequency, retention count, compression settings.",
-  },
-  {
-    id: "invoice-print",
-    label: "Invoice/Document Printing",
-    desc: "Margins, fonts, column widths, header/footer content, logo placement.",
-  },
-  {
-    id: "voucher-print",
-    label: "Accounting Voucher Printing",
-    desc: "Format and fields for payment, receipt, journal, contra vouchers.",
-  },
-  {
-    id: "warning-alarms",
-    label: "Warning Alarms",
-    desc: "Credit limit exceeded, overdue payment, low stock, below minimum price.",
-  },
-  {
-    id: "ageing-slabs",
-    label: "Ageing Analysis Time Slabs",
-    desc: "Define 0-30, 31-60, 61-90, 90+ day buckets for receivable/payable reports.",
-  },
-  {
-    id: "interest-slabs",
-    label: "Interest Calculation Slabs",
-    desc: "Overdue interest rates and time slab configurations.",
-  },
-  {
-    id: "max-voucher-entries",
-    label: "Maximum Entries in Voucher",
-    desc: "Set maximum number of line items allowed per voucher.",
-  },
+  { id: "party-dashboard", label: "Party Dashboard Configuration", desc: "Widgets shown on party dashboards." },
+  { id: "email", label: "Email Configuration", desc: "SMTP server and sender settings." },
+  { id: "whatsapp-sms", label: "WhatsApp/SMS API Configuration", desc: "Messaging gateway credentials." },
+  { id: "backup", label: "Backup Configuration", desc: "Auto-backup schedule and retention." },
+  { id: "invoice-print", label: "Invoice/Document Printing", desc: "Invoice print layout defaults." },
+  { id: "voucher-print", label: "Accounting Voucher Printing", desc: "Voucher print layout defaults." },
+  { id: "warning-alarms", label: "Warning Alarms", desc: "Alert triggers for credit, stock, and price." },
+  { id: "ageing-slabs", label: "Ageing Analysis Time Slabs", desc: "Receivable/payable ageing buckets." },
+  { id: "interest-slabs", label: "Interest Calculation Slabs", desc: "Overdue interest rates by period." },
+  { id: "max-voucher-entries", label: "Maximum Entries in Voucher", desc: "Line item limit per voucher." },
 ];
 
+const inputCls =
+  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
+const btnPrimary =
+  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md";
+const btnOutline =
+  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50";
+
+function ToggleRow({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <label className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+      <span className="text-[12px] text-gray-700">{label}</span>
+      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="rounded" />
+    </label>
+  );
+}
+
+function PrintPanel({
+  title,
+  config,
+  onChange,
+}: {
+  title: string;
+  config: SystemConfiguration["invoicePrint"];
+  onChange: (next: SystemConfiguration["invoicePrint"]) => void;
+}) {
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+      {[
+        ["marginTopMm", "Top margin (mm)"],
+        ["marginBottomMm", "Bottom margin (mm)"],
+        ["marginLeftMm", "Left margin (mm)"],
+        ["marginRightMm", "Right margin (mm)"],
+        ["fontSize", "Font size (pt)"],
+      ].map(([key, lbl]) => (
+        <div key={key}>
+          <label className={labelCls}>{lbl}</label>
+          <input
+            type="number"
+            className={inputCls}
+            value={config[key as keyof typeof config] as number}
+            onChange={(e) => onChange({ ...config, [key]: Number(e.target.value) || 0 })}
+          />
+        </div>
+      ))}
+      <div className="col-span-2 md:col-span-3">
+        <ToggleRow label="Show logo on print" checked={config.showLogo} onChange={(v) => onChange({ ...config, showLogo: v })} />
+      </div>
+      <div className="col-span-2">
+        <label className={labelCls}>Header text</label>
+        <input className={inputCls} value={config.headerText} onChange={(e) => onChange({ ...config, headerText: e.target.value })} />
+      </div>
+      <div className="col-span-2">
+        <label className={labelCls}>Footer text</label>
+        <input className={inputCls} value={config.footerText} onChange={(e) => onChange({ ...config, footerText: e.target.value })} />
+      </div>
+    </div>
+  );
+}
+
 export default function ConfigurationHub() {
-  const { currentPage, holidays, addHoliday, updateHoliday, deleteHoliday } = useStore();
+  const { currentPage, companySettings, updateCompanySettings, holidays, addHoliday, updateHoliday, deleteHoliday } =
+    useStore();
   const [activeSection, setActiveSection] = useState("overview");
+  const [draft, setDraft] = useState<SystemConfiguration>(DEFAULT_SYSTEM_CONFIGURATION);
   const [showHolidayForm, setShowHolidayForm] = useState(false);
   const [selectedHoliday, setSelectedHoliday] = useState<any>(null);
   const [holidayForm, setHolidayForm] = useState({ date: "", name: "" });
 
   const isHolidaysPage = currentPage === "holidays";
+
+  const loadedConfig = useMemo(
+    () => mergeSystemConfiguration(companySettings?.systemConfiguration),
+    [companySettings?.systemConfiguration],
+  );
+
+  const openSection = (sectionId: string) => {
+    setDraft(loadedConfig);
+    setActiveSection(sectionId);
+  };
+
+  const saveConfig = async () => {
+    await updateCompanySettings({ systemConfiguration: draft });
+    toast.success("Configuration saved");
+  };
 
   const resetHolidayForm = () => {
     setHolidayForm({ date: "", name: "" });
@@ -95,257 +115,319 @@ export default function ConfigurationHub() {
   };
 
   const handleHolidaySubmit = async () => {
-    if (!holidayForm.date || !holidayForm.name.trim())
-      return alert("Date and Holiday Name are required.");
+    if (!holidayForm.date || !holidayForm.name.trim()) {
+      toast.error("Date and holiday name are required");
+      return;
+    }
     if (selectedHoliday) {
       await updateHoliday(selectedHoliday.id, holidayForm);
-      alert("Holiday updated.");
+      toast.success("Holiday updated");
     } else {
       await addHoliday(holidayForm);
-      alert("Holiday saved.");
+      toast.success("Holiday saved");
     }
     resetHolidayForm();
   };
 
+  const renderSectionForm = () => {
+    switch (activeSection) {
+      case "party-dashboard":
+        return (
+          <div className="bg-white border border-gray-200 rounded-lg p-4">
+            <ToggleRow label="Show outstanding balance" checked={draft.partyDashboard.showOutstanding} onChange={(v) => setDraft({ ...draft, partyDashboard: { ...draft.partyDashboard, showOutstanding: v } })} />
+            <ToggleRow label="Show last invoice" checked={draft.partyDashboard.showLastInvoice} onChange={(v) => setDraft({ ...draft, partyDashboard: { ...draft.partyDashboard, showLastInvoice: v } })} />
+            <ToggleRow label="Show credit limit" checked={draft.partyDashboard.showCreditLimit} onChange={(v) => setDraft({ ...draft, partyDashboard: { ...draft.partyDashboard, showCreditLimit: v } })} />
+            <ToggleRow label="Show ageing summary" checked={draft.partyDashboard.showAgingSummary} onChange={(v) => setDraft({ ...draft, partyDashboard: { ...draft.partyDashboard, showAgingSummary: v } })} />
+          </div>
+        );
+      case "email":
+        return (
+          <div className="grid grid-cols-2 gap-3 bg-white border border-gray-200 rounded-lg p-4">
+            {[
+              ["smtpHost", "SMTP Host"],
+              ["smtpPort", "SMTP Port", "number"],
+              ["smtpUser", "SMTP User"],
+              ["smtpPassword", "SMTP Password", "password"],
+              ["senderEmail", "Sender Email"],
+            ].map(([key, lbl, type]) => (
+              <div key={key}>
+                <label className={labelCls}>{lbl}</label>
+                <input
+                  type={type || "text"}
+                  className={inputCls}
+                  value={draft.email[key as keyof typeof draft.email] as string | number}
+                  onChange={(e) =>
+                    setDraft({
+                      ...draft,
+                      email: {
+                        ...draft.email,
+                        [key]: type === "number" ? Number(e.target.value) || 0 : e.target.value,
+                      },
+                    })
+                  }
+                />
+              </div>
+            ))}
+            <div className="col-span-2">
+              <ToggleRow label="Use TLS/STARTTLS" checked={draft.email.useTls} onChange={(v) => setDraft({ ...draft, email: { ...draft.email, useTls: v } })} />
+            </div>
+          </div>
+        );
+      case "whatsapp-sms":
+        return (
+          <div className="grid grid-cols-2 gap-3 bg-white border border-gray-200 rounded-lg p-4">
+            {[
+              ["provider", "Provider"],
+              ["apiKey", "API Key"],
+              ["senderId", "Sender ID"],
+              ["gatewayUrl", "Gateway URL"],
+            ].map(([key, lbl]) => (
+              <div key={key} className={key === "gatewayUrl" ? "col-span-2" : ""}>
+                <label className={labelCls}>{lbl}</label>
+                <input
+                  className={inputCls}
+                  value={draft.messaging[key as keyof typeof draft.messaging]}
+                  onChange={(e) =>
+                    setDraft({ ...draft, messaging: { ...draft.messaging, [key]: e.target.value } })
+                  }
+                />
+              </div>
+            ))}
+          </div>
+        );
+      case "backup":
+        return (
+          <div className="grid grid-cols-2 gap-3 bg-white border border-gray-200 rounded-lg p-4">
+            <div className="col-span-2">
+              <ToggleRow label="Enable automatic backup" checked={draft.backup.autoBackupEnabled} onChange={(v) => setDraft({ ...draft, backup: { ...draft.backup, autoBackupEnabled: v } })} />
+            </div>
+            <div className="col-span-2">
+              <label className={labelCls}>Backup folder path</label>
+              <input className={inputCls} value={draft.backup.backupFolder} onChange={(e) => setDraft({ ...draft, backup: { ...draft.backup, backupFolder: e.target.value } })} />
+            </div>
+            <div>
+              <label className={labelCls}>Frequency</label>
+              <select className={inputCls} value={draft.backup.frequency} onChange={(e) => setDraft({ ...draft, backup: { ...draft.backup, frequency: e.target.value as any } })}>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+              </select>
+            </div>
+            <div>
+              <label className={labelCls}>Retention count</label>
+              <input type="number" className={inputCls} value={draft.backup.retentionCount} onChange={(e) => setDraft({ ...draft, backup: { ...draft.backup, retentionCount: Number(e.target.value) || 1 } })} />
+            </div>
+            <div className="col-span-2">
+              <ToggleRow label="Compress backup files" checked={draft.backup.compress} onChange={(v) => setDraft({ ...draft, backup: { ...draft.backup, compress: v } })} />
+            </div>
+          </div>
+        );
+      case "invoice-print":
+        return (
+          <div className="bg-white border border-gray-200 rounded-lg p-4">
+            <PrintPanel title="Invoice" config={draft.invoicePrint} onChange={(invoicePrint) => setDraft({ ...draft, invoicePrint })} />
+          </div>
+        );
+      case "voucher-print":
+        return (
+          <div className="bg-white border border-gray-200 rounded-lg p-4">
+            <PrintPanel title="Voucher" config={draft.voucherPrint} onChange={(voucherPrint) => setDraft({ ...draft, voucherPrint })} />
+          </div>
+        );
+      case "warning-alarms":
+        return (
+          <div className="bg-white border border-gray-200 rounded-lg p-4">
+            <ToggleRow label="Credit limit exceeded" checked={draft.warningAlarms.creditLimitExceeded} onChange={(v) => setDraft({ ...draft, warningAlarms: { ...draft.warningAlarms, creditLimitExceeded: v } })} />
+            <ToggleRow label="Overdue payment" checked={draft.warningAlarms.overduePayment} onChange={(v) => setDraft({ ...draft, warningAlarms: { ...draft.warningAlarms, overduePayment: v } })} />
+            <ToggleRow label="Low stock" checked={draft.warningAlarms.lowStock} onChange={(v) => setDraft({ ...draft, warningAlarms: { ...draft.warningAlarms, lowStock: v } })} />
+            <ToggleRow label="Below minimum price" checked={draft.warningAlarms.belowMinimumPrice} onChange={(v) => setDraft({ ...draft, warningAlarms: { ...draft.warningAlarms, belowMinimumPrice: v } })} />
+          </div>
+        );
+      case "ageing-slabs":
+        return (
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                  {["Label", "From (days)", "To (days)", ""].map((h) => (
+                    <th key={h} className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {draft.ageingSlabs.map((slab, idx) => (
+                  <tr key={idx} className="border-b border-gray-100">
+                    <td className="px-2 py-1.5"><input className={inputCls} value={slab.label} onChange={(e) => { const ageingSlabs = [...draft.ageingSlabs]; ageingSlabs[idx] = { ...slab, label: e.target.value }; setDraft({ ...draft, ageingSlabs }); }} /></td>
+                    <td className="px-2 py-1.5"><input type="number" className={inputCls} value={slab.fromDays} onChange={(e) => { const ageingSlabs = [...draft.ageingSlabs]; ageingSlabs[idx] = { ...slab, fromDays: Number(e.target.value) || 0 }; setDraft({ ...draft, ageingSlabs }); }} /></td>
+                    <td className="px-2 py-1.5"><input type="number" className={inputCls} value={slab.toDays ?? ""} placeholder="∞" onChange={(e) => { const ageingSlabs = [...draft.ageingSlabs]; ageingSlabs[idx] = { ...slab, toDays: e.target.value === "" ? null : Number(e.target.value) }; setDraft({ ...draft, ageingSlabs }); }} /></td>
+                    <td className="px-2 py-1.5"><button className="text-[11px] text-red-600" onClick={() => setDraft({ ...draft, ageingSlabs: draft.ageingSlabs.filter((_, i) => i !== idx) })}>Remove</button></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="p-3 border-t border-gray-200">
+              <button className={btnOutline} onClick={() => setDraft({ ...draft, ageingSlabs: [...draft.ageingSlabs, { label: "New slab", fromDays: 0, toDays: 30 }] })}>Add slab</button>
+            </div>
+          </div>
+        );
+      case "interest-slabs":
+        return (
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                  {["Label", "From (days)", "To (days)", "Rate %", ""].map((h) => (
+                    <th key={h} className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {draft.interestSlabs.map((slab, idx) => (
+                  <tr key={idx} className="border-b border-gray-100">
+                    <td className="px-2 py-1.5"><input className={inputCls} value={slab.label} onChange={(e) => { const interestSlabs = [...draft.interestSlabs]; interestSlabs[idx] = { ...slab, label: e.target.value }; setDraft({ ...draft, interestSlabs }); }} /></td>
+                    <td className="px-2 py-1.5"><input type="number" className={inputCls} value={slab.fromDays} onChange={(e) => { const interestSlabs = [...draft.interestSlabs]; interestSlabs[idx] = { ...slab, fromDays: Number(e.target.value) || 0 }; setDraft({ ...draft, interestSlabs }); }} /></td>
+                    <td className="px-2 py-1.5"><input type="number" className={inputCls} value={slab.toDays ?? ""} placeholder="∞" onChange={(e) => { const interestSlabs = [...draft.interestSlabs]; interestSlabs[idx] = { ...slab, toDays: e.target.value === "" ? null : Number(e.target.value) }; setDraft({ ...draft, interestSlabs }); }} /></td>
+                    <td className="px-2 py-1.5"><input type="number" className={inputCls} value={slab.ratePercent} onChange={(e) => { const interestSlabs = [...draft.interestSlabs]; interestSlabs[idx] = { ...slab, ratePercent: Number(e.target.value) || 0 }; setDraft({ ...draft, interestSlabs }); }} /></td>
+                    <td className="px-2 py-1.5"><button className="text-[11px] text-red-600" onClick={() => setDraft({ ...draft, interestSlabs: draft.interestSlabs.filter((_, i) => i !== idx) })}>Remove</button></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="p-3 border-t border-gray-200">
+              <button className={btnOutline} onClick={() => setDraft({ ...draft, interestSlabs: [...draft.interestSlabs, { label: "New slab", fromDays: 0, toDays: 30, ratePercent: 18 }] })}>Add slab</button>
+            </div>
+          </div>
+        );
+      case "max-voucher-entries":
+        return (
+          <div className="bg-white border border-gray-200 rounded-lg p-4 max-w-sm">
+            <label className={labelCls}>Maximum line items per voucher</label>
+            <input type="number" min={1} max={5000} className={inputCls} value={draft.maxVoucherEntries} onChange={(e) => setDraft({ ...draft, maxVoucherEntries: Number(e.target.value) || 1 })} />
+            <p className="text-[11px] text-gray-500 mt-2">Applies to accounting and inventory vouchers when saving new entries.</p>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   if (isHolidaysPage || activeSection === "holidays") {
     return (
-      <div style={{ display: "flex", height: "100%", gap: 0 }}>
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            borderRight: showHolidayForm ? BORDER : "none",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "8px 12px",
-              borderBottom: BORDER,
-              background: BG_HEADER,
-            }}
-          >
-            <Calendar style={{ width: 16, height: 16 }} />
-            <span style={{ fontWeight: 700, fontSize: 13 }}>List of Holidays</span>
-            <div style={{ flex: 1 }} />
+      <div className="p-4 bg-[#f5f6fa] min-h-screen">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-[15px] font-semibold text-gray-800">List of Holidays</h1>
+            <p className="text-[11px] text-gray-500 mt-0.5">Define company holidays for working-day calculations</p>
+          </div>
+          <div className="flex gap-2">
             {!isHolidaysPage && (
-              <button style={BTN("#fff")} onClick={() => setActiveSection("overview")}>
-                ← Back
+              <button className={btnOutline} onClick={() => setActiveSection("overview")}>
+                <ArrowLeft className="w-3.5 h-3.5 inline mr-1" /> Back
               </button>
             )}
-            <button
-              style={BTN("#3D6B25")}
-              onClick={() => {
-                resetHolidayForm();
-                setShowHolidayForm(true);
-              }}
-            >
-              <Plus style={{ width: 12, height: 12, display: "inline", marginRight: 4 }} />
-              Add Holiday
+            <button className={btnPrimary} onClick={() => { resetHolidayForm(); setShowHolidayForm(true); }}>
+              <Plus className="w-3.5 h-3.5 inline mr-1" /> Add Holiday
             </button>
           </div>
-          <div style={{ flex: 1, overflowY: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+        </div>
+        <div className="flex gap-4">
+          <div className={`flex-1 bg-white border border-gray-200 rounded-lg overflow-hidden ${showHolidayForm ? "max-w-[calc(100%-320px)]" : ""}`}>
+            <table className="w-full">
               <thead>
-                <tr style={{ background: BG_HEADER, position: "sticky", top: 0 }}>
+                <tr className="bg-[#f5f6fa] border-b border-gray-200">
                   {["#", "Date", "Holiday Name", "Actions"].map((h) => (
-                    <th
-                      key={h}
-                      style={{
-                        padding: "6px 10px",
-                        borderBottom: BORDER,
-                        textAlign: "left",
-                        fontWeight: 700,
-                      }}
-                    >
-                      {h}
-                    </th>
+                    <th key={h} className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {(holidays || []).length === 0 ? (
-                  <tr>
-                    <td colSpan={4} style={{ textAlign: "center", padding: 24, color: "#666" }}>
-                      No holidays defined. Add company holidays to calculate working days
-                      accurately.
-                    </td>
-                  </tr>
+                  <tr><td colSpan={4} className="text-center py-8 text-[12px] text-gray-500">No holidays defined.</td></tr>
                 ) : (
-                  [...(holidays || [])]
-                    .sort((a: any, b: any) => a.date.localeCompare(b.date))
-                    .map((h: any, i: number) => (
-                      <tr key={h.id} style={{ background: i % 2 === 0 ? "#fff" : BG_ROW_ALT }}>
-                        <td style={{ padding: "5px 10px", borderBottom: BORDER }}>{i + 1}</td>
-                        <td style={{ padding: "5px 10px", borderBottom: BORDER, fontWeight: 600 }}>
-                          {h.date}
-                        </td>
-                        <td style={{ padding: "5px 10px", borderBottom: BORDER }}>{h.name}</td>
-                        <td style={{ padding: "5px 10px", borderBottom: BORDER }}>
-                          <div style={{ display: "flex", gap: 6 }}>
-                            <button
-                              style={BTN("#fff")}
-                              onClick={() => {
-                                setSelectedHoliday(h);
-                                setHolidayForm({ date: h.date, name: h.name });
-                                setShowHolidayForm(true);
-                              }}
-                            >
-                              <Edit2 style={{ width: 12, height: 12 }} />
-                            </button>
-                            <button
-                              style={{ ...BTN("#fff"), color: "#c00" }}
-                              onClick={async () => {
-                                if (confirm("Delete?")) await deleteHoliday(h.id);
-                              }}
-                            >
-                              <Trash2 style={{ width: 12, height: 12 }} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
+                  [...(holidays || [])].sort((a, b) => a.date.localeCompare(b.date)).map((h, i) => (
+                    <tr key={h.id} className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="px-3 py-2.5 text-[12px] text-gray-500">{i + 1}</td>
+                      <td className="px-3 py-2.5 text-[12px] font-medium text-gray-800">{h.date}</td>
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{h.name}</td>
+                      <td className="px-3 py-2.5">
+                        <div className="flex gap-1">
+                          <button className={btnOutline} onClick={() => { setSelectedHoliday(h); setHolidayForm({ date: h.date, name: h.name }); setShowHolidayForm(true); }}><Edit2 className="w-3 h-3" /></button>
+                          <button className={`${btnOutline} text-red-600`} onClick={async () => { if (confirm("Delete holiday?")) { await deleteHoliday(h.id); toast.success("Deleted"); } }}><Trash2 className="w-3 h-3" /></button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
                 )}
               </tbody>
             </table>
           </div>
-          <div
-            style={{ padding: "4px 12px", borderTop: BORDER, background: BG_HEADER, fontSize: 11 }}
-          >
-            Total: {(holidays || []).length} holiday(s)
+          {showHolidayForm && (
+            <div className="w-80 bg-white border border-gray-200 rounded-lg p-4 flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <h2 className="text-[13px] font-semibold text-gray-800">{selectedHoliday ? "Edit" : "Add"} Holiday</h2>
+                <button onClick={resetHolidayForm}><X className="w-4 h-4 text-gray-500" /></button>
+              </div>
+              <div><label className={labelCls}>Date *</label><input type="date" className={inputCls} value={holidayForm.date} onChange={(e) => setHolidayForm({ ...holidayForm, date: e.target.value })} /></div>
+              <div><label className={labelCls}>Holiday Name *</label><input className={inputCls} value={holidayForm.name} onChange={(e) => setHolidayForm({ ...holidayForm, name: e.target.value })} placeholder="e.g. Dashain" /></div>
+              <div className="flex gap-2 mt-auto">
+                <button className={btnPrimary} onClick={handleHolidaySubmit}><Save className="w-3.5 h-3.5 inline mr-1" /> Save</button>
+                <button className={btnOutline} onClick={resetHolidayForm}>Cancel</button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  if (activeSection !== "overview") {
+    const section = CONFIG_SECTIONS.find((s) => s.id === activeSection);
+    return (
+      <div className="p-4 bg-[#f5f6fa] min-h-screen">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-[15px] font-semibold text-gray-800">{section?.label}</h1>
+            <p className="text-[11px] text-gray-500 mt-0.5">{section?.desc}</p>
+          </div>
+          <div className="flex gap-2">
+            <button className={btnOutline} onClick={() => setActiveSection("overview")}><ArrowLeft className="w-3.5 h-3.5 inline mr-1" /> Back</button>
+            <button className={btnPrimary} onClick={saveConfig}><Save className="w-3.5 h-3.5 inline mr-1" /> Save</button>
           </div>
         </div>
-        {showHolidayForm && (
-          <div style={{ width: 300, borderLeft: BORDER, display: "flex", flexDirection: "column" }}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                padding: "8px 12px",
-                background: BG_HEADER,
-                borderBottom: BORDER,
-              }}
-            >
-              <span style={{ fontWeight: 700, fontSize: 13 }}>
-                {selectedHoliday ? "Edit" : "Add"} Holiday
-              </span>
-              <button
-                style={{
-                  marginLeft: "auto",
-                  background: "transparent",
-                  border: "none",
-                  cursor: "pointer",
-                }}
-                onClick={resetHolidayForm}
-              >
-                <X style={{ width: 16, height: 16 }} />
-              </button>
-            </div>
-            <div
-              style={{ flex: 1, padding: 14, display: "flex", flexDirection: "column", gap: 12 }}
-            >
-              <label style={{ fontSize: 12 }}>
-                <div style={{ fontWeight: 600, marginBottom: 3 }}>Date *</div>
-                <input
-                  type="date"
-                  value={holidayForm.date}
-                  onChange={(e) => setHolidayForm({ ...holidayForm, date: e.target.value })}
-                  style={INPUT_STYLE}
-                />
-              </label>
-              <label style={{ fontSize: 12 }}>
-                <div style={{ fontWeight: 600, marginBottom: 3 }}>Holiday Name *</div>
-                <input
-                  value={holidayForm.name}
-                  onChange={(e) => setHolidayForm({ ...holidayForm, name: e.target.value })}
-                  style={INPUT_STYLE}
-                  placeholder="e.g. Dashain, Tihar, New Year"
-                />
-              </label>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                gap: 8,
-                padding: "10px 14px",
-                borderTop: BORDER,
-                background: BG_HEADER,
-              }}
-            >
-              <button style={BTN("#3D6B25")} onClick={handleHolidaySubmit}>
-                <Save style={{ width: 12, height: 12, display: "inline", marginRight: 4 }} />
-                {selectedHoliday ? "Update" : "Save"}
-              </button>
-              <button style={BTN("#fff")} onClick={resetHolidayForm}>
-                Cancel
-              </button>
-            </div>
-          </div>
-        )}
+        {renderSectionForm()}
       </div>
     );
   }
 
   return (
-    <div style={{ padding: 20 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-        <Sliders style={{ width: 18, height: 18 }} />
-        <h2 style={{ margin: 0, fontSize: 15, fontWeight: 700 }}>System Configuration</h2>
+    <div className="p-4 bg-[#f5f6fa] min-h-screen">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">System Configuration</h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">Company-wide settings for reports, alerts, printing, and integrations</p>
+        </div>
       </div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-          gap: 12,
-        }}
-      >
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {CONFIG_SECTIONS.map((s) => (
-          <div
+          <button
             key={s.id}
-            style={{
-              border: BORDER,
-              borderRadius: 4,
-              padding: 14,
-              background: "#fff",
-              cursor: "pointer",
-              transition: "background 0.15s",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = BG_ROW_ALT)}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "#fff")}
-            onClick={() =>
-              alert(
-                `${s.label}\n\n${s.desc}\n\nThis configuration panel will be fully implemented in the next phase.`,
-              )
-            }
+            type="button"
+            className="text-left bg-white border border-gray-200 rounded-lg p-4 hover:border-[#1557b0]/40 hover:bg-gray-50 transition-colors"
+            onClick={() => openSection(s.id)}
           >
-            <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 4 }}>{s.label}</div>
-            <div style={{ fontSize: 11, color: "#555" }}>{s.desc}</div>
-          </div>
+            <div className="text-[13px] font-semibold text-gray-800 mb-1">{s.label}</div>
+            <div className="text-[11px] text-gray-500">{s.desc}</div>
+          </button>
         ))}
-        <div
-          style={{
-            border: BORDER,
-            borderRadius: 4,
-            padding: 14,
-            background: "#fff",
-            cursor: "pointer",
-            transition: "background 0.15s",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = BG_ROW_ALT)}
-          onMouseLeave={(e) => (e.currentTarget.style.background = "#fff")}
+        <button
+          type="button"
+          className="text-left bg-white border border-gray-200 rounded-lg p-4 hover:border-[#1557b0]/40 hover:bg-gray-50 transition-colors"
           onClick={() => setActiveSection("holidays")}
         >
-          <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 4 }}>List of Holidays</div>
-          <div style={{ fontSize: 11, color: "#555" }}>
-            Define company holidays for working-day calculations.
-          </div>
-          <div style={{ marginTop: 8, fontSize: 11, color: "#3D6B25", fontWeight: 600 }}>
-            {(holidays || []).length} holiday(s) configured →
-          </div>
-        </div>
+          <div className="text-[13px] font-semibold text-gray-800 mb-1">List of Holidays</div>
+          <div className="text-[11px] text-gray-500">Define company holidays for working-day calculations.</div>
+          <div className="mt-2 text-[11px] text-[#1557b0] font-medium">{(holidays || []).length} holiday(s) configured →</div>
+        </button>
       </div>
     </div>
   );

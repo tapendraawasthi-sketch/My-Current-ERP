@@ -60,6 +60,7 @@ function isInward(type: string): boolean {
     t.includes("transfer-in") ||
     t.includes("receipt") ||
     t.includes("material-received") ||
+    t.includes("rejection-in") ||
     t.includes("adjustment-in") ||
     t === "in"
   );
@@ -71,6 +72,7 @@ function isOutward(type: string): boolean {
     t.includes("sales") ||
     t.includes("transfer-out") ||
     t.includes("material-issued") ||
+    t.includes("rejection-out") ||
     t.includes("adjustment-out") ||
     t === "out"
   );

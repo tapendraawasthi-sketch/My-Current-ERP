@@ -131,6 +131,7 @@ export interface CompanySettings {
   invoiceFooter?: string;
   signatoryName?: string;
   logo?: string;
+  systemConfiguration?: import("../lib/systemConfiguration").SystemConfiguration;
   voucherSeries?: Record<string, any>;
   lastLoginBy?: string;
   lastLoginAt?: string;
@@ -773,6 +774,7 @@ export interface AppState extends MultiGodownStoreSlice {
   postMaterialIssued: (id: string) => Promise<void>;
   postMaterialReceived: (id: string) => Promise<void>;
   postPhysicalStock: (id: string) => Promise<void>;
+  postRejectionStock: (voucherId: string) => Promise<void>;
   addProduction: (entry: any) => Promise<void>;
   addUnassemble: (entry: any) => Promise<void>;
   addMaterialIssued: (entry: any) => Promise<void>;

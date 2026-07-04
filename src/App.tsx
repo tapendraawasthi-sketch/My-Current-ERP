@@ -55,6 +55,7 @@ import FixedAssets from "./pages/FixedAssets";
 import BatchManagement from "./pages/BatchManagement";
 import PDCManagement from "./pages/PDCManagement";
 import Payroll from "./pages/Payroll";
+import PayrollRun from "./pages/PayrollRun";
 import BudgetVsActual from "./pages/BudgetVsActual";
 import RecurringVouchers from "./pages/RecurringVouchers";
 import FinancialDashboard from "./pages/FinancialDashboard";
@@ -115,6 +116,8 @@ import MaterialIssuedPage from "./pages/MaterialIssuedPage";
 import MaterialReceivedPage from "./pages/MaterialReceivedPage";
 import UnassemblePage from "./pages/UnassemblePage";
 import ReversingJournals from "./pages/ReversingJournals";
+import RejectionVoucherPage from "./pages/RejectionVoucherPage";
+import JobWorkRegister from "./pages/JobWorkRegister";
 
 const App: React.FC = () => {
   const { currentPage, authStage, initializeApp, setCurrentPage } = useStore();
@@ -285,6 +288,13 @@ const App: React.FC = () => {
       case "cheque-printing": return <ChequePrinting />;
       case "reversing-journals":
       case "reversing-journal": return <ReversingJournals />;
+      case "rejection-out": return <RejectionVoucherPage mode="out" />;
+      case "rejection-in": return <RejectionVoucherPage mode="in" />;
+      case "job-work-register":
+      case "job-work-out-order":
+      case "job-work-in-order": return <JobWorkRegister defaultTab={currentPage === "job-work-in-order" ? "in" : "out"} />;
+      case "attendance-voucher":
+      case "attendance-entry": return <PayrollRun />;
 
       // Financial Reports
       case "balance-sheet": return <BalanceSheet />;

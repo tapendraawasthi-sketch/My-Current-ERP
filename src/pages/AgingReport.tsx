@@ -7,6 +7,7 @@ import { Download, FileSpreadsheet, RefreshCw, TrendingUp, TrendingDown } from "
 import ReportDateRangePicker, { DateRange } from "../components/ui/ReportDateRangePicker";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
+import { mergeSystemConfiguration, getAgeingBucketIndex } from "../lib/systemConfiguration";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -47,12 +48,17 @@ function daysDiff(dateStr: string, asOf: string): number {
   return Math.floor(diff / (1000 * 60 * 60 * 24));
 }
 
-function bucketAmount(days: number, amount: number): Partial<AgingBucket> {
-  if (days <= 0) return { current: amount };
-  if (days <= 30) return { days1to30: amount };
-  if (days <= 60) return { days31to60: amount };
-  if (days <= 90) return { days61to90: amount };
-  return { over90: amount };
+function bucketAmount(days: number, amount: number, slabIndex?: number): Partial<AgingBucket> {
+  const keys: (keyof Omit<AgingBucket, "total">)[] = [
+    "current",
+    "days1to30",
+    "days31to60",
+    "days61to90",
+    "over90",
+  ];
+  const idx = slabIndex ?? (days <= 0 ? 0 : days <= 30 ? 1 : days <= 60 ? 2 : days <= 90 ? 3 : 4);
+  const key = keys[Math.min(idx, keys.length - 1)];
+  return { [key]: amount };
 }
 
 function emptyBucket(): AgingBucket {
@@ -143,6 +149,8 @@ const AgingBar: React.FC<{ totals: AgingBucket, direction: "receivable" | "payab
 
 const AgingReport: React.FC = () => {
   const { parties, companySettings } = useStore();
+  const ageingSlabs = mergeSystemConfiguration(companySettings?.systemConfiguration).ageingSlabs;
+  const slabLabels = ageingSlabs.map((s) => s.label);
 
   const [dateRange, setDateRange] = useState<DateRange>({
     fromDate: todayISO(),
@@ -199,7 +207,8 @@ const AgingReport: React.FC = () => {
       // Days overdue from dueDate or invoice date
       const refDate = inv.dueDate ?? inv.date;
       const days = refDate ? daysDiff(refDate, asOfDate) : 0;
-      const bucket = bucketAmount(days, balance);
+      const slabIndex = getAgeingBucketIndex(days, ageingSlabs);
+      const bucket = bucketAmount(days, balance, slabIndex);
 
       const partyId = inv.partyId ?? "unknown";
       const partyName =
@@ -227,7 +236,7 @@ const AgingReport: React.FC = () => {
     }
 
     return Array.from(partyMap.values()).sort((a, b) => b.buckets.total - a.buckets.total);
-  }, [invoices, payments, asOfDate, parties, direction]);
+  }, [invoices, payments, asOfDate, parties, direction, ageingSlabs]);
 
   // ── Filter ────────────────────────────────────────────────────────────────
   const filteredRows = useMemo<AgingRow[]>(() => {

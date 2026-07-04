@@ -43,6 +43,27 @@ const PayrollVoucher = lazy(() => import("./Payroll"));
 const ReversingJournalVoucher = lazy(() => import("./ReversingJournals"));
 const MaterialIssuedVoucher = lazy(() => import("./MaterialIssuedPage"));
 const MaterialReceivedVoucher = lazy(() => import("./MaterialReceivedPage"));
+const RejectionOutVoucher = lazy(() =>
+  import("./RejectionVoucherPage").then((m) => ({
+    default: () => <m.default mode="out" />,
+  })),
+);
+const RejectionInVoucher = lazy(() =>
+  import("./RejectionVoucherPage").then((m) => ({
+    default: () => <m.default mode="in" />,
+  })),
+);
+const JobWorkOutOrderVoucher = lazy(() =>
+  import("./JobWorkRegister").then((m) => ({
+    default: () => <m.default defaultTab="out" />,
+  })),
+);
+const JobWorkInOrderVoucher = lazy(() =>
+  import("./JobWorkRegister").then((m) => ({
+    default: () => <m.default defaultTab="in" />,
+  })),
+);
+const AttendanceVoucher = lazy(() => import("./PayrollRun"));
 
 const VoucherEntryHub: React.FC = () => {
   const [activeVoucherType, setActiveVoucherType] = useState<string>("sales-invoice");
@@ -216,6 +237,16 @@ const VoucherEntryHub: React.FC = () => {
         return <PayrollVoucher />;
       case "reversing-journal":
         return <ReversingJournalVoucher />;
+      case "rejection-out":
+        return <RejectionOutVoucher />;
+      case "rejection-in":
+        return <RejectionInVoucher />;
+      case "job-work-out-order":
+        return <JobWorkOutOrderVoucher />;
+      case "job-work-in-order":
+        return <JobWorkInOrderVoucher />;
+      case "attendance":
+        return <AttendanceVoucher />;
       case "sales-order":
         return <SalesOrderVoucher />;
       case "memorandum":

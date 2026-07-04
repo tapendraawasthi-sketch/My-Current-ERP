@@ -544,6 +544,72 @@ export const createInventorySlice: StateCreator<AppState, [], [], any> = (set, g
       stockMovements: [...s.stockMovements, ...newMovements],
     }));
   },
+
+  postRejectionStock: async (voucherId: string) => {
+    const db = getDB();
+    const voucher = (await db.vouchers.get(voucherId)) as any;
+    if (!voucher) throw new Error("Rejection voucher not found");
+    if (voucher.stockPostedAt) throw new Error("Stock already posted for this rejection");
+
+    const isOut = String(voucher.type || "").toLowerCase() === "rejection-out";
+    const { warehouses, inventoryConfig } = get() as any;
+    const wh = getDefaultWarehouse(warehouses);
+    const allowNegative = inventoryConfig?.allowNegativeStock === true;
+    const itemLines: any[] = voucher.itemLines || [];
+    const newMovements: any[] = [];
+
+    for (const line of itemLines) {
+      const qty = Number(line.qty || 0);
+      if (qty <= 0) continue;
+      const rate = Number(line.rate || 0);
+
+      if (isOut) {
+        await assertStockAvailable(db, line, wh.id, voucher.date, qty, allowNegative, wh.name);
+        const mov = buildOutMovement({
+          id: `mov-rej-${voucherId}-${line.itemId}`,
+          date: voucher.date,
+          itemId: line.itemId || line.id,
+          itemName: line.itemName,
+          warehouseId: wh.id,
+          warehouseName: wh.name,
+          qty,
+          rate,
+          referenceId: voucherId,
+          referenceNo: voucher.voucherNo,
+          referenceType: "rejection-out",
+          narration: voucher.narration || "Rejection out to supplier",
+          movementType: "rejection-out",
+        });
+        await db.stockMovements.put(mov);
+        newMovements.push(mov);
+      } else {
+        const mov = buildInMovement({
+          id: `mov-rej-${voucherId}-${line.itemId}`,
+          date: voucher.date,
+          itemId: line.itemId || line.id,
+          itemName: line.itemName,
+          warehouseId: wh.id,
+          warehouseName: wh.name,
+          qty,
+          rate,
+          referenceId: voucherId,
+          referenceNo: voucher.voucherNo,
+          referenceType: "rejection-in",
+          narration: voucher.narration || "Rejection in from customer",
+          movementType: "rejection-in",
+        });
+        await db.stockMovements.put(mov);
+        newMovements.push(mov);
+      }
+    }
+
+    const stockPostedAt = new Date().toISOString();
+    await db.vouchers.update(voucherId, { stockPostedAt } as any);
+    set((s) => ({
+      vouchers: s.vouchers.map((v: any) => (v.id === voucherId ? { ...v, stockPostedAt } : v)),
+      stockMovements: [...s.stockMovements, ...newMovements],
+    }));
+  },
 });
 
 function getDefaultWarehouse(warehouses: any[]): { id: string; name: string } {
@@ -643,6 +709,7 @@ function isOutwardType(type: string): boolean {
     type.includes("transfer-out") ||
     type.includes("adjustment-out") ||
     type.includes("material-issued") ||
+    type.includes("rejection-out") ||
     type.includes("consumption") ||
     type === "out"
   );
