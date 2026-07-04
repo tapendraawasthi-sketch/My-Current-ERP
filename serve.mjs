@@ -30,7 +30,10 @@ if (!existsSync(INDEX_PATH)) {
 
 console.log(`✅ dist/ folder verified at ${DIST_DIR}`);
 
-const ERP_BOT_BACKEND = ""; // Self-contained — no external bot service on Render
+// Set ERP_BOT_BACKEND_URL in the environment (e.g. http://YOUR_VPS_IP:8765) to
+// forward /erp-bot/* to your self-hosted Ollama-backed erp_bot service.
+// Leave unset to keep the built-in rule-based brain (no external process needed).
+const ERP_BOT_BACKEND = (process.env.ERP_BOT_BACKEND_URL || "").trim().replace(/\/$/, "");
 
 async function readRequestBody(req) {
   const chunks = [];
@@ -41,30 +44,66 @@ async function readRequestBody(req) {
 async function handleErpBotRequest(req, res, method, rawPath) {
   const subpath = rawPath.replace(/^\/erp-bot/, "") || "/";
 
-  if (method === "GET" && subpath === "/status") {
-    res.writeHead(200, { "Content-Type": "application/json" });
+  // No backend configured — serve the built-in offline status/response so the
+  // frontend gracefully falls back to the rule-based brain.
+  if (!ERP_BOT_BACKEND) {
+    if (method === "GET" && subpath === "/status") {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          status: "online",
+          mode: "builtin",
+          ollama: "unavailable",
+          khata_llm: false,
+          khata_brain: "builtin",
+          indexed_files: 0,
+          message: "Self-contained CA brain — no external API required. Set ERP_BOT_BACKEND_URL to enable the local LLM.",
+        }),
+      );
+      return;
+    }
+
+    res.writeHead(503, { "Content-Type": "application/json" });
     res.end(
       JSON.stringify({
-        status: "online",
+        error: "External ERP bot not configured",
         mode: "builtin",
-        ollama: "unavailable",
-        khata_llm: false,
-        khata_brain: "builtin",
-        indexed_files: 0,
-        message: "Self-contained CA brain — no external API required",
+        hint: "Set ERP_BOT_BACKEND_URL to your self-hosted erp_bot instance to enable the local LLM.",
       }),
     );
     return;
   }
 
-  res.writeHead(503, { "Content-Type": "application/json" });
-  res.end(
-    JSON.stringify({
-      error: "External ERP bot disabled",
-      mode: "builtin",
-      hint: "Falcon and e-Khata use built-in brains in this deployment",
-    }),
-  );
+  // Backend configured — actually proxy the request through.
+  const targetUrl = `${ERP_BOT_BACKEND}${subpath}`;
+  const body = method === "GET" || method === "HEAD" ? undefined : await readRequestBody(req);
+
+  try {
+    const forwardHeaders = { ...req.headers };
+    delete forwardHeaders.host;
+    delete forwardHeaders["content-length"];
+
+    const upstream = await fetch(targetUrl, {
+      method,
+      headers: forwardHeaders,
+      body,
+      signal: AbortSignal.timeout(30000),
+    });
+
+    const contentType = upstream.headers.get("content-type") || "application/json";
+    const buf = Buffer.from(await upstream.arrayBuffer());
+    res.writeHead(upstream.status, { "Content-Type": contentType });
+    res.end(buf);
+  } catch (err) {
+    res.writeHead(502, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify({
+        error: "ERP bot backend unreachable",
+        detail: err instanceof Error ? err.message : String(err),
+        target: targetUrl,
+      }),
+    );
+  }
 }
 
 const MIME_TYPES = {
