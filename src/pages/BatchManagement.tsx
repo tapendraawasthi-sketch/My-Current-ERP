@@ -8,7 +8,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
-import { Plus, Download, Edit2, Trash2, X, AlertTriangle, Package, Hash } from "lucide-react";
+import { Plus, Download, Edit2, Trash2, X, AlertTriangle, Package, Hash, Search, Save } from "lucide-react";
+import { ReportEmptyState } from "../components/ReportEmptyState";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const fmt = (n: number) =>
@@ -21,6 +22,11 @@ const inputCls =
   "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white " +
   "focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full";
 const labelCls = "text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1";
+const formLabelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
+const btnPrimary =
+  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
+const btnOutline =
+  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 const thCls =
   "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 " +
   "uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200 whitespace-nowrap";
@@ -320,457 +326,362 @@ export default function BatchManagement() {
     reserved: "bg-amber-100 text-amber-700",
   };
 
+  const showForm = showBatchModal || showSNModal;
+
+  const openBatchEdit = (batch: any) => {
+    setBatchForm({ ...batch });
+    setEditingBatchId(batch.id);
+    setShowBatchModal(true);
+  };
+
+  const openSNEdit = (sn: any) => {
+    setSnForm({ ...sn });
+    setEditingSNId(sn.id);
+    setShowSNModal(true);
+  };
+
+  const resetBatchForm = () => {
+    setShowBatchModal(false);
+    setEditingBatchId(null);
+    setBatchForm(emptyBatch());
+  };
+
+  const resetSNForm = () => {
+    setShowSNModal(false);
+    setEditingSNId(null);
+    setSnForm(emptySN());
+  };
+
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
-    <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">
-            Batch &amp; Serial Number Tracking
-          </h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
-            Track inventory by batch/lot or individual serial number
-          </p>
-        </div>
-        <div className="flex gap-2">
-          {activeTab === "batch" ? (
-            <>
-              <button
-                onClick={exportBatches}
-                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
-              >
-                <Download className="h-3.5 w-3.5" /> Export
-              </button>
-              <button
-                onClick={() => {
-                  setBatchForm(emptyBatch());
-                  setEditingBatchId(null);
-                  setShowBatchModal(true);
-                }}
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
-              >
-                <Plus className="h-3.5 w-3.5" /> Add Batch
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                onClick={exportSNs}
-                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
-              >
-                <Download className="h-3.5 w-3.5" /> Export
-              </button>
-              <button
-                onClick={() => {
-                  setSnForm(emptySN());
-                  setEditingSNId(null);
-                  setShowSNModal(true);
-                }}
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
-              >
-                <Plus className="h-3.5 w-3.5" /> Add Serial No.
-              </button>
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <div className="flex gap-1 mb-4">
-        <button
-          onClick={() => setActiveTab("batch")}
-          className={`h-8 px-4 text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors ${
-            activeTab === "batch"
-              ? "bg-[#1557b0] text-white"
-              : "bg-white border border-gray-300 text-gray-600 hover:bg-gray-50"
-          }`}
-        >
-          <Package className="h-3.5 w-3.5" /> Batch / Lot Tracking
-        </button>
-        <button
-          onClick={() => setActiveTab("serial")}
-          className={`h-8 px-4 text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors ${
-            activeTab === "serial"
-              ? "bg-[#1557b0] text-white"
-              : "bg-white border border-gray-300 text-gray-600 hover:bg-gray-50"
-          }`}
-        >
-          <Hash className="h-3.5 w-3.5" /> Serial Number Tracking
-        </button>
-      </div>
-
-      {/* ── BATCH TAB ──────────────────────────────────────────────────────── */}
-      {activeTab === "batch" && (
-        <>
-          {/* KPI */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-            {[
-              {
-                label: "Total Batches",
-                value: batchStats.total,
-                color: "text-gray-800",
-                isAmt: false,
-              },
-              { label: "Expired", value: batchStats.expired, color: "text-red-600", isAmt: false },
-              {
-                label: "Expiring (30d)",
-                value: batchStats.nearExpiry,
-                color: "text-amber-700",
-                isAmt: false,
-              },
-              {
-                label: "Total Value",
-                value: batchStats.totalValue,
-                color: "text-[#1557b0]",
-                isAmt: true,
-              },
-            ].map((k) => (
-              <div key={k.label} className="bg-white border border-gray-200 rounded-lg p-3">
-                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                  {k.label}
-                </p>
-                <p
-                  className={`font-bold font-mono mt-1 ${k.color} ${k.isAmt ? "text-[13px]" : "text-[20px]"}`}
+    <div className="flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-hidden">
+      <div className="p-4 pb-0 shrink-0">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-[15px] font-semibold text-gray-800">
+              Batch &amp; Serial Number Tracking
+            </h1>
+            <p className="text-[11px] text-gray-500 mt-0.5">
+              Track inventory by batch/lot or individual serial number
+            </p>
+          </div>
+          <div className="flex gap-2">
+            {activeTab === "batch" ? (
+              <>
+                <button type="button" onClick={exportBatches} className={btnOutline}>
+                  <Download className="h-3.5 w-3.5" /> Export
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setBatchForm(emptyBatch());
+                    setEditingBatchId(null);
+                    setShowBatchModal(true);
+                  }}
+                  className={btnPrimary}
                 >
-                  {k.isAmt ? "Rs. " + fmt(k.value as number) : k.value}
-                </p>
-              </div>
-            ))}
+                  <Plus className="h-3.5 w-3.5" /> Add batch
+                </button>
+              </>
+            ) : (
+              <>
+                <button type="button" onClick={exportSNs} className={btnOutline}>
+                  <Download className="h-3.5 w-3.5" /> Export
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSnForm(emptySN());
+                    setEditingSNId(null);
+                    setShowSNModal(true);
+                  }}
+                  className={btnPrimary}
+                >
+                  <Plus className="h-3.5 w-3.5" /> Add serial no.
+                </button>
+              </>
+            )}
           </div>
+        </div>
 
-          {/* Expiry alert */}
-          {(batchStats.expired > 0 || batchStats.nearExpiry > 0) && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4 flex items-center gap-2 text-[12px] text-red-800">
-              <AlertTriangle className="h-4 w-4 shrink-0" />
-              {batchStats.expired > 0 && (
-                <span>
-                  <strong>{batchStats.expired} batches have EXPIRED.</strong>{" "}
-                </span>
-              )}
-              {batchStats.nearExpiry > 0 && (
-                <span>
-                  <strong>{batchStats.nearExpiry} batches expiring within 30 days.</strong>
-                </span>
-              )}
-            </div>
-          )}
+        <div className="flex gap-1 mb-3">
+          <button
+            type="button"
+            onClick={() => setActiveTab("batch")}
+            className={`h-8 px-4 text-[12px] font-medium rounded-md inline-flex items-center gap-1.5 transition-colors ${
+              activeTab === "batch"
+                ? "bg-[#1557b0] text-white"
+                : "bg-white border border-gray-300 text-gray-600 hover:bg-gray-50"
+            }`}
+          >
+            <Package className="h-3.5 w-3.5" /> Batch / lot tracking
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("serial")}
+            className={`h-8 px-4 text-[12px] font-medium rounded-md inline-flex items-center gap-1.5 transition-colors ${
+              activeTab === "serial"
+                ? "bg-[#1557b0] text-white"
+                : "bg-white border border-gray-300 text-gray-600 hover:bg-gray-50"
+            }`}
+          >
+            <Hash className="h-3.5 w-3.5" /> Serial number tracking
+          </button>
+        </div>
+      </div>
 
-          {/* Filters */}
-          <div className="bg-white border border-gray-200 rounded-lg p-3 mb-4 flex flex-wrap gap-3 items-end no-print">
-            <div className="flex-1 min-w-[180px]">
-              <label className={labelCls}>Search</label>
-              <input
-                value={batchSearch}
-                onChange={(e) => setBatchSearch(e.target.value)}
-                placeholder="Batch no, item name..."
-                className={inputCls}
-              />
-            </div>
-            <div>
-              <label className={labelCls}>Expiry Status</label>
-              <select
-                value={filterExpiry}
-                onChange={(e) => setFilterExpiry(e.target.value)}
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-              >
-                <option value="ALL">All</option>
-                <option value="expired">Expired</option>
-                <option value="30days">Expiring in 30 days</option>
-                <option value="90days">Expiring in 90 days</option>
-                <option value="ok">OK (&gt;90 days)</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Batch table */}
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full" style={{ minWidth: 1000 }}>
-                <thead>
-                  <tr>
-                    <th className={thCls}>Batch No.</th>
-                    <th className={thCls}>Item</th>
-                    <th className={thCls}>Mfg. Date</th>
-                    <th className={thCls}>Expiry Date</th>
-                    <th className={thCls}>Days Left</th>
-                    <th className={thCls}>Purchase Date</th>
-                    <th className={`${thCls} text-right`}>Rate</th>
-                    <th className={`${thCls} text-right`}>Qty</th>
-                    <th className={`${thCls} text-right`}>Value</th>
-                    <th className={thCls}>Status</th>
-                    <th className={thCls}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredBatches.length === 0 && (
-                    <tr>
-                      <td colSpan={11} className="px-4 py-10 text-center text-[12px] text-gray-400">
-                        No batches found. Add a batch to begin tracking.
-                      </td>
-                    </tr>
-                  )}
-                  {filteredBatches.map((batch: any) => {
-                    const days = daysUntilExpiry(batch.expiryDate);
-                    const isExpired = batch.expiryDate && days <= 0;
-                    const isNearExpiry = batch.expiryDate && days > 0 && days <= 30;
-                    const value = (batch.currentQty || 0) * (batch.purchaseRate || 0);
-                    return (
-                      <tr
-                        key={batch.id}
-                        className={`hover:bg-gray-50 ${isExpired ? "bg-red-50" : isNearExpiry ? "bg-amber-50" : ""}`}
-                      >
-                        <td className="px-3 py-2.5 text-[12px] font-mono font-semibold text-gray-800 border-b border-gray-100">
-                          {batch.batchNo}
-                          {batch.supplierBatchNo && (
-                            <div className="text-[10px] text-gray-400">
-                              Supplier: {batch.supplierBatchNo}
-                            </div>
-                          )}
-                        </td>
-                        <td className={tdCls}>{batch.itemName}</td>
-                        <td className={tdCls}>{batch.manufacturingDate || "—"}</td>
-                        <td
-                          className={`${tdCls} ${isExpired ? "text-red-600 font-semibold" : isNearExpiry ? "text-amber-700 font-semibold" : ""}`}
-                        >
-                          {batch.expiryDate || "—"}
-                        </td>
-                        <td className="px-3 py-2.5 text-[12px] border-b border-gray-100">
-                          {batch.expiryDate ? (
-                            <span
-                              className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
-                                isExpired
-                                  ? "bg-red-100 text-red-700"
-                                  : isNearExpiry
-                                    ? "bg-amber-100 text-amber-700"
-                                    : "bg-green-100 text-green-700"
-                              }`}
-                            >
-                              {isExpired ? "EXPIRED" : `${days}d`}
-                            </span>
-                          ) : (
-                            "—"
-                          )}
-                        </td>
-                        <td className={tdCls}>{batch.purchaseDate}</td>
-                        <td className={amtCls}>{fmt(batch.purchaseRate)}</td>
-                        <td
-                          className={`${amtCls} font-semibold ${(batch.currentQty || 0) <= 0 ? "text-red-500" : "text-gray-800"}`}
-                        >
-                          {fmt(batch.currentQty)}
-                        </td>
-                        <td className={`${amtCls} text-[#1557b0] font-semibold`}>{fmt(value)}</td>
-                        <td className="px-3 py-2.5 border-b border-gray-100">
-                          <span
-                            className={`px-2 py-0.5 text-[10px] font-semibold rounded uppercase ${
-                              isExpired
-                                ? "bg-red-100 text-red-700"
-                                : (batch.currentQty || 0) <= 0
-                                  ? "bg-gray-100 text-gray-500"
-                                  : "bg-green-100 text-green-700"
-                            }`}
-                          >
-                            {isExpired
-                              ? "Expired"
-                              : (batch.currentQty || 0) <= 0
-                                ? "Empty"
-                                : "Active"}
-                          </span>
-                        </td>
-                        <td className="px-3 py-2.5 border-b border-gray-100">
-                          <div className="flex gap-1">
-                            <button
-                              onClick={() => {
-                                setBatchForm({ ...batch });
-                                setEditingBatchId(batch.id);
-                                setShowBatchModal(true);
-                              }}
-                              className="p-1.5 rounded hover:bg-gray-100 text-gray-500"
-                              title="Edit"
-                            >
-                              <Edit2 className="h-3.5 w-3.5" />
-                            </button>
-                            <button
-                              onClick={async () => {
-                                if (confirm("Delete this batch?")) {
-                                  await store.deleteBatch(batch.id);
-                                  toast.success("Batch deleted");
-                                }
-                              }}
-                              className="p-1.5 rounded hover:bg-red-50 text-red-500"
-                              title="Delete"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* ── SERIAL NUMBER TAB ──────────────────────────────────────────────── */}
-      {activeTab === "serial" && (
-        <>
-          {/* KPI */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-            {[
-              { label: "Total Units", value: snStats.total, color: "text-gray-800" },
-              { label: "Available", value: snStats.available, color: "text-green-700" },
-              { label: "Sold", value: snStats.sold, color: "text-gray-600" },
-              { label: "Damaged", value: snStats.damaged, color: "text-red-600" },
-            ].map((k) => (
-              <div key={k.label} className="bg-white border border-gray-200 rounded-lg p-3">
-                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                  {k.label}
-                </p>
-                <p className={`text-[20px] font-bold font-mono mt-1 ${k.color}`}>{k.value}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Filters */}
-          <div className="bg-white border border-gray-200 rounded-lg p-3 mb-4 flex flex-wrap gap-3 items-end no-print">
-            <div className="flex-1 min-w-[180px]">
-              <label className={labelCls}>Search</label>
-              <input
-                value={snSearch}
-                onChange={(e) => setSnSearch(e.target.value)}
-                placeholder="Serial no, item, customer..."
-                className={inputCls}
-              />
-            </div>
-            <div>
-              <label className={labelCls}>Status</label>
-              <div className="flex rounded-md border border-gray-300 overflow-hidden">
-                {["ALL", "available", "sold", "returned", "damaged", "reserved"].map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => setSnStatusFilter(s)}
-                    className={`h-8 px-2.5 text-[11px] font-medium capitalize transition-colors ${
-                      snStatusFilter === s
-                        ? "bg-[#1557b0] text-white"
-                        : "bg-white text-gray-600 hover:bg-gray-50"
-                    }`}
-                  >
-                    {s === "ALL" ? "All" : s}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Serial number table */}
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full" style={{ minWidth: 900 }}>
-                <thead>
-                  <tr>
-                    <th className={thCls}>Serial No.</th>
-                    <th className={thCls}>Item</th>
-                    <th className={thCls}>Status</th>
-                    <th className={thCls}>Purchase Date</th>
-                    <th className={`${thCls} text-right`}>Purchase Rate</th>
-                    <th className={thCls}>Sold Date</th>
-                    <th className={thCls}>Sold To</th>
-                    <th className={thCls}>Invoice</th>
-                    <th className={thCls}>Warranty Expiry</th>
-                    <th className={thCls}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredSNs.length === 0 && (
-                    <tr>
-                      <td colSpan={10} className="px-4 py-10 text-center text-[12px] text-gray-400">
-                        No serial numbers found.
-                      </td>
-                    </tr>
-                  )}
-                  {filteredSNs.map((sn: any) => (
-                    <tr key={sn.id} className="hover:bg-gray-50">
-                      <td className="px-3 py-2.5 text-[12px] font-mono font-semibold text-gray-800 border-b border-gray-100">
-                        {sn.serialNo}
-                      </td>
-                      <td className={tdCls}>{sn.itemName}</td>
-                      <td className="px-3 py-2.5 border-b border-gray-100">
-                        <span
-                          className={`px-2 py-0.5 text-[10px] font-semibold rounded uppercase ${snStatusColors[sn.status] || "bg-gray-100 text-gray-700"}`}
-                        >
-                          {sn.status}
-                        </span>
-                      </td>
-                      <td className={tdCls}>{sn.purchaseDate || "—"}</td>
-                      <td className={amtCls}>{sn.purchaseRate ? fmt(sn.purchaseRate) : "—"}</td>
-                      <td className={tdCls}>{sn.soldDate || "—"}</td>
-                      <td className={tdCls}>{sn.soldToPartyName || "—"}</td>
-                      <td className="px-3 py-2.5 text-[11px] font-mono text-gray-600 border-b border-gray-100">
-                        {sn.invoiceNo || "—"}
-                      </td>
-                      <td
-                        className={`${tdCls} ${sn.warrantyExpiry && daysUntilExpiry(sn.warrantyExpiry) <= 0 ? "text-red-600" : ""}`}
-                      >
-                        {sn.warrantyExpiry || "—"}
-                        {sn.warrantyExpiry &&
-                          daysUntilExpiry(sn.warrantyExpiry) <= 0 &&
-                          " (Expired)"}
-                      </td>
-                      <td className="px-3 py-2.5 border-b border-gray-100">
-                        <div className="flex gap-1">
-                          <button
-                            onClick={() => {
-                              setSnForm({ ...sn });
-                              setEditingSNId(sn.id);
-                              setShowSNModal(true);
-                            }}
-                            className="p-1.5 rounded hover:bg-gray-100 text-gray-500"
-                            title="Edit"
-                          >
-                            <Edit2 className="h-3.5 w-3.5" />
-                          </button>
-                          <button
-                            onClick={async () => {
-                              if (confirm("Delete this serial number?")) {
-                                await store.deleteSerialNumber(sn.id);
-                                toast.success("Deleted");
-                              }
-                            }}
-                            className="p-1.5 rounded hover:bg-red-50 text-red-500"
-                            title="Delete"
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+      <div className="flex flex-1 min-h-0 overflow-hidden">
+        <div
+          className={`flex flex-1 flex-col min-w-0 overflow-hidden ${showForm ? "border-r border-gray-200" : ""}`}
+        >
+          <div className="flex-1 overflow-y-auto px-4 pb-4 min-h-0">
+            {activeTab === "batch" && (
+              <>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 no-print">
+                  {[
+                    { label: "Total batches", value: batchStats.total, color: "text-gray-800", isAmt: false },
+                    { label: "Expired", value: batchStats.expired, color: "text-red-600", isAmt: false },
+                    { label: "Expiring (30d)", value: batchStats.nearExpiry, color: "text-amber-700", isAmt: false },
+                    { label: "Total value", value: batchStats.totalValue, color: "text-[#1557b0]", isAmt: true },
+                  ].map((k) => (
+                    <div key={k.label} className="bg-white border border-gray-200 rounded-md p-3">
+                      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">{k.label}</p>
+                      <p className={`text-[12px] font-bold font-mono mt-1 ${k.color}`}>
+                        {k.isAmt ? "Rs. " + fmt(k.value as number) : k.value}
+                      </p>
+                    </div>
                   ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </>
-      )}
+                </div>
 
-      {/* ── Batch Modal ────────────────────────────────────────────────────── */}
-      {showBatchModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-xl max-h-[90vh] overflow-hidden flex flex-col">
-            <div className="flex items-center justify-between px-4 py-3 bg-[#f5f6fa] border-b border-gray-200">
-              <h3 className="text-[14px] font-semibold text-gray-800">
-                {editingBatchId ? "Edit Batch" : "Add Batch / Lot"}
-              </h3>
-              <button
-                onClick={() => setShowBatchModal(false)}
-                className="p-1 rounded hover:bg-gray-200 text-gray-500"
-              >
-                <X className="h-4 w-4" />
-              </button>
+                {(batchStats.expired > 0 || batchStats.nearExpiry > 0) && (
+                  <div className="bg-red-50 border border-red-200 rounded-md p-3 mb-4 flex items-center gap-2 text-[12px] text-red-800 no-print">
+                    <AlertTriangle className="h-4 w-4 shrink-0" />
+                    {batchStats.expired > 0 && (
+                      <span><strong>{batchStats.expired} batches have expired.</strong> </span>
+                    )}
+                    {batchStats.nearExpiry > 0 && (
+                      <span><strong>{batchStats.nearExpiry} batches expiring within 30 days.</strong></span>
+                    )}
+                  </div>
+                )}
+
+                <div className="bg-white border border-gray-200 rounded-md p-3 mb-4 flex flex-wrap gap-3 items-end no-print">
+                  <div className="flex-1 min-w-[180px] relative">
+                    <label className={labelCls}>Search</label>
+                    <Search className="h-3.5 w-3.5 absolute left-2.5 bottom-2 text-gray-400 pointer-events-none" />
+                    <input
+                      value={batchSearch}
+                      onChange={(e) => setBatchSearch(e.target.value)}
+                      placeholder="Batch no, item name..."
+                      className={`${inputCls} pl-8`}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Expiry status</label>
+                    <select value={filterExpiry} onChange={(e) => setFilterExpiry(e.target.value)} className={inputCls}>
+                      <option value="ALL">All</option>
+                      <option value="expired">Expired</option>
+                      <option value="30days">Expiring in 30 days</option>
+                      <option value="90days">Expiring in 90 days</option>
+                      <option value="ok">OK (&gt;90 days)</option>
+                    </select>
+                  </div>
+                </div>
+
+                {filteredBatches.length === 0 ? (
+                  <div className="bg-white border border-gray-200 rounded-md">
+                    <ReportEmptyState
+                      message="No batches found"
+                      hint='Click "Add batch" to begin tracking inventory by lot.'
+                    />
+                  </div>
+                ) : (
+                  <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="w-full border-collapse" style={{ minWidth: 1000 }}>
+                        <thead>
+                          <tr>
+                            <th className={thCls}>Batch no.</th>
+                            <th className={thCls}>Item</th>
+                            <th className={thCls}>Mfg. date</th>
+                            <th className={thCls}>Expiry date</th>
+                            <th className={thCls}>Days left</th>
+                            <th className={thCls}>Purchase date</th>
+                            <th className={`${thCls} text-right`}>Rate</th>
+                            <th className={`${thCls} text-right`}>Qty</th>
+                            <th className={`${thCls} text-right`}>Value</th>
+                            <th className={thCls}>Status</th>
+                            <th className={`${thCls} text-right`}>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filteredBatches.map((batch: any) => {
+                            const days = daysUntilExpiry(batch.expiryDate);
+                            const isExpired = batch.expiryDate && days <= 0;
+                            const isNearExpiry = batch.expiryDate && days > 0 && days <= 30;
+                            const value = (batch.currentQty || 0) * (batch.purchaseRate || 0);
+                            return (
+                              <tr
+                                key={batch.id}
+                                className={`group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] ${isExpired ? "bg-red-50" : isNearExpiry ? "bg-amber-50" : ""}`}
+                                onClick={() => openBatchEdit(batch)}
+                              >
+                                <td className="px-3 py-2.5 text-[12px] font-mono font-medium text-gray-800 border-b border-gray-100">
+                                  {batch.batchNo}
+                                  {batch.supplierBatchNo && (
+                                    <div className="text-[10px] text-gray-400 font-normal">Supplier: {batch.supplierBatchNo}</div>
+                                  )}
+                                </td>
+                                <td className={tdCls}>{batch.itemName}</td>
+                                <td className={tdCls}>{batch.manufacturingDate || "—"}</td>
+                                <td className={`${tdCls} ${isExpired ? "text-red-600 font-medium" : isNearExpiry ? "text-amber-700 font-medium" : ""}`}>
+                                  {batch.expiryDate || "—"}
+                                </td>
+                                <td className="px-3 py-2.5 text-[12px] border-b border-gray-100">
+                                  {batch.expiryDate ? (
+                                    <span className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${isExpired ? "bg-red-100 text-red-700" : isNearExpiry ? "bg-amber-100 text-amber-700" : "bg-green-100 text-green-700"}`}>
+                                      {isExpired ? "Expired" : `${days}d`}
+                                    </span>
+                                  ) : "—"}
+                                </td>
+                                <td className={tdCls}>{batch.purchaseDate}</td>
+                                <td className={amtCls}>{fmt(batch.purchaseRate)}</td>
+                                <td className={`${amtCls} font-medium ${(batch.currentQty || 0) <= 0 ? "text-red-500" : "text-gray-800"}`}>{fmt(batch.currentQty)}</td>
+                                <td className={`${amtCls} text-[#1557b0] font-medium`}>{fmt(value)}</td>
+                                <td className="px-3 py-2.5 border-b border-gray-100">
+                                  <span className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${isExpired ? "bg-red-100 text-red-700" : (batch.currentQty || 0) <= 0 ? "bg-gray-100 text-gray-700" : "bg-green-100 text-green-700"}`}>
+                                    {isExpired ? "Expired" : (batch.currentQty || 0) <= 0 ? "Empty" : "Active"}
+                                  </span>
+                                </td>
+                                <td className="px-3 py-2.5 border-b border-gray-100 text-right">
+                                  <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button type="button" className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50" onClick={(e) => { e.stopPropagation(); openBatchEdit(batch); }}>
+                                      <Edit2 className="h-3.5 w-3.5" />
+                                    </button>
+                                    <button type="button" className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50" onClick={async (e) => { e.stopPropagation(); if (confirm("Delete this batch?")) { await store.deleteBatch(batch.id); toast.success("Batch deleted"); } }}>
+                                      <Trash2 className="h-3.5 w-3.5" />
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+                      {filteredBatches.length} batch{filteredBatches.length === 1 ? "" : "es"}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+
+            {activeTab === "serial" && (
+              <>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 no-print">
+                  {[
+                    { label: "Total units", value: snStats.total, color: "text-gray-800" },
+                    { label: "Available", value: snStats.available, color: "text-green-700" },
+                    { label: "Sold", value: snStats.sold, color: "text-gray-600" },
+                    { label: "Damaged", value: snStats.damaged, color: "text-red-600" },
+                  ].map((k) => (
+                    <div key={k.label} className="bg-white border border-gray-200 rounded-md p-3">
+                      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">{k.label}</p>
+                      <p className={`text-[12px] font-bold font-mono mt-1 ${k.color}`}>{k.value}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="bg-white border border-gray-200 rounded-md p-3 mb-4 flex flex-wrap gap-3 items-end no-print">
+                  <div className="flex-1 min-w-[180px] relative">
+                    <label className={labelCls}>Search</label>
+                    <Search className="h-3.5 w-3.5 absolute left-2.5 bottom-2 text-gray-400 pointer-events-none" />
+                    <input value={snSearch} onChange={(e) => setSnSearch(e.target.value)} placeholder="Serial no, item, customer..." className={`${inputCls} pl-8`} />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Status</label>
+                    <div className="flex rounded-md border border-gray-300 overflow-hidden">
+                      {["ALL", "available", "sold", "returned", "damaged", "reserved"].map((s) => (
+                        <button key={s} type="button" onClick={() => setSnStatusFilter(s)} className={`h-8 px-2.5 text-[11px] font-medium capitalize transition-colors ${snStatusFilter === s ? "bg-[#1557b0] text-white" : "bg-white text-gray-600 hover:bg-gray-50"}`}>
+                          {s === "ALL" ? "All" : s}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {filteredSNs.length === 0 ? (
+                  <div className="bg-white border border-gray-200 rounded-md">
+                    <ReportEmptyState message="No serial numbers found" hint='Click "Add serial no." to register a unit.' />
+                  </div>
+                ) : (
+                  <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="w-full border-collapse" style={{ minWidth: 900 }}>
+                        <thead>
+                          <tr>
+                            <th className={thCls}>Serial no.</th>
+                            <th className={thCls}>Item</th>
+                            <th className={thCls}>Status</th>
+                            <th className={thCls}>Purchase date</th>
+                            <th className={`${thCls} text-right`}>Purchase rate</th>
+                            <th className={thCls}>Sold date</th>
+                            <th className={thCls}>Sold to</th>
+                            <th className={thCls}>Invoice</th>
+                            <th className={thCls}>Warranty expiry</th>
+                            <th className={`${thCls} text-right`}>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filteredSNs.map((sn: any) => (
+                            <tr key={sn.id} className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]" onClick={() => openSNEdit(sn)}>
+                              <td className="px-3 py-2.5 text-[12px] font-mono font-medium text-gray-800 border-b border-gray-100">{sn.serialNo}</td>
+                              <td className={tdCls}>{sn.itemName}</td>
+                              <td className="px-3 py-2.5 border-b border-gray-100">
+                                <span className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${snStatusColors[sn.status] || "bg-gray-100 text-gray-700"}`}>{sn.status}</span>
+                              </td>
+                              <td className={tdCls}>{sn.purchaseDate || "—"}</td>
+                              <td className={amtCls}>{sn.purchaseRate ? fmt(sn.purchaseRate) : "—"}</td>
+                              <td className={tdCls}>{sn.soldDate || "—"}</td>
+                              <td className={tdCls}>{sn.soldToPartyName || "—"}</td>
+                              <td className="px-3 py-2.5 text-[11px] font-mono text-gray-600 border-b border-gray-100">{sn.invoiceNo || "—"}</td>
+                              <td className={`${tdCls} ${sn.warrantyExpiry && daysUntilExpiry(sn.warrantyExpiry) <= 0 ? "text-red-600" : ""}`}>
+                                {sn.warrantyExpiry || "—"}
+                                {sn.warrantyExpiry && daysUntilExpiry(sn.warrantyExpiry) <= 0 && " (Expired)"}
+                              </td>
+                              <td className="px-3 py-2.5 border-b border-gray-100 text-right">
+                                <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <button type="button" className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50" onClick={(e) => { e.stopPropagation(); openSNEdit(sn); }}>
+                                    <Edit2 className="h-3.5 w-3.5" />
+                                  </button>
+                                  <button type="button" className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50" onClick={async (e) => { e.stopPropagation(); if (confirm("Delete this serial number?")) { await store.deleteSerialNumber(sn.id); toast.success("Deleted"); } }}>
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+                      {filteredSNs.length} serial number{filteredSNs.length === 1 ? "" : "s"}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+
+        {showBatchModal && (
+          <div className="w-full lg:w-[420px] xl:w-[480px] shrink-0 flex flex-col bg-white border-l border-gray-200 min-h-0">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 shrink-0">
+              <span className="text-[13px] font-semibold text-gray-800">{editingBatchId ? "Edit batch" : "Add batch / lot"}</span>
+              <button type="button" className="text-gray-500 hover:text-gray-700" onClick={resetBatchForm}><X className="h-4 w-4" /></button>
             </div>
-            <div className="p-4 overflow-y-auto space-y-3">
+            <div className="flex-1 overflow-y-auto p-4 space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <div className="col-span-2">
                   <label className={labelCls}>Item *</label>
@@ -901,40 +812,29 @@ export default function BatchManagement() {
                 </div>
               </div>
             </div>
-            <div className="px-4 py-3 border-t border-gray-200 flex justify-end gap-2 bg-gray-50">
-              <button
-                onClick={() => setShowBatchModal(false)}
-                className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
-              >
-                Cancel
+            <div className="flex gap-2 p-4 border-t border-gray-200 shrink-0">
+              <button type="button" className={btnPrimary} onClick={saveBatch}>
+                <Save className="h-3.5 w-3.5" />
+                {editingBatchId ? "Update" : "Save"}
               </button>
-              <button
-                onClick={saveBatch}
-                className="h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
-              >
-                {editingBatchId ? "Update Batch" : "Add Batch"}
+              <button type="button" className={btnOutline} onClick={resetBatchForm}>
+                Cancel
               </button>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* ── Serial Number Modal ────────────────────────────────────────────── */}
-      {showSNModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-xl max-h-[90vh] overflow-hidden flex flex-col">
-            <div className="flex items-center justify-between px-4 py-3 bg-[#f5f6fa] border-b border-gray-200">
-              <h3 className="text-[14px] font-semibold text-gray-800">
-                {editingSNId ? "Edit Serial Number" : "Add Serial Number"}
-              </h3>
-              <button
-                onClick={() => setShowSNModal(false)}
-                className="p-1 rounded hover:bg-gray-200 text-gray-500"
-              >
+        {showSNModal && (
+          <div className="w-full lg:w-[420px] xl:w-[480px] shrink-0 flex flex-col bg-white border-l border-gray-200 min-h-0">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 shrink-0">
+              <span className="text-[13px] font-semibold text-gray-800">
+                {editingSNId ? "Edit serial number" : "Add serial number"}
+              </span>
+              <button type="button" className="text-gray-500 hover:text-gray-700" onClick={resetSNForm}>
                 <X className="h-4 w-4" />
               </button>
             </div>
-            <div className="p-4 overflow-y-auto space-y-3">
+            <div className="flex-1 overflow-y-auto p-4 space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <div className="col-span-2">
                   <label className={labelCls}>Item *</label>
@@ -1086,23 +986,18 @@ export default function BatchManagement() {
                 </div>
               </div>
             </div>
-            <div className="px-4 py-3 border-t border-gray-200 flex justify-end gap-2 bg-gray-50">
-              <button
-                onClick={() => setShowSNModal(false)}
-                className="h-8 px-4 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
-              >
-                Cancel
+            <div className="flex gap-2 p-4 border-t border-gray-200 shrink-0">
+              <button type="button" className={btnPrimary} onClick={saveSerialNumber}>
+                <Save className="h-3.5 w-3.5" />
+                {editingSNId ? "Update" : "Save"}
               </button>
-              <button
-                onClick={saveSerialNumber}
-                className="h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
-              >
-                {editingSNId ? "Update" : "Add Serial Number"}
+              <button type="button" className={btnOutline} onClick={resetSNForm}>
+                Cancel
               </button>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
