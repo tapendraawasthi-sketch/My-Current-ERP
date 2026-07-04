@@ -11,6 +11,7 @@ import { useIsMobile } from "../hooks/use-mobile";
 import { LayoutDashboard, FileText, BookOpen, TrendingUp, Settings, Menu, X } from "lucide-react";
 import toast from "react-hot-toast";
 import FalconProvider from "./falcon/FalconProvider";
+import EKhataProvider from "./ekhata/EKhataProvider";
 import SyncStatusIndicator from "./SyncStatusIndicator";
 import { startSyncLoop, stopSyncLoop } from "../lib/syncEngine";
 import { startAutoBackupScheduler, stopAutoBackupScheduler } from "../lib/autoBackupScheduler";
@@ -702,6 +703,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
         )}
         <FalconProvider />
+        <EKhataProvider />
       </div>
     );
   }
@@ -734,6 +736,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </div>
       <StatusBar />
       <FalconProvider />
+      <EKhataProvider />
     </div>
   );
 };

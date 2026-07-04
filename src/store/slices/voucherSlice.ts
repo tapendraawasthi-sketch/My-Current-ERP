@@ -71,7 +71,10 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
     const type = voucher.type || "journal";
 
     return db.transaction("rw", [db.vouchers, db.accounts, db.auditLogs], async () => {
-      const voucherNo = await generateNextVoucherNo(type, db);
+      const voucherNo =
+        typeof voucher.voucherNo === "string" && voucher.voucherNo.trim()
+          ? voucher.voucherNo.trim()
+          : await generateNextVoucherNo(type, db);
 
       const newVoucher = {
         status: voucher.status || "draft",

@@ -38,12 +38,15 @@ const isInputElement = (el: Element | null): boolean => {
     const dataCmp = ancestor.getAttribute("data-component") || "";
     if (
       id.includes("falcon") ||
+      id.includes("ekhata") ||
       id.includes("chat") ||
       id.includes("ai-input") ||
       cls.includes("falcon") ||
+      cls.includes("ekhata") ||
       cls.includes("chat-input") ||
       cls.includes("ai-chat") ||
       dataCmp.includes("falcon") ||
+      dataCmp.includes("ekhata") ||
       dataCmp.includes("chat")
     )
       return true;
