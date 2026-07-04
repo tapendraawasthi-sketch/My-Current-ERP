@@ -88,13 +88,38 @@ export async function fetchSyncPull(
     query(voucherSql, params),
   ]);
 
+  const invoiceIds = invoices.rows.map((r) => r.id).filter(Boolean);
+  let lineRows: Record<string, unknown>[] = [];
+  if (invoiceIds.length > 0) {
+    const linesResult = await query(
+      `SELECT id, invoice_id, item_id, quantity, rate, amount, vat_amount
+       FROM invoice_lines
+       WHERE tenant_id = $1 AND company_id = $2 AND invoice_id = ANY($3::uuid[])`,
+      [tenantId, companyId, invoiceIds],
+    );
+    lineRows = linesResult.rows;
+  }
+
+  const linesByInvoice = new Map<string, Record<string, unknown>[]>();
+  for (const line of lineRows) {
+    const invId = String(line.invoice_id);
+    const bucket = linesByInvoice.get(invId) || [];
+    bucket.push(line);
+    linesByInvoice.set(invId, bucket);
+  }
+
+  const invoicesWithLines = invoices.rows.map((inv) => ({
+    ...inv,
+    lines: linesByInvoice.get(String(inv.id)) || [],
+  }));
+
   return {
     since: sinceParam,
     pulledAt: new Date().toISOString(),
     accounts: accounts.rows,
     parties: parties.rows,
     items: items.rows,
-    invoices: invoices.rows,
+    invoices: invoicesWithLines,
     vouchers: vouchers.rows,
   };
 }

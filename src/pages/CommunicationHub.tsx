@@ -5,8 +5,14 @@ import { getDB, generateId } from "../lib/db";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
 import {
+  getMessagingConfigFromSettings,
+  sendEmailMessage,
+  sendSmsMessage,
+} from "../lib/messagingService";
+import {
   Mail,
   MessageSquare,
+  Printer,
   Copy,
   Upload,
   Download,
@@ -290,19 +296,57 @@ export default function CommunicationHub() {
 
   function sendEmail() {
     if (!emailTo) return toast.error("Email address required");
-    const url =
-      `mailto:${emailTo}` +
-      `?cc=${encodeURIComponent(emailCc)}` +
-      `&bcc=${encodeURIComponent(emailBcc)}` +
-      `&subject=${encodeURIComponent(emailSubject)}` +
-      `&body=${encodeURIComponent(emailBody)}`;
-    window.open(url, "_blank");
+    const { email } = getMessagingConfigFromSettings(companySettings);
+    void sendEmailMessage({
+      to: emailTo,
+      cc: emailCc,
+      bcc: emailBcc,
+      subject: emailSubject,
+      body: emailBody,
+      email,
+    }).then((result) => {
+      if (result.method === "smtp") toast.success("Email sent via SMTP");
+      else toast.success("Opened email client (mailto)");
+    });
   }
 
   function sendWhatsApp() {
     const phone = normalizePhone(waPhone);
     if (!phone) return toast.error("Phone number required");
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(waMessage)}`, "_blank");
+    const { messaging } = getMessagingConfigFromSettings(companySettings);
+    void sendSmsMessage({ to: phone, message: waMessage, messaging }).then((result) => {
+      if (result.method === "gateway") toast.success("SMS sent via gateway");
+      else if (result.ok) toast.success("Opened WhatsApp");
+      else toast.error("Could not send message");
+    });
+  }
+
+  function sendBulkEmail() {
+    const selected = overdueReminderRows.filter((r: any) =>
+      selectedReminderParties.includes(r.party.id),
+    );
+    if (!selected.length) return toast.error("Select at least one party");
+
+    const { email } = getMessagingConfigFromSettings(companySettings);
+    let sent = 0;
+    selected.forEach((row: any, i) => {
+      setTimeout(() => {
+        const to = row.party.email || "";
+        if (!to) {
+          toast.error(`No email for ${row.party.name}`);
+          return;
+        }
+        void sendEmailMessage({
+          to,
+          subject: `Payment reminder — ${row.party.name}`,
+          body: buildReminderMessage(row),
+          email,
+        }).then(() => {
+          sent += 1;
+          toast.success(`Reminder sent to ${row.party.name} (${sent}/${selected.length})`);
+        });
+      }, i * 1200);
+    });
   }
 
   const paymentLink = useMemo(() => {
@@ -972,6 +1016,9 @@ export default function CommunicationHub() {
                 </span>
               </h2>
               <div className="flex gap-2">
+                <button className={primaryBtn} onClick={sendBulkEmail}>
+                  <Mail size={14} /> Email Selected ({selectedReminderParties.length})
+                </button>
                 <button
                   className="h-8 px-3 bg-green-600 hover:bg-green-700 text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm"
                   onClick={sendBulkWhatsApp}

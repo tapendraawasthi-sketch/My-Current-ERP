@@ -3,6 +3,7 @@ import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import { Sliders, Calendar, Plus, Edit2, Trash2, X, Save, ArrowLeft } from "lucide-react";
 import toast from "react-hot-toast";
+import { sendTestEmail } from "../lib/messagingService";
 import {
   DEFAULT_SYSTEM_CONFIGURATION,
   mergeSystemConfiguration,
@@ -274,6 +275,32 @@ export default function ConfigurationHub() {
                 checked={draft.email.useTls}
                 onChange={(v) => setDraft({ ...draft, email: { ...draft.email, useTls: v } })}
               />
+            </div>
+            <div className="col-span-2 flex items-center gap-2">
+              <button
+                type="button"
+                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
+                onClick={() => {
+                  const recipient =
+                    draft.email.senderEmail?.trim() || draft.email.smtpUser?.trim() || "";
+                  if (!recipient) {
+                    toast.error("Set sender email or SMTP user first");
+                    return;
+                  }
+                  void sendTestEmail(draft.email, recipient).then((r) => {
+                    toast.success(
+                      r.method === "smtp"
+                        ? "Test email sent via SMTP"
+                        : "Opened mail client for test",
+                    );
+                  });
+                }}
+              >
+                Send test email
+              </button>
+              <span className="text-[11px] text-gray-500">
+                Uses SMTP when configured; otherwise opens your email client.
+              </span>
             </div>
           </div>
         );

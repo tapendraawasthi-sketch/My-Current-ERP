@@ -4,6 +4,7 @@ import cors from "cors";
 import healthRouter from "./routes/health.js";
 import authRouter from "./routes/auth.js";
 import syncRouter from "./routes/sync.js";
+import messagingRouter from "./routes/messaging.js";
 import { envelopeMiddleware } from "./middleware/responseEnvelope.js";
 import { rateLimitMiddleware } from "./middleware/rateLimit.js";
 import { connectRedis } from "./lib/redis.js";
@@ -19,6 +20,7 @@ app.use(rateLimitMiddleware);
 app.use("/api", healthRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/sync", syncRouter);
+app.use("/api/messaging", messagingRouter);
 
 app.use((_req, res) => {
   res.status(404).json({

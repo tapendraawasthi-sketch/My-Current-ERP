@@ -157,6 +157,38 @@ async function pullRemoteChanges(): Promise<void> {
     } as any);
   }
 
+  for (const row of data.invoices || []) {
+    const id = String(row.id);
+    const existing = await db.invoices.get(id);
+    const pulledLines = Array.isArray(row.lines) ? row.lines : [];
+    const lines =
+      pulledLines.length > 0
+        ? pulledLines.map((l: Record<string, unknown>, idx: number) => ({
+            id: String(l.id || `${id}-line-${idx}`),
+            itemId: l.item_id ? String(l.item_id) : undefined,
+            quantity: Number(l.quantity || 0),
+            qty: Number(l.quantity || 0),
+            rate: Number(l.rate || 0),
+            amount: Number(l.amount || 0),
+            vatAmount: Number(l.vat_amount || 0),
+          }))
+        : existing?.lines || [];
+
+    await db.invoices.put({
+      ...(existing || {}),
+      id,
+      invoiceNo: String(row.invoice_no || existing?.invoiceNo || ""),
+      date: String(row.invoice_date || existing?.date || "").slice(0, 10),
+      type: String(row.invoice_type || existing?.type || "sales"),
+      status: String(row.status || existing?.status || "draft"),
+      partyId: row.party_id ? String(row.party_id) : existing?.partyId,
+      subTotal: Number(row.sub_total ?? existing?.subTotal ?? 0),
+      vatAmount: Number(row.vat_amount ?? existing?.vatAmount ?? 0),
+      grandTotal: Number(row.grand_total ?? existing?.grandTotal ?? 0),
+      lines,
+    } as any);
+  }
+
   localStorage.setItem(SYNC_PULL_KEY, now);
 }
 

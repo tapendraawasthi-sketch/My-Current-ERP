@@ -109,6 +109,7 @@ import BankBook from "./pages/BankBook";
 import PartyLedgerStatement from "./pages/PartyLedgerStatement";
 import VoucherEntryHub from "./pages/VoucherEntryHub";
 import ConfigurationHub from "./pages/ConfigurationHub";
+import CommunicationHub from "./pages/CommunicationHub";
 import ChequeRegister from "./pages/ChequeRegister";
 import BankStatementImport from "./pages/BankStatementImport";
 import ChequePrinting from "./pages/ChequePrinting";
@@ -383,6 +384,9 @@ const App: React.FC = () => {
       case "configuration":
       case "holidays":
         return <ConfigurationHub />;
+      case "communication-hub":
+      case "communication":
+        return <CommunicationHub />;
       case "cheque-register":
         return <ChequeRegister />;
       case "bank-statement-import":
