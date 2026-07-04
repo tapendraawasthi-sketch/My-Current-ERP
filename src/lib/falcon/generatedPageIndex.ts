@@ -190,8 +190,8 @@ export const GENERATED_PAGE_INDEX: GeneratedPageEntry[] = [
     ],
     "component": "BudgetVsActual",
     "file": "src/pages/BudgetVsActual.tsx",
-    "title": "Budget Vs Actual",
-    "subtitle": "",
+    "title": "Budget vs Actual",
+    "subtitle": "Compare planned budgets against actual transactions with variance analysis",
     "menuPath": "Books & Reports → Budget vs Actual"
   },
   {
@@ -384,8 +384,8 @@ export const GENERATED_PAGE_INDEX: GeneratedPageEntry[] = [
     ],
     "component": "FinancialDashboard",
     "file": "src/pages/FinancialDashboard.tsx",
-    "title": "Dashboard",
-    "subtitle": "{bsDateStr} · {adDateStr}",
+    "title": "Home",
+    "subtitle": "",
     "menuPath": "Home → Financial Dashboard"
   },
   {
@@ -536,8 +536,8 @@ export const GENERATED_PAGE_INDEX: GeneratedPageEntry[] = [
     ],
     "component": "GeneralLedger",
     "file": "src/pages/GeneralLedger.tsx",
-    "title": "{companySettings?.companyNameEn || companySettings?.name || \"Company\"}",
-    "subtitle": "",
+    "title": "General Ledger",
+    "subtitle": "Browse account groups, sub-groups, and ledger statements",
     "menuPath": "Books & Reports → General Ledger"
   },
   {
@@ -620,7 +620,7 @@ export const GENERATED_PAGE_INDEX: GeneratedPageEntry[] = [
     "component": "OutstandingPayables",
     "file": "src/pages/OutstandingPayables.tsx",
     "title": "Outstanding Payables",
-    "subtitle": "Unpaid and partially paid sales invoices",
+    "subtitle": "Unpaid and partially paid purchase invoices",
     "menuPath": "Books & Reports → Outstanding Payables"
   },
   {
@@ -1178,4 +1178,4 @@ export const GENERATED_PAGE_INDEX: GeneratedPageEntry[] = [
   }
 ];
 
-export const GENERATED_PAGE_INDEX_BUILT_AT = "2026-07-04T09:46:35.473Z";
+export const GENERATED_PAGE_INDEX_BUILT_AT = "2026-07-04T09:55:21.289Z";
