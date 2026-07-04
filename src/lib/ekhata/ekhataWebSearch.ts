@@ -3,14 +3,37 @@
  * Works in browser (CORS-safe) and server.
  */
 
+import { understandAccountingLanguage } from "./accountingLanguageBrain";
+
 export interface RealSearchResult {
   answer: string;
   title: string;
   url?: string;
-  source: "wikipedia" | "duckduckgo";
+  source: "wikipedia" | "duckduckgo" | "lexicon";
 }
 
-/** Expand shorthand / broken queries into searchable terms */
+/** Accounting lexicon lookup before hitting Wikipedia (avoids mythological sampatti etc.) */
+function tryAccountingLexicon(query: string): RealSearchResult | null {
+  const accounting = understandAccountingLanguage(query);
+  if (accounting.kind !== "answer" || accounting.confidence < 0.55) {
+    return null;
+  }
+  return {
+    answer: accounting.reply,
+    title: "e-Khata Accounting",
+    source: "lexicon",
+  };
+}
+
+/** Prefix accounting queries so Wikipedia returns accounting definitions, not unrelated topics */
+function accountingSearchQuery(query: string): string {
+  const lower = query.toLowerCase();
+  if (/\b(accounting|ifrs|nas|nfrs|debit|credit|ledger|vat|tds|ssf|asset|liability|equity)\b/i.test(lower)) {
+    return query;
+  }
+  return `accounting definition Nepal ${query}`;
+}
+
 export function expandSearchQueries(text: string): string[] {
   const t = text.toLowerCase().replace(/\?+$/, "").trim();
   const queries: string[] = [];
@@ -116,7 +139,10 @@ function extractAnswerSnippet(extract: string, query: string): string {
  * Real web search — Wikipedia first (fast, reliable, CORS-safe).
  */
 export async function searchWebReal(query: string): Promise<RealSearchResult | null> {
-  const queries = expandSearchQueries(query);
+  const lexiconHit = tryAccountingLexicon(query);
+  if (lexiconHit) return lexiconHit;
+
+  const queries = expandSearchQueries(accountingSearchQuery(query));
 
   for (const q of queries) {
     const title = await wikiOpensearch(q);
@@ -160,6 +186,10 @@ export function formatRealSearchAnswer(
   result: RealSearchResult,
   lang: "nepali" | "english" | "mixed",
 ): string {
+  if (result.source === "lexicon") {
+    return result.answer;
+  }
+
   const intro =
     lang === "english"
       ? "🌐 I searched Wikipedia:\n\n"

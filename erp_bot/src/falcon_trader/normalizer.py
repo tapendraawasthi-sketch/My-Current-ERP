@@ -27,12 +27,13 @@ WORD_TO_NUMBER: dict[str, int] = {
     "saya": 100,
     "hajar": 1000,
     "lakh": 100000,
+    "karod": 10000000,
+    "crore": 10000000,
+    "arab": 1000000000,
 }
 
+# Postpositions (le, lai, bata, ma) are semantic role markers — never strip them.
 FILLER_WORDS = {
-    "le",
-    "lai",
-    "ma",
     "ko",
     "ki",
     "ho",
@@ -70,12 +71,25 @@ def parse_amount_words(text: str) -> int | None:
     if not normalized:
         return None
 
+    # saadhe teen hajar = 3500, saadhe paanch hajar = 5500
+    saadhe_match = re.search(
+        r"\bsaadhe\s+(\w+)\s+(hajar|saya|lakh|karod|crore)\b",
+        normalized,
+    )
+    if saadhe_match:
+        num_word = saadhe_match.group(1)
+        unit = saadhe_match.group(2)
+        base = WORD_TO_NUMBER.get(num_word)
+        unit_val = WORD_TO_NUMBER.get(unit)
+        if base is not None and unit_val is not None:
+            return int((base + 0.5) * unit_val)
+
     k_match = re.search(r"(\d+(?:\.\d+)?)\s*k\b", normalized)
     if k_match:
         return int(float(k_match.group(1)) * 1000)
 
     digit_match = re.search(r"\b(\d+(?:\.\d+)?)\b", normalized)
-    if digit_match and not re.search(r"\b(hajar|saya|lakh)\b", normalized):
+    if digit_match and not re.search(r"\b(hajar|saya|lakh|karod|crore|arab)\b", normalized):
         value = digit_match.group(1)
         return int(float(value))
 
