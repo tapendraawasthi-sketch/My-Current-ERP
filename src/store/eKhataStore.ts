@@ -15,9 +15,9 @@ function buildWelcome(): string {
     "Namaste! Ma e-Khata — tapaiko **accounting language** ra **emotional AI** sahayogi.\n\n" +
     "Ma Nepali ra English duitai accounting bhasha bujhchhu, tapai ko mood pani bujhchhu. Sodhnus wa entry lekhnu hos:\n" +
     "• 'What entry for bad debt write off?' / 'Bad debt ko entry k hunchha?'\n" +
-    "• 'Ram lai 500 udhaar becheko' / 'salary accrual 500000'\n" +
-    "• Wa kura matra garnu hos — ma empathetic jawaf dinchhu\n\n" +
-    "🧠 CA Brain · Emotional AI · Ollama LLM when online"
+    "• 'i sold 200 cups for Rs 50 each' / 'bought stationery 1200'\n" +
+    "• 'received payment 3000 from Ram' / 'Ram lai 500 udhaar'\n\n" +
+    "🧠 Smart Work Brain · CA entries · Emotional AI · Ollama when online"
   );
 }
 

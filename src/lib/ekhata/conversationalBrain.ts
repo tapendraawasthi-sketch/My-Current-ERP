@@ -89,7 +89,7 @@ function extractTopic(text: string): string | null {
   const patterns: Array<[RegExp, string]> = [
     [/\b(movie|film|cinema|picture)\b/i, "movie"],
     [/\b(music|gaana|song|sangeet)\b/i, "music"],
-    [/\b(food|khana|khaana|recipe)\b/i, "food"],
+    [/\b(momo|food|khana|khaana|recipe)\b/i, "food"],
     [/\b(color|colour|rang)\b/i, "color"],
     [/\b(book|kitab|pustak)\b/i, "book"],
     [/\b(sport|khel|cricket|football)\b/i, "sport"],
@@ -244,10 +244,10 @@ export function analyzeQuestion(text: string, history: ConversationTurn[] = []):
     };
   }
 
-  // Opinion / preference questions
+  // Opinion / preference — "do you like X"
   if (
-    /\b(favourite|favorite|pasand|man\s*par|ramro\s*lag|best|top|sabai\s*banda)\b/i.test(t) &&
-    (isQuestion || extractTopic(t))
+    /\b(do\s+you\s+like|like\s+.*\?|pasand\s*cha|man\s*par|favourite|favorite)\b/i.test(t) &&
+    (isQuestion || extractTopic(t) || /\b(momo|food|movie|music|sport|tea|coffee|chai)\b/i.test(t))
   ) {
     return {
       kind: "opinion_preference",

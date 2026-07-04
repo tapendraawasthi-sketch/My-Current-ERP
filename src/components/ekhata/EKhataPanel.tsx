@@ -11,7 +11,7 @@ function statusLabel(llmOnline: boolean, llmModel?: string): string {
       ? `Ollama LLM · ${llmModel} · CA + Emotional AI`
       : "Ollama LLM · CA + Emotional AI";
   }
-  return "CA Brain · Emotional AI";
+  return "CA + Smart Work + Emotional AI";
 }
 
 const EKhataPanel: React.FC = () => {

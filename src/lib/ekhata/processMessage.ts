@@ -10,7 +10,7 @@ import {
   understandAccountingLanguage,
 } from "./accountingLanguageBrain";
 import { generateConversationalReply, type ConversationTurn } from "./conversationalBrain";
-import { shouldTryTransactionParse } from "./nepaliBrain";
+import { shouldTryWorkParse } from "./smartWorkBrain";
 import type { KhataConfirmationCard, KhataParseResult } from "./types";
 import type { LedgerBalanceSnapshot } from "./conversationEngine";
 
@@ -49,7 +49,8 @@ export interface ProcessMessageOptions {
 function localizeClarify(question: string, lang: ReturnType<typeof detectUserLanguage>): string {
   if (lang !== "english") return question;
   const map: Record<string, string> = {
-    "Aaple diye ki unle diye?": "Did YOU give or did THEY pay? (e.g. 'Ram lai 500 diye' = credit sale; 'Shyam le 500 tiryo' = payment received)",
+    "Aaple diye ki unle diye?":
+      "Did YOU give or did THEY pay? (e.g. 'Ram lai 500 diye' = credit sale; 'Shyam le 500 tiryo' = payment received)",
     "Ke transaction ho? Thora clear lekhnus.":
       "What transaction is this? Please be clearer — e.g. 'Ram lai 500 udhaar', 'salary 50000', 'bad debt write off 2000'",
     "Rakam kati ho? Number lekhnus.": "What is the amount? Please include a number.",
@@ -80,8 +81,8 @@ export function processEKhataMessage(
     };
   }
 
-  // 1. Transaction with amount → CA entry engine
-  if (shouldTryTransactionParse(trimmed)) {
+  // 1. Accounting work — natural language entry parse
+  if (shouldTryWorkParse(trimmed)) {
     const parsed = parseKhataMessage(trimmed, normalizedText);
 
     if (parsed.clarifying_question) {
@@ -142,7 +143,13 @@ export async function processEKhataMessageAsync(
       const status = await checkEKhataLlmStatus();
       if (status.khataLlm && status.online) {
         const lang = detectUserLanguage(rawText);
-        const llm = await askEKhataLlm(rawText, getEKhataSessionId(), options.balance, undefined, lang);
+        const llm = await askEKhataLlm(
+          rawText,
+          getEKhataSessionId(),
+          options.balance,
+          undefined,
+          lang,
+        );
         const normalizedText = normalizeNepaliText(rawText);
 
         if (llm.kind === "entry" && llm.card) {

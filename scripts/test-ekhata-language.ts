@@ -144,5 +144,35 @@ check(
 
 check("isEmotionalMessage sad", isEmotionalMessage("dukhi chhu aaja"));
 
+const cupsSale = processEKhataMessage("i sold 200 cups today for Rs. 50 each");
+check(
+  "english qty x rate sale",
+  cupsSale.kind === "entry" &&
+    cupsSale.card?.intent === "khata_cash_sale" &&
+    cupsSale.card.amount === 10000,
+);
+
+const paymentIn = processEKhataMessage("received payment 3000 from Ram");
+check(
+  "english payment received",
+  paymentIn.kind === "entry" &&
+    paymentIn.card?.intent === "khata_payment_in" &&
+    paymentIn.card.amount === 3000,
+);
+
+const bought = processEKhataMessage("bought stationery for 1200");
+check(
+  "english purchase",
+  bought.kind === "entry" &&
+    bought.card?.intent === "khata_purchase" &&
+    bought.card.amount === 1200,
+);
+
+const momoLike = generateConversationalReply("do you like momo");
+check(
+  "do you like momo conversational",
+  momoLike.toLowerCase().includes("momo") || momoLike.toLowerCase().includes("khana"),
+);
+
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed > 0 ? 1 : 0);

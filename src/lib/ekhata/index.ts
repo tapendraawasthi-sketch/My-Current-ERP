@@ -32,9 +32,36 @@ export {
   isAccountingLanguageQuery,
   ACCOUNTING_LEXICON,
 } from "./accountingLanguageBrain";
-export type { UserLanguage, AccountingLanguageResult, AccountingQuestionType } from "./accountingLanguageBrain";
-export { CA_CHART_OF_ACCOUNTS, CLASSIFICATION_GUIDE, classifyAccount, getAccountsByClass } from "./caAccountClassification";
-export { CA_ENTRY_TEMPLATES, buildJournalLines, validateJournalBalance, findTemplateByKeywords } from "./caEntryTemplates";
-export type { KhataConfirmationCard, KhataIntent, KhataParseResult, JournalLineDraft, AccountClass } from "./types";
+export type {
+  UserLanguage,
+  AccountingLanguageResult,
+  AccountingQuestionType,
+} from "./accountingLanguageBrain";
+export {
+  CA_CHART_OF_ACCOUNTS,
+  CLASSIFICATION_GUIDE,
+  classifyAccount,
+  getAccountsByClass,
+} from "./caAccountClassification";
+export {
+  CA_ENTRY_TEMPLATES,
+  buildJournalLines,
+  validateJournalBalance,
+  findTemplateByKeywords,
+} from "./caEntryTemplates";
+export type {
+  KhataConfirmationCard,
+  KhataIntent,
+  KhataParseResult,
+  JournalLineDraft,
+  AccountClass,
+} from "./types";
 export { KHATA_INTENT_LABELS, NEPAL_RATES } from "./types";
-export type { EKhataProcessResult, EKhataEngine, ProcessMessageOptions } from "./processMessage";
+export {
+  shouldTryWorkParse,
+  parseSmartAmount,
+  classifyWorkIntent,
+  analyzeWork,
+  isConversationalOnly,
+} from "./smartWorkBrain";
+export type { WorkSignals } from "./smartWorkBrain";
