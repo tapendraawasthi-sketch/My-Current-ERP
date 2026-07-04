@@ -14,8 +14,16 @@ import {
 } from "lucide-react";
 import { useStore } from "../store";
 import { CostCenterLevel, CostCenter } from "../lib/types";
-import { generateId } from "../lib/db";
 import toast from "react-hot-toast";
+import { ReportEmptyState } from "../components/ReportEmptyState";
+
+const btnPrimary =
+  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
+const btnOutline =
+  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
+const inputCls =
+  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
 
 export default function CostCenters() {
   const { costCenters, addCostCenter, updateCostCenter, deleteCostCenter, vouchers } = useStore();
@@ -33,7 +41,6 @@ export default function CostCenters() {
     isActive: true,
   });
 
-  // Calculate balances per cost center
   const costCenterBalances = useMemo(() => {
     const balances: Record<string, number> = {};
     vouchers
@@ -46,7 +53,6 @@ export default function CostCenters() {
         });
       });
 
-    // Roll up balances to parents
     const rollup = { ...balances };
 
     const resolveBalance = (id: string): number => {
@@ -148,7 +154,7 @@ export default function CostCenters() {
 
     return (
       <ul
-        className={`flex flex-col gap-1 ${depth > 0 ? "ml-4 pl-4 border-l border-[#9DC07A] mt-1" : ""}`}
+        className={`flex flex-col gap-1 ${depth > 0 ? "ml-4 pl-4 border-l border-gray-200 mt-1" : ""}`}
       >
         {nodes.map((node) => {
           const hasChildren = costCenters.some((c) => c.parentId === node.id);
@@ -159,10 +165,14 @@ export default function CostCenters() {
           return (
             <li key={node.id}>
               <div
-                className={`flex items-center justify-between p-2 rounded-md cursor-pointer group transition-colors ${isSelected ? "bg-[#D4EABD] border border-[#9DC07A]" : "hover:bg-[#EBF5E2] border border-transparent"}`}
+                className={`flex items-center justify-between p-2 rounded-md cursor-pointer group transition-colors border ${
+                  isSelected
+                    ? "bg-blue-50 border-[#1557b0]/30 border-l-[3px] border-l-[#1557b0]"
+                    : "hover:bg-gray-50 border-transparent hover:border-gray-200"
+                }`}
                 onClick={() => setSelectedCenterId(node.id)}
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 min-w-0">
                   <div
                     className="w-5 h-5 flex items-center justify-center shrink-0"
                     onClick={(e) => {
@@ -172,16 +182,18 @@ export default function CostCenters() {
                   >
                     {hasChildren ? (
                       isExpanded ? (
-                        <ChevronDown className="w-4 h-4 text-[#000000] hover:text-[#000000]" />
+                        <ChevronDown className="w-4 h-4 text-gray-500" />
                       ) : (
-                        <ChevronRight className="w-4 h-4 text-[#000000] hover:text-[#000000]" />
+                        <ChevronRight className="w-4 h-4 text-gray-500" />
                       )
                     ) : (
                       <span className="w-4 h-4 inline-block" />
                     )}
                   </div>
                   <div
-                    className={`p-1.5 rounded-md ${!node.parentId ? "bg-[#D4EABD] text-[#1557b0]" : "bg-[#EBF5E2] text-[#000000]"}`}
+                    className={`p-1.5 rounded-md shrink-0 ${
+                      !node.parentId ? "bg-blue-100 text-[#1557b0]" : "bg-gray-100 text-gray-600"
+                    }`}
                   >
                     {!node.parentId ? (
                       <Building2 className="w-3.5 h-3.5" />
@@ -189,21 +201,23 @@ export default function CostCenters() {
                       <MapPin className="w-3.5 h-3.5" />
                     )}
                   </div>
-                  <div>
-                    <div className="text-[12px] font-medium text-[#000000] flex items-center gap-2">
-                      {node.name}
+                  <div className="min-w-0">
+                    <div className="text-[12px] font-medium text-gray-800 flex items-center gap-2">
+                      <span className="truncate">{node.name}</span>
                       {!node.isActive && (
-                        <span className="px-1.5 py-0.5 text-[9px] bg-red-100 text-red-600 rounded uppercase font-bold">
+                        <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-red-100 text-red-700 shrink-0">
                           Inactive
                         </span>
                       )}
                     </div>
-                    <div className="text-[10px] text-[#000000] font-mono">{node.code}</div>
+                    <div className="text-[10px] text-gray-500 font-mono">{node.code}</div>
                   </div>
                 </div>
-                <div className="text-[11px] font-mono text-[#000000] flex gap-2 items-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="text-[11px] font-mono text-gray-600 flex gap-2 items-center opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-2">
                   <span
-                    className={balance > 0 ? "text-green-600" : balance < 0 ? "text-red-600" : ""}
+                    className={
+                      balance > 0 ? "text-[#059669]" : balance < 0 ? "text-red-600" : ""
+                    }
                   >
                     Rs. {Math.abs(balance).toLocaleString()}{" "}
                     {balance > 0 ? "Dr" : balance < 0 ? "Cr" : ""}
@@ -219,63 +233,70 @@ export default function CostCenters() {
   };
 
   const selectedCenter = costCenters.find((c) => c.id === selectedCenterId);
+  const balance = selectedCenter ? costCenterBalances[selectedCenter.id] || 0 : 0;
 
   return (
-    <div className="flex flex-col gap-4 animate-fadeIn pb-4 h-[calc(100vh-100px)]">
-      <div className="flex items-center justify-between shrink-0">
-        <div>
-          <h1 className="text-[15px] font-semibold text-[#000000]">Cost Centers</h1>
-          <p className="text-[11px] text-[#000000] mt-0.5">
-            Manage hierarchical cost centers, departments, and branches
-          </p>
+    <div className="flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-hidden">
+      <div className="p-4 pb-0 shrink-0">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-[15px] font-semibold text-gray-800">Cost Centers</h1>
+            <p className="text-[11px] text-gray-500 mt-0.5">
+              Manage hierarchical cost centers, departments, and branches
+            </p>
+          </div>
+          <button type="button" className={btnPrimary} onClick={handleAddNew}>
+            <Plus className="h-3.5 w-3.5" />
+            Add cost center
+          </button>
         </div>
-        <button
-          onClick={handleAddNew}
-          className="h-8 px-3 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 shadow-sm"
-        >
-          <Plus className="w-4 h-4" /> Add Cost Center
-        </button>
       </div>
 
-      <div className="flex gap-4 flex-1 overflow-hidden">
-        {/* Left Panel: Tree */}
-        <div className="w-[55%] bg-white rounded-lg shadow-sm border border-[#9DC07A] flex flex-col">
-          <div className="p-3 border-b border-[#9DC07A] bg-[#f5f6fa] shrink-0">
-            <h3 className="text-[11px] font-bold text-[#000000] uppercase tracking-wide">
-              Cost Center Hierarchy
+      <div className="flex flex-1 gap-4 overflow-hidden px-4 pb-4 min-h-0">
+        <div className="w-[55%] min-w-0 bg-white rounded-md border border-gray-200 flex flex-col">
+          <div className="px-3 py-2.5 border-b border-gray-200 bg-[#f5f6fa] shrink-0">
+            <h3 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              Cost center hierarchy
             </h3>
           </div>
           <div className="flex-1 overflow-y-auto p-4">
             {costCenters.length === 0 ? (
-              <div className="text-center text-[#000000] text-[12px] py-8">
-                No cost centers configured. Click Add Cost Center to begin.
-              </div>
+              <ReportEmptyState
+                message="No cost centers configured"
+                hint='Click "Add cost center" to create your first cost center.'
+                icon={<Building2 size={28} strokeWidth={1.5} />}
+              />
             ) : (
               renderTree()
             )}
           </div>
+          {costCenters.length > 0 && (
+            <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500 shrink-0">
+              {costCenters.length} cost center{costCenters.length === 1 ? "" : "s"}
+            </div>
+          )}
         </div>
 
-        {/* Right Panel: Details or Form */}
-        <div className="w-[45%] bg-white rounded-lg shadow-sm border border-[#9DC07A] flex flex-col overflow-y-auto">
+        <div className="w-[45%] min-w-0 bg-white rounded-md border border-gray-200 flex flex-col overflow-hidden">
           {showForm ? (
-            <div className="p-4 flex flex-col h-full">
-              <div className="flex items-center justify-between mb-4 border-b border-[#9DC07A] pb-3">
-                <h3 className="text-[13px] font-semibold text-[#000000]">
-                  {isEditing ? "Edit Cost Center" : "New Cost Center"}
-                </h3>
+            <>
+              <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 shrink-0">
+                <span className="text-[13px] font-semibold text-gray-800">
+                  {isEditing ? "Edit cost center" : "New cost center"}
+                </span>
                 <button
+                  type="button"
                   onClick={() => setShowForm(false)}
-                  className="text-[#000000] hover:text-[#000000]"
+                  className="text-gray-500 hover:text-gray-700"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="h-4 w-4" />
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="flex-1 flex flex-col">
-                <div className="space-y-4 flex-1">
+              <form onSubmit={handleSubmit} className="flex flex-1 flex-col min-h-0">
+                <div className="flex-1 overflow-y-auto p-4 space-y-3">
                   <div>
-                    <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                    <label className={labelCls}>
                       Name <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -283,11 +304,11 @@ export default function CostCenters() {
                       required
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full h-8 px-2 text-[12px] border border-[#9DC07A] rounded focus:outline-none focus:border-[#1557b0]"
+                      className={inputCls}
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                    <label className={labelCls}>
                       Code <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -295,19 +316,17 @@ export default function CostCenters() {
                       required
                       value={formData.code}
                       onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                      className="w-full h-8 px-2 text-[12px] border border-[#9DC07A] rounded focus:outline-none focus:border-[#1557b0] uppercase"
+                      className={`${inputCls} uppercase font-mono`}
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-medium text-[#000000] mb-1">
-                      Parent Cost Center
-                    </label>
+                    <label className={labelCls}>Parent cost center</label>
                     <select
                       value={formData.parentId}
                       onChange={(e) => setFormData({ ...formData, parentId: e.target.value })}
-                      className="w-full h-8 px-2 text-[12px] border border-[#9DC07A] rounded focus:outline-none focus:border-[#1557b0] bg-white"
+                      className={inputCls}
                     >
-                      <option value="">-- None (Root Level) --</option>
+                      <option value="">None (root level)</option>
                       {costCenters
                         .filter((c) => c.id !== selectedCenterId)
                         .map((c) => (
@@ -318,22 +337,18 @@ export default function CostCenters() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[11px] font-medium text-[#000000] mb-1">
-                      Description
-                    </label>
+                    <label className={labelCls}>Description</label>
                     <textarea
                       rows={3}
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      className="w-full px-2 py-1.5 text-[12px] border border-[#9DC07A] rounded focus:outline-none focus:border-[#1557b0] resize-none"
+                      className="w-full px-2.5 py-1.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] resize-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-medium text-[#000000] mb-1">
-                      Responsible Person
-                    </label>
+                    <label className={labelCls}>Responsible person</label>
                     <div className="relative">
-                      <User className="w-4 h-4 text-[#000000] absolute left-2 top-2" />
+                      <User className="w-4 h-4 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                       <input
                         type="text"
                         value={formData.responsiblePerson}
@@ -341,122 +356,120 @@ export default function CostCenters() {
                           setFormData({ ...formData, responsiblePerson: e.target.value })
                         }
                         placeholder="e.g. Ram Sharma"
-                        className="w-full h-8 pl-8 pr-2 text-[12px] border border-[#9DC07A] rounded focus:outline-none focus:border-[#1557b0]"
+                        className={`${inputCls} pl-8`}
                       />
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 mt-2">
+                  <label className="flex items-center gap-2 text-[12px] text-gray-700 cursor-pointer">
                     <input
                       type="checkbox"
-                      id="isActive"
                       checked={formData.isActive}
                       onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                      className="rounded border-[#9DC07A] text-[#1557b0] focus:ring-[#1557b0]"
+                      className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
                     />
-                    <label htmlFor="isActive" className="text-[12px] text-[#000000] font-medium">
-                      Active Cost Center
-                    </label>
-                  </div>
+                    Active cost center
+                  </label>
                 </div>
 
-                <div className="pt-4 border-t border-[#9DC07A] flex justify-end gap-2 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => setShowForm(false)}
-                    className="h-8 px-4 bg-white border border-[#9DC07A] text-[#000000] text-[12px] font-medium rounded hover:bg-[#EBF5E2]"
-                  >
+                <div className="flex justify-end gap-2 p-4 border-t border-gray-200 shrink-0">
+                  <button type="button" className={btnOutline} onClick={() => setShowForm(false)}>
                     Cancel
                   </button>
-                  <button
-                    type="submit"
-                    className="h-8 px-4 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded flex items-center gap-1.5 shadow-sm"
-                  >
-                    <Save className="w-4 h-4" /> Save
+                  <button type="submit" className={btnPrimary}>
+                    <Save className="h-3.5 w-3.5" />
+                    Save
                   </button>
                 </div>
               </form>
-            </div>
+            </>
           ) : selectedCenter ? (
-            <div className="p-6 flex flex-col h-full">
-              <div className="flex items-start justify-between mb-6">
-                <div>
-                  <h2 className="text-[18px] font-bold text-[#000000] mb-1">
+            <div className="flex flex-col h-full overflow-y-auto">
+              <div className="px-4 py-3 border-b border-gray-200 flex items-start justify-between shrink-0">
+                <div className="min-w-0">
+                  <h2 className="text-[13px] font-semibold text-gray-800 truncate">
                     {selectedCenter.name}
                   </h2>
-                  <div className="text-[12px] font-mono text-[#000000] bg-[#EBF5E2] px-2 py-0.5 rounded inline-block">
+                  <span className="mt-1 inline-block rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-gray-100 text-gray-700 font-mono">
                     {selectedCenter.code}
-                  </div>
+                  </span>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-1 shrink-0 ml-2">
                   <button
+                    type="button"
                     onClick={() => handleEdit(selectedCenter)}
-                    className="p-1.5 bg-white border border-[#9DC07A] text-[#000000] hover:text-[#1557b0] hover:border-[#1557b0] rounded shadow-sm transition-colors"
+                    className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
+                    title="Edit"
                   >
-                    <Edit2 className="w-4 h-4" />
+                    <Edit2 className="h-3.5 w-3.5" />
                   </button>
                   <button
+                    type="button"
                     onClick={() => handleDelete(selectedCenter.id)}
-                    className="p-1.5 bg-white border border-[#9DC07A] text-[#000000] hover:text-red-600 hover:border-red-600 rounded shadow-sm transition-colors"
+                    className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50"
+                    title="Delete"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="h-3.5 w-3.5" />
                   </button>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-8">
-                <div className="bg-[#EBF5E2] p-3 rounded border border-[#9DC07A]">
-                  <div className="text-[10px] font-bold text-[#000000] uppercase mb-1">Status</div>
-                  <div
-                    className={`text-[12px] font-medium ${selectedCenter.isActive ? "text-green-600" : "text-red-600"}`}
-                  >
-                    {selectedCenter.isActive ? "Active" : "Inactive"}
-                  </div>
-                </div>
-                <div className="bg-[#EBF5E2] p-3 rounded border border-[#9DC07A]">
-                  <div className="text-[10px] font-bold text-[#000000] uppercase mb-1">
-                    Responsible Person
-                  </div>
-                  <div className="text-[12px] font-medium text-[#000000]">
-                    {selectedCenter.responsiblePerson || "Not Assigned"}
-                  </div>
-                </div>
-                <div className="bg-[#D4EABD] p-3 rounded border border-[#9DC07A] col-span-2 flex items-center justify-between">
-                  <div>
-                    <div className="text-[10px] font-bold text-[#000000] uppercase mb-1">
-                      Current Net Balance
+              <div className="p-4 space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-[#f5f6fa] p-3 rounded-md border border-gray-200">
+                    <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                      Status
                     </div>
-                    <div className="text-[16px] font-mono font-bold text-[#000000]">
-                      Rs. {Math.abs(costCenterBalances[selectedCenter.id] || 0).toLocaleString()}
-                      <span className="text-[12px] ml-1">
-                        {costCenterBalances[selectedCenter.id] > 0
-                          ? "Dr"
-                          : costCenterBalances[selectedCenter.id] < 0
-                            ? "Cr"
-                            : ""}
-                      </span>
+                    <span
+                      className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+                        selectedCenter.isActive
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
+                      }`}
+                    >
+                      {selectedCenter.isActive ? "Active" : "Inactive"}
+                    </span>
+                  </div>
+                  <div className="bg-[#f5f6fa] p-3 rounded-md border border-gray-200">
+                    <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                      Responsible person
+                    </div>
+                    <div className="text-[12px] text-gray-700">
+                      {selectedCenter.responsiblePerson || "—"}
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {selectedCenter.description && (
-                <div className="mb-6">
-                  <h4 className="text-[11px] font-bold text-[#000000] uppercase mb-2">
-                    Description
-                  </h4>
-                  <p className="text-[12px] text-[#000000] leading-relaxed bg-[#EBF5E2] p-3 rounded border border-[#9DC07A]">
-                    {selectedCenter.description}
-                  </p>
+                <div className="bg-[#eef2ff] p-3 rounded-md border border-[#c7d2fe]">
+                  <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                    Current net balance
+                  </div>
+                  <div className="text-[12px] font-mono font-bold text-gray-800">
+                    Rs. {Math.abs(balance).toLocaleString()}
+                    <span className="text-[11px] font-medium ml-1 text-gray-600">
+                      {balance > 0 ? "Dr" : balance < 0 ? "Cr" : ""}
+                    </span>
+                  </div>
                 </div>
-              )}
+
+                {selectedCenter.description && (
+                  <div>
+                    <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                      Description
+                    </h4>
+                    <p className="text-[12px] text-gray-700 leading-relaxed bg-[#f5f6fa] p-3 rounded-md border border-gray-200">
+                      {selectedCenter.description}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center text-[#000000] p-8">
-              <Building2 className="w-16 h-16 mb-4 text-[#000000]" />
-              <p className="text-[14px] font-medium text-[#000000]">Select a Cost Center</p>
-              <p className="text-[11px] text-[#000000] mt-1">
-                Click on any node in the tree to view its details.
-              </p>
+            <div className="flex-1 flex items-center justify-center p-6">
+              <ReportEmptyState
+                message="Select a cost center"
+                hint="Click any node in the tree to view its details."
+                icon={<Building2 size={28} strokeWidth={1.5} />}
+              />
             </div>
           )}
         </div>
