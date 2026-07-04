@@ -6,7 +6,6 @@ import { GlobalSearch } from "./GlobalSearch";
 import { Bell, User, LogOut, Settings, HelpCircle, Search, Moon, Sun } from "lucide-react";
 import toast from "react-hot-toast";
 
-
 const Header: React.FC = () => {
   const { companySettings, currentUser, logout, notifications, setCurrentPage, currentFiscalYear } =
     useStore();
@@ -147,18 +146,20 @@ const Header: React.FC = () => {
             color: "#374151",
             transition: "border-color 150ms ease, box-shadow 150ms ease",
           }}
-          onFocus={e => {
+          onFocus={(e) => {
             e.currentTarget.style.borderColor = "#2e7d32";
             e.currentTarget.style.boxShadow = "0 0 0 2px rgba(46,125,50,0.15)";
           }}
-          onBlur={e => {
+          onBlur={(e) => {
             e.currentTarget.style.borderColor = "#d1d5db";
             e.currentTarget.style.boxShadow = "none";
           }}
         >
           <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <Search style={{ width: 13, height: 13, color: "#374151" }} />
-            <span style={{ color: "rgba(107,114,128,0.8)" }}>Search accounts, vouchers, parties…</span>
+            <span style={{ color: "rgba(107,114,128,0.8)" }}>
+              Search accounts, vouchers, parties…
+            </span>
           </span>
           <kbd
             style={{
@@ -234,7 +235,6 @@ const Header: React.FC = () => {
         >
           <HelpCircle style={{ width: 16, height: 16, color: "#000000" }} />
         </a>
-
 
         {/* Notifications */}
         <div ref={alertsRef} style={{ position: "relative" }}>

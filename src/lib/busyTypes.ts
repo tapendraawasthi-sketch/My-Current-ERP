@@ -6,9 +6,9 @@
 // ============================================================
 
 export enum VoucherCategory {
-  DUAL = "dual",           // Accounting + Inventory
+  DUAL = "dual", // Accounting + Inventory
   ACCOUNTING = "accounting", // Accounting only
-  INVENTORY = "inventory",  // Inventory only
+  INVENTORY = "inventory", // Inventory only
 }
 
 export enum GSTNature {
@@ -156,7 +156,7 @@ export interface BillSundryMaster {
   nature: BillSundryNature;
   affectCostInSale: boolean;
   affectCostInPurchase: boolean;
-  accountingInSale?: string;   // Account ID
+  accountingInSale?: string; // Account ID
   accountingInPurchase?: string; // Account ID
   affectAccountingInStockTransfer: boolean;
   gstApplicable: boolean;
@@ -822,20 +822,104 @@ export interface GlobalShortcut {
 }
 
 export const GLOBAL_SHORTCUTS: GlobalShortcut[] = [
-  { key: "Ctrl+F1", action: "add_account", page: "accounts", description: "Add Account Master", category: "Masters" },
-  { key: "Ctrl+F2", action: "add_item", page: "items", description: "Add Item Master", category: "Masters" },
-  { key: "Ctrl+F5", action: "add_payment", page: "payment", description: "Add Payment Voucher", category: "Vouchers" },
-  { key: "Ctrl+F6", action: "add_receipt", page: "receipt", description: "Add Receipt Voucher", category: "Vouchers" },
-  { key: "Ctrl+F7", action: "add_journal", page: "journal", description: "Add Journal Voucher", category: "Vouchers" },
-  { key: "Ctrl+F8", action: "add_sales", page: "sales", description: "Add Sales Voucher", category: "Vouchers" },
-  { key: "Ctrl+F9", action: "add_purchase", page: "purchase", description: "Add Purchase Voucher", category: "Vouchers" },
-  { key: "Ctrl+B", action: "balance_sheet", page: "balance-sheet", description: "Balance Sheet", category: "Reports" },
-  { key: "Ctrl+T", action: "trial_balance", page: "trial-balance", description: "Trial Balance", category: "Reports" },
-  { key: "Ctrl+S", action: "stock_status", page: "stock-summary", description: "Stock Status", category: "Reports" },
-  { key: "Ctrl+A", action: "account_summary", page: "ledger", description: "Account Summary", category: "Reports" },
-  { key: "Ctrl+L", action: "ledger", page: "ledger", description: "Account Ledger", category: "Reports" },
-  { key: "Ctrl+G", action: "gst_summary", page: "vat-reports", description: "GST Summary", category: "Reports" },
-  { key: "Ctrl+U", action: "switch_user", page: "users", description: "Switch User", category: "System" },
+  {
+    key: "Ctrl+F1",
+    action: "add_account",
+    page: "accounts",
+    description: "Add Account Master",
+    category: "Masters",
+  },
+  {
+    key: "Ctrl+F2",
+    action: "add_item",
+    page: "items",
+    description: "Add Item Master",
+    category: "Masters",
+  },
+  {
+    key: "Ctrl+F5",
+    action: "add_payment",
+    page: "payment",
+    description: "Add Payment Voucher",
+    category: "Vouchers",
+  },
+  {
+    key: "Ctrl+F6",
+    action: "add_receipt",
+    page: "receipt",
+    description: "Add Receipt Voucher",
+    category: "Vouchers",
+  },
+  {
+    key: "Ctrl+F7",
+    action: "add_journal",
+    page: "journal",
+    description: "Add Journal Voucher",
+    category: "Vouchers",
+  },
+  {
+    key: "Ctrl+F8",
+    action: "add_sales",
+    page: "sales",
+    description: "Add Sales Voucher",
+    category: "Vouchers",
+  },
+  {
+    key: "Ctrl+F9",
+    action: "add_purchase",
+    page: "purchase",
+    description: "Add Purchase Voucher",
+    category: "Vouchers",
+  },
+  {
+    key: "Ctrl+B",
+    action: "balance_sheet",
+    page: "balance-sheet",
+    description: "Balance Sheet",
+    category: "Reports",
+  },
+  {
+    key: "Ctrl+T",
+    action: "trial_balance",
+    page: "trial-balance",
+    description: "Trial Balance",
+    category: "Reports",
+  },
+  {
+    key: "Ctrl+S",
+    action: "stock_status",
+    page: "stock-summary",
+    description: "Stock Status",
+    category: "Reports",
+  },
+  {
+    key: "Ctrl+A",
+    action: "account_summary",
+    page: "ledger",
+    description: "Account Summary",
+    category: "Reports",
+  },
+  {
+    key: "Ctrl+L",
+    action: "ledger",
+    page: "ledger",
+    description: "Account Ledger",
+    category: "Reports",
+  },
+  {
+    key: "Ctrl+G",
+    action: "gst_summary",
+    page: "vat-reports",
+    description: "GST Summary",
+    category: "Reports",
+  },
+  {
+    key: "Ctrl+U",
+    action: "switch_user",
+    page: "users",
+    description: "Switch User",
+    category: "System",
+  },
   { key: "F10", action: "calculator", description: "Calculator", category: "Tools" },
 ];
 
@@ -903,7 +987,7 @@ export interface VoucherReplicationConfig {
 // ALERT / NOTIFICATION TYPES
 // ============================================================
 
-export type AlarmType = 
+export type AlarmType =
   | "negative_stock"
   | "credit_limit_exceeded"
   | "min_stock"

@@ -370,10 +370,14 @@ const SystemSettings: React.FC = () => {
           size="sm"
           footer={
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => {
-                setResetModal(false);
-                setResetConfirmText("");
-              }}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setResetModal(false);
+                  setResetConfirmText("");
+                }}
+              >
                 Cancel
               </Button>
               <Button
@@ -389,10 +393,12 @@ const SystemSettings: React.FC = () => {
         >
           <div className="text-xs font-semibold select-none text-[#1f2937] leading-relaxed space-y-3">
             <div className="bg-red-50 border border-red-200 text-red-700 rounded p-3">
-              ⚠️ This will permanently delete ALL business data including invoices, vouchers, accounts, 
-              parties, and stock records. This action CANNOT be undone.
+              ⚠️ This will permanently delete ALL business data including invoices, vouchers,
+              accounts, parties, and stock records. This action CANNOT be undone.
             </div>
-            <p>Type <strong className="font-mono text-red-600">DELETE ALL DATA</strong> to confirm:</p>
+            <p>
+              Type <strong className="font-mono text-red-600">DELETE ALL DATA</strong> to confirm:
+            </p>
             <input
               type="text"
               value={resetConfirmText}

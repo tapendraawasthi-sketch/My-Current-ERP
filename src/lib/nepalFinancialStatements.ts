@@ -782,7 +782,12 @@ export function balanceSheetDataToRows(data: BalanceSheetData): NepalStatementLi
   rows.push(sectionHeader("hdr-assets", "II. ASSETS", "सम्पत्ति"));
   rows.push(...data.fixedAssets);
   rows.push(
-    sectionTotal("tot-fa", "Total Fixed Assets", data.totalFixedAssets, totalPrevious(data.fixedAssets)),
+    sectionTotal(
+      "tot-fa",
+      "Total Fixed Assets",
+      data.totalFixedAssets,
+      totalPrevious(data.fixedAssets),
+    ),
   );
   rows.push(...data.nonCurrentAssets);
   rows.push(
@@ -838,7 +843,12 @@ export function profitLossDataToRows(data: ProfitLossData): NepalStatementLine[]
   }
 
   rows.push(
-    sectionTotal("tot-income", "Total Income", data.totalIncome, totalsRound(data.netSales + totalPrevious(data.otherIncome))),
+    sectionTotal(
+      "tot-income",
+      "Total Income",
+      data.totalIncome,
+      totalsRound(data.netSales + totalPrevious(data.otherIncome)),
+    ),
   );
 
   rows.push(sectionHeader("hdr-cogs", "Cost of Goods Sold", "बिक्री गरिएको मालको लागत"));
@@ -857,7 +867,12 @@ export function profitLossDataToRows(data: ProfitLossData): NepalStatementLine[]
     ),
   );
   rows.push(
-    sectionTotal("tot-exp", "Total Expenses", data.totalExpenses, totalsRound(data.costOfGoodsSold + totalPrevious(data.indirectExpenses))),
+    sectionTotal(
+      "tot-exp",
+      "Total Expenses",
+      data.totalExpenses,
+      totalsRound(data.costOfGoodsSold + totalPrevious(data.indirectExpenses)),
+    ),
   );
 
   rows.push({
@@ -933,10 +948,16 @@ export function buildNotesToAccounts(args: {
 
   const sectionTitles: Record<string, { title: string; titleNepali: string }> = {
     equity: { title: "Share Capital & Reserves", titleNepali: "शेयर पूँजी तथा सुरक्षित कोष" },
-    "non-current-liability": { title: "Non-Current Liabilities", titleNepali: "दीर्घकालीन दायित्व" },
+    "non-current-liability": {
+      title: "Non-Current Liabilities",
+      titleNepali: "दीर्घकालीन दायित्व",
+    },
     "current-liability": { title: "Current Liabilities", titleNepali: "चालु दायित्व" },
     "fixed-asset": { title: "Property, Plant & Equipment", titleNepali: "स्थायी सम्पत्ति" },
-    "non-current-asset": { title: "Other Non-Current Assets", titleNepali: "अन्य दीर्घकालीन सम्पत्ति" },
+    "non-current-asset": {
+      title: "Other Non-Current Assets",
+      titleNepali: "अन्य दीर्घकालीन सम्पत्ति",
+    },
     "current-asset": { title: "Current Assets", titleNepali: "चालु सम्पत्ति" },
     revenue: { title: "Revenue", titleNepali: "आय" },
     cogs: { title: "Direct Expenses", titleNepali: "प्रत्यक्ष खर्च" },

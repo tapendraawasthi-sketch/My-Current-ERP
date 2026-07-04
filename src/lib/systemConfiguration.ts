@@ -157,7 +157,9 @@ export function mergeSystemConfiguration(
     invoicePrint: { ...DEFAULT_SYSTEM_CONFIGURATION.invoicePrint, ...raw.invoicePrint },
     voucherPrint: { ...DEFAULT_SYSTEM_CONFIGURATION.voucherPrint, ...raw.voucherPrint },
     warningAlarms: { ...DEFAULT_SYSTEM_CONFIGURATION.warningAlarms, ...raw.warningAlarms },
-    ageingSlabs: raw.ageingSlabs?.length ? raw.ageingSlabs : DEFAULT_SYSTEM_CONFIGURATION.ageingSlabs,
+    ageingSlabs: raw.ageingSlabs?.length
+      ? raw.ageingSlabs
+      : DEFAULT_SYSTEM_CONFIGURATION.ageingSlabs,
     interestSlabs: raw.interestSlabs?.length
       ? raw.interestSlabs
       : DEFAULT_SYSTEM_CONFIGURATION.interestSlabs,

@@ -127,7 +127,6 @@ const App: React.FC = () => {
     if (initCalledRef.current) return;
     initCalledRef.current = true;
     initializeApp();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initializeApp]);
 
   useEffect(() => {
@@ -147,11 +146,22 @@ const App: React.FC = () => {
       const tag = (document.activeElement as HTMLElement)?.tagName;
       if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
 
-      if (e.ctrlKey && e.key === "b") { e.preventDefault(); setCurrentPage("balance-sheet"); }
-      else if (e.ctrlKey && e.key === "t") { e.preventDefault(); setCurrentPage("trial-balance"); }
-      else if (e.ctrlKey && e.key === "l") { e.preventDefault(); setCurrentPage("ledger"); }
-      else if (e.ctrlKey && e.key === "g") { e.preventDefault(); setCurrentPage("vat-reports"); }
-      else if (e.ctrlKey && e.key === "u") { e.preventDefault(); setCurrentPage("users"); }
+      if (e.ctrlKey && e.key === "b") {
+        e.preventDefault();
+        setCurrentPage("balance-sheet");
+      } else if (e.ctrlKey && e.key === "t") {
+        e.preventDefault();
+        setCurrentPage("trial-balance");
+      } else if (e.ctrlKey && e.key === "l") {
+        e.preventDefault();
+        setCurrentPage("ledger");
+      } else if (e.ctrlKey && e.key === "g") {
+        e.preventDefault();
+        setCurrentPage("vat-reports");
+      } else if (e.ctrlKey && e.key === "u") {
+        e.preventDefault();
+        setCurrentPage("users");
+      }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
@@ -162,7 +172,11 @@ const App: React.FC = () => {
     if (authStage === "checking") {
       const timer = setTimeout(() => {
         console.error("App.tsx safety net: stuck in checking for 10s, forcing gateway");
-        useStore.setState((state: any) => ({ ...state, isInitializing: false, authStage: "gateway" }));
+        useStore.setState((state: any) => ({
+          ...state,
+          isInitializing: false,
+          authStage: "gateway",
+        }));
       }, 10000);
       return () => clearTimeout(timer);
     }
@@ -170,196 +184,332 @@ const App: React.FC = () => {
 
   if (authStage === "checking") {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#f5f6fa" }}>
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ background: "#f5f6fa" }}
+      >
         <div className="text-center">
-          <div style={{ width: 40, height: 40, border: "4px solid #1557b0", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} className="mx-auto mb-4" />
-          <p className="text-[12px] mt-1" style={{ color: "#6b7280" }}>Loading Sutra ERP…</p>
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              border: "4px solid #1557b0",
+              borderTopColor: "transparent",
+              borderRadius: "50%",
+              animation: "spin 0.8s linear infinite",
+            }}
+            className="mx-auto mb-4"
+          />
+          <p className="text-[12px] mt-1" style={{ color: "#6b7280" }}>
+            Loading Sutra ERP…
+          </p>
         </div>
       </div>
     );
   }
 
-  if (authStage === "no-company") return (<><Toaster position="bottom-right" /><SignUpWizard /></>);
-  if (authStage === "gateway") return (<><Toaster position="bottom-right" /><GatewayScreen /></>);
-  if (authStage === "company-login") return (<><Toaster position="bottom-right" /><CompanyLoginScreen /></>);
+  if (authStage === "no-company")
+    return (
+      <>
+        <Toaster position="bottom-right" />
+        <SignUpWizard />
+      </>
+    );
+  if (authStage === "gateway")
+    return (
+      <>
+        <Toaster position="bottom-right" />
+        <GatewayScreen />
+      </>
+    );
+  if (authStage === "company-login")
+    return (
+      <>
+        <Toaster position="bottom-right" />
+        <CompanyLoginScreen />
+      </>
+    );
 
   const renderPage = () => {
     switch (currentPage) {
       // ─── Dashboards ─────────────────────────────────────────────────────────────
       case "financial-dashboard":
-      case "dashboard": return <FinancialDashboard />;
-      
+      case "dashboard":
+        return <FinancialDashboard />;
+
       // New Modules
-      case "pdc-register": return <PDCRegister />;
-      case "employee-loans": return <EmployeeLoans />;
-      case "notes-to-accounts": return <NotesToAccounts />;
-      case "equity-statement": return <EquityStatement />;
+      case "pdc-register":
+        return <PDCRegister />;
+      case "employee-loans":
+        return <EmployeeLoans />;
+      case "notes-to-accounts":
+        return <NotesToAccounts />;
+      case "equity-statement":
+        return <EquityStatement />;
       case "funds-flow":
-      case "funds-flow-statement": return <FundsFlowStatement />;
+      case "funds-flow-statement":
+        return <FundsFlowStatement />;
 
       // Masters
       case "accounts":
-      case "chart-of-accounts": return <ChartOfAccounts />;
+      case "chart-of-accounts":
+        return <ChartOfAccounts />;
       case "parties":
-      case "party-master": return <Parties />;
+      case "party-master":
+        return <Parties />;
       case "item-master":
       case "items":
-      case "stock-book": return <StockBook />;
+      case "stock-book":
+        return <StockBook />;
       case "item-groups":
-      case "item-group-master": return <ItemGroupMaster />;
-      case "warehouses": return <Warehouses />;
-      case "units": return <Units />;
+      case "item-group-master":
+        return <ItemGroupMaster />;
+      case "warehouses":
+        return <Warehouses />;
+      case "units":
+        return <Units />;
       case "unit-conversion":
-      case "unit-conversions": return <UnitConversionMaster />;
+      case "unit-conversions":
+        return <UnitConversionMaster />;
       case "ledgers":
-      case "ledger-master": return <LedgerMaster />;
+      case "ledger-master":
+        return <LedgerMaster />;
       case "price-lists":
-      case "price-list-master": return <PriceLists />;
+      case "price-list-master":
+        return <PriceLists />;
       case "cost-centers":
-      case "cost-centre": return <CostCenters />;
-      case "sales-persons": return <SalesPersons />;
+      case "cost-centre":
+        return <CostCenters />;
+      case "sales-persons":
+        return <SalesPersons />;
       case "standard-narration":
-      case "standard-narrations": return <StandardNarrationMaster />;
-      case "budget": return <BudgetMaster />;
+      case "standard-narrations":
+        return <StandardNarrationMaster />;
+      case "budget":
+        return <BudgetMaster />;
       case "batch-management":
-      case "batches": return <BatchManagement />;
+      case "batches":
+        return <BatchManagement />;
       case "pdc-summary":
-      case "pdc-management": return <PDCManagement />;
+      case "pdc-management":
+        return <PDCManagement />;
 
       // NEW BUSY MASTERS
       case "bill-sundry":
-      case "bill-sundries": return <BillSundryMaster />;
+      case "bill-sundries":
+        return <BillSundryMaster />;
       case "sale-type":
-      case "sale-types": return <SaleTypeMaster />;
+      case "sale-types":
+        return <SaleTypeMaster />;
       case "purchase-type":
-      case "purchase-types": return <PurchaseTypeMaster />;
+      case "purchase-types":
+        return <PurchaseTypeMaster />;
       case "tax-category":
-      case "tax-categories": return <TaxCategoryMaster />;
+      case "tax-categories":
+        return <TaxCategoryMaster />;
       case "voucher-types":
-      case "voucher-series-config": return <VoucherTypeMaster />;
-      case "schemes": return <SchemeMaster />;
+      case "voucher-series-config":
+        return <VoucherTypeMaster />;
+      case "schemes":
+        return <SchemeMaster />;
       case "misc-masters":
       case "material-centres":
       case "bill-of-material":
-      case "bom": return <MiscMasters />;
+      case "bom":
+        return <MiscMasters />;
 
       // Sales Transactions
       case "billing":
-      case "sales-return": return <BillingInvoice />;
-      case "sales": return <SalesVoucher />;
-      case "delivery-challan": return <DeliveryChallan />;
+      case "sales-return":
+        return <BillingInvoice />;
+      case "sales":
+        return <SalesVoucher />;
+      case "delivery-challan":
+        return <DeliveryChallan />;
       case "quotation":
-      case "sales-quotation": return <QuotationPage type="sales_quotation" />;
-      case "sales-order": return <OrderVoucherPage type="sales_order" />;
+      case "sales-quotation":
+        return <QuotationPage type="sales_quotation" />;
+      case "sales-order":
+        return <OrderVoucherPage type="sales_order" />;
 
       // Purchase Transactions
       case "purchase":
-      case "purchase-return": return <PurchaseVoucher />;
+      case "purchase-return":
+        return <PurchaseVoucher />;
       case "goods-receipt":
-      case "grn": return <GoodsReceiptNote />;
-      case "purchase-order": return <OrderVoucherPage type="purchase_order" />;
-      case "purchase-quotation": return <QuotationPage type="purchase_quotation" />;
+      case "grn":
+        return <GoodsReceiptNote />;
+      case "purchase-order":
+        return <OrderVoucherPage type="purchase_order" />;
+      case "purchase-quotation":
+        return <QuotationPage type="purchase_quotation" />;
 
       // Finance Vouchers
-      case "journal": return <JournalEntries />;
-      case "payment": return <PaymentVoucher />;
-      case "receipt": return <ReceiptVoucher />;
-      case "contra": return <ContraVoucher />;
-      case "debit-note": return <DebitNoteVoucher />;
-      case "credit-note": return <CreditNoteVoucher />;
-      case "recurring-vouchers": return <RecurringVouchers />;
+      case "journal":
+        return <JournalEntries />;
+      case "payment":
+        return <PaymentVoucher />;
+      case "receipt":
+        return <ReceiptVoucher />;
+      case "contra":
+        return <ContraVoucher />;
+      case "debit-note":
+        return <DebitNoteVoucher />;
+      case "credit-note":
+        return <CreditNoteVoucher />;
+      case "recurring-vouchers":
+        return <RecurringVouchers />;
 
       // Inventory Vouchers
-      case "stock-transfer": return <StockTransfer />;
-      case "physical-stock": return <PhysicalStockPage2 />;
-      case "stock-journal": return <StockJournalPage />;
-      case "production": return <ProductionPage />;
-      case "unassemble": return <UnassemblePage />;
+      case "stock-transfer":
+        return <StockTransfer />;
+      case "physical-stock":
+        return <PhysicalStockPage2 />;
+      case "stock-journal":
+        return <StockJournalPage />;
+      case "production":
+        return <ProductionPage />;
+      case "unassemble":
+        return <UnassemblePage />;
       case "material-issued":
-      case "material-out": return <MaterialIssuedPage />;
+      case "material-out":
+        return <MaterialIssuedPage />;
       case "material-received":
-      case "material-in": return <MaterialReceivedPage />;
-      case "voucher-entry": return <VoucherEntryHub />;
+      case "material-in":
+        return <MaterialReceivedPage />;
+      case "voucher-entry":
+        return <VoucherEntryHub />;
       case "configuration-hub":
       case "configuration":
-      case "holidays": return <ConfigurationHub />;
-      case "cheque-register": return <ChequeRegister />;
-      case "bank-statement-import": return <BankStatementImport />;
-      case "cheque-printing": return <ChequePrinting />;
+      case "holidays":
+        return <ConfigurationHub />;
+      case "cheque-register":
+        return <ChequeRegister />;
+      case "bank-statement-import":
+        return <BankStatementImport />;
+      case "cheque-printing":
+        return <ChequePrinting />;
       case "reversing-journals":
-      case "reversing-journal": return <ReversingJournals />;
-      case "rejection-out": return <RejectionVoucherPage mode="out" />;
-      case "rejection-in": return <RejectionVoucherPage mode="in" />;
+      case "reversing-journal":
+        return <ReversingJournals />;
+      case "rejection-out":
+        return <RejectionVoucherPage mode="out" />;
+      case "rejection-in":
+        return <RejectionVoucherPage mode="in" />;
       case "job-work-register":
       case "job-work-out-order":
-      case "job-work-in-order": return <JobWorkRegister defaultTab={currentPage === "job-work-in-order" ? "in" : "out"} />;
+      case "job-work-in-order":
+        return <JobWorkRegister defaultTab={currentPage === "job-work-in-order" ? "in" : "out"} />;
       case "attendance-voucher":
-      case "attendance-entry": return <PayrollRun />;
+      case "attendance-entry":
+        return <PayrollRun />;
 
       // Financial Reports
-      case "balance-sheet": return <BalanceSheet />;
-      case "profit-loss": return <ProfitLoss />;
-      case "trial-balance": return <TrialBalance />;
-      case "day-book": return <DayBook />;
-      case "outstanding-receivables": return <OutstandingReceivables />;
-      case "outstanding-payables": return <OutstandingPayables />;
-      case "aging-report": return <AgingReport />;
-      case "interest-calculation": return <InterestCalculation />;
-      case "income-expenditure": return <IncomeExpenditureAccount />;
-      case "cash-flow": return <CashFlowStatement />;
-      case "ratio-analysis": return <RatioAnalysis />;
-      case "fixed-assets": return <FixedAssets />;
-      case "budget-vs-actual": return <BudgetVsActual />;
+      case "balance-sheet":
+        return <BalanceSheet />;
+      case "profit-loss":
+        return <ProfitLoss />;
+      case "trial-balance":
+        return <TrialBalance />;
+      case "day-book":
+        return <DayBook />;
+      case "outstanding-receivables":
+        return <OutstandingReceivables />;
+      case "outstanding-payables":
+        return <OutstandingPayables />;
+      case "aging-report":
+        return <AgingReport />;
+      case "interest-calculation":
+        return <InterestCalculation />;
+      case "income-expenditure":
+        return <IncomeExpenditureAccount />;
+      case "cash-flow":
+        return <CashFlowStatement />;
+      case "ratio-analysis":
+        return <RatioAnalysis />;
+      case "fixed-assets":
+        return <FixedAssets />;
+      case "budget-vs-actual":
+        return <BudgetVsActual />;
       case "ledger-report":
-      case "ledger": return <GeneralLedger />;
-      case "party-statement": return <PartyLedgerStatement />;
-      
+      case "ledger":
+        return <GeneralLedger />;
+      case "party-statement":
+        return <PartyLedgerStatement />;
+
       // Inventory Reports
-      case "stock-summary": return <StockSummaryReport />;
+      case "stock-summary":
+        return <StockSummaryReport />;
       case "stock-status":
       case "closing-stock":
-      case "inventory-report": return <InventoryReport />;
-      case "stock-ledger": return <StockLedgerReport />;
-      case "sales-analysis": return <SalesAnalysisReport />;
+      case "inventory-report":
+        return <InventoryReport />;
+      case "stock-ledger":
+        return <StockLedgerReport />;
+      case "sales-analysis":
+        return <SalesAnalysisReport />;
 
       // GST / VAT Reports
       case "vat-reports":
       case "gstr1":
       case "gstr2":
       case "gstr3b":
-      case "gst-summary": return <VatReports />;
+      case "gst-summary":
+        return <VatReports />;
 
       // Company / Utilities
-      case "fiscal-year": return <FiscalYear />;
-      case "audit-log": return <AuditLog />;
-      case "accounts-configuration": return <AccountsConfiguration />;
+      case "fiscal-year":
+        return <FiscalYear />;
+      case "audit-log":
+        return <AuditLog />;
+      case "accounts-configuration":
+        return <AccountsConfiguration />;
       case "inventory-config":
-      case "inventory-configuration": return <InventoryConfiguration />;
+      case "inventory-configuration":
+        return <InventoryConfiguration />;
       case "payroll":
-      case "salary-process": return <Payroll />;
+      case "salary-process":
+        return <Payroll />;
       case "tds-report":
-      case "tds-reports": return <TdsReport />;
-      case "tds-certificate": return <TdsCertificatePage />;
-      case "bonus-provision": return <BonusProvision />;
-      case "gratuity-calculation": return <GratuityCalculation />;
-      case "pay-heads": return <PayHeadMaster />;
-      case "vat-classifications": return <VATClassificationMaster />;
-      case "master-control-centre": return <MasterControlCentre />;
+      case "tds-reports":
+        return <TdsReport />;
+      case "tds-certificate":
+        return <TdsCertificatePage />;
+      case "bonus-provision":
+        return <BonusProvision />;
+      case "gratuity-calculation":
+        return <GratuityCalculation />;
+      case "pay-heads":
+        return <PayHeadMaster />;
+      case "vat-classifications":
+        return <VATClassificationMaster />;
+      case "master-control-centre":
+        return <MasterControlCentre />;
       case "users":
-      case "users-management": return <UsersManagement />;
+      case "users-management":
+        return <UsersManagement />;
       case "settings":
-      case "company-settings": return <CompanySettings />;
+      case "company-settings":
+        return <CompanySettings />;
       case "backup":
-      case "backup-restore": return <BackupRestore />;
+      case "backup-restore":
+        return <BackupRestore />;
       case "data-import-export":
-      case "data-export-import": return <DataExportImport />;
-      case "bank-reconciliation": return <BankReconciliation />;
+      case "data-export-import":
+        return <DataExportImport />;
+      case "bank-reconciliation":
+        return <BankReconciliation />;
       case "employees":
-      case "employee-master": return <EmployeeMaster />;
-      case "sales-register": return <SalesRegister />;
-      case "purchase-register": return <PurchaseRegister />;
-      case "cash-book": return <CashBook />;
-      case "bank-book": return <BankBook />;
+      case "employee-master":
+        return <EmployeeMaster />;
+      case "sales-register":
+        return <SalesRegister />;
+      case "purchase-register":
+        return <PurchaseRegister />;
+      case "cash-book":
+        return <CashBook />;
+      case "bank-book":
+        return <BankBook />;
 
       default:
         return <FinancialDashboard />;

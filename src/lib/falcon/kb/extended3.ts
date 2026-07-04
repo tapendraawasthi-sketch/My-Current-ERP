@@ -2,825 +2,962 @@ import type { KBEntry } from "../types";
 
 export const KB_EXTENDED3: KBEntry[] = [
   {
-    id: "ext-401", category: "transactions",
+    id: "ext-401",
+    category: "transactions",
     q: "What does the 'Reference No' field on invoices do?",
     keywords: ["reference no", "invoice reference", "external reference"],
-    a: "Allows entering an external reference (customer PO, supplier bill). Links invoice to external document, appears in reports/printouts, searchable, helps with cross-referencing."
+    a: "Allows entering an external reference (customer PO, supplier bill). Links invoice to external document, appears in reports/printouts, searchable, helps with cross-referencing.",
   },
   {
-    id: "ext-402", category: "transactions",
+    id: "ext-402",
+    category: "transactions",
     q: "What does the 'Order Ref' field do?",
     keywords: ["order ref", "sales order reference"],
-    a: "Links invoice to Sales/Purchase Order. Auto-populates party and items. Tracks order fulfillment. Order status updates when invoice posted."
+    a: "Links invoice to Sales/Purchase Order. Auto-populates party and items. Tracks order fulfillment. Order status updates when invoice posted.",
   },
   {
-    id: "ext-403", category: "transactions",
+    id: "ext-403",
+    category: "transactions",
     q: "What does the 'Challan Ref' field do?",
     keywords: ["challan ref", "delivery challan reference", "grn ref"],
-    a: "Links to Delivery Challan or GRN. Auto-populates items/quantities. Challan status updates to 'Invoiced' after posting. Maintains document trail."
+    a: "Links to Delivery Challan or GRN. Auto-populates items/quantities. Challan status updates to 'Invoiced' after posting. Maintains document trail.",
   },
   {
-    id: "ext-404", category: "transactions",
+    id: "ext-404",
+    category: "transactions",
     q: "What is the 'Bill To Address' field?",
     keywords: ["bill to address", "invoice address"],
-    a: "Captures where to send invoice. Auto-fills from party address, can be overridden for one-time shipping. Appears on printed invoice."
+    a: "Captures where to send invoice. Auto-fills from party address, can be overridden for one-time shipping. Appears on printed invoice.",
   },
   {
-    id: "ext-405", category: "transactions",
+    id: "ext-405",
+    category: "transactions",
     q: "What does the 'Due Date' field do?",
     keywords: ["due date", "payment deadline"],
-    a: "Sets payment deadline. Appears on printed invoice, used in aging reports to calculate overdue days, and interest calculation. Triggers dashboard alerts."
+    a: "Sets payment deadline. Appears on printed invoice, used in aging reports to calculate overdue days, and interest calculation. Triggers dashboard alerts.",
   },
   {
-    id: "ext-406", category: "transactions",
+    id: "ext-406",
+    category: "transactions",
     q: "How does the 'Cheque No' and 'Cheque Date' work?",
     keywords: ["cheque no", "cheque date", "bank transfer details"],
-    a: "When payment mode is Bank Transfer, these fields appear to track cheque details. Recorded with invoice for reference."
+    a: "When payment mode is Bank Transfer, these fields appear to track cheque details. Recorded with invoice for reference.",
   },
   {
-    id: "ext-407", category: "transactions",
+    id: "ext-407",
+    category: "transactions",
     q: "What is the 'Narration (Nepali)' field?",
     keywords: ["nepali narration", "bilingual invoice"],
-    a: "Optional Nepali language description (supports Devanagari). Appears on printed invoice alongside English narration for bilingual invoices."
+    a: "Optional Nepali language description (supports Devanagari). Appears on printed invoice alongside English narration for bilingual invoices.",
   },
   {
-    id: "ext-408", category: "transactions",
+    id: "ext-408",
+    category: "transactions",
     q: "How does the 'Attachments' field work?",
     keywords: ["attachments", "upload files invoice"],
-    a: "Upload images, PDFs, docs. Stored as base64 within invoice record. Multiple attachments allowed. Useful for signed receipts or POs."
+    a: "Upload images, PDFs, docs. Stored as base64 within invoice record. Multiple attachments allowed. Useful for signed receipts or POs.",
   },
   {
-    id: "ext-409", category: "transactions",
+    id: "ext-409",
+    category: "transactions",
     q: "How does the VAT Taxable checkbox work per line?",
     keywords: ["vat taxable checkbox", "line vat"],
-    a: "Checked (default): VAT calculated on line. Unchecked: Line is VAT-exempt. Taxable/VAT amounts update real-time. Exempt amount tracked separately."
+    a: "Checked (default): VAT calculated on line. Unchecked: Line is VAT-exempt. Taxable/VAT amounts update real-time. Exempt amount tracked separately.",
   },
   {
-    id: "ext-410", category: "transactions",
+    id: "ext-410",
+    category: "transactions",
     q: "How does the VAT Rate field work per line?",
     keywords: ["line vat rate", "override vat rate"],
-    a: "Default 13%. Overridable per line if checked. Supports 0%. VAT Amount = Taxable x (Rate/100). Rate depends on item category."
+    a: "Default 13%. Overridable per line if checked. Supports 0%. VAT Amount = Taxable x (Rate/100). Rate depends on item category.",
   },
   {
-    id: "ext-411", category: "transactions",
+    id: "ext-411",
+    category: "transactions",
     q: "What is the 'HSN Code' field?",
     keywords: ["hsn code", "product classification"],
-    a: "Harmonized System of Nomenclature code. Standardized product classification. Auto-fills from item master, appears on printed invoice, used in tax reports."
+    a: "Harmonized System of Nomenclature code. Standardized product classification. Auto-fills from item master, appears on printed invoice, used in tax reports.",
   },
   {
-    id: "ext-412", category: "transactions",
+    id: "ext-412",
+    category: "transactions",
     q: "What does the 'Warehouse' selection on each line do?",
     keywords: ["line warehouse", "per line godown"],
-    a: "Determines which warehouse stock is taken from (sales) or added to (purchase). Required for multi-godown. Different lines can use different warehouses."
+    a: "Determines which warehouse stock is taken from (sales) or added to (purchase). Required for multi-godown. Different lines can use different warehouses.",
   },
   {
-    id: "ext-413", category: "transactions",
+    id: "ext-413",
+    category: "transactions",
     q: "How does the 'Paid Amount' field work for credit sales?",
     keywords: ["paid amount credit", "partial payment invoice"],
-    a: "For credit sales: enter partial payment received now. Balance due shown. Creates partial payment record. Payment status becomes Partial."
+    a: "For credit sales: enter partial payment received now. Balance due shown. Creates partial payment record. Payment status becomes Partial.",
   },
   {
-    id: "ext-414", category: "transactions",
+    id: "ext-414",
+    category: "transactions",
     q: "What happens when I select a Payment Mode?",
     keywords: ["payment mode", "cash bank credit"],
-    a: "Changes form fields. Cash: simple. Bank: shows bank dropdown + cheque fields. Credit: shows paid amount, creates receivable. Affects accounting entries."
+    a: "Changes form fields. Cash: simple. Bank: shows bank dropdown + cheque fields. Credit: shows paid amount, creates receivable. Affects accounting entries.",
   },
   {
-    id: "ext-415", category: "transactions",
+    id: "ext-415",
+    category: "transactions",
     q: "How does bill discount interact with line discounts?",
     keywords: ["bill discount", "line discount", "discount hierarchy"],
-    a: "Line Discount applied first. Bill Discount (percentage or fixed) applied to total taxable amount after line discounts. Both can be used together."
+    a: "Line Discount applied first. Bill Discount (percentage or fixed) applied to total taxable amount after line discounts. Both can be used together.",
   },
   {
-    id: "ext-416", category: "transactions",
+    id: "ext-416",
+    category: "transactions",
     q: "What is the structure of a journal voucher line?",
     keywords: ["journal line structure", "voucher debit credit"],
-    a: "Account, Debit OR Credit (mutually exclusive per line), Narration. At least 2 lines required. Total Debits must equal Total Credits."
+    a: "Account, Debit OR Credit (mutually exclusive per line), Narration. At least 2 lines required. Total Debits must equal Total Credits.",
   },
   {
-    id: "ext-417", category: "transactions",
+    id: "ext-417",
+    category: "transactions",
     q: "How does auto-serial generation work for vouchers?",
     keywords: ["auto serial", "voucher numbering logic"],
-    a: "System auto-generates numbers: [Prefix][Serial Number] based on voucher type and FY. Final number assigned on posting."
+    a: "System auto-generates numbers: [Prefix][Serial Number] based on voucher type and FY. Final number assigned on posting.",
   },
   {
-    id: "ext-418", category: "transactions",
+    id: "ext-418",
+    category: "transactions",
     q: "What is the 'Reference Document No' field on vouchers?",
     keywords: ["reference document no", "voucher ref no"],
-    a: "Links voucher to external source document (bank deposit slip, invoice no). Appears in reports, helps with audit trail. Distinct from voucher number."
+    a: "Links voucher to external source document (bank deposit slip, invoice no). Appears in reports, helps with audit trail. Distinct from voucher number.",
   },
   {
-    id: "ext-419", category: "transactions",
+    id: "ext-419",
+    category: "transactions",
     q: "How do I add narration to individual voucher lines?",
     keywords: ["line narration", "voucher line description"],
-    a: "Small text input below account selection on each line. Describes purpose of that specific posting. Appears in ledger report for that account."
+    a: "Small text input below account selection on each line. Describes purpose of that specific posting. Appears in ledger report for that account.",
   },
   {
-    id: "ext-420", category: "transactions",
+    id: "ext-420",
+    category: "transactions",
     q: "What happens if I leave a line's debit and credit both as 0?",
     keywords: ["zero debit credit", "invalid voucher line"],
-    a: "Line is invalid. Validation error on save. Remove line if not needed. At least 2 valid lines with non-zero amounts required."
+    a: "Line is invalid. Validation error on save. Remove line if not needed. At least 2 valid lines with non-zero amounts required.",
   },
   {
-    id: "ext-421", category: "transactions",
+    id: "ext-421",
+    category: "transactions",
     q: "How does the voucher clone feature work?",
     keywords: ["clone voucher", "copy voucher"],
-    a: "Creates exact copy with new ID, today's date, status 'draft', lines duplicated, number cleared. Useful for recurring entries."
+    a: "Creates exact copy with new ID, today's date, status 'draft', lines duplicated, number cleared. Useful for recurring entries.",
   },
   {
-    id: "ext-422", category: "transactions",
+    id: "ext-422",
+    category: "transactions",
     q: "How do I view all vouchers of a specific type?",
     keywords: ["filter vouchers", "voucher register type"],
-    a: "In Vouchers Register, use type filter dropdown (Journal/Payment/Receipt/Contra) or tab buttons. Filters list to show only that type."
+    a: "In Vouchers Register, use type filter dropdown (Journal/Payment/Receipt/Contra) or tab buttons. Filters list to show only that type.",
   },
   {
-    id: "ext-423", category: "transactions",
+    id: "ext-423",
+    category: "transactions",
     q: "What shows in the voucher detail modal?",
     keywords: ["voucher details", "view voucher modal"],
-    a: "Header (No, Date, Class), full narration, line items table (Account, Debit, Credit), totals, status badge, cancel reason, and action buttons."
+    a: "Header (No, Date, Class), full narration, line items table (Account, Debit, Credit), totals, status badge, cancel reason, and action buttons.",
   },
   {
-    id: "ext-424", category: "transactions",
+    id: "ext-424",
+    category: "transactions",
     q: "How do payment vouchers differ from journal vouchers?",
     keywords: ["payment vs journal", "payment voucher features"],
-    a: "Automatically credit Cash/Bank, debit party. Include payment mode, bank/cheque details, bill allocation, and TDS deduction. Simpler to enter."
+    a: "Automatically credit Cash/Bank, debit party. Include payment mode, bank/cheque details, bill allocation, and TDS deduction. Simpler to enter.",
   },
   {
-    id: "ext-425", category: "transactions",
+    id: "ext-425",
+    category: "transactions",
     q: "How do receipt vouchers differ from payment vouchers?",
     keywords: ["receipt vs payment", "receipt voucher features"],
-    a: "Automatically debit Cash/Bank, credit party. Include receipt mode, bank/cheque details, bill allocation, and TCS features."
+    a: "Automatically debit Cash/Bank, credit party. Include receipt mode, bank/cheque details, bill allocation, and TCS features.",
   },
   {
-    id: "ext-426", category: "transactions",
+    id: "ext-426",
+    category: "transactions",
     q: "How does bill allocation work on payment vouchers?",
     keywords: ["bill allocation payment", "pay outstanding purchase bills"],
-    a: "Select supplier. Panel loads outstanding purchase invoices. Auto-fill (FIFO) or manual allocation. Green (valid) / Red (over). Unallocated = advance."
+    a: "Select supplier. Panel loads outstanding purchase invoices. Auto-fill (FIFO) or manual allocation. Green (valid) / Red (over). Unallocated = advance.",
   },
   {
-    id: "ext-427", category: "transactions",
+    id: "ext-427",
+    category: "transactions",
     q: "How does bill allocation work on receipt vouchers?",
     keywords: ["bill allocation receipt", "receive outstanding sales bills"],
-    a: "Select customer. Panel loads outstanding sales invoices. Auto-fill (FIFO) or manual allocation. Unallocated = advance from customer."
+    a: "Select customer. Panel loads outstanding sales invoices. Auto-fill (FIFO) or manual allocation. Unallocated = advance from customer.",
   },
   {
-    id: "ext-428", category: "transactions",
+    id: "ext-428",
+    category: "transactions",
     q: "How does TDS work on payment vouchers?",
     keywords: ["tds payment voucher", "deduct tds supplier"],
-    a: "Enable TDS, select section. TDS Rate auto-fills. Net Payment = Gross - TDS. Posting: Dr Supplier (full), Cr Bank (net), Cr TDS Payable."
+    a: "Enable TDS, select section. TDS Rate auto-fills. Net Payment = Gross - TDS. Posting: Dr Supplier (full), Cr Bank (net), Cr TDS Payable.",
   },
   {
-    id: "ext-429", category: "transactions",
+    id: "ext-429",
+    category: "transactions",
     q: "What is a contra voucher used for?",
     keywords: ["contra voucher", "cash deposit", "bank transfer"],
-    a: "Internal transfers: cash deposit to bank, cash withdrawal, or bank-to-bank. No external party involved."
+    a: "Internal transfers: cash deposit to bank, cash withdrawal, or bank-to-bank. No external party involved.",
   },
   {
-    id: "ext-430", category: "transactions",
+    id: "ext-430",
+    category: "transactions",
     q: "How do I handle multiple payment modes in one transaction?",
     keywords: ["multiple payment modes", "split payment modes"],
-    a: "MultiModePayment component. Split transaction across Cash, Bank, eSewa, etc. Total allocated must equal total transaction amount."
+    a: "MultiModePayment component. Split transaction across Cash, Bank, eSewa, etc. Total allocated must equal total transaction amount.",
   },
   {
-    id: "ext-431", category: "transactions",
+    id: "ext-431",
+    category: "transactions",
     q: "What fields are specific to Delivery Challans?",
     keywords: ["delivery challan fields", "dc specific fields"],
-    a: "Vehicle No, Driver Name, Status, Sales Order Ref, Warehouse. Items show qty only (no pricing)."
+    a: "Vehicle No, Driver Name, Status, Sales Order Ref, Warehouse. Items show qty only (no pricing).",
   },
   {
-    id: "ext-432", category: "transactions",
+    id: "ext-432",
+    category: "transactions",
     q: "What fields are specific to Goods Receipt Notes?",
     keywords: ["grn specific fields", "goods receipt fields"],
-    a: "Inspected By, Ordered Qty, Received Qty, Accepted Qty, Rejected Qty (auto-calc), PO Reference, Warehouse, Vehicle No."
+    a: "Inspected By, Ordered Qty, Received Qty, Accepted Qty, Rejected Qty (auto-calc), PO Reference, Warehouse, Vehicle No.",
   },
   {
-    id: "ext-433", category: "transactions",
+    id: "ext-433",
+    category: "transactions",
     q: "How does GRN quality inspection work in detail?",
     keywords: ["grn inspection details", "accepted rejected grn"],
-    a: "Enter Ordered Qty, Received Qty, Accepted Qty (enters stock). Rejected Qty = Received - Accepted (doesn't enter stock). Inspector name recorded."
+    a: "Enter Ordered Qty, Received Qty, Accepted Qty (enters stock). Rejected Qty = Received - Accepted (doesn't enter stock). Inspector name recorded.",
   },
   {
-    id: "ext-434", category: "transactions",
+    id: "ext-434",
+    category: "transactions",
     q: "When should I use a Delivery Challan vs direct Sales Invoice?",
     keywords: ["delivery challan vs invoice", "when to use dc"],
-    a: "Use DC when transport tracking needed or goods leave before billing. Use direct invoice for immediate billing, counter sales, or services."
+    a: "Use DC when transport tracking needed or goods leave before billing. Use direct invoice for immediate billing, counter sales, or services.",
   },
   {
-    id: "ext-435", category: "transactions",
+    id: "ext-435",
+    category: "transactions",
     q: "Can I create multiple invoices from one challan?",
     keywords: ["partial invoice challan", "multiple invoices one challan"],
-    a: "Yes. Partial billing allowed. Invoice qty <= Challan qty. Challan status tracks remaining qty. Fully invoiced when all quantities billed."
+    a: "Yes. Partial billing allowed. Invoice qty <= Challan qty. Challan status tracks remaining qty. Fully invoiced when all quantities billed.",
   },
   {
-    id: "ext-436", category: "transactions",
+    id: "ext-436",
+    category: "transactions",
     q: "What happens to stock when a challan is cancelled?",
     keywords: ["cancel challan", "challan stock reversal"],
-    a: "If dispatched: Stock reverses (increases). If draft: No stock impact. Reason required. Status = cancelled. Cannot be re-used."
+    a: "If dispatched: Stock reverses (increases). If draft: No stock impact. Reason required. Status = cancelled. Cannot be re-used.",
   },
   {
-    id: "ext-437", category: "transactions",
+    id: "ext-437",
+    category: "transactions",
     q: "How do I create a sales quotation?",
     keywords: ["create quotation detailed", "sales estimate"],
-    a: "Transactions → Quotations. Select customer, date, validity. Add items/qty/rates. Save Draft/Final. Print/email. Track status."
+    a: "Transactions → Quotations. Select customer, date, validity. Add items/qty/rates. Save Draft/Final. Print/email. Track status.",
   },
   {
-    id: "ext-438", category: "transactions",
+    id: "ext-438",
+    category: "transactions",
     q: "How do I convert a quotation to a sales order?",
     keywords: ["convert quote to order", "quotation conversion"],
-    a: "Open quotation, click 'Convert to Sales Order'. Details pre-filled. Adjust qty/date. Save as order. Quotation marked 'Converted'."
+    a: "Open quotation, click 'Convert to Sales Order'. Details pre-filled. Adjust qty/date. Save as order. Quotation marked 'Converted'.",
   },
   {
-    id: "ext-439", category: "transactions",
+    id: "ext-439",
+    category: "transactions",
     q: "How do I track outstanding orders?",
     keywords: ["outstanding orders", "pending sales order"],
-    a: "Sales/Purchase Order Outstanding reports. Shows Order No, Party, Ordered/Delivered/Pending qty. Aging flags orders > 7 days."
+    a: "Sales/Purchase Order Outstanding reports. Shows Order No, Party, Ordered/Delivered/Pending qty. Aging flags orders > 7 days.",
   },
   {
-    id: "ext-440", category: "transactions",
+    id: "ext-440",
+    category: "transactions",
     q: "What is the difference between Quotation and Sales Order?",
     keywords: ["quotation vs sales order", "order difference"],
-    a: "Quotation: Estimate/offer, no commitment. Sales Order: Confirmed order, commits inventory, drives fulfillment."
+    a: "Quotation: Estimate/offer, no commitment. Sales Order: Confirmed order, commits inventory, drives fulfillment.",
   },
   {
-    id: "ext-441", category: "transactions",
+    id: "ext-441",
+    category: "transactions",
     q: "How do purchase orders work?",
     keywords: ["purchase order workflow", "po flow"],
-    a: "Request goods from supplier. Sent for confirmation. GRN created against PO when goods arrive, then Invoice. Outstanding PO report shows pending receipts."
+    a: "Request goods from supplier. Sent for confirmation. GRN created against PO when goods arrive, then Invoice. Outstanding PO report shows pending receipts.",
   },
   {
-    id: "ext-442", category: "transactions",
+    id: "ext-442",
+    category: "transactions",
     q: "How do I transfer stock between warehouses?",
     keywords: ["stock transfer detailed", "inter branch transfer"],
-    a: "Transactions → Inventory → Stock Transfer. Select From/To warehouses, items, qty, rates. Toggle 'Inter Branch' if applicable. Posts Out and In movements."
+    a: "Transactions → Inventory → Stock Transfer. Select From/To warehouses, items, qty, rates. Toggle 'Inter Branch' if applicable. Posts Out and In movements.",
   },
   {
-    id: "ext-443", category: "transactions",
+    id: "ext-443",
+    category: "transactions",
     q: "What accounting entries does inter-branch transfer create?",
     keywords: ["inter branch accounting", "branch transfer entry"],
-    a: "Dr Branch Transfer Receivable (receiving branch), Cr Branch Transfer Payable (sending branch). Tracks consolidation balances."
+    a: "Dr Branch Transfer Receivable (receiving branch), Cr Branch Transfer Payable (sending branch). Tracks consolidation balances.",
   },
   {
-    id: "ext-444", category: "transactions",
+    id: "ext-444",
+    category: "transactions",
     q: "When should I use a Stock Journal?",
     keywords: ["stock journal usage", "when to use stock journal"],
-    a: "Write-off damaged stock, found stock, physical count adjustments, transferring between batches, sample usage. Any non-transactional stock adjustment."
+    a: "Write-off damaged stock, found stock, physical count adjustments, transferring between batches, sample usage. Any non-transactional stock adjustment.",
   },
   {
-    id: "ext-445", category: "transactions",
+    id: "ext-445",
+    category: "transactions",
     q: "How does Stock Journal affect accounting?",
     keywords: ["stock journal accounting", "financial impact stock journal"],
-    a: "Primarily affects inventory quantities. For significant write-offs, create separate journal voucher for financial impact (Cost of Goods Sold/Loss)."
+    a: "Primarily affects inventory quantities. For significant write-offs, create separate journal voucher for financial impact (Cost of Goods Sold/Loss).",
   },
   {
-    id: "ext-446", category: "transactions",
+    id: "ext-446",
+    category: "transactions",
     q: "What is the difference between Stock Transfer and Stock Journal?",
     keywords: ["stock transfer vs stock journal", "inventory transaction diff"],
-    a: "Transfer: Moves stock between locations (net unchanged). Journal: Adjusts stock levels (net changes), single location affected per line."
+    a: "Transfer: Moves stock between locations (net unchanged). Journal: Adjusts stock levels (net changes), single location affected per line.",
   },
   {
-    id: "ext-447", category: "transactions",
+    id: "ext-447",
+    category: "transactions",
     q: "How do I record production in Sutra ERP?",
     keywords: ["record production", "manufacturing process"],
-    a: "Define BOM. Transactions → Inventory → Production. Select finished product/qty. BOM auto-fills raw materials. Adjust actuals. Post to consume materials and produce goods."
+    a: "Define BOM. Transactions → Inventory → Production. Select finished product/qty. BOM auto-fills raw materials. Adjust actuals. Post to consume materials and produce goods.",
   },
   {
-    id: "ext-448", category: "transactions",
+    id: "ext-448",
+    category: "transactions",
     q: "What is a Bill of Material (BOM)?",
     keywords: ["bill of material detail", "bom recipe"],
-    a: "Recipe for manufacturing. Parent item (finished) + Child items (raw materials) with qty per unit. Used by Production Voucher to calculate material needs."
+    a: "Recipe for manufacturing. Parent item (finished) + Child items (raw materials) with qty per unit. Used by Production Voucher to calculate material needs.",
   },
   {
-    id: "ext-449", category: "transactions",
+    id: "ext-449",
+    category: "transactions",
     q: "How is production cost calculated?",
     keywords: ["production cost formula", "manufacturing cost calc"],
-    a: "Production cost = Sum of (Raw Material Qty Consumed × Raw Material Rate). Determines value at which finished goods enter stock."
+    a: "Production cost = Sum of (Raw Material Qty Consumed × Raw Material Rate). Determines value at which finished goods enter stock.",
   },
   {
-    id: "ext-450", category: "transactions",
+    id: "ext-450",
+    category: "transactions",
     q: "What stock movements does production create?",
     keywords: ["production stock movements", "manufacturing inventory"],
-    a: "Consumption (Out): Raw materials decrease based on BOM/actuals. Production (In): Finished goods increase based on units produced and calculated cost."
+    a: "Consumption (Out): Raw materials decrease based on BOM/actuals. Production (In): Finished goods increase based on units produced and calculated cost.",
   },
   {
-    id: "ext-451", category: "transactions",
+    id: "ext-451",
+    category: "transactions",
     q: "How do I handle customer returns in POS?",
     keywords: ["pos return detailed", "pos refund process"],
-    a: "Go to BillingInvoice / Sales Return. Select original POS invoice ref. Adjust qtys. Process refund in payments. Post to increase stock and reverse ledger."
+    a: "Go to BillingInvoice / Sales Return. Select original POS invoice ref. Adjust qtys. Process refund in payments. Post to increase stock and reverse ledger.",
   },
   {
-    id: "ext-452", category: "transactions",
+    id: "ext-452",
+    category: "transactions",
     q: "How does POS handle discounts for specific customers?",
     keywords: ["pos customer discount", "pos price list"],
-    a: "If customer has assigned price list, prices auto-load. Manual line/bill discounts can be applied. Discount history tracked per customer."
+    a: "If customer has assigned price list, prices auto-load. Manual line/bill discounts can be applied. Discount history tracked per customer.",
   },
   {
-    id: "ext-453", category: "transactions",
+    id: "ext-453",
+    category: "transactions",
     q: "How does POS day close handle credit sales?",
     keywords: ["pos credit sales day close", "pos accounts receivable"],
-    a: "Tracked separately from cash. Expected cash includes cash sales only. Credit sales appear in receivables and update customer ledgers."
+    a: "Tracked separately from cash. Expected cash includes cash sales only. Credit sales appear in receivables and update customer ledgers.",
   },
   {
-    id: "ext-454", category: "transactions",
+    id: "ext-454",
+    category: "transactions",
     q: "What happens if I close POS session with variance?",
     keywords: ["pos session variance", "cash variance pos"],
-    a: "Variance = Actual - Expected cash. Recorded in session log. Small (<1) flagged minor, large flagged red. All logged for audit."
+    a: "Variance = Actual - Expected cash. Recorded in session log. Small (<1) flagged minor, large flagged red. All logged for audit.",
   },
   {
-    id: "ext-455", category: "transactions",
+    id: "ext-455",
+    category: "transactions",
     q: "Can I re-open a closed POS session?",
     keywords: ["reopen pos session", "edit closed pos"],
-    a: "No, closed sessions cannot be re-opened. Create adjustment regular vouchers or start new session. Audit trail preserves original data."
+    a: "No, closed sessions cannot be re-opened. Create adjustment regular vouchers or start new session. Audit trail preserves original data.",
   },
   {
-    id: "ext-456", category: "transactions",
+    id: "ext-456",
+    category: "transactions",
     q: "How does POS handle items with batch tracking?",
     keywords: ["pos batch tracking", "pos lot number"],
-    a: "Scanning/selecting item shows available batches. Select batch (FIFO auto-selection). Batch qty decreases. Batch visible in cart."
+    a: "Scanning/selecting item shows available batches. Select batch (FIFO auto-selection). Batch qty decreases. Batch visible in cart.",
   },
   {
-    id: "ext-457", category: "transactions",
+    id: "ext-457",
+    category: "transactions",
     q: "How does POS work with serial-tracked items?",
     keywords: ["pos serial tracking", "pos sell serial"],
-    a: "After adding item, system prompts for serial number. Enter/scan specific unit serial. That unit removed from inventory. Cannot sell same serial twice."
+    a: "After adding item, system prompts for serial number. Enter/scan specific unit serial. That unit removed from inventory. Cannot sell same serial twice.",
   },
   {
-    id: "ext-458", category: "transactions",
+    id: "ext-458",
+    category: "transactions",
     q: "How do I configure POS receipt footer?",
     keywords: ["pos receipt footer", "customize thermal receipt"],
-    a: "Uses company name/address/PAN. Hardcoded 'Thank you!'. For custom footer, modify printReceipt function or print template settings."
+    a: "Uses company name/address/PAN. Hardcoded 'Thank you!'. For custom footer, modify printReceipt function or print template settings.",
   },
   {
-    id: "ext-459", category: "transactions",
+    id: "ext-459",
+    category: "transactions",
     q: "How does POS handle tax-exempt customers?",
     keywords: ["pos tax exempt", "pos zero vat"],
-    a: "Select tax-exempt customer or manually uncheck VAT per line. Exempt amount tracked separately, receipt shows VAT as 0."
+    a: "Select tax-exempt customer or manually uncheck VAT per line. Exempt amount tracked separately, receipt shows VAT as 0.",
   },
   {
-    id: "ext-460", category: "transactions",
+    id: "ext-460",
+    category: "transactions",
     q: "How do I track cashier performance in POS?",
     keywords: ["pos cashier tracking", "pos user tracking"],
-    a: "Each sale records createdBy/createdByName. Session history shows per-cashier metrics. Multiple cashiers can run separate sessions."
+    a: "Each sale records createdBy/createdByName. Session history shows per-cashier metrics. Multiple cashiers can run separate sessions.",
   },
   {
-    id: "ext-461", category: "masters",
+    id: "ext-461",
+    category: "masters",
     q: "How do I set up a loan account?",
     keywords: ["setup loan account", "loan given taken"],
-    a: "Loans taken: 'Loans (Liability)' group (Cr). Loans given: 'Loans & Advances (Asset)' (Dr). Set opening balance, link to bank for repayments."
+    a: "Loans taken: 'Loans (Liability)' group (Cr). Loans given: 'Loans & Advances (Asset)' (Dr). Set opening balance, link to bank for repayments.",
   },
   {
-    id: "ext-462", category: "masters",
+    id: "ext-462",
+    category: "masters",
     q: "How do I set up partner capital accounts?",
     keywords: ["partner capital account", "partnership ledger"],
-    a: "Create ledgers under 'Partners Capital Account' (Cr). Separate ledger per partner. Record contributions via receipt, drawings via payment, profit share via journal."
+    a: "Create ledgers under 'Partners Capital Account' (Cr). Separate ledger per partner. Record contributions via receipt, drawings via payment, profit share via journal.",
   },
   {
-    id: "ext-463", category: "masters",
+    id: "ext-463",
+    category: "masters",
     q: "How do I set up VAT accounts?",
     keywords: ["vat accounts setup", "output input vat ledgers"],
-    a: "VAT Payable (Output): 'Duties & Taxes' (Cr). VAT Input: 'Current Assets' or 'Duties & Taxes' (Dr). Sales credit Payable, Purchases debit Input."
+    a: "VAT Payable (Output): 'Duties & Taxes' (Cr). VAT Input: 'Current Assets' or 'Duties & Taxes' (Dr). Sales credit Payable, Purchases debit Input.",
   },
   {
-    id: "ext-464", category: "masters",
+    id: "ext-464",
+    category: "masters",
     q: "How do I set up TDS accounts?",
     keywords: ["tds accounts setup", "tds payable ledger"],
-    a: "TDS Payable: 'Duties & Taxes' (Cr) when deducted, Dr when deposited to IRD. TDS Expense (optional) under Indirect Expenses."
+    a: "TDS Payable: 'Duties & Taxes' (Cr) when deducted, Dr when deposited to IRD. TDS Expense (optional) under Indirect Expenses.",
   },
   {
-    id: "ext-465", category: "masters",
+    id: "ext-465",
+    category: "masters",
     q: "How do I handle multiple bank accounts?",
     keywords: ["multiple bank accounts", "bank ledger setup"],
-    a: "Create separate ledgers under 'Bank Accounts' sub-group (Current Assets). Configure details per account. Select appropriate bank in payment/receipt. Contra for transfers."
+    a: "Create separate ledgers under 'Bank Accounts' sub-group (Current Assets). Configure details per account. Select appropriate bank in payment/receipt. Contra for transfers.",
   },
   {
-    id: "ext-466", category: "masters",
+    id: "ext-466",
+    category: "masters",
     q: "How do I set up expense sub-categories?",
     keywords: ["expense sub categories", "expense grouping"],
-    a: "Primary: Indirect Expenses. Sub-groups: Admin, Selling, Financial. Create ledgers under appropriate sub-groups for granular P&L tracking."
+    a: "Primary: Indirect Expenses. Sub-groups: Admin, Selling, Financial. Create ledgers under appropriate sub-groups for granular P&L tracking.",
   },
   {
-    id: "ext-467", category: "masters",
+    id: "ext-467",
+    category: "masters",
     q: "What are sub-ledgers and when to use them?",
     keywords: ["sub ledgers", "parent child ledger"],
-    a: "Child accounts under a parent GL (e.g. Trade Debtors parent, individual customer sub-ledgers). Balance rolls up to parent in reports. Enable in Features/Options."
+    a: "Child accounts under a parent GL (e.g. Trade Debtors parent, individual customer sub-ledgers). Balance rolls up to parent in reports. Enable in Features/Options.",
   },
   {
-    id: "ext-468", category: "masters",
+    id: "ext-468",
+    category: "masters",
     q: "How does account grouping affect financial statements?",
     keywords: ["account grouping impact", "financial statement structure"],
-    a: "Capital/Liabilities → Balance Sheet Liabilities. Current Assets → BS Assets. Direct Income → P&L Income. Indirect Expenses → P&L Expenses. Misgrouping causes errors."
+    a: "Capital/Liabilities → Balance Sheet Liabilities. Current Assets → BS Assets. Direct Income → P&L Income. Indirect Expenses → P&L Expenses. Misgrouping causes errors.",
   },
   {
-    id: "ext-469", category: "masters",
+    id: "ext-469",
+    category: "masters",
     q: "How do I reclassify a ledger to a different group?",
     keywords: ["reclassify ledger", "change ledger group"],
-    a: "Edit ledger, change Account Group dropdown, save. Takes effect immediately in reports. No impact on transaction history."
+    a: "Edit ledger, change Account Group dropdown, save. Takes effect immediately in reports. No impact on transaction history.",
   },
   {
-    id: "ext-470", category: "masters",
+    id: "ext-470",
+    category: "masters",
     q: "How do I merge duplicate ledgers?",
     keywords: ["merge ledgers", "duplicate accounts"],
-    a: "Manual process: Transfer balance via journal, reassign transactions to surviving ledger, delete/deactivate the duplicate. Maintain audit trail."
+    a: "Manual process: Transfer balance via journal, reassign transactions to surviving ledger, delete/deactivate the duplicate. Maintain audit trail.",
   },
   {
-    id: "ext-471", category: "masters",
+    id: "ext-471",
+    category: "masters",
     q: "How do I set credit limits for parties?",
     keywords: ["credit limit setup", "party credit days"],
-    a: "Edit party → General tab. Set Credit Limit (Rs.) and Credit Period (Days). System warns when approaching limit. Appears in reports."
+    a: "Edit party → General tab. Set Credit Limit (Rs.) and Credit Period (Days). System warns when approaching limit. Appears in reports.",
   },
   {
-    id: "ext-472", category: "masters",
+    id: "ext-472",
+    category: "masters",
     q: "How do I handle a party that is both customer and supplier?",
     keywords: ["party type both", "customer and supplier"],
-    a: "Set type to 'Both'. Appears in both dropdowns. Single ledger tracks all. Net balance = Sales - Payments + Purchases - Receipts. Can offset via contra."
+    a: "Set type to 'Both'. Appears in both dropdowns. Single ledger tracks all. Net balance = Sales - Payments + Purchases - Receipts. Can offset via contra.",
   },
   {
-    id: "ext-473", category: "masters",
+    id: "ext-473",
+    category: "masters",
     q: "How do I set up a party's GST/VAT registration?",
     keywords: ["party tax registration", "vat details party"],
-    a: "Enter PAN (9-digit). Set Registration Type (Regular, Composition, Unregistered, etc.), Tax Category, GST Applicable, Reverse Charge flags."
+    a: "Enter PAN (9-digit). Set Registration Type (Regular, Composition, Unregistered, etc.), Tax Category, GST Applicable, Reverse Charge flags.",
   },
   {
-    id: "ext-474", category: "masters",
+    id: "ext-474",
+    category: "masters",
     q: "How do I deactivate a party?",
     keywords: ["deactivate party", "disable customer supplier"],
-    a: "Edit party, uncheck 'Is Active Party', save. Won't appear in dropdowns for new transactions, but existing transactions remain in reports."
+    a: "Edit party, uncheck 'Is Active Party', save. Won't appear in dropdowns for new transactions, but existing transactions remain in reports.",
   },
   {
-    id: "ext-475", category: "masters",
+    id: "ext-475",
+    category: "masters",
     q: "How do I handle party address changes?",
     keywords: ["party address change", "update customer address"],
-    a: "Edit party, update address fields. Old invoices retain original address, new invoices use updated one."
+    a: "Edit party, update address fields. Old invoices retain original address, new invoices use updated one.",
   },
   {
-    id: "ext-476", category: "masters",
+    id: "ext-476",
+    category: "masters",
     q: "How does party opening balance affect accounting?",
     keywords: ["party opening balance impact"],
-    a: "Customer Dr balance creates receivable. Supplier Cr balance creates payable. Appears in TB, Party Statement, Outstanding/Aging reports."
+    a: "Customer Dr balance creates receivable. Supplier Cr balance creates payable. Appears in TB, Party Statement, Outstanding/Aging reports.",
   },
   {
-    id: "ext-477", category: "masters",
+    id: "ext-477",
+    category: "masters",
     q: "How do I track multiple contacts for a party?",
     keywords: ["multiple contacts party", "contact person"],
-    a: "Primary phone/email on party form. Additional contacts via optional fields (configured in Master Configuration: Contact Person, Alternate Phone)."
+    a: "Primary phone/email on party form. Additional contacts via optional fields (configured in Master Configuration: Contact Person, Alternate Phone).",
   },
   {
-    id: "ext-478", category: "masters",
+    id: "ext-478",
+    category: "masters",
     q: "How do I set up item pricing tiers?",
     keywords: ["pricing tiers", "price lists item"],
-    a: "Create Price Lists. Set item prices in each list. Assign price list to parties. Correct price auto-loads during sales."
+    a: "Create Price Lists. Set item prices in each list. Assign price list to parties. Correct price auto-loads during sales.",
   },
   {
-    id: "ext-479", category: "masters",
+    id: "ext-479",
+    category: "masters",
     q: "How do I handle batch-tracked items?",
     keywords: ["batch tracked items", "mfg date exp date"],
-    a: "Enable Batch Management. Create batches (MFG/EXP dates). Link to purchase/GRN. Select batch (FIFO) during sales. Track batch stock, near-expiry alerts."
+    a: "Enable Batch Management. Create batches (MFG/EXP dates). Link to purchase/GRN. Select batch (FIFO) during sales. Track batch stock, near-expiry alerts.",
   },
   {
-    id: "ext-480", category: "masters",
+    id: "ext-480",
+    category: "masters",
     q: "How do I set reorder levels?",
     keywords: ["set reorder level", "min stock configuration"],
-    a: "Edit item → enter Reorder Level and Min Stock Level. Dashboard alerts when stock falls below. Used for purchase planning."
+    a: "Edit item → enter Reorder Level and Min Stock Level. Dashboard alerts when stock falls below. Used for purchase planning.",
   },
   {
-    id: "ext-481", category: "masters",
+    id: "ext-481",
+    category: "masters",
     q: "How do I handle items with multiple units?",
     keywords: ["multiple units item", "unit conversion setup"],
-    a: "Set base unit. Define conversions in Unit Conversion Master (e.g. 1 Box = 12 PCS). Select alternate unit during sales, auto-converts to base unit for stock."
+    a: "Set base unit. Define conversions in Unit Conversion Master (e.g. 1 Box = 12 PCS). Select alternate unit during sales, auto-converts to base unit for stock.",
   },
   {
-    id: "ext-482", category: "masters",
+    id: "ext-482",
+    category: "masters",
     q: "How do I set up composite items (kits/bundles)?",
     keywords: ["composite items", "kits bundles bom"],
-    a: "Create finished item. Add components in BOM. Sales auto-consume components, or use Production voucher to handle assembly."
+    a: "Create finished item. Add components in BOM. Sales auto-consume components, or use Production voucher to handle assembly.",
   },
   {
-    id: "ext-483", category: "masters",
+    id: "ext-483",
+    category: "masters",
     q: "How do I handle item images?",
     keywords: ["item images", "product photos"],
-    a: "Not built into core master, but can be added via optional fields or attachments. POS grid shows items as text buttons currently."
+    a: "Not built into core master, but can be added via optional fields or attachments. POS grid shows items as text buttons currently.",
   },
   {
-    id: "ext-484", category: "masters",
+    id: "ext-484",
+    category: "masters",
     q: "How does cost tracking work for items?",
     keywords: ["item cost tracking", "weighted average cost calculation"],
-    a: "Purchase Rate on master updated on purchase. Stock valuation (Weighted avg) updates. COGS = Qty sold x Average cost. Gross margin = Sales - Cost."
+    a: "Purchase Rate on master updated on purchase. Stock valuation (Weighted avg) updates. COGS = Qty sold x Average cost. Gross margin = Sales - Cost.",
   },
   {
-    id: "ext-485", category: "masters",
+    id: "ext-485",
+    category: "masters",
     q: "How do I handle non-inventory items (services)?",
     keywords: ["service items", "non inventory tracking"],
-    a: "Create item with unit 'SVC' or 'NOS'. Set rates. No stock tracking/movement created. Service income tracked in sales reports."
+    a: "Create item with unit 'SVC' or 'NOS'. Set rates. No stock tracking/movement created. Service income tracked in sales reports.",
   },
   {
-    id: "ext-486", category: "reports",
+    id: "ext-486",
+    category: "reports",
     q: "How do I navigate between reports quickly?",
     keywords: ["navigate reports", "report shortcuts"],
-    a: "Sidebar, Top Menu, Right Shortcut Bar (B, T, L, etc.), Ctrl shortcuts (Ctrl+B, Ctrl+T), Dashboard metric cards, Gateway Reports Hub."
+    a: "Sidebar, Top Menu, Right Shortcut Bar (B, T, L, etc.), Ctrl shortcuts (Ctrl+B, Ctrl+T), Dashboard metric cards, Gateway Reports Hub.",
   },
   {
-    id: "ext-487", category: "reports",
+    id: "ext-487",
+    category: "reports",
     q: "How do I set report filters?",
     keywords: ["report filters options"],
-    a: "Date Range (BS/AD, presets), Account/Party filters, Warehouse filter, Status, Type. Appear at top of report page."
+    a: "Date Range (BS/AD, presets), Account/Party filters, Warehouse filter, Status, Type. Appear at top of report page.",
   },
   {
-    id: "ext-488", category: "reports",
+    id: "ext-488",
+    category: "reports",
     q: "How do I save report preferences?",
     keywords: ["save report preferences", "default filters"],
-    a: "Filters persist in component state during session, reset on reload. Use F12 Configuration (if available) for persistent preferences."
+    a: "Filters persist in component state during session, reset on reload. Use F12 Configuration (if available) for persistent preferences.",
   },
   {
-    id: "ext-489", category: "reports",
+    id: "ext-489",
+    category: "reports",
     q: "How do I print a report directly?",
     keywords: ["print report direct", "browser print report"],
-    a: "Click 'Print' in report toolbar. Browser print dialog opens. Print CSS hides filters, shows headers. Adjust page/margins and print."
+    a: "Click 'Print' in report toolbar. Browser print dialog opens. Print CSS hides filters, shows headers. Adjust page/margins and print.",
   },
   {
-    id: "ext-490", category: "reports",
+    id: "ext-490",
+    category: "reports",
     q: "How do I compare two periods in reports?",
     keywords: ["compare periods reports", "variance report comparison"],
-    a: "Use 'Compare with' option. Shows Current Period, Previous Period, and Variance (absolute/percentage). Available in P&L, Sales Analysis, Statistics."
+    a: "Use 'Compare with' option. Shows Current Period, Previous Period, and Variance (absolute/percentage). Available in P&L, Sales Analysis, Statistics.",
   },
   {
-    id: "ext-491", category: "general",
+    id: "ext-491",
+    category: "general",
     q: "What does the 'Today's Sales' widget show?",
     keywords: ["todays sales widget", "dashboard sales stat"],
-    a: "Sum of all posted sales invoices today and count. Links to Sales Register. Updates on refresh."
+    a: "Sum of all posted sales invoices today and count. Links to Sales Register. Updates on refresh.",
   },
   {
-    id: "ext-492", category: "general",
+    id: "ext-492",
+    category: "general",
     q: "What does the 'Outstanding Receivables' widget show?",
     keywords: ["outstanding receivables widget", "dashboard unpaid stat"],
-    a: "Total amount customers owe (Grand Total - Paid Amount). Links to Outstanding Receivables report. Blue color."
+    a: "Total amount customers owe (Grand Total - Paid Amount). Links to Outstanding Receivables report. Blue color.",
   },
   {
-    id: "ext-493", category: "general",
+    id: "ext-493",
+    category: "general",
     q: "What does the 'Cash & Bank' widget show?",
     keywords: ["cash bank widget", "dashboard liquidity stat"],
-    a: "Total liquid assets (sum of cash + bank ledgers). Links to cash/bank book. Yellow color."
+    a: "Total liquid assets (sum of cash + bank ledgers). Links to cash/bank book. Yellow color.",
   },
   {
-    id: "ext-494", category: "general",
+    id: "ext-494",
+    category: "general",
     q: "What does the 'VAT Liability' widget show?",
     keywords: ["vat liability widget", "dashboard tax stat"],
-    a: "Net VAT payable (Output VAT - Input VAT from posted invoices). Red color. Links to VAT Reports."
+    a: "Net VAT payable (Output VAT - Input VAT from posted invoices). Red color. Links to VAT Reports.",
   },
   {
-    id: "ext-495", category: "general",
+    id: "ext-495",
+    category: "general",
     q: "What does the 'Stock Position' widget show?",
     keywords: ["stock position widget", "dashboard inventory stat"],
-    a: "Total inventory value across all warehouses (Qty x Rate). Purple color. Links to Stock Summary."
+    a: "Total inventory value across all warehouses (Qty x Rate). Purple color. Links to Stock Summary.",
   },
   {
-    id: "ext-496", category: "general",
+    id: "ext-496",
+    category: "general",
     q: "What does the 'Active Parties' widget show?",
     keywords: ["active parties widget", "dashboard customer stat"],
-    a: "Count of active customers, suppliers, both. Indigo color. Links to Parties Directory."
+    a: "Count of active customers, suppliers, both. Indigo color. Links to Parties Directory.",
   },
   {
-    id: "ext-497", category: "general",
+    id: "ext-497",
+    category: "general",
     q: "How do dashboard alerts update?",
     keywords: ["dashboard alerts update", "real time alerts"],
-    a: "Computed from current store data on each render. Update when data changes. Links to relevant pages."
+    a: "Computed from current store data on each render. Update when data changes. Links to relevant pages.",
   },
   {
-    id: "ext-498", category: "general",
+    id: "ext-498",
+    category: "general",
     q: "How do I refresh dashboard data?",
     keywords: ["refresh dashboard", "update stats"],
-    a: "Click 'Refresh' button on dashboard header. Recalculates all widgets/alerts from current store data."
+    a: "Click 'Refresh' button on dashboard header. Recalculates all widgets/alerts from current store data.",
   },
   {
-    id: "ext-499", category: "general",
+    id: "ext-499",
+    category: "general",
     q: "What is the Configuration Hub?",
     keywords: ["configuration hub", "settings center"],
-    a: "Central access to Company Settings, Accounts/Inventory/Print configs, F11 Features, Users, Fiscal Year, Backup & Restore."
+    a: "Central access to Company Settings, Accounts/Inventory/Print configs, F11 Features, Users, Fiscal Year, Backup & Restore.",
   },
   {
-    id: "ext-500", category: "general",
+    id: "ext-500",
+    category: "general",
     q: "How do I configure invoice defaults?",
     keywords: ["invoice defaults", "default sales account"],
-    a: "Accounts Configuration → Set Default Sales/Purchase/Cash/Bank/VAT accounts. Auto-fills on invoices, overridable."
+    a: "Accounts Configuration → Set Default Sales/Purchase/Cash/Bank/VAT accounts. Auto-fills on invoices, overridable.",
   },
   {
-    id: "ext-501", category: "general",
+    id: "ext-501",
+    category: "general",
     q: "How do inventory valuation methods work?",
     keywords: ["inventory valuation methods", "weighted average fifo lifo"],
-    a: "Weighted Avg: (Old Value + New Value) / (Old Qty + New Qty). FIFO: Oldest sold first. LIFO: Newest sold first. Set in Inventory Config."
+    a: "Weighted Avg: (Old Value + New Value) / (Old Qty + New Qty). FIFO: Oldest sold first. LIFO: Newest sold first. Set in Inventory Config.",
   },
   {
-    id: "ext-502", category: "general",
+    id: "ext-502",
+    category: "general",
     q: "How do I configure print settings?",
     keywords: ["print settings configuration", "invoice template text"],
-    a: "Company Settings → Upload logo, toggle bank details, enter bank info, terms & conditions, footer text, signatory name, PAN toggle."
+    a: "Company Settings → Upload logo, toggle bank details, enter bank info, terms & conditions, footer text, signatory name, PAN toggle.",
   },
   {
-    id: "ext-503", category: "general",
+    id: "ext-503",
+    category: "general",
     q: "What F11 features can I configure?",
     keywords: ["f11 features", "company toggles"],
-    a: "Multi Currency, Sub Ledgers, Bill-by-Bill, Auto Ref, Bank Details, Ledger Reconciliation, Salesman, Cost Center, Budgeting, Interest, TDS/TCS, Multi Godown."
+    a: "Multi Currency, Sub Ledgers, Bill-by-Bill, Auto Ref, Bank Details, Ledger Reconciliation, Salesman, Cost Center, Budgeting, Interest, TDS/TCS, Multi Godown.",
   },
   {
-    id: "ext-504", category: "general",
+    id: "ext-504",
+    category: "general",
     q: "How do I export specific data?",
     keywords: ["export specific data", "selective export"],
-    a: "Data Import/Export → Choose COA, Parties, Items, Vouchers/Invoices (by date). Export to Excel."
+    a: "Data Import/Export → Choose COA, Parties, Items, Vouchers/Invoices (by date). Export to Excel.",
   },
   {
-    id: "ext-505", category: "general",
+    id: "ext-505",
+    category: "general",
     q: "How do I import parties from Excel?",
     keywords: ["import parties excel template"],
-    a: "Data Import/Export → Download template. Fill details. 'Import Parties' → upload. System validates and creates parties, reports errors."
+    a: "Data Import/Export → Download template. Fill details. 'Import Parties' → upload. System validates and creates parties, reports errors.",
   },
   {
-    id: "ext-506", category: "general",
+    id: "ext-506",
+    category: "general",
     q: "How do I import items from Excel?",
     keywords: ["import items excel template"],
-    a: "Download item template. Fill details/opening stock. Upload. System creates items and opening stock movements."
+    a: "Download item template. Fill details/opening stock. Upload. System creates items and opening stock movements.",
   },
   {
-    id: "ext-507", category: "general",
+    id: "ext-507",
+    category: "general",
     q: "How do I take a complete system backup?",
     keywords: ["complete system backup", "full json export"],
-    a: "Backup & Restore → 'Create Full Backup'. Exports entire IndexedDB as JSON file. Daily backup recommended."
+    a: "Backup & Restore → 'Create Full Backup'. Exports entire IndexedDB as JSON file. Daily backup recommended.",
   },
   {
-    id: "ext-508", category: "general",
+    id: "ext-508",
+    category: "general",
     q: "How do I restore a backup?",
     keywords: ["restore backup json", "import full backup"],
-    a: "Backup & Restore → 'Restore Backup'. Select JSON file. Warning: Replaces ALL current data. Validates, imports, reloads page."
+    a: "Backup & Restore → 'Restore Backup'. Select JSON file. Warning: Replaces ALL current data. Validates, imports, reloads page.",
   },
   {
-    id: "ext-509", category: "general",
+    id: "ext-509",
+    category: "general",
     q: "How do I clear test data?",
     keywords: ["clear test data", "factory reset database"],
-    a: "Company Settings → Administrative Controls → 'Factory Reset Database'. Type 'DELETE ALL DATA'. Restores seed data."
+    a: "Company Settings → Administrative Controls → 'Factory Reset Database'. Type 'DELETE ALL DATA'. Restores seed data.",
   },
   {
-    id: "ext-510", category: "general",
+    id: "ext-510",
+    category: "general",
     q: "Can I migrate data from another accounting system?",
     keywords: ["migrate data", "switch accounting software"],
-    a: "Export old system to Excel. Map to Sutra templates. Import COA, Parties, Items (with stock). Enter opening balances via journal. Verify TB."
+    a: "Export old system to Excel. Map to Sutra templates. Import COA, Parties, Items (with stock). Enter opening balances via journal. Verify TB.",
   },
   {
-    id: "ext-511", category: "general",
+    id: "ext-511",
+    category: "general",
     q: "What is the exact format for importing Chart of Accounts?",
     keywords: ["import chart of accounts format", "coa excel template"],
-    a: "Groups first (Name, Alias, Parent, Nature), then Ledgers (Name, Group, Type, Balance, Dr/Cr, PAN). Must reference existing/imported groups."
+    a: "Groups first (Name, Alias, Parent, Nature), then Ledgers (Name, Group, Type, Balance, Dr/Cr, PAN). Must reference existing/imported groups.",
   },
   {
-    id: "ext-512", category: "general",
+    id: "ext-512",
+    category: "general",
     q: "How do I export filtered voucher data?",
     keywords: ["export filtered vouchers"],
-    a: "Vouchers Register → apply filters → 'Export Register Spreadsheet'. Includes all columns (account names resolved), but not line item details."
+    a: "Vouchers Register → apply filters → 'Export Register Spreadsheet'. Includes all columns (account names resolved), but not line item details.",
   },
   {
-    id: "ext-513", category: "general",
+    id: "ext-513",
+    category: "general",
     q: "Can I export invoice line items?",
     keywords: ["export invoice lines", "line item excel"],
-    a: "Use Sales/Purchase Analysis reports for item-wise breakdown export. Individual invoice PDF shows line items. Register export only shows summary."
+    a: "Use Sales/Purchase Analysis reports for item-wise breakdown export. Individual invoice PDF shows line items. Register export only shows summary.",
   },
   {
-    id: "ext-514", category: "general",
+    id: "ext-514",
+    category: "general",
     q: "How do I export the Trial Balance?",
     keywords: ["export trial balance"],
-    a: "Generate TB → 'Export' button. Excel shows hierarchical groups/ledgers, opening balances, transactions, closing balances."
+    a: "Generate TB → 'Export' button. Excel shows hierarchical groups/ledgers, opening balances, transactions, closing balances.",
   },
   {
-    id: "ext-515", category: "general",
+    id: "ext-515",
+    category: "general",
     q: "What does the Excel export for Day Book contain?",
     keywords: ["day book export format"],
-    a: "Date, Voucher No, Type, Party, Narration, Dr/Cr, Status. All transactions in date order for the filtered range."
+    a: "Date, Voucher No, Type, Party, Narration, Dr/Cr, Status. All transactions in date order for the filtered range.",
   },
   {
-    id: "ext-516", category: "general",
+    id: "ext-516",
+    category: "general",
     q: "How do I export POS day reports?",
     keywords: ["export pos day report", "pos excel"],
-    a: "POS → Day Close → 'Day Report'. Excel has 2 sheets: POS Sales (each sale details) and Summary (aggregated metrics)."
+    a: "POS → Day Close → 'Day Report'. Excel has 2 sheets: POS Sales (each sale details) and Summary (aggregated metrics).",
   },
   {
-    id: "ext-517", category: "general",
+    id: "ext-517",
+    category: "general",
     q: "Can I export audit logs?",
     keywords: ["export audit logs"],
-    a: "Audit Log page → apply filters → Export. Columns: Timestamp, User, Action, Description, Status, Risk. Limited to last 500 records."
+    a: "Audit Log page → apply filters → Export. Columns: Timestamp, User, Action, Description, Status, Risk. Limited to last 500 records.",
   },
   {
-    id: "ext-518", category: "general",
+    id: "ext-518",
+    category: "general",
     q: "How does role-based menu filtering work?",
     keywords: ["role menu filtering", "cansee permission"],
-    a: "Gateway uses canSee() to check permissions. Admin: sees all. Accountant: sees accounting. Filters menu tree. Some pages also restrict programmatically."
+    a: "Gateway uses canSee() to check permissions. Admin: sees all. Accountant: sees accounting. Filters menu tree. Some pages also restrict programmatically.",
   },
   {
-    id: "ext-519", category: "general",
+    id: "ext-519",
+    category: "general",
     q: "How do I set up a read-only user?",
     keywords: ["read only user", "viewer role"],
-    a: "Create 'operator' role without posting permissions. Can view reports/masters. No built-in 'viewer' role; requires custom role configuration."
+    a: "Create 'operator' role without posting permissions. Can view reports/masters. No built-in 'viewer' role; requires custom role configuration.",
   },
   {
-    id: "ext-520", category: "general",
+    id: "ext-520",
+    category: "general",
     q: "How does the login lockout timer work exactly?",
     keywords: ["login lockout timer", "failed login exact"],
-    a: "Failed attempts in localStorage. At 5, isLocked=true, 30s countdown. Countdown decreases via setTimeout. Resets on success."
+    a: "Failed attempts in localStorage. At 5, isLocked=true, 30s countdown. Countdown decreases via setTimeout. Resets on success.",
   },
   {
-    id: "ext-521", category: "general",
+    id: "ext-521",
+    category: "general",
     q: "How does the Alt key suppression work?",
     keywords: ["alt key suppression", "prevent browser menu"],
-    a: "Script in index.html prevents default if (e.altKey && !e.ctrlKey && !e.metaKey). Prevents browser menu hijacking, allows Alt+key shortcuts."
+    a: "Script in index.html prevents default if (e.altKey && !e.ctrlKey && !e.metaKey). Prevents browser menu hijacking, allows Alt+key shortcuts.",
   },
   {
-    id: "ext-522", category: "general",
+    id: "ext-522",
+    category: "general",
     q: "How does the Escape key work across the app?",
     keywords: ["escape key behavior", "cancel shortcut"],
-    a: "Forms: returns to list (prompts if dirty). Modals/Falcon/F12: closes them. Login: returns to Gateway. Cancels operations globally."
+    a: "Forms: returns to list (prompts if dirty). Modals/Falcon/F12: closes them. Login: returns to Gateway. Cancels operations globally.",
   },
   {
-    id: "ext-523", category: "general",
+    id: "ext-523",
+    category: "general",
     q: "How does the Ctrl+S shortcut work?",
     keywords: ["ctrl+s shortcut", "save hotkey"],
-    a: "Form components listen for (ctrlKey || metaKey) && 's'. Calls save handler, prevents browser save dialog. Only works on active forms."
+    a: "Form components listen for (ctrlKey || metaKey) && 's'. Calls save handler, prevents browser save dialog. Only works on active forms.",
   },
   {
-    id: "ext-524", category: "general",
+    id: "ext-524",
+    category: "general",
     q: "How does jsPDF autoTable render invoice lines?",
     keywords: ["jspdf autotable", "invoice pdf generation detail"],
-    a: "Maps invoice.lines. Styles borders/colors/fonts, calculates widths, auto-handles page breaks. Renders header before and totals after table."
+    a: "Maps invoice.lines. Styles borders/colors/fonts, calculates widths, auto-handles page breaks. Renders header before and totals after table.",
   },
   {
-    id: "ext-525", category: "general",
+    id: "ext-525",
+    category: "general",
     q: "How do print-specific CSS classes work?",
     keywords: ["print css classes", "media print rules"],
-    a: "@media print hides .no-print, shows .print-only. Sets white background, black text. @page size A4, 12mm margins. Prevents tr breaks."
+    a: "@media print hides .no-print, shows .print-only. Sets white background, black text. @page size A4, 12mm margins. Prevents tr breaks.",
   },
   {
-    id: "ext-526", category: "general",
+    id: "ext-526",
+    category: "general",
     q: "How does the POS receipt window work?",
     keywords: ["pos receipt window code", "thermal print trigger"],
-    a: "Opens new window (310px width), writes HTML with inline styles, triggers window.print(). Toast error if popup blocked."
+    a: "Opens new window (310px width), writes HTML with inline styles, triggers window.print(). Toast error if popup blocked.",
   },
   {
-    id: "ext-527", category: "general",
+    id: "ext-527",
+    category: "general",
     q: "How can I customize the invoice PDF template?",
     keywords: ["customize pdf template code", "jspdf code change"],
-    a: "Settings control logo/text. Deeper customization requires modifying generateInvoicePDF() in src/lib/printUtils.ts."
+    a: "Settings control logo/text. Deeper customization requires modifying generateInvoicePDF() in src/lib/printUtils.ts.",
   },
   {
-    id: "ext-528", category: "general",
+    id: "ext-528",
+    category: "general",
     q: "How does Bikram Sambat date conversion work?",
     keywords: ["bikram sambat conversion", "nepali date converter api"],
-    a: "Uses nepali-date-converter. adToBS returns {year,month,day}. bsToAD returns AD Date. ADToBSString returns formatted BS string."
+    a: "Uses nepali-date-converter. adToBS returns {year,month,day}. bsToAD returns AD Date. ADToBSString returns formatted BS string.",
   },
   {
-    id: "ext-529", category: "general",
+    id: "ext-529",
+    category: "general",
     q: "What are the Nepali months in order?",
     keywords: ["nepali months", "bs months list"],
-    a: "Baisakh, Jestha, Ashadh, Shrawan, Bhadra, Ashwin, Kartik, Mangsir, Poush, Magh, Falgun, Chaitra."
+    a: "Baisakh, Jestha, Ashadh, Shrawan, Bhadra, Ashwin, Kartik, Mangsir, Poush, Magh, Falgun, Chaitra.",
   },
   {
-    id: "ext-530", category: "general",
+    id: "ext-530",
+    category: "general",
     q: "How does the Nepali fiscal year work?",
     keywords: ["nepali fiscal year logic", "bs fy calculation"],
-    a: "Shrawan 1 to Ashadh end. Label '2081/82'. Shrawan-Poush = first year, Magh-Ashadh = second year."
+    a: "Shrawan 1 to Ashadh end. Label '2081/82'. Shrawan-Poush = first year, Magh-Ashadh = second year.",
   },
   {
-    id: "ext-531", category: "general",
+    id: "ext-531",
+    category: "general",
     q: "How does the NepaliDatePicker component work?",
     keywords: ["nepalidatepicker logic", "bs calendar component"],
-    a: "Popup with month grid. Returns BS-formatted string ('2081-04-15'). Validates against BS rules. Converts/shows AD representation."
+    a: "Popup with month grid. Returns BS-formatted string ('2081-04-15'). Validates against BS rules. Converts/shows AD representation.",
   },
   {
-    id: "ext-532", category: "general",
+    id: "ext-532",
+    category: "general",
     q: "What happens when IndexedDB quota is exceeded?",
     keywords: ["indexeddb quota exceeded", "storage full"],
-    a: "Dexie throws QuotaExceededError, app shows toast. Solutions: clear/archive old data, factory reset, use PostgreSQL backend. Browser allows 50-80% of disk."
+    a: "Dexie throws QuotaExceededError, app shows toast. Solutions: clear/archive old data, factory reset, use PostgreSQL backend. Browser allows 50-80% of disk.",
   },
   {
-    id: "ext-533", category: "general",
+    id: "ext-533",
+    category: "general",
     q: "How does the app handle network errors in API calls?",
     keywords: ["network error api", "cbms offline handling"],
-    a: "Try/catch blocks. CBMS failures logged/retryable. Backend: Express middleware returns {success:false, error}. Frontend shows toasts. Core works offline."
+    a: "Try/catch blocks. CBMS failures logged/retryable. Backend: Express middleware returns {success:false, error}. Frontend shows toasts. Core works offline.",
   },
   {
-    id: "ext-534", category: "general",
+    id: "ext-534",
+    category: "general",
     q: "What validation happens on party creation?",
     keywords: ["party validation rules", "pan validation rule"],
-    a: "Name required. PAN exactly 9 digits. Phone 7-15 digits. Type customer/supplier/both. Opening balance numeric."
+    a: "Name required. PAN exactly 9 digits. Phone 7-15 digits. Type customer/supplier/both. Opening balance numeric.",
   },
   {
-    id: "ext-535", category: "general",
+    id: "ext-535",
+    category: "general",
     q: "What happens when duplicate invoice numbers occur?",
     keywords: ["duplicate invoice numbers", "reference duplication"],
-    a: "Auto-serial ensures uniqueness. Manual reference numbers can duplicate (not blocked). Exception reports detect duplicates."
+    a: "Auto-serial ensures uniqueness. Manual reference numbers can duplicate (not blocked). Exception reports detect duplicates.",
   },
   {
-    id: "ext-536", category: "general",
+    id: "ext-536",
+    category: "general",
     q: "How are concurrent edits handled?",
     keywords: ["concurrent edits", "multiple tabs indexdb"],
-    a: "Single tab recommended. Multiple tabs have separate Dexie/Zustand instances, last write may not sync immediately. No record locking."
+    a: "Single tab recommended. Multiple tabs have separate Dexie/Zustand instances, last write may not sync immediately. No record locking.",
   },
   {
-    id: "ext-537", category: "general",
+    id: "ext-537",
+    category: "general",
     q: "How does the app recover from corrupted IndexedDB?",
     keywords: ["corrupted indexdb", "recover database"],
-    a: "ErrorBoundary catches errors. 'Try Again' button. Manual fix: DevTools → Application → Delete DB, then factory reset/restore backup."
-  }
+    a: "ErrorBoundary catches errors. 'Try Again' button. Manual fix: DevTools → Application → Delete DB, then factory reset/restore backup.",
+  },
 ];

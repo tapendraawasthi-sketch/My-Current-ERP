@@ -16,14 +16,7 @@
 
 import React, { useMemo, useCallback } from "react";
 import { useStore } from "../store/useStore";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import {
   RefreshCw,
   TrendingUp,
@@ -40,6 +33,7 @@ import {
   Receipt,
 } from "lucide-react";
 import { getBSTodayLong, getBSToday } from "../lib/nepaliDate";
+import { mergeSystemConfiguration } from "../lib/systemConfiguration";
 
 // ─── Formatting helpers ────────────────────────────────────────────────────────
 
@@ -81,11 +75,12 @@ const ChartTooltip: React.FC<any> = ({ active, payload, label }) => {
     >
       <div style={{ fontWeight: 700, marginBottom: 4, color: "#ffffff" }}>{label}</div>
       {payload.map((entry: any) => (
-        <div key={entry.name} style={{ display: "flex", justifyContent: "space-between", gap: 12, marginTop: 2 }}>
+        <div
+          key={entry.name}
+          style={{ display: "flex", justifyContent: "space-between", gap: 12, marginTop: 2 }}
+        >
           <span style={{ color: entry.color }}>{entry.name}</span>
-          <span style={{ fontFamily: "monospace", fontWeight: 600 }}>
-            {fmtShort(entry.value)}
-          </span>
+          <span style={{ fontFamily: "monospace", fontWeight: 600 }}>{fmtShort(entry.value)}</span>
         </div>
       ))}
     </div>
@@ -159,17 +154,39 @@ const KpiCard: React.FC<KpiCardProps> = ({
         borderRadius: "6px 0 0 6px",
       }}
     />
-    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", paddingLeft: 4 }}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "flex-start",
+        justifyContent: "space-between",
+        paddingLeft: 4,
+      }}
+    >
       <div>
-        <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#6b7280" }}>
+        <div
+          style={{
+            fontSize: 10,
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: "0.06em",
+            color: "#6b7280",
+          }}
+        >
           {label}
         </div>
-        <div style={{ fontSize: 20, fontWeight: 700, marginTop: 4, fontFamily: "'Courier New', monospace", color: "#111827", lineHeight: 1.2 }}>
+        <div
+          style={{
+            fontSize: 20,
+            fontWeight: 700,
+            marginTop: 4,
+            fontFamily: "'Courier New', monospace",
+            color: "#111827",
+            lineHeight: 1.2,
+          }}
+        >
           {value}
         </div>
-        {sub && (
-          <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 3 }}>{sub}</div>
-        )}
+        {sub && <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 3 }}>{sub}</div>}
       </div>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
         <div
@@ -189,7 +206,9 @@ const KpiCard: React.FC<KpiCardProps> = ({
         {trend !== undefined && (
           <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
             <TrendIcon value={trend} size={12} />
-            <span style={{ fontSize: 10, color: trend >= 0 ? "#059669" : "#dc2626", fontWeight: 600 }}>
+            <span
+              style={{ fontSize: 10, color: trend >= 0 ? "#059669" : "#dc2626", fontWeight: 600 }}
+            >
               vs yesterday
             </span>
           </div>
@@ -197,7 +216,17 @@ const KpiCard: React.FC<KpiCardProps> = ({
       </div>
     </div>
     {onClick && (
-      <div style={{ display: "flex", alignItems: "center", gap: 3, paddingLeft: 4, color: accentColor, fontSize: 10, fontWeight: 600 }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 3,
+          paddingLeft: 4,
+          color: accentColor,
+          fontSize: 10,
+          fontWeight: 600,
+        }}
+      >
         View Report <ArrowRight size={10} />
       </div>
     )}
@@ -225,7 +254,15 @@ const PulseCell: React.FC<PulseCellProps> = ({ label, value, period }) => {
         gap: 2,
       }}
     >
-      <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#6b7280" }}>
+      <div
+        style={{
+          fontSize: 9,
+          fontWeight: 700,
+          textTransform: "uppercase",
+          letterSpacing: "0.08em",
+          color: "#6b7280",
+        }}
+      >
         {label}
       </div>
       <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
@@ -335,12 +372,20 @@ const FinancialDashboard: React.FC = () => {
     setCurrentPage,
   } = useStore();
 
+  const warningAlarms = mergeSystemConfiguration(
+    companySettings?.systemConfiguration,
+  ).warningAlarms;
+
   // ── Date strings ────────────────────────────────────────────────────────────
 
   const today = new Date();
   const todayISO = today.toISOString().split("T")[0];
   const weekdayEn = WEEKDAYS_EN[today.getDay()];
-  const adDateStr = today.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+  const adDateStr = today.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
   let bsDateStr = "";
   try {
     bsDateStr = getBSTodayLong();
@@ -368,8 +413,10 @@ const FinancialDashboard: React.FC = () => {
         if (!inv.date || inv.status !== "posted") continue;
         if (inv.date < fromDate || inv.date > toDate) continue;
         const t = String(inv.type || "").toLowerCase();
-        if (t.includes("sales-invoice") || t === "sales_invoice") sales += Number(inv.grandTotal || 0);
-        if (t.includes("purchase-invoice") || t === "purchase_invoice") purchases += Number(inv.grandTotal || 0);
+        if (t.includes("sales-invoice") || t === "sales_invoice")
+          sales += Number(inv.grandTotal || 0);
+        if (t.includes("purchase-invoice") || t === "purchase_invoice")
+          purchases += Number(inv.grandTotal || 0);
       }
       return { sales, purchases, grossMargin: sales - purchases };
     },
@@ -398,7 +445,12 @@ const FinancialDashboard: React.FC = () => {
       if (acc.isGroup || acc.isActive === false) continue;
       const name = (acc.name || "").toLowerCase();
       const group = (acc.group || acc.groupName || "").toLowerCase();
-      if (name.includes("cash") || name.includes("bank") || group.includes("cash") || group.includes("bank")) {
+      if (
+        name.includes("cash") ||
+        name.includes("bank") ||
+        group.includes("cash") ||
+        group.includes("bank")
+      ) {
         total += Number(acc.balance || 0);
       }
     }
@@ -413,7 +465,7 @@ const FinancialDashboard: React.FC = () => {
       if (inv.status !== "posted") continue;
       const ps = (inv.paymentStatus || "").toLowerCase();
       if (ps === "unpaid" || ps === "partial") {
-        total += (Number(inv.grandTotal || 0) - Number(inv.paidAmount || 0));
+        total += Number(inv.grandTotal || 0) - Number(inv.paidAmount || 0);
       }
     }
     return total;
@@ -427,7 +479,7 @@ const FinancialDashboard: React.FC = () => {
       if (inv.status !== "posted") continue;
       const ps = (inv.paymentStatus || "").toLowerCase();
       if (ps === "unpaid" || ps === "partial") {
-        total += (Number(inv.grandTotal || 0) - Number(inv.paidAmount || 0));
+        total += Number(inv.grandTotal || 0) - Number(inv.paidAmount || 0);
       }
     }
     return total;
@@ -460,15 +512,44 @@ const FinancialDashboard: React.FC = () => {
       const group = (acc.group || acc.groupName || acc.parentGroup || "").toLowerCase();
       const bal = Number(acc.balance || 0);
 
-      if (group.includes("cash") || group.includes("bank") || group.includes("sundry debtor") || group.includes("stock") || group.includes("current asset") || group.includes("receivable")) {
+      if (
+        group.includes("cash") ||
+        group.includes("bank") ||
+        group.includes("sundry debtor") ||
+        group.includes("stock") ||
+        group.includes("current asset") ||
+        group.includes("receivable")
+      ) {
         currentAssets += bal;
-      } else if (group.includes("fixed") || group.includes("plant") || group.includes("equipment") || group.includes("building")) {
+      } else if (
+        group.includes("fixed") ||
+        group.includes("plant") ||
+        group.includes("equipment") ||
+        group.includes("building")
+      ) {
         fixedAssets += bal;
-      } else if (group.includes("sundry creditor") || group.includes("current liab") || group.includes("payable") || group.includes("duties") || group.includes("outstanding")) {
+      } else if (
+        group.includes("sundry creditor") ||
+        group.includes("current liab") ||
+        group.includes("payable") ||
+        group.includes("duties") ||
+        group.includes("outstanding")
+      ) {
         currentLiabilities += Math.abs(bal);
-      } else if (group.includes("loan") || group.includes("long-term") || group.includes("debenture") || group.includes("long term")) {
+      } else if (
+        group.includes("loan") ||
+        group.includes("long-term") ||
+        group.includes("debenture") ||
+        group.includes("long term")
+      ) {
         longTermLiabilities += Math.abs(bal);
-      } else if (group.includes("capital") || group.includes("reserve") || group.includes("equity") || group.includes("retained") || group.includes("surplus")) {
+      } else if (
+        group.includes("capital") ||
+        group.includes("reserve") ||
+        group.includes("equity") ||
+        group.includes("retained") ||
+        group.includes("surplus")
+      ) {
         equity += Math.abs(bal);
       }
     }
@@ -489,7 +570,8 @@ const FinancialDashboard: React.FC = () => {
       const toDate = `${ym}-${String(lastDay).padStart(2, "0")}`;
       const { sales, purchases } = computeRange(fromDate, toDate);
       result.push({
-        month: d.toLocaleString("en-US", { month: "short" }) + " " + String(d.getFullYear()).slice(2),
+        month:
+          d.toLocaleString("en-US", { month: "short" }) + " " + String(d.getFullYear()).slice(2),
         sales,
         purchases,
       });
@@ -555,8 +637,11 @@ const FinancialDashboard: React.FC = () => {
       if (ps !== "unpaid" && ps !== "partial") return false;
       return inv.dueDate && inv.dueDate < todayISO;
     });
-    if (overdue.length > 0) {
-      const amt = overdue.reduce((s, i) => s + (Number(i.grandTotal || 0) - Number(i.paidAmount || 0)), 0);
+    if (warningAlarms.overduePayment && overdue.length > 0) {
+      const amt = overdue.reduce(
+        (s, i) => s + (Number(i.grandTotal || 0) - Number(i.paidAmount || 0)),
+        0,
+      );
       list.push({
         type: "danger",
         icon: <AlertTriangle size={16} />,
@@ -580,12 +665,16 @@ const FinancialDashboard: React.FC = () => {
         }, 0);
       return stock <= minQty;
     });
-    if (reorder.length > 0) {
+    if (warningAlarms.lowStock && reorder.length > 0) {
       list.push({
         type: "warning",
         icon: <Package size={16} />,
         title: `${reorder.length} Item${reorder.length > 1 ? "s" : ""} Below Reorder Level`,
-        message: reorder.slice(0, 3).map((i) => i.name).join(", ") + (reorder.length > 3 ? ` + ${reorder.length - 3} more` : ""),
+        message:
+          reorder
+            .slice(0, 3)
+            .map((i) => i.name)
+            .join(", ") + (reorder.length > 3 ? ` + ${reorder.length - 3} more` : ""),
         action: "VIEW STOCK",
         onAction: () => setCurrentPage("stock-summary"),
       });
@@ -596,21 +685,27 @@ const FinancialDashboard: React.FC = () => {
     in3days.setDate(in3days.getDate() + 3);
     const in3daysISO = in3days.toISOString().split("T")[0];
     const pdcDue = vouchers.filter(
-      (v) => v.type === "receipt" && v.pdc && v.pdcDate && v.pdcDate <= in3daysISO && v.pdcDate >= todayISO && v.status === "posted",
+      (v) =>
+        v.type === "receipt" &&
+        v.pdc &&
+        v.pdcDate &&
+        v.pdcDate <= in3daysISO &&
+        v.pdcDate >= todayISO &&
+        v.status === "posted",
     );
     if (pdcDue.length > 0) {
       list.push({
         type: "info",
         icon: <Clock size={16} />,
         title: `${pdcDue.length} PDC Cheque${pdcDue.length > 1 ? "s" : ""} Due for Deposit`,
-        message: `Due by ${in3daysISO} — total Rs. ${pdcDue.reduce((s, v) => s + (Number(v.amount || 0)), 0).toLocaleString("en-IN")}`,
+        message: `Due by ${in3daysISO} — total Rs. ${pdcDue.reduce((s, v) => s + Number(v.amount || 0), 0).toLocaleString("en-IN")}`,
         action: "VIEW PDC",
         onAction: () => setCurrentPage("pdc-management"),
       });
     }
 
     return list;
-  }, [invoices, items, stockMovements, vouchers, todayISO, today, setCurrentPage]);
+  }, [invoices, items, stockMovements, vouchers, todayISO, today, setCurrentPage, warningAlarms]);
 
   // ── Refresh (calls initializeApp, NOT page reload) ──────────────────────────
 
@@ -625,7 +720,8 @@ const FinancialDashboard: React.FC = () => {
   // ── BSSnapshot totals ───────────────────────────────────────────────────────
 
   const totalAssets = bsSnapshot.currentAssets + bsSnapshot.fixedAssets;
-  const totalLiabEquity = bsSnapshot.currentLiabilities + bsSnapshot.longTermLiabilities + bsSnapshot.equity;
+  const totalLiabEquity =
+    bsSnapshot.currentLiabilities + bsSnapshot.longTermLiabilities + bsSnapshot.equity;
 
   // ─────────────────────────────────────────────────────────────────────────────
   // RENDER
@@ -707,9 +803,7 @@ const FinancialDashboard: React.FC = () => {
           <div style={{ fontSize: 11, fontWeight: 600, color: "#ffffff" }}>
             {weekdayEn}, {bsDateStr}
           </div>
-          <div style={{ fontSize: 10, color: "#94a3b8", marginTop: 1 }}>
-            {adDateStr} (AD)
-          </div>
+          <div style={{ fontSize: 10, color: "#94a3b8", marginTop: 1 }}>{adDateStr} (AD)</div>
         </div>
 
         {/* Right: User + Refresh */}
@@ -739,8 +833,12 @@ const FinancialDashboard: React.FC = () => {
               gap: 5,
               transition: "background 150ms ease",
             }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#0f4a96"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#1557b0"; }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.background = "#0f4a96";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.background = "#1557b0";
+            }}
             title="Refresh data (does not reload the page)"
           >
             <RefreshCw size={13} />
@@ -750,8 +848,16 @@ const FinancialDashboard: React.FC = () => {
       </div>
 
       {/* Main scrollable content */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px", display: "flex", flexDirection: "column", gap: 16 }}>
-
+      <div
+        style={{
+          flex: 1,
+          overflowY: "auto",
+          padding: "16px 20px",
+          display: "flex",
+          flexDirection: "column",
+          gap: 16,
+        }}
+      >
         {/* ════════════════════════════════════════════════════════════════════
             ROW 2 — Profit Pulse Strip
         ════════════════════════════════════════════════════════════════════ */}
@@ -766,8 +872,24 @@ const FinancialDashboard: React.FC = () => {
         >
           <PulseCell label="Today's Gross Margin" value={todayPulse.grossMargin} period="Today" />
           <PulseCell label="Month-to-Date Gross Margin" value={mtdPulse.grossMargin} period="MTD" />
-          <div style={{ flex: 1, padding: "10px 16px", display: "flex", flexDirection: "column", gap: 2 }}>
-            <div style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#6b7280" }}>
+          <div
+            style={{
+              flex: 1,
+              padding: "10px 16px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+            }}
+          >
+            <div
+              style={{
+                fontSize: 9,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+                color: "#6b7280",
+              }}
+            >
               Year-to-Date Gross Margin
             </div>
             <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
@@ -860,7 +982,15 @@ const FinancialDashboard: React.FC = () => {
               justifyContent: "space-between",
             }}
           >
-            <span style={{ fontSize: 11, fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                color: "#374151",
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+              }}
+            >
               Balance Sheet Snapshot
             </span>
             <button
@@ -900,8 +1030,16 @@ const FinancialDashboard: React.FC = () => {
                 Assets
               </div>
               {[
-                { label: "Current Assets", value: bsSnapshot.currentAssets, sub: "Cash, Bank, Debtors, Stock" },
-                { label: "Fixed Assets", value: bsSnapshot.fixedAssets, sub: "Plant, Equipment, Building" },
+                {
+                  label: "Current Assets",
+                  value: bsSnapshot.currentAssets,
+                  sub: "Cash, Bank, Debtors, Stock",
+                },
+                {
+                  label: "Fixed Assets",
+                  value: bsSnapshot.fixedAssets,
+                  sub: "Plant, Equipment, Building",
+                },
               ].map(({ label, value, sub }) => (
                 <div
                   key={label}
@@ -917,7 +1055,14 @@ const FinancialDashboard: React.FC = () => {
                     <div style={{ fontSize: 12, fontWeight: 600, color: "#111827" }}>{label}</div>
                     <div style={{ fontSize: 10, color: "#9ca3af" }}>{sub}</div>
                   </div>
-                  <div style={{ fontFamily: "'Courier New', monospace", fontSize: 13, fontWeight: 700, color: "#059669" }}>
+                  <div
+                    style={{
+                      fontFamily: "'Courier New', monospace",
+                      fontSize: 13,
+                      fontWeight: 700,
+                      color: "#059669",
+                    }}
+                  >
                     {fmtShort(value)}
                   </div>
                 </div>
@@ -931,8 +1076,17 @@ const FinancialDashboard: React.FC = () => {
                   justifyContent: "space-between",
                 }}
               >
-                <span style={{ fontSize: 12, fontWeight: 700, color: "#111827" }}>Total Assets</span>
-                <span style={{ fontFamily: "'Courier New', monospace", fontSize: 14, fontWeight: 700, color: "#059669" }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: "#111827" }}>
+                  Total Assets
+                </span>
+                <span
+                  style={{
+                    fontFamily: "'Courier New', monospace",
+                    fontSize: 14,
+                    fontWeight: 700,
+                    color: "#059669",
+                  }}
+                >
                   {fmtShort(totalAssets)}
                 </span>
               </div>
@@ -955,9 +1109,21 @@ const FinancialDashboard: React.FC = () => {
                 Liabilities & Equity
               </div>
               {[
-                { label: "Current Liabilities", value: bsSnapshot.currentLiabilities, sub: "Creditors, Outstanding Expenses" },
-                { label: "Long-Term Liabilities", value: bsSnapshot.longTermLiabilities, sub: "Loans, Debentures" },
-                { label: "Equity / Capital", value: bsSnapshot.equity, sub: "Capital, Reserves & Surplus" },
+                {
+                  label: "Current Liabilities",
+                  value: bsSnapshot.currentLiabilities,
+                  sub: "Creditors, Outstanding Expenses",
+                },
+                {
+                  label: "Long-Term Liabilities",
+                  value: bsSnapshot.longTermLiabilities,
+                  sub: "Loans, Debentures",
+                },
+                {
+                  label: "Equity / Capital",
+                  value: bsSnapshot.equity,
+                  sub: "Capital, Reserves & Surplus",
+                },
               ].map(({ label, value, sub }) => (
                 <div
                   key={label}
@@ -973,7 +1139,14 @@ const FinancialDashboard: React.FC = () => {
                     <div style={{ fontSize: 12, fontWeight: 600, color: "#111827" }}>{label}</div>
                     <div style={{ fontSize: 10, color: "#9ca3af" }}>{sub}</div>
                   </div>
-                  <div style={{ fontFamily: "'Courier New', monospace", fontSize: 13, fontWeight: 700, color: "#d97706" }}>
+                  <div
+                    style={{
+                      fontFamily: "'Courier New', monospace",
+                      fontSize: 13,
+                      fontWeight: 700,
+                      color: "#d97706",
+                    }}
+                  >
                     {fmtShort(value)}
                   </div>
                 </div>
@@ -987,8 +1160,17 @@ const FinancialDashboard: React.FC = () => {
                   justifyContent: "space-between",
                 }}
               >
-                <span style={{ fontSize: 12, fontWeight: 700, color: "#111827" }}>Total Liab. + Equity</span>
-                <span style={{ fontFamily: "'Courier New', monospace", fontSize: 14, fontWeight: 700, color: "#d97706" }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: "#111827" }}>
+                  Total Liab. + Equity
+                </span>
+                <span
+                  style={{
+                    fontFamily: "'Courier New', monospace",
+                    fontSize: 14,
+                    fontWeight: 700,
+                    color: "#d97706",
+                  }}
+                >
                   {fmtShort(totalLiabEquity)}
                 </span>
               </div>
@@ -1017,15 +1199,39 @@ const FinancialDashboard: React.FC = () => {
               justifyContent: "space-between",
             }}
           >
-            <span style={{ fontSize: 11, fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                color: "#374151",
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+              }}
+            >
               6-Month Sales vs Purchases
             </span>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: "#374151" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 4,
+                  fontSize: 10,
+                  color: "#374151",
+                }}
+              >
                 <div style={{ width: 10, height: 10, borderRadius: 2, background: "#1557b0" }} />
                 Sales
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: "#374151" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 4,
+                  fontSize: 10,
+                  color: "#374151",
+                }}
+              >
                 <div style={{ width: 10, height: 10, borderRadius: 2, background: "#dc2626" }} />
                 Purchases
               </div>
@@ -1052,8 +1258,20 @@ const FinancialDashboard: React.FC = () => {
                   }}
                 />
                 <Tooltip content={<ChartTooltip />} cursor={{ fill: "#f5f6fa" }} />
-                <Bar dataKey="sales" name="Sales" fill="#1557b0" radius={[4, 4, 0, 0]} maxBarSize={32} />
-                <Bar dataKey="purchases" name="Purchases" fill="#dc2626" radius={[4, 4, 0, 0]} maxBarSize={32} />
+                <Bar
+                  dataKey="sales"
+                  name="Sales"
+                  fill="#1557b0"
+                  radius={[4, 4, 0, 0]}
+                  maxBarSize={32}
+                />
+                <Bar
+                  dataKey="purchases"
+                  name="Purchases"
+                  fill="#dc2626"
+                  radius={[4, 4, 0, 0]}
+                  maxBarSize={32}
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -1082,12 +1300,30 @@ const FinancialDashboard: React.FC = () => {
                 justifyContent: "space-between",
               }}
             >
-              <span style={{ fontSize: 11, fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  color: "#374151",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                }}
+              >
                 AR Aging
               </span>
               <button
                 onClick={() => setCurrentPage("aging-report")}
-                style={{ background: "none", border: "none", fontSize: 10, fontWeight: 600, color: "#1557b0", cursor: "pointer", display: "flex", alignItems: "center", gap: 3 }}
+                style={{
+                  background: "none",
+                  border: "none",
+                  fontSize: 10,
+                  fontWeight: 600,
+                  color: "#1557b0",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 3,
+                }}
               >
                 Full Report <ArrowRight size={10} />
               </button>
@@ -1101,13 +1337,29 @@ const FinancialDashboard: React.FC = () => {
                 { label: "90+ Days", value: agingBuckets.d90plus, color: "#991b1b" },
               ].map(({ label, value, color }) => (
                 <div key={label}>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
+                  <div
+                    style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}
+                  >
                     <span style={{ fontSize: 11, color: "#374151" }}>{label}</span>
-                    <span style={{ fontSize: 11, fontFamily: "'Courier New', monospace", fontWeight: 700, color }}>
+                    <span
+                      style={{
+                        fontSize: 11,
+                        fontFamily: "'Courier New', monospace",
+                        fontWeight: 700,
+                        color,
+                      }}
+                    >
                       {fmt(value)}
                     </span>
                   </div>
-                  <div style={{ height: 4, background: "#f3f4f6", borderRadius: 2, overflow: "hidden" }}>
+                  <div
+                    style={{
+                      height: 4,
+                      background: "#f3f4f6",
+                      borderRadius: 2,
+                      overflow: "hidden",
+                    }}
+                  >
                     <div
                       style={{
                         height: "100%",
@@ -1142,19 +1394,44 @@ const FinancialDashboard: React.FC = () => {
                 justifyContent: "space-between",
               }}
             >
-              <span style={{ fontSize: 11, fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  color: "#374151",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                }}
+              >
                 Top 5 Customers (YTD)
               </span>
               <button
                 onClick={() => setCurrentPage("party-statement")}
-                style={{ background: "none", border: "none", fontSize: 10, fontWeight: 600, color: "#1557b0", cursor: "pointer", display: "flex", alignItems: "center", gap: 3 }}
+                style={{
+                  background: "none",
+                  border: "none",
+                  fontSize: 10,
+                  fontWeight: 600,
+                  color: "#1557b0",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 3,
+                }}
               >
                 View All <ArrowRight size={10} />
               </button>
             </div>
             <div>
               {topCustomers.length === 0 ? (
-                <div style={{ padding: "24px 16px", textAlign: "center", fontSize: 11, color: "#9ca3af" }}>
+                <div
+                  style={{
+                    padding: "24px 16px",
+                    textAlign: "center",
+                    fontSize: 11,
+                    color: "#9ca3af",
+                  }}
+                >
                   No sales data available for this fiscal year.
                 </div>
               ) : (
@@ -1175,7 +1452,8 @@ const FinancialDashboard: React.FC = () => {
                           width: 22,
                           height: 22,
                           borderRadius: "50%",
-                          background: ["#1557b0", "#059669", "#d97706", "#7c3aed", "#0284c7"][idx % 5] + "20",
+                          background:
+                            ["#1557b0", "#059669", "#d97706", "#7c3aed", "#0284c7"][idx % 5] + "20",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
@@ -1187,11 +1465,27 @@ const FinancialDashboard: React.FC = () => {
                         {c.name.charAt(0).toUpperCase()}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 12, fontWeight: 600, color: "#111827", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        <div
+                          style={{
+                            fontSize: 12,
+                            fontWeight: 600,
+                            color: "#111827",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          }}
+                        >
                           {c.name}
                         </div>
                       </div>
-                      <div style={{ fontSize: 12, fontWeight: 700, fontFamily: "'Courier New', monospace", color: "#111827" }}>
+                      <div
+                        style={{
+                          fontSize: 12,
+                          fontWeight: 700,
+                          fontFamily: "'Courier New', monospace",
+                          color: "#111827",
+                        }}
+                      >
                         {fmt(c.total)}
                       </div>
                     </div>
@@ -1221,11 +1515,21 @@ const FinancialDashboard: React.FC = () => {
                 borderBottom: "1px solid #e5e7eb",
               }}
             >
-              <span style={{ fontSize: 11, fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  color: "#374151",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                }}
+              >
                 Action Required
               </span>
             </div>
-            <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
+            <div
+              style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 10 }}
+            >
               {alerts.map((alert, idx) => (
                 <AlertRow key={idx} {...alert} />
               ))}

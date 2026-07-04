@@ -155,12 +155,10 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
         (a) =>
           !a.isGroup &&
           a.isActive &&
-          (
-            a.group === "Bank Accounts" ||
+          (a.group === "Bank Accounts" ||
             a.groupName === "Bank Accounts" ||
             a.name.toLowerCase().includes("bank") ||
-            (a as any).bankDetails && Object.keys((a as any).bankDetails).length > 0
-          ),
+            ((a as any).bankDetails && Object.keys((a as any).bankDetails).length > 0)),
       ),
     [accounts],
   );

@@ -7,16 +7,16 @@
  */
 
 export interface TaxSlab {
-  upTo: number;       // income limit (Infinity for last slab)
-  rate: number;       // tax rate as fraction (0.01 = 1%)
+  upTo: number; // income limit (Infinity for last slab)
+  rate: number; // tax rate as fraction (0.01 = 1%)
 }
 
 export const NEPAL_TAX_SLABS: TaxSlab[] = [
-  { upTo: 100000,   rate: 0.01  },   // 1%  on first   1,00,000
-  { upTo: 200000,   rate: 0.10  },   // 10% on next    2,00,000
-  { upTo: 400000,   rate: 0.20  },   // 20% on next    4,00,000
-  { upTo: 1100000,  rate: 0.30  },   // 30% on next   11,00,000
-  { upTo: Infinity, rate: 0.36  },   // 36% on balance
+  { upTo: 100000, rate: 0.01 }, // 1%  on first   1,00,000
+  { upTo: 200000, rate: 0.1 }, // 10% on next    2,00,000
+  { upTo: 400000, rate: 0.2 }, // 20% on next    4,00,000
+  { upTo: 1100000, rate: 0.3 }, // 30% on next   11,00,000
+  { upTo: Infinity, rate: 0.36 }, // 36% on balance
 ];
 
 /**
@@ -41,18 +41,18 @@ export function computeNepalTDS(taxableIncome: number): number {
 }
 
 /** EPF contribution rates */
-export const EPF_EMPLOYEE_RATE = 0.10;   // 10% of basic
-export const EPF_EMPLOYER_RATE = 0.10;   // 10% of basic
+export const EPF_EMPLOYEE_RATE = 0.1; // 10% of basic
+export const EPF_EMPLOYER_RATE = 0.1; // 10% of basic
 
 /** SSF contribution rates */
-export const SSF_EMPLOYEE_RATE = 0.01;   // 1% of gross
+export const SSF_EMPLOYEE_RATE = 0.01; // 1% of gross
 export const SSF_EMPLOYER_RATE = 0.0333; // 3.33% of gross
 
 /** CIT optional deduction rate */
-export const CIT_RATE = 0.10;            // 10% of basic
+export const CIT_RATE = 0.1; // 10% of basic
 
 /** Personal exemptions (annual) */
-export const EXEMPTION_SINGLE  = 400000;
+export const EXEMPTION_SINGLE = 400000;
 export const EXEMPTION_MARRIED = 500000;
 
 /** Format Nepali rupees */

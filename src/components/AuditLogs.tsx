@@ -39,7 +39,12 @@ const AuditLogs: React.FC = () => {
       try {
         const { getDB } = await import("../lib/db");
         const db = getDB();
-        const logs = await db.table("auditLogs").orderBy("timestamp").reverse().limit(500).toArray();
+        const logs = await db
+          .table("auditLogs")
+          .orderBy("timestamp")
+          .reverse()
+          .limit(500)
+          .toArray();
         setRealLogs(
           logs.map((l: any) => ({
             id: String(l.id || Math.random()),
@@ -48,7 +53,7 @@ const AuditLogs: React.FC = () => {
             action: (l.action || "UPDATE").toUpperCase() as AuditLog["action"],
             description: l.narration || l.description || l.action || "",
             status: (l.status || "SUCCESS").toUpperCase() as AuditLog["status"],
-          }))
+          })),
         );
       } catch (err) {
         console.warn("Could not load audit logs from DB", err);

@@ -157,7 +157,8 @@ const DayBook: React.FC = () => {
 
     // From vouchers
     const dayVouchers = vouchers.filter(
-      (v: any) => v.date >= dateRange.fromDate && v.date <= dateRange.toDate && v.status === "posted",
+      (v: any) =>
+        v.date >= dateRange.fromDate && v.date <= dateRange.toDate && v.status === "posted",
     );
 
     for (const v of dayVouchers) {
@@ -194,7 +195,8 @@ const DayBook: React.FC = () => {
 
     // From invoices
     const dayInvoices = invoices.filter(
-      (inv: any) => inv.date >= dateRange.fromDate && inv.date <= dateRange.toDate && inv.status === "posted",
+      (inv: any) =>
+        inv.date >= dateRange.fromDate && inv.date <= dateRange.toDate && inv.status === "posted",
     );
 
     for (const inv of dayInvoices) {
@@ -337,11 +339,7 @@ const DayBook: React.FC = () => {
 
       {/* Date Navigation + Filters */}
       <div className="mb-4">
-        <ReportDateRangePicker
-          value={dateRange}
-          onChange={setDateRange}
-          label="Day Book Period"
-        />
+        <ReportDateRangePicker value={dateRange} onChange={setDateRange} label="Day Book Period" />
       </div>
 
       <div className="flex flex-wrap gap-2 mb-4">
@@ -412,12 +410,24 @@ const DayBook: React.FC = () => {
               background: "#ffffff",
               outline: "none",
             }}
-            onFocus={(e) => { (e.currentTarget as HTMLInputElement).style.borderColor = "#1557b0"; }}
-            onBlur={(e) => { (e.currentTarget as HTMLInputElement).style.borderColor = "#d1d5db"; }}
+            onFocus={(e) => {
+              (e.currentTarget as HTMLInputElement).style.borderColor = "#1557b0";
+            }}
+            onBlur={(e) => {
+              (e.currentTarget as HTMLInputElement).style.borderColor = "#d1d5db";
+            }}
           />
           <button
             onClick={() => handleJump({ key: "Enter" } as any)}
-            style={{ height: 30, padding: "0 10px", background: "#f5f6fa", border: "1px solid #d1d5db", borderRadius: 4, fontSize: 11, cursor: "pointer" }}
+            style={{
+              height: 30,
+              padding: "0 10px",
+              background: "#f5f6fa",
+              border: "1px solid #d1d5db",
+              borderRadius: 4,
+              fontSize: 11,
+              cursor: "pointer",
+            }}
           >
             Find
           </button>
@@ -464,7 +474,9 @@ const DayBook: React.FC = () => {
       {/* Main Table */}
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
         <div className="px-4 py-2.5 border-b border-gray-200 bg-[#f5f6fa] flex items-center justify-between">
-          <h3 className="text-[12px] font-semibold text-gray-700">Day Book ({dateRange.fromDate} to {dateRange.toDate})</h3>
+          <h3 className="text-[12px] font-semibold text-gray-700">
+            Day Book ({dateRange.fromDate} to {dateRange.toDate})
+          </h3>
           <p className="text-[11px] text-gray-500">
             {filteredEntries.length} entr
             {filteredEntries.length === 1 ? "y" : "ies"}

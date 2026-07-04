@@ -1,7 +1,12 @@
 // src/components/pl/PLDrillDown.tsx
 // @ts-nocheck
 import React, { useEffect, useState } from "react";
-import type { PLComputation, PLReportOptions, PLDrillState, AccountLedgerData } from "../../lib/plTypes";
+import type {
+  PLComputation,
+  PLReportOptions,
+  PLDrillState,
+  AccountLedgerData,
+} from "../../lib/plTypes";
 import { getAccountLedger } from "../../lib/profitLossEngine";
 import { getDB } from "../../lib/db";
 import { RefreshCw, ArrowLeft } from "lucide-react";
@@ -35,12 +40,24 @@ function GroupAccountList({
   let lines = [];
 
   switch (groupId) {
-    case "sales": lines = plData.sales.lines; break;
-    case "purchases": lines = plData.purchases.lines; break;
-    case "direct-expenses": lines = plData.directExpenses.lines; break;
-    case "direct-income": lines = plData.directIncome.lines; break;
-    case "indirect-expenses": lines = plData.indirectExpenses.lines; break;
-    case "indirect-income": lines = plData.indirectIncome.lines; break;
+    case "sales":
+      lines = plData.sales.lines;
+      break;
+    case "purchases":
+      lines = plData.purchases.lines;
+      break;
+    case "direct-expenses":
+      lines = plData.directExpenses.lines;
+      break;
+    case "direct-income":
+      lines = plData.directIncome.lines;
+      break;
+    case "indirect-expenses":
+      lines = plData.indirectExpenses.lines;
+      break;
+    case "indirect-income":
+      lines = plData.indirectIncome.lines;
+      break;
     default:
       // Try to find in all sections
       const all = [
@@ -54,7 +71,8 @@ function GroupAccountList({
       lines = all.filter((l) => l.accountId === groupId || l.groupId === groupId);
   }
 
-  const thCls = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200";
+  const thCls =
+    "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200";
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
@@ -68,7 +86,9 @@ function GroupAccountList({
       {lines.length === 0 ? (
         <div className="p-8 text-center text-[12px] text-gray-500">
           No transactions in this group for the selected period.
-          <p className="mt-2 text-[11px] text-gray-400">Accounts with zero balance are still shown if they exist in the chart of accounts.</p>
+          <p className="mt-2 text-[11px] text-gray-400">
+            Accounts with zero balance are still shown if they exist in the chart of accounts.
+          </p>
         </div>
       ) : (
         <table className="w-full">
@@ -87,15 +107,17 @@ function GroupAccountList({
                 <tr
                   key={line.accountId}
                   className="hover:bg-[#f5f8ff] cursor-pointer transition-colors"
-                  onClick={() => onDrillDown({
-                    level: 2,
-                    selectedGroupId: drillState.selectedGroupId,
-                    selectedGroupLabel: drillState.selectedGroupLabel,
-                    selectedAccountId: line.accountId,
-                    selectedAccountName: line.accountName,
-                    fromDate: options.fromDate,
-                    toDate: options.toDate,
-                  })}
+                  onClick={() =>
+                    onDrillDown({
+                      level: 2,
+                      selectedGroupId: drillState.selectedGroupId,
+                      selectedGroupLabel: drillState.selectedGroupLabel,
+                      selectedAccountId: line.accountId,
+                      selectedAccountName: line.accountName,
+                      fromDate: options.fromDate,
+                      toDate: options.toDate,
+                    })
+                  }
                 >
                   <td className="px-3 py-2.5 text-[12px] font-medium text-[#1557b0] hover:underline">
                     {line.accountName}
@@ -106,7 +128,9 @@ function GroupAccountList({
                   <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
                     {line.credit > 0 ? fmt(line.credit) : "—"}
                   </td>
-                  <td className={`px-3 py-2.5 text-right font-mono text-[12px] font-semibold ${net >= 0 ? "text-green-700" : "text-red-600"}`}>
+                  <td
+                    className={`px-3 py-2.5 text-right font-mono text-[12px] font-semibold ${net >= 0 ? "text-green-700" : "text-red-600"}`}
+                  >
                     {fmt(Math.abs(net))} {net >= 0 ? "Cr" : "Dr"}
                   </td>
                 </tr>
@@ -115,7 +139,8 @@ function GroupAccountList({
             {/* Zero-balance accounts note */}
             <tr className="bg-gray-50">
               <td colSpan={4} className="px-3 py-1.5 text-[10px] text-gray-400 italic">
-                Accounts with zero balance in this period are displayed. Groups with no activity show — in amounts.
+                Accounts with zero balance in this period are displayed. Groups with no activity
+                show — in amounts.
               </td>
             </tr>
           </tbody>
@@ -149,9 +174,16 @@ function AccountLedgerView({
     )
       .then(setLedger)
       .finally(() => setLoading(false));
-  }, [drillState.selectedAccountId, drillState.fromDate, drillState.toDate, options.fromDate, options.toDate]);
+  }, [
+    drillState.selectedAccountId,
+    drillState.fromDate,
+    drillState.toDate,
+    options.fromDate,
+    options.toDate,
+  ]);
 
-  const thCls = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200";
+  const thCls =
+    "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200";
 
   if (loading) {
     return (
@@ -176,7 +208,9 @@ function AccountLedgerView({
         </div>
         <div className="text-right">
           <p className="text-[10px] text-gray-500 uppercase font-semibold">Closing Balance</p>
-          <p className={`font-mono text-[13px] font-bold ${ledger.closingBalance >= 0 ? "text-green-700" : "text-red-600"}`}>
+          <p
+            className={`font-mono text-[13px] font-bold ${ledger.closingBalance >= 0 ? "text-green-700" : "text-red-600"}`}
+          >
             Rs. {fmt(Math.abs(ledger.closingBalance))} {ledger.closingBalance >= 0 ? "Cr" : "Dr"}
           </p>
         </div>
@@ -185,27 +219,43 @@ function AccountLedgerView({
       <table className="w-full">
         <thead>
           <tr>
-            <th className={thCls} style={{ width: "100px" }}>Date</th>
+            <th className={thCls} style={{ width: "100px" }}>
+              Date
+            </th>
             <th className={thCls}>Particulars</th>
-            <th className={`${thCls}`} style={{ width: "100px" }}>Vch Type</th>
-            <th className={`${thCls}`} style={{ width: "110px" }}>Vch No.</th>
-            <th className={`${thCls} text-right`} style={{ width: "110px" }}>Debit</th>
-            <th className={`${thCls} text-right`} style={{ width: "110px" }}>Credit</th>
-            <th className={`${thCls} text-right`} style={{ width: "130px" }}>Balance</th>
+            <th className={`${thCls}`} style={{ width: "100px" }}>
+              Vch Type
+            </th>
+            <th className={`${thCls}`} style={{ width: "110px" }}>
+              Vch No.
+            </th>
+            <th className={`${thCls} text-right`} style={{ width: "110px" }}>
+              Debit
+            </th>
+            <th className={`${thCls} text-right`} style={{ width: "110px" }}>
+              Credit
+            </th>
+            <th className={`${thCls} text-right`} style={{ width: "130px" }}>
+              Balance
+            </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100">
           {/* Opening Balance */}
           <tr className="bg-[#f5f6fa]">
             <td className="px-3 py-2 text-[11px] text-gray-500">{options.fromDate}</td>
-            <td className="px-3 py-2 text-[12px] font-semibold text-gray-700" colSpan={3}>Opening Balance</td>
+            <td className="px-3 py-2 text-[12px] font-semibold text-gray-700" colSpan={3}>
+              Opening Balance
+            </td>
             <td className="px-3 py-2 text-right font-mono text-[12px]">
               {ledger.openingBalance < 0 ? fmt(Math.abs(ledger.openingBalance)) : ""}
             </td>
             <td className="px-3 py-2 text-right font-mono text-[12px]">
               {ledger.openingBalance >= 0 ? fmt(ledger.openingBalance) : ""}
             </td>
-            <td className={`px-3 py-2 text-right font-mono text-[12px] font-semibold ${ledger.openingBalance >= 0 ? "text-green-700" : "text-red-600"}`}>
+            <td
+              className={`px-3 py-2 text-right font-mono text-[12px] font-semibold ${ledger.openingBalance >= 0 ? "text-green-700" : "text-red-600"}`}
+            >
               {fmt(Math.abs(ledger.openingBalance))} {ledger.openingBalance >= 0 ? "Cr" : "Dr"}
             </td>
           </tr>
@@ -221,11 +271,13 @@ function AccountLedgerView({
               <tr
                 key={entry.id}
                 className="hover:bg-[#f5f8ff] cursor-pointer transition-colors"
-                onClick={() => onDrillDown({
-                  ...drillState,
-                  level: 3,
-                  selectedVoucherId: entry.voucherId,
-                })}
+                onClick={() =>
+                  onDrillDown({
+                    ...drillState,
+                    level: 3,
+                    selectedVoucherId: entry.voucherId,
+                  })
+                }
               >
                 <td className="px-3 py-2 text-[11px] text-gray-600">{entry.date}</td>
                 <td className="px-3 py-2 text-[12px] text-gray-700">
@@ -246,7 +298,10 @@ function AccountLedgerView({
                       e.stopPropagation();
                       if (entry.voucherId) {
                         sessionStorage.setItem("sutra:open-voucher-id", entry.voucherId);
-                        sessionStorage.setItem("sutra:open-voucher-type", entry.voucherType || "journal");
+                        sessionStorage.setItem(
+                          "sutra:open-voucher-type",
+                          entry.voucherType || "journal",
+                        );
                       }
                       const pageMap: Record<string, string> = {
                         receipt: "receipt",
@@ -258,7 +313,8 @@ function AccountLedgerView({
                         "debit-note": "debit-note",
                         "credit-note": "credit-note",
                       };
-                      const targetPage = pageMap[entry.voucherType?.toLowerCase() || ""] || "journal";
+                      const targetPage =
+                        pageMap[entry.voucherType?.toLowerCase() || ""] || "journal";
                       setCurrentPage(targetPage);
                     }}
                     style={{
@@ -276,8 +332,12 @@ function AccountLedgerView({
                       textDecorationStyle: "dotted",
                       transition: "background 120ms ease",
                     }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#eff6ff"; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "none"; }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLButtonElement).style.background = "#eff6ff";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLButtonElement).style.background = "none";
+                    }}
                     title={`Open ${entry.voucherType} voucher`}
                   >
                     {entry.voucherNo}
@@ -289,7 +349,9 @@ function AccountLedgerView({
                 <td className="px-3 py-2 text-right font-mono text-[12px] text-gray-700">
                   {entry.credit > 0 ? fmt(entry.credit) : ""}
                 </td>
-                <td className={`px-3 py-2 text-right font-mono text-[12px] font-semibold ${entry.runningBalance >= 0 ? "text-green-700" : "text-red-600"}`}>
+                <td
+                  className={`px-3 py-2 text-right font-mono text-[12px] font-semibold ${entry.runningBalance >= 0 ? "text-green-700" : "text-red-600"}`}
+                >
                   {fmt(Math.abs(entry.runningBalance))} {entry.runningBalance >= 0 ? "Cr" : "Dr"}
                 </td>
               </tr>
@@ -299,10 +361,18 @@ function AccountLedgerView({
           {/* Closing Balance */}
           <tr className="bg-[#eef2ff] font-bold border-t-2 border-[#c7d2fe]">
             <td className="px-3 py-2 text-[11px] text-gray-600">{options.toDate}</td>
-            <td className="px-3 py-2 text-[12px] font-bold text-gray-800" colSpan={3}>Closing Balance</td>
-            <td className="px-3 py-2 text-right font-mono text-[12px] font-bold">{fmt(ledger.totalDebit)}</td>
-            <td className="px-3 py-2 text-right font-mono text-[12px] font-bold">{fmt(ledger.totalCredit)}</td>
-            <td className={`px-3 py-2 text-right font-mono text-[12px] font-bold ${ledger.closingBalance >= 0 ? "text-green-700" : "text-red-600"}`}>
+            <td className="px-3 py-2 text-[12px] font-bold text-gray-800" colSpan={3}>
+              Closing Balance
+            </td>
+            <td className="px-3 py-2 text-right font-mono text-[12px] font-bold">
+              {fmt(ledger.totalDebit)}
+            </td>
+            <td className="px-3 py-2 text-right font-mono text-[12px] font-bold">
+              {fmt(ledger.totalCredit)}
+            </td>
+            <td
+              className={`px-3 py-2 text-right font-mono text-[12px] font-bold ${ledger.closingBalance >= 0 ? "text-green-700" : "text-red-600"}`}
+            >
               {fmt(Math.abs(ledger.closingBalance))} {ledger.closingBalance >= 0 ? "Cr" : "Dr"}
             </td>
           </tr>
@@ -362,7 +432,9 @@ function VoucherView({
           </h3>
           <p className="text-[11px] text-gray-500 mt-0.5">
             {voucher.type?.toUpperCase()} &nbsp;·&nbsp; Date: {voucher.date} &nbsp;·&nbsp; Status:{" "}
-            <span className={`font-semibold ${voucher.status === "posted" ? "text-green-600" : "text-red-600"}`}>
+            <span
+              className={`font-semibold ${voucher.status === "posted" ? "text-green-600" : "text-red-600"}`}
+            >
               {voucher.status?.toUpperCase()}
             </span>
           </p>
@@ -379,7 +451,8 @@ function VoucherView({
         {/* Narration */}
         {voucher.narration && (
           <div className="bg-gray-50 border border-gray-200 rounded-md px-3 py-2 text-[12px] text-gray-700">
-            <span className="font-semibold text-gray-500 text-[10px] uppercase">Narration:</span>&nbsp;
+            <span className="font-semibold text-gray-500 text-[10px] uppercase">Narration:</span>
+            &nbsp;
             {voucher.narration}
           </div>
         )}
@@ -388,9 +461,15 @@ function VoucherView({
         <table className="w-full border border-gray-200 rounded-lg overflow-hidden">
           <thead>
             <tr className="bg-[#f5f6fa]">
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase">Account</th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase">Debit</th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase">Credit</th>
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase">
+                Account
+              </th>
+              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase">
+                Debit
+              </th>
+              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase">
+                Credit
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -423,11 +502,13 @@ function VoucherView({
         </table>
 
         {/* Balance indicator */}
-        <div className={`px-3 py-2 rounded-md border text-[12px] font-semibold ${
-          Math.abs((voucher.totalDebit || 0) - (voucher.totalCredit || 0)) < 0.01
-            ? "bg-green-50 border-green-200 text-green-700"
-            : "bg-red-50 border-red-200 text-red-700"
-        }`}>
+        <div
+          className={`px-3 py-2 rounded-md border text-[12px] font-semibold ${
+            Math.abs((voucher.totalDebit || 0) - (voucher.totalCredit || 0)) < 0.01
+              ? "bg-green-50 border-green-200 text-green-700"
+              : "bg-red-50 border-red-200 text-red-700"
+          }`}
+        >
           {Math.abs((voucher.totalDebit || 0) - (voucher.totalCredit || 0)) < 0.01
             ? "✓ Voucher is balanced (Dr = Cr)"
             : `⚠ Unbalanced by Rs. ${fmt2(Math.abs((voucher.totalDebit || 0) - (voucher.totalCredit || 0)))}`}
@@ -438,22 +519,44 @@ function VoucherView({
 }
 
 // ─── Main DrillDown Component ─────────────────────────────────────────────────
-export default function PLDrillDown({ drillState, options, plData, onDrillDown, onBack, companyName }: Props) {
+export default function PLDrillDown({
+  drillState,
+  options,
+  plData,
+  onDrillDown,
+  onBack,
+  companyName,
+}: Props) {
   const levelLabels = ["P&L Report", "Account Group", "Ledger", "Voucher"];
 
   return (
     <div className="flex-1 overflow-auto p-4 space-y-3">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-[12px] text-gray-500">
-        <button onClick={() => onDrillDown({ level: 0 })} className="text-[#1557b0] hover:underline">
+        <button
+          onClick={() => onDrillDown({ level: 0 })}
+          className="text-[#1557b0] hover:underline"
+        >
           P&L Report
         </button>
         {drillState.selectedGroupLabel && (
           <>
             <span className="text-gray-300">›</span>
             <button
-              onClick={() => drillState.level > 1 && onDrillDown({ ...drillState, level: 1, selectedAccountId: undefined, selectedVoucherId: undefined })}
-              className={drillState.level > 1 ? "text-[#1557b0] hover:underline" : "text-gray-700 font-semibold"}
+              onClick={() =>
+                drillState.level > 1 &&
+                onDrillDown({
+                  ...drillState,
+                  level: 1,
+                  selectedAccountId: undefined,
+                  selectedVoucherId: undefined,
+                })
+              }
+              className={
+                drillState.level > 1
+                  ? "text-[#1557b0] hover:underline"
+                  : "text-gray-700 font-semibold"
+              }
             >
               {drillState.selectedGroupLabel}
             </button>
@@ -463,8 +566,15 @@ export default function PLDrillDown({ drillState, options, plData, onDrillDown, 
           <>
             <span className="text-gray-300">›</span>
             <button
-              onClick={() => drillState.level > 2 && onDrillDown({ ...drillState, level: 2, selectedVoucherId: undefined })}
-              className={drillState.level > 2 ? "text-[#1557b0] hover:underline" : "text-gray-700 font-semibold"}
+              onClick={() =>
+                drillState.level > 2 &&
+                onDrillDown({ ...drillState, level: 2, selectedVoucherId: undefined })
+              }
+              className={
+                drillState.level > 2
+                  ? "text-[#1557b0] hover:underline"
+                  : "text-gray-700 font-semibold"
+              }
             >
               {drillState.selectedAccountName}
             </button>
@@ -489,11 +599,7 @@ export default function PLDrillDown({ drillState, options, plData, onDrillDown, 
       )}
 
       {drillState.level === 2 && drillState.selectedAccountId && (
-        <AccountLedgerView
-          drillState={drillState}
-          options={options}
-          onDrillDown={onDrillDown}
-        />
+        <AccountLedgerView drillState={drillState} options={options} onDrillDown={onDrillDown} />
       )}
 
       {drillState.level === 3 && drillState.selectedVoucherId && (

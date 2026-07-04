@@ -26,16 +26,11 @@ const BonusProvision: React.FC = () => {
   }, [accounts, vouchers, currentFiscalYear]);
 
   const eligibleEmployees = useMemo(() => {
-    return (employees || []).filter(
-      (e) => e.status !== "inactive" && e.bonusEligible !== false,
-    );
+    return (employees || []).filter((e) => e.status !== "inactive" && e.bonusEligible !== false);
   }, [employees]);
 
   const rows = useMemo(() => {
-    const oneMonthTotal = eligibleEmployees.reduce(
-      (sum, e) => sum + Number(e.basicSalary || 0),
-      0,
-    );
+    const oneMonthTotal = eligibleEmployees.reduce((sum, e) => sum + Number(e.basicSalary || 0), 0);
     const profitCap = Math.max(0, pl.netProfit) * (profitSharePercent / 100);
     const provisionTotal = pl.netProfit > 0 ? Math.min(oneMonthTotal, profitCap) : 0;
 
@@ -48,7 +43,7 @@ const BonusProvision: React.FC = () => {
 
     return eligibleEmployees.map((e) => {
       const basic = Number(e.basicSalary || 0);
-      const bonusAmount = Math.round(((basic / oneMonthTotal) * provisionTotal) * 100) / 100;
+      const bonusAmount = Math.round((basic / oneMonthTotal) * provisionTotal * 100) / 100;
       return { ...e, bonusAmount };
     });
   }, [eligibleEmployees, pl.netProfit, profitSharePercent]);
@@ -71,10 +66,7 @@ const BonusProvision: React.FC = () => {
         (a.name?.toLowerCase().includes("bonus") || a.code === "5325"),
     );
     const payableAcc = (accounts || []).find(
-      (a) =>
-        !a.isGroup &&
-        a.type === "liability" &&
-        a.name?.toLowerCase().includes("bonus"),
+      (a) => !a.isGroup && a.type === "liability" && a.name?.toLowerCase().includes("bonus"),
     );
 
     if (!expenseAcc || !payableAcc) {

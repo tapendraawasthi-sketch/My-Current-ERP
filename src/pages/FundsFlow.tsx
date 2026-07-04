@@ -24,20 +24,47 @@ const amtCls = `${tdCls} font-mono text-right`;
 
 // Current Asset / Liability keywords
 const CURRENT_ASSET_KW = [
-  "cash", "bank", "debtor", "receivable", "inventory", "stock",
-  "prepaid", "advance paid", "short term", "petty cash",
+  "cash",
+  "bank",
+  "debtor",
+  "receivable",
+  "inventory",
+  "stock",
+  "prepaid",
+  "advance paid",
+  "short term",
+  "petty cash",
 ];
 const CURRENT_LIABILITY_KW = [
-  "creditor", "payable", "advance received", "tax payable", "vat payable",
-  "short term loan", "overdraft", "provision",
+  "creditor",
+  "payable",
+  "advance received",
+  "tax payable",
+  "vat payable",
+  "short term loan",
+  "overdraft",
+  "provision",
 ];
 const LONG_TERM_LIABILITY_KW = [
-  "term loan", "mortgage", "debenture", "long term", "nfrs",
+  "term loan",
+  "mortgage",
+  "debenture",
+  "long term",
+  "nfrs",
   "lease liability",
 ];
 const FIXED_ASSET_KW = [
-  "fixed asset", "property", "plant", "equipment", "furniture",
-  "vehicle", "machinery", "land", "building", "intangible", "goodwill",
+  "fixed asset",
+  "property",
+  "plant",
+  "equipment",
+  "furniture",
+  "vehicle",
+  "machinery",
+  "land",
+  "building",
+  "intangible",
+  "goodwill",
 ];
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -45,7 +72,7 @@ export default function FundsFlow() {
   const { accounts, vouchers, currentFiscalYear, companySettings } = useStore();
 
   const fyStart = currentFiscalYear?.startDate || new Date().getFullYear() + "-04-01";
-  const fyEnd   = currentFiscalYear?.endDate   || (new Date().getFullYear() + 1) + "-03-31";
+  const fyEnd = currentFiscalYear?.endDate || new Date().getFullYear() + 1 + "-03-31";
 
   const [openingDate, setOpeningDate] = useState(fyStart);
   const [closingDate, setClosingDate] = useState(fyEnd);
@@ -76,16 +103,33 @@ export default function FundsFlow() {
     return map;
   };
 
-  const openingBal = useMemo(() => computeBalanceAt(openingDate), [vouchers, accounts, openingDate]);
-  const closingBal = useMemo(() => computeBalanceAt(closingDate), [vouchers, accounts, closingDate]);
+  const openingBal = useMemo(
+    () => computeBalanceAt(openingDate),
+    [vouchers, accounts, openingDate],
+  );
+  const closingBal = useMemo(
+    () => computeBalanceAt(closingDate),
+    [vouchers, accounts, closingDate],
+  );
 
   // ── Classify accounts ──────────────────────────────────────────────────────
-  const classify = (acc: any): "current_asset" | "current_liability" | "fixed_asset" | "long_term_liability" | "equity" | "other" => {
+  const classify = (
+    acc: any,
+  ):
+    | "current_asset"
+    | "current_liability"
+    | "fixed_asset"
+    | "long_term_liability"
+    | "equity"
+    | "other" => {
     const name = (acc.name || "").toLowerCase();
-    if (CURRENT_ASSET_KW.some((k) => name.includes(k)) && acc.type === "asset") return "current_asset";
-    if (CURRENT_LIABILITY_KW.some((k) => name.includes(k)) && acc.type === "liability") return "current_liability";
+    if (CURRENT_ASSET_KW.some((k) => name.includes(k)) && acc.type === "asset")
+      return "current_asset";
+    if (CURRENT_LIABILITY_KW.some((k) => name.includes(k)) && acc.type === "liability")
+      return "current_liability";
     if (FIXED_ASSET_KW.some((k) => name.includes(k)) && acc.type === "asset") return "fixed_asset";
-    if (LONG_TERM_LIABILITY_KW.some((k) => name.includes(k)) && acc.type === "liability") return "long_term_liability";
+    if (LONG_TERM_LIABILITY_KW.some((k) => name.includes(k)) && acc.type === "liability")
+      return "long_term_liability";
     if (acc.type === "equity") return "equity";
     if (acc.type === "asset") return "current_asset"; // default assets to current
     if (acc.type === "liability") return "current_liability"; // default liabilities to current
@@ -101,8 +145,8 @@ export default function FundsFlow() {
     const equityAccounts = accounts.filter((a) => a.type === "equity");
 
     // Working Capital = Current Assets - Current Liabilities
-    const openCA  = currentAssets.reduce((s, a) => s + (openingBal[a.id] || 0), 0);
-    const openCL  = currentLiabilities.reduce((s, a) => s + (openingBal[a.id] || 0), 0);
+    const openCA = currentAssets.reduce((s, a) => s + (openingBal[a.id] || 0), 0);
+    const openCL = currentLiabilities.reduce((s, a) => s + (openingBal[a.id] || 0), 0);
     const closeCA = currentAssets.reduce((s, a) => s + (closingBal[a.id] || 0), 0);
     const closeCL = currentLiabilities.reduce((s, a) => s + (closingBal[a.id] || 0), 0);
 
@@ -111,10 +155,16 @@ export default function FundsFlow() {
     const netChangeInWC = closingWC - openingWC;
 
     // Working Capital changes by account
-    const wcChanges: Array<{ name: string; opening: number; closing: number; change: number; type: string }> = [];
+    const wcChanges: Array<{
+      name: string;
+      opening: number;
+      closing: number;
+      change: number;
+      type: string;
+    }> = [];
 
     for (const acc of [...currentAssets, ...currentLiabilities]) {
-      const open  = openingBal[acc.id] || 0;
+      const open = openingBal[acc.id] || 0;
       const close = closingBal[acc.id] || 0;
       const change = close - open;
       if (Math.abs(change) > 0.01 || Math.abs(open) > 0.01 || Math.abs(close) > 0.01) {
@@ -146,12 +196,14 @@ export default function FundsFlow() {
     }, 0);
     const netProfit = incomeNet - expenseNet;
 
-    if (netProfit > 0) sourcesOfFunds.push({ label: "Net Profit from Operations", amount: netProfit });
-    else applicationOfFunds.push({ label: "Net Loss from Operations", amount: Math.abs(netProfit) });
+    if (netProfit > 0)
+      sourcesOfFunds.push({ label: "Net Profit from Operations", amount: netProfit });
+    else
+      applicationOfFunds.push({ label: "Net Loss from Operations", amount: Math.abs(netProfit) });
 
     // Long-term liability increases = sources
     for (const acc of longTermLiabilities) {
-      const open  = openingBal[acc.id] || 0;
+      const open = openingBal[acc.id] || 0;
       const close = closingBal[acc.id] || 0;
       const change = Math.abs(close) - Math.abs(open); // liabilities are credit-nature
       if (change > 0) {
@@ -163,7 +215,7 @@ export default function FundsFlow() {
 
     // Equity increases = sources
     for (const acc of equityAccounts) {
-      const open  = openingBal[acc.id] || 0;
+      const open = openingBal[acc.id] || 0;
       const close = closingBal[acc.id] || 0;
       const change = Math.abs(close) - Math.abs(open);
       if (change > 0) {
@@ -173,7 +225,7 @@ export default function FundsFlow() {
 
     // Fixed asset increases = application
     for (const acc of fixedAssets) {
-      const open  = openingBal[acc.id] || 0;
+      const open = openingBal[acc.id] || 0;
       const close = closingBal[acc.id] || 0;
       const change = close - open;
       if (change > 0) {
@@ -187,7 +239,10 @@ export default function FundsFlow() {
     if (netChangeInWC > 0) {
       applicationOfFunds.push({ label: "Net Increase in Working Capital", amount: netChangeInWC });
     } else if (netChangeInWC < 0) {
-      sourcesOfFunds.push({ label: "Net Decrease in Working Capital", amount: Math.abs(netChangeInWC) });
+      sourcesOfFunds.push({
+        label: "Net Decrease in Working Capital",
+        amount: Math.abs(netChangeInWC),
+      });
     }
 
     return { wcChanges, sourcesOfFunds, applicationOfFunds, openingWC, closingWC };
@@ -204,12 +259,20 @@ export default function FundsFlow() {
     XLSX.utils.book_append_sheet(
       wb,
       XLSX.utils.json_to_sheet([
-        ...sourcesOfFunds.map((r) => ({ Section: "Sources", Particulars: r.label, Amount: r.amount })),
+        ...sourcesOfFunds.map((r) => ({
+          Section: "Sources",
+          Particulars: r.label,
+          Amount: r.amount,
+        })),
         { Section: "TOTAL SOURCES", Particulars: "", Amount: totalSources },
-        ...applicationOfFunds.map((r) => ({ Section: "Application", Particulars: r.label, Amount: r.amount })),
+        ...applicationOfFunds.map((r) => ({
+          Section: "Application",
+          Particulars: r.label,
+          Amount: r.amount,
+        })),
         { Section: "TOTAL APPLICATION", Particulars: "", Amount: totalApplication },
       ]),
-      "Funds Flow"
+      "Funds Flow",
     );
 
     XLSX.utils.book_append_sheet(
@@ -221,9 +284,9 @@ export default function FundsFlow() {
           Opening: r.opening,
           Closing: r.closing,
           Change: r.change,
-        }))
+        })),
       ),
-      "Working Capital Changes"
+      "Working Capital Changes",
     );
 
     XLSX.writeFile(wb, `FundsFlow_${openingDate}_to_${closingDate}.xlsx`);
@@ -286,12 +349,27 @@ export default function FundsFlow() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
         {[
           { label: "Opening Working Capital", value: openingWC, color: "text-gray-700" },
-          { label: "Closing Working Capital", value: closingWC, color: closingWC >= 0 ? "text-[#1557b0]" : "text-red-600" },
-          { label: "Net Change in W.C.", value: closingWC - openingWC, color: (closingWC - openingWC) >= 0 ? "text-green-700" : "text-red-600" },
-          { label: "Statement Balanced", value: isBalanced ? 1 : 0, color: isBalanced ? "text-green-700" : "text-red-600", isLabel: true },
+          {
+            label: "Closing Working Capital",
+            value: closingWC,
+            color: closingWC >= 0 ? "text-[#1557b0]" : "text-red-600",
+          },
+          {
+            label: "Net Change in W.C.",
+            value: closingWC - openingWC,
+            color: closingWC - openingWC >= 0 ? "text-green-700" : "text-red-600",
+          },
+          {
+            label: "Statement Balanced",
+            value: isBalanced ? 1 : 0,
+            color: isBalanced ? "text-green-700" : "text-red-600",
+            isLabel: true,
+          },
         ].map((kpi) => (
           <div key={kpi.label} className="bg-white border border-gray-200 rounded-lg p-3">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">{kpi.label}</p>
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              {kpi.label}
+            </p>
             {kpi.isLabel ? (
               <p className={`text-[14px] font-bold mt-1 ${kpi.color}`}>
                 {isBalanced ? "✓ Balanced" : "⚠ Unbalanced"}
@@ -330,7 +408,11 @@ export default function FundsFlow() {
                 </tr>
               ))}
               {sourcesOfFunds.length === 0 && (
-                <tr><td colSpan={2} className="px-4 py-6 text-center text-[12px] text-gray-400">No sources identified</td></tr>
+                <tr>
+                  <td colSpan={2} className="px-4 py-6 text-center text-[12px] text-gray-400">
+                    No sources identified
+                  </td>
+                </tr>
               )}
             </tbody>
             <tfoot>
@@ -366,12 +448,18 @@ export default function FundsFlow() {
                 </tr>
               ))}
               {applicationOfFunds.length === 0 && (
-                <tr><td colSpan={2} className="px-4 py-6 text-center text-[12px] text-gray-400">No applications identified</td></tr>
+                <tr>
+                  <td colSpan={2} className="px-4 py-6 text-center text-[12px] text-gray-400">
+                    No applications identified
+                  </td>
+                </tr>
               )}
             </tbody>
             <tfoot>
               <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-                <td className="px-4 py-2.5 text-[12px] font-bold text-gray-800">Total Application</td>
+                <td className="px-4 py-2.5 text-[12px] font-bold text-gray-800">
+                  Total Application
+                </td>
                 <td className="px-4 py-2.5 text-[12px] font-bold font-mono text-right text-[#1557b0]">
                   {fmt(totalApplication)}
                 </td>
@@ -422,17 +510,28 @@ export default function FundsFlow() {
                   <tr key={i} className="hover:bg-gray-50">
                     <td className={tdCls}>{row.name}</td>
                     <td className="px-4 py-2 text-[11px] border-b border-gray-100">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
-                        row.type === "current_asset" ? "bg-blue-100 text-blue-700" : "bg-amber-100 text-amber-700"
-                      }`}>
+                      <span
+                        className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
+                          row.type === "current_asset"
+                            ? "bg-blue-100 text-blue-700"
+                            : "bg-amber-100 text-amber-700"
+                        }`}
+                      >
                         {row.type === "current_asset" ? "Current Asset" : "Current Liability"}
                       </span>
                     </td>
-                    <td className={amtCls}>{Math.abs(row.opening) > 0.01 ? fmt(row.opening) : "—"}</td>
-                    <td className={amtCls}>{Math.abs(row.closing) > 0.01 ? fmt(row.closing) : "—"}</td>
-                    <td className={`${amtCls} ${row.change >= 0 ? "text-green-700" : "text-red-600"}`}>
+                    <td className={amtCls}>
+                      {Math.abs(row.opening) > 0.01 ? fmt(row.opening) : "—"}
+                    </td>
+                    <td className={amtCls}>
+                      {Math.abs(row.closing) > 0.01 ? fmt(row.closing) : "—"}
+                    </td>
+                    <td
+                      className={`${amtCls} ${row.change >= 0 ? "text-green-700" : "text-red-600"}`}
+                    >
                       {Math.abs(row.change) > 0.01
-                        ? (row.change > 0 ? "+" : "") + row.change.toLocaleString("en-NP", { minimumFractionDigits: 2 })
+                        ? (row.change > 0 ? "+" : "") +
+                          row.change.toLocaleString("en-NP", { minimumFractionDigits: 2 })
                         : "—"}
                     </td>
                     <td className="px-4 py-2 text-[12px] font-mono text-right border-b border-gray-100 text-green-700">

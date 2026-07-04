@@ -3,14 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { useStore } from "../store/useStore";
 
 export type ScreenType =
-  | "gateway"
-  | "voucher"
-  | "report"
-  | "master"
-  | "inventory"
-  | "tax"
-  | "config"
-  | "list";
+  "gateway" | "voucher" | "report" | "master" | "inventory" | "tax" | "config" | "list";
 
 export interface ScreenContextValue {
   screenType: ScreenType;

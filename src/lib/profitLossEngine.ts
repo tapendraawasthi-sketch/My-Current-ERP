@@ -13,10 +13,7 @@ import type {
   PLGroupType,
 } from "./plTypes";
 import { GROUP_TYPE_KEYWORDS } from "./plTypes";
-import {
-  computeTotalClosingStockValue,
-  mapConfigMethodToValuation,
-} from "./stockValuation";
+import { computeTotalClosingStockValue, mapConfigMethodToValuation } from "./stockValuation";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -40,8 +37,12 @@ const getMonthLabel = (dateStr: string): string => {
   return d.toLocaleString("default", { month: "short", year: "2-digit" });
 };
 
-const getMonthsInRange = (from: string, to: string): Array<{ start: string; end: string; label: string; year: number; idx: number }> => {
-  const months: Array<{ start: string; end: string; label: string; year: number; idx: number }> = [];
+const getMonthsInRange = (
+  from: string,
+  to: string,
+): Array<{ start: string; end: string; label: string; year: number; idx: number }> => {
+  const months: Array<{ start: string; end: string; label: string; year: number; idx: number }> =
+    [];
   const start = new Date(from);
   const end = new Date(to);
   let current = new Date(start.getFullYear(), start.getMonth(), 1);
@@ -66,7 +67,7 @@ const getMonthsInRange = (from: string, to: string): Array<{ start: string; end:
 export function classifyGroup(
   groupName: string,
   groupType?: string,
-  parentGroupName?: string
+  parentGroupName?: string,
 ): PLGroupType {
   const lname = (groupName || "").toLowerCase();
   const ltype = (groupType || "").toLowerCase();
@@ -94,10 +95,13 @@ export function classifyGroup(
   // Check parent
   if (lparent.includes("sales") || lparent.includes("revenue")) return "sales";
   if (lparent.includes("purchase")) return "purchase";
-  if (lparent.includes("direct expense") || lparent.includes("direct cost")) return "direct-expense";
+  if (lparent.includes("direct expense") || lparent.includes("direct cost"))
+    return "direct-expense";
   if (lparent.includes("direct income")) return "direct-income";
-  if (lparent.includes("indirect expense") || lparent.includes("overhead")) return "indirect-expense";
-  if (lparent.includes("indirect income") || lparent.includes("other income")) return "indirect-income";
+  if (lparent.includes("indirect expense") || lparent.includes("overhead"))
+    return "indirect-expense";
+  if (lparent.includes("indirect income") || lparent.includes("other income"))
+    return "indirect-income";
   if (lparent.includes("income") && !lparent.includes("expenditure")) return "indirect-income";
   if (lparent.includes("expense") || lparent.includes("expenditure")) return "indirect-expense";
 
@@ -111,25 +115,29 @@ export async function computeProfitLoss(options: PLReportOptions): Promise<PLCom
 
   // 1. Load all data
   const [allAccounts, allVouchers] = await Promise.all([
-    db.table("accounts").toArray().catch(() => []),
-    db.table("vouchers").toArray().catch(() => []),
+    db
+      .table("accounts")
+      .toArray()
+      .catch(() => []),
+    db
+      .table("vouchers")
+      .toArray()
+      .catch(() => []),
   ]);
 
   // Filter vouchers to date range & posted status
   const vouchers = allVouchers.filter(
-    (v: any) =>
-      v.status === "posted" &&
-      v.date >= options.fromDate &&
-      v.date <= options.toDate
+    (v: any) => v.status === "posted" && v.date >= options.fromDate && v.date <= options.toDate,
   );
 
   // Also load invoices for sales/purchase data
-  const allInvoices = await db.table("invoices").toArray().catch(() => []);
+  const allInvoices = await db
+    .table("invoices")
+    .toArray()
+    .catch(() => []);
   const invoices = allInvoices.filter(
     (inv: any) =>
-      inv.status === "posted" &&
-      inv.date >= options.fromDate &&
-      inv.date <= options.toDate
+      inv.status === "posted" && inv.date >= options.fromDate && inv.date <= options.toDate,
   );
 
   // 2. Build account balance map from voucher lines
@@ -154,7 +162,7 @@ export async function computeProfitLoss(options: PLReportOptions): Promise<PLCom
   for (const inv of invoices) {
     const isSales = inv.type?.includes("sales") || inv.type === "sales-invoice";
     const isPurchase = inv.type?.includes("purchase") || inv.type === "purchase-invoice";
-    
+
     // Add VAT/tax amounts
     if (inv.taxableAmount && inv.partyId) {
       // These are typically already captured in voucher lines
@@ -201,14 +209,16 @@ export async function computeProfitLoss(options: PLReportOptions): Promise<PLCom
     const groupType = classifyGroup(
       acc.name || "",
       acc.type || acc.group || acc.accountType || "",
-      parentGroupName
+      parentGroupName,
     );
 
     const bal = balanceMap.get(acc.id) || { debit: 0, credit: 0 };
     // Also include opening balance contributions
     const openingBal = acc.openingBalance || acc.openingBalanceDr || 0;
     const openingCr = acc.openingBalanceCr || 0;
-    const netDebit = bal.debit + (acc.level === "ledger" || acc.level === "subledger" ? (openingBal > 0 ? openingBal : 0) : 0);
+    const netDebit =
+      bal.debit +
+      (acc.level === "ledger" || acc.level === "subledger" ? (openingBal > 0 ? openingBal : 0) : 0);
     const netCredit = bal.credit + (openingCr > 0 ? openingCr : 0);
     const netBalance = netCredit - netDebit;
 
@@ -271,7 +281,10 @@ export async function computeProfitLoss(options: PLReportOptions): Promise<PLCom
   // 5. Closing stock
   let closingStock = 0;
   if (options.updateClosingStock) {
-    const stockMovements = await db.table("stockMovements").toArray().catch(() => []);
+    const stockMovements = await db
+      .table("stockMovements")
+      .toArray()
+      .catch(() => []);
     const invConfig = await db
       .table("inventoryConfig")
       .get("global")
@@ -330,10 +343,7 @@ export async function computeProfitLoss(options: PLReportOptions): Promise<PLCom
 
     for (const month of months) {
       const monthVouchers = allVouchers.filter(
-        (v: any) =>
-          v.status === "posted" &&
-          v.date >= month.start &&
-          v.date <= month.end
+        (v: any) => v.status === "posted" && v.date >= month.start && v.date <= month.end,
       );
 
       const monthBalMap: Map<string, { debit: number; credit: number }> = new Map();
@@ -363,7 +373,13 @@ export async function computeProfitLoss(options: PLReportOptions): Promise<PLCom
       const mDirectExp = Math.max(0, getMonthSection(buckets["direct-expense"], "debit"));
       const mIndirectInc = Math.max(0, getMonthSection(buckets["indirect-income"], "credit"));
       const mIndirectExp = Math.max(0, getMonthSection(buckets["indirect-expense"], "debit"));
-      const mGross = mSales + mDirectInc + closingStock / months.length - (openingStock / months.length) - mPurchase - mDirectExp;
+      const mGross =
+        mSales +
+        mDirectInc +
+        closingStock / months.length -
+        openingStock / months.length -
+        mPurchase -
+        mDirectExp;
       const mNet = mGross + mIndirectInc - mIndirectExp;
 
       // Per-account breakdown for detailed monthly
@@ -429,21 +445,25 @@ export async function computeProfitLoss(options: PLReportOptions): Promise<PLCom
 export async function getAccountLedger(
   accountId: string,
   fromDate: string,
-  toDate: string
+  toDate: string,
 ): Promise<AccountLedgerData> {
   const db = getDB();
   const [allVouchers, allAccounts] = await Promise.all([
-    db.table("vouchers").toArray().catch(() => []),
-    db.table("accounts").toArray().catch(() => []),
+    db
+      .table("vouchers")
+      .toArray()
+      .catch(() => []),
+    db
+      .table("accounts")
+      .toArray()
+      .catch(() => []),
   ]);
 
   const acc = allAccounts.find((a: any) => a.id === accountId);
   const accountName = acc?.name || accountId;
 
   // Opening balance = balance before fromDate
-  const beforeVouchers = allVouchers.filter(
-    (v: any) => v.status === "posted" && v.date < fromDate
-  );
+  const beforeVouchers = allVouchers.filter((v: any) => v.status === "posted" && v.date < fromDate);
   let openingDebit = Number(acc?.openingBalanceDr || acc?.openingBalance || 0);
   let openingCredit = Number(acc?.openingBalanceCr || 0);
 
@@ -459,10 +479,7 @@ export async function getAccountLedger(
 
   // Period transactions
   const periodVouchers = allVouchers.filter(
-    (v: any) =>
-      v.status === "posted" &&
-      v.date >= fromDate &&
-      v.date <= toDate
+    (v: any) => v.status === "posted" && v.date >= fromDate && v.date <= toDate,
   );
 
   const entries: AccountLedgerEntry[] = [];
@@ -482,7 +499,7 @@ export async function getAccountLedger(
           narration: l.narration || v.narration || "",
           voucherId: v.id,
           particulars: l.accountName || v.narration || v.type || "",
-        }))
+        })),
     )
     .sort((a: any, b: any) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
 
@@ -530,17 +547,25 @@ export function exportPLToExcel(pl: PLComputation, companyName: string) {
   if (pl.options.variant === "horizontal") {
     rows.push(["DEBIT SIDE", "", "AMOUNT", "", "CREDIT SIDE", "", "AMOUNT"]);
     rows.push(["Opening Stock", "", pl.openingStock, "", "Sales", "", pl.sales.total]);
-    
+
     for (const line of pl.purchases.lines) {
       rows.push([line.accountName, "", line.absBalance, "", "", "", ""]);
     }
     rows.push(["Total Purchases", "", pl.purchases.total, "", "", "", ""]);
-    
+
     for (const line of pl.directExpenses.lines) {
       rows.push([line.accountName, "", line.absBalance, "", "", "", ""]);
     }
-    rows.push(["Total Direct Expenses", "", pl.directExpenses.total, "", "Closing Stock", "", pl.closingStock]);
-    
+    rows.push([
+      "Total Direct Expenses",
+      "",
+      pl.directExpenses.total,
+      "",
+      "Closing Stock",
+      "",
+      pl.closingStock,
+    ]);
+
     if (pl.grossProfit >= 0) {
       rows.push(["", "", "", "", "Gross Profit c/d", "", pl.grossProfit]);
     } else {
@@ -548,7 +573,7 @@ export function exportPLToExcel(pl: PLComputation, companyName: string) {
     }
 
     rows.push(["--- P&L Account ---", "", "", "", "--- P&L Account ---", "", ""]);
-    
+
     if (pl.grossProfit < 0) {
       rows.push(["Gross Loss b/d", "", Math.abs(pl.grossProfit), "", "", "", ""]);
     } else {
@@ -596,7 +621,7 @@ export function exportPLToCSV(pl: PLComputation) {
   const rows: string[] = [];
   rows.push("Account,Amount");
   rows.push(`Opening Stock,${pl.openingStock}`);
-  
+
   for (const line of pl.purchases.lines) {
     rows.push(`${line.accountName},${line.absBalance}`);
   }

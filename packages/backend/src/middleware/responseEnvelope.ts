@@ -29,12 +29,7 @@ export function sendError(res: Response, error: string, status = 400): void {
 export function envelopeMiddleware(_req: Request, res: Response, next: NextFunction): void {
   const originalJson = res.json.bind(res);
   res.json = (body: unknown) => {
-    if (
-      body &&
-      typeof body === "object" &&
-      "success" in body &&
-      "timestamp" in body
-    ) {
+    if (body && typeof body === "object" && "success" in body && "timestamp" in body) {
       return originalJson(body);
     }
     return originalJson({

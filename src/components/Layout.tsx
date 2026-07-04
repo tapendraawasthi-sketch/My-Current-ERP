@@ -97,7 +97,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const openDialog =
       document.querySelector('[role="dialog"][aria-hidden="false"]') ||
       document.querySelector('[data-state="open"]') ||
-      document.querySelector('.modal-backdrop');
+      document.querySelector(".modal-backdrop");
     if (openDialog) return;
     const ACTION_VALUE_TO_PAGE: Record<string, string> = {
       journal: "journal",
@@ -330,14 +330,30 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               built for Nepal
             </h2>
 
-            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", marginBottom: 32, lineHeight: 1.6 }}>
+            <p
+              style={{
+                fontSize: 13,
+                color: "rgba(255,255,255,0.75)",
+                marginBottom: 32,
+                lineHeight: 1.6,
+              }}
+            >
               Complete ERP with VAT, TDS, Nepali calendar, IRD compliance and multi-company support.
             </p>
 
             {[
-              { title: "BS Calendar & VAT Ready", desc: "Bikram Sambat dates, 13% VAT, TDS withholding built-in" },
-              { title: "Multi-Company & Users", desc: "Role-based access with complete audit trail" },
-              { title: "Inventory + Accounting", desc: "Integrated stock, invoicing and double-entry ledger" },
+              {
+                title: "BS Calendar & VAT Ready",
+                desc: "Bikram Sambat dates, 13% VAT, TDS withholding built-in",
+              },
+              {
+                title: "Multi-Company & Users",
+                desc: "Role-based access with complete audit trail",
+              },
+              {
+                title: "Inventory + Accounting",
+                desc: "Integrated stock, invoicing and double-entry ledger",
+              },
               { title: "Reports & Export", desc: "Trial Balance, P&L, Balance Sheet, VAT reports" },
             ].map((feature) => (
               <div
@@ -370,8 +386,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   ✓
                 </span>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#ffffff" }}>{feature.title}</div>
-                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.65)" }}>{feature.desc}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#ffffff" }}>
+                    {feature.title}
+                  </div>
+                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.65)" }}>
+                    {feature.desc}
+                  </div>
                 </div>
               </div>
             ))}
@@ -382,7 +402,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
         </div>
 
-        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 32 }}>
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 32,
+          }}
+        >
           <div style={{ width: "100%", maxWidth: 380 }}>
             <div
               style={{
@@ -393,14 +421,24 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               }}
             >
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: "#1f2937", marginBottom: 4 }}>Sign In</h3>
+              <h3 style={{ fontSize: 18, fontWeight: 700, color: "#1f2937", marginBottom: 4 }}>
+                Sign In
+              </h3>
               <p style={{ fontSize: 12, color: "#6b7280", marginBottom: 24 }}>
                 Enter your credentials to access the system
               </p>
 
               <form onSubmit={handleLoginSubmit}>
                 <div style={{ marginBottom: 16 }}>
-                  <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "#374151", marginBottom: 4 }}>
+                  <label
+                    style={{
+                      display: "block",
+                      fontSize: 11,
+                      fontWeight: 600,
+                      color: "#374151",
+                      marginBottom: 4,
+                    }}
+                  >
                     System Operator ID
                   </label>
                   <input
@@ -432,7 +470,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </div>
 
                 <div style={{ marginBottom: 24 }}>
-                  <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "#374151", marginBottom: 4 }}>
+                  <label
+                    style={{
+                      display: "block",
+                      fontSize: 11,
+                      fontWeight: 600,
+                      color: "#374151",
+                      marginBottom: 4,
+                    }}
+                  >
                     Access Code
                   </label>
                   <input
@@ -497,7 +543,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   // ── Mobile layout ──
   if (isMobile) {
     return (
-      <div className="app-layout-with-topbar" style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden" }}>
+      <div
+        className="app-layout-with-topbar"
+        style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden" }}
+      >
         <TopMenuBar />
 
         <header
@@ -549,8 +598,20 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </button>
         </header>
 
-        <main style={{ flex: 1, overflowY: "auto", padding: 16, paddingBottom: 72, background: "#f5f6fa" }}>
-          <div key={currentPage} className="page-enter" style={{ minHeight: "100%", display: "flex", flexDirection: "column" }}>
+        <main
+          style={{
+            flex: 1,
+            overflowY: "auto",
+            padding: 16,
+            paddingBottom: 72,
+            background: "#f5f6fa",
+          }}
+        >
+          <div
+            key={currentPage}
+            className="page-enter"
+            style={{ minHeight: "100%", display: "flex", flexDirection: "column" }}
+          >
             {children}
           </div>
         </main>
@@ -600,7 +661,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
         {drawerOpen && (
           <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex" }}>
-            <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)" }} onClick={() => setDrawerOpen(false)} />
+            <div
+              style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)" }}
+              onClick={() => setDrawerOpen(false)}
+            />
             <div style={{ position: "relative", width: 272, height: "100%", overflowY: "auto" }}>
               <div
                 style={{
@@ -616,7 +680,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <span style={{ fontWeight: 600 }}>Menu</span>
                 <button
                   onClick={() => setDrawerOpen(false)}
-                  style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 6, padding: 4, cursor: "pointer", color: "#ffffff" }}
+                  style={{
+                    background: "transparent",
+                    border: "1px solid rgba(255,255,255,0.2)",
+                    borderRadius: 6,
+                    padding: 4,
+                    cursor: "pointer",
+                    color: "#ffffff",
+                  }}
                 >
                   <X style={{ width: 16, height: 16 }} />
                 </button>
@@ -634,13 +705,23 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div
       className="app-layout-with-topbar"
-      style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden", background: THEME.bg }}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+        overflow: "hidden",
+        background: THEME.bg,
+      }}
     >
       <TopMenuBar />
       <BusyMenuBar />
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
         <main style={{ flex: 1, overflowY: "auto", padding: 20, background: "#f5f6fa" }}>
-          <div key={currentPage} className="page-enter" style={{ minHeight: "100%", display: "flex", flexDirection: "column" }}>
+          <div
+            key={currentPage}
+            className="page-enter"
+            style={{ minHeight: "100%", display: "flex", flexDirection: "column" }}
+          >
             {children}
           </div>
         </main>

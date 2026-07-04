@@ -34,7 +34,7 @@ const RATIO_DEFS: RatioDef[] = [
     formula: "Current Assets ÷ Current Liabilities",
     benchmark: { min: 1.5, max: 3.0, unit: ":1", label: "Ideal: 1.5–3.0 for trading" },
     category: "liquidity",
-    compute: (d) => d.currentLiabilities > 0 ? d.currentAssets / d.currentLiabilities : 0,
+    compute: (d) => (d.currentLiabilities > 0 ? d.currentAssets / d.currentLiabilities : 0),
     higherIsBetter: true,
   },
   {
@@ -43,7 +43,8 @@ const RATIO_DEFS: RatioDef[] = [
     formula: "(Current Assets − Stock) ÷ Current Liabilities",
     benchmark: { min: 1.0, max: 2.0, unit: ":1", label: "Ideal: ≥1.0" },
     category: "liquidity",
-    compute: (d) => d.currentLiabilities > 0 ? (d.currentAssets - d.stockValue) / d.currentLiabilities : 0,
+    compute: (d) =>
+      d.currentLiabilities > 0 ? (d.currentAssets - d.stockValue) / d.currentLiabilities : 0,
     higherIsBetter: true,
   },
   // Profitability
@@ -53,7 +54,7 @@ const RATIO_DEFS: RatioDef[] = [
     formula: "(Gross Profit ÷ Net Sales) × 100",
     benchmark: { min: 20, max: 40, unit: "%", label: "Ideal: 20–40% for trading" },
     category: "profitability",
-    compute: (d) => d.netSales > 0 ? (d.grossProfit / d.netSales) * 100 : 0,
+    compute: (d) => (d.netSales > 0 ? (d.grossProfit / d.netSales) * 100 : 0),
     higherIsBetter: true,
   },
   {
@@ -62,7 +63,7 @@ const RATIO_DEFS: RatioDef[] = [
     formula: "(Net Profit ÷ Net Sales) × 100",
     benchmark: { min: 5, max: 20, unit: "%", label: "Ideal: 5–20%" },
     category: "profitability",
-    compute: (d) => d.netSales > 0 ? (d.netProfit / d.netSales) * 100 : 0,
+    compute: (d) => (d.netSales > 0 ? (d.netProfit / d.netSales) * 100 : 0),
     higherIsBetter: true,
   },
   {
@@ -71,7 +72,7 @@ const RATIO_DEFS: RatioDef[] = [
     formula: "(Net Profit ÷ Equity) × 100",
     benchmark: { min: 15, max: 30, unit: "%", label: "Ideal: ≥15%" },
     category: "profitability",
-    compute: (d) => d.equity > 0 ? (d.netProfit / d.equity) * 100 : 0,
+    compute: (d) => (d.equity > 0 ? (d.netProfit / d.equity) * 100 : 0),
     higherIsBetter: true,
   },
   // Solvency
@@ -81,7 +82,7 @@ const RATIO_DEFS: RatioDef[] = [
     formula: "Total Debt ÷ Shareholders' Equity",
     benchmark: { min: 0, max: 1.5, unit: ":1", label: "Ideal: ≤1.5" },
     category: "solvency",
-    compute: (d) => d.equity > 0 ? d.totalDebt / d.equity : 0,
+    compute: (d) => (d.equity > 0 ? d.totalDebt / d.equity : 0),
     higherIsBetter: false,
   },
   {
@@ -90,15 +91,30 @@ const RATIO_DEFS: RatioDef[] = [
     formula: "EBIT ÷ Interest Expense",
     benchmark: { min: 3, max: 999, unit: "x", label: "Ideal: ≥3x" },
     category: "solvency",
-    compute: (d) => d.interestExpense > 0 ? d.ebit / d.interestExpense : 999,
+    compute: (d) => (d.interestExpense > 0 ? d.ebit / d.interestExpense : 999),
     higherIsBetter: true,
   },
 ];
 
 const CATEGORIES = [
-  { key: "liquidity",     label: "Liquidity Ratios",     color: "#1557b0", desc: "Ability to meet short-term obligations" },
-  { key: "profitability", label: "Profitability Ratios",  color: "#059669", desc: "Efficiency in generating profit from operations" },
-  { key: "solvency",      label: "Solvency Ratios",       color: "#7c3aed", desc: "Long-term financial stability and debt management" },
+  {
+    key: "liquidity",
+    label: "Liquidity Ratios",
+    color: "#1557b0",
+    desc: "Ability to meet short-term obligations",
+  },
+  {
+    key: "profitability",
+    label: "Profitability Ratios",
+    color: "#059669",
+    desc: "Efficiency in generating profit from operations",
+  },
+  {
+    key: "solvency",
+    label: "Solvency Ratios",
+    color: "#7c3aed",
+    desc: "Long-term financial stability and debt management",
+  },
 ] as const;
 
 const getRatioStatus = (ratio: RatioDef, value: number): "good" | "warning" | "bad" => {
@@ -114,37 +130,48 @@ const getRatioStatus = (ratio: RatioDef, value: number): "good" | "warning" | "b
   }
 };
 
-const RatioCard: React.FC<{ ratio: RatioDef; value: number; color: string }> = ({ ratio, value, color }) => {
+const RatioCard: React.FC<{ ratio: RatioDef; value: number; color: string }> = ({
+  ratio,
+  value,
+  color,
+}) => {
   const status = getRatioStatus(ratio, value);
   const statusColors = {
-    good:    { bg: "#f0fdf4", border: "#86efac", text: "#059669", dot: "#059669" },
+    good: { bg: "#f0fdf4", border: "#86efac", text: "#059669", dot: "#059669" },
     warning: { bg: "#fffbeb", border: "#fde68a", text: "#d97706", dot: "#d97706" },
-    bad:     { bg: "#fef2f2", border: "#fca5a5", text: "#dc2626", dot: "#dc2626" },
+    bad: { bg: "#fef2f2", border: "#fca5a5", text: "#dc2626", dot: "#dc2626" },
   }[status];
 
   const displayValue = Number.isFinite(value)
-    ? value.toLocaleString("en-IN", { minimumFractionDigits: value < 10 ? 2 : 1, maximumFractionDigits: 2 })
+    ? value.toLocaleString("en-IN", {
+        minimumFractionDigits: value < 10 ? 2 : 1,
+        maximumFractionDigits: 2,
+      })
     : "—";
 
   return (
-    <div style={{
-      background: statusColors.bg,
-      border: `1px solid ${statusColors.border}`,
-      borderRadius: 6,
-      padding: "14px 16px",
-      display: "flex",
-      flexDirection: "column",
-      gap: 6,
-    }}>
+    <div
+      style={{
+        background: statusColors.bg,
+        border: `1px solid ${statusColors.border}`,
+        borderRadius: 6,
+        padding: "14px 16px",
+        display: "flex",
+        flexDirection: "column",
+        gap: 6,
+      }}
+    >
       <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
-        <div style={{
-          width: 8,
-          height: 8,
-          borderRadius: "50%",
-          background: statusColors.dot,
-          flexShrink: 0,
-          marginTop: 4,
-        }} />
+        <div
+          style={{
+            width: 8,
+            height: 8,
+            borderRadius: "50%",
+            background: statusColors.dot,
+            flexShrink: 0,
+            marginTop: 4,
+          }}
+        />
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 12, fontWeight: 700, color: "#111827" }}>{ratio.label}</div>
           <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 1, fontStyle: "italic" }}>
@@ -152,26 +179,28 @@ const RatioCard: React.FC<{ ratio: RatioDef; value: number; color: string }> = (
           </div>
         </div>
       </div>
-      <div style={{
-        fontSize: 24,
-        fontWeight: 700,
-        fontFamily: "'Courier New', monospace",
-        color: statusColors.text,
-        lineHeight: 1.1,
-      }}>
+      <div
+        style={{
+          fontSize: 24,
+          fontWeight: 700,
+          fontFamily: "'Courier New', monospace",
+          color: statusColors.text,
+          lineHeight: 1.1,
+        }}
+      >
         {displayValue}
-        <span style={{ fontSize: 12, fontWeight: 400, marginLeft: 4 }}>
-          {ratio.benchmark.unit}
-        </span>
+        <span style={{ fontSize: 12, fontWeight: 400, marginLeft: 4 }}>{ratio.benchmark.unit}</span>
       </div>
-      <div style={{
-        fontSize: 10,
-        color: "#6b7280",
-        padding: "3px 8px",
-        background: "rgba(0,0,0,0.04)",
-        borderRadius: 3,
-        borderLeft: `2px solid ${color}`,
-      }}>
+      <div
+        style={{
+          fontSize: 10,
+          color: "#6b7280",
+          padding: "3px 8px",
+          background: "rgba(0,0,0,0.04)",
+          borderRadius: 3,
+          borderLeft: `2px solid ${color}`,
+        }}
+      >
         {ratio.benchmark.label}
       </div>
     </div>
@@ -179,18 +208,13 @@ const RatioCard: React.FC<{ ratio: RatioDef; value: number; color: string }> = (
 };
 
 export default function RatioAnalysis() {
-  const {
-    accounts,
-    vouchers,
-    stockMovements,
-    currentFiscalYear,
-  } = useStore();
+  const { accounts, vouchers, stockMovements, currentFiscalYear } = useStore();
 
   const fyStart = currentFiscalYear?.startDate || new Date().getFullYear() + "-04-01";
   const fyEnd = currentFiscalYear?.endDate || new Date().getFullYear() + 1 + "-03-31";
 
   const [fromDate, setFromDate] = useState(fyStart);
-  const [toDate,   setToDate]   = useState(fyEnd);
+  const [toDate, setToDate] = useState(fyEnd);
 
   const financialData: FinancialData = useMemo(() => {
     const balanceAt: Record<string, number> = {};
@@ -221,28 +245,117 @@ export default function RatioAnalysis() {
       }
     }
 
-    const kwMatch = (name, kws) => kws.some(k => (name || "").toLowerCase().includes(k));
+    const kwMatch = (name, kws) => kws.some((k) => (name || "").toLowerCase().includes(k));
 
-    const currentAssets = accounts.filter(a => !a.isGroup && a.type === "asset" && kwMatch(a.name, ["cash", "bank", "debtor", "receivable", "inventory", "stock", "prepaid", "advance paid", "petty cash"])).reduce((s, a) => s + (balanceAt[a.id] || 0), 0);
-    const currentLiabilities = Math.abs(accounts.filter(a => !a.isGroup && a.type === "liability" && kwMatch(a.name, ["creditor", "payable", "advance received", "tax payable", "vat payable", "overdraft", "short term"])).reduce((s, a) => s + (balanceAt[a.id] || 0), 0));
-    
-    const stockValue = Math.max(0, (stockMovements || []).filter(m => (m.date || "") <= toDate).reduce((s, m) => {
-      const q = Math.abs(Number(m.qty || m.quantity || 0));
-      const r = Number(m.rate || m.costRate || 0);
-      return String(m.type || m.movementType || "").toLowerCase().includes("in") || String(m.type || m.movementType || "").toLowerCase().includes("purchase") || String(m.type || m.movementType || "").toLowerCase().includes("opening") ? s + q * r : s - q * r;
-    }, 0));
+    const currentAssets = accounts
+      .filter(
+        (a) =>
+          !a.isGroup &&
+          a.type === "asset" &&
+          kwMatch(a.name, [
+            "cash",
+            "bank",
+            "debtor",
+            "receivable",
+            "inventory",
+            "stock",
+            "prepaid",
+            "advance paid",
+            "petty cash",
+          ]),
+      )
+      .reduce((s, a) => s + (balanceAt[a.id] || 0), 0);
+    const currentLiabilities = Math.abs(
+      accounts
+        .filter(
+          (a) =>
+            !a.isGroup &&
+            a.type === "liability" &&
+            kwMatch(a.name, [
+              "creditor",
+              "payable",
+              "advance received",
+              "tax payable",
+              "vat payable",
+              "overdraft",
+              "short term",
+            ]),
+        )
+        .reduce((s, a) => s + (balanceAt[a.id] || 0), 0),
+    );
 
-    const netSales = accounts.filter(a => !a.isGroup && a.type === "income" && kwMatch(a.name, ["sales", "revenue"])).reduce((s, a) => s + -(periodMov[a.id] || 0), 0) || accounts.filter(a => !a.isGroup && a.type === "income").reduce((s, a) => s + -(periodMov[a.id] || 0), 0);
-    const totalRevenue = accounts.filter(a => !a.isGroup && a.type === "income").reduce((s, a) => s + -(periodMov[a.id] || 0), 0);
-    const totalExpenses = accounts.filter(a => !a.isGroup && a.type === "expense").reduce((s, a) => s + (periodMov[a.id] || 0), 0);
-    
-    const cogs = accounts.filter(a => !a.isGroup && a.type === "expense" && kwMatch(a.name, ["cost of", "purchase", "direct"])).reduce((s, a) => s + (periodMov[a.id] || 0), 0);
+    const stockValue = Math.max(
+      0,
+      (stockMovements || [])
+        .filter((m) => (m.date || "") <= toDate)
+        .reduce((s, m) => {
+          const q = Math.abs(Number(m.qty || m.quantity || 0));
+          const r = Number(m.rate || m.costRate || 0);
+          return String(m.type || m.movementType || "")
+            .toLowerCase()
+            .includes("in") ||
+            String(m.type || m.movementType || "")
+              .toLowerCase()
+              .includes("purchase") ||
+            String(m.type || m.movementType || "")
+              .toLowerCase()
+              .includes("opening")
+            ? s + q * r
+            : s - q * r;
+        }, 0),
+    );
+
+    const netSales =
+      accounts
+        .filter((a) => !a.isGroup && a.type === "income" && kwMatch(a.name, ["sales", "revenue"]))
+        .reduce((s, a) => s + -(periodMov[a.id] || 0), 0) ||
+      accounts
+        .filter((a) => !a.isGroup && a.type === "income")
+        .reduce((s, a) => s + -(periodMov[a.id] || 0), 0);
+    const totalRevenue = accounts
+      .filter((a) => !a.isGroup && a.type === "income")
+      .reduce((s, a) => s + -(periodMov[a.id] || 0), 0);
+    const totalExpenses = accounts
+      .filter((a) => !a.isGroup && a.type === "expense")
+      .reduce((s, a) => s + (periodMov[a.id] || 0), 0);
+
+    const cogs = accounts
+      .filter(
+        (a) =>
+          !a.isGroup && a.type === "expense" && kwMatch(a.name, ["cost of", "purchase", "direct"]),
+      )
+      .reduce((s, a) => s + (periodMov[a.id] || 0), 0);
     const grossProfit = totalRevenue - cogs;
     const netProfit = totalRevenue - totalExpenses;
-    
-    const equity = Math.abs(accounts.filter(a => !a.isGroup && a.type === "equity").reduce((s, a) => s + (balanceAt[a.id] || 0), 0));
-    const totalDebt = Math.abs(accounts.filter(a => !a.isGroup && a.type === "liability" && kwMatch(a.name, ["term loan", "mortgage", "debenture", "long term", "bond"])).reduce((s, a) => s + (balanceAt[a.id] || 0), 0));
-    const interestExpense = accounts.filter(a => !a.isGroup && a.type === "expense" && kwMatch(a.name, ["interest expense", "finance charge", "bank charge", "interest on loan"])).reduce((s, a) => s + (periodMov[a.id] || 0), 0);
+
+    const equity = Math.abs(
+      accounts
+        .filter((a) => !a.isGroup && a.type === "equity")
+        .reduce((s, a) => s + (balanceAt[a.id] || 0), 0),
+    );
+    const totalDebt = Math.abs(
+      accounts
+        .filter(
+          (a) =>
+            !a.isGroup &&
+            a.type === "liability" &&
+            kwMatch(a.name, ["term loan", "mortgage", "debenture", "long term", "bond"]),
+        )
+        .reduce((s, a) => s + (balanceAt[a.id] || 0), 0),
+    );
+    const interestExpense = accounts
+      .filter(
+        (a) =>
+          !a.isGroup &&
+          a.type === "expense" &&
+          kwMatch(a.name, [
+            "interest expense",
+            "finance charge",
+            "bank charge",
+            "interest on loan",
+          ]),
+      )
+      .reduce((s, a) => s + (periodMov[a.id] || 0), 0);
     const ebit = netProfit + interestExpense;
 
     return {
@@ -294,11 +407,13 @@ export default function RatioAnalysis() {
                 </div>
               </div>
 
-              <div style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-                gap: 12,
-              }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+                  gap: 12,
+                }}
+              >
                 {catRatios.map((ratio) => (
                   <RatioCard
                     key={ratio.key}

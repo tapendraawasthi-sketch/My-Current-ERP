@@ -1,11 +1,6 @@
 import { getDB, type DBSyncOutboxRecord } from "./db";
 
-export type SyncEntityType =
-  | "account"
-  | "party"
-  | "item"
-  | "voucher"
-  | "invoice";
+export type SyncEntityType = "account" | "party" | "item" | "voucher" | "invoice";
 
 export interface EnqueueSyncInput {
   entityType: SyncEntityType;
@@ -108,7 +103,9 @@ export async function runSyncCycle(): Promise<void> {
   try {
     const db = getDB();
     const pending = await db.syncOutbox
-      .filter((r) => !r.syncedAt && (r.syncAttempts ?? 0) < MAX_ATTEMPTS && r.status !== "sync_failed")
+      .filter(
+        (r) => !r.syncedAt && (r.syncAttempts ?? 0) < MAX_ATTEMPTS && r.status !== "sync_failed",
+      )
       .limit(BATCH_SIZE)
       .toArray();
 
@@ -119,9 +116,7 @@ export async function runSyncCycle(): Promise<void> {
       if (ok) {
         const now = new Date().toISOString();
         await Promise.all(
-          pending.map((r) =>
-            db.syncOutbox.update(r.id, { syncedAt: now, status: "pending" }),
-          ),
+          pending.map((r) => db.syncOutbox.update(r.id, { syncedAt: now, status: "pending" })),
         );
       }
     } catch (err) {

@@ -197,9 +197,7 @@ const SalesVoucher: React.FC = () => {
     // First, split the bill discount proportionally between taxable and exempt portions.
     const preBillDiscTotal = taxable + exempt;
     const billDisc =
-      billDiscountAmount > 0
-        ? billDiscountAmount
-        : preBillDiscTotal * (billDiscountPercent / 100);
+      billDiscountAmount > 0 ? billDiscountAmount : preBillDiscTotal * (billDiscountPercent / 100);
 
     // Subtract bill discount from the taxable portion only (exempt already has no VAT).
     const taxableAfterDisc = Math.max(0, taxable - billDisc);

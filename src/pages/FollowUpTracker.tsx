@@ -140,6 +140,34 @@ export default function FollowUpTracker() {
       );
   }, [parties, invoices, followUpNotes, searchTerm]);
 
+  const performanceData = useMemo(() => {
+    let filteredNotes = followUpNotes;
+    if (fromDate) {
+      filteredNotes = filteredNotes.filter((n) => n.createdAt >= fromDate);
+    }
+    if (toDate) {
+      filteredNotes = filteredNotes.filter((n) => n.createdAt <= toDate);
+    }
+    if (userFilter !== "ALL") {
+      filteredNotes = filteredNotes.filter((n) => n.createdBy === userFilter);
+    }
+
+    const totalOutstanding = outstandingParties.reduce((sum, p) => sum + p.totalOutstanding, 0);
+    const followUpsMade = filteredNotes.length;
+    const amountsPromised = filteredNotes.reduce((sum, n) => sum + n.promisedAmount, 0);
+    const amountsCollected = 0;
+    const collectionEfficiency =
+      amountsPromised > 0 ? (amountsCollected / amountsPromised) * 100 : 0;
+
+    return {
+      totalOutstanding,
+      followUpsMade,
+      amountsPromised,
+      amountsCollected,
+      collectionEfficiency,
+    };
+  }, [followUpNotes, outstandingParties, fromDate, toDate, userFilter]);
+
   // Handle adding a follow-up note
   const handleAddNote = async () => {
     if (!selectedParty || !addNoteForm.note.trim()) {
@@ -1022,36 +1050,6 @@ export default function FollowUpTracker() {
 
   // Render collection performance
   const renderCollectionPerformance = () => {
-    const performanceData = useMemo(() => {
-      // Calculate metrics based on date range and user filter
-      let filteredNotes = followUpNotes;
-      if (fromDate) {
-        filteredNotes = filteredNotes.filter((n) => n.createdAt >= fromDate);
-      }
-      if (toDate) {
-        filteredNotes = filteredNotes.filter((n) => n.createdAt <= toDate);
-      }
-      if (userFilter !== "ALL") {
-        filteredNotes = filteredNotes.filter((n) => n.createdBy === userFilter);
-      }
-
-      const totalOutstanding = outstandingParties.reduce((sum, p) => sum + p.totalOutstanding, 0);
-      const followUpsMade = filteredNotes.length;
-      const amountsPromised = filteredNotes.reduce((sum, n) => sum + n.promisedAmount, 0);
-      // Amounts collected would require linking to receipts
-      const amountsCollected = 0; // Placeholder
-      const collectionEfficiency =
-        amountsPromised > 0 ? (amountsCollected / amountsPromised) * 100 : 0;
-
-      return {
-        totalOutstanding,
-        followUpsMade,
-        amountsPromised,
-        amountsCollected,
-        collectionEfficiency,
-      };
-    }, [followUpNotes, outstandingParties, fromDate, toDate, userFilter]);
-
     return (
       <div style={{ padding: "20px" }}>
         <h2

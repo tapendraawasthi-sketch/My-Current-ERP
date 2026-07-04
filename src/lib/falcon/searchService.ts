@@ -106,8 +106,7 @@ export async function searchDuckDuckGo(
   signal?: AbortSignal,
 ): Promise<SearchResult[]> {
   try {
-    const ddgUrl =
-      `${DDG_BASE}?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
+    const ddgUrl = `${DDG_BASE}?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
     const resp = await fetch(proxyUrl(ddgUrl), { signal });
     if (!resp.ok) return [];
 
@@ -202,8 +201,7 @@ export async function searchWikipedia(
 ): Promise<SearchResult[]> {
   try {
     // Step 1 — opensearch (CORS-safe with origin=*)
-    const openUrl =
-      `${WIKI_SEARCH}?action=opensearch&search=${encodeURIComponent(query)}&limit=3&namespace=0&format=json&origin=*`;
+    const openUrl = `${WIKI_SEARCH}?action=opensearch&search=${encodeURIComponent(query)}&limit=3&namespace=0&format=json&origin=*`;
     const openResp = await fetch(openUrl, { signal });
     if (!openResp.ok) return [];
 
@@ -216,8 +214,7 @@ export async function searchWikipedia(
     // Step 2 — fetch extract for the top result
     const topTitle = titles[0];
     try {
-      const extractUrl =
-        `${WIKI_SEARCH}?action=query&titles=${encodeURIComponent(topTitle)}&prop=extracts&exintro=true&exchars=500&format=json&origin=*`;
+      const extractUrl = `${WIKI_SEARCH}?action=query&titles=${encodeURIComponent(topTitle)}&prop=extracts&exintro=true&exchars=500&format=json&origin=*`;
       const extResp = await fetch(extractUrl, { signal });
       if (extResp.ok) {
         const extData = await extResp.json();
@@ -347,8 +344,7 @@ export async function searchWeb(
 
     // Strategy 3 — Brave Search (only if API key env var is configured)
     const braveKey =
-      typeof import.meta !== "undefined" &&
-      (import.meta as any).env?.VITE_BRAVE_SEARCH_KEY;
+      typeof import.meta !== "undefined" && (import.meta as any).env?.VITE_BRAVE_SEARCH_KEY;
     if (braveKey) {
       tasks.push(
         fetch(
@@ -435,7 +431,9 @@ export function formatSearchResultsForLLM(response: SearchResponse): string {
 
   const lines: string[] = [];
   lines.push(`SEARCH RESULTS FOR: "${response.query}"`);
-  lines.push(`Searched at: ${response.searchedAt.toISOString().replace("T", " ").slice(0, 19)} UTC`);
+  lines.push(
+    `Searched at: ${response.searchedAt.toISOString().replace("T", " ").slice(0, 19)} UTC`,
+  );
 
   if (response.directAnswer) {
     lines.push("");
@@ -464,4 +462,3 @@ export function formatSearchResultsForLLM(response: SearchResponse): string {
 
   return lines.join("n").trim();
 }
-

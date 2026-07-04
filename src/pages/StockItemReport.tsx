@@ -53,7 +53,7 @@ const StockItemReport: React.FC = () => {
     const selectedItem = items.find((item) => item.id === selectedItemId);
     if (!selectedItem) return { rows: [], summary: {} };
 
-    let result = [];
+    const result = [];
     let runningBalance = selectedItem.openingQty || 0;
     let totalInwardQty = 0;
     let totalOutwardQty = 0;

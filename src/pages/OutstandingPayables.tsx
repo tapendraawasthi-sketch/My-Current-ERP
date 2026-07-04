@@ -3,8 +3,7 @@ import React, { useState, useMemo } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { getDB } from "../lib/db";
 import { useStore } from "../store/useStore";
-import { Download, FileSpreadsheet, RefreshCw, TrendingUp,  Printer,
-} from "lucide-react";
+import { Download, FileSpreadsheet, RefreshCw, TrendingUp, Printer } from "lucide-react";
 import ReportDateRangePicker, { DateRange } from "../components/ui/ReportDateRangePicker";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
@@ -95,11 +94,15 @@ const OutstandingPayables: React.FC = () => {
   };
 
   const getAgingStyle = (daysOverdue: number) => {
-    if (daysOverdue <= 0)  return { background: "transparent", color: "#374151", borderLeft: "3px solid transparent" };
-    if (daysOverdue <= 30) return { background: "#fffbeb",    color: "#92400e",  borderLeft: "3px solid #f59e0b" };
-    if (daysOverdue <= 60) return { background: "#fff7ed",    color: "#9a3412",  borderLeft: "3px solid #f97316" };
-    if (daysOverdue <= 90) return { background: "#fef2f2",    color: "#991b1b",  borderLeft: "3px solid #ef4444" };
-    return                        { background: "#fef2f2",    color: "#7f1d1d",  borderLeft: "3px solid #991b1b" };
+    if (daysOverdue <= 0)
+      return { background: "transparent", color: "#374151", borderLeft: "3px solid transparent" };
+    if (daysOverdue <= 30)
+      return { background: "#fffbeb", color: "#92400e", borderLeft: "3px solid #f59e0b" };
+    if (daysOverdue <= 60)
+      return { background: "#fff7ed", color: "#9a3412", borderLeft: "3px solid #f97316" };
+    if (daysOverdue <= 90)
+      return { background: "#fef2f2", color: "#991b1b", borderLeft: "3px solid #ef4444" };
+    return { background: "#fef2f2", color: "#7f1d1d", borderLeft: "3px solid #991b1b" };
   };
 
   // Fix: use getDB() — default import, NOT named { db }
@@ -216,15 +219,18 @@ const OutstandingPayables: React.FC = () => {
   }, [payableRows, statusFilter, partyFilter, searchTerm, showOverdueOnly]);
 
   // ── Totals ────────────────────────────────────────────────────────────────
-  
+
   const groupedByParty = useMemo(() => {
-    const map = new Map<string, {
-      partyName: string;
-      partyId: string;
-      invoices: PayableRow[];
-      total: number;
-      avgDaysOverdue: number;
-    }>();
+    const map = new Map<
+      string,
+      {
+        partyName: string;
+        partyId: string;
+        invoices: PayableRow[];
+        total: number;
+        avgDaysOverdue: number;
+      }
+    >();
 
     for (const inv of filteredRows) {
       const key = inv.partyId || inv.partyName || "unknown";
@@ -234,17 +240,24 @@ const OutstandingPayables: React.FC = () => {
       const days = inv.daysOverdue;
 
       if (!map.has(key)) {
-        map.set(key, { partyName: inv.partyName || "—", partyId: inv.partyId || "", invoices: [], total: 0, avgDaysOverdue: 0 });
+        map.set(key, {
+          partyName: inv.partyName || "—",
+          partyId: inv.partyId || "",
+          invoices: [],
+          total: 0,
+          avgDaysOverdue: 0,
+        });
       }
       const group = map.get(key)!;
       group.invoices.push(inv);
       group.total += outstanding;
-      group.avgDaysOverdue = (group.avgDaysOverdue * (group.invoices.length - 1) + days) / group.invoices.length;
+      group.avgDaysOverdue =
+        (group.avgDaysOverdue * (group.invoices.length - 1) + days) / group.invoices.length;
     }
 
     return Array.from(map.values()).sort((a, b) => b.total - a.total);
   }, [filteredRows]);
-  
+
   const totals = useMemo(
     () => ({
       original: filteredRows.reduce((s, r) => s + r.originalAmount, 0),
@@ -375,7 +388,6 @@ const OutstandingPayables: React.FC = () => {
 
       {/* Filters */}
       <div className="bg-white border border-gray-200 rounded-lg p-3 mb-4 shadow-sm flex flex-wrap items-center gap-2">
-
         <button
           type="button"
           onClick={() => setShowOverdueOnly((v) => !v)}
@@ -397,12 +409,23 @@ const OutstandingPayables: React.FC = () => {
         >
           {showOverdueOnly ? "⚠ Overdue Only" : "All Invoices"}
           {showOverdueOnly && (
-            <span style={{ background: "#dc2626", color: "#ffffff", borderRadius: 9999, padding: "0 5px", fontSize: 9 }}>
-              {groupedByParty.reduce((s, g) => s + g.invoices.filter(inv => inv.daysOverdue > 0).length, 0)}
+            <span
+              style={{
+                background: "#dc2626",
+                color: "#ffffff",
+                borderRadius: 9999,
+                padding: "0 5px",
+                fontSize: 9,
+              }}
+            >
+              {groupedByParty.reduce(
+                (s, g) => s + g.invoices.filter((inv) => inv.daysOverdue > 0).length,
+                0,
+              )}
             </span>
           )}
         </button>
-  
+
         <div className="mb-2">
           <ReportDateRangePicker
             value={dateRange}
@@ -462,27 +485,44 @@ const OutstandingPayables: React.FC = () => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="report-table" style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
+            <table
+              className="report-table"
+              style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}
+            >
               <colgroup>
-                <col style={{ width: "5%" }} />   {/* expand */}
-                <col style={{ width: "30%" }} />  {/* name */}
-                <col style={{ width: "12%" }} />  {/* invoice no */}
-                <col style={{ width: "10%" }} />  {/* date */}
-                <col style={{ width: "10%" }} />  {/* due date */}
-                <col style={{ width: "10%" }} />  {/* days overdue */}
-                <col style={{ width: "13%" }} />  {/* outstanding */}
-                <col style={{ width: "10%" }} />  {/* action */}
+                <col style={{ width: "5%" }} /> {/* expand */}
+                <col style={{ width: "30%" }} /> {/* name */}
+                <col style={{ width: "12%" }} /> {/* invoice no */}
+                <col style={{ width: "10%" }} /> {/* date */}
+                <col style={{ width: "10%" }} /> {/* due date */}
+                <col style={{ width: "10%" }} /> {/* days overdue */}
+                <col style={{ width: "13%" }} /> {/* outstanding */}
+                <col style={{ width: "10%" }} /> {/* action */}
               </colgroup>
               <thead>
                 <tr style={{ background: "#f5f6fa", borderBottom: "2px solid #e5e7eb" }}>
                   <th style={{ width: 36 }} />
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Party / Invoice</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Inv. No.</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Date</th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Due Date</th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Days Overdue</th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Outstanding</th>
-                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Action</th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Party / Invoice
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Inv. No.
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Date
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Due Date
+                  </th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Days Overdue
+                  </th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Outstanding
+                  </th>
+                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -511,77 +551,158 @@ const OutstandingPayables: React.FC = () => {
                           onClick={() => toggleParty(groupKey)}
                         >
                           <td style={{ padding: "8px 10px", textAlign: "center" }}>
-                            <span style={{ fontSize: 11, color: "#6b7280", transform: isExpanded ? "rotate(90deg)" : "none", display: "inline-block", transition: "transform 150ms ease" }}>
+                            <span
+                              style={{
+                                fontSize: 11,
+                                color: "#6b7280",
+                                transform: isExpanded ? "rotate(90deg)" : "none",
+                                display: "inline-block",
+                                transition: "transform 150ms ease",
+                              }}
+                            >
                               ▶
                             </span>
                           </td>
-                          <td style={{ padding: "8px 10px", fontWeight: 700, fontSize: 12, color: "#111827" }}>
+                          <td
+                            style={{
+                              padding: "8px 10px",
+                              fontWeight: 700,
+                              fontSize: 12,
+                              color: "#111827",
+                            }}
+                          >
                             {group.partyName}
-                            <span style={{ fontSize: 10, color: "#9ca3af", fontWeight: 400, marginLeft: 6 }}>
+                            <span
+                              style={{
+                                fontSize: 10,
+                                color: "#9ca3af",
+                                fontWeight: 400,
+                                marginLeft: 6,
+                              }}
+                            >
                               {group.invoices.length} bill{group.invoices.length > 1 ? "s" : ""}
                             </span>
                           </td>
-                          <td colSpan={3} style={{ padding: "8px 10px", fontSize: 10, color: "#9ca3af" }}>
+                          <td
+                            colSpan={3}
+                            style={{ padding: "8px 10px", fontSize: 10, color: "#9ca3af" }}
+                          >
                             Avg overdue: {Math.round(group.avgDaysOverdue)} days
                           </td>
-                          <td className="px-3 py-2.5 text-right font-mono font-bold" style={{ color: avgStyle.color }}>
+                          <td
+                            className="px-3 py-2.5 text-right font-mono font-bold"
+                            style={{ color: avgStyle.color }}
+                          >
                             Rs. {group.total.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                           </td>
                           <td colSpan={2} />
                         </tr>
 
                         {/* Nested invoice rows — shown when expanded */}
-                        {isExpanded && group.invoices.map((inv) => {
-                          const outstanding = inv.outstandingAmount;
-                          const daysOverdue = inv.daysOverdue;
-                          const rowStyle = getAgingStyle(daysOverdue);
+                        {isExpanded &&
+                          group.invoices.map((inv) => {
+                            const outstanding = inv.outstandingAmount;
+                            const daysOverdue = inv.daysOverdue;
+                            const rowStyle = getAgingStyle(daysOverdue);
 
-                          return (
-                            <tr key={inv.invoiceId} style={{ background: rowStyle.background, borderBottom: "1px solid #f3f4f6", borderLeft: rowStyle.borderLeft }}>
-                              <td />
-                              <td style={{ padding: "7px 10px 7px 24px", fontSize: 11, color: "#374151" }}>
-                                {inv.invoiceNo || inv.invoiceId?.slice(0, 8)}
-                              </td>
-                              <td style={{ padding: "7px 10px", fontSize: 11, fontFamily: "monospace", color: "#374151" }}>
-                                {inv.invoiceNo}
-                              </td>
-                              <td style={{ padding: "7px 10px", fontSize: 11, color: "#6b7280" }}>{inv.dateNepali || inv.invoiceDate}</td>
-                              <td style={{ padding: "7px 10px", fontSize: 11, color: daysOverdue > 0 ? "#dc2626" : "#6b7280" }}>
-                                {inv.dueDate || "—"}
-                              </td>
-                              <td className="px-3 py-2.5 text-right font-mono text-[11px]" style={{ color: daysOverdue > 0 ? "#991b1b" : "#059669" }}>
-                                {daysOverdue > 0 ? (
-                                  <span style={{
-                                    display: "inline-flex",
-                                    alignItems: "center",
-                                    background: "#fee2e2",
-                                    color: "#991b1b",
-                                    borderRadius: 9999,
-                                    padding: "1px 8px",
-                                    fontSize: 10,
-                                    fontWeight: 700,
-                                  }}>
-                                    {daysOverdue}d
-                                  </span>
-                                ) : (
-                                  <span style={{ color: "#059669", fontSize: 10, fontWeight: 600 }}>Not due</span>
-                                )}
-                              </td>
-                              <td className="px-3 py-2.5 text-right font-mono text-[11px]" style={{ fontWeight: 600, color: rowStyle.color }}>
-                                {outstanding.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-                              </td>
-                              <td style={{ padding: "7px 10px", textAlign: "center" }}>
-                                <button
-                                  type="button"
-                                  onClick={() => setSelectedRow(inv)}
-                                  style={{ height: 22, padding: "0 8px", fontSize: 10, fontWeight: 600, background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 3, color: "#1e40af", cursor: "pointer" }}
+                            return (
+                              <tr
+                                key={inv.invoiceId}
+                                style={{
+                                  background: rowStyle.background,
+                                  borderBottom: "1px solid #f3f4f6",
+                                  borderLeft: rowStyle.borderLeft,
+                                }}
+                              >
+                                <td />
+                                <td
+                                  style={{
+                                    padding: "7px 10px 7px 24px",
+                                    fontSize: 11,
+                                    color: "#374151",
+                                  }}
                                 >
-                                  View
-                                </button>
-                              </td>
-                            </tr>
-                          );
-                        })}
+                                  {inv.invoiceNo || inv.invoiceId?.slice(0, 8)}
+                                </td>
+                                <td
+                                  style={{
+                                    padding: "7px 10px",
+                                    fontSize: 11,
+                                    fontFamily: "monospace",
+                                    color: "#374151",
+                                  }}
+                                >
+                                  {inv.invoiceNo}
+                                </td>
+                                <td style={{ padding: "7px 10px", fontSize: 11, color: "#6b7280" }}>
+                                  {inv.dateNepali || inv.invoiceDate}
+                                </td>
+                                <td
+                                  style={{
+                                    padding: "7px 10px",
+                                    fontSize: 11,
+                                    color: daysOverdue > 0 ? "#dc2626" : "#6b7280",
+                                  }}
+                                >
+                                  {inv.dueDate || "—"}
+                                </td>
+                                <td
+                                  className="px-3 py-2.5 text-right font-mono text-[11px]"
+                                  style={{ color: daysOverdue > 0 ? "#991b1b" : "#059669" }}
+                                >
+                                  {daysOverdue > 0 ? (
+                                    <span
+                                      style={{
+                                        display: "inline-flex",
+                                        alignItems: "center",
+                                        background: "#fee2e2",
+                                        color: "#991b1b",
+                                        borderRadius: 9999,
+                                        padding: "1px 8px",
+                                        fontSize: 10,
+                                        fontWeight: 700,
+                                      }}
+                                    >
+                                      {daysOverdue}d
+                                    </span>
+                                  ) : (
+                                    <span
+                                      style={{ color: "#059669", fontSize: 10, fontWeight: 600 }}
+                                    >
+                                      Not due
+                                    </span>
+                                  )}
+                                </td>
+                                <td
+                                  className="px-3 py-2.5 text-right font-mono text-[11px]"
+                                  style={{ fontWeight: 600, color: rowStyle.color }}
+                                >
+                                  {outstanding.toLocaleString("en-IN", {
+                                    minimumFractionDigits: 2,
+                                  })}
+                                </td>
+                                <td style={{ padding: "7px 10px", textAlign: "center" }}>
+                                  <button
+                                    type="button"
+                                    onClick={() => setSelectedRow(inv)}
+                                    style={{
+                                      height: 22,
+                                      padding: "0 8px",
+                                      fontSize: 10,
+                                      fontWeight: 600,
+                                      background: "#eff6ff",
+                                      border: "1px solid #bfdbfe",
+                                      borderRadius: 3,
+                                      color: "#1e40af",
+                                      cursor: "pointer",
+                                    }}
+                                  >
+                                    View
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })}
                       </React.Fragment>
                     );
                   })

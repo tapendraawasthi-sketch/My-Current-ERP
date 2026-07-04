@@ -13,29 +13,39 @@ const BsDateCell: React.FC<BsDateCellProps> = ({ date, dateNepali, compact, show
   if (!date) return <span className="text-gray-400">—</span>;
 
   // Normalize to Date object
-  const dateObj: Date = typeof date === "string"
-    ? new Date(date.includes("T") ? date : date + "T00:00:00")
-    : date;
+  const dateObj: Date =
+    typeof date === "string" ? new Date(date.includes("T") ? date : date + "T00:00:00") : date;
 
   if (isNaN(dateObj.getTime())) return <span className="text-gray-400">—</span>;
 
-  const dateStrForFormat = typeof date === "string" ? date.split("T")[0] : dateObj.toISOString().split("T")[0];
+  const dateStrForFormat =
+    typeof date === "string" ? date.split("T")[0] : dateObj.toISOString().split("T")[0];
 
-  const bsDate = dateNepali || (() => {
-    try { return formatADToBS(dateStrForFormat); } catch { return dateStrForFormat; }
-  })();
+  const bsDate =
+    dateNepali ||
+    (() => {
+      try {
+        return formatADToBS(dateStrForFormat);
+      } catch {
+        return dateStrForFormat;
+      }
+    })();
 
   // Parse AD date for the secondary display
   const adDisplay = (() => {
     try {
-      return dateObj.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
-    } catch { return dateStrForFormat; }
+      return dateObj.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      });
+    } catch {
+      return dateStrForFormat;
+    }
   })();
 
   if (compact) {
-    return (
-      <span style={{ fontSize: 12, fontFamily: "inherit" }}>{bsDate}</span>
-    );
+    return <span style={{ fontSize: 12, fontFamily: "inherit" }}>{bsDate}</span>;
   }
 
   return (

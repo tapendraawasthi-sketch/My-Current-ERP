@@ -78,40 +78,82 @@ function addBuckets(a: AgingBucket, b: Partial<AgingBucket>): AgingBucket {
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 
-
-const AgingBar: React.FC<{ totals: AgingBucket, direction: "receivable" | "payable" }> = ({ totals, direction }) => {
+const AgingBar: React.FC<{ totals: AgingBucket; direction: "receivable" | "payable" }> = ({
+  totals,
+  direction,
+}) => {
   const segments = [
-    { label: "Current",   value: totals.current, color: "#059669", pct: (totals.current / totals.total) * 100 },
-    { label: "1-30 days", value: totals.days1to30,   color: "#d97706", pct: (totals.days1to30   / totals.total) * 100 },
-    { label: "31-60 days",value: totals.days31to60,  color: "#f59e0b", pct: (totals.days31to60  / totals.total) * 100 },
-    { label: "61-90 days",value: totals.days61to90,  color: "#ef4444", pct: (totals.days61to90  / totals.total) * 100 },
-    { label: "90+ days",  value: totals.over90, color: "#991b1b", pct: (totals.over90 / totals.total) * 100 },
+    {
+      label: "Current",
+      value: totals.current,
+      color: "#059669",
+      pct: (totals.current / totals.total) * 100,
+    },
+    {
+      label: "1-30 days",
+      value: totals.days1to30,
+      color: "#d97706",
+      pct: (totals.days1to30 / totals.total) * 100,
+    },
+    {
+      label: "31-60 days",
+      value: totals.days31to60,
+      color: "#f59e0b",
+      pct: (totals.days31to60 / totals.total) * 100,
+    },
+    {
+      label: "61-90 days",
+      value: totals.days61to90,
+      color: "#ef4444",
+      pct: (totals.days61to90 / totals.total) * 100,
+    },
+    {
+      label: "90+ days",
+      value: totals.over90,
+      color: "#991b1b",
+      pct: (totals.over90 / totals.total) * 100,
+    },
   ];
 
   const fmt = (n: number) =>
-    "Rs. " + (n || 0).toLocaleString("en-IN", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    "Rs. " +
+    (n || 0).toLocaleString("en-IN", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
   return (
-    <div style={{
-      background: "#ffffff",
-      border: "1px solid #e5e7eb",
-      borderRadius: 6,
-      padding: "14px 16px",
-      marginBottom: 12,
-    }}>
-      <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#6b7280", marginBottom: 10 }}>
-        {direction === "receivable" ? "Receivables" : "Payables"} Aging Overview — Total: {fmt(totals.total)}
+    <div
+      style={{
+        background: "#ffffff",
+        border: "1px solid #e5e7eb",
+        borderRadius: 6,
+        padding: "14px 16px",
+        marginBottom: 12,
+      }}
+    >
+      <div
+        style={{
+          fontSize: 10,
+          fontWeight: 700,
+          textTransform: "uppercase",
+          letterSpacing: "0.06em",
+          color: "#6b7280",
+          marginBottom: 10,
+        }}
+      >
+        {direction === "receivable" ? "Receivables" : "Payables"} Aging Overview — Total:{" "}
+        {fmt(totals.total)}
       </div>
 
       {/* Stacked bar */}
-      <div style={{
-        display: "flex",
-        height: 12,
-        borderRadius: 6,
-        overflow: "hidden",
-        background: "#f3f4f6",
-        marginBottom: 10,
-      }}>
+      <div
+        style={{
+          display: "flex",
+          height: 12,
+          borderRadius: 6,
+          overflow: "hidden",
+          background: "#f3f4f6",
+          marginBottom: 10,
+        }}
+      >
         {segments.map((seg) =>
           seg.pct > 0 ? (
             <div
@@ -124,7 +166,7 @@ const AgingBar: React.FC<{ totals: AgingBucket, direction: "receivable" | "payab
                 minWidth: seg.pct > 0 ? 2 : 0,
               }}
             />
-          ) : null
+          ) : null,
         )}
       </div>
 
@@ -132,14 +174,21 @@ const AgingBar: React.FC<{ totals: AgingBucket, direction: "receivable" | "payab
       <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
         {segments.map((seg) => (
           <div key={seg.label} style={{ display: "flex", alignItems: "center", gap: 5 }}>
-            <div style={{ width: 8, height: 8, borderRadius: 2, background: seg.color, flexShrink: 0 }} />
+            <div
+              style={{ width: 8, height: 8, borderRadius: 2, background: seg.color, flexShrink: 0 }}
+            />
             <span style={{ fontSize: 10, color: "#374151" }}>{seg.label}</span>
-            <span style={{ fontSize: 10, fontFamily: "'Courier New', monospace", fontWeight: 700, color: seg.color }}>
+            <span
+              style={{
+                fontSize: 10,
+                fontFamily: "'Courier New', monospace",
+                fontWeight: 700,
+                color: seg.color,
+              }}
+            >
               {fmt(seg.value)}
             </span>
-            <span style={{ fontSize: 9, color: "#9ca3af" }}>
-              ({(seg.pct || 0).toFixed(0)}%)
-            </span>
+            <span style={{ fontSize: 9, color: "#9ca3af" }}>({(seg.pct || 0).toFixed(0)}%)</span>
           </div>
         ))}
       </div>
@@ -159,7 +208,12 @@ const AgingReport: React.FC = () => {
   const asOfDate = dateRange.toDate;
   const [direction, setDirection] = useState<"receivable" | "payable">("receivable");
   const [searchTerm, setSearchTerm] = useState("");
-  const [reminderParty, setReminderParty] = useState<{ name: string; phone?: string; outstanding: number; days: number } | null>(null);
+  const [reminderParty, setReminderParty] = useState<{
+    name: string;
+    phone?: string;
+    outstanding: number;
+    days: number;
+  } | null>(null);
 
   // Fix: use getDB() — default import, not named { db }
   const db = getDB();
@@ -220,7 +274,8 @@ const AgingReport: React.FC = () => {
       const existing = partyMap.get(partyId) ?? {
         partyId,
         partyName,
-        partyPan, partyPhone,
+        partyPan,
+        partyPhone,
         buckets: emptyBucket(),
       };
 
@@ -475,7 +530,14 @@ const AgingReport: React.FC = () => {
                       </td>
                       <td style={{ padding: "7px 10px", fontSize: 11, color: "#374151" }}>
                         {row.partyPhone ? (
-                          <a href={`tel:${row.partyPhone}`} style={{ color: "#1557b0", textDecoration: "none", fontFamily: "monospace" }}>
+                          <a
+                            href={`tel:${row.partyPhone}`}
+                            style={{
+                              color: "#1557b0",
+                              textDecoration: "none",
+                              fontFamily: "monospace",
+                            }}
+                          >
                             {row.partyPhone}
                           </a>
                         ) : (
@@ -485,12 +547,21 @@ const AgingReport: React.FC = () => {
                       <td style={{ padding: "7px 10px", textAlign: "center" }}>
                         <button
                           type="button"
-                          onClick={() => setReminderParty({
-                            name: row.partyName || "Party",
-                            phone: row.partyPhone,
-                            outstanding: row.buckets.total,
-                            days: row.buckets.over90 > 0 ? 90 : row.buckets.days61to90 > 0 ? 60 : row.buckets.days31to60 > 0 ? 30 : 0,
-                          })}
+                          onClick={() =>
+                            setReminderParty({
+                              name: row.partyName || "Party",
+                              phone: row.partyPhone,
+                              outstanding: row.buckets.total,
+                              days:
+                                row.buckets.over90 > 0
+                                  ? 90
+                                  : row.buckets.days61to90 > 0
+                                    ? 60
+                                    : row.buckets.days31to60 > 0
+                                      ? 30
+                                      : 0,
+                            })
+                          }
                           style={{
                             height: 24,
                             padding: "0 8px",

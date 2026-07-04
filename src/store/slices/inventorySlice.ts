@@ -198,7 +198,9 @@ export const createInventorySlice: StateCreator<AppState, [], [], any> = (set, g
             return isOutwardType(t) ? sum - Math.abs(q) : sum + Math.abs(q);
           }, 0);
         if (onHand < qty) {
-          throw new Error(`Insufficient stock for ${line.itemName || line.itemId} in ${fromWh?.name || "source warehouse"}`);
+          throw new Error(
+            `Insufficient stock for ${line.itemName || line.itemId} in ${fromWh?.name || "source warehouse"}`,
+          );
         }
       }
 
@@ -260,7 +262,8 @@ export const createInventorySlice: StateCreator<AppState, [], [], any> = (set, g
     const db = getDB();
     const entry = await db.productions.get(id);
     if (!entry) throw new Error("Production entry not found");
-    if (entry.status === "POSTED" && entry.postedAt) throw new Error("Production entry is already posted");
+    if (entry.status === "POSTED" && entry.postedAt)
+      throw new Error("Production entry is already posted");
 
     const { warehouses, inventoryConfig } = get() as any;
     const wh = getDefaultWarehouse(warehouses);
@@ -328,7 +331,8 @@ export const createInventorySlice: StateCreator<AppState, [], [], any> = (set, g
     const db = getDB();
     const entry = await db.unassembles.get(id);
     if (!entry) throw new Error("Unassemble entry not found");
-    if (entry.status === "POSTED" && entry.postedAt) throw new Error("Unassemble entry is already posted");
+    if (entry.status === "POSTED" && entry.postedAt)
+      throw new Error("Unassemble entry is already posted");
 
     const { warehouses, inventoryConfig } = get() as any;
     const wh = getDefaultWarehouse(warehouses);
@@ -396,7 +400,8 @@ export const createInventorySlice: StateCreator<AppState, [], [], any> = (set, g
     const db = getDB();
     const entry = await db.materialIssued.get(id);
     if (!entry) throw new Error("Material issued entry not found");
-    if (entry.status === "POSTED" && entry.postedAt) throw new Error("Material issued entry is already posted");
+    if (entry.status === "POSTED" && entry.postedAt)
+      throw new Error("Material issued entry is already posted");
 
     const { warehouses, inventoryConfig } = get() as any;
     const wh = getDefaultWarehouse(warehouses);
@@ -441,7 +446,8 @@ export const createInventorySlice: StateCreator<AppState, [], [], any> = (set, g
     const db = getDB();
     const entry = await db.materialReceived.get(id);
     if (!entry) throw new Error("Material received entry not found");
-    if (entry.status === "POSTED" && entry.postedAt) throw new Error("Material received entry is already posted");
+    if (entry.status === "POSTED" && entry.postedAt)
+      throw new Error("Material received entry is already posted");
 
     const { warehouses } = get() as any;
     const wh = getDefaultWarehouse(warehouses);
@@ -484,7 +490,8 @@ export const createInventorySlice: StateCreator<AppState, [], [], any> = (set, g
     const db = getDB();
     const entry = (await db.physicalStocks.get(id)) as any;
     if (!entry) throw new Error("Physical stock entry not found");
-    if (entry.status === "POSTED" && entry.postedAt) throw new Error("Physical stock entry is already posted");
+    if (entry.status === "POSTED" && entry.postedAt)
+      throw new Error("Physical stock entry is already posted");
 
     const { warehouses } = get() as any;
     const wh = getDefaultWarehouse(warehouses);

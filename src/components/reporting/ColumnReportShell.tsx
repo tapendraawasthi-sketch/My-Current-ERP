@@ -285,14 +285,25 @@ const ColumnReportShell: React.FC<ColumnReportShellProps> = ({
       {/* Report body */}
       <div className={`flex-1 overflow-auto column-report-body ${rowHeightClass}`}>
         {reportMeta && (
-          <div className="print-only hidden" style={{ marginBottom: 12, borderBottom: "2px solid #111827", paddingBottom: 10 }}>
-            <div style={{ fontSize: 16, fontWeight: 700, textAlign: "center" }}>{reportMeta.companyName}</div>
-            <div style={{ fontSize: 13, fontWeight: 600, textAlign: "center", marginTop: 2 }}>General Ledger</div>
+          <div
+            className="print-only hidden"
+            style={{ marginBottom: 12, borderBottom: "2px solid #111827", paddingBottom: 10 }}
+          >
+            <div style={{ fontSize: 16, fontWeight: 700, textAlign: "center" }}>
+              {reportMeta.companyName}
+            </div>
+            <div style={{ fontSize: 13, fontWeight: 600, textAlign: "center", marginTop: 2 }}>
+              General Ledger
+            </div>
             <div style={{ fontSize: 11, textAlign: "center", color: "#6b7280", marginTop: 2 }}>
               Account: {reportMeta.accountName} ({reportMeta.accountCode})
             </div>
-            <div style={{ fontSize: 11, textAlign: "center", color: "#6b7280" }}>Period: {reportMeta.period}</div>
-            <div style={{ fontSize: 10, textAlign: "center", color: "#9ca3af", marginTop: 2 }}>PAN: {reportMeta.pan}</div>
+            <div style={{ fontSize: 11, textAlign: "center", color: "#6b7280" }}>
+              Period: {reportMeta.period}
+            </div>
+            <div style={{ fontSize: 10, textAlign: "center", color: "#9ca3af", marginTop: 2 }}>
+              PAN: {reportMeta.pan}
+            </div>
           </div>
         )}
         {children}

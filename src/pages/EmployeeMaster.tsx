@@ -518,9 +518,7 @@ export default function EmployeeMaster() {
                   type="checkbox"
                   id="bonusEligible"
                   checked={formData.bonusEligible !== false}
-                  onChange={(e) =>
-                    setFormData({ ...formData, bonusEligible: e.target.checked })
-                  }
+                  onChange={(e) => setFormData({ ...formData, bonusEligible: e.target.checked })}
                   className="rounded border-[#9DC07A] text-[#1557b0] focus:ring-[#1557b0]"
                 />
                 <label htmlFor="bonusEligible" className="text-[12px] font-medium text-[#000000]">

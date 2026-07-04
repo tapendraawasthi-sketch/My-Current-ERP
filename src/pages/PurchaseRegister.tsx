@@ -15,7 +15,6 @@ import NepaliDatePicker from "../components/ui/NepaliDatePicker";
 import { useStore } from "../store/useStore";
 import Pagination from "../components/ui/Pagination";
 
-
 interface ColumnDef {
   key: string;
   label: string;
@@ -24,19 +23,19 @@ interface ColumnDef {
 }
 
 const ALL_COLUMNS: ColumnDef[] = [
-  { key: "invoiceNo",  label: "Invoice No",  defaultVisible: true,  width: "10%" },
-  { key: "date",       label: "Date",        defaultVisible: true,  width: "9%"  },
-  { key: "party",      label: "Party",       defaultVisible: true,  width: "22%" },
-  { key: "pan",        label: "PAN",         defaultVisible: false, width: "8%"  },
-  { key: "subTotal",   label: "Sub Total",   defaultVisible: true,  width: "10%" },
-  { key: "discount",   label: "Discount",    defaultVisible: true,  width: "9%" },
-  { key: "taxable",    label: "Taxable",     defaultVisible: true,  width: "10%" },
-  { key: "exempt",     label: "Exempt",      defaultVisible: true,  width: "10%" },
-  { key: "vat",        label: "VAT 13%",     defaultVisible: true,  width: "10%" },
-  { key: "grandTotal", label: "Grand Total", defaultVisible: true,  width: "11%" },
-  { key: "tds",        label: "TDS",         defaultVisible: false, width: "8%"  },
-  { key: "netAmount",  label: "Net Amount",  defaultVisible: true,  width: "11%" },
-  { key: "status",     label: "Status",      defaultVisible: true,  width: "8%"  },
+  { key: "invoiceNo", label: "Invoice No", defaultVisible: true, width: "10%" },
+  { key: "date", label: "Date", defaultVisible: true, width: "9%" },
+  { key: "party", label: "Party", defaultVisible: true, width: "22%" },
+  { key: "pan", label: "PAN", defaultVisible: false, width: "8%" },
+  { key: "subTotal", label: "Sub Total", defaultVisible: true, width: "10%" },
+  { key: "discount", label: "Discount", defaultVisible: true, width: "9%" },
+  { key: "taxable", label: "Taxable", defaultVisible: true, width: "10%" },
+  { key: "exempt", label: "Exempt", defaultVisible: true, width: "10%" },
+  { key: "vat", label: "VAT 13%", defaultVisible: true, width: "10%" },
+  { key: "grandTotal", label: "Grand Total", defaultVisible: true, width: "11%" },
+  { key: "tds", label: "TDS", defaultVisible: false, width: "8%" },
+  { key: "netAmount", label: "Net Amount", defaultVisible: true, width: "11%" },
+  { key: "status", label: "Status", defaultVisible: true, width: "8%" },
 ];
 
 const PurchaseRegister: React.FC = () => {
@@ -48,7 +47,6 @@ const PurchaseRegister: React.FC = () => {
     );
   }, [invoices]);
 
-  
   const STORAGE_KEY = "sutra_purchase_register_cols";
   const [visibleCols, setVisibleCols] = useState<Set<string>>(() => {
     try {
@@ -287,7 +285,6 @@ const PurchaseRegister: React.FC = () => {
           <p className="text-[11px] text-[#000000] mt-0.5">All purchase invoices and returns</p>
         </div>
         <div className="flex items-center gap-2">
-
           <div style={{ position: "relative" }}>
             <Button
               size="sm"
@@ -300,19 +297,30 @@ const PurchaseRegister: React.FC = () => {
               ⊞ Columns
             </Button>
             {showColPicker && (
-              <div style={{
-                position: "absolute",
-                top: "calc(100% + 4px)",
-                right: 0,
-                background: "#ffffff",
-                border: "1px solid #e5e7eb",
-                borderRadius: 6,
-                boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
-                zIndex: 50,
-                minWidth: 200,
-                padding: 8,
-              }}>
-                <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "#6b7280", padding: "2px 6px 6px" }}>
+              <div
+                style={{
+                  position: "absolute",
+                  top: "calc(100% + 4px)",
+                  right: 0,
+                  background: "#ffffff",
+                  border: "1px solid #e5e7eb",
+                  borderRadius: 6,
+                  boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
+                  zIndex: 50,
+                  minWidth: 200,
+                  padding: 8,
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.06em",
+                    color: "#6b7280",
+                    padding: "2px 6px 6px",
+                  }}
+                >
                   Show / Hide Columns
                 </div>
                 {ALL_COLUMNS.map((col) => (
@@ -329,8 +337,12 @@ const PurchaseRegister: React.FC = () => {
                       color: "#374151",
                       userSelect: "none",
                     }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLLabelElement).style.background = "#f5f6fa"; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLLabelElement).style.background = "transparent"; }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLLabelElement).style.background = "#f5f6fa";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLLabelElement).style.background = "transparent";
+                    }}
                   >
                     <input
                       type="checkbox"
@@ -436,15 +448,21 @@ const PurchaseRegister: React.FC = () => {
         </div>
       </Card>
 
-      
       {/* Table */}
-      <div style={{
-        flex: 1,
-        overflowY: "auto",
-        maxHeight: "calc(100vh - 200px)",
-        position: "relative",
-      }} className="bg-white border rounded-lg overflow-hidden animate-fadeIn" style={{ borderColor: "var(--border)" }}>
-        <table className="data-table" style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
+      <div
+        style={{
+          flex: 1,
+          overflowY: "auto",
+          maxHeight: "calc(100vh - 200px)",
+          position: "relative",
+        }}
+        className="bg-white border rounded-lg overflow-hidden animate-fadeIn"
+        style={{ borderColor: "var(--border)" }}
+      >
+        <table
+          className="data-table"
+          style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}
+        >
           <colgroup>
             {ALL_COLUMNS.filter((c) => visibleCols.has(c.key)).map((c) => (
               <col key={c.key} style={{ width: c.width }} />
@@ -453,7 +471,24 @@ const PurchaseRegister: React.FC = () => {
           <thead style={{ position: "sticky", top: 0, zIndex: 5 }}>
             <tr className="bg-[#eef1f8] border-b-2 border-[#c5cad8]">
               {ALL_COLUMNS.filter((c) => visibleCols.has(c.key)).map((col) => (
-                <th key={col.key} className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em]" style={{ textAlign: ["subTotal", "discount", "taxable", "exempt", "vat", "grandTotal", "tds", "netAmount"].includes(col.key) ? "right" : "left" }}>
+                <th
+                  key={col.key}
+                  className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em]"
+                  style={{
+                    textAlign: [
+                      "subTotal",
+                      "discount",
+                      "taxable",
+                      "exempt",
+                      "vat",
+                      "grandTotal",
+                      "tds",
+                      "netAmount",
+                    ].includes(col.key)
+                      ? "right"
+                      : "left",
+                  }}
+                >
                   {col.label}
                 </th>
               ))}
@@ -462,7 +497,10 @@ const PurchaseRegister: React.FC = () => {
           <tbody>
             {paginatedInvoices.length === 0 ? (
               <tr>
-                <td colSpan={ALL_COLUMNS.filter(c => visibleCols.has(c.key)).length} className="text-center py-8 text-[#000000]">
+                <td
+                  colSpan={ALL_COLUMNS.filter((c) => visibleCols.has(c.key)).length}
+                  className="text-center py-8 text-[#000000]"
+                >
                   No invoices found
                 </td>
               </tr>
@@ -471,54 +509,287 @@ const PurchaseRegister: React.FC = () => {
                 <tr key={invoice.id} className="hover:bg-[#e8eeff]">
                   {ALL_COLUMNS.filter((c) => visibleCols.has(c.key)).map((col) => {
                     switch (col.key) {
-                      case "invoiceNo": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-[#000000] font-bold">{invoice.invoiceNo}</td>;
-                      case "date": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-[#000000]">{new Date(invoice.date).toLocaleDateString()}</td>;
-                      case "party": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-[#000000]">{invoice.partyName}</td>;
-                      case "pan": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-[#000000] font-mono">{invoice.partyPan || "-"}</td>;
-                      case "subTotal": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(invoice.subTotal)}</td>;
-                      case "discount": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(invoice.discountAmount || 0)}</td>;
-                      case "taxable": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(invoice.taxableAmount)}</td>;
-                      case "exempt": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(invoice.exemptAmount || 0)}</td>;
-                      case "vat": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-right font-mono amt amt-dr">Rs. {formatNumber(invoice.vatAmount)}</td>;
-                      case "grandTotal": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-right font-mono amt font-bold">Rs. {formatNumber(invoice.grandTotal)}</td>;
-                      case "tds": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-right font-mono amt">Rs. {formatNumber(invoice.tdsAmount || 0)}</td>;
-                      case "netAmount": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-right font-mono amt font-bold" style={{ color: "var(--primary)" }}>Rs. {formatNumber(invoice.grandTotal - (invoice.tdsAmount || 0))}</td>;
-                      case "status": return <td key={col.key} className="px-3 py-[7px] text-[12px] text-center">{getPaymentStatusBadge(invoice.paymentStatus)}</td>;
-                      default: return <td key={col.key} />;
+                      case "invoiceNo":
+                        return (
+                          <td
+                            key={col.key}
+                            className="px-3 py-[7px] text-[12px] text-[#000000] font-bold"
+                          >
+                            {invoice.invoiceNo}
+                          </td>
+                        );
+                      case "date":
+                        return (
+                          <td key={col.key} className="px-3 py-[7px] text-[12px] text-[#000000]">
+                            {new Date(invoice.date).toLocaleDateString()}
+                          </td>
+                        );
+                      case "party":
+                        return (
+                          <td key={col.key} className="px-3 py-[7px] text-[12px] text-[#000000]">
+                            {invoice.partyName}
+                          </td>
+                        );
+                      case "pan":
+                        return (
+                          <td
+                            key={col.key}
+                            className="px-3 py-[7px] text-[12px] text-[#000000] font-mono"
+                          >
+                            {invoice.partyPan || "-"}
+                          </td>
+                        );
+                      case "subTotal":
+                        return (
+                          <td
+                            key={col.key}
+                            className="px-3 py-[7px] text-[12px] text-right font-mono amt"
+                          >
+                            Rs. {formatNumber(invoice.subTotal)}
+                          </td>
+                        );
+                      case "discount":
+                        return (
+                          <td
+                            key={col.key}
+                            className="px-3 py-[7px] text-[12px] text-right font-mono amt"
+                          >
+                            Rs. {formatNumber(invoice.discountAmount || 0)}
+                          </td>
+                        );
+                      case "taxable":
+                        return (
+                          <td
+                            key={col.key}
+                            className="px-3 py-[7px] text-[12px] text-right font-mono amt"
+                          >
+                            Rs. {formatNumber(invoice.taxableAmount)}
+                          </td>
+                        );
+                      case "exempt":
+                        return (
+                          <td
+                            key={col.key}
+                            className="px-3 py-[7px] text-[12px] text-right font-mono amt"
+                          >
+                            Rs. {formatNumber(invoice.exemptAmount || 0)}
+                          </td>
+                        );
+                      case "vat":
+                        return (
+                          <td
+                            key={col.key}
+                            className="px-3 py-[7px] text-[12px] text-right font-mono amt amt-dr"
+                          >
+                            Rs. {formatNumber(invoice.vatAmount)}
+                          </td>
+                        );
+                      case "grandTotal":
+                        return (
+                          <td
+                            key={col.key}
+                            className="px-3 py-[7px] text-[12px] text-right font-mono amt font-bold"
+                          >
+                            Rs. {formatNumber(invoice.grandTotal)}
+                          </td>
+                        );
+                      case "tds":
+                        return (
+                          <td
+                            key={col.key}
+                            className="px-3 py-[7px] text-[12px] text-right font-mono amt"
+                          >
+                            Rs. {formatNumber(invoice.tdsAmount || 0)}
+                          </td>
+                        );
+                      case "netAmount":
+                        return (
+                          <td
+                            key={col.key}
+                            className="px-3 py-[7px] text-[12px] text-right font-mono amt font-bold"
+                            style={{ color: "var(--primary)" }}
+                          >
+                            Rs. {formatNumber(invoice.grandTotal - (invoice.tdsAmount || 0))}
+                          </td>
+                        );
+                      case "status":
+                        return (
+                          <td key={col.key} className="px-3 py-[7px] text-[12px] text-center">
+                            {getPaymentStatusBadge(invoice.paymentStatus)}
+                          </td>
+                        );
+                      default:
+                        return <td key={col.key} />;
                     }
                   })}
                 </tr>
               ))
             )}
           </tbody>
-          <tfoot style={{ position: "sticky", bottom: 0, zIndex: 5, boxShadow: "0 -2px 8px rgba(0,0,0,0.08)" }}>
+          <tfoot
+            style={{
+              position: "sticky",
+              bottom: 0,
+              zIndex: 5,
+              boxShadow: "0 -2px 8px rgba(0,0,0,0.08)",
+            }}
+          >
             <tr style={{ background: "#1e2433", color: "#ffffff" }}>
               {ALL_COLUMNS.filter((c) => visibleCols.has(c.key)).map((col, idx) => {
                 if (idx === 0) {
-                  const span = ALL_COLUMNS.filter((c) => visibleCols.has(c.key)).findIndex(c => c.key === "subTotal");
+                  const span = ALL_COLUMNS.filter((c) => visibleCols.has(c.key)).findIndex(
+                    (c) => c.key === "subTotal",
+                  );
                   if (span > 0) {
                     return (
-                      <td key="grand-total-label" colSpan={span} style={{ padding: "10px 12px", fontSize: 12, fontWeight: 700, color: "#ffffff" }}>
+                      <td
+                        key="grand-total-label"
+                        colSpan={span}
+                        style={{
+                          padding: "10px 12px",
+                          fontSize: 12,
+                          fontWeight: 700,
+                          color: "#ffffff",
+                        }}
+                      >
                         Grand Total ({filteredInvoices.length} records)
                       </td>
                     );
                   }
                 }
-                
-                const span = ALL_COLUMNS.filter((c) => visibleCols.has(c.key)).findIndex(c => c.key === "subTotal");
+
+                const span = ALL_COLUMNS.filter((c) => visibleCols.has(c.key)).findIndex(
+                  (c) => c.key === "subTotal",
+                );
                 if (idx > 0 && idx < span) return null;
 
                 switch (col.key) {
-                  case "subTotal": return <td key={col.key} className="num-cell-bold" style={{ padding: "10px 12px", color: "#ffffff", fontFamily: "'Courier New', monospace", textAlign: "right" }}>Rs. {formatNumber(totals.subTotal)}</td>;
-                  case "discount": return <td key={col.key} className="num-cell-bold" style={{ padding: "10px 12px", color: "#ffffff", fontFamily: "'Courier New', monospace", textAlign: "right" }}>Rs. {formatNumber(totals.discount)}</td>;
-                  case "taxable": return <td key={col.key} className="num-cell-bold" style={{ padding: "10px 12px", color: "#86efac", fontFamily: "'Courier New', monospace", textAlign: "right" }}>Rs. {formatNumber(totals.taxable)}</td>;
-                  case "exempt": return <td key={col.key} className="num-cell-bold" style={{ padding: "10px 12px", color: "#ffffff", fontFamily: "'Courier New', monospace", textAlign: "right" }}>Rs. {formatNumber(totals.exempt)}</td>;
-                  case "vat": return <td key={col.key} className="num-cell-bold" style={{ padding: "10px 12px", color: "#93c5fd", fontFamily: "'Courier New', monospace", textAlign: "right" }}>Rs. {formatNumber(totals.vat)}</td>;
-                  case "grandTotal": return <td key={col.key} className="num-cell-bold" style={{ padding: "10px 12px", color: "#fde68a", fontFamily: "'Courier New', monospace", fontSize: 13, textAlign: "right" }}>Rs. {formatNumber(totals.grandTotal)}</td>;
-                  case "tds": return <td key={col.key} className="num-cell-bold" style={{ padding: "10px 12px", color: "#ffffff", fontFamily: "'Courier New', monospace", textAlign: "right" }}>Rs. {formatNumber(totals.tds)}</td>;
-                  case "netAmount": return <td key={col.key} className="num-cell-bold" style={{ padding: "10px 12px", color: "#fde68a", fontFamily: "'Courier New', monospace", fontSize: 13, textAlign: "right" }}>Rs. {formatNumber(totals.netAmount)}</td>;
-                  case "status": return <td key={col.key} style={{ padding: "10px 12px" }}></td>;
-                  default: return <td key={col.key} style={{ padding: "10px 12px" }}></td>;
+                  case "subTotal":
+                    return (
+                      <td
+                        key={col.key}
+                        className="num-cell-bold"
+                        style={{
+                          padding: "10px 12px",
+                          color: "#ffffff",
+                          fontFamily: "'Courier New', monospace",
+                          textAlign: "right",
+                        }}
+                      >
+                        Rs. {formatNumber(totals.subTotal)}
+                      </td>
+                    );
+                  case "discount":
+                    return (
+                      <td
+                        key={col.key}
+                        className="num-cell-bold"
+                        style={{
+                          padding: "10px 12px",
+                          color: "#ffffff",
+                          fontFamily: "'Courier New', monospace",
+                          textAlign: "right",
+                        }}
+                      >
+                        Rs. {formatNumber(totals.discount)}
+                      </td>
+                    );
+                  case "taxable":
+                    return (
+                      <td
+                        key={col.key}
+                        className="num-cell-bold"
+                        style={{
+                          padding: "10px 12px",
+                          color: "#86efac",
+                          fontFamily: "'Courier New', monospace",
+                          textAlign: "right",
+                        }}
+                      >
+                        Rs. {formatNumber(totals.taxable)}
+                      </td>
+                    );
+                  case "exempt":
+                    return (
+                      <td
+                        key={col.key}
+                        className="num-cell-bold"
+                        style={{
+                          padding: "10px 12px",
+                          color: "#ffffff",
+                          fontFamily: "'Courier New', monospace",
+                          textAlign: "right",
+                        }}
+                      >
+                        Rs. {formatNumber(totals.exempt)}
+                      </td>
+                    );
+                  case "vat":
+                    return (
+                      <td
+                        key={col.key}
+                        className="num-cell-bold"
+                        style={{
+                          padding: "10px 12px",
+                          color: "#93c5fd",
+                          fontFamily: "'Courier New', monospace",
+                          textAlign: "right",
+                        }}
+                      >
+                        Rs. {formatNumber(totals.vat)}
+                      </td>
+                    );
+                  case "grandTotal":
+                    return (
+                      <td
+                        key={col.key}
+                        className="num-cell-bold"
+                        style={{
+                          padding: "10px 12px",
+                          color: "#fde68a",
+                          fontFamily: "'Courier New', monospace",
+                          fontSize: 13,
+                          textAlign: "right",
+                        }}
+                      >
+                        Rs. {formatNumber(totals.grandTotal)}
+                      </td>
+                    );
+                  case "tds":
+                    return (
+                      <td
+                        key={col.key}
+                        className="num-cell-bold"
+                        style={{
+                          padding: "10px 12px",
+                          color: "#ffffff",
+                          fontFamily: "'Courier New', monospace",
+                          textAlign: "right",
+                        }}
+                      >
+                        Rs. {formatNumber(totals.tds)}
+                      </td>
+                    );
+                  case "netAmount":
+                    return (
+                      <td
+                        key={col.key}
+                        className="num-cell-bold"
+                        style={{
+                          padding: "10px 12px",
+                          color: "#fde68a",
+                          fontFamily: "'Courier New', monospace",
+                          fontSize: 13,
+                          textAlign: "right",
+                        }}
+                      >
+                        Rs. {formatNumber(totals.netAmount)}
+                      </td>
+                    );
+                  case "status":
+                    return <td key={col.key} style={{ padding: "10px 12px" }}></td>;
+                  default:
+                    return <td key={col.key} style={{ padding: "10px 12px" }}></td>;
                 }
               })}
             </tr>

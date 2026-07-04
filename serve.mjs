@@ -12,8 +12,8 @@ const DIST_DIR = join(__dirname, "dist");
 if (!existsSync(DIST_DIR)) {
   console.error(
     `\n❌ FATAL: dist/ folder not found at ${DIST_DIR}\n` +
-    `   Run "npm run build" before starting the server.\n` +
-    `   On Render: ensure buildCommand runs before startCommand.\n`
+      `   Run "npm run build" before starting the server.\n` +
+      `   On Render: ensure buildCommand runs before startCommand.\n`,
   );
   process.exit(1);
 }
@@ -23,7 +23,7 @@ const INDEX_PATH = join(DIST_DIR, "index.html");
 if (!existsSync(INDEX_PATH)) {
   console.error(
     `\n❌ FATAL: dist/index.html not found.\n` +
-    `   The build may have failed silently. Check build logs.\n`
+      `   The build may have failed silently. Check build logs.\n`,
   );
   process.exit(1);
 }
@@ -31,30 +31,30 @@ if (!existsSync(INDEX_PATH)) {
 console.log(`✅ dist/ folder verified at ${DIST_DIR}`);
 
 const MIME_TYPES = {
-  ".js":    "application/javascript; charset=utf-8",
-  ".mjs":   "application/javascript; charset=utf-8",
-  ".css":   "text/css; charset=utf-8",
-  ".svg":   "image/svg+xml",
-  ".png":   "image/png",
-  ".jpg":   "image/jpeg",
-  ".jpeg":  "image/jpeg",
-  ".ico":   "image/x-icon",
-  ".woff":  "font/woff",
+  ".js": "application/javascript; charset=utf-8",
+  ".mjs": "application/javascript; charset=utf-8",
+  ".css": "text/css; charset=utf-8",
+  ".svg": "image/svg+xml",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".ico": "image/x-icon",
+  ".woff": "font/woff",
   ".woff2": "font/woff2",
-  ".ttf":   "font/ttf",
-  ".html":  "text/html; charset=utf-8",
-  ".json":  "application/json; charset=utf-8",
-  ".webp":  "image/webp",
-  ".gif":   "image/gif",
-  ".txt":   "text/plain; charset=utf-8",
-  ".xml":   "application/xml",
-  ".map":   "application/json",
+  ".ttf": "font/ttf",
+  ".html": "text/html; charset=utf-8",
+  ".json": "application/json; charset=utf-8",
+  ".webp": "image/webp",
+  ".gif": "image/gif",
+  ".txt": "text/plain; charset=utf-8",
+  ".xml": "application/xml",
+  ".map": "application/json",
 };
 
 const CACHE_CONTROL = {
-  assets: "public, max-age=31536000, immutable",  // 1 year for hashed assets
-  html:   "no-cache, no-store, must-revalidate",   // Always fresh for SPA shell
-  other:  "public, max-age=3600",                  // 1 hour for other static files
+  assets: "public, max-age=31536000, immutable", // 1 year for hashed assets
+  html: "no-cache, no-store, must-revalidate", // Always fresh for SPA shell
+  other: "public, max-age=3600", // 1 hour for other static files
 };
 
 async function serveRequest(req, res) {

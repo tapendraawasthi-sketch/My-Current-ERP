@@ -14,14 +14,7 @@ import {
 } from "./shared";
 
 type HelpModalKey =
-  | "docs"
-  | "updates"
-  | "troubleshoot"
-  | "settings"
-  | "addons"
-  | "support"
-  | "about"
-  | "knowledge";
+  "docs" | "updates" | "troubleshoot" | "settings" | "addons" | "support" | "about" | "knowledge";
 
 interface AdminLogRow {
   id: string;

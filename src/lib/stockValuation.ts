@@ -4,8 +4,8 @@ export type ValuationMethod = "fifo" | "lifo" | "weighted_average";
 
 export interface StockMovementRaw {
   id: string;
-  date: string;           // "YYYY-MM-DD"
-  type: string;           // e.g. "purchase", "sales", "opening", "stock-transfer-in", etc.
+  date: string; // "YYYY-MM-DD"
+  type: string; // e.g. "purchase", "sales", "opening", "stock-transfer-in", etc.
   itemId: string;
   itemName: string;
   warehouseId?: string;
@@ -44,7 +44,7 @@ export interface StockItemSummary {
   purchaseRate: number; // weighted avg purchase rate during period
   purchaseAmount: number;
   salesQty: number;
-  salesRate: number;   // avg sales rate during period
+  salesRate: number; // avg sales rate during period
   salesAmount: number;
   closingQty: number;
   closingRate: number;
@@ -102,14 +102,16 @@ export function computeStockSummary(
     const sorted = [...rawMovs].sort((a, b) => a.date.localeCompare(b.date));
 
     // Split into pre-period (opening) and in-period
-    const preMovs = fromDate ? sorted.filter(m => m.date < fromDate) : [];
-    const inPeriod = fromDate && toDate
-      ? sorted.filter(m => m.date >= fromDate && m.date <= toDate)
-      : sorted;
+    const preMovs = fromDate ? sorted.filter((m) => m.date < fromDate) : [];
+    const inPeriod =
+      fromDate && toDate ? sorted.filter((m) => m.date >= fromDate && m.date <= toDate) : sorted;
 
     // Compute opening stock using method
-    const { closingQty: openingQty, closingRate: openingRate, closingAmount: openingAmount } =
-      runValuation(preMovs, method);
+    const {
+      closingQty: openingQty,
+      closingRate: openingRate,
+      closingAmount: openingAmount,
+    } = runValuation(preMovs, method);
 
     // Run in-period
     const {
@@ -151,10 +153,7 @@ interface ValuationResult {
   closingAmount: number;
 }
 
-function runValuation(
-  movs: StockMovementRaw[],
-  method: ValuationMethod,
-): ValuationResult {
+function runValuation(movs: StockMovementRaw[], method: ValuationMethod): ValuationResult {
   const layers: ValuationLayer[] = [];
   let waQty = 0;
   let waAmount = 0;
@@ -219,8 +218,10 @@ function runValuationDetailed(
     layers.push({ qty: openingQty, rate: openingRate });
   }
 
-  let purchaseQty = 0, purchaseAmount = 0;
-  let salesQty = 0, salesAmount = 0;
+  let purchaseQty = 0,
+    purchaseAmount = 0;
+  let salesQty = 0,
+    salesAmount = 0;
   let balQty = openingQty;
   let balAmount = openingAmount;
 
@@ -246,8 +247,12 @@ function runValuationDetailed(
         entry = {
           date: m.date,
           particulars: m.type.replace(/-/g, " "),
-          inQty: qty, inRate: rate, inAmount: qty * rate,
-          outQty: 0, outRate: 0, outAmount: 0,
+          inQty: qty,
+          inRate: rate,
+          inAmount: qty * rate,
+          outQty: 0,
+          outRate: 0,
+          outAmount: 0,
           balanceQty: waQty,
           balanceRate: avgRate,
           balanceAmount: waAmount,
@@ -259,8 +264,12 @@ function runValuationDetailed(
         entry = {
           date: m.date,
           particulars: m.type.replace(/-/g, " "),
-          inQty: qty, inRate: rate, inAmount: qty * rate,
-          outQty: 0, outRate: 0, outAmount: 0,
+          inQty: qty,
+          inRate: rate,
+          inAmount: qty * rate,
+          outQty: 0,
+          outRate: 0,
+          outAmount: 0,
           balanceQty: balQty,
           balanceRate: bRate,
           balanceAmount: balAmount,
@@ -280,8 +289,12 @@ function runValuationDetailed(
         entry = {
           date: m.date,
           particulars: m.type.replace(/-/g, " "),
-          inQty: 0, inRate: 0, inAmount: 0,
-          outQty: qty, outRate: avgRate, outAmount: cost,
+          inQty: 0,
+          inRate: 0,
+          inAmount: 0,
+          outQty: qty,
+          outRate: avgRate,
+          outAmount: cost,
           balanceQty: waQty,
           balanceRate: waQty > 0 ? waAmount / waQty : 0,
           balanceAmount: waAmount,
@@ -296,8 +309,12 @@ function runValuationDetailed(
         entry = {
           date: m.date,
           particulars: m.type.replace(/-/g, " "),
-          inQty: 0, inRate: 0, inAmount: 0,
-          outQty: qty, outRate: qty > 0 ? costOfGoods / qty : 0, outAmount: costOfGoods,
+          inQty: 0,
+          inRate: 0,
+          inAmount: 0,
+          outQty: qty,
+          outRate: qty > 0 ? costOfGoods / qty : 0,
+          outAmount: costOfGoods,
           balanceQty: balQty,
           balanceRate: bRate,
           balanceAmount: balAmount,
@@ -311,9 +328,8 @@ function runValuationDetailed(
   }
 
   const closingQty = method === "weighted_average" ? waQty : layers.reduce((s, l) => s + l.qty, 0);
-  const closingAmount = method === "weighted_average"
-    ? waAmount
-    : layers.reduce((s, l) => s + l.qty * l.rate, 0);
+  const closingAmount =
+    method === "weighted_average" ? waAmount : layers.reduce((s, l) => s + l.qty * l.rate, 0);
   const closingRate = closingQty > 0 ? closingAmount / closingQty : 0;
 
   return {

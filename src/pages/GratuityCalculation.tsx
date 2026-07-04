@@ -32,8 +32,7 @@ const GratuityCalculation: React.FC = () => {
         const joinDate = e.dateOfJoining || e.joinDate;
         const years = yearsOfService(joinDate);
         const basic = Number(e.basicSalary || 0);
-        const gratuity =
-          years >= minYears ? computeGratuity(basic, Math.floor(years)) : 0;
+        const gratuity = years >= minYears ? computeGratuity(basic, Math.floor(years)) : 0;
         return {
           id: e.id,
           name: e.name,
@@ -46,10 +45,7 @@ const GratuityCalculation: React.FC = () => {
       });
   }, [employees, minYears]);
 
-  const totalGratuity = useMemo(
-    () => rows.reduce((sum, r) => sum + r.gratuity, 0),
-    [rows],
-  );
+  const totalGratuity = useMemo(() => rows.reduce((sum, r) => sum + r.gratuity, 0), [rows]);
 
   const postProvision = async () => {
     if (totalGratuity <= 0) {
@@ -58,16 +54,10 @@ const GratuityCalculation: React.FC = () => {
     }
 
     const expenseAcc = (accounts || []).find(
-      (a) =>
-        !a.isGroup &&
-        a.type === "expense" &&
-        a.name?.toLowerCase().includes("gratuity"),
+      (a) => !a.isGroup && a.type === "expense" && a.name?.toLowerCase().includes("gratuity"),
     );
     const payableAcc = (accounts || []).find(
-      (a) =>
-        !a.isGroup &&
-        a.type === "liability" &&
-        a.name?.toLowerCase().includes("gratuity"),
+      (a) => !a.isGroup && a.type === "liability" && a.name?.toLowerCase().includes("gratuity"),
     );
 
     if (!expenseAcc || !payableAcc) {

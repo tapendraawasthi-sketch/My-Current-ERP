@@ -36,12 +36,17 @@ const loadPLOptions = (): PLReportOptions | null => {
   try {
     const raw = localStorage.getItem(PL_STORAGE_KEY);
     return raw ? JSON.parse(raw) : null;
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 };
 
 const savePLOptions = (opts: PLReportOptions) => {
   try {
-    localStorage.setItem(PL_STORAGE_KEY, JSON.stringify({ ...opts, _savedAt: new Date().toISOString() }));
+    localStorage.setItem(
+      PL_STORAGE_KEY,
+      JSON.stringify({ ...opts, _savedAt: new Date().toISOString() }),
+    );
   } catch {}
 };
 
@@ -67,59 +72,66 @@ export default function ProfitLoss() {
   const reportRef = useRef<HTMLDivElement>(null);
 
   // ── Compute P&L ───────────────────────────────────────────────────────────
-  const runCompute = useCallback(async (opts: PLReportOptions, stockOverride?: number | null) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await computeProfitLoss(opts);
-      if (stockOverride !== null && stockOverride !== undefined) {
-        result.closingStock = stockOverride;
-        // Recompute derived figures
-        const tradingDebit = result.purchases.total + result.directExpenses.total + result.openingStock;
-        const tradingCredit = result.sales.total + result.directIncome.total + stockOverride;
-        result.grossProfit = tradingCredit - tradingDebit;
-        result.grossProfitLabel = result.grossProfit >= 0 ? "Gross Profit" : "Gross Loss";
-        const plDebitBase = result.grossProfit < 0 ? Math.abs(result.grossProfit) : 0;
-        const plCreditBase = result.grossProfit > 0 ? result.grossProfit : 0;
-        result.plDebitTotal = plDebitBase + result.indirectExpenses.total;
-        result.plCreditTotal = plCreditBase + result.indirectIncome.total;
-        result.netProfit = result.plCreditTotal - result.plDebitTotal;
-        result.netProfitLabel = result.netProfit >= 0 ? "Net Profit" : "Net Loss";
-      }
-      setPlData(result);
+  const runCompute = useCallback(
+    async (opts: PLReportOptions, stockOverride?: number | null) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const result = await computeProfitLoss(opts);
+        if (stockOverride !== null && stockOverride !== undefined) {
+          result.closingStock = stockOverride;
+          // Recompute derived figures
+          const tradingDebit =
+            result.purchases.total + result.directExpenses.total + result.openingStock;
+          const tradingCredit = result.sales.total + result.directIncome.total + stockOverride;
+          result.grossProfit = tradingCredit - tradingDebit;
+          result.grossProfitLabel = result.grossProfit >= 0 ? "Gross Profit" : "Gross Loss";
+          const plDebitBase = result.grossProfit < 0 ? Math.abs(result.grossProfit) : 0;
+          const plCreditBase = result.grossProfit > 0 ? result.grossProfit : 0;
+          result.plDebitTotal = plDebitBase + result.indirectExpenses.total;
+          result.plCreditTotal = plCreditBase + result.indirectIncome.total;
+          result.netProfit = result.plCreditTotal - result.plDebitTotal;
+          result.netProfitLabel = result.netProfit >= 0 ? "Net Profit" : "Net Loss";
+        }
+        setPlData(result);
 
-      if (opts.variant === "vertical") {
-        const prevFrom = shiftDateByYears(opts.fromDate, -1);
-        const prevTo = shiftDateByYears(opts.toDate, -1);
-        const nas = buildProfitLossData({
-          accounts: (accounts || []) as any[],
-          currentVouchers: (vouchers || []) as any[],
-          previousVouchers: (vouchers || []) as any[],
-          fromDate: opts.fromDate,
-          toDate: opts.toDate,
-          previousFromDate: prevFrom,
-          previousToDate: prevTo,
-          closingStockCurrent: result.closingStock,
-        });
-        setNasPlRows(profitLossDataToRows(nas));
-      } else {
-        setNasPlRows(null);
+        if (opts.variant === "vertical") {
+          const prevFrom = shiftDateByYears(opts.fromDate, -1);
+          const prevTo = shiftDateByYears(opts.toDate, -1);
+          const nas = buildProfitLossData({
+            accounts: (accounts || []) as any[],
+            currentVouchers: (vouchers || []) as any[],
+            previousVouchers: (vouchers || []) as any[],
+            fromDate: opts.fromDate,
+            toDate: opts.toDate,
+            previousFromDate: prevFrom,
+            previousToDate: prevTo,
+            closingStockCurrent: result.closingStock,
+          });
+          setNasPlRows(profitLossDataToRows(nas));
+        } else {
+          setNasPlRows(null);
+        }
+      } catch (err: any) {
+        setError(err?.message || "Failed to compute P&L. Check account groupings.");
+        toast.error("P&L computation failed.");
+      } finally {
+        setLoading(false);
       }
-    } catch (err: any) {
-      setError(err?.message || "Failed to compute P&L. Check account groupings.");
-      toast.error("P&L computation failed.");
-    } finally {
-      setLoading(false);
-    }
-  }, [accounts, vouchers]);
+    },
+    [accounts, vouchers],
+  );
 
-  const handleOptionsConfirm = useCallback((newOptions: PLReportOptions) => {
-    setOptions(newOptions);
-    savePLOptions(newOptions);
-    setShowOptionsDialog(false);
-    setDrillState({ level: 0 });
-    runCompute(newOptions, closingStockOverride);
-  }, [runCompute, closingStockOverride]);
+  const handleOptionsConfirm = useCallback(
+    (newOptions: PLReportOptions) => {
+      setOptions(newOptions);
+      savePLOptions(newOptions);
+      setShowOptionsDialog(false);
+      setDrillState({ level: 0 });
+      runCompute(newOptions, closingStockOverride);
+    },
+    [runCompute, closingStockOverride],
+  );
 
   useEffect(() => {
     if (storedPLOpts) {
@@ -131,11 +143,14 @@ export default function ProfitLoss() {
     if (plData) runCompute(options, closingStockOverride);
   }, [options, plData, runCompute, closingStockOverride]);
 
-  const handleClosingStockUpdate = useCallback((value: number) => {
-    setClosingStockOverride(value);
-    runCompute(options, value);
-    toast.success("Closing stock updated.");
-  }, [options, runCompute]);
+  const handleClosingStockUpdate = useCallback(
+    (value: number) => {
+      setClosingStockOverride(value);
+      runCompute(options, value);
+      toast.success("Closing stock updated.");
+    },
+    [options, runCompute],
+  );
 
   const handleDrillDown = useCallback((newState: PLDrillState) => {
     setDrillState(newState);
@@ -245,8 +260,8 @@ export default function ProfitLoss() {
             <p className="text-[13px] font-semibold text-red-700">Computation Error</p>
             <p className="text-[12px] text-red-600 mt-1">{error}</p>
             <p className="text-[11px] text-red-500 mt-1">
-              Tip: Ensure account groups are correctly classified (Sales, Purchase, Direct/Indirect Expenses/Income).
-              Go to Chart of Accounts and verify each account's group type.
+              Tip: Ensure account groups are correctly classified (Sales, Purchase, Direct/Indirect
+              Expenses/Income). Go to Chart of Accounts and verify each account's group type.
             </p>
           </div>
         </div>
@@ -282,7 +297,9 @@ export default function ProfitLoss() {
               pl={plData}
               options={options}
               onDrillDown={handleDrillDown}
-              onClosingStockUpdate={options.updateClosingStock ? handleClosingStockUpdate : undefined}
+              onClosingStockUpdate={
+                options.updateClosingStock ? handleClosingStockUpdate : undefined
+              }
             />
           )}
           {options.variant === "vertical" && nasPlRows ? (
@@ -296,25 +313,13 @@ export default function ProfitLoss() {
               )}
             />
           ) : options.variant === "vertical" ? (
-            <PLVertical
-              pl={plData}
-              options={options}
-              onDrillDown={handleDrillDown}
-            />
+            <PLVertical pl={plData} options={options} onDrillDown={handleDrillDown} />
           ) : null}
           {options.variant === "monthly-summary" && (
-            <PLMonthlySummary
-              pl={plData}
-              options={options}
-              onDrillDown={handleDrillDown}
-            />
+            <PLMonthlySummary pl={plData} options={options} onDrillDown={handleDrillDown} />
           )}
           {options.variant === "detailed-monthly" && (
-            <PLDetailedMonthly
-              pl={plData}
-              options={options}
-              onDrillDown={handleDrillDown}
-            />
+            <PLDetailedMonthly pl={plData} options={options} onDrillDown={handleDrillDown} />
           )}
         </div>
       )}

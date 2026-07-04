@@ -65,7 +65,10 @@ export default function NotesToAccounts() {
           </div>
         ) : (
           notes.map((note) => (
-            <div key={note.id} className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+            <div
+              key={note.id}
+              className="bg-white border border-gray-200 rounded-lg overflow-hidden"
+            >
               <div className="px-4 py-2.5 border-b border-gray-200 bg-[#f5f6fa]">
                 <h3 className="text-[12px] font-semibold text-gray-800">
                   Note {note.noteNumber}: {note.title}

@@ -560,35 +560,62 @@ LENGTH GUIDELINES:
 // ─────────────────────────────────────────────────────────────────────────────
 
 const ROUTE_CONTEXT_MAP: Record<string, string> = {
-  "sales": "The Sales Voucher page is for creating sales transactions. Key fields: date (in BS), party (customer), voucher type, line items with qty/rate/discount/VAT, payment mode (cash/credit/bank), narration. After saving (F2), stock is reduced and accounts are posted: Dr Debtor/Cash, Cr Sales Account + VAT Payable.",
-  "billing": "The Billing / Sales Invoice page handles tax invoices, sales returns, and credit notes. It supports VAT calculation at 13%, bill sundry charges (freight, insurance), discount, and CBMS/IRD e-billing integration. The same form handles both sales and purchase returns via tab selection.",
-  "purchase": "The Purchase Invoice page records goods/services purchased. Key fields: supplier party, item lines with purchase rate, VAT category (input tax credit), TDS deduction option, and payment terms. Posting debits Purchases/Expenses + VAT Input and credits Supplier/Cash.",
-  "journal": "The Journal Entry page is for manual double-entry bookkeeping. Every line must have an account and either a debit or credit amount. Total debits MUST equal total credits before posting. Used for adjustments, provisions, accruals, depreciation, and year-end entries.",
-  "payment": "The Payment Voucher page records money paid out. Typically: Dr Supplier/Expense account, Cr Cash or Bank. Supports TDS withholding (auto-calculates TDS and creates TDS Payable entry). Can link to outstanding bills for bill-by-bill settlement.",
-  "receipt": "The Receipt Voucher page records money received. Typically: Dr Cash or Bank, Cr Customer account. Supports bill-by-bill allocation against outstanding invoices, PDC (post-dated cheque) entry, and advance receipt recording.",
-  "contra": "The Contra Voucher is exclusively for transfers between cash and bank accounts. Cash-to-Bank: Dr Bank, Cr Cash. Bank-to-Cash: Dr Cash, Cr Bank. Inter-bank transfer: Dr Bank A, Cr Bank B. No other account types should be used here.",
-  "accounts": "The Chart of Accounts page manages the account master. Uses BUSY-style 15 primary groups (Capital, Reserves, Loans-Liability, Current Liabilities, Provisions, Fixed Assets, Current Assets, Investments, Loans-Asset, Direct Income, Indirect Income, Direct Expenses, Indirect Expenses, Purchase Accounts, Suspense). You can add Groups and Ledger accounts.",
-  "parties": "The Parties Directory manages customers and suppliers. Key fields: name, type (Customer/Supplier/Both), PAN, VAT number, credit limit, credit days, opening balance. Each party is linked to a ledger account in Chart of Accounts.",
-  "items": "The Item/Stock Master manages all inventory items. Fields: name, code, unit, item group, sale rate, purchase rate, VAT category (taxable/exempt/zero-rated), HSN code, reorder level. Supports batch tracking and serial number tracking.",
-  "stock-book": "The Stock Book (Item Master) page. Same as items — manages product catalog and inventory items.",
-  "balance-sheet": "The Balance Sheet report shows the financial position as of a selected date. It groups accounts into Assets (Fixed + Current) and Liabilities + Equity (Capital + Reserves + Long-term + Current). The balance sheet must balance: Total Assets = Total Liabilities + Equity.",
-  "profit-loss": "The Profit & Loss Statement shows financial performance over a period. Structure: Revenue → Cost of Goods Sold → Gross Profit → Operating Expenses → Operating Profit → Other Income/Expense → Net Profit Before Tax → Tax → Net Profit After Tax.",
-  "trial-balance": "The Trial Balance lists all accounts with their debit and credit totals for a period. Total Debits MUST equal Total Credits. Used to verify no posting errors. Shows opening balance, period transactions, and closing balance for each account.",
-  "day-book": "The Day Book shows ALL transactions posted on a specific date or date range, regardless of type. It is the primary audit trail for daily operations. Includes voucher number, type, party, narration, debit, credit.",
-  "ledger-report": "The General Ledger (Account Ledger) shows all transactions for a specific account over a period, with running balance. Shows opening balance, each transaction with date/voucher/narration, and closing balance.",
-  "ledger": "Same as ledger-report — the General Ledger account statement view.",
-  "outstanding-receivables": "Shows amounts owed TO the company by customers. Filtered by party, date range. Shows original invoice amount, amount received, and outstanding balance. Links to aging buckets.",
-  "outstanding-payables": "Shows amounts owed BY the company to suppliers. Similar to receivables but for purchase invoices.",
-  "aging-report": "The Aging Report buckets outstanding receivables or payables into age groups: Current, 0-30 days, 31-60 days, 61-90 days, 91-180 days, Over 180 days. Helps identify overdue collections and credit risk.",
-  "vat-reports": "VAT Reports include Sales Register (all taxable sales), Purchase Register (all taxable purchases), and VAT Payable summary. Compliant with Nepal VAT Act 2052. Used for monthly/trimesterly VAT return filing at IRD.",
-  "stock-summary": "The Stock Summary report shows current stock position for all items: opening stock + purchases − sales ± adjustments = closing stock. Can filter by item, group, warehouse, or date.",
-  "fiscal-year": "The Fiscal Year page manages accounting periods. In Nepal, FY runs from Baisakh 1 to Chaitra end (mid-April to mid-April). You can open a new FY, close the current FY (which locks it from changes), and view all FY history.",
-  "payroll": "The Payroll module manages employee salaries. Set up employees with salary structures (basic, allowances, deductions). Run payroll for a period, review payslips, post payroll journal entries automatically.",
-  "fixed-assets": "Fixed Assets tracks long-term assets (land, building, vehicles, equipment). Records purchase, calculates depreciation (SLM or WDV), posts depreciation journal entries, and tracks accumulated depreciation and net book value.",
-  "pos": "The POS (Point of Sale) Mode is for fast retail billing. Supports barcode scanning, cart management, multiple payment methods (cash/card/wallet/bank/credit), VAT receipts, hold bills, day open/close session, and session cash reconciliation.",
-  "audit-log": "The Audit Log records every significant user action in the system: voucher creation/editing/deletion, user login/logout, settings changes. It is append-only and tamper-evident for compliance purposes.",
-  "settings": "Company Settings stores the organization profile: legal name, address, PAN/VAT number, phone, email, logo, default currency, decimal places, voucher series prefixes, CBMS credentials, fiscal year start date.",
-  "users": "User Management handles multi-user access control. Create users with roles (Admin, Accountant, Cashier, Viewer). Each role has specific permissions on modules and actions.",
+  sales:
+    "The Sales Voucher page is for creating sales transactions. Key fields: date (in BS), party (customer), voucher type, line items with qty/rate/discount/VAT, payment mode (cash/credit/bank), narration. After saving (F2), stock is reduced and accounts are posted: Dr Debtor/Cash, Cr Sales Account + VAT Payable.",
+  billing:
+    "The Billing / Sales Invoice page handles tax invoices, sales returns, and credit notes. It supports VAT calculation at 13%, bill sundry charges (freight, insurance), discount, and CBMS/IRD e-billing integration. The same form handles both sales and purchase returns via tab selection.",
+  purchase:
+    "The Purchase Invoice page records goods/services purchased. Key fields: supplier party, item lines with purchase rate, VAT category (input tax credit), TDS deduction option, and payment terms. Posting debits Purchases/Expenses + VAT Input and credits Supplier/Cash.",
+  journal:
+    "The Journal Entry page is for manual double-entry bookkeeping. Every line must have an account and either a debit or credit amount. Total debits MUST equal total credits before posting. Used for adjustments, provisions, accruals, depreciation, and year-end entries.",
+  payment:
+    "The Payment Voucher page records money paid out. Typically: Dr Supplier/Expense account, Cr Cash or Bank. Supports TDS withholding (auto-calculates TDS and creates TDS Payable entry). Can link to outstanding bills for bill-by-bill settlement.",
+  receipt:
+    "The Receipt Voucher page records money received. Typically: Dr Cash or Bank, Cr Customer account. Supports bill-by-bill allocation against outstanding invoices, PDC (post-dated cheque) entry, and advance receipt recording.",
+  contra:
+    "The Contra Voucher is exclusively for transfers between cash and bank accounts. Cash-to-Bank: Dr Bank, Cr Cash. Bank-to-Cash: Dr Cash, Cr Bank. Inter-bank transfer: Dr Bank A, Cr Bank B. No other account types should be used here.",
+  accounts:
+    "The Chart of Accounts page manages the account master. Uses BUSY-style 15 primary groups (Capital, Reserves, Loans-Liability, Current Liabilities, Provisions, Fixed Assets, Current Assets, Investments, Loans-Asset, Direct Income, Indirect Income, Direct Expenses, Indirect Expenses, Purchase Accounts, Suspense). You can add Groups and Ledger accounts.",
+  parties:
+    "The Parties Directory manages customers and suppliers. Key fields: name, type (Customer/Supplier/Both), PAN, VAT number, credit limit, credit days, opening balance. Each party is linked to a ledger account in Chart of Accounts.",
+  items:
+    "The Item/Stock Master manages all inventory items. Fields: name, code, unit, item group, sale rate, purchase rate, VAT category (taxable/exempt/zero-rated), HSN code, reorder level. Supports batch tracking and serial number tracking.",
+  "stock-book":
+    "The Stock Book (Item Master) page. Same as items — manages product catalog and inventory items.",
+  "balance-sheet":
+    "The Balance Sheet report shows the financial position as of a selected date. It groups accounts into Assets (Fixed + Current) and Liabilities + Equity (Capital + Reserves + Long-term + Current). The balance sheet must balance: Total Assets = Total Liabilities + Equity.",
+  "profit-loss":
+    "The Profit & Loss Statement shows financial performance over a period. Structure: Revenue → Cost of Goods Sold → Gross Profit → Operating Expenses → Operating Profit → Other Income/Expense → Net Profit Before Tax → Tax → Net Profit After Tax.",
+  "trial-balance":
+    "The Trial Balance lists all accounts with their debit and credit totals for a period. Total Debits MUST equal Total Credits. Used to verify no posting errors. Shows opening balance, period transactions, and closing balance for each account.",
+  "day-book":
+    "The Day Book shows ALL transactions posted on a specific date or date range, regardless of type. It is the primary audit trail for daily operations. Includes voucher number, type, party, narration, debit, credit.",
+  "ledger-report":
+    "The General Ledger (Account Ledger) shows all transactions for a specific account over a period, with running balance. Shows opening balance, each transaction with date/voucher/narration, and closing balance.",
+  ledger: "Same as ledger-report — the General Ledger account statement view.",
+  "outstanding-receivables":
+    "Shows amounts owed TO the company by customers. Filtered by party, date range. Shows original invoice amount, amount received, and outstanding balance. Links to aging buckets.",
+  "outstanding-payables":
+    "Shows amounts owed BY the company to suppliers. Similar to receivables but for purchase invoices.",
+  "aging-report":
+    "The Aging Report buckets outstanding receivables or payables into age groups: Current, 0-30 days, 31-60 days, 61-90 days, 91-180 days, Over 180 days. Helps identify overdue collections and credit risk.",
+  "vat-reports":
+    "VAT Reports include Sales Register (all taxable sales), Purchase Register (all taxable purchases), and VAT Payable summary. Compliant with Nepal VAT Act 2052. Used for monthly/trimesterly VAT return filing at IRD.",
+  "stock-summary":
+    "The Stock Summary report shows current stock position for all items: opening stock + purchases − sales ± adjustments = closing stock. Can filter by item, group, warehouse, or date.",
+  "fiscal-year":
+    "The Fiscal Year page manages accounting periods. In Nepal, FY runs from Baisakh 1 to Chaitra end (mid-April to mid-April). You can open a new FY, close the current FY (which locks it from changes), and view all FY history.",
+  payroll:
+    "The Payroll module manages employee salaries. Set up employees with salary structures (basic, allowances, deductions). Run payroll for a period, review payslips, post payroll journal entries automatically.",
+  "fixed-assets":
+    "Fixed Assets tracks long-term assets (land, building, vehicles, equipment). Records purchase, calculates depreciation (SLM or WDV), posts depreciation journal entries, and tracks accumulated depreciation and net book value.",
+  pos: "The POS (Point of Sale) Mode is for fast retail billing. Supports barcode scanning, cart management, multiple payment methods (cash/card/wallet/bank/credit), VAT receipts, hold bills, day open/close session, and session cash reconciliation.",
+  "audit-log":
+    "The Audit Log records every significant user action in the system: voucher creation/editing/deletion, user login/logout, settings changes. It is append-only and tamper-evident for compliance purposes.",
+  settings:
+    "Company Settings stores the organization profile: legal name, address, PAN/VAT number, phone, email, logo, default currency, decimal places, voucher series prefixes, CBMS credentials, fiscal year start date.",
+  users:
+    "User Management handles multi-user access control. Create users with roles (Admin, Accountant, Cashier, Viewer). Each role has specific permissions on modules and actions.",
 };
 
 function getRouteContext(route: string): string {
@@ -634,9 +661,7 @@ export function buildMasterSystemPrompt(options: MasterPromptOptions = {}): stri
     parts.push(`════════════════════════════════════════════════════════`);
     parts.push(`CURRENT PAGE CONTEXT`);
     parts.push(`════════════════════════════════════════════════════════`);
-    parts.push(
-      `The user is currently viewing the "${currentRoute}" page in Sutra ERP.`,
-    );
+    parts.push(`The user is currently viewing the "${currentRoute}" page in Sutra ERP.`);
     parts.push(`Page-specific context: ${routeCtx}`);
     parts.push(
       `When answering questions, assume they relate to this page unless clearly otherwise.`,
@@ -677,13 +702,13 @@ export function buildMasterSystemPrompt(options: MasterPromptOptions = {}): stri
     parts.push(`════════════════════════════════════════════════════════`);
     parts.push(`LIVE WEB SEARCH RESULTS — USE THIS FRESH DATA FIRST`);
     parts.push(`════════════════════════════════════════════════════════`);
-    parts.push(
-      `The following results were retrieved from a live web search moments ago.`,
-    );
+    parts.push(`The following results were retrieved from a live web search moments ago.`);
     parts.push(
       `Treat this as current, authoritative information. Prioritize it over your training data for facts, figures, and recent events.`,
     );
-    parts.push(`When using this data, introduce it with: "According to recent search results:" or "Current information shows:"`);
+    parts.push(
+      `When using this data, introduce it with: "According to recent search results:" or "Current information shows:"`,
+    );
     parts.push("");
     parts.push(webSearchResults.trim());
     parts.push("");
@@ -730,18 +755,10 @@ export function buildMasterSystemPrompt(options: MasterPromptOptions = {}): stri
   parts.push(
     `You are now ready to answer the user's question. Use ALL of the above knowledge, context, and formatting rules.`,
   );
-  parts.push(
-    `Think carefully through the reasoning phases. Be helpful, accurate, and clear.`,
-  );
-  parts.push(
-    `For ERP questions: be precise about navigation and field names.`,
-  );
-  parts.push(
-    `For accounting/tax questions: be accurate about Nepal-specific rules and rates.`,
-  );
-  parts.push(
-    `For general questions: be knowledgeable, engaging, and complete.`,
-  );
+  parts.push(`Think carefully through the reasoning phases. Be helpful, accurate, and clear.`);
+  parts.push(`For ERP questions: be precise about navigation and field names.`);
+  parts.push(`For accounting/tax questions: be accurate about Nepal-specific rules and rates.`);
+  parts.push(`For general questions: be knowledgeable, engaging, and complete.`);
   parts.push(
     `If web search results were provided above, make sure to incorporate that fresh data into your answer.`,
   );
@@ -751,4 +768,3 @@ export function buildMasterSystemPrompt(options: MasterPromptOptions = {}): stri
 
   return parts.join("\\n");
 }
-

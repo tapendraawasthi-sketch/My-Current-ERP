@@ -505,8 +505,8 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
               Math.abs(balance) < 0.01
                 ? PaymentStatus.PAID
                 : newPaid > 0
-                ? PaymentStatus.PARTIAL
-                : PaymentStatus.UNPAID;
+                  ? PaymentStatus.PARTIAL
+                  : PaymentStatus.UNPAID;
             await updateInvoice(prevInvId, { paidAmount: newPaid, paymentStatus: newStatus });
           }
         }

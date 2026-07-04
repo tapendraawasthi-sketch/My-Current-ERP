@@ -55,7 +55,11 @@ const AccountTreeRenderer: React.FC<AccountTreeRendererProps> = ({
   const maxDepth = depthLevels[depth];
   const useAccordion = expandedIds !== undefined;
 
-  const renderNode = (node: ReportNode, currentIndent: number, depthLevel: number): React.ReactNode => {
+  const renderNode = (
+    node: ReportNode,
+    currentIndent: number,
+    depthLevel: number,
+  ): React.ReactNode => {
     const hasChildren = node.isGroup || (node.children && node.children.length > 0);
     const isExpanded = useAccordion ? expandedIds!.has(node.id) : depthLevel < maxDepth;
     const isLedger = node.level === "ledger";
@@ -108,16 +112,12 @@ const AccountTreeRenderer: React.FC<AccountTreeRendererProps> = ({
               <span className={node.level === "group" ? "font-semibold text-gray-800" : ""}>
                 {node.name}
               </span>
-              {node.code && (
-                <span className="text-gray-400 text-[10px] ml-1">{node.code}</span>
-              )}
+              {node.code && <span className="text-gray-400 text-[10px] ml-1">{node.code}</span>}
             </div>
           </td>
 
           {/* Balance cell */}
-          <td className={amtCls}>
-            {displayBalance !== 0 ? fmt(displayBalance) : "—"}
-          </td>
+          <td className={amtCls}>{displayBalance !== 0 ? fmt(displayBalance) : "—"}</td>
 
           {/* Alt (prev year) column */}
           {showAltColumn && (
@@ -130,9 +130,7 @@ const AccountTreeRenderer: React.FC<AccountTreeRendererProps> = ({
         {/* Children */}
         {isExpanded &&
           hasChildren &&
-          node.children.map((child) =>
-            renderNode(child, currentIndent + 1, depthLevel + 1),
-          )}
+          node.children.map((child) => renderNode(child, currentIndent + 1, depthLevel + 1))}
       </React.Fragment>
     );
   };
@@ -154,9 +152,7 @@ const AccountTreeRenderer: React.FC<AccountTreeRendererProps> = ({
           </tr>
         </thead>
       )}
-      <tbody>
-        {nodes.map((node) => renderNode(node, indent, 0))}
-      </tbody>
+      <tbody>{nodes.map((node) => renderNode(node, indent, 0))}</tbody>
     </>
   );
 };

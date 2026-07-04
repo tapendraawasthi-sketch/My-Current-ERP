@@ -228,10 +228,7 @@ const PurchaseVoucher: React.FC = () => {
   const [tdsRate, setTdsRate] = useState(0);
   const [tdsResult, setTdsResult] = useState<TdsResult | null>(null);
 
-  const selectedParty = useMemo(
-    () => parties.find((p) => p.id === partyId),
-    [parties, partyId],
-  );
+  const selectedParty = useMemo(() => parties.find((p) => p.id === partyId), [parties, partyId]);
 
   const tdsSectionOptions = useMemo(() => {
     return getApplicableNepalTdsRates({
@@ -909,9 +906,11 @@ const PurchaseVoucher: React.FC = () => {
                           </div>
                         )}
 
-                        {currentTdsResult && !currentTdsResult.applicable && currentTdsResult.reason && (
-                          <p className="text-[10px] text-amber-700">{currentTdsResult.reason}</p>
-                        )}
+                        {currentTdsResult &&
+                          !currentTdsResult.applicable &&
+                          currentTdsResult.reason && (
+                            <p className="text-[10px] text-amber-700">{currentTdsResult.reason}</p>
+                          )}
 
                         {currentTdsResult && currentTdsResult.applicable && (
                           <div className="mt-2 bg-white border border-amber-200 rounded p-2 space-y-1 text-[11px]">

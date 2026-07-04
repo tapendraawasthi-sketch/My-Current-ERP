@@ -943,14 +943,14 @@ export interface DBFixedAsset {
   id: string;
   name: string;
   code?: string;
-  category: string;           // e.g. "Furniture", "Vehicle", "Computer", "Machinery"
-  purchaseDate: string;       // ISO date
-  purchaseCost: number;       // original cost
-  residualValue: number;      // scrap value at end of life
-  usefulLifeYears: number;    // expected useful life
+  category: string; // e.g. "Furniture", "Vehicle", "Computer", "Machinery"
+  purchaseDate: string; // ISO date
+  purchaseCost: number; // original cost
+  residualValue: number; // scrap value at end of life
+  usefulLifeYears: number; // expected useful life
   depreciationMethod: "slm" | "wdv"; // Straight Line or Written Down Value
-  wdvRate?: number;           // % rate for WDV (Nepal IT Act rates)
-  assetAccountId?: string;    // linked GL account
+  wdvRate?: number; // % rate for WDV (Nepal IT Act rates)
+  assetAccountId?: string; // linked GL account
   depreciationAccountId?: string;
   accumulatedDepAccountId?: string;
   location?: string;
@@ -980,10 +980,10 @@ export interface DBDepreciationEntry {
   date: string;
   fiscalYear: string;
   method: "slm" | "wdv";
-  openingNBV: number;         // net book value at start of period
+  openingNBV: number; // net book value at start of period
   depreciationAmount: number;
   closingNBV: number;
-  voucherId?: string;         // linked journal voucher if auto-posted
+  voucherId?: string; // linked journal voucher if auto-posted
   createdAt: string;
 }
 
@@ -1329,37 +1329,37 @@ export class SutraERPDatabase extends Dexie {
       costCentreAllocations: "++id, voucherId, costCentreId, date",
       approvalPolicies: "++id, voucherType, isActive",
       approvalRequests: "++id, voucherId, voucherType, status, createdAt",
-      approvalActions:  "++id, requestId, level, actionAt",
+      approvalActions: "++id, requestId, level, actionAt",
       recurringTemplates: "++id, name, frequency, isActive, nextDueDate",
-      recurringPostings:  "++id, templateId, postedDate, voucherId",
+      recurringPostings: "++id, templateId, postedDate, voucherId",
       // ── Tables declared on the class but previously missing from schema ──
-      branches:         "++id, name, isActive, createdAt",
-      cbmsQueue:        "++id, invoiceId, status, createdAt",
+      branches: "++id, name, isActive, createdAt",
+      cbmsQueue: "++id, invoiceId, status, createdAt",
       chequeBounceLogs: "++id, chequeId, date, createdAt",
-      followUpNotes:    "++id, partyId, date, createdAt",
-      jobWorkOrders:    "++id, orderNo, date, status, createdAt",
+      followUpNotes: "++id, partyId, date, createdAt",
+      jobWorkOrders: "++id, orderNo, date, status, createdAt",
       priceFloorPolicies: "++id, itemId, isActive, createdAt",
       stockCategories: "++id, name, parentId",
       voucherTypeMasters: "++id, name, parentId, type",
       voucherSeriesConfig: "++id, voucherType, seriesName",
-      reportSchedules:  "++id, name, isActive, createdAt",
-      salespersons:     "++id, name, isActive, createdAt",
+      reportSchedules: "++id, name, isActive, createdAt",
+      salespersons: "++id, name, isActive, createdAt",
       voucherAuditLogs: "++id, voucherId, action, createdAt",
     });
 
     // Version 21 — adds 9 tables that were declared on the class but
     // were never included in any schema, causing _loadAllData to crash.
     this.version(21).stores({
-      branches:           "++id, name, isActive, createdAt",
-      cbmsQueue:          "++id, invoiceId, status, createdAt",
-      chequeBounceLogs:   "++id, chequeId, date, createdAt",
-      followUpNotes:      "++id, partyId, date, createdAt",
-      jobWorkOrders:      "++id, orderNo, date, status, createdAt",
+      branches: "++id, name, isActive, createdAt",
+      cbmsQueue: "++id, invoiceId, status, createdAt",
+      chequeBounceLogs: "++id, chequeId, date, createdAt",
+      followUpNotes: "++id, partyId, date, createdAt",
+      jobWorkOrders: "++id, orderNo, date, status, createdAt",
       priceFloorPolicies: "++id, itemId, isActive, createdAt",
-      stockCategories:    "++id, name, parentId",
+      stockCategories: "++id, name, parentId",
       voucherTypeMasters: "++id, name, parentId, type",
       voucherSeriesConfig: "++id, voucherType, seriesName",
-      voucherAuditLogs:   "++id, voucherId, action, createdAt",
+      voucherAuditLogs: "++id, voucherId, action, createdAt",
     });
 
     // Version 22 — offline-first sync outbox
@@ -1382,7 +1382,9 @@ export function getDB(): SutraERPDatabase {
 
 export async function resetDB(): Promise<SutraERPDatabase> {
   if (_db) {
-    try { _db.close(); } catch (_) {}
+    try {
+      _db.close();
+    } catch (_) {}
     _db = null;
   }
   _db = new SutraERPDatabase();
@@ -1417,7 +1419,9 @@ export async function openDB() {
       const newDb = await resetDB();
       await Promise.race([
         newDb.open(),
-        new Promise((_, reject) => setTimeout(() => reject(new Error("DB_RECOVERY_TIMEOUT")), 5000)),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("DB_RECOVERY_TIMEOUT")), 5000),
+        ),
       ]);
       return newDb;
     }
@@ -1580,21 +1584,21 @@ export interface DBSerialNumber {
 // ─── PDC (Post-Dated Cheques) ─────────────────────────────────────────────────
 export interface DBPDCEntry {
   id: string;
-  type: "received" | "issued";          // received from customer / issued to supplier
+  type: "received" | "issued"; // received from customer / issued to supplier
   partyId: string;
   partyName: string;
   partyPan?: string;
   bankName: string;
   branchName?: string;
   chequeNo: string;
-  chequeDate: string;                   // future date on the cheque
+  chequeDate: string; // future date on the cheque
   amount: number;
   currency?: string;
   status: "pending" | "deposited" | "dishonoured" | "cancelled" | "returned";
-  depositDate?: string;                 // when actually deposited to bank
+  depositDate?: string; // when actually deposited to bank
   dishonourDate?: string;
   dishonourReason?: string;
-  bankAccountId?: string;               // our bank account to deposit into
+  bankAccountId?: string; // our bank account to deposit into
   linkedInvoiceId?: string;
   linkedInvoiceNo?: string;
   narration?: string;
@@ -1634,7 +1638,8 @@ export interface DBApprovalAction {
   createdAt: string;
 }
 
-export type RecurringFrequency = "daily" | "weekly" | "fortnightly" | "monthly" | "quarterly" | "half-yearly" | "yearly";
+export type RecurringFrequency =
+  "daily" | "weekly" | "fortnightly" | "monthly" | "quarterly" | "half-yearly" | "yearly";
 
 export interface DBRecurringLine {
   accountId: string;
@@ -1649,16 +1654,16 @@ export interface DBRecurringTemplate {
   id?: number;
   name: string;
   description: string;
-  voucherType: string;          // "journal", "payment", "receipt", etc.
+  voucherType: string; // "journal", "payment", "receipt", etc.
   frequency: RecurringFrequency;
-  startDate: string;            // "YYYY-MM-DD"
-  endDate?: string;             // optional end date
-  nextDueDate: string;          // computed next posting date
-  lines: DBRecurringLine[];     // JSON-serialised
+  startDate: string; // "YYYY-MM-DD"
+  endDate?: string; // optional end date
+  nextDueDate: string; // computed next posting date
+  lines: DBRecurringLine[]; // JSON-serialised
   totalAmount: number;
   isActive: boolean;
-  autoPost: boolean;            // if true, posts automatically without review
-  reminderDaysBefore: number;   // days before due date to show reminder
+  autoPost: boolean; // if true, posts automatically without review
+  reminderDaysBefore: number; // days before due date to show reminder
   lastPostedDate?: string;
   postingCount: number;
   createdAt: string;
@@ -1670,7 +1675,7 @@ export interface DBRecurringPosting {
   templateId: number;
   templateName: string;
   postedDate: string;
-  voucherId?: number;           // ID of the created voucher
+  voucherId?: number; // ID of the created voucher
   status: "posted" | "skipped" | "failed";
   notes: string;
   createdAt: string;
@@ -1706,17 +1711,17 @@ export interface DBSalaryStructure {
   medicalAllowance: number;
   transportAllowance: number;
   otherAllowances: number;
-  epfRate: number;        // default 10% employee, 10% employer
-  citRate: number;        // default 10%
-  ssfRate: number;        // default 1% employee, 3.33% employer (SSF mode)
+  epfRate: number; // default 10% employee, 10% employer
+  citRate: number; // default 10%
+  ssfRate: number; // default 1% employee, 3.33% employer (SSF mode)
   createdAt: string;
   updatedAt: string;
 }
 
 export interface DBPayrollRun {
   id?: number;
-  month: number;          // 1–12
-  year: number;           // Gregorian or BS year
+  month: number; // 1–12
+  year: number; // Gregorian or BS year
   fiscalYear: string;
   status: "draft" | "processed" | "approved" | "paid";
   totalGross: number;
@@ -1746,16 +1751,16 @@ export interface DBPayrollEntry {
   overtimePay: number;
   grossSalary: number;
   // Deductions
-  epfEmployee: number;    // 10% of basic
-  citEmployee: number;    // 10% of basic (if opted)
-  ssfEmployee: number;    // 1% of gross (if SSF mode)
-  tdsAmount: number;      // progressive slab
+  epfEmployee: number; // 10% of basic
+  citEmployee: number; // 10% of basic (if opted)
+  ssfEmployee: number; // 1% of gross (if SSF mode)
+  tdsAmount: number; // progressive slab
   otherDeductions: number;
   totalDeductions: number;
   netPay: number;
   // Employer contributions
-  epfEmployer: number;    // 10% of basic
-  ssfEmployer: number;    // 3.33% of gross
+  epfEmployer: number; // 10% of basic
+  ssfEmployer: number; // 3.33% of gross
   // Annualised tax workings
   annualisedGross: number;
   taxableIncome: number;
@@ -1766,24 +1771,24 @@ export interface DBPayrollEntry {
 
 export interface DBCurrency {
   id?: number;
-  code: string;           // e.g. "USD", "EUR", "INR"
-  name: string;           // e.g. "US Dollar"
-  symbol: string;         // e.g. "$"
-  decimalPlaces: number;  // usually 2
+  code: string; // e.g. "USD", "EUR", "INR"
+  name: string; // e.g. "US Dollar"
+  symbol: string; // e.g. "$"
+  decimalPlaces: number; // usually 2
   isActive: boolean;
-  isBase: boolean;        // true for the company's home currency (NPR)
+  isBase: boolean; // true for the company's home currency (NPR)
   createdAt: string;
   updatedAt: string;
 }
 
 export interface DBExchangeRate {
   id?: number;
-  currencyCode: string;   // foreign currency code
-  date: string;           // "YYYY-MM-DD" – rate effective from this date
-  buyRate: number;        // bank buy rate (foreign → base)
-  sellRate: number;       // bank sell rate (base → foreign)
-  midRate: number;        // mid/official rate used for accounting
-  source: string;         // "manual" | "NRB" | "IRD"
+  currencyCode: string; // foreign currency code
+  date: string; // "YYYY-MM-DD" – rate effective from this date
+  buyRate: number; // bank buy rate (foreign → base)
+  sellRate: number; // bank sell rate (base → foreign)
+  midRate: number; // mid/official rate used for accounting
+  source: string; // "manual" | "NRB" | "IRD"
   createdAt: string;
   updatedAt: string;
 }
@@ -1794,11 +1799,11 @@ export interface DBFXGainLossEntry {
   currencyCode: string;
   foreignAmount: number;
   rateAtTransaction: number;
-  rateAtSettlement: number;       // for realized; 0 for unrealized
-  rateAtRevaluation: number;      // for unrealized period-end
+  rateAtSettlement: number; // for realized; 0 for unrealized
+  rateAtRevaluation: number; // for unrealized period-end
   baseAmountAtTransaction: number;
   baseAmountAtSettlement: number;
-  gainLossAmount: number;         // positive = gain, negative = loss
+  gainLossAmount: number; // positive = gain, negative = loss
   type: "realized" | "unrealized";
   voucherId?: number;
   relatedAccountId: string;
@@ -1812,7 +1817,7 @@ export interface DBCostCentre {
   code: string;
   name: string;
   type: "cost" | "profit" | "investment";
-  parentId?: number;           // for hierarchy (department → sub-department)
+  parentId?: number; // for hierarchy (department → sub-department)
   description: string;
   managerId?: string;
   budgetAmount: number;
@@ -1831,24 +1836,24 @@ export interface DBCostCentreAllocation {
   accountId: string;
   accountName: string;
   amount: number;
-  allocationPercent: number;    // if split across multiple centres
+  allocationPercent: number; // if split across multiple centres
   narration: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface DBApprovalLevel {
-  level: number;              // 1 = first checker, 2 = second, etc.
-  approverRole: string;       // e.g. "accountant", "manager", "director"
-  approverUserId?: string;    // optional: lock to specific user
+  level: number; // 1 = first checker, 2 = second, etc.
+  approverRole: string; // e.g. "accountant", "manager", "director"
+  approverUserId?: string; // optional: lock to specific user
   isRequired: boolean;
 }
 
 export interface DBApprovalPolicy {
   id?: number;
-  voucherType: string;        // "payment", "receipt", "journal", "purchase", "sales", "*"
-  minimumAmount: number;      // apply only if voucher amount ≥ this
-  levels: DBApprovalLevel[];  // JSON-serialised array
+  voucherType: string; // "payment", "receipt", "journal", "purchase", "sales", "*"
+  minimumAmount: number; // apply only if voucher amount ≥ this
+  levels: DBApprovalLevel[]; // JSON-serialised array
   isActive: boolean;
   description: string;
   createdAt: string;

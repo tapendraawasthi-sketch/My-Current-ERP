@@ -26,7 +26,28 @@ import { createSettingsSlice } from "./slices/settingsSlice";
 // Re-export all types and helpers so external files don't break
 export * from "./store.types";
 
-import { getDB, resetDB, generateId, openDB, DBCurrency, DBExchangeRate, DBFXGainLossEntry, DBCostCentre, DBCostCentreAllocation, DBApprovalPolicy, DBApprovalRequest, DBApprovalAction, DBRecurringTemplate, DBRecurringPosting, ApprovalStatus, DBWarehouse, DBStockTransferVoucher, DBSalaryStructure, DBPayrollRun, DBPayrollEntry } from "../lib/db";
+import {
+  getDB,
+  resetDB,
+  generateId,
+  openDB,
+  DBCurrency,
+  DBExchangeRate,
+  DBFXGainLossEntry,
+  DBCostCentre,
+  DBCostCentreAllocation,
+  DBApprovalPolicy,
+  DBApprovalRequest,
+  DBApprovalAction,
+  DBRecurringTemplate,
+  DBRecurringPosting,
+  ApprovalStatus,
+  DBWarehouse,
+  DBStockTransferVoucher,
+  DBSalaryStructure,
+  DBPayrollRun,
+  DBPayrollEntry,
+} from "../lib/db";
 import { computeNepalTDS } from "../lib/nepalTax";
 import { startCbmsQueueWorker } from "../lib/cbmsService";
 import { migrateWorkflowFields } from "../lib/workflowMigration";
@@ -84,7 +105,7 @@ export const useStore = create<AppState>()((...a) => {
       const db = getDB();
       await db.warehouses.update(id, updates);
       set((state: AppState) => ({
-        warehouses: (state.warehouses || []).map((w) => w.id === id ? { ...w, ...updates } : w),
+        warehouses: (state.warehouses || []).map((w) => (w.id === id ? { ...w, ...updates } : w)),
       }));
     },
     getNextTransferNo: async () => {
@@ -98,7 +119,12 @@ export const useStore = create<AppState>()((...a) => {
       const id = crypto.randomUUID();
       const now = new Date().toISOString();
       const voucher: DBStockTransferVoucher = {
-        ...draft, id, transferNo: no, status: "posted", createdAt: now, updatedAt: now,
+        ...draft,
+        id,
+        transferNo: no,
+        status: "posted",
+        createdAt: now,
+        updatedAt: now,
       };
       await db.stockTransfers.put(voucher);
       set((state: AppState) => ({ stockTransfers: [...(state.stockTransfers || []), voucher] }));
@@ -149,7 +175,12 @@ export const useStore = create<AppState>()((...a) => {
     loadAuditLogs: async () => {
       try {
         const db = getDB();
-        const logs = await db.table("auditLogs").orderBy("timestamp").reverse().limit(500).toArray();
+        const logs = await db
+          .table("auditLogs")
+          .orderBy("timestamp")
+          .reverse()
+          .limit(500)
+          .toArray();
         set({ auditLogs: logs });
       } catch (err) {
         console.error("[loadAuditLogs]", err);
@@ -164,15 +195,15 @@ export const useStore = create<AppState>()((...a) => {
 
     branches: [],
     salespersons: [],
-        exchangeRates: [] as DBExchangeRate[],
+    exchangeRates: [] as DBExchangeRate[],
     fxGainLossEntries: [] as DBFXGainLossEntry[],
     costCentres: [] as DBCostCentre[],
     costCentreAllocations: [] as DBCostCentreAllocation[],
     approvalPolicies: [] as DBApprovalPolicy[],
     approvalRequests: [] as DBApprovalRequest[],
-    approvalActions:  [] as DBApprovalAction[],
+    approvalActions: [] as DBApprovalAction[],
     recurringTemplates: [] as DBRecurringTemplate[],
-    recurringPostings:  [] as DBRecurringPosting[],
+    recurringPostings: [] as DBRecurringPosting[],
     followUpNotes: [],
     jobWorkOrders: [],
     reportSchedules: [],
@@ -218,10 +249,10 @@ export const useStore = create<AppState>()((...a) => {
           // upgrade it will force-delete + recreate the DB, preventing the
           // forever-loading spinner that was caused by an IndexedDB version hang.
           const db = await openDB();
-          
+
           // ── Seed default data if tables are empty ──────────────────────────────
           const accountCount = await db.accounts.count();
-          
+
           if (accountCount === 0) {
             try {
               const { seedNepalNASChartOfAccounts } =
@@ -279,7 +310,9 @@ export const useStore = create<AppState>()((...a) => {
                 (!adminUser.passwordHash?.startsWith("pbkdf2v2_") &&
                   !adminUser.passwordHash?.startsWith("sha256v1_"))
               ) {
-                await db.users.update(adminUser.id, { passwordHash: await hashPassword("admin123") });
+                await db.users.update(adminUser.id, {
+                  passwordHash: await hashPassword("admin123"),
+                });
               }
             } catch {
               /* non-critical */
@@ -332,10 +365,10 @@ export const useStore = create<AppState>()((...a) => {
               const sessionCompany = (await db.companySettings.get(sessionCompanyId)) as any;
               if (sessionUser && sessionUser.isActive && sessionCompany) {
                 await get()._loadAllData();
-                return { 
-                  action: "authenticated", 
-                  user: sessionUser as StoreUser, 
-                  companyId: sessionCompanyId 
+                return {
+                  action: "authenticated",
+                  user: sessionUser as StoreUser,
+                  companyId: sessionCompanyId,
                 };
               }
             } catch {
@@ -353,15 +386,15 @@ export const useStore = create<AppState>()((...a) => {
               ? { username: company.lastLoginBy, loginAt: company.lastLoginAt }
               : null;
 
-          return { 
-            action: "gateway", 
+          return {
+            action: "gateway",
             companySettings: (settingsArr[0] as CompanySettings) || null,
-            lastLoginInfo 
+            lastLoginInfo,
           };
         })();
 
         const result = await Promise.race([initPromise, timeoutPromise]);
-        
+
         if (result.action === "no-company") {
           set({ isDbReady: true, isInitializing: false, authStage: "no-company" as AuthStage });
         } else if (result.action === "authenticated") {
@@ -514,7 +547,9 @@ export const useStore = create<AppState>()((...a) => {
         db.discountStructures.toArray().catch(() => []),
         db.itemGroups.toArray().catch(() => []),
         db.holidays.toArray().catch(() => []),
-        getDB().employees.toArray().catch(() => []),
+        getDB()
+          .employees.toArray()
+          .catch(() => []),
         db.bankStatements.toArray().catch(() => []),
         db.tdsEntries.toArray().catch(() => []),
         db.tdsChallans.toArray().catch(() => []),
@@ -556,12 +591,12 @@ export const useStore = create<AppState>()((...a) => {
         db.reportSchedules.toArray().catch(() => []),
         db.priceFloorPolicies.toArray().catch(() => []),
         db.chequeBounceLogs.toArray().catch(() => []),
-        Promise.resolve([]),            // schemes (not yet in DB schema)
-        Promise.resolve([]),            // billsOfMaterial (not yet in DB schema)
+        Promise.resolve([]), // schemes (not yet in DB schema)
+        Promise.resolve([]), // billsOfMaterial (not yet in DB schema)
         db.serialNumbers.toArray().catch(() => []),
         db.stockTransfers.toArray().catch(() => []),
         db.quotations.toArray().catch(() => []),
-        Promise.resolve(null),          // inventoryConfig (not yet in DB schema)
+        Promise.resolve(null), // inventoryConfig (not yet in DB schema)
       ]);
 
       const currentFiscalYear = (fiscalYears.find((fy: any) => fy.isCurrent || fy.isDefault) ||
@@ -854,11 +889,12 @@ export const useStore = create<AppState>()((...a) => {
         await db.open();
       } catch (upgradeErr: any) {
         const msg: string = upgradeErr?.message || "";
-        if (
-          upgradeErr?.name === "UpgradeError" ||
-          msg.toLowerCase().includes("primary key")
-        ) {
-          try { await db.delete(); } catch {}
+        if (upgradeErr?.name === "UpgradeError" || msg.toLowerCase().includes("primary key")) {
+          try {
+            await db.delete();
+          } catch {
+            /* ignore delete failure during schema recovery */
+          }
           db = await resetDB();
           await db.open();
         } else {
@@ -996,7 +1032,7 @@ export const useStore = create<AppState>()((...a) => {
         if (db.fixedAssets) await db.fixedAssets.update(id, { ...updates, updatedAt: now });
         set((state: any) => ({
           fixedAssets: (state.fixedAssets || []).map((a: any) =>
-            a.id === id ? { ...a, ...updates, updatedAt: now } : a
+            a.id === id ? { ...a, ...updates, updatedAt: now } : a,
           ),
         }));
       } catch (err) {
@@ -1055,7 +1091,10 @@ export const useStore = create<AppState>()((...a) => {
         if (db.batches) await db.batches.put(row);
         set((s: any) => ({ batches: [...(s.batches || []), row] }));
         return row;
-      } catch (err) { console.warn("addBatch failed", err); throw err; }
+      } catch (err) {
+        console.warn("addBatch failed", err);
+        throw err;
+      }
     },
     updateBatch: async (id: string, updates: any) => {
       try {
@@ -1064,17 +1103,21 @@ export const useStore = create<AppState>()((...a) => {
         if (db.batches) await db.batches.update(id, { ...updates, updatedAt: now });
         set((s: any) => ({
           batches: (s.batches || []).map((b: any) =>
-            b.id === id ? { ...b, ...updates, updatedAt: now } : b
+            b.id === id ? { ...b, ...updates, updatedAt: now } : b,
           ),
         }));
-      } catch (err) { console.warn("updateBatch failed", err); }
+      } catch (err) {
+        console.warn("updateBatch failed", err);
+      }
     },
     deleteBatch: async (id: string) => {
       try {
         const db = getDB();
         if (db.batches) await db.batches.delete(id);
         set((s: any) => ({ batches: (s.batches || []).filter((b: any) => b.id !== id) }));
-      } catch (err) { console.warn("deleteBatch failed", err); }
+      } catch (err) {
+        console.warn("deleteBatch failed", err);
+      }
     },
     loadBatches: async () => {
       try {
@@ -1082,7 +1125,9 @@ export const useStore = create<AppState>()((...a) => {
         if (!db.batches) return;
         const batches = await db.batches.toArray();
         set({ batches: batches || [] });
-      } catch (err) { console.warn("loadBatches failed", err); }
+      } catch (err) {
+        console.warn("loadBatches failed", err);
+      }
     },
 
     // ─── Serial Number Actions ────────────────────────────────────────────────────
@@ -1095,7 +1140,10 @@ export const useStore = create<AppState>()((...a) => {
         if (db.serialNumbers) await db.serialNumbers.put(row);
         set((s: any) => ({ serialNumbers: [...(s.serialNumbers || []), row] }));
         return row;
-      } catch (err) { console.warn("addSerialNumber failed", err); throw err; }
+      } catch (err) {
+        console.warn("addSerialNumber failed", err);
+        throw err;
+      }
     },
     updateSerialNumber: async (id: string, updates: any) => {
       try {
@@ -1104,10 +1152,12 @@ export const useStore = create<AppState>()((...a) => {
         if (db.serialNumbers) await db.serialNumbers.update(id, { ...updates, updatedAt: now });
         set((s: any) => ({
           serialNumbers: (s.serialNumbers || []).map((sn: any) =>
-            sn.id === id ? { ...sn, ...updates, updatedAt: now } : sn
+            sn.id === id ? { ...sn, ...updates, updatedAt: now } : sn,
           ),
         }));
-      } catch (err) { console.warn("updateSerialNumber failed", err); }
+      } catch (err) {
+        console.warn("updateSerialNumber failed", err);
+      }
     },
     deleteSerialNumber: async (id: string) => {
       try {
@@ -1116,7 +1166,9 @@ export const useStore = create<AppState>()((...a) => {
         set((s: any) => ({
           serialNumbers: (s.serialNumbers || []).filter((sn: any) => sn.id !== id),
         }));
-      } catch (err) { console.warn("deleteSerialNumber failed", err); }
+      } catch (err) {
+        console.warn("deleteSerialNumber failed", err);
+      }
     },
     loadSerialNumbers: async () => {
       try {
@@ -1124,7 +1176,9 @@ export const useStore = create<AppState>()((...a) => {
         if (!db.serialNumbers) return;
         const sns = await db.serialNumbers.toArray();
         set({ serialNumbers: sns || [] });
-      } catch (err) { console.warn("loadSerialNumbers failed", err); }
+      } catch (err) {
+        console.warn("loadSerialNumbers failed", err);
+      }
     },
     // ─── PDC Actions ──────────────────────────────────────────────────────────────
     addPDC: async (pdc: any) => {
@@ -1136,26 +1190,34 @@ export const useStore = create<AppState>()((...a) => {
         if (getDB().pdcRegister) await getDB().pdcRegister.put(row);
         set((s: any) => ({ pdcRegister: [...(s.pdcRegister || []), row] }));
         return row;
-      } catch (err) { console.warn("addPDC failed", err); throw err; }
+      } catch (err) {
+        console.warn("addPDC failed", err);
+        throw err;
+      }
     },
     updatePDC: async (id: string, updates: any) => {
       try {
         const db = getDB();
         const now = new Date().toISOString();
-        if (getDB().pdcRegister) await getDB().pdcRegister.update(id, { ...updates, updatedAt: now });
+        if (getDB().pdcRegister)
+          await getDB().pdcRegister.update(id, { ...updates, updatedAt: now });
         set((s: any) => ({
           pdcRegister: (s.pdcRegister || []).map((p: any) =>
-            p.id === id ? { ...p, ...updates, updatedAt: now } : p
+            p.id === id ? { ...p, ...updates, updatedAt: now } : p,
           ),
         }));
-      } catch (err) { console.warn("updatePDC failed", err); }
+      } catch (err) {
+        console.warn("updatePDC failed", err);
+      }
     },
     deletePDC: async (id: string) => {
       try {
         const db = getDB();
         if (getDB().pdcRegister) await getDB().pdcRegister.delete(id);
         set((s: any) => ({ pdcRegister: (s.pdcRegister || []).filter((p: any) => p.id !== id) }));
-      } catch (err) { console.warn("deletePDC failed", err); }
+      } catch (err) {
+        console.warn("deletePDC failed", err);
+      }
     },
     loadPDCRegister: async () => {
       try {
@@ -1163,23 +1225,29 @@ export const useStore = create<AppState>()((...a) => {
         if (!getDB().pdcRegister) return;
         const records = await getDB().pdcRegister.toArray();
         set({ pdcRegister: records || [] });
-      } catch (err) { console.warn("loadPDCRegister failed", err); }
+      } catch (err) {
+        console.warn("loadPDCRegister failed", err);
+      }
     },
     // ── PAYROLL ACTIONS ─────────────────────────────────────────────────────
     loadPayrollData: async () => {
-      const [employees, salaryStructures, payrollRuns, payrollEntries] =
-        await Promise.all([
-          getDB().employees.toArray(),
-          getDB().salaryStructures.toArray(),
-          getDB().payrollRuns.toArray(),
-          getDB().payrollEntries.toArray(),
-        ]);
+      const [employees, salaryStructures, payrollRuns, payrollEntries] = await Promise.all([
+        getDB().employees.toArray(),
+        getDB().salaryStructures.toArray(),
+        getDB().payrollRuns.toArray(),
+        getDB().payrollEntries.toArray(),
+      ]);
       set({ employees, salaryStructures, payrollRuns, payrollEntries });
     },
 
     addEmployee: async (emp: any) => {
       const id = emp.id || generateId();
-      await getDB().employees.put({ ...emp, id, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      await getDB().employees.put({
+        ...emp,
+        id,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
       const employees = await getDB().employees.toArray();
       set({ employees });
       return id;
@@ -1205,7 +1273,11 @@ export const useStore = create<AppState>()((...a) => {
     },
 
     addSalaryStructure: async (s: any) => {
-      const id = await getDB().salaryStructures.add({ ...s, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      const id = await getDB().salaryStructures.add({
+        ...s,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
       const salaryStructures = await getDB().salaryStructures.toArray();
       set({ salaryStructures });
       return id;
@@ -1220,9 +1292,26 @@ export const useStore = create<AppState>()((...a) => {
         const structs = salaryStructures
           .filter((s: any) => s.employeeId === emp.id)
           .sort((a: any, b: any) => b.effectiveFrom.localeCompare(a.effectiveFrom));
-        const sal = structs[0] || { basicSalary: 0, houseRentAllowance: 0, medicalAllowance: 0, transportAllowance: 0, otherAllowances: 0, epfRate: 10, citRate: 10, ssfRate: 1, epfApplicable: emp.epfApplicable, citApplicable: emp.citApplicable, ssfApplicable: emp.ssfApplicable };
+        const sal = structs[0] || {
+          basicSalary: 0,
+          houseRentAllowance: 0,
+          medicalAllowance: 0,
+          transportAllowance: 0,
+          otherAllowances: 0,
+          epfRate: 10,
+          citRate: 10,
+          ssfRate: 1,
+          epfApplicable: emp.epfApplicable,
+          citApplicable: emp.citApplicable,
+          ssfApplicable: emp.ssfApplicable,
+        };
 
-        const grossSalary = sal.basicSalary + sal.houseRentAllowance + sal.medicalAllowance + sal.transportAllowance + sal.otherAllowances;
+        const grossSalary =
+          sal.basicSalary +
+          sal.houseRentAllowance +
+          sal.medicalAllowance +
+          sal.transportAllowance +
+          sal.otherAllowances;
 
         // EPF: 10% of basic (employee + employer)
         const epfEmployee = emp.epfApplicable ? sal.basicSalary * (sal.epfRate / 100) : 0;
@@ -1287,12 +1376,20 @@ export const useStore = create<AppState>()((...a) => {
       const totalGross = entries.reduce((s: number, e: any) => s + e.grossSalary, 0);
       const totalDeductions = entries.reduce((s: number, e: any) => s + e.totalDeductions, 0);
       const totalNetPay = entries.reduce((s: number, e: any) => s + e.netPay, 0);
-      const totalEmployerContribution = entries.reduce((s: number, e: any) => s + e.epfEmployer + e.ssfEmployer, 0);
+      const totalEmployerContribution = entries.reduce(
+        (s: number, e: any) => s + e.epfEmployer + e.ssfEmployer,
+        0,
+      );
 
       const runId = await getDB().payrollRuns.add({
-        month, year, fiscalYear,
+        month,
+        year,
+        fiscalYear,
         status: "processed",
-        totalGross, totalDeductions, totalNetPay, totalEmployerContribution,
+        totalGross,
+        totalDeductions,
+        totalNetPay,
+        totalEmployerContribution,
         processedAt: new Date().toISOString(),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -1321,7 +1418,11 @@ export const useStore = create<AppState>()((...a) => {
 
     addCurrency: async (c: Omit<DBCurrency, "id">) => {
       const db = getDB();
-      await db.currencies.add({ ...c, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      await db.currencies.add({
+        ...c,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
       const currencies = await db.currencies.toArray();
       set({ currencies });
     },
@@ -1335,7 +1436,11 @@ export const useStore = create<AppState>()((...a) => {
 
     addExchangeRate: async (r: Omit<DBExchangeRate, "id">) => {
       const db = getDB();
-      await db.exchangeRates.add({ ...r, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      await db.exchangeRates.add({
+        ...r,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
       const exchangeRates = await db.exchangeRates.toArray();
       set({ exchangeRates });
     },
@@ -1356,7 +1461,11 @@ export const useStore = create<AppState>()((...a) => {
 
     addFXGainLoss: async (entry: Omit<DBFXGainLossEntry, "id">) => {
       const db = getDB();
-      await db.fxGainLossEntries.add({ ...entry, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      await db.fxGainLossEntries.add({
+        ...entry,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
       const fxGainLossEntries = await db.fxGainLossEntries.toArray();
       set({ fxGainLossEntries });
     },
@@ -1373,7 +1482,11 @@ export const useStore = create<AppState>()((...a) => {
 
     addCostCentre: async (cc: Omit<DBCostCentre, "id">) => {
       const db = getDB();
-      await getDB().costCentres.add({ ...cc, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      await getDB().costCentres.add({
+        ...cc,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
       const costCentres = await getDB().costCentres.toArray();
       set({ costCentres });
     },
@@ -1401,7 +1514,11 @@ export const useStore = create<AppState>()((...a) => {
 
     addCostCentreAllocation: async (a: Omit<DBCostCentreAllocation, "id">) => {
       const db = getDB();
-      await getDB().costCentreAllocations.add({ ...a, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      await getDB().costCentreAllocations.add({
+        ...a,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
       const costCentreAllocations = await getDB().costCentreAllocations.toArray();
       set({ costCentreAllocations });
     },
@@ -1422,7 +1539,7 @@ export const useStore = create<AppState>()((...a) => {
         db.approvalActions.toArray(),
       ]);
       // Parse JSON levels field
-      const parsed = approvalPolicies.map(p => ({
+      const parsed = approvalPolicies.map((p) => ({
         ...p,
         levels: typeof p.levels === "string" ? JSON.parse(p.levels) : p.levels,
       }));
@@ -1431,10 +1548,18 @@ export const useStore = create<AppState>()((...a) => {
 
     addApprovalPolicy: async (policy: Omit<DBApprovalPolicy, "id">) => {
       const db = getDB();
-      const toStore: any = { ...policy, levels: JSON.stringify(policy.levels), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+      const toStore: any = {
+        ...policy,
+        levels: JSON.stringify(policy.levels),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
       await getDB().approvalPolicies.add(toStore);
       const raw = await getDB().approvalPolicies.toArray();
-      const approvalPolicies = raw.map(p => ({ ...p, levels: typeof p.levels === "string" ? JSON.parse(p.levels) : p.levels }));
+      const approvalPolicies = raw.map((p) => ({
+        ...p,
+        levels: typeof p.levels === "string" ? JSON.parse(p.levels) : p.levels,
+      }));
       set({ approvalPolicies });
     },
 
@@ -1444,7 +1569,10 @@ export const useStore = create<AppState>()((...a) => {
       if (changes.levels) toStore.levels = JSON.stringify(changes.levels);
       await getDB().approvalPolicies.update(id, toStore);
       const raw = await getDB().approvalPolicies.toArray();
-      const approvalPolicies = raw.map(p => ({ ...p, levels: typeof p.levels === "string" ? JSON.parse(p.levels) : p.levels }));
+      const approvalPolicies = raw.map((p) => ({
+        ...p,
+        levels: typeof p.levels === "string" ? JSON.parse(p.levels) : p.levels,
+      }));
       set({ approvalPolicies });
     },
 
@@ -1452,13 +1580,20 @@ export const useStore = create<AppState>()((...a) => {
       const db = getDB();
       await getDB().approvalPolicies.delete(id);
       const raw = await getDB().approvalPolicies.toArray();
-      const approvalPolicies = raw.map(p => ({ ...p, levels: typeof p.levels === "string" ? JSON.parse(p.levels) : p.levels }));
+      const approvalPolicies = raw.map((p) => ({
+        ...p,
+        levels: typeof p.levels === "string" ? JSON.parse(p.levels) : p.levels,
+      }));
       set({ approvalPolicies });
     },
 
     submitForApproval: async (request: Omit<DBApprovalRequest, "id">) => {
       const db = getDB();
-      const id = await getDB().approvalRequests.add({ ...request, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      const id = await getDB().approvalRequests.add({
+        ...request,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
       const approvalRequests = await getDB().approvalRequests.toArray();
       set({ approvalRequests });
       return id;
@@ -1469,7 +1604,7 @@ export const useStore = create<AppState>()((...a) => {
       action: "approved" | "rejected" | "returned",
       actionByUserId: string,
       actionByName: string,
-      comments: string
+      comments: string,
     ) => {
       const db = getDB();
       const now = new Date().toISOString();
@@ -1507,7 +1642,8 @@ export const useStore = create<AppState>()((...a) => {
       // Update the action level
       const actions = await db.approvalActions.where("requestId").equals(requestId).toArray();
       const lastAction = actions[actions.length - 1];
-      if (lastAction?.id) await db.approvalActions.update(lastAction.id, { level: req.currentLevel });
+      if (lastAction?.id)
+        await db.approvalActions.update(lastAction.id, { level: req.currentLevel });
 
       await getDB().approvalRequests.update(requestId, {
         status: newStatus,
@@ -1530,19 +1666,27 @@ export const useStore = create<AppState>()((...a) => {
         getDB().recurringTemplates.toArray(),
         db.recurringPostings.toArray(),
       ]);
-      const parsed = recurringTemplates.map(t => ({
+      const parsed = recurringTemplates.map((t) => ({
         ...t,
-        lines: typeof t.lines === "string" ? JSON.parse(t.lines) : (t.lines || []),
+        lines: typeof t.lines === "string" ? JSON.parse(t.lines) : t.lines || [],
       }));
       set({ recurringTemplates: parsed, recurringPostings });
     },
 
     addRecurringTemplate: async (t: Omit<DBRecurringTemplate, "id">) => {
       const db = getDB();
-      const toStore: any = { ...t, lines: JSON.stringify(t.lines), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+      const toStore: any = {
+        ...t,
+        lines: JSON.stringify(t.lines),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
       await getDB().recurringTemplates.add(toStore);
       const raw = await getDB().recurringTemplates.toArray();
-      const recurringTemplates = raw.map(r => ({ ...r, lines: typeof r.lines === "string" ? JSON.parse(r.lines) : (r.lines || []) }));
+      const recurringTemplates = raw.map((r) => ({
+        ...r,
+        lines: typeof r.lines === "string" ? JSON.parse(r.lines) : r.lines || [],
+      }));
       set({ recurringTemplates });
     },
 
@@ -1552,7 +1696,10 @@ export const useStore = create<AppState>()((...a) => {
       if (changes.lines) toStore.lines = JSON.stringify(changes.lines);
       await getDB().recurringTemplates.update(id, toStore);
       const raw = await getDB().recurringTemplates.toArray();
-      const recurringTemplates = raw.map(r => ({ ...r, lines: typeof r.lines === "string" ? JSON.parse(r.lines) : (r.lines || []) }));
+      const recurringTemplates = raw.map((r) => ({
+        ...r,
+        lines: typeof r.lines === "string" ? JSON.parse(r.lines) : r.lines || [],
+      }));
       set({ recurringTemplates });
     },
 
@@ -1560,7 +1707,10 @@ export const useStore = create<AppState>()((...a) => {
       const db = getDB();
       await getDB().recurringTemplates.delete(id);
       const raw = await getDB().recurringTemplates.toArray();
-      const recurringTemplates = raw.map(r => ({ ...r, lines: typeof r.lines === "string" ? JSON.parse(r.lines) : (r.lines || []) }));
+      const recurringTemplates = raw.map((r) => ({
+        ...r,
+        lines: typeof r.lines === "string" ? JSON.parse(r.lines) : r.lines || [],
+      }));
       set({ recurringTemplates });
     },
 
@@ -1568,7 +1718,8 @@ export const useStore = create<AppState>()((...a) => {
       const db = getDB();
       const template = (await getDB().recurringTemplates.get(templateId)) as any;
       if (!template) return;
-      const lines = typeof template.lines === "string" ? JSON.parse(template.lines) : (template.lines || []);
+      const lines =
+        typeof template.lines === "string" ? JSON.parse(template.lines) : template.lines || [];
 
       // Compute next due date after posting
       const nextDue = computeNextDueDate(postDate, template.frequency);
@@ -1595,7 +1746,10 @@ export const useStore = create<AppState>()((...a) => {
         getDB().recurringTemplates.toArray(),
         db.recurringPostings.toArray(),
       ]);
-      const recurringTemplates = raw.map(r => ({ ...r, lines: typeof r.lines === "string" ? JSON.parse(r.lines) : (r.lines || []) }));
+      const recurringTemplates = raw.map((r) => ({
+        ...r,
+        lines: typeof r.lines === "string" ? JSON.parse(r.lines) : r.lines || [],
+      }));
       set({ recurringTemplates, recurringPostings });
     },
 
@@ -1696,7 +1850,6 @@ export const useStore = create<AppState>()((...a) => {
         payload: { id, ...updates },
       });
     },
-
   };
 });
 
@@ -1845,7 +1998,8 @@ export async function postInvoiceJournal(
     if (line.accountId) {
       const acc = await db.accounts.get(line.accountId);
       if (acc) {
-        const newBal = Math.round(((acc.balance || 0) + (line.debit || 0) - (line.credit || 0)) * 100) / 100;
+        const newBal =
+          Math.round(((acc.balance || 0) + (line.debit || 0) - (line.credit || 0)) * 100) / 100;
         await db.accounts.update(line.accountId, { balance: newBal });
       }
     }

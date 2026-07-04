@@ -29,8 +29,24 @@ const SutraLogotype: React.FC<{ size?: number }> = ({ size = 48 }) => (
     />
 
     {/* Ledger lines — double-entry accounting motif, below the S */}
-    <line x1="13" y1="41" x2="35" y2="41" stroke="rgba(255,255,255,0.45)" strokeWidth="1.5" strokeLinecap="round" />
-    <line x1="16" y1="44.5" x2="32" y2="44.5" stroke="rgba(255,255,255,0.25)" strokeWidth="1" strokeLinecap="round" />
+    <line
+      x1="13"
+      y1="41"
+      x2="35"
+      y2="41"
+      stroke="rgba(255,255,255,0.45)"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+    <line
+      x1="16"
+      y1="44.5"
+      x2="32"
+      y2="44.5"
+      stroke="rgba(255,255,255,0.25)"
+      strokeWidth="1"
+      strokeLinecap="round"
+    />
   </svg>
 );
 
@@ -74,7 +90,15 @@ export default function AuthBrandingPanel() {
             >
               Sutra ERP
             </h1>
-            <p style={{ fontSize: 11, color: "rgba(255,255,255,0.6)", marginTop: 3, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+            <p
+              style={{
+                fontSize: 11,
+                color: "rgba(255,255,255,0.6)",
+                marginTop: 3,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+              }}
+            >
               Professional Accounting for Nepal
             </p>
           </div>
@@ -96,13 +120,43 @@ export default function AuthBrandingPanel() {
               }}
             >
               {/* Tick mark — minimal, no cartoon icons */}
-              <svg width="16" height="16" viewBox="0 0 16 16" style={{ marginTop: 1, flexShrink: 0 }}>
-                <circle cx="8" cy="8" r="7" stroke="rgba(255,255,255,0.35)" strokeWidth="1" fill="none" />
-                <path d="M5 8l2 2 4-4" stroke="#22c55e" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                style={{ marginTop: 1, flexShrink: 0 }}
+              >
+                <circle
+                  cx="8"
+                  cy="8"
+                  r="7"
+                  stroke="rgba(255,255,255,0.35)"
+                  strokeWidth="1"
+                  fill="none"
+                />
+                <path
+                  d="M5 8l2 2 4-4"
+                  stroke="#22c55e"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  fill="none"
+                />
               </svg>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#ffffff", lineHeight: 1.3 }}>{title}</div>
-                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.65)", marginTop: 3, lineHeight: 1.5 }}>{desc}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#ffffff", lineHeight: 1.3 }}>
+                  {title}
+                </div>
+                <div
+                  style={{
+                    fontSize: 11,
+                    color: "rgba(255,255,255,0.65)",
+                    marginTop: 3,
+                    lineHeight: 1.5,
+                  }}
+                >
+                  {desc}
+                </div>
               </div>
             </div>
           ))}

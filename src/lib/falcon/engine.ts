@@ -7,17 +7,14 @@ import { runReasoner } from "./reasoner";
 export function askFalcon(
   question: string,
   currentPath?: string,
-  conversationHistory?: Array<{ role: "user" | "assistant"; content: string }>
+  conversationHistory?: Array<{ role: "user" | "assistant"; content: string }>,
 ): FalconAnswer {
   // 1. Trim and validate input
   const raw = question.trim();
   if (!raw) {
     return {
       answer: "I didn't quite catch that. Could you provide more detail?",
-      suggestions: [
-        "How do I create a sales invoice?",
-        "What are keyboard shortcuts?",
-      ],
+      suggestions: ["How do I create a sales invoice?", "What are keyboard shortcuts?"],
       confidence: 0,
     };
   }

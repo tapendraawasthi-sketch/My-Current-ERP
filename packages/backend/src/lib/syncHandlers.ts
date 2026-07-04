@@ -10,8 +10,7 @@ export interface SyncRecordInput {
   payload: Record<string, unknown>;
 }
 
-const UUID_RE =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export function clientIdToUuid(clientId: string): string {
   if (UUID_RE.test(clientId)) return clientId;
@@ -222,7 +221,10 @@ async function upsertInvoice(
 ): Promise<void> {
   const id = clientIdToUuid(entityId);
   const invoiceNo = str(payload.invoiceNo || payload.voucherNo, `INV-${entityId.slice(-8)}`);
-  const invoiceDate = str(payload.date || payload.invoiceDate, new Date().toISOString().slice(0, 10));
+  const invoiceDate = str(
+    payload.date || payload.invoiceDate,
+    new Date().toISOString().slice(0, 10),
+  );
   const invoiceType = str(payload.type || payload.invoiceType, "sales");
   const partyId = payload.partyId ? clientIdToUuid(str(payload.partyId)) : null;
 

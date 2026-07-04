@@ -13,7 +13,11 @@ const labelClass = "block text-[11px] font-medium text-gray-600 mb-1";
 const errorClass = "mt-1 text-[11px] text-red-600 flex items-center gap-1";
 
 const FieldError = ({ msg }: { msg?: string }) =>
-  msg ? <p className={errorClass}><span className="font-bold">!</span> {msg}</p> : null;
+  msg ? (
+    <p className={errorClass}>
+      <span className="font-bold">!</span> {msg}
+    </p>
+  ) : null;
 
 const inputStyle = (hasError: boolean) => ({
   background: "#ffffff",
@@ -36,7 +40,9 @@ export default function Step2TaxRegistration({ data, onChange, errors = {} }: Pr
         <div className="md:col-span-2">
           <label className={labelClass}>
             PAN / VAT Registration Number <span className="text-red-600">*</span>
-            <span className="ml-2 text-gray-400 font-normal">({(data.panNumber || "").length}/9 digits)</span>
+            <span className="ml-2 text-gray-400 font-normal">
+              ({(data.panNumber || "").length}/9 digits)
+            </span>
           </label>
           <input
             type="text"
