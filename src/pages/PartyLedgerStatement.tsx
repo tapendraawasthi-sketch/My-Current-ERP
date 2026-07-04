@@ -10,7 +10,7 @@
 import { DualDate } from "../components/ui/DualDate";
 import React, { useEffect, useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
-import { Card, Button, Select, NepaliDatePicker, Table, PartySelect } from "../components/ui";
+import { NepaliDatePicker, PartySelect } from "../components/ui";
 import { computePartyStatement, computeOutstandingAnalysis } from "../lib/accounting";
 import { exportLedgerToExcel } from "../lib/exportUtils";
 import { generatePartyStatementPDF } from "../lib/printUtils";
@@ -207,35 +207,35 @@ const PartyLedgerStatement: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-6 animate-fadeIn select-none text-xs">
+    <div className="flex flex-col gap-4 animate-fadeIn select-none text-xs">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-[#000000]">Party Ledger</h1>
-          <p className="text-[11px] text-[#000000] mt-0.5">
+          <h1 className="text-[15px] font-semibold text-gray-800">Party Ledger</h1>
+          <p className="mt-0.5 text-[11px] text-gray-500">
             Transaction history for a specific party
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
+          <button
+            type="button"
             onClick={handleExport}
-            icon={<span className="text-sm">📄</span>}
+            className="flex h-8 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 text-[12px] font-medium text-gray-700 hover:bg-gray-50"
           >
+            <span className="text-sm">📄</span>
             Export Excel
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
+          </button>
+          <button
+            type="button"
             onClick={handlePrint}
-            icon={<span className="text-sm">🖨️</span>}
+            className="flex h-8 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 text-[12px] font-medium text-gray-700 hover:bg-gray-50"
           >
+            <span className="text-sm">🖨️</span>
             Print PDF
-          </Button>
+          </button>
         </div>
       </div>
 
-      <Card border padding="md" className="no-print">
+      <div className="no-print rounded-md border border-gray-200 bg-white p-3">
         <div className="grid gap-4 lg:grid-cols-4">
           <PartySelect
             label="Party"
@@ -246,9 +246,8 @@ const PartyLedgerStatement: React.FC = () => {
           <NepaliDatePicker label="From Date" value={startDate} onChange={setStartDate} />
           <NepaliDatePicker label="To Date" value={endDate} onChange={setEndDate} />
           <div className="flex items-end">
-            <Button
-              variant="secondary"
-              size="sm"
+            <button
+              type="button"
               onClick={() => {
                 setSelectedPartyId("");
                 setReportFilters({ partyId: undefined });
@@ -257,45 +256,46 @@ const PartyLedgerStatement: React.FC = () => {
                   setEndDate(currentFiscalYear.endDate);
                 }
               }}
+              className="h-8 rounded-md border border-gray-300 bg-white px-3 text-[12px] font-medium text-gray-700 hover:bg-gray-50"
             >
               Reset
-            </Button>
+            </button>
           </div>
         </div>
-      </Card>
+      </div>
 
       {selectedParty && statement ? (
         <>
-          {/* Party Summary Header Panel */}
-          <div
-            className="bg-white border rounded-lg p-4 mb-3 grid grid-cols-4 gap-4 animate-fadeIn"
-            style={{ borderColor: "var(--border)" }}
-          >
+          <div className="grid gap-4 rounded-md border border-gray-200 bg-white p-4 md:grid-cols-2 xl:grid-cols-4">
             <div>
-              <div className="text-[10px] text-[#000000] font-bold uppercase mb-1">Party</div>
-              <div className="font-bold text-[13px] text-[#000000]">{selectedParty?.name}</div>
-              <div className="text-[11px] text-[#000000]">
+              <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                Party
+              </div>
+              <div className="text-[13px] font-semibold text-gray-800">{selectedParty?.name}</div>
+              <div className="text-[11px] text-gray-500">
                 {selectedParty?.pan ? `PAN: ${selectedParty.pan}` : ""}
               </div>
             </div>
             <div>
-              <div className="text-[10px] text-[#000000] font-bold uppercase mb-1">Type</div>
+              <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                Type
+              </div>
               <span
-                className={`badge bg-[#D4EABD] text-[#000000] px-2 py-0.5 rounded text-[10px] font-semibold uppercase`}
+                className="inline-flex rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 text-blue-700"
               >
                 {selectedParty?.type}
               </span>
             </div>
             <div>
-              <div className="text-[10px] text-[#000000] font-bold uppercase mb-1">
+              <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-gray-500">
                 Opening Balance
               </div>
-              <div className="font-mono font-bold text-[14px] text-[#000000]">
+              <div className="font-mono text-[14px] font-bold text-gray-800">
                 {formatNumber(Math.abs(statement?.openingBalance || 0))}
               </div>
             </div>
             <div>
-              <div className="text-[10px] text-[#000000] font-bold uppercase mb-1">
+              <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-gray-500">
                 Closing Balance
               </div>
               {(() => {
@@ -305,7 +305,7 @@ const PartyLedgerStatement: React.FC = () => {
                     : -statement.closingBalance;
                 return (
                   <div
-                    className={`font-mono font-bold text-[14px] ${closingBalance >= 0 ? "text-green-700" : "text-red-600"}`}
+                    className={`font-mono text-[14px] font-bold ${closingBalance >= 0 ? "text-green-700" : "text-red-600"}`}
                   >
                     {formatNumber(Math.abs(closingBalance))} {closingBalance >= 0 ? "Dr" : "Cr"}
                   </div>
@@ -314,47 +314,46 @@ const PartyLedgerStatement: React.FC = () => {
             </div>
           </div>
 
-          {/* Outstanding Summary Collapsible Card */}
-          <Card border padding="sm" className="mb-4 no-print">
-            <div
-              className="flex items-center justify-between cursor-pointer"
+          <div className="mb-4 rounded-md border border-gray-200 bg-white p-3 no-print">
+            <button
+              type="button"
+              className="flex w-full items-center justify-between text-left"
               onClick={() => setSummaryExpanded(!summaryExpanded)}
             >
               <div className="flex items-center gap-2">
-                <span className="font-bold text-[#000000] text-xs">
-                  {" "}
+                <span className="text-xs font-semibold text-gray-800">
                   Outstanding Summary Analysis
                 </span>
-                <span className="text-[10px] text-[#000000] font-semibold">
+                <span className="text-[10px] font-medium text-gray-500">
                   (Click to {summaryExpanded ? "Collapse" : "Expand"})
                 </span>
               </div>
-              <div className="text-[#000000] font-bold text-xs">{summaryExpanded ? "▲" : "▼"}</div>
-            </div>
+              <div className="text-xs font-semibold text-gray-600">{summaryExpanded ? "▲" : "▼"}</div>
+            </button>
 
             {summaryExpanded && outstandingSummary && (
-              <div className="mt-3 pt-3 border-t border-[#9DC07A] animate-fadeIn space-y-3">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="mt-3 space-y-3 border-t border-gray-200 pt-3 animate-fadeIn">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
                   {partyDashboard.showOutstanding && (
                     <div className="flex flex-col gap-1">
-                      <div className="text-[10px] text-[#000000] font-bold uppercase">
+                      <div className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
                         Total Receivable / Payable
                       </div>
                       <div className="flex items-center gap-4 text-[11px] mt-0.5">
                         <div>
-                          <span className="text-[#000000] mr-1">Receivable:</span>
+                          <span className="mr-1 text-gray-500">Receivable:</span>
                           <strong className="text-green-700 font-mono">
                             रू {formatNumber(outstandingSummary.totalReceivable)}
                           </strong>
                         </div>
                         <div>
-                          <span className="text-[#000000] mr-1">Payable:</span>
+                          <span className="mr-1 text-gray-500">Payable:</span>
                           <strong className="text-red-600 font-mono">
                             रू {formatNumber(outstandingSummary.totalPayable)}
                           </strong>
                         </div>
                       </div>
-                      <div className="text-[10px] text-[#000000] mt-1">
+                      <div className="mt-1 text-[10px] text-gray-500">
                         Net Outstanding:{" "}
                         <strong
                           className={
@@ -372,11 +371,11 @@ const PartyLedgerStatement: React.FC = () => {
 
                   {partyDashboard.showLastInvoice && (
                     <div className="flex flex-col gap-1">
-                      <div className="text-[10px] text-[#000000] font-bold uppercase">
+                      <div className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
                         Last Invoice
                       </div>
                       {lastInvoice ? (
-                        <div className="text-[11px] text-[#000000] mt-0.5">
+                        <div className="mt-0.5 text-[11px] text-gray-700">
                           <strong>{lastInvoice.invoiceNo || lastInvoice.voucherNo}</strong> dated{" "}
                           <span className="font-mono">{lastInvoice.date}</span>
                           <span className="ml-2 font-mono font-semibold">
@@ -384,7 +383,7 @@ const PartyLedgerStatement: React.FC = () => {
                           </span>
                         </div>
                       ) : (
-                        <div className="text-[11px] text-[#000000] italic mt-0.5">
+                        <div className="mt-0.5 text-[11px] italic text-gray-500">
                           No invoices found.
                         </div>
                       )}
@@ -392,11 +391,11 @@ const PartyLedgerStatement: React.FC = () => {
                   )}
 
                   <div className="flex flex-col gap-1">
-                    <div className="text-[10px] text-[#000000] font-bold uppercase">
+                    <div className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
                       Oldest Pending Bill
                     </div>
                     {outstandingSummary.oldestBillNo ? (
-                      <div className="text-[11px] text-[#000000] mt-0.5">
+                      <div className="mt-0.5 text-[11px] text-gray-700">
                         <strong>{outstandingSummary.oldestBillNo}</strong> dated{" "}
                         <span className="font-mono">{outstandingSummary.oldestBillDate}</span>
                         <span className="text-red-600 font-semibold ml-2">
@@ -404,7 +403,7 @@ const PartyLedgerStatement: React.FC = () => {
                         </span>
                       </div>
                     ) : (
-                      <div className="text-[11px] text-[#000000] italic mt-0.5">
+                      <div className="mt-0.5 text-[11px] italic text-gray-500">
                         No pending bills.
                       </div>
                     )}
@@ -412,16 +411,16 @@ const PartyLedgerStatement: React.FC = () => {
 
                   {partyDashboard.showCreditLimit && (
                     <div className="flex flex-col gap-1">
-                      <div className="text-[10px] text-[#000000] font-bold uppercase">
+                      <div className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
                         Credit Limit Utilization
                       </div>
                       {selectedParty.creditLimit && selectedParty.creditLimit > 0 ? (
                         <div className="mt-1">
-                          <div className="flex justify-between text-[9px] text-[#000000] mb-1">
+                          <div className="mb-1 flex justify-between text-[9px] text-gray-500">
                             <span>Limit: रू {formatNumber(selectedParty.creditLimit)}</span>
                             <span>{creditLimitPercent}% Used</span>
                           </div>
-                          <div className="w-full bg-[#EBF5E2] rounded-full h-1.5 overflow-hidden">
+                          <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200">
                             <div
                               className={`h-1.5 rounded-full transition-all duration-300 ${
                                 creditLimitPercent > 90
@@ -431,11 +430,11 @@ const PartyLedgerStatement: React.FC = () => {
                                     : "bg-green-600"
                               }`}
                               style={{ width: `${creditLimitPercent}%` }}
-                            ></div>
+                            />
                           </div>
                         </div>
                       ) : (
-                        <div className="text-[11px] text-[#000000] italic mt-0.5">
+                        <div className="mt-0.5 text-[11px] italic text-gray-500">
                           No credit limit set.
                         </div>
                       )}
@@ -445,14 +444,14 @@ const PartyLedgerStatement: React.FC = () => {
 
                 {partyDashboard.showAgingSummary && partyAgingBuckets.length > 0 && (
                   <div>
-                    <div className="text-[10px] text-[#000000] font-bold uppercase mb-2">
+                    <div className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-gray-500">
                       Ageing Summary
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {partyAgingBuckets.map((b) => (
                         <span
                           key={b.label}
-                          className="px-2 py-1 bg-[#EBF5E2] border border-[#9DC07A] rounded text-[11px] font-mono"
+                          className="rounded border border-gray-200 bg-gray-50 px-2 py-1 text-[11px] font-mono text-gray-700"
                         >
                           {b.label}: रू {formatNumber(b.amount)}
                         </span>
@@ -462,76 +461,73 @@ const PartyLedgerStatement: React.FC = () => {
                 )}
               </div>
             )}
-          </Card>
+          </div>
 
-          <div
-            className="w-full overflow-x-auto border border-[#9DC07A] rounded-lg shadow-sm bg-white animate-fadeIn"
-            style={{ borderColor: "var(--border)" }}
-          >
-            <table className="data-table sticky-thead">
+          <div className="w-full overflow-x-auto rounded-md border border-gray-200 bg-white animate-fadeIn">
+            <table className="min-w-full">
               <thead>
-                <tr className="bg-[#eef1f8] border-b-2 border-[#c5cad8]">
+                <tr className="bg-[#f5f6fa] border-b border-gray-200">
                   <th
                     scope="col"
-                    className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left"
+                    className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-500"
                   >
                     Date (BS)
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left"
+                    className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-500"
                   >
                     Voucher No
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left"
+                    className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-500"
                   >
                     Type
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-left"
+                    className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-500"
                     style={{ width: "40%" }}
                   >
                     Narration
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right"
+                    className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500"
                   >
                     Debit
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right"
+                    className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500"
                   >
                     Credit
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-2 text-[10px] font-bold text-[#4b5563] uppercase tracking-[0.06em] text-right"
+                    className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500"
                   >
                     Balance
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-150">
-                <tr className="bg-[#D4EABD] text-[11px] font-medium text-[#000000] italic border-b border-[#9DC07A]">
+              <tbody className="divide-y divide-gray-100">
+                <tr className="border-b border-blue-100 bg-blue-50 text-[12px] text-gray-700">
                   <td className="px-3 py-2.5">{startDate}</td>
                   <td className="px-3 py-2.5">-</td>
                   <td className="px-3 py-2.5">-</td>
                   <td className="px-3 py-2.5 font-semibold">Opening Balance</td>
                   <td className="px-3 py-2.5 text-right font-mono">-</td>
                   <td className="px-3 py-2.5 text-right font-mono">-</td>
-                  <td className="px-3 py-2.5 text-right font-mono amt font-bold">
+                  <td className="px-3 py-2.5 text-right font-mono font-bold">
                     {formatNumber(statement.openingBalance)} {statement.openingType}
                   </td>
                 </tr>
 
                 {statement.entries.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="text-center py-4 text-[#000000] text-[12px]">
+                    <td colSpan={7} className="py-8 text-center text-[12px] text-gray-500">
                       No transactions in this period.
                     </td>
                   </tr>
@@ -539,49 +535,49 @@ const PartyLedgerStatement: React.FC = () => {
                   statement.entries.map((row, idx) => (
                     <tr
                       key={`${row.voucherId}-${row.date}-${idx}`}
-                      className="border-b border-[#9DC07A] bg-white hover:bg-[#e8eeff] transition-colors"
+                      className="bg-white transition-colors hover:bg-gray-50"
                     >
-                      <td className="px-3 py-2.5 text-[12px] text-[#000000]">{row.dateNepali}</td>
-                      <td className="px-3 py-2.5 text-[12px] text-[#000000] font-bold">
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{row.dateNepali}</td>
+                      <td className="px-3 py-2.5 text-[12px] font-semibold text-gray-800">
                         {row.voucherNo}
                         {row.invoiceRef && (
-                          <span className="ml-1 text-[10px] text-[#000000]">
+                          <span className="ml-1 text-[10px] text-gray-500">
                             ({row.invoiceRef})
                           </span>
                         )}
                       </td>
-                      <td className="px-3 py-2.5 text-[12px] text-[#000000]">{row.voucherType}</td>
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{row.voucherType}</td>
                       <td
-                        className="px-3 py-2.5 text-[12px] text-[#000000] truncate max-w-xs"
+                        className="max-w-xs truncate px-3 py-2.5 text-[12px] text-gray-700"
                         title={row.narration}
                       >
                         {row.narration}
                       </td>
-                      <td className="px-3 py-2.5 text-[12px] text-right font-mono amt amt-dr">
+                      <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
                         {row.debit ? formatNumber(row.debit) : "-"}
                       </td>
-                      <td className="px-3 py-2.5 text-[12px] text-right font-mono amt amt-cr">
+                      <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
                         {row.credit ? formatNumber(row.credit) : "-"}
                       </td>
-                      <td className="px-3 py-2.5 text-[12px] text-right font-mono amt font-bold">
+                      <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
                         {formatNumber(row.balance)} {row.balanceType}
                       </td>
                     </tr>
                   ))
                 )}
 
-                <tr className="bg-[#eef2ff] font-bold text-[12px] border-t-2 border-[#c7d2fe] text-[#000000]">
+                <tr className="bg-[#eef2ff] text-[12px] font-bold text-gray-800 border-t-2 border-[#c7d2fe]">
                   <td className="px-3 py-2.5">{endDate}</td>
                   <td className="px-3 py-2.5">-</td>
                   <td className="px-3 py-2.5">-</td>
                   <td className="px-3 py-2.5 font-bold">Closing Balance</td>
-                  <td className="px-3 py-2.5 text-right font-mono amt amt-dr">
+                  <td className="px-3 py-2.5 text-right font-mono">
                     {formatNumber(statement.totalDebit)}
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono amt amt-cr">
+                  <td className="px-3 py-2.5 text-right font-mono">
                     {formatNumber(statement.totalCredit)}
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono amt font-bold">
+                  <td className="px-3 py-2.5 text-right font-mono font-bold">
                     {formatNumber(statement.closingBalance)} {statement.closingType}
                   </td>
                 </tr>
@@ -590,9 +586,9 @@ const PartyLedgerStatement: React.FC = () => {
           </div>
         </>
       ) : (
-        <Card border padding="lg" className="text-center text-[#000000]">
+        <div className="rounded-md border border-gray-200 bg-white px-6 py-12 text-center text-[12px] text-gray-500">
           Select a party and date range to view the ledger statement.
-        </Card>
+        </div>
       )}
     </div>
   );
