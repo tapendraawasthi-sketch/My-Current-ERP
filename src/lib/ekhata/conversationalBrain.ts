@@ -2,13 +2,14 @@
  * e-Khata Conversational Reasoning Brain
  *
  * Understands what the user is actually asking — not just keyword matching.
- * Uses question-type analysis, conversation memory, and contextual reasoning
- * to produce human-like Nepali/English replies.
+ * Uses question-type analysis, conversation memory, emotional intelligence,
+ * and contextual reasoning to produce human-like Nepali/English replies.
  */
 
 import type { LedgerBalanceSnapshot } from "./conversationEngine";
 import { replyBalance } from "./conversationEngine";
 import { searchKnowledge } from "./nepaliBrain";
+import { composeEmotionalReply, detectEmotionalContext, isEmotionalMessage } from "./emotionalBrain";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -38,6 +39,7 @@ export type QuestionKind =
   | "abuse"
   | "math"
   | "follow_up"
+  | "user_emotion"
   | "unknown";
 
 export interface ConversationTurn {
@@ -58,7 +60,7 @@ export interface QuestionAnalysis {
 // ─── Question Understanding ──────────────────────────────────────────────────
 
 const GREETING =
-  /^(namaste|namaskar|hello|hi|hey|good\s*(morning|evening|afternoon|night)|subha|shubha|k\s*cha|k\s*xa|kasto\s*cha|kasto\s*xa)\b/i;
+  /^(hajur\s*|tapai\s*)?(namaste|namaskar|hello|hi|hey|good\s*(morning|evening|afternoon|night)|subha|shubha|k\s*cha|k\s*xa|kasto\s*cha|kasto\s*xa)\b/i;
 const FAREWELL = /\b(bye|goodbye|alvida|ta\s*ta|tata|good\s*night|see\s*you|pheri\s*bhetaula)\b/i;
 const THANKS = /\b(dhanyabad|dhanyabaad|thanks|thank\s*you|shukriya|thx)\b/i;
 const HELP = /\b(help|madat|sahayog|sahara|kasari|how\s*to|sikaunu|bataunu)\b/i;
@@ -107,6 +109,26 @@ export function analyzeQuestion(text: string, history: ConversationTurn[] = []):
 
   if (ABUSE.test(t)) {
     return { kind: "abuse", topic: null, subject: null, isQuestion, language: lang, confidence: 0.95, rawIntent: "abuse" };
+  }
+
+  // Emotional sharing — detect feelings before factual parsing
+  const emotional = detectEmotionalContext(text, history);
+  if (
+    emotional.primaryEmotion !== "neutral" &&
+    emotional.intensity !== "low" &&
+    !isQuestion &&
+    !BALANCE.test(t) &&
+    !CAPABILITY.test(t)
+  ) {
+    return {
+      kind: "user_emotion",
+      topic: emotional.primaryEmotion,
+      subject: "user",
+      isQuestion: false,
+      language: lang,
+      confidence: 0.88,
+      rawIntent: `emotion_${emotional.primaryEmotion}`,
+    };
   }
 
   if (BALANCE.test(t) && !/\bbalance\s*sheet\b/i.test(t)) {
@@ -359,6 +381,7 @@ const BOT_RESPONSES: Record<QuestionKind, string[]> = {
     "Thik cha! Aru kei thaaha paunu cha?",
     "Bujhe! Ani aru kei?",
   ],
+  user_emotion: [],
   unknown: [
     "Hmm, yo sawal thora complex lagyo. Thora aru detail dinus — ma koshish garchhu!",
     "Ma sabai kura jandina, tara accounting, tax, Nepal, khana, entertainment — yinihar ma help garna sakchhu. Thora clear sodhnus?",
@@ -413,18 +436,14 @@ function handleFollowUp(text: string, history: ConversationTurn[]): string {
 
 // ─── Main entry ──────────────────────────────────────────────────────────────
 
-export function generateConversationalReply(
+function buildBaseReply(
   text: string,
-  options: {
-    balance?: LedgerBalanceSnapshot;
-    history?: ConversationTurn[];
-  } = {},
+  analysis: QuestionAnalysis,
+  history: ConversationTurn[],
+  balance?: LedgerBalanceSnapshot,
 ): string {
-  const history = options.history ?? [];
-  const analysis = analyzeQuestion(text, history);
-
-  if (analysis.kind === "balance" && options.balance) {
-    return replyBalance(options.balance);
+  if (analysis.kind === "balance" && balance) {
+    return replyBalance(balance);
   }
 
   const knowledgeAnswer = searchKnowledge(text);
@@ -445,13 +464,40 @@ export function generateConversationalReply(
     return handleFollowUp(text, history);
   }
 
+  // Emotional messages get standalone replies from emotional brain
+  if (analysis.kind === "user_emotion") {
+    return ""; // handled entirely by composeEmotionalReply
+  }
+
   const responses = BOT_RESPONSES[analysis.kind];
   if (responses && responses.length > 0) {
     return pick(responses);
   }
 
-  // Last resort: try knowledge base again, then unknown
   if (knowledgeAnswer) return knowledgeAnswer;
 
   return pick(BOT_RESPONSES.unknown);
 }
+
+export function generateConversationalReply(
+  text: string,
+  options: {
+    balance?: LedgerBalanceSnapshot;
+    history?: ConversationTurn[];
+  } = {},
+): string {
+  const history = options.history ?? [];
+  const analysis = analyzeQuestion(text, history);
+  const emotional = detectEmotionalContext(text, history);
+
+  const baseReply = buildBaseReply(text, analysis, history, options.balance);
+
+  // Apply emotional intelligence layer — empathy, politeness, tone
+  return composeEmotionalReply(baseReply || pick(BOT_RESPONSES.unknown), emotional, {
+    isQuestion: analysis.isQuestion,
+    userText: text,
+  });
+}
+
+export { isEmotionalMessage, detectEmotionalContext } from "./emotionalBrain";
+export type { EmotionalContext, UserEmotion, ResponseTone } from "./emotionalBrain";

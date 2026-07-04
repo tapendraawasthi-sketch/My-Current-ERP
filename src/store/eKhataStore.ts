@@ -14,7 +14,7 @@ function buildWelcome(): string {
   return (
     "Namaste! Ma e-Khata — tapaaiko digital khata sahayogi.\n\n" +
     "Nepali, English, Roman Nepali — sabai ma kura garnu hos. Khata entry rakhnu hos, sawal sodhnu hos, wa kura matra garnu hos.\n\n" +
-    "🧠 **Conversational AI** — ma tapaiko sawal bujhchhu ra human jasto jawaf dinchhu. Ollama deploy bhayo bhane full LLM pani chalchha."
+    "🧠 **Emotional AI brain** — ma tapai ko mood bujhchhu, empathetic ra polite jawaf dinchhu. Ollama deploy bhayo bhane full LLM pani chalchha."
   );
 }
 

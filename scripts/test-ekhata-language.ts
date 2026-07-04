@@ -7,6 +7,7 @@ import { processEKhataMessage } from "../src/lib/ekhata/processMessage";
 import { parseKhataMessage } from "../src/lib/ekhata/parseKhata";
 import { analyzeNepaliMessage, generateNepaliReply } from "../src/lib/ekhata/nepaliBrain";
 import { analyzeQuestion, generateConversationalReply } from "../src/lib/ekhata/conversationalBrain";
+import { detectEmotionalContext, isEmotionalMessage } from "../src/lib/ekhata/emotionalBrain";
 
 let passed = 0;
 let failed = 0;
@@ -108,6 +109,22 @@ check(
 
 const genderAnalysis = analyzeQuestion("timi kta ho");
 check("gender question kind", genderAnalysis.kind === "about_bot_gender");
+
+const sadReply = generateConversationalReply("aaja ekdam dukhi feel bhairaheko chhu");
+check(
+  "sad emotion empathetic reply",
+  sadReply.includes("bujhe") || sadReply.includes("dukhi") || sadReply.includes("eklo") ||
+    sadReply.includes("sun") || sadReply.includes("yaha chhu") || sadReply.includes("naramro"),
+  sadReply.slice(0, 100),
+);
+
+const angryCtx = detectEmotionalContext("yo system le kaam gardaina, ris aaayo");
+check("detect angry emotion", angryCtx.primaryEmotion === "angry" || angryCtx.primaryEmotion === "frustrated");
+
+const politeReply = generateConversationalReply("hajur namaste");
+check("polite greeting", politeReply.toLowerCase().includes("namaste") || politeReply.includes("Hajur"));
+
+check("isEmotionalMessage sad", isEmotionalMessage("dukhi chhu aaja"));
 
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed > 0 ? 1 : 0);

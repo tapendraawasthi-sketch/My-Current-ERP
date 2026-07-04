@@ -8,7 +8,7 @@ function statusLabel(llmOnline: boolean, llmModel?: string): string {
   if (llmOnline) {
     return llmModel ? `Ollama LLM · ${llmModel}` : "Ollama LLM connected";
   }
-  return "Conversational AI brain";
+  return "Emotional AI brain";
 }
 
 const EKhataPanel: React.FC = () => {
@@ -185,7 +185,7 @@ const EKhataPanel: React.FC = () => {
           </button>
         </div>
         <p className="mt-1 text-[10px] text-gray-400">
-          Ctrl+Shift+K · {llmOnline ? "Ollama LLM" : "Conversational AI"} · Saves to ledger
+          Ctrl+Shift+K · {llmOnline ? "Ollama LLM" : "Emotional AI"} · Saves to ledger
         </p>
       </div>
     </div>
