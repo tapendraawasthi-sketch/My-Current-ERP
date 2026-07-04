@@ -18,6 +18,7 @@ ERP_PATH = Path(ERP_PATH).resolve()
 
 MODEL_NAME = os.getenv("MODEL_NAME", "qwen2.5:7b-instruct")
 KHATA_STRUCTURED_PARSE = os.getenv("KHATA_USE_STRUCTURED_PARSE", "true").lower() == "true"
+KHATA_SYNTHESIZE_CONTEXT = os.getenv("KHATA_SYNTHESIZE_CONTEXT", "true").lower() == "true"
 EMBED_MODEL = os.getenv("EMBED_MODEL", "nomic-embed-text")
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "1500"))

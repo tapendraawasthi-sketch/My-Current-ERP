@@ -12,8 +12,12 @@ from langchain_ollama import ChatOllama
 
 from ..config import KHATA_STRUCTURED_PARSE, MODEL_NAME, OLLAMA_BASE_URL
 from ..falcon_trader import parse_khata_message
-from ..vectorstore.ca_knowledge_store import search_ca_knowledge
-from ..vectorstore.nepali_grammar_store import format_grammar_context, search_nepali_grammar
+from .context_intelligence import (
+    build_intelligent_context,
+    clear_session_context,
+    update_session_from_card,
+    update_session_from_message,
+)
 from .structured_parse import STRUCTURED_PARSE_INSTRUCTION, parse_llm_response
 from .system_prompt import KHATA_SYSTEM_PROMPT
 
@@ -169,68 +173,15 @@ def _lang_instruction(lang: str) -> str:
     return "\n\n[LANGUAGE] User uses mixed Nepali/English. Match their style."
 
 
-def _framework_context(text: str) -> str:
-    """Retrieve IFRS Conceptual Framework paragraphs relevant to the question."""
-    hits = search_ca_knowledge(text, k=4)
-    if not hits:
-        return ""
-    lines = []
-    for h in hits:
-        pid = h.get("paragraph_id", "")
-        section = h.get("section", "")
-        body = h.get("text", "")
-        if pid:
-            lines.append(f"[Para {pid}] {section}\n{body}")
-        else:
-            lines.append(body)
-    return (
-        "[IFRS CONCEPTUAL FRAMEWORK KNOWLEDGE — retrieved for this question]\n"
-        + "\n\n".join(lines)
-    )
+def _grammar_context(text: str, session_id: str = "default") -> str:
+    """Intelligent grammar synthesis for NLU interpretation."""
+    ctx = build_intelligent_context(text, session_id, force_ifrs=False, force_grammar=True)
+    return ctx
 
 
-def _is_nepali_input(text: str) -> bool:
-    """True when message uses Devanagari or common Roman Nepali patterns."""
-    if re.search(r"[\u0900-\u097F]", text):
-        return True
-    return bool(re.search(
-        r"\b(k\s*ho|k\s*xa|kasari|udhaar|kharcha|bikri|tiryo|diyo|liyo|kinyo|beche|"
-        r"hisab|lekha|chha|hunchha|xaina|garchu|garxu|tapai|timi|paisa|saya|hajar|"
-        r"lakh|malai|lai|le\s|ko\s|ma\s|bata|sanga|ni\b|ta\b|hai\b|yaar|bhai|dai)\b",
-        text, re.I,
-    ))
-
-
-def _grammar_context(text: str) -> str:
-    """Retrieve Nepali grammar reference sections for NLU interpretation."""
-    if not _is_nepali_input(text):
-        return ""
-    hits = search_nepali_grammar(text, k=3)
-    return format_grammar_context(hits)
-
-
-def _combined_context(text: str) -> str:
-    """Merge IFRS and Nepali grammar context blocks for the LLM."""
-    parts = []
-    fw = _framework_context(text) if _is_framework_question(text) else ""
-    gr = _grammar_context(text)
-    if gr:
-        parts.append(gr)
-    if fw:
-        parts.append(fw)
-    return "\n\n".join(parts)
-
-
-def _is_framework_question(text: str) -> bool:
-    return bool(re.search(
-        r"\b(ifrs|nas|conceptual\s+framework|recognition|derecognition|measurement|"
-        r"faithful|relevance|comparability|materiality|going\s+concern|fair\s+value|"
-        r"historical\s+cost|economic\s+resource|present\s+obligation|unit\s+of\s+account|"
-        r"executory|substance|capital\s+maintenance|accrual\s+accounting|stewardship|"
-        r"sampatti|dayitwo|manyata|mulyankan|biswasilo|sambandhit|nyaya\s+mulya|"
-        r"paribhasha|ko\s+matlab|ko\s+paribhasha|k\s+ho)\b",
-        text, re.I,
-    ))
+def _combined_context(text: str, session_id: str = "default") -> str:
+    """Merge synthesized grammar + IFRS context for the LLM."""
+    return build_intelligent_context(text, session_id)
 
 
 def _invoke_llm(
@@ -284,12 +235,14 @@ def _try_llm_structured_parse(
     if not KHATA_STRUCTURED_PARSE:
         return None, None
 
+    grammar = _grammar_context(text, session_id)
+    parse_ctx = STRUCTURED_PARSE_INSTRUCTION + "\n\nReturn JSON only for this transaction:\n" + text
     raw = _invoke_llm(
         text,
         session_id,
         balance,
         lang,
-        context=STRUCTURED_PARSE_INSTRUCTION + "\n\nReturn JSON only for this transaction:\n" + text,
+        context=(grammar + "\n\n" + parse_ctx if grammar else parse_ctx),
     )
     card, clarify = parse_llm_response(raw, text)
     return card, clarify
@@ -310,7 +263,8 @@ def _process_entry(text: str, session_id: str, balance: dict[str, Any] | None, l
 
     card = _parsed_to_card(parsed, text)
     if card:
-        grammar_hint = _grammar_context(text)
+        update_session_from_card(session_id, card)
+        grammar_hint = _grammar_context(text, session_id)
         llm_reply = _invoke_llm(
             text,
             session_id,
@@ -344,6 +298,7 @@ def _process_entry(text: str, session_id: str, balance: dict[str, Any] | None, l
             "engine": "ollama",
         }
     if llm_card:
+        update_session_from_card(session_id, llm_card)
         reply = _template_entry_reply(llm_card, lang)
         return {
             "kind": "entry",
@@ -373,6 +328,8 @@ def khata_chat(
         )
         return {"kind": "chat", "reply": empty, "card": None, "session_id": session_id, "engine": "rules"}
 
+    update_session_from_message(session_id, text)
+
     # Rule-based entry detection + LLM structured fallback
     if _is_transaction_signal(text):
         entry_result = _process_entry(text, session_id, balance, lang)
@@ -380,7 +337,7 @@ def khata_chat(
             return entry_result
 
     # Accounting language Q&A and general conversation via Ollama
-    context = _combined_context(text)
+    context = _combined_context(text, session_id)
     reply = _invoke_llm(text, session_id, balance, lang, context=context)
     return {
         "kind": "chat",
@@ -393,3 +350,4 @@ def khata_chat(
 
 def clear_session(session_id: str) -> None:
     _sessions.pop(session_id, None)
+    clear_session_context(session_id)

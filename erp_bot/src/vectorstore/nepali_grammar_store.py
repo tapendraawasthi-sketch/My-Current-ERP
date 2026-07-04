@@ -390,6 +390,46 @@ def search_nepali_grammar(query: str, k: int = 4) -> list[dict]:
     return results
 
 
+def get_chunks_for_sections(section_ids: list[int], max_per_section: int = 1) -> list[dict]:
+    """Return best chunk per section from the local search index."""
+    if not section_ids:
+        return []
+
+    index = _load_search_index()
+    chunks = index.get("chunks", [])
+    if not chunks:
+        return []
+
+    want = set(section_ids)
+    by_section: dict[int, list[dict]] = {}
+    for chunk in chunks:
+        sid = chunk.get("section_id", 0)
+        if sid in want:
+            by_section.setdefault(sid, []).append(chunk)
+
+    results: list[dict] = []
+    for sid in section_ids:
+        candidates = by_section.get(sid, [])
+        if not candidates:
+            continue
+        # Prefer verbatim sources with more keyword overlap potential
+        candidates.sort(
+            key=lambda c: (1 if "verbatim" in c.get("source", "") else 0, len(c.get("text", ""))),
+            reverse=True,
+        )
+        for chunk in candidates[:max_per_section]:
+            results.append({
+                "section_id": chunk.get("section_id", 0),
+                "title_en": chunk.get("title_en", ""),
+                "title_ne": chunk.get("title_ne", ""),
+                "text": chunk.get("text", ""),
+                "source": chunk.get("source", ""),
+                "chunk_id": chunk.get("chunk_id", ""),
+                "score": 0.0,
+            })
+    return results
+
+
 def format_grammar_context(hits: list[dict]) -> str:
     """Format retrieved grammar sections for LLM system context."""
     if not hits:
