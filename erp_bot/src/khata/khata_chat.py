@@ -10,9 +10,10 @@ from typing import Any
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_ollama import ChatOllama
 
-from ..config import MODEL_NAME, OLLAMA_BASE_URL
+from ..config import KHATA_STRUCTURED_PARSE, MODEL_NAME, OLLAMA_BASE_URL
 from ..falcon_trader import parse_khata_message
 from ..vectorstore.ca_knowledge_store import search_ca_knowledge
+from .structured_parse import STRUCTURED_PARSE_INSTRUCTION, parse_llm_response
 from .system_prompt import KHATA_SYSTEM_PROMPT
 
 _sessions: dict[str, list] = {}
@@ -56,6 +57,15 @@ INTENT_LABELS = {
     "khata_loan_repayment": "Loan Repayment",
     "khata_stock_purchase": "Stock Purchase",
     "khata_contra_cash_bank": "Contra Cash to Bank",
+    "khata_sales_return": "Sales Return",
+    "khata_purchase_return": "Purchase Return",
+    "khata_customer_advance": "Customer Advance",
+    "khata_employee_advance": "Employee Advance",
+    "khata_opening_balance": "Opening Balance",
+    "khata_asset_disposal": "Asset Disposal",
+    "khata_inventory_write_down": "Inventory Write-down",
+    "khata_commission_income": "Commission Income",
+    "khata_rent_expense": "Rent Expense",
 }
 
 
@@ -224,10 +234,90 @@ def _invoke_llm(
 
 def _is_transaction_signal(text: str) -> bool:
     return bool(re.search(
-        r"\b(\d{2,}|saya|hajar|lakh)\b.*\b(udhaar|salary|ssf|gratuity|vat|tds|"
-        r"depreciation|bad\s*debt|loan|capital|drawings|stock|kharcha|bikri|kineko|tiryo)\b",
+        r"\b(\d+|saya|hajar|lakh)\b.*\b(udhaar|salary|ssf|gratuity|vat|tds|"
+        r"depreciation|bad\s*debt|loan|capital|drawings|stock|kharcha|bikri|kineko|kinyo|"
+        r"tiryo|diyo|becheko|sold|purchase|bought|payment|commission|advance|return|rent|bhaada)\b",
         text, re.I,
-    ))
+    )) or bool(re.search(r"\b(sold|bought|paid|received|tiryo|kineko)\b.*\d", text, re.I))
+
+
+def _try_llm_structured_parse(
+    text: str,
+    session_id: str,
+    balance: dict[str, Any] | None,
+    lang: str,
+) -> tuple[dict[str, Any] | None, str | None]:
+    """LLM fallback parser — uses fine-tuned model knowledge, not regex."""
+    if not KHATA_STRUCTURED_PARSE:
+        return None, None
+
+    raw = _invoke_llm(
+        text,
+        session_id,
+        balance,
+        lang,
+        context=STRUCTURED_PARSE_INSTRUCTION + "\n\nReturn JSON only for this transaction:\n" + text,
+    )
+    card, clarify = parse_llm_response(raw, text)
+    return card, clarify
+
+
+def _process_entry(text: str, session_id: str, balance: dict[str, Any] | None, lang: str) -> dict[str, Any] | None:
+    """Rules first, LLM structured parse second."""
+    parsed = parse_khata_message(text)
+
+    if parsed.get("clarifying_question"):
+        return {
+            "kind": "clarify",
+            "reply": _template_clarify(str(parsed["clarifying_question"]), lang),
+            "card": None,
+            "session_id": session_id,
+            "engine": "hybrid",
+        }
+
+    card = _parsed_to_card(parsed, text)
+    if card:
+        llm_reply = _invoke_llm(
+            text,
+            session_id,
+            balance,
+            lang,
+            context=(
+                f"User posted a transaction. Parsed entry (DO NOT change amounts): "
+                f"{json.dumps(card, ensure_ascii=False)}. "
+                f"Confirm the entry in {'English' if lang == 'english' else 'Nepali'} "
+                f"with Dr/Cr explanation. Tell them to click Confirm."
+            ),
+        )
+        reply = llm_reply if len(llm_reply) > 40 else _template_entry_reply(card, lang)
+        return {
+            "kind": "entry",
+            "reply": reply,
+            "card": card,
+            "session_id": session_id,
+            "engine": "hybrid",
+        }
+
+    # LLM structured fallback when rules miss
+    llm_card, llm_clarify = _try_llm_structured_parse(text, session_id, balance, lang)
+    if llm_clarify:
+        return {
+            "kind": "clarify",
+            "reply": _template_clarify(llm_clarify, lang),
+            "card": None,
+            "session_id": session_id,
+            "engine": "ollama",
+        }
+    if llm_card:
+        reply = _template_entry_reply(llm_card, lang)
+        return {
+            "kind": "entry",
+            "reply": reply,
+            "card": llm_card,
+            "session_id": session_id,
+            "engine": "ollama",
+        }
+    return None
 
 
 def khata_chat(
@@ -248,41 +338,11 @@ def khata_chat(
         )
         return {"kind": "chat", "reply": empty, "card": None, "session_id": session_id, "engine": "rules"}
 
-    # Rule-based entry detection (accurate amounts — LLM never invents)
+    # Rule-based entry detection + LLM structured fallback
     if _is_transaction_signal(text):
-        parsed = parse_khata_message(text)
-
-        if parsed.get("clarifying_question"):
-            return {
-                "kind": "clarify",
-                "reply": _template_clarify(str(parsed["clarifying_question"]), lang),
-                "card": None,
-                "session_id": session_id,
-                "engine": "hybrid",
-            }
-
-        card = _parsed_to_card(parsed, text)
-        if card:
-            llm_reply = _invoke_llm(
-                text,
-                session_id,
-                balance,
-                lang,
-                context=(
-                    f"User posted a transaction. Parsed entry (DO NOT change amounts): "
-                    f"{json.dumps(card, ensure_ascii=False)}. "
-                    f"Confirm the entry in {'English' if lang == 'english' else 'Nepali'} "
-                    f"with Dr/Cr explanation. Tell them to click Confirm."
-                ),
-            )
-            reply = llm_reply if len(llm_reply) > 40 else _template_entry_reply(card, lang)
-            return {
-                "kind": "entry",
-                "reply": reply,
-                "card": card,
-                "session_id": session_id,
-                "engine": "hybrid",
-            }
+        entry_result = _process_entry(text, session_id, balance, lang)
+        if entry_result:
+            return entry_result
 
     # Accounting language Q&A and general conversation via Ollama
     context = _framework_context(text) if _is_framework_question(text) else ""

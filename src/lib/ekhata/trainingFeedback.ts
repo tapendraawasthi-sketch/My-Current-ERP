@@ -1,8 +1,9 @@
 /**
  * e-Khata training feedback — stores confirmed/cancelled entries for LoRA fine-tuning.
- * Persists to localStorage; export via exportTrainingFeedback().
+ * Persists to localStorage; syncs to erp_bot POST /khata/feedback when online.
  */
 
+import { EKHATA_BOT_URL } from "./ekhataLlmClient";
 import type { KhataConfirmationCard } from "./types";
 
 const STORAGE_KEY = "ekhata-training-feedback-v1";
@@ -37,6 +38,24 @@ function saveRecords(records: TrainingFeedbackRecord[]): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed));
 }
 
+function syncFeedbackToServer(record: TrainingFeedbackRecord): void {
+  fetch(`${EKHATA_BOT_URL}/khata/feedback`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      id: record.id,
+      label: record.label,
+      narration: record.narration,
+      intent: record.intent,
+      amount: record.amount,
+      party: record.party,
+      journalLines: record.journalLines,
+      correctedNarration: record.correctedNarration,
+      timestamp: record.timestamp,
+    }),
+  }).catch(() => undefined);
+}
+
 export function recordTrainingFeedback(
   card: KhataConfirmationCard,
   label: FeedbackLabel,
@@ -61,6 +80,7 @@ export function recordTrainingFeedback(
   const records = loadRecords();
   records.push(record);
   saveRecords(records);
+  syncFeedbackToServer(record);
 }
 
 export function getTrainingFeedbackCount(): { confirmed: number; cancelled: number; total: number } {

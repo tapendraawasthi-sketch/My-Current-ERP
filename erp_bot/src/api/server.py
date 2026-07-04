@@ -13,12 +13,15 @@ from ..config import (
     BOT_ROOT,
     EMBED_MODEL,
     ERP_PATH,
+    KHATA_STRUCTURED_PARSE,
     MODEL_NAME,
     OLLAMA_BASE_URL,
 )
 from ..ingestion import embedder
 from ..vectorstore import chroma_store
+from ..watcher.watcher import start_watcher
 from ..khata import khata_chat
+from ..khata.feedback_store import append_feedback, feedback_stats
 from ..khata.khata_chat import clear_session as khata_clear_session
 
 app = FastAPI(title="ERP AI Chatbot")
@@ -40,7 +43,7 @@ app.mount(
 
 @app.on_event("startup")
 def on_startup():
-    watcher.start_watcher()
+    start_watcher()
     print("[SERVER] Watcher started")
     if chroma_store.get_indexed_file_count() == 0:
         print(
@@ -73,6 +76,18 @@ class KhataChatResponse(BaseModel):
     card: dict | None = None
     session_id: str
     engine: str = "ollama"
+
+
+class KhataFeedbackRequest(BaseModel):
+    label: str = Field(..., pattern="^(confirmed|cancelled|corrected)$")
+    narration: str = Field(..., min_length=1, max_length=4000)
+    intent: str = Field(..., min_length=1, max_length=128)
+    amount: int = Field(..., ge=0)
+    party: str | None = None
+    journalLines: list[dict] | None = None
+    correctedNarration: str | None = None
+    id: str | None = None
+    timestamp: str | None = None
 
 
 @app.get("/status")
@@ -153,6 +168,13 @@ def khata_clear_session_endpoint(payload: dict) -> dict:
     return {"status": "ok", "session_id": sid or None}
 
 
+@app.post("/khata/feedback")
+def khata_feedback_endpoint(req: KhataFeedbackRequest) -> dict:
+    """Store confirmed/cancelled entries for LoRA re-training."""
+    stored = append_feedback(req.model_dump(exclude_none=True))
+    return {"status": "ok", "id": stored["id"], "stats": feedback_stats()}
+
+
 @app.get("/khata/training/stats")
 def khata_training_stats() -> dict:
     """Return generated corpus line counts for training pipeline monitoring."""
@@ -163,6 +185,7 @@ def khata_training_stats() -> dict:
         "ca-training-corpus-generated.jsonl",
         "lora-instruction-dataset.jsonl",
         "domain-classifier-dataset.jsonl",
+        "user-feedback.jsonl",
     ):
         path = data_dir / name
         if path.exists():
@@ -170,8 +193,10 @@ def khata_training_stats() -> dict:
             stats["corpus_files"][name] = lines
         else:
             stats["corpus_files"][name] = 0
+    stats["user_feedback"] = feedback_stats()
     stats["model"] = MODEL_NAME
-    stats["note"] = "Run npm run generate:ekhata-corpus to refresh"
+    stats["structured_parse"] = KHATA_STRUCTURED_PARSE
+    stats["note"] = "Run npm run generate:ekhata-corpus to refresh; POST /khata/feedback for user entries"
     return stats
 
 

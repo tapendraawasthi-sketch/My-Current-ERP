@@ -38,9 +38,24 @@ bash erp_bot/training/train_ekhata_lora.sh
 
 ## 3. Merge & export to Ollama
 
+**Base model (no GPU fine-tune):**
+
+```bash
+bash erp_bot/training/create_base_model.sh ekhata-ca:7b
+```
+
+**After LoRA training:**
+
+```bash
+bash erp_bot/training/export_to_ollama.sh
+# merges adapter via merge_config.yaml, then ollama create ekhata-ca:7b
+```
+
+Or manually:
+
 ```bash
 llamafactory-cli export merge_config.yaml
-# Create Modelfile and: ollama create ekhata-ca:7b -f Modelfile
+bash erp_bot/training/create_base_model.sh ekhata-ca:7b
 ```
 
 ## 4. Configure erp_bot
@@ -55,7 +70,11 @@ KHATA_USE_STRUCTURED_PARSE=true
 
 ## 5. User feedback loop
 
-Confirmed entries in the e-KHATA panel are saved to `localStorage` (`ekhata-training-feedback-v1`).
+Confirmed entries in the e-KHATA panel are saved to:
+- Browser `localStorage` (`ekhata-training-feedback-v1`)
+- Server `data/ekhata/user-feedback.jsonl` via `POST /khata/feedback` (when erp_bot is running)
+
+Monitor counts: `GET /khata/training/stats`
 
 Export from browser console:
 
