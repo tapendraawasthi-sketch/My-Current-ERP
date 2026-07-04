@@ -7,6 +7,7 @@ Sources:
   - data/ekhata/source/nepali-grammar-reference.txt (structured 33 sections)
   - data/ekhata/source/nepali-grammar-reference-verbatim.txt (Part 1 verbatim)
   - data/ekhata/source/nepali-grammar-reference-verbatim-part2.txt (Part 2 verbatim, sections 34–80)
+  - data/ekhata/source/nepali-grammar-reference-verbatim-part3.txt (Part 3 verbatim, sections 81–105)
   - data/ekhata/nepali-grammar-search-index.json (prebuilt at ingest / commit time)
 """
 
@@ -24,6 +25,7 @@ _REPO_ROOT = _BOT_ROOT.parent
 _GRAMMAR_TXT = _REPO_ROOT / "data" / "ekhata" / "source" / "nepali-grammar-reference.txt"
 _GRAMMAR_VERBATIM = _REPO_ROOT / "data" / "ekhata" / "source" / "nepali-grammar-reference-verbatim.txt"
 _GRAMMAR_VERBATIM_PART2 = _REPO_ROOT / "data" / "ekhata" / "source" / "nepali-grammar-reference-verbatim-part2.txt"
+_GRAMMAR_VERBATIM_PART3 = _REPO_ROOT / "data" / "ekhata" / "source" / "nepali-grammar-reference-verbatim-part3.txt"
 _GRAMMAR_INDEX = _REPO_ROOT / "data" / "ekhata" / "nepali-grammar-index.json"
 _SEARCH_INDEX = _REPO_ROOT / "data" / "ekhata" / "nepali-grammar-search-index.json"
 
@@ -43,7 +45,10 @@ _cached_sections: list[dict] | None = None
 _cached_search_index: dict | None = None
 
 # Financial / NLU sections get a boost for transaction queries
-_FINANCIAL_SECTIONS = frozenset({18, 21, 24, 26, 27, 31, 70, 71, 72, 75, 78, 79})
+_FINANCIAL_SECTIONS = frozenset({
+    18, 21, 24, 26, 27, 31, 70, 71, 72, 75, 78, 79,
+    81, 82, 83, 84, 85, 86, 87, 88, 97, 98, 99, 101, 102, 103, 104,
+})
 
 
 def _tokenize(text: str) -> list[str]:
@@ -117,6 +122,13 @@ def _load_sections() -> list[dict]:
             _parse_sections_from_text(
                 _GRAMMAR_VERBATIM_PART2.read_text(encoding="utf-8"),
                 "nepali-grammar-reference-verbatim-part2.txt",
+            )
+        )
+    if _GRAMMAR_VERBATIM_PART3.exists():
+        sections.extend(
+            _parse_sections_from_text(
+                _GRAMMAR_VERBATIM_PART3.read_text(encoding="utf-8"),
+                "nepali-grammar-reference-verbatim-part3.txt",
             )
         )
 
@@ -429,6 +441,7 @@ def ingest_nepali_grammar() -> dict:
             str(_GRAMMAR_TXT.name),
             str(_GRAMMAR_VERBATIM.name) if _GRAMMAR_VERBATIM.exists() else None,
             str(_GRAMMAR_VERBATIM_PART2.name) if _GRAMMAR_VERBATIM_PART2.exists() else None,
+            str(_GRAMMAR_VERBATIM_PART3.name) if _GRAMMAR_VERBATIM_PART3.exists() else None,
         ],
     }
 
@@ -443,4 +456,5 @@ def grammar_reference_exists() -> bool:
         _GRAMMAR_TXT.exists()
         or _GRAMMAR_VERBATIM.exists()
         or _GRAMMAR_VERBATIM_PART2.exists()
+        or _GRAMMAR_VERBATIM_PART3.exists()
     )

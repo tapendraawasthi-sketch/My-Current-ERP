@@ -75,12 +75,14 @@ Complete Nepali grammar knowledge for interpreting user messages (Devanagari, Ro
 - **Structured:** `data/ekhata/source/nepali-grammar-reference.txt` (33 sections)
 - **Verbatim Part 1:** `data/ekhata/source/nepali-grammar-reference-verbatim.txt` (sections 1–33)
 - **Verbatim Part 2:** `data/ekhata/source/nepali-grammar-reference-verbatim-part2.txt` (sections 34–80)
-- **Part 2 raw paste:** `data/ekhata/source/nepali-grammar-reference-verbatim-part2-raw.txt`
+- **Verbatim Part 3:** `data/ekhata/source/nepali-grammar-reference-verbatim-part3.txt` (sections 81–105, accounting/VAT/NER)
+- **Part 3 raw paste:** `data/ekhata/source/nepali-grammar-reference-verbatim-part3-raw.txt`
 - **Search index:** `data/ekhata/nepali-grammar-search-index.json` (local BM25 — **no ChromaDB, Ollama, or API keys**)
-- **Section map:** `data/ekhata/nepali-grammar-index.json` (80 sections total)
+- **Section map:** `data/ekhata/nepali-grammar-index.json` (105 sections total)
 - **Rebuild reference:** `python3 scripts/build_nepali_grammar_reference.py --force`
 - **Rebuild verbatim Part 1:** `python3 scripts/build_nepali_grammar_reference_verbatim.py`
 - **Rebuild verbatim Part 2:** `python3 scripts/build_nepali_grammar_reference_verbatim_part2.py`
+- **Rebuild verbatim Part 3:** `python3 scripts/build_nepali_grammar_reference_verbatim_part3.py`
 - **Rebuild search index:** `python3 erp_bot/scripts/ingest_nepali_grammar.py`
 
 Ollama chat (`erp_bot/src/khata/khata_chat.py`) retrieves grammar sections automatically via local BM25 search when interpreting Nepali/mixed input.
