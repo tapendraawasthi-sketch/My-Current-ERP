@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import ReportDateRangePicker from "../components/ui/ReportDateRangePicker";
+import { ReportEmptyState } from "../components/ReportEmptyState";
 import NepalFinancialStatementView from "../components/reports/NepalFinancialStatementView";
 import {
   buildBalanceSheetData,
@@ -307,9 +308,9 @@ function BSRow({
   const isZero = Math.abs(row.amount || 0) < 0.005;
   const indent = depth * 16;
 
-  const cls = `flex items-center justify-between px-3 py-1.5 border-b border-gray-100 transition-colors ${
+  const cls = `flex items-center justify-between px-3 py-1.5 border-b border-gray-100 border-l-[3px] transition-colors ${
     row.bold ? "bg-[#f9fafb] font-semibold" : "bg-white"
-  } ${row.isClickable ? "cursor-pointer hover:bg-[#f0f4ff]" : ""} ${
+  } ${row.isClickable ? "cursor-pointer border-l-transparent hover:border-l-[#1557b0] hover:bg-gray-50" : "border-l-transparent"} ${
     row.isPLLine ? "bg-green-50" : ""
   } ${row.isPLAdjusted ? "bg-yellow-50" : ""}`;
 
@@ -407,7 +408,7 @@ function HorizontalBS({
   onClosingStockEdit: () => void;
 }) {
   const thCls =
-    "px-3 py-2.5 text-[10px] font-bold uppercase tracking-wide text-gray-500 bg-[#f5f6fa] border-b border-gray-200";
+    "px-3 py-2.5 text-[10px] font-semibold uppercase tracking-wide text-gray-500 bg-[#f5f6fa] border-b border-gray-200";
 
   const renderSection = (section: any) => (
     <div key={section.id} className="border-b border-gray-200">
@@ -437,7 +438,7 @@ function HorizontalBS({
   return (
     <div className="grid grid-cols-2 gap-4">
       {/* Left: Liabilities + Equity */}
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+      <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
         <div className={`${thCls} text-left flex items-center justify-between`}>
           <span>Liabilities & Capital</span>
           <span>Amount (Rs.)</span>
@@ -462,7 +463,7 @@ function HorizontalBS({
       </div>
 
       {/* Right: Assets */}
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+      <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
         <div className={`${thCls} text-left flex items-center justify-between`}>
           <span>Assets</span>
           <span>Amount (Rs.)</span>
@@ -489,18 +490,18 @@ function VerticalBS({
   onDrillDown: (id: string, name: string, isAccount: boolean) => void;
 }) {
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+    <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
       <div className="px-3 py-2 bg-[#f5f6fa] border-b border-gray-200 flex items-center justify-between">
-        <span className="text-[10px] font-bold uppercase tracking-wide text-gray-500">
+        <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
           Particulars
         </span>
         <div className="flex gap-4">
           {options.showPreviousYear && (
-            <span className="text-[10px] font-bold uppercase tracking-wide text-gray-500 w-28 text-right">
-              Previous Year
+            <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-500 w-28 text-right">
+              Previous year
             </span>
           )}
-          <span className="text-[10px] font-bold uppercase tracking-wide text-gray-500 w-28 text-right">
+          <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-500 w-28 text-right">
             Amount (Rs.)
           </span>
         </div>
@@ -508,8 +509,8 @@ function VerticalBS({
 
       {/* Equity + Liabilities */}
       <div className="px-3 py-1.5 bg-[#eef2ff] border-b border-blue-100">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-[#1557b0]">
-          I. EQUITY AND LIABILITIES
+        <span className="text-[10px] font-semibold uppercase tracking-wide text-[#1557b0]">
+          I. Equity and liabilities
         </span>
       </div>
       {bs.liabilitiesEquity.map((sec) => (
@@ -605,7 +606,7 @@ function GroupSummaryView({
   findRows(bs.assets);
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+    <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
       <div className="px-4 py-3 border-b border-gray-200 bg-[#f9fafb]">
         <h3 className="text-[14px] font-semibold text-gray-800">{groupName}</h3>
         <p className="text-[11px] text-gray-500 mt-0.5">
@@ -613,12 +614,10 @@ function GroupSummaryView({
         </p>
       </div>
       {allRows.length === 0 ? (
-        <div className="p-8 text-center text-[12px] text-gray-500">
-          No accounts in this group for the selected period.
-          <p className="mt-1 text-[10px] text-gray-400">
-            Groups with zero balance are still shown as per settings.
-          </p>
-        </div>
+        <ReportEmptyState
+          message="No accounts in this group"
+          hint="Adjust filters or enable zero-balance accounts in Options."
+        />
       ) : (
         <table className="report-table w-full">
           <thead>
@@ -643,7 +642,11 @@ function GroupSummaryView({
               return (
                 <tr
                   key={i}
-                  className={`transition-colors ${row.accountId ? "hover:bg-[#f0f4ff] cursor-pointer" : ""}`}
+                  className={`transition-colors border-l-[3px] border-l-transparent ${
+                    row.accountId
+                      ? "hover:bg-gray-50 hover:border-l-[#1557b0] cursor-pointer"
+                      : ""
+                  }`}
                   onClick={() => row.accountId && onDrillAccount(row.accountId, row.caption)}
                 >
                   <td className="px-3 py-2.5 text-[12px] text-[#1557b0] font-medium">
@@ -712,7 +715,7 @@ function AccountLedgerView({
   if (!ledger) return null;
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+    <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
       <div className="px-4 py-3 border-b border-gray-200 bg-[#f9fafb] flex items-center justify-between">
         <div>
           <h3 className="text-[14px] font-semibold text-gray-800">{ledger.accountName}</h3>
@@ -776,7 +779,7 @@ function AccountLedgerView({
           {ledger.entries.map((entry, i) => (
             <tr
               key={i}
-              className="hover:bg-[#f0f4ff] cursor-pointer"
+              className="group cursor-pointer border-l-[3px] border-l-transparent hover:border-l-[#1557b0] hover:bg-gray-50"
               onClick={() => onDrillVoucher(entry.voucherId, entry.voucherNo)}
             >
               <td className="px-3 py-2 text-[11px] text-gray-600">{entry.date}</td>
@@ -853,7 +856,7 @@ function VoucherView({ voucherId }: { voucherId: string }) {
   if (!voucher) return <div className="p-8 text-center text-gray-500">Voucher not found</div>;
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden max-w-3xl mx-auto">
+    <div className="bg-white border border-gray-200 rounded-md overflow-hidden max-w-3xl mx-auto">
       <div className="px-4 py-3 border-b border-gray-200 bg-[#f9fafb] flex items-center justify-between">
         <div>
           <h3 className="text-[14px] font-semibold text-gray-800">
@@ -879,7 +882,7 @@ function VoucherView({ voucherId }: { voucherId: string }) {
             {voucher.narration}
           </div>
         )}
-        <table className="report-table w-full border border-gray-200 rounded-lg overflow-hidden">
+        <table className="report-table w-full border border-gray-200 rounded-md overflow-hidden">
           <thead>
             <tr className="bg-[#f5f6fa]">
               <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase">
@@ -1038,7 +1041,7 @@ export default function BalanceSheet() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#e4f1d9] relative">
+    <div className="flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-hidden relative">
       {/* Options Dialog */}
       {showOptions && (
         <OptionsDialog
@@ -1053,19 +1056,18 @@ export default function BalanceSheet() {
         />
       )}
 
-      {/* Toolbar */}
-      <div className="flex items-center justify-between px-4 py-2 bg-[#d4eabd] border-b border-gray-400 shrink-0 shadow-sm z-10 no-print">
+      <div className="flex items-center justify-between px-4 py-2.5 bg-white border-b border-gray-200 shrink-0 z-10 no-print">
         <div className="flex items-center gap-4">
           <div>
             <h1 className="text-[15px] font-semibold text-gray-800">Balance Sheet</h1>
-            <p className="text-[11px] text-gray-600 mt-0.5">
-              {tenant?.name} &nbsp;·&nbsp; As at: {options.toDate}
+            <p className="text-[11px] text-gray-500 mt-0.5">
+              {tenant?.name} · As at {options.toDate}
             </p>
           </div>
           {drillState.level > 0 && (
             <button
               onClick={() => navigateBack()}
-              className="flex items-center gap-1.5 px-3 py-1.5 ml-4 bg-white border border-gray-300 rounded-md text-[12px] font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              className="h-8 px-3 ml-2 bg-white border border-gray-300 rounded-md text-[12px] font-medium text-gray-700 hover:bg-gray-50 inline-flex items-center gap-1.5"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
               Back
@@ -1076,7 +1078,7 @@ export default function BalanceSheet() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => loadBS()}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 rounded-md text-[12px] font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+            className="h-8 w-8 inline-flex items-center justify-center bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
             title="Refresh (F5)"
           >
             <RefreshCw className="h-3.5 w-3.5" />
@@ -1085,14 +1087,14 @@ export default function BalanceSheet() {
           <div className="flex bg-white rounded-md border border-gray-300 overflow-hidden">
             <button
               onClick={() => handleExport("excel")}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-medium text-gray-700 hover:bg-gray-50 border-r border-gray-200 transition-colors"
+              className="h-8 px-3 inline-flex items-center gap-1.5 text-[12px] font-medium text-gray-700 hover:bg-gray-50 border-r border-gray-200"
             >
               <FileSpreadsheet className="h-3.5 w-3.5 text-green-600" />
               Excel
             </button>
             <button
               onClick={() => handleExport("csv")}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              className="h-8 px-3 inline-flex items-center gap-1.5 text-[12px] font-medium text-gray-700 hover:bg-gray-50"
             >
               <FileText className="h-3.5 w-3.5 text-blue-600" />
               CSV
@@ -1101,7 +1103,7 @@ export default function BalanceSheet() {
 
           <button
             onClick={() => window.print()}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 rounded-md text-[12px] font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+            className="h-8 px-3 inline-flex items-center gap-1.5 bg-white border border-gray-300 rounded-md text-[12px] font-medium text-gray-700 hover:bg-gray-50"
           >
             <Printer className="h-3.5 w-3.5" />
             Print
@@ -1109,7 +1111,7 @@ export default function BalanceSheet() {
 
           <button
             onClick={() => setShowOptions(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#1557b0] text-white rounded-md text-[12px] font-medium hover:bg-[#0f4a96] transition-colors ml-2 shadow-sm"
+            className="h-8 px-3 inline-flex items-center gap-1.5 bg-[#1557b0] text-white rounded-md text-[12px] font-medium hover:bg-[#0f4a96] ml-1"
           >
             <Settings className="h-3.5 w-3.5" />
             Options
@@ -1117,25 +1119,70 @@ export default function BalanceSheet() {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 overflow-auto p-4 md:p-6 print-container relative">
+      <div className="flex-1 overflow-auto p-4 md:p-6 print-container relative min-h-0">
         {loading ? (
           <div className="flex items-center justify-center h-64">
-            <RefreshCw className="h-8 w-8 animate-spin text-[#1557b0]" />
+            <div className="flex flex-col items-center gap-3">
+              <RefreshCw className="h-7 w-7 animate-spin text-[#1557b0]" />
+              <p className="text-[12px] text-gray-600 font-medium">Computing balance sheet…</p>
+            </div>
           </div>
         ) : !bsData && !nasData ? (
-          <div className="text-center py-20 text-gray-500 text-[12px]">
-            No data generated. Click Options to begin.
+          <div className="bg-white border border-gray-200 rounded-md">
+            <ReportEmptyState
+              message="Balance sheet not generated"
+              hint='Click Options to configure the report and generate balances.'
+            />
           </div>
         ) : (
           <div className="max-w-[1200px] mx-auto pb-10">
-            {/* Imbalance Warning */}
+            {bsData && drillState.level === 0 && (
+              <div className="no-print grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+                <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Total assets
+                  </p>
+                  <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
+                    {fmt2(bsData.totalAssets)}
+                  </p>
+                </div>
+                <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Liabilities & equity
+                  </p>
+                  <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
+                    {fmt2(bsData.totalLiabilitiesEquity)}
+                  </p>
+                </div>
+                <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Closing stock
+                  </p>
+                  <p className="text-[14px] font-semibold text-[#1557b0] mt-0.5 font-mono">
+                    {fmt2(bsData.closingStock)}
+                  </p>
+                </div>
+                <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Status
+                  </p>
+                  <p
+                    className={`text-[12px] font-semibold mt-1 ${
+                      bsData.isBalanced ? "text-green-700" : "text-red-700"
+                    }`}
+                  >
+                    {bsData.isBalanced ? "Balanced" : `Diff: Rs. ${fmt2(Math.abs(bsData.difference))}`}
+                  </p>
+                </div>
+              </div>
+            )}
+
             {bsData && !bsData.isBalanced && drillState.level === 0 && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3 no-print">
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md flex items-start gap-3 no-print">
                 <AlertTriangle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="text-[13px] font-bold text-red-800">
-                    Balance Sheet is not balanced!
+                  <h4 className="text-[12px] font-semibold text-red-800">
+                    Balance sheet is not balanced
                   </h4>
                   <p className="text-[12px] text-red-700 mt-1">
                     Difference in Opening Balances / Vouchers:{" "}
@@ -1242,13 +1289,22 @@ export default function BalanceSheet() {
               )}
             </div>
 
-            {/* Closing Stock Info (only on main report) */}
             {drillState.level === 0 && bsData && (
-              <div className="mt-6 text-[10px] text-gray-400 text-center no-print flex items-center justify-center gap-2">
-                <Scale className="h-3.5 w-3.5" />
-                Closing Stock Source:{" "}
-                <span className="font-semibold uppercase">{bsData.closingStockSource}</span>
-                (Rs. {fmt2(bsData.closingStock)})
+              <div className="mt-4 px-3 py-2 bg-white border border-gray-200 rounded-md text-[11px] text-gray-500 no-print flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+                <span className="inline-flex items-center gap-1">
+                  <Scale className="h-3.5 w-3.5" />
+                  Closing stock: {bsData.closingStockSource} (Rs. {fmt2(bsData.closingStock)})
+                </span>
+                <span>·</span>
+                <span>
+                  {options.orientation === "horizontal" ? "Horizontal (T-format)" : "Vertical"} ·{" "}
+                  {options.formatId === "schedule-iii" ? "NAS / Schedule III" : "Standard"}
+                </span>
+                <span>·</span>
+                <span>
+                  As at {options.toDate}
+                  {options.showSecondLevel && " · Detailed view"}
+                </span>
               </div>
             )}
           </div>
