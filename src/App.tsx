@@ -131,16 +131,6 @@ const App: React.FC = () => {
   }, [initializeApp]);
 
   useEffect(() => {
-    if (!import.meta.env.DEV) return;
-    if (document.getElementById("erp-bot-loader")) return;
-    const script = document.createElement("script");
-    script.id = "erp-bot-loader";
-    script.src = "http://localhost:8765/static/erp_bot/chat.js";
-    script.async = true;
-    document.body.appendChild(script);
-  }, []);
-
-  useEffect(() => {
     const handleNav = (e: Event) => {
       const customEvent = e as CustomEvent<string>;
       if (customEvent.detail && typeof customEvent.detail === "string") {

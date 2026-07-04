@@ -13,17 +13,15 @@ import {
   Sparkles,
   Loader2,
   Brain,
-  Globe,
   Check,
   Settings,
-  Key,
-  Search,
   Copy,
   Square,
   ChevronDown,
 } from "lucide-react";
 import { MarkdownRenderer } from "../../lib/falcon/markdownRenderer";
-import { useFalconStore, GROQ_MODELS } from "../../store/falconStore";
+import { useFalconStore } from "../../store/falconStore";
+import { ERP_BOT_URL } from "../../lib/erpBotClient";
 import { FalconThinkingPanel } from "./FalconThinkingPanel";
 import type { FalconChatMessage } from "../../store/falconStore";
 
@@ -163,16 +161,18 @@ const MessageBubble = memo(
           <span className="text-[10px] text-gray-400 px-1">{formatTime(msg.timestamp)}</span>
         )}
 
-        {/* Badges — web search + domain */}
+        {/* Badges — sources + domain */}
         {!isUser && !isStreaming && (
           <div className="flex flex-wrap gap-1 px-1">
-            {msg.webSearchUsed && msg.searchQuery && (
-              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] bg-orange-50 text-orange-700 border border-orange-200">
-                <Search className="h-2.5 w-2.5" />
-                Searched: {msg.searchQuery.slice(0, 40)}
-                {msg.searchQuery.length > 40 ? "…" : ""}
-              </span>
-            )}
+            {msg.sources && msg.sources.length > 0 &&
+              msg.sources.slice(0, 4).map((src) => (
+                <span
+                  key={src}
+                  className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-mono bg-gray-100 text-gray-600 border border-gray-200"
+                >
+                  {src}
+                </span>
+              ))}
             {domainBadge && (
               <span
                 className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] border ${domainBadge.cls}`}
@@ -243,81 +243,41 @@ MessageBubble.displayName = "MessageBubble";
 // ─────────────────────────────────────────────────────────────────────────────
 
 const SettingsPanel = memo(({ onClose }: { onClose: () => void }) => {
-  const { apiKey, setApiKey, model, setModel } = useFalconStore();
-  const [draft, setDraft] = useState(apiKey);
-  const [show, setShow] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const { botOnline, indexedFiles, refreshBotStatus } = useFalconStore();
+  const [checking, setChecking] = useState(false);
 
-  const handleSave = () => {
-    setApiKey(draft);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+  const handleRefresh = async () => {
+    setChecking(true);
+    await refreshBotStatus();
+    setChecking(false);
   };
 
   return (
     <div className="border-t border-gray-200 bg-gray-50 px-3 py-3 space-y-3 text-[12px]">
-      {/* API Key row */}
-      <div>
-        <label className="flex items-center gap-1 text-[11px] font-semibold text-gray-600 uppercase tracking-wide mb-1">
-          <Key className="h-3 w-3" /> Groq API Key
-        </label>
-        <div className="flex gap-1">
-          <div className="relative flex-1">
-            <input
-              type={show ? "text" : "password"}
-              value={draft}
-              onChange={(e) => setDraft(e.target.value)}
-              placeholder="gsk_…"
-              className="w-full h-7 px-2 pr-8 text-[11px] border border-gray-300 rounded-md bg-white focus:outline-none focus:border-[#1557b0]"
-            />
-            <button
-              onClick={() => setShow((p) => !p)}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-[10px]"
-            >
-              {show ? "Hide" : "Show"}
-            </button>
-          </div>
-          <button
-            onClick={handleSave}
-            className="h-7 px-2.5 bg-[#1557b0] text-white text-[11px] rounded-md hover:bg-[#0f4a96] flex items-center gap-1"
-          >
-            {saved ? <Check className="h-3 w-3" /> : "Save"}
-          </button>
-        </div>
-        <p className="mt-0.5 text-[10px] text-gray-400">
-          Free key at{" "}
-          <a
-            href="https://console.groq.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500 underline"
-          >
-            console.groq.com
-          </a>
-        </p>
-      </div>
-
-      {/* Model selector */}
       <div>
         <label className="block text-[11px] font-semibold text-gray-600 uppercase tracking-wide mb-1">
-          AI Model
+          Local ERP Bot (no API keys)
         </label>
-        <select
-          value={model}
-          onChange={(e) => setModel(e.target.value)}
-          className="w-full h-7 px-2 text-[11px] border border-gray-300 rounded-md bg-white focus:outline-none focus:border-[#1557b0]"
-        >
-          {GROQ_MODELS.map((m) => (
-            <option key={m.id} value={m.id}>
-              {m.name}
-            </option>
-          ))}
-        </select>
-        <p className="mt-0.5 text-[10px] text-gray-400">
-          Llama 3.3 70B recommended for best reasoning
+        <div className="flex items-center gap-2">
+          <span
+            className={`inline-block h-2 w-2 rounded-full ${botOnline ? "bg-green-500" : "bg-red-500"}`}
+          />
+          <span className="text-[11px] text-gray-700">
+            {botOnline ? `Online — ${indexedFiles} files indexed` : "Offline — start erp_bot locally"}
+          </span>
+        </div>
+        <p className="mt-1 text-[10px] text-gray-500 font-mono break-all">{ERP_BOT_URL}</p>
+        <p className="mt-1 text-[10px] text-gray-400">
+          Run: <code className="bg-gray-200 px-1 rounded">python erp_bot/scripts/start.py</code>
         </p>
       </div>
-
+      <button
+        onClick={handleRefresh}
+        disabled={checking}
+        className="h-7 px-2.5 bg-[#1557b0] text-white text-[11px] rounded-md hover:bg-[#0f4a96] disabled:opacity-50"
+      >
+        {checking ? "Checking…" : "Check connection"}
+      </button>
       <button onClick={onClose} className="text-[11px] text-gray-500 hover:text-gray-700 underline">
         Close settings
       </button>
@@ -340,10 +300,13 @@ export const FalconPanel: React.FC = () => {
     isStreaming,
     currentThinkingSteps,
     context,
+    botOnline,
+    indexedFiles,
     sendMessage,
     rateMessage,
     clearHistory,
     cancelStream,
+    refreshBotStatus,
   } = store;
 
   const [input, setInput] = useState("");
@@ -372,10 +335,13 @@ export const FalconPanel: React.FC = () => {
     return () => window.removeEventListener("falcon-suggestion", handler);
   }, []);
 
-  // Focus textarea on open
+  // Focus textarea on open + refresh bot status
   useEffect(() => {
-    if (isOpen) setTimeout(() => textareaRef.current?.focus(), 100);
-  }, [isOpen]);
+    if (isOpen) {
+      setTimeout(() => textareaRef.current?.focus(), 100);
+      refreshBotStatus();
+    }
+  }, [isOpen, refreshBotStatus]);
 
   // ── Send ──────────────────────────────────────────────────────────────────
   const handleSend = useCallback(async () => {
@@ -409,6 +375,9 @@ export const FalconPanel: React.FC = () => {
         <div className="flex items-center gap-1.5 flex-1 min-w-0">
           <Bot className="h-4 w-4 flex-shrink-0" />
           <span className="font-bold text-[13px] tracking-tight">FALCON AI</span>
+          <span className="text-[10px] text-blue-200 ml-1">
+            {botOnline ? `${indexedFiles} files` : "offline"}
+          </span>
           {isStreaming && (
             <span className="text-[10px] text-blue-200 animate-pulse ml-1">● streaming</span>
           )}
@@ -580,7 +549,7 @@ export const FalconPanel: React.FC = () => {
 
         {/* Hint bar */}
         <p className="mt-1 text-[10px] text-gray-400 leading-tight">
-          Falcon AI can make mistakes · Ctrl+/ to toggle · Enter to send · Shift+Enter for new line
+          Local ERP bot · no API keys · Ctrl+/ to toggle
         </p>
       </div>
     </div>
