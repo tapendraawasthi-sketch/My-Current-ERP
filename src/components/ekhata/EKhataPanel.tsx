@@ -63,7 +63,9 @@ const EKhataPanel: React.FC = () => {
         <BookOpen className="h-4 w-4 flex-shrink-0" />
         <div className="flex-1 min-w-0">
           <span className="font-bold text-[13px] tracking-tight">e-KHATA</span>
-          <p className="text-[10px] text-emerald-100 truncate">{statusLabel(llmOnline, llmModel)}</p>
+          <p className="text-[10px] text-emerald-100 truncate">
+            {statusLabel(llmOnline, llmModel)}
+          </p>
         </div>
         <button
           type="button"

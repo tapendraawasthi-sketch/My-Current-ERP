@@ -124,7 +124,8 @@ export async function processEKhataMessageAsync(
 
   if (preferLlm) {
     try {
-      const { checkEKhataLlmStatus, askEKhataLlm, getEKhataSessionId } = await import("./ekhataLlmClient");
+      const { checkEKhataLlmStatus, askEKhataLlm, getEKhataSessionId } =
+        await import("./ekhataLlmClient");
       const status = await checkEKhataLlmStatus();
       if (status.khataLlm && status.online) {
         const llm = await askEKhataLlm(rawText, getEKhataSessionId(), options.balance);

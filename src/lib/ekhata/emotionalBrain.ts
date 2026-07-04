@@ -126,12 +126,17 @@ function scoreEmotion(text: string, signals: EmotionSignal[]): number {
   return score;
 }
 
-function detectPolitenessLevel(text: string, history: ConversationTurn[]): "casual" | "formal" | "honorific" {
+function detectPolitenessLevel(
+  text: string,
+  history: ConversationTurn[],
+): "casual" | "formal" | "honorific" {
   const t = text.toLowerCase();
   if (/\b(hajur|tapai|jyu|sir|madam|ma'am|respect)\b/i.test(t)) return "honorific";
   if (/\b(timi|timro|you|yo|hey)\b/i.test(t)) return "casual";
   // Default Nepali business context: respectful
-  const userUsesFormal = history.some((h) => h.role === "user" && /\b(hajur|tapai)\b/i.test(h.text));
+  const userUsesFormal = history.some(
+    (h) => h.role === "user" && /\b(hajur|tapai)\b/i.test(h.text),
+  );
   return userUsesFormal ? "honorific" : "formal";
 }
 
@@ -153,11 +158,17 @@ function detectMoodTrend(history: ConversationTurn[]): "improving" | "declining"
   return "stable";
 }
 
-export function detectEmotionalContext(text: string, history: ConversationTurn[] = []): EmotionalContext {
+export function detectEmotionalContext(
+  text: string,
+  history: ConversationTurn[] = [],
+): EmotionalContext {
   const t = text.toLowerCase().trim();
 
   const scores: Array<{ emotion: UserEmotion; score: number }> = [];
-  for (const [emotion, signals] of Object.entries(EMOTION_SIGNALS) as [UserEmotion, EmotionSignal[]][]) {
+  for (const [emotion, signals] of Object.entries(EMOTION_SIGNALS) as [
+    UserEmotion,
+    EmotionSignal[],
+  ][]) {
     if (emotion === "neutral") continue;
     const score = scoreEmotion(t, signals);
     if (score > 0) scores.push({ emotion, score });
@@ -199,7 +210,11 @@ export function detectEmotionalContext(text: string, history: ConversationTurn[]
   };
 }
 
-function selectTone(emotion: UserEmotion, intensity: EmotionalContext["intensity"], isVenting: boolean): ResponseTone {
+function selectTone(
+  emotion: UserEmotion,
+  intensity: EmotionalContext["intensity"],
+  isVenting: boolean,
+): ResponseTone {
   switch (emotion) {
     case "happy":
     case "grateful":
@@ -267,9 +282,7 @@ const EMOTION_OPENERS: Record<UserEmotion, string[]> = {
     "Ekdam exciting! Yo sunera mero pani mood ramro bhayo!",
     "Wow! Tapai ko excitement feel garna sakchu — ramro kura ho!",
   ],
-  grateful: [
-    "Tapai ko kind words le malai khushi lagyo. Yo nai mero kaam ho hajur.",
-  ],
+  grateful: ["Tapai ko kind words le malai khushi lagyo. Yo nai mero kaam ho hajur."],
   neutral: [],
 };
 
@@ -317,9 +330,7 @@ const EMOTIONAL_REPLIES: Record<UserEmotion, string[]> = {
     "Exciting news! Tapai ko enthusiasm feel garna sakchu. Thora aru bhannus!",
     "Wow! Yo sunera mero pani mood ramro bhayo. Badhai cha!",
   ],
-  grateful: [
-    "Tapai ko dhanyabad le malai motivate garchha. Aru kei chahiyo bhane bhannus hajur!",
-  ],
+  grateful: ["Tapai ko dhanyabad le malai motivate garchha. Aru kei chahiyo bhane bhannus hajur!"],
   neutral: [],
 };
 
@@ -336,10 +347,22 @@ const TONE_CLOSERS: Record<ResponseTone, string[]> = {
   empathetic: ["Tapai eklo hunuhunna.", "Ma sunna tayar chhu.", "Chinta nagarnus — milera herau."],
   celebratory: ["Badhai cha!", "Ramro kura ho!", "Khushi manaus!"],
   calming: ["Aram le — sab thik hunchha.", "Ek choti saas linus.", "Milera solve garchhu."],
-  gentle: ["Aafno health khyaal rakhnu.", "Rest garnu pani important ho.", "Ma help garna tayar chhu."],
-  reassuring: ["Chinta nagarnus — step-by-step milaau.", "Sab manage hunchha.", "Ma sanga chha tapai."],
+  gentle: [
+    "Aafno health khyaal rakhnu.",
+    "Rest garnu pani important ho.",
+    "Ma help garna tayar chhu.",
+  ],
+  reassuring: [
+    "Chinta nagarnus — step-by-step milaau.",
+    "Sab manage hunchha.",
+    "Ma sanga chha tapai.",
+  ],
   respectful: ["Tapai ko samaya ko maan garchhu.", "J chahiyo bhannus hajur."],
-  encouraging: ["Tapai garna saknu hunchha!", "Ek step agadi badhau — ma sath ma chhu.", "Confusion clear hunchha, chinta nagarnus."],
+  encouraging: [
+    "Tapai garna saknu hunchha!",
+    "Ek step agadi badhau — ma sath ma chhu.",
+    "Confusion clear hunchha, chinta nagarnus.",
+  ],
 };
 
 function pick<T>(arr: T[]): T {
@@ -371,7 +394,9 @@ export function composeEmotionalReply(
   const userText = options.userText ?? "";
 
   // Standalone emotional response when user is venting/sharing feelings
-  if (shouldUseStandaloneEmotionalReply(primaryEmotion, emotional.intensity, isQuestion, userText)) {
+  if (
+    shouldUseStandaloneEmotionalReply(primaryEmotion, emotional.intensity, isQuestion, userText)
+  ) {
     const standalone = EMOTIONAL_REPLIES[primaryEmotion];
     if (standalone?.length) {
       let reply = pick(standalone);

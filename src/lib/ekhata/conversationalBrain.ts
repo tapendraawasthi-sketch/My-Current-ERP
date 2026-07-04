@@ -9,7 +9,11 @@
 import type { LedgerBalanceSnapshot } from "./conversationEngine";
 import { replyBalance } from "./conversationEngine";
 import { searchKnowledge } from "./nepaliBrain";
-import { composeEmotionalReply, detectEmotionalContext, isEmotionalMessage } from "./emotionalBrain";
+import {
+  composeEmotionalReply,
+  detectEmotionalContext,
+  isEmotionalMessage,
+} from "./emotionalBrain";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -71,7 +75,11 @@ const BALANCE = /\b(kati\s*udhaar|udhaar\s*kati|kitna|baki|total\s*udhaar|hisab\
 
 function detectLanguage(text: string): "nepali" | "english" | "mixed" {
   if (/[\u0900-\u097F]/.test(text)) return "nepali";
-  if (/\b(the|is|are|was|what|who|how|why|when|where|do|does|can|you|your|favourite|favorite)\b/i.test(text))
+  if (
+    /\b(the|is|are|was|what|who|how|why|when|where|do|does|can|you|your|favourite|favorite)\b/i.test(
+      text,
+    )
+  )
     return "english";
   return "mixed";
 }
@@ -108,7 +116,15 @@ export function analyzeQuestion(text: string, history: ConversationTurn[] = []):
     );
 
   if (ABUSE.test(t)) {
-    return { kind: "abuse", topic: null, subject: null, isQuestion, language: lang, confidence: 0.95, rawIntent: "abuse" };
+    return {
+      kind: "abuse",
+      topic: null,
+      subject: null,
+      isQuestion,
+      language: lang,
+      confidence: 0.95,
+      rawIntent: "abuse",
+    };
   }
 
   // Emotional sharing — detect feelings before factual parsing
@@ -132,7 +148,15 @@ export function analyzeQuestion(text: string, history: ConversationTurn[] = []):
   }
 
   if (BALANCE.test(t) && !/\bbalance\s*sheet\b/i.test(t)) {
-    return { kind: "balance", topic: "khata", subject: null, isQuestion, language: lang, confidence: 0.9, rawIntent: "balance_query" };
+    return {
+      kind: "balance",
+      topic: "khata",
+      subject: null,
+      isQuestion,
+      language: lang,
+      confidence: 0.9,
+      rawIntent: "balance_query",
+    };
   }
 
   // Bot gender / identity questions — must come BEFORE affirmation check
@@ -159,23 +183,65 @@ export function analyzeQuestion(text: string, history: ConversationTurn[] = []):
     /\bwho\s*are\s*you\b/i.test(t) ||
     /\b(ta\s*ko\s*ho|timro\s*naam|your\s*name|about\s*you|introduce\s*yourself)\b/i.test(t)
   ) {
-    return { kind: "about_bot_identity", topic: null, subject: "bot", isQuestion: true, language: lang, confidence: 0.9, rawIntent: "identity" };
+    return {
+      kind: "about_bot_identity",
+      topic: null,
+      subject: "bot",
+      isQuestion: true,
+      language: lang,
+      confidence: 0.9,
+      rawIntent: "identity",
+    };
   }
 
-  if (/\b(timi|tapai|you)\s*(lai|ko)\s*(k\s*asto\s*lag|feel|feelings|emotion|dukhi|khushi)\b/i.test(t)) {
-    return { kind: "about_bot_feelings", topic: null, subject: "bot", isQuestion: true, language: lang, confidence: 0.85, rawIntent: "feelings" };
+  if (
+    /\b(timi|tapai|you)\s*(lai|ko)\s*(k\s*asto\s*lag|feel|feelings|emotion|dukhi|khushi)\b/i.test(t)
+  ) {
+    return {
+      kind: "about_bot_feelings",
+      topic: null,
+      subject: "bot",
+      isQuestion: true,
+      language: lang,
+      confidence: 0.85,
+      rawIntent: "feelings",
+    };
   }
 
   if (/\b(timi|tapai|you)\s*(ko\s*)?(umar|age|kati\s*barsa|how\s*old)\b/i.test(t)) {
-    return { kind: "about_bot_age", topic: null, subject: "bot", isQuestion: true, language: lang, confidence: 0.88, rawIntent: "age" };
+    return {
+      kind: "about_bot_age",
+      topic: null,
+      subject: "bot",
+      isQuestion: true,
+      language: lang,
+      confidence: 0.88,
+      rawIntent: "age",
+    };
   }
 
   if (CAPABILITY.test(t)) {
-    return { kind: "capability", topic: null, subject: "bot", isQuestion, language: lang, confidence: 0.9, rawIntent: "capability" };
+    return {
+      kind: "capability",
+      topic: null,
+      subject: "bot",
+      isQuestion,
+      language: lang,
+      confidence: 0.9,
+      rawIntent: "capability",
+    };
   }
 
   if (HELP.test(t) || /^(madat|help|sahayog)$/i.test(t)) {
-    return { kind: "help", topic: null, subject: null, isQuestion: isQuestion || /^(madat|help|sahayog)$/i.test(t), language: lang, confidence: 0.85, rawIntent: "help" };
+    return {
+      kind: "help",
+      topic: null,
+      subject: null,
+      isQuestion: isQuestion || /^(madat|help|sahayog)$/i.test(t),
+      language: lang,
+      confidence: 0.85,
+      rawIntent: "help",
+    };
   }
 
   // Opinion / preference questions
@@ -208,42 +274,134 @@ export function analyzeQuestion(text: string, history: ConversationTurn[] = []):
 
   // Factual question types
   if (/\b(what\s*is|what\s*are|k\s*ho|ke\s*ho|k\s*chha|ke\s*chha)\b/i.test(t)) {
-    return { kind: "factual_what", topic: extractTopic(t), subject: null, isQuestion: true, language: lang, confidence: 0.8, rawIntent: "what_is" };
+    return {
+      kind: "factual_what",
+      topic: extractTopic(t),
+      subject: null,
+      isQuestion: true,
+      language: lang,
+      confidence: 0.8,
+      rawIntent: "what_is",
+    };
   }
   if (/\b(how\s*(to|do|does|can|is)|kasari|k\s*garne)\b/i.test(t)) {
-    return { kind: "factual_how", topic: extractTopic(t), subject: null, isQuestion: true, language: lang, confidence: 0.8, rawIntent: "how_to" };
+    return {
+      kind: "factual_how",
+      topic: extractTopic(t),
+      subject: null,
+      isQuestion: true,
+      language: lang,
+      confidence: 0.8,
+      rawIntent: "how_to",
+    };
   }
   if (/\b(why|kina|k\s*le)\b/i.test(t)) {
-    return { kind: "factual_why", topic: extractTopic(t), subject: null, isQuestion: true, language: lang, confidence: 0.75, rawIntent: "why" };
+    return {
+      kind: "factual_why",
+      topic: extractTopic(t),
+      subject: null,
+      isQuestion: true,
+      language: lang,
+      confidence: 0.75,
+      rawIntent: "why",
+    };
   }
   if (/\b(when|kahile|k\s*baje)\b/i.test(t)) {
-    return { kind: "factual_when", topic: extractTopic(t), subject: null, isQuestion: true, language: lang, confidence: 0.75, rawIntent: "when" };
+    return {
+      kind: "factual_when",
+      topic: extractTopic(t),
+      subject: null,
+      isQuestion: true,
+      language: lang,
+      confidence: 0.75,
+      rawIntent: "when",
+    };
   }
   if (/\b(where|kaha|k\s*ma)\b/i.test(t)) {
-    return { kind: "factual_where", topic: extractTopic(t), subject: null, isQuestion: true, language: lang, confidence: 0.75, rawIntent: "where" };
+    return {
+      kind: "factual_where",
+      topic: extractTopic(t),
+      subject: null,
+      isQuestion: true,
+      language: lang,
+      confidence: 0.75,
+      rawIntent: "where",
+    };
   }
   if (/\b(who|ko\s*ho|kun\s*ho)\b/i.test(t)) {
-    return { kind: "factual_who", topic: extractTopic(t), subject: null, isQuestion: true, language: lang, confidence: 0.75, rawIntent: "who" };
+    return {
+      kind: "factual_who",
+      topic: extractTopic(t),
+      subject: null,
+      isQuestion: true,
+      language: lang,
+      confidence: 0.75,
+      rawIntent: "who",
+    };
   }
 
   if (GREETING.test(t) && t.length < 40) {
-    return { kind: "greeting", topic: null, subject: null, isQuestion: false, language: lang, confidence: 0.9, rawIntent: "greeting" };
+    return {
+      kind: "greeting",
+      topic: null,
+      subject: null,
+      isQuestion: false,
+      language: lang,
+      confidence: 0.9,
+      rawIntent: "greeting",
+    };
   }
   if (FAREWELL.test(t)) {
-    return { kind: "farewell", topic: null, subject: null, isQuestion: false, language: lang, confidence: 0.9, rawIntent: "farewell" };
+    return {
+      kind: "farewell",
+      topic: null,
+      subject: null,
+      isQuestion: false,
+      language: lang,
+      confidence: 0.9,
+      rawIntent: "farewell",
+    };
   }
   if (THANKS.test(t)) {
-    return { kind: "thanks", topic: null, subject: null, isQuestion: false, language: lang, confidence: 0.9, rawIntent: "thanks" };
+    return {
+      kind: "thanks",
+      topic: null,
+      subject: null,
+      isQuestion: false,
+      language: lang,
+      confidence: 0.9,
+      rawIntent: "thanks",
+    };
   }
 
   // Small talk
-  if (/\b(k\s*cha|k\s*xa|kasto\s*cha|how\s*are\s*you|sanchai|thik\s*cha|what'?s\s*up|wassup)\b/i.test(t)) {
-    return { kind: "small_talk", topic: null, subject: null, isQuestion: true, language: lang, confidence: 0.85, rawIntent: "small_talk" };
+  if (
+    /\b(k\s*cha|k\s*xa|kasto\s*cha|how\s*are\s*you|sanchai|thik\s*cha|what'?s\s*up|wassup)\b/i.test(
+      t,
+    )
+  ) {
+    return {
+      kind: "small_talk",
+      topic: null,
+      subject: null,
+      isQuestion: true,
+      language: lang,
+      confidence: 0.85,
+      rawIntent: "small_talk",
+    };
   }
 
   // Math
   if (/\b(\d+\s*[\+\-\*\/x]\s*\d+)\b/.test(t)) {
-    return { kind: "math", topic: "math", subject: null, isQuestion: false, language: lang, confidence: 0.95, rawIntent: "math" };
+    return {
+      kind: "math",
+      topic: "math",
+      subject: null,
+      isQuestion: false,
+      language: lang,
+      confidence: 0.95,
+      rawIntent: "math",
+    };
   }
 
   // Affirmation — only standalone short responses, NOT embedded in questions
@@ -252,7 +410,15 @@ export function analyzeQuestion(text: string, history: ConversationTurn[] = []):
     !isQuestion &&
     /^(ho|hunchha|thik|sahi|okay|ok|yes|huss|huncha|ramro|nice|good|la|hajur)$/i.test(t)
   ) {
-    return { kind: "affirmation", topic: null, subject: null, isQuestion: false, language: lang, confidence: 0.8, rawIntent: "affirmation" };
+    return {
+      kind: "affirmation",
+      topic: null,
+      subject: null,
+      isQuestion: false,
+      language: lang,
+      confidence: 0.8,
+      rawIntent: "affirmation",
+    };
   }
 
   if (
@@ -260,18 +426,42 @@ export function analyzeQuestion(text: string, history: ConversationTurn[] = []):
     !isQuestion &&
     /^(hoina|chaina|chhaina|xaina|no|nope|nah|na|pardaina)$/i.test(t)
   ) {
-    return { kind: "negation", topic: null, subject: null, isQuestion: false, language: lang, confidence: 0.8, rawIntent: "negation" };
+    return {
+      kind: "negation",
+      topic: null,
+      subject: null,
+      isQuestion: false,
+      language: lang,
+      confidence: 0.8,
+      rawIntent: "negation",
+    };
   }
 
   // Follow-up detection from history
   if (history.length >= 2 && t.length < 30 && !isQuestion) {
     const lastAssistant = [...history].reverse().find((h) => h.role === "assistant");
     if (lastAssistant && /\?(|\n)/.test(lastAssistant.text)) {
-      return { kind: "follow_up", topic: extractTopic(t), subject: null, isQuestion: false, language: lang, confidence: 0.7, rawIntent: "follow_up" };
+      return {
+        kind: "follow_up",
+        topic: extractTopic(t),
+        subject: null,
+        isQuestion: false,
+        language: lang,
+        confidence: 0.7,
+        rawIntent: "follow_up",
+      };
     }
   }
 
-  return { kind: "unknown", topic: extractTopic(t), subject: null, isQuestion, language: lang, confidence: 0.3, rawIntent: "unknown" };
+  return {
+    kind: "unknown",
+    topic: extractTopic(t),
+    subject: null,
+    isQuestion,
+    language: lang,
+    confidence: 0.3,
+    rawIntent: "unknown",
+  };
 }
 
 // ─── Knowledge for opinion / conversational topics ───────────────────────────
@@ -329,18 +519,10 @@ const BOT_RESPONSES: Record<QuestionKind, string[]> = {
   factual_how: [
     "Kasari garna bhannu khojnu bhayo? Thora detail dinus — step-by-step bataidinchhu!",
   ],
-  factual_why: [
-    "Kina bhannu khojnu bhayo? Context thora dinus — reason explain garchhu.",
-  ],
-  factual_when: [
-    "Kahile ko kura ho? Thora aru detail dinus.",
-  ],
-  factual_where: [
-    "Kaha ko barema sodhnu bhayo? Thora clear garnus.",
-  ],
-  factual_who: [
-    "Ko ko barema sodhnu bhayo? Thora detail dinus.",
-  ],
+  factual_why: ["Kina bhannu khojnu bhayo? Context thora dinus — reason explain garchhu."],
+  factual_when: ["Kahile ko kura ho? Thora aru detail dinus."],
+  factual_where: ["Kaha ko barema sodhnu bhayo? Thora clear garnus."],
+  factual_who: ["Ko ko barema sodhnu bhayo? Thora detail dinus."],
   small_talk: [
     "Ma thik chhu, dhanyabad! Tapai kasto hunuhunchha? Aaja khata ma kei kaam chha?",
     "Ramro cha! Ma harek bela tayar chhu tapaiko laagi. Ke help garna sakchhu?",
@@ -365,22 +547,13 @@ const BOT_RESPONSES: Record<QuestionKind, string[]> = {
     "Hajur, mero brain chha! Ma yesto kaam garna sakchhu:\n\n📒 **Khata kaam:** Udhaar, bikri, kharid, kharcha — sabai record\n📚 **Accounting gyan:** Balance sheet, P&L, journal, debit-credit\n💰 **Tax info:** VAT 13%, income tax slabs, TDS rates\n🇳🇵 **Nepal knowledge:** Rajdhani, janasankhya, festivals, provinces\n🍛 **Saamaanya gyan:** Khana, mausam, health, entertainment\n🧮 **Calculation:** Simple math\n\nMa sabai kura jandina — tara dherai kura janchhu! Sodhnus!",
   ],
   balance: [],
-  affirmation: [
-    "Ramro! Aru kei chahiyo?",
-    "Thik chha! K garne aba?",
-  ],
-  negation: [
-    "Huncha, kei pardaina. Chahiye bela pheri aaunus!",
-    "OK, choddim. Aru kura?",
-  ],
+  affirmation: ["Ramro! Aru kei chahiyo?", "Thik chha! K garne aba?"],
+  negation: ["Huncha, kei pardaina. Chahiye bela pheri aaunus!", "OK, choddim. Aru kura?"],
   abuse: [
     "Yesto shabda prayog nagarnus hajur. Ma tapailai help garna chahanchu — ramro tarikale sodhnus na!",
   ],
   math: [],
-  follow_up: [
-    "Thik cha! Aru kei thaaha paunu cha?",
-    "Bujhe! Ani aru kei?",
-  ],
+  follow_up: ["Thik cha! Aru kei thaaha paunu cha?", "Bujhe! Ani aru kei?"],
   user_emotion: [],
   unknown: [
     "Hmm, yo sawal thora complex lagyo. Thora aru detail dinus — ma koshish garchhu!",
@@ -400,11 +573,20 @@ function tryMath(text: string): string | null {
   const b = parseFloat(mathMatch[3]);
   let result: number;
   switch (op) {
-    case "+": result = a + b; break;
-    case "-": result = a - b; break;
-    case "*": result = a * b; break;
-    case "/": result = b === 0 ? NaN : a / b; break;
-    default: return null;
+    case "+":
+      result = a + b;
+      break;
+    case "-":
+      result = a - b;
+      break;
+    case "*":
+      result = a * b;
+      break;
+    case "/":
+      result = b === 0 ? NaN : a / b;
+      break;
+    default:
+      return null;
   }
   if (isNaN(result)) return "Zero le divide garna mildaina!";
   return `${a} ${mathMatch[2]} ${b} = ${result.toLocaleString()}`;
@@ -412,8 +594,16 @@ function tryMath(text: string): string | null {
 
 function getGreeting(): string {
   const hour = new Date().getHours();
-  if (hour < 12) return pick(["Subha prabhat! Bihanai ko energy ramro! Aaja ko khata suru garau?", "Good morning! Aja ramro din huncha. K kaam chha?"]);
-  if (hour >= 17) return pick(["Subha sandhya! Din ramro bityo? Hisab milaaune bela bhayo hola.", "Good evening! Beluka ko aram kaisi?"]);
+  if (hour < 12)
+    return pick([
+      "Subha prabhat! Bihanai ko energy ramro! Aaja ko khata suru garau?",
+      "Good morning! Aja ramro din huncha. K kaam chha?",
+    ]);
+  if (hour >= 17)
+    return pick([
+      "Subha sandhya! Din ramro bityo? Hisab milaaune bela bhayo hola.",
+      "Good evening! Beluka ko aram kaisi?",
+    ]);
   return pick(BOT_RESPONSES.greeting);
 }
 
@@ -456,7 +646,11 @@ function buildBaseReply(
 
   if (analysis.kind === "greeting") return getGreeting();
 
-  if (analysis.kind === "opinion_preference" && analysis.topic && OPINION_RESPONSES[analysis.topic]) {
+  if (
+    analysis.kind === "opinion_preference" &&
+    analysis.topic &&
+    OPINION_RESPONSES[analysis.topic]
+  ) {
     return pick(OPINION_RESPONSES[analysis.topic]);
   }
 
