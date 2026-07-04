@@ -1,14 +1,11 @@
 /**
- * e-Khata Autonomous Brain
- *
- * Self-directed reasoning: decides WHEN to search the web, HOW to answer,
- * and handles system/meta questions — not rigid keyword routing.
+ * e-Khata Autonomous Brain — self-directed reasoning + REAL web search.
  */
 
-import { searchWeb, formatSearchResults, isCurrentEventQuery } from "../falconWebSearch";
 import { searchKnowledge } from "./nepaliBrain";
 import { composeEmotionalReply, detectEmotionalContext } from "./emotionalBrain";
 import { generateConversationalReply, type ConversationTurn } from "./conversationalBrain";
+import { formatRealSearchAnswer, searchWebReal } from "./ekhataWebSearch";
 import type { LedgerBalanceSnapshot } from "./conversationEngine";
 
 export interface AutonomousBrainOptions {
@@ -25,31 +22,14 @@ export interface AutonomousBrainResult {
   sources: string[];
 }
 
-// ─── Meta / system questions (bot status, online, capabilities) ─────────────
-
 const META_ONLINE =
   /\b(am\s+i\s+online|online\s*du|online\s*chu|online\s*chau|online\s*ho|ahile\s+online|k\s*ma\s+online|ke\s+ma\s+online|connected|connection|internet|llm\s*online|ollama\s*online|timi\s+online|tapai\s+online)\b/i;
 
 const META_STATUS =
-  /\b(what\s+are\s+you|who\s+are\s+you|what\s+can\s+you|what\s+do\s+you|timi\s+ko\s+ho|ke\s+ho\s+timi|your\s+brain|mero\s+brain|status|health)\b/i;
+  /\b(what\s+are\s+you|who\s+are\s+you|what\s+can\s+you|what\s+do\s+you|timi\s+ko\s+ho|ke\s+ho\s+timi|your\s+brain|mero\s+brain)\b/i;
 
-const EXPLICIT_SEARCH =
-  /\b(search|google|look\s*up|find\s+online|web\s*search|internet\s*ma\s*khoj|online\s*ma\s*her|khojera\s*bhannu)\b/i;
-
-const NEEDS_WEB =
-  /\b(today|now|current|latest|news|weather|mausam|price\s+of|exchange\s+rate|who\s+won|election|population|score|live|real\s*time|update|aaja\s+ko|ahile\s+ko)\b/i;
-
-const GENERAL_KNOWLEDGE =
-  /\b(what\s+is|who\s+is|where\s+is|when\s+did|how\s+much|tell\s+me\s+about|k\s*ho|ke\s+ho|kun\s+ho|kati\s+ho|explain|define)\b/i;
-
-function buildSearchQuery(text: string): string {
-  const q = text
-    .replace(/\b(k\s*ho|ke\s+ho|bhannu|sodh|please|hajur|tapai|timi)\b/gi, " ")
-    .replace(/\?+$/, "")
-    .trim();
-  if (q.length < 4) return text.replace(/\?+$/, "").trim();
-  return q;
-}
+const FACTUAL_QUESTION =
+  /\b(who\s+is|what\s+is|where\s+is|when\s+did|how\s+much|tell\s+me\s+about|k\s*ho|ke\s+ho|kun\s+ho|kati\s+ho|explain|define|search|google|look\s*up|latest|current|today|news|weather|mausam|population|capital|president|prime\s+minister|\bpm\b)\b/i;
 
 function answerMetaQuestion(text: string, opts: AutonomousBrainOptions): string | null {
   const t = text.toLowerCase();
@@ -57,28 +37,23 @@ function answerMetaQuestion(text: string, opts: AutonomousBrainOptions): string 
   if (META_ONLINE.test(t)) {
     if (opts.llmOnline) {
       return (
-        `Hajur, hajur online hunuhunchha — internet connection chha! 🟢\n\n` +
-        `e-Khata pani online chha. Ollama LLM ${opts.llmModel ? `(${opts.llmModel})` : ""} connected chha — full AI brain active.\n\n` +
-        `Khata entry, accounting sawal, wa kunai pani kura — sodhnus!`
+        `Hajur online hunuhunchha! 🟢 e-Khata + Ollama LLM ${opts.llmModel ? `(${opts.llmModel})` : ""} connected chha.\n\nSodhnus — ma web search pani garchhu!`
       );
     }
     return (
-      `Hajur online hunuhunchha — tapai ko browser/internet chaliraheko chha! 🟢\n\n` +
-      `e-Khata ko **built-in autonomous brain** active chha (CA + Emotional AI + Web Search). ` +
-      `Ollama LLM ahile offline chha — tara ma web search ra local brain bata help garchhu.\n\n` +
-      `Ke help garna sakchhu?`
+      `Hajur online hunuhunchha! 🟢\n\n` +
+      `e-Khata **Autonomous Brain** active chha — web search, CA accounting, emotional AI. ` +
+      `Ollama offline chha tara ma Wikipedia bata real-time khojchhu.`
     );
   }
 
-  if (META_STATUS.test(t) && !/\b(vat|tax|debit|credit|balance)\b/i.test(t)) {
+  if (META_STATUS.test(t) && !/\b(vat|tax|debit|credit)\b/i.test(t)) {
     return (
-      `Ma **e-Khata Autonomous Brain** ho — tapaiko self-contained AI sahayogi:\n\n` +
-      `🧠 **Autonomous reasoning** — sawal bujhchhu, khojchu, jawaf dinchhu\n` +
-      `🌐 **Web search** — aaja ko news, weather, facts — internet bata khojchhu\n` +
-      `📒 **CA accounting** — journal entries, natural language ma ("sold 200 cups @ 50")\n` +
-      `💚 **Emotional AI** — tapai ko mood bujhchhu, empathetic jawaf\n` +
-      `${opts.llmOnline ? `🟢 Ollama LLM online (${opts.llmModel ?? "connected"})` : "🟡 Ollama offline — built-in brain + web search active"}\n\n` +
-      `Kunai pani sawal sodhnus — ma afai sochera jawaf dinchhu!`
+      `Ma **e-Khata Autonomous Brain** ho:\n\n` +
+      `🌐 **Real web search** — Wikipedia bata facts khojchhu\n` +
+      `📒 **CA accounting** — natural language entries\n` +
+      `💚 **Emotional AI** — empathetic replies\n` +
+      `${opts.llmOnline ? `🟢 Ollama: ${opts.llmModel ?? "online"}` : "🟡 Built-in brain + Wikipedia search"}`
     );
   }
 
@@ -88,55 +63,18 @@ function answerMetaQuestion(text: string, opts: AutonomousBrainOptions): string 
 export function shouldAutonomousWebSearch(text: string): boolean {
   const t = text.toLowerCase().trim();
   if (META_ONLINE.test(t) || META_STATUS.test(t)) return false;
-  if (EXPLICIT_SEARCH.test(t)) return true;
-  if (isCurrentEventQuery(t) || NEEDS_WEB.test(t)) return true;
-  // Unknown general knowledge without local answer
-  if (GENERAL_KNOWLEDGE.test(t) && t.length > 8) return true;
-  return false;
-}
-
-async function performWebSearch(
-  query: string,
-): Promise<{ text: string | null; sources: string[] }> {
-  try {
-    const results = await searchWeb(buildSearchQuery(query), { timeout: 8000 });
-    if (results.error && results.results.length === 0) {
-      return { text: null, sources: [] };
-    }
-    const formatted = formatSearchResults(results);
-    const sources = results.results.map((r) => r.url ?? r.source).filter(Boolean) as string[];
-    return { text: formatted, sources };
-  } catch {
-    return { text: null, sources: [] };
-  }
-}
-
-function composeWebAnswer(
-  query: string,
-  searchText: string,
-  lang: "nepali" | "english" | "mixed",
-): string {
-  const intro =
-    lang === "english"
-      ? "I searched the web for you:\n\n"
-      : "Maile internet bata khojera yo paye:\n\n";
-
-  const body = searchText.replace(/^Web search results for '[^']+':\n?/, "").trim();
-
-  const closer =
-    lang === "english" ? "\n\nNeed anything else?" : "\n\nAru kei chahiyo bhane sodhnus!";
-
-  return `${intro}${body}${closer}`;
+  if (FACTUAL_QUESTION.test(t)) return true;
+  return t.length > 10 && /\?/.test(t);
 }
 
 function detectLang(text: string): "nepali" | "english" | "mixed" {
   if (/[\u0900-\u097F]/.test(text)) return "nepali";
-  if (/\b(the|is|are|what|who|how|am|i|online|you|your)\b/i.test(text)) return "english";
+  if (/\b(the|is|are|what|who|how|pm|of|nepal)\b/i.test(text)) return "english";
   return "mixed";
 }
 
 /**
- * Main autonomous brain — async, self-directed, web-search capable.
+ * Main autonomous brain — ALWAYS searches web for factual questions.
  */
 export async function askAutonomousBrain(
   text: string,
@@ -146,7 +84,7 @@ export async function askAutonomousBrain(
   const lang = detectLang(trimmed);
   const emotional = detectEmotionalContext(trimmed, options.history ?? []);
 
-  // 1. Meta/system questions — instant accurate answer
+  // 1. Meta/system
   const meta = answerMetaQuestion(trimmed, options);
   if (meta) {
     return {
@@ -157,8 +95,9 @@ export async function askAutonomousBrain(
     };
   }
 
-  // 2. Local knowledge base first (fast, no network)
-  const local = searchKnowledge(trimmed);
+  // 2. Local KB only for accounting/tax (not general facts)
+  const isAccountingLocal = /\b(vat|tds|tax|debit|credit|balance\s*sheet|journal|gaap|nepal\s+tax)\b/i.test(trimmed);
+  const local = isAccountingLocal ? searchKnowledge(trimmed) : null;
   if (local && !shouldAutonomousWebSearch(trimmed)) {
     return {
       reply: composeEmotionalReply(local, emotional, { userText: trimmed }),
@@ -168,21 +107,33 @@ export async function askAutonomousBrain(
     };
   }
 
-  // 3. Web search when brain decides it needs external info
+  // 3. REAL web search for factual questions — mandatory, no dumb fallback
   if (shouldAutonomousWebSearch(trimmed)) {
-    const { text: searchText, sources } = await performWebSearch(trimmed);
-    if (searchText) {
-      const reply = composeWebAnswer(trimmed, searchText, lang);
+    const result = await searchWebReal(trimmed);
+    if (result) {
+      const reply = formatRealSearchAnswer(result, lang);
       return {
         reply: composeEmotionalReply(reply, emotional, { userText: trimmed }),
         engine: "web-search",
         searchedWeb: true,
-        sources,
+        sources: [result.url ?? "wikipedia"],
       };
     }
+
+    // Search attempted but failed — honest message, NOT "thora detail dinus"
+    const failMsg =
+      lang === "english"
+        ? `I tried searching Wikipedia but couldn't find a clear answer for "${trimmed}". Could you rephrase?`
+        : `Maile Wikipedia ma khojem tara "${trimmed}" ko clear jawaf paina. Thora aru tarikale sodhnus?`;
+    return {
+      reply: failMsg,
+      engine: "web-search",
+      searchedWeb: true,
+      sources: [],
+    };
   }
 
-  // 4. Fallback — conversational + emotional brain
+  // 4. Conversational fallback (not factual)
   const conversational = generateConversationalReply(trimmed, {
     balance: options.balance,
     history: options.history,

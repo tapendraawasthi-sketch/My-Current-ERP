@@ -196,14 +196,33 @@ async function processWithAutonomousBrain(
 ): Promise<EKhataProcessResult> {
   const trimmed = rawText.trim();
   const normalizedText = normalizeNepaliText(trimmed);
+  const lang = detectUserLanguage(trimmed);
 
-  // Sync path: accounting work + entries first
-  const syncResult = processEKhataMessage(trimmed, options);
-  if (syncResult.kind !== "chat" || syncResult.engine !== "brain") {
-    return syncResult;
+  // 1. Accounting entries (sync)
+  if (shouldTryWorkParse(trimmed)) {
+    const parsed = parseKhataMessage(trimmed, normalizedText);
+    if (parsed.clarifying_question) {
+      return { kind: "clarify", reply: localizeClarify(parsed.clarifying_question, lang), normalizedText, engine: "ca" };
+    }
+    if (parsed.card) {
+      return {
+        kind: "entry",
+        reply: buildLocalizedEntryReply(parsed.card, lang),
+        normalizedText,
+        parseResult: parsed,
+        card: parsed.card,
+        engine: "ca",
+      };
+    }
   }
 
-  // Chat fallback → autonomous brain (web search + reasoning)
+  // 2. Accounting language Q&A (sync)
+  const accountingAnswer = understandAccountingLanguage(trimmed);
+  if (accountingAnswer.kind === "answer" && accountingAnswer.confidence >= 0.6) {
+    return { kind: "chat", reply: accountingAnswer.reply, normalizedText, engine: "accounting-brain" };
+  }
+
+  // 3. Everything else → autonomous brain (web search + conversation)
   const { askAutonomousBrain } = await import("./autonomousBrain");
   const autonomous = await askAutonomousBrain(trimmed, {
     balance: options.balance,

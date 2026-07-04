@@ -182,5 +182,12 @@ check(
   onlineQ.reply.slice(0, 80),
 );
 
+const pmQ = await askAutonomousBrain("who is pm of nepal", { llmOnline: false });
+check(
+  "who is pm of nepal web search",
+  pmQ.searchedWeb && pmQ.engine === "web-search" && (pmQ.reply.includes("Prime Minister") || pmQ.reply.includes("Balendra") || pmQ.reply.includes("serving")),
+  pmQ.reply.slice(0, 120),
+);
+
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed > 0 ? 1 : 0);

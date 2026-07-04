@@ -67,3 +67,5 @@ export {
 export type { WorkSignals } from "./smartWorkBrain";
 export { askAutonomousBrain, shouldAutonomousWebSearch } from "./autonomousBrain";
 export type { AutonomousBrainOptions, AutonomousBrainResult } from "./autonomousBrain";
+export { searchWebReal, expandSearchQueries, formatRealSearchAnswer } from "./ekhataWebSearch";
+export type { RealSearchResult } from "./ekhataWebSearch";
