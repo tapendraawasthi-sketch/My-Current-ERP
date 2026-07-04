@@ -2,7 +2,28 @@
 
 import { ERP_MODULES, type ERPModuleDoc } from "./falcon/erpCodeKnowledge";
 
+/** Longer phrases first — matched in descending length order. */
 const QUERY_MODULE_MAP: Record<string, string> = {
+  "journal voucher": "journal-voucher",
+  "journal entry": "journal-voucher",
+  "journal-voucher": "journal-voucher",
+  "payment voucher": "payment-voucher",
+  "receipt voucher": "receipt-voucher",
+  "contra voucher": "contra-voucher",
+  "sales return": "sales-return",
+  "purchase return": "purchase-return",
+  "sales invoice": "sales-invoice",
+  "purchase invoice": "purchase-invoice",
+  "general ledger": "general-ledger",
+  "chart of accounts": "chart-of-accounts",
+  "profit and loss": "profit-loss",
+  "profit & loss": "profit-loss",
+  "trial balance": "trial-balance",
+  "balance sheet": "balance-sheet",
+  "day book": "day-book",
+  "vat report": "vat-reports",
+  "vat return": "vat-reports",
+  "stock summary": "stock-summary",
   journal: "journal-voucher",
   ledger: "general-ledger",
   invoice: "sales-invoice",
@@ -24,6 +45,7 @@ const QUERY_MODULE_MAP: Record<string, string> = {
 const ROUTE_ALIASES: Record<string, string> = {
   ledger: "general-ledger",
   billing: "sales-invoice",
+  sales: "sales-invoice",
   journal: "journal-voucher",
   receipt: "receipt-voucher",
   payment: "payment-voucher",
@@ -36,32 +58,77 @@ const ROUTE_ALIASES: Record<string, string> = {
   daybook: "day-book",
 };
 
+const QUERY_KEYWORDS_SORTED = Object.entries(QUERY_MODULE_MAP).sort(
+  (a, b) => b[0].length - a[0].length,
+);
+
 const DEFAULT_SUGGESTIONS = [
   "How do I create a sales invoice?",
   "What is a journal voucher?",
   "How do I view general ledger?",
 ];
 
-function resolveModuleKey(query: string, route?: string): string | undefined {
-  if (route) {
-    const normalized = route.toLowerCase().replace(/\//g, "");
-    if (ROUTE_ALIASES[normalized]) return ROUTE_ALIASES[normalized];
-    if (ERP_MODULES[normalized]) return normalized;
-    const byRoute = Object.values(ERP_MODULES).find(
-      (m) => m.route === normalized || m.id === normalized,
-    );
-    if (byRoute) return byRoute.id;
-    const partial = Object.keys(ERP_MODULES).find(
-      (k) => k.includes(normalized) || normalized.includes(k),
-    );
-    if (partial) return partial;
-  }
-
-  const q = query.toLowerCase();
-  for (const [keyword, moduleId] of Object.entries(QUERY_MODULE_MAP)) {
-    if (q.includes(keyword)) return moduleId;
+function matchExplicitQuery(query: string): string | undefined {
+  const q = query.toLowerCase().trim();
+  if (!q) return undefined;
+  for (const [keyword, moduleId] of QUERY_KEYWORDS_SORTED) {
+    if ((keyword.includes(" ") || keyword.includes("-")) && q.includes(keyword)) {
+      return moduleId;
+    }
   }
   return undefined;
+}
+
+/** Short queries where a module keyword is the main subject (e.g. "journal", "journal how?"). */
+function matchTopicQuery(query: string): string | undefined {
+  const q = query.toLowerCase().replace(/[?.,!]/g, "").trim();
+  const words = q.split(/\s+/).filter(Boolean);
+  if (words.length === 0 || words.length > 4) return undefined;
+  for (const [keyword, moduleId] of QUERY_KEYWORDS_SORTED) {
+    if (keyword.includes(" ") || keyword.includes("-")) continue;
+    if (words.some((w) => w === keyword || w.startsWith(keyword))) return moduleId;
+  }
+  return undefined;
+}
+
+function matchSingleWordQuery(query: string): string | undefined {
+  const q = query.toLowerCase().trim();
+  if (!q) return undefined;
+  for (const [keyword, moduleId] of QUERY_KEYWORDS_SORTED) {
+    if (!keyword.includes(" ") && !keyword.includes("-") && q.includes(keyword)) {
+      return moduleId;
+    }
+  }
+  return undefined;
+}
+
+function matchRouteToModule(route: string): string | undefined {
+  const normalized = route.toLowerCase().replace(/\//g, "");
+  if (ROUTE_ALIASES[normalized]) return ROUTE_ALIASES[normalized];
+  if (ERP_MODULES[normalized]) return normalized;
+  const byRoute = Object.values(ERP_MODULES).find(
+    (m) => m.route === normalized || m.id === normalized,
+  );
+  if (byRoute) return byRoute.id;
+  return Object.keys(ERP_MODULES).find(
+    (k) => k.includes(normalized) || normalized.includes(k),
+  );
+}
+
+/** Explicit query terms beat page route; route beats incidental keyword mentions in longer questions. */
+function resolveModuleKey(query: string, route?: string): string | undefined {
+  const explicit = matchExplicitQuery(query);
+  if (explicit) return explicit;
+
+  const topic = matchTopicQuery(query);
+  if (topic) return topic;
+
+  if (route) {
+    const fromRoute = matchRouteToModule(route);
+    if (fromRoute) return fromRoute;
+  }
+
+  return matchSingleWordQuery(query);
 }
 
 function formatModuleAnswer(doc: ERPModuleDoc): string {
@@ -132,18 +199,10 @@ export function buildModuleSuggestions(moduleKey?: string): string[] {
 export function buildBuiltinErpAnswer(query: string, route?: string): string {
   const moduleKey = resolveModuleKey(query, route);
   const doc = moduleKey ? ERP_MODULES[moduleKey] : undefined;
-
   if (doc) return formatModuleAnswer(doc);
-
-  if (route) {
-    const routeKey = resolveModuleKey("", route);
-    const routeDoc = routeKey ? ERP_MODULES[routeKey] : undefined;
-    if (routeDoc) return formatModuleAnswer(routeDoc);
-  }
-
   return formatOverviewAnswer();
 }
 
 export function resolveBuiltinModuleKey(query: string, route?: string): string | undefined {
-  return resolveModuleKey(query, route) ?? (route ? resolveModuleKey("", route) : undefined);
+  return resolveModuleKey(query, route);
 }
