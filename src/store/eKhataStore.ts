@@ -1,7 +1,14 @@
 import { create } from "zustand";
 import { confirmKhataEntry } from "../lib/ekhata/confirmKhata";
 import { replyCancel, replySaved } from "../lib/ekhata/conversationEngine";
-import { processEKhataMessageAsync } from "../lib/ekhata/processMessage";
+import { recordTrainingFeedback } from "../lib/ekhata/trainingFeedback";
+import {
+  createConversationContext,
+  processEKhataMessageAsync,
+  updateContextAfterConfirm,
+  updateContextAfterEntry,
+  type EKhataConversationContext,
+} from "../lib/ekhata/processMessage";
 import type { ConversationTurn } from "../lib/ekhata/conversationalBrain";
 import type { EKhataChatMessage, KhataConfirmationCard } from "../lib/ekhata/types";
 import { useStore } from "./useStore";
@@ -12,14 +19,16 @@ function genId(): string {
 
 function buildWelcome(): string {
   return (
-    "Namaste! Ma **e-Khata Autonomous Brain** — tapaiko self-contained AI sahayogi.\n\n" +
-    "Ma afai sochchhu, internet bata khojchhu, ra jawaf dinchhu:\n" +
-    "• Accounting entries — natural language ('sold 200 cups @ Rs 50')\n" +
-    "• Web search — news, weather, facts, current info\n" +
-    "• Emotional chat — tapai ko mood bujhchhu\n\n" +
-    "🧠 Autonomous Brain · 🌐 Web Search · 📒 CA Entries · Ollama when online"
+    "Namaste! Ma **e-Khata CA Brain** — tapaiko accounting intelligence sahayogi.\n\n" +
+    "Ma bujhchhu ra jawaf dinchhu:\n" +
+    "• **Accounting entries** — Nepali, English, Roman Nepali ('ram le 500 ko saman kinyo')\n" +
+    "• **IFRS/NAS concepts** — sampatti, dayitwo, recognition, VAT/SSF/TDS\n" +
+    "• **Three languages** — Devanagari, Roman, English\n\n" +
+    "📒 CA Entries · 📘 Framework Q&A · 🧠 Ollama when online"
   );
 }
+
+let conversationContext: EKhataConversationContext = createConversationContext();
 
 function getKhataBalance() {
   const accounts = useStore.getState().accounts ?? [];
@@ -71,10 +80,15 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
     try {
       const { checkEKhataLlmStatus } = await import("../lib/ekhata/processMessage");
       const status = await checkEKhataLlmStatus();
+      const online = status.khataLlm && status.online;
       set({
-        llmOnline: status.khataLlm && status.online,
+        llmOnline: online,
         llmModel: status.model,
       });
+      if (online) {
+        const { syncAllTrainingFeedbackToServer } = await import("../lib/ekhata/trainingFeedback");
+        syncAllTrainingFeedbackToServer();
+      }
     } catch {
       set({ llmOnline: false, llmModel: undefined });
     }
@@ -105,9 +119,11 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
         history,
         llmOnline: get().llmOnline,
         llmModel: get().llmModel,
+        conversationContext,
       });
 
       if (result.kind === "entry" && result.card) {
+        conversationContext = updateContextAfterEntry(conversationContext, result.card, trimmed);
         set((s) => ({
           messages: [
             ...s.messages,
@@ -179,6 +195,8 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
           },
         ],
       }));
+      conversationContext = updateContextAfterConfirm(conversationContext, voucherNo);
+      recordTrainingFeedback(card, "confirmed");
     } catch (error) {
       set((s) => ({
         isLoading: false,
@@ -196,6 +214,8 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
   },
 
   cancelPending: () => {
+    const card = get().pendingCard;
+    if (card) recordTrainingFeedback(card, "cancelled");
     set((s) => ({
       pendingCard: null,
       messages: [
@@ -211,6 +231,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
   },
 
   clearHistory: () => {
+    conversationContext = createConversationContext();
     set({
       messages: [
         {

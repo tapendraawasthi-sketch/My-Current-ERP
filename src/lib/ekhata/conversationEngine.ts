@@ -85,15 +85,51 @@ export function replyHelp(): string {
   );
 }
 
-export function replyBalance(snapshot?: LedgerBalanceSnapshot): string {
+export function replyBalance(snapshot?: LedgerBalanceSnapshot, query?: string): string {
   if (!snapshot) {
     return "Abhi balance herna khata account load hudai cha. Feri sodhnus.";
   }
+
+  const q = (query ?? "").toLowerCase();
+  if (/\b(payable|creditor|udhaar\s*bhitra|linu\s*baki|dine\s*baki|supplier\s*due)\b/i.test(q)) {
+    return (
+      `Tapai ko **payable** (udhaar bhitra / linu baki): NPR ${snapshot.udhaarIn.toLocaleString()}\n\n` +
+      "Naya entry garna sidhai transaction lekhna milcha."
+    );
+  }
+  if (/\b(receivable|debtor|udhaar\s*baahir|dainu\s*baki|customer\s*due)\b/i.test(q)) {
+    return (
+      `Tapai ko **receivable** (udhaar baahir / dainu baki): NPR ${snapshot.udhaarOut.toLocaleString()}\n\n` +
+      "Naya entry garna sidhai transaction lekhna milcha."
+    );
+  }
+
   return (
     `Tapai ko khata snapshot:\n` +
-    `• Udharo baahir (dainu baki): NPR ${snapshot.udhaarOut.toLocaleString()}\n` +
-    `• Udharo bhitra (linu baki): NPR ${snapshot.udhaarIn.toLocaleString()}\n\n` +
+    `• Udharo baahir (receivable / dainu baki): NPR ${snapshot.udhaarOut.toLocaleString()}\n` +
+    `• Udharo bhitra (payable / linu baki): NPR ${snapshot.udhaarIn.toLocaleString()}\n\n` +
     "Naya entry garna sidhai transaction lekhna milcha."
+  );
+}
+
+/** Live ledger balance queries — not balance-sheet definitions. */
+export function isLedgerBalanceQuery(text: string): boolean {
+  const trimmed = text.trim();
+  if (!trimmed || /\bbalance\s*sheet\b/i.test(trimmed)) return false;
+
+  const n = normalizeNepaliText(trimmed);
+  if (CHAT_BALANCE.test(n)) return true;
+
+  const hasBalanceIntent =
+    /\b(kati|kitna|total|balance|how\s*much|my|mero|current)\b/i.test(trimmed) ||
+    /\b(kati|kitna|total)\b/i.test(n);
+
+  if (!hasBalanceIntent) return false;
+
+  return (
+    /\b(receivable|debtor|payable|creditor|udhaar|udharo|udhar|dainu\s*baki|linu\s*baki|dine\s*baki)\b/i.test(
+      trimmed,
+    ) || /\b(my|mero)\s*(debtors?|receivables?|payables?|creditors?|udhaar)\b/i.test(trimmed)
   );
 }
 

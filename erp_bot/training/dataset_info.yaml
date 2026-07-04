@@ -1,0 +1,15 @@
+ekhata_instruction:
+  file_name: lora-instruction-dataset.jsonl
+  formatting: alpaca
+  columns:
+    prompt: instruction
+    query: input
+    response: output
+
+ekhata_domain:
+  file_name: domain-classifier-dataset.jsonl
+  formatting: alpaca
+  columns:
+    prompt: instruction
+    query: input
+    response: output

@@ -1,10 +1,13 @@
 /**
- * e-Khata Autonomous Brain — self-directed reasoning + REAL web search.
+ * e-Khata Autonomous Brain — self-directed reasoning + REAL web search (external facts only).
  */
 
+import { shouldBlockWebSearch } from "./domainRouter";
 import { searchKnowledge } from "./nepaliBrain";
 import { composeEmotionalReply, detectEmotionalContext } from "./emotionalBrain";
 import { generateConversationalReply, type ConversationTurn } from "./conversationalBrain";
+import { understandAccountingLanguage } from "./accountingLanguageBrain";
+import { understandConceptualFramework } from "./conceptualFrameworkBrain";
 import { formatRealSearchAnswer, searchWebReal } from "./ekhataWebSearch";
 import type { LedgerBalanceSnapshot } from "./conversationEngine";
 
@@ -29,7 +32,7 @@ const META_STATUS =
   /\b(what\s+are\s+you|who\s+are\s+you|what\s+can\s+you|what\s+do\s+you|timi\s+ko\s+ho|ke\s+ho\s+timi|your\s+brain|mero\s+brain)\b/i;
 
 const FACTUAL_QUESTION =
-  /\b(who\s+is|what\s+is|where\s+is|when\s+did|how\s+much|tell\s+me\s+about|k\s*ho|ke\s+ho|kun\s+ho|kati\s+ho|explain|define|search|google|look\s*up|latest|current|today|news|weather|mausam|population|capital|president|prime\s+minister|\bpm\b)\b/i;
+  /\b(who\s+is|what\s+is|where\s+is|when\s+did|how\s+much|tell\s+me\s+about|k\s*ho|ke\s*ho|kun\s+ho|kati\s+ho|explain|define|search|google|look\s*up|latest|current|today|news|weather|mausam|population|capital|president|prime\s+minister|\bpm\b)\b/i;
 
 function answerMetaQuestion(text: string, opts: AutonomousBrainOptions): string | null {
   const t = text.toLowerCase();
@@ -37,23 +40,23 @@ function answerMetaQuestion(text: string, opts: AutonomousBrainOptions): string 
   if (META_ONLINE.test(t)) {
     if (opts.llmOnline) {
       return (
-        `Hajur online hunuhunchha! 🟢 e-Khata + Ollama LLM ${opts.llmModel ? `(${opts.llmModel})` : ""} connected chha.\n\nSodhnus — ma web search pani garchhu!`
+        `Hajur online hunuhunchha! e-Khata + Ollama LLM ${opts.llmModel ? `(${opts.llmModel})` : ""} connected chha.\n\nAccounting sodhnus — ma CA brain bata jawaf dinchhu; general facts ko lagi Wikipedia khojchhu.`
       );
     }
     return (
-      `Hajur online hunuhunchha! 🟢\n\n` +
-      `e-Khata **Autonomous Brain** active chha — web search, CA accounting, emotional AI. ` +
-      `Ollama offline chha tara ma Wikipedia bata real-time khojchhu.`
+      `Hajur online hunuhunchha!\n\n` +
+      `e-Khata **CA Brain** active chha — accounting entries, IFRS framework, bilingual Q&A. ` +
+      `Ollama offline chha; external facts ko lagi Wikipedia khojna sakinchha.`
     );
   }
 
-  if (META_STATUS.test(t) && !/\b(vat|tax|debit|credit)\b/i.test(t)) {
+  if (META_STATUS.test(t) && !/\b(vat|tax|debit|credit|sampatti|asset)\b/i.test(t)) {
     return (
-      `Ma **e-Khata Autonomous Brain** ho:\n\n` +
-      `🌐 **Real web search** — Wikipedia bata facts khojchhu\n` +
-      `📒 **CA accounting** — natural language entries\n` +
-      `💚 **Emotional AI** — empathetic replies\n` +
-      `${opts.llmOnline ? `🟢 Ollama: ${opts.llmModel ?? "online"}` : "🟡 Built-in brain + Wikipedia search"}`
+      `Ma **e-Khata CA Brain** ho:\n\n` +
+      `📒 **Accounting entries** — Nepali/English natural language\n` +
+      `📘 **IFRS/NAS framework** — conceptual Q&A\n` +
+      `🌐 **Web search** — external facts matra (accounting Wikipedia ma jadaina)\n` +
+      `${opts.llmOnline ? `🟢 Ollama: ${opts.llmModel ?? "online"}` : "🟡 Built-in CA brain + Wikipedia for general facts"}`
     );
   }
 
@@ -63,6 +66,7 @@ function answerMetaQuestion(text: string, opts: AutonomousBrainOptions): string 
 export function shouldAutonomousWebSearch(text: string): boolean {
   const t = text.toLowerCase().trim();
   if (META_ONLINE.test(t) || META_STATUS.test(t)) return false;
+  if (shouldBlockWebSearch(text)) return false;
   if (FACTUAL_QUESTION.test(t)) return true;
   return t.length > 10 && /\?/.test(t);
 }
@@ -73,9 +77,6 @@ function detectLang(text: string): "nepali" | "english" | "mixed" {
   return "mixed";
 }
 
-/**
- * Main autonomous brain — ALWAYS searches web for factual questions.
- */
 export async function askAutonomousBrain(
   text: string,
   options: AutonomousBrainOptions = {},
@@ -84,65 +85,81 @@ export async function askAutonomousBrain(
   const lang = detectLang(trimmed);
   const emotional = detectEmotionalContext(trimmed, options.history ?? []);
 
-  // 1. Meta/system
   const meta = answerMetaQuestion(trimmed, options);
   if (meta) {
     return {
-      reply: composeEmotionalReply(meta, emotional, { userText: trimmed }),
+      reply: composeEmotionalReply(meta, emotional, { userText: trimmed, factual: true }),
       engine: "autonomous",
       searchedWeb: false,
       sources: ["system"],
     };
   }
 
-  // 2. Local KB only for accounting/tax (not general facts)
-  const isAccountingLocal = /\b(vat|tds|tax|debit|credit|balance\s*sheet|journal|gaap|nepal\s+tax)\b/i.test(trimmed);
-  const local = isAccountingLocal ? searchKnowledge(trimmed) : null;
-  if (local && !shouldAutonomousWebSearch(trimmed)) {
+  // Accounting domain — never Wikipedia
+  if (shouldBlockWebSearch(trimmed)) {
+    const framework = understandConceptualFramework(trimmed);
+    if (framework.kind === "answer" && framework.confidence >= 0.5) {
+      return {
+        reply: composeEmotionalReply(framework.reply, emotional, { userText: trimmed, factual: true }),
+        engine: "autonomous",
+        searchedWeb: false,
+        sources: ["framework-brain"],
+      };
+    }
+
+    const accounting = understandAccountingLanguage(trimmed);
+    if (accounting.kind === "answer" && accounting.confidence >= 0.55) {
+      return {
+        reply: composeEmotionalReply(accounting.reply, emotional, { userText: trimmed, factual: true }),
+        engine: "autonomous",
+        searchedWeb: false,
+        sources: ["accounting-brain"],
+      };
+    }
+
+    const local = searchKnowledge(trimmed);
+    if (local) {
+      return {
+        reply: composeEmotionalReply(local, emotional, { userText: trimmed, factual: true }),
+        engine: "autonomous",
+        searchedWeb: false,
+        sources: ["knowledge-base"],
+      };
+    }
+
+    const fallback = generateConversationalReply(trimmed, {
+      balance: options.balance,
+      history: options.history,
+    });
     return {
-      reply: composeEmotionalReply(local, emotional, { userText: trimmed }),
-      engine: "autonomous",
+      reply: composeEmotionalReply(fallback, emotional, { userText: trimmed }),
+      engine: "brain",
       searchedWeb: false,
-      sources: ["knowledge-base"],
+      sources: ["conversational"],
     };
   }
 
-  // 3. REAL web search for factual questions — mandatory, no dumb fallback
   if (shouldAutonomousWebSearch(trimmed)) {
     const result = await searchWebReal(trimmed);
     if (result) {
       const reply = formatRealSearchAnswer(result, lang);
       return {
-        reply: composeEmotionalReply(reply, emotional, { userText: trimmed }),
+        reply: composeEmotionalReply(reply, emotional, { userText: trimmed, factual: true }),
         engine: "web-search",
         searchedWeb: true,
         sources: [result.url ?? "wikipedia"],
       };
     }
-
-    // Search attempted but failed — honest message, NOT "thora detail dinus"
-    const failMsg =
-      lang === "english"
-        ? `I tried searching Wikipedia but couldn't find a clear answer for "${trimmed}". Could you rephrase?`
-        : `Maile Wikipedia ma khojem tara "${trimmed}" ko clear jawaf paina. Thora aru tarikale sodhnus?`;
-    return {
-      reply: failMsg,
-      engine: "web-search",
-      searchedWeb: true,
-      sources: [],
-    };
   }
 
-  // 4. Conversational fallback (not factual)
-  const conversational = generateConversationalReply(trimmed, {
+  const reply = generateConversationalReply(trimmed, {
     balance: options.balance,
     history: options.history,
   });
-
   return {
-    reply: conversational,
+    reply: composeEmotionalReply(reply, emotional, { userText: trimmed }),
     engine: "brain",
     searchedWeb: false,
-    sources: ["conversational-brain"],
+    sources: ["conversational"],
   };
 }

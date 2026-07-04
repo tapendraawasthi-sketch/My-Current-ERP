@@ -7,6 +7,7 @@
 import { findTemplateByKeywords, getEntryTemplate } from "./caEntryTemplates";
 import { CLASSIFICATION_GUIDE } from "./caAccountClassification";
 import { formatJournalPreview } from "./caEntryEngine";
+import { isAccountingDomain } from "./domainRouter";
 import type { KhataIntent, KhataConfirmationCard } from "./types";
 import { KHATA_INTENT_LABELS } from "./types";
 
@@ -56,11 +57,21 @@ export const ACCOUNTING_LEXICON: Array<{
   { concept: "depreciation", en: ["depreciation", "asset write down"], ne: ["depreciation", "mulya ghata"], intent: "khata_depreciation", accountClass: "expense" },
   { concept: "capital", en: ["capital", "owner investment"], ne: ["capital", "puni", "lagaani"], intent: "khata_capital_introduced", accountClass: "equity" },
   { concept: "drawings", en: ["drawings", "owner withdrawal"], ne: ["drawings", "nikasne"], intent: "khata_drawings", accountClass: "equity" },
-  { concept: "stock", en: ["stock", "inventory", "cogs"], ne: ["stock", "saman", "inventory"], intent: "khata_stock_purchase", accountClass: "stock" },
+  { concept: "stock", en: ["stock", "inventory", "cogs", "wip", "merchandise"], ne: ["stock", "saman", "inventory", "mal"], intent: "khata_stock_purchase", accountClass: "stock" },
+  { concept: "goodwill", en: ["goodwill", "intangible"], ne: ["goodwill", "sarbhaumik"], accountClass: "asset" },
+  { concept: "provision", en: ["provision", "allowance", "doubtful debt"], ne: ["provision", "andaaja", "andaaj"], intent: "khata_provision_bad_debt", accountClass: "liability" },
+  { concept: "capital", en: ["capital", "owner investment", "share capital", "equity capital"], ne: ["capital", "puni", "lagaani", "punji"], intent: "khata_capital_introduced", accountClass: "equity" },
+  { concept: "trial_balance", en: ["trial balance", "tb"], ne: ["trial balance", "parikshan lekha"], accountClass: "asset" },
+  { concept: "balance_sheet", en: ["balance sheet", "statement of financial position"], ne: ["balance sheet", "sampatti dayitwo"], accountClass: "asset" },
+  { concept: "bank_overdraft", en: ["bank overdraft", "overdraft"], ne: ["bank overdraft", "atiran"], accountClass: "liability" },
+  { concept: "deferred_revenue", en: ["deferred revenue", "unearned revenue", "customer advance"], ne: ["advance", "unearned"], intent: "khata_customer_advance", accountClass: "liability" },
+  { concept: "commission", en: ["commission income", "commission"], ne: ["commission", "aamdani commission"], intent: "khata_commission_income", accountClass: "income" },
+  { concept: "rent", en: ["rent expense", "rent paid"], ne: ["bhaada", "bhada", "bhada kharcha"], intent: "khata_rent_expense", accountClass: "expense" },
+  { concept: "sales_return", en: ["sales return", "credit note"], ne: ["sales return", "firta", "saman firta"], intent: "khata_sales_return", accountClass: "income" },
   { concept: "outstanding", en: ["outstanding", "receivable", "payable", "accrued"], ne: ["baki", "outstanding", "baki kharcha"], intent: "khata_outstanding_expense", accountClass: "liability" },
   { concept: "debit", en: ["debit", "dr", "left side"], ne: ["debit", "jama", "baaya"], accountClass: "asset" },
   { concept: "credit", en: ["credit", "cr", "right side"], ne: ["credit", "kharcha side", "daaya"], accountClass: "liability" },
-  { concept: "asset", en: ["asset", "resources owned"], ne: ["sampatti", "asset"], accountClass: "asset" },
+  { concept: "asset", en: ["asset", "resources owned", "goodwill", "prepaid", "receivable"], ne: ["sampatti", "sampati", "asset", "sampada"], intent: undefined, accountClass: "asset" },
   { concept: "liability", en: ["liability", "obligation", "payable"], ne: ["rin", "dayitwo", "liability"], accountClass: "liability" },
   { concept: "equity", en: ["equity", "capital", "owner stake"], ne: ["puni", "equity", "malik ko hissa"], accountClass: "equity" },
   { concept: "income", en: ["income", "revenue", "sales"], ne: ["aamdani", "income", "bikri"], accountClass: "income" },
@@ -105,6 +116,18 @@ function scoreConcepts(text: string): Array<{ concept: string; score: number; en
   const lower = text.toLowerCase();
   const results: Array<{ concept: string; score: number; entry?: (typeof ACCOUNTING_LEXICON)[0] }> = [];
 
+  const aliases: Record<string, string> = {
+    sampati: "asset",
+    sampatti: "asset",
+    sampada: "asset",
+    dayitwo: "liability",
+    rin: "liability",
+    aamdani: "income",
+    kharcho: "expense",
+    punji: "capital",
+    andaaj: "provision",
+  };
+
   for (const term of ACCOUNTING_LEXICON) {
     let score = 0;
     for (const w of term.en) {
@@ -116,10 +139,20 @@ function scoreConcepts(text: string): Array<{ concept: string; score: number; en
     if (score > 0) results.push({ concept: term.concept, score, entry: term });
   }
 
+  for (const [alias, concept] of Object.entries(aliases)) {
+    if (lower.includes(alias)) {
+      const entry = ACCOUNTING_LEXICON.find((t) => t.concept === concept);
+      if (entry) results.push({ concept, score: alias.length + 5, entry });
+    }
+  }
+
   return results.sort((a, b) => b.score - a.score);
 }
 
 function isAccountingLanguageQuery(text: string): boolean {
+  if (isAccountingDomain(text) && /\b(what|how|when|which|k\s|kasari|explain|define|entry|classify|difference|scenario|bujh|sodh|bhannu|matlab|k\s*ho|ke\s*ho|kun\s*ho|arth)\b/i.test(text)) {
+    return true;
+  }
   const concepts = scoreConcepts(text);
   const qType = classifyQuestionType(text);
   if (concepts.length >= 1 && qType !== "general") return true;
@@ -187,8 +220,48 @@ function answerDefinition(concept: string, lang: UserLanguage): string | null {
       ne: "Credit (Cr) lekh ko daaya paalo ho. Liability, Equity, ra Income badhda Credit hunchha.",
     },
     asset: {
-      en: CLASSIFICATION_GUIDE.asset.definition + " Examples: Cash, Bank, Debtors, Stock, Fixed Assets.",
-      ne: "Sampatti (Asset) — business le aafno maane resources. Udaharan: Cash, Bank, Debtors, Stock, Fixed Assets.",
+      en: "Asset (sampatti) — a present economic resource controlled by the entity from past events (IFRS Para 4.3). In khata: Cash, Bank, Debtors, Stock, Fixed Assets, Prepaid, Input VAT.",
+      ne: "Sampatti (Asset) — entity le niyantran ma liyeko present economic resource (IFRS Para 4.3). Khata ma: Cash, Bank, Debtors, Stock, Fixed Assets, Prepaid, Input VAT.",
+    },
+    goodwill: {
+      en: "Goodwill is an intangible asset — excess paid over fair value of net assets in a business acquisition. Not charity/goodwill in ordinary English.",
+      ne: "Goodwill intangible asset ho — business kharid garda net asset ko fair value bhanda badhi tireko rakam. Sadharan 'goodwill' (dharma) hoina.",
+    },
+    provision: {
+      en: "Accounting provision = liability of uncertain timing/amount (e.g. provision for bad debts, warranty). Dr Expense, Cr Provision.",
+      ne: "Accounting provision = uncertain timing/amount ko liability (jastai bad debt provision). Dr Expense, Cr Provision.",
+    },
+    stock: {
+      en: "Stock/Inventory = goods held for sale. Asset on balance sheet; COGS matched on sale.",
+      ne: "Stock/Inventory = becna lai rakheko saman. Balance sheet ma asset; becda COGS match hunchha.",
+    },
+    capital: {
+      en: "Capital (equity) = owner's investment in the business. Distinct from 'capital city' or loan.",
+      ne: "Capital (puni/equity) = malik ko business ma lagaani. Shahar ko capital wa loan hoina.",
+    },
+    bank_overdraft: {
+      en: "Bank overdraft is a **liability** — you owe the bank, not an asset.",
+      ne: "Bank overdraft **liability** ho — tapai bank lai tirna baki, asset hoina.",
+    },
+    trial_balance: {
+      en: "Trial balance lists all ledger balances; total debits must equal total credits before financial statements.",
+      ne: "Trial balance ma sabai ledger balance hunchha; financial statement banaunu agi total Dr = Cr hunu parchha.",
+    },
+    balance_sheet: {
+      en: "Balance sheet shows Assets = Liabilities + Equity at a point in time.",
+      ne: "Balance sheet ma ek samaya ma Assets = Liabilities + Equity dekhauchha.",
+    },
+    commission: {
+      en: "Commission income: Dr Cash/Debtor, Cr Other Income when earned/received.",
+      ne: "Commission aamdani: Dr Cash/Debtor, Cr Other Income jaba earn/receive hunchha.",
+    },
+    rent: {
+      en: "Rent expense: Dr Rent/Operating Expense, Cr Cash/Creditor when incurred or paid.",
+      ne: "Bhada kharcha: Dr Expense, Cr Cash/Creditor jaba kharcha incur wa tirnu parchha.",
+    },
+    sales_return: {
+      en: "Sales return reverses sale: Dr Sales (or Sales Return), Cr Debtor/Cash. Reduces revenue and receivable.",
+      ne: "Sales return le bikri ultaauchha: Dr Sales, Cr Debtor/Cash. Revenue ra receivable ghanchha.",
     },
     liability: {
       en: CLASSIFICATION_GUIDE.liability.definition + " Examples: Creditors, Loan, SSF Payable, VAT Payable.",
@@ -298,6 +371,11 @@ function answerComparison(text: string, lang: UserLanguage): string {
     return lang === "english"
       ? "**Income vs Expense vs Gain vs Loss:**\n• Income — ordinary revenue (sales, services)\n• Expense — ordinary costs (salary, rent)\n• Gain — non-operating profit (asset sold above book value)\n• Loss — non-operating loss (asset sold below book value)"
       : "**Income vs Expense vs Gain vs Loss:**\n• Income — sadharan revenue (bikri, service)\n• Expense — sadharan kharcha (talab, bhada)\n• Gain — non-operating nafa (asset bechda book value bhanda badhi)\n• Loss — non-operating noksan";
+  }
+  if (/\b(accrual|provision)\b/i.test(text)) {
+    return lang === "english"
+      ? "**Accrual vs Provision:**\n• Accrual — record expense/income when obligation/right arises (e.g. unpaid bill)\n• Provision — liability for uncertain amount (e.g. doubtful debts) per IAS 37"
+      : "**Accrual vs Provision:**\n• Accrual — bill/rights aayeko bela record\n• Provision — uncertain amount ko liability (jastai bad debt provision)";
   }
   return lang === "english"
     ? "Please specify what to compare — e.g. 'accrual vs cash', 'receivable vs payable', 'income vs expense'."
