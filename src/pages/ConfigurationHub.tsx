@@ -149,6 +149,7 @@ export default function ConfigurationHub() {
     addHoliday,
     updateHoliday,
     deleteHoliday,
+    setCurrentPage,
   } = useStore();
   const [activeSection, setActiveSection] = useState("overview");
   const [draft, setDraft] = useState<SystemConfiguration>(DEFAULT_SYSTEM_CONFIGURATION);
@@ -862,6 +863,17 @@ export default function ConfigurationHub() {
             <div className="text-[11px] text-gray-500">{s.desc}</div>
           </button>
         ))}
+        <button
+          type="button"
+          className="text-left bg-white border border-gray-200 rounded-lg p-4 hover:border-[#1557b0]/40 hover:bg-gray-50 transition-colors"
+          onClick={() => setCurrentPage("communication-hub")}
+        >
+          <div className="text-[13px] font-semibold text-gray-800 mb-1">Communication Hub</div>
+          <div className="text-[11px] text-gray-500">
+            Send invoice emails, payment reminders, and SMS using the settings above.
+          </div>
+          <div className="mt-2 text-[11px] text-[#1557b0] font-medium">Open hub →</div>
+        </button>
         <button
           type="button"
           className="text-left bg-white border border-gray-200 rounded-lg p-4 hover:border-[#1557b0]/40 hover:bg-gray-50 transition-colors"

@@ -651,8 +651,8 @@ const FinancialDashboard: React.FC = () => {
         icon: <AlertTriangle size={16} />,
         title: `${overdue.length} Overdue Invoice${overdue.length > 1 ? "s" : ""}`,
         message: `${fmt(amt)} outstanding beyond due date — requires immediate follow-up`,
-        action: "VIEW AR",
-        onAction: () => setCurrentPage("outstanding-receivables"),
+        action: "SEND REMINDERS",
+        onAction: () => setCurrentPage("communication-hub"),
       });
     }
 

@@ -37,6 +37,8 @@ import {
   Repeat,
   Receipt,
   Calculator,
+  Mail,
+  HardDrive,
 } from "lucide-react";
 
 interface NavItem {
@@ -68,6 +70,7 @@ const menuGroups: MenuGroup[] = [
       { label: "Purchase Return", page: "purchase-return", icon: RefreshCw },
       { label: "Receipt", page: "receipt", icon: Receipt },
       { label: "Payment", page: "payment", icon: Banknote },
+      { label: "Voucher Entry Hub", page: "voucher-entry", icon: ClipboardList },
       { label: "Journal", page: "journal", icon: FileText },
       { label: "Contra", page: "contra", icon: ArrowLeftRight },
       { label: "Debit Note", page: "debit-note", icon: FileText },
@@ -134,6 +137,9 @@ const menuGroups: MenuGroup[] = [
     items: [
       { label: "Audit Log", page: "audit-log", icon: ShieldCheck },
       { label: "Users", page: "users", icon: Users },
+      { label: "Configuration Hub", page: "configuration-hub", icon: Settings },
+      { label: "Communication Hub", page: "communication-hub", icon: Mail },
+      { label: "Backup & Restore", page: "backup-restore", icon: HardDrive },
       { label: "Accounts Config", page: "accounts-configuration", icon: Settings },
       { label: "Inventory Config", page: "inventory-config", icon: Settings },
       { label: "Recurring Vouchers", page: "recurring-vouchers", icon: Repeat },

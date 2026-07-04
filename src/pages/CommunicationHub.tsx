@@ -25,6 +25,7 @@ import {
   RefreshCw,
   Building,
   FileSpreadsheet,
+  Settings,
 } from "lucide-react";
 
 function money(v: number): string {
@@ -173,6 +174,7 @@ export default function CommunicationHub() {
     accounts = [],
     vouchers = [],
     addVoucher,
+    setCurrentPage,
   } = useStore();
 
   const [activeTab, setActiveTab] = useState("Invoice Delivery");
@@ -749,6 +751,13 @@ export default function CommunicationHub() {
             Invoice delivery, payment reminders and external data import utilities.
           </p>
         </div>
+        <button
+          type="button"
+          className={outlineBtn}
+          onClick={() => setCurrentPage("configuration-hub")}
+        >
+          <Settings size={14} /> Email & SMS settings
+        </button>
       </div>
 
       <div className="flex gap-2 mb-6 border-b border-gray-200 overflow-x-auto">

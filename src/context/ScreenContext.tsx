@@ -82,6 +82,10 @@ const configPages = new Set([
   "users",
   "configuration-hub",
   "configuration",
+  "communication-hub",
+  "communication",
+  "holidays",
+  "voucher-entry",
   "backup-restore",
   "backup",
 ]);

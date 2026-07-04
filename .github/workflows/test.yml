@@ -30,3 +30,11 @@ jobs:
 
       - name: Run TypeScript Check
         run: npx tsc --noEmit
+
+      - name: Install backend dependencies
+        run: npm ci
+        working-directory: packages/backend
+
+      - name: Backend TypeScript Check
+        run: npx tsc --noEmit
+        working-directory: packages/backend
