@@ -554,15 +554,18 @@ export function generateNepaliReply(text: string, balance?: LedgerBalanceSnapsho
   return pick(R.unknown);
 }
 
-/** Transaction signal words — exported for index.ts compatibility */
+/** Transaction signal words — CA-level expanded patterns */
 export const TRANSACTION_SIGNALS =
-  /\b(\d{2,}|saya|hajar|lakh)\b.*\b(udhaar|udhar|credit|tiryo|tireko|kineko|becheko|bikri|kharcha|expense|purchase|sold|cash\s+ma|nagad|payment\s+gareko)\b|\b(udhaar|udhar|credit|tiryo|tireko|kineko|becheko|bikri|kharcha|expense|purchase|sold|cash\s+ma|nagad|payment\s+gareko)\b.*\b(\d{2,}|saya|hajar|lakh)\b/i;
+  /\b(\d{2,}|saya|hajar|lakh)\b.*\b(udhaar|udhar|credit|tiryo|tireko|kineko|becheko|bikri|kharcha|expense|purchase|sold|cash\s+ma|nagad|payment\s+gareko|salary|ssf|gratuity|vat|tds|depreciation|loan|capital|drawings|stock|bad\s*debt|discount|contra|bank\s*charge|interest|rent|provision|accrual|prepaid|outstanding|cogs)\b|\b(udhaar|udhar|credit|tiryo|tireko|kineko|becheko|bikri|kharcha|expense|purchase|sold|cash\s+ma|nagad|payment\s+gareko|salary|ssf|gratuity|vat|tds|depreciation|loan|capital|drawings|stock|bad\s*debt|discount|contra|bank\s*charge|interest|rent|provision|accrual|prepaid|outstanding|cogs)\b.*\b(\d{2,}|saya|hajar|lakh)\b/i;
 
 export function shouldTryTransactionParse(text: string): boolean {
   const t = text.toLowerCase().trim();
   if (!t) return false;
 
   if (TRANSACTION_SIGNALS.test(t)) return true;
+
+  const CA_KEYWORDS = /\b(salary|ssf|gratuity|vat|tds|depreciation|bad\s*debt|provision|accrual|prepaid|outstanding|contra|drawings|capital|cogs|discount)\b/i;
+  if (CA_KEYWORDS.test(t) && /\b\d{2,}\b/.test(t)) return true;
 
   const WEAK_TRANSACTION = /\b(diye|diya|liye|aayo|gayo)\b/i;
   if (WEAK_TRANSACTION.test(t) && /\b\d{2,}\b/.test(t)) {

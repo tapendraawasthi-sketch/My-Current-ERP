@@ -1,15 +1,16 @@
 /**
- * e-Khata message router — decides: transaction parse OR conversational brain.
- * Key fix: conversational messages NEVER get "Ke transaction ho?" error.
+ * e-Khata message router — CA-level accounting entry maker + conversational brain.
  */
 
 import { normalizeNepaliText } from "./normalizeNepali";
 import { parseKhataMessage } from "./parseKhata";
+import { formatJournalPreview } from "./caEntryEngine";
 import { generateNepaliReply, shouldTryTransactionParse } from "./nepaliBrain";
 import type { KhataConfirmationCard, KhataParseResult } from "./types";
+import { KHATA_INTENT_LABELS } from "./types";
 import type { LedgerBalanceSnapshot } from "./conversationEngine";
 
-export type EKhataEngine = "brain" | "ollama" | "rules" | "hybrid";
+export type EKhataEngine = "brain" | "ollama" | "rules" | "hybrid" | "ca";
 
 export type EKhataProcessResult =
   | {
@@ -35,30 +36,32 @@ export type EKhataProcessResult =
 
 export interface ProcessMessageOptions {
   balance?: LedgerBalanceSnapshot;
-  /** Optional Ollama when erp_bot + Ollama explicitly deployed */
   preferLlm?: boolean;
 }
 
-const INTENT_LABELS: Record<string, string> = {
-  khata_credit_sale: "Udharo (Credit Sale)",
-  khata_cash_sale: "Nagad Bikri (Cash Sale)",
-  khata_payment_in: "Payment Aayo",
-  khata_purchase: "Kharid",
-  khata_payment_out: "Payment Gareko",
-  khata_expense: "Kharcha",
-};
-
 function buildEntryReply(card: NonNullable<KhataParseResult["card"]>): string {
-  const label = INTENT_LABELS[card.intent] || card.intent;
+  const label = KHATA_INTENT_LABELS[card.intent] || card.intent;
   const party = card.party || "(party chaina)";
-  return (
-    `Maile yo entry bujhe:\n` +
+  const lines = card.journalLines ?? [];
+
+  let reply =
+    `📒 CA-Level Entry:\n` +
     `• Prakar: ${label}\n` +
     `• Party: ${party}\n` +
     `• Rakam: NPR ${card.amount.toLocaleString()}\n` +
-    (card.item ? `• Saman: ${card.item}\n` : "") +
-    `\nSahi chha bhane **Confirm** thichnus.`
-  );
+    (card.item ? `• Saman/Vivaran: ${card.item}\n` : "") +
+    (card.primaryClass ? `• Class: ${card.primaryClass}\n` : "");
+
+  if (lines.length > 0) {
+    reply += `\n📋 Journal Entry:\n${formatJournalPreview(lines)}\n`;
+  }
+
+  if (card.caExplanation) {
+    reply += `\n💡 CA Note: ${card.caExplanation}\n`;
+  }
+
+  reply += `\nSahi chha bhane **Confirm** thichnus.`;
+  return reply;
 }
 
 export function processEKhataMessage(
@@ -71,7 +74,7 @@ export function processEKhataMessage(
   if (!trimmed) {
     return {
       kind: "chat",
-      reply: "Ke lekhnu hunthyo? Udaharan: 'Ram lai 500 udhaar diye' wa 'namaste'",
+      reply: "Ke lekhnu hunthyo? Udaharan: 'Ram lai 500 udhaar', 'salary 50000', 'bad debt write off 2000'",
       normalizedText: "",
       engine: "brain",
     };
@@ -85,7 +88,7 @@ export function processEKhataMessage(
         kind: "clarify",
         reply: parsed.clarifying_question,
         normalizedText,
-        engine: "rules",
+        engine: "ca",
       };
     }
 
@@ -96,7 +99,7 @@ export function processEKhataMessage(
         normalizedText,
         parseResult: parsed,
         card: parsed.card,
-        engine: "rules",
+        engine: "ca",
       };
     }
   }
@@ -149,7 +152,7 @@ export async function processEKhataMessageAsync(
         };
       }
     } catch {
-      // Built-in brain
+      // Built-in CA engine
     }
   }
 

@@ -1,0 +1,665 @@
+{
+  "version": "1.0.0",
+  "description": "CA-level accounting entry training corpus for e-Khata. Each example maps a natural-language narration to the correct intent, journal lines, and account classification.",
+  "metadata": {
+    "jurisdiction": "Nepal",
+    "framework": "NAS/IFRS-aligned double-entry",
+    "vat_rate": 0.13,
+    "ssf_employee_rate": 0.1,
+    "ssf_employer_rate": 0.11,
+    "account_classes": ["asset", "liability", "equity", "income", "expense", "gain", "loss", "stock"]
+  },
+  "classification_rules": {
+    "asset": {
+      "definition": "Resources with future economic benefit owned by the business",
+      "debit_when": "Asset increases — purchase, receipt, accrual of receivable",
+      "credit_when": "Asset decreases — payment, sale, write-off, depreciation",
+      "examples": ["Cash", "Bank", "Sundry Debtors", "Stock", "Fixed Assets", "Prepaid Expenses", "Input VAT"]
+    },
+    "liability": {
+      "definition": "Obligations owed to outsiders",
+      "debit_when": "Liability decreases — payment, settlement",
+      "credit_when": "Liability increases — credit purchase, accrual, provision, statutory dues",
+      "examples": ["Sundry Creditors", "Loan Payable", "SSF Payable", "VAT Payable", "Salary Payable", "Gratuity Provision"]
+    },
+    "equity": {
+      "definition": "Owner's residual interest in the business",
+      "debit_when": "Equity decreases — drawings, loss transfer",
+      "credit_when": "Equity increases — capital introduced, profit transfer",
+      "examples": ["Capital Account", "Retained Earnings", "Drawings"]
+    },
+    "income": {
+      "definition": "Revenue from ordinary activities and other inflows",
+      "debit_when": "Income reversed or reduced",
+      "credit_when": "Income earned — sale, service rendered, other income received",
+      "examples": ["Sales Revenue", "Interest Received", "Rent Received", "Discount Received", "Bad Debt Recovered"]
+    },
+    "expense": {
+      "definition": "Costs incurred to earn revenue",
+      "debit_when": "Expense incurred — bill received, payment, accrual",
+      "credit_when": "Expense reversed or prepaid adjustment",
+      "examples": ["Rent", "Salary", "Electricity", "Depreciation", "Bad Debts", "Bank Charges", "SSF Employer"]
+    },
+    "gain": {
+      "definition": "Profit on disposal of assets above book value",
+      "debit_when": "Gain reversed",
+      "credit_when": "Asset sold above written-down value",
+      "examples": ["Gain on sale of machinery"]
+    },
+    "loss": {
+      "definition": "Loss on disposal below book value",
+      "debit_when": "Asset sold below book value or written off",
+      "credit_when": "Loss reversed",
+      "examples": ["Loss on sale of vehicle"]
+    },
+    "stock": {
+      "definition": "Inventory held for sale or production",
+      "debit_when": "Stock purchased or manufactured",
+      "credit_when": "Stock sold (COGS) or written down",
+      "examples": ["Raw Materials", "Finished Goods", "Trading Stock"]
+    }
+  },
+  "situation_guide": [
+    {
+      "situation": "Customer buys on credit (udhaar)",
+      "when": "Goods/services delivered but payment not yet received",
+      "intent": "khata_credit_sale",
+      "entry": "Dr Sundry Debtors, Cr Sales",
+      "class_affected": "asset (debtor increases), income (sales recognised)"
+    },
+    {
+      "situation": "Customer pays outstanding amount",
+      "when": "Cash/bank received against previous credit sale",
+      "intent": "khata_payment_in",
+      "entry": "Dr Cash/Bank, Cr Sundry Debtors",
+      "class_affected": "asset (cash up, debtor down)"
+    },
+    {
+      "situation": "Supplier sells on credit",
+      "when": "Goods received but payment not yet made",
+      "intent": "khata_credit_purchase",
+      "entry": "Dr Purchase/Stock, Cr Sundry Creditors",
+      "class_affected": "expense/stock up, liability (creditor) up"
+    },
+    {
+      "situation": "Bad debt — debtor cannot pay",
+      "when": "Receivable confirmed irrecoverable",
+      "intent": "khata_bad_debt_writeoff",
+      "entry": "Dr Bad Debts Expense, Cr Sundry Debtors",
+      "class_affected": "expense up, asset (debtor) down"
+    },
+    {
+      "situation": "Provision for doubtful debts",
+      "when": "End of period — conservatism, expected losses not yet confirmed",
+      "intent": "khata_provision_bad_debt",
+      "entry": "Dr Bad Debts Expense, Cr Provision for Bad Debts",
+      "class_affected": "expense up, liability (provision) up"
+    },
+    {
+      "situation": "Salary for the month (not yet paid)",
+      "when": "Month-end accrual before payment date",
+      "intent": "khata_salary_accrual",
+      "entry": "Dr Salary Expense, Cr Salary Payable",
+      "class_affected": "expense up, liability up"
+    },
+    {
+      "situation": "SSF employee contribution",
+      "when": "Processing payroll — 10% deducted from employee",
+      "intent": "khata_ssf_employee",
+      "entry": "Dr Salary (gross), Cr SSF Employee Payable + Net Salary Payable",
+      "class_affected": "expense up, liability (SSF) up"
+    },
+    {
+      "situation": "SSF employer contribution",
+      "when": "Employer's 11% share on basic salary",
+      "intent": "khata_ssf_employer",
+      "entry": "Dr SSF Employer Expense, Cr SSF Employer Payable",
+      "class_affected": "expense up, liability up"
+    },
+    {
+      "situation": "Gratuity provision",
+      "when": "Annual/monthly provision for employee retirement benefit",
+      "intent": "khata_gratuity_provision",
+      "entry": "Dr Gratuity Expense, Cr Gratuity Provision",
+      "class_affected": "expense up, liability up"
+    },
+    {
+      "situation": "VAT-inclusive sale",
+      "when": "Registered VAT business sells with 13% VAT",
+      "intent": "khata_vat_sales",
+      "entry": "Dr Debtor (gross), Cr Sales (net) + Output VAT",
+      "class_affected": "asset up, income up, liability (VAT) up"
+    },
+    {
+      "situation": "VAT payment to IRD",
+      "when": "Net VAT remitted to tax authority",
+      "intent": "khata_vat_payment",
+      "entry": "Dr Output VAT Payable, Cr Bank",
+      "class_affected": "liability down, asset (bank) down"
+    },
+    {
+      "situation": "TDS deducted on service payment",
+      "when": "Paying contractor/supplier with tax withheld",
+      "intent": "khata_tds_deducted",
+      "entry": "Dr Expense (gross), Cr TDS Payable + Bank (net)",
+      "class_affected": "expense up, liability (TDS) up"
+    },
+    {
+      "situation": "Outstanding expense (bill received, unpaid)",
+      "when": "Accrual basis — expense incurred but not paid",
+      "intent": "khata_outstanding_expense",
+      "entry": "Dr Expense, Cr Outstanding Expenses",
+      "class_affected": "expense up, liability up"
+    },
+    {
+      "situation": "Depreciation",
+      "when": "Periodic allocation of fixed asset cost",
+      "intent": "khata_depreciation",
+      "entry": "Dr Depreciation Expense, Cr Accumulated Depreciation",
+      "class_affected": "expense up, contra-asset up"
+    },
+    {
+      "situation": "Capital introduced by owner",
+      "when": "Owner invests cash into business",
+      "intent": "khata_capital_introduced",
+      "entry": "Dr Bank, Cr Capital",
+      "class_affected": "asset up, equity up"
+    },
+    {
+      "situation": "Owner drawings",
+      "when": "Owner withdraws cash for personal use",
+      "intent": "khata_drawings",
+      "entry": "Dr Drawings, Cr Cash",
+      "class_affected": "equity down, asset down"
+    },
+    {
+      "situation": "Stock purchase",
+      "when": "Inventory acquired for resale",
+      "intent": "khata_stock_purchase",
+      "entry": "Dr Stock, Cr Cash/Creditor",
+      "class_affected": "stock up, asset/liability down"
+    },
+    {
+      "situation": "COGS on stock sale",
+      "when": "Matching principle — cost of inventory sold",
+      "intent": "khata_stock_sale_cogs",
+      "entry": "Dr COGS/Purchase, Cr Stock",
+      "class_affected": "expense up, stock down"
+    }
+  ],
+  "examples": [
+    {
+      "id": "ex-001",
+      "narration": "Ram lai 500 udharo becheko",
+      "narration_en": "Sold 500 on credit to Ram",
+      "intent": "khata_credit_sale",
+      "amount": 500,
+      "party": "Ram",
+      "primary_class": "income",
+      "tags": ["receivable", "udhaar", "credit_sale"],
+      "lines": [
+        { "account": "KH-DEBT", "debit": 500, "credit": 0 },
+        { "account": "KH-SALE", "debit": 0, "credit": 500 }
+      ]
+    },
+    {
+      "id": "ex-002",
+      "narration": "aaja 200 ko nagad bikri vayo",
+      "narration_en": "Cash sale of 200 today",
+      "intent": "khata_cash_sale",
+      "amount": 200,
+      "primary_class": "income",
+      "tags": ["cash", "nagad"],
+      "lines": [
+        { "account": "KH-CASH", "debit": 200, "credit": 0 },
+        { "account": "KH-SALE", "debit": 0, "credit": 200 }
+      ]
+    },
+    {
+      "id": "ex-003",
+      "narration": "Shyam le 2000 tiryo",
+      "narration_en": "Shyam paid 2000",
+      "intent": "khata_payment_in",
+      "amount": 2000,
+      "party": "Shyam",
+      "primary_class": "asset",
+      "tags": ["receivable", "collection"],
+      "lines": [
+        { "account": "KH-CASH", "debit": 2000, "credit": 0 },
+        { "account": "KH-DEBT", "debit": 0, "credit": 2000 }
+      ]
+    },
+    {
+      "id": "ex-004",
+      "narration": "Gita lai 1500 payment gareko",
+      "narration_en": "Paid 1500 to Gita",
+      "intent": "khata_payment_out",
+      "amount": 1500,
+      "party": "Gita",
+      "primary_class": "liability",
+      "tags": ["payable", "payment"],
+      "lines": [
+        { "account": "KH-CRED", "debit": 1500, "credit": 0 },
+        { "account": "KH-CASH", "debit": 0, "credit": 1500 }
+      ]
+    },
+    {
+      "id": "ex-005",
+      "narration": "electricity kharcha 3500",
+      "narration_en": "Electricity expense 3500",
+      "intent": "khata_expense",
+      "amount": 3500,
+      "item": "electricity",
+      "primary_class": "expense",
+      "tags": ["expense", "operating"],
+      "lines": [
+        { "account": "KH-EXP", "debit": 3500, "credit": 0 },
+        { "account": "KH-CASH", "debit": 0, "credit": 3500 }
+      ]
+    },
+    {
+      "id": "ex-006",
+      "narration": "Hari bata 10000 udhaar ma saman kineko",
+      "narration_en": "Purchased 10000 on credit from Hari",
+      "intent": "khata_credit_purchase",
+      "amount": 10000,
+      "party": "Hari",
+      "primary_class": "liability",
+      "tags": ["payable", "credit_purchase"],
+      "lines": [
+        { "account": "KH-PUR", "debit": 10000, "credit": 0 },
+        { "account": "KH-CRED", "debit": 0, "credit": 10000 }
+      ]
+    },
+    {
+      "id": "ex-007",
+      "narration": "Ram ko 3000 bad debt write off",
+      "narration_en": "Write off 3000 bad debt of Ram",
+      "intent": "khata_bad_debt_writeoff",
+      "amount": 3000,
+      "party": "Ram",
+      "primary_class": "expense",
+      "tags": ["bad_debt", "writeoff"],
+      "lines": [
+        { "account": "KH-BD-EXP", "debit": 3000, "credit": 0 },
+        { "account": "KH-DEBT", "debit": 0, "credit": 3000 }
+      ]
+    },
+    {
+      "id": "ex-008",
+      "narration": "provision for bad debt 5000",
+      "narration_en": "Provision for bad debts 5000",
+      "intent": "khata_provision_bad_debt",
+      "amount": 5000,
+      "primary_class": "expense",
+      "tags": ["provision", "bad_debt"],
+      "lines": [
+        { "account": "KH-BD-EXP", "debit": 5000, "credit": 0 },
+        { "account": "KH-BD-PROV", "debit": 0, "credit": 5000 }
+      ]
+    },
+    {
+      "id": "ex-009",
+      "narration": "bad debt recovery 1500 from Shyam",
+      "narration_en": "Recovered 1500 bad debt from Shyam",
+      "intent": "khata_bad_debt_recovery",
+      "amount": 1500,
+      "party": "Shyam",
+      "primary_class": "income",
+      "tags": ["bad_debt", "recovery"],
+      "lines": [
+        { "account": "KH-CASH", "debit": 1500, "credit": 0 },
+        { "account": "KH-BD-REC", "debit": 0, "credit": 1500 }
+      ]
+    },
+    {
+      "id": "ex-010",
+      "narration": "salary accrual 500000",
+      "narration_en": "Salary accrual for the month 500000",
+      "intent": "khata_salary_accrual",
+      "amount": 500000,
+      "primary_class": "expense",
+      "tags": ["salary", "accrual", "payroll"],
+      "lines": [
+        { "account": "KH-SAL", "debit": 500000, "credit": 0 },
+        { "account": "KH-SAL-PAY", "debit": 0, "credit": 500000 }
+      ]
+    },
+    {
+      "id": "ex-011",
+      "narration": "salary payment 500000",
+      "narration_en": "Salary payment 500000",
+      "intent": "khata_salary_payment",
+      "amount": 500000,
+      "primary_class": "expense",
+      "tags": ["salary", "payment"],
+      "lines": [
+        { "account": "KH-SAL-PAY", "debit": 500000, "credit": 0 },
+        { "account": "KH-BANK", "debit": 0, "credit": 500000 }
+      ]
+    },
+    {
+      "id": "ex-012",
+      "narration": "ssf employee 50000 gross salary",
+      "narration_en": "SSF employee contribution on 50000 gross salary",
+      "intent": "khata_ssf_employee",
+      "amount": 50000,
+      "primary_class": "liability",
+      "tags": ["ssf", "employee", "statutory"],
+      "lines": [
+        { "account": "KH-SAL", "debit": 50000, "credit": 0 },
+        { "account": "KH-SSF-EMP", "debit": 0, "credit": 5000 },
+        { "account": "KH-SAL-PAY", "debit": 0, "credit": 45000 }
+      ]
+    },
+    {
+      "id": "ex-013",
+      "narration": "ssf employer 50000 basic",
+      "narration_en": "SSF employer contribution on 50000 basic",
+      "intent": "khata_ssf_employer",
+      "amount": 50000,
+      "primary_class": "expense",
+      "tags": ["ssf", "employer", "statutory"],
+      "lines": [
+        { "account": "KH-SSF-ER-EXP", "debit": 5500, "credit": 0 },
+        { "account": "KH-SSF-ER", "debit": 0, "credit": 5500 }
+      ]
+    },
+    {
+      "id": "ex-014",
+      "narration": "gratuity provision 25000",
+      "narration_en": "Gratuity provision 25000",
+      "intent": "khata_gratuity_provision",
+      "amount": 25000,
+      "primary_class": "expense",
+      "tags": ["gratuity", "provision"],
+      "lines": [
+        { "account": "KH-GRAT-EXP", "debit": 25000, "credit": 0 },
+        { "account": "KH-GRAT-PROV", "debit": 0, "credit": 25000 }
+      ]
+    },
+    {
+      "id": "ex-015",
+      "narration": "gratuity payment 100000",
+      "narration_en": "Gratuity payment on retirement 100000",
+      "intent": "khata_gratuity_payment",
+      "amount": 100000,
+      "primary_class": "liability",
+      "tags": ["gratuity", "payment"],
+      "lines": [
+        { "account": "KH-GRAT-PROV", "debit": 100000, "credit": 0 },
+        { "account": "KH-BANK", "debit": 0, "credit": 100000 }
+      ]
+    },
+    {
+      "id": "ex-016",
+      "narration": "vat sale 113000 to ABC Traders",
+      "narration_en": "VAT-inclusive sale 113000 to ABC Traders",
+      "intent": "khata_vat_sales",
+      "amount": 113000,
+      "party": "ABC Traders",
+      "primary_class": "income",
+      "tags": ["vat", "sales"],
+      "lines": [
+        { "account": "KH-DEBT", "debit": 113000, "credit": 0 },
+        { "account": "KH-SALE", "debit": 0, "credit": 100000 },
+        { "account": "KH-VAT-OUT", "debit": 0, "credit": 13000 }
+      ]
+    },
+    {
+      "id": "ex-017",
+      "narration": "vat purchase 56500",
+      "narration_en": "VAT-inclusive purchase 56500",
+      "intent": "khata_vat_purchase",
+      "amount": 56500,
+      "primary_class": "expense",
+      "tags": ["vat", "purchase", "input_vat"],
+      "lines": [
+        { "account": "KH-PUR", "debit": 50000, "credit": 0 },
+        { "account": "KH-VAT-IN", "debit": 6500, "credit": 0 },
+        { "account": "KH-CASH", "debit": 0, "credit": 56500 }
+      ]
+    },
+    {
+      "id": "ex-018",
+      "narration": "vat payment 8000 to IRD",
+      "narration_en": "VAT payment 8000 to IRD",
+      "intent": "khata_vat_payment",
+      "amount": 8000,
+      "primary_class": "liability",
+      "tags": ["vat", "payment", "ird"],
+      "lines": [
+        { "account": "KH-VAT-OUT", "debit": 8000, "credit": 0 },
+        { "account": "KH-BANK", "debit": 0, "credit": 8000 }
+      ]
+    },
+    {
+      "id": "ex-019",
+      "narration": "tds deducted 100000 service payment",
+      "narration_en": "TDS deducted on 100000 service payment",
+      "intent": "khata_tds_deducted",
+      "amount": 100000,
+      "primary_class": "liability",
+      "tags": ["tds", "withholding"],
+      "lines": [
+        { "account": "KH-EXP", "debit": 100000, "credit": 0 },
+        { "account": "KH-TDS-PAY", "debit": 0, "credit": 15000 },
+        { "account": "KH-BANK", "debit": 0, "credit": 85000 }
+      ]
+    },
+    {
+      "id": "ex-020",
+      "narration": "tds paid 15000",
+      "narration_en": "TDS remittance 15000 to IRD",
+      "intent": "khata_tds_paid",
+      "amount": 15000,
+      "primary_class": "liability",
+      "tags": ["tds", "payment"],
+      "lines": [
+        { "account": "KH-TDS-PAY", "debit": 15000, "credit": 0 },
+        { "account": "KH-BANK", "debit": 0, "credit": 15000 }
+      ]
+    },
+    {
+      "id": "ex-021",
+      "narration": "outstanding expense rent 20000",
+      "narration_en": "Accrued rent expense 20000",
+      "intent": "khata_outstanding_expense",
+      "amount": 20000,
+      "item": "rent",
+      "primary_class": "expense",
+      "tags": ["accrual", "outstanding"],
+      "lines": [
+        { "account": "KH-EXP", "debit": 20000, "credit": 0 },
+        { "account": "KH-OUT-EXP", "debit": 0, "credit": 20000 }
+      ]
+    },
+    {
+      "id": "ex-022",
+      "narration": "prepaid expense insurance 12000",
+      "narration_en": "Prepaid insurance 12000",
+      "intent": "khata_prepaid_expense",
+      "amount": 12000,
+      "item": "insurance",
+      "primary_class": "asset",
+      "tags": ["prepaid", "advance"],
+      "lines": [
+        { "account": "KH-PREPAID", "debit": 12000, "credit": 0 },
+        { "account": "KH-CASH", "debit": 0, "credit": 12000 }
+      ]
+    },
+    {
+      "id": "ex-023",
+      "narration": "depreciation 50000 machinery",
+      "narration_en": "Depreciation on machinery 50000",
+      "intent": "khata_depreciation",
+      "amount": 50000,
+      "item": "machinery",
+      "primary_class": "expense",
+      "tags": ["depreciation", "fixed_asset"],
+      "lines": [
+        { "account": "KH-DEPR", "debit": 50000, "credit": 0 },
+        { "account": "KH-ACC-DEP", "debit": 0, "credit": 50000 }
+      ]
+    },
+    {
+      "id": "ex-024",
+      "narration": "bank charge 500",
+      "narration_en": "Bank charges 500",
+      "intent": "khata_bank_charges",
+      "amount": 500,
+      "primary_class": "expense",
+      "tags": ["bank", "charges"],
+      "lines": [
+        { "account": "KH-BANK-CHG", "debit": 500, "credit": 0 },
+        { "account": "KH-BANK", "debit": 0, "credit": 500 }
+      ]
+    },
+    {
+      "id": "ex-025",
+      "narration": "interest received 3000",
+      "narration_en": "Interest received 3000",
+      "intent": "khata_other_income",
+      "amount": 3000,
+      "item": "interest",
+      "primary_class": "income",
+      "tags": ["interest", "other_income"],
+      "lines": [
+        { "account": "KH-BANK", "debit": 3000, "credit": 0 },
+        { "account": "KH-OTH-INC", "debit": 0, "credit": 3000 }
+      ]
+    },
+    {
+      "id": "ex-026",
+      "narration": "capital introduced 500000",
+      "narration_en": "Owner capital introduced 500000",
+      "intent": "khata_capital_introduced",
+      "amount": 500000,
+      "primary_class": "equity",
+      "tags": ["capital", "investment"],
+      "lines": [
+        { "account": "KH-BANK", "debit": 500000, "credit": 0 },
+        { "account": "KH-CAP", "debit": 0, "credit": 500000 }
+      ]
+    },
+    {
+      "id": "ex-027",
+      "narration": "drawings 50000",
+      "narration_en": "Owner drawings 50000",
+      "intent": "khata_drawings",
+      "amount": 50000,
+      "primary_class": "equity",
+      "tags": ["drawings", "withdrawal"],
+      "lines": [
+        { "account": "KH-DRAW", "debit": 50000, "credit": 0 },
+        { "account": "KH-CASH", "debit": 0, "credit": 50000 }
+      ]
+    },
+    {
+      "id": "ex-028",
+      "narration": "loan received 1000000",
+      "narration_en": "Bank loan received 1000000",
+      "intent": "khata_loan_received",
+      "amount": 1000000,
+      "primary_class": "liability",
+      "tags": ["loan", "borrowing"],
+      "lines": [
+        { "account": "KH-BANK", "debit": 1000000, "credit": 0 },
+        { "account": "KH-LOAN", "debit": 0, "credit": 1000000 }
+      ]
+    },
+    {
+      "id": "ex-029",
+      "narration": "loan repayment 50000",
+      "narration_en": "Loan repayment 50000",
+      "intent": "khata_loan_repayment",
+      "amount": 50000,
+      "primary_class": "liability",
+      "tags": ["loan", "repayment"],
+      "lines": [
+        { "account": "KH-LOAN", "debit": 50000, "credit": 0 },
+        { "account": "KH-BANK", "debit": 0, "credit": 50000 }
+      ]
+    },
+    {
+      "id": "ex-030",
+      "narration": "stock purchase 75000",
+      "narration_en": "Inventory stock purchase 75000",
+      "intent": "khata_stock_purchase",
+      "amount": 75000,
+      "primary_class": "stock",
+      "tags": ["stock", "inventory"],
+      "lines": [
+        { "account": "KH-STOCK", "debit": 75000, "credit": 0 },
+        { "account": "KH-CASH", "debit": 0, "credit": 75000 }
+      ]
+    },
+    {
+      "id": "ex-031",
+      "narration": "cogs 40000",
+      "narration_en": "Cost of goods sold 40000",
+      "intent": "khata_stock_sale_cogs",
+      "amount": 40000,
+      "primary_class": "expense",
+      "tags": ["cogs", "stock"],
+      "lines": [
+        { "account": "KH-PUR", "debit": 40000, "credit": 0 },
+        { "account": "KH-STOCK", "debit": 0, "credit": 40000 }
+      ]
+    },
+    {
+      "id": "ex-032",
+      "narration": "contra cash to bank 100000",
+      "narration_en": "Cash deposited to bank 100000",
+      "intent": "khata_contra_cash_bank",
+      "amount": 100000,
+      "primary_class": "asset",
+      "tags": ["contra", "cash", "bank"],
+      "lines": [
+        { "account": "KH-BANK", "debit": 100000, "credit": 0 },
+        { "account": "KH-CASH", "debit": 0, "credit": 100000 }
+      ]
+    },
+    {
+      "id": "ex-033",
+      "narration": "discount allowed 500 to Ram",
+      "narration_en": "Discount allowed 500 to Ram",
+      "intent": "khata_discount_allowed",
+      "amount": 500,
+      "party": "Ram",
+      "primary_class": "expense",
+      "tags": ["discount", "allowed"],
+      "lines": [
+        { "account": "KH-DISC-ALL", "debit": 500, "credit": 0 },
+        { "account": "KH-DEBT", "debit": 0, "credit": 500 }
+      ]
+    },
+    {
+      "id": "ex-034",
+      "narration": "discount received 1000 from supplier",
+      "narration_en": "Discount received 1000 from supplier",
+      "intent": "khata_discount_received",
+      "amount": 1000,
+      "primary_class": "income",
+      "tags": ["discount", "received"],
+      "lines": [
+        { "account": "KH-CRED", "debit": 1000, "credit": 0 },
+        { "account": "KH-DISC-REC", "debit": 0, "credit": 1000 }
+      ]
+    },
+    {
+      "id": "ex-035",
+      "narration": "राम लाई ५०० उधार दिए",
+      "narration_en": "Devanagari: gave 500 credit to Ram",
+      "intent": "khata_credit_sale",
+      "amount": 500,
+      "party": "Ram",
+      "primary_class": "income",
+      "tags": ["receivable", "devanagari"],
+      "lines": [
+        { "account": "KH-DEBT", "debit": 500, "credit": 0 },
+        { "account": "KH-SALE", "debit": 0, "credit": 500 }
+      ]
+    }
+  ]
+}

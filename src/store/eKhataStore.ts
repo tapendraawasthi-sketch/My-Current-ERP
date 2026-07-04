@@ -11,9 +11,15 @@ function genId(): string {
 
 function buildWelcome(): string {
   return (
-    "Namaste! Ma e-Khata — tapaaiko digital khata sahayogi.\n\n" +
-    "Nepali, English, Roman Nepali — sabai ma kura garnu hos. Khata entry rakhnu hos wa sawal sodhnu hos.\n\n" +
-    "🟢 **Self-contained** — kuni pani external app, API, athaba download chaina. Sabai yahi ERP bhitra chalcha."
+    "Namaste! Ma e-Khata — tapaaiko CA-level digital accounting sahayogi.\n\n" +
+    "Udhaar, receivable, bad debt, salary, SSF, gratuity, VAT, TDS, depreciation, stock — sabai scenario ma sahi journal entry banauchhu.\n\n" +
+    "Nepali, English, Roman Nepali — sabai ma lekhnu hos. Udaharan:\n" +
+    "• 'Ram lai 500 udhaar becheko'\n" +
+    "• 'salary accrual 500000'\n" +
+    "• 'bad debt write off 3000'\n" +
+    "• 'ssf employee 50000 gross salary'\n" +
+    "• 'gratuity provision 25000'\n\n" +
+    "🟢 Self-contained — sabai yahi ERP bhitra chalcha."
   );
 }
 

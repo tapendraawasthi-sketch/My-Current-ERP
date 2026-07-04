@@ -3,9 +3,10 @@ import { BookOpen, Loader2, Send, Trash2, X } from "lucide-react";
 import { useEKhataStore } from "../../store/eKhataStore";
 import { useFalconStore } from "../../store/falconStore";
 import { KHATA_INTENT_LABELS } from "../../lib/ekhata/types";
+import { validateJournalBalance } from "../../lib/ekhata/caEntryTemplates";
 
 function statusLabel(): string {
-  return "Self-contained Nepali brain";
+  return "CA-Level Accounting Entry Maker";
 }
 
 const EKhataPanel: React.FC = () => {
@@ -15,8 +16,6 @@ const EKhataPanel: React.FC = () => {
     messages,
     pendingCard,
     isLoading,
-    llmOnline,
-    llmModel,
     sendMessage,
     confirmPending,
     cancelPending,
@@ -47,6 +46,9 @@ const EKhataPanel: React.FC = () => {
     setInput("");
     await sendMessage(text);
   }, [input, isLoading, sendMessage]);
+
+  const journalLines = pendingCard?.journalLines ?? [];
+  const balance = journalLines.length > 0 ? validateJournalBalance(journalLines) : null;
 
   if (!isOpen) return null;
 
@@ -103,20 +105,30 @@ const EKhataPanel: React.FC = () => {
         {pendingCard && (
           <div className="rounded-md border border-gray-200 bg-white p-3 shadow-sm">
             <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
-              Confirm transaction
+              Confirm CA Journal Entry
             </p>
             <dl className="mt-2 space-y-1 text-[12px] text-gray-700">
               <div className="flex justify-between gap-4">
                 <dt>Type</dt>
                 <dd>{KHATA_INTENT_LABELS[pendingCard.intent]}</dd>
               </div>
+              {pendingCard.primaryClass && (
+                <div className="flex justify-between gap-4">
+                  <dt>Class</dt>
+                  <dd>
+                    <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 text-blue-700">
+                      {pendingCard.primaryClass}
+                    </span>
+                  </dd>
+                </div>
+              )}
               <div className="flex justify-between gap-4">
                 <dt>Party</dt>
                 <dd>{pendingCard.party ?? "—"}</dd>
               </div>
               <div className="flex justify-between gap-4">
                 <dt>Amount</dt>
-                <dd className="font-mono">NPR {pendingCard.amount}</dd>
+                <dd className="font-mono">NPR {pendingCard.amount.toLocaleString()}</dd>
               </div>
               <div className="flex justify-between gap-4">
                 <dt>Item</dt>
@@ -127,11 +139,79 @@ const EKhataPanel: React.FC = () => {
                 <dd>{pendingCard.date}</dd>
               </div>
             </dl>
+
+            {journalLines.length > 0 && (
+              <div className="mt-3">
+                <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500 mb-1">
+                  Journal Lines
+                </p>
+                <table className="w-full text-[11px]">
+                  <thead>
+                    <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                      <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        Account
+                      </th>
+                      <th className="px-2 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        Dr
+                      </th>
+                      <th className="px-2 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        Cr
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {journalLines.map((line, i) => (
+                      <tr key={i} className="border-b border-gray-100">
+                        <td className="px-2 py-1.5 text-[11px] text-gray-700">
+                          {line.accountName}
+                          <span className="ml-1 text-[9px] text-gray-400">({line.accountClass})</span>
+                        </td>
+                        <td className="px-2 py-1.5 font-mono text-right text-[11px] text-gray-700">
+                          {line.debit > 0 ? line.debit.toLocaleString() : "—"}
+                        </td>
+                        <td className="px-2 py-1.5 font-mono text-right text-[11px] text-gray-700">
+                          {line.credit > 0 ? line.credit.toLocaleString() : "—"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  {balance && (
+                    <tfoot>
+                      <tr className="bg-[#eef2ff] font-bold text-[11px] border-t-2 border-[#c7d2fe]">
+                        <td className="px-2 py-1.5">Total</td>
+                        <td className="px-2 py-1.5 font-mono text-right">
+                          {balance.totalDebit.toLocaleString()}
+                        </td>
+                        <td className="px-2 py-1.5 font-mono text-right">
+                          {balance.totalCredit.toLocaleString()}
+                        </td>
+                      </tr>
+                    </tfoot>
+                  )}
+                </table>
+                {balance && (
+                  <div
+                    className={`mt-2 rounded px-2 py-1 text-[10px] font-medium border ${
+                      balance.balanced
+                        ? "bg-green-50 text-green-700 border-green-200"
+                        : "bg-red-50 text-red-700 border-red-200"
+                    }`}
+                  >
+                    {balance.balanced ? "✓ Journal Balanced" : "✗ Journal Unbalanced"}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {pendingCard.caExplanation && (
+              <p className="mt-2 text-[10px] text-gray-500 italic">{pendingCard.caExplanation}</p>
+            )}
+
             <div className="mt-3 flex gap-2">
               <button
                 type="button"
                 onClick={confirmPending}
-                disabled={isLoading}
+                disabled={isLoading || (balance !== null && !balance.balanced)}
                 className="h-8 flex-1 rounded-md bg-[#1557b0] text-[12px] font-medium text-white hover:bg-[#0f4a96] disabled:opacity-50"
               >
                 Confirm ✓
@@ -166,7 +246,7 @@ const EKhataPanel: React.FC = () => {
             onKeyDown={(e) => {
               if (e.key === "Enter") handleSend();
             }}
-            placeholder="Nepali ma lekhnu hola..."
+            placeholder="Nepali/English ma entry lekhnu hola..."
             disabled={isLoading}
             className="h-8 flex-1 rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[#1557b0] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 disabled:opacity-50"
             data-component="ekhata-input"
@@ -182,7 +262,7 @@ const EKhataPanel: React.FC = () => {
           </button>
         </div>
         <p className="mt-1 text-[10px] text-gray-400">
-          Ctrl+Shift+K · Self-contained AI · Saves to ledger
+          Ctrl+Shift+K · CA-Level Double Entry · Saves to ledger
         </p>
       </div>
     </div>
