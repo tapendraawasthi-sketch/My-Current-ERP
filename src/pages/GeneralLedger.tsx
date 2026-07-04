@@ -1,8 +1,10 @@
 import React, { useMemo, useState } from "react";
 import * as XLSX from "xlsx";
+import { Search } from "lucide-react";
 import { useStore } from "../store/useStore";
 import BsDateCell from "../components/reporting/BsDateCell";
 import ColumnReportShell from "../components/reporting/ColumnReportShell";
+import { ReportEmptyState } from "../components/ReportEmptyState";
 
 interface Account {
   id: string;
@@ -63,7 +65,7 @@ const HighlightMatch: React.FC<{ text: string; query: string }> = ({ text, query
   return (
     <>
       {text.slice(0, idx)}
-      <mark style={{ background: "#fef3c7", color: "#111827", borderRadius: 2, padding: "0 1px" }}>
+      <mark className="bg-amber-100 text-gray-900 rounded px-0.5">
         {text.slice(idx, idx + query.length)}
       </mark>
       {text.slice(idx + query.length)}
@@ -309,13 +311,13 @@ const GeneralLedger: React.FC = () => {
       onExport={exportLedger}
       onRefresh={initializeApp}
     >
-      <div className="no-print bg-white border-b border-gray-200 px-4 py-2 flex gap-3 items-center">
-        <div style={{ position: "relative", width: 400 }}>
+      <div className="no-print bg-white border-b border-gray-200 px-4 py-3">
+        <div className="relative w-full max-w-md">
+          <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
           <input
             value={searchAccount}
             onChange={(e) => {
               setSearchAccount(e.target.value);
-              // also clear selection if typed
               if (account && e.target.value && account.name !== e.target.value) {
                 setAccountId("");
               }
@@ -325,163 +327,200 @@ const GeneralLedger: React.FC = () => {
                 setSearchAccount("");
               }
             }}
-            placeholder="Search and select account..."
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            placeholder="Search and select account…"
+            className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
           />
           {searchAccount && !accountId && (
-            <div
-              style={{
-                position: "absolute",
-                top: "100%",
-                left: 0,
-                right: 0,
-                background: "#ffffff",
-                border: "1px solid #e5e7eb",
-                borderRadius: "0 0 6px 6px",
-                boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-                maxHeight: 300,
-                overflowY: "auto",
-                zIndex: 50,
-              }}
-            >
+            <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 border-t-0 rounded-b-md shadow-lg max-h-[300px] overflow-y-auto z-50">
               {filteredAccountList.map((a) => (
-                <div
+                <button
                   key={a.id}
+                  type="button"
                   onClick={() => {
                     setAccountId(a.id);
                     setSearchAccount(a.name);
                   }}
-                  style={{
-                    padding: "6px 12px",
-                    cursor: "pointer",
-                    fontSize: 12,
-                    borderBottom: "1px solid #f3f4f6",
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "#f9fafb")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                  className="w-full text-left px-3 py-2 border-b border-gray-100 hover:bg-gray-50 transition-colors"
                 >
-                  <div style={{ fontWeight: 600, color: "#111827" }}>
+                  <div className="text-[12px] font-semibold text-gray-800">
                     <HighlightMatch text={a.name} query={searchAccount} />
                   </div>
-                  <div style={{ fontSize: 10, color: "#6b7280" }}>
+                  <div className="text-[10px] text-gray-500 mt-0.5">
                     <HighlightMatch text={a.code} query={searchAccount} />
                     {a.group && (
                       <span>
                         {" "}
-                        • <HighlightMatch text={a.group} query={searchAccount} />
+                        · <HighlightMatch text={a.group} query={searchAccount} />
                       </span>
                     )}
                   </div>
-                </div>
+                </button>
               ))}
               {filteredAccountList.length === 0 && (
-                <div
-                  style={{ padding: "12px", fontSize: 12, color: "#6b7280", textAlign: "center" }}
-                >
-                  No accounts found.
-                </div>
+                <div className="px-3 py-4 text-[12px] text-gray-500 text-center">No accounts found.</div>
               )}
             </div>
           )}
         </div>
       </div>
 
-      {account && (
-        <div className="print-only hidden text-center mb-4 p-4">
-          <h1 className="text-[16px] font-bold">
-            {companySettings?.companyNameEn || companySettings?.name || "Company"}
-          </h1>
-          <h2 className="text-[13px] font-semibold">Ledger Statement</h2>
-          <div className="text-[11px]">
-            {account.code} - {account.name} | {fromBS} to {toBS}
+      {!account && (
+        <div className="p-4">
+          <div className="bg-white border border-gray-200 rounded-md">
+            <ReportEmptyState
+              message="No account selected"
+              hint="Search and select a ledger account to view its statement."
+            />
           </div>
         </div>
       )}
 
       {account && (
-        <div className="bg-[#eef2ff] border-b border-[#c7d2fe] px-4 py-2 text-[12px] font-semibold sticky top-0 z-20">
-          Opening Balance as on {fromBS}: Rs. {money(absBalance(ledgerData.openingSigned))}{" "}
-          {openingIndicator}
+        <div className="no-print px-4 pt-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              Opening balance
+            </p>
+            <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
+              {money(absBalance(ledgerData.openingSigned))} {openingIndicator}
+            </p>
+            <p className="text-[10px] text-gray-500 mt-0.5">As on {fromBS}</p>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              Transactions
+            </p>
+            <p className="text-[14px] font-semibold text-[#1557b0] mt-0.5">
+              {ledgerData.rows.length}
+            </p>
+            <p className="text-[10px] text-gray-500 mt-0.5">
+              {fromBS} to {toBS}
+            </p>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              Closing balance
+            </p>
+            <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
+              {money(absBalance(ledgerData.closingSigned))} {closingIndicator}
+            </p>
+            <p className="text-[10px] text-gray-500 mt-0.5">As on {toBS}</p>
+          </div>
         </div>
       )}
 
-      <table className="report-table w-full border-collapse">
-        <thead className="sticky top-[36px] z-10 bg-[#f5f6fa] border-b border-gray-200">
-          <tr>
-            {show("date") && <Th>Date</Th>}
-            {show("voucherNo") && <Th>Voucher No.</Th>}
-            {show("type") && <Th>Voucher Type</Th>}
-            {show("particulars") && <Th>Particulars</Th>}
-            {show("narration") && <Th>Narration</Th>}
-            {isPartyLedger && show("billRef") && <Th>Bill Ref.</Th>}
-            {show("debit") && <Th right>Dr.</Th>}
-            {show("credit") && <Th right>Cr.</Th>}
-            {show("running") && <Th right>Running Balance</Th>}
-            {show("indicator") && <Th>Dr/Cr</Th>}
-          </tr>
-        </thead>
+      {account && (
+        <div className="print-only hidden text-center mb-4 p-4">
+          <h1 className="text-[15px] font-semibold">
+            {companySettings?.companyNameEn || companySettings?.name || "Company"}
+          </h1>
+          <h2 className="text-[12px] font-semibold mt-1">Ledger statement</h2>
+          <div className="text-[11px] text-gray-600">
+            {account.code} - {account.name} | {fromBS} to {toBS}
+          </div>
+        </div>
+      )}
 
-        <tbody>
-          {!account && (
-            <tr>
-              <td className="px-4 py-8 text-center text-gray-500" colSpan={10}>
-                Select an account to view ledger.
-              </td>
-            </tr>
-          )}
+      {account && ledgerData.rows.length === 0 ? (
+        <div className="p-4">
+          <div className="bg-white border border-gray-200 rounded-md">
+            <ReportEmptyState
+              message="No transactions in this period"
+              hint="Adjust the BS date range or choose a different account."
+            />
+          </div>
+        </div>
+      ) : account ? (
+        <div className="bg-white border border-gray-200 rounded-md mx-4 my-3 overflow-hidden">
+          <div className="bg-[#f5f6fa] border-b border-gray-200 px-4 py-2 text-[12px] font-medium text-gray-700 sticky top-0 z-20">
+            Opening balance as on {fromBS}: Rs. {money(absBalance(ledgerData.openingSigned))}{" "}
+            {openingIndicator}
+          </div>
 
-          {pagedRows.map((row: any) => (
-            <tr
-              key={`${row.voucher.id}-${row.line.accountId}-${row.voucher.voucherNo}`}
-              onClick={() => openVoucher(row.voucher)}
-              className="cursor-pointer hover:bg-yellow-50 border-b border-gray-100"
-            >
-              {show("date") && (
-                <Td>
-                  <BsDateCell date={row.adDate} dateNepali={row.bsDate} />
-                </Td>
-              )}
+          <table className="w-full border-collapse">
+            <thead className="sticky top-[36px] z-10 bg-[#f5f6fa] border-b border-gray-200">
+              <tr>
+                {show("date") && <Th>Date</Th>}
+                {show("voucherNo") && <Th>Voucher no.</Th>}
+                {show("type") && <Th>Voucher type</Th>}
+                {show("particulars") && <Th>Particulars</Th>}
+                {show("narration") && <Th>Narration</Th>}
+                {isPartyLedger && show("billRef") && <Th>Bill ref.</Th>}
+                {show("debit") && <Th right>Dr.</Th>}
+                {show("credit") && <Th right>Cr.</Th>}
+                {show("running") && <Th right>Running balance</Th>}
+                {show("indicator") && <Th>Dr/Cr</Th>}
+              </tr>
+            </thead>
 
-              {show("voucherNo") && <Td className="font-mono">{row.voucher.voucherNo}</Td>}
-              {show("type") && <Td>{row.voucher.type}</Td>}
-              {show("particulars") && <Td>{row.opposite}</Td>}
-              {show("narration") && <Td className="text-gray-600">{row.voucher.narration}</Td>}
-              {isPartyLedger && show("billRef") && <Td>{row.billRef}</Td>}
-              {show("debit") && (
-                <Td right className="font-mono">
-                  {row.debit ? money(row.debit) : ""}
-                </Td>
-              )}
-              {show("credit") && (
-                <Td right className="font-mono">
-                  {row.credit ? money(row.credit) : ""}
-                </Td>
-              )}
-              {show("running") && (
-                <Td right className="font-mono font-semibold">
-                  {money(row.runningAbs)}
-                </Td>
-              )}
-              {show("indicator") && (
-                <Td className={row.indicator === "Cr" ? "italic text-gray-700" : ""}>
-                  {row.indicator}
-                </Td>
-              )}
-            </tr>
-          ))}
-        </tbody>
+            <tbody>
+              {pagedRows.map((row: any) => (
+                <tr
+                  key={`${row.voucher.id}-${row.line.accountId}-${row.voucher.voucherNo}`}
+                  onClick={() => openVoucher(row.voucher)}
+                  className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] border-b border-gray-100"
+                >
+                  {show("date") && (
+                    <Td>
+                      <BsDateCell date={row.adDate} dateNepali={row.bsDate} />
+                    </Td>
+                  )}
 
-        {account && (
-          <tfoot>
-            <tr className="bg-[#eef2ff] font-bold border-t-2 border-[#c7d2fe]">
-              <td colSpan={10} className="px-4 py-2 text-right">
-                Closing Balance as on {toBS}: Rs. {money(absBalance(ledgerData.closingSigned))}{" "}
-                {closingIndicator}
-              </td>
-            </tr>
-          </tfoot>
-        )}
-      </table>
+                  {show("voucherNo") && (
+                    <Td className="font-mono text-[#1557b0] font-medium">{row.voucher.voucherNo}</Td>
+                  )}
+                  {show("type") && <Td>{row.voucher.type}</Td>}
+                  {show("particulars") && <Td>{row.opposite}</Td>}
+                  {show("narration") && <Td className="text-gray-600">{row.voucher.narration}</Td>}
+                  {isPartyLedger && show("billRef") && <Td>{row.billRef}</Td>}
+                  {show("debit") && (
+                    <Td right className="font-mono">
+                      {row.debit ? money(row.debit) : "—"}
+                    </Td>
+                  )}
+                  {show("credit") && (
+                    <Td right className="font-mono">
+                      {row.credit ? money(row.credit) : "—"}
+                    </Td>
+                  )}
+                  {show("running") && (
+                    <Td right className="font-mono font-medium">
+                      {money(row.runningAbs)}
+                    </Td>
+                  )}
+                  {show("indicator") && (
+                    <Td>
+                      <span
+                        className={`rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase ${
+                          row.indicator === "Cr"
+                            ? "bg-gray-100 text-gray-700"
+                            : "bg-blue-100 text-blue-700"
+                        }`}
+                      >
+                        {row.indicator}
+                      </span>
+                    </Td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+
+            <tfoot>
+              <tr className="bg-[#eef2ff] font-bold border-t-2 border-[#c7d2fe]">
+                <td colSpan={10} className="px-4 py-2.5 text-right text-[12px] text-gray-800">
+                  Closing balance as on {toBS}: Rs. {money(absBalance(ledgerData.closingSigned))}{" "}
+                  {closingIndicator}
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+            {ledgerData.rows.length} ledger entr{ledgerData.rows.length === 1 ? "y" : "ies"}
+            {pageSize !== "all" && ` · showing page ${page}`}
+          </div>
+        </div>
+      ) : null}
     </ColumnReportShell>
   );
 };
