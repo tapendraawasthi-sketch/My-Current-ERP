@@ -470,9 +470,9 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
 
   return (
     <div className="space-y-5 animate-fadeIn text-xs">
-      <div className="flex items-center justify-between border-b border-[#9DC07A] pb-4">
+      <div className="flex items-center justify-between border-b border-gray-200 pb-4">
         <div>
-          <div className="text-sm font-bold text-[#000000] tracking-tight flex items-center gap-2">
+          <div className="text-sm font-bold text-gray-700 tracking-tight flex items-center gap-2">
             {type === "challan" ? (
               <Truck className="h-5 w-5 text-[#1557b0]" />
             ) : (
@@ -480,7 +480,7 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
             )}
             {type === "challan" ? "Delivery Challan" : "Goods Receipt Note"}
           </div>
-          <p className="text-[11px] text-[#000000] mt-0.5 uppercase tracking-wider font-bold">
+          <p className="text-[11px] text-gray-700 mt-0.5 uppercase tracking-wider font-bold">
             {type === "challan"
               ? "Track dispatched goods before invoice creation."
               : "Capture goods received before purchase invoicing."}
@@ -566,7 +566,7 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
         <div className="overflow-x-auto">
           <table className="min-w-full text-[11px] border-separate border-spacing-0">
             <thead>
-              <tr className="bg-[#EBF5E2] text-left text-[#000000] text-[10px] uppercase tracking-[0.25em]">
+              <tr className="bg-[#f5f6fa] text-left text-gray-700 text-[10px] uppercase tracking-[0.25em]">
                 <th className="px-2 py-2 font-semibold">Item</th>
                 {type === "grn" && <th className="px-2 py-2 font-semibold">Ordered</th>}
                 <th className="px-2 py-2 font-semibold">Received</th>
@@ -582,7 +582,7 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
               {lines.map((line, index) => {
                 const selectedItem = itemOptions.find((it) => it.id === line.itemId);
                 return (
-                  <tr key={line.id} className="border-t border-[#9DC07A]">
+                  <tr key={line.id} className="border-t border-gray-200">
                     <td className="px-2 py-2">
                       <select
                         value={line.itemId}
@@ -595,7 +595,7 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
                             unit: item?.unit || "",
                           });
                         }}
-                        className="w-full h-9 text-xs border border-[#9DC07A] rounded px-2"
+                        className="w-full h-9 text-xs border border-gray-200 rounded px-2"
                       >
                         <option value="">Select item</option>
                         {itemOptions.map((item) => (
@@ -613,7 +613,7 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
                           onChange={(e) =>
                             updateLine(line.id, { orderedQty: Number(e.target.value) || 0 })
                           }
-                          className="w-full h-9 text-xs border border-[#9DC07A] rounded px-2 text-right"
+                          className="w-full h-9 text-xs border border-gray-200 rounded px-2 text-right"
                           min={0}
                         />
                       </td>
@@ -628,7 +628,7 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
                             qty: Number(e.target.value) || 0,
                           })
                         }
-                        className="w-full h-9 text-xs border border-[#9DC07A] rounded px-2 text-right"
+                        className="w-full h-9 text-xs border border-gray-200 rounded px-2 text-right"
                         min={0}
                       />
                     </td>
@@ -641,7 +641,7 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
                             onChange={(e) =>
                               updateLine(line.id, { acceptedQty: Number(e.target.value) || 0 })
                             }
-                            className="w-full h-9 text-xs border border-[#9DC07A] rounded px-2 text-right"
+                            className="w-full h-9 text-xs border border-gray-200 rounded px-2 text-right"
                             min={0}
                           />
                         </td>
@@ -658,7 +658,7 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
                           onChange={(e) =>
                             updateLine(line.id, { qty: Number(e.target.value) || 0 })
                           }
-                          className="w-full h-9 text-xs border border-[#9DC07A] rounded px-2 text-right"
+                          className="w-full h-9 text-xs border border-gray-200 rounded px-2 text-right"
                           min={0}
                         />
                       </td>
@@ -667,7 +667,7 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
                       <select
                         value={line.warehouseId}
                         onChange={(e) => updateLine(line.id, { warehouseId: e.target.value })}
-                        className="w-full h-9 text-xs border border-[#9DC07A] rounded px-2"
+                        className="w-full h-9 text-xs border border-gray-200 rounded px-2"
                       >
                         <option value="">Select warehouse</option>
                         {warehouseOptions.map((item) => (
@@ -682,7 +682,7 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
                         type="text"
                         value={line.description || ""}
                         onChange={(e) => updateLine(line.id, { description: e.target.value })}
-                        className="w-full h-9 text-xs border border-[#9DC07A] rounded px-2"
+                        className="w-full h-9 text-xs border border-gray-200 rounded px-2"
                       />
                     </td>
                     <td className="px-2 py-2 text-center">
@@ -710,8 +710,8 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
           >
             Add line
           </Button>
-          <div className="text-[11px] text-[#000000]">
-            Total quantity: <span className="font-semibold text-[#000000]">{totalQty}</span>
+          <div className="text-[11px] text-gray-700">
+            Total quantity: <span className="font-semibold text-gray-700">{totalQty}</span>
           </div>
         </div>
       </Card>
