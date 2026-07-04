@@ -53,11 +53,16 @@ export async function askErpBot(
   message: string,
   sessionId: string,
   signal?: AbortSignal,
+  contextBlock?: string,
 ): Promise<{ answer: string; sources: string[] }> {
+  const payload = contextBlock
+    ? `${contextBlock}\n\n--- USER QUESTION ---\n${message}`
+    : message;
+
   const resp = await fetch(`${ERP_BOT_URL}/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message, session_id: sessionId }),
+    body: JSON.stringify({ message: payload, session_id: sessionId }),
     signal,
   });
   if (!resp.ok) {
