@@ -2,7 +2,12 @@
 // Falcon AI — Unified Intelligent Brain
 // The main engine that combines all AI components for intelligent responses
 
-import { parseQuery, type ParsedQuery, type UserIntent, extractIntent } from "./nlpEngine";
+import {
+  parseQuery,
+  type ParsedQuery,
+  extractIntent,
+  isElaborationQuery,
+} from "./nlpEngine";
 import { analyzeIntent, type SmartIntent, getResponseDirective } from "./smartIntentEngine";
 import { composeResponse, type ComposedResponse } from "./precisionComposer";
 import {
@@ -113,45 +118,97 @@ function enhanceWithRouteContext(
   };
 }
 
+function resolveFocusFromHistory(
+  history: Array<{ role: "user" | "assistant"; content: string }>
+): string | null {
+  const lastAssistant = history
+    .slice()
+    .reverse()
+    .find((m) => m.role === "assistant" && m.content.trim().length > 0);
+  if (!lastAssistant) return null;
+
+  const pathMatch = lastAssistant.content.match(/(?:Navigate to:|Location:|→)\s*([^\n`]+)/i);
+  if (pathMatch?.[1]) {
+    const segment = pathMatch[1].split("→").pop()?.trim().toLowerCase();
+    if (segment) {
+      const resolved = resolveRoute(segment.replace(/\s+/g, "-"));
+      if (resolved) return resolved;
+    }
+  }
+
+  const fileMatch = lastAssistant.content.match(/src\/pages\/(\w+)\.tsx/);
+  if (fileMatch?.[1]) {
+    const page = GENERATED_PAGE_INDEX.find((p) => p.component === fileMatch[1]);
+    if (page) return page.route;
+  }
+
+  return null;
+}
+
+function carryForwardTopic(
+  intent: SmartIntent,
+  carriedFocus: string,
+  lastTurn?: ConversationTurn
+): SmartIntent {
+  const isElaboration = isElaborationQuery(intent.parsed.original);
+
+  if (isElaboration) {
+    return {
+      ...intent,
+      primaryFocus: carriedFocus,
+      routeContext: lastTurn?.intent.routeContext || intent.routeContext,
+      responseStrategy: "comprehensive",
+      excludeFromResponse: [],
+      userIntent: {
+        ...intent.userIntent,
+        wantsExplanation: true,
+        wantsLocation: false,
+      },
+    };
+  }
+
+  return {
+    ...intent,
+    primaryFocus: carriedFocus,
+    routeContext: lastTurn?.intent.routeContext || intent.routeContext,
+    secondaryTopics: lastTurn
+      ? [...intent.secondaryTopics, ...lastTurn.intent.secondaryTopics.slice(0, 2)]
+      : intent.secondaryTopics,
+  };
+}
+
 function enhanceWithConversationContext(
   intent: SmartIntent,
   history: Array<{ role: "user" | "assistant"; content: string }>
 ): SmartIntent {
-  if (history.length === 0) {
+  if (history.length === 0 && conversationMemory.length === 0) {
     return intent;
   }
 
-  // Check for follow-up questions
-  const lastUserMessage = history
-    .slice()
-    .reverse()
-    .find((m) => m.role === "user");
-  
-  if (!lastUserMessage) {
-    return intent;
-  }
-
-  // Resolve pronouns and references
   const queryLower = intent.parsed.original.toLowerCase();
   const pronouns = ["it", "this", "that", "these", "those", "them"];
-  
-  const hasPronouns = pronouns.some((p) => {
-    const pattern = new RegExp(`\\b${p}\\b`, "i");
-    return pattern.test(queryLower);
-  });
+  const hasPronouns = pronouns.some((p) => new RegExp(`\\b${p}\\b`, "i").test(queryLower));
+  const isElaboration = isElaborationQuery(intent.parsed.original);
 
-  if (hasPronouns && conversationMemory.length > 0) {
+  if (!hasPronouns && !isElaboration) {
+    return intent;
+  }
+
+  if (conversationMemory.length > 0) {
     const lastTurn = conversationMemory[conversationMemory.length - 1];
-    if (lastTurn.intent.primaryFocus && !intent.primaryFocus) {
-      return {
-        ...intent,
-        primaryFocus: lastTurn.intent.primaryFocus,
-        secondaryTopics: [
-          ...intent.secondaryTopics,
-          ...lastTurn.intent.secondaryTopics.slice(0, 2),
-        ],
-      };
+    const carriedFocus =
+      lastTurn.intent.primaryFocus ||
+      lastTurn.intent.routeContext ||
+      resolveFocusFromHistory(history);
+
+    if (carriedFocus && (!intent.primaryFocus || isElaboration)) {
+      return carryForwardTopic(intent, carriedFocus, lastTurn);
     }
+  }
+
+  const historyFocus = resolveFocusFromHistory(history);
+  if (historyFocus && (!intent.primaryFocus || isElaboration)) {
+    return carryForwardTopic(intent, historyFocus);
   }
 
   return intent;

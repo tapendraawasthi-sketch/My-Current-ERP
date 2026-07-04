@@ -581,6 +581,26 @@ export function findBestMatch<T extends { keywords: string[] }>(
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// FOLLOW-UP / ELABORATION DETECTION
+// ─────────────────────────────────────────────────────────────────────────────
+
+const ELABORATION_PATTERNS = [
+  /^(give|tell|show|need|want).{0,24}\b(more\s+)?detail/i,
+  /^(more|further|additional)\s+(detail|info|information)/i,
+  /^(explain|elaborate|expand)(\s+more|\s+further|\s+that|\s+this)?\b/i,
+  /^(in\s+)?detail\s*\??$/i,
+  /^(tell\s+me\s+more|more\s+please|be\s+more\s+specific)\b/i,
+  /^(what\s+else|anything\s+else)\b/i,
+  /^(go\s+on|continue)\s*\??$/i,
+];
+
+/** Short follow-ups that ask for more about the previous answer, not a new topic. */
+export function isElaborationQuery(query: string): boolean {
+  const q = query.trim().toLowerCase();
+  return ELABORATION_PATTERNS.some((pattern) => pattern.test(q));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // INTENT EXTRACTION
 // ─────────────────────────────────────────────────────────────────────────────
 

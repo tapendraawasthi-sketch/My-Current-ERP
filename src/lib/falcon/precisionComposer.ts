@@ -179,6 +179,30 @@ function composeTipsSection(info: CodeStructureInfo): string {
   return tips.join("\n\n");
 }
 
+function composePageOverviewSection(info: CodeStructureInfo): string {
+  const lines: string[] = [];
+
+  if (info.subtitle) {
+    lines.push(info.subtitle);
+  } else {
+    lines.push(
+      `The **${info.title}** screen (${info.category}) — part of the Sutra ERP navigation tree.`,
+    );
+  }
+
+  if (info.menuPath) {
+    lines.push(`**Menu path:** ${info.menuPath}`);
+  }
+
+  if (info.aliases.length > 0) {
+    lines.push(`**Also known as:** ${info.aliases.join(", ")}`);
+  }
+
+  lines.push(`**Source file:** \`${info.filePath}\``);
+
+  return lines.join("\n\n");
+}
+
 function composeRelatedSection(info: CodeStructureInfo): string {
   if (info.relatedRoutes.length === 0) {
     return "";
@@ -795,6 +819,8 @@ function composeComprehensiveResponse(intent: SmartIntent): ComposedResponse {
   sections.push(`**${info.title}**`);
   if (info.moduleDoc?.description) {
     sections.push(info.moduleDoc.description);
+  } else {
+    sections.push(composePageOverviewSection(info));
   }
   sections.push("");
   includedSections.push("title");

@@ -3,7 +3,7 @@
 // Determines exactly what the user is asking and how to respond
 
 import type { ParsedQuery, UserIntent, EntityType } from "./nlpEngine";
-import { parseQuery, extractIntent } from "./nlpEngine";
+import { parseQuery, extractIntent, isElaborationQuery } from "./nlpEngine";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TYPES
@@ -278,10 +278,29 @@ function determineOptionalSections(
 // FOCUS EXTRACTION
 // ─────────────────────────────────────────────────────────────────────────────
 
+const META_FOCUS_WORDS = new Set([
+  "detail",
+  "details",
+  "more",
+  "info",
+  "information",
+  "it",
+  "this",
+  "that",
+  "these",
+  "those",
+  "them",
+]);
+
 function extractPrimaryFocus(
   parsed: ParsedQuery,
   intent: UserIntent
 ): string | null {
+  // Elaboration follow-ups ("give in detail") carry no new topic — resolved from chat context
+  if (isElaborationQuery(parsed.original)) {
+    return null;
+  }
+
   // Use target object if available
   if (intent.target) {
     return intent.target;
@@ -301,7 +320,11 @@ function extractPrimaryFocus(
   for (const pattern of focusPatterns) {
     const match = parsed.original.match(pattern);
     if (match && match[1]) {
-      return match[1].toLowerCase().replace(/\s+/g, "-");
+      const candidate = match[1].toLowerCase().replace(/\s+/g, "-");
+      const firstWord = candidate.split("-")[0];
+      if (!META_FOCUS_WORDS.has(firstWord) && !META_FOCUS_WORDS.has(candidate)) {
+        return candidate;
+      }
     }
   }
 
