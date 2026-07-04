@@ -69,9 +69,9 @@ export default function PLMonthlySummary({ pl, options, onDrillDown }: Props) {
     "px-3 py-2 text-right font-mono text-[12px] text-gray-400 border-l border-gray-100";
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-x-auto shadow-sm">
-      <div className="px-4 py-3 border-b border-gray-200 bg-[#f9fafb]">
-        <h3 className="text-[14px] font-semibold text-gray-800">Monthly Profit & Loss Summary</h3>
+    <div className="bg-white border border-gray-200 rounded-md overflow-x-auto">
+      <div className="px-3 py-2 border-b border-gray-200 bg-[#f5f6fa]">
+        <h3 className="text-[12px] font-semibold text-gray-800">Monthly profit & loss summary</h3>
         <p className="text-[11px] text-gray-500 mt-0.5">
           For the period: {pl.fromDate} to {pl.toDate}
         </p>
@@ -83,7 +83,7 @@ export default function PLMonthlySummary({ pl, options, onDrillDown }: Props) {
             <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200 sticky left-0 z-10 w-48">
               Particulars
             </th>
-            <th className={thCls} style={{ width: 80, textAlign: "center" }}>
+            <th className={`${thCls} w-20 text-center`}>
               Trend
             </th>
             {pl.monthLabels.map((label) => (
@@ -97,11 +97,11 @@ export default function PLMonthlySummary({ pl, options, onDrillDown }: Props) {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100">
-          <tr className="hover:bg-[#f5f8ff]">
+          <tr className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]">
             <td className="px-3 py-2 text-[12px] font-medium text-gray-700 sticky left-0 bg-white z-10 border-r border-gray-100">
               Sales (Revenue)
             </td>
-            <td style={{ padding: "4px 8px", textAlign: "center", width: 72 }}>
+            <td className="px-2 py-1 text-center w-20">
               <Sparkline
                 values={pl.monthlyData.map((m) => m.sales)}
                 color="#1557b0"
@@ -119,11 +119,11 @@ export default function PLMonthlySummary({ pl, options, onDrillDown }: Props) {
             </td>
           </tr>
 
-          <tr className="hover:bg-[#f5f8ff]">
+          <tr className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]">
             <td className="px-3 py-2 text-[12px] font-medium text-gray-700 sticky left-0 bg-white z-10 border-r border-gray-100">
               Direct Income
             </td>
-            <td style={{ padding: "4px 8px", textAlign: "center", width: 72 }}>
+            <td className="px-2 py-1 text-center w-20">
               <Sparkline
                 values={pl.monthlyData.map((m) => m.directIncome)}
                 color="#1557b0"
@@ -141,11 +141,11 @@ export default function PLMonthlySummary({ pl, options, onDrillDown }: Props) {
             </td>
           </tr>
 
-          <tr className="hover:bg-[#f5f8ff]">
+          <tr className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]">
             <td className="px-3 py-2 text-[12px] font-medium text-gray-700 sticky left-0 bg-white z-10 border-r border-gray-100">
               Purchases
             </td>
-            <td style={{ padding: "4px 8px", textAlign: "center", width: 72 }}>
+            <td className="px-2 py-1 text-center w-20">
               <Sparkline
                 values={pl.monthlyData.map((m) => m.purchases)}
                 color="#d97706"
@@ -163,11 +163,11 @@ export default function PLMonthlySummary({ pl, options, onDrillDown }: Props) {
             </td>
           </tr>
 
-          <tr className="hover:bg-[#f5f8ff]">
+          <tr className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]">
             <td className="px-3 py-2 text-[12px] font-medium text-gray-700 sticky left-0 bg-white z-10 border-r border-gray-100">
               Direct Expenses
             </td>
-            <td style={{ padding: "4px 8px", textAlign: "center", width: 72 }}>
+            <td className="px-2 py-1 text-center w-20">
               <Sparkline
                 values={pl.monthlyData.map((m) => m.directExpenses)}
                 color="#d97706"
@@ -191,7 +191,7 @@ export default function PLMonthlySummary({ pl, options, onDrillDown }: Props) {
                 <td className="px-3 py-2 text-[12px] font-bold text-gray-800 sticky left-0 bg-gray-50 z-10 border-r border-gray-200">
                   Gross Profit
                 </td>
-                <td style={{ padding: "4px 8px", textAlign: "center", width: 72 }}>
+                <td className="px-2 py-1 text-center w-20">
                   <Sparkline
                     values={pl.monthlyData.map((m) => Math.abs(m.grossProfit))}
                     color={pl.grossProfit >= 0 ? "#059669" : "#dc2626"}
@@ -214,11 +214,11 @@ export default function PLMonthlySummary({ pl, options, onDrillDown }: Props) {
                 </td>
               </tr>
 
-              <tr className="hover:bg-[#f5f8ff]">
+              <tr className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]">
                 <td className="px-3 py-2 text-[12px] font-medium text-gray-700 sticky left-0 bg-white z-10 border-r border-gray-100">
                   Indirect Income
                 </td>
-                <td style={{ padding: "4px 8px", textAlign: "center", width: 72 }}>
+                <td className="px-2 py-1 text-center w-20">
                   <Sparkline
                     values={pl.monthlyData.map((m) => m.indirectIncome)}
                     color="#1557b0"
@@ -236,11 +236,11 @@ export default function PLMonthlySummary({ pl, options, onDrillDown }: Props) {
                 </td>
               </tr>
 
-              <tr className="hover:bg-[#f5f8ff]">
+              <tr className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]">
                 <td className="px-3 py-2 text-[12px] font-medium text-gray-700 sticky left-0 bg-white z-10 border-r border-gray-100">
                   Indirect Expenses
                 </td>
-                <td style={{ padding: "4px 8px", textAlign: "center", width: 72 }}>
+                <td className="px-2 py-1 text-center w-20">
                   <Sparkline
                     values={pl.monthlyData.map((m) => m.indirectExpenses)}
                     color="#d97706"
@@ -265,13 +265,7 @@ export default function PLMonthlySummary({ pl, options, onDrillDown }: Props) {
               Net Profit
             </td>
             <td
-              style={{
-                padding: "4px 8px",
-                textAlign: "center",
-                width: 72,
-                background: "#1557b0",
-                borderRight: "1px solid #0f4a96",
-              }}
+              className="px-2 py-1 text-center w-20 bg-[#1557b0] border-r border-[#0f4a96]"
             >
               <Sparkline
                 values={pl.monthlyData.map((m) => Math.abs(m.netProfit))}

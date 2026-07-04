@@ -11,6 +11,7 @@ import {
 import ReportShell from "../components/reporting/ReportShell";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 import { useScreenF12 } from "../hooks/useF12Config";
+import { ReportEmptyState } from "../components/ReportEmptyState";
 
 const GroupSummaryReport: React.FC = () => {
   // Register this screen with F12 system

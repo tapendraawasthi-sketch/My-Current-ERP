@@ -2,7 +2,8 @@
 import React, { useState, useMemo } from "react";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
-import { BarChart2, TrendingUp, Download } from "lucide-react";
+import { Download } from "lucide-react";
+import { ReportEmptyState } from "../components/ReportEmptyState";
 
 type GroupBy = "party" | "item" | "month";
 
@@ -109,7 +110,7 @@ export default function SalesAnalysisReport() {
   const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
 
   return (
-    <div className="p-4 bg-[#f5f6fa] min-h-screen">
+    <div className="flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-y-auto p-4 md:p-6">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">Sales Analysis Report</h1>
@@ -123,7 +124,7 @@ export default function SalesAnalysisReport() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4">
+      <div className="no-print bg-white border border-gray-200 rounded-md p-3 mb-4">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           <div>
             <label className={labelCls}>From Date</label>
@@ -171,44 +172,52 @@ export default function SalesAnalysisReport() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-3 gap-4 mb-4">
-        <div className="bg-white border border-gray-200 rounded-lg p-4">
-          <div className="text-[11px] text-gray-500 font-medium uppercase tracking-wide">
-            Total {voucherType === "purchase" ? "Purchases" : "Sales"}
-          </div>
-          <div className="text-[18px] font-bold text-gray-800 mt-1 font-mono">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+        <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            Total {voucherType === "purchase" ? "purchases" : "sales"}
+          </p>
+          <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
             Rs. {formatNumber(totals.totalSales)}
-          </div>
+          </p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-lg p-4">
-          <div className="text-[11px] text-gray-500 font-medium uppercase tracking-wide">
-            Total Invoices
-          </div>
-          <div className="text-[18px] font-bold text-gray-800 mt-1">{totals.totalInvoices}</div>
+        <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            Total invoices
+          </p>
+          <p className="text-[14px] font-semibold text-gray-800 mt-0.5">
+            {totals.totalInvoices}
+          </p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-lg p-4">
-          <div className="text-[11px] text-gray-500 font-medium uppercase tracking-wide">
-            Avg per Invoice
-          </div>
-          <div className="text-[18px] font-bold text-gray-800 mt-1 font-mono">
+        <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            Avg per invoice
+          </p>
+          <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
             Rs.{" "}
             {formatNumber(totals.totalInvoices > 0 ? totals.totalSales / totals.totalInvoices : 0)}
-          </div>
+          </p>
         </div>
       </div>
 
-      {/* Data Table */}
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-        <div className="px-4 py-2.5 border-b border-gray-200 bg-[#f5f6fa] flex items-center justify-between">
-          <span className="text-[11px] font-semibold text-gray-600 uppercase tracking-wide">
+      <div className="bg-white border border-gray-200 rounded-md overflow-hidden flex-1 min-h-0 flex flex-col">
+        <div className="px-3 py-2 border-b border-gray-200 bg-[#f5f6fa]">
+          <span className="text-[11px] font-semibold text-gray-600">
             Analysis by{" "}
-            {groupBy === "party" ? "Party/Account" : groupBy === "item" ? "Item" : "Month"} —{" "}
+            {groupBy === "party" ? "party/account" : groupBy === "item" ? "item" : "month"} —{" "}
             {analysisData.length} records
           </span>
-          <TrendingUp className="h-4 w-4 text-gray-400" />
         </div>
 
-        <table className="w-full">
+        {analysisData.length === 0 ? (
+          <ReportEmptyState
+            message="No data found for selected period and filters"
+            hint="Adjust date range, voucher type, or group-by option."
+          />
+        ) : (
+          <>
+        <div className="overflow-x-auto">
+        <table className="w-full border-collapse">
           <thead>
             <tr className="bg-[#f5f6fa] border-b border-gray-200">
               <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
@@ -243,7 +252,10 @@ export default function SalesAnalysisReport() {
               const share = totals.totalSales > 0 ? (row.totalSales / totals.totalSales) * 100 : 0;
               const barWidth = maxSales > 0 ? (row.totalSales / maxSales) * 100 : 0;
               return (
-                <tr key={row.key} className="hover:bg-gray-50">
+                <tr
+                  key={row.key}
+                  className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] border-b border-gray-100"
+                >
                   <td className="px-3 py-2.5 text-[11px] text-gray-400">{idx + 1}</td>
                   <td className="px-3 py-2.5 text-[12px] font-medium text-gray-800">{row.label}</td>
                   <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-600">
@@ -255,7 +267,7 @@ export default function SalesAnalysisReport() {
                   <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-600">
                     Rs. {formatNumber(row.avgPerInvoice)}
                   </td>
-                  <td className="px-3 py-2.5 text-[12px] font-mono text-right font-bold text-gray-800">
+                  <td className="px-3 py-2.5 text-[12px] font-mono text-right font-semibold text-gray-800">
                     Rs. {formatNumber(row.totalSales)}
                   </td>
                   <td className="px-3 py-2.5">
@@ -274,24 +286,13 @@ export default function SalesAnalysisReport() {
                 </tr>
               );
             })}
-            {analysisData.length === 0 && (
-              <tr>
-                <td colSpan={7} className="py-12 text-center">
-                  <BarChart2 className="h-8 w-8 text-gray-300 mx-auto mb-2" />
-                  <p className="text-[12px] text-gray-500">
-                    No data found for selected period and filters
-                  </p>
-                </td>
-              </tr>
-            )}
           </tbody>
         </table>
+        </div>
 
-        {/* Grand Total */}
-        {analysisData.length > 0 && (
-          <div className="px-4 py-2.5 border-t-2 border-[#c7d2fe] bg-[#eef2ff] flex justify-between text-[12px] font-bold text-gray-800">
+          <div className="px-3 py-2.5 border-t-2 border-[#c7d2fe] bg-[#eef2ff] flex justify-between text-[12px] font-semibold text-gray-800">
             <span>
-              GRAND TOTAL — {analysisData.length}{" "}
+              Grand total — {analysisData.length}{" "}
               {groupBy === "party" ? "parties" : groupBy === "item" ? "items" : "months"}
             </span>
             <div className="flex gap-8">
@@ -299,6 +300,10 @@ export default function SalesAnalysisReport() {
               <span className="font-mono">Rs. {formatNumber(totals.totalSales)}</span>
             </div>
           </div>
+          <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+            {analysisData.length} record{analysisData.length === 1 ? "" : "s"}
+          </div>
+          </>
         )}
       </div>
     </div>
