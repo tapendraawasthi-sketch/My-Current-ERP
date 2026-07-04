@@ -60,7 +60,7 @@ const TdsCertificate: React.FC<TdsCertificateProps> = ({
         <button
           type="button"
           onClick={() => window.print()}
-          className="h-8 px-3 bg-[#1557b0] text-white text-[12px] font-medium rounded-md"
+          className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
         >
           Print Certificate
         </button>
