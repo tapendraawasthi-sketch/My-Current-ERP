@@ -22,15 +22,15 @@ function money(v: number): string {
   return v < 0 ? `(${s})` : s;
 }
 
-const cardClass = "bg-white border border-gray-200 rounded-md shadow-sm p-4";
+const cardClass = "bg-white border border-gray-200 rounded-md p-4";
 const tableHeadClass =
   "bg-[#f5f6fa] border-b border-gray-200 px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const tableCellClass = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 
 const primaryBtn =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm";
+  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors";
 const outlineBtn =
-  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5 shadow-sm";
+  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5";
 const inputClass =
   "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-shadow";
 
@@ -949,9 +949,9 @@ export default function CostCenterReport() {
                           </td>
                         </tr>
 
-                        <tr className="bg-indigo-50/50 border-t-2 border-indigo-100">
+                        <tr className="bg-blue-50/50 border-t-2 border-[#c7d2fe]">
                           <td
-                            className={`${tableCellClass} font-bold text-indigo-900 uppercase tracking-wide`}
+                            className={`${tableCellClass} font-bold text-[#1557b0] uppercase tracking-wide`}
                           >
                             Net Profit
                           </td>
@@ -966,7 +966,7 @@ export default function CostCenterReport() {
                             </td>
                           ))}
                           <td
-                            className={`${tableCellClass} text-right font-bold bg-indigo-100/50 ${matrixTotals.total?.net >= 0 ? "text-green-700" : "text-red-700"}`}
+                            className={`${tableCellClass} text-right font-bold bg-[#eef2ff] ${matrixTotals.total?.net >= 0 ? "text-green-700" : "text-red-700"}`}
                           >
                             {money(matrixTotals.total?.net || 0)}
                           </td>
@@ -1084,11 +1084,11 @@ export default function CostCenterReport() {
             />
 
             {allocationPreview ? (
-              <div className="border border-indigo-200 rounded-md p-4 bg-indigo-50/30">
-                <div className="font-semibold text-[13px] text-indigo-900 mb-1">
+              <div className="border border-[#c7d2fe] rounded-md p-4 bg-[#eef2ff]">
+                <div className="font-semibold text-[13px] text-[#1557b0] mb-1">
                   {allocationPreview.account?.name}
                 </div>
-                <div className="text-[12px] text-indigo-700 mb-3 pb-3 border-b border-indigo-100">
+                <div className="text-[12px] text-gray-600 mb-3 pb-3 border-b border-[#c7d2fe]">
                   Total Amount:{" "}
                   <span className="font-bold">Rs. {money(allocationPreview.totalAmount)}</span>
                 </div>
@@ -1096,27 +1096,27 @@ export default function CostCenterReport() {
                 <table className="w-full border-collapse mb-4">
                   <thead>
                     <tr>
-                      <th className="text-left text-[10px] font-semibold text-indigo-800 uppercase tracking-wide py-1">
+                      <th className="text-left text-[10px] font-semibold text-gray-700 uppercase tracking-wide py-1">
                         Cost Center
                       </th>
-                      <th className="text-right text-[10px] font-semibold text-indigo-800 uppercase tracking-wide py-1">
+                      <th className="text-right text-[10px] font-semibold text-gray-700 uppercase tracking-wide py-1">
                         %
                       </th>
-                      <th className="text-right text-[10px] font-semibold text-indigo-800 uppercase tracking-wide py-1">
+                      <th className="text-right text-[10px] font-semibold text-gray-700 uppercase tracking-wide py-1">
                         Allocated
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-indigo-100/50">
+                  <tbody className="divide-y divide-gray-100">
                     {allocationPreview.allocations.map((a) => (
                       <tr key={a.costCenterId}>
-                        <td className="py-1.5 text-[11px] text-indigo-900">
+                        <td className="py-1.5 text-[11px] text-[#1557b0]">
                           {costCenters.find((c) => c.id === a.costCenterId)?.name}
                         </td>
-                        <td className="py-1.5 text-[11px] text-indigo-800 text-right">
+                        <td className="py-1.5 text-[11px] text-gray-700 text-right">
                           {money(a.percentage)}%
                         </td>
-                        <td className="py-1.5 text-[11px] text-indigo-900 font-medium text-right">
+                        <td className="py-1.5 text-[11px] text-[#1557b0] font-medium text-right">
                           Rs. {money(a.amount)}
                         </td>
                       </tr>
@@ -1125,7 +1125,7 @@ export default function CostCenterReport() {
                 </table>
 
                 <button
-                  className="w-full h-8 bg-indigo-600 hover:bg-indigo-700 text-white text-[12px] font-medium rounded-md transition-colors"
+                  className="w-full h-8 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md transition-colors"
                   onClick={postAllocationJournal}
                 >
                   Confirm & Post Journal
@@ -1292,27 +1292,27 @@ export default function CostCenterReport() {
             {transferForm.receivers?.length > 0 &&
               transferForm.fromCostCenterId &&
               transferForm.expenseAccountId && (
-                <div className="mt-4 border border-indigo-200 rounded-md p-4 bg-indigo-50/30">
-                  <div className="font-semibold text-[13px] text-indigo-900 mb-2">
+                <div className="mt-4 border border-[#c7d2fe] rounded-md p-4 bg-[#eef2ff]">
+                  <div className="font-semibold text-[13px] text-[#1557b0] mb-2">
                     Journal Preview
                   </div>
                   <table className="w-full border-collapse mt-2 text-[11px]">
-                    <tbody className="divide-y divide-indigo-100/50">
+                    <tbody className="divide-y divide-gray-100">
                       {transferPreview.receivers.map((r, idx) => (
                         <tr key={idx}>
-                          <td className="py-1 text-indigo-900">
+                          <td className="py-1 text-[#1557b0]">
                             Dr {r.costCenter?.name} ({transferPreview.account?.name})
                           </td>
-                          <td className="py-1 text-right font-medium text-indigo-900">
+                          <td className="py-1 text-right font-medium text-[#1557b0]">
                             Rs. {money(r.amount)}
                           </td>
                         </tr>
                       ))}
-                      <tr className="bg-indigo-100/30">
-                        <td className="py-1 text-indigo-900">
+                      <tr className="bg-[#eef2ff]">
+                        <td className="py-1 text-[#1557b0]">
                           Cr {transferPreview.fromCC?.name} ({transferPreview.account?.name})
                         </td>
-                        <td className="py-1 text-right font-bold text-indigo-900">
+                        <td className="py-1 text-right font-bold text-[#1557b0]">
                           Rs. {money(transferPreview.receiverTotal)}
                         </td>
                       </tr>
@@ -1464,7 +1464,7 @@ export default function CostCenterReport() {
                           style={{
                             width: Math.min(100, (r.actualYTD / maxBudgetActual) * 100) + "%",
                           }}
-                          className={`h-full rounded-full ${r.actualYTD > r.budgetYTD ? "bg-red-500" : "bg-indigo-500"}`}
+                          className={`h-full rounded-full ${r.actualYTD > r.budgetYTD ? "bg-red-500" : "bg-[#1557b0]"}`}
                         />
                       </div>
                     </td>

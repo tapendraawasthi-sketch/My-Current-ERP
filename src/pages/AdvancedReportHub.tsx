@@ -527,7 +527,7 @@ const AdvancedReportHub: React.FC = () => {
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-gray-200 mb-4 bg-white px-2 pt-2 rounded-t-md shadow-sm overflow-x-auto hide-scrollbar">
+        <div className="flex border-b border-gray-200 mb-4 bg-white px-2 pt-2 rounded-t-md overflow-x-auto hide-scrollbar">
           {[
             "Drill-Down Navigator",
             "Ratio Analysis Dashboard",
@@ -550,7 +550,7 @@ const AdvancedReportHub: React.FC = () => {
 
         {/* Tab Content */}
         {activeTab === 0 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 mb-4 max-w-full overflow-auto">
+          <div className="bg-white border border-gray-200 rounded-md p-4 mb-4 max-w-full overflow-auto">
             <div className="flex items-center gap-1.5 mb-4 text-[12px] bg-gray-50 p-2.5 rounded-md border border-gray-200">
               <Home size={14} className="text-gray-500" />
               {drillPath.map((p, i) => (
@@ -725,7 +725,7 @@ const AdvancedReportHub: React.FC = () => {
             )}
 
             {drillLevel === "voucher-detail" && selectedVoucher && (
-              <div className="bg-gray-50 border border-gray-200 rounded-md p-5 max-w-4xl mx-auto shadow-sm">
+              <div className="bg-gray-50 border border-gray-200 rounded-md p-5 max-w-4xl mx-auto">
                 <div className="flex justify-between items-start mb-6 pb-4 border-b border-gray-200">
                   <div>
                     <h3 className="text-[16px] font-semibold text-gray-800 mb-1">
@@ -754,14 +754,14 @@ const AdvancedReportHub: React.FC = () => {
                     )}
                   </div>
                   <button
-                    className="h-8 px-4 bg-white border border-gray-300 text-[#1557b0] text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors shadow-sm"
+                    className="h-8 px-4 bg-white border border-gray-300 text-[#1557b0] text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
                     onClick={() => setCurrentPage("voucher-entry")}
                   >
                     Open in Entry Mode
                   </button>
                 </div>
 
-                <div className="border border-gray-200 rounded-md overflow-hidden shadow-sm bg-white">
+                <div className="border border-gray-200 rounded-md overflow-hidden bg-white">
                   <table className="w-full min-w-max border-collapse">
                     <thead>
                       <tr className="bg-[#f5f6fa] border-b border-gray-200">
@@ -823,7 +823,7 @@ const AdvancedReportHub: React.FC = () => {
         )}
 
         {activeTab === 1 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-5 mb-4 max-w-full overflow-auto">
+          <div className="bg-white border border-gray-200 rounded-md p-5 mb-4 max-w-full overflow-auto">
             <div className="flex justify-between items-end mb-6">
               <div>
                 <h2 className="text-[15px] font-semibold text-gray-800">
@@ -847,7 +847,7 @@ const AdvancedReportHub: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
-              <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[#1557b0] transition-colors group">
+              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[#1557b0] transition-colors group">
                 <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   Current Ratio
                   <TrendingUp size={14} className="text-gray-400 group-hover:text-[#1557b0]" />
@@ -862,7 +862,7 @@ const AdvancedReportHub: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[#1557b0] transition-colors group">
+              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[#1557b0] transition-colors group">
                 <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   Quick Ratio
                   <Activity size={14} className="text-gray-400 group-hover:text-[#1557b0]" />
@@ -877,7 +877,7 @@ const AdvancedReportHub: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[#1557b0] transition-colors group">
+              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[#1557b0] transition-colors group">
                 <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   Cash Ratio
                   <TrendingDown size={14} className="text-gray-400 group-hover:text-[#1557b0]" />
@@ -888,7 +888,7 @@ const AdvancedReportHub: React.FC = () => {
                 <div className="text-[11px] font-medium text-green-600">Good</div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[#1557b0] transition-colors group">
+              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[#1557b0] transition-colors group">
                 <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   GP Margin
                   <TrendingUp size={14} className="text-gray-400 group-hover:text-[#1557b0]" />
@@ -903,7 +903,7 @@ const AdvancedReportHub: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[#1557b0] transition-colors group">
+              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[#1557b0] transition-colors group">
                 <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   NP Margin
                   <TrendingUp size={14} className="text-gray-400 group-hover:text-[#1557b0]" />
@@ -918,7 +918,7 @@ const AdvancedReportHub: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[#1557b0] transition-colors group">
+              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[#1557b0] transition-colors group">
                 <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   ROA
                   <Activity size={14} className="text-gray-400 group-hover:text-[#1557b0]" />
@@ -935,7 +935,7 @@ const AdvancedReportHub: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white border border-gray-200 rounded-md p-5 shadow-sm">
+              <div className="bg-white border border-gray-200 rounded-md p-5">
                 <h3 className="text-[13px] font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100">
                   Quarterly Gross Margin Trend
                 </h3>
@@ -976,7 +976,7 @@ const AdvancedReportHub: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-md p-5 shadow-sm">
+              <div className="bg-white border border-gray-200 rounded-md p-5">
                 <h3 className="text-[13px] font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100">
                   Efficiency Ratios
                 </h3>
@@ -1033,19 +1033,19 @@ const AdvancedReportHub: React.FC = () => {
         )}
 
         {activeTab === 2 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-5 mb-4 max-w-full overflow-auto">
+          <div className="bg-white border border-gray-200 rounded-md p-5 mb-4 max-w-full overflow-auto">
             <h2 className="text-[15px] font-semibold text-gray-800 mb-5 pb-3 border-b border-gray-100">
               Report Automation Scheduler
             </h2>
 
             {dueSchedules.length > 0 && (
-              <div className="bg-blue-50 border border-blue-200 text-blue-800 p-3 rounded-md mb-6 flex items-center justify-between shadow-sm">
+              <div className="bg-blue-50 border border-blue-200 text-blue-800 p-3 rounded-md mb-6 flex items-center justify-between">
                 <div className="flex items-center gap-2 text-[13px] font-medium">
                   <AlertTriangle size={16} className="text-blue-600" />
                   {dueSchedules.length} scheduled report(s) are due to be run.
                 </div>
                 <button
-                  className="h-8 px-4 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96] transition-colors shadow-sm flex items-center gap-1.5"
+                  className="h-8 px-4 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96] transition-colors flex items-center gap-1.5"
                   onClick={generateDueReports}
                 >
                   <Play size={14} />
@@ -1129,7 +1129,7 @@ const AdvancedReportHub: React.FC = () => {
               </div>
               <div className="flex justify-end">
                 <button
-                  className="h-8 px-4 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96] transition-colors shadow-sm flex items-center gap-1.5"
+                  className="h-8 px-4 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96] transition-colors flex items-center gap-1.5"
                   onClick={saveSchedule}
                 >
                   <Plus size={14} />
@@ -1236,7 +1236,7 @@ const AdvancedReportHub: React.FC = () => {
         )}
 
         {activeTab === 3 && (
-          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 mb-4 max-w-full overflow-auto">
+          <div className="bg-white border border-gray-200 rounded-md p-4 mb-4 max-w-full overflow-auto">
             <h2 className="text-[15px] font-semibold text-gray-800 mb-5">
               Exception Detection Engine
             </h2>
@@ -1299,7 +1299,7 @@ const AdvancedReportHub: React.FC = () => {
                       {expandedException === exc.exception && (
                         <tr className="bg-gray-50 border-b border-gray-200">
                           <td colSpan={5} className="p-4 px-6">
-                            <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm">
+                            <div className="bg-white border border-gray-200 rounded-md p-4">
                               <h4 className="font-semibold text-gray-800 mb-3 border-b border-gray-100 pb-2 text-[13px]">
                                 Affected Records ({exc.count})
                               </h4>
