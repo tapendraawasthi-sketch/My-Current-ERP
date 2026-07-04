@@ -8,18 +8,28 @@
 
 import { DualDate } from "../components/ui/DualDate";
 import React, { useState, useMemo } from "react";
-import { ActionToolbar } from "../components/ui";
 import { useStore } from "../store/useStore";
-import { SearchableTable, Button, Badge, Input, Select, NepaliDatePicker } from "../components/ui";
+import { Select, NepaliDatePicker } from "../components/ui";
 import JournalVoucherForm from "../components/voucher/JournalVoucherForm";
-import { BookOpen, Plus, Eye } from "lucide-react";
+import { Plus, Eye, Search, Download } from "lucide-react";
 import { formatNumber } from "../lib/utils";
 import { VoucherType, VoucherStatus } from "../lib/types";
+import { ReportEmptyState } from "../components/ReportEmptyState";
 
-const statusVariant = {
-  [VoucherStatus.DRAFT]: "default",
-  [VoucherStatus.POSTED]: "success",
-  [VoucherStatus.CANCELLED]: "danger",
+const th =
+  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
+const btnPrimary =
+  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
+const btnOutline =
+  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
+const inputCls =
+  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+
+const statusBadge = (status: string) => {
+  if (status === VoucherStatus.POSTED) return "bg-green-100 text-green-700";
+  if (status === VoucherStatus.CANCELLED) return "bg-red-100 text-red-700";
+  return "bg-gray-100 text-gray-700";
 };
 
 const JournalEntries: React.FC = () => {
@@ -32,6 +42,8 @@ const JournalEntries: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [pageSize, setPageSize] = useState(50);
 
   const journals = useMemo(
     () => vouchers.filter((v) => v.type === VoucherType.JOURNAL),
@@ -46,6 +58,19 @@ const JournalEntries: React.FC = () => {
       .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
   }, [journals, statusFilter, fromDate, toDate]);
 
+  const searched = useMemo(() => {
+    const q = searchTerm.trim().toLowerCase();
+    if (!q) return filtered;
+    return filtered.filter(
+      (row) =>
+        (row.voucherNo || "").toLowerCase().includes(q) ||
+        (row.narration || "").toLowerCase().includes(q) ||
+        (row.referenceNo || "").toLowerCase().includes(q),
+    );
+  }, [filtered, searchTerm]);
+
+  const displayed = useMemo(() => searched.slice(0, pageSize), [searched, pageSize]);
+
   const openNew = () => {
     setActiveId(null);
     setMode("new");
@@ -59,6 +84,24 @@ const JournalEntries: React.FC = () => {
     setActiveId(null);
   };
 
+  const exportCsv = () => {
+    const headers = ["Voucher No", "Date", "Narration", "Debit", "Credit", "Status"];
+    const rows = searched.map((row) =>
+      [row.voucherNo, row.date, row.narration, row.totalDebit, row.totalCredit, row.status]
+        .map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`)
+        .join(","),
+    );
+    const blob = new Blob([[headers.join(","), ...rows].join("\n")], {
+      type: "text/csv;charset=utf-8;",
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "journal-vouchers.csv";
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   if (mode === "new" || mode === "edit") {
     return (
       <JournalVoucherForm
@@ -69,116 +112,155 @@ const JournalEntries: React.FC = () => {
     );
   }
 
-  const columns = [
-    {
-      key: "voucherNo",
-      header: "Voucher No",
-      render: (v: string) => <span className="font-mono font-bold text-[#000000]">{v}</span>,
-    },
-    {
-      key: "date",
-      header: "Date",
-      render: (_: any, row: any) => (
-        <DualDate date={row.date || row.adDate} dateNepali={row.dateNepali || row.bsDate} />
-      ),
-    },
-    {
-      key: "narration",
-      header: "Narration",
-      render: (v: string) => <span className="line-clamp-1 max-w-[260px]">{v || "—"}</span>,
-    },
-    {
-      key: "totalDebit",
-      header: "Debit",
-      align: "right" as const,
-      render: (v: number) => (
-        <span className="font-mono">
-          {symbol} {formatNumber(v || 0)}
-        </span>
-      ),
-    },
-    {
-      key: "totalCredit",
-      header: "Credit",
-      align: "right" as const,
-      render: (v: number) => (
-        <span className="font-mono">
-          {symbol} {formatNumber(v || 0)}
-        </span>
-      ),
-    },
-    {
-      key: "status",
-      header: "Status",
-      align: "center" as const,
-      render: (v: string) => (
-        <Badge variant={statusVariant[v] || "default"}>{(v || "").toUpperCase()}</Badge>
-      ),
-    },
-    {
-      key: "actions",
-      header: "Actions",
-      align: "center" as const,
-      render: (_: any, row: any) => (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            openEdit(row);
-          }}
-          className="p-1.5 rounded text-[#000000] hover:text-[#000000] hover:bg-[#D4EABD]"
-          title="View / Edit"
-        >
-          <Eye className="h-4 w-4" />
-        </button>
-      ),
-    },
-  ];
-
   return (
-    <div className="flex flex-col gap-6 animate-fadeIn text-xs select-none">
-      <ActionToolbar title="Journal Vouchers" subtitle="Double-entry bookkeeping records" />
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#9DC07A] pb-5">
-        <div>
-          <h2 className="text-xl font-bold text-[#000000] tracking-tight flex items-center gap-2">
-            <BookOpen className="h-5 w-5 text-[#000000]" />
-            <span>JOURNAL VOUCHERS</span>
-          </h2>
-          <p className="text-xs text-[#000000] mt-1 leading-none font-semibold uppercase tracking-wider">
-            Double-entry journal voucher register
-          </p>
+    <div className="flex h-full min-h-0 flex-col bg-[#f5f6fa]">
+      <div className="p-4 pb-0 shrink-0">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-[15px] font-semibold text-gray-800">Journal vouchers</h1>
+            <p className="text-[11px] text-gray-500 mt-0.5">
+              Double-entry journal voucher register
+            </p>
+          </div>
+          <button type="button" className={btnPrimary} onClick={openNew}>
+            <Plus className="h-3.5 w-3.5" />
+            New journal entry
+          </button>
         </div>
-        <Button variant="primary" size="sm" onClick={openNew} icon={<Plus className="h-4 w-4" />}>
-          New Journal Entry
-        </Button>
+
+        <div className="no-print flex flex-wrap items-center gap-2 mb-3 p-3 bg-white border border-gray-200 rounded-md">
+          <span className="text-[11px] text-gray-500">From</span>
+          <div className="w-32">
+            <NepaliDatePicker value={fromDate} onChange={setFromDate} />
+          </div>
+          <span className="text-[11px] text-gray-500">To</span>
+          <div className="w-32">
+            <NepaliDatePicker value={toDate} onChange={setToDate} />
+          </div>
+          <span className="text-[11px] text-gray-500">Status</span>
+          <div className="w-36">
+            <Select
+              options={[
+                { value: "ALL", label: "All statuses" },
+                { value: VoucherStatus.DRAFT, label: "Draft" },
+                { value: VoucherStatus.POSTED, label: "Posted" },
+                { value: VoucherStatus.CANCELLED, label: "Cancelled" },
+              ]}
+              value={statusFilter}
+              onChange={setStatusFilter}
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2 mb-3 no-print">
+          <div className="relative max-w-xs flex-1 min-w-[200px]">
+            <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search voucher no or narration…"
+              className={`${inputCls} w-full pl-8`}
+            />
+          </div>
+          <select
+            value={pageSize}
+            onChange={(e) => setPageSize(Number(e.target.value))}
+            className={inputCls}
+          >
+            <option value={25}>25 rows</option>
+            <option value={50}>50 rows</option>
+            <option value={100}>100 rows</option>
+          </select>
+          <span className="text-[11px] text-gray-500 whitespace-nowrap">
+            {searched.length} record{searched.length === 1 ? "" : "s"}
+          </span>
+          <button type="button" className={btnOutline} onClick={exportCsv}>
+            <Download className="h-3.5 w-3.5" />
+            Export
+          </button>
+        </div>
       </div>
 
-      {/* Filters */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-white p-4 border border-[#9DC07A] rounded-xl shadow-sm">
-        <NepaliDatePicker label="From Date" value={fromDate} onChange={setFromDate} />
-        <NepaliDatePicker label="To Date" value={toDate} onChange={setToDate} />
-        <Select
-          label="Status"
-          options={[
-            { value: "ALL", label: "All Statuses" },
-            { value: VoucherStatus.DRAFT, label: "Draft" },
-            { value: VoucherStatus.POSTED, label: "Posted" },
-            { value: VoucherStatus.CANCELLED, label: "Cancelled" },
-          ]}
-          value={statusFilter}
-          onChange={setStatusFilter}
-        />
+      <div className="flex-1 overflow-y-auto px-4 pb-4 min-h-0">
+        {searched.length === 0 ? (
+          <div className="bg-white border border-gray-200 rounded-md">
+            <ReportEmptyState
+              message="No journal vouchers found"
+              hint='Adjust filters or click "New journal entry" to create your first entry.'
+            />
+          </div>
+        ) : (
+          <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                    <th className={th}>Voucher no</th>
+                    <th className={th}>Date</th>
+                    <th className={th}>Narration</th>
+                    <th className={`${th} text-right`}>Debit</th>
+                    <th className={`${th} text-right`}>Credit</th>
+                    <th className={`${th} text-center`}>Status</th>
+                    <th className={`${th} text-right`}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {displayed.map((row) => (
+                    <tr
+                      key={row.id}
+                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                      onClick={() => openEdit(row)}
+                    >
+                      <td className={`${td} font-mono font-medium text-gray-800`}>
+                        {row.voucherNo}
+                      </td>
+                      <td className={td}>
+                        <DualDate
+                          date={row.date || row.adDate}
+                          dateNepali={row.dateNepali || row.bsDate}
+                        />
+                      </td>
+                      <td className={`${td} text-gray-500 max-w-[260px] truncate`}>
+                        {row.narration || "—"}
+                      </td>
+                      <td className={`${td} font-mono text-right`}>
+                        {symbol} {formatNumber(row.totalDebit || 0)}
+                      </td>
+                      <td className={`${td} font-mono text-right`}>
+                        {symbol} {formatNumber(row.totalCredit || 0)}
+                      </td>
+                      <td className={`${td} text-center`}>
+                        <span
+                          className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${statusBadge(row.status)}`}
+                        >
+                          {(row.status || "").toUpperCase()}
+                        </span>
+                      </td>
+                      <td className={`${td} text-right`}>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openEdit(row);
+                          }}
+                          className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 opacity-0 group-hover:opacity-100 transition-opacity"
+                          title="View / edit"
+                        >
+                          <Eye className="h-3.5 w-3.5" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+              Showing {displayed.length} of {searched.length} journal vouchers
+            </div>
+          </div>
+        )}
       </div>
-
-      <SearchableTable
-        columns={columns}
-        data={filtered}
-        searchFields={["voucherNo", "narration", "referenceNo"]}
-        rowKey="id"
-        onRowClick={openEdit}
-        emptyMessage="No journal vouchers found. Create your first entry."
-        placeholder="Search voucher no or narration…"
-        stickyHeader
-      />
     </div>
   );
 };
