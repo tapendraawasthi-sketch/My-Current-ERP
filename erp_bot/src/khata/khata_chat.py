@@ -1,4 +1,4 @@
-"""e-Khata conversational LLM via Ollama — CA accounting language brain."""
+"""e-Khata conversational LLM via Ollama — two-stage CA accounting brain."""
 
 from __future__ import annotations
 
@@ -13,17 +13,29 @@ from langchain_ollama import ChatOllama
 from ..config import KHATA_STRUCTURED_PARSE, MODEL_NAME, OLLAMA_BASE_URL
 from ..falcon_trader import parse_khata_message
 from ..vectorstore.ca_knowledge_store import search_ca_knowledge
-from .structured_parse import STRUCTURED_PARSE_INSTRUCTION, parse_llm_response
+from .extraction_prompt import EXTRACTION_SYSTEM_PROMPT, EXTRACTION_USER_TEMPLATE
+from .ollama_health import is_ollama_online
+from .structured_parse import parse_extraction_response
 from .system_prompt import KHATA_SYSTEM_PROMPT
 
 _sessions: dict[str, list] = {}
 _MAX_HISTORY = 24
 
+# Stage 2 — response generation (natural language, moderate temperature)
 _llm = ChatOllama(
     model=MODEL_NAME,
     base_url=OLLAMA_BASE_URL,
     temperature=0.35,
     num_ctx=8192,
+)
+
+# Stage 1 — structured extraction (deterministic JSON)
+_llm_extract = ChatOllama(
+    model=MODEL_NAME,
+    base_url=OLLAMA_BASE_URL,
+    temperature=0.0,
+    num_ctx=4096,
+    format="json",
 )
 
 INTENT_LABELS = {
@@ -107,24 +119,31 @@ def _parsed_to_card(parsed: dict[str, Any], raw_text: str) -> dict[str, Any] | N
     return card
 
 
-def _template_entry_reply(card: dict[str, Any], lang: str) -> str:
+def _template_entry_reply(card: dict[str, Any], lang: str, *, offline: bool = False) -> str:
     label = INTENT_LABELS.get(card["intent"], card["intent"])
     party = card.get("party") or ("(no party)" if lang == "english" else "(party chaina)")
     amount = card["amount"]
+    offline_note = ""
+    if offline:
+        offline_note = (
+            "\n\n_(AI offline — basic entry mode active. Start `ollama serve` for full AI.)_"
+            if lang == "english"
+            else "\n\n_(AI offline — basic entry mode. Pura AI ko lagi `ollama serve` start garnus.)_"
+        )
     if lang == "english":
         return (
             f"I understood this journal entry:\n"
             f"• Type: {label}\n"
             f"• Party: {party}\n"
             f"• Amount: NPR {amount:,}\n\n"
-            f"Click **Confirm** if correct."
+            f"Click **Confirm** if correct.{offline_note}"
         )
     return (
         f"Maile yo entry bujhe:\n"
         f"• Prakar: {label}\n"
         f"• Party: {party}\n"
         f"• Rakam: NPR {amount:,}\n\n"
-        f"Sahi cha bhane **Confirm** thichnus."
+        f"Sahi cha bhane **Confirm** thichnus.{offline_note}"
     )
 
 
@@ -183,7 +202,7 @@ def _framework_context(text: str) -> str:
         else:
             lines.append(body)
     return (
-        "[IFRS CONCEPTUAL FRAMEWORK KNOWLEDGE — retrieved for this question]\n"
+        "[IFRS CONCEPTUAL FRAMEWORK KNOWLEDGE — use as background, do NOT copy verbatim]\n"
         + "\n\n".join(lines)
     )
 
@@ -215,6 +234,7 @@ def _invoke_llm(
     lang: str,
     context: str = "",
 ) -> str:
+    """Stage 2 — conversational response generation with session history."""
     history = _sessions.setdefault(session_id, [])
     system = KHATA_SYSTEM_PROMPT + _balance_block(balance) + _lang_instruction(lang)
     if context:
@@ -246,6 +266,52 @@ def _invoke_llm(
     return text.strip()
 
 
+def _extract_transaction_llm(text: str, balance: dict[str, Any] | None) -> dict[str, Any]:
+    """Stage 1 — structured extraction. No session history (evaluable in isolation)."""
+    if not KHATA_STRUCTURED_PARSE or not is_ollama_online():
+        return {"ok": False, "reason": "offline_or_disabled"}
+
+    system = EXTRACTION_SYSTEM_PROMPT + _balance_block(balance)
+    messages = [
+        SystemMessage(content=system),
+        HumanMessage(content=EXTRACTION_USER_TEMPLATE.format(message=text)),
+    ]
+
+    try:
+        result = _llm_extract.invoke(messages)
+        raw = result.content if hasattr(result, "content") else str(result)
+    except Exception:
+        return {"ok": False, "reason": "llm_error"}
+
+    return parse_extraction_response(raw, text)
+
+
+def _narrate_entry(
+    text: str,
+    card: dict[str, Any],
+    session_id: str,
+    balance: dict[str, Any] | None,
+    lang: str,
+) -> str:
+    """Stage 2 — confirm parsed entry in user's language."""
+    if not is_ollama_online():
+        return _template_entry_reply(card, lang)
+
+    llm_reply = _invoke_llm(
+        text,
+        session_id,
+        balance,
+        lang,
+        context=(
+            f"User posted a transaction. Parsed entry (DO NOT change amounts): "
+            f"{json.dumps(card, ensure_ascii=False)}. "
+            f"Confirm the entry in {'English' if lang == 'english' else 'Nepali'} "
+            f"with Dr/Cr explanation. Tell them to click Confirm."
+        ),
+    )
+    return llm_reply if len(llm_reply) > 40 else _template_entry_reply(card, lang)
+
+
 def _is_accounting_question(text: str) -> bool:
     """Questions should go to Q&A, not transaction parsing."""
     if text.strip().endswith("?"):
@@ -268,29 +334,8 @@ def _is_transaction_signal(text: str) -> bool:
     )) or bool(re.search(r"\b(sold|bought|paid|received|tiryo|kineko)\b.*\d", text, re.I))
 
 
-def _try_llm_structured_parse(
-    text: str,
-    session_id: str,
-    balance: dict[str, Any] | None,
-    lang: str,
-) -> tuple[dict[str, Any] | None, str | None]:
-    """LLM fallback parser — uses fine-tuned model knowledge, not regex."""
-    if not KHATA_STRUCTURED_PARSE:
-        return None, None
-
-    raw = _invoke_llm(
-        text,
-        session_id,
-        balance,
-        lang,
-        context=STRUCTURED_PARSE_INSTRUCTION + "\n\nReturn JSON only for this transaction:\n" + text,
-    )
-    card, clarify = parse_llm_response(raw, text)
-    return card, clarify
-
-
-def _process_entry(text: str, session_id: str, balance: dict[str, Any] | None, lang: str) -> dict[str, Any] | None:
-    """Rules first, LLM structured parse second."""
+def _process_entry_rules(text: str, lang: str) -> dict[str, Any] | None:
+    """Offline fallback — regex rules only."""
     parsed = parse_khata_message(text)
 
     if parsed.get("clarifying_question"):
@@ -298,52 +343,61 @@ def _process_entry(text: str, session_id: str, balance: dict[str, Any] | None, l
             "kind": "clarify",
             "reply": _template_clarify(str(parsed["clarifying_question"]), lang),
             "card": None,
-            "session_id": session_id,
-            "engine": "hybrid",
+            "engine": "rules",
         }
 
     card = _parsed_to_card(parsed, text)
-    if card:
-        llm_reply = _invoke_llm(
-            text,
-            session_id,
-            balance,
-            lang,
-            context=(
-                f"User posted a transaction. Parsed entry (DO NOT change amounts): "
-                f"{json.dumps(card, ensure_ascii=False)}. "
-                f"Confirm the entry in {'English' if lang == 'english' else 'Nepali'} "
-                f"with Dr/Cr explanation. Tell them to click Confirm."
-            ),
-        )
-        reply = llm_reply if len(llm_reply) > 40 else _template_entry_reply(card, lang)
-        return {
-            "kind": "entry",
-            "reply": reply,
-            "card": card,
-            "session_id": session_id,
-            "engine": "hybrid",
-        }
+    if not card:
+        return None
 
-    # LLM structured fallback when rules miss
-    llm_card, llm_clarify = _try_llm_structured_parse(text, session_id, balance, lang)
-    if llm_clarify:
-        return {
-            "kind": "clarify",
-            "reply": _template_clarify(llm_clarify, lang),
-            "card": None,
-            "session_id": session_id,
-            "engine": "ollama",
-        }
-    if llm_card:
-        reply = _template_entry_reply(llm_card, lang)
-        return {
-            "kind": "entry",
-            "reply": reply,
-            "card": llm_card,
-            "session_id": session_id,
-            "engine": "ollama",
-        }
+    return {
+        "kind": "entry",
+        "reply": _template_entry_reply(card, lang, offline=True),
+        "card": card,
+        "engine": "rules",
+    }
+
+
+def _process_entry(
+    text: str,
+    session_id: str,
+    balance: dict[str, Any] | None,
+    lang: str,
+) -> dict[str, Any] | None:
+    """LLM extraction first (Stage 1), regex fallback when offline (Stage 1b)."""
+    online = is_ollama_online()
+
+    if online and KHATA_STRUCTURED_PARSE:
+        extraction = _extract_transaction_llm(text, balance)
+
+        if extraction.get("ok") and extraction.get("is_question"):
+            return None
+
+        if extraction.get("ok") and extraction.get("clarify"):
+            return {
+                "kind": "clarify",
+                "reply": _template_clarify(str(extraction["clarify"]), lang),
+                "card": None,
+                "engine": "ollama",
+            }
+
+        if extraction.get("ok") and extraction.get("card"):
+            card = extraction["card"]
+            reply = _narrate_entry(text, card, session_id, balance, lang)
+            return {
+                "kind": "entry",
+                "reply": reply,
+                "card": card,
+                "session_id": session_id,
+                "engine": "ollama",
+            }
+
+    # Offline or LLM extraction failed — regex fallback
+    rules_result = _process_entry_rules(text, lang)
+    if rules_result:
+        rules_result["session_id"] = session_id
+        return rules_result
+
     return None
 
 
@@ -353,7 +407,7 @@ def khata_chat(
     balance: dict[str, Any] | None = None,
     language: str | None = None,
 ) -> dict[str, Any]:
-    """Accounting language brain: rules for entries + Ollama for understanding & chat."""
+    """Two-stage brain: LLM extraction for entries, LLM response for Q&A."""
     text = (message or "").strip()
     lang = _detect_language(text, language)
 
@@ -365,14 +419,31 @@ def khata_chat(
         )
         return {"kind": "chat", "reply": empty, "card": None, "session_id": session_id, "engine": "rules"}
 
-    # Rule-based entry detection + LLM structured fallback
     if _is_transaction_signal(text):
         entry_result = _process_entry(text, session_id, balance, lang)
         if entry_result:
             return entry_result
 
-    # Accounting language Q&A and general conversation via Ollama
     context = _framework_context(text) if _is_framework_question(text) else ""
+    if not is_ollama_online():
+        if lang == "english":
+            offline_reply = (
+                "AI is currently offline. Basic entry mode works for common transactions. "
+                "Start `ollama serve` for full accounting Q&A."
+            )
+        else:
+            offline_reply = (
+                "AI ahile offline chha. Sadharan entry basic mode ma hunchha. "
+                "Pura accounting Q&A ko lagi `ollama serve` start garnus."
+            )
+        return {
+            "kind": "chat",
+            "reply": offline_reply,
+            "card": None,
+            "session_id": session_id,
+            "engine": "rules",
+        }
+
     reply = _invoke_llm(text, session_id, balance, lang, context=context)
     return {
         "kind": "chat",
