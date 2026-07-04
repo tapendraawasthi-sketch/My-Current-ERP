@@ -9,7 +9,8 @@ import {
   detectUserLanguage,
   understandAccountingLanguage,
 } from "./accountingLanguageBrain";
-import { generateNepaliReply, shouldTryTransactionParse } from "./nepaliBrain";
+import { generateConversationalReply, type ConversationTurn } from "./conversationalBrain";
+import { shouldTryTransactionParse } from "./nepaliBrain";
 import type { KhataConfirmationCard, KhataParseResult } from "./types";
 import type { LedgerBalanceSnapshot } from "./conversationEngine";
 
@@ -39,8 +40,10 @@ export type EKhataProcessResult =
 
 export interface ProcessMessageOptions {
   balance?: LedgerBalanceSnapshot;
-  /** Try Ollama LLM when erp_bot is online (auto-enabled by store) */
+  /** Try Ollama LLM via erp_bot when available (default: true) */
   preferLlm?: boolean;
+  /** Recent chat turns for conversational context */
+  history?: ConversationTurn[];
 }
 
 function localizeClarify(question: string, lang: ReturnType<typeof detectUserLanguage>): string {
@@ -113,8 +116,11 @@ export function processEKhataMessage(
     };
   }
 
-  // 3. General conversation → nepali brain (fallback)
-  const reply = generateNepaliReply(trimmed, options.balance, lang);
+  // 3. General conversation → emotional conversational brain
+  const reply = generateConversationalReply(trimmed, {
+    balance: options.balance,
+    history: options.history,
+  });
   return {
     kind: "chat",
     reply,
@@ -131,7 +137,8 @@ export async function processEKhataMessageAsync(
 
   if (preferLlm) {
     try {
-      const { checkEKhataLlmStatus, askEKhataLlm, getEKhataSessionId } = await import("./ekhataLlmClient");
+      const { checkEKhataLlmStatus, askEKhataLlm, getEKhataSessionId } =
+        await import("./ekhataLlmClient");
       const status = await checkEKhataLlmStatus();
       if (status.khataLlm && status.online) {
         const lang = detectUserLanguage(rawText);

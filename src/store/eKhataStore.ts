@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { confirmKhataEntry } from "../lib/ekhata/confirmKhata";
 import { replyCancel, replySaved } from "../lib/ekhata/conversationEngine";
 import { processEKhataMessageAsync } from "../lib/ekhata/processMessage";
+import type { ConversationTurn } from "../lib/ekhata/conversationalBrain";
 import type { EKhataChatMessage, KhataConfirmationCard } from "../lib/ekhata/types";
 import { useStore } from "./useStore";
 
@@ -11,12 +12,12 @@ function genId(): string {
 
 function buildWelcome(): string {
   return (
-    "Namaste! Ma e-Khata — tapaiko **accounting language** sahayogi.\n\n" +
-    "Ma Nepali ra English duitai accounting bhasha bujhchhu. Sodhnus wa entry lekhnu hos:\n" +
+    "Namaste! Ma e-Khata — tapaiko **accounting language** ra **emotional AI** sahayogi.\n\n" +
+    "Ma Nepali ra English duitai accounting bhasha bujhchhu, tapai ko mood pani bujhchhu. Sodhnus wa entry lekhnu hos:\n" +
     "• 'What entry for bad debt write off?' / 'Bad debt ko entry k hunchha?'\n" +
-    "• 'Is debtors an asset or liability?' / 'Debtors asset ho?'\n" +
-    "• 'Ram lai 500 udhaar becheko' / 'salary accrual 500000'\n\n" +
-    "🟢 Built-in Accounting Brain · Ollama LLM when online"
+    "• 'Ram lai 500 udhaar becheko' / 'salary accrual 500000'\n" +
+    "• Wa kura matra garnu hos — ma empathetic jawaf dinchhu\n\n" +
+    "🧠 CA Brain · Emotional AI · Ollama LLM when online"
   );
 }
 
@@ -71,7 +72,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
       const { checkEKhataLlmStatus } = await import("../lib/ekhata/processMessage");
       const status = await checkEKhataLlmStatus();
       set({
-        llmOnline: status.online && status.khataLlm,
+        llmOnline: status.khataLlm && status.online,
         llmModel: status.model,
       });
     } catch {
@@ -93,9 +94,15 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
     }));
 
     try {
+      const history: ConversationTurn[] = get()
+        .messages.filter((m) => m.id !== "welcome")
+        .slice(-10)
+        .map((m) => ({ role: m.role, text: m.text }));
+
       const result = await processEKhataMessageAsync(trimmed, {
         balance: getKhataBalance(),
         preferLlm: true,
+        history,
       });
 
       if (result.kind === "entry" && result.card) {

@@ -1,11 +1,29 @@
 /**
- * e-Khata module — CA-level Nepali accounting entry maker + conversational brain.
+ * e-Khata module — CA-level Nepali accounting entry maker + emotional conversational brain.
  */
 
 export { normalizeNepaliText, transliterateDevanagari, tokenizeNepali } from "./normalizeNepali";
-export { analyzeNepaliMessage, generateNepaliReply, shouldTryTransactionParse, TRANSACTION_SIGNALS } from "./nepaliBrain";
+export { generateConversationalReply, analyzeQuestion } from "./conversationalBrain";
+export type { ConversationTurn, QuestionAnalysis, QuestionKind } from "./conversationalBrain";
+export {
+  composeEmotionalReply,
+  detectEmotionalContext,
+  isEmotionalMessage,
+} from "./emotionalBrain";
+export type { EmotionalContext, UserEmotion, ResponseTone } from "./emotionalBrain";
+export {
+  analyzeNepaliMessage,
+  generateNepaliReply,
+  shouldTryTransactionParse,
+  TRANSACTION_SIGNALS,
+  searchKnowledge,
+} from "./nepaliBrain";
 export { parseKhataMessage } from "./parseKhata";
-export { processEKhataMessage, processEKhataMessageAsync, checkEKhataLlmStatus } from "./processMessage";
+export {
+  processEKhataMessage,
+  processEKhataMessageAsync,
+  checkEKhataLlmStatus,
+} from "./processMessage";
 export { generateCAEntry, formatJournalPreview, classifyScenario } from "./caEntryEngine";
 export {
   understandAccountingLanguage,

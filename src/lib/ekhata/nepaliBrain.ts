@@ -256,12 +256,24 @@ export function analyzeNepaliMessage(text: string): MessageAnalysis {
     isIdentityQuestion: scoreTopic(t, TOPIC_SIGNALS.identity) >= 8,
     isCapabilityQuestion: scoreTopic(t, TOPIC_SIGNALS.capability) >= 8,
     isKnowledgeQuestion:
-      /\b(timlai|timilai|tapailai|timi|tapai)\s*(k\s*k|ke\s*ke|kk)\s*(thaha|tha|janch|aaucha)\b/i.test(t),
+      /\b(timlai|timilai|tapailai|timi|tapai)\s*(k\s*k|ke\s*ke|kk)\s*(thaha|tha|janch|aaucha)\b/i.test(
+        t,
+      ),
     isHelpRequest: scoreTopic(t, TOPIC_SIGNALS.help) >= 7,
-    isAffirmation: /\b(ho|hunchha|thik|sahi|okay|ok|yes|huss|huncha)\b/i.test(t) && t.length < 20,
-    isNegation: /\b(hoina|chaina|chhaina|xaina|no|nope|nah|na|pardaina)\b/i.test(t) && t.length < 20,
+    isAffirmation:
+      !isQuestion &&
+      t.length < 20 &&
+      /^(ho|hunchha|thik|sahi|okay|ok|yes|huss|huncha|ramro|nice|good|la|hajur)$/i.test(t),
+    isNegation:
+      !isQuestion &&
+      t.length < 25 &&
+      /^(hoina|chaina|chhaina|xaina|no|nope|nah|na|pardaina)$/i.test(t),
     isAbuse: /\b(muji|randi|lado|chikne|machikne|fuck|shit|bastard)\b/i.test(t),
-    detectedLanguage: hasNepali ? "nepali" : /\b(the|is|are|was|have|has|do|does|will|can)\b/i.test(t) ? "english" : "mixed",
+    detectedLanguage: hasNepali
+      ? "nepali"
+      : /\b(the|is|are|was|have|has|do|does|will|can)\b/i.test(t)
+        ? "english"
+        : "mixed",
     questionTarget,
   };
 }
@@ -316,7 +328,8 @@ const KNOWLEDGE: Record<string, Record<string, string>> = {
       "Sagarmatha (Mount Everest) sansar ko sabse aglo himal ho — 8,848.86 meter. Nepal ra China (Tibet) ko border ma parchha.",
     languages:
       "Nepal ma 123+ bhasha bolinchha. Official language: Nepali (Khas bhasha). Maithili, Bhojpuri, Tharu, Tamang, Newar — aru pani dherai chhan.",
-    provinces: "Nepal ka 7 Pradesh: Koshi, Madhesh, Bagmati, Gandaki, Lumbini, Karnali, Sudurpashchim.",
+    provinces:
+      "Nepal ka 7 Pradesh: Koshi, Madhesh, Bagmati, Gandaki, Lumbini, Karnali, Sudurpashchim.",
     festivals:
       "Nepal ka pramukh chaadhpar: Dashain (sabse thulo), Tihar (Diwali), Chhath, Holi, Teej, Maghe Sankranti, Losar, Bisket Jatra.",
     constitution:
@@ -329,12 +342,11 @@ const KNOWLEDGE: Record<string, Record<string, string>> = {
       "Paani ko chemical formula H₂O ho — 2 hydrogen atoms ra 1 oxygen atom milera banchha.",
     "sun distance":
       "Surya prithvi bata lagbhag 15 crore km (150 million km) tada chha. Sunlight lai prithvi auna lagbhag 8 minute 20 second lagchha.",
-    "pi value":
-      "Pi (π) ko value approximately 3.14159 ho. Circle ko circumference ÷ diameter = π.",
+    "pi value": "Pi (π) ko value approximately 3.14159 ho. Circle ko circumference ÷ diameter = π.",
   },
 };
 
-function searchKnowledge(text: string): string | null {
+export function searchKnowledge(text: string): string | null {
   const t = text.toLowerCase();
   for (const [, entries] of Object.entries(KNOWLEDGE)) {
     for (const [key, answer] of Object.entries(entries)) {
@@ -345,10 +357,16 @@ function searchKnowledge(text: string): string | null {
       }
     }
   }
-  if (/\b(tax\s*rate|income\s*tax|kar\s*dar)\b/i.test(t) && /\b(single|natural\s*person|byakti)\b/i.test(t)) {
+  if (
+    /\b(tax\s*rate|income\s*tax|kar\s*dar)\b/i.test(t) &&
+    /\b(single|natural\s*person|byakti)\b/i.test(t)
+  ) {
     return KNOWLEDGE.tax["income tax single"];
   }
-  if (/\b(tax\s*rate|income\s*tax|kar\s*dar)\b/i.test(t) && /\b(married|couple|dampati)\b/i.test(t)) {
+  if (
+    /\b(tax\s*rate|income\s*tax|kar\s*dar)\b/i.test(t) &&
+    /\b(married|couple|dampati)\b/i.test(t)
+  ) {
     return KNOWLEDGE.tax["income tax couple"];
   }
   if (/\b(balance\s*sheet)\b/i.test(t) && /\b(k[aeo]?\s*ho|what\s*is|explain|bhannu)\b/i.test(t)) {
@@ -432,15 +450,8 @@ const R: Record<string, string[]> = {
   accounting_general: [
     "Accounting bhanya — paisa aayo kaha, gayo kaha, baki kati — systematic tarikale track garne system ho. Double entry principle ma har ek transaction ma debit = credit hunu parchha.",
   ],
-  affirmation: [
-    "Ramro! Aru kei chahiyo?",
-    "Thik chha! K garne aba?",
-    "OK! Ready chhu — bhannus!",
-  ],
-  negation: [
-    "Huncha, kei pardaina. Chahiye bela pheri aaunus!",
-    "OK, choddim. Aru kura?",
-  ],
+  affirmation: ["Ramro! Aru kei chahiyo?", "Thik chha! K garne aba?", "OK! Ready chhu — bhannus!"],
+  negation: ["Huncha, kei pardaina. Chahiye bela pheri aaunus!", "OK, choddim. Aru kura?"],
   abuse: [
     "Yesto shabda prayog nagarnus hajur. Ma tapailai help garna chahanchu — ramro tarikale sodhnus na!",
     "Maafi, tara yesto language ma reply gardina. Ramrosanga kura garau!",
