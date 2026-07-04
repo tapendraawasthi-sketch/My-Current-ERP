@@ -103,6 +103,11 @@ TEST_CASES: list[tuple[str, str]] = [
     ("hello", "general"),
     ("thanks", "general"),
     ("ok", "general"),
+
+    # bare topic + typo tolerance
+    ("journal voucher", "definition"),
+    ("payment voucher", "definition"),
+    ("how to make payment vouche", "action_path"),
 ]
 
 

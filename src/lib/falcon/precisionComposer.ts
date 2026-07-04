@@ -17,8 +17,8 @@ import {
   searchModules,
 } from "./codeStructureParser";
 import { ERP_MODULES, type ERPModuleDoc, type ERPFieldDoc } from "./erpCodeKnowledge";
-import { FALCON_KB } from "./knowledgeBase";
 import { formatNavAnswer, postComposeScope } from "./intentTaxonomy";
+import { findKbEntryLastResort } from "./kbFallback";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TYPES
@@ -39,6 +39,39 @@ function scopeComposed(intent: SmartIntent, response: ComposedResponse): Compose
     ...response,
     answer: postComposeScope(response.answer, intent.falconIntent),
   };
+}
+
+function composeFromKbLastResort(
+  intent: SmartIntent,
+  focus: string | null,
+  responseType: ResponseStrategy,
+  sectionsIncluded: SectionType[],
+): ComposedResponse | null {
+  const kbEntry = findKbEntryLastResort(intent.parsed.original, focus);
+  if (!kbEntry) return null;
+
+  return scopeComposed(intent, {
+    answer: kbEntry.answer,
+    confidence: 0.55,
+    sources: [`kb:${kbEntry.id}`],
+    suggestions: kbEntry.followups || [],
+    responseType,
+    sectionsIncluded,
+    matchedModule: kbEntry.module,
+  });
+}
+
+function resolveModuleInfo(focus: string) {
+  const info = getCodeStructureInfo(focus);
+  if (info?.moduleDoc) return info;
+
+  const results = searchModules(focus, 1);
+  if (results.length > 0) {
+    const page = results[0].entry;
+    const fromRoute = getCodeStructureInfo(page.route);
+    if (fromRoute) return fromRoute;
+  }
+  return info;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -319,37 +352,20 @@ function composeStepsOnlyResponse(intent: SmartIntent): ComposedResponse {
     };
   }
   
-  const info = getCodeStructureInfo(focus);
-  
-  if (!info || !info.moduleDoc?.workflow?.steps) {
-    // Try to find from KB
-    const queryLower = intent.parsed.original.toLowerCase();
-    const kbEntry = FALCON_KB.find((entry) => {
-      const entryText = [entry.title, ...entry.keywords, entry.module]
-        .join(" ").toLowerCase();
-      return entryText.includes(focus) || queryLower.includes(entry.module);
-    });
-    
-    if (kbEntry) {
-      return {
-        answer: kbEntry.answer,
-        confidence: 0.7,
-        sources: [`kb:${kbEntry.id}`],
-        suggestions: kbEntry.followups || [],
-        responseType: "steps-only",
-        sectionsIncluded: ["steps"],
-        matchedModule: kbEntry.module,
-      };
-    }
-    
-    return {
+  const info = resolveModuleInfo(focus);
+
+  if (!info?.moduleDoc?.workflow?.steps) {
+    const kbFallback = composeFromKbLastResort(intent, focus, "steps-only", ["steps"]);
+    if (kbFallback) return kbFallback;
+
+    return scopeComposed(intent, {
       answer: `I don't have specific steps for "${focus}". Please try a more specific module name.`,
       confidence: 0.3,
       sources: [],
       suggestions: ["How to create sales invoice?", "How to post journal entry?"],
       responseType: "steps-only",
       sectionsIncluded: [],
-    };
+    });
   }
   
   const stepsSection = composeStepsSection(info);
@@ -386,7 +402,7 @@ function composeExplanationResponse(intent: SmartIntent): ComposedResponse {
     });
   }
 
-  const info = getCodeStructureInfo(focus);
+  const info = resolveModuleInfo(focus);
 
   if (info?.moduleDoc) {
     const title = `**${info.title}**`;
@@ -412,24 +428,8 @@ function composeExplanationResponse(intent: SmartIntent): ComposedResponse {
     });
   }
   
-  // Try KB
-  const queryLower = focus.toLowerCase();
-  const kbEntry = FALCON_KB.find((entry) => {
-    const entryText = [entry.title, ...entry.keywords].join(" ").toLowerCase();
-    return entryText.includes(queryLower) || queryLower.includes(entry.module);
-  });
-  
-  if (kbEntry) {
-    return scopeComposed(intent, {
-      answer: kbEntry.answer,
-      confidence: 0.8,
-      sources: [`kb:${kbEntry.id}`],
-      suggestions: kbEntry.followups || [],
-      responseType: "explanation",
-      sectionsIncluded: ["title"],
-      matchedModule: kbEntry.module,
-    });
-  }
+  const kbFallback = composeFromKbLastResort(intent, focus, "explanation", ["title"]);
+  if (kbFallback) return kbFallback;
 
   const results = searchModules(focus, 1);
   if (results.length > 0 && results[0].moduleDoc) {
@@ -824,25 +824,9 @@ function composeComprehensiveResponse(intent: SmartIntent): ComposedResponse {
   const focus = intent.primaryFocus;
   
   if (!focus) {
-    // Try to answer from KB based on query
-    const queryLower = intent.parsed.original.toLowerCase();
-    const kbEntry = FALCON_KB.find((entry) =>
-      entry.keywords.some((k) => queryLower.includes(k.toLowerCase())) ||
-      queryLower.includes(entry.module)
-    );
-    
-    if (kbEntry) {
-      return {
-        answer: kbEntry.answer,
-        confidence: 0.7,
-        sources: [`kb:${kbEntry.id}`],
-        suggestions: kbEntry.followups || [],
-        responseType: "comprehensive",
-        sectionsIncluded: ["title"],
-        matchedModule: kbEntry.module,
-      };
-    }
-    
+    const kbFallback = composeFromKbLastResort(intent, null, "comprehensive", ["title"]);
+    if (kbFallback) return kbFallback;
+
     return {
       answer: "Could you please be more specific? Try asking about a particular module, voucher type, or report.",
       confidence: 0.3,
@@ -857,27 +841,12 @@ function composeComprehensiveResponse(intent: SmartIntent): ComposedResponse {
     };
   }
   
-  const info = getCodeStructureInfo(focus);
-  
+  const info = resolveModuleInfo(focus);
+
   if (!info) {
-    // Fallback to KB
-    const kbEntry = FALCON_KB.find((entry) =>
-      entry.keywords.some((k) => focus.includes(k.toLowerCase())) ||
-      focus.includes(entry.module)
-    );
-    
-    if (kbEntry) {
-      return {
-        answer: kbEntry.answer,
-        confidence: 0.7,
-        sources: [`kb:${kbEntry.id}`],
-        suggestions: kbEntry.followups || [],
-        responseType: "comprehensive",
-        sectionsIncluded: ["title"],
-        matchedModule: kbEntry.module,
-      };
-    }
-    
+    const kbFallback = composeFromKbLastResort(intent, focus, "comprehensive", ["title"]);
+    if (kbFallback) return kbFallback;
+
     return {
       answer: `I couldn't find detailed information for "${focus}". Please try a different term or ask about a specific ERP feature.`,
       confidence: 0.3,

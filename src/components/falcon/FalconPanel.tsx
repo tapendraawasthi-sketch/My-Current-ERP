@@ -32,30 +32,25 @@ import { GENERATED_PAGE_INDEX } from "../../lib/falcon/generatedPageIndex";
 
 const QUICK_PROMPTS: Record<string, string[]> = {
   ERP: [
-    "Create sales invoice",
-    "Record receipt",
-    "View VAT report",
-    "Add new party",
-    "Check outstanding",
-    "Day book today",
-    "Print invoice",
-    "Stock summary",
+    "Journal voucher",
+    "How to make payment voucher",
+    "Steps to create sales invoice",
+    "Where is trial balance",
+    "What gets debited in payment voucher",
+    "Why is journal not balanced",
   ],
   Finance: [
+    "What is TDS in Nepal",
     "Explain double-entry",
     "VAT calculation formula",
     "Trial balance vs P&L",
     "How is depreciation calculated?",
-    "What is TDS?",
-    "Debit vs Credit",
   ],
   General: [
     "Search latest news",
     "Calculate compound interest",
     "Explain inflation simply",
     "What is machine learning?",
-    "Healthy breakfast ideas",
-    "How does GPS work?",
   ],
 };
 
@@ -71,6 +66,22 @@ function formatTime(ts: Date | string): string {
   } catch {
     return "";
   }
+}
+
+/** Intent badge for precision response type */
+function getIntentBadge(falconIntent?: string): { label: string; cls: string } | null {
+  if (!falconIntent) return null;
+  const map: Record<string, { label: string; cls: string }> = {
+    action_path: { label: "📍 Path lookup", cls: "bg-sky-50 text-sky-700 border-sky-200" },
+    nav: { label: "📍 Navigation", cls: "bg-sky-50 text-sky-700 border-sky-200" },
+    definition: { label: "📖 Definition", cls: "bg-indigo-50 text-indigo-700 border-indigo-200" },
+    steps: { label: "📋 Steps", cls: "bg-amber-50 text-amber-700 border-amber-200" },
+    troubleshoot: { label: "🔧 Fix", cls: "bg-red-50 text-red-700 border-red-200" },
+    effect: { label: "⚖️ Accounting", cls: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+    code: { label: "💻 Code", cls: "bg-violet-50 text-violet-700 border-violet-200" },
+    general: { label: "💡 General", cls: "bg-gray-50 text-gray-600 border-gray-200" },
+  };
+  return map[falconIntent] ?? null;
 }
 
 /** Domain badge config */
@@ -109,6 +120,7 @@ const MessageBubble = memo(
     const isUser = msg.role === "user";
     const isStreaming = !!msg.isStreaming;
     const domainBadge = getDomainBadge(msg.domain);
+    const intentBadge = getIntentBadge(msg.falconIntent);
 
     const handleCopy = useCallback(() => {
       navigator.clipboard.writeText(msg.content).then(() => {
@@ -175,6 +187,13 @@ const MessageBubble = memo(
                   {src}
                 </span>
               ))}
+            {intentBadge && (
+              <span
+                className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] border ${intentBadge.cls}`}
+              >
+                {intentBadge.label}
+              </span>
+            )}
             {domainBadge && (
               <span
                 className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] border ${domainBadge.cls}`}

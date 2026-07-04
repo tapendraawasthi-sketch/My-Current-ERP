@@ -1,6 +1,9 @@
 /** Built-in ERP answers when erp_bot backend is unreachable (e.g. on Render without bot service). */
 
 import { ERP_MODULES, type ERPModuleDoc } from "./falcon/erpCodeKnowledge";
+import { classifyIntent, formatNavAnswer, type FalconIntent } from "./falcon/intentTaxonomy";
+import { getNavigationPathWithShortcut } from "./falcon/codeStructureParser";
+import { postComposeScope } from "./falcon/intentTaxonomy";
 
 /** Longer phrases first — matched in descending length order. */
 const QUERY_MODULE_MAP: Record<string, string> = {
@@ -79,7 +82,6 @@ function matchExplicitQuery(query: string): string | undefined {
   return undefined;
 }
 
-/** Short queries where a module keyword is the main subject (e.g. "journal", "journal how?"). */
 function matchTopicQuery(query: string): string | undefined {
   const q = query.toLowerCase().replace(/[?.,!]/g, "").trim();
   const words = q.split(/\s+/).filter(Boolean);
@@ -115,8 +117,7 @@ function matchRouteToModule(route: string): string | undefined {
   );
 }
 
-/** Explicit query terms beat page route; route beats incidental keyword mentions in longer questions. */
-function resolveModuleKey(query: string, route?: string): string | undefined {
+export function resolveBuiltinModuleKey(query: string, route?: string): string | undefined {
   const explicit = matchExplicitQuery(query);
   if (explicit) return explicit;
 
@@ -131,59 +132,42 @@ function resolveModuleKey(query: string, route?: string): string | undefined {
   return matchSingleWordQuery(query);
 }
 
-function formatModuleAnswer(doc: ERPModuleDoc): string {
-  const access = doc.howToAccess.join(" · ");
-  const steps = doc.workflow.steps.map((s, i) => `${i + 1}. ${s}`).join("\n");
-  const requiredFields = doc.keyFields
-    .filter((f) => f.required)
-    .map((f) => f.name)
-    .join(", ");
+function formatModuleByIntent(doc: ERPModuleDoc, intent: FalconIntent, moduleKey: string): string {
+  const nav = getNavigationPathWithShortcut(moduleKey);
 
-  const lines = [
-    `**${doc.displayName}**`,
-    doc.description,
-    "",
-    `**Open:** ${access}`,
-    "",
-    `**Steps:**`,
-    steps,
-  ];
-
-  if (requiredFields) {
-    lines.push("", `**Required fields:** ${requiredFields}`);
+  switch (intent) {
+    case "action_path":
+    case "nav": {
+      if (nav) return formatNavAnswer(nav.path, nav.shortcut);
+      const path = doc.howToAccess.find((a) => !/^F\d+|^Press/i.test(a)) || doc.howToAccess[0];
+      const shortcutLine = doc.howToAccess.find((a) => /F\d+|Ctrl\+/i.test(a));
+      const shortcut = shortcutLine?.match(/F\d+|Ctrl\+[A-Z]/i)?.[0];
+      return formatNavAnswer(path.replace(/^Press\s+/i, ""), shortcut);
+    }
+    case "steps":
+      return doc.workflow.steps.map((s, i) => `${i + 1}. ${s}`).join("\n");
+    case "definition":
+      return postComposeScope(`**${doc.displayName}**\n${doc.description}`, "definition");
+    case "effect":
+      return postComposeScope(
+        `**${doc.displayName} — Accounting Effect:**\n${doc.accountingImpact}`,
+        "effect",
+      );
+    case "troubleshoot": {
+      const err = doc.commonErrors[0];
+      if (!err) return `No known issues documented for ${doc.displayName}.`;
+      return `**Problem:** ${err.error}\n\n**Solution:** ${err.solution}`;
+    }
+    default:
+      return postComposeScope(`**${doc.displayName}**\n${doc.description}`, "definition");
   }
-
-  lines.push("", `**Accounting effect:** ${doc.accountingImpact}`);
-
-  if (doc.validationRules.length > 0) {
-    lines.push("", "**Rules:**");
-    doc.validationRules.slice(0, 4).forEach((r) => lines.push(`- ${r}`));
-  }
-
-  if (doc.commonErrors.length > 0) {
-    lines.push("", "**Common issues:**");
-    doc.commonErrors.slice(0, 3).forEach((e) => {
-      lines.push(`- ${e.error} → ${e.solution}`);
-    });
-  }
-
-  if (doc.vatNote) lines.push("", `**VAT:** ${doc.vatNote}`);
-  if (doc.tdsNote) lines.push("", `**TDS:** ${doc.tdsNote}`);
-
-  return lines.join("\n");
 }
 
 function formatOverviewAnswer(): string {
   return [
     "**Sutra ERP** is an accounting and inventory system for Nepali businesses.",
     "",
-    "**Main areas:**",
-    "- **Masters** — parties, items, chart of accounts",
-    "- **Transactions** — sales/purchase invoices, receipts, payments, journal & contra",
-    "- **Inventory** — stock journals, transfers, GRN, delivery challans",
-    "- **Reports** — ledger, trial balance, P&L, balance sheet, VAT, stock summary",
-    "",
-    "Ask about a specific screen — e.g. *journal voucher*, *general ledger*, *sales invoice*.",
+    "Ask about a specific feature — e.g. *journal voucher*, *how to make payment voucher*, *trial balance*.",
   ].join("\n");
 }
 
@@ -196,13 +180,14 @@ export function buildModuleSuggestions(moduleKey?: string): string[] {
   });
 }
 
-export function buildBuiltinErpAnswer(query: string, route?: string): string {
-  const moduleKey = resolveModuleKey(query, route);
+export function buildBuiltinErpAnswer(
+  query: string,
+  route?: string,
+  intent?: FalconIntent,
+): string {
+  const resolvedIntent = intent ?? classifyIntent(query);
+  const moduleKey = resolveBuiltinModuleKey(query, route);
   const doc = moduleKey ? ERP_MODULES[moduleKey] : undefined;
-  if (doc) return formatModuleAnswer(doc);
+  if (doc) return formatModuleByIntent(doc, resolvedIntent, moduleKey);
   return formatOverviewAnswer();
-}
-
-export function resolveBuiltinModuleKey(query: string, route?: string): string | undefined {
-  return resolveModuleKey(query, route);
 }

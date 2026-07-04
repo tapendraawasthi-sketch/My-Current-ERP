@@ -84,10 +84,25 @@ def _scope_answer(answer: str, intent: str) -> str:
         return answer
 
     elif intent == "definition":
-        # Keep at most first 3 sentences
-        text = " ".join(line.strip() for line in lines if line.strip())
+        raw_lines = [line.strip() for line in lines if line.strip()]
+        title_line = next((l for l in raw_lines if l.startswith("**") and l.endswith("**")), None)
+        body_lines = [
+            l for l in raw_lines
+            if l != title_line
+            and not re.match(
+                r"^\*\*(Open|Steps|Rules|Required|Accounting|Validation|Location|Menu path)",
+                l,
+                re.I,
+            )
+        ]
+        text = " ".join(body_lines).replace("**", "")
         sentences = re.split(r"(?<=[.!?])\s+", text)
-        return " ".join(sentences[:3]).strip()
+        body = " ".join(sentences[:3]).strip()
+        if title_line and body:
+            return f"{title_line}\n{body}"
+        if title_line:
+            return title_line
+        return body or answer
 
     elif intent == "steps":
         # Keep only numbered list lines

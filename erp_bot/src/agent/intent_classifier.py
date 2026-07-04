@@ -95,6 +95,30 @@ _DEFINITION_PATTERNS = re.compile(
     re.IGNORECASE,
 )
 
+_QUESTION_WORD = re.compile(
+    r"^(how|what|where|why|when|which|can|could|would|should|do|does|did|"
+    r"is|are|was|were|explain|tell|show|list|steps|step)\b",
+    re.IGNORECASE,
+)
+
+_ERP_TOPIC = re.compile(
+    r"\b(journal|voucher|invoice|payment|receipt|contra|ledger|trial\s*balance|"
+    r"day\s*book|balance\s*sheet|chart\s*of\s*accounts|party|parties|stock|"
+    r"vat|tds|payroll|report|sales|purchase|credit\s*note|debit\s*note)\b",
+    re.IGNORECASE,
+)
+
+
+def _is_bare_topic(q: str) -> bool:
+    """Short feature name without question word → definition (e.g. 'journal voucher')."""
+    text = q.strip()
+    if not text or _QUESTION_WORD.search(text):
+        return False
+    words = re.sub(r"[?.,!]", "", text).split()
+    if not words or len(words) > 4:
+        return False
+    return bool(_ERP_TOPIC.search(text))
+
 
 def classify(question: str) -> str:
     """Return the intent label for a user question.
@@ -137,8 +161,11 @@ def classify(question: str) -> str:
     if _ACTION_PATH_PATTERNS.search(q):
         return "action_path"
 
-    # 7. definition — "what is X", explain, describe
+    # 7. definition — "what is X", explain, describe, bare topic
     if _DEFINITION_PATTERNS.search(q):
+        return "definition"
+
+    if _is_bare_topic(q):
         return "definition"
 
     # 8. general — fallback

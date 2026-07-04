@@ -17,6 +17,7 @@ import {
   type SmartAssistantContext,
 } from "../lib/falcon/smartAssistant";
 import { getCodebaseStats } from "../lib/falcon/codeStructureParser";
+import type { FalconIntent } from "../lib/falcon/intentTaxonomy";
 
 let _activeController: AbortController | null = null;
 
@@ -72,7 +73,8 @@ async function buildSmartReply(
     role: "assistant",
     content: result.answer,
     timestamp: new Date(),
-    domain: "erp",
+    domain: result.mode === "hybrid" ? "web-search" : "erp",
+    falconIntent: result.falconIntent,
     sources: result.sources,
     suggestions: result.suggestions,
   };
@@ -85,6 +87,7 @@ export interface FalconChatMessage {
   timestamp: Date;
   domain?: QuestionDomain;
   intent?: QuestionIntent;
+  falconIntent?: FalconIntent;
   reasoningSteps?: ThoughtStep[];
   sources?: string[];
   feedback?: 1 | -1;
@@ -213,6 +216,9 @@ export const useFalconStore = create<FalconState>()(
           return;
         }
 
+        const { classifyIntent } = await import("../lib/falcon/intentTaxonomy");
+        const falconIntent = classifyIntent(cleanText);
+
         const classification = classifyQuestion(cleanText, state.context.route);
         const plan = buildReasoningPlan(
           cleanText,
@@ -240,6 +246,7 @@ export const useFalconStore = create<FalconState>()(
               isStreaming: true,
               domain: classification.domain,
               intent: classification.intent,
+              falconIntent,
             },
           ],
           isStreaming: true,
@@ -268,6 +275,7 @@ export const useFalconStore = create<FalconState>()(
                     reasoningSteps: plan.steps,
                     sources: result.sources,
                     suggestions: followUps,
+                    falconIntent,
                   }
                 : m,
             ),

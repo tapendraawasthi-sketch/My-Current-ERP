@@ -11,13 +11,9 @@
  */
 
 import { askFalconBrainSync, askFalconBrain, type FalconResponse, type FalconContext } from "./falconBrain";
-import { findPagesByQuery, findPageByRoute, formatPageAnswer } from "./pageIndexSearch";
+import type { FalconIntent } from "./intentTaxonomy";
 import { getModuleContext } from "./erpCodeKnowledge";
-import {
-  buildBuiltinErpAnswer,
-  resolveBuiltinModuleKey,
-  buildModuleSuggestions,
-} from "../builtinErpAssistant";
+import { findPageByRoute } from "./pageIndexSearch";
 import { GENERATED_PAGE_INDEX, GENERATED_PAGE_INDEX_BUILT_AT } from "./generatedPageIndex";
 
 export interface SmartAssistantContext {
@@ -34,7 +30,22 @@ export interface SmartAssistantResult {
   mode: "falcon-brain" | "knowledge-base" | "page-index" | "module-docs" | "hybrid";
   matchedId?: string;
   responseType?: string;
+  falconIntent?: FalconIntent;
   processingTimeMs?: number;
+}
+
+function toSmartResult(response: FalconResponse): SmartAssistantResult {
+  return {
+    answer: response.answer,
+    sources: response.sources,
+    suggestions: response.suggestions,
+    confidence: Math.round(response.confidence * 100),
+    mode: response.metadata.webSearchUsed ? "hybrid" : "falcon-brain",
+    matchedId: response.metadata.matchedModule,
+    responseType: response.metadata.responseType,
+    falconIntent: response.metadata.falconIntent,
+    processingTimeMs: response.reasoning.processingTimeMs,
+  };
 }
 
 /**
@@ -56,18 +67,7 @@ export function askSmartAssistant(
 
   // Use the new Falcon Brain engine (synchronous version for compatibility)
   const response = askFalconBrainSync(query, falconContext);
-
-  // Convert to SmartAssistantResult format
-  return {
-    answer: response.answer,
-    sources: response.sources,
-    suggestions: response.suggestions,
-    confidence: Math.round(response.confidence * 100),
-    mode: "falcon-brain",
-    matchedId: response.metadata.matchedModule,
-    responseType: response.metadata.responseType,
-    processingTimeMs: response.reasoning.processingTimeMs,
-  };
+  return toSmartResult(response);
 }
 
 /**
@@ -88,18 +88,7 @@ export async function askSmartAssistantAsync(
 
   // Use the async Falcon Brain engine (supports web search)
   const response = await askFalconBrain(query, falconContext);
-
-  // Convert to SmartAssistantResult format
-  return {
-    answer: response.answer,
-    sources: response.sources,
-    suggestions: response.suggestions,
-    confidence: Math.round(response.confidence * 100),
-    mode: response.metadata.webSearchUsed ? "hybrid" : "falcon-brain",
-    matchedId: response.metadata.matchedModule,
-    responseType: response.metadata.responseType,
-    processingTimeMs: response.reasoning.processingTimeMs,
-  };
+  return toSmartResult(response);
 }
 
 /** Structured context block sent to erp_bot when the Python RAG service is online. */

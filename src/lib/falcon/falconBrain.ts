@@ -19,9 +19,13 @@ import {
   type CodeStructureInfo,
 } from "./codeStructureParser";
 import { GENERATED_PAGE_INDEX } from "./generatedPageIndex";
-import { FALCON_KB } from "./knowledgeBase";
 import { ERP_MODULES, ERP_ACCOUNTING_RULES, ERP_FORMULAS } from "./erpCodeKnowledge";
-import { searchWeb, formatSearchResults, isCurrentEventQuery } from "../falconWebSearch";
+import { searchWeb, formatSearchResults } from "../falconWebSearch";
+import {
+  shouldUseWebSearchForIntent,
+  formatWebSearchAnswer,
+} from "./webSearchPolicy";
+import type { FalconIntent } from "./intentTaxonomy";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TYPES
@@ -49,6 +53,7 @@ export interface ResponseMetadata {
   matchedModule?: string;
   matchedRoute?: string;
   responseType: string;
+  falconIntent: FalconIntent;
   sectionsIncluded: string[];
   webSearchUsed: boolean;
   codebaseVersion: string;
@@ -156,13 +161,16 @@ function carryForwardTopic(
     return {
       ...intent,
       primaryFocus: carriedFocus,
+      falconIntent: "definition",
+      responseStrategy: "explanation",
       routeContext: lastTurn?.intent.routeContext || intent.routeContext,
-      responseStrategy: "comprehensive",
       excludeFromResponse: [],
       userIntent: {
         ...intent.userIntent,
+        falconIntent: "definition",
         wantsExplanation: true,
         wantsLocation: false,
+        wantsSteps: false,
       },
     };
   }
@@ -230,25 +238,6 @@ async function performWebSearch(query: string): Promise<string | null> {
   }
 }
 
-function shouldUseWebSearch(intent: SmartIntent): boolean {
-  // Check for web search triggers
-  const queryLower = intent.parsed.original.toLowerCase();
-  
-  // Don't use web search for ERP-specific questions
-  if (
-    intent.userIntent.targetType === "voucher" ||
-    intent.userIntent.targetType === "report" ||
-    intent.userIntent.targetType === "master" ||
-    intent.userIntent.targetType === "module"
-  ) {
-    return false;
-  }
-
-  // Use web search for current events or explicit search requests
-  return isCurrentEventQuery(queryLower) ||
-         /\b(search|latest|current|news|today)\b/i.test(queryLower);
-}
-
 // ─────────────────────────────────────────────────────────────────────────────
 // MAIN PROCESSING FUNCTION
 // ─────────────────────────────────────────────────────────────────────────────
@@ -258,44 +247,28 @@ export async function askFalconBrain(
   context: FalconContext = {}
 ): Promise<FalconResponse> {
   const startTime = performance.now();
-  
-  // 1. Parse the query
+
   const parsedQuery = parseQuery(query);
-  
-  // 2. Analyze intent
   let intent = analyzeIntent(query, context.currentRoute);
-  
-  // 3. Enhance with context
   intent = enhanceWithRouteContext(intent, context);
-  
+
   if (context.conversationHistory) {
     intent = enhanceWithConversationContext(intent, context.conversationHistory);
   }
-  
-  // 4. Check if web search is needed
-  let webSearchResult: string | null = null;
-  const webSearchUsed = shouldUseWebSearch(intent);
-  
+
+  let composed = composeResponse(intent);
+  const webSearchUsed = shouldUseWebSearchForIntent(intent, composed.confidence);
+
   if (webSearchUsed) {
-    webSearchResult = await performWebSearch(query);
-  }
-  
-  // 5. Compose the response
-  let composed: ComposedResponse;
-  
-  if (webSearchResult && !parsedQuery.isGreeting) {
-    // If we have web results, include them
-    composed = composeResponse(intent);
-    if (composed.confidence < 0.5) {
+    const webSearchResult = await performWebSearch(query);
+    if (webSearchResult && composed.confidence < 0.55) {
       composed = {
         ...composed,
-        answer: `**Web Search Results:**\n\n${webSearchResult}`,
+        answer: formatWebSearchAnswer(webSearchResult, query),
         confidence: 0.7,
         sources: ["web-search"],
       };
     }
-  } else {
-    composed = composeResponse(intent);
   }
   
   // 6. Calculate processing time
@@ -317,6 +290,7 @@ export async function askFalconBrain(
     matchedModule: composed.matchedModule,
     matchedRoute: composed.matchedModule ? resolveRoute(composed.matchedModule) || undefined : undefined,
     responseType: composed.responseType,
+    falconIntent: intent.falconIntent,
     sectionsIncluded: composed.sectionsIncluded,
     webSearchUsed,
     codebaseVersion: `${stats.totalScreens} screens, ${stats.totalKBEntries} KB entries`,
@@ -386,6 +360,7 @@ export function askFalconBrainSync(
     matchedModule: composed.matchedModule,
     matchedRoute: composed.matchedModule ? resolveRoute(composed.matchedModule) || undefined : undefined,
     responseType: composed.responseType,
+    falconIntent: intent.falconIntent,
     sectionsIncluded: composed.sectionsIncluded,
     webSearchUsed: false,
     codebaseVersion: `${stats.totalScreens} screens, ${stats.totalKBEntries} KB entries`,
