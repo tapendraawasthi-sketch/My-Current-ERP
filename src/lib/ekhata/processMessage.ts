@@ -22,6 +22,7 @@ import {
 import { shouldTryWorkParse } from "./smartWorkBrain";
 import type { KhataConfirmationCard, KhataParseResult } from "./types";
 import type { LedgerBalanceSnapshot } from "./conversationEngine";
+import { isLedgerBalanceQuery, replyBalance } from "./conversationEngine";
 
 export type EKhataEngine =
   | "brain"
@@ -111,6 +112,20 @@ function tryContextualCommand(
   }
 
   return null;
+}
+
+function tryLedgerBalanceQuery(
+  trimmed: string,
+  normalizedText: string,
+  balance?: LedgerBalanceSnapshot,
+): EKhataProcessResult | null {
+  if (!balance || !isLedgerBalanceQuery(trimmed)) return null;
+  return {
+    kind: "chat",
+    reply: replyBalance(balance, trimmed),
+    normalizedText,
+    engine: "ca",
+  };
 }
 
 function tryJournalEntry(
@@ -206,6 +221,9 @@ export function processEKhataMessage(
 
   const contextual = tryContextualCommand(trimmed, lang, options.conversationContext);
   if (contextual) return contextual;
+
+  const ledgerBalance = tryLedgerBalanceQuery(trimmed, normalizedText, options.balance);
+  if (ledgerBalance) return ledgerBalance;
 
   const entry = tryJournalEntry(trimmed, normalizedText, lang);
   if (entry) return entry;
@@ -318,6 +336,9 @@ export async function processEKhataMessageAsync(
   // 1. Contextual commands (reverse / repeat / delta)
   const contextual = tryContextualCommand(trimmed, lang, options.conversationContext);
   if (contextual) return contextual;
+
+  const ledgerBalance = tryLedgerBalanceQuery(trimmed, normalizedText, options.balance);
+  if (ledgerBalance) return ledgerBalance;
 
   // 2. Local journal entry parse (always first for transactions)
   const entry = tryJournalEntry(trimmed, normalizedText, lang);

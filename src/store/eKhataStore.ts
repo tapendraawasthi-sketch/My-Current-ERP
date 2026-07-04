@@ -80,10 +80,15 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
     try {
       const { checkEKhataLlmStatus } = await import("../lib/ekhata/processMessage");
       const status = await checkEKhataLlmStatus();
+      const online = status.khataLlm && status.online;
       set({
-        llmOnline: status.khataLlm && status.online,
+        llmOnline: online,
         llmModel: status.model,
       });
+      if (online) {
+        const { syncAllTrainingFeedbackToServer } = await import("../lib/ekhata/trainingFeedback");
+        syncAllTrainingFeedbackToServer();
+      }
     } catch {
       set({ llmOnline: false, llmModel: undefined });
     }

@@ -87,11 +87,19 @@ CA_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ("khata_loan_received", re.compile(r"\bloan\s*received\b", re.I)),
     ("khata_loan_repayment", re.compile(r"\bloan\s*(repay\w*|payment|tiryo)\b", re.I)),
     ("khata_credit_purchase", re.compile(r"\b(udhaar\s*ma\b.*\b(kineko|kharid)\b|credit\s*purchase)\b", re.I)),
-    ("khata_stock_purchase", re.compile(r"\b(stock\s*purchase|inventory)\b", re.I)),
+    ("khata_inventory_write_down", re.compile(
+        r"\b(inventory\s*write\s*down|stock\s*adjustment|shrinkage|obsolete\s*stock|stock\s*count\s*difference|saman\s*bigryo)\b",
+        re.I,
+    )),
+    ("khata_asset_disposal", re.compile(
+        r"\b(asset\s*disposal|sold\s*(old\s*)?(vehicle|machine|asset|computer|equipment)|fixed\s*asset\s*sold|machine\s*becheko)\b",
+        re.I,
+    )),
+    ("khata_stock_purchase", re.compile(
+        r"\b(stock\s*(purchase|kineko)|stock\s*kineko|saman\s*kineko)\b", re.I
+    )),
     ("khata_stock_sale_cogs", re.compile(r"\bcogs\b", re.I)),
     ("khata_contra_cash_bank", re.compile(r"\bcontra\b", re.I)),
-    ("khata_asset_disposal", re.compile(r"\b(asset\s*disposal|dispose\s*asset|sampatti\s*bikri)\b", re.I)),
-    ("khata_inventory_write_down", re.compile(r"\b(inventory\s*write\s*down|stock\s*write\s*down|mal\s*ghata)\b", re.I)),
 ]
 
 _CREDIT_TERMS = r"(udhaar|udharo|udhar|credit|उधार|on\s+account|on\s+tab|deferred\s*payment)"
@@ -143,6 +151,8 @@ def _has_payment_in_cue(text: str) -> bool:
 
 
 def _has_cash_sale_cue(text: str) -> bool:
+    if re.search(r"\b(asset\s*disposal|sold\s+asset|fixed\s*asset|machine\s*becheko)\b", text, re.I):
+        return False
     if (
         re.search(r"\b(sold|sale|sales|revenue|earned|selling)\b", text, re.I)
         and not re.search(r"\b(udhaar|udhar|udharo|credit|bought|purchase|kineko|kharid)\b", text, re.I)
@@ -155,6 +165,8 @@ def _has_cash_sale_cue(text: str) -> bool:
 
 
 def _has_purchase_cue(text: str) -> bool:
+    if re.search(r"\b(inventory\s*write\s*down|write\s*down|shrinkage)\b", text, re.I):
+        return False
     return bool(
         re.search(
             r"\b(kineko|kine|kiniyo|kinyo|kinna|kharid|kharido|purchase|bought|buy|purchased|procured|extended\s+credit\s+to\s+buy)\b",

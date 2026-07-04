@@ -21,7 +21,7 @@ from ..ingestion import embedder
 from ..vectorstore import chroma_store
 from ..watcher.watcher import start_watcher
 from ..khata import khata_chat
-from ..khata.feedback_store import append_feedback, feedback_stats
+from ..khata.feedback_store import append_feedback, append_feedback_bulk, feedback_stats
 from ..khata.khata_chat import clear_session as khata_clear_session
 
 app = FastAPI(title="ERP AI Chatbot")
@@ -173,6 +173,18 @@ def khata_feedback_endpoint(req: KhataFeedbackRequest) -> dict:
     """Store confirmed/cancelled entries for LoRA re-training."""
     stored = append_feedback(req.model_dump(exclude_none=True))
     return {"status": "ok", "id": stored["id"], "stats": feedback_stats()}
+
+
+class KhataFeedbackBulkRequest(BaseModel):
+    records: list[KhataFeedbackRequest] = Field(..., max_length=500)
+
+
+@app.post("/khata/feedback/bulk")
+def khata_feedback_bulk_endpoint(req: KhataFeedbackBulkRequest) -> dict:
+    """Sync browser localStorage feedback batch to server corpus."""
+    payload = [r.model_dump(exclude_none=True) for r in req.records]
+    result = append_feedback_bulk(payload)
+    return {"status": "ok", **result}
 
 
 @app.get("/khata/training/stats")

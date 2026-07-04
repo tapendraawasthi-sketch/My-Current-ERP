@@ -127,3 +127,27 @@ export function downloadTrainingFeedbackExport(): void {
 export function clearTrainingFeedback(): void {
   localStorage.removeItem(STORAGE_KEY);
 }
+
+/** Push all local feedback records to erp_bot (fire-and-forget). */
+export function syncAllTrainingFeedbackToServer(): void {
+  const records = loadRecords();
+  if (records.length === 0) return;
+
+  fetch(`${EKHATA_BOT_URL}/khata/feedback/bulk`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      records: records.map((r) => ({
+        id: r.id,
+        label: r.label,
+        narration: r.narration,
+        intent: r.intent,
+        amount: r.amount,
+        party: r.party,
+        journalLines: r.journalLines,
+        correctedNarration: r.correctedNarration,
+        timestamp: r.timestamp,
+      })),
+    }),
+  }).catch(() => undefined);
+}

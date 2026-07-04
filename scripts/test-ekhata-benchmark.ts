@@ -87,5 +87,28 @@ check(
   `got ${extended.card?.intent}`,
 );
 
+// Ledger-aware balance (audit A8)
+const balanceSnap = { udhaarOut: 125000, udhaarIn: 45000 };
+const receivableQ = processEKhataMessage("total receivable kati", { balance: balanceSnap });
+check(
+  "ledger receivable query uses balance",
+  receivableQ.engine === "ca" && receivableQ.reply.includes("125,000"),
+  `engine=${receivableQ.engine}`,
+);
+
+const debtorsQ = processEKhataMessage("what is my debtors balance", { balance: balanceSnap });
+check(
+  "ledger debtors balance query",
+  debtorsQ.engine === "ca" && debtorsQ.reply.includes("125,000"),
+  `engine=${debtorsQ.engine}`,
+);
+
+const payableQ = processEKhataMessage("total payable kati", { balance: balanceSnap });
+check(
+  "ledger payable query",
+  payableQ.engine === "ca" && payableQ.reply.includes("45,000"),
+  `engine=${payableQ.engine}`,
+);
+
 console.log(`\n=== Benchmark: ${passed} passed, ${failed} failed ===`);
 process.exit(failed > 0 ? 1 : 0);

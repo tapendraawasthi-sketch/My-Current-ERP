@@ -30,6 +30,11 @@ def append_feedback(record: dict[str, Any]) -> dict[str, Any]:
     return stored
 
 
+def append_feedback_bulk(records: list[dict[str, Any]]) -> dict[str, Any]:
+    stored_rows = [append_feedback(record) for record in records]
+    return {"count": len(stored_rows), "stats": feedback_stats()}
+
+
 def feedback_stats() -> dict[str, Any]:
     if not FEEDBACK_FILE.exists():
         return {"confirmed": 0, "cancelled": 0, "corrected": 0, "total": 0}

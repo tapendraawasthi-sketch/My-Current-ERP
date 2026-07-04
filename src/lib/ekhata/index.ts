@@ -84,6 +84,7 @@ export {
   exportTrainingFeedbackAsJsonl,
   downloadTrainingFeedbackExport,
   getTrainingFeedbackCount,
+  syncAllTrainingFeedbackToServer,
 } from "./trainingFeedback";
 export type { TrainingFeedbackRecord, FeedbackLabel } from "./trainingFeedback";
 export type { ConversationState, EKhataConversationContext } from "./conversationState";
