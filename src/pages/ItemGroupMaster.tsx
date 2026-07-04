@@ -1,30 +1,7 @@
-// @ts-nocheck
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useStore } from "../store/useStore";
-import { Plus, Edit2, Trash2, Layers, X, Save } from "lucide-react";
-
-const BORDER = "1px solid #000";
-const BG_HEADER = "#D4EABD";
-const BG_ROW_ALT = "#F5FAF0";
-const INPUT_STYLE: React.CSSProperties = {
-  width: "100%",
-  padding: "5px 8px",
-  border: BORDER,
-  borderRadius: 3,
-  fontSize: 12,
-  background: "#fff",
-  outline: "none",
-};
-const BTN = (bg: string): React.CSSProperties => ({
-  padding: "5px 14px",
-  background: bg,
-  border: BORDER,
-  borderRadius: 3,
-  fontSize: 12,
-  fontWeight: 600,
-  cursor: "pointer",
-  color: bg === "#fff" ? "#000" : "#fff",
-});
+import { Plus, Edit2, Trash2, Search, X, Save } from "lucide-react";
+import { ReportEmptyState } from "../components/ReportEmptyState";
 
 const DEFAULT_FORM = {
   name: "",
@@ -38,6 +15,17 @@ const DEFAULT_FORM = {
   taxCategoryId: "",
 };
 
+const th =
+  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
+const btnPrimary =
+  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
+const btnOutline =
+  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
+const inputCls =
+  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
+
 export default function ItemGroupMaster() {
   const { itemGroups, taxCategories, accounts, addItemGroup, updateItemGroup, deleteItemGroup } =
     useStore();
@@ -46,11 +34,18 @@ export default function ItemGroupMaster() {
   const [search, setSearch] = useState("");
   const [form, setForm] = useState(DEFAULT_FORM);
 
-  const filtered = (itemGroups || []).filter((g: any) =>
-    g.name.toLowerCase().includes(search.toLowerCase()),
+  const filtered = useMemo(
+    () =>
+      (itemGroups || []).filter((g: any) =>
+        g.name.toLowerCase().includes(search.toLowerCase()),
+      ),
+    [itemGroups, search],
   );
 
-  const ledgerAccounts = (accounts || []).filter((a: any) => !a.isGroup);
+  const ledgerAccounts = useMemo(
+    () => (accounts || []).filter((a: any) => !a.isGroup),
+    [accounts],
+  );
 
   const resetForm = () => {
     setForm(DEFAULT_FORM);
@@ -86,200 +81,186 @@ export default function ItemGroupMaster() {
     resetForm();
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string, e?: React.MouseEvent) => {
+    e?.stopPropagation();
     if (!confirm("Delete this item group?")) return;
     await deleteItemGroup(id);
+    if (selected?.id === id) resetForm();
+  };
+
+  const parentName = (underGroupId: string) => {
+    if (!underGroupId) return "—";
+    return (itemGroups || []).find((p: any) => p.id === underGroupId)?.name || underGroupId;
   };
 
   return (
-    <div style={{ display: "flex", height: "100%", gap: 0 }}>
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          borderRight: showForm ? BORDER : "none",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            padding: "8px 12px",
-            borderBottom: BORDER,
-            background: BG_HEADER,
-          }}
-        >
-          <Layers style={{ width: 16, height: 16 }} />
-          <span style={{ fontWeight: 700, fontSize: 13 }}>Item Group Master</span>
-          <div style={{ flex: 1 }} />
-          <input
-            placeholder="Search..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{ ...INPUT_STYLE, width: 180 }}
-          />
-          <button
-            style={BTN("#3D6B25")}
-            onClick={() => {
-              resetForm();
-              setShowForm(true);
-            }}
-          >
-            <Plus style={{ width: 12, height: 12, display: "inline", marginRight: 4 }} />
-            Add Group
-          </button>
+    <div className="flex h-full min-h-0 bg-[#f5f6fa]">
+      <div className={`flex flex-1 flex-col min-w-0 ${showForm ? "border-r border-gray-200" : ""}`}>
+        <div className="p-4 pb-0">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-[15px] font-semibold text-gray-800">Item Groups</h1>
+              <p className="text-[11px] text-gray-500 mt-0.5">
+                Group stock items for reporting, defaults, and tax mapping
+              </p>
+            </div>
+            <button
+              type="button"
+              className={btnPrimary}
+              onClick={() => {
+                resetForm();
+                setShowForm(true);
+              }}
+            >
+              <Plus className="h-3.5 w-3.5" />
+              Add group
+            </button>
+          </div>
+
+          <div className="relative mb-3 max-w-xs">
+            <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+            <input
+              placeholder="Search groups..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className={`${inputCls} pl-8`}
+            />
+          </div>
         </div>
-        <div style={{ flex: 1, overflowY: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
-            <thead>
-              <tr style={{ background: BG_HEADER, position: "sticky", top: 0 }}>
-                {[
-                  "#",
-                  "Group Name",
-                  "Alias",
-                  "Primary?",
-                  "Parent Group",
-                  "HSN Code",
-                  "Actions",
-                ].map((h) => (
-                  <th
-                    key={h}
-                    style={{
-                      padding: "6px 10px",
-                      borderBottom: BORDER,
-                      textAlign: "left",
-                      fontWeight: 700,
-                    }}
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.length === 0 ? (
-                <tr>
-                  <td colSpan={7} style={{ textAlign: "center", padding: 24, color: "#666" }}>
-                    No item groups found. Click "Add Group" to create one.
-                  </td>
-                </tr>
-              ) : (
-                filtered.map((g: any, i: number) => (
-                  <tr key={g.id} style={{ background: i % 2 === 0 ? "#fff" : BG_ROW_ALT }}>
-                    <td style={{ padding: "5px 10px", borderBottom: BORDER }}>{i + 1}</td>
-                    <td style={{ padding: "5px 10px", borderBottom: BORDER, fontWeight: 600 }}>
-                      {g.name}
-                    </td>
-                    <td style={{ padding: "5px 10px", borderBottom: BORDER }}>{g.alias || "—"}</td>
-                    <td style={{ padding: "5px 10px", borderBottom: BORDER }}>
-                      {g.isPrimary ? "Yes" : "No"}
-                    </td>
-                    <td style={{ padding: "5px 10px", borderBottom: BORDER }}>
-                      {g.underGroupId
-                        ? (itemGroups || []).find((p: any) => p.id === g.underGroupId)?.name ||
-                          g.underGroupId
-                        : "—"}
-                    </td>
-                    <td style={{ padding: "5px 10px", borderBottom: BORDER }}>
-                      {g.hsnCode || "—"}
-                    </td>
-                    <td style={{ padding: "5px 10px", borderBottom: BORDER }}>
-                      <div style={{ display: "flex", gap: 6 }}>
-                        <button style={BTN("#fff")} onClick={() => handleEdit(g)}>
-                          <Edit2 style={{ width: 12, height: 12 }} />
-                        </button>
-                        <button
-                          style={{ ...BTN("#fff"), color: "#c00" }}
-                          onClick={() => handleDelete(g.id)}
-                        >
-                          <Trash2 style={{ width: 12, height: 12 }} />
-                        </button>
-                      </div>
-                    </td>
+
+        <div className="flex-1 overflow-y-auto px-4 pb-4">
+          {filtered.length === 0 ? (
+            <div className="bg-white border border-gray-200 rounded-md">
+              <ReportEmptyState
+                message="No item groups found"
+                hint='Click "Add group" to create your first item group.'
+              />
+            </div>
+          ) : (
+            <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                    <th className={th}>#</th>
+                    <th className={th}>Group name</th>
+                    <th className={th}>Alias</th>
+                    <th className={th}>Primary</th>
+                    <th className={th}>Parent group</th>
+                    <th className={th}>HSN code</th>
+                    <th className={`${th} text-right`}>Actions</th>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-        <div
-          style={{ padding: "4px 12px", borderTop: BORDER, background: BG_HEADER, fontSize: 11 }}
-        >
-          Total: {filtered.length} group(s)
+                </thead>
+                <tbody>
+                  {filtered.map((g: any, i: number) => (
+                    <tr
+                      key={g.id}
+                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                      onClick={() => handleEdit(g)}
+                    >
+                      <td className={td}>{i + 1}</td>
+                      <td className={`${td} font-medium text-gray-800`}>{g.name}</td>
+                      <td className={td}>{g.alias || "—"}</td>
+                      <td className={td}>
+                        {g.isPrimary ? (
+                          <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 text-blue-700">
+                            Yes
+                          </span>
+                        ) : (
+                          <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-gray-100 text-gray-700">
+                            No
+                          </span>
+                        )}
+                      </td>
+                      <td className={td}>{parentName(g.underGroupId)}</td>
+                      <td className={td}>{g.hsnCode || "—"}</td>
+                      <td className={`${td} text-right`}>
+                        <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            type="button"
+                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEdit(g);
+                            }}
+                          >
+                            <Edit2 className="h-3.5 w-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50"
+                            onClick={(e) => handleDelete(g.id, e)}
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+                {filtered.length} group{filtered.length === 1 ? "" : "s"}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
       {showForm && (
-        <div style={{ width: 360, borderLeft: BORDER, display: "flex", flexDirection: "column" }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              padding: "8px 12px",
-              background: BG_HEADER,
-              borderBottom: BORDER,
-            }}
-          >
-            <span style={{ fontWeight: 700, fontSize: 13 }}>
-              {selected ? "Edit" : "Add"} Item Group
+        <div className="w-[360px] shrink-0 flex flex-col bg-white border-l border-gray-200">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+            <span className="text-[13px] font-semibold text-gray-800">
+              {selected ? "Edit item group" : "Add item group"}
             </span>
             <button
-              style={{
-                marginLeft: "auto",
-                background: "transparent",
-                border: "none",
-                cursor: "pointer",
-              }}
+              type="button"
+              className="text-gray-500 hover:text-gray-700"
               onClick={resetForm}
             >
-              <X style={{ width: 16, height: 16 }} />
+              <X className="h-4 w-4" />
             </button>
           </div>
-          <div
-            style={{
-              flex: 1,
-              overflowY: "auto",
-              padding: 14,
-              display: "flex",
-              flexDirection: "column",
-              gap: 10,
-            }}
-          >
+
+          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
             {[
-              { label: "Group Name *", key: "name" },
+              { label: "Group name", key: "name", required: true },
               { label: "Alias", key: "alias" },
-              { label: "HSN Code", key: "hsnCode" },
-            ].map(({ label, key }) => (
-              <label key={key} style={{ fontSize: 12 }}>
-                <div style={{ fontWeight: 600, marginBottom: 3 }}>{label}</div>
+              { label: "HSN code", key: "hsnCode" },
+            ].map(({ label, key, required }) => (
+              <div key={key}>
+                <label className={labelCls}>
+                  {label}
+                  {required ? " *" : ""}
+                </label>
                 <input
                   value={(form as any)[key]}
                   onChange={(e) => setForm({ ...form, [key]: e.target.value })}
-                  style={INPUT_STYLE}
+                  className={inputCls}
                 />
-              </label>
+              </div>
             ))}
-            <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12 }}>
+
+            <label className="flex items-center gap-2 text-[12px] text-gray-700 cursor-pointer">
               <input
                 type="checkbox"
                 checked={form.isPrimary}
                 onChange={(e) =>
                   setForm({ ...form, isPrimary: e.target.checked, underGroupId: "" })
                 }
+                className="rounded border-gray-300"
               />
-              <span>Primary Group (top-level)</span>
+              Primary group (top-level)
             </label>
+
             {!form.isPrimary && (
-              <label style={{ fontSize: 12 }}>
-                <div style={{ fontWeight: 600, marginBottom: 3 }}>Under Group</div>
+              <div>
+                <label className={labelCls}>Under group</label>
                 <select
                   value={form.underGroupId}
                   onChange={(e) => setForm({ ...form, underGroupId: e.target.value })}
-                  style={INPUT_STYLE}
+                  className={inputCls}
                 >
-                  <option value="">— Select Parent —</option>
+                  <option value="">Select parent</option>
                   {(itemGroups || [])
                     .filter((g: any) => g.id !== selected?.id)
                     .map((g: any) => (
@@ -288,59 +269,54 @@ export default function ItemGroupMaster() {
                       </option>
                     ))}
                 </select>
-              </label>
+              </div>
             )}
+
             {[
-              { label: "Stock Account", key: "stockAccountId" },
-              { label: "Sales Account", key: "salesAccountId" },
-              { label: "Purchase Account", key: "purchaseAccountId" },
+              { label: "Stock account", key: "stockAccountId" },
+              { label: "Sales account", key: "salesAccountId" },
+              { label: "Purchase account", key: "purchaseAccountId" },
             ].map(({ label, key }) => (
-              <label key={key} style={{ fontSize: 12 }}>
-                <div style={{ fontWeight: 600, marginBottom: 3 }}>{label}</div>
+              <div key={key}>
+                <label className={labelCls}>{label}</label>
                 <select
                   value={(form as any)[key]}
                   onChange={(e) => setForm({ ...form, [key]: e.target.value })}
-                  style={INPUT_STYLE}
+                  className={inputCls}
                 >
-                  <option value="">— None —</option>
+                  <option value="">None</option>
                   {ledgerAccounts.map((a: any) => (
                     <option key={a.id} value={a.id}>
                       {a.name}
                     </option>
                   ))}
                 </select>
-              </label>
+              </div>
             ))}
-            <label style={{ fontSize: 12 }}>
-              <div style={{ fontWeight: 600, marginBottom: 3 }}>Tax Category</div>
+
+            <div>
+              <label className={labelCls}>Tax category</label>
               <select
                 value={form.taxCategoryId}
                 onChange={(e) => setForm({ ...form, taxCategoryId: e.target.value })}
-                style={INPUT_STYLE}
+                className={inputCls}
               >
-                <option value="">— None —</option>
+                <option value="">None</option>
                 {(taxCategories || []).map((tc: any) => (
                   <option key={tc.id} value={tc.id}>
                     {tc.name}
                   </option>
                 ))}
               </select>
-            </label>
+            </div>
           </div>
-          <div
-            style={{
-              display: "flex",
-              gap: 8,
-              padding: "10px 14px",
-              borderTop: BORDER,
-              background: BG_HEADER,
-            }}
-          >
-            <button style={BTN("#3D6B25")} onClick={handleSubmit}>
-              <Save style={{ width: 12, height: 12, display: "inline", marginRight: 4 }} />
+
+          <div className="flex gap-2 p-4 border-t border-gray-200">
+            <button type="button" className={btnPrimary} onClick={handleSubmit}>
+              <Save className="h-3.5 w-3.5" />
               {selected ? "Update" : "Save"}
             </button>
-            <button style={BTN("#fff")} onClick={resetForm}>
+            <button type="button" className={btnOutline} onClick={resetForm}>
               Cancel
             </button>
           </div>
