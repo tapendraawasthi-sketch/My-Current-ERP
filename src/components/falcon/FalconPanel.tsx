@@ -164,7 +164,8 @@ const MessageBubble = memo(
         {/* Badges — sources + domain */}
         {!isUser && !isStreaming && (
           <div className="flex flex-wrap gap-1 px-1">
-            {msg.sources && msg.sources.length > 0 &&
+            {msg.sources &&
+              msg.sources.length > 0 &&
               msg.sources.slice(0, 4).map((src) => (
                 <span
                   key={src}

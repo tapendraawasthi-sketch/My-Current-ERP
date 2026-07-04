@@ -430,7 +430,9 @@ export function classifyQuestion(
   ) {
     intent = "calculate";
   } else if (
-    /\b(compare|difference between|vs.?|versus|which is better|what'?s the difference)\b/.test(lower)
+    /\b(compare|difference between|vs.?|versus|which is better|what'?s the difference)\b/.test(
+      lower,
+    )
   ) {
     intent = "compare";
   } else if (

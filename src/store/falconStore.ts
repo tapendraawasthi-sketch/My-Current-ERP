@@ -8,12 +8,7 @@ import {
   generateFollowUpSuggestions,
 } from "../lib/falcon/chainOfThought";
 import type { ThoughtStep, QuestionDomain, QuestionIntent } from "../lib/falcon/chainOfThought";
-import {
-  ERP_BOT_URL,
-  askErpBot,
-  checkErpBotStatus,
-  getErpBotSessionId,
-} from "../lib/erpBotClient";
+import { ERP_BOT_URL, askErpBot, checkErpBotStatus, getErpBotSessionId } from "../lib/erpBotClient";
 import {
   buildBuiltinErpAnswer,
   buildModuleSuggestions,
