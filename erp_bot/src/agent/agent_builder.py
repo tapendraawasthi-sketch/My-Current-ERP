@@ -21,6 +21,93 @@ from .tools import (
     web_search,
 )
 
+
+# ── Post-generation answer trimmer ─────────────────────────────────────────────
+# Enforces intent-specific output format as a safety net when the model rambles.
+
+_PATH_LINE_PATTERN = re.compile(
+    r"(Path:|Shortcut:|→|Menu|Transactions|Masters|Reports|Utilities|Company|F\d+)",
+    re.IGNORECASE,
+)
+_DEFINITION_SENTENCE_PATTERN = re.compile(
+    r"^[A-Z].*?(is used for|is a|is an|is the|records|allows|enables|lets you|"
+    r"provides|helps|used to|feature for|way to)\b",
+    re.IGNORECASE,
+)
+_NUMBERED_STEP_PATTERN = re.compile(r"^\s*\d+[.)]\s*")
+_DEBIT_CREDIT_PATTERN = re.compile(r"\b(DEBIT|CREDIT|Dr\.?|Cr\.?)\b", re.IGNORECASE)
+
+
+def _scope_answer(answer: str, intent: str) -> str:
+    """Trim model output to match the intent, as a safety net.
+
+    - action_path / nav: keep only lines containing navigation paths.
+    - definition: keep at most the first 3 sentences.
+    - steps: keep only numbered list lines.
+    - effect: keep only lines with DEBIT/CREDIT/Dr/Cr.
+    - code / troubleshoot / general: return unchanged.
+    """
+    if not answer or not answer.strip():
+        return answer
+
+    lines = answer.strip().split("\n")
+
+    if intent in ("action_path", "nav"):
+        # Keep only lines that look like navigation paths
+        path_lines = []
+        for line in lines:
+            stripped = line.strip()
+            if not stripped:
+                continue
+            # Keep lines with path indicators or menu keywords
+            if _PATH_LINE_PATTERN.search(stripped):
+                path_lines.append(stripped)
+                continue
+            # Also keep lines that look like "Feature → Sub → Page" format
+            if "→" in stripped or ">" in stripped:
+                path_lines.append(stripped)
+                continue
+        # Filter out definition-like sentences
+        filtered = []
+        for line in path_lines:
+            # Skip lines that define the feature
+            if _DEFINITION_SENTENCE_PATTERN.search(line):
+                continue
+            filtered.append(line)
+        if filtered:
+            return filtered[0]  # Return ONLY the first path line
+        # Fallback: return first non-empty line if nothing path-like found
+        for line in lines:
+            if line.strip():
+                return line.strip()
+        return answer
+
+    elif intent == "definition":
+        # Keep at most first 3 sentences
+        text = " ".join(line.strip() for line in lines if line.strip())
+        sentences = re.split(r"(?<=[.!?])\s+", text)
+        return " ".join(sentences[:3]).strip()
+
+    elif intent == "steps":
+        # Keep only numbered list lines
+        step_lines = [line for line in lines if _NUMBERED_STEP_PATTERN.match(line)]
+        if step_lines:
+            return "\n".join(step_lines)
+        return answer
+
+    elif intent == "effect":
+        # Keep only lines containing DEBIT/CREDIT/Dr/Cr
+        effect_lines = [
+            line for line in lines
+            if _DEBIT_CREDIT_PATTERN.search(line)
+        ]
+        if effect_lines:
+            return "\n".join(effect_lines)
+        return answer
+
+    # code / troubleshoot / general — return unchanged
+    return answer
+
 _llm = ChatOllama(model=MODEL_NAME, base_url=OLLAMA_BASE_URL, temperature=0, num_ctx=8192)
 _tools = [
     search_codebase,
@@ -64,10 +151,19 @@ def _extract_sources(text: str) -> set[str]:
 def _build_enriched_question(question: str) -> tuple[str, set[str]]:
     intent = _classify_intent(question)
 
-    # For navigation/action_path intents: search for route/menu/shortcut
-    # patterns only — no need for deep code chunks.
+    # For navigation/action_path intents: search specifically for route
+    # definitions, menu config, and keyboard shortcut constants — not deep
+    # component logic.
     if intent in _LIGHTWEIGHT_INTENTS:
-        nav_query = f"menu route navigation shortcut {question}"
+        # Target the specific files and patterns that define navigation:
+        # - App.tsx (switch(currentPage) route map)
+        # - Sidebar.tsx (menuGroups)
+        # - BusyMenuBar.tsx (MENU_TREE)
+        # - RightButtonBar.tsx, PAGE_SHORTCUTS
+        nav_query = (
+            f"route case menu item page shortcut PAGE_SHORTCUTS Sidebar "
+            f"App.tsx BusyMenuBar menuGroups MENU_TREE currentPage {question}"
+        )
         search_out = search_codebase.invoke({"query": nav_query})
     else:
         search_out = search_codebase.invoke({"query": question})
@@ -147,6 +243,8 @@ def _build_enriched_question(question: str) -> tuple[str, set[str]]:
 
 
 def ask(question: str, session_id: str) -> dict:
+    # Classify intent once for both enrichment and answer scoping
+    intent = _classify_intent(question)
     enriched, prefetched_sources = _build_enriched_question(question)
     config = {
         "configurable": {"thread_id": session_id},
@@ -162,6 +260,9 @@ def ask(question: str, session_id: str) -> dict:
 
     messages = result.get("messages", [])
     answer = messages[-1].content if messages else "No response generated."
+
+    # Apply intent-specific answer scoping to enforce format discipline
+    answer = _scope_answer(answer, intent)
 
     sources = set(prefetched_sources)
     for m in messages:

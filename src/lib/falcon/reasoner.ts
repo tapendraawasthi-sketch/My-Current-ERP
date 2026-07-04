@@ -19,6 +19,80 @@ import {
   buildFallback,
 } from "./composer";
 
+// ── ANSWER SCOPING ─────────────────────────────────────────────────────────────
+// Enforces intent-specific output format, matching the Python bot's _scope_answer.
+
+const PATH_INDICATORS = ["→", "Path:", "Shortcut:", "Menu", "Transactions", "Masters", "Reports", "Utilities", "Company", "F5", "F6", "F7", "F8", "F9", "F10"];
+const DEFINITION_STARTERS = /^.{0,50}(is used for|is a |is an |is the |records|allows|enables|lets you|provides|helps|used to|feature for|way to)/i;
+
+/**
+ * Scope the answer based on intent to enforce format discipline.
+ * - action_path / navigate: path + shortcut only
+ * - definition: max 3 sentences
+ * - steps: numbered list only
+ * - effect: DEBIT/CREDIT lines only
+ */
+function scopeAnswer(answer: string, intent: string): string {
+  if (!answer || !answer.trim()) return answer;
+
+  const lines = answer.trim().split("\n");
+
+  if (intent === "action_path" || intent === "navigate") {
+    // Keep only lines containing navigation paths
+    const pathLines: string[] = [];
+    for (const line of lines) {
+      const stripped = line.trim();
+      if (!stripped) continue;
+      // Check for path indicators
+      if (PATH_INDICATORS.some((ind) => stripped.includes(ind))) {
+        // Skip definition-like sentences
+        if (!DEFINITION_STARTERS.test(stripped)) {
+          pathLines.push(stripped);
+        }
+      }
+    }
+    if (pathLines.length > 0) {
+      // Return only the first path line for action_path/navigate
+      return pathLines[0];
+    }
+    // Fallback: return first non-empty line
+    for (const line of lines) {
+      if (line.trim()) return line.trim();
+    }
+    return answer;
+  }
+
+  if (intent === "definition") {
+    // Keep at most first 3 sentences
+    const text = lines.map((l) => l.trim()).filter(Boolean).join(" ");
+    const sentences = text.split(/(?<=[.!?])\s+/);
+    return sentences.slice(0, 3).join(" ").trim();
+  }
+
+  if (intent === "steps") {
+    // Keep only numbered list lines
+    const stepLines = lines.filter((line) => /^\s*\d+[.)]\s*/.test(line));
+    if (stepLines.length > 0) {
+      return stepLines.join("\n");
+    }
+    return answer;
+  }
+
+  if (intent === "effect") {
+    // Keep only lines containing DEBIT/CREDIT/Dr/Cr
+    const effectLines = lines.filter((line) =>
+      /\b(DEBIT|CREDIT|Dr\.?|Cr\.?)\b/i.test(line)
+    );
+    if (effectLines.length > 0) {
+      return effectLines.join("\n");
+    }
+    return answer;
+  }
+
+  // code / troubleshoot / general / others — return unchanged
+  return answer;
+}
+
 // ─── SHARED CONSTANTS ────────────────────────────────────────────────────────
 
 const DEFAULT_SUGGESTIONS = [
@@ -567,6 +641,8 @@ const STRATEGIES: AnyStrategy[] = [
  * runReasoner — evaluates all strategies in priority order and returns the
  * first result with confidence >= 40. If none reach that threshold, the
  * highest-confidence result seen (or the fallback) is returned.
+ *
+ * Applies intent-based answer scoping as a final step to enforce format discipline.
  */
 export function runReasoner(input: FalconReasoningInput): FalconReasoningResult {
   let bestResult: FalconReasoningResult | null = null;
@@ -591,13 +667,21 @@ export function runReasoner(input: FalconReasoningInput): FalconReasoningResult 
 
     // Return immediately if confidence is good enough
     if (result.confidence >= 40) {
+      // Apply intent-based answer scoping before returning
+      result.answer = scopeAnswer(result.answer, input.intent);
       return result;
     }
   }
 
   // Return the best result seen even if < 40 confidence
-  if (bestResult) return bestResult;
+  if (bestResult) {
+    // Apply intent-based answer scoping
+    bestResult.answer = scopeAnswer(bestResult.answer, input.intent);
+    return bestResult;
+  }
 
   // Final safety net: explicit fallback
-  return generalFallbackStrategy.execute(input, KNOWLEDGE_BASE);
+  const fallback = generalFallbackStrategy.execute(input, KNOWLEDGE_BASE);
+  fallback.answer = scopeAnswer(fallback.answer, input.intent);
+  return fallback;
 }
