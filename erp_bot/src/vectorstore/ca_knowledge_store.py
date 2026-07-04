@@ -24,13 +24,21 @@ def get_collection():
     return _client.get_or_create_collection(COLLECTION_NAME)
 
 
+def _all_corpus_items(data: dict) -> list[dict]:
+    """Flatten all searchable items from the complete knowledge JSON."""
+    items: list[dict] = []
+    for key in ("paragraphs", "tables", "glossary", "chapterTexts", "sections"):
+        items.extend(data.get(key, []))
+    return items
+
+
 def _keyword_score(query: str, doc: dict) -> float:
     tokens = {t.lower() for t in query.split() if len(t) >= 3 and t.isalnum()}
     if not tokens:
         return 0.0
 
     text = " ".join(
-        str(doc.get(k, "")) for k in ("text", "section", "topics", "concepts")
+        str(doc.get(k, "")) for k in ("text", "section", "topics", "term", "definition")
     ).lower()
     score = 0.0
     for token in tokens:
@@ -42,7 +50,7 @@ def _keyword_score(query: str, doc: dict) -> float:
 
 
 def search_ca_knowledge(query: str, k: int = 6) -> list[dict]:
-    """Hybrid semantic + keyword search over CA knowledge corpus."""
+    """Hybrid semantic + keyword search over complete CA knowledge corpus."""
     try:
         collection = get_collection()
         if collection.count() == 0:
@@ -64,10 +72,11 @@ def search_ca_knowledge(query: str, k: int = 6) -> list[dict]:
         for doc, meta, dist in zip(docs, metas, dists):
             item = {
                 "text": doc,
-                "paragraph_id": meta.get("paragraph_id", ""),
+                "paragraph_id": meta.get("paragraph_id", meta.get("item_id", "")),
                 "chapter": meta.get("chapter", 0),
                 "section": meta.get("section", ""),
                 "topics": meta.get("topics", ""),
+                "item_type": meta.get("item_type", ""),
                 "distance": dist,
             }
             kw = _keyword_score(query, item)
@@ -77,7 +86,7 @@ def search_ca_knowledge(query: str, k: int = 6) -> list[dict]:
 
         candidates.sort(key=lambda x: x["_score"], reverse=True)
         return [
-            {k: v for k, v in c.items() if not k.startswith("_")}
+            {key: val for key, val in c.items() if not key.startswith("_")}
             for c in candidates[:k]
         ]
     except Exception as exc:
@@ -100,70 +109,91 @@ def _fallback_search(query: str, k: int) -> list[dict]:
     tokens = {t.lower() for t in query.split() if len(t) >= 3}
 
     scored = []
-    for para in data.get("paragraphs", []):
-        text = para.get("text", "")
-        section = para.get("section", "")
-        topics = " ".join(para.get("topics", []))
-        combined = f"{text} {section} {topics}".lower()
+    for item in _all_corpus_items(data):
+        text = item.get("text", "")
+        section = item.get("section", "")
+        term = item.get("term", "")
+        topics = " ".join(item.get("topics", []))
+        combined = f"{text} {section} {topics} {term}".lower()
 
         score = 0.0
         for token in tokens:
             if token in combined:
                 score += 1.0
-        if any(alias in query_lower for concept in data.get("concepts", []) for alias in concept.get("ne", []) + concept.get("en", []) if alias.lower() in query_lower and any(pid == para.get("id") for pid in concept.get("paragraphs", []))):
-            score += 5.0
+        if term and term.lower() in query_lower:
+            score += 10.0
 
         if score > 0:
             scored.append({
                 "text": text,
-                "paragraph_id": para.get("id", ""),
-                "chapter": para.get("chapter", 0),
+                "paragraph_id": item.get("id", ""),
+                "chapter": item.get("chapter", 0),
                 "section": section,
                 "topics": topics,
+                "item_type": item.get("type", ""),
                 "_score": score,
             })
 
     scored.sort(key=lambda x: x["_score"], reverse=True)
-    return [{k: v for k, v in c.items() if k != "_score"} for c in scored[:k]]
+    return [{key: val for key, val in c.items() if key != "_score"} for c in scored[:k]]
+
+
+def _item_doc_text(item: dict) -> str:
+    item_id = item.get("id", "")
+    item_type = item.get("type", "paragraph")
+    section = item.get("section", "")
+    text = item.get("text", "")
+    term = item.get("term", "")
+    topics = ", ".join(item.get("topics", []))
+
+    if item_type == "glossary" and term:
+        return f"[Glossary: {term}] {section}\n{text}\nTopics: {topics}"
+    if item_type == "table":
+        return f"[{item_id}] {section}\n{text}\nTopics: {topics}"
+    if item_type in ("sp_paragraph",) or str(item_id).startswith("SP"):
+        return f"[{item_id}] {section}\n{text}\nTopics: {topics}"
+    if item_type == "chapter_full":
+        return f"[Chapter {item.get('chapter', 0)} full text] {section}\n{text[:4000]}\nTopics: {topics}"
+    return f"[Para {item_id}] {section}\n{text}\nTopics: {topics}"
 
 
 def ingest_ca_knowledge() -> dict:
-    """Embed and upsert all paragraphs from conceptual-framework-knowledge.json."""
+    """Embed and upsert ALL items from conceptual-framework-knowledge.json."""
     if not _KNOWLEDGE_JSON.exists():
         return {"status": "error", "message": f"Knowledge file not found: {_KNOWLEDGE_JSON}"}
 
     with open(_KNOWLEDGE_JSON, encoding="utf-8") as f:
         data = json.load(f)
 
-    paragraphs = data.get("paragraphs", [])
-    if not paragraphs:
+    items = _all_corpus_items(data)
+    if not items:
         return {"status": "skipped", "chunks": 0}
 
     collection = get_collection()
-    batch_size = 50
+    batch_size = 40
     indexed = 0
 
     try:
-        for i in range(0, len(paragraphs), batch_size):
-            batch = paragraphs[i : i + batch_size]
+        for i in range(0, len(items), batch_size):
+            batch = items[i : i + batch_size]
             texts = []
             ids = []
             metas = []
 
-            for para in batch:
-                pid = para.get("id", "")
-                section = para.get("section", "")
-                text = para.get("text", "")
-                topics = ", ".join(para.get("topics", []))
-                doc_text = f"[Para {pid}] {section}\n{text}\nTopics: {topics}"
+            for item in batch:
+                item_id = item.get("id", "")
+                doc_text = _item_doc_text(item)
+                chunk_id = f"cf-{item_id}".replace(" ", "-")
                 texts.append(doc_text)
-                ids.append(f"cf-{pid}")
+                ids.append(chunk_id)
                 metas.append({
-                    "paragraph_id": pid,
-                    "chapter": para.get("chapter", 0),
-                    "section": section,
-                    "topics": topics,
-                    "chunk_id": f"cf-{pid}",
+                    "paragraph_id": item_id,
+                    "item_id": item_id,
+                    "item_type": item.get("type", "paragraph"),
+                    "chapter": item.get("chapter", 0),
+                    "section": item.get("section", ""),
+                    "topics": ", ".join(item.get("topics", [])),
+                    "chunk_id": chunk_id,
                     "source": "conceptual-framework-knowledge.json",
                 })
 
@@ -177,7 +207,7 @@ def ingest_ca_knowledge() -> dict:
                 )
             indexed += len(batch)
 
-        return {"status": "indexed", "chunks": indexed}
+        return {"status": "indexed", "chunks": indexed, "complete": data.get("metadata", {}).get("complete", False)}
     except Exception as exc:
         return {"status": "error", "message": str(exc), "chunks": indexed}
 

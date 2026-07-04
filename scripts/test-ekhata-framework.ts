@@ -3,6 +3,7 @@
  * Run: npm run test:ekhata-framework
  */
 import { processEKhataMessage } from "../src/lib/ekhata/processMessage";
+import corpus from "../data/ekhata/conceptual-framework-knowledge.json";
 import {
   understandConceptualFramework,
   isFrameworkQuery,
@@ -83,6 +84,26 @@ check("qualitative characteristics", qual.kind === "answer" && qual.confidence >
 // Measurement
 const measure = understandConceptualFramework("fair value measurement k ho?");
 check("fair value measurement", measure.kind === "answer" && measure.reply.includes("6."));
+
+// Coverage completeness
+const meta = corpus.metadata;
+check("100% paragraph coverage", meta.coverage?.coveragePercent === 100);
+check("has SP sections", meta.total_sp_paragraphs === 5);
+check("has tables", meta.total_tables === 2);
+check("has glossary", (meta.total_glossary_terms ?? 0) >= 30);
+check("has all 8 chapter full texts", meta.total_chapter_full_texts === 8);
+
+// SP section
+const sp = understandConceptualFramework("Is the conceptual framework a standard?");
+check("SP section query", sp.kind === "answer" && (sp.reply.includes("SP1") || sp.reply.includes("not a Standard")));
+
+// Glossary
+const prudence = understandConceptualFramework("what is prudence in IFRS framework?");
+check("glossary prudence", prudence.kind === "answer" && prudence.reply.toLowerCase().includes("prudence"));
+
+// Table lookup
+const table41 = understandConceptualFramework("Table 4.1 elements of financial statements");
+check("Table 4.1", table41.kind === "answer" && table41.reply.includes("Table 4.1"));
 
 console.log(`\n=== Framework Brain Results: ${passed} passed, ${failed} failed ===`);
 process.exit(failed > 0 ? 1 : 0);

@@ -40,20 +40,32 @@ interface ConceptEntry {
   paragraphs: string[];
 }
 
-interface ParagraphEntry {
+interface KnowledgeItem {
   id: string;
+  type?: string;
   chapter: number;
   section: string;
   text: string;
   summary?: string;
   topics: string[];
+  term?: string;
+  definition?: string;
 }
 
 interface CorpusShape {
   concepts: ConceptEntry[];
-  paragraphs: ParagraphEntry[];
+  paragraphs: KnowledgeItem[];
+  tables?: KnowledgeItem[];
+  glossary?: KnowledgeItem[];
+  chapterTexts?: KnowledgeItem[];
+  sections?: KnowledgeItem[];
+  fullDocumentText?: string;
   metadata: {
     chapters: Array<{ number: number; title: string }>;
+    complete?: boolean;
+    total_paragraphs?: number;
+    total_glossary_terms?: number;
+    coverage?: { coveragePercent: number; missingParagraphIds: string[] };
   };
 }
 
@@ -63,7 +75,23 @@ const CHAPTER_TITLES = Object.fromEntries(
   KB.metadata.chapters.map((c) => [c.number, c.title]),
 );
 
-const PARA_BY_ID = new Map(KB.paragraphs.map((p) => [p.id, p]));
+const ALL_SEARCHABLE: KnowledgeItem[] = [
+  ...KB.paragraphs,
+  ...(KB.tables ?? []),
+  ...(KB.glossary ?? []),
+  ...(KB.chapterTexts ?? []),
+  ...(KB.sections ?? []),
+];
+
+const ITEM_BY_ID = new Map(ALL_SEARCHABLE.map((p) => [p.id, p]));
+const PARA_BY_ID = ITEM_BY_ID;
+
+const GLOSSARY_BY_TERM = new Map(
+  (KB.glossary ?? []).flatMap((g) => {
+    const term = (g.term ?? g.id.replace("glossary-", "").replace(/_/g, " ")).toLowerCase();
+    return [[term, g] as const];
+  }),
+);
 
 /** Expanded Nepali/local → IFRS concept bridge (beyond corpus aliases) */
 const NEPALI_CONCEPT_BRIDGE: Record<string, string[]> = {
@@ -238,39 +266,63 @@ function scoreConcepts(text: string, tokens: Set<string>): Array<{ id: string; s
   return results.sort((a, b) => b.score - a.score);
 }
 
-function retrieveParagraphs(
+function lookupGlossary(text: string): KnowledgeItem | null {
+  const lower = text.toLowerCase();
+  for (const [term, entry] of GLOSSARY_BY_TERM) {
+    if (lower.includes(term) && term.length >= 4) return entry;
+  }
+  return null;
+}
+
+function retrieveKnowledgeItems(
   concepts: Array<{ id: string; score: number; concept: ConceptEntry }>,
   intent: FrameworkQuestionIntent,
   text: string,
-  limit = 4,
-): ParagraphEntry[] {
-  const paraScores = new Map<string, number>();
+  limit = 5,
+): KnowledgeItem[] {
+  const itemScores = new Map<string, number>();
 
-  const paraRef = text.match(/\b(\d+\.\d+)\b/);
+  const paraRef = text.match(/\b(SP\d+\.\d+|\d+\.\d+)\b/);
   if (paraRef) {
-    const p = PARA_BY_ID.get(paraRef[1]);
+    const p = ITEM_BY_ID.get(paraRef[1]);
     if (p) return [p];
+  }
+
+  if (/\btable\s+4\.1\b/i.test(text)) {
+    const t = ITEM_BY_ID.get("Table 4.1");
+    if (t) return [t];
+  }
+  if (/\btable\s+6\.1\b/i.test(text)) {
+    const t = ITEM_BY_ID.get("Table 6.1");
+    if (t) return [t];
   }
 
   for (const { concept, score } of concepts.slice(0, 5)) {
     for (const pid of concept.paragraphs) {
-      const existing = paraScores.get(pid) ?? 0;
-      paraScores.set(pid, existing + score);
+      itemScores.set(pid, (itemScores.get(pid) ?? 0) + score);
     }
   }
 
   const tokens = expandTokens(tokenize(normalizeNepaliText(text)));
-  for (const para of KB.paragraphs) {
-    const paraLower = para.text.toLowerCase();
+  for (const item of ALL_SEARCHABLE) {
+    const itemLower = item.text.toLowerCase();
     let tokenHit = 0;
     for (const t of tokens) {
-      if (t.length >= 4 && paraLower.includes(t)) tokenHit += 1;
+      if (t.length >= 4 && itemLower.includes(t)) tokenHit += 1;
     }
     if (tokenHit > 0) {
-      paraScores.set(para.id, (paraScores.get(para.id) ?? 0) + tokenHit * 2);
+      itemScores.set(item.id, (itemScores.get(item.id) ?? 0) + tokenHit * 2);
     }
-    if (para.section && text.toLowerCase().includes(para.section.toLowerCase().slice(0, 12))) {
-      paraScores.set(para.id, (paraScores.get(para.id) ?? 0) + 15);
+    if (item.section && text.toLowerCase().includes(item.section.toLowerCase().slice(0, 12))) {
+      itemScores.set(item.id, (itemScores.get(item.id) ?? 0) + 15);
+    }
+    if (item.type === "glossary" && item.term) {
+      const termLower = item.term.toLowerCase();
+      // Only boost glossary when term is explicitly asked (not substring of compound query)
+      const termRegex = new RegExp(`\\b${termLower.replace(/\s+/g, "\\s+")}\\b`, "i");
+      if (termRegex.test(text) && termLower.length >= 6) {
+        itemScores.set(item.id, (itemScores.get(item.id) ?? 0) + 25);
+      }
     }
   }
 
@@ -282,19 +334,28 @@ function retrieveParagraphs(
   };
   const boostChapters = intentChapterBoost[intent];
   if (boostChapters) {
-    for (const [pid, sc] of paraScores) {
-      const p = PARA_BY_ID.get(pid);
+    for (const [id, sc] of itemScores) {
+      const p = ITEM_BY_ID.get(id);
       if (p && boostChapters.includes(p.chapter)) {
-        paraScores.set(pid, sc + 5);
+        itemScores.set(id, sc + 5);
       }
     }
   }
 
-  return [...paraScores.entries()]
+  return [...itemScores.entries()]
     .sort((a, b) => b[1] - a[1])
     .slice(0, limit)
-    .map(([id]) => PARA_BY_ID.get(id)!)
+    .map(([id]) => ITEM_BY_ID.get(id)!)
     .filter(Boolean);
+}
+
+function retrieveParagraphs(
+  concepts: Array<{ id: string; score: number; concept: ConceptEntry }>,
+  intent: FrameworkQuestionIntent,
+  text: string,
+  limit = 4,
+): KnowledgeItem[] {
+  return retrieveKnowledgeItems(concepts, intent, text, limit);
 }
 
 function isFrameworkQuery(text: string): boolean {
@@ -308,29 +369,42 @@ function isFrameworkQuery(text: string): boolean {
   return false;
 }
 
+function formatItemRef(item: KnowledgeItem): string {
+  if (item.type === "glossary" && item.term) return `**Glossary: ${item.term}**`;
+  if (item.type === "table") return `**${item.id}** (Ch ${item.chapter})`;
+  if (item.type === "sp_paragraph") return `**${item.id}** (Status & Purpose)`;
+  if (item.id.startsWith("SP")) return `**${item.id}** (Status & Purpose)`;
+  if (item.type === "chapter_full") return `**Chapter ${item.chapter}** (full text excerpt)`;
+  return `**Para ${item.id}** (Ch ${item.chapter || item.id.split(".")[0]})`;
+}
+
 function formatParagraphRef(id: string): string {
+  const item = ITEM_BY_ID.get(id);
+  if (item) return formatItemRef(item);
   return `**Para ${id}** (Ch ${id.split(".")[0]})`;
 }
 
 function synthesizeDefinitionAnswer(
   concepts: Array<{ id: string; score: number; concept: ConceptEntry }>,
-  paragraphs: ParagraphEntry[],
+  items: KnowledgeItem[],
   lang: UserLanguage,
 ): string {
   const top = concepts[0]?.concept;
-  const paras = paragraphs.slice(0, 3);
+  const paras = items.slice(0, 3);
 
   if (lang === "english") {
     let reply = top
       ? `**${top.en[0].replace(/^definition of /i, "").replace(/^the /i, "").replace(/\b\w/g, (c) => c.toUpperCase())}** (IFRS Conceptual Framework)\n\n`
       : "**IFRS Conceptual Framework**\n\n";
     for (const p of paras) {
-      reply += `${formatParagraphRef(p.id)}`;
+      reply += formatItemRef(p);
       if (p.section) reply += ` — ${p.section}`;
-      reply += `\n> ${p.text}\n\n`;
+      reply += `\n> ${p.definition ?? p.text}\n\n`;
     }
     if (top) {
       reply += `_Source: IFRS Conceptual Framework 2018, Chapter ${top.chapter} — ${CHAPTER_TITLES[top.chapter]}_`;
+    } else if (KB.metadata.complete) {
+      reply += `_Source: IFRS Conceptual Framework 2018 (complete corpus — ${KB.metadata.total_paragraphs} paragraphs, ${KB.metadata.total_glossary_terms} glossary terms)_`;
     }
     return reply.trim();
   }
@@ -338,9 +412,9 @@ function synthesizeDefinitionAnswer(
   const neLabel = top?.ne[0] ?? top?.en[0] ?? "Conceptual Framework";
   let reply = `**${neLabel}** (IFRS Conceptual Framework / NAS)\n\n`;
   for (const p of paras) {
-    reply += `${formatParagraphRef(p.id)}`;
+    reply += formatItemRef(p);
     if (p.section) reply += ` — ${p.section}`;
-    reply += `\n> ${p.text}\n\n`;
+    reply += `\n> ${p.definition ?? p.text}\n\n`;
   }
   reply += `_Srot: IFRS Conceptual Framework 2018, Chapter ${paras[0]?.chapter ?? top?.chapter} — ${CHAPTER_TITLES[paras[0]?.chapter ?? top?.chapter ?? 1]}_`;
   return reply.trim();
@@ -417,15 +491,15 @@ function synthesizeChapterOverview(text: string, lang: UserLanguage): string | n
 
 function synthesizeGeneralAnswer(
   concepts: Array<{ id: string; score: number; concept: ConceptEntry }>,
-  paragraphs: ParagraphEntry[],
+  items: KnowledgeItem[],
   lang: UserLanguage,
 ): string {
-  if (paragraphs.length === 0) {
+  if (items.length === 0) {
     return lang === "english"
-      ? "I have the full IFRS Conceptual Framework (2018) in my knowledge. Ask about assets, liabilities, recognition, measurement, qualitative characteristics, or any chapter 1–8."
-      : "Ma IFRS Conceptual Framework (2018) ko pura gyan rakheko chhu. Sampatti, dayitwo, manyata, mulyankan, qualitative characteristics, wa chapter 1–8 ko barema sodhnus.";
+      ? `I have the complete IFRS Conceptual Framework (2018) — ${KB.metadata.total_paragraphs ?? 316} paragraphs, SP sections, tables, and glossary. Ask about any concept, paragraph, or defined term.`
+      : `Ma IFRS Conceptual Framework (2018) ko pura document rakheko chhu — ${KB.metadata.total_paragraphs ?? 316} paragraphs, tables, ra glossary. Kunai pani concept, paragraph, wa defined term sodhnus.`;
   }
-  return synthesizeDefinitionAnswer(concepts, paragraphs, lang);
+  return synthesizeDefinitionAnswer(concepts, items, lang);
 }
 
 /** Main entry — semantic CA framework understanding */
@@ -509,20 +583,35 @@ export function understandConceptualFramework(text: string): FrameworkBrainResul
   };
 }
 
-/** Build context block for Ollama LLM injection */
+/** Build context block for Ollama LLM injection — uses full searchable corpus */
 export function buildFrameworkContextBlock(text: string): string {
-  const result = understandConceptualFramework(text);
-  if (result.kind !== "answer" || result.paragraphs.length === 0) return "";
+  const lang = detectUserLanguage(text);
+  const intent = classifyIntent(text);
+  const tokens = expandTokens(tokenize(normalizeNepaliText(text)));
+  const concepts = scoreConcepts(text, tokens);
+  const items = retrieveKnowledgeItems(concepts, intent, text, 6);
 
-  const paras = result.paragraphs
-    .map((id) => PARA_BY_ID.get(id))
-    .filter(Boolean) as ParagraphEntry[];
+  if (items.length === 0 && KB.fullDocumentText) {
+    // Last resort: include relevant excerpt from full document
+    const queryTokens = [...tokens].filter((t) => t.length >= 5).slice(0, 3);
+    for (const t of queryTokens) {
+      const idx = KB.fullDocumentText.toLowerCase().indexOf(t);
+      if (idx >= 0) {
+        const excerpt = KB.fullDocumentText.slice(Math.max(0, idx - 200), idx + 800);
+        return `[IFRS CONCEPTUAL FRAMEWORK — document excerpt]\n${excerpt}`;
+      }
+    }
+    return "";
+  }
 
-  const lines = paras.map((p) => `[Para ${p.id}] ${p.text}`);
+  const lines = items.map((p) => {
+    const label = p.type === "glossary" ? `Glossary: ${p.term}` : p.id;
+    return `[${label}] ${p.text.slice(0, 1200)}`;
+  });
+
   return (
-    `[IFRS CONCEPTUAL FRAMEWORK KNOWLEDGE — retrieved for this question]\n` +
-    `Concepts: ${result.concepts.join(", ")}\n` +
-    `Intent: ${result.intent}\n\n` +
+    `[IFRS CONCEPTUAL FRAMEWORK KNOWLEDGE — complete corpus retrieval]\n` +
+    `Items retrieved: ${items.length} | Intent: ${intent}\n\n` +
     lines.join("\n\n")
   );
 }
