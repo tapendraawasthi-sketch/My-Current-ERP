@@ -324,8 +324,8 @@ function extractTopics(query: string): string[] {
   ]);
   return query
     .toLowerCase()
-    .replace(/[^a-z0-9s]/g, " ")
-    .split(/s+/)
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
     .filter((w) => w.length > 3 && !stopWords.has(w))
     .slice(0, 5);
 }
@@ -358,12 +358,12 @@ export function classifyQuestion(
   };
 
   // Greeting exact patterns get a strong boost
-  if (/^(hi|hello|hey|namaste|namaskar|sup|howdy)[s!?.]*$/.test(lower)) {
+  if (/^(hi|hello|hey|namaste|namaskar|sup|howdy)[\s!?.]*$/.test(lower)) {
     scores.greeting += 20;
   }
 
   // Short queries (< 4 words) with no specific signals → greeting or general
-  const wordCount = lower.split(/s+/).length;
+  const wordCount = lower.split(/\s+/).length;
   if (wordCount <= 3 && scores.greeting > 0) scores.greeting += 5;
 
   // ── Signal 3: Route boosting ──────────────────────────────────────────
@@ -418,35 +418,35 @@ export function classifyQuestion(
   // ── Signal 2: Intent detection ────────────────────────────────────────
   let intent: QuestionIntent = "explain";
 
-  if (/b(how do i|how to|steps to|guide me|walk me through|show me how)b/.test(lower)) {
+  if (/\b(how do i|how to|steps to|guide me|walk me through|show me how)\b/.test(lower)) {
     intent = "how-to";
   } else if (
-    /b(not working|error|problem|issue|can'?t|cannot|why is|why does|fails|broken)b/.test(lower)
+    /\b(not working|error|problem|issue|can'?t|cannot|why is|why does|fails|broken)\b/.test(lower)
   ) {
     intent = "troubleshoot";
   } else if (
-    /b(calculate|compute|what iss+d|how much|formula|total|sum of)b/.test(lower) ||
-    /d+s*[%×÷+-]s*d+/.test(lower)
+    /\b(calculate|compute|what is\s+\d|how much|formula|total|sum of)\b/.test(lower) ||
+    /\d+\s*[%×÷+-]\s*\d+/.test(lower)
   ) {
     intent = "calculate";
   } else if (
-    /b(compare|difference between|vs.?|versus|which is better|what'?s the difference)b/.test(lower)
+    /\b(compare|difference between|vs.?|versus|which is better|what'?s the difference)\b/.test(lower)
   ) {
     intent = "compare";
   } else if (
-    /b(list|what are all|show me all|give me all|types of|kinds of|examples of)b/.test(lower)
+    /\b(list|what are all|show me all|give me all|types of|kinds of|examples of)\b/.test(lower)
   ) {
     intent = "list";
-  } else if (/b(define|definition|meaning of|what does.+mean)b/.test(lower)) {
+  } else if (/\b(define|definition|meaning of|what does.+mean)\b/.test(lower)) {
     intent = "define";
   } else if (
-    /b(search|find online|what'?s the price|latest|current|today'?s)b/.test(lower) ||
+    /\b(search|find online|what'?s the price|latest|current|today'?s)\b/.test(lower) ||
     topDomain === "web-search"
   ) {
     intent = "search";
   } else if (topDomain === "greeting") {
     intent = "casual";
-  } else if (/b(what is|what are|explain|tell me|describe|why)b/.test(lower)) {
+  } else if (/\b(what is|what are|explain|tell me|describe|why)\b/.test(lower)) {
     intent = "explain";
   }
 
@@ -509,11 +509,11 @@ export function extractSearchQuery(query: string, domain: QuestionDomain): strin
 
   let cleaned = query.toLowerCase().trim();
   for (const filler of fillers) {
-    cleaned = cleaned.replace(new RegExp(`b${filler}b`, "gi"), "").trim();
+    cleaned = cleaned.replace(new RegExp(`\\b${filler}\\b`, "gi"), "").trim();
   }
 
   // Remove leading question words
-  cleaned = cleaned.replace(/^(who|what|where|when|why|how|which)s+/i, "").trim();
+  cleaned = cleaned.replace(/^(who|what|where|when|why|how|which)\s+/i, "").trim();
 
   // Remove punctuation at the end
   cleaned = cleaned.replace(/[?.!]+$/, "").trim();
@@ -538,7 +538,7 @@ export function buildReasoningPlan(
   const classification = classifyQuestion(query, currentRoute);
 
   // ── Estimate complexity ──────────────────────────────────────────────
-  const wordCount = query.split(/s+/).length;
+  const wordCount = query.split(/\s+/).length;
   let complexity: "simple" | "moderate" | "complex" = "simple";
   if (wordCount > 25 || intent === "troubleshoot" || intent === "compare") complexity = "moderate";
   if (wordCount > 40 || intent === "calculate" || domain === "accounting") complexity = "moderate";
@@ -586,7 +586,7 @@ export function buildReasoningPlan(
       `Intent pattern: "${intent}" — user is looking for ${intentLabel[intent]}n` +
       `Key topics identified: ${topicStr}n` +
       `Current page context: ${routeContext || " not specified — using global context"}n` +
-      `Complexity estimate: ${complexity} (${query.split(/s+/).length} words, intent "${intent}")`,
+      `Complexity estimate: ${complexity} (${query.split(/\s+/).length} words, intent "${intent}")`,
     conclusion: `Classified as [${domain.toUpperCase()}] domain with [${intent}] intent. Confidence: ${classification.confidence}%. Complexity: ${complexity}.`,
     duration: complexity === "simple" ? 400 : complexity === "moderate" ? 650 : 900,
   });
@@ -801,7 +801,7 @@ export function buildReasoningPlan(
       `Analyzing what the user is likely to need next after this answer...n` +
       `Considering: What adjacent topics naturally follow from "${topicStr}"?n` +
       `Selected follow-ups:n` +
-      followUps.map((f, i) => `  ${i + 1}. "${f}"`).join("n"),
+      followUps.map((f, i) => `  ${i + 1}. "${f}"`).join("\n"),
     conclusion: `${followUps.length} follow-up suggestions prepared`,
     duration: 200,
   });
@@ -1048,5 +1048,5 @@ export function buildEnhancedUserMessage(
   // ── Prompt additions from reasoning plan ──────────────────────────────
   parts.push(plan.promptAdditions);
 
-  return parts.join("n");
+  return parts.join("\n");
 }

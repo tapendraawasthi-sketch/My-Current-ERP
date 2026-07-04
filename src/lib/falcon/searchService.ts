@@ -460,5 +460,5 @@ export function formatSearchResultsForLLM(response: SearchResponse): string {
     lines.push(`Note: ${response.error}`);
   }
 
-  return lines.join("n").trim();
+  return lines.join("\n").trim();
 }

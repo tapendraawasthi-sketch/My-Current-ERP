@@ -134,7 +134,7 @@ export function parseMarkdown(text: string): ParsedBlock[] {
   if (!text || typeof text !== "string") return [];
 
   const blocks: ParsedBlock[] = [];
-  const lines = text.split("n");
+  const lines = text.split("\n");
   let i = 0;
 
   while (i < lines.length) {
@@ -168,24 +168,24 @@ export function parseMarkdown(text: string): ParsedBlock[] {
         i++;
       }
       i++; // consume closing ```
-      blocks.push({ type: "code-block", language: lang, code: codeLines.join("n") });
+      blocks.push({ type: "code-block", language: lang, code: codeLines.join("\n") });
       continue;
     }
 
     // ── Headings ────────────────────────────────────────────────────────
-    const h3 = line.match(/^###s+(.*)/);
+    const h3 = line.match(/^###\s+(.*)/);
     if (h3) {
       blocks.push({ type: "heading", level: 3, content: h3[1].trim() });
       i++;
       continue;
     }
-    const h2 = line.match(/^##s+(.*)/);
+    const h2 = line.match(/^##\s+(.*)/);
     if (h2) {
       blocks.push({ type: "heading", level: 2, content: h2[1].trim() });
       i++;
       continue;
     }
-    const h1 = line.match(/^#s+(.*)/);
+    const h1 = line.match(/^#\s+(.*)/);
     if (h1) {
       blocks.push({ type: "heading", level: 1, content: h1[1].trim() });
       i++;
@@ -193,10 +193,10 @@ export function parseMarkdown(text: string): ParsedBlock[] {
     }
 
     // ── Bullet list ─────────────────────────────────────────────────────
-    if (/^(s*[-•*]s+)/.test(line)) {
+    if (/^(\s*[-•*]\s+)/.test(line)) {
       const items: string[] = [];
-      while (i < lines.length && /^(s*[-•*]s+)/.test(lines[i].trimEnd())) {
-        items.push(lines[i].replace(/^s*[-•*]s+/, "").trim());
+      while (i < lines.length && /^(\s*[-•*]\s+)/.test(lines[i].trimEnd())) {
+        items.push(lines[i].replace(/^(\s*[-•*]\s+)/, "").trim());
         i++;
       }
       blocks.push({ type: "bullet-list", items });
@@ -204,10 +204,10 @@ export function parseMarkdown(text: string): ParsedBlock[] {
     }
 
     // ── Numbered list ────────────────────────────────────────────────────
-    if (/^s*d+[.)]s+/.test(line)) {
+    if (/^\s*\d+[.)]\s+/.test(line)) {
       const items: string[] = [];
-      while (i < lines.length && /^s*d+[.)]s+/.test(lines[i].trimEnd())) {
-        items.push(lines[i].replace(/^s*d+[.)]s+/, "").trim());
+      while (i < lines.length && /^\s*\d+[.)]\s+/.test(lines[i].trimEnd())) {
+        items.push(lines[i].replace(/^\s*\d+[.)]\s+/, "").trim());
         i++;
       }
       blocks.push({ type: "numbered-list", items });
@@ -220,10 +220,10 @@ export function parseMarkdown(text: string): ParsedBlock[] {
       i < lines.length &&
       lines[i].trim() !== "" &&
       !lines[i].startsWith("```") &&
-      !/^#{1,3}s+/.test(lines[i]) &&
+      !/^#{1,3}\s+/.test(lines[i]) &&
       !/^(-{3,}|_{3,}|\*{3,})$/.test(lines[i].trim()) &&
-      !/^(s*[-•*]s+)/.test(lines[i]) &&
-      !/^s*d+[.)]s+/.test(lines[i])
+      !/^(\s*[-•*]\s+)/.test(lines[i]) &&
+      !/^\s*\d+[.)]\s+/.test(lines[i])
     ) {
       paraLines.push(lines[i].trimEnd());
       i++;

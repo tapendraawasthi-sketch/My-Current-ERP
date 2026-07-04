@@ -2265,7 +2265,7 @@ export function getModuleContext(route: string): string {
  * Returns the accounting rule for a specific operation as a readable string.
  */
 export function getAccountingRule(operation: string): string {
-  const normalized = operation.toLowerCase().trim().replace(/\\s+/g, "-");
+  const normalized = operation.toLowerCase().trim().replace(/\s+/g, "-");
 
   const rule = ERP_ACCOUNTING_RULES.find(
     (r) =>

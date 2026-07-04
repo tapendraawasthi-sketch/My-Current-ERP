@@ -1,6 +1,6 @@
 /** Built-in ERP answers when erp_bot backend is unreachable (e.g. on Render without bot service). */
 
-import { ERP_MODULES, getModuleContext } from "./falcon/erpCodeKnowledge";
+import { ERP_MODULES, type ERPModuleDoc } from "./falcon/erpCodeKnowledge";
 
 const QUERY_MODULE_MAP: Record<string, string> = {
   journal: "journal-voucher",
@@ -29,13 +29,18 @@ const ROUTE_ALIASES: Record<string, string> = {
   payment: "payment-voucher",
   contra: "contra-voucher",
   coa: "chart-of-accounts",
-  "chart-of-accounts": "chart-of-accounts",
   pl: "profit-loss",
   pnl: "profit-loss",
   vat: "vat-reports",
   stock: "stock-summary",
   daybook: "day-book",
 };
+
+const DEFAULT_SUGGESTIONS = [
+  "How do I create a sales invoice?",
+  "What is a journal voucher?",
+  "How do I view general ledger?",
+];
 
 function resolveModuleKey(query: string, route?: string): string | undefined {
   if (route) {
@@ -59,29 +64,86 @@ function resolveModuleKey(query: string, route?: string): string | undefined {
   return undefined;
 }
 
-export function buildBuiltinErpAnswer(query: string, route?: string): string {
-  const moduleKey = resolveModuleKey(query, route);
-  const moduleCtx = moduleKey ? getModuleContext(moduleKey) : route ? getModuleContext(route) : "";
+function formatModuleAnswer(doc: ERPModuleDoc): string {
+  const access = doc.howToAccess.join(" · ");
+  const steps = doc.workflow.steps.map((s, i) => `${i + 1}. ${s}`).join("\n");
+  const requiredFields = doc.keyFields
+    .filter((f) => f.required)
+    .map((f) => f.name)
+    .join(", ");
 
-  if (moduleCtx && !moduleCtx.includes("general ERP knowledge")) {
-    const doc = moduleKey ? ERP_MODULES[moduleKey] : undefined;
-    const title = doc?.displayName || route || "this module";
-    return (
-      `**Summary**: Here is how **${title}** works in Sutra ERP (built-in module guide — no API keys).\n\n` +
-      `**Module guide**:\n\n${moduleCtx}\n\n` +
-      `**Note**: For live codebase search and deeper tracing across files, run \`erp_bot\` locally (\`python erp_bot/scripts/start.py\`).`
-    );
+  const lines = [
+    `**${doc.displayName}**`,
+    doc.description,
+    "",
+    `**Open:** ${access}`,
+    "",
+    `**Steps:**`,
+    steps,
+  ];
+
+  if (requiredFields) {
+    lines.push("", `**Required fields:** ${requiredFields}`);
   }
 
-  return (
-    `**Summary**: Sutra ERP is a multi-tenant accounting and inventory system (React frontend, Express/PostgreSQL backend).\n\n` +
-    `**How it works**:\n` +
-    `- **Masters**: parties, items, chart of accounts, warehouses\n` +
-    `- **Transactions**: sales/purchase invoices, receipts, payments, journal & contra vouchers\n` +
-    `- **Inventory**: stock journals, transfers, GRN, delivery challans\n` +
-    `- **Reports**: ledger, trial balance, P&L, balance sheet, VAT, stock summary\n` +
-    `- **Posting**: double-entry; ledger_postings are insert-only (reversals for corrections)\n\n` +
-    `Ask about a specific screen (e.g. "journal voucher", "general ledger", "sales invoice") for detailed steps.\n\n` +
-    `**Note**: Built-in guide mode (no API). For full AI codebase search, start local \`erp_bot\`.`
-  );
+  lines.push("", `**Accounting effect:** ${doc.accountingImpact}`);
+
+  if (doc.validationRules.length > 0) {
+    lines.push("", "**Rules:**");
+    doc.validationRules.slice(0, 4).forEach((r) => lines.push(`- ${r}`));
+  }
+
+  if (doc.commonErrors.length > 0) {
+    lines.push("", "**Common issues:**");
+    doc.commonErrors.slice(0, 3).forEach((e) => {
+      lines.push(`- ${e.error} → ${e.solution}`);
+    });
+  }
+
+  if (doc.vatNote) lines.push("", `**VAT:** ${doc.vatNote}`);
+  if (doc.tdsNote) lines.push("", `**TDS:** ${doc.tdsNote}`);
+
+  return lines.join("\n");
+}
+
+function formatOverviewAnswer(): string {
+  return [
+    "**Sutra ERP** is an accounting and inventory system for Nepali businesses.",
+    "",
+    "**Main areas:**",
+    "- **Masters** — parties, items, chart of accounts",
+    "- **Transactions** — sales/purchase invoices, receipts, payments, journal & contra",
+    "- **Inventory** — stock journals, transfers, GRN, delivery challans",
+    "- **Reports** — ledger, trial balance, P&L, balance sheet, VAT, stock summary",
+    "",
+    "Ask about a specific screen — e.g. *journal voucher*, *general ledger*, *sales invoice*.",
+  ].join("\n");
+}
+
+export function buildModuleSuggestions(moduleKey?: string): string[] {
+  const doc = moduleKey ? ERP_MODULES[moduleKey] : undefined;
+  if (!doc?.relatedModules?.length) return DEFAULT_SUGGESTIONS;
+  return doc.relatedModules.slice(0, 3).map((id) => {
+    const related = ERP_MODULES[id];
+    return related ? `Tell me about ${related.displayName}` : `Tell me about ${id}`;
+  });
+}
+
+export function buildBuiltinErpAnswer(query: string, route?: string): string {
+  const moduleKey = resolveModuleKey(query, route);
+  const doc = moduleKey ? ERP_MODULES[moduleKey] : undefined;
+
+  if (doc) return formatModuleAnswer(doc);
+
+  if (route) {
+    const routeKey = resolveModuleKey("", route);
+    const routeDoc = routeKey ? ERP_MODULES[routeKey] : undefined;
+    if (routeDoc) return formatModuleAnswer(routeDoc);
+  }
+
+  return formatOverviewAnswer();
+}
+
+export function resolveBuiltinModuleKey(query: string, route?: string): string | undefined {
+  return resolveModuleKey(query, route) ?? (route ? resolveModuleKey("", route) : undefined);
 }

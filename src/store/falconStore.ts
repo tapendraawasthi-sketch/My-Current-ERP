@@ -14,7 +14,11 @@ import {
   checkErpBotStatus,
   getErpBotSessionId,
 } from "../lib/erpBotClient";
-import { buildBuiltinErpAnswer } from "../lib/builtinErpAssistant";
+import {
+  buildBuiltinErpAnswer,
+  buildModuleSuggestions,
+  resolveBuiltinModuleKey,
+} from "../lib/builtinErpAssistant";
 
 let _activeController: AbortController | null = null;
 
@@ -33,15 +37,7 @@ function genId(): string {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
-const WELCOME_MESSAGE = `Hello! I'm **Falcon AI**, your ERP assistant for Sutra ERP — **no API keys**.
-
-**On this site:** I answer from built-in module guides (works on Render without setup).
-
-**For full codebase search:** run local \`erp_bot\` (Ollama + ChromaDB):
-1. \`ollama serve\`
-2. \`cd erp_bot && python scripts/start.py\`
-
-Ask about invoices, journals, ledger, VAT, stock, or any screen you're on.`;
+const WELCOME_MESSAGE = `Hi — I'm **Falcon AI**, your built-in ERP guide for Sutra. Ask about any voucher, report, or screen.`;
 
 export interface FalconChatMessage {
   id: string;
@@ -87,14 +83,15 @@ export interface FalconState {
 }
 
 function buildBuiltinReply(text: string, route?: string): FalconChatMessage {
-  const answer = buildBuiltinErpAnswer(text, route);
+  const moduleKey = resolveBuiltinModuleKey(text, route);
   return {
     id: genId(),
     role: "assistant",
-    content: answer,
+    content: buildBuiltinErpAnswer(text, route),
     timestamp: new Date(),
     domain: "erp",
-    sources: ["built-in module guide"],
+    sources: ["built-in guide"],
+    suggestions: buildModuleSuggestions(moduleKey),
   };
 }
 
@@ -176,6 +173,20 @@ export const useFalconStore = create<FalconState>()(
           currentThinkingSteps: [],
         }));
 
+        const status = await checkErpBotStatus();
+        set({ botOnline: status.online, indexedFiles: status.indexedFiles });
+
+        if (!status.online) {
+          const builtinMsg = buildBuiltinReply(cleanText, state.context.route);
+          set((s) => ({
+            messages: [...s.messages, builtinMsg],
+            isTyping: false,
+            isStreaming: false,
+            currentThinkingSteps: [],
+          }));
+          return;
+        }
+
         const classification = classifyQuestion(cleanText, state.context.route);
         const plan = buildReasoningPlan(
           cleanText,
@@ -185,27 +196,6 @@ export const useFalconStore = create<FalconState>()(
         );
         set({ currentThinkingSteps: plan.steps });
         await new Promise((r) => setTimeout(r, 400));
-
-        const status = await checkErpBotStatus();
-        set({ botOnline: status.online, indexedFiles: status.indexedFiles });
-
-        if (!status.online) {
-          const builtinMsg = buildBuiltinReply(cleanText, state.context.route);
-          builtinMsg.intent = classification.intent;
-          builtinMsg.reasoningSteps = plan.steps;
-          builtinMsg.suggestions = generateFollowUpSuggestions(
-            cleanText,
-            classification.domain,
-            state.context.route,
-          );
-          set((s) => ({
-            messages: [...s.messages, builtinMsg],
-            isTyping: false,
-            isStreaming: false,
-            currentThinkingSteps: [],
-          }));
-          return;
-        }
 
         const routeCtx = state.context.route
           ? `User is on page: ${state.context.screenTitle || state.context.route}.\n\n`
@@ -282,7 +272,7 @@ export const useFalconStore = create<FalconState>()(
       },
     }),
     {
-      name: "falcon-store",
+      name: "falcon-store-v4",
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         context: state.context,
