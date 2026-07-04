@@ -235,6 +235,7 @@ CREATE TABLE vouchers (
   status          TEXT NOT NULL DEFAULT 'draft',
   narration       TEXT,
   party_id        UUID REFERENCES parties(id) ON DELETE SET NULL,
+  idempotency_key UUID,
   total_debit     NUMERIC(18,2) NOT NULL DEFAULT 0,
   total_credit    NUMERIC(18,2) NOT NULL DEFAULT 0,
   grand_total     NUMERIC(18,2) NOT NULL DEFAULT 0,
@@ -247,6 +248,8 @@ CREATE TABLE vouchers (
 CREATE INDEX idx_vouchers_tenant_company ON vouchers(tenant_id, company_id);
 CREATE INDEX idx_vouchers_fiscal_year ON vouchers(tenant_id, company_id, fiscal_year_id);
 CREATE INDEX idx_vouchers_date ON vouchers(tenant_id, company_id, voucher_date);
+CREATE UNIQUE INDEX idx_vouchers_idempotency_key ON vouchers(idempotency_key)
+  WHERE idempotency_key IS NOT NULL;
 
 CREATE TABLE voucher_lines (
   id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -693,3 +696,74 @@ CREATE INDEX idx_audit_logs_tenant_company ON audit_logs(tenant_id, company_id, 
 CREATE TRIGGER trg_audit_logs_immutable
   BEFORE UPDATE OR DELETE ON audit_logs
   FOR EACH ROW EXECUTE FUNCTION prevent_mutation();
+
+-- ─── Mobile Khata extensions ──────────────────────────────────────────────────
+-- Khata voucher_type values (TEXT on vouchers.voucher_type, all prefixed khata_):
+--   khata_credit_sale  → DR KH-DEBT (Khata Debtors)   CR KH-SALE (Khata Sales)
+--   khata_cash_sale    → DR KH-CASH (Khata Cash)      CR KH-SALE (Khata Sales)
+--   khata_payment_in   → DR KH-CASH (Khata Cash)      CR KH-DEBT (Khata Debtors)
+--   khata_purchase     → DR KH-PUR  (Khata Purchases) CR KH-CASH or KH-CRED
+--   khata_payment_out  → DR KH-CRED (Khata Creditors) CR KH-CASH (Khata Cash)
+--   khata_expense      → DR KH-EXP  (Khata Expenses)  CR KH-CASH (Khata Cash)
+-- Reversals: insert counter-voucher with negated amounts (append-only ledger).
+
+ALTER TABLE parties
+  ADD COLUMN IF NOT EXISTS is_khata_created BOOLEAN NOT NULL DEFAULT FALSE;
+
+CREATE TABLE IF NOT EXISTS khata_account_code_templates (
+  code            TEXT PRIMARY KEY,
+  name            TEXT NOT NULL,
+  account_type    TEXT NOT NULL
+);
+
+INSERT INTO khata_account_code_templates (code, name, account_type) VALUES
+  ('KH-DEBT', 'Khata Debtors',   'asset'),
+  ('KH-CRED', 'Khata Creditors', 'liability'),
+  ('KH-SALE', 'Khata Sales',     'income'),
+  ('KH-PUR',  'Khata Purchases', 'expense'),
+  ('KH-EXP',  'Khata Expenses',  'expense'),
+  ('KH-CASH', 'Khata Cash',      'asset')
+ON CONFLICT (code) DO NOTHING;
+
+CREATE OR REPLACE FUNCTION seed_khata_chart_of_accounts(
+  p_tenant_id UUID,
+  p_company_id UUID
+) RETURNS void AS $$
+BEGIN
+  INSERT INTO chart_of_accounts (
+    tenant_id, company_id, code, name, account_type, level, is_group, is_active
+  )
+  SELECT
+    p_tenant_id,
+    p_company_id,
+    t.code,
+    t.name,
+    t.account_type,
+    'ledger',
+    FALSE,
+    TRUE
+  FROM khata_account_code_templates t
+  ON CONFLICT (tenant_id, company_id, code) DO NOTHING;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TABLE IF NOT EXISTS khata_transactions (
+  id                        UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  tenant_id                 UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  company_id                UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+  voucher_id                UUID NOT NULL REFERENCES vouchers(id) ON DELETE RESTRICT,
+  chat_source_text          TEXT,
+  detected_party_name_raw   TEXT,
+  item_description_raw      TEXT,
+  sync_status               TEXT NOT NULL DEFAULT 'synced'
+    CHECK (sync_status IN ('pending', 'synced', 'failed')),
+  created_offline           BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at                TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_khata_transactions_voucher
+  ON khata_transactions(voucher_id);
+CREATE INDEX IF NOT EXISTS idx_khata_transactions_tenant_company
+  ON khata_transactions(tenant_id, company_id);
+CREATE INDEX IF NOT EXISTS idx_khata_transactions_sync_status
+  ON khata_transactions(tenant_id, company_id, sync_status);
