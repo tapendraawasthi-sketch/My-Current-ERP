@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { confirmKhataEntry } from "../lib/ekhata/confirmKhata";
 import { replyCancel, replySaved } from "../lib/ekhata/conversationEngine";
 import { processEKhataMessageAsync } from "../lib/ekhata/processMessage";
+import type { ConversationTurn } from "../lib/ekhata/conversationalBrain";
 import type { EKhataChatMessage, KhataConfirmationCard } from "../lib/ekhata/types";
 import { useStore } from "./useStore";
 
@@ -12,8 +13,8 @@ function genId(): string {
 function buildWelcome(): string {
   return (
     "Namaste! Ma e-Khata — tapaaiko digital khata sahayogi.\n\n" +
-    "Nepali, English, Roman Nepali — sabai ma kura garnu hos. Khata entry rakhnu hos wa sawal sodhnu hos.\n\n" +
-    "🟢 **Self-contained** — kuni pani external app, API, athaba download chaina. Sabai yahi ERP bhitra chalcha."
+    "Nepali, English, Roman Nepali — sabai ma kura garnu hos. Khata entry rakhnu hos, sawal sodhnu hos, wa kura matra garnu hos.\n\n" +
+    "🧠 **Conversational AI** — ma tapaiko sawal bujhchhu ra human jasto jawaf dinchhu. Ollama deploy bhayo bhane full LLM pani chalchha."
   );
 }
 
@@ -64,11 +65,16 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
   togglePanel: () => set((s) => ({ isOpen: !s.isOpen })),
 
   refreshLlmStatus: async () => {
-    // Built-in brain is always available — no external status check needed
-    set({
-      llmOnline: false,
-      llmModel: undefined,
-    });
+    try {
+      const { checkEKhataLlmStatus } = await import("../lib/ekhata/ekhataLlmClient");
+      const status = await checkEKhataLlmStatus();
+      set({
+        llmOnline: status.khataLlm && status.online,
+        llmModel: status.model,
+      });
+    } catch {
+      set({ llmOnline: false, llmModel: undefined });
+    }
   },
 
   sendMessage: async (text: string) => {
@@ -85,9 +91,14 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
     }));
 
     try {
+      const history: ConversationTurn[] = get()
+        .messages.filter((m) => m.id !== "welcome")
+        .slice(-10)
+        .map((m) => ({ role: m.role, text: m.text }));
+
       const result = await processEKhataMessageAsync(trimmed, {
         balance: getKhataBalance(),
-        preferLlm: false,
+        history,
       });
 
       if (result.kind === "entry" && result.card) {

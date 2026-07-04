@@ -258,8 +258,14 @@ export function analyzeNepaliMessage(text: string): MessageAnalysis {
     isKnowledgeQuestion:
       /\b(timlai|timilai|tapailai|timi|tapai)\s*(k\s*k|ke\s*ke|kk)\s*(thaha|tha|janch|aaucha)\b/i.test(t),
     isHelpRequest: scoreTopic(t, TOPIC_SIGNALS.help) >= 7,
-    isAffirmation: /\b(ho|hunchha|thik|sahi|okay|ok|yes|huss|huncha)\b/i.test(t) && t.length < 20,
-    isNegation: /\b(hoina|chaina|chhaina|xaina|no|nope|nah|na|pardaina)\b/i.test(t) && t.length < 20,
+    isAffirmation:
+      !isQuestion &&
+      t.length < 20 &&
+      /^(ho|hunchha|thik|sahi|okay|ok|yes|huss|huncha|ramro|nice|good|la|hajur)$/i.test(t),
+    isNegation:
+      !isQuestion &&
+      t.length < 25 &&
+      /^(hoina|chaina|chhaina|xaina|no|nope|nah|na|pardaina)$/i.test(t),
     isAbuse: /\b(muji|randi|lado|chikne|machikne|fuck|shit|bastard)\b/i.test(t),
     detectedLanguage: hasNepali ? "nepali" : /\b(the|is|are|was|have|has|do|does|will|can)\b/i.test(t) ? "english" : "mixed",
     questionTarget,
@@ -334,7 +340,7 @@ const KNOWLEDGE: Record<string, Record<string, string>> = {
   },
 };
 
-function searchKnowledge(text: string): string | null {
+export function searchKnowledge(text: string): string | null {
   const t = text.toLowerCase();
   for (const [, entries] of Object.entries(KNOWLEDGE)) {
     for (const [key, answer] of Object.entries(entries)) {

@@ -5,7 +5,8 @@
 
 import { normalizeNepaliText } from "./normalizeNepali";
 import { parseKhataMessage } from "./parseKhata";
-import { generateNepaliReply, shouldTryTransactionParse } from "./nepaliBrain";
+import { generateConversationalReply, type ConversationTurn } from "./conversationalBrain";
+import { shouldTryTransactionParse } from "./nepaliBrain";
 import type { KhataConfirmationCard, KhataParseResult } from "./types";
 import type { LedgerBalanceSnapshot } from "./conversationEngine";
 
@@ -35,8 +36,10 @@ export type EKhataProcessResult =
 
 export interface ProcessMessageOptions {
   balance?: LedgerBalanceSnapshot;
-  /** Optional Ollama when erp_bot + Ollama explicitly deployed */
+  /** Try Ollama LLM via erp_bot when available (default: true) */
   preferLlm?: boolean;
+  /** Recent chat turns for conversational context */
+  history?: ConversationTurn[];
 }
 
 const INTENT_LABELS: Record<string, string> = {
@@ -101,7 +104,10 @@ export function processEKhataMessage(
     }
   }
 
-  const reply = generateNepaliReply(trimmed, options.balance);
+  const reply = generateConversationalReply(trimmed, {
+    balance: options.balance,
+    history: options.history,
+  });
   return {
     kind: "chat",
     reply,
@@ -114,7 +120,7 @@ export async function processEKhataMessageAsync(
   rawText: string,
   options: ProcessMessageOptions = {},
 ): Promise<EKhataProcessResult> {
-  const preferLlm = options.preferLlm === true;
+  const preferLlm = options.preferLlm !== false;
 
   if (preferLlm) {
     try {

@@ -6,6 +6,7 @@ import { normalizeNepaliText } from "../src/lib/ekhata/normalizeNepali";
 import { processEKhataMessage } from "../src/lib/ekhata/processMessage";
 import { parseKhataMessage } from "../src/lib/ekhata/parseKhata";
 import { analyzeNepaliMessage, generateNepaliReply } from "../src/lib/ekhata/nepaliBrain";
+import { analyzeQuestion, generateConversationalReply } from "../src/lib/ekhata/conversationalBrain";
 
 let passed = 0;
 let failed = 0;
@@ -84,6 +85,29 @@ check("mixed entry", mixed.kind === "entry" && mixed.card?.amount === 500);
 
 const nepal = processEKhataMessage("Nepal ko culture ramro chha");
 check("nepal topic", nepal.kind === "chat" && nepal.engine === "brain");
+
+const genderQ = generateConversationalReply("timi kta ho");
+check(
+  "gender question not affirmation",
+  genderQ.includes("AI") || genderQ.includes("manav hoina") || genderQ.includes("digital"),
+  genderQ.slice(0, 80),
+);
+
+const movieQ = generateConversationalReply("favourite movie?");
+check(
+  "favourite movie opinion reply",
+  movieQ.toLowerCase().includes("film") || movieQ.toLowerCase().includes("movie") || movieQ.includes("Kabaddi"),
+  movieQ.slice(0, 80),
+);
+
+const whatDoYouDo = generateConversationalReply("what do you do");
+check(
+  "what do you do capability",
+  whatDoYouDo.includes("Khata") || whatDoYouDo.includes("brain") || whatDoYouDo.includes("sakchhu"),
+);
+
+const genderAnalysis = analyzeQuestion("timi kta ho");
+check("gender question kind", genderAnalysis.kind === "about_bot_gender");
 
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed > 0 ? 1 : 0);

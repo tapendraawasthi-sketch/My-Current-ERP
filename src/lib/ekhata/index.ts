@@ -4,7 +4,9 @@
  */
 
 export { normalizeNepaliText, transliterateDevanagari, tokenizeNepali } from "./normalizeNepali";
-export { analyzeNepaliMessage, generateNepaliReply, shouldTryTransactionParse, TRANSACTION_SIGNALS } from "./nepaliBrain";
+export { generateConversationalReply, analyzeQuestion } from "./conversationalBrain";
+export type { ConversationTurn, QuestionAnalysis, QuestionKind } from "./conversationalBrain";
+export { analyzeNepaliMessage, generateNepaliReply, shouldTryTransactionParse, TRANSACTION_SIGNALS, searchKnowledge } from "./nepaliBrain";
 export { parseKhataMessage } from "./parseKhata";
 export { processEKhataMessage, processEKhataMessageAsync, checkEKhataLlmStatus } from "./processMessage";
 export type { KhataConfirmationCard, KhataIntent, KhataParseResult } from "./types";
