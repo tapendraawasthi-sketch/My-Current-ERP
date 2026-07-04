@@ -33,6 +33,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
+          if (id.includes("node_modules/@mlc-ai/web-llm")) return "webllm";
           if (id.includes("node_modules/react") || id.includes("node_modules/react-dom"))
             return "react";
           if (id.includes("node_modules/lucide-react") || id.includes("node_modules/recharts"))

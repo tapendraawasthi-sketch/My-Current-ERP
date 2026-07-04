@@ -37,19 +37,22 @@ check("cash sale nagad bikri", cash.card?.intent === "khata_cash_sale" && cash.c
 
 // Conversational
 const greet = processEKhataMessage("namaste");
-check("greeting chat", greet.kind === "chat" && greet.reply.includes("Namaste"));
+check("greeting needs AI not scripted", greet.kind === "chat" && greet.reply.includes("AI"));
 
 const help = processEKhataMessage("madat");
-check("help chat", help.kind === "chat" && help.reply.includes("udaharan"));
+check("help needs AI", help.kind === "chat" && help.reply.includes("AI"));
 
 const thanks = processEKhataMessage("dhanyabad");
-check("thanks chat", thanks.kind === "chat");
+check("thanks needs AI not fake reply", thanks.kind === "chat" && thanks.reply.includes("AI"));
 
 const casual = processEKhataMessage("k xa");
-check("casual k xa", casual.kind === "chat" && casual.reply.includes("Thik cha"));
+check("casual k xa needs real AI", casual.kind === "chat" && casual.reply.includes("AI"));
 
-const casual2 = processEKhataMessage("ke cha");
-check("casual ke cha", casual2.kind === "chat" && casual2.reply.includes("Thik cha"));
+const casual2 = processEKhataMessage("khana khayeu?");
+check(
+  "khana khayeu needs real AI not transaction error",
+  casual2.kind === "chat" && !casual2.reply.includes("Ke transaction ho"),
+);
 
 // Credit sale without party asks for name
 const noParty = processEKhataMessage("500 ko udaro becheko");
