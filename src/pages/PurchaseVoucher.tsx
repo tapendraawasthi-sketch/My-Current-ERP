@@ -8,14 +8,15 @@ import {
   RefreshCw,
   Eye,
   X,
+  Search,
   FileSpreadsheet,
   Printer,
   ChevronDown,
   AlertTriangle,
   CheckCircle,
 } from "lucide-react";
-import { Badge } from "../components/ui";
 import NepaliDatePicker from "../components/ui/NepaliDatePicker";
+import { ReportEmptyState } from "../components/ReportEmptyState";
 import toast from "react-hot-toast";
 import * as XLSX from "xlsx";
 import { computeVatForLine } from "../lib/taxUtils";
@@ -130,21 +131,28 @@ function computeLine(
   };
 }
 
-function getStatusVariant(status: string): "success" | "warning" | "danger" | "info" | "default" {
+const statusBadgeCls = (status: string) => {
   switch (status) {
     case "posted":
-      return "success";
+      return "bg-green-100 text-green-700";
     case "draft":
-      return "warning";
+      return "bg-amber-100 text-amber-700";
     case "cancelled":
-      return "danger";
+      return "bg-red-100 text-red-700";
     case "submitted":
     case "under_review":
-      return "info";
+      return "bg-blue-100 text-blue-700";
     default:
-      return "default";
+      return "bg-gray-100 text-gray-700";
   }
-}
+};
+
+const vatBadgeCls = (variant?: string) => {
+  if (variant === "success") return "bg-green-100 text-green-700";
+  if (variant === "warning") return "bg-amber-100 text-amber-700";
+  if (variant === "info") return "bg-blue-100 text-blue-700";
+  return "bg-gray-100 text-gray-700";
+};
 
 // ─── TDS helpers ──────────────────────────────────────────────────────────────
 
@@ -484,7 +492,7 @@ const PurchaseVoucher: React.FC = () => {
 
   // ─── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
+    <div className="flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-y-auto p-4 md:p-6">
       {/* Page Header — direct div, NOT ActionToolbar with children */}
       <div className="flex items-center justify-between mb-4">
         <div>
@@ -494,9 +502,14 @@ const PurchaseVoucher: React.FC = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {/* Badge variant is "default" not "outline" */}
-          <Badge variant="default">{companySettings?.name ?? "Company"}</Badge>
-          {currentFiscalYear && <Badge variant="info">FY {currentFiscalYear.name}</Badge>}
+          <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-gray-100 text-gray-700">
+            {companySettings?.name ?? "Company"}
+          </span>
+          {currentFiscalYear && (
+            <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 text-blue-700">
+              FY {currentFiscalYear.name}
+            </span>
+          )}
           <button
             type="button"
             onClick={() => setActiveTab("new")}
@@ -526,7 +539,7 @@ const PurchaseVoucher: React.FC = () => {
       {activeTab === "new" && (
         <div className="space-y-4">
           {/* Header fields */}
-          <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+          <div className="bg-white border border-gray-200 rounded-md p-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
               {/* Date AD */}
               <div>
@@ -652,7 +665,7 @@ const PurchaseVoucher: React.FC = () => {
           </div>
 
           {/* Line Items */}
-          <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+          <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
             <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-200 bg-[#f5f6fa]">
               <h3 className="text-[12px] font-semibold text-gray-700">Line Items</h3>
               <button
@@ -804,9 +817,11 @@ const PurchaseVoucher: React.FC = () => {
                             ))}
                           </select>
                           {line.vatLabel && (
-                            <Badge variant={line.vatBadgeVariant || "default"}>
+                            <span
+                              className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${vatBadgeCls(line.vatBadgeVariant)}`}
+                            >
                               {line.vatLabel}
-                            </Badge>
+                            </span>
                           )}
                         </div>
                       </td>
@@ -1061,15 +1076,15 @@ const PurchaseVoucher: React.FC = () => {
       {/* ── LIST TAB ──────────────────────────────────────────────────────────── */}
       {activeTab === "list" && (
         <div className="space-y-4">
-          {/* Filters */}
-          <div className="bg-white border border-gray-200 rounded-lg p-3 flex flex-wrap items-center gap-2 shadow-sm">
-            <div className="relative flex-1 min-w-[180px]">
+          <div className="no-print bg-white border border-gray-200 rounded-md p-3 flex flex-wrap items-center gap-2">
+            <div className="relative flex-1 min-w-[180px] max-w-xs">
+              <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search by invoice no. or supplier…"
-                className="h-8 pl-3 pr-3 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
               />
             </div>
             <select
@@ -1077,109 +1092,117 @@ const PurchaseVoucher: React.FC = () => {
               onChange={(e) => setStatusFilter(e.target.value)}
               className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
             >
-              <option value="all">All Statuses</option>
+              <option value="all">All statuses</option>
               <option value="posted">Posted</option>
               <option value="draft">Draft</option>
               <option value="cancelled">Cancelled</option>
             </select>
+            <span className="text-[11px] text-gray-500">
+              {filteredInvoices.length} invoice{filteredInvoices.length === 1 ? "" : "s"}
+            </span>
             <button
               type="button"
               onClick={() => setActiveTab("new")}
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors"
+              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
             >
               <Plus className="h-3.5 w-3.5" />
-              New Invoice
+              New invoice
             </button>
           </div>
 
-          {/* Table */}
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[700px]">
-                <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                      Invoice No.
-                    </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                      Date
-                    </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                      Supplier
-                    </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                      Amount
-                    </th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                      TDS
-                    </th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                      Status
-                    </th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-16">
-                      View
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {filteredInvoices.length === 0 ? (
-                    <tr>
-                      <td colSpan={7} className="px-3 py-12 text-center text-[12px] text-gray-400">
-                        No purchase invoices found.
-                      </td>
+          {filteredInvoices.length === 0 ? (
+            <div className="bg-white border border-gray-200 rounded-md">
+              <ReportEmptyState
+                message="No purchase invoices found"
+                hint='Adjust filters or switch to "New invoice" to create one.'
+              />
+            </div>
+          ) : (
+            <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[700px] border-collapse">
+                  <thead>
+                    <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        Invoice no.
+                      </th>
+                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        Date
+                      </th>
+                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        Supplier
+                      </th>
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        Amount
+                      </th>
+                      <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        TDS
+                      </th>
+                      <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        Status
+                      </th>
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-16">
+                        Actions
+                      </th>
                     </tr>
-                  ) : (
-                    filteredInvoices.map((inv) => (
+                  </thead>
+                  <tbody>
+                    {filteredInvoices.map((inv) => (
                       <tr
                         key={inv.id}
-                        className="hover:bg-gray-50 cursor-pointer"
+                        className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
                         onClick={() => setSelectedInvoice(inv)}
                       >
-                        <td className="px-3 py-2.5 text-[12px] font-mono font-semibold text-gray-800">
+                        <td className="px-3 py-2.5 text-[12px] font-mono font-medium text-gray-800 border-b border-gray-100">
                           {inv.invoiceNo}
                         </td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700">
+                        <td className="px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100">
                           {inv.dateNepali || inv.date}
                         </td>
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700">
+                        <td className="px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100">
                           {inv.partyName || "—"}
                         </td>
-                        <td className="px-3 py-2.5 text-right font-mono text-[12px] font-semibold text-gray-800">
+                        <td className="px-3 py-2.5 text-right font-mono text-[12px] font-medium text-gray-800 border-b border-gray-100">
                           {money(inv.grandTotal ?? 0)}
                         </td>
-                        <td className="px-3 py-2.5 text-center">
+                        <td className="px-3 py-2.5 text-center border-b border-gray-100">
                           {inv.tdsAmount && inv.tdsAmount > 0 ? (
-                            <span className="inline-block px-2 py-0.5 text-[10px] font-semibold uppercase rounded bg-amber-100 text-amber-700">
+                            <span className="inline-block rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-amber-100 text-amber-700">
                               {money(inv.tdsAmount)}
                             </span>
                           ) : (
                             <span className="text-[11px] text-gray-400">—</span>
                           )}
                         </td>
-                        <td className="px-3 py-2.5 text-center">
-                          <Badge variant={getStatusVariant(inv.status)}>{inv.status}</Badge>
+                        <td className="px-3 py-2.5 text-center border-b border-gray-100">
+                          <span
+                            className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${statusBadgeCls(inv.status)}`}
+                          >
+                            {inv.status}
+                          </span>
                         </td>
-                        <td
-                          className="px-3 py-2.5 text-center"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedInvoice(inv);
-                          }}
-                        >
+                        <td className="px-3 py-2.5 text-right border-b border-gray-100">
                           <button
                             type="button"
-                            className="h-6 w-6 flex items-center justify-center text-gray-400 hover:text-[#1557b0] hover:bg-[#1557b0]/10 rounded transition-colors mx-auto"
+                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedInvoice(inv);
+                            }}
                           >
                             <Eye className="h-3.5 w-3.5" />
                           </button>
                         </td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+                {filteredInvoices.length} purchase invoice{filteredInvoices.length === 1 ? "" : "s"}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
 
@@ -1197,9 +1220,11 @@ const PurchaseVoucher: React.FC = () => {
                 <span className="text-[13px] font-semibold text-gray-800">
                   Invoice: {selectedInvoice.invoiceNo}
                 </span>
-                <Badge variant={getStatusVariant(selectedInvoice.status)}>
+                <span
+                  className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${statusBadgeCls(selectedInvoice.status)}`}
+                >
                   {selectedInvoice.status}
-                </Badge>
+                </span>
               </div>
               <button
                 type="button"
