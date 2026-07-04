@@ -1,24 +1,33 @@
 // @ts-nocheck
-import React, { useState, useEffect, useMemo } from "react";
-import { useStore } from "../store/useStore";
-import { getDB } from "../lib/db";
+import React, { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import * as XLSX from "xlsx";
 import {
-  Package,
-  TrendingDown,
   AlertTriangle,
   Download,
-  Search,
   Filter,
+  Package,
   RefreshCw,
+  Search,
+  TrendingDown,
 } from "lucide-react";
+import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useStore } from "../store/useStore";
 
-const BORDER = "1px solid #000";
-const BG = "#E4F1D9";
-const BG_CARD = "#EBF5E2";
-const BG_HEADER = "#D4EABD";
-const BG_DEEP = "#C9DEB5";
+const inputCls =
+  "h-8 w-full px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+const labelCls = "mb-1 block text-[11px] font-medium text-gray-600";
+const tableHeaderCls =
+  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const sortableHeaderButtonCls =
+  "flex w-full items-center justify-between gap-2 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-500";
+const bucketColumns = [
+  { key: "b0_30", label: "0-30 Days", headerClass: "bg-green-50 text-green-700" },
+  { key: "b31_60", label: "31-60 Days", headerClass: "bg-amber-50 text-amber-700" },
+  { key: "b61_90", label: "61-90 Days", headerClass: "bg-orange-50 text-orange-700" },
+  { key: "b91_180", label: "91-180 Days", headerClass: "bg-red-50 text-red-700" },
+  { key: "b180plus", label: "180+ Days", headerClass: "bg-red-100 text-red-800" },
+];
 
 function money(v) {
   const abs = Math.abs(Number(v || 0));
@@ -210,549 +219,398 @@ export default function StockAgeingReport() {
   };
 
   const deadStockItems = ageingData.filter((row) => row.isDeadStock);
+  const deadStockTotalValue = deadStockItems.reduce(
+    (sum, row) => sum + row.bucketValues.b180plus,
+    0,
+  );
+
+  const renderSortIndicator = (column) =>
+    sortBy === column ? (
+      <span className="text-[11px] text-[#1557b0]">{sortDirection === "asc" ? "↑" : "↓"}</span>
+    ) : null;
+
+  const summaryCards = [
+    {
+      title: "Total Stock Value",
+      value: money(summary.totalValue),
+      icon: Package,
+      accent: "text-[#1557b0]",
+      border: "border-[#1557b0]/20",
+      bg: "bg-white",
+    },
+    {
+      title: "0-30 Days Value",
+      value: money(summary.value0_30),
+      icon: Package,
+      accent: "text-green-700",
+      border: "border-green-200",
+      bg: "bg-green-50/60",
+    },
+    {
+      title: "Slow Moving (91+ Days)",
+      value: money(summary.value91_180plus),
+      icon: TrendingDown,
+      accent: "text-amber-700",
+      border: "border-amber-200",
+      bg: "bg-amber-50/60",
+    },
+    {
+      title: "Dead Stock Value",
+      value: money(summary.deadStockValue),
+      icon: AlertTriangle,
+      accent: "text-red-700",
+      border: "border-red-200",
+      bg: "bg-red-50/70",
+    },
+  ];
 
   return (
-    <div style={{ backgroundColor: BG, minHeight: "100vh", padding: "20px" }}>
-      <div
-        style={{
-          backgroundColor: BG_HEADER,
-          padding: "15px",
-          borderRadius: "8px",
-          border: BORDER,
-          marginBottom: "20px",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: "10px",
-          }}
-        >
-          <h1 style={{ fontSize: "14px", fontWeight: "bold", color: "#000000", margin: 0 }}>
-            Stock Ageing Report
-          </h1>
+    <div className="flex h-full min-h-0 flex-col overflow-y-auto bg-[#f5f6fa] p-4 md:p-6">
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">Stock Ageing Report</h1>
+          <p className="mt-0.5 text-[11px] text-gray-500">
+            FIFO-based bucket ageing analysis for current stock holdings by date, group, and
+            warehouse
+          </p>
+        </div>
+        <div className="no-print flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handleRunReport}
+            className="inline-flex h-8 items-center gap-1.5 rounded-md bg-[#1557b0] px-3 text-[12px] font-medium text-white hover:bg-[#0f4a96]"
+          >
+            <RefreshCw className="h-3.5 w-3.5" />
+            Run Report
+          </button>
+          <button
+            type="button"
+            onClick={handleExportExcel}
+            className="inline-flex h-8 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 text-[12px] font-medium text-gray-700 hover:bg-gray-50"
+          >
+            <Download className="h-3.5 w-3.5" />
+            Export Excel
+          </button>
+        </div>
+      </div>
 
-          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "end" }}>
-            <div>
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: "3px",
-                  fontSize: "11px",
-                  fontWeight: "bold",
-                }}
-              >
-                Item Group
-              </label>
-              <select
-                value={groupFilter}
-                onChange={(e) => setGroupFilter(e.target.value)}
-                style={{ padding: "4px", border: BORDER, borderRadius: "4px", fontSize: "11px" }}
-              >
-                <option value="">All Groups</option>
-                {itemGroups.map((group) => (
-                  <option key={group.id} value={group.id}>
-                    {group.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: "3px",
-                  fontSize: "11px",
-                  fontWeight: "bold",
-                }}
-              >
-                Warehouse
-              </label>
-              <select
-                value={warehouseFilter}
-                onChange={(e) => setWarehouseFilter(e.target.value)}
-                style={{ padding: "4px", border: BORDER, borderRadius: "4px", fontSize: "11px" }}
-              >
-                <option value="">All Warehouses</option>
-                {warehouses.map((wh) => (
-                  <option key={wh.id} value={wh.id}>
-                    {wh.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: "3px",
-                  fontSize: "11px",
-                  fontWeight: "bold",
-                }}
-              >
-                Reference Date
-              </label>
-              <input
-                type="date"
-                value={referenceDate}
-                onChange={(e) => setReferenceDate(e.target.value)}
-                style={{ padding: "4px", border: BORDER, borderRadius: "4px", fontSize: "11px" }}
-              />
-            </div>
-
-            <div>
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: "3px",
-                  fontSize: "11px",
-                  fontWeight: "bold",
-                }}
-              >
-                Category
-              </label>
-              <select
-                value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value)}
-                style={{ padding: "4px", border: BORDER, borderRadius: "4px", fontSize: "11px" }}
-              >
-                <option value="ALL">All</option>
-                <option value="NEAR-DEAD">Near-Dead (90+ days &gt;50%)</option>
-                <option value="DEAD">Dead (180+ days)</option>
-              </select>
-            </div>
-
-            <button
-              onClick={handleRunReport}
-              style={{
-                backgroundColor: "#1557b0",
-                color: "white",
-                border: BORDER,
-                padding: "6px 12px",
-                borderRadius: "4px",
-                cursor: "pointer",
-                fontSize: "11px",
-                display: "flex",
-                alignItems: "center",
-                gap: "4px",
-              }}
-            >
-              <RefreshCw size={12} />
-              Run Report
-            </button>
-
-            <button
-              onClick={handleExportExcel}
-              style={{
-                backgroundColor: "#059669",
-                color: "white",
-                border: BORDER,
-                padding: "6px 12px",
-                borderRadius: "4px",
-                cursor: "pointer",
-                fontSize: "11px",
-                display: "flex",
-                alignItems: "center",
-                gap: "4px",
-              }}
-            >
-              <Download size={12} />
-              Export Excel
-            </button>
+      <div className="no-print mb-4 rounded-md border border-gray-200 bg-white p-3">
+        <div className="mb-3 flex items-start gap-2">
+          <div className="rounded-md border border-gray-200 bg-[#f5f6fa] p-1.5">
+            <Filter className="h-3.5 w-3.5 text-[#1557b0]" />
+          </div>
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+              Report filters
+            </p>
+            <p className="mt-0.5 text-[11px] text-gray-500">
+              Refine ageing results by item group, warehouse, reference date, and stock category.
+            </p>
           </div>
         </div>
 
-        <div style={{ display: "flex", gap: "15px", marginTop: "15px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <Search size={14} style={{ color: "#000000" }} />
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
+          <div>
+            <label className={labelCls}>Item Group</label>
+            <select
+              value={groupFilter}
+              onChange={(e) => setGroupFilter(e.target.value)}
+              className={inputCls}
+            >
+              <option value="">All Groups</option>
+              {(itemGroups || []).map((group) => (
+                <option key={group.id} value={group.id}>
+                  {group.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className={labelCls}>Warehouse</label>
+            <select
+              value={warehouseFilter}
+              onChange={(e) => setWarehouseFilter(e.target.value)}
+              className={inputCls}
+            >
+              <option value="">All Warehouses</option>
+              {(warehouses || []).map((wh) => (
+                <option key={wh.id} value={wh.id}>
+                  {wh.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className={labelCls}>Reference Date</label>
             <input
-              type="text"
-              placeholder="Search items..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                padding: "4px 8px",
-                border: BORDER,
-                borderRadius: "4px",
-                fontSize: "11px",
-                width: "200px",
-              }}
+              type="date"
+              value={referenceDate}
+              onChange={(e) => setReferenceDate(e.target.value)}
+              className={inputCls}
             />
           </div>
-        </div>
-      </div>
 
-      {/* Summary Cards */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: "15px",
-          marginBottom: "20px",
-        }}
-      >
-        <div
-          style={{ backgroundColor: BG_CARD, padding: "15px", borderRadius: "8px", border: BORDER }}
-        >
-          <div style={{ fontSize: "12px", color: "#000000", marginBottom: "5px" }}>
-            Total Stock Value
+          <div>
+            <label className={labelCls}>Category</label>
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className={inputCls}
+            >
+              <option value="ALL">All</option>
+              <option value="NEAR-DEAD">Near-Dead (90+ days &gt;50%)</option>
+              <option value="DEAD">Dead (180+ days)</option>
+            </select>
           </div>
-          <div style={{ fontSize: "18px", fontWeight: "bold", color: "#000000" }}>
-            {money(summary.totalValue)}
-          </div>
-        </div>
-        <div
-          style={{
-            backgroundColor: "#dcfce7",
-            padding: "15px",
-            borderRadius: "8px",
-            border: BORDER,
-          }}
-        >
-          <div style={{ fontSize: "12px", color: "#000000", marginBottom: "5px" }}>
-            0-30 Days Value
-          </div>
-          <div style={{ fontSize: "18px", fontWeight: "bold", color: "#166534" }}>
-            {money(summary.value0_30)}
-          </div>
-        </div>
-        <div
-          style={{
-            backgroundColor: "#fef9c3",
-            padding: "15px",
-            borderRadius: "8px",
-            border: BORDER,
-          }}
-        >
-          <div style={{ fontSize: "12px", color: "#000000", marginBottom: "5px" }}>
-            Slow Moving (91+ Days)
-          </div>
-          <div style={{ fontSize: "18px", fontWeight: "bold", color: "#854d0e" }}>
-            {money(summary.value91_180plus)}
-          </div>
-        </div>
-        <div
-          style={{
-            backgroundColor: "#dc2626",
-            padding: "15px",
-            borderRadius: "8px",
-            border: BORDER,
-          }}
-        >
-          <div style={{ fontSize: "12px", color: "white", marginBottom: "5px" }}>
-            Dead Stock Value
-          </div>
-          <div style={{ fontSize: "18px", fontWeight: "bold", color: "white" }}>
-            {money(summary.deadStockValue)}
+
+          <div>
+            <label className={labelCls}>Search Items</label>
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Code or name"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className={`${inputCls} pl-8`}
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Main Table */}
-      <div
-        style={{ backgroundColor: BG_CARD, padding: "15px", borderRadius: "8px", border: BORDER }}
-      >
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", border: BORDER }}>
-            <thead>
-              <tr style={{ backgroundColor: BG_HEADER }}>
-                <th
-                  style={{ border: BORDER, padding: "8px", cursor: "pointer" }}
-                  onClick={() => handleSort("item.code")}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <span>Item Code</span>
-                    {sortBy === "item.code" && <span>{sortDirection === "asc" ? "↑" : "↓"}</span>}
-                  </div>
-                </th>
-                <th
-                  style={{ border: BORDER, padding: "8px", cursor: "pointer" }}
-                  onClick={() => handleSort("item.name")}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <span>Item Name</span>
-                    {sortBy === "item.name" && <span>{sortDirection === "asc" ? "↑" : "↓"}</span>}
-                  </div>
-                </th>
-                <th style={{ border: BORDER, padding: "8px" }}>Item Group</th>
-                <th style={{ border: BORDER, padding: "8px" }}>Unit</th>
-                <th
-                  style={{ border: BORDER, padding: "8px", cursor: "pointer", textAlign: "right" }}
-                  onClick={() => handleSort("totalQty")}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <span>Total Qty</span>
-                    {sortBy === "totalQty" && <span>{sortDirection === "asc" ? "↑" : "↓"}</span>}
-                  </div>
-                </th>
-                <th
-                  style={{ border: BORDER, padding: "8px", cursor: "pointer", textAlign: "right" }}
-                  onClick={() => handleSort("avgRate")}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <span>Avg Cost Rate</span>
-                    {sortBy === "avgRate" && <span>{sortDirection === "asc" ? "↑" : "↓"}</span>}
-                  </div>
-                </th>
-                <th
-                  style={{ border: BORDER, padding: "8px", cursor: "pointer", textAlign: "right" }}
-                  onClick={() => handleSort("totalValue")}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <span>Total Value</span>
-                    {sortBy === "totalValue" && <span>{sortDirection === "asc" ? "↑" : "↓"}</span>}
-                  </div>
-                </th>
-                <th
-                  style={{
-                    border: BORDER,
-                    padding: "8px",
-                    backgroundColor: "#dcfce7",
-                    color: "#166534",
-                    textAlign: "center",
-                  }}
-                >
-                  0-30 Days
-                </th>
-                <th
-                  style={{
-                    border: BORDER,
-                    padding: "8px",
-                    backgroundColor: "#fef9c3",
-                    color: "#854d0e",
-                    textAlign: "center",
-                  }}
-                >
-                  31-60 Days
-                </th>
-                <th
-                  style={{
-                    border: BORDER,
-                    padding: "8px",
-                    backgroundColor: "#fed7aa",
-                    color: "#9a3412",
-                    textAlign: "center",
-                  }}
-                >
-                  61-90 Days
-                </th>
-                <th
-                  style={{
-                    border: BORDER,
-                    padding: "8px",
-                    backgroundColor: "#fecaca",
-                    color: "#991b1b",
-                    textAlign: "center",
-                  }}
-                >
-                  91-180 Days
-                </th>
-                <th
-                  style={{
-                    border: BORDER,
-                    padding: "8px",
-                    backgroundColor: "#f87171",
-                    color: "#fff",
-                    textAlign: "center",
-                  }}
-                >
-                  180+ Days
-                </th>
-                <th style={{ border: BORDER, padding: "8px" }}>Dead Stock</th>
-              </tr>
-            </thead>
-            <tbody>
-              {ageingData.length > 0 ? (
-                ageingData.map((row, idx) => (
-                  <tr
-                    key={row.item.id}
-                    style={{ backgroundColor: idx % 2 === 0 ? BG_DEEP : "transparent" }}
-                  >
-                    <td style={{ border: BORDER, padding: "8px" }}>{row.item.code}</td>
-                    <td style={{ border: BORDER, padding: "8px" }}>{row.item.name}</td>
-                    <td style={{ border: BORDER, padding: "8px" }}>{row.item.groupId}</td>
-                    <td style={{ border: BORDER, padding: "8px" }}>{row.item.unit}</td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                      {row.totalQty}
-                    </td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                      {money(row.avgRate)}
-                    </td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                      {money(row.totalValue)}
-                    </td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                      {row.buckets.b0_30} | {money(row.bucketValues.b0_30)}
-                    </td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                      {row.buckets.b31_60} | {money(row.bucketValues.b31_60)}
-                    </td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                      {row.buckets.b61_90} | {money(row.bucketValues.b61_90)}
-                    </td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                      {row.buckets.b91_180} | {money(row.bucketValues.b91_180)}
-                    </td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                      {row.buckets.b180plus} | {money(row.bucketValues.b180plus)}
-                    </td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "center" }}>
-                      <span
-                        style={{
-                          backgroundColor: row.isDeadStock ? "#f87171" : "#dcfce7",
-                          color: row.isDeadStock ? "#fff" : "#166534",
-                          padding: "2px 6px",
-                          borderRadius: "12px",
-                          fontSize: "11px",
-                          fontWeight: "bold",
-                        }}
+      <div className="mb-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+        {summaryCards.map((card) => {
+          const Icon = card.icon;
+          return (
+            <div
+              key={card.title}
+              className={`rounded-md border ${card.border} ${card.bg} p-3`}
+            >
+              <div className="mb-2 flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                    {card.title}
+                  </p>
+                  <p className="mt-1 font-mono text-[18px] font-semibold text-gray-800">
+                    {card.value}
+                  </p>
+                </div>
+                <div className={`rounded-md bg-white/80 p-2 ${card.accent}`}>
+                  <Icon className="h-4 w-4" />
+                </div>
+              </div>
+              <p className="text-[11px] text-gray-500">As of {referenceDate}</p>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="mb-4 overflow-hidden rounded-md border border-gray-200 bg-white">
+        <div className="flex items-center justify-between gap-3 border-b border-gray-200 bg-[#f5f6fa] px-3 py-2">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+              Stock ageing analysis
+            </p>
+            <p className="mt-0.5 text-[12px] font-semibold text-gray-800">
+              FIFO bucket view as of {referenceDate}
+            </p>
+          </div>
+          <div className="text-[11px] text-gray-500">
+            {ageingData.length} item{ageingData.length === 1 ? "" : "s"}
+          </div>
+        </div>
+
+        {ageingData.length === 0 ? (
+          <ReportEmptyState
+            message="No stock ageing data found for the selected filters."
+            hint="Adjust the group, warehouse, category, or search criteria and run the report again."
+          />
+        ) : (
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[1500px] border-collapse">
+                <thead>
+                  <tr className="border-b border-gray-200 bg-[#f5f6fa]">
+                    <th className={tableHeaderCls}>
+                      <button
+                        type="button"
+                        className={sortableHeaderButtonCls}
+                        onClick={() => handleSort("item.code")}
                       >
-                        {row.isDeadStock ? "YES" : "NO"}
-                      </span>
-                    </td>
+                        <span>Item Code</span>
+                        {renderSortIndicator("item.code")}
+                      </button>
+                    </th>
+                    <th className={tableHeaderCls}>
+                      <button
+                        type="button"
+                        className={sortableHeaderButtonCls}
+                        onClick={() => handleSort("item.name")}
+                      >
+                        <span>Item Name</span>
+                        {renderSortIndicator("item.name")}
+                      </button>
+                    </th>
+                    <th className={tableHeaderCls}>Item Group</th>
+                    <th className={tableHeaderCls}>Unit</th>
+                    <th className={`${tableHeaderCls} text-right`}>
+                      <button
+                        type="button"
+                        className={`${sortableHeaderButtonCls} justify-end`}
+                        onClick={() => handleSort("totalQty")}
+                      >
+                        <span>Total Qty</span>
+                        {renderSortIndicator("totalQty")}
+                      </button>
+                    </th>
+                    <th className={`${tableHeaderCls} text-right`}>
+                      <button
+                        type="button"
+                        className={`${sortableHeaderButtonCls} justify-end`}
+                        onClick={() => handleSort("avgRate")}
+                      >
+                        <span>Avg Cost Rate</span>
+                        {renderSortIndicator("avgRate")}
+                      </button>
+                    </th>
+                    <th className={`${tableHeaderCls} text-right`}>
+                      <button
+                        type="button"
+                        className={`${sortableHeaderButtonCls} justify-end`}
+                        onClick={() => handleSort("totalValue")}
+                      >
+                        <span>Total Value</span>
+                        {renderSortIndicator("totalValue")}
+                      </button>
+                    </th>
+                    {bucketColumns.map((bucket) => (
+                      <th
+                        key={bucket.key}
+                        className={`${tableHeaderCls} text-center ${bucket.headerClass}`}
+                      >
+                        {bucket.label}
+                      </th>
+                    ))}
+                    <th className={`${tableHeaderCls} text-center`}>Dead Stock</th>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan="12"
-                    style={{ border: BORDER, padding: "16px", textAlign: "center", color: "#666" }}
-                  >
-                    No data found for the selected filters
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                </thead>
+                <tbody>
+                  {ageingData.map((row) => (
+                    <tr
+                      key={row.item.id}
+                      className="group border-b border-gray-100 hover:bg-gray-50"
+                    >
+                      <td className="px-3 py-2.5 text-[12px] font-medium text-[#1557b0]">
+                        {row.item.code}
+                      </td>
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{row.item.name}</td>
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{row.item.groupId}</td>
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{row.item.unit}</td>
+                      <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-800">
+                        {row.totalQty}
+                      </td>
+                      <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-700">
+                        {money(row.avgRate)}
+                      </td>
+                      <td className="px-3 py-2.5 text-[12px] font-mono text-right font-semibold text-gray-800">
+                        {money(row.totalValue)}
+                      </td>
+                      {bucketColumns.map((bucket) => (
+                        <td
+                          key={`${row.item.id}-${bucket.key}`}
+                          className="px-3 py-2.5 text-[12px] text-right"
+                        >
+                          <div className="font-mono text-[12px] text-gray-700">
+                            {row.buckets[bucket.key]}
+                          </div>
+                          <div className="font-mono text-[11px] text-gray-500">
+                            {money(row.bucketValues[bucket.key])}
+                          </div>
+                        </td>
+                      ))}
+                      <td className="px-3 py-2.5 text-center text-[12px]">
+                        <span
+                          className={
+                            row.isDeadStock
+                              ? "inline-flex rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-red-100 text-red-700"
+                              : "inline-flex rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-green-100 text-green-700"
+                          }
+                        >
+                          {row.isDeadStock ? "YES" : "NO"}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="border-t border-gray-200 bg-[#f5f6fa] px-3 py-2 text-[11px] text-gray-500">
+              {ageingData.length} stock item{ageingData.length === 1 ? "" : "s"} in report
+            </div>
+          </>
+        )}
       </div>
 
-      {/* Dead Stock Summary */}
       {deadStockItems.length > 0 && (
-        <div
-          style={{
-            marginTop: "20px",
-            backgroundColor: "#fee2e2",
-            padding: "15px",
-            borderRadius: "8px",
-            border: BORDER,
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "10px",
-            }}
-          >
-            <h2 style={{ fontSize: "14px", fontWeight: "bold", color: "#000000" }}>
-              DEAD STOCK SUMMARY
-            </h2>
-            <div style={{ fontSize: "12px", fontWeight: "bold", color: "#dc2626" }}>
-              Total Dead Stock Value:{" "}
-              {money(deadStockItems.reduce((sum, row) => sum + row.bucketValues.b180plus, 0))}
+        <div className="overflow-hidden rounded-md border border-red-200 bg-white">
+          <div className="flex items-center justify-between gap-3 border-b border-red-200 bg-red-50 px-3 py-2">
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-red-600">
+                Dead stock summary
+              </p>
+              <p className="mt-0.5 text-[12px] font-semibold text-gray-800">
+                Items concentrated in the 180+ day bucket
+              </p>
+            </div>
+            <div className="text-right text-[11px] text-red-700">
+              <span className="font-medium">Total dead stock value</span>
+              <div className="font-mono text-[12px] font-semibold">{money(deadStockTotalValue)}</div>
             </div>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              backgroundColor: "#fecaca",
-              padding: "10px",
-              borderRadius: "6px",
-              marginBottom: "10px",
-            }}
-          >
-            <AlertTriangle size={16} style={{ color: "#991b1b" }} />
-            <span style={{ color: "#991b1b", fontWeight: "bold" }}>
-              RECOMMENDED ACTION: Markdown or Write-Off
+          <div className="mx-3 my-3 flex items-center gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2">
+            <AlertTriangle className="h-4 w-4 text-amber-700" />
+            <span className="text-[12px] font-medium text-amber-800">
+              Recommended action: Markdown or write-off
             </span>
           </div>
 
-          <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", border: BORDER }}>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[720px] border-collapse">
               <thead>
-                <tr style={{ backgroundColor: "#f87171", color: "#fff" }}>
-                  <th style={{ border: BORDER, padding: "8px", color: "#fff" }}>Item Code</th>
-                  <th style={{ border: BORDER, padding: "8px", color: "#fff" }}>Item Name</th>
-                  <th style={{ border: BORDER, padding: "8px", color: "#fff", textAlign: "right" }}>
-                    Dead Qty
-                  </th>
-                  <th style={{ border: BORDER, padding: "8px", color: "#fff", textAlign: "right" }}>
-                    Dead Value
-                  </th>
-                  <th style={{ border: BORDER, padding: "8px", color: "#fff" }}>Action</th>
+                <tr className="border-b border-red-200 bg-red-50">
+                  <th className={tableHeaderCls}>Item Code</th>
+                  <th className={tableHeaderCls}>Item Name</th>
+                  <th className={`${tableHeaderCls} text-right`}>Dead Qty</th>
+                  <th className={`${tableHeaderCls} text-right`}>Dead Value</th>
+                  <th className={`${tableHeaderCls} text-center`}>Action</th>
                 </tr>
               </thead>
               <tbody>
                 {deadStockItems.map((row) => (
-                  <tr key={`dead-${row.item.id}`}>
-                    <td style={{ border: BORDER, padding: "8px" }}>{row.item.code}</td>
-                    <td style={{ border: BORDER, padding: "8px" }}>{row.item.name}</td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
+                  <tr
+                    key={`dead-${row.item.id}`}
+                    className="border-b border-red-100 hover:bg-red-50/40"
+                  >
+                    <td className="px-3 py-2.5 text-[12px] font-medium text-[#1557b0]">
+                      {row.item.code}
+                    </td>
+                    <td className="px-3 py-2.5 text-[12px] text-gray-700">{row.item.name}</td>
+                    <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-800">
                       {row.buckets.b180plus}
                     </td>
-                    <td
-                      style={{
-                        border: BORDER,
-                        padding: "8px",
-                        textAlign: "right",
-                        color: "#dc2626",
-                        fontWeight: "bold",
-                      }}
-                    >
+                    <td className="px-3 py-2.5 text-[12px] font-mono text-right font-semibold text-red-700">
                       {money(row.bucketValues.b180plus)}
                     </td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "center" }}>
+                    <td className="px-3 py-2.5 text-center">
                       <button
+                        type="button"
                         onClick={() => {}}
-                        style={{
-                          backgroundColor: "#dc2626",
-                          color: "white",
-                          border: BORDER,
-                          padding: "4px 8px",
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                          fontSize: "11px",
-                        }}
+                        className="inline-flex h-7 items-center rounded-md border border-red-300 bg-white px-3 text-[12px] font-medium text-red-700 hover:bg-red-50"
                       >
                         Write Off
                       </button>
@@ -761,6 +619,10 @@ export default function StockAgeingReport() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          <div className="border-t border-red-200 bg-red-50/70 px-3 py-2 text-[11px] text-red-700">
+            {deadStockItems.length} dead stock item{deadStockItems.length === 1 ? "" : "s"}
           </div>
         </div>
       )}
