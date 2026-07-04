@@ -9,7 +9,7 @@ function genId(): string {
 }
 
 const WELCOME =
-  "Namaste! **e-Khata** ma Nepali/Romanized bhasa ma entry garnus.\n\n**Udharo:** `Ram lai 500 udhaar diye`\n**Payment:** `Shyam le 200 tiryo`\n**Cash sale:** `cash ma chai becheko 750`\n\nConfirm garnu agadi card dekhincha.";
+  "Namaste! **e-Khata** ma Nepali/Romanized bhasa ma entry garnus.\n\n**Udharo:** `Ram lai 500 udhaar diye`\n**Payment:** `Shyam le 200 tiryo`\n**Cash sale:** `aaja 200 ko nagad bikri vayo`\n**Purchase:** `aja sabji kineko 1000`\n\nConfirm garnu agadi card dekhincha.";
 
 export interface EKhataState {
   isOpen: boolean;

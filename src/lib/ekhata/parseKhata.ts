@@ -41,14 +41,19 @@ const WORD_TO_NUMBER: Record<string, number> = {
 
 const PARTY_STOPWORDS = new Set([
   "cash",
+  "nagad",
+  "nakad",
+  "nakit",
   "udhaar",
   "udhar",
+  "udharo",
   "credit",
   "payment",
   "purchase",
   "kharcha",
   "expense",
   "aja",
+  "aaja",
   "hijo",
   "parsi",
   "sold",
@@ -60,6 +65,10 @@ const PARTY_STOPWORDS = new Set([
   "rs",
   "npr",
   "rupees",
+  "bikri",
+  "vayo",
+  "bhayo",
+  "ko",
 ]);
 
 const FILLER_WORDS = new Set([
@@ -172,7 +181,11 @@ function extractItem(text: string, intent: KhataIntent | null): string | null {
     const m1 = soft.match(/\b(\w+)\s+ko\s+(\w+)\s+becheko\b/);
     if (m1 && !PARTY_STOPWORDS.has(m2Group(m1, 2))) return m1[2];
     const m2 = soft.match(/\b(\w+)\s+becheko\b/);
-    if (m2 && !PARTY_STOPWORDS.has(m2[1]) && !["cash", "ma"].includes(m2[1])) return m2[1];
+    if (m2 && !PARTY_STOPWORDS.has(m2[1]) && !["cash", "ma", "nagad"].includes(m2[1])) return m2[1];
+    const m3 = soft.match(/\b(\w+)\s+ko\s+(\w+)\s+bikri\b/);
+    if (m3 && !PARTY_STOPWORDS.has(m2Group(m3, 2))) return m3[2];
+    const m4 = soft.match(/\bsold\s+(\w+)\s+for\b/i);
+    if (m4 && !PARTY_STOPWORDS.has(m4[1].toLowerCase())) return m4[1];
   }
 
   if (intent === "khata_expense") {
@@ -190,22 +203,56 @@ function m2Group(match: RegExpMatchArray, index: number): string {
 }
 
 function extractDate(text: string): string {
-  const normalized = normalize(text);
+  const raw = normalizeUnicodeDigits(text).toLowerCase();
   const today = new Date();
-  if (/\bhijo\b/.test(normalized)) {
+  if (/\bhijo\b/.test(raw)) {
     today.setDate(today.getDate() - 1);
-  } else if (/\bparsi\b/.test(normalized)) {
+  } else if (/\bparsi\b/.test(raw)) {
     today.setDate(today.getDate() + 1);
   }
   return today.toISOString().slice(0, 10);
+}
+
+function hasCashSaleCue(text: string): boolean {
+  return (
+    /\b(cash|nakit|nagad|nakad)\b/i.test(text) &&
+    /\b(bikri|becheko|beche|bik|sale|sold)\b/i.test(text)
+  );
+}
+
+function hasCreditSaleCue(text: string): boolean {
+  return (
+    /\b(udhaar|udharo|udhar|credit|उधार)\b/i.test(text) ||
+    (/\b(diye|die|diya|diae|दिए)\b/i.test(text) && /\b(lai|le)\b/i.test(text))
+  );
+}
+
+function hasPaymentInCue(text: string): boolean {
+  return /\b(tiryo|tireko|tira|tire|received|aayo|aayeko|aaye|payment\s+received|paisa\s+aayo|jama|jama\s+gareko|payo|paye)\b/i.test(
+    text,
+  );
+}
+
+function hasPurchaseCue(text: string): boolean {
+  return /\b(kineko|kine|kiniyo|kinyo|kinna|kharid|kharido|purchase)\b/i.test(text);
+}
+
+function hasPaymentOutCue(text: string): boolean {
+  return /\b(payment\s+gareko|payment\s+made|paisa\s+diye|tirna\s+diye|bhugtan|tiryo\s+diye)\b|\bpayment\b.*\bgareko\b/i.test(
+    text,
+  );
+}
+
+function hasExpenseCue(text: string): boolean {
+  return /\b(kharcha|kharcho|expense|kharch)\b/i.test(text);
 }
 
 function needsPartyRoleClarification(text: string): boolean {
   const normalized = normalize(text);
   if (!normalized) return false;
   if (
-    /\b(udhaar|udhar|credit|tiryo|payment|kharcha|kineko|becheko|cash|sold|purchase)\b/.test(
-      normalized,
+    /\b(udhaar|udharo|udhar|credit|tiryo|payment|kharcha|kharcho|kineko|kine|kiniyo|becheko|beche|bikri|cash|nagad|nakad|nakit|sold|purchase|kharid|vayo|bhayo)\b/i.test(
+      text,
     )
   ) {
     return false;
@@ -222,32 +269,30 @@ function classifyIntent(text: string): KhataIntent | null {
   const q = text.trim();
   if (!q) return null;
 
-  if (
-    /\b(udhaar|udharo|udhar|credit|उधार)\b.*\b(diye|die|diya|diae|दिए)\b|\b(udhaar|udharo|udhar|credit|उधार)\b|\b(udhaar|udharo|udhar|उधार)\s+(diye|die|diya|diae|दिए)\b/i.test(
-      q,
-    )
-  ) {
+  if (hasCreditSaleCue(q)) {
     return "khata_credit_sale";
   }
-  if (/\b(tiryo|tireko|tira|received|aayo|aayeko|payment\s+received|paisa\s+aayo|jama)\b/i.test(q)) {
+  if (hasPaymentInCue(q)) {
     return "khata_payment_in";
   }
-  if (
-    /\b(cash|nakit)\b.*\b(becheko|beche|sale|sold)\b|\b(becheko|beche|sold)\b.*\b(cash|nakit)\b|\bcash\s+ma\b|\bsold\b.*\bfor\b/i.test(
-      q,
-    )
-  ) {
+  if (hasCashSaleCue(q)) {
     return "khata_cash_sale";
   }
-  if (/\b(kineko|kine|kinna|purchase|kharid)\b/i.test(q)) return "khata_purchase";
-  if (
-    /\b(payment\s+gareko|payment\s+made|paisa\s+diye|tirna\s+diye|bhugtan|tiryo\s+diye)\b|\bpayment\b.*\bgareko\b/i.test(
-      q,
-    )
-  ) {
+  if (/\bko\s+nagad\s+bikri\b/i.test(q) || /\bnagad\s+bikri\s+(vayo|bhayo|vayeko|bhayeko)\b/i.test(q)) {
+    return "khata_cash_sale";
+  }
+  if (/\b(bikri|becheko)\s+(vayo|bhayo|vayeko|bhayeko)\b/i.test(q) && /\b(nagad|nakad|cash|nakit)\b/i.test(q)) {
+    return "khata_cash_sale";
+  }
+  if (hasPurchaseCue(q)) {
+    return "khata_purchase";
+  }
+  if (hasPaymentOutCue(q)) {
     return "khata_payment_out";
   }
-  if (/\b(kharcha|expense|kharch)\b/i.test(q)) return "khata_expense";
+  if (hasExpenseCue(q)) {
+    return "khata_expense";
+  }
 
   if (/\b(diye|die|diya|diae)\b/i.test(q) && /\b(lai|le)\b/i.test(q)) {
     return "khata_credit_sale";
