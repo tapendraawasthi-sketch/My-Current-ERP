@@ -1,15 +1,10 @@
 import { parseKhataMessage } from "./parseKhata";
 import { buildParseReply, isLikelyKhataEntry, type LedgerBalanceSnapshot } from "./conversationEngine";
-import {
-  askEKhataBrowserAi,
-  isEKhataBrowserAiReady,
-  loadEKhataBrowserAi,
-  replyNeedsBrowserAi,
-} from "./ekhataWebLlm";
+import { generateNepaliReply, isConversationalMessage } from "./nepaliBrain";
 import { normalizeNepaliText } from "./normalizeNepali";
 import type { KhataConfirmationCard, KhataParseResult } from "./types";
 
-export type EKhataEngine = "ollama" | "browser" | "rules" | "hybrid";
+export type EKhataEngine = "brain" | "ollama" | "rules" | "hybrid";
 
 export type EKhataProcessResult =
   | {
@@ -35,90 +30,53 @@ export type EKhataProcessResult =
 
 export interface ProcessMessageOptions {
   balance?: LedgerBalanceSnapshot;
+  /** Optional Ollama enhancement when erp_bot is deployed */
   preferLlm?: boolean;
-  /** Auto-start browser LLM download on conversational messages */
-  autoLoadBrowserAi?: boolean;
 }
 
 /**
- * Rule-based path — ONLY for structured khata transactions (amounts, udhaar, bikri).
- * Never fakes conversational replies; open chat needs a real LLM.
+ * Self-contained e-Khata processor — built-in Nepali brain + transaction parser.
+ * No Ollama, WebLLM, or external apps required.
  */
 export function processEKhataMessage(
   rawText: string,
-  _options: ProcessMessageOptions = {},
+  options: ProcessMessageOptions = {},
 ): EKhataProcessResult {
   const normalizedText = normalizeNepaliText(rawText);
 
-  if (!isLikelyKhataEntry(normalizedText)) {
-    return {
-      kind: "chat",
-      reply: replyNeedsBrowserAi(),
-      normalizedText,
-      engine: "rules",
-    };
-  }
-
-  const parseResult = parseKhataMessage(rawText, normalizedText);
-
-  if (parseResult.card) {
-    return {
-      kind: "entry",
-      reply: buildParseReply(parseResult, parseResult.card),
-      normalizedText,
-      parseResult,
-      card: parseResult.card,
-      engine: "rules",
-    };
-  }
-
-  if (parseResult.clarifying_question) {
-    return {
-      kind: "clarify",
-      reply: buildParseReply(parseResult),
-      normalizedText,
-      engine: "rules",
-    };
+  if (isLikelyKhataEntry(normalizedText)) {
+    const parseResult = parseKhataMessage(rawText, normalizedText);
+    if (parseResult.card) {
+      return {
+        kind: "entry",
+        reply: buildParseReply(parseResult, parseResult.card),
+        normalizedText,
+        parseResult,
+        card: parseResult.card,
+        engine: "rules",
+      };
+    }
+    if (parseResult.clarifying_question) {
+      return {
+        kind: "clarify",
+        reply: buildParseReply(parseResult),
+        normalizedText,
+        engine: "rules",
+      };
+    }
   }
 
   return {
     kind: "chat",
-    reply: replyNeedsBrowserAi(),
+    reply: generateNepaliReply(rawText, options.balance),
     normalizedText,
-    engine: "rules",
+    engine: "brain",
   };
 }
 
-async function tryBrowserLlm(
-  rawText: string,
-  balance?: LedgerBalanceSnapshot,
-  autoLoad = true,
-): Promise<EKhataProcessResult | null> {
-  if (typeof window === "undefined") return null;
-
-  try {
-    if (!isEKhataBrowserAiReady() && autoLoad) {
-      await loadEKhataBrowserAi();
-    } else if (!isEKhataBrowserAiReady()) {
-      return null;
-    }
-
-    const reply = await askEKhataBrowserAi(rawText, balance);
-    return {
-      kind: "chat",
-      reply,
-      normalizedText: normalizeNepaliText(rawText),
-      engine: "browser",
-    };
-  } catch {
-    return null;
-  }
-}
-
 /**
- * Full e-Khata brain:
- * 1. Structured transactions → accurate rule parser (always)
- * 2. Open conversation → Ollama LLM, else browser WebLLM, else ask to load AI
+ * Full e-Khata brain: built-in Nepali language engine (default).
+ * Optional Ollama via erp_bot only when explicitly deployed.
  */
 export async function processEKhataMessageAsync(
   rawText: string,
@@ -126,19 +84,16 @@ export async function processEKhataMessageAsync(
 ): Promise<EKhataProcessResult> {
   const normalizedText = normalizeNepaliText(rawText);
   const preferLlm = options.preferLlm !== false;
-  const autoLoad = options.autoLoadBrowserAi !== false;
 
-  // Accurate ledger entries always go through the rule parser first
+  // Accurate khata entries — rule parser first
   if (isLikelyKhataEntry(normalizedText)) {
     const parseResult = parseKhataMessage(rawText, normalizedText);
     if (parseResult.card) {
-      // Optional Ollama polish for confirm message when server LLM is up
       if (preferLlm) {
         try {
-          const { checkEKhataLlmStatus } = await import("./ekhataLlmClient");
+          const { checkEKhataLlmStatus, askEKhataLlm, getEKhataSessionId } = await import("./ekhataLlmClient");
           const status = await checkEKhataLlmStatus();
           if (status.khataLlm) {
-            const { askEKhataLlm, getEKhataSessionId } = await import("./ekhataLlmClient");
             const llm = await askEKhataLlm(rawText, getEKhataSessionId(), options.balance);
             if (llm.kind === "entry" && llm.card) {
               return {
@@ -151,7 +106,7 @@ export async function processEKhataMessageAsync(
             }
           }
         } catch {
-          // Use rule-based card
+          // Built-in parser
         }
       }
       return {
@@ -173,54 +128,59 @@ export async function processEKhataMessageAsync(
     }
   }
 
-  // Open conversation — needs a real LLM (not scripted rules)
-  if (preferLlm) {
-    try {
-      const { askEKhataLlm, checkEKhataLlmStatus, getEKhataSessionId } = await import("./ekhataLlmClient");
-      const status = await checkEKhataLlmStatus();
-      if (status.khataLlm) {
-        const llm = await askEKhataLlm(rawText, getEKhataSessionId(), options.balance);
-
-        if (llm.kind === "entry" && llm.card) {
+  // Open Nepali conversation — built-in brain (self-contained)
+  if (isConversationalMessage(rawText) || !isLikelyKhataEntry(normalizedText)) {
+    if (preferLlm) {
+      try {
+        const { checkEKhataLlmStatus, askEKhataLlm, getEKhataSessionId } = await import("./ekhataLlmClient");
+        const status = await checkEKhataLlmStatus();
+        if (status.khataLlm) {
+          const llm = await askEKhataLlm(rawText, getEKhataSessionId(), options.balance);
+          if (llm.kind === "entry" && llm.card) {
+            return {
+              kind: "entry",
+              reply: llm.reply,
+              normalizedText,
+              card: llm.card,
+              engine: llm.engine as "ollama" | "hybrid",
+            };
+          }
+          if (llm.kind === "clarify") {
+            return {
+              kind: "clarify",
+              reply: llm.reply,
+              normalizedText,
+              engine: llm.engine as "ollama" | "hybrid",
+            };
+          }
           return {
-            kind: "entry",
+            kind: "chat",
             reply: llm.reply,
             normalizedText,
-            card: llm.card,
-            engine: llm.engine as "ollama" | "hybrid",
+            engine: "ollama",
           };
         }
-
-        if (llm.kind === "clarify") {
-          return {
-            kind: "clarify",
-            reply: llm.reply,
-            normalizedText,
-            engine: llm.engine as "ollama" | "hybrid",
-          };
-        }
-
-        return {
-          kind: "chat",
-          reply: llm.reply,
-          normalizedText,
-          engine: "ollama",
-        };
+      } catch {
+        // Built-in brain
       }
-    } catch {
-      // Fall through to browser LLM
     }
 
-    const browser = await tryBrowserLlm(rawText, options.balance, autoLoad);
-    if (browser) return browser;
+    return {
+      kind: "chat",
+      reply: generateNepaliReply(rawText, options.balance),
+      normalizedText,
+      engine: "brain",
+    };
   }
 
   return processEKhataMessage(rawText, options);
 }
 
 export async function checkEKhataLlmStatus() {
-  const { checkEKhataLlmStatus: check } = await import("./ekhataLlmClient");
-  return check();
+  try {
+    const { checkEKhataLlmStatus: check } = await import("./ekhataLlmClient");
+    return check();
+  } catch {
+    return { online: false, khataLlm: false };
+  }
 }
-
-export { loadEKhataBrowserAi, isEKhataBrowserAiReady, getWebLlmState, onWebLlmProgress, isWebGpuAvailable } from "./ekhataWebLlm";

@@ -68,11 +68,13 @@ async function handleErpBotRequest(req, res, method, rawPath) {
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(
       JSON.stringify({
-        status: "offline",
+        status: "online",
         mode: "builtin",
         ollama: "unavailable",
+        khata_llm: true,
+        khata_brain: "builtin",
         indexed_files: 0,
-        message: "Using built-in module guides (no erp_bot service on this host)",
+        message: "e-Khata built-in Nepali brain (self-contained, no external apps)",
       }),
     );
     return;

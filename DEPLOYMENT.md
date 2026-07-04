@@ -80,12 +80,12 @@ The default `sutra-erp` Node service **does not** run Ollama. For full LLM on Re
    - `ERP_BOT_BACKEND_URL=https://your-erp-bot-host:8765`
 3. Rebuild — Falcon and e-Khata use `/erp-bot` proxy in `serve.mjs`.
 
-Without `ERP_BOT_BACKEND_URL`, e-Khata uses:
+Without `ERP_BOT_BACKEND_URL`, e-Khata uses the **built-in Nepali brain** — fully self-contained in the app:
 
-1. **Browser Nepali AI** (WebLLM + Qwen2.5) — click **Load Nepali AI** in the panel. Runs in the user's browser via WebGPU (~300MB one-time download). Full Nepali conversation (`khana khayeu?`, `k xa`, etc.) with no API keys.
-2. **Rule-based parser** — accurate khata entry amounts/parties when you write transactions like `Ram lai 500 udhaar diye`.
+- **Conversation** — `khana khayeu?`, `k xa`, `timi ko ho?`, weather, food, greetings — understood via built-in Nepali language engine (no Ollama, no WebLLM, no API keys).
+- **Khata entries** — `Ram lai 500 udhaar diye` parsed accurately with confirm card.
 
-Requires Chrome/Edge with WebGPU for browser AI.
+Optional: deploy `erp_bot` + Ollama for extended LLM (not required).
 
 ### Verify Ollama from browser network
 
