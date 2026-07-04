@@ -185,9 +185,7 @@ export default function SalesAnalysisReport() {
           <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Total invoices
           </p>
-          <p className="text-[14px] font-semibold text-gray-800 mt-0.5">
-            {totals.totalInvoices}
-          </p>
+          <p className="text-[14px] font-semibold text-gray-800 mt-0.5">{totals.totalInvoices}</p>
         </div>
         <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
           <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
@@ -216,93 +214,96 @@ export default function SalesAnalysisReport() {
           />
         ) : (
           <>
-        <div className="overflow-x-auto">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="bg-[#f5f6fa] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                #
-              </th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                {groupBy === "party"
-                  ? "Party / Account"
-                  : groupBy === "item"
-                    ? "Item Name"
-                    : "Month"}
-              </th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                Invoices
-              </th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                Total Qty
-              </th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                Avg/Invoice
-              </th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                Total Amount
-              </th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-36">
-                Share
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
-            {analysisData.map((row, idx) => {
-              const share = totals.totalSales > 0 ? (row.totalSales / totals.totalSales) * 100 : 0;
-              const barWidth = maxSales > 0 ? (row.totalSales / maxSales) * 100 : 0;
-              return (
-                <tr
-                  key={row.key}
-                  className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] border-b border-gray-100"
-                >
-                  <td className="px-3 py-2.5 text-[11px] text-gray-400">{idx + 1}</td>
-                  <td className="px-3 py-2.5 text-[12px] font-medium text-gray-800">{row.label}</td>
-                  <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-600">
-                    {row.invoiceCount}
-                  </td>
-                  <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-600">
-                    {formatNumber(row.totalQty)}
-                  </td>
-                  <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-600">
-                    Rs. {formatNumber(row.avgPerInvoice)}
-                  </td>
-                  <td className="px-3 py-2.5 text-[12px] font-mono text-right font-semibold text-gray-800">
-                    Rs. {formatNumber(row.totalSales)}
-                  </td>
-                  <td className="px-3 py-2.5">
-                    <div className="flex items-center gap-2">
-                      <div className="flex-1 bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                        <div
-                          className="bg-[#1557b0] h-full rounded-full"
-                          style={{ width: `${barWidth}%` }}
-                        />
-                      </div>
-                      <span className="text-[10px] text-gray-500 w-10 text-right">
-                        {share.toFixed(1)}%
-                      </span>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-        </div>
-
-          <div className="px-3 py-2.5 border-t-2 border-[#c7d2fe] bg-[#eef2ff] flex justify-between text-[12px] font-semibold text-gray-800">
-            <span>
-              Grand total — {analysisData.length}{" "}
-              {groupBy === "party" ? "parties" : groupBy === "item" ? "items" : "months"}
-            </span>
-            <div className="flex gap-8">
-              <span className="font-mono">{totals.totalInvoices} invoices</span>
-              <span className="font-mono">Rs. {formatNumber(totals.totalSales)}</span>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      #
+                    </th>
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      {groupBy === "party"
+                        ? "Party / Account"
+                        : groupBy === "item"
+                          ? "Item Name"
+                          : "Month"}
+                    </th>
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      Invoices
+                    </th>
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      Total Qty
+                    </th>
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      Avg/Invoice
+                    </th>
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      Total Amount
+                    </th>
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-36">
+                      Share
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {analysisData.map((row, idx) => {
+                    const share =
+                      totals.totalSales > 0 ? (row.totalSales / totals.totalSales) * 100 : 0;
+                    const barWidth = maxSales > 0 ? (row.totalSales / maxSales) * 100 : 0;
+                    return (
+                      <tr
+                        key={row.key}
+                        className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] border-b border-gray-100"
+                      >
+                        <td className="px-3 py-2.5 text-[11px] text-gray-400">{idx + 1}</td>
+                        <td className="px-3 py-2.5 text-[12px] font-medium text-gray-800">
+                          {row.label}
+                        </td>
+                        <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-600">
+                          {row.invoiceCount}
+                        </td>
+                        <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-600">
+                          {formatNumber(row.totalQty)}
+                        </td>
+                        <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-600">
+                          Rs. {formatNumber(row.avgPerInvoice)}
+                        </td>
+                        <td className="px-3 py-2.5 text-[12px] font-mono text-right font-semibold text-gray-800">
+                          Rs. {formatNumber(row.totalSales)}
+                        </td>
+                        <td className="px-3 py-2.5">
+                          <div className="flex items-center gap-2">
+                            <div className="flex-1 bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                              <div
+                                className="bg-[#1557b0] h-full rounded-full"
+                                style={{ width: `${barWidth}%` }}
+                              />
+                            </div>
+                            <span className="text-[10px] text-gray-500 w-10 text-right">
+                              {share.toFixed(1)}%
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
-          </div>
-          <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
-            {analysisData.length} record{analysisData.length === 1 ? "" : "s"}
-          </div>
+
+            <div className="px-3 py-2.5 border-t-2 border-[#c7d2fe] bg-[#eef2ff] flex justify-between text-[12px] font-semibold text-gray-800">
+              <span>
+                Grand total — {analysisData.length}{" "}
+                {groupBy === "party" ? "parties" : groupBy === "item" ? "items" : "months"}
+              </span>
+              <div className="flex gap-8">
+                <span className="font-mono">{totals.totalInvoices} invoices</span>
+                <span className="font-mono">Rs. {formatNumber(totals.totalSales)}</span>
+              </div>
+            </div>
+            <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+              {analysisData.length} record{analysisData.length === 1 ? "" : "s"}
+            </div>
           </>
         )}
       </div>

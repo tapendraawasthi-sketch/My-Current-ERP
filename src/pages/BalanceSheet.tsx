@@ -35,6 +35,13 @@ import ReportDateRangePicker from "../components/ui/ReportDateRangePicker";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 import NepalFinancialStatementView from "../components/reports/NepalFinancialStatementView";
 import {
+  FinancialStatementHeader,
+  FinancialStatementFooter,
+  FinancialStatementShell,
+  formatAsAtDate,
+  fsClasses as fs,
+} from "../components/reports/FinancialStatementChrome";
+import {
   buildBalanceSheetData,
   balanceSheetDataToRows,
   shiftDateByYears,
@@ -396,6 +403,106 @@ function BSRow({
   );
 }
 
+function BSRowTr({
+  row,
+  onDrillDown,
+  options,
+  showSecond,
+  depth = 0,
+  layout = "tformat",
+}: {
+  row: any;
+  onDrillDown: (id: string, name: string, isAccount: boolean) => void;
+  options: BSOptions;
+  showSecond: boolean;
+  depth?: number;
+  layout?: "tformat" | "vertical";
+}) {
+  const [expanded, setExpanded] = useState(showSecond);
+  const hasChildren = (row.children?.length || 0) > 0;
+  const isZero = Math.abs(row.amount || 0) < 0.005;
+  const indent = 10 + depth * 14;
+
+  const handleClick = () => {
+    if (!row.isClickable) return;
+    if (hasChildren) {
+      setExpanded((p) => !p);
+    } else if (row.accountId) {
+      onDrillDown(row.accountId, row.caption, true);
+    } else if (row.groupId) {
+      onDrillDown(row.groupId, row.caption, false);
+    }
+  };
+
+  const rowClass = [
+    row.isClickable ? `${fs.rowHover} cursor-pointer` : "",
+    row.isGroup || row.bold ? fs.rowGroup : fs.rowLedger,
+    row.isPLLine ? "bg-green-50" : "",
+    row.isPLAdjusted ? "bg-amber-50 no-print" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return (
+    <>
+      <tr className={rowClass} onClick={handleClick}>
+        <td className={fs.cellParticulars} style={{ paddingLeft: `${indent}px` }}>
+          <div className="flex items-center gap-1.5">
+            {hasChildren && (
+              <span className="text-gray-400 shrink-0 no-print">
+                {expanded ? (
+                  <ChevronDown className="h-3 w-3" />
+                ) : (
+                  <ChevronRight className="h-3 w-3" />
+                )}
+              </span>
+            )}
+            <span
+              className={`${row.bold ? "font-semibold" : ""} ${isZero ? "text-gray-400" : ""} ${
+                row.isPLLine ? "text-green-700 font-semibold" : ""
+              }`}
+            >
+              {row.caption}
+              {row.isPLAdjusted && (
+                <span className="ml-1.5 text-[9px] text-amber-600 font-normal no-print">
+                  [screen only]
+                </span>
+              )}
+            </span>
+          </div>
+        </td>
+        <td className={fs.cellNote}>—</td>
+        {layout === "vertical" && options.showPreviousYear && (
+          <td className={`${fs.cellAmount} text-gray-400 font-normal`}>
+            {row.prevYearAmount !== undefined ? fmt(row.prevYearAmount) : "—"}
+          </td>
+        )}
+        <td className={`${fs.cellAmount} ${isZero ? "text-gray-300 font-normal" : ""}`}>
+          {isZero ? "—" : fmt(Math.abs(row.amount || 0))}
+        </td>
+        {layout === "vertical" && options.showPercentage && (
+          <td className={`${fs.cellNote} text-right`}>
+            {isZero || row.percentage === undefined ? "" : `${row.percentage?.toFixed(1)}%`}
+          </td>
+        )}
+      </tr>
+      {expanded &&
+        hasChildren &&
+        (row.children || []).map((child: any, ci: number) => (
+          <BSRowTr
+            key={ci}
+            row={child}
+            onDrillDown={onDrillDown}
+            options={options}
+            showSecond={showSecond}
+            depth={depth + 1}
+            layout={layout}
+          />
+        ))}
+    </>
+  );
+}
+
 // ─── Horizontal BS ────────────────────────────────────────────────────────────
 
 function HorizontalBS({
@@ -409,76 +516,71 @@ function HorizontalBS({
   onDrillDown: (id: string, name: string, isAccount: boolean) => void;
   onClosingStockEdit: () => void;
 }) {
-  const thCls =
-    "px-3 py-2.5 text-[10px] font-semibold uppercase tracking-wide text-gray-500 bg-[#f5f6fa] border-b border-gray-200";
-
-  const renderSection = (section: any) => (
-    <div key={section.id} className="border-b border-gray-200">
-      <div className="px-3 py-1.5 bg-[#eef2ff] border-b border-blue-100">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-[#1557b0]">
-          {section.caption}
-        </span>
-      </div>
-      {section.rows.map((row: any, ri: number) => (
-        <BSRow
-          key={ri}
-          row={row}
-          onDrillDown={onDrillDown}
-          options={options}
-          showSecond={options.showSecondLevel}
-        />
-      ))}
-      <div className="flex items-center justify-between px-3 py-2 bg-[#f9fafb] border-t border-gray-200">
-        <span className="text-[12px] font-bold text-gray-700">Total {section.caption}</span>
-        <span className="text-[12px] font-mono font-bold text-gray-800">
-          {fmt(Math.abs(section.total))}
-        </span>
-      </div>
+  const renderSide = (sections: any[], sideTotal: number, sideLabel: string) => (
+    <div className={fs.tformatCol}>
+      <table className={fs.table}>
+        <tbody>
+          {sections.map((section) => (
+            <React.Fragment key={section.id}>
+              <tr className={fs.sectionHead}>
+                <td colSpan={3}>{section.caption}</td>
+              </tr>
+              {section.rows.map((row: any, ri: number) => (
+                <BSRowTr
+                  key={ri}
+                  row={row}
+                  onDrillDown={onDrillDown}
+                  options={options}
+                  showSecond={options.showSecondLevel}
+                />
+              ))}
+              <tr className={fs.subtotalRow}>
+                <td className={fs.cellParticulars}>Total {section.caption}</td>
+                <td className={fs.cellNote} />
+                <td className={fs.cellAmount}>{fmt(Math.abs(section.total))}</td>
+              </tr>
+            </React.Fragment>
+          ))}
+          {bs.plAdjustedAmount !== 0 && (
+            <tr className="bg-amber-50 no-print">
+              <td className={fs.cellParticulars}>Profit & Loss Adjusted</td>
+              <td className={fs.cellNote}>—</td>
+              <td className={fs.cellAmount}>{fmt(Math.abs(bs.plAdjustedAmount))}</td>
+            </tr>
+          )}
+          <tr className={fs.grandTotalRow}>
+            <td className={fs.cellParticulars}>TOTAL</td>
+            <td className={fs.cellNote} />
+            <td className={fs.cellAmount}>
+              {sideLabel === "Liabilities"
+                ? fmt(bs.totalLiabilitiesEquity + Math.abs(bs.plAdjustedAmount))
+                : fmt(sideTotal)}
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 
   return (
-    <div className="grid grid-cols-2 gap-4 items-stretch">
-      {/* Left: Liabilities + Equity */}
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden flex flex-col min-h-full">
-        <div className={`${thCls} text-left flex items-center justify-between shrink-0`}>
-          <span>Liabilities & Capital</span>
-          <span>Amount (Rs.)</span>
+    <FinancialStatementShell>
+      <div className={fs.unifiedThead}>
+        <div className="fs-unified-thead__side">
+          <span>Liabilities</span>
+          <span>Notes No.</span>
+          <span>Amount (₹)</span>
         </div>
-        <div className="flex-1 flex flex-col min-h-0">
-          {bs.liabilitiesEquity.map(renderSection)}
-          {bs.plAdjustedAmount !== 0 && (
-            <div className="flex items-center justify-between px-3 py-1.5 bg-yellow-50 border-t border-yellow-200">
-              <span className="text-[11px] text-amber-700">
-                Profit & Loss Adjusted <span className="text-[9px]">[screen only, not printed]</span>
-              </span>
-              <span className="text-[11px] font-mono text-amber-700">
-                {fmt(Math.abs(bs.plAdjustedAmount))}
-              </span>
-            </div>
-          )}
-        </div>
-        <div className="flex items-center justify-between px-3 py-2.5 bg-[#1557b0] text-white shrink-0 mt-auto">
-          <span className="text-[12px] font-bold">TOTAL</span>
-          <span className="text-[13px] font-mono font-bold">
-            {fmt(bs.totalLiabilitiesEquity + Math.abs(bs.plAdjustedAmount))}
-          </span>
-        </div>
-      </div>
-
-      {/* Right: Assets */}
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden flex flex-col min-h-full">
-        <div className={`${thCls} text-left flex items-center justify-between shrink-0`}>
+        <div className="fs-unified-thead__side">
           <span>Assets</span>
-          <span>Amount (Rs.)</span>
-        </div>
-        <div className="flex-1 flex flex-col min-h-0">{bs.assets.map(renderSection)}</div>
-        <div className="flex items-center justify-between px-3 py-2.5 bg-[#1557b0] text-white shrink-0 mt-auto">
-          <span className="text-[12px] font-bold">TOTAL</span>
-          <span className="text-[13px] font-mono font-bold">{fmt(bs.totalAssets)}</span>
+          <span>Notes No.</span>
+          <span>Amount (₹)</span>
         </div>
       </div>
-    </div>
+      <div className={fs.tformatGrid}>
+        {renderSide(bs.liabilitiesEquity, bs.totalLiabilitiesEquity, "Liabilities")}
+        {renderSide(bs.assets, bs.totalAssets, "Assets")}
+      </div>
+    </FinancialStatementShell>
   );
 }
 
@@ -493,83 +595,93 @@ function VerticalBS({
   options: BSOptions;
   onDrillDown: (id: string, name: string, isAccount: boolean) => void;
 }) {
+  const colCount = 2 + (options.showPreviousYear ? 1 : 0) + (options.showPercentage ? 1 : 0);
+
   return (
-    <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-      <div className="px-3 py-2 bg-[#f5f6fa] border-b border-gray-200 flex items-center justify-between">
-        <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
-          Particulars
-        </span>
-        <div className="flex gap-4">
-          {options.showPreviousYear && (
-            <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-500 w-28 text-right">
-              Previous year
-            </span>
-          )}
-          <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-500 w-28 text-right">
-            Amount (Rs.)
-          </span>
-        </div>
-      </div>
-
-      {/* Equity + Liabilities */}
-      <div className="px-3 py-1.5 bg-[#eef2ff] border-b border-blue-100">
-        <span className="text-[10px] font-semibold uppercase tracking-wide text-[#1557b0]">
-          I. Equity and liabilities
-        </span>
-      </div>
-      {bs.liabilitiesEquity.map((sec) => (
-        <div key={sec.id}>
-          <div className="px-3 py-1 bg-gray-50 border-b border-gray-100">
-            <span className="text-[11px] font-semibold text-gray-700 uppercase">{sec.caption}</span>
-          </div>
-          {sec.rows.map((row: any, ri: number) => (
-            <BSRow
-              key={ri}
-              row={row}
-              onDrillDown={onDrillDown}
-              options={options}
-              showSecond={options.showSecondLevel}
-            />
+    <FinancialStatementShell>
+      <table className={fs.table}>
+        <thead>
+          <tr className={fs.thead}>
+            <th className={fs.theadCell}>Particulars</th>
+            <th className={`${fs.theadCell} text-center`} style={{ width: 56 }}>
+              Notes No.
+            </th>
+            {options.showPreviousYear && (
+              <th className={`${fs.theadCell} text-right`}>Previous Year (₹)</th>
+            )}
+            <th className={`${fs.theadCell} text-right`} style={{ width: 140 }}>
+              Amount (₹)
+            </th>
+            {options.showPercentage && (
+              <th className={`${fs.theadCell} text-right`} style={{ width: 56 }}>
+                %
+              </th>
+            )}
+          </tr>
+        </thead>
+        <tbody>
+          <tr className={fs.sectionHead}>
+            <td colSpan={colCount}>I. Equity and Liabilities</td>
+          </tr>
+          {bs.liabilitiesEquity.map((sec) => (
+            <React.Fragment key={sec.id}>
+              <tr className={fs.sectionHead}>
+                <td colSpan={colCount}>{sec.caption}</td>
+              </tr>
+              {sec.rows.map((row: any, ri: number) => (
+                <BSRowTr
+                  key={ri}
+                  row={row}
+                  onDrillDown={onDrillDown}
+                  options={options}
+                  showSecond={options.showSecondLevel}
+                  layout="vertical"
+                />
+              ))}
+              <tr className={fs.subtotalRow}>
+                <td className={fs.cellParticulars}>Total {sec.caption}</td>
+                <td className={fs.cellNote} />
+                {options.showPreviousYear && <td className={fs.cellAmount}>—</td>}
+                <td className={fs.cellAmount}>{fmt(sec.total)}</td>
+                {options.showPercentage && <td className={fs.cellNote} />}
+              </tr>
+            </React.Fragment>
           ))}
-          <div className="flex items-center justify-between px-3 py-1.5 bg-[#f9fafb] border-t border-gray-200">
-            <span className="text-[12px] font-bold text-gray-700">Total {sec.caption}</span>
-            <span className="text-[12px] font-mono font-bold">{fmt(sec.total)}</span>
-          </div>
-        </div>
-      ))}
+          <tr className={fs.subtotalRow}>
+            <td className={fs.cellParticulars}>Total Liabilities & Equity</td>
+            <td className={fs.cellNote} />
+            {options.showPreviousYear && <td className={fs.cellAmount}>—</td>}
+            <td className={fs.cellAmount}>{fmt(bs.totalLiabilitiesEquity)}</td>
+            {options.showPercentage && <td className={fs.cellNote} />}
+          </tr>
 
-      <div className="flex items-center justify-between px-3 py-2 bg-[#eef2ff] border-y border-blue-100">
-        <span className="text-[12px] font-bold text-[#1557b0]">Total Liabilities & Equity</span>
-        <span className="text-[13px] font-mono font-bold text-[#1557b0]">
-          {fmt(bs.totalLiabilitiesEquity)}
-        </span>
-      </div>
-
-      {/* Assets */}
-      <div className="px-3 py-1.5 bg-[#eef2ff] border-b border-blue-100 mt-2">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-[#1557b0]">
-          II. ASSETS
-        </span>
-      </div>
-      {bs.assets.map((sec) => (
-        <div key={sec.id}>
-          {sec.rows.map((row: any, ri: number) => (
-            <BSRow
-              key={ri}
-              row={row}
-              onDrillDown={onDrillDown}
-              options={options}
-              showSecond={options.showSecondLevel}
-            />
+          <tr className={fs.sectionHead}>
+            <td colSpan={colCount}>II. Assets</td>
+          </tr>
+          {bs.assets.map((sec) => (
+            <React.Fragment key={sec.id}>
+              {sec.rows.map((row: any, ri: number) => (
+                <BSRowTr
+                  key={ri}
+                  row={row}
+                  onDrillDown={onDrillDown}
+                  options={options}
+                  showSecond={options.showSecondLevel}
+                  layout="vertical"
+                />
+              ))}
+            </React.Fragment>
           ))}
-        </div>
-      ))}
-
-      <div className="flex items-center justify-between px-3 py-2.5 bg-[#1557b0] text-white">
-        <span className="text-[12px] font-bold">TOTAL ASSETS</span>
-        <span className="text-[13px] font-mono font-bold">{fmt(bs.totalAssets)}</span>
-      </div>
-    </div>
+          <tr className={fs.grandTotalRow}>
+            <td className={fs.cellParticulars}>TOTAL ASSETS</td>
+            <td className={fs.cellNote} />
+            {options.showPreviousYear && <td className={fs.cellAmount}>—</td>}
+            <td className={fs.cellAmount}>{fmt(bs.totalAssets)}</td>
+            {options.showPercentage && <td className={fs.cellNote} />}
+          </tr>
+        </tbody>
+      </table>
+    </FinancialStatementShell>
   );
 }
 
@@ -647,9 +759,7 @@ function GroupSummaryView({
                 <tr
                   key={i}
                   className={`transition-colors border-l-[3px] border-l-transparent ${
-                    row.accountId
-                      ? "hover:bg-gray-50 hover:border-l-[#1557b0] cursor-pointer"
-                      : ""
+                    row.accountId ? "hover:bg-gray-50 hover:border-l-[#1557b0] cursor-pointer" : ""
                   }`}
                   onClick={() => row.accountId && onDrillAccount(row.accountId, row.caption)}
                 >
@@ -936,8 +1046,12 @@ function VoucherView({ voucherId }: { voucherId: string }) {
 // ─── Main Balance Sheet Component ─────────────────────────────────────────────
 
 export default function BalanceSheet() {
-  const { tenant, accounts, vouchers, currentFiscalYear } = useStore();
+  const { tenant, companySettings, accounts, vouchers, currentFiscalYear } = useStore();
   const fy = currentFiscalYear || tenant?.fiscalYears?.[0];
+  const companyName =
+    companySettings?.name || companySettings?.companyNameEn || tenant?.name || "Company";
+  const companyAddress = companySettings?.address;
+  const companyPan = companySettings?.panNumber || companySettings?.vatNumber;
 
   const [options, setOptions] = useState<BSOptions>(makeDefaultOptions(fy));
   const [showOptions, setShowOptions] = useState(false);
@@ -970,9 +1084,7 @@ export default function BalanceSheet() {
         setDrillState({ level: 0, path: [] });
       } catch (err) {
         console.error(err);
-        toast.error(
-          err instanceof Error ? err.message : "Failed to generate Balance Sheet",
-        );
+        toast.error(err instanceof Error ? err.message : "Failed to generate Balance Sheet");
       } finally {
         setLoading(false);
       }
@@ -1144,7 +1256,7 @@ export default function BalanceSheet() {
           <div className="bg-white border border-gray-200 rounded-md">
             <ReportEmptyState
               message="Balance sheet not generated"
-              hint='Click Options to configure the report and generate balances.'
+              hint="Click Options to configure the report and generate balances."
             />
           </div>
         ) : (
@@ -1184,7 +1296,9 @@ export default function BalanceSheet() {
                       bsData.isBalanced ? "text-green-700" : "text-red-700"
                     }`}
                   >
-                    {bsData.isBalanced ? "Balanced" : `Diff: Rs. ${fmt2(Math.abs(bsData.difference))}`}
+                    {bsData.isBalanced
+                      ? "Balanced"
+                      : `Diff: Rs. ${fmt2(Math.abs(bsData.difference))}`}
                   </p>
                 </div>
               </div>
@@ -1213,12 +1327,17 @@ export default function BalanceSheet() {
               </div>
             )}
 
-            {/* Print Header */}
-            <div className="print-only hidden mb-6 text-center">
-              <h2 className="text-[18px] font-bold uppercase">{tenant?.name}</h2>
-              <h3 className="text-[14px] font-semibold mt-1">Balance Sheet</h3>
-              <p className="text-[12px] mt-1">As at {options.toDate}</p>
-            </div>
+            {/* Statutory report header + body */}
+            {drillState.level === 0 && (bsData || nasData) && (
+              <FinancialStatementHeader
+                companyName={companyName}
+                companyNameNepali={companySettings?.companyNameNe || companySettings?.nameNepali}
+                address={companyAddress}
+                pan={companyPan}
+                reportTitle="Balance Sheet"
+                asAt={formatAsAtDate(options.toDate)}
+              />
+            )}
 
             {/* Navigation Breadcrumbs */}
             {drillState.level > 0 && (
@@ -1301,6 +1420,8 @@ export default function BalanceSheet() {
                 <VoucherView voucherId={drillState.voucherId} />
               )}
             </div>
+
+            {drillState.level === 0 && bsData && <FinancialStatementFooter />}
 
             {drillState.level === 0 && bsData && (
               <div className="mt-4 px-3 py-2 bg-white border border-gray-200 rounded-md text-[11px] text-gray-500 no-print flex flex-wrap items-center justify-center gap-x-3 gap-y-1">

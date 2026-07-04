@@ -18,8 +18,7 @@ import { generateId } from "../lib/db";
 import { useScreenF12 } from "../hooks/useF12Config";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 
-const th =
-  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
@@ -121,9 +120,7 @@ const LedgerMaster: React.FC = () => {
   const filteredAccounts = useMemo(
     () =>
       (accounts || []).filter(
-        (acc) =>
-          acc.isGroup === false &&
-          acc.name.toLowerCase().includes(searchTerm.toLowerCase()),
+        (acc) => acc.isGroup === false && acc.name.toLowerCase().includes(searchTerm.toLowerCase()),
       ),
     [accounts, searchTerm],
   );

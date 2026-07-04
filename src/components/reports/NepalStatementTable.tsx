@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import type { NepalStatementLine } from "../../lib/nepalFinancialStatements";
+import { fsClasses as fs } from "./FinancialStatementChrome";
 
 interface Props {
   rows: NepalStatementLine[];
@@ -31,12 +32,15 @@ const NepalStatementTable: React.FC<Props> = ({ rows, currentYearLabel, previous
       <React.Fragment key={row.id}>
         <tr
           className={[
-            row.isGrandTotal ? "bg-[#eef2ff] font-bold border-t-2 border-[#c7d2fe]" : "",
-            row.isTotal ? "bg-gray-50 font-semibold border-t border-gray-200" : "",
+            row.isGrandTotal ? fs.grandTotalRow : "",
+            row.isTotal ? fs.subtotalRow : "",
             child ? "bg-gray-50/50" : "",
-          ].join(" ")}
+            hasChildren ? fs.rowHover : "",
+          ]
+            .filter(Boolean)
+            .join(" ")}
         >
-          <td className="px-3 py-2.5 text-[12px] text-gray-700">
+          <td className={fs.cellParticulars}>
             <div
               className="flex items-center gap-1"
               style={{ paddingLeft: `${(row.indent || 0) * 18}px` }}
@@ -61,11 +65,11 @@ const NepalStatementTable: React.FC<Props> = ({ rows, currentYearLabel, previous
             </div>
           </td>
 
-          <td className="px-3 py-2.5 text-[12px] text-right font-mono">{money(row.currentYear)}</td>
-
-          <td className="px-3 py-2.5 text-[12px] text-right font-mono">
-            {money(row.previousYear)}
+          <td className={`${fs.cellAmount} ${row.isGrandTotal || row.isTotal ? "" : ""}`}>
+            {money(row.currentYear)}
           </td>
+
+          <td className={fs.cellAmount}>{money(row.previousYear)}</td>
         </tr>
 
         {expanded[row.id] && row.children?.map((childRow) => renderRow(childRow, true))}
@@ -74,18 +78,12 @@ const NepalStatementTable: React.FC<Props> = ({ rows, currentYearLabel, previous
   };
 
   return (
-    <table className="w-full border-collapse bg-white">
+    <table className={fs.table}>
       <thead>
-        <tr className="bg-[#f5f6fa] border-b border-gray-200">
-          <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-            Particulars
-          </th>
-          <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-            {currentYearLabel}
-          </th>
-          <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-            {previousYearLabel}
-          </th>
+        <tr className={fs.thead}>
+          <th className={fs.theadCell}>Particulars</th>
+          <th className={`${fs.theadCell} text-right`}>{currentYearLabel} (₹)</th>
+          <th className={`${fs.theadCell} text-right`}>{previousYearLabel} (₹)</th>
         </tr>
       </thead>
 

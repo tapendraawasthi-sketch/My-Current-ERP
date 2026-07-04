@@ -27,8 +27,7 @@ const TAB_META: Record<TabKey, { label: string; vt: VoucherType }> = {
   "purchase-return": { label: "Purchase returns", vt: VoucherType.PURCHASE_RETURN },
 };
 
-const th =
-  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
@@ -139,15 +138,7 @@ const BillingInvoice: React.FC = () => {
   };
 
   const exportCsv = () => {
-    const headers = [
-      "Invoice No",
-      "Date",
-      "Party",
-      "Grand Total",
-      "VAT",
-      "Payment",
-      "Status",
-    ];
+    const headers = ["Invoice No", "Date", "Party", "Grand Total", "VAT", "Payment", "Status"];
     const rows = searched.map((row) =>
       [
         row.invoiceNo,

@@ -1,7 +1,16 @@
 // @ts-nocheck
 import React, { useState, useEffect, useMemo } from "react";
 import { TrendingUp, TrendingDown, Download, Search } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, CartesianGrid } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
+  CartesianGrid,
+} from "recharts";
 import * as XLSX from "xlsx";
 import ReportEmptyState from "../components/ReportEmptyState";
 import { getDB } from "../lib/db";
@@ -53,7 +62,9 @@ function ProfitabilityTooltip({ active, payload, label }) {
       <div className="mt-1 space-y-1 text-gray-600">
         <div className="flex items-center justify-between gap-4">
           <span>Gross Margin</span>
-          <span className="font-semibold text-gray-800">{Number(payload[0]?.value || 0).toFixed(2)}%</span>
+          <span className="font-semibold text-gray-800">
+            {Number(payload[0]?.value || 0).toFixed(2)}%
+          </span>
         </div>
         <div className="flex items-center justify-between gap-4">
           <span>Revenue</span>
@@ -521,11 +532,15 @@ export default function ItemProfitabilityReport() {
                     Summary
                   </td>
                   <td className="px-3 py-2.5 text-right text-gray-500">-</td>
-                  <td className="px-3 py-2.5 text-right font-mono">{money(summary.totalRevenue)}</td>
+                  <td className="px-3 py-2.5 text-right font-mono">
+                    {money(summary.totalRevenue)}
+                  </td>
                   <td className="px-3 py-2.5 text-right text-gray-500">-</td>
                   <td className="px-3 py-2.5 text-right font-mono">{money(summary.totalCOGS)}</td>
                   <td className="px-3 py-2.5 text-right font-mono">{money(summary.totalGP)}</td>
-                  <td className={`px-3 py-2.5 text-right font-mono ${getMarginColorClass(summary.overallMargin)}`}>
+                  <td
+                    className={`px-3 py-2.5 text-right font-mono ${getMarginColorClass(summary.overallMargin)}`}
+                  >
                     {summary.overallMargin.toFixed(2)}%
                   </td>
                   <td className="px-3 py-2.5 text-center text-gray-500">-</td>

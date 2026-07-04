@@ -95,8 +95,7 @@ const DEFAULT_BILL_SUNDRIES: Omit<BillSundry, "id">[] = [
   },
 ];
 
-const th =
-  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
   "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
@@ -252,7 +251,9 @@ export default function BillSundryMaster() {
           ) : filtered.length === 0 ? (
             <div className="bg-white border border-gray-200 rounded-md">
               <ReportEmptyState
-                message={searchTerm ? "No bill sundries match your search" : "No bill sundries found"}
+                message={
+                  searchTerm ? "No bill sundries match your search" : "No bill sundries found"
+                }
                 hint={
                   searchTerm
                     ? "Try a different search term."
@@ -295,9 +296,7 @@ export default function BillSundryMaster() {
                         </span>
                       </td>
                       <td className={`${td} capitalize`}>{item.nature.replace(/_/g, " ")}</td>
-                      <td className={`${td} text-center`}>
-                        {item.affectCostInSale ? "✓" : "—"}
-                      </td>
+                      <td className={`${td} text-center`}>{item.affectCostInSale ? "✓" : "—"}</td>
                       <td className={`${td} text-center`}>
                         {item.affectCostInPurchase ? "✓" : "—"}
                       </td>
@@ -370,14 +369,22 @@ export default function BillSundryMaster() {
             <div className="grid grid-cols-1 gap-3">
               <div>
                 <label className={labelCls}>Bill sundry type</label>
-                <select value={F.type} onChange={(e) => setF("type", e.target.value)} className={inputCls}>
+                <select
+                  value={F.type}
+                  onChange={(e) => setF("type", e.target.value)}
+                  className={inputCls}
+                >
                   <option value={BillSundryType.ADDITIVE}>Additive (+) — increases bill</option>
                   <option value={BillSundryType.DEDUCTIVE}>Deductive (-) — decreases bill</option>
                 </select>
               </div>
               <div>
                 <label className={labelCls}>Nature</label>
-                <select value={F.nature} onChange={(e) => setF("nature", e.target.value)} className={inputCls}>
+                <select
+                  value={F.nature}
+                  onChange={(e) => setF("nature", e.target.value)}
+                  className={inputCls}
+                >
                   {Object.values(BillSundryNature).map((n) => (
                     <option key={n} value={n}>
                       {n.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
@@ -428,7 +435,10 @@ export default function BillSundryMaster() {
                 { key: "gstApplicable", label: "GST applicable" },
                 { key: "isActive", label: "Active" },
               ].map(({ key, label }) => (
-                <label key={key} className="flex items-center gap-2 cursor-pointer text-[12px] text-gray-700">
+                <label
+                  key={key}
+                  className="flex items-center gap-2 cursor-pointer text-[12px] text-gray-700"
+                >
                   <input
                     type="checkbox"
                     checked={!!(F as any)[key]}

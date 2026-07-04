@@ -75,7 +75,9 @@ export default function PayrollReports() {
   const activeEmployees = useMemo(() => employees.filter((e) => e.isActive), [employees]);
   const exportYear = selectedFiscalYear.split("/")[1] || "2081";
   const selectedFiscalYearLabel = useMemo(() => {
-    return fiscalYears.find((fy) => fy.id === selectedFiscalYear)?.yearBs || "No fiscal year selected";
+    return (
+      fiscalYears.find((fy) => fy.id === selectedFiscalYear)?.yearBs || "No fiscal year selected"
+    );
   }, [fiscalYears, selectedFiscalYear]);
 
   useEffect(() => {
@@ -455,7 +457,10 @@ export default function PayrollReports() {
             </thead>
             <tbody>
               {ssfData.map((row, idx) => (
-                <tr key={`${row.ssfNo}-${idx}`} className="border-b border-gray-100 hover:bg-gray-50">
+                <tr
+                  key={`${row.ssfNo}-${idx}`}
+                  className="border-b border-gray-100 hover:bg-gray-50"
+                >
                   <td className="px-3 py-2.5 text-[12px] font-mono text-gray-700">{row.ssfNo}</td>
                   <td className="px-3 py-2.5 text-[12px] text-gray-700">{row.name}</td>
                   <td className="px-3 py-2.5 text-[12px] text-gray-500">{row.department}</td>
@@ -538,7 +543,10 @@ export default function PayrollReports() {
             </thead>
             <tbody>
               {pfData.map((row, idx) => (
-                <tr key={`${row.code}-${idx}`} className="border-b border-gray-100 hover:bg-gray-50">
+                <tr
+                  key={`${row.code}-${idx}`}
+                  className="border-b border-gray-100 hover:bg-gray-50"
+                >
                   <td className="px-3 py-2.5 text-[12px] font-mono text-gray-700">{row.code}</td>
                   <td className="px-3 py-2.5 text-[12px] text-gray-700">{row.name}</td>
                   <td className={amountCellCls}>{money(row.basicSalary)}</td>
@@ -602,7 +610,10 @@ export default function PayrollReports() {
             </thead>
             <tbody>
               {citData.map((row, idx) => (
-                <tr key={`${row.name}-${idx}`} className="border-b border-gray-100 hover:bg-gray-50">
+                <tr
+                  key={`${row.name}-${idx}`}
+                  className="border-b border-gray-100 hover:bg-gray-50"
+                >
                   <td className="px-3 py-2.5 text-[12px] text-gray-700">{row.name}</td>
                   <td className={amountCellCls}>{money(row.basicSalary)}</td>
                   <td className={amountCellCls}>{money(row.citDeducted)}</td>
@@ -675,7 +686,8 @@ export default function PayrollReports() {
             <tbody>
               {installmentData.map((inst) => {
                 const isOverdue = new Date(inst.dueDate) < new Date();
-                const statusKind = inst.status === "paid" ? "success" : isOverdue ? "danger" : "warning";
+                const statusKind =
+                  inst.status === "paid" ? "success" : isOverdue ? "danger" : "warning";
 
                 return (
                   <tr key={inst.id} className="border-b border-gray-100 hover:bg-gray-50">
@@ -806,7 +818,10 @@ export default function PayrollReports() {
                       action: () => toggleComplianceStatus(month.name, "tds_dep"),
                     },
                   ].map((item) => (
-                    <div key={item.label} className="rounded-md border border-gray-200 bg-white p-2.5">
+                    <div
+                      key={item.label}
+                      className="rounded-md border border-gray-200 bg-white p-2.5"
+                    >
                       <div className="mb-2 flex items-center justify-between gap-2">
                         <span className="text-[12px] text-gray-700">{item.label}</span>
                         <span
@@ -892,8 +907,12 @@ export default function PayrollReports() {
               <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                 Active Employees
               </p>
-              <p className="mt-2 text-[18px] font-semibold text-gray-800">{activeEmployees.length}</p>
-              <p className="mt-1 text-[11px] text-gray-500">Included in payroll compliance reports</p>
+              <p className="mt-2 text-[18px] font-semibold text-gray-800">
+                {activeEmployees.length}
+              </p>
+              <p className="mt-1 text-[11px] text-gray-500">
+                Included in payroll compliance reports
+              </p>
             </div>
             <Users className="h-4 w-4 text-[#1557b0]" />
           </div>
@@ -902,14 +921,20 @@ export default function PayrollReports() {
           <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Gross Salary
           </p>
-          <p className="mt-2 text-[18px] font-semibold text-gray-800">{money(ssfTotals.grossSalary)}</p>
-          <p className="mt-1 text-[11px] text-gray-500">For {selectedMonth || "the selected month"}</p>
+          <p className="mt-2 text-[18px] font-semibold text-gray-800">
+            {money(ssfTotals.grossSalary)}
+          </p>
+          <p className="mt-1 text-[11px] text-gray-500">
+            For {selectedMonth || "the selected month"}
+          </p>
         </div>
         <div className="rounded-md border border-gray-200 bg-white p-4">
           <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Total SSF
           </p>
-          <p className="mt-2 text-[18px] font-semibold text-gray-800">{money(ssfTotals.totalSSF)}</p>
+          <p className="mt-2 text-[18px] font-semibold text-gray-800">
+            {money(ssfTotals.totalSSF)}
+          </p>
           <p className="mt-1 text-[11px] text-gray-500">Employee plus employer contribution</p>
         </div>
         <div className="rounded-md border border-gray-200 bg-white p-4">
@@ -921,7 +946,9 @@ export default function PayrollReports() {
               <p className="mt-2 text-[18px] font-semibold text-gray-800">
                 {complianceSummary.completed}/{complianceSummary.total}
               </p>
-              <p className="mt-1 text-[11px] text-gray-500">Tracked filing and deposit checkpoints</p>
+              <p className="mt-1 text-[11px] text-gray-500">
+                Tracked filing and deposit checkpoints
+              </p>
             </div>
             <ShieldCheck className="h-4 w-4 text-[#1557b0]" />
           </div>

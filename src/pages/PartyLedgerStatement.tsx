@@ -280,9 +280,7 @@ const PartyLedgerStatement: React.FC = () => {
               <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-gray-500">
                 Type
               </div>
-              <span
-                className="inline-flex rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 text-blue-700"
-              >
+              <span className="inline-flex rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 text-blue-700">
                 {selectedParty?.type}
               </span>
             </div>
@@ -328,7 +326,9 @@ const PartyLedgerStatement: React.FC = () => {
                   (Click to {summaryExpanded ? "Collapse" : "Expand"})
                 </span>
               </div>
-              <div className="text-xs font-semibold text-gray-600">{summaryExpanded ? "▲" : "▼"}</div>
+              <div className="text-xs font-semibold text-gray-600">
+                {summaryExpanded ? "▲" : "▼"}
+              </div>
             </button>
 
             {summaryExpanded && outstandingSummary && (
@@ -541,9 +541,7 @@ const PartyLedgerStatement: React.FC = () => {
                       <td className="px-3 py-2.5 text-[12px] font-semibold text-gray-800">
                         {row.voucherNo}
                         {row.invoiceRef && (
-                          <span className="ml-1 text-[10px] text-gray-500">
-                            ({row.invoiceRef})
-                          </span>
+                          <span className="ml-1 text-[10px] text-gray-500">({row.invoiceRef})</span>
                         )}
                       </td>
                       <td className="px-3 py-2.5 text-[12px] text-gray-700">{row.voucherType}</td>

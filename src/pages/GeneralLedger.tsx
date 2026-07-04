@@ -357,7 +357,9 @@ const GeneralLedger: React.FC = () => {
                 </button>
               ))}
               {filteredAccountList.length === 0 && (
-                <div className="px-3 py-4 text-[12px] text-gray-500 text-center">No accounts found.</div>
+                <div className="px-3 py-4 text-[12px] text-gray-500 text-center">
+                  No accounts found.
+                </div>
               )}
             </div>
           )}
@@ -467,7 +469,9 @@ const GeneralLedger: React.FC = () => {
                   )}
 
                   {show("voucherNo") && (
-                    <Td className="font-mono text-[#1557b0] font-medium">{row.voucher.voucherNo}</Td>
+                    <Td className="font-mono text-[#1557b0] font-medium">
+                      {row.voucher.voucherNo}
+                    </Td>
                   )}
                   {show("type") && <Td>{row.voucher.type}</Td>}
                   {show("particulars") && <Td>{row.opposite}</Td>}

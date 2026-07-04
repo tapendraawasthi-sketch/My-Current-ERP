@@ -29,8 +29,7 @@ function toBSDisplay(dateStr: string): string {
   }
 }
 
-const th =
-  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const thR = `${th} text-right`;
 const td = "px-3 py-2.5 text-[12px] text-gray-700";
 const tdR = `${td} font-mono text-right`;

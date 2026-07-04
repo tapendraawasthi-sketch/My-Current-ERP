@@ -68,10 +68,7 @@ function getAccountNetBalance(
   return bal.credit + openingCr - (bal.debit + openingDr);
 }
 
-function toBSAmount(
-  netBalance: number,
-  side: "assets" | "liabilities" | "equity",
-): number {
+function toBSAmount(netBalance: number, side: "assets" | "liabilities" | "equity"): number {
   return side === "assets" ? -netBalance : netBalance;
 }
 
@@ -156,15 +153,7 @@ function collectSideRows(
       getParentName(root),
     );
     if (rootSide !== side) continue;
-    const row = buildNodeRow(
-      root,
-      side,
-      showZeroLedgers,
-      0,
-      balanceMap,
-      accountMap,
-      getParentName,
-    );
+    const row = buildNodeRow(root, side, showZeroLedgers, 0, balanceMap, accountMap, getParentName);
     if (row) rows.push(row);
   }
   return rows;
@@ -431,8 +420,7 @@ export async function computeBalanceSheet(options: BSOptions): Promise<BSComputa
     });
   }
 
-  const sumRows = (rows: BSRowData[]) =>
-    rows.reduce((s, r) => s + (r.amount || 0), 0);
+  const sumRows = (rows: BSRowData[]) => rows.reduce((s, r) => s + (r.amount || 0), 0);
 
   const liabilitiesSection: BSSection = {
     id: "liabilities",

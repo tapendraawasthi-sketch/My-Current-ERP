@@ -8,7 +8,18 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
-import { Plus, Download, Edit2, Trash2, X, AlertTriangle, Package, Hash, Search, Save } from "lucide-react";
+import {
+  Plus,
+  Download,
+  Edit2,
+  Trash2,
+  X,
+  AlertTriangle,
+  Package,
+  Hash,
+  Search,
+  Save,
+} from "lucide-react";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -439,13 +450,35 @@ export default function BatchManagement() {
               <>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 no-print">
                   {[
-                    { label: "Total batches", value: batchStats.total, color: "text-gray-800", isAmt: false },
-                    { label: "Expired", value: batchStats.expired, color: "text-red-600", isAmt: false },
-                    { label: "Expiring (30d)", value: batchStats.nearExpiry, color: "text-amber-700", isAmt: false },
-                    { label: "Total value", value: batchStats.totalValue, color: "text-[#1557b0]", isAmt: true },
+                    {
+                      label: "Total batches",
+                      value: batchStats.total,
+                      color: "text-gray-800",
+                      isAmt: false,
+                    },
+                    {
+                      label: "Expired",
+                      value: batchStats.expired,
+                      color: "text-red-600",
+                      isAmt: false,
+                    },
+                    {
+                      label: "Expiring (30d)",
+                      value: batchStats.nearExpiry,
+                      color: "text-amber-700",
+                      isAmt: false,
+                    },
+                    {
+                      label: "Total value",
+                      value: batchStats.totalValue,
+                      color: "text-[#1557b0]",
+                      isAmt: true,
+                    },
                   ].map((k) => (
                     <div key={k.label} className="bg-white border border-gray-200 rounded-md p-3">
-                      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">{k.label}</p>
+                      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        {k.label}
+                      </p>
                       <p className={`text-[12px] font-bold font-mono mt-1 ${k.color}`}>
                         {k.isAmt ? "Rs. " + fmt(k.value as number) : k.value}
                       </p>
@@ -457,10 +490,14 @@ export default function BatchManagement() {
                   <div className="bg-red-50 border border-red-200 rounded-md p-3 mb-4 flex items-center gap-2 text-[12px] text-red-800 no-print">
                     <AlertTriangle className="h-4 w-4 shrink-0" />
                     {batchStats.expired > 0 && (
-                      <span><strong>{batchStats.expired} batches have expired.</strong> </span>
+                      <span>
+                        <strong>{batchStats.expired} batches have expired.</strong>{" "}
+                      </span>
                     )}
                     {batchStats.nearExpiry > 0 && (
-                      <span><strong>{batchStats.nearExpiry} batches expiring within 30 days.</strong></span>
+                      <span>
+                        <strong>{batchStats.nearExpiry} batches expiring within 30 days.</strong>
+                      </span>
                     )}
                   </div>
                 )}
@@ -478,7 +515,11 @@ export default function BatchManagement() {
                   </div>
                   <div>
                     <label className={labelCls}>Expiry status</label>
-                    <select value={filterExpiry} onChange={(e) => setFilterExpiry(e.target.value)} className={inputCls}>
+                    <select
+                      value={filterExpiry}
+                      onChange={(e) => setFilterExpiry(e.target.value)}
+                      className={inputCls}
+                    >
                       <option value="ALL">All</option>
                       <option value="expired">Expired</option>
                       <option value="30days">Expiring in 30 days</option>
@@ -529,36 +570,73 @@ export default function BatchManagement() {
                                 <td className="px-3 py-2.5 text-[12px] font-mono font-medium text-gray-800 border-b border-gray-100">
                                   {batch.batchNo}
                                   {batch.supplierBatchNo && (
-                                    <div className="text-[10px] text-gray-400 font-normal">Supplier: {batch.supplierBatchNo}</div>
+                                    <div className="text-[10px] text-gray-400 font-normal">
+                                      Supplier: {batch.supplierBatchNo}
+                                    </div>
                                   )}
                                 </td>
                                 <td className={tdCls}>{batch.itemName}</td>
                                 <td className={tdCls}>{batch.manufacturingDate || "—"}</td>
-                                <td className={`${tdCls} ${isExpired ? "text-red-600 font-medium" : isNearExpiry ? "text-amber-700 font-medium" : ""}`}>
+                                <td
+                                  className={`${tdCls} ${isExpired ? "text-red-600 font-medium" : isNearExpiry ? "text-amber-700 font-medium" : ""}`}
+                                >
                                   {batch.expiryDate || "—"}
                                 </td>
                                 <td className="px-3 py-2.5 text-[12px] border-b border-gray-100">
                                   {batch.expiryDate ? (
-                                    <span className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${isExpired ? "bg-red-100 text-red-700" : isNearExpiry ? "bg-amber-100 text-amber-700" : "bg-green-100 text-green-700"}`}>
+                                    <span
+                                      className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${isExpired ? "bg-red-100 text-red-700" : isNearExpiry ? "bg-amber-100 text-amber-700" : "bg-green-100 text-green-700"}`}
+                                    >
                                       {isExpired ? "Expired" : `${days}d`}
                                     </span>
-                                  ) : "—"}
+                                  ) : (
+                                    "—"
+                                  )}
                                 </td>
                                 <td className={tdCls}>{batch.purchaseDate}</td>
                                 <td className={amtCls}>{fmt(batch.purchaseRate)}</td>
-                                <td className={`${amtCls} font-medium ${(batch.currentQty || 0) <= 0 ? "text-red-500" : "text-gray-800"}`}>{fmt(batch.currentQty)}</td>
-                                <td className={`${amtCls} text-[#1557b0] font-medium`}>{fmt(value)}</td>
+                                <td
+                                  className={`${amtCls} font-medium ${(batch.currentQty || 0) <= 0 ? "text-red-500" : "text-gray-800"}`}
+                                >
+                                  {fmt(batch.currentQty)}
+                                </td>
+                                <td className={`${amtCls} text-[#1557b0] font-medium`}>
+                                  {fmt(value)}
+                                </td>
                                 <td className="px-3 py-2.5 border-b border-gray-100">
-                                  <span className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${isExpired ? "bg-red-100 text-red-700" : (batch.currentQty || 0) <= 0 ? "bg-gray-100 text-gray-700" : "bg-green-100 text-green-700"}`}>
-                                    {isExpired ? "Expired" : (batch.currentQty || 0) <= 0 ? "Empty" : "Active"}
+                                  <span
+                                    className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${isExpired ? "bg-red-100 text-red-700" : (batch.currentQty || 0) <= 0 ? "bg-gray-100 text-gray-700" : "bg-green-100 text-green-700"}`}
+                                  >
+                                    {isExpired
+                                      ? "Expired"
+                                      : (batch.currentQty || 0) <= 0
+                                        ? "Empty"
+                                        : "Active"}
                                   </span>
                                 </td>
                                 <td className="px-3 py-2.5 border-b border-gray-100 text-right">
                                   <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button type="button" className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50" onClick={(e) => { e.stopPropagation(); openBatchEdit(batch); }}>
+                                    <button
+                                      type="button"
+                                      className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        openBatchEdit(batch);
+                                      }}
+                                    >
                                       <Edit2 className="h-3.5 w-3.5" />
                                     </button>
-                                    <button type="button" className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50" onClick={async (e) => { e.stopPropagation(); if (confirm("Delete this batch?")) { await store.deleteBatch(batch.id); toast.success("Batch deleted"); } }}>
+                                    <button
+                                      type="button"
+                                      className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50"
+                                      onClick={async (e) => {
+                                        e.stopPropagation();
+                                        if (confirm("Delete this batch?")) {
+                                          await store.deleteBatch(batch.id);
+                                          toast.success("Batch deleted");
+                                        }
+                                      }}
+                                    >
                                       <Trash2 className="h-3.5 w-3.5" />
                                     </button>
                                   </div>
@@ -587,7 +665,9 @@ export default function BatchManagement() {
                     { label: "Damaged", value: snStats.damaged, color: "text-red-600" },
                   ].map((k) => (
                     <div key={k.label} className="bg-white border border-gray-200 rounded-md p-3">
-                      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">{k.label}</p>
+                      <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        {k.label}
+                      </p>
                       <p className={`text-[12px] font-bold font-mono mt-1 ${k.color}`}>{k.value}</p>
                     </div>
                   ))}
@@ -597,13 +677,23 @@ export default function BatchManagement() {
                   <div className="flex-1 min-w-[180px] relative">
                     <label className={labelCls}>Search</label>
                     <Search className="h-3.5 w-3.5 absolute left-2.5 bottom-2 text-gray-400 pointer-events-none" />
-                    <input value={snSearch} onChange={(e) => setSnSearch(e.target.value)} placeholder="Serial no, item, customer..." className={`${inputCls} pl-8`} />
+                    <input
+                      value={snSearch}
+                      onChange={(e) => setSnSearch(e.target.value)}
+                      placeholder="Serial no, item, customer..."
+                      className={`${inputCls} pl-8`}
+                    />
                   </div>
                   <div>
                     <label className={labelCls}>Status</label>
                     <div className="flex rounded-md border border-gray-300 overflow-hidden">
                       {["ALL", "available", "sold", "returned", "damaged", "reserved"].map((s) => (
-                        <button key={s} type="button" onClick={() => setSnStatusFilter(s)} className={`h-8 px-2.5 text-[11px] font-medium capitalize transition-colors ${snStatusFilter === s ? "bg-[#1557b0] text-white" : "bg-white text-gray-600 hover:bg-gray-50"}`}>
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => setSnStatusFilter(s)}
+                          className={`h-8 px-2.5 text-[11px] font-medium capitalize transition-colors ${snStatusFilter === s ? "bg-[#1557b0] text-white" : "bg-white text-gray-600 hover:bg-gray-50"}`}
+                        >
                           {s === "ALL" ? "All" : s}
                         </button>
                       ))}
@@ -613,7 +703,10 @@ export default function BatchManagement() {
 
                 {filteredSNs.length === 0 ? (
                   <div className="bg-white border border-gray-200 rounded-md">
-                    <ReportEmptyState message="No serial numbers found" hint='Click "Add serial no." to register a unit.' />
+                    <ReportEmptyState
+                      message="No serial numbers found"
+                      hint='Click "Add serial no." to register a unit.'
+                    />
                   </div>
                 ) : (
                   <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
@@ -635,27 +728,62 @@ export default function BatchManagement() {
                         </thead>
                         <tbody>
                           {filteredSNs.map((sn: any) => (
-                            <tr key={sn.id} className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]" onClick={() => openSNEdit(sn)}>
-                              <td className="px-3 py-2.5 text-[12px] font-mono font-medium text-gray-800 border-b border-gray-100">{sn.serialNo}</td>
+                            <tr
+                              key={sn.id}
+                              className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                              onClick={() => openSNEdit(sn)}
+                            >
+                              <td className="px-3 py-2.5 text-[12px] font-mono font-medium text-gray-800 border-b border-gray-100">
+                                {sn.serialNo}
+                              </td>
                               <td className={tdCls}>{sn.itemName}</td>
                               <td className="px-3 py-2.5 border-b border-gray-100">
-                                <span className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${snStatusColors[sn.status] || "bg-gray-100 text-gray-700"}`}>{sn.status}</span>
+                                <span
+                                  className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${snStatusColors[sn.status] || "bg-gray-100 text-gray-700"}`}
+                                >
+                                  {sn.status}
+                                </span>
                               </td>
                               <td className={tdCls}>{sn.purchaseDate || "—"}</td>
-                              <td className={amtCls}>{sn.purchaseRate ? fmt(sn.purchaseRate) : "—"}</td>
+                              <td className={amtCls}>
+                                {sn.purchaseRate ? fmt(sn.purchaseRate) : "—"}
+                              </td>
                               <td className={tdCls}>{sn.soldDate || "—"}</td>
                               <td className={tdCls}>{sn.soldToPartyName || "—"}</td>
-                              <td className="px-3 py-2.5 text-[11px] font-mono text-gray-600 border-b border-gray-100">{sn.invoiceNo || "—"}</td>
-                              <td className={`${tdCls} ${sn.warrantyExpiry && daysUntilExpiry(sn.warrantyExpiry) <= 0 ? "text-red-600" : ""}`}>
+                              <td className="px-3 py-2.5 text-[11px] font-mono text-gray-600 border-b border-gray-100">
+                                {sn.invoiceNo || "—"}
+                              </td>
+                              <td
+                                className={`${tdCls} ${sn.warrantyExpiry && daysUntilExpiry(sn.warrantyExpiry) <= 0 ? "text-red-600" : ""}`}
+                              >
                                 {sn.warrantyExpiry || "—"}
-                                {sn.warrantyExpiry && daysUntilExpiry(sn.warrantyExpiry) <= 0 && " (Expired)"}
+                                {sn.warrantyExpiry &&
+                                  daysUntilExpiry(sn.warrantyExpiry) <= 0 &&
+                                  " (Expired)"}
                               </td>
                               <td className="px-3 py-2.5 border-b border-gray-100 text-right">
                                 <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                  <button type="button" className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50" onClick={(e) => { e.stopPropagation(); openSNEdit(sn); }}>
+                                  <button
+                                    type="button"
+                                    className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      openSNEdit(sn);
+                                    }}
+                                  >
                                     <Edit2 className="h-3.5 w-3.5" />
                                   </button>
-                                  <button type="button" className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50" onClick={async (e) => { e.stopPropagation(); if (confirm("Delete this serial number?")) { await store.deleteSerialNumber(sn.id); toast.success("Deleted"); } }}>
+                                  <button
+                                    type="button"
+                                    className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-red-600 hover:bg-red-50"
+                                    onClick={async (e) => {
+                                      e.stopPropagation();
+                                      if (confirm("Delete this serial number?")) {
+                                        await store.deleteSerialNumber(sn.id);
+                                        toast.success("Deleted");
+                                      }
+                                    }}
+                                  >
                                     <Trash2 className="h-3.5 w-3.5" />
                                   </button>
                                 </div>
@@ -678,8 +806,16 @@ export default function BatchManagement() {
         {showBatchModal && (
           <div className="w-full lg:w-[420px] xl:w-[480px] shrink-0 flex flex-col bg-white border-l border-gray-200 min-h-0">
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 shrink-0">
-              <span className="text-[13px] font-semibold text-gray-800">{editingBatchId ? "Edit batch" : "Add batch / lot"}</span>
-              <button type="button" className="text-gray-500 hover:text-gray-700" onClick={resetBatchForm}><X className="h-4 w-4" /></button>
+              <span className="text-[13px] font-semibold text-gray-800">
+                {editingBatchId ? "Edit batch" : "Add batch / lot"}
+              </span>
+              <button
+                type="button"
+                className="text-gray-500 hover:text-gray-700"
+                onClick={resetBatchForm}
+              >
+                <X className="h-4 w-4" />
+              </button>
             </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
               <div className="grid grid-cols-2 gap-3">
@@ -830,7 +966,11 @@ export default function BatchManagement() {
               <span className="text-[13px] font-semibold text-gray-800">
                 {editingSNId ? "Edit serial number" : "Add serial number"}
               </span>
-              <button type="button" className="text-gray-500 hover:text-gray-700" onClick={resetSNForm}>
+              <button
+                type="button"
+                className="text-gray-500 hover:text-gray-700"
+                onClick={resetSNForm}
+              >
                 <X className="h-4 w-4" />
               </button>
             </div>
