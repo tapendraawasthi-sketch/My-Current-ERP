@@ -3,6 +3,7 @@ import { KHATA_INTENT_LABELS } from "./types";
 import {
   CHAT_BALANCE,
   CHAT_BYE,
+  CHAT_CASUAL,
   CHAT_GREETING,
   CHAT_HELP,
   CHAT_THANKS,
@@ -10,7 +11,7 @@ import {
 } from "./nepaliLanguage";
 import { normalizeNepaliText } from "./normalizeNepali";
 
-export type ChatIntent = "greeting" | "thanks" | "help" | "balance" | "bye" | "unknown";
+export type ChatIntent = "greeting" | "casual" | "thanks" | "help" | "balance" | "bye" | "unknown";
 
 export interface LedgerBalanceSnapshot {
   udhaarOut: number;
@@ -21,6 +22,7 @@ export function detectChatIntent(text: string): ChatIntent | null {
   const n = normalizeNepaliText(text);
   if (!n) return null;
   if (CHAT_GREETING.test(n)) return "greeting";
+  if (CHAT_CASUAL.test(n.trim())) return "casual";
   if (CHAT_THANKS.test(n)) return "thanks";
   if (CHAT_HELP.test(n)) return "help";
   if (CHAT_BALANCE.test(n)) return "balance";
@@ -54,6 +56,15 @@ export function replyGreeting(): string {
     "Nepali, Roman Nepali, aru Hindi-mixed bhasa ma lekhna milcha. " +
     "Jastai: `Ram lai 500 udhaar diye`, `aaja 200 ko nagad bikri vayo`, `Shyam le 200 tiryo`.\n\n" +
     "Entry confirm garnu agadi card dekhauchu. `madat` bhannu bhaye udaharan dinchu."
+  );
+}
+
+export function replyCasual(): string {
+  return (
+    "Thik cha! Ma tayar chu.\n\n" +
+    "Khata entry garna sidhai lekhna milcha — jastai `Ram lai 500 udhaar diye`, " +
+    "`aaja 200 ko nagad bikri vayo`, `Shyam le 200 tiryo`.\n\n" +
+    "Udaharan chaiyo bhane `madat` bhannus."
   );
 }
 
@@ -138,6 +149,8 @@ export function buildChatReply(intent: ChatIntent, balance?: LedgerBalanceSnapsh
   switch (intent) {
     case "greeting":
       return replyGreeting();
+    case "casual":
+      return replyCasual();
     case "thanks":
       return replyThanks();
     case "help":

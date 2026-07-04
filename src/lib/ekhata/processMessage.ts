@@ -4,13 +4,9 @@ import {
   buildParseReply,
   detectChatIntent,
   isLikelyKhataEntry,
+  replyUnknownChat,
   type LedgerBalanceSnapshot,
 } from "./conversationEngine";
-import {
-  askEKhataLlm,
-  checkEKhataLlmStatus,
-  getEKhataSessionId,
-} from "./ekhataLlmClient";
 import { normalizeNepaliText } from "./normalizeNepali";
 import type { KhataConfirmationCard, KhataParseResult } from "./types";
 
@@ -80,6 +76,24 @@ export function processEKhataMessage(
     };
   }
 
+  if (!isLikelyKhataEntry(normalizedText)) {
+    const fallbackChat = detectChatIntent(normalizedText);
+    if (fallbackChat) {
+      return {
+        kind: "chat",
+        reply: buildChatReply(fallbackChat, options.balance),
+        normalizedText,
+        engine: "rules",
+      };
+    }
+    return {
+      kind: "chat",
+      reply: replyUnknownChat(),
+      normalizedText,
+      engine: "rules",
+    };
+  }
+
   if (chatIntent) {
     return {
       kind: "chat",
@@ -91,7 +105,7 @@ export function processEKhataMessage(
 
   return {
     kind: "chat",
-    reply: buildParseReply(parseResult),
+    reply: replyUnknownChat(),
     normalizedText,
     engine: "rules",
   };
@@ -109,6 +123,7 @@ export async function processEKhataMessageAsync(
 
   if (preferLlm) {
     try {
+      const { askEKhataLlm, checkEKhataLlmStatus, getEKhataSessionId } = await import("./ekhataLlmClient");
       const status = await checkEKhataLlmStatus();
       if (status.khataLlm) {
         const sessionId = getEKhataSessionId();
@@ -148,4 +163,7 @@ export async function processEKhataMessageAsync(
   return processEKhataMessage(rawText, options);
 }
 
-export { checkEKhataLlmStatus };
+export async function checkEKhataLlmStatus() {
+  const { checkEKhataLlmStatus: check } = await import("./ekhataLlmClient");
+  return check();
+}

@@ -116,29 +116,31 @@ function parseAmountWords(text: string): number | null {
   return found ? total : null;
 }
 
-function extractParty(text: string): string | null {
-  const soft = normalizeUnicodeDigits(text)
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s\u0900-\u097F.]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-  if (!soft) return null;
-
-  const laiMatch = soft.match(/\b([a-zA-Z\u0900-\u097F][a-zA-Z\u0900-\u097F\s]{0,30}?)\s+(?:lai|le)\b/i);
-  if (laiMatch) {
-    const partyTokens = laiMatch[1]
+function extractParty(displayText: string, normalizedText?: string): string | null {
+  for (const source of [displayText, normalizedText].filter(Boolean) as string[]) {
+    const soft = normalizeUnicodeDigits(source)
+      .toLowerCase()
       .trim()
-      .split(" ")
-      .filter((token) => !PARTY_STOPWORDS.has(token.toLowerCase()));
-    if (partyTokens.length) {
-      return partyTokens.map((t) => t.charAt(0).toUpperCase() + t.slice(1).toLowerCase()).join(" ");
-    }
-  }
+      .replace(/[^\w\s\u0900-\u097F.]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (!soft) continue;
 
-  const capitalized = text.match(/\b([A-Z][a-z]{1,30})\b/g) ?? [];
-  for (const name of capitalized) {
-    if (!PARTY_STOPWORDS.has(name.toLowerCase())) return name;
+    const laiMatch = soft.match(/\b([a-zA-Z\u0900-\u097F][a-zA-Z\u0900-\u097F\s]{0,30}?)\s+(?:lai|le|लाई|ले)\b/i);
+    if (laiMatch) {
+      const partyTokens = laiMatch[1]
+        .trim()
+        .split(" ")
+        .filter((token) => !PARTY_STOPWORDS.has(token.toLowerCase()));
+      if (partyTokens.length) {
+        return partyTokens.map((t) => t.charAt(0).toUpperCase() + t.slice(1).toLowerCase()).join(" ");
+      }
+    }
+
+    const capitalized = source.match(/\b([A-Z][a-z]{1,30})\b/g) ?? [];
+    for (const name of capitalized) {
+      if (!PARTY_STOPWORDS.has(name.toLowerCase())) return name;
+    }
   }
 
   return null;
@@ -201,6 +203,8 @@ function hasCashSaleCue(text: string): boolean {
 function hasCreditSaleCue(text: string): boolean {
   return (
     /\b(udhaar|udharo|udhar|credit|उधार)\b/i.test(text) ||
+    /\b(udhaar|udharo|udhar)\s+becheko\b/i.test(text) ||
+    /\bbecheko\b.*\b(udhaar|udharo|udhar)\b/i.test(text) ||
     (/\b(diye|die|diya|diae|दिए)\b/i.test(text) && /\b(lai|le)\b/i.test(text))
   );
 }
@@ -243,11 +247,32 @@ function needsPartyRoleClarification(text: string): boolean {
   return false;
 }
 
+function needsPartyName(intent: KhataIntent, party: string | null): boolean {
+  if (party) return false;
+  return intent === "khata_credit_sale" || intent === "khata_payment_in" || intent === "khata_payment_out";
+}
+
+function partyClarifyingQuestion(intent: KhataIntent): string {
+  switch (intent) {
+    case "khata_credit_sale":
+      return "Kaslaai udharo diye? Party ko naam sahit lekhnu hola. Udaharan: Ram lai 500 udharo becheko";
+    case "khata_payment_in":
+      return "Kasle paisa tiryo? Party ko naam lekhnu hola. Udaharan: Shyam le 200 tiryo";
+    case "khata_payment_out":
+      return "Kaslai payment diye? Party ko naam lekhnu hola. Udaharan: Gita lai 2000 payment gareko";
+    default:
+      return "Party ko naam chaincha. Feri lekhnu hola.";
+  }
+}
+
 function classifyIntent(text: string): KhataIntent | null {
   const q = text.trim();
   if (!q) return null;
 
   if (hasCreditSaleCue(q)) {
+    return "khata_credit_sale";
+  }
+  if (/\b(udhaar|udharo|udhar)\s+becheko\b/i.test(q) || /\bbecheko\b.*\b(udhaar|udharo|udhar)\b/i.test(q)) {
     return "khata_credit_sale";
   }
   if (hasPaymentInCue(q)) {
@@ -300,7 +325,11 @@ export function parseKhataMessage(rawText: string, preNormalized?: string): Khat
     return { clarifying_question: "Rakam kati ho? Number lekhnus." };
   }
 
-  const party = extractParty(displayText);
+  const party = extractParty(displayText, text);
+  if (needsPartyName(intent, party)) {
+    return { clarifying_question: partyClarifyingQuestion(intent) };
+  }
+
   const card: KhataConfirmationCard = {
     intent,
     party: party ?? null,

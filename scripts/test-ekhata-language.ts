@@ -45,6 +45,25 @@ check("help chat", help.kind === "chat" && help.reply.includes("udaharan"));
 const thanks = processEKhataMessage("dhanyabad");
 check("thanks chat", thanks.kind === "chat");
 
+const casual = processEKhataMessage("k xa");
+check("casual k xa", casual.kind === "chat" && casual.reply.includes("Thik cha"));
+
+const casual2 = processEKhataMessage("ke cha");
+check("casual ke cha", casual2.kind === "chat" && casual2.reply.includes("Thik cha"));
+
+// Credit sale without party asks for name
+const noParty = processEKhataMessage("500 ko udaro becheko");
+check(
+  "credit sale no party clarify",
+  noParty.kind === "clarify" && noParty.reply.includes("Kaslaai"),
+);
+
+const withParty = parseKhataMessage("Ram lai 500 udharo becheko");
+check(
+  "credit sale with party",
+  withParty.card?.intent === "khata_credit_sale" && withParty.card.party === "Ram",
+);
+
 // Entry beats greeting when transaction cues present
 const mixed = processEKhataMessage("namaste Ram lai 500 udhaar diye");
 check("mixed entry", mixed.kind === "entry" && mixed.card?.amount === 500);

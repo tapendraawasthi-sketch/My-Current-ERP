@@ -288,6 +288,9 @@ export const PHRASE_ALIASES: [string, string][] = [
   ["ke garna milcha", "help"],
   ["kasari entry garne", "help"],
   ["kasari lekhne", "help"],
+  ["udhaar becheko", "udhaar becheko"],
+  ["udharo becheko", "udhaar becheko"],
+  ["ko udhaar becheko", "ko udhaar becheko"],
 ];
 
 /** Canonical vocabulary grouped by meaning (for docs / future ML) */
@@ -310,6 +313,9 @@ export const VOCABULARY = {
 /** Greeting / chat triggers */
 export const CHAT_GREETING =
   /\b(namaste|namaskar|namaskaar|hello|hi|hey|good\s*(morning|evening|afternoon))\b/i;
+/** Casual Nepali small-talk (k xa, ke cha, kasto cha, etc.) */
+export const CHAT_CASUAL =
+  /^(?:k|ke|ki)\s*(?:xa|x|chha|cha|ho|huncha|hunu\s*huncha)(?:\s*ta)?$|^(?:kasto|kasari|kina)\s*(?:cha|chha|ho|huncha)(?:\s*ta)?$|^(?:sab|sabb?)\s*(?:thik|ramro)(?:\s*cha|\s*chha)?$|^(?:thik|ramro)\s*(?:cha|chha)(?:\s*ta)?$|^(?:hajur|hajurr?|ji)(?:\s*ji)?$/i;
 export const CHAT_THANKS = /\b(dhanyabad|dhanybaad|thanks|thank\s*you|shukriya)\b/i;
 export const CHAT_HELP =
   /\b(help|madat|sahayata|kasari|ke\s*garne|ke\s*garna|example|udaharan|sikau|siknus)\b/i;
