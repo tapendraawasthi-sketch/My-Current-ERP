@@ -3,6 +3,7 @@ import React, { useState, useMemo } from "react";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
 import { Download, Package, AlertTriangle } from "lucide-react";
+import { ReportEmptyState } from "../components/ReportEmptyState";
 import {
   computeStockSummary,
   mapConfigMethodToValuation,
@@ -119,6 +120,12 @@ export default function StockSummaryReport() {
 
   const displayData = viewMode === "critical_level" ? criticalItems : stockData;
   const sorted = [...displayData].sort((a, b) => a.name.localeCompare(b.name));
+  const hasDisplayRows =
+    viewMode === "group_wise"
+      ? stockData.length > 0
+      : viewMode === "critical_level"
+        ? criticalItems.length > 0
+        : sorted.length > 0;
 
   const inputCls =
     "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
@@ -132,7 +139,7 @@ export default function StockSummaryReport() {
             Closing stock — {valuationMethod.toUpperCase().replace("_", " ")} valuation
           </p>
         </div>
-        <button className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-md flex items-center gap-1.5 hover:bg-gray-50">
+        <button className="flex h-8 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 text-[12px] font-medium text-gray-700 hover:bg-gray-50">
           <Download className="h-3.5 w-3.5" /> Export
         </button>
       </div>
@@ -149,7 +156,7 @@ export default function StockSummaryReport() {
           { label: "Zero Stock", value: totals.zeroStockItems, color: "text-amber-600" },
           { label: "Critical Items", value: totals.criticalItems, color: "text-red-600" },
         ].map((stat) => (
-          <div key={stat.label} className="bg-white border border-gray-200 rounded-lg p-3">
+          <div key={stat.label} className="rounded-md border border-gray-200 bg-white p-3">
             <div className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">
               {stat.label}
             </div>
@@ -159,7 +166,7 @@ export default function StockSummaryReport() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white border border-gray-200 rounded-lg p-3 mb-4 flex items-center gap-3 flex-wrap">
+      <div className="mb-4 flex flex-wrap items-center gap-3 rounded-md border border-gray-200 bg-white p-3">
         <div className="flex gap-1">
           {(
             [
@@ -171,12 +178,12 @@ export default function StockSummaryReport() {
             <button
               key={key}
               onClick={() => setViewMode(key)}
-              className={`h-8 px-3 text-[12px] font-medium rounded-md transition-colors ${viewMode === key ? "bg-[#1557b0] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+              className={`h-8 rounded-md px-3 text-[12px] font-medium transition-colors ${viewMode === key ? "bg-[#1557b0] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
             >
               {label}
               {key === "critical_level" && totals.criticalItems > 0 && (
                 <span
-                  className={`ml-1.5 text-[10px] px-1.5 py-0.5 rounded ${viewMode === key ? "bg-white/20" : "bg-red-100 text-red-700"}`}
+                  className={`ml-1.5 rounded px-1.5 py-0.5 text-[10px] ${viewMode === key ? "bg-white/20" : "bg-red-100 text-red-700"}`}
                 >
                   {totals.criticalItems}
                 </span>
@@ -211,13 +218,27 @@ export default function StockSummaryReport() {
       </div>
 
       {/* Table */}
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-        {viewMode === "group_wise" ? (
+      <div className="overflow-hidden rounded-md border border-gray-200 bg-white">
+        {!hasDisplayRows ? (
+          <ReportEmptyState
+            icon={<Package className="mx-auto h-8 w-8 text-gray-300" />}
+            message={
+              viewMode === "critical_level"
+                ? "No items at critical stock levels."
+                : "No items to display"
+            }
+            hint={
+              viewMode === "critical_level"
+                ? "All active items are currently within the configured thresholds."
+                : "Adjust the date, search term, or zero-balance filter."
+            }
+          />
+        ) : viewMode === "group_wise" ? (
           Object.entries(grouped)
             .sort(([a], [b]) => a.localeCompare(b))
             .map(([group, groupItems]) => (
               <div key={group}>
-                <div className="px-4 py-2 bg-[#e8f0fe] border-b border-blue-200 font-semibold text-[12px] text-[#1557b0] flex justify-between">
+                <div className="flex justify-between border-b border-blue-200 bg-blue-50 px-4 py-2 text-[12px] font-semibold text-[#1557b0]">
                   <span>
                     {group} — {groupItems.length} items
                   </span>
@@ -229,55 +250,44 @@ export default function StockSummaryReport() {
               </div>
             ))
         ) : (
-          <>
-            {viewMode === "critical_level" && criticalItems.length === 0 && (
-              <div className="py-12 text-center">
-                <Package className="h-8 w-8 text-gray-300 mx-auto mb-2" />
-                <p className="text-[12px] text-gray-500">
-                  No items at critical stock levels. All stock levels are normal.
-                </p>
-              </div>
-            )}
-            <StockTable items={sorted} />
-          </>
+          <StockTable items={sorted} />
         )}
 
         {/* Grand Total */}
-        <div className="px-4 py-2.5 border-t-2 border-[#c7d2fe] bg-[#eef2ff] flex justify-between text-[12px] font-bold text-gray-800">
-          <span>
-            TOTAL — {viewMode === "critical_level" ? criticalItems.length : sorted.length} items
-          </span>
-          <span className="font-mono">
-            Rs.{" "}
-            {formatNumber(
-              (viewMode === "critical_level" ? criticalItems : sorted).reduce(
-                (s, i) => s + i.value,
-                0,
-              ),
-            )}
-          </span>
-        </div>
+        {hasDisplayRows && (
+          <div className="flex justify-between border-t-2 border-[#c7d2fe] bg-[#eef2ff] px-4 py-2.5 text-[12px] font-bold text-gray-800">
+            <span>
+              TOTAL — {viewMode === "critical_level" ? criticalItems.length : sorted.length} items
+            </span>
+            <span className="font-mono">
+              Rs.{" "}
+              {formatNumber(
+                (viewMode === "critical_level" ? criticalItems : sorted).reduce(
+                  (s, i) => s + i.value,
+                  0,
+                ),
+              )}
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
 function StockTable({ items }: { items: StockRow[] }) {
+  if (items.length === 0) {
+    return (
+      <ReportEmptyState
+        icon={<Package className="mx-auto h-8 w-8 text-gray-300" />}
+        message="No items to display"
+        hint="Adjust the date, search term, or zero-balance filter."
+      />
+    );
+  }
+
   return (
-    <table
-      className="report-table w-full"
-      style={{ borderCollapse: "collapse", tableLayout: "fixed" }}
-    >
-      <colgroup>
-        <col style={{ width: "10%" }} /> {/* Code */}
-        <col style={{ width: "25%" }} /> {/* Name */}
-        <col style={{ width: "15%" }} /> {/* Group */}
-        <col style={{ width: "8%" }} /> {/* Unit */}
-        <col style={{ width: "10%" }} /> {/* Qty */}
-        <col style={{ width: "10%" }} /> {/* Avg Rate */}
-        <col style={{ width: "12%" }} /> {/* Value */}
-        <col style={{ width: "10%" }} /> {/* Status */}
-      </colgroup>
+    <table className="report-table w-full table-fixed">
       <thead>
         <tr className="bg-[#f5f6fa] border-b border-gray-200">
           {[
@@ -292,11 +302,25 @@ function StockTable({ items }: { items: StockRow[] }) {
           ].map((h) => (
             <th
               key={h}
-              className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide"
-              style={{
-                textAlign:
-                  h.includes("Qty") || h.includes("Rate") || h.includes("Value") ? "right" : "left",
-              }}
+              className={`px-3 py-2.5 text-[10px] font-semibold uppercase tracking-wide text-gray-500 ${
+                h.includes("Qty") || h.includes("Rate") || h.includes("Value")
+                  ? "text-right"
+                  : "text-left"
+              } ${
+                h === "Code"
+                  ? "w-[10%]"
+                  : h === "Item Name"
+                    ? "w-[25%]"
+                    : h === "Group"
+                      ? "w-[15%]"
+                      : h === "Unit"
+                        ? "w-[8%]"
+                        : h === "Closing Qty" || h === "Avg Rate"
+                          ? "w-[10%]"
+                          : h === "Stock Value"
+                            ? "w-[12%]"
+                            : "w-[10%]"
+              }`}
             >
               {h}
             </th>
@@ -311,36 +335,29 @@ function StockTable({ items }: { items: StockRow[] }) {
           return (
             <tr
               key={item.id}
-              style={{
-                borderBottom: "1px solid #f3f4f6",
-                borderLeft: isAtReorder
-                  ? "3px solid #dc2626"
+              className={`group border-b border-gray-100 transition-colors hover:bg-gray-50 ${
+                isAtReorder
+                  ? "border-l-[3px] border-l-red-600 bg-red-50/60"
                   : isNearReorder
-                    ? "3px solid #d97706"
-                    : "3px solid transparent",
-                background: isAtReorder ? "#fef2f2" : "transparent",
-              }}
-              className="hover:bg-gray-50"
+                    ? "border-l-[3px] border-l-amber-600"
+                    : "border-l-[3px] border-l-transparent"
+              }`}
             >
               <td className="px-3 py-2.5 text-[11px] font-mono text-gray-500">
                 {item.code || "—"}
               </td>
-              <td style={{ padding: "7px 10px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+              <td className="px-3 py-2.5">
+                <div className="flex items-center gap-1.5">
                   {isAtReorder && (
                     <span
                       title="Stock at or below reorder level — replenishment required"
-                      style={{ fontSize: 12, flexShrink: 0 }}
+                      className="shrink-0 text-[12px] text-red-600"
                     >
                       ⚠
                     </span>
                   )}
                   <span
-                    style={{
-                      fontSize: 12,
-                      fontWeight: isAtReorder ? 700 : 400,
-                      color: isAtReorder ? "#991b1b" : "#111827",
-                    }}
+                    className={`text-[12px] ${isAtReorder ? "font-semibold text-red-800" : "text-gray-800"}`}
                   >
                     {item.name}
                   </span>
@@ -356,10 +373,7 @@ function StockTable({ items }: { items: StockRow[] }) {
               <td className="px-3 py-2.5 text-[12px] font-mono text-right text-gray-600">
                 {item.avgRate > 0 ? formatNumber(item.avgRate) : "—"}
               </td>
-              <td
-                className="px-3 py-2.5 text-[12px] font-mono text-right font-bold"
-                style={{ color: "#059669" }}
-              >
+              <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-green-700">
                 Rs. {formatNumber(item.value)}
               </td>
               <td className="px-3 py-2.5">
@@ -384,13 +398,6 @@ function StockTable({ items }: { items: StockRow[] }) {
             </tr>
           );
         })}
-        {items.length === 0 && (
-          <tr>
-            <td colSpan={8} className="py-8 text-center text-[12px] text-gray-500">
-              No items to display
-            </td>
-          </tr>
-        )}
       </tbody>
     </table>
   );
