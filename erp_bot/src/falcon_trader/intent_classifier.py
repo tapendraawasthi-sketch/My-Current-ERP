@@ -40,6 +40,15 @@ INTENT_LABELS = (
     "khata_stock_purchase",
     "khata_stock_sale_cogs",
     "khata_contra_cash_bank",
+    "khata_sales_return",
+    "khata_purchase_return",
+    "khata_customer_advance",
+    "khata_employee_advance",
+    "khata_opening_balance",
+    "khata_asset_disposal",
+    "khata_inventory_write_down",
+    "khata_commission_income",
+    "khata_rent_expense",
 )
 
 CA_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
@@ -55,7 +64,14 @@ CA_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ("khata_vat_purchase", re.compile(r"\bvat\s*(purchase|kharid|kineko)\b", re.I)),
     ("khata_tds_paid", re.compile(r"\btds\s*(paid|tiryo|remittance)\b", re.I)),
     ("khata_tds_deducted", re.compile(r"\b(tds\s*(deduct|kateko)|withholding\s*tax)\b", re.I)),
-    ("khata_salary_accrual", re.compile(r"\bsalary\s*accrual\b", re.I)),
+    ("khata_sales_return", re.compile(r"\b(sales\s*return|credit\s*note|saman\s*firta|firtayo|return\s+gare)\b", re.I)),
+    ("khata_purchase_return", re.compile(r"\b(purchase\s*return|debit\s*note|supplier\s*return)\b", re.I)),
+    ("khata_customer_advance", re.compile(r"\b(customer\s*advance|advance\s*(received|liyo|aayo)|unearned\s*revenue)\b", re.I)),
+    ("khata_employee_advance", re.compile(r"\b(employee\s*advance|staff\s*advance|talab\s*advance)\b", re.I)),
+    ("khata_opening_balance", re.compile(r"\b(opening\s*balance|opening\s*entry|suruwati\s*khata)\b", re.I)),
+    ("khata_commission_income", re.compile(r"\b(commission\s*(income|received|aayo|aamdani))\b", re.I)),
+    ("khata_rent_expense", re.compile(r"\b(rent\s*(expense|paid|tiryo)|bhaada|bhada)\b", re.I)),
+    ("khata_salary_accrual", re.compile(r"\b(salary\s*accrual|talab\s*provision|accrued\s*salary)\b", re.I)),
     ("khata_salary_payment", re.compile(r"\bsalary\s*(payment|diyo|tiryo|paid)\b", re.I)),
     ("khata_outstanding_expense", re.compile(r"\boutstanding\s*(expense|kharcha)\b", re.I)),
     ("khata_prepaid_expense", re.compile(r"\bprepaid\b", re.I)),
@@ -75,14 +91,15 @@ CA_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
 ]
 
 _CREDIT_SALE = re.compile(
-    r"\b(udhaar|udhar|credit)\b.*\b(becheko|beche|bikri|sale|sold|diye)\b|\b"
+    r"\b(udhaar|udhar|credit|on\s+account|on\s+tab)\b.*\b(becheko|beche|bikri|sale|sold|diye|extended|invoiced)\b|\b"
     r"(udhaar|udhar)\s+becheko\b|\b"
-    r"(diye|die|diya)\b.*\b(lai|le)\b",
+    r"(diye|die|diya)\b.*\blai\b",
     re.IGNORECASE,
 )
 
 _PAYMENT_IN = re.compile(
-    r"\b(tiryo|tireko|tira|payment\s+received|paisa\s+aayo|jama)\b",
+    r"\b(tiryo|tireko|tira|payment\s+received|paisa\s+aayo|jama|collected|settled)\b|"
+    r"\b(le|bata|from)\b.*\b(diyo|diye|tiryo|tireko|payo|aayo)\b",
     re.IGNORECASE,
 )
 
@@ -122,11 +139,13 @@ def classify(text: str, raw_text: str | None = None) -> str | None:
 
     for source in sources:
         if _CREDIT_SALE.search(source) and not _PURCHASE.search(source):
-            return "khata_credit_sale"
+            if not re.search(r"\b(tiryo|tireko|clear|collected)\b", source, re.I):
+                return "khata_credit_sale"
         if _PAYMENT_IN.search(source) and not re.search(
-            r"\b(interest|discount|rent|dividend)\s*(received|aayo)\b", source, re.I
+            r"\b(interest|discount|rent|dividend|commission)\s*(received|aayo)\b", source, re.I
         ):
-            return "khata_payment_in"
+            if not (re.search(r"\blai\b", source, re.I) and re.search(r"\b(diye|diyo)\b", source, re.I)):
+                return "khata_payment_in"
         if _CASH_SALE.search(source):
             return "khata_cash_sale"
         if _PURCHASE.search(source) and not re.search(r"\b(udhaar|udhar|credit)\b", source, re.I):

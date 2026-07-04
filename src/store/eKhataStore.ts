@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { confirmKhataEntry } from "../lib/ekhata/confirmKhata";
 import { replyCancel, replySaved } from "../lib/ekhata/conversationEngine";
+import { recordTrainingFeedback } from "../lib/ekhata/trainingFeedback";
 import {
   createConversationContext,
   processEKhataMessageAsync,
@@ -190,6 +191,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
         ],
       }));
       conversationContext = updateContextAfterConfirm(conversationContext, voucherNo);
+      recordTrainingFeedback(card, "confirmed");
     } catch (error) {
       set((s) => ({
         isLoading: false,
@@ -207,6 +209,8 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
   },
 
   cancelPending: () => {
+    const card = get().pendingCard;
+    if (card) recordTrainingFeedback(card, "cancelled");
     set((s) => ({
       pendingCard: null,
       messages: [

@@ -153,6 +153,28 @@ def khata_clear_session_endpoint(payload: dict) -> dict:
     return {"status": "ok", "session_id": sid or None}
 
 
+@app.get("/khata/training/stats")
+def khata_training_stats() -> dict:
+    """Return generated corpus line counts for training pipeline monitoring."""
+    from pathlib import Path
+    data_dir = ERP_PATH / "data" / "ekhata"
+    stats: dict = {"corpus_files": {}}
+    for name in (
+        "ca-training-corpus-generated.jsonl",
+        "lora-instruction-dataset.jsonl",
+        "domain-classifier-dataset.jsonl",
+    ):
+        path = data_dir / name
+        if path.exists():
+            lines = sum(1 for _ in path.open(encoding="utf-8"))
+            stats["corpus_files"][name] = lines
+        else:
+            stats["corpus_files"][name] = 0
+    stats["model"] = MODEL_NAME
+    stats["note"] = "Run npm run generate:ekhata-corpus to refresh"
+    return stats
+
+
 @app.post("/reindex")
 def reindex(background_tasks: BackgroundTasks) -> dict:
     background_tasks.add_task(embedder.ingest_all)

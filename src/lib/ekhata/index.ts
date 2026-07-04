@@ -79,6 +79,13 @@ export {
   updateContextAfterConfirm,
   updateContextAfterEntry,
 } from "./conversationState";
+export {
+  recordTrainingFeedback,
+  exportTrainingFeedbackAsJsonl,
+  downloadTrainingFeedbackExport,
+  getTrainingFeedbackCount,
+} from "./trainingFeedback";
+export type { TrainingFeedbackRecord, FeedbackLabel } from "./trainingFeedback";
 export type { ConversationState, EKhataConversationContext } from "./conversationState";
 export { searchWebReal, expandSearchQueries, formatRealSearchAnswer } from "./ekhataWebSearch";
 export type { RealSearchResult } from "./ekhataWebSearch";
