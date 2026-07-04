@@ -119,8 +119,37 @@ function foldDigits(text: string): string {
   return text.replace(/[०-९]/g, (ch) => NEPALI_DIGIT_MAP[ch] ?? ch);
 }
 
+/** English-dominant messages keep work verbs (sold/bought/received) for semantic NLU. */
+const ENGLISH_PRESERVE =
+  /\b(sold|bought|purchase|purchased|received|paid|payment|expense|salary|each|worth|from|for|today|yesterday|the|a|an)\b/i;
+
+const ENGLISH_VERB_ALIASES = new Set([
+  "sold",
+  "sale",
+  "sales",
+  "bought",
+  "buy",
+  "purchase",
+  "purchased",
+  "received",
+  "receive",
+  "paid",
+  "pay",
+  "payment",
+  "expense",
+  "expenses",
+  "spent",
+  "spend",
+  "earning",
+  "earned",
+  "revenue",
+  "procured",
+  "procure",
+]);
+
 function foldSpelling(text: string): string {
   let value = text.toLowerCase();
+  const preserveEnglish = ENGLISH_PRESERVE.test(text);
 
   for (const [from, to] of SORTED_PHRASES) {
     value = value.split(from).join(to);
@@ -128,6 +157,7 @@ function foldSpelling(text: string): string {
 
   const tokens = value.split(/\s+/);
   const folded = tokens.map((token) => {
+    if (preserveEnglish && ENGLISH_VERB_ALIASES.has(token)) return token;
     for (const [from, to] of SORTED_WORDS) {
       if (token === from) return to;
     }

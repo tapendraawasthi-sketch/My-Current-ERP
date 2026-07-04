@@ -11,6 +11,7 @@ import {
   shouldTryWorkParse,
 } from "./smartWorkBrain";
 import { parseSemanticTransaction } from "./semanticNepaliBrain";
+import { resolveBestAmount, cleanPartyName } from "./meaningEngine";
 
 const CLARIFYING_QUESTION = "Aaple diye ki unle diye?";
 
@@ -53,6 +54,14 @@ const PARTY_STOPWORDS = new Set([
   "rs",
   "npr",
   "rupees",
+  "rupee",
+  "rupiya",
+  "for",
+  "each",
+  "per",
+  "today",
+  "yesterday",
+  "tomorrow",
   "bikri",
   "vayo",
   "bhayo",
@@ -584,10 +593,12 @@ export function classifyKhataIntent(rawText: string, preNormalized?: string): Kh
   return classifyIntent(rawText.trim(), text);
 }
 
-function resolveAmount(text: string): number | null {
-  const smart = parseSmartAmount(text);
+function resolveAmount(displayText: string, normalizedText?: string): number | null {
+  const best = resolveBestAmount(displayText, normalizedText);
+  if (best.amount && best.amount > 0) return best.amount;
+  const smart = parseSmartAmount(displayText);
   if (smart.amount && smart.amount > 0) return smart.amount;
-  return parseAmountWords(text);
+  return parseAmountWords(displayText) ?? parseAmountWords(normalizedText ?? "");
 }
 
 export function parseKhataMessage(rawText: string, preNormalized?: string): KhataParseResult {
@@ -622,14 +633,12 @@ export function parseKhataMessage(rawText: string, preNormalized?: string): Khat
   }
 
   const semantic = parseSemanticTransaction(displayText);
-  const amount =
-    semantic.amount ?? resolveAmount(displayText) ?? resolveAmount(text);
+  const amount = resolveAmount(displayText, text);
   if (!amount || amount <= 0) {
     return { clarifying_question: "Rakam kati ho? Number lekhnus." };
   }
 
-  const party =
-    semantic.party ?? extractParty(displayText, text);
+  const party = cleanPartyName(semantic.party ?? extractParty(displayText, text));
   if (needsPartyName(intent, party)) {
     return { clarifying_question: partyClarifyingQuestion(intent) };
   }
