@@ -1063,8 +1063,8 @@ def section_33() -> str:
 1. NORMALIZATION LAYER: Always run input through Devanagari transliteration + spelling
    alias folding (Section 31) before intent classification.
 
-2. EMBEDDING RETRIEVAL: Index this document in ChromaDB (nepali_grammar collection);
-   retrieve Sections 18, 21, 24, 26, 27, 31 for transaction messages.
+2. LOCAL SEARCH INDEX: Prebuilt BM25 index at data/ekhata/nepali-grammar-search-index.json
+   (no ChromaDB, Ollama embeddings, or API keys). Rebuild: ingest_nepali_grammar.py
 
 3. FEW-SHOT EXAMPLES: Use Section 27 patterns as few-shot examples in system prompt.
 

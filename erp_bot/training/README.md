@@ -72,12 +72,15 @@ KHATA_USE_STRUCTURED_PARSE=true
 
 Complete Nepali grammar knowledge for interpreting user messages (Devanagari, Roman, Halkhabar, code-switch):
 
-- **Source:** `data/ekhata/source/nepali-grammar-reference.txt` (33 sections)
-- **Index:** `data/ekhata/nepali-grammar-index.json`
-- **Rebuild:** `python3 scripts/build_nepali_grammar_reference.py --force`
-- **Ingest to ChromaDB:** `python3 erp_bot/scripts/ingest_nepali_grammar.py`
+- **Structured:** `data/ekhata/source/nepali-grammar-reference.txt` (33 sections)
+- **Verbatim (all variations):** `data/ekhata/source/nepali-grammar-reference-verbatim.txt`
+- **Search index:** `data/ekhata/nepali-grammar-search-index.json` (local BM25 — **no ChromaDB, Ollama, or API keys**)
+- **Section map:** `data/ekhata/nepali-grammar-index.json`
+- **Rebuild reference:** `python3 scripts/build_nepali_grammar_reference.py --force`
+- **Rebuild verbatim:** `python3 scripts/build_nepali_grammar_reference_verbatim.py`
+- **Rebuild search index:** `python3 erp_bot/scripts/ingest_nepali_grammar.py`
 
-Ollama chat (`erp_bot/src/khata/khata_chat.py`) retrieves relevant grammar sections automatically for Nepali/mixed input.
+Ollama chat (`erp_bot/src/khata/khata_chat.py`) retrieves grammar sections automatically via local BM25 search when interpreting Nepali/mixed input.
 
 ## 7. User feedback loop
 
