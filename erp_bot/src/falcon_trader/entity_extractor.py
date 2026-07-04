@@ -83,17 +83,17 @@ def extract_item(text: str, intent: str | None) -> str | None:
         if match and match.group(2) not in PARTY_STOPWORDS:
             return match.group(2)
         match = re.search(r"\b(\w+)\s+becheko\b", soft)
-        if match and match.group(1) not in PARTY_STOPWORDS | {"cash", "750"}:
+        if match and match.group(1) not in PARTY_STOPWORDS | {"cash", "750", "500", "ma"}:
             return match.group(1)
         match = re.search(r"\bsold\s+(\w+)\s+for\b", soft)
         if match:
             return match.group(1)
 
     if intent == "khata_expense":
-        match = re.search(r"\b(\w+)\s+kharcha\b", soft)
+        match = re.search(r"\b([a-zA-Z]+)\s+kharcha\b", soft)
         if match:
             return match.group(1)
-        match = re.search(r"\bkharcha\s+(\w+)\b", soft)
+        match = re.search(r"\bkharcha\s+([a-zA-Z]+)\b", soft)
         if match:
             return match.group(1)
 

@@ -1,4 +1,5 @@
 import { Router, type Request, type Response } from "express";
+import { parseKhataTransaction } from "../lib/falconNlu.js";
 import { getPool, query } from "../lib/db.js";
 import { sendError, sendSuccess } from "../middleware/responseEnvelope.js";
 
@@ -39,7 +40,7 @@ function num(value: unknown): number {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-// TODO: call Falcon Trader NLU via child_process or lightweight Python HTTP endpoint.
+// Fallback only when PYTHON_PATH / erp_bot is unavailable in dev.
 function mockParseTransaction(rawText: string) {
   const text = rawText.trim();
   const lower = text.toLowerCase();
@@ -217,8 +218,14 @@ router.post("/khata/transaction", async (req: Request, res: Response) => {
     return sendError(res, "tenant_id, company_id, and raw_text are required", 400);
   }
 
-  const parsed = mockParseTransaction(rawText);
-  return sendSuccess(res, parsed);
+  try {
+    const parsed = await parseKhataTransaction(rawText);
+    return sendSuccess(res, parsed);
+  } catch (error) {
+    console.warn("[khata] Falcon NLU failed, using mock parser:", error);
+    const parsed = mockParseTransaction(rawText);
+    return sendSuccess(res, parsed);
+  }
 });
 
 async function executeKhataConfirm(input: {

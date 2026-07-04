@@ -26,7 +26,7 @@ def check(name: str, text: str, expected: dict) -> bool:
 def main() -> int:
     today = date.today().isoformat()
     passed = 0
-    total = 10
+    total = 15
 
     tests = [
         (
@@ -79,6 +79,31 @@ def main() -> int:
             "purchase khandsari 5 saya",
             {"intent": "khata_purchase", "AMOUNT": 500, "ITEM": "khandsari"},
         ),
+        (
+            "11",
+            "Ram le 1.5k udhaar diye",
+            {"intent": "khata_credit_sale", "PARTY": "Ram", "AMOUNT": 1500},
+        ),
+        (
+            "12",
+            "hijo 300 kharcha petrol",
+            {"intent": "khata_expense", "AMOUNT": 300, "ITEM": "petrol"},
+        ),
+        (
+            "13",
+            "500 cash ma becheko",
+            {"intent": "khata_cash_sale", "AMOUNT": 500},
+        ),
+        (
+            "14",
+            "Hari le 1000 payment gareko",
+            {"intent": "khata_payment_out", "PARTY": "Hari", "AMOUNT": 1000},
+        ),
+        (
+            "15",
+            "Ram lai 500 credit diye for dal",
+            {"intent": "khata_credit_sale", "PARTY": "Ram", "AMOUNT": 500},
+        ),
     ]
 
     for name, text, expected in tests:
@@ -86,7 +111,7 @@ def main() -> int:
             passed += 1
 
     print(f"\n{passed}/{total} passed")
-    return 0 if passed >= 9 else 1
+    return 0 if passed >= 14 else 1
 
 
 if __name__ == "__main__":

@@ -15,6 +15,7 @@ import PremiumGate from "./components/PremiumGate";
 import TrustModal from "./components/TrustModal";
 import {
   canViewPartySummary,
+  dismissVatMessageFor30Days,
   hasCompletedOnboarding,
   incrementTransactionCount,
   isFreeTierLimitReached,
@@ -228,6 +229,22 @@ export default function App() {
             if (!canViewPartySummary() && !wasUpgradeDismissedThisSession()) {
               setShowPremium(true);
             }
+          }}
+          onGrowthLadderYes={() => {
+            setMessages((prev) => [
+              ...prev,
+              {
+                id: createId(),
+                role: "assistant",
+                text:
+                  "NPR 50 lakh pachhi darta garna parne huna sakchha. Thulo byapar bhaye Sutra ERP Pro le formal billing ra VAT report garna madat garchha.",
+              },
+            ]);
+            setInsights((prev) => prev.filter((item) => item.type !== "growth_ladder"));
+          }}
+          onGrowthLadderNo={() => {
+            dismissVatMessageFor30Days();
+            setInsights((prev) => prev.filter((item) => item.type !== "growth_ladder"));
           }}
         />
       )}
