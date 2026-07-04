@@ -17,8 +17,10 @@ const fmt = (n: number) =>
 const amtCls = "text-right font-mono text-[12px] font-semibold text-gray-800 whitespace-nowrap";
 const amtCls0 = "text-right font-mono text-[12px] text-gray-400 whitespace-nowrap";
 const thCls =
-  "px-3 py-2 text-[10px] font-bold uppercase tracking-wide text-gray-500 border-b border-gray-200 bg-[#f5f6fa]";
+  "px-3 py-2.5 text-[10px] font-semibold uppercase tracking-wide text-gray-500 border-b border-gray-200 bg-[#f5f6fa]";
 const tdCls = "px-3 py-1.5 text-[12px]";
+const rowHover =
+  "hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] transition-colors";
 
 interface Props {
   mode?: "pl" | "ie"; // "ie" = Income & Expenditure mode
@@ -65,7 +67,7 @@ function AccountLines({
         return (
           <React.Fragment key={line.accountId}>
             <tr
-              className={`hover:bg-[#f5f8ff] transition-colors ${line.isGroup ? "bg-[#fafafa]" : ""} ${!isZero ? "cursor-pointer" : ""}`}
+              className={`${rowHover} ${line.isGroup ? "bg-[#fafafa]" : ""} ${!isZero ? "cursor-pointer" : ""}`}
               onClick={() => {
                 if (isZero && !line.isGroup) return;
                 if (hasChildren) {
@@ -287,16 +289,16 @@ export default function PLHorizontal({
   return (
     <div className="space-y-4">
       {/* Report Header */}
-      <div className="bg-white border border-gray-200 rounded-lg p-3 flex items-center justify-between">
+      <div className="bg-white border border-gray-200 rounded-md p-3 flex items-center justify-between">
         <div>
-          <h2 className="text-[15px] font-bold text-gray-800">{reportTitle}</h2>
+          <h2 className="text-[15px] font-semibold text-gray-800">{reportTitle}</h2>
           <p className="text-[11px] text-gray-500 mt-0.5">
             For the period: <strong>{pl.fromDate}</strong> to <strong>{pl.toDate}</strong>
-            {options.showSecondLevel && " · Detailed View"}
+            {options.showSecondLevel && " · Detailed view"}
           </p>
         </div>
         <div
-          className={`px-4 py-2 rounded-lg border text-[13px] font-bold ${
+          className={`rounded-md px-3 py-1.5 border text-[12px] font-semibold ${
             pl.netProfit >= 0
               ? "bg-green-50 text-green-700 border-green-200"
               : "bg-red-50 text-red-700 border-red-200"
@@ -309,7 +311,7 @@ export default function PLHorizontal({
       {/* T-Format Table */}
       <div className="grid grid-cols-2 gap-4">
         {/* ── DEBIT (LEFT) ── */}
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+        <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
           <table className="w-full border-collapse">
             <thead>
               <tr>
@@ -324,7 +326,7 @@ export default function PLHorizontal({
 
               {/* Opening Stock */}
               <tr
-                className="hover:bg-[#f5f8ff] cursor-pointer"
+                className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
                 onClick={() =>
                   onDrillDown({
                     level: 1,
@@ -350,7 +352,7 @@ export default function PLHorizontal({
                 />
               ) : (
                 <tr
-                  className="hover:bg-[#f5f8ff] cursor-pointer"
+                  className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
                   onClick={() =>
                     onDrillDown({
                       level: 1,
@@ -382,7 +384,7 @@ export default function PLHorizontal({
                 />
               ) : (
                 <tr
-                  className="hover:bg-[#f5f8ff] cursor-pointer"
+                  className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
                   onClick={() =>
                     onDrillDown({
                       level: 1,
@@ -428,7 +430,7 @@ export default function PLHorizontal({
                 />
               ) : (
                 <tr
-                  className="hover:bg-[#f5f8ff] cursor-pointer"
+                  className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
                   onClick={() =>
                     onDrillDown({
                       level: 1,
@@ -459,7 +461,7 @@ export default function PLHorizontal({
         </div>
 
         {/* ── CREDIT (RIGHT) ── */}
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+        <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
           <table className="w-full border-collapse">
             <thead>
               <tr>
@@ -482,7 +484,7 @@ export default function PLHorizontal({
                 />
               ) : (
                 <tr
-                  className="hover:bg-[#f5f8ff] cursor-pointer"
+                  className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
                   onClick={() =>
                     onDrillDown({
                       level: 1,
@@ -512,7 +514,7 @@ export default function PLHorizontal({
                 />
               ) : (
                 <tr
-                  className="hover:bg-[#f5f8ff] cursor-pointer"
+                  className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
                   onClick={() =>
                     onDrillDown({
                       level: 1,
@@ -536,7 +538,7 @@ export default function PLHorizontal({
 
               {/* Closing Stock */}
               <tr
-                className="hover:bg-[#f5f8ff] cursor-pointer"
+                className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
                 onClick={() => {
                   if (onClosingStockUpdate) setEditingClosingStock(true);
                 }}
@@ -580,7 +582,7 @@ export default function PLHorizontal({
                 />
               ) : (
                 <tr
-                  className="hover:bg-[#f5f8ff] cursor-pointer"
+                  className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
                   onClick={() =>
                     onDrillDown({
                       level: 1,
