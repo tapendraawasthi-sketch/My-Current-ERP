@@ -1,31 +1,67 @@
 // @ts-nocheck
 import React, { useState, useEffect, useMemo } from "react";
-import { useStore } from "../store/useStore";
-import { getDB } from "../lib/db";
-import toast from "react-hot-toast";
+import { TrendingUp, TrendingDown, Download, Search } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, CartesianGrid } from "recharts";
 import * as XLSX from "xlsx";
-import { TrendingUp, TrendingDown, Download, BarChart2, Search, Filter } from "lucide-react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  Cell,
-  CartesianGrid,
-} from "recharts";
+import ReportEmptyState from "../components/ReportEmptyState";
+import { getDB } from "../lib/db";
+import { useStore } from "../store/useStore";
 
-const BORDER = "1px solid #000";
-const BG = "#E4F1D9";
-const BG_CARD = "#EBF5E2";
-const BG_HEADER = "#D4EABD";
-const BG_DEEP = "#C9DEB5";
+const CHART_MARGIN = { top: 12, right: 24, left: 120, bottom: 16 };
+const AXIS_TICK = { fill: "#6b7280", fontSize: 11 };
 
 function money(v) {
   const abs = Math.abs(Number(v || 0));
   const s = abs.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   return v < 0 ? `(${s})` : s;
+}
+
+function getMarginColorClass(marginPct) {
+  if (marginPct >= 20) {
+    return "text-green-700";
+  }
+
+  if (marginPct >= 10) {
+    return "text-amber-700";
+  }
+
+  return "text-red-700";
+}
+
+function getChartBarColor(marginPct) {
+  if (marginPct >= 20) {
+    return "#059669";
+  }
+
+  if (marginPct >= 10) {
+    return "#d97706";
+  }
+
+  return "#dc2626";
+}
+
+function ProfitabilityTooltip({ active, payload, label }) {
+  if (!active || !payload?.length) {
+    return null;
+  }
+
+  const point = payload[0]?.payload || {};
+
+  return (
+    <div className="rounded-md border border-gray-200 bg-white px-3 py-2 text-[11px]">
+      <p className="font-medium text-gray-700">{label}</p>
+      <div className="mt-1 space-y-1 text-gray-600">
+        <div className="flex items-center justify-between gap-4">
+          <span>Gross Margin</span>
+          <span className="font-semibold text-gray-800">{Number(payload[0]?.value || 0).toFixed(2)}%</span>
+        </div>
+        <div className="flex items-center justify-between gap-4">
+          <span>Revenue</span>
+          <span className="font-semibold text-gray-800">{money(point.revenue)}</span>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function ItemProfitabilityReport() {
@@ -182,74 +218,77 @@ export default function ItemProfitabilityReport() {
     revenue: item.revenue,
   }));
 
-  return (
-    <div style={{ backgroundColor: BG, minHeight: "100vh", padding: "20px" }}>
-      <h1 style={{ fontSize: "24px", fontWeight: "bold", color: "#000000", marginBottom: "20px" }}>
-        Item Profitability Report
-      </h1>
+  const kpiCards = [
+    {
+      label: "TOTAL REVENUE",
+      value: money(summary.totalRevenue),
+      valueClassName: "text-gray-800",
+    },
+    {
+      label: "TOTAL COGS",
+      value: money(summary.totalCOGS),
+      valueClassName: "text-gray-800",
+    },
+    {
+      label: "TOTAL GROSS PROFIT",
+      value: money(summary.totalGP),
+      valueClassName: summary.totalGP >= 0 ? "text-green-700" : "text-red-700",
+    },
+    {
+      label: "OVERALL MARGIN %",
+      value: `${summary.overallMargin.toFixed(2)}%`,
+      valueClassName: getMarginColorClass(summary.overallMargin),
+    },
+  ];
 
-      {/* Controls Bar */}
-      <div
-        style={{
-          backgroundColor: BG_HEADER,
-          padding: "15px",
-          borderRadius: "8px",
-          border: BORDER,
-          marginBottom: "20px",
-        }}
-      >
-        <div style={{ display: "flex", gap: "15px", flexWrap: "wrap", alignItems: "end" }}>
+  return (
+    <div className="flex h-full min-h-0 flex-col overflow-y-auto bg-[#f5f6fa] p-4 md:p-6">
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">Item Profitability Report</h1>
+          <p className="mt-0.5 text-[11px] text-gray-500">
+            Review item-wise sales performance, gross profit, and margins for the selected period.
+          </p>
+        </div>
+        <div className="no-print flex items-center gap-2">
+          <button
+            onClick={handleExportExcel}
+            className="inline-flex h-8 items-center gap-1.5 rounded-md bg-[#1557b0] px-3 text-[12px] font-medium text-white hover:bg-[#0f4a96]"
+          >
+            <Download className="h-3.5 w-3.5" />
+            <span>Export Excel</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="no-print mb-4 rounded-md border border-gray-200 bg-white p-4">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-6">
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "5px",
-                fontWeight: "bold",
-                fontSize: "12px",
-              }}
-            >
-              From Date
-            </label>
+            <label className="mb-1 block text-[11px] font-medium text-gray-600">From Date</label>
             <input
               type="date"
               value={fromDate}
               onChange={(e) => setFromDate(e.target.value)}
-              style={{ padding: "6px", border: BORDER, borderRadius: "4px", fontSize: "12px" }}
+              className="h-8 w-full rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[#1557b0] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20"
             />
           </div>
+
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "5px",
-                fontWeight: "bold",
-                fontSize: "12px",
-              }}
-            >
-              To Date
-            </label>
+            <label className="mb-1 block text-[11px] font-medium text-gray-600">To Date</label>
             <input
               type="date"
               value={toDate}
               onChange={(e) => setToDate(e.target.value)}
-              style={{ padding: "6px", border: BORDER, borderRadius: "4px", fontSize: "12px" }}
+              className="h-8 w-full rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[#1557b0] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20"
             />
           </div>
+
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "5px",
-                fontWeight: "bold",
-                fontSize: "12px",
-              }}
-            >
-              Item Group
-            </label>
+            <label className="mb-1 block text-[11px] font-medium text-gray-600">Item Group</label>
             <select
               value={groupFilter}
               onChange={(e) => setGroupFilter(e.target.value)}
-              style={{ padding: "6px", border: BORDER, borderRadius: "4px", fontSize: "12px" }}
+              className="h-8 w-full rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[#1557b0] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20"
             >
               <option value="">All Groups</option>
               {itemGroups.map((g) => (
@@ -259,21 +298,13 @@ export default function ItemProfitabilityReport() {
               ))}
             </select>
           </div>
+
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "5px",
-                fontWeight: "bold",
-                fontSize: "12px",
-              }}
-            >
-              Salesperson
-            </label>
+            <label className="mb-1 block text-[11px] font-medium text-gray-600">Salesperson</label>
             <select
               value={salespersonFilter}
               onChange={(e) => setSalespersonFilter(e.target.value)}
-              style={{ padding: "6px", border: BORDER, borderRadius: "4px", fontSize: "12px" }}
+              className="h-8 w-full rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[#1557b0] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20"
             >
               <option value="">All Salespersons</option>
               {salespersons.map((sp) => (
@@ -283,374 +314,298 @@ export default function ItemProfitabilityReport() {
               ))}
             </select>
           </div>
+
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "5px",
-                fontWeight: "bold",
-                fontSize: "12px",
-              }}
-            >
-              View
-            </label>
+            <label className="mb-1 block text-[11px] font-medium text-gray-600">View</label>
             <select
               value={viewMode}
               onChange={(e) => setViewMode(e.target.value)}
-              style={{ padding: "6px", border: BORDER, borderRadius: "4px", fontSize: "12px" }}
+              className="h-8 w-full rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[#1557b0] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20"
             >
               <option value="top20">Top 20 Profitable</option>
               <option value="bottom20">Bottom 20 Profitable</option>
               <option value="all">All Items</option>
             </select>
           </div>
-          <button
-            onClick={() => {}}
-            style={{
-              backgroundColor: "#1557b0",
-              color: "white",
-              border: BORDER,
-              padding: "8px 16px",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: "12px",
-            }}
-          >
-            Run Analysis
-          </button>
-          <button
-            onClick={handleExportExcel}
-            style={{
-              backgroundColor: "#059669",
-              color: "white",
-              border: BORDER,
-              padding: "8px 16px",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: "12px",
-              display: "flex",
-              alignItems: "center",
-              gap: "5px",
-            }}
-          >
-            <Download size={14} />
-            Export Excel
-          </button>
-          <div style={{ flex: 1 }}>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "5px",
-                fontWeight: "bold",
-                fontSize: "12px",
-              }}
+
+          <div className="flex items-end">
+            <button
+              onClick={() => {}}
+              className="h-8 w-full rounded-md border border-gray-300 bg-white px-3 text-[12px] font-medium text-gray-700 hover:bg-gray-50"
             >
-              Search
-            </label>
-            <input
-              type="text"
-              placeholder="Search items..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                padding: "6px",
-                border: BORDER,
-                borderRadius: "4px",
-                fontSize: "12px",
-                width: "100%",
-              }}
+              Run Analysis
+            </button>
+          </div>
+
+          <div className="md:col-span-2 xl:col-span-6">
+            <label className="mb-1 block text-[11px] font-medium text-gray-600">Search</label>
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search items by code or name"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="h-8 w-full rounded-md border border-gray-300 bg-white pl-8 pr-2.5 text-[12px] focus:border-[#1557b0] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="mb-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+        {kpiCards.map((card) => (
+          <div key={card.label} className="rounded-md border border-gray-200 bg-white px-4 py-3">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+              {card.label}
+            </p>
+            <p className={`mt-2 text-[14px] font-semibold ${card.valueClassName}`}>{card.value}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="mb-4 rounded-md border border-gray-200 bg-white">
+        <div className="border-b border-gray-200 px-4 py-3">
+          <h2 className="text-[13px] font-semibold text-gray-800">Gross Margin by Item</h2>
+          <p className="mt-0.5 text-[11px] text-gray-500">
+            Margin percentage across the currently filtered items.
+          </p>
+        </div>
+        <div className="h-[360px] p-4">
+          {chartData.length > 0 ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart layout="horizontal" data={chartData} margin={CHART_MARGIN}>
+                <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" horizontal vertical={false} />
+                <XAxis
+                  type="number"
+                  domain={[0, 100]}
+                  tick={AXIS_TICK}
+                  tickLine={false}
+                  axisLine={{ stroke: "#d1d5db" }}
+                  tickFormatter={(value) => `${value}%`}
+                />
+                <YAxis
+                  dataKey="name"
+                  type="category"
+                  width={140}
+                  tick={AXIS_TICK}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <Tooltip content={<ProfitabilityTooltip />} cursor={false} />
+                <Bar dataKey="margin" name="Gross Margin %" radius={[0, 4, 4, 0]}>
+                  {chartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={getChartBarColor(entry.margin)} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <ReportEmptyState
+              message="No item profitability data is available."
+              hint="Adjust the date range or filters to populate the chart."
             />
-          </div>
+          )}
         </div>
       </div>
 
-      {/* Summary Cards */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: "15px",
-          marginBottom: "20px",
-        }}
-      >
-        <div
-          style={{ backgroundColor: BG_CARD, padding: "15px", borderRadius: "8px", border: BORDER }}
-        >
-          <div style={{ fontSize: "12px", color: "#000000", marginBottom: "5px" }}>
-            Total Revenue
-          </div>
-          <div style={{ fontSize: "18px", fontWeight: "bold", color: "#000000" }}>
-            {money(summary.totalRevenue)}
-          </div>
-        </div>
-        <div
-          style={{ backgroundColor: BG_CARD, padding: "15px", borderRadius: "8px", border: BORDER }}
-        >
-          <div style={{ fontSize: "12px", color: "#000000", marginBottom: "5px" }}>Total COGS</div>
-          <div style={{ fontSize: "18px", fontWeight: "bold", color: "#000000" }}>
-            {money(summary.totalCOGS)}
-          </div>
-        </div>
-        <div
-          style={{ backgroundColor: BG_CARD, padding: "15px", borderRadius: "8px", border: BORDER }}
-        >
-          <div style={{ fontSize: "12px", color: "#000000", marginBottom: "5px" }}>
-            Total Gross Profit
-          </div>
-          <div style={{ fontSize: "18px", fontWeight: "bold", color: "#000000" }}>
-            {money(summary.totalGP)}
-          </div>
-        </div>
-        <div
-          style={{ backgroundColor: BG_CARD, padding: "15px", borderRadius: "8px", border: BORDER }}
-        >
-          <div style={{ fontSize: "12px", color: "#000000", marginBottom: "5px" }}>
-            Overall Margin %
-          </div>
-          <div style={{ fontSize: "18px", fontWeight: "bold", color: "#000000" }}>
-            {summary.overallMargin.toFixed(2)}%
-          </div>
-        </div>
-      </div>
-
-      {/* Chart */}
-      <div
-        style={{
-          backgroundColor: BG_CARD,
-          padding: "15px",
-          borderRadius: "8px",
-          border: BORDER,
-          marginBottom: "20px",
-        }}
-      >
-        <h2
-          style={{ fontSize: "16px", fontWeight: "bold", color: "#000000", marginBottom: "15px" }}
-        >
-          Gross Margin by Item
-        </h2>
-        <div style={{ height: "350px" }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              layout="horizontal"
-              data={chartData}
-              margin={{ top: 20, right: 30, left: 150, bottom: 50 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis type="number" domain={[0, 100]} tickFormatter={(value) => `${value}%`} />
-              <YAxis dataKey="name" type="category" width={140} tick={{ fontSize: 12 }} />
-              <Tooltip formatter={(value) => [`${value}%`, "Gross Margin"]} />
-              <Bar dataKey="margin" name="Gross Margin %">
-                {chartData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={
-                      entry.margin >= 20 ? "#059669" : entry.margin >= 10 ? "#d97706" : "#dc2626"
-                    }
-                  />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* Main Table */}
-      <div
-        style={{
-          backgroundColor: BG_CARD,
-          padding: "15px",
-          borderRadius: "8px",
-          border: BORDER,
-          marginBottom: "20px",
-        }}
-      >
-        <h2
-          style={{ fontSize: "16px", fontWeight: "bold", color: "#000000", marginBottom: "15px" }}
-        >
-          {viewMode === "top20"
-            ? "Top 20 Profitable Items"
-            : viewMode === "bottom20"
-              ? "Bottom 20 Profitable Items"
-              : "All Items"}
-        </h2>
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", border: BORDER }}>
-            <thead>
-              <tr style={{ backgroundColor: BG_HEADER }}>
-                <th style={{ border: BORDER, padding: "8px" }}>Rank</th>
-                <th style={{ border: BORDER, padding: "8px" }}>Item Code</th>
-                <th style={{ border: BORDER, padding: "8px" }}>Item Name</th>
-                <th style={{ border: BORDER, padding: "8px" }}>Item Group</th>
-                <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>Units Sold</th>
-                <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                  Avg Selling Rate
-                </th>
-                <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                  Total Revenue
-                </th>
-                <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                  Avg Purchase Rate
-                </th>
-                <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>Total COGS</th>
-                <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>Gross Profit</th>
-                <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>Margin %</th>
-                <th style={{ border: BORDER, padding: "8px", textAlign: "center" }}>Trend</th>
-              </tr>
-            </thead>
-            <tbody>
-              {profitData.length > 0 ? (
-                profitData.map((item, idx) => {
-                  const marginColor =
-                    item.marginPct >= 20 ? "#059669" : item.marginPct >= 10 ? "#d97706" : "#dc2626";
-
-                  const rowBgColor =
-                    item.marginPct < 0 ? "#fee2e2" : idx % 2 === 0 ? BG_DEEP : "transparent";
-
-                  return (
-                    <tr key={item.item.id} style={{ backgroundColor: rowBgColor }}>
-                      <td style={{ border: BORDER, padding: "8px" }}>{idx + 1}</td>
-                      <td style={{ border: BORDER, padding: "8px" }}>{item.item.code}</td>
-                      <td style={{ border: BORDER, padding: "8px" }}>{item.item.name}</td>
-                      <td style={{ border: BORDER, padding: "8px" }}>{item.group}</td>
-                      <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                        {item.unitsSold}
-                      </td>
-                      <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                        {money(item.avgSaleRate)}
-                      </td>
-                      <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                        {money(item.revenue)}
-                      </td>
-                      <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                        {money(item.avgPurchRate)}
-                      </td>
-                      <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                        {money(item.cogs)}
-                      </td>
-                      <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                        {money(item.grossProfit)}
-                      </td>
-                      <td
-                        style={{
-                          border: BORDER,
-                          padding: "8px",
-                          textAlign: "right",
-                          color: marginColor,
-                          fontWeight: "bold",
-                        }}
-                      >
-                        {item.marginPct.toFixed(2)}%
-                      </td>
-                      <td style={{ border: BORDER, padding: "8px", textAlign: "center" }}>
-                        {item.marginPct > 0 ? (
-                          <TrendingUp size={16} style={{ color: "#059669" }} />
-                        ) : (
-                          <TrendingDown size={16} style={{ color: "#dc2626" }} />
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td
-                    colSpan="12"
-                    style={{ border: BORDER, padding: "16px", textAlign: "center", color: "#666" }}
-                  >
-                    No data found for the selected criteria
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Loss Making Items */}
-      {lossMakingItems.length > 0 && (
-        <div
-          style={{
-            backgroundColor: "#fee2e2",
-            padding: "15px",
-            borderRadius: "8px",
-            border: BORDER,
-            marginBottom: "20px",
-          }}
-        >
-          <h2
-            style={{ fontSize: "16px", fontWeight: "bold", color: "#dc2626", marginBottom: "10px" }}
-          >
-            Items Selling at a Loss
+      <div className="mb-4 rounded-md border border-gray-200 bg-white">
+        <div className="border-b border-gray-200 px-4 py-3">
+          <h2 className="text-[13px] font-semibold text-gray-800">
+            {viewMode === "top20"
+              ? "Top 20 Profitable Items"
+              : viewMode === "bottom20"
+                ? "Bottom 20 Profitable Items"
+                : "All Items"}
           </h2>
-          <div
-            style={{
-              backgroundColor: "#fecaca",
-              padding: "10px",
-              borderRadius: "6px",
-              marginBottom: "15px",
-              color: "#991b1b",
-              fontWeight: "bold",
-            }}
-          >
-            These items are being sold below cost. Consider repricing.
-          </div>
-          <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", border: BORDER }}>
+          <p className="mt-0.5 text-[11px] text-gray-500">
+            Ranked item-wise margin analysis for the selected filters.
+          </p>
+        </div>
+
+        {profitData.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="min-w-[1200px] w-full">
               <thead>
-                <tr style={{ backgroundColor: "#f87171", color: "#fff" }}>
-                  <th style={{ border: BORDER, padding: "8px", color: "#fff" }}>Item Code</th>
-                  <th style={{ border: BORDER, padding: "8px", color: "#fff" }}>Item Name</th>
-                  <th style={{ border: BORDER, padding: "8px", color: "#fff", textAlign: "right" }}>
-                    Revenue
+                <tr className="border-b border-gray-200 bg-[#f5f6fa]">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                    Rank
                   </th>
-                  <th style={{ border: BORDER, padding: "8px", color: "#fff", textAlign: "right" }}>
-                    COGS
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                    Item Code
                   </th>
-                  <th style={{ border: BORDER, padding: "8px", color: "#fff", textAlign: "right" }}>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                    Item Name
+                  </th>
+                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                    Item Group
+                  </th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                    Units Sold
+                  </th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                    Avg Selling Rate
+                  </th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                    Total Revenue
+                  </th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                    Avg Purchase Rate
+                  </th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                    Total COGS
+                  </th>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500">
                     Gross Profit
                   </th>
-                  <th style={{ border: BORDER, padding: "8px", color: "#fff", textAlign: "right" }}>
+                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500">
                     Margin %
+                  </th>
+                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                    Trend
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {lossMakingItems.map((item) => (
-                  <tr key={`loss-${item.item.id}`}>
-                    <td style={{ border: BORDER, padding: "8px" }}>{item.item.code}</td>
-                    <td style={{ border: BORDER, padding: "8px" }}>{item.item.name}</td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                      {money(item.revenue)}
-                    </td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                      {money(item.cogs)}
-                    </td>
-                    <td
-                      style={{
-                        border: BORDER,
-                        padding: "8px",
-                        textAlign: "right",
-                        color: "#dc2626",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {money(item.grossProfit)}
-                    </td>
-                    <td
-                      style={{
-                        border: BORDER,
-                        padding: "8px",
-                        textAlign: "right",
-                        color: "#dc2626",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {item.marginPct.toFixed(2)}%
-                    </td>
-                  </tr>
-                ))}
+                {profitData.map((item, idx) => {
+                  const rowClassName =
+                    item.marginPct < 0
+                      ? "group border-b border-gray-200 bg-red-50 transition-colors hover:bg-red-100/80"
+                      : "group border-b border-gray-200 transition-colors hover:bg-[#f8fafc]";
+
+                  return (
+                    <tr key={item.item.id} className={rowClassName}>
+                      <td className="border-l-2 border-l-transparent px-3 py-2.5 text-[12px] text-gray-700 group-hover:border-l-[#1557b0]">
+                        {idx + 1}
+                      </td>
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{item.item.code}</td>
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{item.item.name}</td>
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{item.group}</td>
+                      <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                        {item.unitsSold}
+                      </td>
+                      <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                        {money(item.avgSaleRate)}
+                      </td>
+                      <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                        {money(item.revenue)}
+                      </td>
+                      <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                        {money(item.avgPurchRate)}
+                      </td>
+                      <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                        {money(item.cogs)}
+                      </td>
+                      <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                        {money(item.grossProfit)}
+                      </td>
+                      <td
+                        className={`px-3 py-2.5 text-right font-mono text-[12px] font-semibold ${getMarginColorClass(item.marginPct)}`}
+                      >
+                        {item.marginPct.toFixed(2)}%
+                      </td>
+                      <td className="px-3 py-2.5 text-center">
+                        {item.marginPct > 0 ? (
+                          <TrendingUp className="mx-auto h-4 w-4 text-green-600" />
+                        ) : (
+                          <TrendingDown className="mx-auto h-4 w-4 text-red-600" />
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
+              <tfoot>
+                <tr className="border-t-2 border-[#c7d2fe] bg-[#eef2ff] font-bold text-[12px] text-gray-700">
+                  <td colSpan="5" className="px-3 py-2.5">
+                    Summary
+                  </td>
+                  <td className="px-3 py-2.5 text-right text-gray-500">-</td>
+                  <td className="px-3 py-2.5 text-right font-mono">{money(summary.totalRevenue)}</td>
+                  <td className="px-3 py-2.5 text-right text-gray-500">-</td>
+                  <td className="px-3 py-2.5 text-right font-mono">{money(summary.totalCOGS)}</td>
+                  <td className="px-3 py-2.5 text-right font-mono">{money(summary.totalGP)}</td>
+                  <td className={`px-3 py-2.5 text-right font-mono ${getMarginColorClass(summary.overallMargin)}`}>
+                    {summary.overallMargin.toFixed(2)}%
+                  </td>
+                  <td className="px-3 py-2.5 text-center text-gray-500">-</td>
+                </tr>
+              </tfoot>
             </table>
+          </div>
+        ) : (
+          <ReportEmptyState
+            message="No item profitability data found for the selected criteria."
+            hint="Try widening the date range or clearing one of the applied filters."
+          />
+        )}
+      </div>
+
+      {lossMakingItems.length > 0 && (
+        <div className="rounded-md border border-red-200 bg-red-50">
+          <div className="border-b border-red-200 px-4 py-3">
+            <h2 className="text-[13px] font-semibold text-red-700">Items Selling at a Loss</h2>
+            <p className="mt-0.5 text-[11px] text-red-600">
+              Review items where current revenue is below calculated cost.
+            </p>
+          </div>
+
+          <div className="p-4">
+            <div className="mb-4 rounded-md border border-red-200 bg-red-100 px-3 py-2 text-[11px] font-medium text-red-700">
+              These items are being sold below cost. Consider repricing.
+            </div>
+
+            <div className="overflow-x-auto rounded-md border border-red-200 bg-white">
+              <table className="min-w-[760px] w-full">
+                <thead>
+                  <tr className="border-b border-red-200 bg-[#f5f6fa]">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                      Item Code
+                    </th>
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                      Item Name
+                    </th>
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                      Revenue
+                    </th>
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                      COGS
+                    </th>
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                      Gross Profit
+                    </th>
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                      Margin %
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {lossMakingItems.map((item) => (
+                    <tr
+                      key={`loss-${item.item.id}`}
+                      className="border-b border-red-100 transition-colors hover:bg-red-50"
+                    >
+                      <td className="border-l-2 border-l-transparent px-3 py-2.5 text-[12px] text-gray-700 hover:border-l-[#1557b0]">
+                        {item.item.code}
+                      </td>
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700">{item.item.name}</td>
+                      <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                        {money(item.revenue)}
+                      </td>
+                      <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                        {money(item.cogs)}
+                      </td>
+                      <td className="px-3 py-2.5 text-right font-mono text-[12px] font-semibold text-red-700">
+                        {money(item.grossProfit)}
+                      </td>
+                      <td className="px-3 py-2.5 text-right font-mono text-[12px] font-semibold text-red-700">
+                        {item.marginPct.toFixed(2)}%
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}
