@@ -1,23 +1,11 @@
 // @ts-nocheck
 import React, { useState, useMemo, useCallback } from "react";
 import { useStore } from "../store/useStore";
-import {
-  Download,
-  FileSpreadsheet,
-  Printer,
-  RefreshCw,
-  Filter,
-  ChevronDown,
-  Eye,
-  X,
-  TrendingUp,
-  TrendingDown,
-  AlertTriangle,
-  CheckCircle,
-} from "lucide-react";
+import { Download, FileSpreadsheet, Printer } from "lucide-react";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
 import ReportDateRangePicker, { DateRange } from "../components/ui/ReportDateRangePicker";
+import { ReportEmptyState } from "../components/ReportEmptyState";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -44,17 +32,6 @@ interface AnnexEntry {
   exemptAmount?: number;
 }
 
-interface VatSummary {
-  totalSalesVat: number;
-  totalPurchaseVat: number;
-  totalSalesTaxable: number;
-  totalPurchaseTaxable: number;
-  vatPayable: number;
-  annexACount: number;
-  annexBCount: number;
-  annexCCount: number;
-}
-
 // ─── ReportShell ──────────────────────────────────────────────────────────────
 
 interface ReportShellProps {
@@ -75,7 +52,9 @@ const ReportShell: React.FC<ReportShellProps> = ({
   printable = true,
 }) => {
   return (
-    <div className={`p-4 md:p-6 bg-[#f5f6fa] min-h-screen flex flex-col gap-4 ${className}`}>
+    <div
+      className={`flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-y-auto p-4 md:p-6 ${className}`}
+    >
       <div className="flex items-center justify-between mb-4 no-print">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">{title}</h1>
@@ -83,7 +62,7 @@ const ReportShell: React.FC<ReportShellProps> = ({
         </div>
         {actions && <div className="flex items-center gap-2">{actions}</div>}
       </div>
-      <div className={printable ? "print-content" : ""}>{children}</div>
+      <div className={printable ? "print-content flex-1 min-h-0 flex flex-col" : ""}>{children}</div>
     </div>
   );
 };
@@ -147,41 +126,43 @@ const DataTable: React.FC<DataTableProps> = ({
   data,
   emptyMessage = "No data found.",
   footerRow,
-}) => (
-  <div className="overflow-x-auto">
-    <table className="report-table w-full min-w-max">
-      <thead>
-        <tr className="bg-[#f5f6fa] border-b border-gray-200">
-          {columns.map((col) => (
-            <th
-              key={col.key}
-              className={`px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide ${
-                col.align === "right"
-                  ? "text-right"
-                  : col.align === "center"
-                    ? "text-center"
-                    : "text-left"
-              } ${col.width ?? ""}`}
-            >
-              {/* Use col.label — NOT col.header */}
-              {col.label}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody className="divide-y divide-gray-100">
-        {data.length === 0 ? (
-          <tr>
-            <td
-              colSpan={columns.length}
-              className="px-3 py-12 text-center text-[12px] text-gray-400"
-            >
-              {emptyMessage}
-            </td>
+}) => {
+  if (data.length === 0) {
+    return (
+      <ReportEmptyState
+        message={emptyMessage}
+        hint="Adjust the date range or post invoices for this period."
+      />
+    );
+  }
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full min-w-max border-collapse">
+        <thead>
+          <tr className="bg-[#f5f6fa] border-b border-gray-200">
+            {columns.map((col) => (
+              <th
+                key={col.key}
+                className={`px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide ${
+                  col.align === "right"
+                    ? "text-right"
+                    : col.align === "center"
+                      ? "text-center"
+                      : "text-left"
+                } ${col.width ?? ""}`}
+              >
+                {col.label}
+              </th>
+            ))}
           </tr>
-        ) : (
-          data.map((row, rowIdx) => (
-            <tr key={rowIdx} className="hover:bg-gray-50">
+        </thead>
+        <tbody>
+          {data.map((row, rowIdx) => (
+            <tr
+              key={rowIdx}
+              className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] border-b border-gray-100"
+            >
               {columns.map((col) => (
                 <td
                   key={col.key}
@@ -197,25 +178,26 @@ const DataTable: React.FC<DataTableProps> = ({
                 </td>
               ))}
             </tr>
-          ))
-        )}
-      </tbody>
-      {footerRow && <tfoot>{footerRow}</tfoot>}
-    </table>
-  </div>
-);
+          ))}
+        </tbody>
+        {footerRow && <tfoot>{footerRow}</tfoot>}
+      </table>
+    </div>
+  );
+};
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 
 const VatReports: React.FC = () => {
-  const { invoices, parties, companySettings, currentFiscalYear } = useStore();
+  const { invoices, companySettings, currentFiscalYear } = useStore();
 
   const [activeAnnex, setActiveAnnex] = useState<"A" | "B" | "C" | "D" | "summary">("summary");
   const [dateRange, setDateRange] = useState<DateRange>({
     fromDate: firstDayOfMonth(),
     toDate: todayISO(),
   });
-  const [loading, setLoading] = useState(false);
+
+  const { fromDate, toDate } = dateRange;
 
   // ── Filter invoices by date range ─────────────────────────────────────────
   const filteredInvoices = useMemo(() => {
@@ -517,368 +499,240 @@ const VatReports: React.FC = () => {
   return (
     // ReportShell: NO "actions" prop — buttons rendered as children
     <ReportShell title="VAT Reports" subtitle="Annex A, B, C and VAT summary for IRD submission">
-      {/* Toolbar — rendered as children, NOT as "actions" prop */}
-      <div className="flex items-center justify-between gap-2 mb-4 flex-wrap">
-        <div className="flex items-center gap-2 flex-wrap">
+      <div className="no-print bg-white border border-gray-200 rounded-md p-3 mb-4">
+        <div className="flex items-center justify-between gap-2 flex-wrap">
           <ReportDateRangePicker value={dateRange} onChange={setDateRange} label="" compact />
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handlePrint}
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5"
+            >
+              <Printer className="h-3.5 w-3.5" />
+              Print
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                const data =
+                  activeAnnex === "A"
+                    ? annexAData
+                    : activeAnnex === "B"
+                      ? annexBData
+                      : activeAnnex === "C"
+                        ? annexCData
+                        : annexDData;
+                const cols =
+                  activeAnnex === "A"
+                    ? annexAColumns
+                    : activeAnnex === "B"
+                      ? annexBColumns
+                      : annexCColumns;
+                handleExportExcel("Annex_" + activeAnnex, data, cols);
+              }}
+              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5"
+            >
+              <FileSpreadsheet className="h-3.5 w-3.5" />
+              Export Excel
+            </button>
+          </div>
         </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handlePrint}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 transition-colors"
-          >
-            <Printer className="h-3.5 w-3.5" />
-            Print
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              const data =
-                activeAnnex === "A"
-                  ? annexAData
-                  : activeAnnex === "B"
-                    ? annexBData
-                    : activeAnnex === "C"
-                      ? annexCData
-                      : annexDData;
-              const cols =
-                activeAnnex === "A"
-                  ? annexAColumns
-                  : activeAnnex === "B"
-                    ? annexBColumns
-                    : annexCColumns;
-              handleExportExcel("Annex_" + activeAnnex, data, cols);
-            }}
-            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors"
-          >
-            <FileSpreadsheet className="h-3.5 w-3.5" />
-            Export Excel
-          </button>
-        </div>
+        <p className="text-[11px] text-gray-500 mt-2">
+          {filteredInvoices.length} posted invoice{filteredInvoices.length === 1 ? "" : "s"} in
+          period
+        </p>
       </div>
 
-      {/* KPI cells */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          borderBottom: "2px solid #e5e7eb",
-          background: "#ffffff",
-          marginBottom: 16,
-        }}
-      >
-        {/* Output VAT */}
-        <div style={{ padding: "14px 20px", borderRight: "1px solid #e5e7eb" }}>
-          <div
-            style={{
-              fontSize: 9,
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: "0.08em",
-              color: "#6b7280",
-            }}
-          >
-            Output VAT (Sales)
-          </div>
-          <div
-            style={{
-              fontSize: 20,
-              fontWeight: 700,
-              fontFamily: "'Courier New', monospace",
-              color: "#1557b0",
-              marginTop: 4,
-              lineHeight: 1.2,
-            }}
-          >
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+        <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            Output VAT (sales)
+          </p>
+          <p className="text-[14px] font-semibold text-[#1557b0] mt-0.5 font-mono">
             {fmtVat(vatSummary.outputVat)}
-          </div>
-          <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 3 }}>
-            Taxable: {fmtVat(vatSummary.outputTaxable)} · {vatSummary.outputCount} invoices
-          </div>
+          </p>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            Taxable {fmtVat(vatSummary.outputTaxable)} · {vatSummary.outputCount} invoices
+          </p>
         </div>
-
-        {/* Input VAT */}
-        <div style={{ padding: "14px 20px", borderRight: "1px solid #e5e7eb" }}>
-          <div
-            style={{
-              fontSize: 9,
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: "0.08em",
-              color: "#6b7280",
-            }}
-          >
-            Input VAT (Purchases)
-          </div>
-          <div
-            style={{
-              fontSize: 20,
-              fontWeight: 700,
-              fontFamily: "'Courier New', monospace",
-              color: "#059669",
-              marginTop: 4,
-              lineHeight: 1.2,
-            }}
-          >
+        <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            Input VAT (purchases)
+          </p>
+          <p className="text-[14px] font-semibold text-green-700 mt-0.5 font-mono">
             {fmtVat(vatSummary.inputVat)}
-          </div>
-          <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 3 }}>
-            Taxable: {fmtVat(vatSummary.inputTaxable)} · {vatSummary.inputCount} bills
-          </div>
+          </p>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            Taxable {fmtVat(vatSummary.inputTaxable)} · {vatSummary.inputCount} bills
+          </p>
         </div>
-
-        {/* Net VAT Payable */}
         <div
-          style={{
-            padding: "14px 20px",
-            background: vatSummary.netVat >= 0 ? "#fef9f0" : "#f0fdf4",
-          }}
+          className={`border rounded-md px-3 py-2.5 ${
+            vatSummary.netVat >= 0
+              ? "bg-red-50 border-red-200"
+              : "bg-green-50 border-green-200"
+          }`}
         >
-          <div
-            style={{
-              fontSize: 9,
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: "0.08em",
-              color: "#6b7280",
-            }}
-          >
-            {vatSummary.netVat >= 0 ? "Net VAT Payable to IRD" : "Net VAT Refundable"}
-          </div>
-          <div
-            style={{
-              fontSize: 20,
-              fontWeight: 700,
-              fontFamily: "'Courier New', monospace",
-              color: vatSummary.netVat >= 0 ? "#dc2626" : "#059669",
-              marginTop: 4,
-              lineHeight: 1.2,
-            }}
+          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            {vatSummary.netVat >= 0 ? "Net VAT payable to IRD" : "Net VAT refundable"}
+          </p>
+          <p
+            className={`text-[14px] font-semibold mt-0.5 font-mono ${
+              vatSummary.netVat >= 0 ? "text-red-700" : "text-green-700"
+            }`}
           >
             {fmtVat(Math.abs(vatSummary.netVat))}
-          </div>
-          <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 3 }}>
-            Output − Input = {vatSummary.netVat >= 0 ? "Payable" : "Refundable"}
-          </div>
+          </p>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            Output − input = {vatSummary.netVat >= 0 ? "Payable" : "Refundable"}
+          </p>
         </div>
       </div>
 
-      {/* Tabs */}
-      <div
-        style={{
-          display: "flex",
-          borderBottom: "2px solid #e5e7eb",
-          background: "#ffffff",
-          overflowX: "auto",
-          marginBottom: 16,
-        }}
-      >
+      <div className="no-print flex items-end border-b-2 border-gray-200 bg-white border border-gray-200 rounded-t-md overflow-x-auto mb-0">
         {[
-          {
-            key: "summary" as const,
-            label: "Summary",
-            sub: "VAT Computation",
-            total: vatSummary.netVat,
-            color: "#7c3aed",
-          },
-          {
-            key: "A" as const,
-            label: "Annex A",
-            sub: "Sales Register",
-            total: vatSummary.outputVat,
-            color: "#1557b0",
-          },
-          { key: "B" as const, label: "Annex B", sub: "Retail Sales", total: 0, color: "#059669" },
-          {
-            key: "C" as const,
-            label: "Annex C",
-            sub: "Purchases",
-            total: vatSummary.inputVat,
-            color: "#d97706",
-          },
-          {
-            key: "D" as const,
-            label: "Annex D",
-            sub: "Import Purchases",
-            total: 0,
-            color: "#4f46e5",
-          },
-        ].map((tab) => {
-          const isActive = activeAnnex === tab.key;
-          return (
-            <button
-              key={tab.key}
-              type="button"
-              onClick={() => setActiveAnnex(tab.key)}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-                gap: 2,
-                padding: "10px 20px",
-                background: "transparent",
-                border: "none",
-                borderBottom: isActive ? `2px solid ${tab.color}` : "2px solid transparent",
-                marginBottom: -2,
-                cursor: "pointer",
-                transition: "border-color 150ms ease",
-                whiteSpace: "nowrap",
-                minWidth: 140,
-              }}
+          { key: "summary" as const, label: "Summary", sub: "VAT computation" },
+          { key: "A" as const, label: "Annex A", sub: "Sales register" },
+          { key: "B" as const, label: "Annex B", sub: "Retail sales" },
+          { key: "C" as const, label: "Annex C", sub: "Purchases" },
+          { key: "D" as const, label: "Annex D", sub: "Import purchases" },
+        ].map((tab) => (
+          <button
+            key={tab.key}
+            type="button"
+            onClick={() => setActiveAnnex(tab.key)}
+            className={`h-auto min-w-[120px] px-4 py-2 -mb-0.5 text-left border-b-2 transition-colors whitespace-nowrap ${
+              activeAnnex === tab.key
+                ? "border-[#1557b0] text-[#1557b0]"
+                : "border-transparent text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            <span
+              className={`block text-[12px] ${
+                activeAnnex === tab.key ? "font-semibold" : "font-medium"
+              }`}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span
-                  style={{ fontSize: 12, fontWeight: 700, color: isActive ? tab.color : "#374151" }}
-                >
-                  {tab.label}
-                </span>
-                {tab.total !== 0 && (
-                  <span
-                    style={{
-                      fontSize: 9,
-                      fontWeight: 700,
-                      background: isActive ? `${tab.color}18` : "#f3f4f6",
-                      color: isActive ? tab.color : "#9ca3af",
-                      border: `1px solid ${isActive ? tab.color + "40" : "#e5e7eb"}`,
-                      borderRadius: 10,
-                      padding: "0 6px",
-                    }}
-                  >
-                    {Math.abs(tab.total).toLocaleString("en-IN", { maximumFractionDigits: 0 })}
-                  </span>
-                )}
-              </div>
-              <span style={{ fontSize: 10, color: "#9ca3af" }}>{tab.sub}</span>
-            </button>
-          );
-        })}
+              {tab.label}
+            </span>
+            <span className="block text-[10px] text-gray-400 mt-0.5">{tab.sub}</span>
+          </button>
+        ))}
       </div>
 
-      {/* ── Summary Tab ──────────────────────────────────────────────────────── */}
       {activeAnnex === "summary" && (
         <div className="space-y-4">
-          {/* VAT Return Summary Table */}
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-            <div className="px-4 py-3 border-b border-gray-200 bg-[#f5f6fa]">
-              <h3 className="text-[12px] font-semibold text-gray-700">
-                VAT Return Statement — {companySettings?.name ?? "Company"}
+          <div className="bg-white border border-gray-200 rounded-b-md rounded-t-none overflow-hidden">
+            <div className="px-3 py-2 border-b border-gray-200 bg-[#f5f6fa]">
+              <h3 className="text-[12px] font-semibold text-gray-800">
+                VAT return statement — {companySettings?.name ?? "Company"}
               </h3>
-              <p className="text-[10px] text-gray-500 mt-0.5">
+              <p className="text-[11px] text-gray-500 mt-0.5">
                 Period: {fromDate} to {toDate}
               </p>
             </div>
 
             <div className="overflow-x-auto">
-              <table className="report-table w-full">
+              <table className="w-full border-collapse">
                 <thead>
                   <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                       Particulars
                     </th>
-                    <th className="px-4 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-40">
-                      Taxable Amount
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-40">
+                      Taxable amount
                     </th>
-                    <th className="px-4 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-40">
-                      VAT Amount
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-40">
+                      VAT amount
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {/* Output VAT section */}
+                <tbody>
                   <tr className="bg-green-50">
                     <td
                       colSpan={3}
-                      className="px-4 py-2 text-[11px] font-bold text-green-800 uppercase tracking-wide"
+                      className="px-3 py-2 text-[11px] font-semibold text-green-800 uppercase tracking-wide"
                     >
-                      Output VAT (Sales)
+                      Output VAT (sales)
                     </td>
                   </tr>
-                  <tr className="hover:bg-gray-50">
-                    <td className="px-4 py-2.5 text-[12px] text-gray-700 pl-8">
-                      Annex A — Sales to VAT Registered Buyers
+                  <tr className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] border-b border-gray-100">
+                    <td className="px-3 py-2.5 text-[12px] text-gray-700 pl-8">
+                      Annex A — Sales to VAT registered buyers
                     </td>
-                    <td className="px-4 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                    <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
                       {money(annexATotal.taxable)}
                     </td>
-                    <td className="px-4 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                    <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
                       {money(annexATotal.vat)}
                     </td>
                   </tr>
-                  <tr className="hover:bg-gray-50">
-                    <td className="px-4 py-2.5 text-[12px] text-gray-700 pl-8">
-                      Annex B — Retail Sales (Non-VAT Registered)
+                  <tr className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] border-b border-gray-100">
+                    <td className="px-3 py-2.5 text-[12px] text-gray-700 pl-8">
+                      Annex B — Retail sales (non-VAT registered)
                     </td>
-                    <td className="px-4 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                    <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
                       {money(annexBTotal.taxable)}
                     </td>
-                    <td className="px-4 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                    <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
                       {money(annexBTotal.vat)}
                     </td>
                   </tr>
-                  <tr className="bg-green-50 border-t border-green-200">
-                    <td className="px-4 py-2.5 text-[12px] font-bold text-green-800 pl-8">
-                      Total Output VAT
-                    </td>
-                    <td className="px-4 py-2.5 text-right font-mono text-[12px] font-bold text-green-800">
+                  <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
+                    <td className="px-3 py-2.5 text-gray-800 pl-8">Total output VAT</td>
+                    <td className="px-3 py-2.5 text-right font-mono text-gray-800">
                       {money(vatSummary.outputTaxable)}
                     </td>
-                    <td className="px-4 py-2.5 text-right font-mono text-[12px] font-bold text-green-800">
+                    <td className="px-3 py-2.5 text-right font-mono text-gray-800">
                       {money(vatSummary.outputVat)}
                     </td>
                   </tr>
 
-                  {/* Input VAT section */}
                   <tr className="bg-amber-50">
                     <td
                       colSpan={3}
-                      className="px-4 py-2 text-[11px] font-bold text-amber-800 uppercase tracking-wide"
+                      className="px-3 py-2 text-[11px] font-semibold text-amber-800 uppercase tracking-wide"
                     >
-                      Input VAT (Purchases)
+                      Input VAT (purchases)
                     </td>
                   </tr>
-                  <tr className="hover:bg-gray-50">
-                    <td className="px-4 py-2.5 text-[12px] text-gray-700 pl-8">
-                      Annex C — Local Purchases
+                  <tr className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] border-b border-gray-100">
+                    <td className="px-3 py-2.5 text-[12px] text-gray-700 pl-8">
+                      Annex C — Local purchases
                     </td>
-                    <td className="px-4 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                    <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
                       {money(annexCTotal.taxable)}
                     </td>
-                    <td className="px-4 py-2.5 text-right font-mono text-[12px] text-gray-700">
+                    <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
                       {money(annexCTotal.vat)}
                     </td>
                   </tr>
-                  <tr className="bg-amber-50 border-t border-amber-200">
-                    <td className="px-4 py-2.5 text-[12px] font-bold text-amber-800 pl-8">
-                      Total Input VAT
-                    </td>
-                    <td className="px-4 py-2.5 text-right font-mono text-[12px] font-bold text-amber-800">
+                  <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
+                    <td className="px-3 py-2.5 text-gray-800 pl-8">Total input VAT</td>
+                    <td className="px-3 py-2.5 text-right font-mono text-gray-800">
                       {money(vatSummary.inputTaxable)}
                     </td>
-                    <td className="px-4 py-2.5 text-right font-mono text-[12px] font-bold text-amber-800">
+                    <td className="px-3 py-2.5 text-right font-mono text-gray-800">
                       {money(vatSummary.inputVat)}
                     </td>
                   </tr>
 
-                  {/* Net VAT payable */}
                   <tr
-                    className={`border-t-2 ${
+                    className={`border-t-2 font-bold text-[12px] ${
                       vatSummary.netVat >= 0
                         ? "bg-red-50 border-red-200"
                         : "bg-green-50 border-green-200"
                     }`}
                   >
                     <td
-                      className={`px-4 py-3 text-[13px] font-bold ${
+                      className={`px-3 py-2.5 ${
                         vatSummary.netVat >= 0 ? "text-red-800" : "text-green-800"
                       }`}
                     >
-                      Net VAT {vatSummary.netVat >= 0 ? "Payable" : "Refundable"}
+                      Net VAT {vatSummary.netVat >= 0 ? "payable" : "refundable"}
                     </td>
-                    <td className="px-4 py-3" />
+                    <td className="px-3 py-2.5" />
                     <td
-                      className={`px-4 py-3 text-right font-mono text-[13px] font-bold ${
+                      className={`px-3 py-2.5 text-right font-mono ${
                         vatSummary.netVat >= 0 ? "text-red-800" : "text-green-800"
                       }`}
                     >
@@ -890,19 +744,21 @@ const VatReports: React.FC = () => {
                 </tbody>
               </table>
             </div>
+            <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+              VAT summary for IRD submission
+            </div>
           </div>
         </div>
       )}
 
-      {/* ── Annex A Tab ───────────────────────────────────────────────────────── */}
       {activeAnnex === "A" && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-[13px] font-semibold text-gray-800">
-                Annex A — Sales to VAT Registered Parties
+              <h3 className="text-[12px] font-semibold text-gray-800">
+                Annex A — Sales to VAT registered parties
               </h3>
-              <p className="text-[10px] text-gray-500 mt-0.5">
+              <p className="text-[11px] text-gray-500 mt-0.5">
                 {annexAData.length} invoices · Taxable: {money(annexATotal.taxable)} · VAT:{" "}
                 {money(annexATotal.vat)}
               </p>
@@ -910,51 +766,55 @@ const VatReports: React.FC = () => {
             <button
               type="button"
               onClick={() => handleExportExcel("Annex_A", annexAData, annexAColumns)}
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 transition-colors"
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5"
             >
               <Download className="h-3.5 w-3.5" />
               Export
             </button>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+          <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
             <DataTable
               columns={annexAColumns}
               data={annexAData}
               emptyMessage="No sales to VAT-registered parties in this period."
               footerRow={
-                <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-                  <td colSpan={5} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
+                <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
+                  <td colSpan={5} className="px-3 py-2.5 text-gray-800">
                     Total
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                  <td className="px-3 py-2.5 text-right font-mono text-gray-800">
                     {money(annexATotal.taxable)}
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                  <td className="px-3 py-2.5 text-right font-mono text-gray-800">
                     {money(annexATotal.exempt)}
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                  <td className="px-3 py-2.5 text-right font-mono text-gray-800">
                     {money(annexATotal.vat)}
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                  <td className="px-3 py-2.5 text-right font-mono text-gray-800">
                     {money(annexATotal.total)}
                   </td>
                 </tr>
               }
             />
+            {annexAData.length > 0 && (
+              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+                {annexAData.length} record{annexAData.length === 1 ? "" : "s"}
+              </div>
+            )}
           </div>
         </div>
       )}
 
-      {/* ── Annex B Tab ───────────────────────────────────────────────────────── */}
       {activeAnnex === "B" && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-[13px] font-semibold text-gray-800">
-                Annex B — Retail Sales (Non-VAT Registered)
+              <h3 className="text-[12px] font-semibold text-gray-800">
+                Annex B — Retail sales (non-VAT registered)
               </h3>
-              <p className="text-[10px] text-gray-500 mt-0.5">
+              <p className="text-[11px] text-gray-500 mt-0.5">
                 {annexBData.length} invoices · Taxable: {money(annexBTotal.taxable)} · VAT:{" "}
                 {money(annexBTotal.vat)}
               </p>
@@ -962,51 +822,55 @@ const VatReports: React.FC = () => {
             <button
               type="button"
               onClick={() => handleExportExcel("Annex_B", annexBData, annexBColumns)}
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 transition-colors"
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5"
             >
               <Download className="h-3.5 w-3.5" />
               Export
             </button>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+          <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
             <DataTable
               columns={annexBColumns}
               data={annexBData}
               emptyMessage="No retail sales in this period."
               footerRow={
-                <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-                  <td colSpan={4} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
+                <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
+                  <td colSpan={4} className="px-3 py-2.5 text-gray-800">
                     Total
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                  <td className="px-3 py-2.5 text-right font-mono text-gray-800">
                     {money(annexBTotal.taxable)}
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                  <td className="px-3 py-2.5 text-right font-mono text-gray-800">
                     {money(annexBTotal.exempt)}
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                  <td className="px-3 py-2.5 text-right font-mono text-gray-800">
                     {money(annexBTotal.vat)}
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                  <td className="px-3 py-2.5 text-right font-mono text-gray-800">
                     {money(annexBTotal.total)}
                   </td>
                 </tr>
               }
             />
+            {annexBData.length > 0 && (
+              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+                {annexBData.length} record{annexBData.length === 1 ? "" : "s"}
+              </div>
+            )}
           </div>
         </div>
       )}
 
-      {/* ── Annex C Tab ───────────────────────────────────────────────────────── */}
       {activeAnnex === "C" && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-[13px] font-semibold text-gray-800">
-                Annex C — Purchase Invoices
+              <h3 className="text-[12px] font-semibold text-gray-800">
+                Annex C — Purchase invoices
               </h3>
-              <p className="text-[10px] text-gray-500 mt-0.5">
+              <p className="text-[11px] text-gray-500 mt-0.5">
                 {annexCData.length} invoices · Taxable: {money(annexCTotal.taxable)} · VAT:{" "}
                 {money(annexCTotal.vat)}
               </p>
@@ -1014,65 +878,74 @@ const VatReports: React.FC = () => {
             <button
               type="button"
               onClick={() => handleExportExcel("Annex_C", annexCData, annexCColumns)}
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 transition-colors"
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5"
             >
               <Download className="h-3.5 w-3.5" />
               Export
             </button>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+          <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
             <DataTable
               columns={annexCColumns}
               data={annexCData}
               emptyMessage="No purchase invoices in this period."
               footerRow={
-                <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-                  <td colSpan={5} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
+                <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
+                  <td colSpan={5} className="px-3 py-2.5 text-gray-800">
                     Total
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                  <td className="px-3 py-2.5 text-right font-mono text-gray-800">
                     {money(annexCTotal.taxable)}
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                  <td className="px-3 py-2.5 text-right font-mono text-gray-800">
                     {money(annexCTotal.vat)}
                   </td>
-                  <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
+                  <td className="px-3 py-2.5 text-right font-mono text-gray-800">
                     {money(annexCTotal.total)}
                   </td>
                 </tr>
               }
             />
+            {annexCData.length > 0 && (
+              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+                {annexCData.length} record{annexCData.length === 1 ? "" : "s"}
+              </div>
+            )}
           </div>
         </div>
       )}
 
-      {/* ── Annex D Tab ───────────────────────────────────────────────────────── */}
       {activeAnnex === "D" && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-[13px] font-semibold text-gray-800">
-                Annex D — Import Purchases
+              <h3 className="text-[12px] font-semibold text-gray-800">
+                Annex D — Import purchases
               </h3>
-              <p className="text-[10px] text-gray-500 mt-0.5">{annexDData.length} records</p>
+              <p className="text-[11px] text-gray-500 mt-0.5">{annexDData.length} records</p>
             </div>
             <button
               type="button"
               onClick={() => handleExportExcel("Annex_D", annexDData, annexCColumns)}
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 transition-colors"
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5"
             >
               <Download className="h-3.5 w-3.5" />
               Export
             </button>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+          <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
             <DataTable
               columns={annexCColumns}
               data={annexDData}
               emptyMessage="No import purchases recorded in this period."
             />
+            {annexDData.length > 0 && (
+              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+                {annexDData.length} record{annexDData.length === 1 ? "" : "s"}
+              </div>
+            )}
           </div>
         </div>
       )}
