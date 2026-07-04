@@ -35,6 +35,7 @@ import {
 import { getBSTodayLong, getBSToday } from "../lib/nepaliDate";
 import { mergeSystemConfiguration } from "../lib/systemConfiguration";
 import { computeOutstandingAnalysis } from "../lib/accounting";
+import { resolveMinimumSaleRate } from "../lib/priceListUtils";
 
 // ─── Formatting helpers ────────────────────────────────────────────────────────
 
@@ -370,6 +371,7 @@ const FinancialDashboard: React.FC = () => {
     items,
     stockMovements,
     parties,
+    priceLists,
     initializeApp,
     setCurrentPage,
   } = useStore();
@@ -731,19 +733,25 @@ const FinancialDashboard: React.FC = () => {
     }
 
     if (warningAlarms.belowMinimumPrice) {
-      const itemById = new Map(items.map((i) => [i.id, i]));
       const violations = new Set<string>();
       for (const inv of invoices) {
         const t = String(inv.type || "").toLowerCase();
         if (!(t.includes("sales-invoice") || t === "sales_invoice") || inv.status !== "posted")
           continue;
+        const invDate = String(inv.date || inv.invoiceDate || "").slice(0, 10);
         for (const line of inv.lines || inv.items || []) {
-          const item = itemById.get(line.itemId);
-          if (!item) continue;
-          const floor = Number(item.salePrice ?? item.sellingPrice ?? item.mrp ?? 0);
+          const floor = resolveMinimumSaleRate(
+            line.itemId,
+            inv.partyId,
+            invDate,
+            items,
+            parties,
+            priceLists || [],
+          );
           const rate = Number(line.rate ?? line.price ?? 0);
           if (floor > 0 && rate > 0 && rate < floor) {
-            violations.add(item.name || item.id);
+            const item = items.find((i) => i.id === line.itemId);
+            violations.add(item?.name || line.itemName || line.itemId);
           }
         }
       }
@@ -768,6 +776,7 @@ const FinancialDashboard: React.FC = () => {
     stockMovements,
     vouchers,
     parties,
+    priceLists,
     todayISO,
     today,
     setCurrentPage,

@@ -8,6 +8,7 @@ export interface SyncPullResult {
   parties: Record<string, unknown>[];
   items: Record<string, unknown>[];
   invoices: Record<string, unknown>[];
+  vouchers: Record<string, unknown>[];
 }
 
 function requireTenantContext(user: AuthTokenPayload): { tenantId: string; companyId: string } {
@@ -65,13 +66,26 @@ export async function fetchSyncPull(
        WHERE tenant_id = $1 AND company_id = $2
        ORDER BY updated_at ASC LIMIT 200`;
 
+  const voucherSql = sinceParam
+    ? `SELECT id, voucher_no, voucher_date, voucher_type, status, narration, party_id,
+              total_debit, total_credit, grand_total, updated_at
+       FROM vouchers
+       WHERE tenant_id = $1 AND company_id = $2 AND updated_at > $3
+       ORDER BY updated_at ASC LIMIT 200`
+    : `SELECT id, voucher_no, voucher_date, voucher_type, status, narration, party_id,
+              total_debit, total_credit, grand_total, updated_at
+       FROM vouchers
+       WHERE tenant_id = $1 AND company_id = $2
+       ORDER BY updated_at ASC LIMIT 200`;
+
   const params = sinceParam ? [tenantId, companyId, sinceParam] : [tenantId, companyId];
 
-  const [accounts, parties, items, invoices] = await Promise.all([
+  const [accounts, parties, items, invoices, vouchers] = await Promise.all([
     query(accountSql, params),
     query(partySql, params),
     query(itemSql, params),
     query(invoiceSql, params),
+    query(voucherSql, params),
   ]);
 
   return {
@@ -81,5 +95,6 @@ export async function fetchSyncPull(
     parties: parties.rows,
     items: items.rows,
     invoices: invoices.rows,
+    vouchers: vouchers.rows,
   };
 }

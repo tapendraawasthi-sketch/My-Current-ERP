@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 import FalconProvider from "./falcon/FalconProvider";
 import SyncStatusIndicator from "./SyncStatusIndicator";
 import { startSyncLoop, stopSyncLoop } from "../lib/syncEngine";
+import { startAutoBackupScheduler, stopAutoBackupScheduler } from "../lib/autoBackupScheduler";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -81,7 +82,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   useEffect(() => {
     if (isAuthenticated && isDbReady) {
       startSyncLoop();
-      return () => stopSyncLoop();
+      startAutoBackupScheduler(() => useStore.getState().companySettings);
+      return () => {
+        stopSyncLoop();
+        stopAutoBackupScheduler();
+      };
     }
     return undefined;
   }, [isAuthenticated, isDbReady]);

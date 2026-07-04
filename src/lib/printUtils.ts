@@ -11,6 +11,11 @@ import QRCode from "qrcode";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import { formatNumber } from "./utils";
+import {
+  DEFAULT_SYSTEM_CONFIGURATION,
+  mergeSystemConfiguration,
+  type PrintConfig,
+} from "./systemConfiguration";
 
 // ─────────────────────────────────────────────────────────────
 // 1.  TYPE DEFINITIONS
@@ -92,6 +97,29 @@ export interface PrintOptions {
   showWatermark?: boolean;
   watermarkText?: string;
   emailAsPdf?: boolean;
+  printConfig?: PrintConfig;
+}
+
+function resolvePrintConfig(
+  options: PrintOptions,
+  kind: "invoice" | "voucher" = "invoice",
+): PrintConfig {
+  if (options.printConfig) return options.printConfig;
+  return kind === "voucher"
+    ? DEFAULT_SYSTEM_CONFIGURATION.voucherPrint
+    : DEFAULT_SYSTEM_CONFIGURATION.invoicePrint;
+}
+
+function buildPageCss(config: PrintConfig): string {
+  return `
+  @page { size: A4 portrait; margin: ${config.marginTopMm}mm ${config.marginRightMm}mm ${config.marginBottomMm}mm ${config.marginLeftMm}mm; }
+  body { font-size: ${config.fontSize}pt; }`;
+}
+
+function printBannerHtml(config: PrintConfig, position: "header" | "footer"): string {
+  const text = position === "header" ? config.headerText : config.footerText;
+  if (!text?.trim()) return "";
+  return `<div class="print-banner print-banner-${position}">${text}</div>`;
 }
 
 export type PrintDocumentType =
@@ -236,7 +264,6 @@ function resolveWatermark(invoice: DBInvoice, opts: PrintOptions): { css: string
 
 const A4_BASE_CSS = `
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  @page { size: A4 portrait; margin: 10mm; }
   body {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 9pt;
@@ -244,6 +271,18 @@ const A4_BASE_CSS = `
     background: #fff;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+  }
+  .print-banner {
+    text-align: center;
+    font-size: 8pt;
+    color: #444;
+    padding: 2pt 0;
+    border-bottom: 0.5px solid #ccc;
+  }
+  .print-banner-footer {
+    border-bottom: none;
+    border-top: 0.5px solid #ccc;
+    margin-top: 8pt;
   }
   @media print {
     body { background: #fff; }
@@ -378,15 +417,17 @@ async function taxInvoiceHTML(
   opts: PrintOptions,
   simplified = false,
 ): Promise<string> {
+  const printConfig = resolvePrintConfig(opts, "invoice");
   const cs = invoice.companySettings || ({} as CompanySettings);
   const qrSrc = invoice.qrCode || (await buildQR(invoice.cbmsIrn || invoice.invoiceNo, 120));
   const { css: wmCss, cls: wmCls } = resolveWatermark(invoice, opts);
 
   const title = simplified ? "SIMPLIFIED TAX INVOICE / सरलीकृत कर चलान" : "TAX INVOICE / कर चलान";
 
-  const logoHtml = cs.logo
-    ? `<img src="${cs.logo}" class="logo-img" alt="Logo" />`
-    : '<div style="width:75pt;height:55pt;"></div>';
+  const logoHtml =
+    printConfig.showLogo && cs.logo
+      ? `<img src="${cs.logo}" class="logo-img" alt="Logo" />`
+      : '<div style="width:75pt;height:55pt;"></div>';
 
   const qrHtml = qrSrc
     ? `<img src="${qrSrc}" class="qr-img" alt="QR" />`
@@ -420,6 +461,7 @@ async function taxInvoiceHTML(
 <title>${simplified ? "Simplified Tax Invoice" : "Tax Invoice"} - ${invoice.invoiceNo}</title>
 <style>
 ${A4_BASE_CSS}
+${buildPageCss(printConfig)}
 ${wmCss}
 ${simplified ? ".invoice-title { border-color: #444; }" : ""}
 .items-table { margin: 5pt 0; }
@@ -436,6 +478,7 @@ ${simplified ? ".invoice-title { border-color: #444; }" : ""}
 </style>
 </head>
 <body class="${wmCls}">
+${printBannerHtml(printConfig, "header")}
 <!-- HEADER -->
 <div class="header-grid">
   <div>${logoHtml}</div>
@@ -563,6 +606,8 @@ ${
     : ""
 }
 
+${printBannerHtml(printConfig, "footer")}
+
 <script>
   window.onload = function() {
     setTimeout(function() { window.print(); }, 300);
@@ -689,7 +734,8 @@ ${dc.remarks ? `<div style="margin-top:6pt; font-size:8.5pt;"><strong>Remarks:</
 // 6.  ACCOUNTING VOUCHER TEMPLATE  (Payment / Receipt / Journal)
 // ─────────────────────────────────────────────────────────────
 
-async function voucherHTML(voucher: AccountingVoucher, _opts: PrintOptions): Promise<string> {
+async function voucherHTML(voucher: AccountingVoucher, opts: PrintOptions): Promise<string> {
+  const printConfig = resolvePrintConfig(opts, "voucher");
   const cs = voucher.companySettings || ({} as CompanySettings);
   const vType = (voucher.type || "Journal").toUpperCase();
 
@@ -713,10 +759,12 @@ async function voucherHTML(voucher: AccountingVoucher, _opts: PrintOptions): Pro
 <title>${vType} VOUCHER - ${voucher.voucherNo}</title>
 <style>
 ${A4_BASE_CSS}
+${buildPageCss(printConfig)}
 tfoot td { background: #e8f5e9; font-weight: bold; }
 </style>
 </head>
 <body>
+${printBannerHtml(printConfig, "header")}
 <div class="company-center" style="margin-bottom:8pt;">
   ${cs.nameNepali ? `<div class="company-name-np">${cs.nameNepali}</div>` : ""}
   <div class="company-name-en">${cs.name || ""}</div>
@@ -771,6 +819,8 @@ ${
   <div class="sig-box"><div class="sig-line"></div>Prepared By</div>
   <div class="sig-box"><div class="sig-line"></div>Approved By</div>
 </div>
+
+${printBannerHtml(printConfig, "footer")}
 
 <script>window.onload=function(){setTimeout(function(){window.print();},300);};</script>
 </body>
@@ -1032,7 +1082,9 @@ export async function generateInvoicePDF(
       logo: companySettings?.logo || "",
     },
   };
-  await printDocument("tax-invoice", inv, {});
+  await printDocument("tax-invoice", inv, {
+    printConfig: mergeSystemConfiguration(companySettings?.systemConfiguration).invoicePrint,
+  });
   // Return a minimal valid Blob so existing code doesn't crash
   return new Blob([""], { type: "application/pdf" });
 }
@@ -1060,7 +1112,9 @@ export function generateVoucherPDF(voucher: any, companySettings: any, _accounts
     },
   };
   // Fire-and-forget (can't await in sync function)
-  printDocument("voucher", v, {}).catch(console.error);
+  printDocument("voucher", v, {
+    printConfig: mergeSystemConfiguration(companySettings?.systemConfiguration).voucherPrint,
+  }).catch(console.error);
   return new Blob([""], { type: "application/pdf" });
 }
 

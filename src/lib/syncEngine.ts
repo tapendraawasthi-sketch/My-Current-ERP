@@ -138,6 +138,25 @@ async function pullRemoteChanges(): Promise<void> {
     } as any);
   }
 
+  for (const row of data.vouchers || []) {
+    const id = String(row.id);
+    const existing = await db.vouchers.get(id);
+    await db.vouchers.put({
+      ...(existing || {}),
+      id,
+      voucherNo: String(row.voucher_no || ""),
+      date: String(row.voucher_date || "").slice(0, 10),
+      type: String(row.voucher_type || "journal"),
+      status: String(row.status || "draft"),
+      narration: row.narration ? String(row.narration) : existing?.narration,
+      partyId: row.party_id ? String(row.party_id) : existing?.partyId,
+      totalDebit: Number(row.total_debit ?? existing?.totalDebit ?? 0),
+      totalCredit: Number(row.total_credit ?? existing?.totalCredit ?? 0),
+      grandTotal: Number(row.grand_total ?? existing?.grandTotal ?? 0),
+      lines: existing?.lines || [],
+    } as any);
+  }
+
   localStorage.setItem(SYNC_PULL_KEY, now);
 }
 
@@ -224,6 +243,11 @@ export async function getPendingSyncCount(): Promise<number> {
 }
 
 export async function pullSyncNow(): Promise<void> {
+  await pullRemoteChanges();
+}
+
+export async function syncNow(): Promise<void> {
+  await runSyncCycle();
   await pullRemoteChanges();
 }
 
