@@ -1,358 +1,364 @@
 /**
- * Self-contained Nepali language brain for e-Khata.
- * Understands Roman/Devanagari Nepali, Hindi-mixed trader speech, and generates
- * contextual human-like replies — no Ollama, WebLLM, or external APIs.
+ * Self-contained Nepali conversational AI brain for e-Khata.
+ * No external APIs, no downloads, no Ollama — runs in the browser.
+ * Handles: greetings, food, weather, identity, help, accounting, business,
+ * Nepal culture, jokes, and more — plus routes transactions to the parser.
  */
 
-import { normalizeNepaliText, tokenizeNepali } from "./normalizeNepali";
+import { normalizeNepaliText } from "./normalizeNepali";
 import type { LedgerBalanceSnapshot } from "./conversationEngine";
-import { replyBalance, replyHelp } from "./conversationEngine";
+import { replyBalance } from "./conversationEngine";
 
-export type NepaliTopic =
-  | "greeting"
-  | "status"
-  | "food"
-  | "drink"
-  | "health"
-  | "identity"
-  | "thanks"
-  | "bye"
-  | "help"
-  | "balance"
-  | "emotion"
-  | "time"
-  | "weather"
-  | "business"
-  | "affirmation"
-  | "negation"
-  | "general";
+// ─── Message analysis ────────────────────────────────────────────────────────
 
-export type QuestionKind = "yes_no" | "what" | "who" | "how" | "when" | "why" | "where" | "how_much" | "none";
-
-export interface NepaliAnalysis {
-  normalized: string;
-  tokens: string[];
-  topics: NepaliTopic[];
-  primaryTopic: NepaliTopic;
+export interface MessageAnalysis {
+  topics: string[];
+  sentiment: "positive" | "negative" | "neutral" | "question";
+  isGreeting: boolean;
+  isFarewell: boolean;
+  isThanks: boolean;
   isQuestion: boolean;
-  questionKind: QuestionKind;
-  mentionsYou: boolean;
-  mentionsMe: boolean;
-  sentiment: "positive" | "negative" | "neutral";
+  isIdentityQuestion: boolean;
+  isHelpRequest: boolean;
+  isAffirmation: boolean;
+  isNegation: boolean;
+  isAboutAccounting: boolean;
+  isAboutWeather: boolean;
+  isAboutFood: boolean;
+  isAboutHealth: boolean;
+  isAboutTime: boolean;
+  isAboutFamily: boolean;
+  isAboutBusiness: boolean;
+  isAboutMoney: boolean;
+  isAboutNepal: boolean;
+  isSmallTalk: boolean;
+  isCompliment: boolean;
+  isComplaint: boolean;
+  isJoke: boolean;
+  detectedLanguage: "nepali" | "english" | "mixed";
 }
 
-/** Topic lexicons — lemmas after normalization */
-const LEXICON: Record<NepaliTopic, string[]> = {
-  greeting: [
-    "namaste", "namaskar", "hello", "hi", "hey", "subha", "subha prabhat", "shubha",
-    "bihana", "beluka", "sandhya", "good", "morning", "evening",
-  ],
-  status: [
-    "xa", "x", "chha", "cha", "ho", "huncha", "hunu", "thik", "ramro", "sab", "kasto",
-    "k xa", "ke cha", "kasto cha", "sanchai", "theek", "tik",
-  ],
-  food: [
-    "khana", "khaye", "khayeu", "khayo", "khannu", "bhok", "bhoko", "pakyo", "pakayeu",
-    "bhath", "bhat", "roti", "tarkari", "masu", "dal", "khaja", "nashta", "bela",
-    "khana khayo", "khana khayeu", "khana khannu", "bhojan",
-  ],
-  drink: ["pani", "chiya", "chai", "coffee", "dudh", "juice", "peeu", "peyo", "khayo pani"],
-  health: ["tabiyat", "birami", "bimar", "dukhne", "dard", "thik", "sanchai", "hospital", "dawai", "aushadhi"],
-  identity: ["ko", "k ho", "ko ho", "naam", "name", "timi", "tapai", "hajur", "k ho yo"],
-  thanks: ["dhanyabad", "shukriya", "thanks", "thank", "dhanyabaad", "meharbani"],
-  bye: ["bye", "alvida", "paxi", "feri", "goodbye", "bida", "jaane"],
-  help: ["help", "madat", "sahayata", "kasari", "sikau", "siknus", "udaharan", "example", "ke garne", "k garne"],
-  balance: ["balance", "kati", "kitna", "udhaar", "baki", "total", "hisab", "hisaab"],
-  emotion: ["dukha", "khushi", "risha", "thakit", "thak", "busy", "stress", "tension", "dar", "nervous", "ramro lagyo"],
-  time: ["baje", "samay", "time", "aile", "ahile", "kati baje", "bela", "din", "hijo", "aja", "parsi"],
-  weather: ["pani", "barsha", "gham", "hawa", "jado", "garmi", "mausam", "weather", "cloud", "badal"],
-  business: ["pasal", "dukan", "shop", "byapar", "bechnu", "kinne", "customer", "grahak", "supplier", "profit", "loss"],
-  affirmation: ["ho", "huncha", "thik", "ramro", "hajur", "ji", "bilkul", "exactly", "yes", "ok", "huncha"],
-  negation: ["hoina", "chaina", "nadine", "no", "nai", "bhayena", "vayena"],
-  general: [],
-};
+const GREETING_PATTERNS =
+  /\b(namaste|namaskar|hello|hi|hey|yo|k\s*cha|k\s*xa|kasto|hajur|dai|didi|bhai|bahini|sathi|kta|kti|sup|wassup|good\s*morning|good\s*evening|good\s*night|shubha|subha|prabhat|sandhya|raatri)\b/i;
+const FAREWELL_PATTERNS =
+  /\b(bye|goodbye|alvida|pheri\s*bhetaula|basnu|jaanu|good\s*night|see\s*you|ta\s*ta|tata|cya|later|ram\s*ram)\b/i;
+const THANKS_PATTERNS = /\b(dhanyabad|dhanyabaad|thanks|thank\s*you|shukriya|aabhari|thx|ty)\b/i;
+const IDENTITY_PATTERNS =
+  /\b(timi\s*ko|timi\s*kun|ko\s*ho|who\s*are|what\s*are\s*you|your\s*name|timro\s*naam|tapaiko\s*naam|about\s*you|introduce|e-khata|ekhata)\b/i;
+const HELP_PATTERNS =
+  /\b(help|madat|sahayog|sahayata|kasari|how\s*to|k\s*garne|ke\s*garne|sikaunu|bataunu|explain|guide|what\s*can\s*you|ke\s*garna\s*sakchau|udaharan|example)\b/i;
+const QUESTION_WORDS =
+  /\b(k[aei]|kina|kasari|kahile|kaha|kati|kun|who|what|when|where|why|how|which|does|is|are|can|could|would|should|do)\b/i;
+const AFFIRMATION = /\b(ho|hunchha|huncha|thik|sahi|okay|ok|yes|huss|ramro|babal|maja|chalcha|aaja)\b/i;
+const NEGATION = /\b(hoina|chaina|chhaina|xaina|no|nope|nah|na|pardaina|nahuncha|sakdina)\b/i;
 
-const QUESTION_WORDS: Record<QuestionKind, string[]> = {
-  yes_no: ["ho", "huncha", "cha", "chha", "hunxa", "garnu", "khayo", "khayeu", "gayeu", "aayo"],
-  what: ["ke", "k", "ki", "k ho", "ke ho", "kya", "what"],
-  who: ["ko", "kasle", "kole", "who"],
-  how: ["kasto", "kasari", "kina garne", "how"],
-  when: ["kaila", "kahile", "when", "kati baje"],
-  why: ["kina", "kyun", "why"],
-  where: ["kaha", "kaha", "where", "kata"],
-  how_much: ["kati", "kitna", "how much"],
-  none: [],
-};
+const FOOD_PATTERNS =
+  /\b(khana|khaana|khayeu|khayo|khanu|bhat|dal|masu|tarkari|momo|chiya|chai|tea|doodh|dudh|paani|pani|breakfast|lunch|dinner|snack|fruit|phal|saag|roti|bhuja|chatpate|samosa|sekuwa|thukpa|chowmein|noodle|biryani|pulau|bhaat|cook|pakau|recipe|kheer|mithai|sweet|icecream|juice|bhok|bhoko)\b/i;
+const WEATHER_PATTERNS =
+  /\b(mausam|weather|garmi|jado|thandi|paani\s*par|rain|dhoop|sunny|cloudy|fog|hiu|snow|hawaa|wind|tato|chiso|barsha|monsoon)\b/i;
+const HEALTH_PATTERNS =
+  /\b(biram|biraami|bimar|birami|health|sancho|sanchai|doctor|hospital|ausadhi|medicine|tabiyet|tabiyat|headache|fever|tauko\s*dukh|pet\s*dukh|cold|flu|covid|exercise|yoga|gym|stress|tired|thakyo|nidra|sleep|rest|aram)\b/i;
+const TIME_PATTERNS =
+  /\b(samay|time|baje|ghanta|minute|aaja|today|hijo|yesterday|bholi|tomorrow|hapta|week|mahina|month|barsha|year|bihanaa|morning|diuso|afternoon|beluka|evening|rati|night|kati\s*baj)\b/i;
+const FAMILY_PATTERNS =
+  /\b(baba|ama|buwa|aama|didi|dai|bhai|bahini|family|pariwar|ghar|home|wife|husband|srimati|sriman|chora|chori|son|daughter|babu|nani|hajur\s*ba|hajur\s*ama|mama|maiju|kaka|kaki|fupu|nanu)\b/i;
+const BUSINESS_PATTERNS =
+  /\b(byapar|business|pasal|shop|dokan|dukan|customer|grahak|supplier|maal|saman|goods|stock|profit|loss|nafa|noksan|invest|loan|rin|bank|saving|bachat|tax|kar|vat|gst|audit|budget|plan|market|bazaar|price|mol|bhau|rate|dar)\b/i;
+const MONEY_PATTERNS =
+  /\b(paisa|rupiya|rupees|rs|npr|money|dhan|sampatti|wealth|income|amdani|expense|kharcha|salary|tallab|bonus|loan|rin|debt|udhaar|savings|bachat|cost|lagat|price|mol|bhau)\b/i;
+const NEPAL_PATTERNS =
+  /\b(nepal|kathmandu|pokhara|chitwan|lumbini|everest|sagarmatha|himalaya|terai|pahad|himal|district|jilla|pradesh|province|festival|dashain|tihar|holi|chhath|teej|maghe|losar|bisket|culture|sanskriti|tradition|parampara|temple|mandir|pagoda|stupa|buddha|pashupatinath|swayambhu|boudha)\b/i;
+const ACCOUNTING_PATTERNS =
+  /\b(accounting|hisab|kitab|lekha|ledger|khata|journal|voucher|debit|credit|balance|sheet|profit|loss|trial|receivable|payable|asset|liability|equity|income|revenue|expense|depreciation|amortization|audit|fiscal|financial|statement|report|tax|vat|tds|pan|invoice|bill|receipt|payment|bank\s*reconciliation|cost\s*center|budget)\b/i;
+const JOKE_PATTERNS = /\b(joke|hasau|funny|mazak|hahaha|lol|lmao|rofl|comedy|humor|hasi)\b/i;
+const COMPLIMENT_PATTERNS =
+  /\b(ramro|nice|great|good|best|wonderful|amazing|awesome|excellent|brilliant|smart|clever|talented|beautiful|sundara|babal|jhakkas|dami|mast|ekdam)\b/i;
+const COMPLAINT_PATTERNS =
+  /\b(naramro|bad|worst|terrible|horrible|useless|stupid|slow|problem|issue|error|bug|wrong|galat|kharab|bigriyo|chal\s*na)\b/i;
+const SMALL_TALK_PATTERNS =
+  /\b(kasto\s*cha|k\s*gardai|busy|free|bored|interesting|news|khabar|suneko|dekheko|padhai|study|job|kaam|office|plan|travel|ghumna|movie|film|music|gaana|song|game|khel|cricket|football|book|kitab)\b/i;
+const BALANCE_PATTERNS = /\b(balance|kati\s*udhaar|udhaar\s*kati|kitna|baki|total\s*udhaar|hisab\s*kati)\b/i;
 
-const YOU_WORDS = new Set(["tapai", "timi", "tapaile", "timile", "hajur", "dai", "didi", "bhai", "hajur"]);
-const ME_WORDS = new Set(["ma", "malaai", "malai", "mero", "hami", "hajur lai"]);
-
-function hashPick(seed: string, variants: string[]): string {
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
-  return variants[h % variants.length];
+function detectTopics(t: string): string[] {
+  const topics: string[] = [];
+  if (FOOD_PATTERNS.test(t)) topics.push("food");
+  if (WEATHER_PATTERNS.test(t)) topics.push("weather");
+  if (HEALTH_PATTERNS.test(t)) topics.push("health");
+  if (TIME_PATTERNS.test(t)) topics.push("time");
+  if (FAMILY_PATTERNS.test(t)) topics.push("family");
+  if (BUSINESS_PATTERNS.test(t)) topics.push("business");
+  if (MONEY_PATTERNS.test(t)) topics.push("money");
+  if (NEPAL_PATTERNS.test(t)) topics.push("nepal");
+  if (ACCOUNTING_PATTERNS.test(t)) topics.push("accounting");
+  if (SMALL_TALK_PATTERNS.test(t)) topics.push("smalltalk");
+  if (BALANCE_PATTERNS.test(t)) topics.push("balance");
+  return topics;
 }
 
-function scoreTopics(tokens: string[], full: string): NepaliTopic[] {
-  const scores = new Map<NepaliTopic, number>();
-
-  for (const [topic, words] of Object.entries(LEXICON) as [NepaliTopic, string[]][]) {
-    if (topic === "general") continue;
-    for (const word of words) {
-      if (word.includes(" ")) {
-        if (full.includes(word)) scores.set(topic, (scores.get(topic) ?? 0) + 3);
-      } else if (tokens.includes(word)) {
-        scores.set(topic, (scores.get(topic) ?? 0) + 1);
-      }
-    }
-  }
-
-  // Short status queries: "k xa", "ke cha"
-  if (/^(?:k|ke|ki)\s*(?:xa|x|chha|cha|ho|huncha)/.test(full.trim())) {
-    scores.set("status", (scores.get("status") ?? 0) + 5);
-    scores.set("greeting", (scores.get("greeting") ?? 0) + 2);
-  }
-
-  const ranked = [...scores.entries()]
-    .filter(([, s]) => s > 0)
-    .sort((a, b) => b[1] - a[1])
-    .map(([t]) => t);
-
-  return ranked.length ? ranked : ["general"];
-}
-
-function detectQuestionKind(tokens: string[], full: string, isQuestion: boolean): QuestionKind {
-  if (!isQuestion) return "none";
-
-  for (const [kind, words] of Object.entries(QUESTION_WORDS) as [QuestionKind, string[]][]) {
-    if (kind === "none") continue;
-    if (words.some((w) => tokens.includes(w) || full.includes(w))) return kind;
-  }
-
-  if (/\?$/.test(full) || /\b(ho|huncha|cha|chha)\s*\??$/.test(full)) return "yes_no";
-  return "what";
-}
-
-function detectSentiment(tokens: string[]): "positive" | "negative" | "neutral" {
-  const pos = ["ramro", "thik", "khushi", "dhanyabad", "sanchai", "masto", "badhi"];
-  const neg = ["naramro", "dukh", "birami", "thak", "stress", "problem", "garo", "dikkat"];
-  if (tokens.some((t) => pos.includes(t))) return "positive";
-  if (tokens.some((t) => neg.includes(t))) return "negative";
+function detectSentiment(t: string): MessageAnalysis["sentiment"] {
+  if (t.includes("?") || QUESTION_WORDS.test(t)) return "question";
+  if (COMPLIMENT_PATTERNS.test(t) || /\b(khushi|happy|ramro|maja|ramailo)\b/.test(t)) return "positive";
+  if (COMPLAINT_PATTERNS.test(t) || /\b(dukhi|sad|risa|angry|naramro)\b/.test(t)) return "negative";
   return "neutral";
 }
 
-export function analyzeNepaliMessage(raw: string): NepaliAnalysis {
-  const normalized = normalizeNepaliText(raw);
-  const tokens = tokenizeNepali(raw);
-  const trimmed = normalized.trim();
-  const rawTrimmed = raw.trim();
-
-  const isQuestion =
-    /\?/.test(rawTrimmed) ||
-    /\?$/.test(trimmed) ||
-    /\b(ke|ki|k|kati|kasle|kaha|kina|kasto|kasari|kaila|kahile|k ho|ke ho|kya)\b/.test(trimmed) ||
-    /\b(ho|huncha|cha|chha|hunxa)\s*\??$/.test(trimmed) ||
-    /\b(khayeu|khayo|khannu|gayo|gayeu|aayo|aayeu|garnu|bhayo|vayo)\s*\??$/.test(trimmed);
-
-  const topics = scoreTopics(tokens, trimmed);
-  const primaryTopic = topics[0] ?? "general";
+export function analyzeNepaliMessage(text: string): MessageAnalysis {
+  const normalized = normalizeNepaliText(text);
+  const t = normalized || text.toLowerCase().trim();
+  const hasNepaliChars = /[\u0900-\u097F]/.test(text);
+  const hasEnglishWords = /\b(the|is|are|was|were|have|has|do|does|will|would|can|could|should|may|might)\b/i.test(
+    t,
+  );
 
   return {
-    normalized: trimmed,
-    tokens,
-    topics,
-    primaryTopic,
-    isQuestion,
-    questionKind: detectQuestionKind(tokens, trimmed, isQuestion),
-    mentionsYou:
-      tokens.some((t) => YOU_WORDS.has(t)) ||
-      /\b(khayeu|khayo|gayo|gayeu|garnu bhayo|sanchai cha)\b/.test(trimmed),
-    mentionsMe: tokens.some((t) => ME_WORDS.has(t)),
-    sentiment: detectSentiment(tokens),
+    topics: detectTopics(t),
+    sentiment: detectSentiment(t),
+    isGreeting: GREETING_PATTERNS.test(t),
+    isFarewell: FAREWELL_PATTERNS.test(t),
+    isThanks: THANKS_PATTERNS.test(t),
+    isQuestion: QUESTION_WORDS.test(t) || text.includes("?"),
+    isIdentityQuestion: IDENTITY_PATTERNS.test(t),
+    isHelpRequest: HELP_PATTERNS.test(t),
+    isAffirmation: AFFIRMATION.test(t),
+    isNegation: NEGATION.test(t),
+    isAboutAccounting: ACCOUNTING_PATTERNS.test(t),
+    isAboutWeather: WEATHER_PATTERNS.test(t),
+    isAboutFood: FOOD_PATTERNS.test(t),
+    isAboutHealth: HEALTH_PATTERNS.test(t),
+    isAboutTime: TIME_PATTERNS.test(t),
+    isAboutFamily: FAMILY_PATTERNS.test(t),
+    isAboutBusiness: BUSINESS_PATTERNS.test(t),
+    isAboutMoney: MONEY_PATTERNS.test(t),
+    isAboutNepal: NEPAL_PATTERNS.test(t),
+    isSmallTalk: SMALL_TALK_PATTERNS.test(t),
+    isCompliment: COMPLIMENT_PATTERNS.test(t),
+    isComplaint: COMPLAINT_PATTERNS.test(t),
+    isJoke: JOKE_PATTERNS.test(t),
+    detectedLanguage: hasNepaliChars ? "nepali" : hasEnglishWords ? "english" : "mixed",
   };
 }
 
-function replyGreeting(analysis: NepaliAnalysis): string {
-  if (analysis.primaryTopic === "status" || analysis.questionKind === "yes_no") {
-    return hashPick(analysis.normalized, [
-      "Thik cha hajur! Tapai kasto hunuhuncha? Khata entry garna cha bhane sidhai lekhna milcha.",
-      "Sab ramro cha! Ma e-Khata — khata ra kura dono garna tayar chu. Ke chaincha?",
-      "Ramro cha! Aaja ke transaction cha? Lekhnus jastai `Ram lai 500 udhaar diye`.",
-    ]);
-  }
-  return hashPick(analysis.normalized, [
-    "Namaste hajur! Ma tapai ko khata sakhi. Nepali ma kura garna ra entry lekhna milcha.",
-    "Namaskar! Khata, udhaar, bikri — sabai yahi lekhna milcha. Kura pani garna milcha.",
-  ]);
+// ─── Response bank ───────────────────────────────────────────────────────────
+
+const RESPONSE_BANK: Record<string, string[]> = {
+  greeting: [
+    "Namaste! Kasto hunuhunchha? e-Khata ma tapailai swagat chha!",
+    "Namaste hajur! Ma e-Khata, tapaaiko digital khata sahayogi. K garna sakchhu?",
+    "Namaste! Aaja ko din ramro hos. Khata ma kei record garne ho?",
+    "Hey! e-Khata yaha chha. Kura garnu hos, khata lekhnu hos, duitai garchhu!",
+    "Namaskar! Ma tapaaiko personal khata assistant. Kei help chahiyo?",
+  ],
+  greeting_morning: [
+    "Subha prabhat! Bihanai ko din ramro hos. Aaja ko khata suru garnu hos.",
+    "Good morning! Aja ko bechbikhan kasari chha? Khata update garne?",
+  ],
+  greeting_evening: [
+    "Subha sandhya! Din kaisa bityo? Aaja ko hisab milau.",
+    "Good evening! Aaja ko kaam sakiyo? Khata check garne?",
+  ],
+  farewell: [
+    "Dhanyabad! Pheri bhetaula. Tapaaiko khata safe chha.",
+    "Bye! Kei help chahiyema pheri aaunus. Ma sadhai yaha chhu.",
+    "Alvida! Ramro din hos. Khata ma kei lekhnu bhayo bhane yaha aaunus.",
+    "Ta ta! Take care. e-Khata sadhai tayar chha.",
+  ],
+  thanks: [
+    "Kei pardaina! Yo ta mero kaam ho. Aru kei help?",
+    "Swagat chha! Tapailai help garna pauda khushi lagchha.",
+    "Dhanyabad timro pani! Kei aru chahiyo bhane bhannus.",
+    "Welcome! Sadhai tapaaiko sewa ma chhu.",
+  ],
+  identity: [
+    "Ma e-Khata ho — tapaaiko personal digital khata assistant! Ma tapaaiko pasal/byapar ko hisab-kitab rakhchhu. Udhaar, bikri, kharid, kharcha — sabai ma record garchhu. Nepali, English duitai bhasha bujhchhu. Tapaaiko data kahilei baahira jaadaina — yo tapaaiko niji khata ho!",
+    "Ma e-Khata — tapaaiko digital khata pustika! Ma Nepali ma kura garchhu, tapaaiko byapar ko entry rakhchhu, ani balance dekhauchu. Kei external app chaahidaina — ma app bhitra nai chhu!",
+  ],
+  help: [
+    "Ma yesto kaam garna sakchhu:\n\n• Udhaar record: \"Ram lai 500 udhaar diye\"\n• Nagad bikri: \"cash ma 200 becheko\"\n• Payment aayo: \"Shyam le 300 tiryo\"\n• Kharid: \"1000 ko sabji kineko\"\n• Kharcha: \"bijuli kharcha 500\"\n• Payment gareko: \"Gita lai 2000 payment gareko\"\n\nAni tapai sanga kura pani garna sakchhu — mausam, khana, Nepal, accounting — j sodhnu bhayo!",
+    "e-Khata le garne kaam:\n\n1. Byapar ko entry rakhne (udhaar, nagad, kharid, kharcha)\n2. Balance dekhaaune\n3. Accounting ko sawal ko jawaf dine\n4. Nepali/English ma kura garne\n\nJastai: \"Ram lai 500 udhaar\" lekhnuhos, confirm card aaucha!",
+  ],
+  affirmation: [
+    "Thik chha! Aru kei chahiyo?",
+    "Ramro! Kei aru help garna sakchhu?",
+    "Huss, bujhe. Aru kura?",
+    "OK! Ready chhu. K garne?",
+  ],
+  negation: [
+    "Thik chha, kei pardaina. Kei chahiye bela pheri bhannus.",
+    "OK, kei gardina. Aru kei?",
+    "Huncha, chhoddim. Aru kura garnu chha?",
+  ],
+  food: [
+    "Khana ko kura — daal bhaat tarkari ta Nepali ko jaan ho! Tapai le k khaanu bhayo aaja?",
+    "Momo khanu bhayo? Nepal ko momo ta world famous! Buff momo ki chicken?",
+    "Chiya ta piunu bhayo hola? Nepali masala chiya ta jhan ramro!",
+    "Khana ramro khaanus — sehat nai dhan ho byapar ma pani!",
+    "Hajur, khana khaye! Tapai le khannu bhayo? Khata entry chaincha bhane bhannus.",
+    "Khaye hai — dhanyabad sodhnu bhayo. Timi le ni khayo?",
+  ],
+  weather: [
+    "Mausam ko kura — Nepal ma ta char mahina paani, char mahina jado, char mahina garmi! Aja bahira kaisa chha?",
+    "Jado lagyo? Chiya piunu hos ani khata update garnu hos — duitai garam kaam!",
+    "Paani pareko chha? Ghar mai basera khata milaaunu hos!",
+    "Nepal ko mausam ta unpredictable chha — tara khata chai consistent rakhnu parcha!",
+  ],
+  health: [
+    "Health nai sabai bhanda thulo dhan ho! Birammi feel bhayo bhane doctor jaanus.",
+    "Aram garnu hos, paani dherai piunu hos. Stress kam garnu — khata ma hunchha!",
+    "Exercise garnu ramro — dimag sharp rahanchha, hisab pani ramro hunchha!",
+    "Sanchai hunuhunchha? Birammi bhaye aram garnu, khata ta ma sambhalchhu!",
+  ],
+  time: [
+    "Samay ta jhandai udchha — tyasaile khata niyamit rakhnu ramro!",
+    "Aja ko kaam aja nai — bholi ko laagi nathopnus. Khata update?",
+    "Time management nai business ko key ho. Entry samaymai garnu!",
+  ],
+  family: [
+    "Pariwar ta sabai bhanda thulo sampatti ho! Ghar pariwar lai samay dinus.",
+    "Family business ho? Sabai ko record rakhnu important — udhaar pani clear hunchha!",
+    "Ghar ko kharcha pani track garna sakchhu — bijuli, paani, bhada sabai!",
+  ],
+  business: [
+    "Byapar kasari chaldai chha? Niyamit khata rakhnu ramro practice ho!",
+    "Customer satisfaction nai business ko jaan ho. Udhaar record clear rakhnus!",
+    "Profit badhauna — kharcha kam garnu ani bikri badhaunu. Simple!",
+    "Stock management important chha — k kinnu, kati kinnu, kahile kinnu!",
+    "Byapar ma patience chahiyo. Dherai din lagchha tara niyamit hisab le help garchha.",
+    "New business tip: pahila customer banau, paisa afai aaucha!",
+  ],
+  money: [
+    "Paisa ko management nai sab bhanda important skill ho!",
+    "Bachat garnu — aamdani bhanda kharcha kam hunu parcha. Khata le track garchha!",
+    "Udhaar dinu bhanda pahila party ko history heros — khata ma sabai chha!",
+    "Cash flow nai business ko lifeline ho. Niyamit track garnu!",
+  ],
+  nepal: [
+    "Nepal — hamro pyaro desh! Sagarmatha dekhi Lumbini samma, sabai ramro!",
+    "Nepal ma byapar garna jhyap chha — customer lai relationship le chinchha!",
+    "Dashain tihar ma byapar badchha — tyasaile stock ready rakhnu!",
+    "Nepal ko economy ma small business ko thulo contribution chha. Ramro garnu hos!",
+    "Kathmandu, Pokhara, Chitwan — jaha pani byapar chaldai chha Nepal ma!",
+  ],
+  accounting: [
+    "Accounting bhanya — paisa aayo kaha, gayo kaha, baki kati — yo track garne system ho!",
+    "Double entry: har ek transaction ma debit ra credit barabar hunu parchha.",
+    "Debit bhanya — paisa aayo wa sampatti badyo. Credit bhanya — paisa gayo wa rin badyo.",
+    "Trial balance — sabai debit ra credit ko total milaunu. Milena bhane galti chha!",
+    "VAT bhanya — Nepal ma 13% Value Added Tax lagchha. NPR 50 lakh bhanda badi turnover ma mandatory.",
+    "TDS — Tax Deducted at Source. Bhuktani garda nai tax katera government lai tirnu parne.",
+    "Balance Sheet — company ko sampatti (assets), rin (liabilities), ra malik ko paisa (equity) dekhaucha.",
+    "Profit & Loss — kati kamaayo (income) ra kati kharchayo (expense) — net profit nikaalcha.",
+    "Fiscal Year — Nepal ma Shrawan 1 dekhi Ashadh masanta samma (mid-July to mid-July).",
+    "Cash vs Accrual: Cash basis ma paisa aayeko/gayeko bela record. Accrual ma bill aayeko bela nai.",
+    "Depreciation — fixed asset ko value time sanga ghatdai janchha. Building, gaadi, machine sabai.",
+    "Inventory valuation: FIFO (pahila aayeko pahila jaanchha), LIFO, wa Average cost method.",
+  ],
+  smalltalk: [
+    "Kaam kura kasari chaldai chha? Ramro hunchha!",
+    "Kei interesting news sunnu bhayo aaja?",
+    "Free time ma k garnu hunchha? Cricket hernu huncha?",
+    "Nepal ma ta festivals dherai — kati ramailo!",
+    "Movie hernu bhayo kei naya? Nepali film industry pani badhdai chha!",
+  ],
+  joke: [
+    "Haha! Thik chha ek joke sunuchu: Accountant lai kasari hasaune? Audit announce gara!",
+    "Nepali joke: Customer le sodhyo 'Udhaar dinu huncha?' Pasal le bhanyo 'Kina, cash le k bigaaryo?'",
+    "Ek joke: Balance sheet balance bhayena. Accountant le bhanyo — calculator ko battery sakiyo!",
+    "Fun fact: Nepal ko paisa lai Rupiya bhancha — 'rupya' Sanskrit shabd ho!",
+  ],
+  compliment: [
+    "Dhanyabad! Tapai pani ramro! Milera kaam garau!",
+    "Thank you! Tapaaiko appreciation le motivation dinhcha!",
+    "Tapai jasto user pauda khushi laaghchha!",
+  ],
+  complaint: [
+    "Sorry sunera! K problem bhayo bataunu hos, ma help garna koshish garchhu.",
+    "Maafi chaahanchhu. K galat bhayo? Fix garna prayaas garchhu.",
+    "Feedback ko laagi dhanyabad. Problem k ho bhannu bhayo bhane ramro help garna sakchhu.",
+  ],
+  unknown: [
+    "Hmm, bujhina purai. Thora clear bhannu hos?",
+    "Yopar ma aafulai confident chhaina. Arko tarika le sodhnu hos?",
+    "Interesting kura! Tara maile purai bujhina. Ke bhannu khojnu bhako?",
+    "Yo bisaya ma malai dherai thaahaa chhaina. Khata sambandhi kura ho bhane help garna sakchhu!",
+  ],
+};
+
+function pickRandom(arr: string[]): string {
+  return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function replyFood(analysis: NepaliAnalysis): string {
-  if (analysis.isQuestion && analysis.mentionsYou) {
-    return hashPick(analysis.normalized, [
-      "Hajur, khana khaye! Tapai le khannu bhayo? Khana pachhi khata entry chaincha bhane bhannus.",
-      "Khaye hai, dhanyabad sodhnu bhayo. Timi le ni khayo? Khata kura ta ma sanga cha hai.",
-      "Ho hajur, khana sakiye. Tapai ko bela ni bhayo ki? Khata entry garna milcha yaha.",
-    ]);
-  }
-  if (analysis.tokens.some((t) => ["bhok", "bhoko"].includes(t))) {
-    return "Bhok lagyo hola — pahile khana khaaunus! Khata entry chaiyo bhane pachhi lekhna milcha.";
-  }
-  return hashPick(analysis.normalized, [
-    "Khana kura ramro! Khana khayepachhi khata entry garne ho ki aru kehi sodhne?",
-    "Khana ta jaruri ho. Khata transaction cha bhane bhannus — ma bujhchu.",
-  ]);
+function hashPick(seed: string, arr: string[]): string {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  return arr[h % arr.length];
 }
 
-function replyIdentity(): string {
-  return (
-    "Ma **e-Khata** — Sutra ERP bhitra ko tapai ko khata sahayogi.\n\n" +
-    "Nepali, Roman Nepali, Devanagari, Hindi-mixed — sabai bujhchu. " +
-    "Khata entry, udhaar, bikri, tiryo — ra sadharan kura pani garna milcha. API key chaina, sabai yahi app bhitra cha."
-  );
-}
+export function generateNepaliReply(text: string, balance?: LedgerBalanceSnapshot): string {
+  const analysis = analyzeNepaliMessage(text);
+  const pick = (key: string) => hashPick(text + key, RESPONSE_BANK[key] ?? RESPONSE_BANK.unknown);
 
-function replyHealth(analysis: NepaliAnalysis): string {
-  if (analysis.sentiment === "negative" || analysis.tokens.some((t) => ["birami", "bimar", "dukhne"].includes(t))) {
-    return "Tabiyat naramro cha hola — aaram garnus. Khata entry chaiyo bhane bistaro lekhna milcha, ma bujhchu.";
-  }
-  return "Sanchai cha bhane ramro! Khata kura chaincha bhane sodhnus.";
-}
-
-function replyEmotion(analysis: NepaliAnalysis): string {
-  if (analysis.sentiment === "negative") {
-    return hashPick(analysis.normalized, [
-      "Garo lagiracha hola. Khata safa rakhda man pani halka huncha — kehi entry cha bhane lekhna milcha.",
-      "Thakit hunu bhayo hola. Aram garnus. Khata kura cha bhane ma sanga kura garnus.",
-    ]);
-  }
-  return "Ramro sunera khushi lagyo! Aru kehi chaincha?";
-}
-
-function replyTime(): string {
-  const now = new Date();
-  const hours = now.getHours();
-  const mins = now.getMinutes();
-  const period = hours >= 12 ? "PM" : "AM";
-  const h12 = hours % 12 || 12;
-  return `Aile ${h12}:${mins.toString().padStart(2, "0")} ${period} bajeko cha. Khata entry garna tayar chu.`;
-}
-
-function replyWeather(analysis: NepaliAnalysis): string {
-  if (analysis.tokens.some((t) => ["pani", "barsha"].includes(t))) {
-    return "Pani parna sakcha — saman sambhalera rakhnu hola. Khata entry chaiyo bhane bhannus.";
-  }
-  if (analysis.tokens.some((t) => ["gham", "garmi"].includes(t))) {
-    return "Garmi cha hola — pani piyera aaram garnus. Khata kura cha bhane sodhnus.";
-  }
-  return "Mausam kura ta bahira hernu parcha, tara khata bhitra ma sabai thik cha. Entry garna milcha.";
-}
-
-function replyBusiness(): string {
-  return hashPick("business", [
-    "Byapar ramro chaliracha hola. Aaja ko bikri, udhaar, tiryo — ke entry garne? Sidhai lekhna milcha.",
-    "Dukan ko hisab yahi rakhna milcha. `aaja 200 ko nagad bikri vayo` jastai lekhnus.",
-  ]);
-}
-
-function replyGeneralQuestion(analysis: NepaliAnalysis): string {
-  const kind = analysis.questionKind;
-  if (kind === "who") {
-    return "Ma e-Khata ho — tapai ko khata sahayogi. Ko barema sodhnu bhayo? Khata party ko naam entry ma lekhna milcha.";
-  }
-  if (kind === "how" || kind === "what") {
-    return replyHelp();
-  }
-  if (kind === "how_much") {
-    return "Rakam kati ho bhane number sahit lekhnu hola — jastai 500, paanch saya, 1 hajar. Ma parse garera confirm card dekhauchu.";
-  }
-  if (kind === "why") {
-    return "Kina bhane tapai lai ramro hisab rakhna — udhaar birsinu hudaina! Entry lekhda ma madat garchu.";
-  }
-  if (kind === "where") {
-    return "Ma yahi Sutra ERP ko e-Khata panel bhitra chu. Khata entry yahi save huncha.";
-  }
-  if (kind === "when") {
-    return "Aaja, hijo, parsi — jasto miti lekhnu bhayo tei linchu. `aaja` bhannus athaba date lekhna milcha.";
-  }
-  return hashPick(analysis.normalized, [
-    "Bujhe! Khata entry ho ki aru kura? Dono garna milcha — Nepali ma lekhna saknu huncha.",
-    "Hajur, sodhnus. Ma khata ra sadharan Nepali kura dono bujhchu. Transaction bhaye rakam sahit lekhnu hola.",
-    "Thik cha. Khata kura chaincha bhane udaharan: `Ram lai 500 udhaar diye`. Aru kura bhaye sodhte rahanus.",
-  ]);
-}
-
-function replyAffirmation(): string {
-  return hashPick("affirmation", [
-    "Ramro! Aru entry athaba kura chaincha?",
-    "Thik cha hajur. Ke garna milcha bhane bhannus.",
-  ]);
-}
-
-function replyNegation(): string {
-  return "Thik cha, chaina bhane kehi gardaina. Aru kehi chaincha bhane sodhnus.";
-}
-
-function replyDrink(analysis: NepaliAnalysis): string {
-  if (analysis.isQuestion) {
-    return hashPick(analysis.normalized, [
-      "Chiya pani khaye! Tapai le? Khata entry chaincha bhane bhannus.",
-      "Pani/chiya — thik cha. Khata kura cha bhane sodhnus.",
-    ]);
-  }
-  return "Ramro! Khata entry garna cha bhane lekhna milcha.";
-}
-
-export function generateNepaliReply(raw: string, balance?: LedgerBalanceSnapshot): string {
-  const analysis = analyzeNepaliMessage(raw);
-
-  if (analysis.topics.includes("thanks")) {
-    return "Swagat cha hajur! Aru entry athaba kura chaincha bhane sodhnus.";
-  }
-  if (analysis.topics.includes("bye")) {
-    return "Ram ram! Khata entry chaiyo bhane feri sodhnus hai.";
-  }
-  if (analysis.topics.includes("help")) {
-    return replyHelp();
-  }
-  if (analysis.topics.includes("balance")) {
+  if (analysis.topics.includes("balance") && balance) {
     return replyBalance(balance);
   }
-  if (analysis.topics.includes("identity") || (analysis.questionKind === "what" && analysis.tokens.includes("ho"))) {
-    return replyIdentity();
+
+  if (analysis.isIdentityQuestion) return pick("identity");
+  if (analysis.isHelpRequest) return pick("help");
+
+  if (analysis.isGreeting) {
+    const hour = new Date().getHours();
+    if (hour < 12) return pick("greeting_morning");
+    if (hour >= 17) return pick("greeting_evening");
+    return pick("greeting");
   }
 
-  switch (analysis.primaryTopic) {
-    case "greeting":
-    case "status":
-      return replyGreeting(analysis);
-    case "food":
-      return replyFood(analysis);
-    case "drink":
-      return replyDrink(analysis);
-    case "health":
-      return replyHealth(analysis);
-    case "emotion":
-      return replyEmotion(analysis);
-    case "time":
-      return replyTime();
-    case "weather":
-      return replyWeather(analysis);
-    case "business":
-      return replyBusiness();
-    case "affirmation":
-      return replyAffirmation();
-    case "negation":
-      return replyNegation();
-    default:
-      if (analysis.isQuestion) return replyGeneralQuestion(analysis);
-      return replyGeneralQuestion(analysis);
-  }
+  if (analysis.isFarewell) return pick("farewell");
+  if (analysis.isThanks) return pick("thanks");
+  if (analysis.isJoke) return pick("joke");
+  if (analysis.isCompliment) return pick("compliment");
+  if (analysis.isComplaint) return pick("complaint");
+
+  if (analysis.isAboutAccounting) return pick("accounting");
+  if (analysis.isAboutFood) return pick("food");
+  if (analysis.isAboutWeather) return pick("weather");
+  if (analysis.isAboutHealth) return pick("health");
+  if (analysis.isAboutFamily) return pick("family");
+  if (analysis.isAboutBusiness) return pick("business");
+  if (analysis.isAboutMoney) return pick("money");
+  if (analysis.isAboutNepal) return pick("nepal");
+  if (analysis.isAboutTime) return pick("time");
+  if (analysis.isSmallTalk) return pick("smalltalk");
+
+  if (analysis.isAffirmation) return pick("affirmation");
+  if (analysis.isNegation) return pick("negation");
+
+  return pick("unknown");
 }
+
+/** Transaction signal words — if present, try parser before chat brain */
+export const TRANSACTION_SIGNALS =
+  /\b(udhaar|udhar|udharo|credit|diye|diya|tiryo|tireko|kineko|becheko|bikri|kharcha|expense|purchase|sold|cash\s+ma|nagad|payment\s+gareko|paisa|rupiya|rs|npr|\d{2,})\b/i;
 
 export function isConversationalMessage(raw: string): boolean {
   const analysis = analyzeNepaliMessage(raw);
-  if (analysis.primaryTopic !== "general") return true;
+  if (TRANSACTION_SIGNALS.test(normalizeNepaliText(raw))) return false;
+  if (analysis.isGreeting || analysis.isHelpRequest || analysis.isIdentityQuestion) return true;
+  if (analysis.topics.length > 0) return true;
   if (analysis.isQuestion) return true;
-  if (analysis.tokens.length <= 6 && !/\d/.test(analysis.normalized)) return true;
-  return false;
+  return analysis.sentiment !== "neutral" || raw.trim().split(/\s+/).length <= 8;
+}
+
+export function shouldTryTransactionParse(text: string): boolean {
+  const trimmed = text.trim();
+  if (!trimmed) return false;
+  const normalized = normalizeNepaliText(trimmed);
+  if (!TRANSACTION_SIGNALS.test(normalized)) return false;
+
+  const analysis = analyzeNepaliMessage(trimmed);
+  const hasStrongEntry =
+    /\d/.test(normalized) &&
+    /\b(udhaar|udhar|udharo|diye|diya|tiryo|kineko|becheko|bikri|kharcha|nagad|payment)\b/.test(normalized);
+
+  if (hasStrongEntry) return true;
+  if (analysis.isGreeting || analysis.isIdentityQuestion || analysis.isHelpRequest) return false;
+  return true;
 }

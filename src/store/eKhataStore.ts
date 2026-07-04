@@ -1,8 +1,7 @@
 import { create } from "zustand";
 import { confirmKhataEntry } from "../lib/ekhata/confirmKhata";
-import { replyCancel, replyGreeting, replySaved } from "../lib/ekhata/conversationEngine";
-import { checkEKhataLlmStatus, processEKhataMessageAsync } from "../lib/ekhata/processMessage";
-import { resetEKhataSession } from "../lib/ekhata/ekhataLlmClient";
+import { replyCancel, replySaved } from "../lib/ekhata/conversationEngine";
+import { processEKhataMessageAsync } from "../lib/ekhata/processMessage";
 import type { EKhataChatMessage, KhataConfirmationCard } from "../lib/ekhata/types";
 import { useStore } from "./useStore";
 
@@ -10,13 +9,11 @@ function genId(): string {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
-function buildWelcome(ollamaOnline: boolean, model?: string): string {
-  const base = replyGreeting();
-  if (ollamaOnline) {
-    return `${base}\n\n🟢 Ollama connected (${model ?? "local"}) — extended AI enabled.`;
-  }
+function buildWelcome(): string {
   return (
-    `${base}\n\n🟢 **Built-in Nepali brain** — sabai yahi app bhitra cha. Khana khayeu, k xa, udhaar entry — kuni pani third-party app chaina.`
+    "Namaste! Ma e-Khata — tapaaiko digital khata sahayogi.\n\n" +
+    "Nepali, English, Roman Nepali — sabai ma kura garnu hos. Khata entry rakhnu hos wa sawal sodhnu hos.\n\n" +
+    "🟢 **Self-contained** — kuni pani external app, API, athaba download chaina. Sabai yahi ERP bhitra chalcha."
   );
 }
 
@@ -56,7 +53,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
     {
       id: "welcome",
       role: "assistant",
-      text: buildWelcome(false),
+      text: buildWelcome(),
       timestamp: new Date(),
     },
   ],
@@ -67,21 +64,10 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
   togglePanel: () => set((s) => ({ isOpen: !s.isOpen })),
 
   refreshLlmStatus: async () => {
-    const status = await checkEKhataLlmStatus();
+    // Built-in brain is always available — no external status check needed
     set({
-      llmOnline: status.khataLlm,
-      llmModel: status.model,
-      messages:
-        get().messages.length === 1 && get().messages[0]?.id === "welcome"
-          ? [
-              {
-                id: "welcome",
-                role: "assistant",
-                text: buildWelcome(status.khataLlm, status.model),
-                timestamp: new Date(),
-              },
-            ]
-          : get().messages,
+      llmOnline: false,
+      llmModel: undefined,
     });
   },
 
@@ -101,6 +87,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
     try {
       const result = await processEKhataMessageAsync(trimmed, {
         balance: getKhataBalance(),
+        preferLlm: false,
       });
 
       if (result.kind === "entry" && result.card) {
@@ -207,14 +194,12 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
   },
 
   clearHistory: () => {
-    resetEKhataSession();
-    const { llmOnline, llmModel } = get();
     set({
       messages: [
         {
           id: "welcome",
           role: "assistant",
-          text: buildWelcome(llmOnline, llmModel),
+          text: buildWelcome(),
           timestamp: new Date(),
         },
       ],

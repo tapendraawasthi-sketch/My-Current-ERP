@@ -1,6 +1,12 @@
+/**
+ * Main e-Khata message processor — routes between transaction parsing
+ * and the self-contained Nepali conversational brain.
+ * No external APIs or downloads required.
+ */
+
 import { parseKhataMessage } from "./parseKhata";
-import { buildParseReply, isLikelyKhataEntry, type LedgerBalanceSnapshot } from "./conversationEngine";
-import { generateNepaliReply, isConversationalMessage } from "./nepaliBrain";
+import { buildParseReply, type LedgerBalanceSnapshot } from "./conversationEngine";
+import { generateNepaliReply, shouldTryTransactionParse } from "./nepaliBrain";
 import { normalizeNepaliText } from "./normalizeNepali";
 import type { KhataConfirmationCard, KhataParseResult } from "./types";
 
@@ -30,22 +36,38 @@ export type EKhataProcessResult =
 
 export interface ProcessMessageOptions {
   balance?: LedgerBalanceSnapshot;
-  /** Optional Ollama enhancement when erp_bot is deployed */
+  /** Optional Ollama when erp_bot + Ollama explicitly deployed */
   preferLlm?: boolean;
 }
 
-/**
- * Self-contained e-Khata processor — built-in Nepali brain + transaction parser.
- * No Ollama, WebLLM, or external apps required.
- */
 export function processEKhataMessage(
   rawText: string,
   options: ProcessMessageOptions = {},
 ): EKhataProcessResult {
-  const normalizedText = normalizeNepaliText(rawText);
+  const trimmed = (rawText || "").trim();
+  const normalizedText = normalizeNepaliText(trimmed);
 
-  if (isLikelyKhataEntry(normalizedText)) {
-    const parseResult = parseKhataMessage(rawText, normalizedText);
+  if (!trimmed) {
+    return {
+      kind: "chat",
+      reply: "Ke lekhnu hunthyo? Udaharan: 'Ram lai 500 udhaar diye' wa 'namaste'",
+      normalizedText: "",
+      engine: "brain",
+    };
+  }
+
+  if (shouldTryTransactionParse(trimmed)) {
+    const parseResult = parseKhataMessage(trimmed, normalizedText);
+
+    if (parseResult.clarifying_question) {
+      return {
+        kind: "clarify",
+        reply: buildParseReply(parseResult),
+        normalizedText,
+        engine: "rules",
+      };
+    }
+
     if (parseResult.card) {
       return {
         kind: "entry",
@@ -53,14 +75,6 @@ export function processEKhataMessage(
         normalizedText,
         parseResult,
         card: parseResult.card,
-        engine: "rules",
-      };
-    }
-    if (parseResult.clarifying_question) {
-      return {
-        kind: "clarify",
-        reply: buildParseReply(parseResult),
-        normalizedText,
         engine: "rules",
       };
     }
@@ -68,109 +82,53 @@ export function processEKhataMessage(
 
   return {
     kind: "chat",
-    reply: generateNepaliReply(rawText, options.balance),
+    reply: generateNepaliReply(trimmed, options.balance),
     normalizedText,
     engine: "brain",
   };
 }
 
-/**
- * Full e-Khata brain: built-in Nepali language engine (default).
- * Optional Ollama via erp_bot only when explicitly deployed.
- */
 export async function processEKhataMessageAsync(
   rawText: string,
   options: ProcessMessageOptions = {},
 ): Promise<EKhataProcessResult> {
-  const normalizedText = normalizeNepaliText(rawText);
-  const preferLlm = options.preferLlm !== false;
+  const preferLlm = options.preferLlm === true;
 
-  // Accurate khata entries — rule parser first
-  if (isLikelyKhataEntry(normalizedText)) {
-    const parseResult = parseKhataMessage(rawText, normalizedText);
-    if (parseResult.card) {
-      if (preferLlm) {
-        try {
-          const { checkEKhataLlmStatus, askEKhataLlm, getEKhataSessionId } = await import("./ekhataLlmClient");
-          const status = await checkEKhataLlmStatus();
-          if (status.khataLlm) {
-            const llm = await askEKhataLlm(rawText, getEKhataSessionId(), options.balance);
-            if (llm.kind === "entry" && llm.card) {
-              return {
-                kind: "entry",
-                reply: llm.reply,
-                normalizedText,
-                card: llm.card,
-                engine: "hybrid",
-              };
-            }
-          }
-        } catch {
-          // Built-in parser
-        }
-      }
-      return {
-        kind: "entry",
-        reply: buildParseReply(parseResult, parseResult.card),
-        normalizedText,
-        parseResult,
-        card: parseResult.card,
-        engine: "rules",
-      };
-    }
-    if (parseResult.clarifying_question) {
-      return {
-        kind: "clarify",
-        reply: buildParseReply(parseResult),
-        normalizedText,
-        engine: "rules",
-      };
-    }
-  }
+  if (preferLlm) {
+    try {
+      const { checkEKhataLlmStatus, askEKhataLlm, getEKhataSessionId } = await import("./ekhataLlmClient");
+      const status = await checkEKhataLlmStatus();
+      if (status.khataLlm && status.online) {
+        const llm = await askEKhataLlm(rawText, getEKhataSessionId(), options.balance);
+        const normalizedText = normalizeNepaliText(rawText);
 
-  // Open Nepali conversation — built-in brain (self-contained)
-  if (isConversationalMessage(rawText) || !isLikelyKhataEntry(normalizedText)) {
-    if (preferLlm) {
-      try {
-        const { checkEKhataLlmStatus, askEKhataLlm, getEKhataSessionId } = await import("./ekhataLlmClient");
-        const status = await checkEKhataLlmStatus();
-        if (status.khataLlm) {
-          const llm = await askEKhataLlm(rawText, getEKhataSessionId(), options.balance);
-          if (llm.kind === "entry" && llm.card) {
-            return {
-              kind: "entry",
-              reply: llm.reply,
-              normalizedText,
-              card: llm.card,
-              engine: llm.engine as "ollama" | "hybrid",
-            };
-          }
-          if (llm.kind === "clarify") {
-            return {
-              kind: "clarify",
-              reply: llm.reply,
-              normalizedText,
-              engine: llm.engine as "ollama" | "hybrid",
-            };
-          }
+        if (llm.kind === "entry" && llm.card) {
           return {
-            kind: "chat",
+            kind: "entry",
             reply: llm.reply,
             normalizedText,
-            engine: "ollama",
+            card: llm.card,
+            engine: llm.engine as "ollama" | "hybrid",
           };
         }
-      } catch {
-        // Built-in brain
+        if (llm.kind === "clarify") {
+          return {
+            kind: "clarify",
+            reply: llm.reply,
+            normalizedText,
+            engine: llm.engine as "ollama" | "hybrid",
+          };
+        }
+        return {
+          kind: "chat",
+          reply: llm.reply,
+          normalizedText,
+          engine: "ollama",
+        };
       }
+    } catch {
+      // Built-in brain
     }
-
-    return {
-      kind: "chat",
-      reply: generateNepaliReply(rawText, options.balance),
-      normalizedText,
-      engine: "brain",
-    };
   }
 
   return processEKhataMessage(rawText, options);

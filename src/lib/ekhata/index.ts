@@ -1,0 +1,11 @@
+/**
+ * e-Khata module — self-contained Nepali conversational AI + accounting assistant.
+ * No external APIs, no downloads, no Ollama required.
+ */
+
+export { normalizeNepaliText, transliterateDevanagari, tokenizeNepali } from "./normalizeNepali";
+export { analyzeNepaliMessage, generateNepaliReply, shouldTryTransactionParse, TRANSACTION_SIGNALS } from "./nepaliBrain";
+export { parseKhataMessage } from "./parseKhata";
+export { processEKhataMessage, processEKhataMessageAsync, checkEKhataLlmStatus } from "./processMessage";
+export type { KhataConfirmationCard, KhataIntent, KhataParseResult } from "./types";
+export type { EKhataProcessResult, EKhataEngine, ProcessMessageOptions } from "./processMessage";

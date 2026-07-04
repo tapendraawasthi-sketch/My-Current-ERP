@@ -71,7 +71,7 @@ async function handleErpBotRequest(req, res, method, rawPath) {
         status: "online",
         mode: "builtin",
         ollama: "unavailable",
-        khata_llm: true,
+        khata_llm: false,
         khata_brain: "builtin",
         indexed_files: 0,
         message: "e-Khata built-in Nepali brain (self-contained, no external apps)",
