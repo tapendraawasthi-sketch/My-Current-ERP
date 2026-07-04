@@ -1,3 +1,5 @@
+import { isNativePlatform } from "./platform";
+
 export interface QueuedTransaction {
   id?: number;
   client_idempotency_key: string;
@@ -80,4 +82,39 @@ export async function replayQueue(
 
 export function createIdempotencyKey(): string {
   return crypto.randomUUID();
+}
+
+export async function registerNetworkListener(
+  onOnline: () => void,
+): Promise<() => void> {
+  if (isNativePlatform()) {
+    try {
+      const { Network } = await import("@capacitor/network");
+      const handle = await Network.addListener("networkStatusChange", (status) => {
+        if (status.connected) {
+          onOnline();
+        }
+      });
+      return () => handle.remove();
+    } catch {
+      // Fallback to web API
+    }
+  }
+
+  const handler = () => onOnline();
+  window.addEventListener("online", handler);
+  return () => window.removeEventListener("online", handler);
+}
+
+export async function isOnline(): Promise<boolean> {
+  if (isNativePlatform()) {
+    try {
+      const { Network } = await import("@capacitor/network");
+      const status = await Network.getStatus();
+      return status.connected;
+    } catch {
+      return navigator.onLine;
+    }
+  }
+  return navigator.onLine;
 }

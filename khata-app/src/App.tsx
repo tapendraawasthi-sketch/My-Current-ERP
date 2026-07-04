@@ -24,6 +24,7 @@ import {
   wasUpgradeDismissedThisSession,
 } from "./lib/featureFlags";
 import { pickVisibleInsights, type InsightItem } from "./lib/insightEngine";
+import { registerNetworkListener } from "./lib/offlineQueue";
 import { buildEsewaLink, buildKhaltiLink } from "./lib/paymentReconcile";
 import type { BalanceSummaryData, ChatMessage, KhataConfirmationCard } from "./types";
 
@@ -113,6 +114,16 @@ export default function App() {
       window.removeEventListener("offline", handleOffline);
       document.removeEventListener("visibilitychange", handleVisible);
     };
+  }, [runSync]);
+
+  useEffect(() => {
+    let cleanup: (() => void) | undefined;
+    registerNetworkListener(() => {
+      runSync();
+    }).then((unsub) => {
+      cleanup = unsub;
+    });
+    return () => cleanup?.();
   }, [runSync]);
 
   const showToast = (text: string) => {

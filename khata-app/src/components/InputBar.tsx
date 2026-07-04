@@ -1,6 +1,7 @@
 import { useRef, useState, type ChangeEvent } from "react";
-import { extractAmountFromImage } from "../lib/ocrInput";
+import { extractAmountFromImage, captureAndExtract } from "../lib/ocrInput";
 import { isVoiceInputSupported, listenOnce } from "../lib/voiceInput";
+import { isNativePlatform } from "../lib/platform";
 
 interface InputBarProps {
   disabled?: boolean;
@@ -36,9 +37,24 @@ export default function InputBar({ disabled, onSend }: InputBarProps) {
   const handlePhoto = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-    const { text, confidence } = await extractAmountFromImage(file);
-    setValue(confidence >= 70 ? text : text);
+    const { text } = await extractAmountFromImage(file);
+    setValue(text);
     event.target.value = "";
+  };
+
+  const handleNativeCamera = async () => {
+    const result = await captureAndExtract();
+    if (result) {
+      setValue(result.text);
+    }
+  };
+
+  const handleCameraClick = () => {
+    if (isNativePlatform()) {
+      handleNativeCamera();
+    } else {
+      fileRef.current?.click();
+    }
   };
 
   return (
@@ -56,7 +72,7 @@ export default function InputBar({ disabled, onSend }: InputBarProps) {
         </button>
         <button
           type="button"
-          onClick={() => fileRef.current?.click()}
+          onClick={handleCameraClick}
           disabled={disabled}
           className="h-8 w-8 rounded-md border border-gray-300 text-[12px] text-gray-700"
           aria-label="Photo input"
