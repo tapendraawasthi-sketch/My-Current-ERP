@@ -2228,13 +2228,13 @@ export function getModuleContext(route: string): string {
   }
 
   if (!doc) {
-    return `=== CURRENT PAGE: ${route} ===\\nThis is a Sutra ERP page. Answer questions about it based on your general ERP knowledge.`;
+    return `=== CURRENT PAGE: ${route} ===\nThis is a Sutra ERP page. Answer questions about it based on your general ERP knowledge.`;
   }
 
   const fields = doc.keyFields.map((f) => `${f.name}${f.required ? "*" : ""}`).join(", ");
-  const steps = doc.workflow.steps.map((s, i) => `  ${i + 1}. ${s}`).join("\\n");
-  const errors = doc.commonErrors.map((e) => `  • ${e.error} → ${e.solution}`).join("\\n");
-  const rules = doc.validationRules.map((r) => `  • ${r}`).join("\\n");
+  const steps = doc.workflow.steps.map((s, i) => `  ${i + 1}. ${s}`).join("\n");
+  const errors = doc.commonErrors.map((e) => `  • ${e.error} → ${e.solution}`).join("\n");
+  const rules = doc.validationRules.map((r) => `  • ${r}`).join("\n");
 
   return [
     `=== CURRENT PAGE: ${doc.displayName} ===`,
@@ -2251,13 +2251,13 @@ export function getModuleContext(route: string): string {
     `Validation rules:`,
     rules || "  None specified",
     ``,
-    errors ? `Common errors & solutions:\\n${errors}` : "",
-    doc.vatNote ? `\\nVAT Note: ${doc.vatNote}` : "",
-    doc.tdsNote ? `\\nTDS Note: ${doc.tdsNote}` : "",
-    doc.nepaliCalendarNote ? `\\nNepali Calendar Note: ${doc.nepaliCalendarNote}` : "",
+    errors ? `Common errors & solutions:\n${errors}` : "",
+    doc.vatNote ? `\nVAT Note: ${doc.vatNote}` : "",
+    doc.tdsNote ? `\nTDS Note: ${doc.tdsNote}` : "",
+    doc.nepaliCalendarNote ? `\nNepali Calendar Note: ${doc.nepaliCalendarNote}` : "",
   ]
     .filter((line) => line !== undefined)
-    .join("\\n")
+    .join("\n")
     .trim();
 }
 
@@ -2284,7 +2284,7 @@ export function getAccountingRule(operation: string): string {
     `CREDIT: ${rule.credit}`,
     `Example: ${rule.example}`,
     `Notes: ${rule.notes}`,
-  ].join("\\n");
+  ].join("\n");
 }
 
 /**
@@ -2312,7 +2312,7 @@ export function formulaExplainer(topic: string): string {
         `Formula: ${f.formula}`,
         `Example: ${f.example}`,
         `Context: ${f.context}`,
-      ].join("\\n"),
+      ].join("\n"),
     )
-    .join("\\n\\n");
+    .join("\n\n");
 }

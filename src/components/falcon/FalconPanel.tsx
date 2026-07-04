@@ -263,7 +263,9 @@ const SettingsPanel = memo(({ onClose }: { onClose: () => void }) => {
             className={`inline-block h-2 w-2 rounded-full ${botOnline ? "bg-green-500" : "bg-red-500"}`}
           />
           <span className="text-[11px] text-gray-700">
-            {botOnline ? `Online — ${indexedFiles} files indexed` : "Offline — start erp_bot locally"}
+            {botOnline
+              ? `Online — ${indexedFiles} files indexed`
+              : "Built-in guide — works on Render without erp_bot"}
           </span>
         </div>
         <p className="mt-1 text-[10px] text-gray-500 font-mono break-all">{ERP_BOT_URL}</p>
@@ -376,7 +378,7 @@ export const FalconPanel: React.FC = () => {
           <Bot className="h-4 w-4 flex-shrink-0" />
           <span className="font-bold text-[13px] tracking-tight">FALCON AI</span>
           <span className="text-[10px] text-blue-200 ml-1">
-            {botOnline ? `${indexedFiles} files` : "offline"}
+            {botOnline ? `${indexedFiles} files` : "built-in guide"}
           </span>
           {isStreaming && (
             <span className="text-[10px] text-blue-200 animate-pulse ml-1">● streaming</span>
@@ -549,7 +551,7 @@ export const FalconPanel: React.FC = () => {
 
         {/* Hint bar */}
         <p className="mt-1 text-[10px] text-gray-400 leading-tight">
-          Local ERP bot · no API keys · Ctrl+/ to toggle
+          Built-in guide · no API keys · Ctrl+/ to toggle
         </p>
       </div>
     </div>

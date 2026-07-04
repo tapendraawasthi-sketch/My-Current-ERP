@@ -14,6 +14,7 @@ import {
   checkErpBotStatus,
   getErpBotSessionId,
 } from "../lib/erpBotClient";
+import { buildBuiltinErpAnswer } from "../lib/builtinErpAssistant";
 
 let _activeController: AbortController | null = null;
 
@@ -32,16 +33,15 @@ function genId(): string {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
-const WELCOME_MESSAGE = `Hello! I'm **Falcon AI**, your local ERP code assistant for Sutra ERP.
+const WELCOME_MESSAGE = `Hello! I'm **Falcon AI**, your ERP assistant for Sutra ERP — **no API keys**.
 
-I run entirely on your machine via **erp_bot** (Ollama + ChromaDB) — **no API keys**.
+**On this site:** I answer from built-in module guides (works on Render without setup).
 
-**To use me:**
-1. Start Ollama: \`ollama serve\`
-2. Start the bot: \`cd erp_bot && python scripts/start.py\`
-3. Ask anything about this codebase — invoices, journals, ledger, routes, etc.
+**For full codebase search:** run local \`erp_bot\` (Ollama + ChromaDB):
+1. \`ollama serve\`
+2. \`cd erp_bot && python scripts/start.py\`
 
-I search your actual React/TypeScript/Express code before answering.`;
+Ask about invoices, journals, ledger, VAT, stock, or any screen you're on.`;
 
 export interface FalconChatMessage {
   id: string;
@@ -86,15 +86,16 @@ export interface FalconState {
   cancelStream: () => void;
 }
 
-function buildOfflineMessage(): string {
-  return (
-    `**ERP bot is not running.**\n\n` +
-    `Falcon AI uses your local \`erp_bot\` service — no cloud API keys.\n\n` +
-    `**Start it:**\n` +
-    `\`\`\`bash\nollama serve\n# new terminal:\ncd erp_bot && source venv/bin/activate && python scripts/start.py\n\`\`\`\n\n` +
-    `Bot URL: \`${ERP_BOT_URL}\`\n\n` +
-    `Change URL with \`VITE_ERP_BOT_URL\` in \`.env\` if needed.`
-  );
+function buildBuiltinReply(text: string, route?: string): FalconChatMessage {
+  const answer = buildBuiltinErpAnswer(text, route);
+  return {
+    id: genId(),
+    role: "assistant",
+    content: answer,
+    timestamp: new Date(),
+    domain: "erp",
+    sources: ["built-in module guide"],
+  };
 }
 
 export const useFalconStore = create<FalconState>()(
@@ -189,17 +190,16 @@ export const useFalconStore = create<FalconState>()(
         set({ botOnline: status.online, indexedFiles: status.indexedFiles });
 
         if (!status.online) {
-          const offlineMsg: FalconChatMessage = {
-            id: genId(),
-            role: "assistant",
-            content: buildOfflineMessage(),
-            timestamp: new Date(),
-            domain: classification.domain,
-            intent: classification.intent,
-            reasoningSteps: plan.steps,
-          };
+          const builtinMsg = buildBuiltinReply(cleanText, state.context.route);
+          builtinMsg.intent = classification.intent;
+          builtinMsg.reasoningSteps = plan.steps;
+          builtinMsg.suggestions = generateFollowUpSuggestions(
+            cleanText,
+            classification.domain,
+            state.context.route,
+          );
           set((s) => ({
-            messages: [...s.messages, offlineMsg],
+            messages: [...s.messages, builtinMsg],
             isTyping: false,
             isStreaming: false,
             currentThinkingSteps: [],
@@ -258,11 +258,15 @@ export const useFalconStore = create<FalconState>()(
           }));
         } catch (err: any) {
           const isAbort = err?.name === "AbortError";
-          const errorContent = isAbort
-            ? "_(Response cancelled)_"
-            : err?.message?.includes("Failed to fetch")
-              ? buildOfflineMessage()
-              : `**Error:** ${err?.message || "Could not reach ERP bot."}`;
+          let errorContent: string;
+          if (isAbort) {
+            errorContent = "_(Response cancelled)_";
+          } else if (err?.message?.includes("Failed to fetch")) {
+            const builtin = buildBuiltinReply(cleanText, state.context.route);
+            errorContent = builtin.content;
+          } else {
+            errorContent = `**Error:** ${err?.message || "Could not reach ERP bot."}`;
+          }
 
           set((s) => ({
             messages: s.messages.map((m) =>

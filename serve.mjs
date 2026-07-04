@@ -30,6 +30,64 @@ if (!existsSync(INDEX_PATH)) {
 
 console.log(`✅ dist/ folder verified at ${DIST_DIR}`);
 
+const ERP_BOT_BACKEND = (process.env.ERP_BOT_BACKEND_URL || "").replace(/\/$/, "");
+
+async function readRequestBody(req) {
+  const chunks = [];
+  for await (const chunk of req) chunks.push(chunk);
+  return Buffer.concat(chunks);
+}
+
+async function handleErpBotRequest(req, res, method, rawPath) {
+  const subpath = rawPath.replace(/^\/erp-bot/, "") || "/";
+
+  if (ERP_BOT_BACKEND) {
+    try {
+      const targetUrl = `${ERP_BOT_BACKEND}${subpath}`;
+      const headers = { ...req.headers, host: undefined };
+      const init = { method, headers };
+      if (method !== "GET" && method !== "HEAD") {
+        init.body = await readRequestBody(req);
+      }
+      const upstream = await fetch(targetUrl, init);
+      const body = Buffer.from(await upstream.arrayBuffer());
+      res.writeHead(upstream.status, {
+        "Content-Type": upstream.headers.get("content-type") || "application/json",
+        "Content-Length": body.length,
+      });
+      res.end(body);
+    } catch (err) {
+      console.error("[serve.mjs] ERP bot proxy error:", err);
+      res.writeHead(502, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "ERP bot backend unreachable" }));
+    }
+    return;
+  }
+
+  if (method === "GET" && subpath === "/status") {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify({
+        status: "offline",
+        mode: "builtin",
+        ollama: "unavailable",
+        indexed_files: 0,
+        message: "Using built-in module guides (no erp_bot service on this host)",
+      }),
+    );
+    return;
+  }
+
+  res.writeHead(503, { "Content-Type": "application/json" });
+  res.end(
+    JSON.stringify({
+      error: "ERP bot not deployed",
+      mode: "builtin",
+      hint: "Falcon AI answers from built-in guides when the bot is offline",
+    }),
+  );
+}
+
 const MIME_TYPES = {
   ".js": "application/javascript; charset=utf-8",
   ".mjs": "application/javascript; charset=utf-8",
@@ -59,8 +117,15 @@ const CACHE_CONTROL = {
 
 async function serveRequest(req, res) {
   const method = req.method || "GET";
+  const rawPath = (req.url || "/").split("?")[0];
 
-  // Only handle GET and HEAD
+  // ERP bot API — proxy to backend service or built-in offline status
+  if (rawPath.startsWith("/erp-bot")) {
+    await handleErpBotRequest(req, res, method, rawPath);
+    return;
+  }
+
+  // Only handle GET and HEAD for static files
   if (method !== "GET" && method !== "HEAD") {
     res.writeHead(405, { "Content-Type": "text/plain" });
     res.end("Method Not Allowed");
@@ -68,7 +133,6 @@ async function serveRequest(req, res) {
   }
 
   // Health check endpoints (used by Render for health monitoring)
-  const rawPath = (req.url || "/").split("?")[0];
   if (rawPath === "/health" || rawPath === "/ping" || rawPath === "/_health") {
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(

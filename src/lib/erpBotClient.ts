@@ -1,8 +1,18 @@
-/** Client for the local erp_bot service (Ollama + ChromaDB, no API keys). */
+/** Resolve ERP bot API base URL for dev vs production. */
 
-export const ERP_BOT_URL =
-  (import.meta.env.VITE_ERP_BOT_URL as string | undefined)?.replace(/\/$/, "") ||
-  "http://localhost:8765";
+export function resolveErpBotUrl(): string {
+  const configured = (import.meta.env.VITE_ERP_BOT_URL as string | undefined)?.trim();
+  if (configured) return configured.replace(/\/$/, "");
+
+  // Production: same-origin proxy via serve.mjs (/erp-bot → backend)
+  if (import.meta.env.PROD && typeof window !== "undefined") {
+    return `${window.location.origin}/erp-bot`;
+  }
+
+  return "http://localhost:8765";
+}
+
+export const ERP_BOT_URL = resolveErpBotUrl();
 
 const SESSION_KEY = "erp_bot_session_id";
 
@@ -20,17 +30,19 @@ export interface ErpBotStatus {
   indexedFiles: number;
   model?: string;
   error?: string;
+  mode?: "live" | "builtin";
 }
 
 export async function checkErpBotStatus(): Promise<ErpBotStatus> {
   try {
-    const resp = await fetch(`${ERP_BOT_URL}/status`, { signal: AbortSignal.timeout(4000) });
+    const resp = await fetch(`${ERP_BOT_URL}/status`, { signal: AbortSignal.timeout(8000) });
     if (!resp.ok) return { online: false, indexedFiles: 0, error: `HTTP ${resp.status}` };
     const data = await resp.json();
     return {
       online: data.status === "online" && data.ollama === "connected",
       indexedFiles: data.indexed_files ?? 0,
       model: data.model,
+      mode: data.mode === "builtin" || data.status === "offline" ? "builtin" : "live",
     };
   } catch (e: any) {
     return { online: false, indexedFiles: 0, error: e?.message || "Unreachable" };
