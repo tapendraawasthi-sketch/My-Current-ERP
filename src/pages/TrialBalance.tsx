@@ -2,8 +2,9 @@ import React, { useState, useMemo, useCallback, useRef } from "react";
 import { useStore } from "../store/useStore";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
-import { ChevronRight, ChevronDown, ArrowLeft, Settings } from "lucide-react";
+import { ChevronRight, ChevronDown, ArrowLeft, Settings, Search } from "lucide-react";
 import ReportDateRangePicker from "../components/ui/ReportDateRangePicker";
+import { ReportEmptyState } from "../components/ReportEmptyState";
 
 type TBVariant = "closing-alphabetical" | "closing-groupwise" | "opening";
 
@@ -735,31 +736,13 @@ export default function TrialBalance() {
         >
           <button
             onClick={() => setShowOptions(false)}
-            style={{
-              height: 32,
-              padding: "0 14px",
-              background: "#ffffff",
-              border: "1px solid #d1d5db",
-              borderRadius: 5,
-              fontSize: 12,
-              cursor: "pointer",
-            }}
+            className="h-8 px-3.5 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
           >
             Cancel
           </button>
           <button
             onClick={handleGenerate}
-            style={{
-              height: 32,
-              padding: "0 14px",
-              background: "#1557b0",
-              color: "#ffffff",
-              border: "none",
-              borderRadius: 5,
-              fontSize: 12,
-              fontWeight: 600,
-              cursor: "pointer",
-            }}
+            className="h-8 px-3.5 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
           >
             Generate Report
           </button>
@@ -779,8 +762,11 @@ export default function TrialBalance() {
     return (
       <tr
         key={`${row.id}-${idx}`}
-        className={`border-b border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors
-          ${isPrimaryGroup ? "bg-gray-100" : isSubGroup ? "bg-gray-50" : "bg-white"}`}
+        className={`border-b border-gray-100 cursor-pointer transition-colors border-l-[3px] ${
+          row.type === "ledger"
+            ? "border-l-transparent hover:border-l-[#1557b0] hover:bg-gray-50"
+            : "border-l-transparent"
+        } ${isPrimaryGroup ? "bg-gray-100" : isSubGroup ? "bg-gray-50" : "bg-white"}`}
         onClick={() => drillIntoRow(row)}
       >
         <td className="px-3 py-2.5 border-r border-gray-200">
@@ -866,7 +852,7 @@ export default function TrialBalance() {
     const closingBal = (accountBalances[acc.id]?.dr || 0) - (accountBalances[acc.id]?.cr || 0);
 
     return (
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+      <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
         <div className="p-4 bg-[#f5f6fa] border-b border-gray-200 flex items-center justify-between no-print">
           <div className="flex items-center gap-3">
             <button
@@ -923,7 +909,7 @@ export default function TrialBalance() {
               {txns.map((t, idx) => (
                 <tr
                   key={t.id}
-                  className={`border-b border-gray-200 cursor-pointer hover:bg-gray-50 ${t.isOpening ? "bg-gray-50 font-medium" : "bg-white"}`}
+                  className={`group cursor-pointer border-b border-gray-100 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] hover:bg-gray-50 ${t.isOpening ? "bg-gray-50 font-medium" : "bg-white"}`}
                   onClick={() => !t.isOpening && t.voucher && drillIntoVoucher(t.voucher)}
                 >
                   <td className="px-3 py-2.5 border-r border-gray-200 font-mono text-gray-600">
@@ -970,6 +956,9 @@ export default function TrialBalance() {
             </tbody>
           </table>
         </div>
+        <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+          {txns.length} ledger entr{txns.length === 1 ? "y" : "ies"}
+        </div>
       </div>
     );
   };
@@ -978,7 +967,7 @@ export default function TrialBalance() {
     if (!selectedVoucher) return null;
     const v = selectedVoucher;
     return (
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+      <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
         <div className="p-4 bg-[#f5f6fa] border-b border-gray-200 flex items-center justify-between no-print">
           <div className="flex items-center gap-3">
             <button
@@ -1078,7 +1067,7 @@ export default function TrialBalance() {
   const isBalanced = balanceDifference < 0.005;
 
   return (
-    <div className="p-4 min-h-[calc(100vh-3rem)] bg-[#f5f6fa]">
+    <div className="flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-y-auto p-4 md:p-6">
       <div className="flex items-center justify-between mb-4 no-print">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">Trial Balance</h1>
@@ -1122,20 +1111,10 @@ export default function TrialBalance() {
 
       {currentDrill.type === "tb" && generated && (
         <div
-          className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm"
+          className="bg-white border border-gray-200 rounded-md overflow-hidden"
           ref={printRef}
         >
-          <div
-            style={{
-              display: "flex",
-              gap: 0,
-              borderBottom: "2px solid #e5e7eb",
-              background: "#ffffff",
-              padding: "0 16px",
-              marginBottom: 0,
-            }}
-            className="no-print"
-          >
+          <div className="no-print flex items-end border-b-2 border-gray-200 bg-white px-4">
             {[
               { key: "closing-alphabetical", label: "Alphabetical" },
               { key: "closing-groupwise", label: "Group-wise" },
@@ -1152,60 +1131,61 @@ export default function TrialBalance() {
                       setOpt("variant", "closing-groupwise");
                       setOpt("displayMode", "detailed");
                     } else {
-                      setOpt("variant", v.key as any);
+                      setOpt("variant", v.key as TBVariant);
                       setOpt("displayMode", "balance-only");
                     }
                   }}
-                  style={{
-                    height: 36,
-                    padding: "0 16px",
-                    background: "transparent",
-                    border: "none",
-                    borderBottom:
-                      activeKey === v.key ? "2px solid #1557b0" : "2px solid transparent",
-                    color: activeKey === v.key ? "#1557b0" : "#6b7280",
-                    fontSize: 12,
-                    fontWeight: activeKey === v.key ? 700 : 400,
-                    cursor: "pointer",
-                    marginBottom: -2,
-                    transition: "all 150ms ease",
-                    whiteSpace: "nowrap",
-                  }}
+                  className={`h-9 px-4 -mb-0.5 text-[12px] font-medium border-b-2 transition-colors whitespace-nowrap ${
+                    activeKey === v.key
+                      ? "border-[#1557b0] text-[#1557b0] font-semibold"
+                      : "border-transparent text-gray-500 hover:text-gray-700"
+                  }`}
                 >
                   {v.label}
                 </button>
               );
             })}
-            <div
-              style={{
-                marginLeft: "auto",
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                paddingBottom: 4,
-              }}
+            <button
+              type="button"
+              onClick={() => setShowOptions(true)}
+              className="ml-auto mb-1.5 h-7 px-2.5 text-[11px] font-semibold text-gray-700 bg-[#f5f6fa] border border-gray-200 rounded-md hover:bg-gray-50 flex items-center gap-1"
             >
-              <button
-                onClick={() => setShowOptions(true)}
-                style={{
-                  height: 28,
-                  padding: "0 10px",
-                  background: "#f5f6fa",
-                  border: "1px solid #e5e7eb",
-                  borderRadius: 4,
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: "#374151",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 4,
-                }}
-              >
-                ⚙ Options
-              </button>
-            </div>
+              <Settings className="w-3 h-3" /> Options
+            </button>
           </div>
+
+          <div className="no-print px-4 py-2.5 border-b border-gray-200 flex flex-wrap items-center gap-2">
+            <div className="relative flex-1 min-w-[160px] max-w-xs">
+              <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search accounts…"
+                className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+              />
+            </div>
+            <span className="text-[11px] text-gray-500">
+              {flatRows.length} account{flatRows.length === 1 ? "" : "s"}
+            </span>
+            {isBalanced ? (
+              <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-green-50 text-green-700 border border-green-200">
+                Balanced
+              </span>
+            ) : (
+              <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-red-50 text-red-700 border border-red-200">
+                Unbalanced
+              </span>
+            )}
+          </div>
+
+          {flatRows.length === 0 ? (
+            <ReportEmptyState
+              message="No accounts match the selected filters"
+              hint="Adjust the date range, group filter, or search term."
+            />
+          ) : (
+          <>
           <div className="overflow-x-auto">
             <table
               className="report-table w-full border-collapse"
@@ -1323,7 +1303,7 @@ export default function TrialBalance() {
                       <>
                         <th
                           style={{
-                            background: "#1e40af",
+                            background: "#1557b0",
                             color: "#ffffff",
                             fontSize: 10,
                             fontWeight: 700,
@@ -1339,7 +1319,7 @@ export default function TrialBalance() {
                         </th>
                         <th
                           style={{
-                            background: "#1e40af",
+                            background: "#1557b0",
                             color: "#ffffff",
                             fontSize: 10,
                             fontWeight: 700,
@@ -1355,7 +1335,7 @@ export default function TrialBalance() {
                         </th>
                         <th
                           style={{
-                            background: "#1e40af",
+                            background: "#1557b0",
                             color: "#ffffff",
                             fontSize: 10,
                             fontWeight: 700,
@@ -1371,7 +1351,7 @@ export default function TrialBalance() {
                         </th>
                         <th
                           style={{
-                            background: "#1e40af",
+                            background: "#1557b0",
                             color: "#ffffff",
                             fontSize: 10,
                             fontWeight: 700,
@@ -1387,7 +1367,7 @@ export default function TrialBalance() {
                         </th>
                         <th
                           style={{
-                            background: "#1e40af",
+                            background: "#1557b0",
                             color: "#ffffff",
                             fontSize: 10,
                             fontWeight: 700,
@@ -1403,7 +1383,7 @@ export default function TrialBalance() {
                         </th>
                         <th
                           style={{
-                            background: "#1e40af",
+                            background: "#1557b0",
                             color: "#ffffff",
                             fontSize: 10,
                             fontWeight: 700,
@@ -1422,7 +1402,7 @@ export default function TrialBalance() {
                       <>
                         <th
                           style={{
-                            background: "#1e40af",
+                            background: "#1557b0",
                             color: "#ffffff",
                             fontSize: 10,
                             fontWeight: 700,
@@ -1438,7 +1418,7 @@ export default function TrialBalance() {
                         </th>
                         <th
                           style={{
-                            background: "#1e40af",
+                            background: "#1557b0",
                             color: "#ffffff",
                             fontSize: 10,
                             fontWeight: 700,
@@ -1548,18 +1528,9 @@ export default function TrialBalance() {
                 </thead>
               )}
               <tbody>
-                {flatRows.length === 0 ? (
-                  <tr>
-                    <td colSpan={10} className="px-3 py-8 text-center text-[12px] text-gray-500">
-                      No data available for selected period.
-                    </td>
-                  </tr>
-                ) : (
-                  flatRows.map((row, idx) => renderRow(row, idx))
-                )}
+                {flatRows.map((row, idx) => renderRow(row, idx))}
               </tbody>
-              {flatRows.length > 0 && (
-                <tfoot>
+              <tfoot>
                   <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold">
                     <td className="px-3 py-2.5 text-[12px] text-gray-800 border-r border-gray-200">
                       GRAND TOTAL
@@ -1589,43 +1560,42 @@ export default function TrialBalance() {
                     )}
                   </tr>
                   {!isBalanced && (
-                    <tr>
+                    <tr className="bg-red-50 border-t-2 border-red-200">
                       <td
                         colSpan={options.displayMode === "detailed" ? 5 : 1}
-                        className="num-cell-bold"
-                        style={{
-                          color: "#dc2626",
-                          textAlign: "left",
-                          padding: "8px 10px",
-                          background: "#fef2f2",
-                          borderTop: "2px solid #fca5a5",
-                        }}
+                        className="px-3 py-2 text-[12px] font-semibold text-red-700"
                       >
                         Difference (should be zero)
                       </td>
                       <td
                         colSpan={2}
-                        className="num-cell-bold"
-                        style={{
-                          color: "#dc2626",
-                          background: "#fef2f2",
-                          borderTop: "2px solid #fca5a5",
-                        }}
+                        className="px-3 py-2 text-right font-mono text-[12px] font-semibold text-red-700"
                       >
                         {balanceDifference.toLocaleString("en-IN", {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
                         })}
                       </td>
-                      {options.showPercentage && (
-                        <td style={{ background: "#fef2f2", borderTop: "2px solid #fca5a5" }}></td>
-                      )}
+                      {options.showPercentage && <td className="bg-red-50" />}
                     </tr>
                   )}
                 </tfoot>
-              )}
             </table>
           </div>
+          <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+            {flatRows.length} trial balance row{flatRows.length === 1 ? "" : "s"}
+          </div>
+          </>
+          )}
+        </div>
+      )}
+
+      {currentDrill.type === "tb" && !generated && (
+        <div className="bg-white border border-gray-200 rounded-md">
+          <ReportEmptyState
+            message="Trial balance not generated"
+            hint='Open Options and click "Generate Report" to view balances.'
+          />
         </div>
       )}
 
