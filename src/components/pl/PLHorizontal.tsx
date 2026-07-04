@@ -8,10 +8,7 @@ import type {
   PLDrillState,
 } from "../../lib/plTypes";
 import { ChevronRight, ChevronDown, Edit3 } from "lucide-react";
-import {
-  FinancialStatementShell,
-  fsClasses as fs,
-} from "../reports/FinancialStatementChrome";
+import { FinancialStatementShell, fsClasses as fs } from "../reports/FinancialStatementChrome";
 
 const fmt = (n: number) =>
   n === 0
@@ -263,299 +260,305 @@ export default function PLHorizontal({
 
         {/* T-Format Table */}
         <div className={fs.tformatGrid}>
-        {/* ── DEBIT (LEFT) ── */}
-        <div className={`${fs.tformatCol} flex flex-col min-h-full`}>
-          <table className={`${fs.table} flex-1`}>
-            <tbody>
-              {/* === TRADING ACCOUNT — DEBIT === */}
-              <SectionDivider label={sec1Label} />
+          {/* ── DEBIT (LEFT) ── */}
+          <div className={`${fs.tformatCol} flex flex-col min-h-full`}>
+            <table className={`${fs.table} flex-1`}>
+              <tbody>
+                {/* === TRADING ACCOUNT — DEBIT === */}
+                <SectionDivider label={sec1Label} />
 
-              {/* Opening Stock */}
-              <tr
-                className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
-                onClick={() =>
-                  onDrillDown({
-                    level: 1,
-                    selectedGroupId: "opening-stock",
-                    selectedGroupLabel: "Opening Stock",
-                  })
-                }
-              >
-                <td className={tdCls}>
-                  <span className="text-gray-600">Opening Stock</span>
-                </td>
-                <td className={pl.openingStock === 0 ? amtCls0 : amtCls}>{fmt(pl.openingStock)}</td>
-                {options.showPercentage && <td />}
-              </tr>
-
-              {/* Purchases */}
-              {options.showSecondLevel ? (
-                <AccountLines
-                  lines={pl.purchases.lines}
-                  options={options}
-                  onDrillDown={onDrillDown}
-                  side="debit"
-                />
-              ) : (
+                {/* Opening Stock */}
                 <tr
                   className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
                   onClick={() =>
                     onDrillDown({
                       level: 1,
-                      selectedGroupId: "purchases",
-                      selectedGroupLabel: "Purchase Accounts",
+                      selectedGroupId: "opening-stock",
+                      selectedGroupLabel: "Opening Stock",
                     })
                   }
                 >
                   <td className={tdCls}>
-                    <span className="text-gray-600">Purchases</span>
+                    <span className="text-gray-600">Opening Stock</span>
                   </td>
-                  <td className={pl.purchases.total === 0 ? amtCls0 : amtCls}>
-                    {fmt(pl.purchases.total)}
+                  <td className={pl.openingStock === 0 ? amtCls0 : amtCls}>
+                    {fmt(pl.openingStock)}
                   </td>
                   {options.showPercentage && <td />}
                 </tr>
-              )}
-              {options.showSecondLevel && pl.purchases.lines.length > 0 && (
-                <SubtotalRow label="Total Purchases" amount={pl.purchases.total} />
-              )}
 
-              {/* Direct Expenses */}
-              {options.showSecondLevel ? (
-                <AccountLines
-                  lines={pl.directExpenses.lines}
-                  options={options}
-                  onDrillDown={onDrillDown}
-                  side="debit"
+                {/* Purchases */}
+                {options.showSecondLevel ? (
+                  <AccountLines
+                    lines={pl.purchases.lines}
+                    options={options}
+                    onDrillDown={onDrillDown}
+                    side="debit"
+                  />
+                ) : (
+                  <tr
+                    className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
+                    onClick={() =>
+                      onDrillDown({
+                        level: 1,
+                        selectedGroupId: "purchases",
+                        selectedGroupLabel: "Purchase Accounts",
+                      })
+                    }
+                  >
+                    <td className={tdCls}>
+                      <span className="text-gray-600">Purchases</span>
+                    </td>
+                    <td className={pl.purchases.total === 0 ? amtCls0 : amtCls}>
+                      {fmt(pl.purchases.total)}
+                    </td>
+                    {options.showPercentage && <td />}
+                  </tr>
+                )}
+                {options.showSecondLevel && pl.purchases.lines.length > 0 && (
+                  <SubtotalRow label="Total Purchases" amount={pl.purchases.total} />
+                )}
+
+                {/* Direct Expenses */}
+                {options.showSecondLevel ? (
+                  <AccountLines
+                    lines={pl.directExpenses.lines}
+                    options={options}
+                    onDrillDown={onDrillDown}
+                    side="debit"
+                  />
+                ) : (
+                  <tr
+                    className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
+                    onClick={() =>
+                      onDrillDown({
+                        level: 1,
+                        selectedGroupId: "direct-expenses",
+                        selectedGroupLabel: "Direct Expenses",
+                      })
+                    }
+                  >
+                    <td className={tdCls}>
+                      <span className="text-gray-600">Direct Expenses</span>
+                    </td>
+                    <td className={pl.directExpenses.total === 0 ? amtCls0 : amtCls}>
+                      {fmt(pl.directExpenses.total)}
+                    </td>
+                    {options.showPercentage && <td />}
+                  </tr>
+                )}
+                {options.showSecondLevel && pl.directExpenses.lines.length > 0 && (
+                  <SubtotalRow label="Total Direct Expenses" amount={pl.directExpenses.total} />
+                )}
+
+                {/* Gross Loss if applicable */}
+                {pl.grossProfit < 0 && renderGrossProfitRow(pl.grossProfit, true)}
+
+                <SubtotalRow
+                  label={`Total (${sec1Label.split(" ")[0]})`}
+                  amount={pl.tradingDebitTotal}
                 />
-              ) : (
+
+                {/* === P&L ACCOUNT — DEBIT === */}
+                <SectionDivider label={sec2Label} />
+
+                {/* Gross Loss b/d */}
+                {pl.grossProfit < 0 && renderGrossProfitRow(pl.grossProfit, false)}
+
+                {/* Indirect Expenses */}
+                {options.showSecondLevel ? (
+                  <AccountLines
+                    lines={pl.indirectExpenses.lines}
+                    options={options}
+                    onDrillDown={onDrillDown}
+                    side="debit"
+                  />
+                ) : (
+                  <tr
+                    className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
+                    onClick={() =>
+                      onDrillDown({
+                        level: 1,
+                        selectedGroupId: "indirect-expenses",
+                        selectedGroupLabel: "Indirect Expenses",
+                      })
+                    }
+                  >
+                    <td className={tdCls}>
+                      <span className="text-gray-600">Indirect Expenses</span>
+                    </td>
+                    <td className={pl.indirectExpenses.total === 0 ? amtCls0 : amtCls}>
+                      {fmt(pl.indirectExpenses.total)}
+                    </td>
+                    {options.showPercentage && <td />}
+                  </tr>
+                )}
+                {options.showSecondLevel && pl.indirectExpenses.lines.length > 0 && (
+                  <SubtotalRow label="Total Indirect Expenses" amount={pl.indirectExpenses.total} />
+                )}
+
+                {/* Net Profit */}
+                {pl.netProfit >= 0 && renderNetProfitRow(pl.netProfit)}
+              </tbody>
+            </table>
+            <table className="w-full border-collapse shrink-0 mt-auto">
+              <tbody>
+                <GrandTotal amount={pl.grandDebitTotal} side="Dr" />
+              </tbody>
+            </table>
+          </div>
+
+          {/* ── CREDIT (RIGHT) ── */}
+          <div className={`${fs.tformatCol} flex flex-col min-h-full`}>
+            <table className={`${fs.table} flex-1`}>
+              <tbody>
+                {/* === TRADING ACCOUNT — CREDIT === */}
+                <SectionDivider label={sec1Label} />
+
+                {/* Sales */}
+                {options.showSecondLevel ? (
+                  <AccountLines
+                    lines={pl.sales.lines}
+                    options={options}
+                    onDrillDown={onDrillDown}
+                    side="credit"
+                  />
+                ) : (
+                  <tr
+                    className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
+                    onClick={() =>
+                      onDrillDown({
+                        level: 1,
+                        selectedGroupId: "sales",
+                        selectedGroupLabel: "Sales Accounts",
+                      })
+                    }
+                  >
+                    <td className={tdCls}>
+                      <span className="text-gray-600">Sales (Revenue from Operations)</span>
+                    </td>
+                    <td className={pl.sales.total === 0 ? amtCls0 : amtCls}>
+                      {fmt(pl.sales.total)}
+                    </td>
+                    {options.showPercentage && <td />}
+                  </tr>
+                )}
+                {options.showSecondLevel && pl.sales.lines.length > 0 && (
+                  <SubtotalRow label="Total Sales" amount={pl.sales.total} />
+                )}
+
+                {/* Direct Income */}
+                {options.showSecondLevel ? (
+                  <AccountLines
+                    lines={pl.directIncome.lines}
+                    options={options}
+                    onDrillDown={onDrillDown}
+                    side="credit"
+                  />
+                ) : (
+                  <tr
+                    className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
+                    onClick={() =>
+                      onDrillDown({
+                        level: 1,
+                        selectedGroupId: "direct-income",
+                        selectedGroupLabel: "Direct Income",
+                      })
+                    }
+                  >
+                    <td className={tdCls}>
+                      <span className="text-gray-600">Direct Income</span>
+                    </td>
+                    <td className={pl.directIncome.total === 0 ? amtCls0 : amtCls}>
+                      {fmt(pl.directIncome.total)}
+                    </td>
+                    {options.showPercentage && <td />}
+                  </tr>
+                )}
+                {options.showSecondLevel && pl.directIncome.lines.length > 0 && (
+                  <SubtotalRow label="Total Direct Income" amount={pl.directIncome.total} />
+                )}
+
+                {/* Closing Stock */}
                 <tr
                   className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
-                  onClick={() =>
-                    onDrillDown({
-                      level: 1,
-                      selectedGroupId: "direct-expenses",
-                      selectedGroupLabel: "Direct Expenses",
-                    })
-                  }
+                  onClick={() => {
+                    if (onClosingStockUpdate) setEditingClosingStock(true);
+                  }}
                 >
                   <td className={tdCls}>
-                    <span className="text-gray-600">Direct Expenses</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-gray-600">Closing Stock</span>
+                      {onClosingStockUpdate && (
+                        <Edit3
+                          className="h-3 w-3 text-gray-400"
+                          title="Click to update closing stock"
+                        />
+                      )}
+                    </div>
                   </td>
-                  <td className={pl.directExpenses.total === 0 ? amtCls0 : amtCls}>
-                    {fmt(pl.directExpenses.total)}
+                  <td className={pl.closingStock === 0 ? amtCls0 : amtCls}>
+                    {fmt(pl.closingStock)}
                   </td>
                   {options.showPercentage && <td />}
                 </tr>
-              )}
-              {options.showSecondLevel && pl.directExpenses.lines.length > 0 && (
-                <SubtotalRow label="Total Direct Expenses" amount={pl.directExpenses.total} />
-              )}
 
-              {/* Gross Loss if applicable */}
-              {pl.grossProfit < 0 && renderGrossProfitRow(pl.grossProfit, true)}
+                {/* Gross Profit c/d if applicable */}
+                {pl.grossProfit >= 0 && renderGrossProfitRow(pl.grossProfit, true)}
 
-              <SubtotalRow
-                label={`Total (${sec1Label.split(" ")[0]})`}
-                amount={pl.tradingDebitTotal}
-              />
-
-              {/* === P&L ACCOUNT — DEBIT === */}
-              <SectionDivider label={sec2Label} />
-
-              {/* Gross Loss b/d */}
-              {pl.grossProfit < 0 && renderGrossProfitRow(pl.grossProfit, false)}
-
-              {/* Indirect Expenses */}
-              {options.showSecondLevel ? (
-                <AccountLines
-                  lines={pl.indirectExpenses.lines}
-                  options={options}
-                  onDrillDown={onDrillDown}
-                  side="debit"
+                <SubtotalRow
+                  label={`Total (${sec1Label.split(" ")[0]})`}
+                  amount={pl.tradingCreditTotal}
                 />
-              ) : (
-                <tr
-                  className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
-                  onClick={() =>
-                    onDrillDown({
-                      level: 1,
-                      selectedGroupId: "indirect-expenses",
-                      selectedGroupLabel: "Indirect Expenses",
-                    })
-                  }
-                >
-                  <td className={tdCls}>
-                    <span className="text-gray-600">Indirect Expenses</span>
-                  </td>
-                  <td className={pl.indirectExpenses.total === 0 ? amtCls0 : amtCls}>
-                    {fmt(pl.indirectExpenses.total)}
-                  </td>
-                  {options.showPercentage && <td />}
-                </tr>
-              )}
-              {options.showSecondLevel && pl.indirectExpenses.lines.length > 0 && (
-                <SubtotalRow label="Total Indirect Expenses" amount={pl.indirectExpenses.total} />
-              )}
 
-              {/* Net Profit */}
-              {pl.netProfit >= 0 && renderNetProfitRow(pl.netProfit)}
-            </tbody>
-          </table>
-          <table className="w-full border-collapse shrink-0 mt-auto">
-            <tbody>
-              <GrandTotal amount={pl.grandDebitTotal} side="Dr" />
-            </tbody>
-          </table>
-        </div>
+                {/* === P&L ACCOUNT — CREDIT === */}
+                <SectionDivider label={sec2Label} />
 
-        {/* ── CREDIT (RIGHT) ── */}
-        <div className={`${fs.tformatCol} flex flex-col min-h-full`}>
-          <table className={`${fs.table} flex-1`}>
-            <tbody>
-              {/* === TRADING ACCOUNT — CREDIT === */}
-              <SectionDivider label={sec1Label} />
+                {/* Gross Profit b/d */}
+                {pl.grossProfit >= 0 && renderGrossProfitRow(pl.grossProfit, false)}
 
-              {/* Sales */}
-              {options.showSecondLevel ? (
-                <AccountLines
-                  lines={pl.sales.lines}
-                  options={options}
-                  onDrillDown={onDrillDown}
-                  side="credit"
-                />
-              ) : (
-                <tr
-                  className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
-                  onClick={() =>
-                    onDrillDown({
-                      level: 1,
-                      selectedGroupId: "sales",
-                      selectedGroupLabel: "Sales Accounts",
-                    })
-                  }
-                >
-                  <td className={tdCls}>
-                    <span className="text-gray-600">Sales (Revenue from Operations)</span>
-                  </td>
-                  <td className={pl.sales.total === 0 ? amtCls0 : amtCls}>{fmt(pl.sales.total)}</td>
-                  {options.showPercentage && <td />}
-                </tr>
-              )}
-              {options.showSecondLevel && pl.sales.lines.length > 0 && (
-                <SubtotalRow label="Total Sales" amount={pl.sales.total} />
-              )}
+                {/* Indirect Income */}
+                {options.showSecondLevel ? (
+                  <AccountLines
+                    lines={pl.indirectIncome.lines}
+                    options={options}
+                    onDrillDown={onDrillDown}
+                    side="credit"
+                  />
+                ) : (
+                  <tr
+                    className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
+                    onClick={() =>
+                      onDrillDown({
+                        level: 1,
+                        selectedGroupId: "indirect-income",
+                        selectedGroupLabel: "Indirect Income",
+                      })
+                    }
+                  >
+                    <td className={tdCls}>
+                      <span className="text-gray-600">Indirect Income (Other Income)</span>
+                    </td>
+                    <td className={pl.indirectIncome.total === 0 ? amtCls0 : amtCls}>
+                      {fmt(pl.indirectIncome.total)}
+                    </td>
+                    {options.showPercentage && <td />}
+                  </tr>
+                )}
+                {options.showSecondLevel && pl.indirectIncome.lines.length > 0 && (
+                  <SubtotalRow label="Total Indirect Income" amount={pl.indirectIncome.total} />
+                )}
 
-              {/* Direct Income */}
-              {options.showSecondLevel ? (
-                <AccountLines
-                  lines={pl.directIncome.lines}
-                  options={options}
-                  onDrillDown={onDrillDown}
-                  side="credit"
-                />
-              ) : (
-                <tr
-                  className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
-                  onClick={() =>
-                    onDrillDown({
-                      level: 1,
-                      selectedGroupId: "direct-income",
-                      selectedGroupLabel: "Direct Income",
-                    })
-                  }
-                >
-                  <td className={tdCls}>
-                    <span className="text-gray-600">Direct Income</span>
-                  </td>
-                  <td className={pl.directIncome.total === 0 ? amtCls0 : amtCls}>
-                    {fmt(pl.directIncome.total)}
-                  </td>
-                  {options.showPercentage && <td />}
-                </tr>
-              )}
-              {options.showSecondLevel && pl.directIncome.lines.length > 0 && (
-                <SubtotalRow label="Total Direct Income" amount={pl.directIncome.total} />
-              )}
-
-              {/* Closing Stock */}
-              <tr
-                className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
-                onClick={() => {
-                  if (onClosingStockUpdate) setEditingClosingStock(true);
-                }}
-              >
-                <td className={tdCls}>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-gray-600">Closing Stock</span>
-                    {onClosingStockUpdate && (
-                      <Edit3
-                        className="h-3 w-3 text-gray-400"
-                        title="Click to update closing stock"
-                      />
-                    )}
-                  </div>
-                </td>
-                <td className={pl.closingStock === 0 ? amtCls0 : amtCls}>{fmt(pl.closingStock)}</td>
-                {options.showPercentage && <td />}
-              </tr>
-
-              {/* Gross Profit c/d if applicable */}
-              {pl.grossProfit >= 0 && renderGrossProfitRow(pl.grossProfit, true)}
-
-              <SubtotalRow
-                label={`Total (${sec1Label.split(" ")[0]})`}
-                amount={pl.tradingCreditTotal}
-              />
-
-              {/* === P&L ACCOUNT — CREDIT === */}
-              <SectionDivider label={sec2Label} />
-
-              {/* Gross Profit b/d */}
-              {pl.grossProfit >= 0 && renderGrossProfitRow(pl.grossProfit, false)}
-
-              {/* Indirect Income */}
-              {options.showSecondLevel ? (
-                <AccountLines
-                  lines={pl.indirectIncome.lines}
-                  options={options}
-                  onDrillDown={onDrillDown}
-                  side="credit"
-                />
-              ) : (
-                <tr
-                  className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
-                  onClick={() =>
-                    onDrillDown({
-                      level: 1,
-                      selectedGroupId: "indirect-income",
-                      selectedGroupLabel: "Indirect Income",
-                    })
-                  }
-                >
-                  <td className={tdCls}>
-                    <span className="text-gray-600">Indirect Income (Other Income)</span>
-                  </td>
-                  <td className={pl.indirectIncome.total === 0 ? amtCls0 : amtCls}>
-                    {fmt(pl.indirectIncome.total)}
-                  </td>
-                  {options.showPercentage && <td />}
-                </tr>
-              )}
-              {options.showSecondLevel && pl.indirectIncome.lines.length > 0 && (
-                <SubtotalRow label="Total Indirect Income" amount={pl.indirectIncome.total} />
-              )}
-
-              {/* Net Loss */}
-              {pl.netProfit < 0 && renderNetProfitRow(pl.netProfit)}
-            </tbody>
-          </table>
-          <table className="w-full border-collapse shrink-0 mt-auto">
-            <tbody>
-              <GrandTotal amount={pl.grandCreditTotal} side="Cr" />
-            </tbody>
-          </table>
-        </div>
+                {/* Net Loss */}
+                {pl.netProfit < 0 && renderNetProfitRow(pl.netProfit)}
+              </tbody>
+            </table>
+            <table className="w-full border-collapse shrink-0 mt-auto">
+              <tbody>
+                <GrandTotal amount={pl.grandCreditTotal} side="Cr" />
+              </tbody>
+            </table>
+          </div>
         </div>
       </FinancialStatementShell>
 

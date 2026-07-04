@@ -162,7 +162,10 @@ interface FinancialStatementShellProps {
   className?: string;
 }
 
-export function FinancialStatementShell({ children, className = "" }: FinancialStatementShellProps) {
+export function FinancialStatementShell({
+  children,
+  className = "",
+}: FinancialStatementShellProps) {
   return <div className={`fs-report ${className}`.trim()}>{children}</div>;
 }
 

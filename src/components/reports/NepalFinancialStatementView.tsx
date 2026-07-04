@@ -1,9 +1,7 @@
 import React from "react";
 import NepalStatementTable from "./NepalStatementTable";
 import type { NepalStatementLine } from "../../lib/nepalFinancialStatements";
-import {
-  FinancialStatementShell,
-} from "./FinancialStatementChrome";
+import { FinancialStatementShell } from "./FinancialStatementChrome";
 
 interface Props {
   title: string;

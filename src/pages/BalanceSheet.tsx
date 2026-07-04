@@ -759,9 +759,7 @@ function GroupSummaryView({
                 <tr
                   key={i}
                   className={`transition-colors border-l-[3px] border-l-transparent ${
-                    row.accountId
-                      ? "hover:bg-gray-50 hover:border-l-[#1557b0] cursor-pointer"
-                      : ""
+                    row.accountId ? "hover:bg-gray-50 hover:border-l-[#1557b0] cursor-pointer" : ""
                   }`}
                   onClick={() => row.accountId && onDrillAccount(row.accountId, row.caption)}
                 >
@@ -1086,9 +1084,7 @@ export default function BalanceSheet() {
         setDrillState({ level: 0, path: [] });
       } catch (err) {
         console.error(err);
-        toast.error(
-          err instanceof Error ? err.message : "Failed to generate Balance Sheet",
-        );
+        toast.error(err instanceof Error ? err.message : "Failed to generate Balance Sheet");
       } finally {
         setLoading(false);
       }
@@ -1260,7 +1256,7 @@ export default function BalanceSheet() {
           <div className="bg-white border border-gray-200 rounded-md">
             <ReportEmptyState
               message="Balance sheet not generated"
-              hint='Click Options to configure the report and generate balances.'
+              hint="Click Options to configure the report and generate balances."
             />
           </div>
         ) : (
@@ -1300,7 +1296,9 @@ export default function BalanceSheet() {
                       bsData.isBalanced ? "text-green-700" : "text-red-700"
                     }`}
                   >
-                    {bsData.isBalanced ? "Balanced" : `Diff: Rs. ${fmt2(Math.abs(bsData.difference))}`}
+                    {bsData.isBalanced
+                      ? "Balanced"
+                      : `Diff: Rs. ${fmt2(Math.abs(bsData.difference))}`}
                   </p>
                 </div>
               </div>
@@ -1423,9 +1421,7 @@ export default function BalanceSheet() {
               )}
             </div>
 
-            {drillState.level === 0 && bsData && (
-              <FinancialStatementFooter />
-            )}
+            {drillState.level === 0 && bsData && <FinancialStatementFooter />}
 
             {drillState.level === 0 && bsData && (
               <div className="mt-4 px-3 py-2 bg-white border border-gray-200 rounded-md text-[11px] text-gray-500 no-print flex flex-wrap items-center justify-center gap-x-3 gap-y-1">

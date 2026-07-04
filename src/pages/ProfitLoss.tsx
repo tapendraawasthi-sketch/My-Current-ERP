@@ -288,7 +288,7 @@ export default function ProfitLoss() {
           <div className="bg-white border border-gray-200 rounded-md">
             <ReportEmptyState
               message="Profit & loss not loaded"
-              hint='Open Options and confirm settings, or click Refresh to compute the report.'
+              hint="Open Options and confirm settings, or click Refresh to compute the report."
             />
           </div>
         </div>
