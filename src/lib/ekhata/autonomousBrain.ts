@@ -7,6 +7,7 @@ import { searchKnowledge } from "./nepaliBrain";
 import { composeEmotionalReply, detectEmotionalContext } from "./emotionalBrain";
 import { generateConversationalReply, type ConversationTurn } from "./conversationalBrain";
 import { understandAccountingLanguage } from "./accountingLanguageBrain";
+import { understandNepalAccountingKnowledge } from "./nepalAccountingKnowledgeBrain";
 import { understandConceptualFramework } from "./conceptualFrameworkBrain";
 import { formatRealSearchAnswer, searchWebReal } from "./ekhataWebSearch";
 import type { LedgerBalanceSnapshot } from "./conversationEngine";
@@ -98,6 +99,16 @@ export async function askAutonomousBrain(
         engine: "autonomous",
         searchedWeb: false,
         sources: ["framework-brain"],
+      };
+    }
+
+    const nepal = understandNepalAccountingKnowledge(trimmed);
+    if (nepal.kind === "answer" && nepal.confidence >= 0.55) {
+      return {
+        reply: composeEmotionalReply(nepal.reply, emotional, { userText: trimmed, factual: true }),
+        engine: "autonomous",
+        searchedWeb: false,
+        sources: ["nepal-knowledge"],
       };
     }
 

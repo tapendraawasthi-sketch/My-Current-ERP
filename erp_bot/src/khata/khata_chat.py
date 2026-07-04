@@ -187,26 +187,6 @@ def _lang_instruction(lang: str) -> str:
     return "\n\n[LANGUAGE] User uses mixed Nepali/English. Match their style."
 
 
-def _framework_context(text: str) -> str:
-    """Retrieve IFRS Conceptual Framework paragraphs relevant to the question."""
-    hits = search_ca_knowledge(text, k=4)
-    if not hits:
-        return ""
-    lines = []
-    for h in hits:
-        pid = h.get("paragraph_id", "")
-        section = h.get("section", "")
-        body = h.get("text", "")
-        if pid:
-            lines.append(f"[Para {pid}] {section}\n{body}")
-        else:
-            lines.append(body)
-    return (
-        "[IFRS CONCEPTUAL FRAMEWORK KNOWLEDGE — use as background, do NOT copy verbatim]\n"
-        + "\n\n".join(lines)
-    )
-
-
 def _is_framework_question(text: str) -> bool:
     return bool(re.search(
         r"\b(ifrs|nas|conceptual\s+framework|recognition|derecognition|measurement|"
@@ -215,6 +195,46 @@ def _is_framework_question(text: str) -> bool:
         r"executory|substance|capital\s+maintenance|accrual\s+accounting|stewardship|"
         r"sampatti|dayitwo|manyata|mulyankan|biswasilo|sambandhit|nyaya\s+mulya|"
         r"paribhasha|ko\s+matlab|ko\s+paribhasha|k\s+ho)\b",
+        text, re.I,
+    ))
+
+
+def _framework_context(text: str) -> str:
+    """Retrieve IFRS Conceptual Framework paragraphs relevant to the question."""
+    return _accounting_knowledge_context(text)
+
+
+def _accounting_knowledge_context(text: str) -> str:
+    """Retrieve IFRS framework + Nepal accounting knowledge for Q&A."""
+    hits = search_ca_knowledge(text, k=4)
+    if not hits:
+        return ""
+    lines = []
+    for h in hits:
+        pid = h.get("paragraph_id", "")
+        section = h.get("section", "")
+        body = h.get("text", "")
+        item_type = h.get("item_type", "")
+        if pid:
+            label = f"[{item_type or 'Knowledge'} {pid}]" if item_type else f"[Para {pid}]"
+            lines.append(f"{label} {section}\n{body}")
+        else:
+            lines.append(body)
+    return (
+        "[ACCOUNTING KNOWLEDGE — use as background, synthesize in user's language, do NOT copy verbatim]\n"
+        + "\n\n".join(lines)
+    )
+
+
+def _is_accounting_knowledge_question(text: str) -> bool:
+    """Broader than framework-only — triggers RAG for tax, NAS, transactions too."""
+    if _is_framework_question(text):
+        return True
+    return bool(re.search(
+        r"\b(vat|tds|ssf|ird|nas|nfrs|tax|kar|bhada|udhaar|provision|accrual|gratuity|bonus|pan|"
+        r"fiscal|shrawan|ashadh|registration|threshold|exempt|withhold|corporate|cooperative|"
+        r"input\s*vat|output\s*vat|labour\s*act|company\s*act|slab|remittance|reverse\s*charge|"
+        r"deferred\s*tax|related\s*party|ipsas|ifrs\s*vs|nepal\s*ma)\b",
         text, re.I,
     ))
 
@@ -424,7 +444,7 @@ def khata_chat(
         if entry_result:
             return entry_result
 
-    context = _framework_context(text) if _is_framework_question(text) else ""
+    context = _accounting_knowledge_context(text) if _is_accounting_knowledge_question(text) else ""
     if not is_ollama_online():
         if lang == "english":
             offline_reply = (

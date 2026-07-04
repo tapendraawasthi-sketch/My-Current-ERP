@@ -1,0 +1,291 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "jurisdiction": "Nepal",
+    "framework": "NAS/NFRS (IFRS-aligned)",
+    "last_updated": "2026-07-04",
+    "fiscal_year_note": "Nepal FY: Shrawan 1 – Ashadh end (BS calendar)",
+    "sources": ["IRD guidelines", "NAS/ICAN", "Labour Act 2074", "Company Act 2063", "SSF Act"]
+  },
+  "tax_rates": {
+    "vat": {
+      "standard_rate": 0.13,
+      "registration_threshold_npr": 5000000,
+      "export_rate": 0,
+      "effective_from": "ongoing",
+      "note_en": "Standard VAT 13%. Exports zero-rated. Registration mandatory if annual turnover exceeds NPR 50 lakhs.",
+      "note_ne": "Sadharan VAT 13% ho. Export zero-rated. Barsaiko turnover 50 lakh bhanda badi bhaye VAT registration anivarya."
+    },
+    "ssf": {
+      "employee_rate": 0.1,
+      "employer_rate": 0.11,
+      "accident_rate": 0.01,
+      "effective_from": "ongoing",
+      "note_en": "SSF: employee 10% of basic, employer 11% of basic, plus 1% accident insurance (employer).",
+      "note_ne": "SSF: karmachari 10% basic bata, employer 11% basic bata, 1% accident (employer)."
+    },
+    "tds": {
+      "services_contract": 0.015,
+      "rent_urban": 0.1,
+      "professional_consultancy": 0.15,
+      "interest": 0.15,
+      "dividend_individual": 0.05,
+      "effective_from": "FY 2081/82",
+      "note_en": "Common TDS: 1.5% goods/services contract, 10% urban rent, 15% professional, 15% interest, 5% dividend (individual).",
+      "note_ne": "Common TDS: karar 1.5%, sahari bhada 10%, professional 15%, byaj 15%, dividend 5% (byakti)."
+    },
+    "income_tax": {
+      "corporate_general": 0.25,
+      "cooperative": 0.05,
+      "sez_concession": 0.2,
+      "individual_slabs_fy_2081_82": [
+        { "upto": 500000, "rate": 0.01, "label": "SSF/social security tax slab" },
+        { "from": 500001, "to": 700000, "rate": 0.1 },
+        { "from": 700001, "to": 1000000, "rate": 0.2 },
+        { "from": 1000001, "to": 2000000, "rate": 0.3 },
+        { "from": 2000001, "rate": 0.36 }
+      ],
+      "effective_from": "FY 2081/82"
+    }
+  },
+  "items": [
+    {
+      "id": "TAX-VAT-REG",
+      "type": "tax",
+      "topics": ["vat", "registration", "ird", "threshold", "50 lakh"],
+      "term_en": "VAT registration threshold Nepal",
+      "term_ne": "VAT registration ko threshold",
+      "text_en": "VAT registration is mandatory when annual taxable turnover exceeds NPR 50 lakhs (5 million). Standard rate is 13%. Exports are zero-rated; exempt supplies have no output VAT but input credit rules differ.",
+      "text_ne": "Barsaiko taxable turnover 50 lakh bhanda badi bhaye VAT registration anivarya. Sadharan dar 13%. Export zero-rated; exempt ma output VAT chaina tara input credit ko niyam farak."
+    },
+    {
+      "id": "TAX-VAT-EXEMPT-VS-ZERO",
+      "type": "tax",
+      "topics": ["vat", "exempt", "zero rated", "export"],
+      "term_en": "VAT exempt vs zero-rated",
+      "term_ne": "exempt ra zero-rated ma farak",
+      "text_en": "Zero-rated (exports): 0% VAT on sale but input VAT generally recoverable. Exempt supplies: no VAT charged, and input VAT on related purchases is usually not creditable.",
+      "text_ne": "Zero-rated (export): bikri ma 0% VAT tara input VAT praya recover garna milchha. Exempt: VAT charge hudaina, ra sambandhit kharid ko input VAT praya credit hudaina."
+    },
+    {
+      "id": "TAX-TDS-RENT",
+      "type": "tax",
+      "topics": ["tds", "rent", "bhaada", "withholding"],
+      "term_en": "TDS on rent Nepal",
+      "term_ne": "bhada ma TDS",
+      "text_en": "TDS on rent in urban areas is generally 10% withheld at source. Record: Dr Rent Expense (gross), Cr TDS Payable, Cr Cash (net paid).",
+      "text_ne": "Sahari area ma bhada ma praya 10% TDS katauncha. Entry: Dr Rent Expense (gross), Cr TDS Payable, Cr Cash (net)."
+    },
+    {
+      "id": "TAX-TDS-SERVICE",
+      "type": "tax",
+      "topics": ["tds", "service", "contract", "15%", "1.5%"],
+      "term_en": "TDS on services and contracts",
+      "term_ne": "service ra karar ma TDS",
+      "text_en": "Goods/supply contracts: often 1.5% TDS. Professional/consultancy services: commonly 15% TDS. Always check contract type and IRD section for exact rate.",
+      "text_ne": "Maal/karar: praya 1.5% TDS. Professional/consultancy: praya 15% TDS. Karar prakar ra IRD section herera exact rate nikaalnu."
+    },
+    {
+      "id": "TAX-CORPORATE",
+      "type": "tax",
+      "topics": ["corporate tax", "company tax", "25%"],
+      "term_en": "Corporate income tax rate Nepal",
+      "term_ne": "company ko income tax rate",
+      "text_en": "General corporate income tax rate in Nepal is 25% on taxable profit. Cooperatives may qualify for 5%. SEZ entities may get concessional rates.",
+      "text_ne": "Nepal ma sadharan company ko income tax 25% taxable profit ma. Sahakari sanstha 5% hun sakchha. SEZ ma concession rate hun sakchha."
+    },
+    {
+      "id": "TAX-AGRI-EXEMPT",
+      "type": "tax",
+      "topics": ["agricultural income", "exempt", "krishi"],
+      "term_en": "Agricultural income tax Nepal",
+      "term_ne": "krishi aamdani ma kar",
+      "text_en": "Primary agricultural income by individuals is generally exempt from income tax in Nepal, subject to IRD conditions and commercialisation thresholds.",
+      "text_ne": "Byakti ko prathamik krishi aamdani Nepal ma sadharan exempt, tara IRD sharta ra commercial threshold hernu parchha."
+    },
+    {
+      "id": "NAS-01",
+      "type": "nas",
+      "topics": ["NAS 1", "financial statements", "presentation"],
+      "term_en": "NAS 1 Presentation of Financial Statements",
+      "term_ne": "NAS 1 — arthik vivaran prastuti",
+      "text_en": "NAS 1 covers overall presentation: complete set (SOFP, P/L, equity changes, cash flows, notes), going concern, accrual basis, and minimum line items for Nepal entities.",
+      "text_ne": "NAS 1 le kul prastuti sametcha: balance sheet, P/L, equity changes, cash flow, notes; going concern, accrual basis, ra minimum line items."
+    },
+    {
+      "id": "NAS-02",
+      "type": "nas",
+      "topics": ["NAS 2", "inventory", "stock", "FIFO", "weighted average"],
+      "term_en": "NAS 2 Inventories",
+      "term_ne": "NAS 2 — inventory",
+      "text_en": "NAS 2: inventories measured at lower of cost and NRV. Cost formulas: FIFO or weighted average (LIFO not permitted under NAS). Write-down to NRV when damaged/obsolete.",
+      "text_ne": "NAS 2: inventory cost wa NRV jun kam ho. FIFO wa weighted average; LIFO NAS ma allowed chaina. Bigreko/obsolete bhaye NRV samma write-down."
+    },
+    {
+      "id": "NAS-16",
+      "type": "nas",
+      "topics": ["NAS 16", "PPE", "fixed assets", "depreciation"],
+      "term_en": "NAS 16 Property Plant and Equipment",
+      "term_ne": "NAS 16 — sampatti upakarana",
+      "text_en": "NAS 16: recognise PPE at cost, depreciate over useful life (SLM or WDV common in Nepal). Major inspection/replacement may be capitalised; repairs are expense.",
+      "text_ne": "NAS 16: PPE cost ma recognise, useful life ma depreciation (SLM/WDV common). Thulo repair capitalise; sadharan repair expense."
+    },
+    {
+      "id": "NAS-19",
+      "type": "nas",
+      "topics": ["NAS 19", "employee benefits", "gratuity", "SSF"],
+      "term_en": "NAS 19 Employee Benefits",
+      "term_ne": "NAS 19 — karmachari labh",
+      "text_en": "NAS 19 covers short-term, post-employment (gratuity, pension), and termination benefits. Nepal: gratuity provision + SSF contributions are common — accrue when obligation arises.",
+      "text_ne": "NAS 19 le short-term, post-employment (gratuity), termination benefits cover garchha. Nepal ma gratuity provision ra SSF accrue garnu parchha."
+    },
+    {
+      "id": "NAS-37",
+      "type": "nas",
+      "topics": ["NAS 37", "provision", "contingent liability", "accrual"],
+      "term_en": "NAS 37 Provisions and Contingent Liabilities",
+      "term_ne": "NAS 37 — provision ra contingent",
+      "text_en": "Provision = liability of uncertain timing/amount when present obligation from past event exists. Contingent liability: disclose, do not recognise unless remote. Accrual records known amount when obligation is certain.",
+      "text_ne": "Provision = uncertain timing/amount ko liability jaba present obligation chha. Contingent: disclose, recognise nagarnu (remote bhaye). Accrual = pakka obligation aayeko bela record."
+    },
+    {
+      "id": "NFRS-15",
+      "type": "nas",
+      "topics": ["NFRS 15", "revenue", "revenue recognition", "contracts"],
+      "term_en": "NFRS 15 Revenue from Contracts",
+      "term_ne": "NFRS 15 — aamdani manyata",
+      "text_en": "NFRS 15: identify contract → performance obligations → transaction price → allocate → recognise when (or as) obligation satisfied. Credit sales still recognise revenue when control transfers, not when cash received.",
+      "text_ne": "NFRS 15: contract → performance obligation → price → allocate → control transfer huda revenue recognise. Udhaar bikri ma pani control gayo bhane revenue, cash aayeko bela matra hoina."
+    },
+    {
+      "id": "NFRS-16",
+      "type": "nas",
+      "topics": ["NFRS 16", "leases", "ROU asset", "lease liability"],
+      "term_en": "NFRS 16 Leases",
+      "term_ne": "NFRS 16 — lease",
+      "text_en": "NFRS 16: lessees recognise right-of-use asset and lease liability for most leases. Depreciate ROU asset; unwind lease liability as interest. Short-term/low-value leases may be expensed.",
+      "text_ne": "NFRS 16: lessee le ROU asset ra lease liability recognise garchha. ROU depreciation; liability unwinding interest. Short-term/low-value lease expense ma jaana sakchha."
+    },
+    {
+      "id": "TXN-CREDIT-SALE",
+      "type": "transaction",
+      "topics": ["credit sale", "udhaar", "receivable", "bikri"],
+      "term_en": "Credit sale / udhaar bikri",
+      "term_ne": "udhaar bikri",
+      "text_en": "When you sell on credit: Dr Sundry Debtors, Cr Sales. Party owes you (asset). Payment later: Dr Cash/Bank, Cr Debtors.",
+      "text_ne": "Udhaar ma becda: Dr Debtors, Cr Sales. Party le tirna baki (asset). Paisa aayepachi: Dr Cash, Cr Debtors.",
+      "examples_ne": ["Ram lai 500 udhaar diye", "Gita lai saman becheko credit ma"],
+      "journal": "Dr Sundry Debtors | Cr Sales"
+    },
+    {
+      "id": "TXN-PAYMENT-IN",
+      "type": "transaction",
+      "topics": ["payment received", "tiryo", "collection", "jama"],
+      "term_en": "Payment received from customer",
+      "term_ne": "payment aayo / tiryo",
+      "text_en": "Customer pays outstanding: Dr Cash/Bank, Cr Sundry Debtors. 'Ram le tiryo' or 'Sita bata aayo' = payment received.",
+      "text_ne": "Customer le tiryo: Dr Cash/Bank, Cr Debtors. 'Ram le tiryo' wa 'Sita bata aayo' = payment received.",
+      "examples_ne": ["Shyam le 2000 tiryo", "Sita bata 5000 aayo"],
+      "journal": "Dr Cash/Bank | Cr Sundry Debtors"
+    },
+    {
+      "id": "TXN-BAD-DEBT",
+      "type": "transaction",
+      "topics": ["bad debt", "write off", "provision", "doubtful"],
+      "term_en": "Bad debt write-off vs provision",
+      "term_ne": "bad debt write-off ra provision",
+      "text_en": "Write-off (confirmed irrecoverable): Dr Bad Debts Expense, Cr Debtors. Provision (conservative estimate): Dr Bad Debts Expense, Cr Provision for Bad Debts. Recovery later: Dr Cash, Cr Bad Debts Recovered (income).",
+      "text_ne": "Write-off: Dr Bad Debts Expense, Cr Debtors. Provision: Dr Bad Debts Expense, Cr Provision. Recovery: Dr Cash, Cr Bad Debts Recovered (income)."
+    },
+    {
+      "id": "TXN-SALARY-SSF",
+      "type": "transaction",
+      "topics": ["salary", "ssf", "payroll", "talab"],
+      "term_en": "Salary with SSF Nepal",
+      "term_ne": "talab ra SSF entry",
+      "text_en": "Accrual: Dr Salary Expense, Cr Salary Payable. Payment: Dr Salary Payable, Cr Bank. SSF employee 10% deducted; employer 11% additional expense. Example net pay = gross − 10% SSF employee.",
+      "text_ne": "Accrual: Dr Salary Expense, Cr Salary Payable. Payment: Dr Salary Payable, Cr Bank. SSF employee 10% katauchha; employer 11% extra expense."
+    },
+    {
+      "id": "TXN-VAT-SALE",
+      "type": "transaction",
+      "topics": ["vat sale", "output vat", "13%"],
+      "term_en": "VAT on sales Nepal",
+      "term_ne": "bikri ma VAT",
+      "text_en": "Credit/cash sale with VAT 13%: Dr Debtor/Cash (gross), Cr Sales (net), Cr Output VAT Payable. Net VAT payable = Output VAT − Input VAT, remitted to IRD monthly.",
+      "text_ne": "VAT 13% bikri: Dr Debtor/Cash (gross), Cr Sales (net), Cr Output VAT. Net VAT = Output − Input, mahina ma IRD lai."
+    },
+    {
+      "id": "ACCT-CASH",
+      "type": "account",
+      "topics": ["cash", "bank", "petty cash"],
+      "term_en": "Cash and Bank accounts",
+      "term_ne": "cash ra bank khata",
+      "text_en": "Cash in Hand and Bank are assets (debit balance). Increase on receipt; decrease on payment. Petty cash/imprest is also an asset, not expense.",
+      "text_ne": "Cash ra Bank asset ho (debit balance). Aayo bhane badhchha; tiryo bhane ghanchha. Petty cash pani asset, expense hoina."
+    },
+    {
+      "id": "ACCT-INPUT-VAT",
+      "type": "account",
+      "topics": ["input vat", "vat credit", "asset"],
+      "term_en": "Input VAT account classification",
+      "term_ne": "input VAT asset ho?",
+      "text_en": "Input VAT on purchases is generally an asset (recoverable credit) until set off against output VAT. Not a regular expense if creditable.",
+      "text_ne": "Kharid ko Input VAT sadharan asset ho (recoverable) jaba credit milchha. Regular expense hoina."
+    },
+    {
+      "id": "GLOSS-SAMPATTI",
+      "type": "glossary",
+      "topics": ["asset", "sampatti", "sampati"],
+      "term_en": "Asset (sampatti)",
+      "term_ne": "sampatti / sampati",
+      "text_en": "Asset = present economic resource controlled by the entity from past events (IFRS Para 4.3). In khata: Cash, Debtors, Stock, Fixed Assets, Prepaid, Input VAT.",
+      "text_ne": "Sampatti = entity le control ma liyeko present economic resource. Khata ma: Cash, Debtors, Stock, Fixed Assets, Prepaid, Input VAT."
+    },
+    {
+      "id": "GLOSS-UDHAAR",
+      "type": "glossary",
+      "topics": ["udhaar", "credit", "receivable", "payable"],
+      "term_en": "Udhaar meaning in accounting",
+      "term_ne": "udhaar ko arth",
+      "text_en": "Udhaar can mean credit sale (they owe you = receivable) OR credit purchase (you owe them = payable). Context: 'X lai udhaar diye' = credit sale; 'X bata udhaar ma kineko' = credit purchase.",
+      "text_ne": "Udhaar = udhaar bikri (receivable) wa udhaar kharid (payable). 'X lai udhaar diye' = bikri; 'X bata udhaar ma kineko' = kharid."
+    },
+    {
+      "id": "GLOSS-PROVISION-ACCRUAL",
+      "type": "glossary",
+      "topics": ["provision", "accrual", "andaaja", "outstanding"],
+      "term_en": "Provision vs accrual",
+      "term_ne": "provision ra accrual farak",
+      "text_en": "Accrual: record expense/income when bill/right is certain (e.g. unpaid electricity bill). Provision: estimate liability for uncertain amount (e.g. doubtful debts per NAS 37).",
+      "text_ne": "Accrual: bill/rights pakka bhayepachi record. Provision: uncertain amount ko andaaja (jastai bad debt provision, NAS 37)."
+    },
+    {
+      "id": "GUIDE-IRD-VAT-FILE",
+      "type": "guidance",
+      "topics": ["ird", "vat return", "filing", "deadline"],
+      "term_en": "VAT return filing Nepal",
+      "term_ne": "VAT return kasari file garne",
+      "text_en": "VAT-registered businesses file monthly VAT returns to IRD (typically by end of next month). Maintain tax invoices with mandatory fields: seller/buyer PAN, amount, VAT, invoice date/number.",
+      "text_ne": "VAT registered business le mahina ko VAT return IRD lai file garchha (praya aglo mahina samm). Tax invoice ma PAN, rakam, VAT, date/number anivarya."
+    },
+    {
+      "id": "GUIDE-BOOKS-7Y",
+      "type": "guidance",
+      "topics": ["books of accounts", "retention", "7 years", "company act"],
+      "term_en": "Books of accounts retention Nepal",
+      "term_ne": "lekha kitab kati barsa rakhné",
+      "text_en": "Company Act 2063 requires companies to maintain books of accounts for at least 7 years. IRD audits may request vouchers, ledgers, and tax records for this period.",
+      "text_ne": "Company Act 2063 anusar lekha kitab kamti ma 7 barsa rakhnuparchha. IRD audit le yo avadhi ko voucher/ledger magna sakchha."
+    },
+    {
+      "id": "GUIDE-BONUS-LABOUR",
+      "type": "guidance",
+      "topics": ["bonus", "labour act", "8.33%"],
+      "term_en": "Bonus under Nepal Labour Act",
+      "term_ne": "bonus labour act anusar",
+      "text_en": "Eligible employees under Labour Act 2074 may be entitled to annual bonus (often referenced as ~8.33% of annual salary depending on profit/eligibility). Record as expense when obligation arises.",
+      "text_ne": "Labour Act 2074 anusar eligible karmachari lai barsaiko bonus (praya ~8.33% jasto reference) hun sakchha. Obligation bhaepachi expense record."
+    }
+  ]
+}

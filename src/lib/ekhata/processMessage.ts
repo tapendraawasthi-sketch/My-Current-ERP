@@ -11,6 +11,7 @@ import {
 } from "./accountingLanguageBrain";
 import { generateConversationalReply, type ConversationTurn } from "./conversationalBrain";
 import { understandConceptualFramework } from "./conceptualFrameworkBrain";
+import { understandNepalAccountingKnowledge } from "./nepalAccountingKnowledgeBrain";
 import { classifyDomain } from "./domainRouter";
 import { detectNegation } from "./negationDetector";
 import {
@@ -176,6 +177,16 @@ function tryJournalEntry(
 }
 
 function tryKnowledgeBrains(trimmed: string, normalizedText: string): EKhataProcessResult | null {
+  const nepalAnswer = understandNepalAccountingKnowledge(trimmed);
+  if (nepalAnswer.kind === "answer" && nepalAnswer.confidence >= 0.55) {
+    return {
+      kind: "chat",
+      reply: nepalAnswer.reply,
+      normalizedText,
+      engine: "accounting-brain",
+    };
+  }
+
   const frameworkAnswer = understandConceptualFramework(trimmed);
   if (frameworkAnswer.kind === "answer" && frameworkAnswer.confidence >= 0.55) {
     return {
