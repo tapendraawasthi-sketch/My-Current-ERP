@@ -7,8 +7,9 @@
 
 export function isSelfContainedAi(): boolean {
   const explicit = (import.meta.env.VITE_ERP_BOT_URL as string | undefined)?.trim();
-  // Production Render: always built-in. Dev: built-in unless URL explicitly set.
-  if (import.meta.env.PROD) return true;
+  // Built-in rule-based brain only, UNLESS a real erp_bot/Ollama URL is configured
+  // (works the same in dev and production — set VITE_ERP_BOT_URL to your self-hosted
+  // erp_bot instance to enable the real local LLM instead of pattern matching).
   return !explicit;
 }
 
