@@ -2,6 +2,7 @@
 // F12 Configuration Panel — Modal overlay UI
 
 import React, { useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { useF12Config } from "../hooks/useF12Config";
 import { type F12FieldDef, type F12SectionDef, type F12ValueMap } from "../lib/f12Types";
 
@@ -191,31 +192,33 @@ const F12Panel: React.FC = () => {
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 bg-black/60 z-[9999] flex items-center justify-center p-4"
+      className="erp-report-modal-overlay no-print"
+      data-modal-open="true"
+      role="dialog"
+      aria-modal="true"
       onClick={(e) => {
         if (e.target === e.currentTarget) closeF12();
       }}
     >
       <div
-        className="w-[680px] max-h-[85vh] bg-white rounded-md shadow-2xl flex flex-col overflow-hidden"
+        className="erp-report-modal"
+        style={{ maxWidth: "680px" }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Title Bar */}
-        <div className="bg-[#1e2433] px-4 py-3 flex items-center justify-between shrink-0">
+        <div className="erp-report-modal-header flex items-center justify-between">
           <div className="flex flex-col">
-            <span className="text-[15px] font-semibold !text-white leading-tight">
+            <h2>
               {screenDef ? screenDef.screenLabel : `Screen: ${activeScreenId}`}
-            </span>
-            <span className="text-[11px] !text-gray-400 mt-0.5 uppercase tracking-wide">
-              F12 — Configuration Settings
-            </span>
+            </h2>
+            <p className="uppercase tracking-wide">F12 — Configuration Settings</p>
           </div>
           <button
             type="button"
             onClick={closeF12}
-            className="!text-gray-400 hover:!text-white transition-colors text-lg leading-none p-1"
+            className="text-gray-400 hover:text-white transition-colors text-lg leading-none p-1"
             title="Close (Esc)"
           >
             ✕
@@ -246,8 +249,8 @@ const F12Panel: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="bg-gray-50 border-t border-gray-200 px-4 py-3 flex items-center justify-between shrink-0">
-          <span className="text-[11px] text-gray-500 flex items-center">
+        <div className="erp-report-modal-footer">
+          <span className="text-[11px] text-gray-500 flex items-center mr-auto">
             Press{" "}
             <kbd className="bg-gray-200 px-1.5 py-0.5 rounded text-gray-700 font-sans mx-1">
               Esc
@@ -258,32 +261,31 @@ const F12Panel: React.FC = () => {
             </kbd>{" "}
             to close
           </span>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handleReset}
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
-            >
-              Reset to Defaults
-            </button>
-            <button
-              type="button"
-              onClick={closeF12}
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              onClick={handleSave}
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
-            >
-              ✓ Save
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={handleReset}
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+          >
+            Reset to Defaults
+          </button>
+          <button
+            type="button"
+            onClick={closeF12}
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={handleSave}
+            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
+          >
+            ✓ Save
+          </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 

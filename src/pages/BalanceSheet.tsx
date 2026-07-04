@@ -1,6 +1,7 @@
 // src/pages/BalanceSheet.tsx
 // @ts-nocheck
 import React, { useState, useCallback, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useStore } from "../store/useStore";
 import {
   computeBalanceSheet,
@@ -94,15 +95,21 @@ function OptionsDialog({
         : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
     }`;
 
-  return (
-    <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden">
-        <div className="bg-[#1e2433] px-5 py-4">
-          <h2 className="text-[15px] font-semibold text-white">Balance Sheet — Report Options</h2>
-          <p className="text-[11px] text-gray-400 mt-0.5">{companyName}</p>
+  return createPortal(
+    <div
+      className="erp-report-modal-overlay no-print"
+      data-modal-open="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="bs-options-title"
+    >
+      <div className="erp-report-modal">
+        <div className="erp-report-modal-header">
+          <h2 id="bs-options-title">Balance Sheet — Report Options</h2>
+          <p>{companyName}</p>
         </div>
 
-        <div className="p-5 space-y-4 overflow-y-auto max-h-[75vh]">
+        <div className="erp-report-modal-body space-y-4">
           {/* Format */}
           <div>
             <label className={lbl}>Reporting Standard</label>
@@ -267,7 +274,7 @@ function OptionsDialog({
           </div>
         </div>
 
-        <div className="flex justify-end gap-2 px-5 py-3 border-t border-gray-200">
+        <div className="erp-report-modal-footer">
           <button
             type="button"
             onClick={onCancel}
@@ -284,7 +291,8 @@ function OptionsDialog({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
@@ -306,13 +314,17 @@ function BSRow({
   const [expanded, setExpanded] = useState(showSecond);
   const hasChildren = (row.children?.length || 0) > 0;
   const isZero = Math.abs(row.amount || 0) < 0.005;
-  const indent = depth * 16;
+  const indent = depth * 14;
 
-  const cls = `flex items-center justify-between px-3 py-1.5 border-b border-gray-100 border-l-[3px] transition-colors ${
-    row.bold ? "bg-[#f9fafb] font-semibold" : "bg-white"
-  } ${row.isClickable ? "cursor-pointer border-l-transparent hover:border-l-[#1557b0] hover:bg-gray-50" : "border-l-transparent"} ${
-    row.isPLLine ? "bg-green-50" : ""
-  } ${row.isPLAdjusted ? "bg-yellow-50" : ""}`;
+  const rowClass = [
+    row.bold ? "erp-bs-group-row" : "",
+    row.isClickable ? "erp-bs-clickable" : "",
+    row.isPLLine ? "erp-bs-pl-row" : "",
+    row.isPLAdjusted ? "erp-bs-adjust-row" : "",
+    isZero ? "erp-bs-zero" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   const handleClick = () => {
     if (!row.isClickable) return;
@@ -327,69 +339,58 @@ function BSRow({
 
   return (
     <>
-      <div className={cls} onClick={handleClick} style={{ paddingLeft: `${12 + indent}px` }}>
-        <div className="flex items-center gap-1.5 min-w-0 flex-1">
-          {hasChildren && (
-            <span className="text-gray-400 shrink-0">
-              {expanded ? (
-                <ChevronDown className="h-3 w-3" />
-              ) : (
-                <ChevronRight className="h-3 w-3" />
+      <tr className={rowClass} onClick={handleClick}>
+        <td style={{ paddingLeft: `${10 + indent}px` }}>
+          <div className="flex items-center gap-1.5 min-w-0">
+            {hasChildren && (
+              <span className="text-gray-500 shrink-0">
+                {expanded ? (
+                  <ChevronDown className="h-3 w-3" />
+                ) : (
+                  <ChevronRight className="h-3 w-3" />
+                )}
+              </span>
+            )}
+            <span
+              className={`truncate ${row.bold ? "font-semibold text-gray-900" : "text-gray-800"} ${
+                row.isPLLine ? "text-green-700 font-semibold" : ""
+              } ${row.isClosingStock ? "text-[#1557b0] font-medium" : ""}`}
+            >
+              {row.caption}
+              {isZero && !row.isClosingStock && (
+                <span className="ml-1.5 text-[10px] text-gray-400 font-normal">(0)</span>
+              )}
+              {row.isPLAdjusted && (
+                <span className="ml-1.5 text-[9px] text-amber-600 font-normal">[screen only]</span>
               )}
             </span>
+          </div>
+        </td>
+        <td className={`erp-bs-amount ${isZero ? "erp-bs-amount-zero" : ""}`}>
+          {options.showPercentage && row.percentage !== undefined && !isZero && (
+            <span className="text-[10px] text-gray-500 mr-2">{row.percentage?.toFixed(1)}%</span>
           )}
-          <span
-            className={`text-[12px] truncate ${row.bold ? "font-semibold text-gray-800" : "text-gray-600"} ${
-              isZero ? "text-gray-400" : ""
-            } ${row.isPLLine ? "text-green-700 font-semibold" : ""} ${
-              row.isClosingStock ? "text-blue-700" : ""
-            }`}
-          >
-            {row.caption}
-            {isZero && !row.isClosingStock && (
-              <span className="ml-1.5 text-[10px] text-gray-300 font-normal">(0)</span>
-            )}
-            {row.isPLAdjusted && (
-              <span className="ml-1.5 text-[9px] text-amber-600 font-normal">[screen only]</span>
-            )}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-3 shrink-0">
-          {options.showPercentage && row.percentage !== undefined && (
-            <span className="text-[10px] text-gray-400 w-10 text-right">
-              {isZero ? "" : `${row.percentage?.toFixed(1)}%`}
+          {options.showPreviousYear && row.prevYearAmount !== undefined && (
+            <span className="text-[10px] text-gray-500 mr-2 block">
+              PY: {fmt(row.prevYearAmount)}
             </span>
           )}
-          {options.showPreviousYear && (
-            <span className="text-[11px] font-mono text-gray-400 w-24 text-right">
-              {row.prevYearAmount !== undefined ? fmt(row.prevYearAmount) : ""}
-            </span>
-          )}
-          <span
-            className={`text-[12px] font-mono font-semibold w-28 text-right ${
-              isZero ? "text-gray-300" : row.bold ? "text-gray-800" : "text-gray-700"
-            } ${row.isPLLine ? "text-green-700" : ""}`}
-          >
-            {fmt(Math.abs(row.amount || 0))}
-          </span>
-        </div>
-      </div>
+          {fmt(Math.abs(row.amount || 0))}
+        </td>
+      </tr>
 
-      {expanded && hasChildren && (
-        <div>
-          {(row.children || []).map((child: any, ci: number) => (
-            <BSRow
-              key={ci}
-              row={child}
-              onDrillDown={onDrillDown}
-              options={options}
-              showSecond={showSecond}
-              depth={depth + 1}
-            />
-          ))}
-        </div>
-      )}
+      {expanded &&
+        hasChildren &&
+        (row.children || []).map((child: any, ci: number) => (
+          <BSRow
+            key={ci}
+            row={child}
+            onDrillDown={onDrillDown}
+            options={options}
+            showSecond={showSecond}
+            depth={depth + 1}
+          />
+        ))}
     </>
   );
 }
@@ -407,16 +408,11 @@ function HorizontalBS({
   onDrillDown: (id: string, name: string, isAccount: boolean) => void;
   onClosingStockEdit: () => void;
 }) {
-  const thCls =
-    "px-3 py-2.5 text-[10px] font-semibold uppercase tracking-wide text-gray-500 bg-[#f5f6fa] border-b border-gray-200";
-
   const renderSection = (section: any) => (
-    <div key={section.id} className="border-b border-gray-200">
-      <div className="px-3 py-1.5 bg-[#eef2ff] border-b border-blue-100">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-[#1557b0]">
-          {section.caption}
-        </span>
-      </div>
+    <React.Fragment key={section.id}>
+      <tr className="erp-bs-section-row">
+        <td colSpan={2}>{section.caption}</td>
+      </tr>
       {section.rows.map((row: any, ri: number) => (
         <BSRow
           key={ri}
@@ -426,54 +422,53 @@ function HorizontalBS({
           showSecond={options.showSecondLevel}
         />
       ))}
-      <div className="flex items-center justify-between px-3 py-2 bg-[#f9fafb] border-t border-gray-200">
-        <span className="text-[12px] font-bold text-gray-700">Total {section.caption}</span>
-        <span className="text-[12px] font-mono font-bold text-gray-800">
-          {fmt(Math.abs(section.total))}
-        </span>
-      </div>
+      <tr className="erp-bs-subtotal-row">
+        <td>Total {section.caption}</td>
+        <td className="erp-bs-amount">{fmt(Math.abs(section.total))}</td>
+      </tr>
+    </React.Fragment>
+  );
+
+  const renderSide = (title: string, sections: any[], total: number, extraRow?: React.ReactNode) => (
+    <div className="erp-bs-side">
+      <table className="erp-bs-table">
+        <thead>
+          <tr>
+            <th className="text-left">{title}</th>
+            <th className="text-right">Amount (Rs.)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sections.map(renderSection)}
+          {extraRow}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td>TOTAL</td>
+            <td className="erp-bs-amount">{fmt(total)}</td>
+          </tr>
+        </tfoot>
+      </table>
     </div>
   );
 
   return (
-    <div className="grid grid-cols-2 gap-4">
-      {/* Left: Liabilities + Equity */}
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-        <div className={`${thCls} text-left flex items-center justify-between`}>
-          <span>Liabilities & Capital</span>
-          <span>Amount (Rs.)</span>
-        </div>
-        {bs.liabilitiesEquity.map(renderSection)}
-        {bs.plAdjustedAmount !== 0 && (
-          <div className="flex items-center justify-between px-3 py-1.5 bg-yellow-50 border-t border-yellow-200">
-            <span className="text-[11px] text-amber-700">
-              Profit & Loss Adjusted <span className="text-[9px]">[screen only, not printed]</span>
-            </span>
-            <span className="text-[11px] font-mono text-amber-700">
-              {fmt(Math.abs(bs.plAdjustedAmount))}
-            </span>
-          </div>
-        )}
-        <div className="flex items-center justify-between px-3 py-2.5 bg-[#1557b0] text-white">
-          <span className="text-[12px] font-bold">TOTAL</span>
-          <span className="text-[13px] font-mono font-bold">
-            {fmt(bs.totalLiabilitiesEquity + Math.abs(bs.plAdjustedAmount))}
-          </span>
-        </div>
-      </div>
-
-      {/* Right: Assets */}
-      <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-        <div className={`${thCls} text-left flex items-center justify-between`}>
-          <span>Assets</span>
-          <span>Amount (Rs.)</span>
-        </div>
-        {bs.assets.map(renderSection)}
-        <div className="flex items-center justify-between px-3 py-2.5 bg-[#1557b0] text-white">
-          <span className="text-[12px] font-bold">TOTAL</span>
-          <span className="text-[13px] font-mono font-bold">{fmt(bs.totalAssets)}</span>
-        </div>
-      </div>
+    <div className="erp-bs-tformat">
+      {renderSide(
+        "Liabilities & Capital",
+        bs.liabilitiesEquity,
+        bs.totalLiabilitiesEquity + Math.abs(bs.plAdjustedAmount),
+        bs.plAdjustedAmount !== 0 ? (
+          <tr className="erp-bs-adjust-row" key="pl-adjust">
+            <td>
+              Profit & Loss Adjusted{" "}
+              <span className="text-[9px] font-normal">[screen only, not printed]</span>
+            </td>
+            <td className="erp-bs-amount">{fmt(Math.abs(bs.plAdjustedAmount))}</td>
+          </tr>
+        ) : null,
+      )}
+      {renderSide("Assets", bs.assets, bs.totalAssets)}
     </div>
   );
 }
@@ -490,82 +485,70 @@ function VerticalBS({
   onDrillDown: (id: string, name: string, isAccount: boolean) => void;
 }) {
   return (
-    <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-      <div className="px-3 py-2 bg-[#f5f6fa] border-b border-gray-200 flex items-center justify-between">
-        <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
-          Particulars
-        </span>
-        <div className="flex gap-4">
-          {options.showPreviousYear && (
-            <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-500 w-28 text-right">
-              Previous year
-            </span>
-          )}
-          <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-500 w-28 text-right">
-            Amount (Rs.)
-          </span>
-        </div>
-      </div>
+    <table className="erp-bs-table">
+      <thead>
+        <tr>
+          <th className="text-left">Particulars</th>
+          {options.showPreviousYear && <th className="text-right">Previous Year</th>}
+          <th className="text-right">Amount (Rs.)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr className="erp-bs-section-row">
+          <td colSpan={options.showPreviousYear ? 3 : 2}>I. Equity and Liabilities</td>
+        </tr>
+        {bs.liabilitiesEquity.map((sec) => (
+          <React.Fragment key={sec.id}>
+            <tr className="erp-bs-group-row">
+              <td colSpan={options.showPreviousYear ? 3 : 2}>{sec.caption}</td>
+            </tr>
+            {sec.rows.map((row: any, ri: number) => (
+              <BSRow
+                key={ri}
+                row={row}
+                onDrillDown={onDrillDown}
+                options={options}
+                showSecond={options.showSecondLevel}
+              />
+            ))}
+            <tr className="erp-bs-subtotal-row">
+              <td>Total {sec.caption}</td>
+              {options.showPreviousYear && <td />}
+              <td className="erp-bs-amount">{fmt(sec.total)}</td>
+            </tr>
+          </React.Fragment>
+        ))}
+        <tr className="erp-bs-subtotal-row">
+          <td className="text-[#1557b0] font-bold">Total Liabilities & Equity</td>
+          {options.showPreviousYear && <td />}
+          <td className="erp-bs-amount text-[#1557b0]">{fmt(bs.totalLiabilitiesEquity)}</td>
+        </tr>
 
-      {/* Equity + Liabilities */}
-      <div className="px-3 py-1.5 bg-[#eef2ff] border-b border-blue-100">
-        <span className="text-[10px] font-semibold uppercase tracking-wide text-[#1557b0]">
-          I. Equity and liabilities
-        </span>
-      </div>
-      {bs.liabilitiesEquity.map((sec) => (
-        <div key={sec.id}>
-          <div className="px-3 py-1 bg-gray-50 border-b border-gray-100">
-            <span className="text-[11px] font-semibold text-gray-700 uppercase">{sec.caption}</span>
-          </div>
-          {sec.rows.map((row: any, ri: number) => (
-            <BSRow
-              key={ri}
-              row={row}
-              onDrillDown={onDrillDown}
-              options={options}
-              showSecond={options.showSecondLevel}
-            />
-          ))}
-          <div className="flex items-center justify-between px-3 py-1.5 bg-[#f9fafb] border-t border-gray-200">
-            <span className="text-[12px] font-bold text-gray-700">Total {sec.caption}</span>
-            <span className="text-[12px] font-mono font-bold">{fmt(sec.total)}</span>
-          </div>
-        </div>
-      ))}
-
-      <div className="flex items-center justify-between px-3 py-2 bg-[#eef2ff] border-y border-blue-100">
-        <span className="text-[12px] font-bold text-[#1557b0]">Total Liabilities & Equity</span>
-        <span className="text-[13px] font-mono font-bold text-[#1557b0]">
-          {fmt(bs.totalLiabilitiesEquity)}
-        </span>
-      </div>
-
-      {/* Assets */}
-      <div className="px-3 py-1.5 bg-[#eef2ff] border-b border-blue-100 mt-2">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-[#1557b0]">
-          II. ASSETS
-        </span>
-      </div>
-      {bs.assets.map((sec) => (
-        <div key={sec.id}>
-          {sec.rows.map((row: any, ri: number) => (
-            <BSRow
-              key={ri}
-              row={row}
-              onDrillDown={onDrillDown}
-              options={options}
-              showSecond={options.showSecondLevel}
-            />
-          ))}
-        </div>
-      ))}
-
-      <div className="flex items-center justify-between px-3 py-2.5 bg-[#1557b0] text-white">
-        <span className="text-[12px] font-bold">TOTAL ASSETS</span>
-        <span className="text-[13px] font-mono font-bold">{fmt(bs.totalAssets)}</span>
-      </div>
-    </div>
+        <tr className="erp-bs-section-row">
+          <td colSpan={options.showPreviousYear ? 3 : 2}>II. Assets</td>
+        </tr>
+        {bs.assets.map((sec) => (
+          <React.Fragment key={sec.id}>
+            {sec.rows.map((row: any, ri: number) => (
+              <BSRow
+                key={ri}
+                row={row}
+                onDrillDown={onDrillDown}
+                options={options}
+                showSecond={options.showSecondLevel}
+              />
+            ))}
+          </React.Fragment>
+        ))}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td>TOTAL ASSETS</td>
+          {options.showPreviousYear && <td />}
+          <td className="erp-bs-amount">{fmt(bs.totalAssets)}</td>
+        </tr>
+      </tfoot>
+    </table>
   );
 }
 
@@ -1050,7 +1033,7 @@ export default function BalanceSheet() {
   };
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-hidden relative">
+    <div className="erp-report flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-hidden relative">
       {/* Options Dialog */}
       {showOptions && (
         <OptionsDialog
@@ -1065,7 +1048,7 @@ export default function BalanceSheet() {
         />
       )}
 
-      <div className="flex items-center justify-between px-4 py-2.5 bg-white border-b border-gray-200 shrink-0 z-10 no-print">
+      <div className="erp-report-toolbar flex items-center justify-between px-4 py-2.5 bg-white border-b border-gray-200 shrink-0 z-10 no-print">
         <div className="flex items-center gap-4">
           <div>
             <h1 className="text-[15px] font-semibold text-gray-800">Balance Sheet</h1>
@@ -1120,7 +1103,7 @@ export default function BalanceSheet() {
 
           <button
             onClick={() => setShowOptions(true)}
-            className="h-8 px-3 inline-flex items-center gap-1.5 bg-[#1557b0] text-white rounded-md text-[12px] font-medium hover:bg-[#0f4a96] ml-1"
+            className="erp-btn-primary h-8 px-3 inline-flex items-center gap-1.5 bg-[#1557b0] text-white rounded-md text-[12px] font-medium hover:bg-[#0f4a96] ml-1"
           >
             <Settings className="h-3.5 w-3.5" />
             Options
@@ -1147,23 +1130,23 @@ export default function BalanceSheet() {
           <div className="max-w-[1200px] mx-auto pb-10">
             {bsData && drillState.level === 0 && (
               <div className="no-print grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
-                <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+                <div className="border border-gray-300 bg-white px-3 py-2.5">
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                     Total assets
                   </p>
-                  <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
+                  <p className="text-[14px] font-semibold text-gray-900 mt-0.5 font-mono">
                     {fmt2(bsData.totalAssets)}
                   </p>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+                <div className="border border-gray-300 bg-white px-3 py-2.5">
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                     Liabilities & equity
                   </p>
-                  <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
+                  <p className="text-[14px] font-semibold text-gray-900 mt-0.5 font-mono">
                     {fmt2(bsData.totalLiabilitiesEquity)}
                   </p>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+                <div className="border border-gray-300 bg-white px-3 py-2.5">
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                     Closing stock
                   </p>
@@ -1171,7 +1154,7 @@ export default function BalanceSheet() {
                     {fmt2(bsData.closingStock)}
                   </p>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
+                <div className="border border-gray-300 bg-white px-3 py-2.5">
                   <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
                     Status
                   </p>

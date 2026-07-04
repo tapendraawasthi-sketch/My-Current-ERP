@@ -170,13 +170,14 @@ button:focus-visible {
   color: #ffffff;
 }
 .right-button-bar button {
-  background-color: #1e2433;
-  color: #cbd5e1;
-  border-bottom: 1px solid #2d3748;
+  background-color: #232a3b !important;
+  color: #e5e7eb !important;
+  border: 1px solid #3d4a63 !important;
 }
 .right-button-bar button:hover {
-  background-color: #273148;
-  color: #ffffff;
+  background-color: #273148 !important;
+  color: #ffffff !important;
+  border-color: #4b5563 !important;
 }
    /* Button hover handled by Tailwind classes per component */
 
@@ -1797,11 +1798,9 @@ td.amt::before { content: none; }
 @keyframes pageEnter {
   from {
     opacity: 0;
-    transform: translateY(6px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 .page-enter {
@@ -1832,4 +1831,217 @@ td.amt::before { content: none; }
 .data-table tbody tr:hover {
   background-color: #fafeff !important;
   border-left: 2px solid #1557b0;
+}
+
+/* === PROFESSIONAL ERP REPORTS (Tally/Busy-style grids) === */
+.erp-report,
+.erp-report .bg-white,
+.erp-report .bg-gray-50,
+.erp-report .bg-gray-100,
+.erp-report .bg-blue-50,
+.erp-report .bg-green-50,
+.erp-report .bg-yellow-50,
+.erp-report .bg-red-50,
+.erp-report .bg-amber-50,
+.erp-report .bg-\[\#f5f6fa\],
+.erp-report .bg-\[\#f9fafb\],
+.erp-report .bg-\[\#eef2ff\] {
+  background-color: #ffffff !important;
+}
+
+.erp-report .erp-report-toolbar {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #d1d5db !important;
+}
+
+.erp-report .erp-report-toolbar button {
+  border: 1px solid #d1d5db !important;
+  background-color: #ffffff !important;
+  color: #374151 !important;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+}
+
+.erp-report .erp-report-toolbar button:hover {
+  background-color: #f5f6fa !important;
+  border-color: #9ca3af !important;
+}
+
+.erp-report .erp-report-toolbar .erp-btn-primary {
+  background-color: #1557b0 !important;
+  border-color: #1557b0 !important;
+  color: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(21, 87, 176, 0.25);
+}
+
+.erp-report .erp-report-toolbar .erp-btn-primary:hover {
+  background-color: #0f4a96 !important;
+  border-color: #0f4a96 !important;
+}
+
+.erp-bs-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #9ca3af;
+  font-size: 12px;
+  background: #ffffff !important;
+}
+
+.erp-bs-table thead th {
+  background: #e8edf5 !important;
+  border: 1px solid #9ca3af;
+  padding: 7px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #374151 !important;
+}
+
+.erp-bs-table tbody td {
+  border: 1px solid #d1d5db;
+  padding: 5px 10px;
+  color: #1f2937 !important;
+  background: #ffffff !important;
+  vertical-align: middle;
+}
+
+.erp-bs-table tbody tr.erp-bs-section-row td {
+  background: #eef2ff !important;
+  border-color: #c7d2fe !important;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #1557b0 !important;
+  padding: 6px 10px;
+}
+
+.erp-bs-table tbody tr.erp-bs-group-row td {
+  background: #f5f6fa !important;
+  font-weight: 600;
+  color: #111827 !important;
+}
+
+.erp-bs-table tbody tr.erp-bs-pl-row td {
+  background: #ecfdf5 !important;
+  color: #047857 !important;
+  font-weight: 600;
+}
+
+.erp-bs-table tbody tr.erp-bs-adjust-row td {
+  background: #fffbeb !important;
+  color: #b45309 !important;
+}
+
+.erp-bs-table tbody tr.erp-bs-subtotal-row td {
+  background: #f3f4f6 !important;
+  font-weight: 700;
+  border-top: 2px solid #9ca3af !important;
+  color: #111827 !important;
+}
+
+.erp-bs-table tbody tr.erp-bs-clickable:hover td {
+  background: #f0f7ff !important;
+  cursor: pointer;
+}
+
+.erp-bs-table tbody tr.erp-bs-zero td {
+  color: #9ca3af !important;
+}
+
+.erp-bs-table tfoot td {
+  border: 1px solid #9ca3af;
+  padding: 8px 10px;
+  background: #1557b0 !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.erp-bs-table .erp-bs-amount {
+  text-align: right;
+  font-family: "Courier New", Courier, monospace;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  white-space: nowrap;
+  width: 130px;
+}
+
+.erp-bs-table .erp-bs-amount-zero {
+  color: #9ca3af !important;
+  font-weight: 500;
+}
+
+.erp-bs-tformat {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border: 1px solid #9ca3af;
+  background: #ffffff !important;
+}
+
+.erp-bs-tformat > .erp-bs-side {
+  border-right: 2px solid #9ca3af;
+}
+
+.erp-bs-tformat > .erp-bs-side:last-child {
+  border-right: none;
+}
+
+.erp-report-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.55);
+  padding: 16px;
+}
+
+.erp-report-modal {
+  width: 100%;
+  max-width: 42rem;
+  max-height: 85vh;
+  overflow: hidden;
+  border-radius: 6px;
+  border: 1px solid #9ca3af;
+  background: #ffffff !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+.erp-report-modal-header {
+  background: #1e2433 !important;
+  padding: 14px 18px;
+  flex-shrink: 0;
+}
+
+.erp-report-modal-header h2 {
+  color: #ffffff !important;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.erp-report-modal-header p {
+  color: #9ca3af !important;
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+.erp-report-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px;
+  background: #ffffff !important;
+}
+
+.erp-report-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 18px;
+  border-top: 1px solid #e5e7eb;
+  background: #f9fafb !important;
 }
