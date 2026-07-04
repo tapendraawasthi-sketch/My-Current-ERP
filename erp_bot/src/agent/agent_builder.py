@@ -12,15 +12,25 @@ from ..config import ERP_PATH, MAX_AGENT_ITERATIONS, MODEL_NAME, OLLAMA_BASE_URL
 from .system_prompt import SYSTEM_PROMPT
 from .intent_classifier import classify as _classify_intent
 from .tools import (
+    fetch_webpage,
     find_references,
     get_project_conventions,
     list_directory,
     read_full_file,
     search_codebase,
+    web_search,
 )
 
 _llm = ChatOllama(model=MODEL_NAME, base_url=OLLAMA_BASE_URL, temperature=0, num_ctx=8192)
-_tools = [search_codebase, read_full_file, list_directory, find_references, get_project_conventions]
+_tools = [
+    search_codebase,
+    read_full_file,
+    list_directory,
+    find_references,
+    get_project_conventions,
+    web_search,
+    fetch_webpage,
+]
 _checkpointer = InMemorySaver()
 _agent = create_agent(
     model=_llm,

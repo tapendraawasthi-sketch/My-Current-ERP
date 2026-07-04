@@ -17,6 +17,13 @@ from ..config import (
 )
 from ..vectorstore.chroma_store import search_codebase as _search
 
+import re as _re
+import textwrap as _textwrap
+
+import requests as _requests
+from bs4 import BeautifulSoup as _BS
+from duckduckgo_search import DDGS as _DDGS
+
 
 @tool
 def search_codebase(query: str) -> str:
@@ -120,3 +127,52 @@ def get_project_conventions() -> str:
             except Exception:
                 pass
     return "\n\n".join(parts) if parts else "No convention files found at repo root."
+
+
+@tool
+def web_search(query: str) -> str:
+    """Search the web using DuckDuckGo (no API key required). Use
+    when the question is about ERP accounting concepts, Nepal tax
+    rules, IRD regulations, or anything not answered by the
+    codebase. Input: a concise search query in plain English."""
+    try:
+        with _DDGS() as ddgs:
+            results = list(ddgs.text(query, max_results=5))
+        if not results:
+            return "No web results found for this query."
+        parts = []
+        for i, r in enumerate(results, 1):
+            parts.append(
+                f"Result {i}: {r.get('title', '')}\n"
+                f"URL: {r.get('href', '')}\n"
+                f"Snippet: {r.get('body', '')[:400]}"
+            )
+        return "\n\n".join(parts)
+    except Exception as e:
+        return f"Web search failed: {e}"
+
+
+@tool
+def fetch_webpage(url: str) -> str:
+    """Fetch and read the plain-text content of a webpage. Use
+    after web_search when a snippet is not enough and you need
+    the full page. Input: exact URL from a web_search result."""
+    try:
+        headers = {
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/124.0 Safari/537.36"
+            )
+        }
+        resp = _requests.get(url, headers=headers, timeout=10)
+        resp.raise_for_status()
+        soup = _BS(resp.text, "html.parser")
+        for tag in soup(["script", "style", "nav", "footer", "header"]):
+            tag.decompose()
+        text = soup.get_text(separator=" ", strip=True)
+        # Collapse whitespace and cap at 3000 chars to stay within context
+        text = _re.sub(r"\s{2,}", " ", text)
+        return _textwrap.shorten(text, width=3000, placeholder=" …[truncated]")
+    except Exception as e:
+        return f"Could not fetch webpage: {e}"
