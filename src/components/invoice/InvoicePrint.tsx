@@ -131,16 +131,16 @@ export default function InvoicePrint({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4 print:p-0 print:relative print:bg-white print:block">
-      <div className="bg-white w-full max-w-4xl rounded-lg shadow-xl overflow-hidden flex flex-col my-4 print:my-0 print:shadow-none print:rounded-none border border-[#9DC07A] print:border-0">
+      <div className="bg-white w-full max-w-4xl rounded-lg shadow-xl overflow-hidden flex flex-col my-4 print:my-0 print:shadow-none print:rounded-none border border-gray-200 print:border-0">
         {/* On-screen Controls (Hidden in Print) */}
-        <div className="no-print flex justify-between items-center px-4 py-3 bg-[#EBF5E2] border-b border-[#9DC07A] select-none">
+        <div className="no-print flex justify-between items-center px-4 py-3 bg-[#f5f6fa] border-b border-gray-200 select-none">
           <div>
-            <h2 className="text-[13px] font-bold text-[#000000]">Print Preview ({printMode})</h2>
+            <h2 className="text-[13px] font-bold text-gray-800">Print Preview ({printMode})</h2>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrint}
-              className="h-8 px-3 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 cursor-pointer"
+              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 cursor-pointer"
             >
               <Printer className="w-3.5 h-3.5" />
               <span>Print Invoice</span>
@@ -148,7 +148,7 @@ export default function InvoicePrint({
             {onClose && (
               <button
                 onClick={onClose}
-                className="h-8 w-8 bg-white border border-[#9DC07A] text-[#000000] rounded-md hover:bg-[#EBF5E2] flex items-center justify-center cursor-pointer"
+                className="h-8 w-8 bg-white border border-gray-200 text-gray-800 rounded-md hover:bg-[#f5f6fa] flex items-center justify-center cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -157,10 +157,10 @@ export default function InvoicePrint({
         </div>
 
         {/* Printable Area */}
-        <div className="p-8 bg-white print:p-0 text-[#000000] select-text overflow-x-auto print:overflow-visible">
+        <div className="p-8 bg-white print:p-0 text-gray-800 select-text overflow-x-auto print:overflow-visible">
           <div className="min-w-[650px] print:min-w-0">
             {/* Professional Company Header */}
-            <div className="flex justify-between items-start border-b-2 border-[#9DC07A] pb-4 mb-4">
+            <div className="flex justify-between items-start border-b-2 border-gray-200 pb-4 mb-4">
               <div className="flex items-start gap-4">
                 {company.logo && (
                   <img
@@ -170,25 +170,25 @@ export default function InvoicePrint({
                   />
                 )}
                 <div>
-                  <h1 className="text-[18px] font-bold text-[#000000] leading-tight uppercase">
+                  <h1 className="text-[18px] font-bold text-gray-800 leading-tight uppercase">
                     {company.companyNameEn}
                   </h1>
                   {company.companyNameNe && (
-                    <h2 className="text-[14px] text-[#000000] font-semibold mt-0.5 font-nepali">
+                    <h2 className="text-[14px] text-gray-800 font-semibold mt-0.5 font-nepali">
                       {company.companyNameNe}
                     </h2>
                   )}
-                  <p className="text-[11px] text-[#000000] mt-1">
+                  <p className="text-[11px] text-gray-800 mt-1">
                     {company.address}, {company.city}
                   </p>
-                  <p className="text-[11px] text-[#000000]">
+                  <p className="text-[11px] text-gray-800">
                     Phone: {company.phone} | Email: {company.email}
                   </p>
                 </div>
               </div>
               <div className="text-right">
-                <div className="bg-[#3D6B25]/5 border border-[#1557b0]/20 rounded-md p-2 text-right">
-                  <p className="text-[11px] font-semibold text-[#000000]">PAN / VAT NO.</p>
+                <div className="bg-[#1557b0]/5 border border-[#1557b0]/20 rounded-md p-2 text-right">
+                  <p className="text-[11px] font-semibold text-gray-800">PAN / VAT NO.</p>
                   <p className="text-[15px] font-mono font-bold text-[#1557b0]">
                     {company.panNumber}
                   </p>
@@ -197,56 +197,56 @@ export default function InvoicePrint({
             </div>
 
             {/* TAX INVOICE Title Strip */}
-            <div className="text-center bg-[#EBF5E2] border border-[#9DC07A] py-1.5 mb-5 rounded">
-              <h2 className="text-[13px] font-bold uppercase tracking-[0.15em] text-[#000000]">
+            <div className="text-center bg-[#f5f6fa] border border-gray-200 py-1.5 mb-5 rounded">
+              <h2 className="text-[13px] font-bold uppercase tracking-[0.15em] text-gray-800">
                 TAX INVOICE / कर बिजक
               </h2>
             </div>
 
             {/* Two-Column Details Layout */}
             <div className="grid grid-cols-2 gap-6 mb-6">
-              <div className="border border-[#9DC07A] rounded p-3 bg-[#EBF5E2]/50">
-                <p className="text-[10px] font-bold uppercase text-[#000000] tracking-wider mb-1.5">
+              <div className="border border-gray-200 rounded p-3 bg-[#f5f6fa]/50">
+                <p className="text-[10px] font-bold uppercase text-gray-800 tracking-wider mb-1.5">
                   Buyer / Billed To:
                 </p>
-                <p className="text-[12px] font-bold text-[#000000]">{party.name}</p>
+                <p className="text-[12px] font-bold text-gray-800">{party.name}</p>
                 {party.address && (
-                  <p className="text-[11px] text-[#000000] mt-0.5">{party.address}</p>
+                  <p className="text-[11px] text-gray-800 mt-0.5">{party.address}</p>
                 )}
-                {party.phone && <p className="text-[11px] text-[#000000]">Phone: {party.phone}</p>}
+                {party.phone && <p className="text-[11px] text-gray-800">Phone: {party.phone}</p>}
                 {party.pan && (
-                  <div className="flex items-center gap-1.5 mt-1.5 pt-1.5 border-t border-[#9DC07A]">
-                    <span className="text-[10px] font-semibold text-[#000000]">BUYER'S PAN:</span>
-                    <span className="text-[11px] font-mono font-bold text-[#000000]">
+                  <div className="flex items-center gap-1.5 mt-1.5 pt-1.5 border-t border-gray-200">
+                    <span className="text-[10px] font-semibold text-gray-800">BUYER'S PAN:</span>
+                    <span className="text-[11px] font-mono font-bold text-gray-800">
                       {party.pan}
                     </span>
                   </div>
                 )}
               </div>
 
-              <div className="border border-[#9DC07A] rounded p-3 bg-[#EBF5E2]/50 flex flex-col justify-between">
+              <div className="border border-gray-200 rounded p-3 bg-[#f5f6fa]/50 flex flex-col justify-between">
                 <div className="space-y-1.5 text-[11px]">
                   <div className="flex justify-between">
-                    <span className="text-[#000000]">Invoice Number:</span>
-                    <span className="font-mono font-bold text-[#000000]">{invoice.invoiceNo}</span>
+                    <span className="text-gray-800">Invoice Number:</span>
+                    <span className="font-mono font-bold text-gray-800">{invoice.invoiceNo}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-[#000000]">Invoice Date:</span>
-                    <span className="font-medium text-[#000000]">
+                    <span className="text-gray-800">Invoice Date:</span>
+                    <span className="font-medium text-gray-800">
                       {new Date(invoice.date).toLocaleDateString()}
                     </span>
                   </div>
                   {invoice.dueDate && (
                     <div className="flex justify-between">
-                      <span className="text-[#000000]">Due Date:</span>
-                      <span className="font-medium text-[#000000]">
+                      <span className="text-gray-800">Due Date:</span>
+                      <span className="font-medium text-gray-800">
                         {new Date(invoice.dueDate).toLocaleDateString()}
                       </span>
                     </div>
                   )}
                   {invoice.paymentMode && (
                     <div className="flex justify-between">
-                      <span className="text-[#000000]">Payment Mode:</span>
+                      <span className="text-gray-800">Payment Mode:</span>
                       <span className="font-semibold text-[#15803d] uppercase">
                         {invoice.paymentMode}
                       </span>
@@ -257,72 +257,72 @@ export default function InvoicePrint({
             </div>
 
             {/* Items Table */}
-            <table className="w-full border-collapse border border-[#9DC07A] text-[11px] mb-6">
+            <table className="w-full border-collapse border border-gray-200 text-[11px] mb-6">
               <thead>
-                <tr className="bg-[#EBF5E2] border-b border-[#9DC07A]">
-                  <th className="border border-[#9DC07A] p-2 text-center w-[30px] font-bold text-[#000000] uppercase">
+                <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                  <th className="border border-gray-200 p-2 text-center w-[30px] font-bold text-gray-800 uppercase">
                     S.N.
                   </th>
-                  <th className="border border-[#9DC07A] p-2 text-left font-bold text-[#000000] uppercase">
+                  <th className="border border-gray-200 p-2 text-left font-bold text-gray-800 uppercase">
                     Product Description
                   </th>
-                  <th className="border border-[#9DC07A] p-2 text-center w-[60px] font-bold text-[#000000] uppercase">
+                  <th className="border border-gray-200 p-2 text-center w-[60px] font-bold text-gray-800 uppercase">
                     HSN
                   </th>
-                  <th className="border border-[#9DC07A] p-2 text-right w-[60px] font-bold text-[#000000] uppercase">
+                  <th className="border border-gray-200 p-2 text-right w-[60px] font-bold text-gray-800 uppercase">
                     Qty
                   </th>
-                  <th className="border border-[#9DC07A] p-2 text-center w-[50px] font-bold text-[#000000] uppercase">
+                  <th className="border border-gray-200 p-2 text-center w-[50px] font-bold text-gray-800 uppercase">
                     Unit
                   </th>
-                  <th className="border border-[#9DC07A] p-2 text-right w-[80px] font-bold text-[#000000] uppercase">
+                  <th className="border border-gray-200 p-2 text-right w-[80px] font-bold text-gray-800 uppercase">
                     Rate
                   </th>
-                  <th className="border border-[#9DC07A] p-2 text-right w-[70px] font-bold text-[#000000] uppercase">
+                  <th className="border border-gray-200 p-2 text-right w-[70px] font-bold text-gray-800 uppercase">
                     Disc
                   </th>
-                  <th className="border border-[#9DC07A] p-2 text-right w-[90px] font-bold text-[#000000] uppercase">
+                  <th className="border border-gray-200 p-2 text-right w-[90px] font-bold text-gray-800 uppercase">
                     Taxable Amt
                   </th>
-                  <th className="border border-[#9DC07A] p-2 text-right w-[70px] font-bold text-[#000000] uppercase">
+                  <th className="border border-gray-200 p-2 text-right w-[70px] font-bold text-gray-800 uppercase">
                     VAT
                   </th>
-                  <th className="border border-[#9DC07A] p-2 text-right w-[100px] font-bold text-[#000000] uppercase">
+                  <th className="border border-gray-200 p-2 text-right w-[100px] font-bold text-gray-800 uppercase">
                     Total
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {invoice.items.map((item, index) => (
-                  <tr key={item.id} className="border-b border-[#9DC07A]">
-                    <td className="border border-[#9DC07A] p-2 text-center font-mono">
+                  <tr key={item.id} className="border-b border-gray-200">
+                    <td className="border border-gray-200 p-2 text-center font-mono">
                       {index + 1}
                     </td>
-                    <td className="border border-[#9DC07A] p-2 font-medium text-[#000000]">
+                    <td className="border border-gray-200 p-2 font-medium text-gray-800">
                       {item.name}
                     </td>
-                    <td className="border border-[#9DC07A] p-2 text-center font-mono text-[#000000]">
+                    <td className="border border-gray-200 p-2 text-center font-mono text-gray-800">
                       {item.hsn || "-"}
                     </td>
-                    <td className="border border-[#9DC07A] p-2 text-right font-mono">
+                    <td className="border border-gray-200 p-2 text-right font-mono">
                       {item.quantity}
                     </td>
-                    <td className="border border-[#9DC07A] p-2 text-center text-[#000000]">
+                    <td className="border border-gray-200 p-2 text-center text-gray-800">
                       {item.unit}
                     </td>
-                    <td className="border border-[#9DC07A] p-2 text-right font-mono">
+                    <td className="border border-gray-200 p-2 text-right font-mono">
                       {item.rate.toFixed(2)}
                     </td>
-                    <td className="border border-[#9DC07A] p-2 text-right font-mono text-[#000000]">
+                    <td className="border border-gray-200 p-2 text-right font-mono text-gray-800">
                       {item.discount.toFixed(2)}
                     </td>
-                    <td className="border border-[#9DC07A] p-2 text-right font-mono">
+                    <td className="border border-gray-200 p-2 text-right font-mono">
                       {item.taxable.toFixed(2)}
                     </td>
-                    <td className="border border-[#9DC07A] p-2 text-right font-mono text-[#000000]">
+                    <td className="border border-gray-200 p-2 text-right font-mono text-gray-800">
                       {item.vat.toFixed(2)}
                     </td>
-                    <td className="border border-[#9DC07A] p-2 text-right font-mono font-bold text-[#000000]">
+                    <td className="border border-gray-200 p-2 text-right font-mono font-bold text-gray-800">
                       {item.total.toFixed(2)}
                     </td>
                   </tr>
@@ -335,42 +335,42 @@ export default function InvoicePrint({
               {/* Left Side: Remarks & Conditions */}
               <div className="space-y-4">
                 {/* Amount in Words */}
-                <div className="p-2.5 bg-[#EBF5E2] border border-[#9DC07A] rounded text-[11px]">
-                  <p className="text-[#000000] uppercase tracking-wider font-bold text-[9px] mb-0.5">
+                <div className="p-2.5 bg-[#f5f6fa] border border-gray-200 rounded text-[11px]">
+                  <p className="text-gray-800 uppercase tracking-wider font-bold text-[9px] mb-0.5">
                     Amount in Words:
                   </p>
-                  <p className="italic font-semibold text-[#000000]">
+                  <p className="italic font-semibold text-gray-800">
                     {numberToWords(Math.floor(invoice.total))}
                   </p>
                 </div>
 
                 {/* Bank Details */}
                 {company.printBankDetails && company.bankName && (
-                  <div className="p-2.5 border border-[#9DC07A] rounded text-[11px] bg-white">
-                    <p className="text-[#000000] uppercase tracking-wider font-bold text-[9px] mb-1">
+                  <div className="p-2.5 border border-gray-200 rounded text-[11px] bg-white">
+                    <p className="text-gray-800 uppercase tracking-wider font-bold text-[9px] mb-1">
                       Bank Payment Details:
                     </p>
                     <div className="grid grid-cols-3 gap-1">
                       {company.bankName && (
                         <>
-                          <span className="text-[#000000]">Bank:</span>
-                          <span className="col-span-2 font-medium text-[#000000]">
+                          <span className="text-gray-800">Bank:</span>
+                          <span className="col-span-2 font-medium text-gray-800">
                             {company.bankName}
                           </span>
                         </>
                       )}
                       {company.bankAccount && (
                         <>
-                          <span className="text-[#000000]">Account:</span>
-                          <span className="col-span-2 font-mono font-bold text-[#000000]">
+                          <span className="text-gray-800">Account:</span>
+                          <span className="col-span-2 font-mono font-bold text-gray-800">
                             {company.bankAccount}
                           </span>
                         </>
                       )}
                       {company.bankBranch && (
                         <>
-                          <span className="text-[#000000]">Branch:</span>
-                          <span className="col-span-2 font-medium text-[#000000]">
+                          <span className="text-gray-800">Branch:</span>
+                          <span className="col-span-2 font-medium text-gray-800">
                             {company.bankBranch}
                           </span>
                         </>
@@ -381,8 +381,8 @@ export default function InvoicePrint({
 
                 {/* Terms */}
                 {company.termsConditions && (
-                  <div className="text-[10px] text-[#000000]">
-                    <p className="font-bold text-[#000000] uppercase tracking-wider text-[9px] mb-1">
+                  <div className="text-[10px] text-gray-800">
+                    <p className="font-bold text-gray-800 uppercase tracking-wider text-[9px] mb-1">
                       Terms & Conditions:
                     </p>
                     <p className="whitespace-pre-line leading-relaxed">{company.termsConditions}</p>
@@ -392,32 +392,32 @@ export default function InvoicePrint({
 
               {/* Right Side: Totals Summary */}
               <div className="flex justify-end items-start">
-                <div className="w-full max-w-sm border border-[#9DC07A] rounded overflow-hidden">
+                <div className="w-full max-w-sm border border-gray-200 rounded overflow-hidden">
                   <div className="p-2.5 space-y-1.5 text-[11px]">
                     <div className="flex justify-between">
-                      <span className="text-[#000000]">Subtotal:</span>
+                      <span className="text-gray-800">Subtotal:</span>
                       <span className="font-mono font-semibold">
                         Rs. {invoice.subtotal.toFixed(2)}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-[#000000]">Discount:</span>
-                      <span className="font-mono text-[#000000]">
+                      <span className="text-gray-800">Discount:</span>
+                      <span className="font-mono text-gray-800">
                         (-) Rs. {invoice.discount.toFixed(2)}
                       </span>
                     </div>
-                    <div className="flex justify-between pt-1 border-t border-[#9DC07A]">
-                      <span className="text-[#000000]">Taxable Value:</span>
-                      <span className="font-mono font-bold text-[#000000]">
+                    <div className="flex justify-between pt-1 border-t border-gray-200">
+                      <span className="text-gray-800">Taxable Value:</span>
+                      <span className="font-mono font-bold text-gray-800">
                         Rs. {invoice.taxable.toFixed(2)}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-[#000000]">VAT (13%):</span>
+                      <span className="text-gray-800">VAT (13%):</span>
                       <span className="font-mono">Rs. {invoice.vat.toFixed(2)}</span>
                     </div>
                   </div>
-                  <div className="bg-[#3D6B25] text-white px-3 py-2 flex justify-between items-center">
+                  <div className="bg-[#1557b0] text-white px-3 py-2 flex justify-between items-center">
                     <span className="text-[11px] font-bold uppercase tracking-wider">
                       Grand Total:
                     </span>
@@ -430,29 +430,29 @@ export default function InvoicePrint({
             </div>
 
             {/* Signature Section */}
-            <div className="grid grid-cols-3 gap-8 mt-12 mb-6 text-center text-[10px] text-[#000000]">
+            <div className="grid grid-cols-3 gap-8 mt-12 mb-6 text-center text-[10px] text-gray-800">
               <div className="flex flex-col items-center">
-                <div className="w-32 border-b border-[#9DC07A] h-10 mb-1"></div>
+                <div className="w-32 border-b border-gray-200 h-10 mb-1"></div>
                 <p>Prepared By</p>
               </div>
               <div className="flex flex-col items-center">
-                <div className="w-32 border-b border-[#9DC07A] h-10 mb-1"></div>
+                <div className="w-32 border-b border-gray-200 h-10 mb-1"></div>
                 <p>Checked By</p>
               </div>
               <div className="flex flex-col items-center">
-                <div className="w-32 border-b border-[#9DC07A] h-10 mb-1"></div>
-                <p className="font-bold text-[#000000]">Authorized Signatory</p>
+                <div className="w-32 border-b border-gray-200 h-10 mb-1"></div>
+                <p className="font-bold text-gray-800">Authorized Signatory</p>
               </div>
             </div>
 
             {/* Print Footer */}
-            <div className="border-t border-[#9DC07A] pt-3 text-center text-[10px] text-[#000000] space-y-0.5 mt-8">
+            <div className="border-t border-gray-200 pt-3 text-center text-[10px] text-gray-800 space-y-0.5 mt-8">
               <p>Thank you for your business!</p>
               <p className="italic">
                 This is a system generated tax invoice. No physical signature is required.
               </p>
               {company.invoiceFooter && (
-                <p className="font-semibold text-[#000000] mt-1">{company.invoiceFooter}</p>
+                <p className="font-semibold text-gray-800 mt-1">{company.invoiceFooter}</p>
               )}
             </div>
           </div>
