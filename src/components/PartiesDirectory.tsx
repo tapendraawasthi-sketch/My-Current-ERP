@@ -165,7 +165,7 @@ const PartiesDirectory: React.FC = React.memo(() => {
           <button
             type="button"
             onClick={handleOpenAdd}
-            className="h-8 px-3 bg-[#1557b0] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
           >
             <Plus className="h-3.5 w-3.5" /> Add Party
           </button>
