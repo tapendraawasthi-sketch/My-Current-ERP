@@ -200,6 +200,14 @@ def _is_framework_question(text: str) -> bool:
     ))
 
 
+def _is_simplification_request(text: str) -> bool:
+    return bool(re.search(
+        r"\b(simple|saral|sajhilo|layman|easy|clear|bujhena|nabujheko|aru\s+palta|"
+        r"pheri\s+bhannus|explain\s+again|give\s+in\s+simple)\b",
+        text, re.I,
+    ))
+
+
 def _invoke_llm(
     message: str,
     session_id: str,
@@ -211,6 +219,12 @@ def _invoke_llm(
     system = KHATA_SYSTEM_PROMPT + _balance_block(balance) + _lang_instruction(lang)
     if context:
         system += f"\n\n[CONTEXT]\n{context}"
+    if _is_simplification_request(message):
+        system += (
+            "\n\n[SIMPLIFICATION REQUEST] User did not understand. "
+            "Give a NEW simpler answer: max 3 sentences, Nepal shopkeeper analogy, "
+            "no jargon, no paragraph dumps, never say 'too complex'."
+        )
 
     messages = [SystemMessage(content=system)]
     messages.extend(history[-_MAX_HISTORY:])
@@ -232,7 +246,20 @@ def _invoke_llm(
     return text.strip()
 
 
+def _is_accounting_question(text: str) -> bool:
+    """Questions should go to Q&A, not transaction parsing."""
+    if text.strip().endswith("?"):
+        return True
+    return bool(re.search(
+        r"\b(k\s*ho|k\s*hun|ke\s*ho|kina|kasari|kati|kun|explain|define|bataau|bhannus|"
+        r"matlab|arth|meaning|what\s+is|how\s+to|which\s+is)\b",
+        text, re.I,
+    ))
+
+
 def _is_transaction_signal(text: str) -> bool:
+    if _is_accounting_question(text):
+        return False
     return bool(re.search(
         r"\b(\d+|saya|hajar|lakh)\b.*\b(udhaar|salary|ssf|gratuity|vat|tds|"
         r"depreciation|bad\s*debt|loan|capital|drawings|stock|kharcha|bikri|kineko|kinyo|"
