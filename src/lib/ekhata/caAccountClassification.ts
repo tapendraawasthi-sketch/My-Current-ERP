@@ -40,6 +40,8 @@ export const CA_CHART_OF_ACCOUNTS: ClassifiedAccount[] = [
   { code: "KH-VAT-IN", name: "Input VAT (Tax Credit)", class: "asset", normalBalance: "debit", subCategory: "tax_asset" },
   { code: "KH-TDS-PAY", name: "TDS Payable", class: "liability", normalBalance: "credit", subCategory: "tax_liability" },
   { code: "KH-OUT-EXP", name: "Outstanding Expenses", class: "liability", normalBalance: "credit", subCategory: "current_liability" },
+  { code: "KH-CUST-ADV", name: "Customer Advance / Unearned Revenue", class: "liability", normalBalance: "credit", subCategory: "current_liability" },
+  { code: "KH-EMP-ADV", name: "Employee Advance", class: "asset", normalBalance: "debit", subCategory: "current_asset" },
 
   // ── EQUITY / CAPITAL ──
   { code: "KH-CAP", name: "Capital Account", class: "equity", normalBalance: "credit", subCategory: "capital" },

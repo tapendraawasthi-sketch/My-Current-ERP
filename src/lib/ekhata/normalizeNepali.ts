@@ -35,6 +35,16 @@ const DEVANAGARI_WORDS: Record<string, string> = {
   राम: "ram",
   श्याम: "shyam",
   भयो: "vayo",
+  ह्रास: "depreciation",
+  ब्याज: "byaj",
+  आम्दानी: "aamdani",
+  सम्पत्ति: "sampatti",
+  सम्पति: "sampati",
+  ऋण: "rin",
+  भुक्तान: "bhugtan",
+  फिर्ता: "firta",
+  कमिसन: "commission",
+  भाडा: "bhaada",
 };
 
 function replaceDevanagariWords(text: string): string {

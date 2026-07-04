@@ -26,6 +26,7 @@
     "test:ekhata-ca": "npx tsx scripts/test-ekhata-ca-entries.ts",
     "test:ekhata-brain": "npx tsx scripts/test-ekhata-brain.ts",
     "test:ekhata-framework": "npx tsx scripts/test-ekhata-framework.ts",
+    "test:ekhata-benchmark": "npx tsx scripts/test-ekhata-benchmark.ts",
     "build:ca-knowledge": "node scripts/build-conceptual-framework-knowledge.mjs"
   },
   "dependencies": {

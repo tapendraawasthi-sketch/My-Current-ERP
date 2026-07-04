@@ -67,5 +67,18 @@ export {
 export type { WorkSignals } from "./smartWorkBrain";
 export { askAutonomousBrain, shouldAutonomousWebSearch } from "./autonomousBrain";
 export type { AutonomousBrainOptions, AutonomousBrainResult } from "./autonomousBrain";
+export { classifyDomain, isAccountingDomain, shouldBlockWebSearch } from "./domainRouter";
+export type { EKhataDomain, DomainRouteResult } from "./domainRouter";
+export { detectNegation } from "./negationDetector";
+export type { NegationResult } from "./negationDetector";
+export { computeVat, computeSsf, computeTds, computeDiscount, isVatInclusiveText } from "./calculationEngine";
+export type { VatBreakdown, SsfBreakdown, TdsBreakdown } from "./calculationEngine";
+export {
+  createConversationContext,
+  detectContextualCommand,
+  updateContextAfterConfirm,
+  updateContextAfterEntry,
+} from "./conversationState";
+export type { ConversationState, EKhataConversationContext } from "./conversationState";
 export { searchWebReal, expandSearchQueries, formatRealSearchAnswer } from "./ekhataWebSearch";
 export type { RealSearchResult } from "./ekhataWebSearch";

@@ -387,11 +387,16 @@ function shouldUseStandaloneEmotionalReply(
 export function composeEmotionalReply(
   baseReply: string,
   emotional: EmotionalContext,
-  options: { isQuestion?: boolean; userText?: string } = {},
+  options: { isQuestion?: boolean; userText?: string; factual?: boolean } = {},
 ): string {
   const { primaryEmotion, tone, needsComfort, isVenting, politenessLevel, moodTrend } = emotional;
   const isQuestion = options.isQuestion ?? false;
   const userText = options.userText ?? "";
+  const factual = options.factual ?? false;
+
+  if (factual || primaryEmotion === "neutral") {
+    return baseReply.trim();
+  }
 
   // Standalone emotional response when user is venting/sharing feelings
   if (

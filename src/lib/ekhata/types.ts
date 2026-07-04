@@ -52,7 +52,16 @@ export type KhataIntent =
   | "khata_loan_repayment"
   | "khata_stock_purchase"
   | "khata_stock_sale_cogs"
-  | "khata_contra_cash_bank";
+  | "khata_contra_cash_bank"
+  | "khata_sales_return"
+  | "khata_purchase_return"
+  | "khata_customer_advance"
+  | "khata_employee_advance"
+  | "khata_opening_balance"
+  | "khata_asset_disposal"
+  | "khata_inventory_write_down"
+  | "khata_commission_income"
+  | "khata_rent_expense";
 
 export interface JournalLineDraft {
   accountCode: string;
@@ -129,6 +138,15 @@ export const KHATA_INTENT_LABELS: Record<KhataIntent, string> = {
   khata_stock_purchase: "Stock / Inventory Purchase",
   khata_stock_sale_cogs: "Cost of Goods Sold (COGS)",
   khata_contra_cash_bank: "Contra (Cash ↔ Bank)",
+  khata_sales_return: "Sales Return / Credit Note",
+  khata_purchase_return: "Purchase Return / Debit Note",
+  khata_customer_advance: "Advance Received from Customer",
+  khata_employee_advance: "Advance to Employee",
+  khata_opening_balance: "Opening Balance Entry",
+  khata_asset_disposal: "Fixed Asset Disposal",
+  khata_inventory_write_down: "Inventory Write-down",
+  khata_commission_income: "Commission Income",
+  khata_rent_expense: "Rent Expense",
 };
 
 /** Nepal statutory rates used in entry generation */

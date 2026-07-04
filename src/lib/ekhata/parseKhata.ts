@@ -1,4 +1,5 @@
-import type { KhataConfirmationCard, KhataIntent, KhataParseResult } from "./types";
+import { detectNegation } from "./negationDetector";
+import { parseCommaAmount } from "./calculationEngine";
 import { generateCAEntry } from "./caEntryEngine";
 import { findTemplateByKeywords } from "./caEntryTemplates";
 import { WORD_TO_NUMBER } from "./nepaliLanguage";
@@ -141,8 +142,64 @@ const CA_INTENT_PATTERNS: IntentPattern[] = [
     test: (t) => /\b(tds\s*(deduct|kateko|withhold)|withholding\s*tax)\b/i.test(t),
   },
   {
+    intent: "khata_sales_return",
+    test: (t) =>
+      /\b(sales\s*return|credit\s*note|purchase\s*return\s*from\s*customer|saman\s*firta|firtayo|firtaayo|return\s+gare|goods\s*returned)\b/i.test(
+        t,
+      ) && !/\b(purchase\s*return|supplier)\b/i.test(t),
+  },
+  {
+    intent: "khata_purchase_return",
+    test: (t) => /\b(purchase\s*return|debit\s*note|supplier\s*return|kharid\s*firta)\b/i.test(t),
+  },
+  {
+    intent: "khata_customer_advance",
+    test: (t) =>
+      /\b(customer\s*advance|advance\s*(received|liyo|aayo)|unearned\s*revenue|advance\s*from\s*customer)\b/i.test(
+        t,
+      ),
+  },
+  {
+    intent: "khata_employee_advance",
+    test: (t) =>
+      /\b(employee\s*advance|staff\s*advance|talab\s*advance|advance\s*to\s*employee|advance\s*diyo\s*staff)\b/i.test(
+        t,
+      ),
+  },
+  {
+    intent: "khata_opening_balance",
+    test: (t) => /\b(opening\s*balance|opening\s*entry|suruwati\s*khata|purano\s*khata\s*bata)\b/i.test(t),
+  },
+  {
+    intent: "khata_asset_disposal",
+    test: (t) =>
+      /\b(asset\s*disposal|sold\s*(old\s*)?(vehicle|machine|asset|computer)|fixed\s*asset\s*sold|machine\s*becheko)\b/i.test(
+        t,
+      ),
+  },
+  {
+    intent: "khata_inventory_write_down",
+    test: (t) =>
+      /\b(inventory\s*write\s*down|stock\s*adjustment|shrinkage|obsolete\s*stock|stock\s*count\s*difference|saman\s*bigryo)\b/i.test(
+        t,
+      ),
+  },
+  {
+    intent: "khata_commission_income",
+    test: (t) => /\b(commission\s*(income|received|aayo|aamdani)|aamdani\s*commission)\b/i.test(t),
+  },
+  {
+    intent: "khata_rent_expense",
+    test: (t) =>
+      /\b(rent\s*(expense|paid|tiryo)|bhaada|bhada|premises\s*usage|landlord\s*charged)\b/i.test(t) &&
+      !/\b(rent\s*received|byaj|interest)\b/i.test(t),
+  },
+  {
     intent: "khata_salary_accrual",
-    test: (t) => /\b(salary\s*accrual|talab\s*provision|month\s*end\s*salary)\b/i.test(t),
+    test: (t) =>
+      /\b(salary\s*accrual|talab\s*provision|month\s*end\s*salary|salary\s*liability|accrued\s*salary|talab\s*accrue)\b/i.test(
+        t,
+      ),
   },
   {
     intent: "khata_salary_payment",
@@ -245,7 +302,10 @@ function parseAmountWords(text: string): number | null {
   const normalized = normalize(text);
   if (!normalized) return null;
 
-  const kMatch = normalized.match(/(\d+(?:\.\d+)?)\s*k\b/);
+  const commaAmt = parseCommaAmount(normalized.replace(/\s/g, ""));
+  if (commaAmt) return commaAmt;
+
+  const kMatch = normalized.match(/(\d+(?:\.\d+)?)\s*k\b/i);
   if (kMatch) return Math.round(parseFloat(kMatch[1]) * 1000);
 
   const digitMatch = normalized.match(/\b(\d+(?:\.\d+)?)\b/);
@@ -370,8 +430,8 @@ function extractItem(text: string, intent: KhataIntent | null): string | null {
 function extractDate(text: string): string {
   const raw = normalizeUnicodeDigits(text).toLowerCase();
   const today = new Date();
-  if (/\bhijo\b/.test(raw)) today.setDate(today.getDate() - 1);
-  else if (/\bparsi\b/.test(raw)) today.setDate(today.getDate() + 1);
+  if (/\b(hijo|yesterday)\b/.test(raw)) today.setDate(today.getDate() - 1);
+  else if (/\b(parsi|tomorrow|day\s+after)\b/.test(raw)) today.setDate(today.getDate() + 1);
   return today.toISOString().slice(0, 10);
 }
 
@@ -390,31 +450,36 @@ function hasCashSaleCue(text: string): boolean {
 
 function hasCreditSaleCue(text: string): boolean {
   if (/\b(kineko|kine|kiniyo|kharid|purchase|saman)\b/i.test(text)) return false;
+  if (/\b(tiryo|tireko|tira|clear|jama|payment\s+received|paisa\s+aayo|collected|outstanding\s+dues)\b/i.test(text))
+    return false;
   return (
-    (/\b(udhaar|udharo|udhar|credit|उधार)\b/i.test(text) &&
-      /\b(becheko|beche|bikri|bik|sale|sold|diye|die|diya)\b/i.test(text)) ||
+    (/\b(udhaar|udharo|udhar|credit|उधार|on\s+account|on\s+tab|deferred\s*payment)\b/i.test(text) &&
+      /\b(becheko|beche|bikri|bik|sale|sold|diye|die|diya|extended|invoiced|dispatched)\b/i.test(text)) ||
     /\b(udhaar|udharo|udhar)\s+becheko\b/i.test(text) ||
     /\bbecheko\b.*\b(udhaar|udharo|udhar)\b/i.test(text) ||
-    (/\b(diye|die|diya|diae|दिए)\b/i.test(text) && /\b(lai|le)\b/i.test(text))
+    (/\b(diye|die|diya|diae|दिए)\b/i.test(text) && /\blai\b/i.test(text) && !/\b(tiryo|tireko)\b/i.test(text))
   );
 }
 
 function hasPaymentInCue(text: string): boolean {
-  if (/\b(interest|discount|rent|dividend)\s*(received|aayo)\b/i.test(text)) return false;
+  if (/\b(interest|discount|rent|dividend|commission)\s*(received|aayo)\b/i.test(text)) return false;
+  if (/\blai\b/i.test(text) && /\b(diye|diyo|die|diya)\b/i.test(text) && !/\b(tiryo|tireko|clear)\b/i.test(text))
+    return false;
   return (
-    /\b(tiryo|tireko|tira|tire|payment\s+received|paisa\s+aayo|jama|jama\s+gareko|payo|paye)\b/i.test(
+    /\b(tiryo|tireko|tira|tire|payment\s+received|paisa\s+aayo|jama|jama\s+gareko|payo|paye|collected|settled|outstanding\s+dues)\b/i.test(
       text,
     ) ||
-    (/\breceived\b/i.test(text) && /\b(payment|paisa|debtor|debt)\b/i.test(text)) ||
-    /\b(aayo|aayeko|aaye)\b/i.test(text)
+    (/\breceived\b/i.test(text) && /\b(payment|paisa|debtor|debt|cheque|check)\b/i.test(text)) ||
+    (/\b(le|bata|from)\b/i.test(text) && /\b(diyo|diye|tiryo|tireko|payo|paye|aayo)\b/i.test(text) &&
+      !/\b(lai)\b/i.test(text))
   );
 }
 
 function hasPurchaseCue(text: string): boolean {
   return (
-    /\b(kineko|kine|kiniyo|kinyo|kinna|kharid|kharido|purchase|bought|buy|purchased|procured)\b/i.test(
+    /\b(kineko|kine|kiniyo|kinyo|kinna|kharid|kharido|purchase|bought|buy|purchased|procured|extended\s+credit\s+to\s+buy)\b/i.test(
       text,
-    ) && !/\b(udhaar|udhar|credit)\b/i.test(text)
+    ) && !/\b(udhaar|udhar|credit\s+sale|becheko|sold)\b/i.test(text)
   );
 }
 
@@ -489,7 +554,7 @@ function classifyIntent(rawText: string, normalizedText: string): KhataIntent | 
     const template = findTemplateByKeywords(q);
     if (template) return template.intent;
 
-    if (/\b(diye|die|diya|diae)\b/i.test(q) && /\b(lai|le)\b/i.test(q)) {
+    if (/\b(diye|die|diya|diae)\b/i.test(q) && /\blai\b/i.test(q)) {
       return "khata_credit_sale";
     }
   }
@@ -514,6 +579,11 @@ export function parseKhataMessage(rawText: string, preNormalized?: string): Khat
   const displayText = rawText.trim();
   if (!text) {
     return { clarifying_question: "Ke transaction ho? Thora clear lekhnu hola." };
+  }
+
+  const negation = detectNegation(displayText);
+  if (negation.blockEntry) {
+    return { clarifying_question: negation.clarification ?? "Yo transaction confirm garna sakina." };
   }
 
   if (needsPartyRoleClarification(text)) {
