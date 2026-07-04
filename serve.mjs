@@ -3,6 +3,7 @@ import { fileURLToPath } from "url";
 import { join, extname, normalize } from "path";
 import { readFile, stat } from "fs/promises";
 import { existsSync } from "fs";
+import { searchWebViaDdgHtml } from "./scripts/ddgHtmlSearch.mjs";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const PORT = parseInt(process.env.PORT || "3000", 10);
@@ -40,6 +41,38 @@ async function readRequestBody(req) {
 
 async function handleErpBotRequest(req, res, method, rawPath) {
   const subpath = rawPath.replace(/^\/erp-bot/, "") || "/";
+
+  if (method === "GET" && subpath.startsWith("/web-search")) {
+    const queryString = rawPath.includes("?") ? rawPath.split("?")[1] : "";
+    const params = new URLSearchParams(queryString);
+    const q = params.get("q") || "";
+    const maxResults = Math.min(Math.max(parseInt(params.get("max_results") || "5", 10) || 5, 1), 8);
+
+    if (ERP_BOT_BACKEND) {
+      try {
+        const targetUrl = `${ERP_BOT_BACKEND}/web-search?${params.toString()}`;
+        const upstream = await fetch(targetUrl, { method: "GET" });
+        const body = Buffer.from(await upstream.arrayBuffer());
+        res.writeHead(upstream.status, {
+          "Content-Type": upstream.headers.get("content-type") || "application/json",
+          "Content-Length": body.length,
+        });
+        res.end(body);
+        return;
+      } catch (err) {
+        console.error("[serve.mjs] ERP bot web-search proxy error:", err);
+      }
+    }
+
+    const payload = await searchWebViaDdgHtml(q, maxResults);
+    const body = Buffer.from(JSON.stringify(payload));
+    res.writeHead(200, {
+      "Content-Type": "application/json",
+      "Content-Length": body.length,
+    });
+    res.end(body);
+    return;
+  }
 
   if (ERP_BOT_BACKEND) {
     try {

@@ -20,7 +20,7 @@ import {
 } from "./codeStructureParser";
 import { GENERATED_PAGE_INDEX } from "./generatedPageIndex";
 import { ERP_MODULES, ERP_ACCOUNTING_RULES, ERP_FORMULAS } from "./erpCodeKnowledge";
-import { searchWeb, formatSearchResults } from "../falconWebSearch";
+import { searchWeb, formatSearchResultsForLLM } from "./searchService";
 import {
   shouldUseWebSearchForIntent,
   formatWebSearchAnswer,
@@ -228,11 +228,11 @@ function enhanceWithConversationContext(
 
 async function performWebSearch(query: string): Promise<string | null> {
   try {
-    const results = await searchWeb(query, { timeout: 5000 });
-    if (results.error) {
+    const results = await searchWeb(query, { timeoutMs: 10000, maxResults: 5 });
+    if (!results.results.length && !results.directAnswer) {
       return null;
     }
-    return formatSearchResults(results);
+    return formatSearchResultsForLLM(results);
   } catch {
     return null;
   }

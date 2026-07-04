@@ -9,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from ..agent import agent_builder
+from .web_search_service import search_web_structured
 from ..config import (
     BOT_ROOT,
     EMBED_MODEL,
@@ -106,6 +107,12 @@ def chat(req: ChatRequest) -> ChatResponse:
 def reindex(background_tasks: BackgroundTasks) -> dict:
     background_tasks.add_task(embedder.ingest_all)
     return {"status": "reindex started", "erp_path": str(ERP_PATH)}
+
+
+@app.get("/web-search")
+def web_search(q: str, max_results: int = 5) -> dict:
+    """No-API-key web search for Falcon AI (DuckDuckGo HTML scraping)."""
+    return search_web_structured(q, max_results=min(max(max_results, 1), 8))
 
 
 @app.post("/clear_session")
