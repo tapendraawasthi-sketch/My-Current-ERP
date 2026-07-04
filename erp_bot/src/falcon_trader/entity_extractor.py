@@ -38,7 +38,7 @@ def _soft_normalize(text: str) -> str:
 
 
 def extract_party(text: str) -> str | None:
-    soft = _soft_normalize(text)
+    soft = normalize(text)
     if not soft:
         return None
 
@@ -57,6 +57,12 @@ def extract_party(text: str) -> str | None:
     for name in capitalized:
         if name.lower() not in PARTY_STOPWORDS:
             return name
+
+    leading = re.match(r"^([a-z\u0900-\u097F]{2,30})\b", soft, re.I)
+    if leading:
+        candidate = leading.group(1).strip()
+        if candidate.lower() not in PARTY_STOPWORDS and candidate.lower() not in {"hamile", "maile", "aja", "hijo"}:
+            return candidate.title()
 
     return None
 

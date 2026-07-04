@@ -5,6 +5,42 @@ import unicodedata
 
 NEPALI_DIGIT_MAP = str.maketrans("०१२३४५६७८९", "0123456789")
 
+DEVANAGARI_WORDS: dict[str, str] = {
+    "उधार": "udhaar",
+    "दिए": "diye",
+    "दियो": "diye",
+    "लाई": "lai",
+    "ले": "le",
+    "बाट": "bata",
+    "हजार": "hajar",
+    "दश": "das",
+    "तीन": "tin",
+    "पाँच": "panch",
+    "पांच": "panch",
+    "तिर्यो": "tiryo",
+    "आज": "aja",
+    "भाडा": "bhaada",
+    "सामान": "saman",
+    "राम": "ram",
+    "श्याम": "shyam",
+    "बेचेको": "becheko",
+    "किनेको": "kineko",
+    "खर्च": "kharcha",
+    "खर्चा": "kharcha",
+    "नगद": "nagad",
+}
+
+
+def transliterate_devanagari(text: str) -> str:
+    if not re.search(r"[\u0900-\u097F]", text):
+        return text
+    out = text
+    for word in sorted(DEVANAGARI_WORDS, key=len, reverse=True):
+        out = out.replace(word, f" {DEVANAGARI_WORDS[word]} ")
+    out = normalize_unicode_digits(out)
+    out = re.sub(r"[\u0900-\u097F]", " ", out)
+    return re.sub(r"\s+", " ", out).strip()
+
 WORD_TO_NUMBER: dict[str, int] = {
     "ek": 1,
     "dui": 2,
@@ -27,12 +63,13 @@ WORD_TO_NUMBER: dict[str, int] = {
     "saya": 100,
     "hajar": 1000,
     "lakh": 100000,
+    "karod": 10000000,
+    "crore": 10000000,
+    "arab": 1000000000,
 }
 
+# Postpositions (le, lai, bata, ma) are semantic role markers — never strip them.
 FILLER_WORDS = {
-    "le",
-    "lai",
-    "ma",
     "ko",
     "ki",
     "ho",
@@ -41,6 +78,22 @@ FILLER_WORDS = {
     "garne",
     "bhayo",
 }
+
+SPELLING_ALIASES: dict[str, str] = {
+    "teen": "tin",
+    "paach": "panch",
+    "paanch": "panch",
+    "pach": "panch",
+    "bechy": "becheko",
+    "aayo": "tiryo",
+    "aayeko": "tiryo",
+    "hazar": "hajar",
+    "sau": "saya",
+}
+
+
+def fold_spelling(text: str) -> str:
+    return " ".join(SPELLING_ALIASES.get(token, token) for token in text.split())
 
 
 def normalize_unicode_digits(text: str) -> str:
@@ -57,12 +110,13 @@ def remove_fillers(tokens: list[str]) -> list[str]:
 
 def normalize(text: str) -> str:
     text = unicodedata.normalize("NFKC", text)
+    text = transliterate_devanagari(text)
     text = normalize_unicode_digits(text)
     text = text.lower().strip()
     text = strip_punctuation(text)
     text = re.sub(r"\s+", " ", text).strip()
     tokens = remove_fillers(text.split())
-    return " ".join(tokens)
+    return fold_spelling(" ".join(tokens))
 
 
 def parse_amount_words(text: str) -> int | None:
@@ -74,8 +128,21 @@ def parse_amount_words(text: str) -> int | None:
     if k_match:
         return int(float(k_match.group(1)) * 1000)
 
+    # saadhe teen hajar = 3500, saadhe paanch hajar = 5500
+    saadhe_match = re.search(
+        r"\bsaadhe\s+(\w+)\s+(hajar|saya|lakh|karod|crore)\b",
+        normalized,
+    )
+    if saadhe_match:
+        num_word = saadhe_match.group(1)
+        unit = saadhe_match.group(2)
+        base = WORD_TO_NUMBER.get(num_word)
+        unit_val = WORD_TO_NUMBER.get(unit)
+        if base is not None and unit_val is not None:
+            return int((base + 0.5) * unit_val)
+
     digit_match = re.search(r"\b(\d+(?:\.\d+)?)\b", normalized)
-    if digit_match and not re.search(r"\b(hajar|saya|lakh)\b", normalized):
+    if digit_match and not re.search(r"\b(hajar|saya|lakh|karod|crore|arab)\b", normalized):
         value = digit_match.group(1)
         return int(float(value))
 

@@ -69,6 +69,16 @@ check("Chapter 4 overview", ch4.kind === "answer" && ch4.reply.includes("Chapter
 const para43 = understandConceptualFramework("paragraph 4.3 ma k cha?");
 check("Paragraph 4.3 lookup", para43.kind === "answer" && para43.reply.includes("4.3"));
 
+// Step 6 — synthesis not paragraph dump
+const assetReply = understandConceptualFramework("What is the definition of an asset?");
+check("no blockquote paragraph dump", assetReply.kind === "answer" && !assetReply.reply.includes("\n> "));
+
+const simpleFaithful = understandConceptualFramework("faithful representation simple bhannus");
+check(
+  "simplification request answered",
+  simpleFaithful.kind === "answer" && simpleFaithful.reply.length < 800 && !/thora complex/i.test(simpleFaithful.reply),
+);
+
 // Integration via processMessage
 const routed = processEKhataMessage("going concern assumption k ho?");
 check("processMessage routes framework", routed.kind === "chat" && routed.engine === "framework-brain");

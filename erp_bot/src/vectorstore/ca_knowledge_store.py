@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import threading
 from pathlib import Path
 
@@ -18,10 +19,35 @@ _write_lock = threading.Lock()
 COLLECTION_NAME = "ca_knowledge"
 _BOT_ROOT = Path(__file__).resolve().parent.parent.parent
 _KNOWLEDGE_JSON = _BOT_ROOT.parent / "data" / "ekhata" / "conceptual-framework-knowledge.json"
+_NEPAL_KNOWLEDGE_JSON = _BOT_ROOT.parent / "data" / "ekhata" / "nepal-accounting-knowledge.json"
 
 
 def get_collection():
     return _client.get_or_create_collection(COLLECTION_NAME)
+
+
+def _nepal_items(data: dict) -> list[dict]:
+    """Flatten Nepal accounting knowledge items for search/ingest."""
+    items = []
+    for item in data.get("items", []):
+        text_parts = [
+            item.get("text_en", ""),
+            item.get("text_ne", ""),
+            item.get("term_en", ""),
+            item.get("term_ne", ""),
+            " ".join(item.get("topics", [])),
+            item.get("journal", ""),
+            " ".join(item.get("examples_ne", [])),
+        ]
+        items.append({
+            "id": item.get("id", ""),
+            "type": item.get("type", "guidance"),
+            "section": item.get("term_en", item.get("id", "")),
+            "text": "\n".join(p for p in text_parts if p),
+            "topics": item.get("topics", []),
+            "term": item.get("term_en", ""),
+        })
+    return items
 
 
 def _all_corpus_items(data: dict) -> list[dict]:
@@ -96,46 +122,56 @@ def search_ca_knowledge(query: str, k: int = 6) -> list[dict]:
 
 def _fallback_search(query: str, k: int) -> list[dict]:
     """JSON fallback when Chroma is empty or Ollama unavailable."""
-    if not _KNOWLEDGE_JSON.exists():
-        return []
+    combined: list[dict] = []
 
-    try:
-        with open(_KNOWLEDGE_JSON, encoding="utf-8") as f:
-            data = json.load(f)
-    except (json.JSONDecodeError, OSError):
-        return []
+    for path, prefix in ((_KNOWLEDGE_JSON, "cf"), (_NEPAL_KNOWLEDGE_JSON, "np")):
+        if not path.exists():
+            continue
+        try:
+            with open(path, encoding="utf-8") as f:
+                data = json.load(f)
+        except (json.JSONDecodeError, OSError):
+            continue
 
-    query_lower = query.lower()
-    tokens = {t.lower() for t in query.split() if len(t) >= 3}
+        items = _all_corpus_items(data) if prefix == "cf" else _nepal_items(data)
+        query_lower = query.lower()
+        tokens = {t.lower() for t in query.split() if len(t) >= 3}
 
-    scored = []
-    for item in _all_corpus_items(data):
-        text = item.get("text", "")
-        section = item.get("section", "")
-        term = item.get("term", "")
-        topics = " ".join(item.get("topics", []))
-        combined = f"{text} {section} {topics} {term}".lower()
+        for item in items:
+            text = item.get("text", "")
+            section = item.get("section", "")
+            term = item.get("term", "")
+            topics = " ".join(item.get("topics", []))
+            combined_text = f"{text} {section} {topics} {term}".lower()
 
-        score = 0.0
-        for token in tokens:
-            if token in combined:
-                score += 1.0
-        if term and term.lower() in query_lower:
-            score += 10.0
+            score = 0.0
+            for token in tokens:
+                if token in combined_text:
+                    score += 1.0
+            if term and term.lower() in query_lower:
+                score += 10.0
+            if prefix == "np" and item.get("type") == "tax" and re.search(
+                r"\b(vat|tds|ssf|tax|ird)\b", query_lower
+            ):
+                score += 3.0
 
-        if score > 0:
-            scored.append({
-                "text": text,
-                "paragraph_id": item.get("id", ""),
-                "chapter": item.get("chapter", 0),
-                "section": section,
-                "topics": topics,
-                "item_type": item.get("type", ""),
-                "_score": score,
-            })
+            if score > 0:
+                combined.append({
+                    "text": text,
+                    "paragraph_id": item.get("id", ""),
+                    "chapter": item.get("chapter", 0),
+                    "section": section,
+                    "topics": topics,
+                    "item_type": item.get("type", ""),
+                    "_score": score,
+                    "_source": path.name,
+                })
 
-    scored.sort(key=lambda x: x["_score"], reverse=True)
-    return [{key: val for key, val in c.items() if key != "_score"} for c in scored[:k]]
+    combined.sort(key=lambda x: x["_score"], reverse=True)
+    return [
+        {key: val for key, val in c.items() if not key.startswith("_")}
+        for c in combined[:k]
+    ]
 
 
 def _item_doc_text(item: dict) -> str:
@@ -158,58 +194,73 @@ def _item_doc_text(item: dict) -> str:
 
 
 def ingest_ca_knowledge() -> dict:
-    """Embed and upsert ALL items from conceptual-framework-knowledge.json."""
-    if not _KNOWLEDGE_JSON.exists():
-        return {"status": "error", "message": f"Knowledge file not found: {_KNOWLEDGE_JSON}"}
+    """Embed and upsert IFRS framework + Nepal accounting knowledge."""
+    indexed = 0
+    errors: list[str] = []
 
-    with open(_KNOWLEDGE_JSON, encoding="utf-8") as f:
-        data = json.load(f)
-
-    items = _all_corpus_items(data)
-    if not items:
-        return {"status": "skipped", "chunks": 0}
+    sources = [
+        (_KNOWLEDGE_JSON, _all_corpus_items, "cf", "conceptual-framework-knowledge.json"),
+        (_NEPAL_KNOWLEDGE_JSON, _nepal_items, "np", "nepal-accounting-knowledge.json"),
+    ]
 
     collection = get_collection()
-    batch_size = 40
-    indexed = 0
 
-    try:
-        for i in range(0, len(items), batch_size):
-            batch = items[i : i + batch_size]
-            texts = []
-            ids = []
-            metas = []
+    for path, flattener, prefix, source_name in sources:
+        if not path.exists():
+            errors.append(f"not found: {path}")
+            continue
+        try:
+            with open(path, encoding="utf-8") as f:
+                data = json.load(f)
+        except (json.JSONDecodeError, OSError) as exc:
+            errors.append(str(exc))
+            continue
 
-            for item in batch:
-                item_id = item.get("id", "")
-                doc_text = _item_doc_text(item)
-                chunk_id = f"cf-{item_id}".replace(" ", "-")
-                texts.append(doc_text)
-                ids.append(chunk_id)
-                metas.append({
-                    "paragraph_id": item_id,
-                    "item_id": item_id,
-                    "item_type": item.get("type", "paragraph"),
-                    "chapter": item.get("chapter", 0),
-                    "section": item.get("section", ""),
-                    "topics": ", ".join(item.get("topics", [])),
-                    "chunk_id": chunk_id,
-                    "source": "conceptual-framework-knowledge.json",
-                })
+        items = flattener(data)
+        if not items:
+            continue
 
-            embeddings = _embedder.embed_documents(texts)
-            with _write_lock:
-                collection.upsert(
-                    ids=ids,
-                    embeddings=embeddings,
-                    documents=texts,
-                    metadatas=metas,
-                )
-            indexed += len(batch)
+        batch_size = 40
+        try:
+            for i in range(0, len(items), batch_size):
+                batch = items[i : i + batch_size]
+                texts = []
+                ids = []
+                metas = []
 
-        return {"status": "indexed", "chunks": indexed, "complete": data.get("metadata", {}).get("complete", False)}
-    except Exception as exc:
-        return {"status": "error", "message": str(exc), "chunks": indexed}
+                for item in batch:
+                    item_id = item.get("id", "")
+                    doc_text = _item_doc_text(item)
+                    chunk_id = f"{prefix}-{item_id}".replace(" ", "-")
+                    texts.append(doc_text)
+                    ids.append(chunk_id)
+                    metas.append({
+                        "paragraph_id": item_id,
+                        "item_id": item_id,
+                        "item_type": item.get("type", "paragraph"),
+                        "chapter": item.get("chapter", 0),
+                        "section": item.get("section", ""),
+                        "topics": ", ".join(item.get("topics", [])) if isinstance(item.get("topics"), list) else str(item.get("topics", "")),
+                        "chunk_id": chunk_id,
+                        "source": source_name,
+                    })
+
+                embeddings = _embedder.embed_documents(texts)
+                with _write_lock:
+                    collection.upsert(
+                        ids=ids,
+                        embeddings=embeddings,
+                        documents=texts,
+                        metadatas=metas,
+                    )
+                indexed += len(batch)
+        except Exception as exc:
+            errors.append(f"{source_name}: {exc}")
+
+    if indexed == 0 and errors:
+        return {"status": "error", "message": "; ".join(errors), "chunks": 0}
+
+    return {"status": "indexed", "chunks": indexed, "errors": errors or None}
 
 
 def get_ca_knowledge_count() -> int:

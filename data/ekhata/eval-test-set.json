@@ -1,0 +1,271 @@
+{
+  "version": "1.0.0",
+  "description": "Held-out e-Khata evaluation set — hard cases from audit guide. Never use for training.",
+  "split": "test",
+  "cases": [
+    {
+      "id": "A-01",
+      "category": "language_variant",
+      "input": "Ram lai 500 ko saman udhaar diye",
+      "expected": { "type": "entry", "intent": "khata_credit_sale", "amount": 500, "party": "Ram" }
+    },
+    {
+      "id": "A-02",
+      "category": "language_variant",
+      "input": "Rame pach-saya ko maal bechy",
+      "expected": { "type": "entry", "intent": "khata_credit_sale", "amount": 500, "party": "Rame" }
+    },
+    {
+      "id": "A-03",
+      "category": "language_variant",
+      "input": "Shyam lai pach hajar udhaar diye",
+      "expected": { "type": "entry", "intent": "khata_credit_sale", "amount": 5000, "party": "Shyam" }
+    },
+    {
+      "id": "A-04",
+      "category": "language_variant",
+      "input": "Ram bata 3000 tiryo",
+      "expected": { "type": "entry", "intent": "khata_payment_in", "amount": 3000, "party": "Ram" }
+    },
+    {
+      "id": "A-05",
+      "category": "language_variant",
+      "input": "Sita bata paach hajar aayo",
+      "expected": { "type": "entry", "intent": "khata_payment_in", "amount": 5000, "party": "Sita" }
+    },
+    {
+      "id": "A-06",
+      "category": "language_variant",
+      "input": "aja das hajar rent tiryo",
+      "expected": { "type": "entry", "intent": "khata_rent_expense", "amount": 10000, "party": null }
+    },
+    {
+      "id": "A-07",
+      "category": "language_variant",
+      "input": "Mohan bata 2000 ko maal kineko",
+      "expected": { "type": "entry", "intent": "khata_purchase", "amount": 2000, "party": "Mohan" }
+    },
+    {
+      "id": "A-08",
+      "category": "language_variant",
+      "input": "hamile Ramesh lai ek lakh ko bike becheko",
+      "expected": { "type": "entry", "intent": "khata_credit_sale", "amount": 100000, "party": "Ramesh" }
+    },
+    {
+      "id": "A-09",
+      "category": "language_variant",
+      "input": "sold goods worth 800 to Deepak on credit",
+      "expected": { "type": "entry", "intent": "khata_credit_sale", "amount": 800, "party": "Deepak" }
+    },
+    {
+      "id": "A-10",
+      "category": "language_variant",
+      "input": "Ram le 1500 diyo",
+      "expected": { "type": "entry", "intent": "khata_payment_in", "amount": 1500, "party": "Ram" }
+    },
+
+    {
+      "id": "B-01",
+      "category": "amount_parsing",
+      "input": "teen hajar paanch saya ko saman becheko Ram lai",
+      "expected": { "type": "entry", "intent": "khata_credit_sale", "amount": 3500, "party": "Ram" }
+    },
+    {
+      "id": "B-02",
+      "category": "amount_parsing",
+      "input": "ek lakh paanch hajar ko loan liyo",
+      "expected": { "type": "entry", "intent": "khata_loan_received", "amount": 105000, "party": null }
+    },
+    {
+      "id": "B-03",
+      "category": "amount_parsing",
+      "input": "das lakh ko property kineko",
+      "expected": { "type": "entry", "intent": "khata_purchase", "amount": 1000000, "party": null }
+    },
+    {
+      "id": "B-04",
+      "category": "amount_parsing",
+      "input": "saadhe teen hajar kharcha",
+      "expected": { "type": "entry", "intent": "khata_expense", "amount": 3500, "party": null }
+    },
+    {
+      "id": "B-05",
+      "category": "amount_parsing",
+      "input": "saadhe paanch hajar rent tiryo",
+      "expected": { "type": "entry", "intent": "khata_rent_expense", "amount": 5500, "party": null }
+    },
+    {
+      "id": "B-06",
+      "category": "amount_parsing",
+      "input": "2k ko maal kineko",
+      "expected": { "type": "entry", "intent": "khata_purchase", "amount": 2000, "party": null }
+    },
+    {
+      "id": "B-07",
+      "category": "amount_parsing",
+      "input": "commission aayo 8500",
+      "expected": { "type": "entry", "intent": "khata_commission_income", "amount": 8500, "party": null }
+    },
+
+    {
+      "id": "C-01",
+      "category": "intent_classification",
+      "input": "sales return 1500",
+      "expected": { "type": "entry", "intent": "khata_sales_return", "amount": 1500, "party": null }
+    },
+    {
+      "id": "C-02",
+      "category": "intent_classification",
+      "input": "bhaada tiryo 9000",
+      "expected": { "type": "entry", "intent": "khata_rent_expense", "amount": 9000, "party": null }
+    },
+    {
+      "id": "C-03",
+      "category": "intent_classification",
+      "input": "salary accrual 50000",
+      "expected": { "type": "entry", "intent": "khata_salary_accrual", "amount": 50000, "party": null }
+    },
+    {
+      "id": "C-04",
+      "category": "intent_classification",
+      "input": "bad debt write off 3000",
+      "expected": { "type": "entry", "intent": "khata_bad_debt_writeoff", "amount": 3000, "party": null }
+    },
+    {
+      "id": "C-05",
+      "category": "intent_classification",
+      "input": "provision for bad debt 5000",
+      "expected": { "type": "entry", "intent": "khata_provision_bad_debt", "amount": 5000, "party": null }
+    },
+    {
+      "id": "C-06",
+      "category": "intent_classification",
+      "input": "drawings 50000",
+      "expected": { "type": "entry", "intent": "khata_drawings", "amount": 50000, "party": null }
+    },
+    {
+      "id": "C-07",
+      "category": "intent_classification",
+      "input": "capital introduced 500000",
+      "expected": { "type": "entry", "intent": "khata_capital_introduced", "amount": 500000, "party": null }
+    },
+    {
+      "id": "C-08",
+      "category": "intent_classification",
+      "input": "Gita lai 700 ko saman diye udhaar ma",
+      "expected": { "type": "entry", "intent": "khata_credit_sale", "amount": 700, "party": "Gita" }
+    },
+    {
+      "id": "C-09",
+      "category": "intent_classification",
+      "input": "Hari bata 10000 udhaar ma saman kineko",
+      "expected": { "type": "entry", "intent": "khata_credit_purchase", "amount": 10000, "party": "Hari" }
+    },
+    {
+      "id": "C-10",
+      "category": "intent_classification",
+      "input": "Gita lai 1500 payment gareko",
+      "expected": { "type": "entry", "intent": "khata_payment_out", "amount": 1500, "party": "Gita" }
+    },
+
+    {
+      "id": "D-01",
+      "category": "devanagari",
+      "input": "राम लाई ५०० को सामान उधार दिए",
+      "expected": { "type": "entry", "intent": "khata_credit_sale", "amount": 500, "party": "Ram" }
+    },
+    {
+      "id": "D-02",
+      "category": "devanagari",
+      "input": "श्याम ले ३ हजार तिर्यो",
+      "expected": { "type": "entry", "intent": "khata_payment_in", "amount": 3000, "party": "Shyam" }
+    },
+    {
+      "id": "D-03",
+      "category": "devanagari",
+      "input": "आज दश हजार भाडा तिर्यो",
+      "expected": { "type": "entry", "intent": "khata_rent_expense", "amount": 10000, "party": null }
+    },
+
+    {
+      "id": "Q-01",
+      "category": "question_gate",
+      "input": "provision k ho?",
+      "expected": { "type": "question" }
+    },
+    {
+      "id": "Q-02",
+      "category": "question_gate",
+      "input": "Ram le 500 diye ho?",
+      "expected": { "type": "question" }
+    },
+    {
+      "id": "Q-03",
+      "category": "question_gate",
+      "input": "what is sampatti",
+      "expected": { "type": "question" }
+    },
+    {
+      "id": "Q-04",
+      "category": "question_gate",
+      "input": "faithful representation k ho",
+      "expected": { "type": "question" }
+    },
+    {
+      "id": "Q-05",
+      "category": "question_gate",
+      "input": "bad debt ko entry k hunchha",
+      "expected": { "type": "question" }
+    },
+    {
+      "id": "Q-06",
+      "category": "question_gate",
+      "input": "how to record salary accrual",
+      "expected": { "type": "question" }
+    },
+    {
+      "id": "Q-07",
+      "category": "question_gate",
+      "input": "total receivable kati xa",
+      "expected": { "type": "question" }
+    },
+    {
+      "id": "Q-08",
+      "category": "question_gate",
+      "input": "Mohan sanga 2000 ko kharedari gareko kasari record garne",
+      "expected": { "type": "question" }
+    },
+
+    {
+      "id": "N-01",
+      "category": "negation",
+      "input": "Ram le tiryena 500",
+      "expected": { "type": "clarify" }
+    },
+    {
+      "id": "N-02",
+      "category": "negation",
+      "input": "Ramesh le paisa tiryena",
+      "expected": { "type": "clarify" }
+    },
+
+    {
+      "id": "F-01",
+      "category": "false_positive_guard",
+      "input": "hello",
+      "expected": { "type": "chat" }
+    },
+    {
+      "id": "F-02",
+      "category": "false_positive_guard",
+      "input": "dhanyabad",
+      "expected": { "type": "chat" }
+    },
+    {
+      "id": "F-03",
+      "category": "false_positive_guard",
+      "input": "Ram le paisa dincha bhanya thyo",
+      "expected": { "type": "chat" }
+    }
+  ]
+}

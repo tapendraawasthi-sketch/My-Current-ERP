@@ -289,9 +289,7 @@ function normalizeUnicodeDigits(text: string): string {
 }
 
 function normalize(text: string): string {
-  let value = normalizeUnicodeDigits(text).toLowerCase().trim();
-  value = value.replace(/[^\w\s.\u0900-\u097F]/g, " ");
-  value = value.replace(/\s+/g, " ").trim();
+  const value = normalizeNepaliText(text).toLowerCase().trim();
   return value
     .split(" ")
     .filter((token) => !FILLER_WORDS.has(token))
@@ -302,14 +300,27 @@ function parseAmountWords(text: string): number | null {
   const normalized = normalize(text);
   if (!normalized) return null;
 
-  const commaAmt = parseCommaAmount(normalized.replace(/\s/g, ""));
-  if (commaAmt) return commaAmt;
-
   const kMatch = normalized.match(/(\d+(?:\.\d+)?)\s*k\b/i);
   if (kMatch) return Math.round(parseFloat(kMatch[1]) * 1000);
 
+  const commaAmt = parseCommaAmount(normalized.replace(/\s/g, ""));
+  if (commaAmt) return commaAmt;
+
+  const saadheMatch = normalized.match(
+    /\bsaadhe\s+(\w+)\s+(hajar|hazar|saya|sau|lakh|lac)\b/,
+  );
+  if (saadheMatch) {
+    const numWord = saadheMatch[1];
+    const unit = saadheMatch[2];
+    const base = WORD_TO_NUMBER[numWord];
+    const unitVal = WORD_TO_NUMBER[unit];
+    if (base != null && unitVal != null) {
+      return Math.round((base + 0.5) * unitVal);
+    }
+  }
+
   const digitMatch = normalized.match(/\b(\d+(?:\.\d+)?)\b/);
-  if (digitMatch && !/\b(hajar|saya|lakh)\b/.test(normalized)) {
+  if (digitMatch && !/\b(hajar|hazar|saya|sau|lakh|lac)\b/.test(normalized)) {
     return Math.round(parseFloat(digitMatch[1]));
   }
 
@@ -385,6 +396,14 @@ function extractParty(displayText: string, normalizedText?: string): string | nu
     for (const name of capitalized) {
       if (!PARTY_STOPWORDS.has(name.toLowerCase()) && !/^(abc|xyz)$/i.test(name)) return name;
     }
+
+    const leadingName = soft.match(/^([a-z\u0900-\u097F]{2,30})\b/i);
+    if (leadingName) {
+      const candidate = leadingName[1].trim();
+      if (!PARTY_STOPWORDS.has(candidate.toLowerCase()) && !/^(hamile|maile|aaja|aja|hijo)$/i.test(candidate)) {
+        return candidate.charAt(0).toUpperCase() + candidate.slice(1).toLowerCase();
+      }
+    }
   }
   return null;
 }
@@ -449,15 +468,20 @@ function hasCashSaleCue(text: string): boolean {
 }
 
 function hasCreditSaleCue(text: string): boolean {
-  if (/\b(kineko|kine|kiniyo|kharid|purchase|saman)\b/i.test(text)) return false;
+  if (/\b(kineko|kine|kiniyo|kharid|purchase)\b/i.test(text)) return false;
+  if (/\bsaman\s*kineko\b/i.test(text)) return false;
   if (/\b(tiryo|tireko|tira|clear|jama|payment\s+received|paisa\s+aayo|collected|outstanding\s+dues)\b/i.test(text))
     return false;
   return (
     (/\b(udhaar|udharo|udhar|credit|उधार|on\s+account|on\s+tab|deferred\s*payment)\b/i.test(text) &&
-      /\b(becheko|beche|bikri|bik|sale|sold|diye|die|diya|extended|invoiced|dispatched)\b/i.test(text)) ||
+      /\b(becheko|beche|bechy|bikri|bik|sale|sold|diye|die|diya|extended|invoiced|dispatched)\b/i.test(text)) ||
     /\b(udhaar|udharo|udhar)\s+becheko\b/i.test(text) ||
     /\bbecheko\b.*\b(udhaar|udharo|udhar)\b/i.test(text) ||
-    (/\b(diye|die|diya|diae|दिए)\b/i.test(text) && /\blai\b/i.test(text) && !/\b(tiryo|tireko)\b/i.test(text))
+    (/\b(diye|die|diya|diae|दिए)\b/i.test(text) && /\blai\b/i.test(text) && !/\b(tiryo|tireko)\b/i.test(text)) ||
+    (/\blai\b/i.test(text) &&
+      /\b(becheko|beche|bechy|bikri|bik)\b/i.test(text) &&
+      !/\b(cash|nagad|nakit|nakad)\b/i.test(text)) ||
+    (/\bko\s+maal\b/i.test(text) && /\b(becheko|beche|bechy|bikri)\b/i.test(text))
   );
 }
 
@@ -517,7 +541,6 @@ function needsPartyName(intent: KhataIntent, party: string | null): boolean {
     "khata_payment_in",
     "khata_payment_out",
     "khata_credit_purchase",
-    "khata_bad_debt_writeoff",
     "khata_discount_allowed",
   ];
   return partyRequired.includes(intent);
@@ -575,9 +598,18 @@ export function classifyKhataIntent(rawText: string, preNormalized?: string): Kh
 }
 
 function resolveAmount(text: string): number | null {
+  const wordAmt = parseAmountWords(text);
+  if (wordAmt && wordAmt > 0) return wordAmt;
+
   const smart = parseSmartAmount(text);
-  if (smart.amount && smart.amount > 0) return smart.amount;
-  return parseAmountWords(text);
+  if (smart.amount && smart.amount > 0) {
+    // Ignore bare digit captures like "2" from "2k" when k-suffix amount exists
+    const kAmt = text.match(/(\d+(?:\.\d+)?)\s*k\b/i);
+    if (kAmt) return Math.round(parseFloat(kAmt[1]) * 1000);
+    return smart.amount;
+  }
+
+  return null;
 }
 
 export function parseKhataMessage(rawText: string, preNormalized?: string): KhataParseResult {
@@ -610,7 +642,7 @@ export function parseKhataMessage(rawText: string, preNormalized?: string): Khat
     };
   }
 
-  const amount = resolveAmount(displayText) ?? resolveAmount(text);
+  const amount = resolveAmount(text) ?? resolveAmount(displayText);
   if (!amount || amount <= 0) {
     return { clarifying_question: "Rakam kati ho? Number lekhnus." };
   }

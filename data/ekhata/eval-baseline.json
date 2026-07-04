@@ -1,0 +1,36 @@
+{
+  "recorded_at": "2026-07-04",
+  "note": "Baseline after eval framework introduction. Targets from Step 9 overhaul guide.",
+  "targets": {
+    "intent_accuracy": 0.92,
+    "amount_accuracy": 0.95,
+    "party_accuracy": 0.85,
+    "question_gate_accuracy": 0.98,
+    "false_positive_rate": 0.02
+  },
+  "python_rules_parser": {
+    "cases": 43,
+    "passed": 32,
+    "intent_accuracy": 0.8,
+    "amount_accuracy": 0.833,
+    "party_accuracy": 0.958,
+    "question_gate_accuracy": 1.0,
+    "false_positive_rate": 0.0
+  },
+  "typescript_parser": {
+    "cases": 43,
+    "passed": 31,
+    "intent_accuracy": 0.833,
+    "amount_accuracy": 0.704,
+    "party_accuracy": 1.0,
+    "question_gate_accuracy": 1.0,
+    "false_positive_rate": 0.0
+  },
+  "known_gaps": [
+    "Roman spelling variants (pach-saya, paach)",
+    "Compound amounts without transaction keywords (teen hajar paanch saya)",
+    "Devanagari input on Python path (no transliteration)",
+    "saadhe number forms partially supported",
+    "LLM extraction path not yet in eval (requires Ollama)"
+  ]
+}

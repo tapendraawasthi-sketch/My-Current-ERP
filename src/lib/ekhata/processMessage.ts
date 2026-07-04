@@ -10,11 +10,15 @@ import {
   understandAccountingLanguage,
 } from "./accountingLanguageBrain";
 import { generateConversationalReply, type ConversationTurn } from "./conversationalBrain";
-import { understandConceptualFramework } from "./conceptualFrameworkBrain";
+import { isFrameworkQuery, understandConceptualFramework } from "./conceptualFrameworkBrain";
+import { understandNepalAccountingKnowledge } from "./nepalAccountingKnowledgeBrain";
 import { classifyDomain } from "./domainRouter";
 import { detectNegation } from "./negationDetector";
 import {
   applyAmountDelta,
+  applyAmountCorrection,
+  applyPartyCorrection,
+  buildCorrectionReply,
   buildReverseExplanation,
   detectContextualCommand,
   type EKhataConversationContext,
@@ -112,6 +116,28 @@ function tryContextualCommand(
     };
   }
 
+  if (cmd === "correct_party") {
+    const card = applyPartyCorrection(ctx.lastCard, trimmed) ?? ctx.lastCard;
+    return {
+      kind: "entry",
+      reply: buildCorrectionReply(card, lang),
+      normalizedText,
+      card,
+      engine: "ca",
+    };
+  }
+
+  if (cmd === "correct_amount") {
+    const card = applyAmountCorrection(ctx.lastCard, trimmed) ?? ctx.lastCard;
+    return {
+      kind: "entry",
+      reply: buildCorrectionReply(card, lang),
+      normalizedText,
+      card,
+      engine: "ca",
+    };
+  }
+
   return null;
 }
 
@@ -176,13 +202,38 @@ function tryJournalEntry(
 }
 
 function tryKnowledgeBrains(trimmed: string, normalizedText: string): EKhataProcessResult | null {
-  const frameworkAnswer = understandConceptualFramework(trimmed);
-  if (frameworkAnswer.kind === "answer" && frameworkAnswer.confidence >= 0.55) {
+  const nepalAnswer = understandNepalAccountingKnowledge(trimmed);
+  const frameworkAnswer = isFrameworkQuery(trimmed) ? understandConceptualFramework(trimmed) : null;
+
+  type KnowledgeCandidate = {
+    reply: string;
+    confidence: number;
+    engine: "framework-brain" | "accounting-brain";
+  };
+
+  const candidates: KnowledgeCandidate[] = [];
+  if (nepalAnswer.kind === "answer" && nepalAnswer.confidence >= 0.55) {
+    candidates.push({
+      reply: nepalAnswer.reply,
+      confidence: nepalAnswer.confidence,
+      engine: "accounting-brain",
+    });
+  }
+  if (frameworkAnswer?.kind === "answer" && frameworkAnswer.confidence >= 0.55) {
+    candidates.push({
+      reply: frameworkAnswer.reply,
+      confidence: frameworkAnswer.confidence,
+      engine: "framework-brain",
+    });
+  }
+
+  if (candidates.length > 0) {
+    const best = candidates.sort((a, b) => b.confidence - a.confidence)[0];
     return {
       kind: "chat",
-      reply: frameworkAnswer.reply,
+      reply: best.reply,
       normalizedText,
-      engine: "framework-brain",
+      engine: best.engine,
     };
   }
 
