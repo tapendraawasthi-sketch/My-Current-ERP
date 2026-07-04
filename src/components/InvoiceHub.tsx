@@ -319,13 +319,13 @@ const InvoiceHub: React.FC = () => {
     return (
       <div className="flex flex-col gap-6 animate-fadeIn text-xs font-semibold select-none">
         {/* Title header */}
-        <div className="flex items-center justify-between border-b border-[#9DC07A] pb-5">
+        <div className="flex items-center justify-between border-b border-gray-200 pb-5">
           <div>
-            <h2 className="text-xl font-bold text-[#000000] tracking-tight flex items-center gap-2">
-              <Receipt className="h-5 w-5 text-[#000000]" />
+            <h2 className="text-xl font-bold text-gray-700 tracking-tight flex items-center gap-2">
+              <Receipt className="h-5 w-5 text-gray-700" />
               <span>GENERATE CORPORATE BILL INVOICE</span>
             </h2>
-            <p className="text-xs text-[#000000] mt-1 leading-none uppercase tracking-wider font-bold">
+            <p className="text-xs text-gray-700 mt-1 leading-none uppercase tracking-wider font-bold">
               Inland Revenue Department compliant VAT billing console
             </p>
           </div>
@@ -343,7 +343,7 @@ const InvoiceHub: React.FC = () => {
 
         <form
           onSubmit={handleSaveInvoice}
-          className="flex flex-col gap-6 select-none font-semibold text-[#000000]"
+          className="flex flex-col gap-6 select-none font-semibold text-gray-700"
         >
           {/* General particulars */}
           <Card border padding="md">
@@ -392,9 +392,9 @@ const InvoiceHub: React.FC = () => {
           {/* Line item builder */}
           <Card title="Billing Line Items Details Grid">
             <div className="flex flex-col gap-4">
-              <div className="border border-[#9DC07A] rounded-lg overflow-hidden bg-white shadow-sm">
+              <div className="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
                 <table className="w-full text-xs text-left border-collapse font-bold">
-                  <thead className="bg-[#EBF5E2] border-b border-[#9DC07A] text-[#000000] uppercase tracking-wider font-bold select-none">
+                  <thead className="bg-[#f5f6fa] border-b border-gray-200 text-gray-700 uppercase tracking-wider font-bold select-none">
                     <tr>
                       <th className="px-3 py-2 w-[40%]">Stock Item</th>
                       <th className="px-3 py-2 w-[12%] text-center">Billing Qty</th>
@@ -406,7 +406,7 @@ const InvoiceHub: React.FC = () => {
                   </thead>
                   <tbody className="divide-y divide-gray-150">
                     {lines.map((line, idx) => (
-                      <tr key={idx} className="hover:bg-[#EBF5E2]/50">
+                      <tr key={idx} className="hover:bg-[#f5f6fa]/50">
                         <td className="px-2.5 py-1.5">
                           <ItemSelect
                             value={line.itemId}
@@ -450,7 +450,7 @@ const InvoiceHub: React.FC = () => {
                             type="checkbox"
                             checked={line.isTaxable}
                             onChange={(e) => handleLineChange(idx, "isTaxable", e.target.checked)}
-                            className="h-4 w-4 text-[#000000] border-[#9DC07A] rounded focus:ring-[#3D6B25]"
+                            className="h-4 w-4 text-gray-700 border-gray-200 rounded focus:ring-[#1557b0]/20"
                           />
                         </td>
                         <td className="px-2.5 py-1.5 text-center">
@@ -469,15 +469,15 @@ const InvoiceHub: React.FC = () => {
                 </table>
               </div>
 
-              <div className="flex justify-between items-center bg-[#EBF5E2] border border-[#9DC07A] rounded-lg p-3">
-                <span className="text-[11px] text-[#000000] leading-none">
+              <div className="flex justify-between items-center bg-[#f5f6fa] border border-gray-200 rounded-lg p-3">
+                <span className="text-[11px] text-gray-700 leading-none">
                   Billing regulations: Standard Nepalese invoices must break down taxable and exempt
                   portions clearly.
                 </span>
                 <button
                   type="button"
                   onClick={handleAddLine}
-                  className="px-3 py-1.5 text-xs text-[#000000] bg-[#D4EABD] hover:bg-[#D4EABD] border border-[#9DC07A] rounded-md font-bold transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+                  className="px-3 py-1.5 text-xs text-gray-700 bg-[#1557b0] hover:bg-[#1557b0] border border-gray-200 rounded-md font-bold transition-colors inline-flex items-center gap-1.5 cursor-pointer"
                 >
                   <PlusCircle className="h-[18px] w-[18px]" />
                   <span>Insert Item Row</span>
@@ -498,14 +498,14 @@ const InvoiceHub: React.FC = () => {
                       id="tdsCheck"
                       checked={enableTds}
                       onChange={(e) => setEnableTds(e.target.checked)}
-                      className="h-4 w-4 text-[#000000] focus:ring-[#3D6B25] rounded border-[#9DC07A]"
+                      className="h-4 w-4 text-gray-700 focus:ring-[#1557b0]/20 rounded border-gray-200"
                     />
-                    <label htmlFor="tdsCheck" className="text-xs font-bold text-[#000000]">
+                    <label htmlFor="tdsCheck" className="text-xs font-bold text-gray-700">
                       Apply withholding TDS deduction on base invoice
                     </label>
                   </div>
                   {enableTds && (
-                    <div className="grid grid-cols-2 gap-4 border-t border-[#9DC07A] pt-4 animate-fadeIn">
+                    <div className="grid grid-cols-2 gap-4 border-t border-gray-200 pt-4 animate-fadeIn">
                       <Select
                         label="Withholding TDS Class"
                         options={Object.values(TdsType).map((t) => ({
@@ -537,7 +537,7 @@ const InvoiceHub: React.FC = () => {
 
               {/* General narrictions */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-[#000000] leading-none">
+                <label className="text-xs font-semibold text-gray-700 leading-none">
                   Billing Invoice Remarks / Narration details
                 </label>
                 <textarea
@@ -545,7 +545,7 @@ const InvoiceHub: React.FC = () => {
                   rows={3}
                   value={narration}
                   onChange={(e) => setNarration(e.target.value)}
-                  className="w-full text-xs font-medium p-3 border border-[#9DC07A] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#3D6B25] focus:border-[#9DC07A] bg-white shadow-sm"
+                  className="w-full text-xs font-medium p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1557b0]/20 focus:border-gray-200 bg-white shadow-sm"
                 />
               </div>
             </div>
@@ -553,9 +553,9 @@ const InvoiceHub: React.FC = () => {
             {/* Calculations summaries Card */}
             <Card
               title="Summary Bill Calculations Valuation"
-              action={<Calculator className="h-4 w-4 text-[#000000]" />}
+              action={<Calculator className="h-4 w-4 text-gray-700" />}
             >
-              <div className="flex flex-col gap-3 font-semibold text-xs text-[#000000] font-mono">
+              <div className="flex flex-col gap-3 font-semibold text-xs text-gray-700 font-mono">
                 <div className="flex justify-between">
                   <span>Gross Valuation (Rates * counts):</span>
                   <span>Rs. {formatNumber(invoiceCalculations.subTotal)}</span>
@@ -564,7 +564,7 @@ const InvoiceHub: React.FC = () => {
                   <span>Discounts deducted sum:</span>
                   <span>(Rs. {formatNumber(invoiceCalculations.discount)})</span>
                 </div>
-                <div className="flex justify-between text-[#000000] border-t border-dashed pt-2">
+                <div className="flex justify-between text-gray-700 border-t border-dashed pt-2">
                   <span className="font-bold">Taxable Turnover valuation:</span>
                   <span className="font-bold">Rs. {formatNumber(invoiceCalculations.taxable)}</span>
                 </div>
@@ -583,16 +583,16 @@ const InvoiceHub: React.FC = () => {
                   </div>
                 )}
                 {invoiceCalculations.roundOff !== 0 && (
-                  <div className="flex justify-between text-[#000000]">
+                  <div className="flex justify-between text-gray-700">
                     <span>Round Off correction:</span>
                     <span>Rs. {formatNumber(invoiceCalculations.roundOff)}</span>
                   </div>
                 )}
-                <div className="flex justify-between items-center text-[#000000] border-t border-double border-t-2 pt-3 font-bold text-sm">
-                  <span className="font-bold text-xs uppercase tracking-wider text-[#000000]">
+                <div className="flex justify-between items-center text-gray-700 border-t border-double border-t-2 pt-3 font-bold text-sm">
+                  <span className="font-bold text-xs uppercase tracking-wider text-gray-700">
                     Gross Grand Total Payable:
                   </span>
-                  <span className="text-xl font-extrabold text-[#000000]">
+                  <span className="text-xl font-extrabold text-gray-700">
                     Rs. {formatNumber(invoiceCalculations.grandTotal)}
                   </span>
                 </div>
@@ -623,13 +623,13 @@ const InvoiceHub: React.FC = () => {
   return (
     <div className="flex flex-col gap-6 animate-fadeIn text-xs select-none">
       {/* Title block */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#9DC07A] pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-200 pb-5">
         <div>
-          <h2 className="text-xl font-bold text-[#000000] tracking-tight flex items-center gap-2">
-            <Receipt className="h-5 w-5 text-[#000000]" />
+          <h2 className="text-xl font-bold text-gray-700 tracking-tight flex items-center gap-2">
+            <Receipt className="h-5 w-5 text-gray-700" />
             <span>TAX INVOICE BILL REGISTER</span>
           </h2>
-          <p className="text-xs text-[#000000] mt-1 leading-none font-semibold uppercase tracking-wider">
+          <p className="text-xs text-gray-700 mt-1 leading-none font-semibold uppercase tracking-wider">
             Sutra Fiscal VAT Sales and Purchase Bills
           </p>
         </div>
@@ -655,7 +655,7 @@ const InvoiceHub: React.FC = () => {
       </div>
 
       {/* FILTER SEARCH PANEL */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 border border-[#9DC07A] rounded-xl shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 border border-gray-200 rounded-xl shadow-sm">
         <div className="w-full md:max-w-xs relative bg-white">
           <Input
             value={searchTerm}
@@ -663,7 +663,7 @@ const InvoiceHub: React.FC = () => {
             placeholder="Search invoice number, buyer/supplier..."
             inputClassName="pl-9 text-xs"
           />
-          <div className="absolute left-3 top-2.5 text-[#000000]">
+          <div className="absolute left-3 top-2.5 text-gray-700">
             <Search className="h-4 w-4" />
           </div>
         </div>
@@ -674,7 +674,7 @@ const InvoiceHub: React.FC = () => {
               key={tab}
               type="button"
               onClick={() => setActiveTab(tab as any)}
-              className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors border select-none uppercase tracking-wide ${activeTab === tab ? "bg-[#D4EABD] text-white border-[#9DC07A]" : "bg-[#EBF5E2] text-[#000000] border-[#9DC07A] hover:bg-[#EBF5E2] hover:text-[#000000]"}`}
+              className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors border select-none uppercase tracking-wide ${activeTab === tab ? "bg-[#1557b0] text-white border-gray-200" : "bg-[#f5f6fa] text-gray-700 border-gray-200 hover:bg-[#f5f6fa] hover:text-gray-700"}`}
             >
               {tab === "ALL" ? "Show All" : tab.replace("-", " ")}
             </button>
@@ -690,7 +690,7 @@ const InvoiceHub: React.FC = () => {
               key: "invoiceNo",
               header: "Bill Serial",
               width: "15%",
-              render: (no) => <span className="font-mono font-bold text-[#000000]">{no}</span>,
+              render: (no) => <span className="font-mono font-bold text-gray-700">{no}</span>,
             },
             {
               key: "date",
@@ -705,9 +705,9 @@ const InvoiceHub: React.FC = () => {
               width: "28%",
               render: (name, row) => (
                 <div className="flex flex-col">
-                  <span className="font-bold text-[#000000] leading-tight">{name}</span>
+                  <span className="font-bold text-gray-700 leading-tight">{name}</span>
                   {row.partyPan && (
-                    <span className="text-[10px] font-mono font-medium text-[#000000] mt-0.5">
+                    <span className="text-[10px] font-mono font-medium text-gray-700 mt-0.5">
                       PAN: {row.partyPan}
                     </span>
                   )}
@@ -719,7 +719,7 @@ const InvoiceHub: React.FC = () => {
               header: "Bill Module",
               width: "12%",
               render: (val) => (
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#000000] leading-none">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-gray-700 leading-none">
                   {String(val).replace("-", " ")}
                 </span>
               ),
@@ -730,7 +730,7 @@ const InvoiceHub: React.FC = () => {
               align: "right",
               width: "13%",
               render: (val) => (
-                <span className="font-mono font-bold text-[#000000]">{formatCurrency(val)}</span>
+                <span className="font-mono font-bold text-gray-700">{formatCurrency(val)}</span>
               ),
             },
             {
@@ -803,37 +803,37 @@ const InvoiceHub: React.FC = () => {
             </div>
           }
         >
-          <div className="flex flex-col gap-6 select-none font-semibold text-[#000000] text-xs">
-            <div className="grid grid-cols-4 gap-4 bg-[#EBF5E2] border border-[#9DC07A] p-4 rounded-xl leading-relaxed">
+          <div className="flex flex-col gap-6 select-none font-semibold text-gray-700 text-xs">
+            <div className="grid grid-cols-4 gap-4 bg-[#f5f6fa] border border-gray-200 p-4 rounded-xl leading-relaxed">
               <div>
-                <span className="block text-[10px] uppercase text-[#000000] font-bold tracking-wider leading-none mb-1">
+                <span className="block text-[10px] uppercase text-gray-700 font-bold tracking-wider leading-none mb-1">
                   Invoice NO
                 </span>
-                <span className="font-mono font-extrabold text-[#000000] text-sm leading-none">
+                <span className="font-mono font-extrabold text-gray-700 text-sm leading-none">
                   {selectedInvoice.invoiceNo}
                 </span>
               </div>
               <div>
-                <span className="block text-[10px] uppercase text-[#000000] font-bold tracking-wider leading-none mb-1">
+                <span className="block text-[10px] uppercase text-gray-700 font-bold tracking-wider leading-none mb-1">
                   Billed Date (BS)
                 </span>
-                <span className="font-bold text-[#000000] text-sm leading-none">
+                <span className="font-bold text-gray-700 text-sm leading-none">
                   {selectedInvoice.dateNepali}
                 </span>
               </div>
               <div>
-                <span className="block text-[10px] uppercase text-[#000000] font-bold tracking-wider leading-none mb-1">
+                <span className="block text-[10px] uppercase text-gray-700 font-bold tracking-wider leading-none mb-1">
                   Tax Register Client
                 </span>
-                <span className="font-bold text-[#000000] text-xs truncate max-w-[120px] block leading-none">
+                <span className="font-bold text-gray-700 text-xs truncate max-w-[120px] block leading-none">
                   {selectedInvoice.partyName}
                 </span>
               </div>
               <div>
-                <span className="block text-[10px] uppercase text-[#000000] font-bold tracking-wider leading-none mb-1">
+                <span className="block text-[10px] uppercase text-gray-700 font-bold tracking-wider leading-none mb-1">
                   Payment Mode
                 </span>
-                <span className="text-[#000000] font-extrabold uppercase mt-1 block leading-none">
+                <span className="text-gray-700 font-extrabold uppercase mt-1 block leading-none">
                   {selectedInvoice.paymentMode}
                 </span>
               </div>
@@ -841,12 +841,12 @@ const InvoiceHub: React.FC = () => {
 
             {/* Line items list */}
             <div className="flex flex-col gap-2">
-              <span className="text-[10px] uppercase text-[#000000] font-bold tracking-wider">
+              <span className="text-[10px] uppercase text-gray-700 font-bold tracking-wider">
                 Dispatched catalog lines list
               </span>
-              <div className="border border-[#9DC07A] rounded-lg overflow-hidden bg-white shadow-sm">
+              <div className="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
                 <table className="w-full text-left text-xs border-collapse font-bold">
-                  <thead className="bg-[#EBF5E2] border-b text-[#000000]">
+                  <thead className="bg-[#f5f6fa] border-b text-gray-700">
                     <tr>
                       <th className="px-3 py-2 w-[40%]">Item Description</th>
                       <th className="px-3 py-2 text-center w-[12%]">Qty</th>
@@ -857,8 +857,8 @@ const InvoiceHub: React.FC = () => {
                   </thead>
                   <tbody className="divide-y divide-gray-150">
                     {selectedInvoice.lines.map((l: any, idx: number) => (
-                      <tr key={idx} className="hover:bg-[#EBF5E2]/20">
-                        <td className="px-3 py-2 text-[#000000]">{l.itemName}</td>
+                      <tr key={idx} className="hover:bg-[#f5f6fa]/20">
+                        <td className="px-3 py-2 text-gray-700">{l.itemName}</td>
                         <td className="px-3 py-2 text-center font-mono">
                           {l.qty} {l.unit}
                         </td>
@@ -879,12 +879,12 @@ const InvoiceHub: React.FC = () => {
             </div>
 
             {/* Calculations breakdown details */}
-            <div className="grid grid-cols-2 gap-6 border-t border-[#9DC07A] pt-4 font-mono">
+            <div className="grid grid-cols-2 gap-6 border-t border-gray-200 pt-4 font-mono">
               <div className="flex flex-col gap-1.5 leading-relaxed font-sans text-xs">
-                <span className="text-[10px] text-[#000000] font-bold uppercase tracking-wider block font-sans">
+                <span className="text-[10px] text-gray-700 font-bold uppercase tracking-wider block font-sans">
                   Remarks / Explanation
                 </span>
-                <p className="bg-[#EBF5E2]/50 border rounded-lg p-3 text-[#000000] font-semibold">
+                <p className="bg-[#f5f6fa]/50 border rounded-lg p-3 text-gray-700 font-semibold">
                   {selectedInvoice.narration}
                 </p>
               </div>
@@ -917,14 +917,14 @@ const InvoiceHub: React.FC = () => {
                   </div>
                 )}
                 {selectedInvoice.roundOff !== 0 && (
-                  <div className="flex justify-between text-[#000000]">
+                  <div className="flex justify-between text-gray-700">
                     <span>Round Off correction:</span>
                     <span>Rs. {formatNumber(selectedInvoice.roundOff)}</span>
                   </div>
                 )}
-                <div className="flex justify-between font-bold text-[#000000] border-t border-double border-t-2 pt-2 text-sm">
+                <div className="flex justify-between font-bold text-gray-700 border-t border-double border-t-2 pt-2 text-sm">
                   <span className="font-sans">Grand total paid:</span>
-                  <span className="text-[#000000]">
+                  <span className="text-gray-700">
                     Rs. {formatNumber(selectedInvoice.grandTotal)}
                   </span>
                 </div>
@@ -965,7 +965,7 @@ const InvoiceHub: React.FC = () => {
         }
       >
         <div className="flex flex-col gap-4 text-xs select-none">
-          <p className="text-[#000000] leading-relaxed font-semibold">
+          <p className="text-gray-700 leading-relaxed font-semibold">
             Are you sure you want to cancel and void this legal VAT tax-bill? This will reverse
             ledger accounts postings and restore warehouse inventory stock levels. This transaction
             cannot be undone.
