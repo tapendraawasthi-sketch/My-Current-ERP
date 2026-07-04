@@ -13,6 +13,7 @@ from .system_prompt import SYSTEM_PROMPT
 from .intent_classifier import classify as _classify_intent
 from .tools import (
     fetch_webpage,
+    find_navigation_path,
     find_references,
     get_project_conventions,
     list_directory,
@@ -110,6 +111,7 @@ def _scope_answer(answer: str, intent: str) -> str:
 
 _llm = ChatOllama(model=MODEL_NAME, base_url=OLLAMA_BASE_URL, temperature=0, num_ctx=8192)
 _tools = [
+    find_navigation_path,
     search_codebase,
     read_full_file,
     list_directory,
@@ -151,9 +153,27 @@ def _extract_sources(text: str) -> set[str]:
 def _build_enriched_question(question: str) -> tuple[str, set[str]]:
     intent = _classify_intent(question)
 
-    # For navigation/action_path intents: search specifically for route
-    # definitions, menu config, and keyboard shortcut constants — not deep
-    # component logic.
+    # Deterministic nav lookup — skip vector search when path is found in source
+    if intent in _LIGHTWEIGHT_INTENTS:
+        nav_result = find_navigation_path.invoke({"feature_name": question})
+        if nav_result.startswith("Path:"):
+            sources = set()
+            for line in nav_result.splitlines():
+                if line.startswith("File:"):
+                    rel = line.split("File:", 1)[1].strip()
+                    if (ERP_PATH / rel).exists():
+                        sources.add(rel)
+            sources.add("src/components/BusyMenuBar.tsx")
+            fmt = (
+                "RESPONSE FORMAT — INTENT: "
+                + intent
+                + "\nOutput EXACTLY the Path line below. Do NOT add explanation or steps.\n\n"
+                + nav_result
+            )
+            enriched = f"INTENT: {intent}\n\n{fmt}\n\nQUESTION: {question}"
+            return enriched, sources
+
+    # For navigation/action_path intents without deterministic match: vector search
     if intent in _LIGHTWEIGHT_INTENTS:
         # Target the specific files and patterns that define navigation:
         # - App.tsx (switch(currentPage) route map)
@@ -243,8 +263,24 @@ def _build_enriched_question(question: str) -> tuple[str, set[str]]:
 
 
 def ask(question: str, session_id: str) -> dict:
-    # Classify intent once for both enrichment and answer scoping
     intent = _classify_intent(question)
+
+    # Short-circuit nav/action_path when deterministic resolver succeeds
+    if intent in _LIGHTWEIGHT_INTENTS:
+        nav_result = find_navigation_path.invoke({"feature_name": question})
+        if nav_result.startswith("Path:"):
+            answer_line = nav_result.splitlines()[0]
+            sources: set[str] = {"src/components/BusyMenuBar.tsx"}
+            for line in nav_result.splitlines():
+                if line.startswith("File:"):
+                    rel = line.split("File:", 1)[1].strip()
+                    if (ERP_PATH / rel).exists():
+                        sources.add(rel)
+            return {
+                "answer": _scope_answer(answer_line, intent),
+                "sources": sorted(sources),
+            }
+
     enriched, prefetched_sources = _build_enriched_question(question)
     config = {
         "configurable": {"thread_id": session_id},

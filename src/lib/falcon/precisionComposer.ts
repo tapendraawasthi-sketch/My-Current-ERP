@@ -7,7 +7,7 @@ import { shouldIncludeSection, getResponseDirective } from "./smartIntentEngine"
 import type { CodeStructureInfo } from "./codeStructureParser";
 import {
   getCodeStructureInfo,
-  getNavigationPath,
+  getNavigationPathWithShortcut,
   getWorkflowSteps,
   getKeyboardShortcuts,
   getValidationRules,
@@ -32,20 +32,6 @@ export interface ComposedResponse {
   responseType: ResponseStrategy;
   sectionsIncluded: SectionType[];
   matchedModule?: string;
-}
-
-function pickPrimaryShortcut(info: CodeStructureInfo | null): string | undefined {
-  if (!info?.moduleDoc) return undefined;
-
-  const fromAccess = info.moduleDoc.howToAccess.find((a) => /F\d+/i.test(a));
-  if (fromAccess) {
-    const match = fromAccess.match(/F\d+/i);
-    if (match) return match[0].toUpperCase();
-  }
-
-  const shortcuts = info.moduleDoc.keyboardShortcuts || {};
-  const navKey = Object.keys(shortcuts).find((k) => /^F[3-9]$/.test(k));
-  return navKey;
 }
 
 function scopeComposed(intent: SmartIntent, response: ComposedResponse): ComposedResponse {
@@ -279,17 +265,16 @@ function composeNavigationOnlyResponse(intent: SmartIntent): ComposedResponse {
     });
   }
 
-  const info = getCodeStructureInfo(focus);
-  const rawPath = getNavigationPath(focus);
-  const shortcut = pickPrimaryShortcut(info);
+  const nav = getNavigationPathWithShortcut(focus);
 
-  if (!rawPath && !info) {
+  if (!nav) {
     const results = searchModules(focus, 3);
     if (results.length > 0) {
       const top = results[0];
-      const path = top.entry.menuPath || top.entry.route;
+      const path = top.entry.menuPaths?.[0] || top.entry.menuPath || top.entry.route;
+      const shortcut = top.entry.shortcut || undefined;
       return scopeComposed(intent, {
-        answer: formatNavAnswer(path),
+        answer: formatNavAnswer(path, shortcut),
         confidence: 0.5,
         sources: [top.entry.file],
         suggestions: results.map((r) => `Where is ${r.entry.title}?`),
@@ -309,17 +294,14 @@ function composeNavigationOnlyResponse(intent: SmartIntent): ComposedResponse {
     });
   }
 
-  const path = rawPath || info?.menuPath || info?.route || focus;
-  const answer = formatNavAnswer(path.replace(/^\*\*Location:\*\*\s*/i, ""), shortcut);
-
   return scopeComposed(intent, {
-    answer,
+    answer: formatNavAnswer(nav.path, nav.shortcut),
     confidence: 0.9,
-    sources: [info?.filePath || "page-index"],
-    suggestions: info ? composeFollowUpsSection(info) : [],
+    sources: [nav.file],
+    suggestions: [],
     responseType: "navigation-only",
     sectionsIncluded: ["navigation"],
-    matchedModule: info?.route,
+    matchedModule: nav.route,
   });
 }
 

@@ -13,6 +13,7 @@
     "dev": "vite dev",
     "start": "node serve.mjs",
     "build": "node scripts/build-falcon-page-index.mjs && vite build",
+    "falcon:index": "node scripts/build-falcon-page-index.mjs",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",

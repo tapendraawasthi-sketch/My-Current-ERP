@@ -130,6 +130,24 @@ def get_project_conventions() -> str:
 
 
 @tool
+def find_navigation_path(feature_name: str) -> str:
+    """Look up the exact menu path and keyboard shortcut for an ERP screen
+    by reading BusyMenuBar.tsx, Sidebar.tsx, and App.tsx directly.
+    Use FIRST for nav or action_path questions before guessing."""
+    from .nav_resolver import resolve_navigation
+
+    result = resolve_navigation(feature_name)
+    if not result.get("found"):
+        return result["answer"]
+
+    lines = [result["answer"]]
+    if result.get("file"):
+        lines.append(f"File: {result['file']}")
+    lines.append("Source: src/components/BusyMenuBar.tsx (MENU_TREE + PAGE_SHORTCUTS)")
+    return "\n".join(lines)
+
+
+@tool
 def web_search(query: str) -> str:
     """Search the web using DuckDuckGo (no API key required). Use
     when the question is about ERP accounting concepts, Nepal tax

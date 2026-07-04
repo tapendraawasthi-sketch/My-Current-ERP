@@ -17,6 +17,8 @@ export interface CodeStructureInfo {
   component: string;
   filePath: string;
   menuPath: string;
+  menuPaths: string[];
+  shortcut: string;
   aliases: string[];
   category: "transaction" | "master" | "report" | "config" | "dashboard" | "unknown";
   relatedRoutes: string[];
@@ -325,6 +327,8 @@ export function getCodeStructureInfo(routeOrQuery: string): CodeStructureInfo | 
     component: page.component,
     filePath: page.file,
     menuPath: page.menuPath,
+    menuPaths: page.menuPaths?.length ? page.menuPaths : page.menuPath ? [page.menuPath] : [],
+    shortcut: page.shortcut ?? "",
     aliases: page.aliases,
     category,
     relatedRoutes,
@@ -418,26 +422,58 @@ export function findRelevantKnowledge(
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function getNavigationPath(routeOrQuery: string): string | null {
+  const result = getNavigationPathWithShortcut(routeOrQuery);
+  return result?.path ?? null;
+}
+
+export interface NavigationPathResult {
+  path: string;
+  shortcut?: string;
+  file: string;
+  route: string;
+  menuPaths: string[];
+}
+
+export function getNavigationPathWithShortcut(routeOrQuery: string): NavigationPathResult | null {
   const info = getCodeStructureInfo(routeOrQuery);
-  
-  if (!info) {
-    // Try to find from search
-    const results = searchModules(routeOrQuery, 1);
-    if (results.length > 0) {
-      return results[0].entry.menuPath || `Navigate to: ${results[0].entry.route}`;
+
+  if (info) {
+    const path =
+      info.menuPaths[0] ||
+      info.menuPath ||
+      info.moduleDoc?.howToAccess?.find((a) => !/^F\d+|^Press/i.test(a)) ||
+      `Route: ${info.route}`;
+
+    let shortcut = info.shortcut;
+    if (!shortcut && info.moduleDoc?.howToAccess) {
+      const keyLine = info.moduleDoc.howToAccess.find((a) => /F\d+|Ctrl\+/i.test(a));
+      const keyMatch = keyLine?.match(/F\d+|Ctrl\+[A-Z]/i);
+      if (keyMatch) shortcut = keyMatch[0].toUpperCase();
     }
-    return null;
+
+    return {
+      path,
+      shortcut: shortcut || undefined,
+      file: info.filePath,
+      route: info.route,
+      menuPaths: info.menuPaths,
+    };
   }
-  
-  if (info.menuPath) {
-    return info.menuPath;
+
+  const results = searchModules(routeOrQuery, 1);
+  if (results.length > 0) {
+    const entry = results[0].entry;
+    const path = entry.menuPaths?.[0] || entry.menuPath || entry.route;
+    return {
+      path,
+      shortcut: entry.shortcut || undefined,
+      file: entry.file,
+      route: entry.route,
+      menuPaths: entry.menuPaths?.length ? entry.menuPaths : path ? [path] : [],
+    };
   }
-  
-  if (info.moduleDoc?.howToAccess?.length) {
-    return info.moduleDoc.howToAccess[0];
-  }
-  
-  return `Route: ${info.route}`;
+
+  return null;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
