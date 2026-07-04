@@ -24,7 +24,9 @@
     "test:falcon": "npm run test:intents && npm run test:web-policy",
     "test:ekhata": "npx tsx scripts/test-ekhata-language.ts",
     "test:ekhata-ca": "npx tsx scripts/test-ekhata-ca-entries.ts",
-    "test:ekhata-brain": "npx tsx scripts/test-ekhata-brain.ts"
+    "test:ekhata-brain": "npx tsx scripts/test-ekhata-brain.ts",
+    "test:ekhata-framework": "npx tsx scripts/test-ekhata-framework.ts",
+    "build:ca-knowledge": "node scripts/build-conceptual-framework-knowledge.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1075.0",
