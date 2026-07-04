@@ -1,15 +1,15 @@
 // @ts-nocheck
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import { getDB } from "../lib/db";
 import * as XLSX from "xlsx";
 import {
-  Building2,
-  Download,
   BarChart2,
-  RefreshCcw,
+  Building2,
   ChevronDown,
   ChevronRight,
+  Download,
+  RefreshCcw,
 } from "lucide-react";
 import {
   BarChart,
@@ -21,12 +21,23 @@ import {
   Cell,
   CartesianGrid,
 } from "recharts";
+import { ReportEmptyState } from "../components/ReportEmptyState";
 
-const BORDER = "1px solid #000";
-const BG = "#E4F1D9";
-const BG_CARD = "#EBF5E2";
-const BG_HEADER = "#D4EABD";
-const BG_DEEP = "#C9DEB5";
+const inputCls =
+  "h-8 w-full px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+const labelCls = "mb-1 block text-[11px] font-medium text-gray-600";
+const primaryButtonCls =
+  "inline-flex h-8 items-center gap-1.5 rounded-md bg-[#1557b0] px-3 text-[12px] font-medium text-white hover:bg-[#0f4a96]";
+const outlineButtonCls =
+  "inline-flex h-8 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 text-[12px] font-medium text-gray-700 hover:bg-gray-50";
+const sectionCls = "overflow-hidden rounded-md border border-gray-200 bg-white";
+const amountCellCls = "px-3 py-2.5 text-[12px] text-gray-700 font-mono text-right";
+const tabs = [
+  { id: "sales", label: "Sales Summary" },
+  { id: "pl", label: "P&L by Branch" },
+  { id: "stock", label: "Stock by Branch" },
+  { id: "consolidated", label: "Consolidated View" },
+];
 
 function money(v) {
   const abs = Math.abs(Number(v || 0));
@@ -34,8 +45,17 @@ function money(v) {
   return v < 0 ? `(${s})` : s;
 }
 
+function tabCls(active) {
+  return [
+    "inline-flex items-center border-b-2 px-1 py-2 text-[12px] font-medium transition-colors",
+    active
+      ? "border-[#1557b0] text-[#1557b0]"
+      : "border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-800",
+  ].join(" ");
+}
+
 export default function BranchReports() {
-  const { invoices, vouchers, stockMovements, accounts, warehouses, fiscalYears } = useStore();
+  const { invoices, vouchers, stockMovements, accounts, fiscalYears, items } = useStore();
   const [branches, setBranches] = useState([]);
   const [activeTab, setActiveTab] = useState("sales");
   const [selectedFiscalYear, setSelectedFiscalYear] = useState("");
@@ -44,7 +64,6 @@ export default function BranchReports() {
   const [branchFilter, setBranchFilter] = useState("ALL");
   const [expandedSections, setExpandedSections] = useState({});
 
-  // Load branches
   useEffect(() => {
     const db = getDB();
     db.branches
@@ -53,7 +72,6 @@ export default function BranchReports() {
       .then(setBranches);
   }, []);
 
-  // Get current fiscal year if none selected
   useEffect(() => {
     if (fiscalYears.length > 0 && !selectedFiscalYear) {
       const currentFY =
@@ -64,12 +82,15 @@ export default function BranchReports() {
     }
   }, [fiscalYears, selectedFiscalYear]);
 
-  // Get fiscal year dates
   const currentFiscalYear = useMemo(() => {
     return fiscalYears.find((fy) => fy.id === selectedFiscalYear);
   }, [fiscalYears, selectedFiscalYear]);
 
-  // Filter data by date range
+  const allBranches = useMemo(
+    () => [...branches, { id: "unallocated", name: "Unallocated", code: "UNALLOC" }],
+    [branches],
+  );
+
   const filteredInvoices = useMemo(() => {
     return invoices.filter((inv) => {
       const inDateRange = (!fromDate || inv.date >= fromDate) && (!toDate || inv.date <= toDate);
@@ -86,12 +107,8 @@ export default function BranchReports() {
     });
   }, [vouchers, fromDate, toDate, branchFilter]);
 
-  // Sales Summary by Branch
   const salesSummary = useMemo(() => {
     const summary = {};
-
-    // Add unallocated branch
-    const allBranches = [...branches, { id: "unallocated", name: "Unallocated", code: "UNALLOC" }];
 
     allBranches.forEach((branch) => {
       const branchInvoices = filteredInvoices.filter((inv) => inv.branchId === branch.id);
@@ -103,13 +120,12 @@ export default function BranchReports() {
         .filter((inv) => inv.type.includes("purchase"))
         .reduce((sum, inv) => sum + (inv.grandTotal || 0), 0);
 
-      // For collection, check receipts in vouchers
       const collections = filteredVouchers
         .filter((v) => v.branchId === branch.id && v.type.includes("receipt"))
         .reduce((sum, v) => sum + (v.grandTotal || 0), 0);
 
       summary[branch.id] = {
-        branch: branch,
+        branch,
         sales,
         purchases,
         collection: collections,
@@ -118,19 +134,15 @@ export default function BranchReports() {
     });
 
     return summary;
-  }, [filteredInvoices, filteredVouchers, branches]);
+  }, [allBranches, filteredInvoices, filteredVouchers]);
 
-  // P&L by Branch
   const plByBranch = useMemo(() => {
     const plData = {};
-
-    const allBranches = [...branches, { id: "unallocated", name: "Unallocated", code: "UNALLOC" }];
 
     allBranches.forEach((branch) => {
       const branchInvoices = filteredInvoices.filter((inv) => inv.branchId === branch.id);
       const branchVouchers = filteredVouchers.filter((v) => v.branchId === branch.id);
 
-      // Income
       const salesRevenue = branchInvoices
         .filter((inv) => inv.type.includes("sales"))
         .reduce((sum, inv) => sum + (inv.grandTotal || 0), 0);
@@ -141,7 +153,6 @@ export default function BranchReports() {
 
       const netSales = salesRevenue - salesReturns;
 
-      // Expenses
       const cogs = branchInvoices
         .filter((inv) => inv.type.includes("purchase"))
         .reduce((sum, inv) => sum + (inv.grandTotal || 0), 0);
@@ -169,9 +180,8 @@ export default function BranchReports() {
     });
 
     return plData;
-  }, [filteredInvoices, filteredVouchers, branches, accounts]);
+  }, [accounts, allBranches, filteredInvoices, filteredVouchers]);
 
-  // Stock by Branch
   const stockByBranch = useMemo(() => {
     const stockData = {};
 
@@ -188,29 +198,25 @@ export default function BranchReports() {
           return acc;
         }, {});
 
-      // Get item details
       const detailedStock = Object.entries(branchStock)
         .map(([itemId, data]) => {
-          const item = items.find((i) => i.id === itemId);
+          const item = (items || []).find((entry) => entry.id === itemId);
           return {
-            item: item || { name: "Unknown Item", code: "N/A" },
+            item: item || { id: itemId, name: "Unknown Item", code: "N/A" },
             qty: data.qty,
             avgRate: data.qty > 0 ? data.totalValue / data.qty : 0,
             totalValue: data.totalValue,
           };
         })
-        .filter((item) => item.qty !== 0);
+        .filter((entry) => entry.qty !== 0);
 
       stockData[branch.id] = detailedStock;
     });
 
     return stockData;
-  }, [branches, stockMovements]);
+  }, [branches, items, stockMovements]);
 
-  // Consolidated View
   const consolidatedData = useMemo(() => {
-    const allBranches = [...branches, { id: "unallocated", name: "Unallocated", code: "UNALLOC" }];
-
     let totalRevenue = 0;
     let totalCogs = 0;
     let totalExpenses = 0;
@@ -239,7 +245,67 @@ export default function BranchReports() {
     const netProfit = grossProfit - totalExpenses;
 
     return { totalRevenue, totalCogs, totalExpenses, grossProfit, netProfit };
-  }, [filteredInvoices, filteredVouchers, branches, accounts]);
+  }, [accounts, allBranches, filteredInvoices, filteredVouchers]);
+
+  const salesRows = useMemo(() => Object.values(salesSummary), [salesSummary]);
+  const plRows = useMemo(() => Object.values(plByBranch), [plByBranch]);
+
+  const salesTotals = useMemo(() => {
+    return salesRows.reduce(
+      (totals, row) => ({
+        sales: totals.sales + row.sales,
+        purchases: totals.purchases + row.purchases,
+        grossProfit: totals.grossProfit + (row.sales - row.purchases),
+        collection: totals.collection + row.collection,
+        outstanding: totals.outstanding + row.outstanding,
+      }),
+      { sales: 0, purchases: 0, grossProfit: 0, collection: 0, outstanding: 0 },
+    );
+  }, [salesRows]);
+
+  const plTotals = useMemo(() => {
+    return plRows.reduce(
+      (totals, row) => ({
+        salesRevenue: totals.salesRevenue + row.salesRevenue,
+        salesReturns: totals.salesReturns + row.salesReturns,
+        netSales: totals.netSales + row.netSales,
+        cogs: totals.cogs + row.cogs,
+        directExpenses: totals.directExpenses + row.directExpenses,
+        grossProfit: totals.grossProfit + row.grossProfit,
+        netProfit: totals.netProfit + row.netProfit,
+      }),
+      {
+        salesRevenue: 0,
+        salesReturns: 0,
+        netSales: 0,
+        cogs: 0,
+        directExpenses: 0,
+        grossProfit: 0,
+        netProfit: 0,
+      },
+    );
+  }, [plRows]);
+
+  const stockSections = useMemo(() => {
+    return branches
+      .map((branch) => ({
+        branch,
+        rows: stockByBranch[branch.id] || [],
+      }))
+      .filter((section) => section.rows.length > 0);
+  }, [branches, stockByBranch]);
+
+  const hasBranchActivity = filteredInvoices.length > 0 || filteredVouchers.length > 0;
+  const branchScopeCount = branchFilter === "ALL" ? allBranches.length : 1;
+
+  const chartData = useMemo(
+    () =>
+      salesRows.map((row) => ({
+        name: row.branch.code || row.branch.name,
+        sales: row.sales,
+      })),
+    [salesRows],
+  );
 
   const toggleExpand = (section) => {
     setExpandedSections((prev) => ({
@@ -249,15 +315,13 @@ export default function BranchReports() {
   };
 
   const exportExcel = () => {
-    // Implementation would depend on active tab
-    // For simplicity, we'll export the sales summary
     const ws = XLSX.utils.json_to_sheet(
-      Object.values(salesSummary).map((s) => ({
-        Branch: s.branch.name,
-        Sales: s.sales,
-        Purchases: s.purchases,
-        Collection: s.collection,
-        Outstanding: s.outstanding,
+      salesRows.map((row) => ({
+        Branch: row.branch.name,
+        Sales: row.sales,
+        Purchases: row.purchases,
+        Collection: row.collection,
+        Outstanding: row.outstanding,
       })),
     );
 
@@ -266,58 +330,38 @@ export default function BranchReports() {
     XLSX.writeFile(wb, `Branch_Sales_Summary_${fromDate}_to_${toDate}.xlsx`);
   };
 
-  // Chart data for sales
-  const chartData = Object.values(salesSummary).map((s) => ({
-    name: s.branch.name,
-    sales: s.sales,
-  }));
-
   return (
-    <div style={{ backgroundColor: BG, minHeight: "100vh", padding: "20px" }}>
-      <div
-        style={{
-          backgroundColor: BG_HEADER,
-          padding: "15px",
-          borderRadius: "8px",
-          border: BORDER,
-          marginBottom: "20px",
-        }}
-      >
-        <h1 style={{ fontSize: "18px", fontWeight: "bold", color: "#000000", margin: 0 }}>
-          Branch-wise Reports
-        </h1>
+    <div className="flex h-full min-h-0 flex-col overflow-y-auto bg-[#f5f6fa] p-4 md:p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">Branch-wise reports</h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            Sales, profitability, stock position, and consolidated branch performance
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button type="button" onClick={exportExcel} className={outlineButtonCls}>
+            <Download className="h-3.5 w-3.5" />
+            Export Excel
+          </button>
+        </div>
+      </div>
 
-        <div
-          style={{
-            display: "flex",
-            gap: "15px",
-            marginTop: "15px",
-            flexWrap: "wrap",
-            alignItems: "end",
-          }}
-        >
+      <div className="no-print mb-4 rounded-md border border-gray-200 bg-white p-3">
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "5px",
-                fontWeight: "bold",
-                fontSize: "12px",
-              }}
-            >
-              Fiscal Year
-            </label>
+            <label className={labelCls}>Fiscal year</label>
             <select
               value={selectedFiscalYear}
               onChange={(e) => {
                 setSelectedFiscalYear(e.target.value);
-                const fy = fiscalYears.find((f) => f.id === e.target.value);
+                const fy = fiscalYears.find((entry) => entry.id === e.target.value);
                 if (fy) {
                   setFromDate(fy.startDate);
                   setToDate(fy.endDate);
                 }
               }}
-              style={{ padding: "6px", border: BORDER, borderRadius: "4px", fontSize: "12px" }}
+              className={inputCls}
             >
               {fiscalYears.map((fy) => (
                 <option key={fy.id} value={fy.id}>
@@ -327,56 +371,29 @@ export default function BranchReports() {
             </select>
           </div>
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "5px",
-                fontWeight: "bold",
-                fontSize: "12px",
-              }}
-            >
-              From Date
-            </label>
+            <label className={labelCls}>From date</label>
             <input
               type="date"
               value={fromDate}
               onChange={(e) => setFromDate(e.target.value)}
-              style={{ padding: "6px", border: BORDER, borderRadius: "4px", fontSize: "12px" }}
+              className={inputCls}
             />
           </div>
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "5px",
-                fontWeight: "bold",
-                fontSize: "12px",
-              }}
-            >
-              To Date
-            </label>
+            <label className={labelCls}>To date</label>
             <input
               type="date"
               value={toDate}
               onChange={(e) => setToDate(e.target.value)}
-              style={{ padding: "6px", border: BORDER, borderRadius: "4px", fontSize: "12px" }}
+              className={inputCls}
             />
           </div>
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "5px",
-                fontWeight: "bold",
-                fontSize: "12px",
-              }}
-            >
-              Branch
-            </label>
+            <label className={labelCls}>Branch</label>
             <select
               value={branchFilter}
               onChange={(e) => setBranchFilter(e.target.value)}
-              style={{ padding: "6px", border: BORDER, borderRadius: "4px", fontSize: "12px" }}
+              className={inputCls}
             >
               <option value="ALL">All Branches</option>
               {branches.map((branch) => (
@@ -386,528 +403,493 @@ export default function BranchReports() {
               ))}
             </select>
           </div>
-          <button
-            onClick={() => {}}
-            style={{
-              backgroundColor: "#1557b0",
-              color: "white",
-              border: BORDER,
-              padding: "8px 16px",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: "12px",
-              display: "flex",
-              alignItems: "center",
-              gap: "5px",
-            }}
+          <div className="flex items-end gap-2">
+            <button type="button" onClick={() => {}} className={primaryButtonCls}>
+              <RefreshCcw className="h-3.5 w-3.5" />
+              Run Report
+            </button>
+            <button type="button" onClick={exportExcel} className={outlineButtonCls}>
+              <Download className="h-3.5 w-3.5" />
+              Export
+            </button>
+          </div>
+        </div>
+        <p className="mt-2 text-[11px] text-gray-500">
+          {currentFiscalYear?.yearBs || "Selected period"} · {filteredInvoices.length} invoices ·{" "}
+          {filteredVouchers.length} vouchers in scope
+        </p>
+      </div>
+
+      <div className="mb-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        <div className="rounded-md border border-gray-200 bg-white p-4">
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Branches in scope
+              </p>
+              <p className="mt-2 text-[18px] font-semibold text-gray-800">{branchScopeCount}</p>
+              <p className="mt-1 text-[11px] text-gray-500">Includes unallocated totals</p>
+            </div>
+            <Building2 className="h-4 w-4 text-[#1557b0]" />
+          </div>
+        </div>
+        <div className="rounded-md border border-gray-200 bg-white p-4">
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                Total sales
+              </p>
+              <p className="mt-2 text-[18px] font-semibold text-gray-800">
+                {money(salesTotals.sales)}
+              </p>
+              <p className="mt-1 text-[11px] text-gray-500">Revenue in the selected period</p>
+            </div>
+            <BarChart2 className="h-4 w-4 text-[#1557b0]" />
+          </div>
+        </div>
+        <div className="rounded-md border border-gray-200 bg-white p-4">
+          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            Collections
+          </p>
+          <p className="mt-2 text-[18px] font-semibold text-gray-800">
+            {money(salesTotals.collection)}
+          </p>
+          <p className="mt-1 text-[11px] text-gray-500">Receipts tagged to branch activity</p>
+        </div>
+        <div className="rounded-md border border-gray-200 bg-white p-4">
+          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            Net profit
+          </p>
+          <p
+            className={`mt-2 text-[18px] font-semibold ${
+              consolidatedData.netProfit >= 0 ? "text-green-700" : "text-red-700"
+            }`}
           >
-            <RefreshCcw size={14} />
-            Run Report
-          </button>
-          <button
-            onClick={exportExcel}
-            style={{
-              backgroundColor: "#059669",
-              color: "white",
-              border: BORDER,
-              padding: "8px 16px",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: "12px",
-              display: "flex",
-              alignItems: "center",
-              gap: "5px",
-            }}
-          >
-            <Download size={14} />
-            Export Excel
-          </button>
+            {money(consolidatedData.netProfit)}
+          </p>
+          <p className="mt-1 text-[11px] text-gray-500">Consolidated after direct expenses</p>
         </div>
       </div>
 
-      {/* Tab Navigation */}
-      <div style={{ display: "flex", gap: "5px", marginBottom: "20px", borderBottom: BORDER }}>
-        {[
-          { id: "sales", label: "Sales Summary" },
-          { id: "pl", label: "P&L by Branch" },
-          { id: "stock", label: "Stock by Branch" },
-          { id: "consolidated", label: "Consolidated View" },
-        ].map((tab) => (
+      <div className="mb-4 flex flex-wrap gap-4 border-b border-gray-200">
+        {tabs.map((tab) => (
           <button
             key={tab.id}
+            type="button"
             onClick={() => setActiveTab(tab.id)}
-            style={{
-              backgroundColor: activeTab === tab.id ? BG_HEADER : "transparent",
-              color: activeTab === tab.id ? "#000000" : "#666",
-              border: BORDER,
-              padding: "10px 16px",
-              borderRadius: "4px 4px 0 0",
-              cursor: "pointer",
-              fontWeight: activeTab === tab.id ? "bold" : "normal",
-            }}
+            className={tabCls(activeTab === tab.id)}
           >
             {tab.label}
           </button>
         ))}
       </div>
 
-      {/* Tab Content */}
       {activeTab === "sales" && (
-        <div
-          style={{ backgroundColor: BG_CARD, padding: "15px", borderRadius: "8px", border: BORDER }}
-        >
-          <h2
-            style={{ fontSize: "16px", fontWeight: "bold", color: "#000000", marginBottom: "15px" }}
-          >
-            Sales Summary by Branch
-          </h2>
-
-          <div style={{ height: "300px", marginBottom: "20px" }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip formatter={(value) => [money(value), "Sales"]} />
-                <Bar dataKey="sales" name="Sales">
-                  {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill="#1557b0" />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+        <div className={sectionCls}>
+          <div className="border-b border-gray-200 px-4 py-3">
+            <h2 className="text-[13px] font-semibold text-gray-800">Sales summary by branch</h2>
+            <p className="mt-0.5 text-[11px] text-gray-500">
+              Compare sales, purchases, collections, and outstanding balances per branch.
+            </p>
           </div>
 
-          <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", border: BORDER }}>
-              <thead>
-                <tr style={{ backgroundColor: BG_HEADER }}>
-                  <th style={{ border: BORDER, padding: "8px" }}>Branch</th>
-                  <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                    Total Sales
-                  </th>
-                  <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                    Total Purchase
-                  </th>
-                  <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                    Gross Profit
-                  </th>
-                  <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>Collection</th>
-                  <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                    Outstanding
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.values(salesSummary).map((s, idx) => (
-                  <tr
-                    key={s.branch.id}
-                    style={{ backgroundColor: idx % 2 === 0 ? BG_DEEP : "transparent" }}
-                  >
-                    <td style={{ border: BORDER, padding: "8px" }}>{s.branch.name}</td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                      {money(s.sales)}
-                    </td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                      {money(s.purchases)}
-                    </td>
-                    <td
-                      style={{
-                        border: BORDER,
-                        padding: "8px",
-                        textAlign: "right",
-                        color: s.sales - s.purchases >= 0 ? "#059669" : "#dc2626",
-                      }}
-                    >
-                      {money(s.sales - s.purchases)}
-                    </td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                      {money(s.collection)}
-                    </td>
-                    <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                      {money(s.outstanding)}
-                    </td>
-                  </tr>
-                ))}
-                {/* Total Row */}
-                <tr style={{ backgroundColor: BG_HEADER }}>
-                  <td style={{ border: BORDER, padding: "8px", fontWeight: "bold" }}>TOTAL</td>
-                  <td
-                    style={{
-                      border: BORDER,
-                      padding: "8px",
-                      textAlign: "right",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {money(Object.values(salesSummary).reduce((sum, s) => sum + s.sales, 0))}
-                  </td>
-                  <td
-                    style={{
-                      border: BORDER,
-                      padding: "8px",
-                      textAlign: "right",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {money(Object.values(salesSummary).reduce((sum, s) => sum + s.purchases, 0))}
-                  </td>
-                  <td
-                    style={{
-                      border: BORDER,
-                      padding: "8px",
-                      textAlign: "right",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {money(
-                      Object.values(salesSummary).reduce(
-                        (sum, s) => sum + (s.sales - s.purchases),
-                        0,
-                      ),
-                    )}
-                  </td>
-                  <td
-                    style={{
-                      border: BORDER,
-                      padding: "8px",
-                      textAlign: "right",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {money(Object.values(salesSummary).reduce((sum, s) => sum + s.collection, 0))}
-                  </td>
-                  <td
-                    style={{
-                      border: BORDER,
-                      padding: "8px",
-                      textAlign: "right",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {money(Object.values(salesSummary).reduce((sum, s) => sum + s.outstanding, 0))}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          {!hasBranchActivity ? (
+            <ReportEmptyState
+              message="No branch activity found for this period"
+              hint="Adjust the fiscal year, date range, or branch filter to load sales data."
+            />
+          ) : (
+            <>
+              <div className="p-4">
+                <div className="h-72 rounded-md border border-gray-200 bg-[#fcfcfd] p-3">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={chartData}>
+                      <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" />
+                      <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#6b7280" }} />
+                      <YAxis tick={{ fontSize: 11, fill: "#6b7280" }} />
+                      <Tooltip formatter={(value) => [money(value), "Sales"]} />
+                      <Bar dataKey="sales" name="Sales">
+                        {chartData.map((_, index) => (
+                          <Cell key={`sales-bar-${index}`} fill="#1557b0" />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              <div className="overflow-x-auto border-t border-gray-200">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        Branch
+                      </th>
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        Total Sales
+                      </th>
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        Total Purchase
+                      </th>
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        Gross Profit
+                      </th>
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        Collection
+                      </th>
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        Outstanding
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {salesRows.map((row) => (
+                      <tr
+                        key={row.branch.id}
+                        className="border-b border-gray-100 hover:border-l-[#1557b0] hover:bg-gray-50"
+                      >
+                        <td className="px-3 py-2.5 text-[12px] text-gray-700">
+                          <div className="font-medium text-gray-800">{row.branch.name}</div>
+                          <div className="text-[11px] text-gray-500">{row.branch.code || "—"}</div>
+                        </td>
+                        <td className={amountCellCls}>{money(row.sales)}</td>
+                        <td className={amountCellCls}>{money(row.purchases)}</td>
+                        <td
+                          className={`${amountCellCls} ${
+                            row.sales - row.purchases >= 0 ? "text-green-700" : "text-red-700"
+                          }`}
+                        >
+                          {money(row.sales - row.purchases)}
+                        </td>
+                        <td className={amountCellCls}>{money(row.collection)}</td>
+                        <td className={amountCellCls}>{money(row.outstanding)}</td>
+                      </tr>
+                    ))}
+                    <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
+                      <td className="px-3 py-2.5 text-gray-800">TOTAL</td>
+                      <td className={`${amountCellCls} font-bold`}>{money(salesTotals.sales)}</td>
+                      <td className={`${amountCellCls} font-bold`}>
+                        {money(salesTotals.purchases)}
+                      </td>
+                      <td
+                        className={`${amountCellCls} font-bold ${
+                          salesTotals.grossProfit >= 0 ? "text-green-700" : "text-red-700"
+                        }`}
+                      >
+                        {money(salesTotals.grossProfit)}
+                      </td>
+                      <td className={`${amountCellCls} font-bold`}>
+                        {money(salesTotals.collection)}
+                      </td>
+                      <td className={`${amountCellCls} font-bold`}>
+                        {money(salesTotals.outstanding)}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
         </div>
       )}
 
       {activeTab === "pl" && (
-        <div
-          style={{ backgroundColor: BG_CARD, padding: "15px", borderRadius: "8px", border: BORDER }}
-        >
-          <h2
-            style={{ fontSize: "16px", fontWeight: "bold", color: "#000000", marginBottom: "15px" }}
-          >
-            P&L by Branch
-          </h2>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-              gap: "20px",
-            }}
-          >
-            {Object.values(plByBranch).map((pl) => (
-              <div
-                key={pl.branch.id}
-                style={{ border: BORDER, borderRadius: "8px", padding: "15px" }}
-              >
-                <h3
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: "bold",
-                    color: "#000000",
-                    marginBottom: "10px",
-                  }}
-                >
-                  {pl.branch.name}
-                </h3>
-
-                <div style={{ marginBottom: "10px" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginBottom: "5px",
-                    }}
-                  >
-                    <span>Sales Revenue</span>
-                    <span>{money(pl.salesRevenue)}</span>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginBottom: "5px",
-                    }}
-                  >
-                    <span>Sales Returns</span>
-                    <span>({money(pl.salesReturns)})</span>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginBottom: "10px",
-                      borderTop: BORDER,
-                      paddingTop: "5px",
-                    }}
-                  >
-                    <span>Net Sales</span>
-                    <span>{money(pl.netSales)}</span>
-                  </div>
-
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginBottom: "5px",
-                    }}
-                  >
-                    <span>COGS</span>
-                    <span>({money(pl.cogs)})</span>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginBottom: "10px",
-                      borderTop: BORDER,
-                      paddingTop: "5px",
-                    }}
-                  >
-                    <span>Gross Profit</span>
-                    <span
-                      style={{
-                        color: pl.grossProfit >= 0 ? "#059669" : "#dc2626",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {money(pl.grossProfit)}
-                    </span>
-                  </div>
-
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginBottom: "5px",
-                    }}
-                  >
-                    <span>Direct Expenses</span>
-                    <span>({money(pl.directExpenses)})</span>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      borderTop: BORDER,
-                      paddingTop: "5px",
-                    }}
-                  >
-                    <span>Net Profit</span>
-                    <span
-                      style={{
-                        color: pl.netProfit >= 0 ? "#059669" : "#dc2626",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {money(pl.netProfit)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
+        <div className={sectionCls}>
+          <div className="border-b border-gray-200 px-4 py-3">
+            <h2 className="text-[13px] font-semibold text-gray-800">P&amp;L by branch</h2>
+            <p className="mt-0.5 text-[11px] text-gray-500">
+              Review revenue, cost, expenses, and net contribution for each branch.
+            </p>
           </div>
+
+          {!hasBranchActivity ? (
+            <ReportEmptyState
+              message="No P&L rows available for the current filters"
+              hint="Widen the date range or choose a branch with posted invoices and vouchers."
+            />
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      Branch
+                    </th>
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      Sales Revenue
+                    </th>
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      Sales Returns
+                    </th>
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      Net Sales
+                    </th>
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      COGS
+                    </th>
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      Direct Expenses
+                    </th>
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      Gross Profit
+                    </th>
+                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      Net Profit
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {plRows.map((row) => (
+                    <tr key={row.branch.id} className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700">
+                        <div className="font-medium text-gray-800">{row.branch.name}</div>
+                        <div className="text-[11px] text-gray-500">{row.branch.code || "—"}</div>
+                      </td>
+                      <td className={amountCellCls}>{money(row.salesRevenue)}</td>
+                      <td className={amountCellCls}>{money(row.salesReturns)}</td>
+                      <td className={amountCellCls}>{money(row.netSales)}</td>
+                      <td className={amountCellCls}>{money(row.cogs)}</td>
+                      <td className={amountCellCls}>{money(row.directExpenses)}</td>
+                      <td
+                        className={`${amountCellCls} ${
+                          row.grossProfit >= 0 ? "text-green-700" : "text-red-700"
+                        }`}
+                      >
+                        {money(row.grossProfit)}
+                      </td>
+                      <td
+                        className={`${amountCellCls} ${
+                          row.netProfit >= 0 ? "text-green-700" : "text-red-700"
+                        }`}
+                      >
+                        {money(row.netProfit)}
+                      </td>
+                    </tr>
+                  ))}
+                  <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
+                    <td className="px-3 py-2.5 text-gray-800">TOTAL</td>
+                    <td className={`${amountCellCls} font-bold`}>{money(plTotals.salesRevenue)}</td>
+                    <td className={`${amountCellCls} font-bold`}>{money(plTotals.salesReturns)}</td>
+                    <td className={`${amountCellCls} font-bold`}>{money(plTotals.netSales)}</td>
+                    <td className={`${amountCellCls} font-bold`}>{money(plTotals.cogs)}</td>
+                    <td className={`${amountCellCls} font-bold`}>
+                      {money(plTotals.directExpenses)}
+                    </td>
+                    <td
+                      className={`${amountCellCls} font-bold ${
+                        plTotals.grossProfit >= 0 ? "text-green-700" : "text-red-700"
+                      }`}
+                    >
+                      {money(plTotals.grossProfit)}
+                    </td>
+                    <td
+                      className={`${amountCellCls} font-bold ${
+                        plTotals.netProfit >= 0 ? "text-green-700" : "text-red-700"
+                      }`}
+                    >
+                      {money(plTotals.netProfit)}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       )}
 
       {activeTab === "stock" && (
-        <div
-          style={{ backgroundColor: BG_CARD, padding: "15px", borderRadius: "8px", border: BORDER }}
-        >
-          <h2
-            style={{ fontSize: "16px", fontWeight: "bold", color: "#000000", marginBottom: "15px" }}
-          >
-            Stock by Branch
-          </h2>
+        <div className={sectionCls}>
+          <div className="border-b border-gray-200 px-4 py-3">
+            <h2 className="text-[13px] font-semibold text-gray-800">Stock by branch</h2>
+            <p className="mt-0.5 text-[11px] text-gray-500">
+              Expand a branch to inspect current quantity, average rate, and total stock value.
+            </p>
+          </div>
 
-          {branches.map((branch) => {
-            const stock = stockByBranch[branch.id] || [];
-            if (stock.length === 0) return null;
-
-            return (
-              <div key={branch.id} style={{ marginBottom: "20px" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    backgroundColor: BG_HEADER,
-                    padding: "8px",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => toggleExpand(`stock-${branch.id}`)}
-                >
-                  <h3 style={{ fontSize: "14px", fontWeight: "bold", color: "#000000", margin: 0 }}>
-                    {branch.name}
-                  </h3>
-                  {expandedSections[`stock-${branch.id}`] ? (
-                    <ChevronDown size={16} />
-                  ) : (
-                    <ChevronRight size={16} />
-                  )}
-                </div>
-
-                {expandedSections[`stock-${branch.id}`] && (
-                  <div style={{ overflowX: "auto" }}>
-                    <table
-                      style={{
-                        width: "100%",
-                        borderCollapse: "collapse",
-                        border: BORDER,
-                        marginTop: "5px",
-                      }}
+          {stockSections.length === 0 ? (
+            <ReportEmptyState
+              message="No branch stock records are available"
+              hint="Stock appears only for branches linked to a warehouse with movement history."
+            />
+          ) : (
+            <div className="divide-y divide-gray-200">
+              {stockSections.map(({ branch, rows }) => {
+                const sectionKey = `stock-${branch.id}`;
+                const totalValue = rows.reduce((sum, row) => sum + row.totalValue, 0);
+                return (
+                  <div key={branch.id}>
+                    <button
+                      type="button"
+                      onClick={() => toggleExpand(sectionKey)}
+                      className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-gray-50"
                     >
-                      <thead>
-                        <tr style={{ backgroundColor: BG_HEADER }}>
-                          <th style={{ border: BORDER, padding: "8px" }}>Item Name</th>
-                          <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                            Qty
-                          </th>
-                          <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                            Avg Rate
-                          </th>
-                          <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                            Total Value
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {stock.map((item, idx) => (
-                          <tr
-                            key={item.item.id}
-                            style={{ backgroundColor: idx % 2 === 0 ? BG_DEEP : "transparent" }}
-                          >
-                            <td style={{ border: BORDER, padding: "8px" }}>{item.item.name}</td>
-                            <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                              {item.qty}
-                            </td>
-                            <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                              {money(item.avgRate)}
-                            </td>
-                            <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
-                              {money(item.totalValue)}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                      <div>
+                        <div className="text-[12px] font-medium text-gray-800">{branch.name}</div>
+                        <div className="text-[11px] text-gray-500">
+                          {rows.length} item{rows.length === 1 ? "" : "s"} · Value {money(totalValue)}
+                        </div>
+                      </div>
+                      {expandedSections[sectionKey] ? (
+                        <ChevronDown className="h-4 w-4 text-gray-500" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4 text-gray-500" />
+                      )}
+                    </button>
+
+                    {expandedSections[sectionKey] && (
+                      <div className="overflow-x-auto border-t border-gray-200">
+                        <table className="w-full border-collapse">
+                          <thead>
+                            <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                                Item Name
+                              </th>
+                              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                                Code
+                              </th>
+                              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                                Qty
+                              </th>
+                              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                                Avg Rate
+                              </th>
+                              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                                Total Value
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {rows.map((row) => (
+                              <tr
+                                key={`${branch.id}-${row.item.id}`}
+                                className="border-b border-gray-100 hover:bg-gray-50"
+                              >
+                                <td className="px-3 py-2.5 text-[12px] text-gray-700">
+                                  {row.item.name}
+                                </td>
+                                <td className="px-3 py-2.5 text-[12px] text-gray-500">
+                                  {row.item.code || "—"}
+                                </td>
+                                <td className={amountCellCls}>{row.qty}</td>
+                                <td className={amountCellCls}>{money(row.avgRate)}</td>
+                                <td className={amountCellCls}>{money(row.totalValue)}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            );
-          })}
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
 
       {activeTab === "consolidated" && (
-        <div
-          style={{ backgroundColor: BG_CARD, padding: "15px", borderRadius: "8px", border: BORDER }}
-        >
-          <h2
-            style={{ fontSize: "16px", fontWeight: "bold", color: "#000000", marginBottom: "15px" }}
-          >
-            Consolidated View
-          </h2>
-
-          <div
-            style={{
-              backgroundColor: "#fef3c7",
-              padding: "10px",
-              borderRadius: "6px",
-              marginBottom: "15px",
-              border: "1px solid #f59e0b",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-              <span style={{ color: "#f59e0b", fontWeight: "bold" }}>Note:</span>
-              <span>Inter-branch transfers are eliminated in consolidated figures</span>
-            </div>
+        <div className={sectionCls}>
+          <div className="border-b border-gray-200 px-4 py-3">
+            <h2 className="text-[13px] font-semibold text-gray-800">Consolidated view</h2>
+            <p className="mt-0.5 text-[11px] text-gray-500">
+              A branch-neutral snapshot of total revenue, costs, and profitability.
+            </p>
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-              gap: "15px",
-            }}
-          >
-            <div
-              style={{
-                backgroundColor: BG_HEADER,
-                padding: "15px",
-                borderRadius: "6px",
-                border: BORDER,
-              }}
-            >
-              <div style={{ fontSize: "12px", color: "#000000", marginBottom: "5px" }}>
-                Total Revenue
+          {!hasBranchActivity ? (
+            <ReportEmptyState
+              message="No consolidated figures available for this period"
+              hint="Choose a date range with branch invoices or vouchers to generate totals."
+            />
+          ) : (
+            <div className="p-4">
+              <div className="mb-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-[12px] text-amber-800">
+                Inter-branch transfers are eliminated in consolidated figures.
               </div>
-              <div style={{ fontSize: "18px", fontWeight: "bold", color: "#000000" }}>
-                {money(consolidatedData.totalRevenue)}
+
+              <div className="mb-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                <div className="rounded-md border border-gray-200 bg-[#fcfcfd] p-4">
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Total Revenue
+                  </p>
+                  <p className="mt-2 text-[18px] font-semibold text-gray-800">
+                    {money(consolidatedData.totalRevenue)}
+                  </p>
+                </div>
+                <div className="rounded-md border border-gray-200 bg-[#fcfcfd] p-4">
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Total COGS
+                  </p>
+                  <p className="mt-2 text-[18px] font-semibold text-gray-800">
+                    {money(consolidatedData.totalCogs)}
+                  </p>
+                </div>
+                <div className="rounded-md border border-gray-200 bg-[#fcfcfd] p-4">
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Gross Profit
+                  </p>
+                  <p
+                    className={`mt-2 text-[18px] font-semibold ${
+                      consolidatedData.grossProfit >= 0 ? "text-green-700" : "text-red-700"
+                    }`}
+                  >
+                    {money(consolidatedData.grossProfit)}
+                  </p>
+                </div>
+                <div className="rounded-md border border-gray-200 bg-[#fcfcfd] p-4">
+                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    Net Profit
+                  </p>
+                  <p
+                    className={`mt-2 text-[18px] font-semibold ${
+                      consolidatedData.netProfit >= 0 ? "text-green-700" : "text-red-700"
+                    }`}
+                  >
+                    {money(consolidatedData.netProfit)}
+                  </p>
+                </div>
+              </div>
+
+              <div className="overflow-x-auto rounded-md border border-gray-200">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        Metric
+                      </th>
+                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        Amount
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { label: "Total Revenue", value: consolidatedData.totalRevenue },
+                      { label: "Total COGS", value: consolidatedData.totalCogs },
+                      { label: "Direct Expenses", value: consolidatedData.totalExpenses },
+                      { label: "Gross Profit", value: consolidatedData.grossProfit },
+                      { label: "Net Profit", value: consolidatedData.netProfit },
+                    ].map((row) => (
+                      <tr key={row.label} className="border-b border-gray-100 last:border-b-0">
+                        <td className="px-3 py-2.5 text-[12px] text-gray-700">{row.label}</td>
+                        <td
+                          className={`${amountCellCls} ${
+                            row.label.includes("Profit") && row.value < 0
+                              ? "text-red-700"
+                              : row.label.includes("Profit")
+                                ? "text-green-700"
+                                : ""
+                          }`}
+                        >
+                          {money(row.value)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
-            <div
-              style={{
-                backgroundColor: BG_HEADER,
-                padding: "15px",
-                borderRadius: "6px",
-                border: BORDER,
-              }}
-            >
-              <div style={{ fontSize: "12px", color: "#000000", marginBottom: "5px" }}>
-                Total COGS
-              </div>
-              <div style={{ fontSize: "18px", fontWeight: "bold", color: "#000000" }}>
-                {money(consolidatedData.totalCogs)}
-              </div>
-            </div>
-            <div
-              style={{
-                backgroundColor: BG_HEADER,
-                padding: "15px",
-                borderRadius: "6px",
-                border: BORDER,
-              }}
-            >
-              <div style={{ fontSize: "12px", color: "#000000", marginBottom: "5px" }}>
-                Gross Profit
-              </div>
-              <div style={{ fontSize: "18px", fontWeight: "bold", color: "#000000" }}>
-                {money(consolidatedData.grossProfit)}
-              </div>
-            </div>
-            <div
-              style={{
-                backgroundColor: BG_HEADER,
-                padding: "15px",
-                borderRadius: "6px",
-                border: BORDER,
-              }}
-            >
-              <div style={{ fontSize: "12px", color: "#000000", marginBottom: "5px" }}>
-                Net Profit
-              </div>
-              <div style={{ fontSize: "18px", fontWeight: "bold", color: "#000000" }}>
-                {money(consolidatedData.netProfit)}
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       )}
     </div>
