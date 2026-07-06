@@ -5,10 +5,17 @@ import { useFalconStore } from "../../store/falconStore";
 import { KHATA_INTENT_LABELS } from "../../lib/ekhata/types";
 import { validateJournalBalance } from "../../lib/ekhata/caEntryTemplates";
 
-import { SELF_CONTAINED_STATUS } from "../../lib/selfContainedAi";
+import { isSelfContainedAi, SELF_CONTAINED_STATUS } from "../../lib/selfContainedAi";
 
-function statusLabel(): string {
-  return `${SELF_CONTAINED_STATUS.label} · Web Search · CA Entries`;
+function statusLabel(llmOnline: boolean, llmModel?: string): string {
+  if (llmOnline) {
+    const model = llmModel?.split(":")[0] ?? "Ollama";
+    return `${model} · Live LLM · CA Entries`;
+  }
+  if (isSelfContainedAi()) {
+    return `${SELF_CONTAINED_STATUS.label} · Web Search · CA Entries`;
+  }
+  return `erp_bot offline · ${SELF_CONTAINED_STATUS.label} fallback`;
 }
 
 const EKhataPanel: React.FC = () => {
@@ -67,7 +74,7 @@ const EKhataPanel: React.FC = () => {
         <div className="flex-1 min-w-0">
           <span className="font-bold text-[13px] tracking-tight">e-KHATA</span>
           <p className="text-[10px] text-emerald-100 truncate">
-            {statusLabel()}
+            {statusLabel(llmOnline, llmModel)}
           </p>
         </div>
         <button

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build local BM25 search index for Nepali grammar reference (no API/Chroma/Ollama)."""
+"""Embed Nepali grammar reference into ChromaDB via Ollama nomic-embed-text."""
 
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ def main() -> None:
         print("[NEPALI GRAMMAR] Reference not found under data/ekhata/source/")
         sys.exit(1)
 
-    print("[NEPALI GRAMMAR] Building local BM25 search index (stdlib only, no API keys)...")
+    print("[NEPALI GRAMMAR] Embedding grammar chunks into ChromaDB (Ollama nomic-embed-text)...")
     result = ingest_nepali_grammar()
     print(f"[NEPALI GRAMMAR] Result: {result}")
     print(f"[NEPALI GRAMMAR] Indexed chunks: {get_nepali_grammar_count()}")

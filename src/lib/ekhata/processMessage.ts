@@ -1,19 +1,18 @@
 /**
- * e-Khata message router — unified pipeline: domain gate → local CA brains → LLM enhance → web (external only).
+ * e-Khata message router — erp_bot LLM when online; local brains only as offline fallback.
  */
 
+import { isSelfContainedAi } from "../selfContainedAi";
 import { normalizeNepaliText } from "./normalizeNepali";
 import { parseKhataMessage } from "./parseKhata";
 import {
   buildLocalizedEntryReply,
   detectUserLanguage,
-  understandAccountingLanguage,
 } from "./accountingLanguageBrain";
 import { generateConversationalReply, type ConversationTurn } from "./conversationalBrain";
 import { understandConceptualFramework } from "./conceptualFrameworkBrain";
-import { classifyDomain } from "./domainRouter";
+import { understandAccountingLanguage } from "./accountingLanguageBrain";
 import { analyzeMessageMeaning } from "./meaningEngine";
-import { answerFromGrammarKnowledge } from "./grammarKnowledgeBrain";
 import { detectNegation } from "./negationDetector";
 import {
   applyAmountDelta,
@@ -22,7 +21,6 @@ import {
   type EKhataConversationContext,
 } from "./conversationState";
 import { shouldTryWorkParse } from "./smartWorkBrain";
-import { isSelfContainedAi } from "../selfContainedAi";
 import type { KhataConfirmationCard, KhataParseResult } from "./types";
 import type { LedgerBalanceSnapshot } from "./conversationEngine";
 import { isLedgerBalanceQuery, replyBalance } from "./conversationEngine";
@@ -202,7 +200,7 @@ function tryKnowledgeBrains(trimmed: string, normalizedText: string): EKhataProc
   return null;
 }
 
-/** Core unified router — always runs local CA brains before web search. */
+/** Offline-only local brain pipeline — used when erp_bot is unreachable. */
 export function processEKhataMessage(
   rawText: string,
   options: ProcessMessageOptions = {},
@@ -247,81 +245,54 @@ export function processEKhataMessage(
   };
 }
 
-async function tryLlmEnhancement(
+async function routeThroughErpBot(
   trimmed: string,
   options: ProcessMessageOptions,
-  localResult: EKhataProcessResult | null,
 ): Promise<EKhataProcessResult | null> {
-  if (options.preferLlm === false || isSelfContainedAi()) return null;
+  if (isSelfContainedAi()) return null;
 
   try {
     const { checkEKhataLlmStatus, askEKhataLlm, getEKhataSessionId } =
       await import("./ekhataLlmClient");
     const status = await checkEKhataLlmStatus();
-    if (!status.khataLlm || !status.online) return null;
+    if (!status.online || !status.khataLlm) return null;
 
     const lang = detectUserLanguage(trimmed);
-    const domain = classifyDomain(trimmed);
+    const normalizedText = normalizeNepaliText(trimmed);
+    const llm = await askEKhataLlm(
+      trimmed,
+      getEKhataSessionId(),
+      options.balance,
+      undefined,
+      lang,
+    );
 
-    // For journal entries already parsed locally, LLM only narrates the card (hybrid)
-    if (localResult?.kind === "entry" && localResult.card) {
-      const llm = await askEKhataLlm(
-        trimmed,
-        getEKhataSessionId(),
-        options.balance,
-        undefined,
-        lang,
-      );
-      if (llm.kind === "entry" && llm.reply) {
-        return {
-          ...localResult,
-          reply: llm.reply || localResult.reply,
-          engine: "hybrid",
-        };
-      }
-      return { ...localResult, engine: "hybrid" };
+    if (llm.kind === "entry" && llm.card) {
+      return {
+        kind: "entry",
+        reply: llm.reply,
+        normalizedText,
+        card: llm.card,
+        engine: (llm.engine as EKhataEngine) ?? "ollama",
+      };
     }
-
-    // For accounting/framework Q&A already answered locally, keep local answer (grounded)
-    if (
-      localResult?.kind === "chat" &&
-      (localResult.engine === "accounting-brain" || localResult.engine === "framework-brain")
-    ) {
-      return localResult;
+    if (llm.kind === "clarify") {
+      return {
+        kind: "clarify",
+        reply: llm.reply,
+        normalizedText,
+        engine: (llm.engine as EKhataEngine) ?? "ollama",
+      };
     }
-
-    // Use LLM for unresolved accounting/compliance/chat when online
-    if (
-      domain.domain === "accounting_qa" ||
-      domain.domain === "framework_qa" ||
-      domain.domain === "compliance_qa" ||
-      domain.domain === "emotional_chat" ||
-      localResult === null
-    ) {
-      const llm = await askEKhataLlm(trimmed, getEKhataSessionId(), options.balance, undefined, lang);
-      const normalizedText = normalizeNepaliText(trimmed);
-
-      if (llm.kind === "entry" && llm.card) {
-        return {
-          kind: "entry",
-          reply: llm.reply || buildLocalizedEntryReply(llm.card, lang),
-          normalizedText,
-          card: llm.card,
-          engine: (llm.engine as "ollama" | "hybrid") ?? "ollama",
-        };
-      }
-      if (llm.kind === "clarify" && llm.reply) {
-        return { kind: "clarify", reply: llm.reply, normalizedText, engine: "ollama" };
-      }
-      if (llm.reply) {
-        return { kind: "chat", reply: llm.reply, normalizedText, engine: "ollama" };
-      }
-    }
+    return {
+      kind: "chat",
+      reply: llm.reply,
+      normalizedText,
+      engine: (llm.engine as EKhataEngine) ?? "ollama",
+    };
   } catch {
-    // Fall through to local pipeline
+    return null;
   }
-
-  return null;
 }
 
 export async function processEKhataMessageAsync(
@@ -329,66 +300,13 @@ export async function processEKhataMessageAsync(
   options: ProcessMessageOptions = {},
 ): Promise<EKhataProcessResult> {
   const trimmed = rawText.trim();
-  const normalizedText = normalizeNepaliText(trimmed);
-  const lang = detectUserLanguage(trimmed);
-  const domain = classifyDomain(trimmed);
 
-  if (!trimmed) {
-    return processEKhataMessage(trimmed, options);
-  }
+  // When erp_bot is online, 100% of replies come from the backend LLM
+  const backend = await routeThroughErpBot(trimmed, options);
+  if (backend) return backend;
 
-  // 1. Contextual commands (reverse / repeat / delta)
-  const contextual = tryContextualCommand(trimmed, lang, options.conversationContext);
-  if (contextual) return contextual;
-
-  const ledgerBalance = tryLedgerBalanceQuery(trimmed, normalizedText, options.balance);
-  if (ledgerBalance) return ledgerBalance;
-
-  // 2. Local journal entry parse (always first for transactions)
-  const entry = tryJournalEntry(trimmed, normalizedText, lang);
-  if (entry) {
-    const enhanced = await tryLlmEnhancement(trimmed, options, entry);
-    return enhanced ?? entry;
-  }
-
-  // 3. Local knowledge brains (framework + accounting) — fixes sampatti / IFRS offline
-  const knowledge = tryKnowledgeBrains(trimmed, normalizedText);
-  if (knowledge) {
-    return knowledge;
-  }
-
-  // 4. LLM for remaining accounting/compliance when online
-  const llmOnly = await tryLlmEnhancement(trimmed, options, null);
-  if (llmOnly) return llmOnly;
-
-  // 5. Autonomous brain — web search ONLY for external facts (never accounting domain)
-  if (domain.domain === "external_fact" || !domain.blockWebSearch) {
-    const { askAutonomousBrain } = await import("./autonomousBrain");
-    const autonomous = await askAutonomousBrain(trimmed, {
-      balance: options.balance,
-      history: options.history,
-      llmOnline: options.llmOnline,
-      llmModel: options.llmModel,
-    });
-    return {
-      kind: "chat",
-      reply: autonomous.reply,
-      normalizedText,
-      engine: autonomous.engine,
-    };
-  }
-
-  // 6. Accounting domain with no match — conversational fallback (not Wikipedia)
-  const reply = generateConversationalReply(trimmed, {
-    balance: options.balance,
-    history: options.history,
-  });
-  return {
-    kind: "chat",
-    reply,
-    normalizedText,
-    engine: "brain",
-  };
+  // Offline degraded mode — local static brains only after confirmed /status failure
+  return processEKhataMessage(trimmed, options);
 }
 
 export async function checkEKhataLlmStatus() {

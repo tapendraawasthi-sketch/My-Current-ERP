@@ -78,7 +78,16 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
   togglePanel: () => set((s) => ({ isOpen: !s.isOpen })),
 
   refreshLlmStatus: async () => {
-    set({ llmOnline: false, llmModel: undefined });
+    try {
+      const { checkEKhataLlmStatus } = await import("../lib/ekhata/ekhataLlmClient");
+      const status = await checkEKhataLlmStatus();
+      set({
+        llmOnline: status.online && status.khataLlm,
+        llmModel: status.model,
+      });
+    } catch {
+      set({ llmOnline: false, llmModel: undefined });
+    }
   },
 
   sendMessage: async (text: string) => {
@@ -100,13 +109,20 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
         .slice(-10)
         .map((m) => ({ role: m.role, text: m.text }));
 
+      const { checkEKhataLlmStatus } = await import("../lib/ekhata/ekhataLlmClient");
+      const llmStatus = await checkEKhataLlmStatus();
+
       const result = await processEKhataMessageAsync(trimmed, {
         balance: getKhataBalance(),
-        preferLlm: false,
         history,
-        llmOnline: false,
-        llmModel: undefined,
+        llmOnline: llmStatus.online && llmStatus.khataLlm,
+        llmModel: llmStatus.model,
         conversationContext,
+      });
+
+      set({
+        llmOnline: llmStatus.online && llmStatus.khataLlm,
+        llmModel: llmStatus.model,
       });
 
       if (result.kind === "entry" && result.card) {

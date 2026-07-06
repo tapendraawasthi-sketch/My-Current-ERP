@@ -1,0 +1,3444 @@
+{
+  "version": "1.0.0",
+  "description": "e-Khata golden evaluation suite (Peak Intelligence Plan Phase 1)",
+  "generated_at": "2026-07-06T04:25:13Z",
+  "bucket_counts": {
+    "concept": 50,
+    "journal_parse": 80,
+    "reasoning": 30,
+    "language": 20,
+    "adversarial": 20
+  },
+  "total": 200,
+  "cases": [
+    {
+      "id": "concept_001",
+      "bucket": "concept",
+      "input": "udeshya ra prakriti k ho",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "SP1.1",
+          "SP1.2",
+          "SP1.3"
+        ],
+        "reply_para_ids": [
+          "SP1.1"
+        ],
+        "reply_language": "nepali",
+        "concept_id": "status_purpose"
+      }
+    },
+    {
+      "id": "concept_002",
+      "bucket": "concept",
+      "input": "framework ko udeshya k ho",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "SP1.1",
+          "SP1.2",
+          "SP1.3"
+        ],
+        "reply_para_ids": [
+          "SP1.1"
+        ],
+        "reply_language": "nepali",
+        "concept_id": "status_purpose"
+      }
+    },
+    {
+      "id": "concept_003",
+      "bucket": "concept",
+      "input": "what is status and purpose",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "SP1.1",
+          "SP1.2",
+          "SP1.3"
+        ],
+        "reply_para_ids": [
+          "SP1.1"
+        ],
+        "reply_language": "english",
+        "concept_id": "status_purpose"
+      }
+    },
+    {
+      "id": "concept_004",
+      "bucket": "concept",
+      "input": "what is conceptual framework purpose",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "SP1.1",
+          "SP1.2",
+          "SP1.3"
+        ],
+        "reply_para_ids": [
+          "SP1.1"
+        ],
+        "reply_language": "english",
+        "concept_id": "status_purpose"
+      }
+    },
+    {
+      "id": "concept_005",
+      "bucket": "concept",
+      "input": "IFRS ma udeshya ra prakriti ko paribhasha",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "SP1.1",
+          "SP1.2",
+          "SP1.3"
+        ],
+        "reply_para_ids": [
+          "SP1.1"
+        ],
+        "reply_language": null,
+        "concept_id": "status_purpose"
+      }
+    },
+    {
+      "id": "concept_006",
+      "bucket": "concept",
+      "input": "udeshya k ho",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.1",
+          "1.2",
+          "1.3"
+        ],
+        "reply_para_ids": [
+          "1.1"
+        ],
+        "reply_language": "nepali",
+        "concept_id": "objective_financial_reporting"
+      }
+    },
+    {
+      "id": "concept_007",
+      "bucket": "concept",
+      "input": "financial reporting ko udeshya k ho",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.1",
+          "1.2",
+          "1.3"
+        ],
+        "reply_para_ids": [
+          "1.1"
+        ],
+        "reply_language": "nepali",
+        "concept_id": "objective_financial_reporting"
+      }
+    },
+    {
+      "id": "concept_008",
+      "bucket": "concept",
+      "input": "what is objective",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.1",
+          "1.2",
+          "1.3"
+        ],
+        "reply_para_ids": [
+          "1.1"
+        ],
+        "reply_language": "english",
+        "concept_id": "objective_financial_reporting"
+      }
+    },
+    {
+      "id": "concept_009",
+      "bucket": "concept",
+      "input": "what is general purpose financial reporting",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.1",
+          "1.2",
+          "1.3"
+        ],
+        "reply_para_ids": [
+          "1.1"
+        ],
+        "reply_language": "english",
+        "concept_id": "objective_financial_reporting"
+      }
+    },
+    {
+      "id": "concept_010",
+      "bucket": "concept",
+      "input": "IFRS ma udeshya ko paribhasha",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.1",
+          "1.2",
+          "1.3"
+        ],
+        "reply_para_ids": [
+          "1.1"
+        ],
+        "reply_language": null,
+        "concept_id": "objective_financial_reporting"
+      }
+    },
+    {
+      "id": "concept_011",
+      "bucket": "concept",
+      "input": "arthik sampatti k ho",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.12",
+          "1.13",
+          "1.14"
+        ],
+        "reply_para_ids": [
+          "1.12"
+        ],
+        "reply_language": "nepali",
+        "concept_id": "economic_resources"
+      }
+    },
+    {
+      "id": "concept_012",
+      "bucket": "concept",
+      "input": "sampatti k ho",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.12",
+          "1.13",
+          "1.14"
+        ],
+        "reply_para_ids": [
+          "1.12"
+        ],
+        "reply_language": "nepali",
+        "concept_id": "economic_resources"
+      }
+    },
+    {
+      "id": "concept_013",
+      "bucket": "concept",
+      "input": "what is economic resource",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.12",
+          "1.13",
+          "1.14"
+        ],
+        "reply_para_ids": [
+          "1.12"
+        ],
+        "reply_language": "english",
+        "concept_id": "economic_resources"
+      }
+    },
+    {
+      "id": "concept_014",
+      "bucket": "concept",
+      "input": "what is economic resources",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.12",
+          "1.13",
+          "1.14"
+        ],
+        "reply_para_ids": [
+          "1.12"
+        ],
+        "reply_language": "english",
+        "concept_id": "economic_resources"
+      }
+    },
+    {
+      "id": "concept_015",
+      "bucket": "concept",
+      "input": "IFRS ma arthik sampatti ko paribhasha",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.12",
+          "1.13",
+          "1.14"
+        ],
+        "reply_para_ids": [
+          "1.12"
+        ],
+        "reply_language": null,
+        "concept_id": "economic_resources"
+      }
+    },
+    {
+      "id": "concept_016",
+      "bucket": "concept",
+      "input": "prapti aadhar k ho",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.17",
+          "1.18",
+          "1.19"
+        ],
+        "reply_para_ids": [
+          "1.17"
+        ],
+        "reply_language": "nepali",
+        "concept_id": "accrual_accounting"
+      }
+    },
+    {
+      "id": "concept_017",
+      "bucket": "concept",
+      "input": "accrual k ho",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.17",
+          "1.18",
+          "1.19"
+        ],
+        "reply_para_ids": [
+          "1.17"
+        ],
+        "reply_language": "nepali",
+        "concept_id": "accrual_accounting"
+      }
+    },
+    {
+      "id": "concept_018",
+      "bucket": "concept",
+      "input": "what is accrual accounting",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.17",
+          "1.18",
+          "1.19"
+        ],
+        "reply_para_ids": [
+          "1.17"
+        ],
+        "reply_language": "english",
+        "concept_id": "accrual_accounting"
+      }
+    },
+    {
+      "id": "concept_019",
+      "bucket": "concept",
+      "input": "what is accrual basis",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.17",
+          "1.18",
+          "1.19"
+        ],
+        "reply_para_ids": [
+          "1.17"
+        ],
+        "reply_language": "english",
+        "concept_id": "accrual_accounting"
+      }
+    },
+    {
+      "id": "concept_020",
+      "bucket": "concept",
+      "input": "IFRS ma prapti aadhar ko paribhasha",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.17",
+          "1.18",
+          "1.19"
+        ],
+        "reply_para_ids": [
+          "1.17"
+        ],
+        "reply_language": null,
+        "concept_id": "accrual_accounting"
+      }
+    },
+    {
+      "id": "concept_021",
+      "bucket": "concept",
+      "input": "nagad prabah k ho",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.20"
+        ],
+        "reply_para_ids": [
+          "1.20"
+        ],
+        "reply_language": "nepali",
+        "concept_id": "cash_flows"
+      }
+    },
+    {
+      "id": "concept_022",
+      "bucket": "concept",
+      "input": "cash flow k ho",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.20"
+        ],
+        "reply_para_ids": [
+          "1.20"
+        ],
+        "reply_language": "nepali",
+        "concept_id": "cash_flows"
+      }
+    },
+    {
+      "id": "concept_023",
+      "bucket": "concept",
+      "input": "what is cash flows",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.20"
+        ],
+        "reply_para_ids": [
+          "1.20"
+        ],
+        "reply_language": "english",
+        "concept_id": "cash_flows"
+      }
+    },
+    {
+      "id": "concept_024",
+      "bucket": "concept",
+      "input": "what is past cash flows",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.20"
+        ],
+        "reply_para_ids": [
+          "1.20"
+        ],
+        "reply_language": "english",
+        "concept_id": "cash_flows"
+      }
+    },
+    {
+      "id": "concept_025",
+      "bucket": "concept",
+      "input": "IFRS ma nagad prabah ko paribhasha",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.20"
+        ],
+        "reply_para_ids": [
+          "1.20"
+        ],
+        "reply_language": null,
+        "concept_id": "cash_flows"
+      }
+    },
+    {
+      "id": "concept_026",
+      "bucket": "concept",
+      "input": "byabasthapan jimma k ho",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.22",
+          "1.23"
+        ],
+        "reply_para_ids": [
+          "1.22"
+        ],
+        "reply_language": "nepali",
+        "concept_id": "stewardship"
+      }
+    },
+    {
+      "id": "concept_027",
+      "bucket": "concept",
+      "input": "sampatti ko upayog k ho",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.22",
+          "1.23"
+        ],
+        "reply_para_ids": [
+          "1.22"
+        ],
+        "reply_language": "nepali",
+        "concept_id": "stewardship"
+      }
+    },
+    {
+      "id": "concept_028",
+      "bucket": "concept",
+      "input": "what is stewardship",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.22",
+          "1.23"
+        ],
+        "reply_para_ids": [
+          "1.22"
+        ],
+        "reply_language": "english",
+        "concept_id": "stewardship"
+      }
+    },
+    {
+      "id": "concept_029",
+      "bucket": "concept",
+      "input": "what is management responsibility",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.22",
+          "1.23"
+        ],
+        "reply_para_ids": [
+          "1.22"
+        ],
+        "reply_language": "english",
+        "concept_id": "stewardship"
+      }
+    },
+    {
+      "id": "concept_030",
+      "bucket": "concept",
+      "input": "IFRS ma byabasthapan jimma ko paribhasha",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.22",
+          "1.23"
+        ],
+        "reply_para_ids": [
+          "1.22"
+        ],
+        "reply_language": null,
+        "concept_id": "stewardship"
+      }
+    },
+    {
+      "id": "concept_031",
+      "bucket": "concept",
+      "input": "sambandhitata k ho",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.6",
+          "2.7",
+          "2.8"
+        ],
+        "reply_para_ids": [
+          "2.6"
+        ],
+        "reply_language": "nepali",
+        "concept_id": "relevance"
+      }
+    },
+    {
+      "id": "concept_032",
+      "bucket": "concept",
+      "input": "sambandhit k ho",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.6",
+          "2.7",
+          "2.8"
+        ],
+        "reply_para_ids": [
+          "2.6"
+        ],
+        "reply_language": "nepali",
+        "concept_id": "relevance"
+      }
+    },
+    {
+      "id": "concept_033",
+      "bucket": "concept",
+      "input": "what is relevance",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.6",
+          "2.7",
+          "2.8"
+        ],
+        "reply_para_ids": [
+          "2.6"
+        ],
+        "reply_language": "english",
+        "concept_id": "relevance"
+      }
+    },
+    {
+      "id": "concept_034",
+      "bucket": "concept",
+      "input": "what is relevant information",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.6",
+          "2.7",
+          "2.8"
+        ],
+        "reply_para_ids": [
+          "2.6"
+        ],
+        "reply_language": "english",
+        "concept_id": "relevance"
+      }
+    },
+    {
+      "id": "concept_035",
+      "bucket": "concept",
+      "input": "IFRS ma sambandhitata ko paribhasha",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.6",
+          "2.7",
+          "2.8"
+        ],
+        "reply_para_ids": [
+          "2.6"
+        ],
+        "reply_language": null,
+        "concept_id": "relevance"
+      }
+    },
+    {
+      "id": "concept_036",
+      "bucket": "concept",
+      "input": "biswasilo pratinidhitwo k ho",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.11",
+          "2.12",
+          "2.13"
+        ],
+        "reply_para_ids": [
+          "2.11"
+        ],
+        "reply_language": "nepali",
+        "concept_id": "faithful_representation"
+      }
+    },
+    {
+      "id": "concept_037",
+      "bucket": "concept",
+      "input": "satya pratinidhitwo k ho",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.11",
+          "2.12",
+          "2.13"
+        ],
+        "reply_para_ids": [
+          "2.11"
+        ],
+        "reply_language": "nepali",
+        "concept_id": "faithful_representation"
+      }
+    },
+    {
+      "id": "concept_038",
+      "bucket": "concept",
+      "input": "what is faithful representation",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.11",
+          "2.12",
+          "2.13"
+        ],
+        "reply_para_ids": [
+          "2.11"
+        ],
+        "reply_language": "english",
+        "concept_id": "faithful_representation"
+      }
+    },
+    {
+      "id": "concept_039",
+      "bucket": "concept",
+      "input": "what is faithfully represented",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.11",
+          "2.12",
+          "2.13"
+        ],
+        "reply_para_ids": [
+          "2.11"
+        ],
+        "reply_language": "english",
+        "concept_id": "faithful_representation"
+      }
+    },
+    {
+      "id": "concept_040",
+      "bucket": "concept",
+      "input": "IFRS ma biswasilo pratinidhitwo ko paribhasha",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.11",
+          "2.12",
+          "2.13"
+        ],
+        "reply_para_ids": [
+          "2.11"
+        ],
+        "reply_language": null,
+        "concept_id": "faithful_representation"
+      }
+    },
+    {
+      "id": "concept_041",
+      "bucket": "concept",
+      "input": "tulaniyogya k ho",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.23",
+          "2.24",
+          "2.25"
+        ],
+        "reply_para_ids": [
+          "2.23"
+        ],
+        "reply_language": "nepali",
+        "concept_id": "comparability"
+      }
+    },
+    {
+      "id": "concept_042",
+      "bucket": "concept",
+      "input": "tulan k ho",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.23",
+          "2.24",
+          "2.25"
+        ],
+        "reply_para_ids": [
+          "2.23"
+        ],
+        "reply_language": "nepali",
+        "concept_id": "comparability"
+      }
+    },
+    {
+      "id": "concept_043",
+      "bucket": "concept",
+      "input": "what is comparability",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.23",
+          "2.24",
+          "2.25"
+        ],
+        "reply_para_ids": [
+          "2.23"
+        ],
+        "reply_language": "english",
+        "concept_id": "comparability"
+      }
+    },
+    {
+      "id": "concept_044",
+      "bucket": "concept",
+      "input": "what is comparable",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.23",
+          "2.24",
+          "2.25"
+        ],
+        "reply_para_ids": [
+          "2.23"
+        ],
+        "reply_language": "english",
+        "concept_id": "comparability"
+      }
+    },
+    {
+      "id": "concept_045",
+      "bucket": "concept",
+      "input": "IFRS ma tulaniyogya ko paribhasha",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.23",
+          "2.24",
+          "2.25"
+        ],
+        "reply_para_ids": [
+          "2.23"
+        ],
+        "reply_language": null,
+        "concept_id": "comparability"
+      }
+    },
+    {
+      "id": "concept_046",
+      "bucket": "concept",
+      "input": "mahatwo k ho",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.29",
+          "2.30",
+          "2.31"
+        ],
+        "reply_para_ids": [
+          "2.29"
+        ],
+        "reply_language": "nepali",
+        "concept_id": "materiality"
+      }
+    },
+    {
+      "id": "concept_047",
+      "bucket": "concept",
+      "input": "mahatwpoorna k ho",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.29",
+          "2.30",
+          "2.31"
+        ],
+        "reply_para_ids": [
+          "2.29"
+        ],
+        "reply_language": "nepali",
+        "concept_id": "materiality"
+      }
+    },
+    {
+      "id": "concept_048",
+      "bucket": "concept",
+      "input": "what is materiality",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.29",
+          "2.30",
+          "2.31"
+        ],
+        "reply_para_ids": [
+          "2.29"
+        ],
+        "reply_language": "english",
+        "concept_id": "materiality"
+      }
+    },
+    {
+      "id": "concept_049",
+      "bucket": "concept",
+      "input": "what is material",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.29",
+          "2.30",
+          "2.31"
+        ],
+        "reply_para_ids": [
+          "2.29"
+        ],
+        "reply_language": "english",
+        "concept_id": "materiality"
+      }
+    },
+    {
+      "id": "concept_050",
+      "bucket": "concept",
+      "input": "IFRS ma mahatwo ko paribhasha",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.29",
+          "2.30",
+          "2.31"
+        ],
+        "reply_para_ids": [
+          "2.29"
+        ],
+        "reply_language": null,
+        "concept_id": "materiality"
+      }
+    },
+    {
+      "id": "journal_001",
+      "bucket": "journal_parse",
+      "input": "Ram lai 500 udharo becheko",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 500,
+          "party": "Ram"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 500,
+          "party": "Ram",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_002",
+      "bucket": "journal_parse",
+      "input": "aaja 200 ko nagad bikri vayo",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_cash_sale",
+          "amount": 200
+        },
+        "llm_card": {
+          "intent": "khata_cash_sale",
+          "amount": 200,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_003",
+      "bucket": "journal_parse",
+      "input": "Shyam le 2000 tiryo",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_payment_in",
+          "amount": 2000,
+          "party": "Shyam"
+        },
+        "llm_card": {
+          "intent": "khata_payment_in",
+          "amount": 2000,
+          "party": "Shyam",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_004",
+      "bucket": "journal_parse",
+      "input": "Gita lai 1500 payment gareko",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_payment_out",
+          "amount": 1500,
+          "party": "Gita"
+        },
+        "llm_card": {
+          "intent": "khata_payment_out",
+          "amount": 1500,
+          "party": "Gita",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_005",
+      "bucket": "journal_parse",
+      "input": "electricity kharcha 3500",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_expense",
+          "amount": 3500
+        },
+        "llm_card": {
+          "intent": "khata_expense",
+          "amount": 3500,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_006",
+      "bucket": "journal_parse",
+      "input": "Hari bata 10000 udhaar ma saman kineko",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_purchase",
+          "amount": 10000,
+          "party": "Hari"
+        },
+        "llm_card": {
+          "intent": "khata_credit_purchase",
+          "amount": 10000,
+          "party": "Hari",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_007",
+      "bucket": "journal_parse",
+      "input": "Ram ko 3000 bad debt write off",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_bad_debt_writeoff",
+          "amount": 3000,
+          "party": "Ram"
+        },
+        "llm_card": {
+          "intent": "khata_bad_debt_writeoff",
+          "amount": 3000,
+          "party": "Ram",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_008",
+      "bucket": "journal_parse",
+      "input": "provision for bad debt 5000",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_provision_bad_debt",
+          "amount": 5000
+        },
+        "llm_card": {
+          "intent": "khata_provision_bad_debt",
+          "amount": 5000,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_009",
+      "bucket": "journal_parse",
+      "input": "bad debt recovery 1500 from Shyam",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_bad_debt_recovery",
+          "amount": 1500,
+          "party": "Shyam"
+        },
+        "llm_card": {
+          "intent": "khata_bad_debt_recovery",
+          "amount": 1500,
+          "party": "Shyam",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_010",
+      "bucket": "journal_parse",
+      "input": "salary accrual 500000",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_salary_accrual",
+          "amount": 500000
+        },
+        "llm_card": {
+          "intent": "khata_salary_accrual",
+          "amount": 500000,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_011",
+      "bucket": "journal_parse",
+      "input": "salary payment 500000",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_salary_payment",
+          "amount": 500000
+        },
+        "llm_card": {
+          "intent": "khata_salary_payment",
+          "amount": 500000,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_012",
+      "bucket": "journal_parse",
+      "input": "ssf employee 50000 gross salary",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_ssf_employee",
+          "amount": 50000
+        },
+        "llm_card": {
+          "intent": "khata_ssf_employee",
+          "amount": 50000,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_013",
+      "bucket": "journal_parse",
+      "input": "ssf employer 50000 basic",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_ssf_employer",
+          "amount": 50000
+        },
+        "llm_card": {
+          "intent": "khata_ssf_employer",
+          "amount": 50000,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_014",
+      "bucket": "journal_parse",
+      "input": "gratuity provision 25000",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_gratuity_provision",
+          "amount": 25000
+        },
+        "llm_card": {
+          "intent": "khata_gratuity_provision",
+          "amount": 25000,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_015",
+      "bucket": "journal_parse",
+      "input": "gratuity payment 100000",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_gratuity_payment",
+          "amount": 100000
+        },
+        "llm_card": {
+          "intent": "khata_gratuity_payment",
+          "amount": 100000,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_016",
+      "bucket": "journal_parse",
+      "input": "vat sale 113000 to ABC Traders",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_vat_sales",
+          "amount": 113000,
+          "party": "ABC Traders"
+        },
+        "llm_card": {
+          "intent": "khata_vat_sales",
+          "amount": 113000,
+          "party": "ABC Traders",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_017",
+      "bucket": "journal_parse",
+      "input": "vat purchase 56500",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_vat_purchase",
+          "amount": 56500
+        },
+        "llm_card": {
+          "intent": "khata_vat_purchase",
+          "amount": 56500,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_018",
+      "bucket": "journal_parse",
+      "input": "vat payment 8000 to IRD",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_vat_payment",
+          "amount": 8000
+        },
+        "llm_card": {
+          "intent": "khata_vat_payment",
+          "amount": 8000,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_019",
+      "bucket": "journal_parse",
+      "input": "tds deducted 100000 service payment",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_tds_deducted",
+          "amount": 100000
+        },
+        "llm_card": {
+          "intent": "khata_tds_deducted",
+          "amount": 100000,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_020",
+      "bucket": "journal_parse",
+      "input": "tds paid 15000",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_tds_paid",
+          "amount": 15000
+        },
+        "llm_card": {
+          "intent": "khata_tds_paid",
+          "amount": 15000,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_021",
+      "bucket": "journal_parse",
+      "input": "outstanding expense rent 20000",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_outstanding_expense",
+          "amount": 20000
+        },
+        "llm_card": {
+          "intent": "khata_outstanding_expense",
+          "amount": 20000,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_022",
+      "bucket": "journal_parse",
+      "input": "prepaid expense insurance 12000",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_prepaid_expense",
+          "amount": 12000
+        },
+        "llm_card": {
+          "intent": "khata_prepaid_expense",
+          "amount": 12000,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_023",
+      "bucket": "journal_parse",
+      "input": "depreciation 50000 machinery",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_depreciation",
+          "amount": 50000
+        },
+        "llm_card": {
+          "intent": "khata_depreciation",
+          "amount": 50000,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_024",
+      "bucket": "journal_parse",
+      "input": "bank charge 500",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_bank_charges",
+          "amount": 500
+        },
+        "llm_card": {
+          "intent": "khata_bank_charges",
+          "amount": 500,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_025",
+      "bucket": "journal_parse",
+      "input": "interest received 3000",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_other_income",
+          "amount": 3000
+        },
+        "llm_card": {
+          "intent": "khata_other_income",
+          "amount": 3000,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_026",
+      "bucket": "journal_parse",
+      "input": "capital introduced 500000",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_capital_introduced",
+          "amount": 500000
+        },
+        "llm_card": {
+          "intent": "khata_capital_introduced",
+          "amount": 500000,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_027",
+      "bucket": "journal_parse",
+      "input": "drawings 50000",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_drawings",
+          "amount": 50000
+        },
+        "llm_card": {
+          "intent": "khata_drawings",
+          "amount": 50000,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_028",
+      "bucket": "journal_parse",
+      "input": "loan received 1000000",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_loan_received",
+          "amount": 1000000
+        },
+        "llm_card": {
+          "intent": "khata_loan_received",
+          "amount": 1000000,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_029",
+      "bucket": "journal_parse",
+      "input": "loan repayment 50000",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_loan_repayment",
+          "amount": 50000
+        },
+        "llm_card": {
+          "intent": "khata_loan_repayment",
+          "amount": 50000,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_030",
+      "bucket": "journal_parse",
+      "input": "stock purchase 75000",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_stock_purchase",
+          "amount": 75000
+        },
+        "llm_card": {
+          "intent": "khata_stock_purchase",
+          "amount": 75000,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_031",
+      "bucket": "journal_parse",
+      "input": "cogs 40000",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_stock_sale_cogs",
+          "amount": 40000
+        },
+        "llm_card": {
+          "intent": "khata_stock_sale_cogs",
+          "amount": 40000,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_032",
+      "bucket": "journal_parse",
+      "input": "contra cash to bank 100000",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_contra_cash_bank",
+          "amount": 100000
+        },
+        "llm_card": {
+          "intent": "khata_contra_cash_bank",
+          "amount": 100000,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_033",
+      "bucket": "journal_parse",
+      "input": "discount allowed 500 to Ram",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_discount_allowed",
+          "amount": 500,
+          "party": "Ram"
+        },
+        "llm_card": {
+          "intent": "khata_discount_allowed",
+          "amount": 500,
+          "party": "Ram",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_034",
+      "bucket": "journal_parse",
+      "input": "discount received 1000 from supplier",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_discount_received",
+          "amount": 1000
+        },
+        "llm_card": {
+          "intent": "khata_discount_received",
+          "amount": 1000,
+          "party": null,
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_035",
+      "bucket": "journal_parse",
+      "input": "राम लाई ५०० उधार दिए",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 500,
+          "party": "Ram"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 500,
+          "party": "Ram",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_036",
+      "bucket": "journal_parse",
+      "input": "Ram lai 200 udhaar becheko",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 200,
+          "party": "Ram"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 200,
+          "party": "Ram",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_037",
+      "bucket": "journal_parse",
+      "input": "Gita lai Rs 1500 udhaar becheko",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 1500,
+          "party": "Gita"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 1500,
+          "party": "Gita",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_038",
+      "bucket": "journal_parse",
+      "input": "aaja Binita lai 8500 udhaar becheko",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 8500,
+          "party": "Binita"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 8500,
+          "party": "Binita",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_039",
+      "bucket": "journal_parse",
+      "input": "Anand lai 85000 udhaar becheko",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 85000,
+          "party": "Anand"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 85000,
+          "party": "Anand",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_040",
+      "bucket": "journal_parse",
+      "input": "ABC Traders lai Rs 500 udhaar becheko",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 500,
+          "party": "ABC Traders"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 500,
+          "party": "ABC Traders",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_041",
+      "bucket": "journal_parse",
+      "input": "aaja Ram lai 2000 udhaar becheko",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 2000,
+          "party": "Ram"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 2000,
+          "party": "Ram",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_042",
+      "bucket": "journal_parse",
+      "input": "Gita lai 10000 udhaar becheko",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 10000,
+          "party": "Gita"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 10000,
+          "party": "Gita",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_043",
+      "bucket": "journal_parse",
+      "input": "Binita lai Rs 100000 udhaar becheko",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 100000,
+          "party": "Binita"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 100000,
+          "party": "Binita",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_044",
+      "bucket": "journal_parse",
+      "input": "aaja Anand lai 750 udhaar becheko",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 750,
+          "party": "Anand"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 750,
+          "party": "Anand",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_045",
+      "bucket": "journal_parse",
+      "input": "ABC Traders lai 3500 udhaar becheko",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 3500,
+          "party": "ABC Traders"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 3500,
+          "party": "ABC Traders",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_046",
+      "bucket": "journal_parse",
+      "input": "Ram lai Rs 25000 udhaar becheko",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 25000,
+          "party": "Ram"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 25000,
+          "party": "Ram",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_047",
+      "bucket": "journal_parse",
+      "input": "aaja Gita lai 500000 udhaar becheko",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 500000,
+          "party": "Gita"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 500000,
+          "party": "Gita",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_048",
+      "bucket": "journal_parse",
+      "input": "Gita lai 85000 ko inventory udhaar ma diye",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 85000,
+          "party": "Gita"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 85000,
+          "party": "Gita",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_049",
+      "bucket": "journal_parse",
+      "input": "Binita lai Rs 500 ko saman udhaar ma diye",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 500,
+          "party": "Binita"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 500,
+          "party": "Binita",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_050",
+      "bucket": "journal_parse",
+      "input": "aaja Anand lai 2000 ko stationery udhaar ma diye",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 2000,
+          "party": "Anand"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 2000,
+          "party": "Anand",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_051",
+      "bucket": "journal_parse",
+      "input": "ABC Traders lai 10000 ko goods udhaar ma diye",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 10000,
+          "party": "ABC Traders"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 10000,
+          "party": "ABC Traders",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_052",
+      "bucket": "journal_parse",
+      "input": "Ram lai Rs 100000 ko services udhaar ma diye",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 100000,
+          "party": "Ram"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 100000,
+          "party": "Ram",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_053",
+      "bucket": "journal_parse",
+      "input": "aaja Gita lai 750 ko chiya udhaar ma diye",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 750,
+          "party": "Gita"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 750,
+          "party": "Gita",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_054",
+      "bucket": "journal_parse",
+      "input": "Binita lai 3500 ko mal udhaar ma diye",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 3500,
+          "party": "Binita"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 3500,
+          "party": "Binita",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_055",
+      "bucket": "journal_parse",
+      "input": "Anand lai Rs 25000 ko inventory udhaar ma diye",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 25000,
+          "party": "Anand"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 25000,
+          "party": "Anand",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_056",
+      "bucket": "journal_parse",
+      "input": "aaja ABC Traders lai 500000 ko saman udhaar ma diye",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 500000,
+          "party": "ABC Traders"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 500000,
+          "party": "ABC Traders",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_057",
+      "bucket": "journal_parse",
+      "input": "Ram lai 1000 ko stationery udhaar ma diye",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 1000,
+          "party": "Ram"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 1000,
+          "party": "Ram",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_058",
+      "bucket": "journal_parse",
+      "input": "Gita lai Rs 5000 ko goods udhaar ma diye",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 5000,
+          "party": "Gita"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 5000,
+          "party": "Gita",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_059",
+      "bucket": "journal_parse",
+      "input": "aaja Binita lai 50000 ko services udhaar ma diye",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 50000,
+          "party": "Binita"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 50000,
+          "party": "Binita",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_060",
+      "bucket": "journal_parse",
+      "input": "sold 10000 on credit to Binita",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 10000,
+          "party": "Binita"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 10000,
+          "party": "Binita",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_061",
+      "bucket": "journal_parse",
+      "input": "sold Rs 100000 on credit to Anand",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 100000,
+          "party": "Anand"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 100000,
+          "party": "Anand",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_062",
+      "bucket": "journal_parse",
+      "input": "aaja sold 750 on credit to ABC Traders",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 750,
+          "party": "ABC Traders"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 750,
+          "party": "ABC Traders",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_063",
+      "bucket": "journal_parse",
+      "input": "sold 3500 on credit to Ram",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 3500,
+          "party": "Ram"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 3500,
+          "party": "Ram",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_064",
+      "bucket": "journal_parse",
+      "input": "sold Rs 25000 on credit to Gita",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 25000,
+          "party": "Gita"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 25000,
+          "party": "Gita",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_065",
+      "bucket": "journal_parse",
+      "input": "aaja sold 500000 on credit to Binita",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 500000,
+          "party": "Binita"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 500000,
+          "party": "Binita",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_066",
+      "bucket": "journal_parse",
+      "input": "sold 1000 on credit to Anand",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 1000,
+          "party": "Anand"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 1000,
+          "party": "Anand",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_067",
+      "bucket": "journal_parse",
+      "input": "sold Rs 5000 on credit to ABC Traders",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 5000,
+          "party": "ABC Traders"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 5000,
+          "party": "ABC Traders",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_068",
+      "bucket": "journal_parse",
+      "input": "aaja sold 50000 on credit to Ram",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 50000,
+          "party": "Ram"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 50000,
+          "party": "Ram",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_069",
+      "bucket": "journal_parse",
+      "input": "sold 200 on credit to Gita",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 200,
+          "party": "Gita"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 200,
+          "party": "Gita",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_070",
+      "bucket": "journal_parse",
+      "input": "sold Rs 1500 on credit to Binita",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 1500,
+          "party": "Binita"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 1500,
+          "party": "Binita",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_071",
+      "bucket": "journal_parse",
+      "input": "aaja sold 8500 on credit to Anand",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 8500,
+          "party": "Anand"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 8500,
+          "party": "Anand",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_072",
+      "bucket": "journal_parse",
+      "input": "sold goods worth 3500 to Anand on account",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 3500,
+          "party": "Anand"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 3500,
+          "party": "Anand",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_073",
+      "bucket": "journal_parse",
+      "input": "sold goods worth Rs 25000 to ABC Traders on account",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 25000,
+          "party": "ABC Traders"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 25000,
+          "party": "ABC Traders",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_074",
+      "bucket": "journal_parse",
+      "input": "aaja sold goods worth 500000 to Ram on account",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 500000,
+          "party": "Ram"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 500000,
+          "party": "Ram",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_075",
+      "bucket": "journal_parse",
+      "input": "sold goods worth 1000 to Gita on account",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 1000,
+          "party": "Gita"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 1000,
+          "party": "Gita",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_076",
+      "bucket": "journal_parse",
+      "input": "sold goods worth Rs 5000 to Binita on account",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 5000,
+          "party": "Binita"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 5000,
+          "party": "Binita",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_077",
+      "bucket": "journal_parse",
+      "input": "aaja sold goods worth 50000 to Anand on account",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 50000,
+          "party": "Anand"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 50000,
+          "party": "Anand",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_078",
+      "bucket": "journal_parse",
+      "input": "sold goods worth 200 to ABC Traders on account",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 200,
+          "party": "ABC Traders"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 200,
+          "party": "ABC Traders",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_079",
+      "bucket": "journal_parse",
+      "input": "sold goods worth Rs 1500 to Ram on account",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 1500,
+          "party": "Ram"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 1500,
+          "party": "Ram",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "journal_080",
+      "bucket": "journal_parse",
+      "input": "aaja sold goods worth 8500 to Gita on account",
+      "expect": {
+        "kind": "transaction",
+        "parse": {
+          "intent": "khata_credit_sale",
+          "amount": 8500,
+          "party": "Gita"
+        },
+        "llm_card": {
+          "intent": "khata_credit_sale",
+          "amount": 8500,
+          "party": "Gita",
+          "balanced": true
+        }
+      }
+    },
+    {
+      "id": "reasoning_001",
+      "bucket": "reasoning",
+      "input": "udhaar deko vs tiryo farak k ho",
+      "expect": {
+        "kind": "general",
+        "reply_keywords": [
+          "udhaar",
+          "tiryo",
+          "debtor",
+          "payment",
+          "receivable",
+          "cash"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_002",
+      "bucket": "reasoning",
+      "input": "provision vs write-off farak k ho",
+      "expect": {
+        "kind": "general",
+        "reply_keywords": [
+          "provision",
+          "write",
+          "bad debt",
+          "receivable"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_003",
+      "bucket": "reasoning",
+      "input": "credit sale ko entry kasari hunchha",
+      "expect": {
+        "kind": "general",
+        "reply_keywords": [
+          "debtor",
+          "sales",
+          "dr",
+          "cr",
+          "udhaar"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_004",
+      "bucket": "reasoning",
+      "input": "payment received entry explain",
+      "expect": {
+        "kind": "general",
+        "reply_keywords": [
+          "cash",
+          "debtor",
+          "dr",
+          "cr",
+          "payment"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_005",
+      "bucket": "reasoning",
+      "input": "Ram lai udhaar becheko entry k ho",
+      "expect": {
+        "kind": "general",
+        "reply_keywords": [
+          "debtor",
+          "sales",
+          "ram",
+          "dr",
+          "cr"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_006",
+      "bucket": "reasoning",
+      "input": "SSF employer vs employee contribution farak",
+      "expect": {
+        "kind": "general",
+        "reply_keywords": [
+          "ssf",
+          "employer",
+          "employee",
+          "10",
+          "11"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_007",
+      "bucket": "reasoning",
+      "input": "VAT inclusive sale ma net ra VAT kasari nikalne",
+      "expect": {
+        "kind": "transaction",
+        "reply_keywords": [
+          "13",
+          "vat",
+          "net",
+          "gross",
+          "1.13"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_008",
+      "bucket": "reasoning",
+      "input": "prepaid expense vs outstanding expense",
+      "expect": {
+        "kind": "general",
+        "reply_keywords": [
+          "prepaid",
+          "outstanding",
+          "accrued",
+          "asset",
+          "liability"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_009",
+      "bucket": "reasoning",
+      "input": "depreciation cash flow ma kina add back",
+      "expect": {
+        "kind": "general",
+        "reply_keywords": [
+          "depreciation",
+          "non-cash",
+          "cash"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_010",
+      "bucket": "reasoning",
+      "input": "drawings capital ma kasari affect hunchha",
+      "expect": {
+        "kind": "general",
+        "reply_keywords": [
+          "drawings",
+          "capital",
+          "equity",
+          "owner"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_011",
+      "bucket": "reasoning",
+      "input": "loan received entry logic",
+      "expect": {
+        "kind": "general",
+        "reply_keywords": [
+          "loan",
+          "bank",
+          "liability",
+          "dr",
+          "cr"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_012",
+      "bucket": "reasoning",
+      "input": "bad debt recovery pachhi entry",
+      "expect": {
+        "kind": "general",
+        "reply_keywords": [
+          "recovery",
+          "bad debt",
+          "income",
+          "cash"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_013",
+      "bucket": "reasoning",
+      "input": "gratuity provision kina chaincha",
+      "expect": {
+        "kind": "general",
+        "reply_keywords": [
+          "gratuity",
+          "provision",
+          "expense",
+          "liability"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_014",
+      "bucket": "reasoning",
+      "input": "TDS deduct garda entry kasari",
+      "expect": {
+        "kind": "general",
+        "reply_keywords": [
+          "tds",
+          "payable",
+          "expense",
+          "bank"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_015",
+      "bucket": "reasoning",
+      "input": "capital introduced vs loan received",
+      "expect": {
+        "kind": "general",
+        "reply_keywords": [
+          "capital",
+          "loan",
+          "equity",
+          "liability"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_016",
+      "bucket": "reasoning",
+      "input": "udhaar bikri ma VAT inclusive 113000 split",
+      "expect": {
+        "kind": "transaction",
+        "reply_keywords": [
+          "113",
+          "100",
+          "13",
+          "vat",
+          "sales"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_017",
+      "bucket": "reasoning",
+      "input": "accrual vs cash basis farak",
+      "expect": {
+        "kind": "general",
+        "reply_keywords": [
+          "accrual",
+          "cash",
+          "recognition",
+          "timing"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_018",
+      "bucket": "reasoning",
+      "input": "substance over form example Nepal",
+      "expect": {
+        "kind": "general",
+        "reply_keywords": [
+          "substance",
+          "form",
+          "economic"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_019",
+      "bucket": "reasoning",
+      "input": "going concern assumption k ho",
+      "expect": {
+        "kind": "accounting_concept",
+        "reply_para_ids": [
+          "3.8",
+          "3.9"
+        ],
+        "reply_keywords": [
+          "going concern"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_020",
+      "bucket": "reasoning",
+      "input": "materiality le ke affect garcha",
+      "expect": {
+        "kind": "accounting_concept",
+        "reply_keywords": [
+          "material",
+          "materiality",
+          "omit"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_021",
+      "bucket": "reasoning",
+      "input": "recognition criteria kasari apply huncha",
+      "expect": {
+        "kind": "accounting_concept",
+        "reply_keywords": [
+          "recognition",
+          "relevance",
+          "faithful"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_022",
+      "bucket": "reasoning",
+      "input": "derecognition asset ko case",
+      "expect": {
+        "kind": "accounting_concept",
+        "reply_keywords": [
+          "derecognition",
+          "control",
+          "transfer"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_023",
+      "bucket": "reasoning",
+      "input": "fair value vs historical cost kun bela",
+      "expect": {
+        "kind": "accounting_concept",
+        "reply_keywords": [
+          "fair value",
+          "historical cost",
+          "measurement"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_024",
+      "bucket": "reasoning",
+      "input": "equity vs liability farak short",
+      "expect": {
+        "kind": "accounting_concept",
+        "reply_keywords": [
+          "equity",
+          "liability",
+          "obligation"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_025",
+      "bucket": "reasoning",
+      "input": "income vs expense recognition timing",
+      "expect": {
+        "kind": "accounting_concept",
+        "reply_keywords": [
+          "income",
+          "expense",
+          "increase",
+          "decrease"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_026",
+      "bucket": "reasoning",
+      "input": "SSF payable asset ho ki liability",
+      "expect": {
+        "kind": "general",
+        "reply_keywords": [
+          "liability",
+          "ssf",
+          "payable"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_027",
+      "bucket": "reasoning",
+      "input": "input VAT vs output VAT entry",
+      "expect": {
+        "kind": "general",
+        "reply_keywords": [
+          "input",
+          "output",
+          "vat",
+          "credit"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_028",
+      "bucket": "reasoning",
+      "input": "salary accrual vs salary payment entry farak",
+      "expect": {
+        "kind": "general",
+        "reply_keywords": [
+          "accrual",
+          "payable",
+          "payment",
+          "salary"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_029",
+      "bucket": "reasoning",
+      "input": "stock purchase cash vs credit",
+      "expect": {
+        "kind": "general",
+        "reply_keywords": [
+          "stock",
+          "cash",
+          "creditor",
+          "purchase"
+        ]
+      }
+    },
+    {
+      "id": "reasoning_030",
+      "bucket": "reasoning",
+      "input": "commission income entry kasari",
+      "expect": {
+        "kind": "general",
+        "reply_keywords": [
+          "commission",
+          "income",
+          "cash",
+          "dr",
+          "cr"
+        ]
+      }
+    },
+    {
+      "id": "language_001",
+      "bucket": "language",
+      "input": "what is an asset",
+      "expect": {
+        "reply_language": "english",
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "4.3"
+        ],
+        "reply_keywords": [
+          "asset",
+          "economic resource"
+        ]
+      }
+    },
+    {
+      "id": "language_002",
+      "bucket": "language",
+      "input": "sampatti k ho",
+      "expect": {
+        "reply_language": "nepali",
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "4.3"
+        ],
+        "reply_keywords": [
+          "sampatti",
+          "asset",
+          "economic"
+        ]
+      }
+    },
+    {
+      "id": "language_003",
+      "bucket": "language",
+      "input": "define liability in accounting",
+      "expect": {
+        "reply_language": "english",
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "4.26"
+        ],
+        "reply_keywords": [
+          "liability",
+          "obligation"
+        ]
+      }
+    },
+    {
+      "id": "language_004",
+      "bucket": "language",
+      "input": "dayitwo k ho",
+      "expect": {
+        "reply_language": "nepali",
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "4.26"
+        ],
+        "reply_keywords": [
+          "dayitwo",
+          "liability",
+          "dait"
+        ]
+      }
+    },
+    {
+      "id": "language_005",
+      "bucket": "language",
+      "input": "what is faithful representation",
+      "expect": {
+        "reply_language": "english",
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.12"
+        ],
+        "reply_keywords": [
+          "faithful",
+          "representation"
+        ]
+      }
+    },
+    {
+      "id": "language_006",
+      "bucket": "language",
+      "input": "faithful representation k ho",
+      "expect": {
+        "reply_language": "nepali",
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.12"
+        ],
+        "reply_keywords": [
+          "faithful",
+          "representation",
+          "imfaithful"
+        ]
+      }
+    },
+    {
+      "id": "language_007",
+      "bucket": "language",
+      "input": "explain recognition criteria",
+      "expect": {
+        "reply_language": "english",
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "5.6"
+        ],
+        "reply_keywords": [
+          "recognition",
+          "relevance"
+        ]
+      }
+    },
+    {
+      "id": "language_008",
+      "bucket": "language",
+      "input": "recognition criteria kasari ho",
+      "expect": {
+        "reply_language": "nepali",
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "5.6"
+        ],
+        "reply_keywords": [
+          "recognition",
+          "criteria",
+          "manyata"
+        ]
+      }
+    },
+    {
+      "id": "language_009",
+      "bucket": "language",
+      "input": "what is equity",
+      "expect": {
+        "reply_language": "english",
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "4.63"
+        ],
+        "reply_keywords": [
+          "equity",
+          "residual"
+        ]
+      }
+    },
+    {
+      "id": "language_010",
+      "bucket": "language",
+      "input": "punji k ho accounting ma",
+      "expect": {
+        "reply_language": "nepali",
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "4.63"
+        ],
+        "reply_keywords": [
+          "punji",
+          "equity",
+          "capital"
+        ]
+      }
+    },
+    {
+      "id": "language_011",
+      "bucket": "language",
+      "input": "what is materiality",
+      "expect": {
+        "reply_language": "english",
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.29"
+        ],
+        "reply_keywords": [
+          "material",
+          "materiality"
+        ]
+      }
+    },
+    {
+      "id": "language_012",
+      "bucket": "language",
+      "input": "materiality ko meaning",
+      "expect": {
+        "reply_language": "nepali",
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.29"
+        ],
+        "reply_keywords": [
+          "material",
+          "mahatwo",
+          "omit"
+        ]
+      }
+    },
+    {
+      "id": "language_013",
+      "bucket": "language",
+      "input": "what is going concern",
+      "expect": {
+        "reply_language": "english",
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "3.8"
+        ],
+        "reply_keywords": [
+          "going concern",
+          "continue"
+        ]
+      }
+    },
+    {
+      "id": "language_014",
+      "bucket": "language",
+      "input": "going concern assumption k ho",
+      "expect": {
+        "reply_language": "nepali",
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "3.8"
+        ],
+        "reply_keywords": [
+          "going concern",
+          "business",
+          "continue"
+        ]
+      }
+    },
+    {
+      "id": "language_015",
+      "bucket": "language",
+      "input": "what is fair value",
+      "expect": {
+        "reply_language": "english",
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "6.2"
+        ],
+        "reply_keywords": [
+          "fair value",
+          "measurement"
+        ]
+      }
+    },
+    {
+      "id": "language_016",
+      "bucket": "language",
+      "input": "fair value k ho",
+      "expect": {
+        "reply_language": "nepali",
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "6.2"
+        ],
+        "reply_keywords": [
+          "fair value",
+          "mulya",
+          "measurement"
+        ]
+      }
+    },
+    {
+      "id": "language_017",
+      "bucket": "language",
+      "input": "asset vs liability difference",
+      "expect": {
+        "reply_language": "english",
+        "kind": "accounting_concept",
+        "reply_keywords": [
+          "asset",
+          "liability"
+        ]
+      }
+    },
+    {
+      "id": "language_018",
+      "bucket": "language",
+      "input": "sampatti ra dayitwo farak",
+      "expect": {
+        "reply_language": "nepali",
+        "kind": "accounting_concept",
+        "reply_keywords": [
+          "sampatti",
+          "dayitwo",
+          "farak"
+        ]
+      }
+    },
+    {
+      "id": "language_019",
+      "bucket": "language",
+      "input": "what is income in IFRS",
+      "expect": {
+        "reply_language": "english",
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "4.68"
+        ],
+        "reply_keywords": [
+          "income",
+          "increase",
+          "equity"
+        ]
+      }
+    },
+    {
+      "id": "language_020",
+      "bucket": "language",
+      "input": "aamdani k ho IFRS ma",
+      "expect": {
+        "reply_language": "nepali",
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "4.68"
+        ],
+        "reply_keywords": [
+          "aamdani",
+          "income",
+          "equity"
+        ]
+      }
+    },
+    {
+      "id": "adversarial_001",
+      "bucket": "adversarial",
+      "input": "sampati k ho xa chaina grammar",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "4.3"
+        ],
+        "forbid_keywords": [
+          "halkhabar",
+          "spelling mistake",
+          "grammar rule"
+        ]
+      }
+    },
+    {
+      "id": "adversarial_002",
+      "bucket": "adversarial",
+      "input": "faithful representation k ho chha ki chaina",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.12"
+        ],
+        "forbid_keywords": [
+          "verb conjugation",
+          "halkhabar"
+        ]
+      }
+    },
+    {
+      "id": "adversarial_003",
+      "bucket": "adversarial",
+      "input": "dayitwo k ho vaneko k ho",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "4.26"
+        ],
+        "forbid_keywords": [
+          "spelling",
+          "romanization"
+        ]
+      }
+    },
+    {
+      "id": "adversarial_004",
+      "bucket": "adversarial",
+      "input": "punji k ho halkhabar ma",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "4.63"
+        ],
+        "forbid_keywords": [
+          "halkhabar guide",
+          "conjugation table"
+        ]
+      }
+    },
+    {
+      "id": "adversarial_005",
+      "bucket": "adversarial",
+      "input": "recognition criteria kasari ho explain pls",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "5.6"
+        ],
+        "forbid_keywords": [
+          "your spelling",
+          "typo"
+        ]
+      }
+    },
+    {
+      "id": "adversarial_006",
+      "bucket": "adversarial",
+      "input": "asset ko paribhasha k ho IFRS",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "4.3"
+        ],
+        "forbid_keywords": [
+          "nepali grammar reference",
+          "decode spelling"
+        ]
+      }
+    },
+    {
+      "id": "adversarial_007",
+      "bucket": "adversarial",
+      "input": "what is sampatti xa",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "4.3"
+        ],
+        "forbid_keywords": [
+          "particle xa",
+          "grammar lesson"
+        ]
+      }
+    },
+    {
+      "id": "adversarial_008",
+      "bucket": "adversarial",
+      "input": "liability k ho vanne",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "4.26"
+        ],
+        "forbid_keywords": [
+          "vanne vs vaneko",
+          "grammar"
+        ]
+      }
+    },
+    {
+      "id": "adversarial_009",
+      "bucket": "adversarial",
+      "input": "materiality ko matlab chaina bhane",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.29"
+        ],
+        "forbid_keywords": [
+          "chaina particle",
+          "verb form"
+        ]
+      }
+    },
+    {
+      "id": "adversarial_010",
+      "bucket": "adversarial",
+      "input": "going concern k ho ki hudaina",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "3.8"
+        ],
+        "forbid_keywords": [
+          "ki hudaina grammar",
+          "conjugation"
+        ]
+      }
+    },
+    {
+      "id": "adversarial_011",
+      "bucket": "adversarial",
+      "input": "fair value kasari measure garne ho",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "6.2"
+        ],
+        "forbid_keywords": [
+          "garne ho grammar",
+          "halkhabar"
+        ]
+      }
+    },
+    {
+      "id": "adversarial_012",
+      "bucket": "adversarial",
+      "input": "income expense farak k ho explain",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "4.68"
+        ],
+        "forbid_keywords": [
+          "spelling variant",
+          "roman nepali lesson"
+        ]
+      }
+    },
+    {
+      "id": "adversarial_013",
+      "bucket": "adversarial",
+      "input": "derecognition k ho short ma",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "5.25"
+        ],
+        "forbid_keywords": [
+          "short ma grammar",
+          "abbreviation lesson"
+        ]
+      }
+    },
+    {
+      "id": "adversarial_014",
+      "bucket": "adversarial",
+      "input": "accrual accounting k ho simple",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "1.17"
+        ],
+        "forbid_keywords": [
+          "simple nepali lesson",
+          "halkhabar"
+        ]
+      }
+    },
+    {
+      "id": "adversarial_015",
+      "bucket": "adversarial",
+      "input": "substance over form k ho example",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "4.59"
+        ],
+        "forbid_keywords": [
+          "form vs form grammar",
+          "spelling"
+        ]
+      }
+    },
+    {
+      "id": "adversarial_016",
+      "bucket": "adversarial",
+      "input": "what is an asset pls halkhabar",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "4.3"
+        ],
+        "forbid_keywords": [
+          "halkhabar romanization",
+          "decode the word asset"
+        ]
+      }
+    },
+    {
+      "id": "adversarial_017",
+      "bucket": "adversarial",
+      "input": "equity k ho accounting sikha",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "4.63"
+        ],
+        "forbid_keywords": [
+          "sikha grammar",
+          "verb teaching"
+        ]
+      }
+    },
+    {
+      "id": "adversarial_018",
+      "bucket": "adversarial",
+      "input": "expense k ho kharcha jasto ho ki",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "4.72"
+        ],
+        "forbid_keywords": [
+          "jasto ho ki particle",
+          "grammar comparison"
+        ]
+      }
+    },
+    {
+      "id": "adversarial_019",
+      "bucket": "adversarial",
+      "input": "comparability k ho IFRS ma",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.20"
+        ],
+        "forbid_keywords": [
+          "comparable spelling",
+          "nepali grammar"
+        ]
+      }
+    },
+    {
+      "id": "adversarial_020",
+      "bucket": "adversarial",
+      "input": "cost constraint k ho brief",
+      "expect": {
+        "kind": "accounting_concept",
+        "context_para_ids": [
+          "2.39"
+        ],
+        "forbid_keywords": [
+          "brief grammar",
+          "halkhabar tutorial"
+        ]
+      }
+    }
+  ]
+}
