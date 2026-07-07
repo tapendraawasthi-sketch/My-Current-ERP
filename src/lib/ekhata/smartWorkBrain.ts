@@ -8,6 +8,7 @@
 
 import type { KhataIntent } from "./types";
 import { isSemanticTransaction, parseSemanticTransaction } from "./semanticNepaliBrain";
+import { mentionsBusinessItem } from "./vocabulary";
 
 export interface WorkSignals {
   hasNumbers: boolean;
@@ -55,8 +56,14 @@ export function shouldTryWorkParse(text: string): boolean {
   )
     return true;
 
+  // Nepali qty × unit price: "20 samosa, 50 eutako" / "20 samosa 50 prati ko"
+  if (/\d+\s+\w+[,\s]+\d+\s+(?:eutako|euta\s*ko|eutai|prati|prati\s*ko)/i.test(t)) return true;
+
   // Qty × rate pattern without explicit verb
   if (/\d+\s+\w+\s+(for|at|@)\s*(rs\.?\s*)?\d+/i.test(t)) return true;
+
+  // Number + known business item (follow-up or partial entry)
+  if (hasNumber && mentionsBusinessItem(t)) return true;
 
   // Nepali genitive price: "50 rupaya ko bag"
   if (/\d+\s+(?:rs|npr|rupees|rupiya|rupya|rupaye|rupaya)\s+ko\s+\w/i.test(t)) return true;
@@ -71,6 +78,21 @@ export function parseSmartAmount(text: string): {
   unitPrice: number | null;
 } {
   const t = text.replace(/,/g, "").toLowerCase();
+
+  // Nepali: "20 samosa 50 eutako" / "20 samosa, 50 eutako" / "50 prati ko"
+  const neQtyRate =
+    t.match(
+      /(\d+(?:\.\d+)?)\s+[a-zA-Z]{2,}(?:s|es)?[,\s]+(\d+(?:\.\d+)?)\s+(?:eutako|euta\s*ko|eutai|prati|prati\s*ko|per|each)/i,
+    ) ||
+    t.match(
+      /(\d+(?:\.\d+)?)\s+[a-zA-Z]{2,}(?:s|es)?\s+(\d+(?:\.\d+)?)\s+(?:eutako|euta\s*ko|eutai|prati|prati\s*ko)/i,
+    );
+  if (neQtyRate) {
+    const qty = parseFloat(neQtyRate[1]);
+    const unit = parseFloat(neQtyRate[2]);
+    if (qty > 0 && unit > 0)
+      return { amount: Math.round(qty * unit), quantity: qty, unitPrice: unit };
+  }
 
   // "200 cups for Rs 50 each" / "200 cups at 50 each" / "200 @ 50"
   const qtyEach =
@@ -242,8 +264,13 @@ export function extractWorkItem(text: string, intent: KhataIntent | null): strin
 
   // "200 cups" / "sold tea" / "bought stationery"
   const qtyItem = t.match(/\b(\d+)\s+([a-zA-Z]{2,20})(?:s|es)?\b/i);
-  if (qtyItem && !/^(rs|npr|for|at|each|per|today|yesterday)$/i.test(qtyItem[2])) {
+  if (qtyItem && !/^(rs|npr|for|at|each|per|today|yesterday|eutako|euta|prati)$/i.test(qtyItem[2])) {
     return qtyItem[2];
+  }
+
+  const neItem = t.match(/\b(\d+)\s+([a-zA-Z]{2,20})(?:s|es)?[,\s]+\d+/i);
+  if (neItem && !/^(rs|npr|for|at|each|per|eutako|euta|prati)$/i.test(neItem[2])) {
+    return neItem[2];
   }
 
   const worthItem = t.match(/\bworth\s+of\s+([a-zA-Z]{2,20})/i);

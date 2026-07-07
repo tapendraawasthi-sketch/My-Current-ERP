@@ -17,6 +17,8 @@ import {
   updateContextAfterEntry,
   type EKhataConversationContext,
 } from "../lib/ekhata/processMessage";
+import { updateContextAfterClarify } from "../lib/ekhata/conversationState";
+import { extractWorkItem } from "../lib/ekhata/smartWorkBrain";
 import type { EKhataChatMessage, KhataConfirmationCard } from "../lib/ekhata/types";
 import { isSelfContainedAi } from "../lib/selfContainedAi";
 import { useStore } from "./useStore";
@@ -142,6 +144,14 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
 
         if (result.kind === "entry" && result.card) {
           conversationContext = updateContextAfterEntry(conversationContext, result.card, trimmed);
+        } else if (result.kind === "clarify") {
+          conversationContext = updateContextAfterClarify(
+            conversationContext,
+            trimmed,
+            result.reply,
+            "khata_cash_sale",
+            extractWorkItem(trimmed, "khata_cash_sale"),
+          );
         }
 
         set((s) => ({

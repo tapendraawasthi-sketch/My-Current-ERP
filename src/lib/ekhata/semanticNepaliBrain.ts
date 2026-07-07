@@ -81,6 +81,7 @@ const VERB_MORPHOLOGY: Record<SemanticAction, string[]> = {
     "bechne",
     "bechnu",
     "bechyo",
+    "bechye",
     "beche",
     "becheko",
     "bechiyeko",

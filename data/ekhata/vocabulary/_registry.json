@@ -1,0 +1,401 @@
+{
+  "version": 1,
+  "description": "Categorized Nepali/English business vocabulary for e-Khata NLU",
+  "categories": [
+    {
+      "slug": "universal-transactions",
+      "displayName": {
+        "en": "Universal Transactions",
+        "ne": "सार्वभौमिक लेनदेन",
+        "ne_roman": "sarvabhaumik len den"
+      },
+      "businessNature": "universal",
+      "tags": [
+        "all",
+        "transactions",
+        "verbs"
+      ],
+      "sectorSlug": null,
+      "file": "categories/universal-transactions.json"
+    },
+    {
+      "slug": "universal-units-pricing",
+      "displayName": {
+        "en": "Units & Pricing",
+        "ne": "एकाइ र मूल्य",
+        "ne_roman": "ekai ra mulya"
+      },
+      "businessNature": "universal",
+      "tags": [
+        "units",
+        "pricing",
+        "quantity"
+      ],
+      "sectorSlug": null,
+      "file": "categories/universal-units-pricing.json"
+    },
+    {
+      "slug": "universal-payment-modes",
+      "displayName": {
+        "en": "Payment Modes",
+        "ne": "भुक्तानी माध्यम",
+        "ne_roman": "bhuktani madhyam"
+      },
+      "businessNature": "universal",
+      "tags": [
+        "payment",
+        "digital",
+        "bank"
+      ],
+      "sectorSlug": null,
+      "file": "categories/universal-payment-modes.json"
+    },
+    {
+      "slug": "universal-accounting-tax",
+      "displayName": {
+        "en": "Accounting & Tax",
+        "ne": "लेखा र कर",
+        "ne_roman": "lekha ra kar"
+      },
+      "businessNature": "universal",
+      "tags": [
+        "accounting",
+        "tax",
+        "ifrs"
+      ],
+      "sectorSlug": null,
+      "file": "categories/universal-accounting-tax.json"
+    },
+    {
+      "slug": "retail-kirana-grocery",
+      "displayName": {
+        "en": "Kirana / General Grocery",
+        "ne": "किराना पसल",
+        "ne_roman": "kirana pasal"
+      },
+      "businessNature": "retail",
+      "tags": [
+        "grocery",
+        "fmcg",
+        "kirana"
+      ],
+      "sectorSlug": "kirana-grocery",
+      "file": "categories/retail-kirana-grocery.json"
+    },
+    {
+      "slug": "retail-mini-mart",
+      "displayName": {
+        "en": "Mini Mart / Convenience Store",
+        "ne": "मिनी मार्ट",
+        "ne_roman": "mini mart"
+      },
+      "businessNature": "retail",
+      "tags": [
+        "minimart",
+        "convenience"
+      ],
+      "sectorSlug": "mini-mart",
+      "file": "categories/retail-mini-mart.json"
+    },
+    {
+      "slug": "wholesale-grocery",
+      "displayName": {
+        "en": "Wholesale Grocery / Trading",
+        "ne": "थोक किराना",
+        "ne_roman": "thok kirana"
+      },
+      "businessNature": "wholesale",
+      "tags": [
+        "wholesale",
+        "trading",
+        "distribution"
+      ],
+      "sectorSlug": "wholesale-grocery",
+      "file": "categories/wholesale-grocery.json"
+    },
+    {
+      "slug": "clothing-fashion",
+      "displayName": {
+        "en": "Clothing & Fashion",
+        "ne": "लuga / Fashion",
+        "ne_roman": "luga fashion"
+      },
+      "businessNature": "retail",
+      "tags": [
+        "clothing",
+        "fashion",
+        "textile"
+      ],
+      "sectorSlug": "clothing-fashion",
+      "file": "categories/clothing-fashion.json"
+    },
+    {
+      "slug": "footwear",
+      "displayName": {
+        "en": "Footwear Shop",
+        "ne": "जutta पसल",
+        "ne_roman": "jutta pasal"
+      },
+      "businessNature": "retail",
+      "tags": [
+        "footwear",
+        "shoes"
+      ],
+      "sectorSlug": "footwear",
+      "file": "categories/footwear.json"
+    },
+    {
+      "slug": "cosmetic-beauty",
+      "displayName": {
+        "en": "Cosmetic & Beauty",
+        "ne": "सौन्दर्य पसल",
+        "ne_roman": "saundarya pasal"
+      },
+      "businessNature": "retail",
+      "tags": [
+        "cosmetic",
+        "beauty",
+        "salon"
+      ],
+      "sectorSlug": "cosmetic",
+      "file": "categories/cosmetic-beauty.json"
+    },
+    {
+      "slug": "pharmacy-medical",
+      "displayName": {
+        "en": "Pharmacy / Medical Store",
+        "ne": "औषधि पसल",
+        "ne_roman": "aushadhi pasal"
+      },
+      "businessNature": "retail",
+      "tags": [
+        "pharmacy",
+        "medical",
+        "healthcare"
+      ],
+      "sectorSlug": "pharmacy-medical",
+      "file": "categories/pharmacy-medical.json"
+    },
+    {
+      "slug": "clinic-health-service",
+      "displayName": {
+        "en": "Clinic / Health Service",
+        "ne": "क्लिनिक / स्वास्थ्य",
+        "ne_roman": "clinic swasthya"
+      },
+      "businessNature": "services",
+      "tags": [
+        "clinic",
+        "health",
+        "medical"
+      ],
+      "sectorSlug": "clinic-health",
+      "file": "categories/clinic-health-service.json"
+    },
+    {
+      "slug": "hospitality-restaurant-cafe",
+      "displayName": {
+        "en": "Restaurant / Cafe / Hotel",
+        "ne": "रेस्टुरेन्ट / होटल",
+        "ne_roman": "restaurant hotel"
+      },
+      "businessNature": "hospitality",
+      "tags": [
+        "restaurant",
+        "cafe",
+        "hotel",
+        "food"
+      ],
+      "sectorSlug": null,
+      "file": "categories/hospitality-restaurant-cafe.json"
+    },
+    {
+      "slug": "manufacturing-production",
+      "displayName": {
+        "en": "Manufacturing / Production",
+        "ne": "उत्पादन / Factory",
+        "ne_roman": "utpadan factory"
+      },
+      "businessNature": "manufacturing",
+      "tags": [
+        "factory",
+        "production"
+      ],
+      "sectorSlug": null,
+      "file": "categories/manufacturing-production.json"
+    },
+    {
+      "slug": "construction-realestate",
+      "displayName": {
+        "en": "Construction / Real Estate",
+        "ne": "निर्माण / Real Estate",
+        "ne_roman": "nirman real estate"
+      },
+      "businessNature": "construction",
+      "tags": [
+        "construction",
+        "realestate",
+        "contractor"
+      ],
+      "sectorSlug": null,
+      "file": "categories/construction-realestate.json"
+    },
+    {
+      "slug": "agriculture-farming",
+      "displayName": {
+        "en": "Agriculture / Farming",
+        "ne": "कृषि / पशुपालन",
+        "ne_roman": "krishi pashupalan"
+      },
+      "businessNature": "agriculture",
+      "tags": [
+        "agriculture",
+        "farming",
+        "dairy"
+      ],
+      "sectorSlug": null,
+      "file": "categories/agriculture-farming.json"
+    },
+    {
+      "slug": "transport-logistics",
+      "displayName": {
+        "en": "Transport / Logistics",
+        "ne": "यातायात / Logistics",
+        "ne_roman": "yatayat logistics"
+      },
+      "businessNature": "transport",
+      "tags": [
+        "transport",
+        "logistics",
+        "freight"
+      ],
+      "sectorSlug": null,
+      "file": "categories/transport-logistics.json"
+    },
+    {
+      "slug": "education-institute",
+      "displayName": {
+        "en": "Education / Training Institute",
+        "ne": "शिक्षा संस्था",
+        "ne_roman": "shiksha sanstha"
+      },
+      "businessNature": "education",
+      "tags": [
+        "school",
+        "college",
+        "training"
+      ],
+      "sectorSlug": null,
+      "file": "categories/education-institute.json"
+    },
+    {
+      "slug": "banking-finance-cooperative",
+      "displayName": {
+        "en": "Banking / Finance / Cooperative",
+        "ne": "बैंक / सहकारी",
+        "ne_roman": "bank sahakari"
+      },
+      "businessNature": "finance",
+      "tags": [
+        "bank",
+        "mfi",
+        "cooperative"
+      ],
+      "sectorSlug": null,
+      "file": "categories/banking-finance-cooperative.json"
+    },
+    {
+      "slug": "telecom-it-services",
+      "displayName": {
+        "en": "Telecom / IT Services",
+        "ne": "टेलिकम / IT",
+        "ne_roman": "telecom it"
+      },
+      "businessNature": "services",
+      "tags": [
+        "telecom",
+        "it",
+        "software"
+      ],
+      "sectorSlug": null,
+      "file": "categories/telecom-it-services.json"
+    },
+    {
+      "slug": "insurance",
+      "displayName": {
+        "en": "Insurance",
+        "ne": "बीमा",
+        "ne_roman": "bima"
+      },
+      "businessNature": "finance",
+      "tags": [
+        "insurance"
+      ],
+      "sectorSlug": null,
+      "file": "categories/insurance.json"
+    },
+    {
+      "slug": "hydropower-energy",
+      "displayName": {
+        "en": "Hydropower / Energy",
+        "ne": "जलvidyut / Energy",
+        "ne_roman": "jalvidyut energy"
+      },
+      "businessNature": "energy",
+      "tags": [
+        "hydropower",
+        "energy"
+      ],
+      "sectorSlug": null,
+      "file": "categories/hydropower-energy.json"
+    },
+    {
+      "slug": "ngo-nonprofit",
+      "displayName": {
+        "en": "NGO / Non-profit",
+        "ne": "गैह्र सरकारी",
+        "ne_roman": "gair sarkari"
+      },
+      "businessNature": "nonprofit",
+      "tags": [
+        "ngo",
+        "nonprofit",
+        "donor"
+      ],
+      "sectorSlug": null,
+      "file": "categories/ngo-nonprofit.json"
+    },
+    {
+      "slug": "media-advertising",
+      "displayName": {
+        "en": "Media / Advertising",
+        "ne": "मिडिया / विज्ञापन",
+        "ne_roman": "media vigyapan"
+      },
+      "businessNature": "media",
+      "tags": [
+        "media",
+        "advertising",
+        "publishing"
+      ],
+      "sectorSlug": null,
+      "file": "categories/media-advertising.json"
+    },
+    {
+      "slug": "remittance-money-transfer",
+      "displayName": {
+        "en": "Remittance / Money Transfer",
+        "ne": "रेमिट्यान्स",
+        "ne_roman": "remittance"
+      },
+      "businessNature": "finance",
+      "tags": [
+        "remittance",
+        "money transfer",
+        "forex"
+      ],
+      "sectorSlug": null,
+      "file": "categories/remittance-money-transfer.json"
+    }
+  ]
+}

@@ -1,0 +1,161 @@
+{
+  "id": "universal-accounting-tax",
+  "slug": "universal-accounting-tax",
+  "displayName": {
+    "en": "Accounting & Tax",
+    "ne": "लेखा र कर",
+    "ne_roman": "lekha ra kar"
+  },
+  "businessNature": "universal",
+  "tags": [
+    "accounting",
+    "tax",
+    "ifrs"
+  ],
+  "sectorSlug": null,
+  "groups": {
+    "elements": {
+      "label": {
+        "en": "Accounting elements",
+        "ne": "लेखा तत्व"
+      },
+      "en": [
+        "asset",
+        "assets",
+        "liability",
+        "liabilities",
+        "equity",
+        "capital",
+        "income",
+        "revenue",
+        "expense",
+        "expenses",
+        "profit",
+        "loss",
+        "drawings",
+        "dividend",
+        "depreciation",
+        "provision",
+        "accrual",
+        "prepaid",
+        "outstanding",
+        "receivable",
+        "payable",
+        "inventory",
+        "stock",
+        "fixed asset",
+        "current asset",
+        "goodwill",
+        "amortization"
+      ],
+      "ne_roman": [
+        "sampatti",
+        "sampati",
+        "dayitwo",
+        "dayitwa",
+        "rin",
+        "karz",
+        "punji",
+        "puni",
+        "poonji",
+        "aamdani",
+        "aay",
+        "kharcha",
+        "nafa",
+        "ghata",
+        "ghataa",
+        "hral",
+        "hral gareko",
+        "drawings",
+        "ghar kharcha",
+        "malik le liyeko",
+        "stock",
+        "saman",
+        "inventory",
+        "hisab",
+        "lekha",
+        "journal",
+        "voucher",
+        "bill",
+        "invoice",
+        "debit",
+        "credit",
+        "dr",
+        "cr"
+      ],
+      "ne_devanagari": [
+        "सम्पत्ति",
+        "दायित्व",
+        "पुँजी",
+        "आम्दानी",
+        "खर्च",
+        "नाफा",
+        "घाटा",
+        "लेखा"
+      ],
+      "variants": [
+        "assets and liabilities",
+        "profit and loss",
+        "balance sheet",
+        "trial balance"
+      ]
+    },
+    "tax_compliance": {
+      "label": {
+        "en": "Tax & compliance",
+        "ne": "कर तथा अनुपालन"
+      },
+      "en": [
+        "vat",
+        "tds",
+        "ssf",
+        "cit",
+        "income tax",
+        "excise",
+        "customs",
+        "pan",
+        "vat bill",
+        "tax invoice",
+        "withholding",
+        "advance tax",
+        "tax deductible",
+        "tax credit"
+      ],
+      "ne_roman": [
+        "vat",
+        "byat",
+        "bhyat",
+        "tds",
+        "ssf",
+        "cit",
+        "income tax",
+        "kar",
+        "tax",
+        "pan",
+        "vat bill",
+        "tax bill",
+        "vat registered",
+        "non vat",
+        "excise",
+        "customs",
+        "bojho",
+        "bojh",
+        "kaatyo",
+        "kaateko",
+        "withholding",
+        "advance tax"
+      ],
+      "ne_devanagari": [
+        "भ्याट",
+        "कर",
+        "आयकर",
+        "टीडीएस"
+      ],
+      "variants": [
+        "vat registered",
+        "non-vat bill",
+        "tds kaateko"
+      ]
+    }
+  }
+}

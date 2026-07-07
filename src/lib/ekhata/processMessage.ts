@@ -20,7 +20,7 @@ import {
   detectContextualCommand,
   type EKhataConversationContext,
 } from "./conversationState";
-import { shouldTryWorkParse } from "./smartWorkBrain";
+import { shouldTryWorkParse, extractWorkItem } from "./smartWorkBrain";
 import type { KhataConfirmationCard, KhataParseResult } from "./types";
 import type { LedgerBalanceSnapshot } from "./conversationEngine";
 import { isLedgerBalanceQuery, replyBalance } from "./conversationEngine";
@@ -129,6 +129,35 @@ function tryLedgerBalanceQuery(
   };
 }
 
+function tryClarificationFollowUp(
+  trimmed: string,
+  normalizedText: string,
+  lang: ReturnType<typeof detectUserLanguage>,
+  ctx?: EKhataConversationContext,
+): EKhataProcessResult | null {
+  if (!ctx || ctx.state !== "awaiting_clarification") return null;
+  if (!/\d/.test(trimmed)) return null;
+
+  const combined = [ctx.pendingPrefix ?? ctx.lastUserText, trimmed].filter(Boolean).join(" ");
+  const combinedNorm = normalizeNepaliText(combined);
+  const parsed = parseKhataMessage(combined, combinedNorm);
+
+  if (parsed.card) {
+    return {
+      kind: "entry",
+      reply: buildLocalizedEntryReply(parsed.card, lang),
+      normalizedText: combinedNorm,
+      parseResult: parsed,
+      card: parsed.card,
+      engine: "ca",
+    };
+  }
+
+  if (parsed.clarifying_question) return null;
+
+  return null;
+}
+
 function tryJournalEntry(
   trimmed: string,
   normalizedText: string,
@@ -226,6 +255,14 @@ export function processEKhataMessage(
 
   const ledgerBalance = tryLedgerBalanceQuery(trimmed, normalizedText, options.balance);
   if (ledgerBalance) return ledgerBalance;
+
+  const clarifyFollowUp = tryClarificationFollowUp(
+    trimmed,
+    normalizedText,
+    lang,
+    options.conversationContext,
+  );
+  if (clarifyFollowUp) return clarifyFollowUp;
 
   const entry = tryJournalEntry(trimmed, normalizedText, lang);
   if (entry) return entry;

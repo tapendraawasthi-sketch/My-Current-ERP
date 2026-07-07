@@ -1,0 +1,544 @@
+{
+  "id": "universal-transactions",
+  "slug": "universal-transactions",
+  "displayName": {
+    "en": "Universal Transactions",
+    "ne": "सार्वभौमिक लेनदेन",
+    "ne_roman": "sarvabhaumik len den"
+  },
+  "businessNature": "universal",
+  "tags": [
+    "all",
+    "transactions",
+    "verbs"
+  ],
+  "sectorSlug": null,
+  "groups": {
+    "sale_verbs": {
+      "label": {
+        "en": "Sale verbs",
+        "ne": "बिक्री क्रिया"
+      },
+      "intentHint": "khata_cash_sale",
+      "en": [
+        "sold",
+        "sell",
+        "sale",
+        "sales",
+        "revenue",
+        "income",
+        "earned",
+        "invoiced",
+        "billed",
+        "retail sale",
+        "cash sale",
+        "credit sale",
+        "wholesale sale",
+        "dispatch",
+        "delivered"
+      ],
+      "ne_roman": [
+        "becheko",
+        "beche",
+        "bechyo",
+        "bechye",
+        "bechiyeko",
+        "bechne",
+        "bechnu",
+        "bechda",
+        "bikri",
+        "bikyo",
+        "bikyayo",
+        "bikne",
+        "biknu",
+        "bikda",
+        "bikyo",
+        "bikri vayo",
+        "nagad bikri",
+        "udhaar bikri",
+        "cash ma becheko",
+        "nagad ma becheko",
+        "maal gayo",
+        "saman becheko",
+        "samaan bikyo",
+        "bikri gareko",
+        "sales gareko"
+      ],
+      "ne_devanagari": [
+        "बेचेको",
+        "बेचyo",
+        "बिक्री",
+        "बिकyo",
+        "माल गयो",
+        "सामान बेचेको"
+      ],
+      "variants": [
+        "beche",
+        "bechya",
+        "bechiyeko",
+        "bechiyeko",
+        "bechiyeko",
+        "bik",
+        "biknu",
+        "bikda",
+        "bikri garyo",
+        "bikri bhayo",
+        "sale gareko",
+        "sold out"
+      ]
+    },
+    "purchase_verbs": {
+      "label": {
+        "en": "Purchase verbs",
+        "ne": "खरिद क्रिया"
+      },
+      "intentHint": "khata_purchase",
+      "en": [
+        "bought",
+        "buy",
+        "purchase",
+        "purchased",
+        "procured",
+        "procure",
+        "ordered",
+        "received goods",
+        "stock in",
+        "goods received",
+        "imported",
+        "sourced"
+      ],
+      "ne_roman": [
+        "kineko",
+        "kine",
+        "kinyo",
+        "kinye",
+        "kiniyo",
+        "kinna",
+        "kinne",
+        "kinnu",
+        "kina",
+        "kinchhu",
+        "kinxu",
+        "kharid",
+        "kharido",
+        "kharidyo",
+        "kharideko",
+        "kharid gareko",
+        "maal aayo",
+        "saman aayo",
+        "samaan liyeko",
+        "stock aayo",
+        "order gareko",
+        "order aayo"
+      ],
+      "ne_devanagari": [
+        "किनेको",
+        "खरिद",
+        "माल आयो",
+        "सामान लिएको"
+      ],
+      "variants": [
+        "kin",
+        "kinyo",
+        "kinye",
+        "kharidne",
+        "kharid garyo",
+        "purchase gareko"
+      ]
+    },
+    "payment_in": {
+      "label": {
+        "en": "Payment received",
+        "ne": "प्राप्त भुक्तानी"
+      },
+      "intentHint": "khata_payment_in",
+      "en": [
+        "received",
+        "receive",
+        "collected",
+        "collection",
+        "payment in",
+        "cash in",
+        "deposit received",
+        "settlement received",
+        "recovery",
+        "recovered"
+      ],
+      "ne_roman": [
+        "tiryo",
+        "tireko",
+        "tire",
+        "tira",
+        "tiryoo",
+        "jama",
+        "jamayo",
+        "aayo",
+        "aayeko",
+        "aaye",
+        "payo",
+        "paye",
+        "milyo",
+        "milyo",
+        "paisa aayo",
+        "rakam aayo",
+        "jamma gareko",
+        "wasool",
+        "wasul",
+        "prapta",
+        "prapti",
+        "udharo katyo",
+        "khata katyo",
+        "farak aayo"
+      ],
+      "ne_devanagari": [
+        "तिरyo",
+        "जम्मा",
+        "आयो",
+        "पैसा आयो",
+        "उधारो काटyo"
+      ],
+      "variants": [
+        "tirna",
+        "tirnu",
+        "jama gareko",
+        "payment aayo",
+        "received payment"
+      ]
+    },
+    "payment_out": {
+      "label": {
+        "en": "Payment made",
+        "ne": "भुक्तानी गरiyo"
+      },
+      "intentHint": "khata_payment_out",
+      "en": [
+        "paid",
+        "pay",
+        "payment made",
+        "payment out",
+        "sent",
+        "transferred",
+        "disbursed",
+        "settled",
+        "remitted",
+        "cleared bill"
+      ],
+      "ne_roman": [
+        "tiryo diye",
+        "tirna diye",
+        "bhugtan",
+        "bhugtan gareko",
+        "payment gareko",
+        "paisa diye",
+        "diye",
+        "diyo",
+        "diyeko",
+        "tireko",
+        "cheque diye",
+        "bank bata tireko",
+        "cash diye",
+        "farak diye",
+        "bill tireko",
+        "bill pay gareko"
+      ],
+      "ne_devanagari": [
+        "भुक्तान",
+        "तिरyo",
+        "दियो",
+        "पैसा दिए"
+      ],
+      "variants": [
+        "payment garyo",
+        "paid cash",
+        "paid online",
+        "bill clear gareko"
+      ]
+    },
+    "expense_verbs": {
+      "label": {
+        "en": "Expense verbs",
+        "ne": "खर्च क्रिया"
+      },
+      "intentHint": "khata_expense",
+      "en": [
+        "expense",
+        "expenses",
+        "spent",
+        "spend",
+        "cost",
+        "charge",
+        "fee",
+        "bill paid",
+        "utility paid"
+      ],
+      "ne_roman": [
+        "kharcha",
+        "kharcho",
+        "karcha",
+        "kharcha gareko",
+        "kharcha bhayo",
+        "kharcha lagyo",
+        "kharcha tireko",
+        "bill tireko",
+        "bill aayo",
+        "kharcha diye"
+      ],
+      "ne_devanagari": [
+        "खर्च",
+        "खर्चा",
+        "बिल तिरyo"
+      ],
+      "variants": [
+        "expense gareko",
+        "spent on",
+        "kharch lagyo"
+      ]
+    },
+    "credit_terms": {
+      "label": {
+        "en": "Credit / udhaar",
+        "ne": "उधार"
+      },
+      "intentHint": "credit",
+      "en": [
+        "credit",
+        "on credit",
+        "due",
+        "outstanding",
+        "receivable",
+        "payable",
+        "deferred"
+      ],
+      "ne_roman": [
+        "udhaar",
+        "udhar",
+        "udharo",
+        "udhaar diye",
+        "udhaar liyeko",
+        "udhaar ma",
+        "credit ma",
+        "baki",
+        "baki cha",
+        "baki rahyo",
+        "diney",
+        "linu parne",
+        "asuli",
+        "karz",
+        "karja",
+        "pachi tirne",
+        "agami hafta tirne",
+        "khata ma",
+        "hisab ma rakheko"
+      ],
+      "ne_devanagari": [
+        "उधार",
+        "उधारो",
+        "बाँकी",
+        "असुली"
+      ],
+      "variants": [
+        "udhar diye",
+        "udharo diye",
+        "on udhaar",
+        "credit sale",
+        "credit purchase"
+      ]
+    },
+    "cash_terms": {
+      "label": {
+        "en": "Cash / nagad",
+        "ne": "नगद"
+      },
+      "intentHint": "cash",
+      "en": [
+        "cash",
+        "in cash",
+        "cash payment",
+        "petty cash",
+        "till",
+        "counter cash"
+      ],
+      "ne_roman": [
+        "nagad",
+        "nakad",
+        "nakit",
+        "cash ma",
+        "nagad ma",
+        "hath ma",
+        "counter bata",
+        "petty cash",
+        "nagad bikri",
+        "nagad tiryo",
+        "cash payment",
+        "note ma",
+        "thaili bata"
+      ],
+      "ne_devanagari": [
+        "नगद",
+        "नकद",
+        "हातमा"
+      ],
+      "variants": [
+        "cash ma",
+        "nagad payment",
+        "by cash"
+      ]
+    },
+    "return_refund": {
+      "label": {
+        "en": "Return / refund",
+        "ne": "फिर्ता"
+      },
+      "intentHint": "return",
+      "en": [
+        "return",
+        "returned",
+        "refund",
+        "refunded",
+        "credit note",
+        "debit note",
+        "exchange"
+      ],
+      "ne_roman": [
+        "firta",
+        "firta diye",
+        "return gareko",
+        "wapas",
+        "wapasi",
+        "exchange",
+        "badli",
+        "sales return",
+        "purchase return",
+        "customer le firta",
+        "supplier lai firta"
+      ],
+      "ne_devanagari": [
+        "फिर्ता",
+        "वापस"
+      ],
+      "variants": [
+        "refund gareko",
+        "return bhayo",
+        "firta garyo"
+      ]
+    },
+    "spelling_aliases": {
+      "label": {
+        "en": "Spelling variants",
+        "ne": "हिज्जे"
+      },
+      "map": {
+        "bechye": "becheko",
+        "bechya": "becheko",
+        "bechiyeko": "becheko",
+        "biknu": "bikri",
+        "bikda": "bikri",
+        "kinye": "kineko",
+        "kiniyo": "kineko",
+        "eutako": "euta ko",
+        "eutai": "euta",
+        "wotako": "wota ko",
+        "pratiko": "prati ko",
+        "rupiyako": "rs ko",
+        "thok": "wholesale",
+        "mahajani": "wholesaler",
+        "osadi": "medicine",
+        "osadhi": "medicine",
+        "aushadhi": "medicine",
+        "cigrate": "cigarette",
+        "chiya": "tea",
+        "chiyapatti": "tea leaves",
+        "chiya patti": "tea leaves",
+        "gyas": "gas",
+        "chini": "sugar",
+        "daal": "dal",
+        "chamal": "rice",
+        "atta": "flour",
+        "tel": "oil",
+        "sabun": "soap",
+        "dahi": "yogurt",
+        "anda": "egg",
+        "momo": "momo",
+        "samosa": "samosa",
+        "chatpate": "chatpate",
+        "pakoda": "pakoda",
+        "pakauda": "pakoda",
+        "suti": "cotton",
+        "kapada": "cloth",
+        "fabric": "cloth",
+        "moja": "socks",
+        "chappal": "slipper",
+        "byat": "vat",
+        "bhyat": "vat",
+        "karz": "udhaar",
+        "karja": "udhaar",
+        "asuli": "receivable",
+        "wasool": "tiryo",
+        "wasul": "tiryo",
+        "jami": "jamma",
+        "dam": "rate",
+        "daam": "rate",
+        "mulya": "price",
+        "saman": "stock",
+        "samaan": "stock",
+        "mal": "stock",
+        "maal": "stock",
+        "godown": "warehouse",
+        "bora": "sack",
+        "packet": "packet",
+        "carton": "carton",
+        "dozen": "dozen",
+        "kilo": "kg",
+        "liter": "ltr",
+        "litre": "ltr",
+        "mitar": "meter",
+        "ghanta": "hour",
+        "mahina": "month",
+        "hajar": "hajar",
+        "hazar": "hajar",
+        "lakh": "lakh",
+        "lac": "lakh",
+        "saya": "saya",
+        "sau": "saya",
+        "connectips": "connectips",
+        "fonepay": "fonepay",
+        "esewa": "esewa",
+        "khalti": "khalti",
+        "cheque": "cheque",
+        "chak": "cheque",
+        "bijuli": "electricity",
+        "bijli": "electricity",
+        "rent": "bhaada",
+        "bhaada": "bhaada",
+        "bhada": "bhaada",
+        "labour": "labour",
+        "mazdoor": "labour",
+        "jyala": "labour",
+        "distributor": "supplier",
+        "supliyer": "supplier",
+        "supplier": "supplier",
+        "dealer": "dealer",
+        "grahak": "customer",
+        "customer": "customer",
+        "party": "party",
+        "staff": "staff",
+        "salary": "salary",
+        "talab": "salary",
+        "bonus": "bonus",
+        "commission": "commission",
+        "discount": "discount",
+        "chhut": "discount",
+        "chut": "discount",
+        "firta": "return",
+        "wapas": "return",
+        "expire": "expired",
+        "myad": "expiry",
+        "kharab": "damaged",
+        "bigreko": "damaged",
+        "chori": "theft",
+        "haraayo": "lost",
+        "phalyo": "discarded"
+      }
+    }
+  }
+}

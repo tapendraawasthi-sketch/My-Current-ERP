@@ -1,0 +1,169 @@
+{
+  "id": "universal-units-pricing",
+  "slug": "universal-units-pricing",
+  "displayName": {
+    "en": "Units & Pricing",
+    "ne": "एकाइ र मूल्य",
+    "ne_roman": "ekai ra mulya"
+  },
+  "businessNature": "universal",
+  "tags": [
+    "units",
+    "pricing",
+    "quantity"
+  ],
+  "sectorSlug": null,
+  "groups": {
+    "quantity_units": {
+      "label": {
+        "en": "Quantity units",
+        "ne": "मापन एकाइ"
+      },
+      "en": [
+        "piece",
+        "pieces",
+        "pc",
+        "pcs",
+        "unit",
+        "units",
+        "each",
+        "per",
+        "dozen",
+        "pair",
+        "set",
+        "box",
+        "packet",
+        "carton",
+        "crate",
+        "bundle",
+        "roll",
+        "sheet",
+        "bag",
+        "sack",
+        "bora",
+        "kg",
+        "kilogram",
+        "gram",
+        "gm",
+        "liter",
+        "litre",
+        "ltr",
+        "ml",
+        "meter",
+        "metre",
+        "ft",
+        "sqft",
+        "sq ft",
+        "ton",
+        "quintal",
+        "hour",
+        "hours",
+        "day",
+        "days",
+        "month"
+      ],
+      "ne_roman": [
+        "euta",
+        "eutako",
+        "eutai",
+        "ota",
+        "otako",
+        "wota",
+        "wotako",
+        "joda",
+        "jodako",
+        "dozen",
+        "packet",
+        "box",
+        "carton",
+        "bora",
+        "bora ko",
+        "kg",
+        "kilo",
+        "gram",
+        "gm",
+        "liter",
+        "ltr",
+        "mitar",
+        "ghanta",
+        "din",
+        "mahina",
+        "thaili",
+        "gaddi",
+        "bundle",
+        "roll"
+      ],
+      "ne_devanagari": [
+        "एउटा",
+        "एउटाको",
+        "वटा",
+        "जोडा",
+        "बोरा",
+        "प्याकेट"
+      ],
+      "variants": [
+        "per piece",
+        "per unit",
+        "per kg",
+        "per dozen",
+        "prati",
+        "prati ko"
+      ]
+    },
+    "price_phrases": {
+      "label": {
+        "en": "Price phrases",
+        "ne": "मूल्य वाक्यांश"
+      },
+      "en": [
+        "for",
+        "at",
+        "worth",
+        "total",
+        "amount",
+        "rate",
+        "price",
+        "mrp",
+        "cost",
+        "each",
+        "per",
+        "@",
+        "rs",
+        "npr",
+        "rupees"
+      ],
+      "ne_roman": [
+        "ko",
+        "ma",
+        "jamma",
+        "jami",
+        "total",
+        "rate",
+        "mulya",
+        "mulya",
+        "dam",
+        "daam",
+        "mrp",
+        "kati ko",
+        "kati ma",
+        "rupiya ko",
+        "rs ko",
+        "prati",
+        "prati ko",
+        "per piece"
+      ],
+      "ne_devanagari": [
+        "को",
+        "मा",
+        "जम्मा",
+        "मूल्य",
+        "दाम"
+      ],
+      "variants": [
+        "worth of",
+        "total of",
+        "amount of"
+      ]
+    }
+  }
+}

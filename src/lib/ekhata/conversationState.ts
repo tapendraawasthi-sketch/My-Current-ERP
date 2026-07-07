@@ -17,6 +17,11 @@ export interface EKhataConversationContext {
   lastCard: KhataConfirmationCard | null;
   lastUserText: string | null;
   lastVoucherNo: string | null;
+  /** Set when bot asked for amount/qty after partial entry */
+  pendingIntent?: string | null;
+  pendingItem?: string | null;
+  pendingPrefix?: string | null;
+  lastClarifyQuestion?: string | null;
 }
 
 export function createConversationContext(): EKhataConversationContext {
@@ -25,6 +30,10 @@ export function createConversationContext(): EKhataConversationContext {
     lastCard: null,
     lastUserText: null,
     lastVoucherNo: null,
+    pendingIntent: null,
+    pendingItem: null,
+    pendingPrefix: null,
+    lastClarifyQuestion: null,
   };
 }
 
@@ -77,6 +86,24 @@ export function buildReverseExplanation(card: KhataConfirmationCard, lang: "engl
   );
 }
 
+export function updateContextAfterClarify(
+  ctx: EKhataConversationContext,
+  userText: string,
+  question: string,
+  pendingIntent?: string | null,
+  pendingItem?: string | null,
+): EKhataConversationContext {
+  return {
+    ...ctx,
+    state: "awaiting_clarification",
+    lastUserText: userText,
+    lastClarifyQuestion: question,
+    pendingPrefix: userText,
+    pendingIntent: pendingIntent ?? ctx.pendingIntent ?? "khata_cash_sale",
+    pendingItem: pendingItem ?? ctx.pendingItem ?? null,
+  };
+}
+
 export function updateContextAfterEntry(
   ctx: EKhataConversationContext,
   card: KhataConfirmationCard,
@@ -87,6 +114,10 @@ export function updateContextAfterEntry(
     state: "transaction_detected",
     lastCard: card,
     lastUserText: userText,
+    pendingIntent: null,
+    pendingItem: null,
+    pendingPrefix: null,
+    lastClarifyQuestion: null,
   };
 }
 

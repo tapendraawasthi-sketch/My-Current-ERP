@@ -1,0 +1,104 @@
+{
+  "id": "universal-payment-modes",
+  "slug": "universal-payment-modes",
+  "displayName": {
+    "en": "Payment Modes",
+    "ne": "भुक्तानी माध्यम",
+    "ne_roman": "bhuktani madhyam"
+  },
+  "businessNature": "universal",
+  "tags": [
+    "payment",
+    "digital",
+    "bank"
+  ],
+  "sectorSlug": null,
+  "groups": {
+    "digital_wallets": {
+      "label": {
+        "en": "Digital wallets",
+        "ne": "डिजिटल वालेट"
+      },
+      "en": [
+        "esewa",
+        "khalti",
+        "ime pay",
+        "connectips",
+        "fonepay",
+        "digital wallet",
+        "qr payment"
+      ],
+      "ne_roman": [
+        "esewa",
+        "e sewa",
+        "khalti",
+        "ime pay",
+        "connectips",
+        "connect ips",
+        "fonepay",
+        "fone pay",
+        "qr",
+        "qr bata",
+        "online",
+        "digital",
+        "wallet",
+        "mobile banking",
+        "m banking"
+      ],
+      "ne_devanagari": [
+        "ईसेवा",
+        "खल्ती"
+      ],
+      "variants": [
+        "e-sewa",
+        "khalti ma",
+        "esewa ma",
+        "online payment"
+      ]
+    },
+    "bank_cheque": {
+      "label": {
+        "en": "Bank / cheque",
+        "ne": "बैंक / चेक"
+      },
+      "en": [
+        "bank",
+        "bank transfer",
+        "neft",
+        "rtgs",
+        "cheque",
+        "check",
+        "dd",
+        "demand draft",
+        "current account",
+        "savings account",
+        "connect ips"
+      ],
+      "ne_roman": [
+        "bank",
+        "bank bata",
+        "bank ma",
+        "cheque",
+        "cheque bata",
+        "chak",
+        "chak bata",
+        "transfer",
+        "neft",
+        "rtgs",
+        "jamma bank ma",
+        "bank jamma",
+        "khata ma jamma"
+      ],
+      "ne_devanagari": [
+        "बैंक",
+        "चेक",
+        "जम्मा"
+      ],
+      "variants": [
+        "bank transfer",
+        "cheque payment",
+        "by cheque"
+      ]
+    }
+  }
+}

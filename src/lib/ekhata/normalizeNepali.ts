@@ -7,9 +7,12 @@ import {
   PHRASE_ALIASES,
   SPELLING_ALIASES,
 } from "./nepaliLanguage";
+import { getMergedSpellingAliases } from "./vocabulary";
 
 const SORTED_PHRASES = [...PHRASE_ALIASES].sort((a, b) => b[0].length - a[0].length);
-const SORTED_WORDS = Object.entries(SPELLING_ALIASES).sort((a, b) => b[0].length - a[0].length);
+const SORTED_WORDS = Object.entries({ ...SPELLING_ALIASES, ...getMergedSpellingAliases() }).sort(
+  (a, b) => b[0].length - a[0].length,
+);
 
 /** Common khata words in Devanagari → roman (whole-word replace before char translit) */
 const DEVANAGARI_WORDS: Record<string, string> = {
