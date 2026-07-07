@@ -5,9 +5,13 @@ import { useFalconStore } from "../../store/falconStore";
 import { KHATA_INTENT_LABELS } from "../../lib/ekhata/types";
 import { validateJournalBalance } from "../../lib/ekhata/caEntryTemplates";
 
+import AchievementSystem from "./AchievementSystem";
 import { SELF_CONTAINED_STATUS } from "../../lib/selfContainedAi";
 
-function statusLabel(): string {
+function statusLabel(llmOnline: boolean, llmModel?: string): string {
+  if (llmOnline) {
+    return `Ollama AI${llmModel ? ` · ${llmModel}` : ""} · Agentic · CA Entries`;
+  }
   return `${SELF_CONTAINED_STATUS.label} · Web Search · CA Entries`;
 }
 
@@ -20,6 +24,8 @@ const EKhataPanel: React.FC = () => {
     isLoading,
     llmOnline,
     llmModel,
+    activeTools,
+    engineLabel,
     sendMessage,
     confirmPending,
     cancelPending,
@@ -67,9 +73,11 @@ const EKhataPanel: React.FC = () => {
         <div className="flex-1 min-w-0">
           <span className="font-bold text-[13px] tracking-tight">e-KHATA</span>
           <p className="text-[10px] text-emerald-100 truncate">
-            {statusLabel()}
+            {statusLabel(llmOnline, llmModel)}
+            {llmOnline ? ` · ${engineLabel}` : ""}
           </p>
         </div>
+        <AchievementSystem compact />
         <button
           type="button"
           onClick={() => {
@@ -235,9 +243,16 @@ const EKhataPanel: React.FC = () => {
         )}
 
         {isLoading && (
-          <div className="flex items-center gap-2 text-[11px] text-gray-500">
-            <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            Sochdai cha...
+          <div className="flex flex-col gap-1 text-[11px] text-gray-500">
+            <div className="flex items-center gap-2">
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              Sochdai cha...
+            </div>
+            {activeTools.length > 0 && (
+              <p className="text-[10px] text-gray-400 pl-5">
+                Tools: {activeTools.join(", ")}
+              </p>
+            )}
           </div>
         )}
         <div ref={messagesEndRef} />

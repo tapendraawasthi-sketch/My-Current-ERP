@@ -17,6 +17,8 @@ const buildSha =
     }
   })();
 
+const devPort = 3000;
+
 export default defineConfig({
   plugins: [react(), tailwindcss(), tsconfigPaths()],
   define: {
@@ -51,7 +53,9 @@ export default defineConfig({
     include: ["react", "react-dom", "dexie", "zustand"],
   },
   server: {
-    port: 3000,
+    port: devPort,
     host: true,
+    strictPort: true,
+    allowedHosts: true,
   },
 });

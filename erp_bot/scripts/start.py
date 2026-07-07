@@ -12,9 +12,9 @@ sys.path.insert(0, str(BOT_ROOT))
 import httpx
 
 import src.config  # noqa: F401 — prints resolved ERP_PATH on import
-from src.config import API_PORT, EMBED_MODEL, MODEL_NAME, OLLAMA_BASE_URL
+from src.config import API_PORT, EMBED_MODEL, FAST_MODEL, MODEL_NAME, OLLAMA_BASE_URL
 
-print(f"[START] MODEL_NAME={MODEL_NAME}, EMBED_MODEL={EMBED_MODEL}")
+print(f"[START] PRIMARY_MODEL={MODEL_NAME}, FAST_MODEL={FAST_MODEL}, EMBED_MODEL={EMBED_MODEL}")
 
 try:
     resp = httpx.get(f"{OLLAMA_BASE_URL}/api/tags", timeout=5)
@@ -24,6 +24,8 @@ try:
     print(f"[START] Ollama models available: {models}")
     if MODEL_NAME not in models:
         print(f"[WARN] MODEL_NAME '{MODEL_NAME}' not found in Ollama — pull it with: ollama pull {MODEL_NAME}")
+    if FAST_MODEL not in models:
+        print(f"[WARN] FAST_MODEL '{FAST_MODEL}' not found in Ollama — pull it with: ollama pull {FAST_MODEL}")
     if EMBED_MODEL not in models:
         print(f"[WARN] EMBED_MODEL '{EMBED_MODEL}' not found in Ollama — pull it with: ollama pull {EMBED_MODEL}")
     # Verify chat inference works (newer Ollama builds can segfault on some CPUs)

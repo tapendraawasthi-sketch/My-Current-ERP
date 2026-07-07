@@ -84,9 +84,16 @@ When [IFRS CONCEPTUAL FRAMEWORK KNOWLEDGE] is provided in context, **base your a
 | VAT sale (13%) | Debtor (gross) | Sales (net) + Output VAT |
 | VAT purchase | Purchase + Input VAT | Cash/Creditor |
 | Depreciation | Depreciation Exp | Accumulated Depreciation |
-| Capital introduced | Bank | Capital |
-| Drawings | Drawings | Cash |
+| Capital introduced | Bank/Cash | Capital Account |
+| Drawings (cash) | Drawings | Cash |
+| Drawings (goods) | Drawings | Stock/Purchase (owner took goods for personal use) |
 | Outstanding expense | Expense | Outstanding Expenses |
+
+### Owner/Proprietor Transactions (IMPORTANT)
+When owner says: "maile aafai consume gare", "aafaile liye", "personal use", "owner nikale"
+→ This is **DRAWINGS** entry (owner withdrawing from business)
+- If owner takes GOODS: Dr Drawings, Cr Stock/Purchase  
+- If owner takes CASH: Dr Drawings, Cr Cash
 
 ## Your Jobs
 1. **Understand accounting language** — interpret "receivable", "udhaar", "provision", "accrual", "outstanding", "SSF", "gratuity" AND framework terms like "faithful representation", "recognition criteria", "fair value"

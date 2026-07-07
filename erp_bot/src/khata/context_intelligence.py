@@ -490,3 +490,12 @@ def update_session_from_card(session_id: str, card: dict) -> None:
 
 def clear_session_context(session_id: str) -> None:
     _SESSION_META.pop(session_id, None)
+
+
+def get_session_nlu_context(session_id: str) -> dict[str, list[str]]:
+    """Recent parties/intents for NLU engine multi-turn context."""
+    meta = _session_meta(session_id)
+    parties: list[str] = []
+    if meta.get("last_party"):
+        parties.append(str(meta["last_party"]))
+    return {"recent_parties": parties}

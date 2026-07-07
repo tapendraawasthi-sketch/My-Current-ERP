@@ -1,0 +1,207 @@
+{
+  "version": 1,
+  "description": "e-Khata tiered knowledge taxonomy. Higher authority wins on conflict; task type selects boost.",
+  "tier_order": [
+    "general",
+    "professional"
+  ],
+  "segments": {
+    "general.language.nepali": {
+      "label": "General — Nepali language",
+      "tier": "general",
+      "base_authority": 10,
+      "path": "general/language/nepali",
+      "use_for": ["language", "nlu", "casual", "education"]
+    },
+    "general.language.english": {
+      "label": "General — English language",
+      "tier": "general",
+      "base_authority": 10,
+      "path": "general/language/english",
+      "use_for": ["language", "nlu", "casual"]
+    },
+    "general.language.romanized": {
+      "label": "General — Romanized Nepali",
+      "tier": "general",
+      "base_authority": 12,
+      "path": "general/language/romanized",
+      "use_for": ["language", "nlu", "journal_entry", "casual"]
+    },
+    "general.accounting-concepts": {
+      "label": "General — Accounting concepts (plain language)",
+      "tier": "general",
+      "base_authority": 25,
+      "path": "general/accounting-concepts",
+      "use_for": ["accounting_qa", "education", "casual"]
+    },
+    "general.intent-taxonomy": {
+      "label": "General — Transaction intent taxonomy (SAL/PUR/EXP/CB/INV/AST/TAX/COR)",
+      "tier": "general",
+      "base_authority": 35,
+      "path": "general/intent-taxonomy",
+      "use_for": ["nlu", "language", "journal_entry", "casual"],
+      "task_boost": {
+        "nlu": 25,
+        "language": 20,
+        "journal_entry": 15
+      }
+    },
+    "general.sector.kirana-grocery": {
+      "label": "General — Sector NLU: Kirana / General Grocery Shop",
+      "tier": "general",
+      "base_authority": 28,
+      "path": "general/sector/kirana-grocery",
+      "use_for": ["nlu", "language", "journal_entry", "casual"],
+      "task_boost": {
+        "nlu": 18,
+        "journal_entry": 12
+      }
+    },
+    "general.sector.mini-mart": {
+      "label": "General — Sector NLU: Mini Mart",
+      "tier": "general",
+      "base_authority": 28,
+      "path": "general/sector/mini-mart",
+      "use_for": ["nlu", "language", "journal_entry", "casual"],
+      "task_boost": {
+        "nlu": 18,
+        "journal_entry": 12
+      }
+    },
+    "general.sector.wholesale-grocery": {
+      "label": "General — Sector NLU: Wholesale Grocery",
+      "tier": "general",
+      "base_authority": 28,
+      "path": "general/sector/wholesale-grocery",
+      "use_for": ["nlu", "language", "journal_entry", "casual"],
+      "task_boost": {
+        "nlu": 18,
+        "journal_entry": 12
+      }
+    },
+    "general.sector.clothing-fashion": {
+      "label": "General — Sector NLU: Clothing/Fashion Shop",
+      "tier": "general",
+      "base_authority": 28,
+      "path": "general/sector/clothing-fashion",
+      "use_for": ["nlu", "language", "journal_entry", "casual"],
+      "task_boost": {
+        "nlu": 18,
+        "journal_entry": 12
+      }
+    },
+    "professional.accounting-standards.conceptual-framework": {
+      "label": "Professional — IFRS Conceptual Framework",
+      "tier": "professional",
+      "base_authority": 70,
+      "path": "professional/accounting-standards/conceptual-framework",
+      "use_for": ["framework_qa", "accounting_qa", "education", "journal_entry"],
+      "task_boost": {
+        "framework_qa": 25,
+        "accounting_qa": 20,
+        "education": 15,
+        "journal_entry": 10
+      }
+    },
+    "professional.accounting-standards.nfrs": {
+      "label": "Professional — NFRS (full standards)",
+      "tier": "professional",
+      "base_authority": 75,
+      "path": "professional/accounting-standards/nfrs",
+      "use_for": ["accounting_qa", "framework_qa", "journal_entry", "education"],
+      "task_boost": {
+        "accounting_qa": 25,
+        "framework_qa": 20,
+        "journal_entry": 15
+      }
+    },
+    "professional.accounting-standards.nfrs-sme": {
+      "label": "Professional — NFRS for SMEs",
+      "tier": "professional",
+      "base_authority": 72,
+      "path": "professional/accounting-standards/nfrs-sme",
+      "use_for": ["accounting_qa", "journal_entry", "education"]
+    },
+    "professional.accounting-standards.nas-micro": {
+      "label": "Professional — NAS for Micro Entities",
+      "tier": "professional",
+      "base_authority": 68,
+      "path": "professional/accounting-standards/nas-micro",
+      "use_for": ["accounting_qa", "journal_entry", "education"]
+    },
+    "professional.legal-compliance.vat": {
+      "label": "Professional — VAT Act / IRD",
+      "tier": "professional",
+      "base_authority": 80,
+      "path": "professional/legal-compliance/vat",
+      "use_for": ["compliance_qa", "journal_entry"],
+      "task_boost": {
+        "compliance_qa": 30,
+        "journal_entry": 12
+      }
+    },
+    "professional.legal-compliance.income-tax": {
+      "label": "Professional — Income Tax Act 2058",
+      "tier": "professional",
+      "base_authority": 80,
+      "path": "professional/legal-compliance/income-tax",
+      "use_for": ["compliance_qa", "journal_entry"],
+      "task_boost": {
+        "compliance_qa": 30
+      }
+    },
+    "professional.legal-compliance.ssf": {
+      "label": "Professional — SSF Act / Labour",
+      "tier": "professional",
+      "base_authority": 78,
+      "path": "professional/legal-compliance/ssf",
+      "use_for": ["compliance_qa", "journal_entry"]
+    },
+    "professional.legal-compliance.nrb": {
+      "label": "Professional — NRB Unified Directives (banks/FIs)",
+      "tier": "professional",
+      "base_authority": 82,
+      "path": "professional/legal-compliance/nrb",
+      "use_for": ["compliance_qa", "accounting_qa"]
+    },
+    "professional.sector.coa": {
+      "label": "Professional — Chart of accounts / sector mapping",
+      "tier": "professional",
+      "base_authority": 65,
+      "path": "professional/sector/coa",
+      "use_for": ["journal_entry", "accounting_qa", "education"]
+    }
+  },
+  "conflict_rules": [
+    {
+      "description": "Compliance questions: legal-compliance beats general and beats accounting-standards on tax rates/filing",
+      "when_task": ["compliance_qa"],
+      "prefer_segment_prefix": "professional.legal-compliance"
+    },
+    {
+      "description": "Framework/recognition questions: accounting-standards beats general concepts",
+      "when_task": ["framework_qa", "accounting_qa", "education"],
+      "prefer_segment_prefix": "professional.accounting-standards"
+    },
+    {
+      "description": "Language understanding: general.language beats professional for grammar/romanization",
+      "when_task": ["language", "nlu", "casual"],
+      "prefer_segment_prefix": "general.language"
+    },
+    {
+      "description": "Intent code mapping: intent-taxonomy beats plain language examples for stable SAL/PUR/EXP labels",
+      "when_task": ["nlu", "journal_entry"],
+      "prefer_segment_prefix": "general.intent-taxonomy"
+    },
+    {
+      "description": "Journal entries: accounting-standards + legal tax segments over plain glossary",
+      "when_task": ["journal_entry"],
+      "prefer_segment_prefix": "professional"
+    }
+  ],
+  "legacy_sources": {
+    "conceptual-framework-knowledge.json": "professional.accounting-standards.conceptual-framework",
+    "nepali-grammar-index.json": "general.language.nepali",
+    "chart_of_accounts_framework": "professional.sector.coa"
+  }
+}

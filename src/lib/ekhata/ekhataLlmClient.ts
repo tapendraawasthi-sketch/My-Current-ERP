@@ -30,25 +30,35 @@ export function resetEKhataSession(): void {
 }
 
 export interface EKhataLlmStatus {
+  /** erp_bot API reachable (chat works; may be KB-only without Ollama). */
   online: boolean;
+  /** Full LLM stack: erp_bot + Ollama connected. */
   khataLlm: boolean;
+  /** erp_bot up but Ollama down — glossary/KB fallbacks only. */
+  degraded?: boolean;
   model?: string;
   error?: string;
 }
 
 export async function checkEKhataLlmStatus(): Promise<EKhataLlmStatus> {
   if (isSelfContainedAi() || !EKHATA_BOT_URL) {
-    return { online: false, khataLlm: false };
+    return {
+      online: false,
+      khataLlm: false,
+      error: "Set VITE_ERP_BOT_URL=http://localhost:8765 in .env.local",
+    };
   }
 
   try {
     const resp = await fetch(`${EKHATA_BOT_URL}/status`, { signal: AbortSignal.timeout(8000) });
     if (!resp.ok) return { online: false, khataLlm: false, error: `HTTP ${resp.status}` };
     const data = await resp.json();
+    const botOk = data.status === "online";
     const ollamaOk = data.ollama === "connected";
     return {
-      online: data.status === "online" && ollamaOk,
+      online: botOk,
       khataLlm: Boolean(data.khata_llm) && ollamaOk,
+      degraded: botOk && !ollamaOk,
       model: data.model,
     };
   } catch (e: unknown) {
@@ -62,6 +72,54 @@ export interface EKhataLlmResponse {
   reply: string;
   card?: KhataConfirmationCard | null;
   engine: string;
+}
+
+export interface EKhataV2Response {
+  message: string;
+  action: "confirm" | "clarify" | "posted" | "info" | "report" | "chat";
+  entry?: Record<string, unknown> | null;
+  card?: KhataConfirmationCard | null;
+  suggestions: string[];
+  insight?: string | null;
+  metadata: Record<string, unknown>;
+  session_id: string;
+}
+
+/** v2 chat with Dexie session snapshot */
+export async function askEKhataV2(
+  message: string,
+  sessionId: string,
+  options?: {
+    balance?: { udhaarOut: number; udhaarIn: number };
+    language?: "nepali" | "english" | "mixed";
+    context?: Record<string, unknown>;
+    signal?: AbortSignal;
+  },
+): Promise<EKhataV2Response> {
+  if (isSelfContainedAi() || !EKHATA_BOT_URL) {
+    throw new Error("Built-in CA brain only — no external LLM service");
+  }
+
+  const resp = await fetch(`${EKHATA_BOT_URL}/v2/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      message,
+      session_id: sessionId,
+      language: options?.language,
+      context: options?.context,
+      balance: options?.balance
+        ? { udhaar_out: options.balance.udhaarOut, udhaar_in: options.balance.udhaarIn }
+        : undefined,
+    }),
+    signal: options?.signal,
+  });
+
+  if (!resp.ok) {
+    throw new Error(`e-Khata v2 error (${resp.status})`);
+  }
+
+  return resp.json() as Promise<EKhataV2Response>;
 }
 
 export async function askEKhataLlm(

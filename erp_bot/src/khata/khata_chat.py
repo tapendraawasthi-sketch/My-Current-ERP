@@ -10,11 +10,18 @@ from typing import Any
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_ollama import ChatOllama
 
-from ..config import KHATA_STRUCTURED_PARSE, MODEL_NAME, OLLAMA_BASE_URL
+from ..config import (
+    KHATA_STRUCTURED_PARSE,
+    OLLAMA_BASE_URL,
+    PRIMARY_MODEL,
+    PRIMARY_MODEL_OPTIONS,
+)
 from ..falcon_trader import parse_khata_message
+from ..nlu import get_nlu_engine
 from .context_intelligence import (
     build_intelligent_context,
     clear_session_context,
+    get_session_nlu_context,
     update_session_from_card,
     update_session_from_message,
 )
@@ -25,10 +32,10 @@ _sessions: dict[str, list] = {}
 _MAX_HISTORY = 24
 
 _llm = ChatOllama(
-    model=MODEL_NAME,
+    model=PRIMARY_MODEL,
     base_url=OLLAMA_BASE_URL,
-    temperature=0.35,
-    num_ctx=8192,
+    temperature=float(PRIMARY_MODEL_OPTIONS["temperature"]),
+    num_ctx=int(PRIMARY_MODEL_OPTIONS["num_ctx"]),
 )
 
 INTENT_LABELS = {
@@ -287,7 +294,31 @@ def _process_entry(text: str, session_id: str, balance: dict[str, Any] | None, l
             "engine": "hybrid",
         }
 
-    # LLM structured fallback when rules miss
+    # Fast NLU LLM fallback (qwen3:4b structured JSON extraction)
+    nlu_parsed = get_nlu_engine().parse_to_khata(
+        text, get_session_nlu_context(session_id)
+    )
+    if nlu_parsed.get("clarifying_question"):
+        return {
+            "kind": "clarify",
+            "reply": _template_clarify(str(nlu_parsed["clarifying_question"]), lang),
+            "card": None,
+            "session_id": session_id,
+            "engine": "nlu",
+        }
+    nlu_card = _parsed_to_card(nlu_parsed, text)
+    if nlu_card:
+        update_session_from_card(session_id, nlu_card)
+        reply = _template_entry_reply(nlu_card, lang)
+        return {
+            "kind": "entry",
+            "reply": reply,
+            "card": nlu_card,
+            "session_id": session_id,
+            "engine": "nlu",
+        }
+
+    # Primary LLM structured fallback when rules + fast NLU miss
     llm_card, llm_clarify = _try_llm_structured_parse(text, session_id, balance, lang)
     if llm_clarify:
         return {

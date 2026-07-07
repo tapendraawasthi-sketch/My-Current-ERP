@@ -13,6 +13,7 @@ from ..config import (
     BOT_ROOT,
     EMBED_MODEL,
     ERP_PATH,
+    FAST_MODEL,
     KHATA_STRUCTURED_PARSE,
     MODEL_NAME,
     OLLAMA_BASE_URL,
@@ -20,11 +21,16 @@ from ..config import (
 from ..ingestion import embedder
 from ..vectorstore import chroma_store
 from ..watcher.watcher import start_watcher
+from ..bridges.session_data import set_session_context
+from ..conversation import get_conversation_manager
 from ..khata import khata_chat
 from ..khata.feedback_store import append_feedback, append_feedback_bulk, feedback_stats
 from ..khata.khata_chat import clear_session as khata_clear_session
 
+from .streaming import router as streaming_router
+
 app = FastAPI(title="ERP AI Chatbot")
+app.include_router(streaming_router)
 
 # Local dev tool only — tighten origins if ever exposed beyond localhost.
 app.add_middleware(
@@ -50,6 +56,13 @@ def on_startup():
             "[SERVER] WARNING: index is empty — run scripts/start.py's initial scan, "
             "or POST /reindex"
         )
+    try:
+        from ..knowledge.knowledge_init import ensure_knowledge_indexes
+
+        idx = ensure_knowledge_indexes()
+        print(f"[SERVER] Knowledge indexes: {idx}")
+    except Exception as exc:
+        print(f"[SERVER] Knowledge index warning: {exc}")
 
 
 class ChatRequest(BaseModel):
@@ -78,6 +91,25 @@ class KhataChatResponse(BaseModel):
     engine: str = "ollama"
 
 
+class V2ChatRequest(BaseModel):
+    message: str = Field(..., max_length=4000, min_length=1)
+    session_id: str = Field(..., min_length=1)
+    balance: dict | None = None
+    language: str | None = None
+    context: dict | None = None
+
+
+class V2ChatResponse(BaseModel):
+    message: str
+    action: str
+    entry: dict | None = None
+    card: dict | None = None
+    suggestions: list[str] = Field(default_factory=list)
+    insight: str | None = None
+    metadata: dict = Field(default_factory=dict)
+    session_id: str
+
+
 class KhataFeedbackRequest(BaseModel):
     label: str = Field(..., pattern="^(confirmed|cancelled|corrected)$")
     narration: str = Field(..., min_length=1, max_length=4000)
@@ -93,7 +125,7 @@ class KhataFeedbackRequest(BaseModel):
 @app.get("/status")
 def status() -> dict:
     try:
-        resp = httpx.get(f"{OLLAMA_BASE_URL}/api/tags", timeout=3)
+        resp = httpx.get(f"{OLLAMA_BASE_URL}/api/tags", timeout=10)
         resp.raise_for_status()
         ollama_status = "connected"
     except Exception:
@@ -102,6 +134,7 @@ def status() -> dict:
     return {
         "status": "online",
         "model": MODEL_NAME,
+        "fast_model": FAST_MODEL,
         "embed_model": EMBED_MODEL,
         "erp_path": str(ERP_PATH),
         "indexed_files": chroma_store.get_indexed_file_count(),
@@ -165,7 +198,49 @@ def khata_clear_session_endpoint(payload: dict) -> dict:
     sid = str(payload.get("session_id", "")).strip()
     if sid:
         khata_clear_session(sid)
+        get_conversation_manager().clear_session(sid)
     return {"status": "ok", "session_id": sid or None}
+
+
+@app.post("/v2/chat", response_model=V2ChatResponse)
+def v2_chat_endpoint(req: V2ChatRequest) -> V2ChatResponse:
+    """e-Khata v2 — conversation manager with reasoner + confirmation flow."""
+    try:
+        if req.context:
+            set_session_context(req.session_id, req.context)
+        mgr = get_conversation_manager()
+        resp = mgr.handle_message(
+            req.message,
+            req.session_id,
+            balance=req.balance,
+            language=req.language,
+            context=req.context,
+        )
+        entry_dict = resp.entry.model_dump() if resp.entry else None
+        return V2ChatResponse(
+            message=resp.message,
+            action=resp.action,
+            entry=entry_dict,
+            card=resp.card,
+            suggestions=resp.suggestions,
+            insight=resp.insight,
+            metadata=resp.metadata,
+            session_id=resp.session_id,
+        )
+    except Exception as e:
+        return V2ChatResponse(
+            message=f"e-Khata v2 error: {e}",
+            action="chat",
+            session_id=req.session_id,
+            metadata={"error": str(e)},
+        )
+
+
+@app.delete("/v2/session/{session_id}")
+def v2_clear_session(session_id: str) -> dict:
+    get_conversation_manager().clear_session(session_id)
+    khata_clear_session(session_id)
+    return {"status": "ok", "session_id": session_id}
 
 
 @app.post("/khata/feedback")

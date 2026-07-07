@@ -4,7 +4,7 @@ import re
 
 from .normalizer import normalize
 
-CLARIFYING_QUESTION = "Aaple diye ki unle diye?"
+CLARIFYING_QUESTION = "Hami le diye ki uniharule diye? (Who gave to whom?)"
 
 _AMBIGUOUS_DIYE = re.compile(
     r"^\s*(\d+|(?:\d+\s+)?(?:saya|hajar|lakh|\w+))\s+(diye|die|diya|diae)\s*$",
