@@ -92,12 +92,16 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
   togglePanel: () => set((s) => ({ isOpen: !s.isOpen })),
 
   refreshLlmStatus: async () => {
-    const status = await checkEKhataLlmStatus();
-    set({
-      llmOnline: status.online,
-      llmModel: status.khataLlm ? status.model : status.degraded ? "KB-only" : status.model,
-      engineLabel: status.degraded ? "v2 (KB)" : status.khataLlm ? "v2" : "offline",
-    });
+    try {
+      const status = await checkEKhataLlmStatus();
+      set({
+        llmOnline: status.online,
+        llmModel: status.khataLlm ? status.model : status.degraded ? "KB-only" : status.model,
+        engineLabel: status.degraded ? "v2 (KB)" : status.khataLlm ? "v2" : "offline",
+      });
+    } catch {
+      set({ llmOnline: false, llmModel: undefined, engineLabel: "offline" });
+    }
   },
 
   sendMessage: async (text: string) => {

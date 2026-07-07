@@ -124,7 +124,13 @@ def _scope_answer(answer: str, intent: str) -> str:
     # code / troubleshoot / general — return unchanged
     return answer
 
-_llm = ChatOllama(model=MODEL_NAME, base_url=OLLAMA_BASE_URL, temperature=0, num_ctx=8192)
+_llm = ChatOllama(
+    model=MODEL_NAME,
+    base_url=OLLAMA_BASE_URL,
+    temperature=0,
+    num_ctx=2048,
+    num_predict=400,
+)
 _tools = [
     find_navigation_path,
     search_codebase,

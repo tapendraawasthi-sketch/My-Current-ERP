@@ -65,6 +65,25 @@ else:
         "from here, or call POST /reindex to force a full rebuild."
     )
 
+from src.vectorstore.nepali_grammar_store import get_nepali_grammar_count, ingest_nepali_grammar
+from src.vectorstore.ca_knowledge_store import get_ca_knowledge_count, ingest_ca_knowledge
+
+ng_count = get_nepali_grammar_count()
+if ng_count == 0:
+    print("[INFO] Nepali grammar Chroma collection empty — ingesting...")
+    result = ingest_nepali_grammar()
+    print(f"[INFO] Nepali grammar ingest: {result}")
+else:
+    print(f"[INFO] Nepali grammar index: {ng_count} chunks")
+
+ca_count = get_ca_knowledge_count()
+if ca_count == 0:
+    print("[INFO] CA/IFRS knowledge Chroma collection empty — ingesting...")
+    result = ingest_ca_knowledge()
+    print(f"[INFO] CA knowledge ingest: {result}")
+else:
+    print(f"[INFO] CA/IFRS knowledge index: {ca_count} chunks")
+
 import uvicorn
 from src.api.server import app
 

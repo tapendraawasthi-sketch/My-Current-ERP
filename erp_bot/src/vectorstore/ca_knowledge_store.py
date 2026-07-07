@@ -32,35 +32,51 @@ def _all_corpus_items(data: dict) -> list[dict]:
     return items
 
 
-def _keyword_score(query: str, doc: dict) -> float:
-    tokens = {t.lower() for t in query.split() if len(t) >= 3 and t.isalnum()}
-    if not tokens:
-        return 0.0
+def get_ca_paragraphs_by_ids(paragraph_ids: list[str]) -> list[dict]:
+    """Fetch IFRS chunks by paragraph/glossary id (for concept-matched retrieval)."""
+    if not paragraph_ids:
+        return []
 
-    text = " ".join(
-        str(doc.get(k, "")) for k in ("text", "section", "topics", "term", "definition")
-    ).lower()
-    score = 0.0
-    for token in tokens:
-        if token in text:
-            score += 1.0
-        if token in str(doc.get("section", "")).lower():
-            score += 2.0
-    return score
-
-
-def search_ca_knowledge(query: str, k: int = 6) -> list[dict]:
-    """Hybrid semantic + keyword search over complete CA knowledge corpus."""
     try:
         collection = get_collection()
         if collection.count() == 0:
-            return _fallback_search(query, k)
+            return []
+
+        result = collection.get(
+            where={"paragraph_id": {"$in": paragraph_ids}},
+            include=["documents", "metadatas"],
+        )
+
+        docs = result.get("documents") or []
+        metas = result.get("metadatas") or []
+        hits: list[dict] = []
+        for doc, meta in zip(docs, metas):
+            hits.append({
+                "text": doc,
+                "paragraph_id": meta.get("paragraph_id", meta.get("item_id", "")),
+                "chapter": meta.get("chapter", 0),
+                "section": meta.get("section", ""),
+                "topics": meta.get("topics", ""),
+                "item_type": meta.get("item_type", ""),
+                "distance": 0.0,
+            })
+        return hits
+    except Exception as exc:
+        print(f"[CA KNOWLEDGE ERROR] paragraph lookup failed: {exc}")
+        return []
+
+
+def search_ca_knowledge(query: str, k: int = 6) -> list[dict]:
+    """Semantic vector search over IFRS/CA knowledge via Ollama embeddings."""
+    try:
+        collection = get_collection()
+        if collection.count() == 0:
+            return []
 
         vec = _embedder.embed_query(query)
-        fetch_count = max(k * 3, 18)
         result = collection.query(
             query_embeddings=[vec],
-            n_results=fetch_count,
+            n_results=k,
             include=["documents", "metadatas", "distances"],
         )
 
@@ -68,9 +84,9 @@ def search_ca_knowledge(query: str, k: int = 6) -> list[dict]:
         metas = result.get("metadatas", [[]])[0]
         dists = result.get("distances", [[]])[0]
 
-        candidates = []
+        hits: list[dict] = []
         for doc, meta, dist in zip(docs, metas, dists):
-            item = {
+            hits.append({
                 "text": doc,
                 "paragraph_id": meta.get("paragraph_id", meta.get("item_id", "")),
                 "chapter": meta.get("chapter", 0),
@@ -78,64 +94,40 @@ def search_ca_knowledge(query: str, k: int = 6) -> list[dict]:
                 "topics": meta.get("topics", ""),
                 "item_type": meta.get("item_type", ""),
                 "distance": dist,
-            }
-            kw = _keyword_score(query, item)
-            semantic = 1.0 / (1.0 + dist)
-            item["_score"] = semantic + 0.12 * kw
-            candidates.append(item)
-
-        candidates.sort(key=lambda x: x["_score"], reverse=True)
-        return [
-            {key: val for key, val in c.items() if not key.startswith("_")}
-            for c in candidates[:k]
-        ]
+            })
+        return hits
     except Exception as exc:
         print(f"[CA KNOWLEDGE ERROR] search failed: {exc}")
-        return _fallback_search(query, k)
-
-
-def _fallback_search(query: str, k: int) -> list[dict]:
-    """JSON fallback when Chroma is empty or Ollama unavailable."""
-    if not _KNOWLEDGE_JSON.exists():
         return []
 
-    try:
-        with open(_KNOWLEDGE_JSON, encoding="utf-8") as f:
-            data = json.load(f)
-    except (json.JSONDecodeError, OSError):
-        return []
 
-    query_lower = query.lower()
-    tokens = {t.lower() for t in query.split() if len(t) >= 3}
+_MAX_CHUNK_CHARS = 2200
 
-    scored = []
-    for item in _all_corpus_items(data):
-        text = item.get("text", "")
-        section = item.get("section", "")
-        term = item.get("term", "")
-        topics = " ".join(item.get("topics", []))
-        combined = f"{text} {section} {topics} {term}".lower()
 
-        score = 0.0
-        for token in tokens:
-            if token in combined:
-                score += 1.0
-        if term and term.lower() in query_lower:
-            score += 10.0
+def format_ifrs_context(hits: list[dict]) -> str:
+    """Format retrieved IFRS/CA knowledge for LLM system context."""
+    if not hits:
+        return ""
 
-        if score > 0:
-            scored.append({
-                "text": text,
-                "paragraph_id": item.get("id", ""),
-                "chapter": item.get("chapter", 0),
-                "section": section,
-                "topics": topics,
-                "item_type": item.get("type", ""),
-                "_score": score,
-            })
+    lines = [
+        "[IFRS CONCEPTUAL FRAMEWORK — retrieved by semantic similarity]",
+        "Cite paragraph IDs when answering; do not invent rules.",
+        "",
+    ]
+    for hit in hits:
+        pid = hit.get("paragraph_id", "")
+        section = hit.get("section", "")
+        body = (hit.get("text") or "").strip()
+        if not body:
+            continue
+        if len(body) > _MAX_CHUNK_CHARS:
+            body = body[:_MAX_CHUNK_CHARS] + "\n...(truncated)..."
+        label = f"Para {pid}" if pid else section
+        lines.append(f"--- {label} ---")
+        lines.append(body)
+        lines.append("")
 
-    scored.sort(key=lambda x: x["_score"], reverse=True)
-    return [{key: val for key, val in c.items() if key != "_score"} for c in scored[:k]]
+    return "\n".join(lines)
 
 
 def _item_doc_text(item: dict) -> str:
@@ -170,6 +162,12 @@ def ingest_ca_knowledge() -> dict:
         return {"status": "skipped", "chunks": 0}
 
     collection = get_collection()
+    try:
+        _client.delete_collection(COLLECTION_NAME)
+    except Exception:
+        pass
+    collection = get_collection()
+
     batch_size = 40
     indexed = 0
 
@@ -180,10 +178,11 @@ def ingest_ca_knowledge() -> dict:
             ids = []
             metas = []
 
-            for item in batch:
-                item_id = item.get("id", "")
+            for j, item in enumerate(batch):
+                item_id = item.get("id", "") or f"item-{i + j}"
+                item_type = item.get("type", "paragraph")
                 doc_text = _item_doc_text(item)
-                chunk_id = f"cf-{item_id}".replace(" ", "-")
+                chunk_id = f"cf-{item_type}-{item_id}-{i + j}".replace(" ", "-")
                 texts.append(doc_text)
                 ids.append(chunk_id)
                 metas.append({
@@ -207,7 +206,12 @@ def ingest_ca_knowledge() -> dict:
                 )
             indexed += len(batch)
 
-        return {"status": "indexed", "chunks": indexed, "complete": data.get("metadata", {}).get("complete", False)}
+        return {
+            "status": "indexed",
+            "chunks": indexed,
+            "complete": data.get("metadata", {}).get("complete", False),
+            "embed_model": EMBED_MODEL,
+        }
     except Exception as exc:
         return {"status": "error", "message": str(exc), "chunks": indexed}
 

@@ -666,25 +666,41 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </nav>
 
         {drawerOpen && (
-          <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex" }}>
+          <>
             <div
-              style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)" }}
+              style={{ position: "fixed", inset: 0, zIndex: 50, background: "rgba(0,0,0,0.45)" }}
               onClick={() => setDrawerOpen(false)}
+              aria-hidden
             />
-            <div style={{ position: "relative", width: 272, height: "100%", overflowY: "auto" }}>
+            <div
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                bottom: 0,
+                zIndex: 51,
+                width: 272,
+                display: "flex",
+                flexDirection: "column",
+                background: "#1e2433",
+                boxShadow: "4px 0 16px rgba(0,0,0,0.25)",
+                overflow: "hidden",
+              }}
+            >
               <div
                 style={{
                   padding: "12px 16px",
-                  borderBottom: `1px solid ${THEME.border}`,
+                  borderBottom: "1px solid #2d3748",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  background: "#1e2433",
+                  flexShrink: 0,
                   color: "#ffffff",
                 }}
               >
-                <span style={{ fontWeight: 600 }}>Menu</span>
+                <span style={{ fontWeight: 600, fontSize: 13 }}>Menu</span>
                 <button
+                  type="button"
                   onClick={() => setDrawerOpen(false)}
                   style={{
                     background: "transparent",
@@ -698,9 +714,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   <X style={{ width: 16, height: 16 }} />
                 </button>
               </div>
-              <Sidebar collapsed={false} setCollapsed={() => undefined} />
+              <div style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
+                <Sidebar collapsed={false} setCollapsed={() => undefined} />
+              </div>
             </div>
-          </div>
+          </>
         )}
         <FalconProvider />
         <EKhataProvider />

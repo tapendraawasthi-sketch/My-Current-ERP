@@ -1,428 +1,212 @@
-"""Intelligent context synthesis for e-Khata.
-
-Analyzes user input, retrieves local grammar/IFRS knowledge, and produces compact
-relevant summaries — not raw section dumps. Pure Python; no external APIs.
-"""
+"""Context retrieval for e-Khata — routes IFRS vs grammar by message kind."""
 
 from __future__ import annotations
 
 import json
 import re
-from dataclasses import dataclass
+from enum import Enum
+from functools import lru_cache
 from pathlib import Path
 
-from ..config import KHATA_SYNTHESIZE_CONTEXT
-from ..vectorstore.ca_knowledge_store import search_ca_knowledge
-from ..vectorstore.nepali_grammar_store import (
-    format_grammar_context,
-    get_chunks_for_sections,
-    search_nepali_grammar,
+from ..vectorstore.ca_knowledge_store import (
+    format_ifrs_context,
+    get_ca_paragraphs_by_ids,
+    search_ca_knowledge,
 )
+from ..vectorstore.nepali_grammar_store import format_grammar_context, search_nepali_grammar
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
-_GRAMMAR_INDEX = _REPO_ROOT / "data" / "ekhata" / "nepali-grammar-index.json"
+_KNOWLEDGE_JSON = _REPO_ROOT / "data" / "ekhata" / "conceptual-framework-knowledge.json"
 
 _SESSION_META: dict[str, dict[str, str]] = {}
 
 _DEVANAGARI_RE = re.compile(r"[\u0900-\u097F]")
-_AMOUNT_RE = re.compile(
-    r"\b(\d+(?:\.\d+)?(?:k|K|hajar|saya|lakh|crore)?|"
-    r"dedh|sade|aadha|paune|saay|say)\b",
-    re.I,
-)
 _PARTY_RE = re.compile(
     r"\b([A-Z][a-z]{2,}(?:\s+[A-Z][a-z]+)?)\s+(?:le|lai|ko|sanga|bata)\b|"
     r"\b([A-Z][a-z]{2,})\s+(?:le|lai)\b",
     re.I,
 )
-_FRAMEWORK_RE = re.compile(
-    r"\b(ifrs|nas|conceptual\s+framework|recognition|derecognition|measurement|"
-    r"faithful|relevance|comparability|materiality|going\s+concern|fair\s+value|"
-    r"historical\s+cost|economic\s+resource|present\s+obligation|unit\s+of\s+account|"
-    r"executory|substance|capital\s+maintenance|accrual\s+accounting|stewardship|"
-    r"sampatti|dayitwo|manyata|mulyankan|biswasilo|sambandhit|nyaya\s+mulya|"
-    r"paribhasha|ko\s+matlab|ko\s+paribhasha|k\s+ho)\b",
+
+# Common Roman-Nepali spelling variants → canonical form used in concept index
+_ROMAN_ALIASES: dict[str, str] = {
+    "sampati": "sampatti",
+    "sampti": "sampatti",
+    "sampatii": "sampatti",
+    "dayitwo": "dayitwo",
+    "dayitto": "dayitwo",
+    "punji": "puni",
+    "aamdani": "aamdani",
+    "kharchaa": "kharcha",
+}
+
+_CONCEPT_QUESTION_RE = re.compile(
+    r"\b("
+    r"k\s*ho|k ho|kasari|kasto|what\s+is|what\s+are|define|definition|meaning|"
+    r"paribhasha|explain|bhaneko|bhayo|matlab|vaneko|vanne|bhannu|ho\s*ki|"
+    r"faithful\s+representation|recognition\s+criteria"
+    r")\b",
     re.I,
 )
+
 _TRANSACTION_RE = re.compile(
-    r"\b(\d+|saya|hajar|lakh)\b.*\b(udhaar|salary|ssf|gratuity|vat|tds|"
-    r"depreciation|bad\s*debt|loan|capital|drawings|stock|kharcha|bikri|kineko|kinyo|"
-    r"tiryo|diyo|becheko|sold|purchase|bought|payment|commission|advance|return|rent|bhaada|"
-    r"debit|credit|dr|cr|ledger|khata)\b|"
-    r"\b(sold|bought|paid|received|tiryo|kineko|debit|credit)\b.*\d",
-    re.I,
-)
-_NEPALI_ROMAN_RE = re.compile(
-    r"\b(k\s*ho|k\s*xa|kasari|udhaar|kharcha|bikri|tiryo|diyo|liyo|kinyo|beche|"
-    r"hisab|lekha|chha|hunchha|xaina|garchu|garxu|tapai|timi|paisa|saya|hajar|"
-    r"lakh|malai|lai|le\s|ko\s|ma\s|bata|sanga|ni\b|ta\b|hai\b|yaar|bhai|dai|"
-    r"garnu|kinnu|bechnu|tirnu|nakad|rasid|naafa|ghaata|talab|bhaada)\b",
-    re.I,
-)
-_ENGLISH_ACCOUNTING_RE = re.compile(
-    r"\b(debit|credit|journal|ledger|vat|tds|ssf|receivable|payable|expense|"
-    r"revenue|asset|liability|equity|depreciation|accrual|invoice|purchase|sale|"
-    r"payment|salary|gratuity|bad\s*debt|opening\s+balance|contra|write[\s-]?off)\b",
+    r"\b(\d+|saya|hajar|lakh)\b.*\b("
+    r"udhaar|salary|ssf|gratuity|vat|tds|depreciation|bad\s*debt|loan|capital|"
+    r"drawings|stock|kharcha|bikri|kineko|kinyo|tiryo|diyo|becheko|sold|purchase|"
+    r"bought|payment|commission|advance|return|rent|bhaada|saman"
+    r")\b",
     re.I,
 )
 
-_INTENT_KEYWORDS: dict[str, list[str]] = {
-    "khata_credit_sale": ["udhaar", "credit sale", "receivable", "beche", "bechyo", "becheko", "diye"],
-    "khata_payment_in": ["tiryo", "tirnu", "payment received", "paid us", "aayo", "prapti"],
-    "khata_cash_sale": ["cash sale", "nakad bikri", "nagad beche"],
-    "khata_purchase": ["kinyo", "kineko", "kinna", "purchase", "kharid", "bought"],
-    "khata_expense": ["kharcha", "expense", "bijuli", "rent", "bhaada", "petrol"],
-    "khata_salary": ["salary", "talab", "payroll", "bonus"],
-    "tax_vat": ["vat", "tds", "ird", "tax", "13%", "section 88", "section 107"],
-    "correction_undo": ["reverse", "galat", "undo", "cancel entry", "feri", "ulto"],
-    "accounting_ledger": ["debit", "credit", "dr", "cr", "ledger", "khata", "journal"],
-    "digital_payment": ["esewa", "khalti", "connect ips", "bank transfer", "cheque"],
-    "normalization": ["chha", "xa", "xaina", "spelling", "typo", "halkhabar"],
-    "nlu_rules": ["nlu", "parse", "interpret", "ambiguous"],
-    "entity_extraction": ["party", "amount", "date", "ner", "extract"],
-}
+_TRANSACTION_RE2 = re.compile(
+    r"\b(sold|bought|paid|received|tiryo|kineko|kinyo|diyo|becheko)\b.*\d",
+    re.I,
+)
 
-_VERB_HINTS: dict[str, str] = {
-    "tiryo": "Payment received — debtor paid (Dr Cash/Bank, Cr Receivable)",
-    "tirnu": "Payment action — check who paid whom",
-    "diyo": "Ambiguous — credit given OR payment; agent (le) decides direction",
-    "diye": "Credit sale / gave on credit (udhaar)",
-    "liyo": "Received / took — often payment in or purchase on credit",
-    "kinyo": "Purchase — expense or inventory (Dr Purchase/Expense, Cr Cash/Payable)",
-    "kineko": "Purchase completed",
-    "beche": "Sale — cash or credit depending on payment words",
-    "bechyo": "Sold — map to sales revenue",
-    "becheko": "Sale completed",
-    "udhaar": "Credit (receivable) — NOT bad debt unless write-off words present",
-    "kharcha": "Expense — Dr Expense, Cr Cash/Bank/Payable",
-    "bikri": "Sales revenue",
-    "debit": "Increase asset/expense or decrease liability — check account named",
-    "credit": "Increase liability/income or decrease asset — check account named",
-    "dr": "Debit side of journal entry",
-    "cr": "Credit side of journal entry",
-}
+_GREETING_RE = re.compile(
+    r"^(hello|hi|hey|namaste|namaskar|dhanyabad|thanks|thank you)\b",
+    re.I,
+)
 
-_SKIP_LINE_RE = re.compile(
-    r"^(━+|SECTION\s+\d+|खण्ड\s+\d+|OVERVIEW:|EXAMPLES:|Part\s+\d+|Document\s+Completion)",
+_UNUSUAL_SPELLING_RE = re.compile(
+    r"\b(chha|cha|xa|xha|xaina|chhaina|chaina|halkhabar|halkbr)\b|[\u0900-\u097F]",
     re.I,
 )
 
 
-@dataclass
-class MessageAnalysis:
-    text: str
-    tokens: list[str]
-    token_set: set[str]
-    has_devanagari: bool
-    has_nepali_roman: bool
-    has_english_accounting: bool
-    is_transaction: bool
-    is_framework: bool
-    intent_keys: list[str]
-    verb_signals: list[str]
-    amount_signals: list[str]
-    party_hints: list[str]
-    expanded_query: str = ""
-
-
-def _tokenize(text: str) -> list[str]:
-    return [
-        t.lower()
-        for t in re.findall(
-            r"[\u0900-\u097F]+|[a-zA-Z]{2,}|\d+(?:\.\d+)?(?:k|hajar|saya|lakh)?",
-            text,
-            re.I,
-        )
-    ]
-
-
-def _load_intent_section_map() -> dict[str, list[int]]:
-    if not _GRAMMAR_INDEX.exists():
-        return {}
-    try:
-        data = json.loads(_GRAMMAR_INDEX.read_text(encoding="utf-8"))
-        return data.get("intentSectionMap", {})
-    except (json.JSONDecodeError, OSError):
-        return {}
-
-
-def _detect_intent_keys(text: str, tokens: set[str]) -> list[str]:
-    lower = text.lower()
-    scored: list[tuple[int, str]] = []
-    for key, keywords in _INTENT_KEYWORDS.items():
-        score = sum(1 for kw in keywords if kw in lower or kw in tokens)
-        if score:
-            scored.append((score, key))
-    scored.sort(reverse=True)
-    return [k for _, k in scored[:3]]
+class MessageKind(str, Enum):
+    ACCOUNTING_CONCEPT = "accounting_concept"
+    TRANSACTION = "transaction"
+    GENERAL = "general"
 
 
 def _session_meta(session_id: str) -> dict[str, str]:
     return _SESSION_META.setdefault(session_id, {})
 
 
-def analyze_message(text: str, session_id: str = "default") -> MessageAnalysis:
-    text = (text or "").strip()
-    tokens = _tokenize(text)
-    token_set = set(tokens)
-    meta = _session_meta(session_id)
-
-    party_hints = []
-    for m in _PARTY_RE.finditer(text):
-        party = m.group(1) or m.group(2)
-        if party and party.lower() not in {"cash", "bank", "sales", "purchase", "expense", "vat", "tds"}:
-            party_hints.append(party)
-
-    verb_signals = [v for v in _VERB_HINTS if v in token_set or v in text.lower()]
-    amount_signals = _AMOUNT_RE.findall(text)
-    intent_keys = _detect_intent_keys(text, token_set)
-
-    expand_parts = [text]
-    if meta.get("last_party"):
-        expand_parts.append(meta["last_party"])
-    if meta.get("last_intent"):
-        expand_parts.append(meta["last_intent"].replace("khata_", " "))
-    if intent_keys:
-        expand_parts.extend(_INTENT_KEYWORDS.get(intent_keys[0], [])[:4])
-
-    return MessageAnalysis(
-        text=text,
-        tokens=tokens,
-        token_set=token_set,
-        has_devanagari=bool(_DEVANAGARI_RE.search(text)),
-        has_nepali_roman=bool(_NEPALI_ROMAN_RE.search(text)),
-        has_english_accounting=bool(_ENGLISH_ACCOUNTING_RE.search(text)),
-        is_transaction=bool(_TRANSACTION_RE.search(text)),
-        is_framework=bool(_FRAMEWORK_RE.search(text)),
-        intent_keys=intent_keys,
-        verb_signals=verb_signals,
-        amount_signals=amount_signals[:3],
-        party_hints=party_hints[:2],
-        expanded_query=" ".join(expand_parts),
-    )
+def _normalize_text(text: str) -> str:
+    low = re.sub(r"\s+", " ", (text or "").lower().strip())
+    for alt, canonical in _ROMAN_ALIASES.items():
+        low = re.sub(rf"\b{re.escape(alt)}\b", canonical, low)
+    return low
 
 
-def _merge_hits(primary: list[dict], extra: list[dict], k: int) -> list[dict]:
+@lru_cache(maxsize=1)
+def _load_concepts() -> tuple[dict, ...]:
+    if not _KNOWLEDGE_JSON.exists():
+        return ()
+    with open(_KNOWLEDGE_JSON, encoding="utf-8") as f:
+        data = json.load(f)
+    items: list[dict] = list(data.get("concepts", []))
+    for entry in data.get("glossary", []):
+        if isinstance(entry, dict) and entry.get("id"):
+            items.append(entry)
+    return tuple(items)
+
+
+def _term_in_text(term: str, normalized_message: str) -> bool:
+    t = _normalize_text(term)
+    if len(t) < 3:
+        return False
+    if t in normalized_message:
+        return True
+    if re.search(rf"\b{re.escape(t)}\b", normalized_message):
+        return True
+    return False
+
+
+def match_accounting_concepts(message: str) -> list[dict]:
+    """Return concept/glossary entries whose en/ne terms appear in the message (most specific first)."""
+    norm = _normalize_text(message)
+    ranked: list[tuple[int, dict]] = []
     seen: set[str] = set()
-    merged: list[dict] = []
-    for hit in primary + extra:
-        key = hit.get("chunk_id") or f"{hit.get('section_id')}-{hit.get('source', '')}"
-        if key in seen:
+
+    for concept in _load_concepts():
+        cid = str(concept.get("id", ""))
+        if not cid:
             continue
-        seen.add(key)
-        merged.append(hit)
-        if len(merged) >= k:
-            break
-    return merged
+        terms = list(concept.get("en", [])) + list(concept.get("ne", []))
+        best_len = 0
+        for term in terms:
+            t = _normalize_text(term)
+            if _term_in_text(t, norm):
+                best_len = max(best_len, len(t))
+        if best_len:
+            ranked.append((best_len, concept))
 
-
-def retrieve_grammar_hits(analysis: MessageAnalysis, k: int = 5) -> list[dict]:
-    """BM25 search plus intent-mapped section boost."""
-    query = analysis.expanded_query or analysis.text
-    hits = search_nepali_grammar(query, k=k)
-
-    section_map = _load_intent_section_map()
-    boost_ids: list[int] = []
-    for key in analysis.intent_keys:
-        boost_ids.extend(section_map.get(key, []))
-
-    if analysis.is_transaction and not boost_ids:
-        boost_ids.extend(section_map.get("accounting_ledger", []))
-
-    if analysis.has_english_accounting and 81 not in boost_ids:
-        boost_ids.extend([81, 83, 102])
-
-    if boost_ids:
-        extra = get_chunks_for_sections(sorted(set(boost_ids))[:6])
-        hits = _merge_hits(hits, extra, k=max(k, 5))
-
+    ranked.sort(key=lambda pair: pair[0], reverse=True)
+    hits: list[dict] = []
+    for _, concept in ranked:
+        cid = str(concept.get("id", ""))
+        if cid in seen:
+            continue
+        seen.add(cid)
+        hits.append(concept)
     return hits
 
 
-def _score_line(line: str, analysis: MessageAnalysis) -> float:
-    stripped = line.strip()
-    if not stripped or len(stripped) < 8:
-        return 0.0
-    if _SKIP_LINE_RE.match(stripped):
-        return 0.0
+def classify_message_kind(message: str) -> MessageKind:
+    """Lightweight routing: accounting definition vs transaction vs general chat."""
+    text = (message or "").strip()
+    if not text:
+        return MessageKind.GENERAL
 
-    lower = stripped.lower()
-    score = 0.0
+    norm = _normalize_text(text)
+    concepts = match_accounting_concepts(text)
 
-    for token in analysis.token_set:
-        if len(token) >= 2 and token in lower:
-            score += 2.0
+    if _TRANSACTION_RE.search(text) or _TRANSACTION_RE2.search(text):
+        return MessageKind.TRANSACTION
 
-    for verb in analysis.verb_signals:
-        if verb in lower:
-            score += 3.5
+    if concepts and _CONCEPT_QUESTION_RE.search(text):
+        return MessageKind.ACCOUNTING_CONCEPT
 
-    for party in analysis.party_hints:
-        if party.lower() in lower:
-            score += 4.0
+    if concepts and len(text.split()) <= 8 and not re.search(r"\b\d{2,}\b", text):
+        return MessageKind.ACCOUNTING_CONCEPT
 
-    if stripped.startswith("AI RULE"):
-        score += 10.0
-    elif stripped.startswith("RULE GROUP"):
-        score += 8.0
-    elif re.match(r"RULE\s+\d+\.\d+:", stripped):
-        score += 7.0
-    elif stripped.startswith("→"):
-        score += 5.0
-    elif stripped.startswith(("•", "INTENT:", "NORMALIZE:", "MAP:")):
-        score += 4.0
+    if _GREETING_RE.match(norm) and len(text.split()) <= 6:
+        return MessageKind.GENERAL
 
-    if analysis.amount_signals and re.search(r"\d", stripped):
-        score += 2.5
+    if re.search(r"\b\d+\b", text) and re.search(
+        r"\b(le|lai|ko|tiryo|diyo|kinyo|becheko|sold|bought|udhaar|payment)\b",
+        text,
+        re.I,
+    ):
+        return MessageKind.TRANSACTION
 
-    if analysis.intent_keys:
-        for key in analysis.intent_keys:
-            for kw in _INTENT_KEYWORDS.get(key, []):
-                if kw in lower:
-                    score += 1.5
+    if concepts:
+        return MessageKind.ACCOUNTING_CONCEPT
 
-    # Penalize very long narrative lines
-    if len(stripped) > 220:
-        score *= 0.35
-
-    return score
+    return MessageKind.GENERAL
 
 
-def _pick_lines(body: str, analysis: MessageAnalysis, limit: int = 8) -> list[str]:
-    scored: list[tuple[float, str]] = []
-    for line in body.splitlines():
-        s = _score_line(line, analysis)
-        if s >= 3.0:
-            scored.append((s, line.strip()))
+def _expand_concept_query(message: str, concepts: list[dict]) -> str:
+    parts = [message]
+    for concept in concepts[:3]:
+        parts.extend(concept.get("en", [])[:3])
+        for pid in concept.get("paragraphs", [])[:4]:
+            parts.append(f"Para {pid}")
+            parts.append(f"IFRS {pid}")
+    return " ".join(parts)
 
-    scored.sort(key=lambda x: x[0], reverse=True)
 
-    picked: list[str] = []
-    seen_norm: set[str] = set()
-    for _, line in scored:
-        norm = re.sub(r"\s+", " ", line.lower())[:80]
-        if norm in seen_norm:
+def _dedupe_hits(hits: list[dict]) -> list[dict]:
+    seen: set[str] = set()
+    out: list[dict] = []
+    for hit in hits:
+        key = str(hit.get("paragraph_id") or hit.get("chunk_id") or hit.get("text", ""))[:120]
+        if key in seen:
             continue
-        seen_norm.add(norm)
-        if len(line) > 200:
-            line = line[:197] + "..."
-        picked.append(line)
-        if len(picked) >= limit:
-            break
-    return picked
+        seen.add(key)
+        out.append(hit)
+    return out
 
 
-def _build_interpretation_hints(analysis: MessageAnalysis) -> list[str]:
+def _party_hints(text: str) -> list[str]:
     hints: list[str] = []
-
-    if analysis.has_devanagari:
-        hints.append("Devanagari input — normalize to Roman equivalents (chha↔xa, ग↔ga).")
-    if analysis.has_nepali_roman and analysis.has_english_accounting:
-        hints.append("Code-switched input — parse English accounting terms with Nepali verbs.")
-    elif analysis.has_english_accounting and not analysis.has_nepali_roman:
-        hints.append("English accounting terms — map debit/credit/ledger to Nepali khata rules.")
-
-    for verb in analysis.verb_signals[:3]:
-        hint = _VERB_HINTS.get(verb)
-        if hint:
-            hints.append(f"'{verb}' → {hint}")
-
-    if "diyo" in analysis.verb_signals or "diye" in analysis.verb_signals:
-        hints.append("Agent check: `X le ... diyo` = X paid; `X lai ... diye` = credit to X.")
-
-    if analysis.party_hints:
-        hints.append(f"Probable party: {', '.join(analysis.party_hints)}.")
-
-    if analysis.amount_signals:
-        hints.append(f"Amount signal: {', '.join(analysis.amount_signals[:2])}.")
-
-    if analysis.intent_keys:
-        hints.append(f"Likely intent family: {', '.join(analysis.intent_keys[:2])}.")
-
-    if analysis.is_transaction and not analysis.amount_signals:
-        hints.append("Transaction-like message but no clear amount — ask user for rakam/number.")
-
-    return hints[:6]
-
-
-def synthesize_grammar_context(
-    hits: list[dict],
-    analysis: MessageAnalysis,
-    max_chars: int = 2100,
-) -> str:
-    if not hits:
-        return ""
-
-    lines = [
-        "[NEPALI NLU INTELLIGENCE — synthesized for this message]",
-        "Use only the bullets below; do not recite full grammar sections.",
-        "",
-        "▸ Message understanding",
-    ]
-    lines.extend(f"  • {h}" for h in _build_interpretation_hints(analysis))
-
-    used = sum(len(x) + 1 for x in lines)
-    section_budget = max(400, (max_chars - used) // max(len(hits), 1))
-
-    for hit in hits:
-        sid = hit.get("section_id", 0)
-        title = hit.get("title_en") or hit.get("title_ne") or f"Section {sid}"
-        body = hit.get("text", "")
-
-        picked = _pick_lines(body, analysis, limit=7)
-        if not picked:
-            continue
-
-        block = [f"▸ Sec {sid}: {title}"]
-        block.extend(f"  • {ln}" if not ln.startswith("→") else f"  {ln}" for ln in picked)
-
-        block_text = "\n".join(block)
-        if len(block_text) > section_budget:
-            block_text = block_text[: section_budget - 3] + "..."
-
-        if used + len(block_text) + 2 > max_chars:
-            break
-
-        lines.append("")
-        lines.append(block_text)
-        used += len(block_text) + 2
-
-    return "\n".join(lines).strip()
-
-
-def synthesize_ifrs_context(query: str, max_chars: int = 850) -> str:
-    hits = search_ca_knowledge(query, k=3)
-    if not hits:
-        return ""
-
-    lines = [
-        "[IFRS FRAMEWORK — relevant excerpts]",
-        "Cite paragraph IDs when answering; do not invent rules.",
-        "",
-    ]
-    used = sum(len(x) + 1 for x in lines)
-
-    for hit in hits:
-        pid = hit.get("paragraph_id", "")
-        section = hit.get("section", "")
-        body = (hit.get("text") or "").strip()
-        if not body:
-            continue
-
-        # First 2 sentences or 280 chars
-        sentences = re.split(r"(?<=[.!?])\s+", body)
-        snippet = " ".join(sentences[:2]).strip()
-        if len(snippet) > 280:
-            snippet = snippet[:277] + "..."
-
-        label = f"Para {pid}" if pid else section
-        block = f"▸ {label}: {snippet}"
-        if used + len(block) + 2 > max_chars:
-            break
-        lines.append(block)
-        used += len(block) + 2
-
-    return "\n".join(lines).strip() if len(lines) > 3 else ""
+    for m in _PARTY_RE.finditer(text):
+        party = m.group(1) or m.group(2)
+        if party and party.lower() not in {"cash", "bank", "sales", "purchase", "expense", "vat", "tds"}:
+            hints.append(party)
+    return hints[:2]
 
 
 def build_intelligent_context(
@@ -432,49 +216,87 @@ def build_intelligent_context(
     force_ifrs: bool | None = None,
     force_grammar: bool | None = None,
 ) -> str:
-    """Build compact intelligent context for Ollama system prompt."""
-    analysis = analyze_message(message, session_id)
+    """Retrieve context chunks; IFRS-first for definitions, grammar-first for transactions."""
+    text = (message or "").strip()
+    if not text:
+        return ""
 
-    include_grammar = force_grammar
-    if include_grammar is None:
-        include_grammar = (
-            analysis.has_devanagari
-            or analysis.has_nepali_roman
-            or analysis.has_english_accounting
-            or analysis.is_transaction
-        )
+    meta = _session_meta(session_id)
+    kind = classify_message_kind(text)
+    concepts = match_accounting_concepts(text)
 
-    include_ifrs = force_ifrs
-    if include_ifrs is None:
-        include_ifrs = analysis.is_framework
+    expand_parts = [text]
+    if kind == MessageKind.TRANSACTION:
+        if meta.get("last_party"):
+            expand_parts.append(meta["last_party"])
+        if meta.get("last_intent"):
+            expand_parts.append(meta["last_intent"].replace("khata_", " "))
+    elif kind == MessageKind.ACCOUNTING_CONCEPT and concepts:
+        expand_parts = [_expand_concept_query(text, concepts)]
 
-    parts: list[str] = []
+    query = " ".join(expand_parts)
 
-    if include_grammar:
-        hits = retrieve_grammar_hits(analysis, k=5)
-        if KHATA_SYNTHESIZE_CONTEXT:
-            grammar = synthesize_grammar_context(hits, analysis)
-        else:
-            grammar = format_grammar_context(hits)
-        if grammar:
-            parts.append(grammar)
+    if force_grammar is not None:
+        include_grammar = force_grammar
+    elif kind == MessageKind.ACCOUNTING_CONCEPT:
+        include_grammar = bool(_UNUSUAL_SPELLING_RE.search(text))
+    else:
+        include_grammar = True
+
+    if force_ifrs is not None:
+        include_ifrs = force_ifrs
+    else:
+        include_ifrs = True
+
+    grammar_block = ""
+    ifrs_block = ""
 
     if include_ifrs:
-        ifrs = synthesize_ifrs_context(message)
-        if ifrs:
-            parts.append(ifrs)
+        ifrs_hits: list[dict] = []
+        if kind == MessageKind.ACCOUNTING_CONCEPT and concepts:
+            para_ids: list[str] = []
+            for concept in concepts[:1]:
+                para_ids.extend(str(p) for p in concept.get("paragraphs", [])[:6])
+            if para_ids:
+                direct = get_ca_paragraphs_by_ids(para_ids)
+                order = {pid: i for i, pid in enumerate(para_ids)}
+                direct.sort(
+                    key=lambda h: order.get(str(h.get("paragraph_id", "")), 999),
+                )
+                ifrs_hits.extend(direct)
+        ifrs_hits.extend(search_ca_knowledge(query, k=8 if kind == MessageKind.ACCOUNTING_CONCEPT else 4))
+        ifrs_hits = _dedupe_hits(ifrs_hits)
+        cap = 3 if kind == MessageKind.ACCOUNTING_CONCEPT else 8
+        ifrs_block = format_ifrs_context(ifrs_hits[:cap])
+
+    if include_grammar:
+        grammar_k = 2 if kind == MessageKind.ACCOUNTING_CONCEPT else (5 if kind == MessageKind.TRANSACTION else 3)
+        grammar_hits = search_nepali_grammar(query, k=grammar_k)
+        grammar_block = format_grammar_context(grammar_hits)
+
+    parts: list[str] = []
+    if kind == MessageKind.ACCOUNTING_CONCEPT:
+        if ifrs_block:
+            parts.append(ifrs_block)
+        if grammar_block:
+            parts.append(grammar_block)
+    else:
+        if grammar_block:
+            parts.append(grammar_block)
+        if ifrs_block:
+            parts.append(ifrs_block)
 
     return "\n\n".join(parts)
 
 
 def update_session_from_message(session_id: str, message: str) -> None:
-    """Track last party/intent hints from user text."""
-    analysis = analyze_message(message, session_id)
+    """Track last party hints from user text for retrieval query expansion."""
     meta = _session_meta(session_id)
-    if analysis.party_hints:
-        meta["last_party"] = analysis.party_hints[0]
-    if analysis.intent_keys:
-        meta["last_intent"] = analysis.intent_keys[0]
+    hints = _party_hints(message)
+    if hints:
+        meta["last_party"] = hints[0]
+    if _DEVANAGARI_RE.search(message):
+        meta["has_devanagari"] = "1"
 
 
 def update_session_from_card(session_id: str, card: dict) -> None:

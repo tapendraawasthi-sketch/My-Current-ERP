@@ -6,13 +6,17 @@ import { KHATA_INTENT_LABELS } from "../../lib/ekhata/types";
 import { validateJournalBalance } from "../../lib/ekhata/caEntryTemplates";
 
 import AchievementSystem from "./AchievementSystem";
-import { SELF_CONTAINED_STATUS } from "../../lib/selfContainedAi";
+import { isSelfContainedAi, SELF_CONTAINED_STATUS } from "../../lib/selfContainedAi";
 
 function statusLabel(llmOnline: boolean, llmModel?: string): string {
   if (llmOnline) {
-    return `Ollama AI${llmModel ? ` · ${llmModel}` : ""} · Agentic · CA Entries`;
+    const model = llmModel?.split(":")[0] ?? "Ollama";
+    return `${model} · Agentic · CA Entries`;
   }
-  return `${SELF_CONTAINED_STATUS.label} · Web Search · CA Entries`;
+  if (isSelfContainedAi()) {
+    return `${SELF_CONTAINED_STATUS.label} · Web Search · CA Entries`;
+  }
+  return `erp_bot offline · ${SELF_CONTAINED_STATUS.label} fallback`;
 }
 
 const EKhataPanel: React.FC = () => {
