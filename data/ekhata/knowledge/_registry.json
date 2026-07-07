@@ -90,6 +90,105 @@
         "journal_entry": 12
       }
     },
+    "general.sector.clinic-health": {
+      "label": "General — Sector NLU: Clinic / Health Service",
+      "tier": "general",
+      "base_authority": 28,
+      "path": "general/sector/clinic-health",
+      "use_for": ["nlu", "language", "journal_entry", "casual"],
+      "task_boost": {
+        "nlu": 18,
+        "journal_entry": 12
+      }
+    },
+    "general.sector.restaurant-cafe": {
+      "label": "General — Sector NLU: Restaurant / Cafe",
+      "tier": "general",
+      "base_authority": 28,
+      "path": "general/sector/restaurant-cafe",
+      "use_for": ["nlu", "language", "journal_entry", "casual"],
+      "task_boost": {
+        "nlu": 18,
+        "journal_entry": 12
+      }
+    },
+    "general.sector.bakery": {
+      "label": "General — Sector NLU: Bakery",
+      "tier": "general",
+      "base_authority": 28,
+      "path": "general/sector/bakery",
+      "use_for": ["nlu", "language", "journal_entry", "casual"],
+      "task_boost": {
+        "nlu": 18,
+        "journal_entry": 12
+      }
+    },
+    "general.sector.dairy-shop": {
+      "label": "General — Sector NLU: Dairy Shop",
+      "tier": "general",
+      "base_authority": 28,
+      "path": "general/sector/dairy-shop",
+      "use_for": ["nlu", "language", "journal_entry", "casual"],
+      "task_boost": {
+        "nlu": 18,
+        "journal_entry": 12
+      }
+    },
+    "general.sector.meat-shop": {
+      "label": "General — Sector NLU: Meat Shop",
+      "tier": "general",
+      "base_authority": 28,
+      "path": "general/sector/meat-shop",
+      "use_for": ["nlu", "language", "journal_entry", "casual"],
+      "task_boost": {
+        "nlu": 18,
+        "journal_entry": 12
+      }
+    },
+    "general.sector.fruit-vegetable-shop": {
+      "label": "General — Sector NLU: Fruit and Vegetable Shop",
+      "tier": "general",
+      "base_authority": 28,
+      "path": "general/sector/fruit-vegetable-shop",
+      "use_for": ["nlu", "language", "journal_entry", "casual"],
+      "task_boost": {
+        "nlu": 18,
+        "journal_entry": 12
+      }
+    },
+    "general.sector.hardware-shop": {
+      "label": "General — Sector NLU: Hardware Shop",
+      "tier": "general",
+      "base_authority": 28,
+      "path": "general/sector/hardware-shop",
+      "use_for": ["nlu", "language", "journal_entry", "casual"],
+      "task_boost": {
+        "nlu": 18,
+        "journal_entry": 12
+      }
+    },
+    "general.sector.construction-material-supplier": {
+      "label": "General — Sector NLU: Construction Material Supplier",
+      "tier": "general",
+      "base_authority": 28,
+      "path": "general/sector/construction-material-supplier",
+      "use_for": ["nlu", "language", "journal_entry", "casual"],
+      "task_boost": {
+        "nlu": 18,
+        "journal_entry": 12
+      }
+    },
+    "general.sector.cement-rod-retail-shop": {
+      "label": "General — Sector NLU: Cement & Rod Retail Shop",
+      "tier": "general",
+      "base_authority": 28,
+      "path": "general/sector/cement-rod-retail-shop",
+      "use_for": ["nlu", "language", "journal_entry", "casual"],
+      "task_boost": {
+        "nlu": 18,
+        "journal_entry": 12
+      }
+    },
     "professional.accounting-standards.conceptual-framework": {
       "label": "Professional — IFRS Conceptual Framework",
       "tier": "professional",
