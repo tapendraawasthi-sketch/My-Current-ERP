@@ -9,13 +9,16 @@ import {
 import { replyCancel, replySaved } from "../lib/ekhata/conversationEngine";
 import { recordTrainingFeedback } from "../lib/ekhata/trainingFeedback";
 import { streamChat } from "../lib/ekhata/streamingClient";
+import type { ConversationTurn } from "../lib/ekhata/conversationalBrain";
 import {
   createConversationContext,
+  processEKhataMessageAsync,
   updateContextAfterConfirm,
   updateContextAfterEntry,
   type EKhataConversationContext,
 } from "../lib/ekhata/processMessage";
 import type { EKhataChatMessage, KhataConfirmationCard } from "../lib/ekhata/types";
+import { isSelfContainedAi } from "../lib/selfContainedAi";
 import { useStore } from "./useStore";
 
 function genId(): string {
@@ -123,6 +126,47 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
     }));
 
     const balance = getKhataBalance();
+
+    if (isSelfContainedAi()) {
+      try {
+        const history: ConversationTurn[] = get()
+          .messages.filter((m) => m.id !== "welcome" && m.id !== assistantId)
+          .slice(-10)
+          .map((m) => ({ role: m.role, text: m.text }));
+
+        const result = await processEKhataMessageAsync(trimmed, {
+          balance,
+          history,
+          conversationContext,
+        });
+
+        if (result.kind === "entry" && result.card) {
+          conversationContext = updateContextAfterEntry(conversationContext, result.card, trimmed);
+        }
+
+        set((s) => ({
+          messages: s.messages.map((m) =>
+            m.id === assistantId ? { ...m, text: result.reply } : m,
+          ),
+          pendingCard: result.kind === "entry" && result.card ? result.card : null,
+          isLoading: false,
+          engineLabel: "builtin",
+        }));
+      } catch (error) {
+        set((s) => ({
+          isLoading: false,
+          messages: s.messages.map((m) =>
+            m.id === assistantId
+              ? {
+                  ...m,
+                  text: error instanceof Error ? error.message : "Parse garna sakina.",
+                }
+              : m,
+          ),
+        }));
+      }
+      return;
+    }
 
     if (!get().llmOnline) {
       set((s) => ({
