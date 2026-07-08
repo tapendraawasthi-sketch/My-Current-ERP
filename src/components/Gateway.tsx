@@ -4,6 +4,7 @@ import { useStore } from "../store/useStore";
 import { useRecentActivity } from "../hooks/useRecentActivity";
 import { getBSTodayLong } from "../lib/nepaliDate";
 import { computeAllStockPositions } from "../lib/stockUtils";
+import { computeOutstandingReceivables, computeOutstandingPayables } from "../lib/accounting";
 import { isAdminOrOwner, isAccountantOrAdmin } from "../lib/permissions";
 import {
   Search,
@@ -785,30 +786,12 @@ const Gateway: React.FC = () => {
   }, [accounts]);
 
   const arOutstanding = useMemo(() => {
-    let total = 0;
-    for (const inv of invoices) {
-      const t = String(inv.type || "").toLowerCase();
-      if (!(t.includes("sales-invoice") || t === "sales_invoice")) continue;
-      if (inv.status !== "posted") continue;
-      const ps = (inv.paymentStatus || "").toLowerCase();
-      if (ps === "unpaid" || ps === "partial")
-        total += Number(inv.grandTotal || 0) - Number(inv.paidAmount || 0);
-    }
-    return total;
-  }, [invoices]);
+    return computeOutstandingReceivables(parties, invoices, vouchers).totalAmount;
+  }, [parties, invoices, vouchers]);
 
   const apOutstanding = useMemo(() => {
-    let total = 0;
-    for (const inv of invoices) {
-      const t = String(inv.type || "").toLowerCase();
-      if (!(t.includes("purchase-invoice") || t === "purchase_invoice")) continue;
-      if (inv.status !== "posted") continue;
-      const ps = (inv.paymentStatus || "").toLowerCase();
-      if (ps === "unpaid" || ps === "partial")
-        total += Number(inv.grandTotal || 0) - Number(inv.paidAmount || 0);
-    }
-    return total;
-  }, [invoices]);
+    return computeOutstandingPayables(parties, invoices, vouchers).totalAmount;
+  }, [parties, invoices, vouchers]);
 
   const vatPayable = useMemo(() => {
     let out = 0,

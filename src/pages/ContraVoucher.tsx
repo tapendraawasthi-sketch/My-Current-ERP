@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { formatNumber } from "../lib/utils";
 import { ADToBSString } from "../lib/nepaliDate";
-import { generateVoucherNo, getAccountBalance } from "../lib/accounting";
+import { generateVoucherNo } from "../lib/accounting";
 import { generateVoucherPDF } from "../lib/printUtils";
 import { VoucherType, VoucherStatus } from "../lib/types";
 import toast from "react-hot-toast";
@@ -119,18 +119,8 @@ const ContraVoucher: React.FC = () => {
   const fromKind = acctKind(fromAcct);
   const toKind = acctKind(toAcct);
 
-  const fromBal = useMemo(() => (fromAcct ? getAccountBalance(fromAcct) : null), [fromAcct]);
-  const toBal = useMemo(() => (toAcct ? getAccountBalance(toAcct) : null), [toAcct]);
-
-  const fromAvailable = useMemo(() => {
-    if (!fromBal) return 0;
-    return fromBal.sign === "Dr" ? fromBal.dr : -fromBal.cr;
-  }, [fromBal]);
-
-  const toAvailable = useMemo(() => {
-    if (!toBal) return 0;
-    return toBal.sign === "Dr" ? toBal.dr : -toBal.cr;
-  }, [toBal]);
+  const fromAvailable = useMemo(() => Math.max(0, fromAcct?.balance ?? 0), [fromAcct]);
+  const toAvailable = useMemo(() => Math.max(0, toAcct?.balance ?? 0), [toAcct]);
 
   const fromAfter = round2(fromAvailable - (Number(amount) || 0));
   const toAfter = round2(toAvailable + (Number(amount) || 0));

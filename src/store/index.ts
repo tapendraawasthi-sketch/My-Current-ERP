@@ -613,10 +613,15 @@ export const useStore = create<AppState>()((...a) => {
           }
         }
       }
-      const accountsWithBalance = accounts.map((a) => ({
-        ...a,
-        balance: (balanceMap[a.id] || 0) + (a.openingBalanceDr || 0) - (a.openingBalanceCr || 0),
-      }));
+      const accountsWithBalance = accounts.map((a) => {
+        const obDr = a.openingBalanceDr ?? 0;
+        const obCr = a.openingBalanceCr ?? 0;
+        const opening = obDr || obCr ? obDr - obCr : (a.openingBalance ?? 0);
+        return {
+          ...a,
+          balance: (balanceMap[a.id] || 0) + opening,
+        };
+      });
 
       set({
         accounts: accountsWithBalance,
@@ -838,6 +843,30 @@ export const useStore = create<AppState>()((...a) => {
         await get()._loadAllData();
       } catch (e) {
         console.error("[login] _loadAllData failed (non-fatal, user still logged in):", e);
+        if (!get().currentFiscalYear) {
+          try {
+            const db = getDB();
+            const fy =
+              (await db.fiscalYears.filter((f: any) => f.isCurrent).first()) ||
+              (await db.fiscalYears.toCollection().first());
+            if (fy) {
+              set({
+                currentFiscalYear: fy as unknown as FiscalYear,
+                fiscalYears: [fy as unknown as FiscalYear],
+              });
+            } else {
+              set({
+                currentFiscalYear: DEFAULT_FISCAL_YEAR,
+                fiscalYears: [DEFAULT_FISCAL_YEAR],
+              });
+            }
+          } catch {
+            set({
+              currentFiscalYear: DEFAULT_FISCAL_YEAR,
+              fiscalYears: [DEFAULT_FISCAL_YEAR],
+            });
+          }
+        }
       }
 
       set({
@@ -1854,6 +1883,15 @@ export const useStore = create<AppState>()((...a) => {
 });
 
 // ─── Private helpers (not on store) ───────────────────────────────────────────
+function maxSerialFromNumbers(numbers: Array<string | undefined>, pad = 4): string {
+  let max = 0;
+  for (const no of numbers) {
+    const match = no?.match(/-(\d+)$/);
+    if (match) max = Math.max(max, parseInt(match[1], 10));
+  }
+  return String(max + 1).padStart(pad, "0");
+}
+
 export async function generateNextVoucherNo(
   type: string,
   db: ReturnType<typeof getDB>,
@@ -1863,14 +1901,15 @@ export async function generateNextVoucherNo(
     payment: "PV",
     receipt: "RV",
     contra: "CV",
+    reversal: "REV",
     "sales-invoice": "SI",
     "purchase-invoice": "PI",
     "sales-return": "SR",
     "purchase-return": "PR",
   };
   const prefix = prefixes[type] || "VCH";
-  const count = await db.vouchers.where("type").equals(type).count();
-  return `${prefix}-${String(count + 1).padStart(4, "0")}`;
+  const existing = await db.vouchers.where("type").equals(type).toArray();
+  return `${prefix}-${maxSerialFromNumbers(existing.map((v) => v.voucherNo))}`;
 }
 
 export async function generateNextInvoiceNo(
@@ -1884,8 +1923,8 @@ export async function generateNextInvoiceNo(
     "purchase-return": "PR",
   };
   const prefix = prefixes[type] || "INV";
-  const count = await db.invoices.where("type").equals(type).count();
-  return `${prefix}-${String(count + 1).padStart(4, "0")}`;
+  const existing = await db.invoices.where("type").equals(type).toArray();
+  return `${prefix}-${maxSerialFromNumbers(existing.map((i) => i.invoiceNo))}`;
 }
 
 export async function reloadAccounts(db: ReturnType<typeof getDB>, set: any) {
@@ -1899,7 +1938,6 @@ export async function postInvoiceJournal(
   get: any,
   set: any,
 ) {
-  // Build journal lines for the invoice
   const lines: any[] = [];
   const partyAccountId =
     invoice.partyAccountId ||
@@ -1912,12 +1950,56 @@ export async function postInvoiceJournal(
   const vat = Number(invoice.vatAmount || 0);
   const tds = Number(invoice.tdsAmount || 0);
   const grandTotal = Number(invoice.grandTotal || 0);
+  const roundOff = Number(invoice.roundOff || 0);
+  const sundryNet = (invoice.billSundries || []).reduce((acc: number, s: any) => {
+    const amt = Number(s.amount || 0);
+    return s.type === "deductive" ? acc - amt : acc + amt;
+  }, 0);
+
+  const pushSundryLines = (invert: boolean) => {
+    if (sundryNet > 0) {
+      lines.push({
+        accountId: "acc-sales",
+        accountName: "Bill Sundries",
+        debit: invert ? sundryNet : 0,
+        credit: invert ? 0 : sundryNet,
+      });
+    } else if (sundryNet < 0) {
+      const amt = Math.abs(sundryNet);
+      lines.push({
+        accountId: "acc-sales",
+        accountName: "Bill Sundries",
+        debit: invert ? 0 : amt,
+        credit: invert ? amt : 0,
+      });
+    }
+  };
+
+  const pushRoundOff = () => {
+    if (Math.abs(roundOff) < 0.005) return;
+    if (roundOff > 0) {
+      lines.push({
+        accountId: "acc-indirect-expenses",
+        accountName: "Round Off",
+        debit: 0,
+        credit: roundOff,
+      });
+    } else {
+      lines.push({
+        accountId: "acc-indirect-expenses",
+        accountName: "Round Off",
+        debit: -roundOff,
+        credit: 0,
+      });
+    }
+  };
 
   if (invoice.type === "sales-invoice") {
+    const partyDebit = grandTotal;
     lines.push({
       accountId: partyAccountId,
       accountName: invoice.partyName,
-      debit: grandTotal,
+      debit: partyDebit,
       credit: 0,
     });
     if (taxable > 0)
@@ -1936,6 +2018,41 @@ export async function postInvoiceJournal(
         debit: 0,
         credit: vat,
       });
+    if (tds > 0) {
+      lines.push({
+        accountId: "acc-tds-receivable",
+        accountName: "TDS Receivable",
+        debit: tds,
+        credit: 0,
+      });
+    }
+    pushSundryLines(false);
+    pushRoundOff();
+  } else if (invoice.type === "sales-return") {
+    lines.push({
+      accountId: partyAccountId,
+      accountName: invoice.partyName,
+      debit: 0,
+      credit: grandTotal,
+    });
+    if (taxable > 0)
+      lines.push({ accountId: "acc-sales", accountName: "Sales Return", debit: taxable, credit: 0 });
+    if (exempt > 0)
+      lines.push({
+        accountId: "acc-sales",
+        accountName: "Sales Return (Exempt)",
+        debit: exempt,
+        credit: 0,
+      });
+    if (vat > 0)
+      lines.push({
+        accountId: "acc-vat-payable",
+        accountName: "VAT Payable",
+        debit: vat,
+        credit: 0,
+      });
+    pushSundryLines(true);
+    pushRoundOff();
   } else if (invoice.type === "purchase-invoice") {
     if (taxable > 0)
       lines.push({
@@ -1958,18 +2075,81 @@ export async function postInvoiceJournal(
         debit: vat,
         credit: 0,
       });
+    const partyCredit = Math.max(0, grandTotal - tds);
     lines.push({
       accountId: partyAccountId,
       accountName: invoice.partyName,
       debit: 0,
-      credit: grandTotal,
+      credit: partyCredit,
     });
+    if (tds > 0) {
+      lines.push({
+        accountId: "acc-tds-payable",
+        accountName: "TDS Payable",
+        debit: 0,
+        credit: tds,
+      });
+    }
+    pushSundryLines(true);
+    pushRoundOff();
+  } else if (invoice.type === "purchase-return") {
+    if (taxable > 0)
+      lines.push({
+        accountId: "acc-purchase",
+        accountName: "Purchase Return",
+        debit: 0,
+        credit: taxable,
+      });
+    if (exempt > 0)
+      lines.push({
+        accountId: "acc-purchase",
+        accountName: "Purchase Return (Exempt)",
+        debit: 0,
+        credit: exempt,
+      });
+    if (vat > 0)
+      lines.push({
+        accountId: "acc-vat-receivable",
+        accountName: "VAT Receivable",
+        debit: 0,
+        credit: vat,
+      });
+    lines.push({
+      accountId: partyAccountId,
+      accountName: invoice.partyName,
+      debit: grandTotal,
+      credit: 0,
+    });
+    pushSundryLines(false);
+    pushRoundOff();
   }
 
   if (lines.length === 0) {
     throw new Error(
       `Invoice ${invoice.invoiceNo} has no accountable amounts (taxable/exempt/total are all zero). Cannot post.`,
     );
+  }
+
+  // Auto-balance minor rounding residual (excludes explicit roundOff line).
+  let debitSum = lines.reduce((s, l) => s + Number(l.debit || 0), 0);
+  let creditSum = lines.reduce((s, l) => s + Number(l.credit || 0), 0);
+  const residual = Math.round((debitSum - creditSum) * 100) / 100;
+  if (Math.abs(residual) >= 0.01) {
+    if (residual > 0) {
+      lines.push({
+        accountId: "acc-indirect-expenses",
+        accountName: "Rounding Difference",
+        debit: 0,
+        credit: residual,
+      });
+    } else {
+      lines.push({
+        accountId: "acc-indirect-expenses",
+        accountName: "Rounding Difference",
+        debit: -residual,
+        credit: 0,
+      });
+    }
   }
 
   validateVoucherBalance(lines);
@@ -2056,4 +2236,70 @@ export async function postInvoiceStock(
   }
   const updatedMovements = await db.stockMovements.toArray();
   set({ stockMovements: updatedMovements });
+}
+
+/** Reverse posted auto-journal for an invoice so it can be re-posted after edit. */
+export async function reverseInvoiceJournal(
+  invoiceId: string,
+  db: ReturnType<typeof getDB>,
+) {
+  const jnlId = `jnl-${invoiceId}`;
+  const existing = await db.vouchers.get(jnlId);
+  if (!existing || existing.status !== "posted") return;
+
+  for (const line of existing.lines || []) {
+    if (!line.accountId) continue;
+    const acc = await db.accounts.get(line.accountId);
+    if (acc) {
+      const newBal =
+        Math.round(((acc.balance || 0) - (line.debit || 0) + (line.credit || 0)) * 100) / 100;
+      await db.accounts.update(line.accountId, { balance: newBal });
+    }
+  }
+  await db.vouchers.delete(jnlId);
+}
+
+/** Reverse stock movements for an invoice (for edit re-post, not cancellation). */
+export async function reverseInvoiceStock(
+  invoiceId: string,
+  db: ReturnType<typeof getDB>,
+  set: any,
+) {
+  const movements = await db.stockMovements.where("referenceId").equals(invoiceId).toArray();
+  const reversedSourceIds = new Set(
+    movements
+      .filter((m) => m.referenceType === "reversal")
+      .map((m) => m.narration?.match(/Reversal of (mov-[^\s:]+)/)?.[1])
+      .filter(Boolean),
+  );
+
+  for (const mov of movements) {
+    if (mov.referenceType === "reversal") continue;
+    if (reversedSourceIds.has(mov.id)) continue;
+    await db.stockMovements.add({
+      ...mov,
+      id: generateId(),
+      qty: -(mov.qty || 0),
+      amount: -(mov.amount || 0),
+      narration: `Reversal of ${mov.id}: invoice edit`,
+      referenceType: "reversal",
+    } as any);
+  }
+
+  const updatedMovements = await db.stockMovements.toArray();
+  set({ stockMovements: updatedMovements });
+}
+
+/** Re-post journal + stock after editing a posted invoice. */
+export async function repostInvoiceJournalAndStock(
+  invoice: any,
+  db: ReturnType<typeof getDB>,
+  get: any,
+  set: any,
+) {
+  await reverseInvoiceJournal(invoice.id, db);
+  await postInvoiceJournal(invoice, db, get, set);
+  await reverseInvoiceStock(invoice.id, db, set);
+  await postInvoiceStock(invoice, db, get, set);
+  await reloadAccounts(db, set);
 }

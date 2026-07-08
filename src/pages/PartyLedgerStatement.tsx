@@ -11,7 +11,7 @@ import { DualDate } from "../components/ui/DualDate";
 import React, { useEffect, useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import { NepaliDatePicker, PartySelect } from "../components/ui";
-import { computePartyStatement, computeOutstandingAnalysis } from "../lib/accounting";
+import { computePartyStatement, computePartyOutstandingSummary, computeInvoiceOutstanding } from "../lib/accounting";
 import { exportLedgerToExcel } from "../lib/exportUtils";
 import { generatePartyStatementPDF } from "../lib/printUtils";
 import { formatNumber, dateToAD } from "../lib/utils";
@@ -61,8 +61,8 @@ const PartyLedgerStatement: React.FC = () => {
 
   const outstandingSummary = useMemo(() => {
     if (!selectedParty) return null;
-    return computeOutstandingAnalysis(selectedParty.id, invoices);
-  }, [selectedParty, invoices]);
+    return computePartyOutstandingSummary(selectedParty.id, invoices, vouchers);
+  }, [selectedParty, invoices, vouchers]);
 
   const creditLimitPercent = useMemo(() => {
     if (!selectedParty?.creditLimit || !outstandingSummary) return 0;
@@ -80,7 +80,8 @@ const PartyLedgerStatement: React.FC = () => {
       if (inv.partyId !== selectedPartyId) continue;
       if (inv.status !== "posted") continue;
       const t = String(inv.type || "").toLowerCase();
-      const outstanding = Number(inv.grandTotal || 0) - Number(inv.paidAmount || 0);
+      const outstanding = computeInvoiceOutstanding(inv, vouchers);
+      if (outstanding <= 0.005) continue;
       if (t.includes("sales-invoice")) {
         balance += outstanding;
         type = "debtor";
@@ -92,7 +93,7 @@ const PartyLedgerStatement: React.FC = () => {
     }
 
     return { balance: Math.abs(balance), type: balance >= 0 ? "debtor" : "creditor" };
-  }, [invoices, selectedPartyId]);
+  }, [invoices, selectedPartyId, vouchers]);
 
   const statement = useMemo(() => {
     if (!selectedParty) {
@@ -114,10 +115,8 @@ const PartyLedgerStatement: React.FC = () => {
     const buckets = ageingSlabs.map((s) => ({ label: s.label, amount: 0 }));
     for (const inv of invoices) {
       if (inv.partyId !== selectedPartyId || inv.status !== "posted") continue;
-      const ps = String(inv.paymentStatus || "").toLowerCase();
-      if (ps !== "unpaid" && ps !== "partial") continue;
-      const outstanding = Number(inv.grandTotal || 0) - Number(inv.paidAmount || 0);
-      if (outstanding <= 0) continue;
+      const outstanding = computeInvoiceOutstanding(inv, vouchers);
+      if (outstanding <= 0.005) continue;
       const refDate = inv.dueDate || inv.date;
       const days = refDate
         ? Math.max(
@@ -129,7 +128,7 @@ const PartyLedgerStatement: React.FC = () => {
       buckets[idx].amount += outstanding;
     }
     return buckets.filter((b) => b.amount > 0);
-  }, [invoices, selectedPartyId, ageingSlabs]);
+  }, [invoices, selectedPartyId, vouchers, ageingSlabs]);
 
   const handlePrint = () => {
     if (!selectedParty || !statement) {

@@ -104,22 +104,63 @@ export function validateDoubleEntry(
   };
 }
 
+function voucherAllocationsForInvoice(
+  inv: any,
+  vouchers: any[],
+  voucherType: "receipt" | "payment",
+): number {
+  let allocated = 0;
+  for (const v of vouchers) {
+    if (v.status !== "posted" || v.type !== voucherType) continue;
+    if (v.partyId && inv.partyId && v.partyId !== inv.partyId) continue;
+
+    for (const line of v.lines ?? []) {
+      if (line.billRefNo === inv.invoiceNo || line.billRefNo === inv.id) {
+        allocated += Number(line.amount ?? line.credit ?? line.debit ?? 0);
+      }
+      for (const bw of line.billWise ?? []) {
+        if (bw.invoiceId === inv.id || bw.billRefNo === inv.invoiceNo) {
+          allocated += Number(bw.amount ?? 0);
+        }
+      }
+    }
+
+    for (const bw of v.billWiseDetails ?? []) {
+      if (bw.invoiceId === inv.id || bw.billRefNo === inv.invoiceNo) {
+        allocated += Number(bw.amount ?? 0);
+      }
+    }
+  }
+  return allocated;
+}
+
+export function computeInvoiceOutstanding(inv: any, vouchers: any[] = []): number {
+  if (inv.status === "cancelled" || inv.status === "draft" || inv.status !== "posted") return 0;
+  const original = Number(inv.grandTotal ?? inv.total ?? 0);
+  if (original <= 0) return 0;
+
+  let allocated = Number(inv.paidAmount ?? 0);
+  if (inv.type === "sales-invoice") {
+    allocated += voucherAllocationsForInvoice(inv, vouchers, "receipt");
+  } else if (inv.type === "purchase-invoice") {
+    allocated += voucherAllocationsForInvoice(inv, vouchers, "payment");
+  }
+
+  return Math.max(0, parseFloat((original - allocated).toFixed(2)));
+}
+
 export function computeOutstandingReceivables(
   parties: any[],
   invoices: any[],
-  vouchers: any[],
+  vouchers: any[] = [],
 ): { totalAmount: number; parties: Array<{ partyId: string; name: string; amount: number }> } {
   const partyBalances: Record<string, number> = {};
 
   for (const inv of invoices) {
-    if (
-      inv.type === "sales-invoice" &&
-      inv.status === "posted" &&
-      (inv.paymentStatus === "unpaid" || inv.paymentStatus === "partial")
-    ) {
-      const outstanding = (inv.grandTotal || 0) - (inv.paidAmount || 0);
-      partyBalances[inv.partyId] = (partyBalances[inv.partyId] || 0) + outstanding;
-    }
+    if (inv.type !== "sales-invoice" || inv.status !== "posted") continue;
+    const outstanding = computeInvoiceOutstanding(inv, vouchers);
+    if (outstanding <= 0.005) continue;
+    partyBalances[inv.partyId] = (partyBalances[inv.partyId] || 0) + outstanding;
   }
 
   const result = Object.entries(partyBalances).map(([partyId, amount]) => {
@@ -461,17 +502,14 @@ export function computeCashFlow(
 export function computeOutstandingPayables(
   parties: any[],
   invoices: any[],
+  vouchers: any[] = [],
 ): { totalAmount: number; parties: Array<{ partyId: string; name: string; amount: number }> } {
   const partyBalances: Record<string, number> = {};
   for (const inv of invoices) {
-    if (
-      inv.type === "purchase-invoice" &&
-      inv.status === "posted" &&
-      (inv.paymentStatus === "unpaid" || inv.paymentStatus === "partial")
-    ) {
-      const outstanding = (inv.grandTotal || 0) - (inv.paidAmount || 0);
-      partyBalances[inv.partyId] = (partyBalances[inv.partyId] || 0) + outstanding;
-    }
+    if (inv.type !== "purchase-invoice" || inv.status !== "posted") continue;
+    const outstanding = computeInvoiceOutstanding(inv, vouchers);
+    if (outstanding <= 0.005) continue;
+    partyBalances[inv.partyId] = (partyBalances[inv.partyId] || 0) + outstanding;
   }
   const result = Object.entries(partyBalances).map(([partyId, amount]) => {
     const party = parties.find((p) => p.id === partyId);
@@ -480,9 +518,64 @@ export function computeOutstandingPayables(
   return { totalAmount: result.reduce((s, r) => s + r.amount, 0), parties: result };
 }
 
+export function computePartyOutstandingSummary(
+  partyId: string,
+  invoices: any[],
+  vouchers: any[] = [],
+): {
+  totalReceivable: number;
+  totalPayable: number;
+  netOutstanding: number;
+  oldestBillNo: string | null;
+  oldestBillDate: string | null;
+  oldestDays: number;
+} {
+  let totalReceivable = 0;
+  let totalPayable = 0;
+  let oldestBill: any = null;
+  const today = new Date().toISOString().slice(0, 10);
+
+  for (const inv of invoices) {
+    if (inv.partyId !== partyId || inv.status !== "posted") continue;
+    const outstanding = computeInvoiceOutstanding(inv, vouchers);
+    if (outstanding <= 0.005) continue;
+
+    if (inv.type === "sales-invoice") {
+      totalReceivable += outstanding;
+    } else if (inv.type === "purchase-invoice") {
+      totalPayable += outstanding;
+    } else {
+      continue;
+    }
+
+    if (!oldestBill || String(inv.date) < String(oldestBill.date)) {
+      oldestBill = inv;
+    }
+  }
+
+  const refDate = oldestBill?.dueDate || oldestBill?.date;
+  const oldestDays = refDate
+    ? Math.max(
+        0,
+        Math.floor((new Date(today).getTime() - new Date(refDate).getTime()) / 86400000),
+      )
+    : 0;
+
+  return {
+    totalReceivable,
+    totalPayable,
+    netOutstanding: totalReceivable - totalPayable,
+    oldestBillNo: oldestBill?.invoiceNo ?? null,
+    oldestBillDate: oldestBill?.date ?? null,
+    oldestDays,
+  };
+}
+
 export function getAccountBalance(accountId: string, vouchers: any[], accounts?: any[]): number {
   const account = accounts?.find((a) => a.id === accountId);
-  let balance = (account?.openingBalanceDr || 0) - (account?.openingBalanceCr || 0);
+  const obDr = account?.openingBalanceDr ?? 0;
+  const obCr = account?.openingBalanceCr ?? 0;
+  let balance = obDr || obCr ? obDr - obCr : (account?.openingBalance ?? 0);
   for (const v of vouchers) {
     if (v.status !== "posted") continue;
     for (const line of v.lines || []) {
@@ -585,9 +678,10 @@ export function computePartyStatement(
 export function computeOutstandingAnalysis(
   parties: any[],
   invoices: any[],
+  vouchers: any[] = [],
 ): { receivables: any; payables: any } {
-  const receivables = computeOutstandingReceivables(parties, invoices, []);
-  const payables = computeOutstandingPayables(parties, invoices);
+  const receivables = computeOutstandingReceivables(parties, invoices, vouchers);
+  const payables = computeOutstandingPayables(parties, invoices, vouchers);
   return { receivables, payables };
 }
 

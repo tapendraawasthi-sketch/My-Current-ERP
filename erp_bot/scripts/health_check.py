@@ -87,28 +87,6 @@ def check_sector_kb() -> str:
 
 def check_holdout_baseline() -> str:
     baseline = REPO_ROOT / "data" / "ekhata" / "sector_nlu_eval_baseline.json"
-    # #region agent log
-    try:
-        import json as _json
-        import time as _time
-
-        with open("/teamspace/studios/this_studio/sutra-erp/.cursor/debug-ab6f1a.log", "a", encoding="utf-8") as _lf:
-            _lf.write(
-                _json.dumps(
-                    {
-                        "sessionId": "ab6f1a",
-                        "hypothesisId": "H1",
-                        "location": "health_check.py:check_holdout_baseline",
-                        "message": "baseline path probe",
-                        "data": {"path": str(baseline), "exists": baseline.exists()},
-                        "timestamp": int(_time.time() * 1000),
-                    }
-                )
-                + "\n"
-            )
-    except Exception:
-        pass
-    # #endregion
     if not baseline.exists():
         raise RuntimeError("sector_nlu_eval_baseline.json missing")
     data = json.loads(baseline.read_text(encoding="utf-8"))

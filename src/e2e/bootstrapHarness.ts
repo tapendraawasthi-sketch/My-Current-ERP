@@ -18,20 +18,6 @@ function setStep(step: string): void {
     window.__ekhataHarnessStep = step;
   }
   console.log(`[ekhata-harness] ${step}`);
-  // #region agent log
-  fetch("http://localhost:7330/ingest/a7e67c06-a5cf-446a-8ca6-f81cab3c7d24", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "ab6f1a" },
-    body: JSON.stringify({
-      sessionId: "ab6f1a",
-      hypothesisId: "H9",
-      location: "bootstrapHarness.ts",
-      message: step,
-      data: {},
-      timestamp: Date.now(),
-    }),
-  }).catch(() => {});
-  // #endregion
 }
 
 function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {

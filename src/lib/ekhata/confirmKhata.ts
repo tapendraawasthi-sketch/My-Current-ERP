@@ -140,59 +140,63 @@ export async function confirmKhataEntry(
   card: KhataConfirmationCard,
   deps: ConfirmKhataDeps,
 ): Promise<{ voucherNo: string }> {
-  const accountIds = await ensureKhataAccounts();
-  const { partyId, partyName } = await resolveParty(card.party, card.intent);
-  const journalDraft = resolveJournalDraft(card);
-  const narration = card.item ? `${card.raw_text} (${card.item})` : card.raw_text;
+  const db = getDB();
 
-  const lines = journalDraft.map((draft) => {
-    const accountId = accountIds.get(draft.accountCode);
-    if (!accountId) {
-      throw new Error(`Account ${draft.accountCode} could not be initialized`);
+  return db.transaction("rw", [db.accounts, db.parties, db.vouchers, db.auditLogs], async () => {
+    const accountIds = await ensureKhataAccounts();
+    const { partyId, partyName } = await resolveParty(card.party, card.intent);
+    const journalDraft = resolveJournalDraft(card);
+    const narration = card.item ? `${card.raw_text} (${card.item})` : card.raw_text;
+
+    const lines = journalDraft.map((draft) => {
+      const accountId = accountIds.get(draft.accountCode);
+      if (!accountId) {
+        throw new Error(`Account ${draft.accountCode} could not be initialized`);
+      }
+      return {
+        id: generateId(),
+        accountId,
+        accountName: draft.accountName,
+        debit: draft.debit,
+        credit: draft.credit,
+        narration: draft.narration ?? narration,
+        partyId,
+        partyName,
+      };
+    });
+
+    const totalDebit = lines.reduce((s, l) => s + l.debit, 0);
+    const totalCredit = lines.reduce((s, l) => s + l.credit, 0);
+
+    const validation = validateDoubleEntry(lines);
+    if (!validation.isValid) {
+      throw new Error(
+        `Journal entry not balanced: Dr ${validation.totalDebit} ≠ Cr ${validation.totalCredit} (diff ${validation.difference})`,
+      );
     }
-    return {
-      id: generateId(),
-      accountId,
-      accountName: draft.accountName,
-      debit: draft.debit,
-      credit: draft.credit,
-      narration: draft.narration ?? narration,
+
+    const voucherNo = await nextKhataVoucherNo();
+    const template = getEntryTemplate(card.intent);
+
+    await deps.addVoucher({
+      type: card.intent,
+      status: "posted",
+      date: card.date,
+      narration,
       partyId,
       partyName,
-    };
+      voucherNo,
+      lines,
+      grandTotal: Math.max(totalDebit, totalCredit),
+      totalDebit,
+      totalCredit,
+      referenceNo: card.raw_text,
+      caExplanation: card.caExplanation ?? template?.explanation,
+      tags: card.tags ?? template?.tags,
+    });
+
+    return { voucherNo };
   });
-
-  const totalDebit = lines.reduce((s, l) => s + l.debit, 0);
-  const totalCredit = lines.reduce((s, l) => s + l.credit, 0);
-
-  const validation = validateDoubleEntry(lines);
-  if (!validation.isValid) {
-    throw new Error(
-      `Journal entry not balanced: Dr ${validation.totalDebit} ≠ Cr ${validation.totalCredit} (diff ${validation.difference})`,
-    );
-  }
-
-  const voucherNo = await nextKhataVoucherNo();
-  const template = getEntryTemplate(card.intent);
-
-  await deps.addVoucher({
-    type: card.intent,
-    status: "posted",
-    date: card.date,
-    narration,
-    partyId,
-    partyName,
-    voucherNo,
-    lines,
-    grandTotal: Math.max(totalDebit, totalCredit),
-    totalDebit,
-    totalCredit,
-    referenceNo: card.raw_text,
-    caExplanation: card.caExplanation ?? template?.explanation,
-    tags: card.tags ?? template?.tags,
-  });
-
-  return { voucherNo };
 }
 
 export { LEGACY_KHATA_ACCOUNTS, CA_CHART_OF_ACCOUNTS };

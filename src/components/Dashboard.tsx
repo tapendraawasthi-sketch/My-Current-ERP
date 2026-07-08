@@ -20,6 +20,7 @@ import {
   ShoppingBag,
 } from "lucide-react";
 import { getDB } from "../lib/db";
+import { computeOutstandingReceivables } from "../lib/accounting";
 
 const Dashboard: React.FC = () => {
   const isDbReady = useStore((state) => state.isDbReady);
@@ -68,17 +69,10 @@ const Dashboard: React.FC = () => {
     );
   }, [invoices, today]);
 
-  // Outstanding receivables
+  // Outstanding receivables (includes receipt voucher allocations)
   const outstandingReceivables = useMemo(() => {
-    return invoices
-      .filter(
-        (inv) =>
-          (inv.type === VoucherType.SALES_INVOICE || inv.type === "sales-invoice") &&
-          inv.status === "posted" &&
-          (inv.paymentStatus === "unpaid" || inv.paymentStatus === "partial"),
-      )
-      .reduce((sum, inv) => sum + ((inv.grandTotal || 0) - (inv.paidAmount || 0)), 0);
-  }, [invoices]);
+    return computeOutstandingReceivables(parties, invoices, vouchers).totalAmount;
+  }, [parties, invoices, vouchers]);
 
   // Cash & Bank balance
   const cashBankBalance = useMemo(() => {

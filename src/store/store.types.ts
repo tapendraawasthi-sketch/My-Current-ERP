@@ -425,6 +425,21 @@ export const DEFAULT_ACCOUNTS = [
     openingBalanceCr: 0,
     isSystemAccount: true,
   },
+  {
+    id: "acc-tds-receivable",
+    code: "1302",
+    name: "TDS Receivable",
+    type: "asset",
+    level: "ledger",
+    parentId: "grp-current-assets",
+    isGroup: false,
+    isActive: true,
+    balance: 0,
+    openingBalance: 0,
+    openingBalanceDr: 0,
+    openingBalanceCr: 0,
+    isSystemAccount: true,
+  },
   // Equity
   {
     id: "grp-equity",

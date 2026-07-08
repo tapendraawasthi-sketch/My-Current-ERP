@@ -4,6 +4,9 @@ import {
   generateNextInvoiceNo,
   postInvoiceJournal,
   postInvoiceStock,
+  repostInvoiceJournalAndStock,
+  reverseInvoiceJournal,
+  reverseInvoiceStock,
 } from "../index";
 import {
   StoreUser,
@@ -28,17 +31,24 @@ import { mergeSystemConfiguration } from "../../lib/systemConfiguration";
 
 /** Checks IndexedDB periodLocks table and throws if the given date is locked. */
 async function enforceperiodLock(date: string, db: ReturnType<typeof getDB>): Promise<void> {
-  try {
-    const d = new Date(date);
-    const key = `${d.getFullYear()}-${d.getMonth() + 1}`;
-    const locks: any[] = await (db as any).table("periodLocks").toArray();
-    if (locks.some((l: any) => l.periodKey === key)) {
-      throw new Error(`Period is locked for date ${date}. Unlock the period before posting.`);
-    }
-  } catch (e: any) {
-    // If periodLocks table doesn't exist yet (first run), ignore silently.
-    if (e.message?.includes("Period is locked")) throw e;
+  if (!db.tables.some((t) => t.name === "periodLocks")) return;
+  const d = new Date(date);
+  const key = `${d.getFullYear()}-${d.getMonth() + 1}`;
+  const locks: any[] = await db.table("periodLocks").toArray();
+  if (locks.some((l: any) => l.periodKey === key)) {
+    throw new Error(`Period is locked for date ${date}. Unlock the period before posting.`);
   }
+}
+
+/** Same guards as addVoucher for any path that posts journal lines. */
+function guardPostedVoucher(
+  voucher: { date?: string; lines?: Array<{ debit?: number; credit?: number }> },
+  get: () => AppState,
+  isDraft: boolean,
+): { totalDebit: number; totalCredit: number } {
+  const { currentFiscalYear } = get();
+  if (voucher.date) assertDateInFiscalYear(voucher.date, currentFiscalYear);
+  return validateVoucherBalance(voucher.lines || [], isDraft);
 }
 
 export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get) => ({
@@ -150,12 +160,19 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
         }
       }
 
+      const newLines: any[] = updates.lines ?? original?.lines ?? [];
+      const newStatus: string = updates.status ?? original?.status ?? "draft";
+      const postDate = updates.date ?? original?.date;
+
+      if (newStatus === "posted") {
+        await enforceperiodLock(postDate, db);
+        guardPostedVoucher({ date: postDate, lines: newLines }, get, false);
+      }
+
       // 2. Persist the updates.
       await db.vouchers.update(id, updates);
 
       // 3. Apply new balance impact if the resulting voucher is posted.
-      const newLines: any[] = updates.lines ?? original?.lines ?? [];
-      const newStatus: string = updates.status ?? original?.status ?? "draft";
       if (newStatus === "posted") {
         for (const line of newLines) {
           if (line.accountId) {
@@ -311,10 +328,43 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
 
   updateInvoice: async (id, updates) => {
     const db = getDB();
-    await db.invoices.update(id, updates);
-    set((s) => ({
-      invoices: s.invoices.map((inv) => (inv.id === id ? { ...inv, ...updates } : inv)),
-    }));
+    const existing = await db.invoices.get(id);
+    const wasPosted = existing?.status === "posted";
+    const willBePosted = (updates.status ?? existing?.status) === "posted";
+
+    return db.transaction(
+      "rw",
+      [db.invoices, db.vouchers, db.stockMovements, db.accounts],
+      async () => {
+        await db.invoices.update(id, updates);
+        const merged = { ...(existing ?? {}), ...updates, id };
+
+        if (willBePosted && !wasPosted) {
+          const jnlExists = await db.vouchers.get(`jnl-${id}`);
+          if (!jnlExists) {
+            await postInvoiceJournal(merged as any, db, get, set);
+            await postInvoiceStock(merged as any, db, get, set);
+          }
+        } else if (willBePosted && wasPosted) {
+          await repostInvoiceJournalAndStock(merged as any, db, get, set);
+        } else if (wasPosted && !willBePosted) {
+          await reverseInvoiceJournal(id, db);
+          await reverseInvoiceStock(id, db, set);
+          await reloadAccounts(db, set);
+        }
+
+        const allInvoices = await db.invoices.toArray();
+        const allVouchers = await db.vouchers.toArray();
+        set({
+          invoices: allInvoices.sort(
+            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+          ),
+          vouchers: allVouchers.sort(
+            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+          ),
+        });
+      },
+    );
   },
 
   cancelInvoice: async (id, reason) => {
@@ -364,6 +414,9 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
               debit: Number(line.credit || 0),
               credit: Number(line.debit || 0),
             }));
+
+            const reversalDate = new Date().toISOString().split("T")[0];
+            assertDateInFiscalYear(reversalDate, get().currentFiscalYear);
 
             const reversalVoucher = {
               id: generateId(),
@@ -644,6 +697,12 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
     const now = new Date().toISOString();
     const vId = generateId();
     const voucherToAdd = { ...journalData, id: vId, createdAt: now };
+
+    if ((voucherToAdd as any).status === "posted") {
+      await enforceperiodLock((voucherToAdd as any).date, db);
+      guardPostedVoucher(voucherToAdd as any, get, false);
+    }
+
     await db.vouchers.add(voucherToAdd as any);
 
     // Update account balances for the conversion journal — mirrors addVoucher logic.
