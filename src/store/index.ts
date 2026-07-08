@@ -1883,6 +1883,15 @@ export const useStore = create<AppState>()((...a) => {
 });
 
 // ─── Private helpers (not on store) ───────────────────────────────────────────
+function maxSerialFromNumbers(numbers: Array<string | undefined>, pad = 4): string {
+  let max = 0;
+  for (const no of numbers) {
+    const match = no?.match(/-(\d+)$/);
+    if (match) max = Math.max(max, parseInt(match[1], 10));
+  }
+  return String(max + 1).padStart(pad, "0");
+}
+
 export async function generateNextVoucherNo(
   type: string,
   db: ReturnType<typeof getDB>,
@@ -1892,14 +1901,15 @@ export async function generateNextVoucherNo(
     payment: "PV",
     receipt: "RV",
     contra: "CV",
+    reversal: "REV",
     "sales-invoice": "SI",
     "purchase-invoice": "PI",
     "sales-return": "SR",
     "purchase-return": "PR",
   };
   const prefix = prefixes[type] || "VCH";
-  const count = await db.vouchers.where("type").equals(type).count();
-  return `${prefix}-${String(count + 1).padStart(4, "0")}`;
+  const existing = await db.vouchers.where("type").equals(type).toArray();
+  return `${prefix}-${maxSerialFromNumbers(existing.map((v) => v.voucherNo))}`;
 }
 
 export async function generateNextInvoiceNo(
@@ -1913,8 +1923,8 @@ export async function generateNextInvoiceNo(
     "purchase-return": "PR",
   };
   const prefix = prefixes[type] || "INV";
-  const count = await db.invoices.where("type").equals(type).count();
-  return `${prefix}-${String(count + 1).padStart(4, "0")}`;
+  const existing = await db.invoices.where("type").equals(type).toArray();
+  return `${prefix}-${maxSerialFromNumbers(existing.map((i) => i.invoiceNo))}`;
 }
 
 export async function reloadAccounts(db: ReturnType<typeof getDB>, set: any) {
@@ -2226,4 +2236,70 @@ export async function postInvoiceStock(
   }
   const updatedMovements = await db.stockMovements.toArray();
   set({ stockMovements: updatedMovements });
+}
+
+/** Reverse posted auto-journal for an invoice so it can be re-posted after edit. */
+export async function reverseInvoiceJournal(
+  invoiceId: string,
+  db: ReturnType<typeof getDB>,
+) {
+  const jnlId = `jnl-${invoiceId}`;
+  const existing = await db.vouchers.get(jnlId);
+  if (!existing || existing.status !== "posted") return;
+
+  for (const line of existing.lines || []) {
+    if (!line.accountId) continue;
+    const acc = await db.accounts.get(line.accountId);
+    if (acc) {
+      const newBal =
+        Math.round(((acc.balance || 0) - (line.debit || 0) + (line.credit || 0)) * 100) / 100;
+      await db.accounts.update(line.accountId, { balance: newBal });
+    }
+  }
+  await db.vouchers.delete(jnlId);
+}
+
+/** Reverse stock movements for an invoice (for edit re-post, not cancellation). */
+export async function reverseInvoiceStock(
+  invoiceId: string,
+  db: ReturnType<typeof getDB>,
+  set: any,
+) {
+  const movements = await db.stockMovements.where("referenceId").equals(invoiceId).toArray();
+  const reversedSourceIds = new Set(
+    movements
+      .filter((m) => m.referenceType === "reversal")
+      .map((m) => m.narration?.match(/Reversal of (mov-[^\s:]+)/)?.[1])
+      .filter(Boolean),
+  );
+
+  for (const mov of movements) {
+    if (mov.referenceType === "reversal") continue;
+    if (reversedSourceIds.has(mov.id)) continue;
+    await db.stockMovements.add({
+      ...mov,
+      id: generateId(),
+      qty: -(mov.qty || 0),
+      amount: -(mov.amount || 0),
+      narration: `Reversal of ${mov.id}: invoice edit`,
+      referenceType: "reversal",
+    } as any);
+  }
+
+  const updatedMovements = await db.stockMovements.toArray();
+  set({ stockMovements: updatedMovements });
+}
+
+/** Re-post journal + stock after editing a posted invoice. */
+export async function repostInvoiceJournalAndStock(
+  invoice: any,
+  db: ReturnType<typeof getDB>,
+  get: any,
+  set: any,
+) {
+  await reverseInvoiceJournal(invoice.id, db);
+  await postInvoiceJournal(invoice, db, get, set);
+  await reverseInvoiceStock(invoice.id, db, set);
+  await postInvoiceStock(invoice, db, get, set);
+  await reloadAccounts(db, set);
 }

@@ -4,6 +4,7 @@ import {
   generateNextInvoiceNo,
   postInvoiceJournal,
   postInvoiceStock,
+  repostInvoiceJournalAndStock,
 } from "../index";
 import {
   StoreUser,
@@ -342,11 +343,17 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
             await postInvoiceJournal(merged as any, db, get, set);
             await postInvoiceStock(merged as any, db, get, set);
           }
+        } else if (willBePosted && wasPosted) {
+          await repostInvoiceJournalAndStock(merged as any, db, get, set);
         }
 
         const allInvoices = await db.invoices.toArray();
+        const allVouchers = await db.vouchers.toArray();
         set({
           invoices: allInvoices.sort(
+            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+          ),
+          vouchers: allVouchers.sort(
             (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
           ),
         });

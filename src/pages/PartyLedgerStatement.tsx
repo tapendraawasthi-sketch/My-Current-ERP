@@ -11,7 +11,7 @@ import { DualDate } from "../components/ui/DualDate";
 import React, { useEffect, useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import { NepaliDatePicker, PartySelect } from "../components/ui";
-import { computePartyStatement, computeOutstandingAnalysis } from "../lib/accounting";
+import { computePartyStatement, computePartyOutstandingSummary } from "../lib/accounting";
 import { exportLedgerToExcel } from "../lib/exportUtils";
 import { generatePartyStatementPDF } from "../lib/printUtils";
 import { formatNumber, dateToAD } from "../lib/utils";
@@ -61,8 +61,8 @@ const PartyLedgerStatement: React.FC = () => {
 
   const outstandingSummary = useMemo(() => {
     if (!selectedParty) return null;
-    return computeOutstandingAnalysis(selectedParty.id, invoices);
-  }, [selectedParty, invoices]);
+    return computePartyOutstandingSummary(selectedParty.id, invoices, vouchers);
+  }, [selectedParty, invoices, vouchers]);
 
   const creditLimitPercent = useMemo(() => {
     if (!selectedParty?.creditLimit || !outstandingSummary) return 0;

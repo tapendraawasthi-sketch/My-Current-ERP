@@ -177,6 +177,7 @@ const App: React.FC = () => {
         useStore.setState((state: any) => ({
           ...state,
           isInitializing: false,
+          isDbReady: true,
           authStage: "gateway",
         }));
       }, 10000);
