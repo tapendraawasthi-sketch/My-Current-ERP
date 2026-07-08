@@ -207,67 +207,70 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
       const snapshot = await buildSessionSnapshot();
       const sessionId = getEKhataSessionId();
 
-      await streamChat(trimmed, sessionId, {
-        onThinkingStart: () => {
-          set({ streamingText: "", activeTools: [] });
-        },
-        onThinkingDone: () => undefined,
-        onToken: (token) => {
-          set((s) => {
-            const next = s.streamingText + token;
-            return {
-              streamingText: next,
+      await streamChat(
+        trimmed,
+        sessionId,
+        {
+          onThinkingStart: () => {
+            set({ streamingText: "", activeTools: [] });
+          },
+          onThinkingDone: () => undefined,
+          onToken: (token) => {
+            set((s) => {
+              const next = s.streamingText + token;
+              return {
+                streamingText: next,
+                messages: s.messages.map((m) => (m.id === assistantId ? { ...m, text: next } : m)),
+              };
+            });
+          },
+          onToolCalling: (tools) => set({ activeTools: tools }),
+          onComplete: (meta) => {
+            const action = meta.action as string | undefined;
+            const card = (meta.card as KhataConfirmationCard | null) ?? null;
+            const message = String(meta.message || get().streamingText || "");
+            const insight = meta.insight as string | null | undefined;
+            const finalText = formatAssistantText(message, insight);
+
+            if (action === "confirm" && card) {
+              conversationContext = updateContextAfterEntry(conversationContext, card, trimmed);
+            }
+
+            set((s) => ({
               messages: s.messages.map((m) =>
-                m.id === assistantId ? { ...m, text: next } : m,
+                m.id === assistantId ? { ...m, text: finalText } : m,
               ),
-            };
-          });
+              pendingCard: action === "confirm" ? card : null,
+              isLoading: false,
+              streamingText: "",
+              activeTools: [],
+              engineLabel: "v2-stream",
+            }));
+          },
+          onError: async () => {
+            const v2 = await askEKhataV2(trimmed, sessionId, { balance, context: snapshot });
+            const finalText = formatAssistantText(v2.message, v2.insight);
+            if (v2.action === "confirm" && v2.card) {
+              conversationContext = updateContextAfterEntry(
+                conversationContext,
+                v2.card as KhataConfirmationCard,
+                trimmed,
+              );
+            }
+            set((s) => ({
+              messages: s.messages.map((m) =>
+                m.id === assistantId ? { ...m, text: finalText } : m,
+              ),
+              pendingCard: v2.action === "confirm" ? (v2.card ?? null) : null,
+              isLoading: false,
+              streamingText: "",
+              activeTools: [],
+              engineLabel: "v2",
+            }));
+          },
         },
-        onToolCalling: (tools) => set({ activeTools: tools }),
-        onComplete: (meta) => {
-          const action = meta.action as string | undefined;
-          const card = (meta.card as KhataConfirmationCard | null) ?? null;
-          const message = String(meta.message || get().streamingText || "");
-          const insight = meta.insight as string | null | undefined;
-          const finalText = formatAssistantText(message, insight);
-
-          if (action === "confirm" && card) {
-            conversationContext = updateContextAfterEntry(conversationContext, card, trimmed);
-          }
-
-          set((s) => ({
-            messages: s.messages.map((m) =>
-              m.id === assistantId ? { ...m, text: finalText } : m,
-            ),
-            pendingCard: action === "confirm" ? card : null,
-            isLoading: false,
-            streamingText: "",
-            activeTools: [],
-            engineLabel: "v2-stream",
-          }));
-        },
-        onError: async () => {
-          const v2 = await askEKhataV2(trimmed, sessionId, { balance, context: snapshot });
-          const finalText = formatAssistantText(v2.message, v2.insight);
-          if (v2.action === "confirm" && v2.card) {
-            conversationContext = updateContextAfterEntry(
-              conversationContext,
-              v2.card as KhataConfirmationCard,
-              trimmed,
-            );
-          }
-          set((s) => ({
-            messages: s.messages.map((m) =>
-              m.id === assistantId ? { ...m, text: finalText } : m,
-            ),
-            pendingCard: v2.action === "confirm" ? (v2.card ?? null) : null,
-            isLoading: false,
-            streamingText: "",
-            activeTools: [],
-            engineLabel: "v2",
-          }));
-        },
-      }, { context: snapshot, balance });
+        { context: snapshot, balance },
+      );
     } catch (error) {
       set((s) => ({
         isLoading: false,
@@ -314,7 +317,10 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
           ],
         }));
         if (voucherNos.length > 0) {
-          conversationContext = updateContextAfterConfirm(conversationContext, voucherNos[voucherNos.length - 1]);
+          conversationContext = updateContextAfterConfirm(
+            conversationContext,
+            voucherNos[voucherNos.length - 1],
+          );
         }
       } catch (error) {
         set((s) => ({

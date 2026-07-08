@@ -36,7 +36,10 @@ function mergeJournalLines(parts: KhataCompoundPart[]): JournalLineDraft[] {
   return lines;
 }
 
-export function formatBatchConfirmation(parts: KhataCompoundPart[], language: "english" | "mixed" = "mixed"): string {
+export function formatBatchConfirmation(
+  parts: KhataCompoundPart[],
+  language: "english" | "mixed" = "mixed",
+): string {
   const header =
     language === "english"
       ? `📎 **${parts.length} separate transactions** — each verified. Please confirm:`

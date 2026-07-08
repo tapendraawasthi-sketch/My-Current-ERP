@@ -128,16 +128,22 @@ const EKhataPanel: React.FC = () => {
             </p>
             <p className="mt-1 text-[11px] text-gray-600">
               Combined total:{" "}
-              <span className="font-mono font-medium">NPR {pendingCompoundBatch.amount.toLocaleString()}</span>
+              <span className="font-mono font-medium">
+                NPR {pendingCompoundBatch.amount.toLocaleString()}
+              </span>
             </p>
             <div className="mt-2 space-y-2">
               {pendingCompoundBatch.parts.map((part) => (
-                <div key={part.index} className="rounded border border-gray-100 bg-[#f5f6fa] px-2 py-1.5 text-[11px]">
+                <div
+                  key={part.index}
+                  className="rounded border border-gray-100 bg-[#f5f6fa] px-2 py-1.5 text-[11px]"
+                >
                   <p className="font-medium text-gray-800">
                     {part.index}. {part.text}
                   </p>
                   <p className="text-gray-600">
-                    {KHATA_INTENT_LABELS[part.card.intent]} · NPR {part.card.amount.toLocaleString()}
+                    {KHATA_INTENT_LABELS[part.card.intent]} · NPR{" "}
+                    {part.card.amount.toLocaleString()}
                     {part.card.party ? ` · ${part.card.party}` : ""}
                   </p>
                 </div>
@@ -168,7 +174,9 @@ const EKhataPanel: React.FC = () => {
                       <tr key={i} className="border-b border-gray-100">
                         <td className="px-2 py-1.5 text-[11px] text-gray-700">
                           {line.accountName}
-                          <span className="ml-1 text-[9px] text-gray-400">({line.accountClass})</span>
+                          <span className="ml-1 text-[9px] text-gray-400">
+                            ({line.accountClass})
+                          </span>
                         </td>
                         <td className="px-2 py-1.5 font-mono text-right text-[11px] text-gray-700">
                           {line.debit > 0 ? line.debit.toLocaleString() : "—"}
@@ -290,7 +298,9 @@ const EKhataPanel: React.FC = () => {
                       <tr key={i} className="border-b border-gray-100">
                         <td className="px-2 py-1.5 text-[11px] text-gray-700">
                           {line.accountName}
-                          <span className="ml-1 text-[9px] text-gray-400">({line.accountClass})</span>
+                          <span className="ml-1 text-[9px] text-gray-400">
+                            ({line.accountClass})
+                          </span>
                         </td>
                         <td className="px-2 py-1.5 font-mono text-right text-[11px] text-gray-700">
                           {line.debit > 0 ? line.debit.toLocaleString() : "—"}
@@ -361,9 +371,7 @@ const EKhataPanel: React.FC = () => {
               Sochdai cha...
             </div>
             {activeTools.length > 0 && (
-              <p className="text-[10px] text-gray-400 pl-5">
-                Tools: {activeTools.join(", ")}
-              </p>
+              <p className="text-[10px] text-gray-400 pl-5">Tools: {activeTools.join(", ")}</p>
             )}
           </div>
         )}

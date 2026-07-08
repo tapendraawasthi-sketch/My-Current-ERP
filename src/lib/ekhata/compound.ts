@@ -7,7 +7,10 @@ const TX_VERB =
   /\b(becheko|beche|bechyo|bikri|bikyo|bikne|kineko|kinya|kharid|kinyo|tiryo|tireko|diye|diyeko|deko|kharcha|kharch|expense|bill|salary|talab|bhada|bhaada|kiraya|rent|jama|aayo|aayeko|liyo|payment|paid|sold|purchase|bought|advance|deposit|withdraw|return|firta|refund)\b/i;
 const LEADING_FILLER = /^(?:aaja|aja|hijo|bholi|yo|aile)\s+/i;
 
-function protectAmountCommas(text: string): { protected: string; placeholders: Map<string, string> } {
+function protectAmountCommas(text: string): {
+  protected: string;
+  placeholders: Map<string, string>;
+} {
   const placeholders = new Map<string, string>();
   const protectedText = text.replace(AMOUNT_COMMA, (match) => {
     const key = `__AMT${placeholders.size}__`;

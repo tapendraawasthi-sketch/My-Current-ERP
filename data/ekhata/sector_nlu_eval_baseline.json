@@ -1,0 +1,6116 @@
+{
+  "tier": "enrich",
+  "total": 391,
+  "passed": 391,
+  "pass_rate": 1.0,
+  "sector_stats": {
+    "bakery": {
+      "total": 15,
+      "passed": 15,
+      "metric_sums": {
+        "retrieval_sector_top5": 15,
+        "retrieval_intent_top5": 15,
+        "retrieval_nlu_intent": 13,
+        "enrich_intent": 13,
+        "enrich_policy": 15,
+        "enrich_skip_posting": 15
+      },
+      "pass_rate": 1.0,
+      "metric_rates": {
+        "retrieval_sector_top5": 1.0,
+        "retrieval_intent_top5": 1.0,
+        "retrieval_nlu_intent": 0.867,
+        "enrich_intent": 0.867,
+        "enrich_policy": 1.0,
+        "enrich_skip_posting": 1.0
+      }
+    },
+    "cement-rod-retail-shop": {
+      "total": 9,
+      "passed": 9,
+      "metric_sums": {
+        "retrieval_sector_top5": 9,
+        "retrieval_intent_top5": 9,
+        "retrieval_nlu_intent": 4,
+        "enrich_intent": 4,
+        "enrich_policy": 9,
+        "enrich_skip_posting": 9
+      },
+      "pass_rate": 1.0,
+      "metric_rates": {
+        "retrieval_sector_top5": 1.0,
+        "retrieval_intent_top5": 1.0,
+        "retrieval_nlu_intent": 0.444,
+        "enrich_intent": 0.444,
+        "enrich_policy": 1.0,
+        "enrich_skip_posting": 1.0
+      }
+    },
+    "clinic-health": {
+      "total": 23,
+      "passed": 23,
+      "metric_sums": {
+        "retrieval_sector_top5": 23,
+        "retrieval_intent_top5": 23,
+        "retrieval_nlu_intent": 20,
+        "enrich_intent": 20,
+        "enrich_policy": 23,
+        "enrich_skip_posting": 23
+      },
+      "pass_rate": 1.0,
+      "metric_rates": {
+        "retrieval_sector_top5": 1.0,
+        "retrieval_intent_top5": 1.0,
+        "retrieval_nlu_intent": 0.87,
+        "enrich_intent": 0.87,
+        "enrich_policy": 1.0,
+        "enrich_skip_posting": 1.0
+      }
+    },
+    "clothing-fashion": {
+      "total": 15,
+      "passed": 15,
+      "metric_sums": {
+        "retrieval_sector_top5": 15,
+        "retrieval_intent_top5": 15,
+        "retrieval_nlu_intent": 12,
+        "enrich_intent": 12,
+        "enrich_policy": 15,
+        "enrich_skip_posting": 15
+      },
+      "pass_rate": 1.0,
+      "metric_rates": {
+        "retrieval_sector_top5": 1.0,
+        "retrieval_intent_top5": 1.0,
+        "retrieval_nlu_intent": 0.8,
+        "enrich_intent": 0.8,
+        "enrich_policy": 1.0,
+        "enrich_skip_posting": 1.0
+      }
+    },
+    "computer-laptop-shop": {
+      "total": 13,
+      "passed": 13,
+      "metric_sums": {
+        "retrieval_sector_top5": 13,
+        "retrieval_intent_top5": 13,
+        "retrieval_nlu_intent": 12,
+        "enrich_intent": 12,
+        "enrich_policy": 13,
+        "enrich_skip_posting": 13
+      },
+      "pass_rate": 1.0,
+      "metric_rates": {
+        "retrieval_sector_top5": 1.0,
+        "retrieval_intent_top5": 1.0,
+        "retrieval_nlu_intent": 0.923,
+        "enrich_intent": 0.923,
+        "enrich_policy": 1.0,
+        "enrich_skip_posting": 1.0
+      }
+    },
+    "construction-material-supplier": {
+      "total": 21,
+      "passed": 21,
+      "metric_sums": {
+        "retrieval_sector_top5": 21,
+        "retrieval_intent_top5": 21,
+        "enrich_policy": 21,
+        "enrich_skip_posting": 21,
+        "retrieval_nlu_intent": 10,
+        "enrich_intent": 10
+      },
+      "pass_rate": 1.0,
+      "metric_rates": {
+        "retrieval_sector_top5": 1.0,
+        "retrieval_intent_top5": 1.0,
+        "enrich_policy": 1.0,
+        "enrich_skip_posting": 1.0,
+        "retrieval_nlu_intent": 0.476,
+        "enrich_intent": 0.476
+      }
+    },
+    "cosmetic": {
+      "total": 20,
+      "passed": 20,
+      "metric_sums": {
+        "retrieval_sector_top5": 20,
+        "retrieval_intent_top5": 20,
+        "retrieval_nlu_intent": 15,
+        "enrich_intent": 15,
+        "enrich_policy": 20,
+        "enrich_skip_posting": 20
+      },
+      "pass_rate": 1.0,
+      "metric_rates": {
+        "retrieval_sector_top5": 1.0,
+        "retrieval_intent_top5": 1.0,
+        "retrieval_nlu_intent": 0.75,
+        "enrich_intent": 0.75,
+        "enrich_policy": 1.0,
+        "enrich_skip_posting": 1.0
+      }
+    },
+    "dairy-shop": {
+      "total": 20,
+      "passed": 20,
+      "metric_sums": {
+        "retrieval_sector_top5": 20,
+        "retrieval_intent_top5": 20,
+        "retrieval_nlu_intent": 13,
+        "enrich_intent": 13,
+        "enrich_policy": 20,
+        "enrich_skip_posting": 20
+      },
+      "pass_rate": 1.0,
+      "metric_rates": {
+        "retrieval_sector_top5": 1.0,
+        "retrieval_intent_top5": 1.0,
+        "retrieval_nlu_intent": 0.65,
+        "enrich_intent": 0.65,
+        "enrich_policy": 1.0,
+        "enrich_skip_posting": 1.0
+      }
+    },
+    "electrical-goods-shop": {
+      "total": 26,
+      "passed": 26,
+      "metric_sums": {
+        "retrieval_sector_top5": 26,
+        "retrieval_intent_top5": 26,
+        "retrieval_nlu_intent": 16,
+        "enrich_intent": 16,
+        "enrich_policy": 26,
+        "enrich_skip_posting": 26
+      },
+      "pass_rate": 1.0,
+      "metric_rates": {
+        "retrieval_sector_top5": 1.0,
+        "retrieval_intent_top5": 1.0,
+        "retrieval_nlu_intent": 0.615,
+        "enrich_intent": 0.615,
+        "enrich_policy": 1.0,
+        "enrich_skip_posting": 1.0
+      }
+    },
+    "electronics-mobile-shop": {
+      "total": 30,
+      "passed": 30,
+      "metric_sums": {
+        "retrieval_sector_top5": 30,
+        "retrieval_intent_top5": 30,
+        "enrich_policy": 30,
+        "enrich_skip_posting": 30,
+        "retrieval_nlu_intent": 16,
+        "enrich_intent": 16
+      },
+      "pass_rate": 1.0,
+      "metric_rates": {
+        "retrieval_sector_top5": 1.0,
+        "retrieval_intent_top5": 1.0,
+        "enrich_policy": 1.0,
+        "enrich_skip_posting": 1.0,
+        "retrieval_nlu_intent": 0.533,
+        "enrich_intent": 0.533
+      }
+    },
+    "footwear": {
+      "total": 19,
+      "passed": 19,
+      "metric_sums": {
+        "retrieval_sector_top5": 19,
+        "retrieval_intent_top5": 19,
+        "retrieval_nlu_intent": 17,
+        "enrich_intent": 17,
+        "enrich_policy": 19,
+        "enrich_skip_posting": 19
+      },
+      "pass_rate": 1.0,
+      "metric_rates": {
+        "retrieval_sector_top5": 1.0,
+        "retrieval_intent_top5": 1.0,
+        "retrieval_nlu_intent": 0.895,
+        "enrich_intent": 0.895,
+        "enrich_policy": 1.0,
+        "enrich_skip_posting": 1.0
+      }
+    },
+    "fruit-vegetable-shop": {
+      "total": 11,
+      "passed": 11,
+      "metric_sums": {
+        "retrieval_sector_top5": 11,
+        "retrieval_intent_top5": 11,
+        "retrieval_nlu_intent": 7,
+        "enrich_intent": 7,
+        "enrich_policy": 11,
+        "enrich_skip_posting": 11
+      },
+      "pass_rate": 1.0,
+      "metric_rates": {
+        "retrieval_sector_top5": 1.0,
+        "retrieval_intent_top5": 1.0,
+        "retrieval_nlu_intent": 0.636,
+        "enrich_intent": 0.636,
+        "enrich_policy": 1.0,
+        "enrich_skip_posting": 1.0
+      }
+    },
+    "hardware-construction-materials-shop": {
+      "total": 20,
+      "passed": 20,
+      "metric_sums": {
+        "retrieval_sector_top5": 20,
+        "retrieval_intent_top5": 20,
+        "retrieval_nlu_intent": 6,
+        "enrich_intent": 6,
+        "enrich_policy": 20,
+        "enrich_skip_posting": 20
+      },
+      "pass_rate": 1.0,
+      "metric_rates": {
+        "retrieval_sector_top5": 1.0,
+        "retrieval_intent_top5": 1.0,
+        "retrieval_nlu_intent": 0.3,
+        "enrich_intent": 0.3,
+        "enrich_policy": 1.0,
+        "enrich_skip_posting": 1.0
+      }
+    },
+    "hardware-shop": {
+      "total": 17,
+      "passed": 17,
+      "metric_sums": {
+        "retrieval_sector_top5": 17,
+        "retrieval_intent_top5": 17,
+        "retrieval_nlu_intent": 11,
+        "enrich_intent": 11,
+        "enrich_policy": 17,
+        "enrich_skip_posting": 17
+      },
+      "pass_rate": 1.0,
+      "metric_rates": {
+        "retrieval_sector_top5": 1.0,
+        "retrieval_intent_top5": 1.0,
+        "retrieval_nlu_intent": 0.647,
+        "enrich_intent": 0.647,
+        "enrich_policy": 1.0,
+        "enrich_skip_posting": 1.0
+      }
+    },
+    "kirana-grocery": {
+      "total": 17,
+      "passed": 17,
+      "metric_sums": {
+        "retrieval_sector_top5": 17,
+        "retrieval_intent_top5": 17,
+        "retrieval_nlu_intent": 13,
+        "enrich_intent": 13,
+        "enrich_policy": 17,
+        "enrich_skip_posting": 17
+      },
+      "pass_rate": 1.0,
+      "metric_rates": {
+        "retrieval_sector_top5": 1.0,
+        "retrieval_intent_top5": 1.0,
+        "retrieval_nlu_intent": 0.765,
+        "enrich_intent": 0.765,
+        "enrich_policy": 1.0,
+        "enrich_skip_posting": 1.0
+      }
+    },
+    "meat-shop": {
+      "total": 10,
+      "passed": 10,
+      "metric_sums": {
+        "retrieval_sector_top5": 10,
+        "retrieval_intent_top5": 10,
+        "retrieval_nlu_intent": 8,
+        "enrich_intent": 8,
+        "enrich_policy": 10,
+        "enrich_skip_posting": 10
+      },
+      "pass_rate": 1.0,
+      "metric_rates": {
+        "retrieval_sector_top5": 1.0,
+        "retrieval_intent_top5": 1.0,
+        "retrieval_nlu_intent": 0.8,
+        "enrich_intent": 0.8,
+        "enrich_policy": 1.0,
+        "enrich_skip_posting": 1.0
+      }
+    },
+    "mini-mart": {
+      "total": 14,
+      "passed": 14,
+      "metric_sums": {
+        "retrieval_sector_top5": 14,
+        "retrieval_intent_top5": 14,
+        "enrich_policy": 14,
+        "enrich_skip_posting": 14,
+        "retrieval_nlu_intent": 8,
+        "enrich_intent": 8
+      },
+      "pass_rate": 1.0,
+      "metric_rates": {
+        "retrieval_sector_top5": 1.0,
+        "retrieval_intent_top5": 1.0,
+        "enrich_policy": 1.0,
+        "enrich_skip_posting": 1.0,
+        "retrieval_nlu_intent": 0.571,
+        "enrich_intent": 0.571
+      }
+    },
+    "mobile-repair-shop": {
+      "total": 8,
+      "passed": 8,
+      "metric_sums": {
+        "retrieval_sector_top5": 8,
+        "retrieval_intent_top5": 8,
+        "retrieval_nlu_intent": 6,
+        "enrich_intent": 6,
+        "enrich_policy": 8,
+        "enrich_skip_posting": 8
+      },
+      "pass_rate": 1.0,
+      "metric_rates": {
+        "retrieval_sector_top5": 1.0,
+        "retrieval_intent_top5": 1.0,
+        "retrieval_nlu_intent": 0.75,
+        "enrich_intent": 0.75,
+        "enrich_policy": 1.0,
+        "enrich_skip_posting": 1.0
+      }
+    },
+    "paint-shop": {
+      "total": 14,
+      "passed": 14,
+      "metric_sums": {
+        "retrieval_sector_top5": 14,
+        "retrieval_intent_top5": 14,
+        "retrieval_nlu_intent": 10,
+        "enrich_intent": 10,
+        "enrich_policy": 14,
+        "enrich_skip_posting": 14
+      },
+      "pass_rate": 1.0,
+      "metric_rates": {
+        "retrieval_sector_top5": 1.0,
+        "retrieval_intent_top5": 1.0,
+        "retrieval_nlu_intent": 0.714,
+        "enrich_intent": 0.714,
+        "enrich_policy": 1.0,
+        "enrich_skip_posting": 1.0
+      }
+    },
+    "pharmacy-medical": {
+      "total": 18,
+      "passed": 18,
+      "metric_sums": {
+        "retrieval_sector_top5": 18,
+        "retrieval_intent_top5": 18,
+        "retrieval_nlu_intent": 16,
+        "enrich_intent": 16,
+        "enrich_policy": 18,
+        "enrich_skip_posting": 18
+      },
+      "pass_rate": 1.0,
+      "metric_rates": {
+        "retrieval_sector_top5": 1.0,
+        "retrieval_intent_top5": 1.0,
+        "retrieval_nlu_intent": 0.889,
+        "enrich_intent": 0.889,
+        "enrich_policy": 1.0,
+        "enrich_skip_posting": 1.0
+      }
+    },
+    "restaurant-cafe": {
+      "total": 13,
+      "passed": 13,
+      "metric_sums": {
+        "retrieval_sector_top5": 13,
+        "retrieval_intent_top5": 13,
+        "retrieval_nlu_intent": 6,
+        "enrich_intent": 6,
+        "enrich_policy": 13,
+        "enrich_skip_posting": 13
+      },
+      "pass_rate": 1.0,
+      "metric_rates": {
+        "retrieval_sector_top5": 1.0,
+        "retrieval_intent_top5": 1.0,
+        "retrieval_nlu_intent": 0.462,
+        "enrich_intent": 0.462,
+        "enrich_policy": 1.0,
+        "enrich_skip_posting": 1.0
+      }
+    },
+    "sanitary-plumbing-shop": {
+      "total": 23,
+      "passed": 23,
+      "metric_sums": {
+        "retrieval_sector_top5": 23,
+        "retrieval_intent_top5": 23,
+        "retrieval_nlu_intent": 16,
+        "enrich_intent": 16,
+        "enrich_policy": 23,
+        "enrich_skip_posting": 23
+      },
+      "pass_rate": 1.0,
+      "metric_rates": {
+        "retrieval_sector_top5": 1.0,
+        "retrieval_intent_top5": 1.0,
+        "retrieval_nlu_intent": 0.696,
+        "enrich_intent": 0.696,
+        "enrich_policy": 1.0,
+        "enrich_skip_posting": 1.0
+      }
+    },
+    "wholesale-grocery": {
+      "total": 15,
+      "passed": 15,
+      "metric_sums": {
+        "retrieval_sector_top5": 15,
+        "retrieval_intent_top5": 15,
+        "retrieval_nlu_intent": 10,
+        "enrich_intent": 10,
+        "enrich_policy": 15,
+        "enrich_skip_posting": 15
+      },
+      "pass_rate": 1.0,
+      "metric_rates": {
+        "retrieval_sector_top5": 1.0,
+        "retrieval_intent_top5": 1.0,
+        "retrieval_nlu_intent": 0.667,
+        "enrich_intent": 0.667,
+        "enrich_policy": 1.0,
+        "enrich_skip_posting": 1.0
+      }
+    }
+  },
+  "failures": [],
+  "results": [
+    {
+      "id": "bakery-78a7415decf5",
+      "sector_slug": "bakery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "egg 5 tray kinye 3500 ma cash"
+    },
+    {
+      "id": "bakery-a1c3a3b1c1ac",
+      "sector_slug": "bakery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "butter ra cream kinye 4200 ma VAT bill sathi supplier bata"
+    },
+    {
+      "id": "bakery-2bb98dd05d75",
+      "sector_slug": "bakery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "baker lai salary 18000 diyeko yo mahina cash"
+    },
+    {
+      "id": "bakery-6ac048a82114",
+      "sector_slug": "bakery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja sugar 25 kg kinye 3000 ma cash"
+    },
+    {
+      "id": "bakery-5d053eccb34f",
+      "sector_slug": "bakery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "POS software subscription 1200 monthly cut vayo card bata"
+    },
+    {
+      "id": "bakery-499d28af7659",
+      "sector_slug": "bakery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja euta customer ley cheque diyo tara bounce vo"
+    },
+    {
+      "id": "bakery-c09f4ecc4e51",
+      "sector_slug": "bakery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "display counter 60000 ko kinye, EMI ma tirne"
+    },
+    {
+      "id": "bakery-9065beffccb6",
+      "sector_slug": "bakery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja euta supplier le sample flavor essence test garna free ma diyo, kunai bill xaina"
+    },
+    {
+      "id": "bakery-c553b4f3f642",
+      "sector_slug": "bakery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja euta customer le maagyo receipt english ma banaudinu, nepali ma matra xa"
+    },
+    {
+      "id": "bakery-5bf4f7332b52",
+      "sector_slug": "bakery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja bakery ma internal audit garyo CA le, fee 3000 tireko"
+    },
+    {
+      "id": "bakery-ab4062c0c72c",
+      "sector_slug": "bakery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja customer le bhanyo Khalti ma paisa xaina, eSewa ma cha, tesai ma pathaideu bhanyo"
+    },
+    {
+      "id": "bakery-2d9cfb5355bb",
+      "sector_slug": "bakery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja bakery ma euta vendor le invoice pathayo email ma, 2000 ko chocolate ra vanilla essence"
+    },
+    {
+      "id": "bakery-0e47350e2f0e",
+      "sector_slug": "bakery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja kamai thorai vo"
+    },
+    {
+      "id": "bakery-d9757dcc323b",
+      "sector_slug": "bakery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja dai le 150 rupaiya matra dine bhannuvayo, bill 300 ko thiyo"
+    },
+    {
+      "id": "bakery-2bec36bbbe06",
+      "sector_slug": "bakery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja bakery ma CCTV camera install garayeko 12000 ko"
+    },
+    {
+      "id": "cement-rod-retail-shop-1a276999fc50",
+      "sector_slug": "cement-rod-retail-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Hongshi cement 200 bag order gareko factory bata, delivery aja rati aune ho"
+    },
+    {
+      "id": "cement-rod-retail-shop-bbf5a5e708c6",
+      "sector_slug": "cement-rod-retail-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Bimala lai cement price change vayeko batauna, Rs 1450 bata Rs 1500 vayo"
+    },
+    {
+      "id": "cement-rod-retail-shop-b0aeffdc6af4",
+      "sector_slug": "cement-rod-retail-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Fonepay बाट Rs 65000 आयो Sita mason बाट rod ko purа bhuktani"
+    },
+    {
+      "id": "cement-rod-retail-shop-552bad62cab2",
+      "sector_slug": "cement-rod-retail-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja market ma rod ko price ekdam badhyo, purano stock ko value pani badhaune ho?"
+    },
+    {
+      "id": "cement-rod-retail-shop-af820cffdda1",
+      "sector_slug": "cement-rod-retail-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Ram bahadur ko cheque bounce vayo Rs 45000 ko"
+    },
+    {
+      "id": "cement-rod-retail-shop-01dd6c1fec67",
+      "sector_slug": "cement-rod-retail-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja bihana dekhi ekjana pani customer aayena, sabai orders phone ma nai"
+    },
+    {
+      "id": "cement-rod-retail-shop-b80f5ac3358f",
+      "sector_slug": "cement-rod-retail-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "VAT return यसपालि कहिले तिर्ने हो, महिनावारी हो कि त्रैमासिक?"
+    },
+    {
+      "id": "cement-rod-retail-shop-3a57a42ba99f",
+      "sector_slug": "cement-rod-retail-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja Rs 45000 ko labor kharcha vayo mahina bhari ko, 5 jana labor lagayeko"
+    },
+    {
+      "id": "cement-rod-retail-shop-c77966e7635c",
+      "sector_slug": "cement-rod-retail-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Deepak mason ko udhaaro Rs 75000 thiyo, aja pura tireko bank transfer bata"
+    },
+    {
+      "id": "clinic-health-63d401a84ff6",
+      "sector_slug": "clinic-health",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "purano customer le 2000 ko udharo tireko aja online ma"
+    },
+    {
+      "id": "clinic-health-a0afc3650532",
+      "sector_slug": "clinic-health",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja 50 rupaiya discount diye ek buढa patient lai"
+    },
+    {
+      "id": "clinic-health-5203bab2529b",
+      "sector_slug": "clinic-health",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "corporate client bata insurance ko through 12000 aayo bank ma"
+    },
+    {
+      "id": "clinic-health-0a326970ecca",
+      "sector_slug": "clinic-health",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "prescription pad print garayeko 2000 ko"
+    },
+    {
+      "id": "clinic-health-5746f19ad867",
+      "sector_slug": "clinic-health",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "printer cartridge kinye 1800 ko cash"
+    },
+    {
+      "id": "clinic-health-361e29ae9847",
+      "sector_slug": "clinic-health",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "telephone bill 300 cash"
+    },
+    {
+      "id": "clinic-health-3d48f13e82a1",
+      "sector_slug": "clinic-health",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "security guard salary 8000 diyeko cash"
+    },
+    {
+      "id": "clinic-health-2d461c07b38e",
+      "sector_slug": "clinic-health",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "insurance company le claim reject garyo patient ko, 5000 ko thiyo"
+    },
+    {
+      "id": "clinic-health-b6bc134f4977",
+      "sector_slug": "clinic-health",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "supplier ley bulk order ma 5% discount diyo, 10000 ko order thiyo"
+    },
+    {
+      "id": "clinic-health-6df7c4bb026e",
+      "sector_slug": "clinic-health",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "medical waste disposal company lai 600 monthly tireko"
+    },
+    {
+      "id": "clinic-health-35d4fde98974",
+      "sector_slug": "clinic-health",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja 2 patient ko payment fonepay bata aayo, 350 ra 420"
+    },
+    {
+      "id": "clinic-health-7ff33fe08436",
+      "sector_slug": "clinic-health",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja bank charge katiyo 50 rupaiya statement herda"
+    },
+    {
+      "id": "clinic-health-774f0bf1505d",
+      "sector_slug": "clinic-health",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja euta patient le bhanyo aja matra cash xaina, bhaley aunda tirchu, kei problem xaina bhaneko"
+    },
+    {
+      "id": "clinic-health-ef9755bc54e5",
+      "sector_slug": "clinic-health",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "gynae clinic ma ANC checkup 600 liyeko pregnant lady bata"
+    },
+    {
+      "id": "clinic-health-50cc9f55995b",
+      "sector_slug": "clinic-health",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "medicine home delivery charge 100 extra liyeko, delivery boy le lyayo"
+    },
+    {
+      "id": "clinic-health-72910479ccd2",
+      "sector_slug": "clinic-health",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "staff insurance premium 3000 yearly clinic le tireko sabai staff ko lagi"
+    },
+    {
+      "id": "clinic-health-5432c45086ee",
+      "sector_slug": "clinic-health",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "doctor lai TDS certificate issue garne ho year end ma"
+    },
+    {
+      "id": "clinic-health-ac94a8bcca69",
+      "sector_slug": "clinic-health",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "no bill le supplier bata cotton kinye 500 ko, chota supplier ho"
+    },
+    {
+      "id": "clinic-health-33920617c935",
+      "sector_slug": "clinic-health",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja clinic ma IME bata paisa aayo remittance jasto, biramiko relative bata"
+    },
+    {
+      "id": "clinic-health-fb6f3cc1e674",
+      "sector_slug": "clinic-health",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja clinic ma euta patient le Prabhu Money Transfer bata paisa pathayo, 1200"
+    },
+    {
+      "id": "clinic-health-42ec2ee68de6",
+      "sector_slug": "clinic-health",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja clinic ma euta cooperative bata loan 50000 liyeko equipment kinna"
+    },
+    {
+      "id": "clinic-health-f6549574be71",
+      "sector_slug": "clinic-health",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja clinic ma euta patient ley bhanyo hospital bata refer vayeko ho, discount milxa ki"
+    },
+    {
+      "id": "clinic-health-ea730e43aa71",
+      "sector_slug": "clinic-health",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja clinic ma euta patient ko payment failed vayo online ma, dubara try garnu paryo"
+    },
+    {
+      "id": "clothing-fashion-11227e76a55e",
+      "sector_slug": "clothing-fashion",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "kapada bigriyo, return garna aayo customer le"
+    },
+    {
+      "id": "clothing-fashion-ccad86023a03",
+      "sector_slug": "clothing-fashion",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "wholesaler bata 200 piece t-shirt Rs 180,000 ma kinya, 30 din credit"
+    },
+    {
+      "id": "clothing-fashion-f76a810f4f3a",
+      "sector_slug": "clothing-fashion",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "supplier le 8000 ko maal fokatma diyo, promotional sample"
+    },
+    {
+      "id": "clothing-fashion-4b304b17d314",
+      "sector_slug": "clothing-fashion",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaj 3 ta customer aaye, kinne 1 jana matra, baki le herera gaye"
+    },
+    {
+      "id": "clothing-fashion-931d545a1833",
+      "sector_slug": "clothing-fashion",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 780 ma belt becheko, esewa"
+    },
+    {
+      "id": "clothing-fashion-416146caccce",
+      "sector_slug": "clothing-fashion",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "2 ta jacket damage vayo transport ma, supplier lai claim garne"
+    },
+    {
+      "id": "clothing-fashion-023229595bb3",
+      "sector_slug": "clothing-fashion",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Bina ji le 5500 ko night suit set kinin, mobile banking bata payment"
+    },
+    {
+      "id": "clothing-fashion-7ce6a5f495dd",
+      "sector_slug": "clothing-fashion",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Sushma didi le 2200 ko top kinin, khalti bata"
+    },
+    {
+      "id": "clothing-fashion-35d9707bb219",
+      "sector_slug": "clothing-fashion",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 3900 ko sports shoes matching outfit combo becheko, mobile banking"
+    },
+    {
+      "id": "clothing-fashion-1cbc4b401907",
+      "sector_slug": "clothing-fashion",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 5900 ko formal trouser 2 piece becheko wholesale rate, cash"
+    },
+    {
+      "id": "clothing-fashion-c3770d762771",
+      "sector_slug": "clothing-fashion",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 7800 ko bridal blouse piece with embroidery becheko, VAT bill, bank transfer"
+    },
+    {
+      "id": "clothing-fashion-20a756aca097",
+      "sector_slug": "clothing-fashion",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Ramesh dai le 9000 ko udhaaro maal linu vayo, 1 mahina paisa tirne"
+    },
+    {
+      "id": "clothing-fashion-0f04cfe1d935",
+      "sector_slug": "clothing-fashion",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja chad parva ko season suru bhayo, sale badhne asha cha"
+    },
+    {
+      "id": "clothing-fashion-fa77a2107694",
+      "sector_slug": "clothing-fashion",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja dukan ma nayaa AC lagayo garmi ko lagi, 55000 kharcha, EMI ma"
+    },
+    {
+      "id": "clothing-fashion-cb45724d3c8c",
+      "sector_slug": "clothing-fashion",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja mahina ko end vayo, sabai account close gari monthly report banaune"
+    },
+    {
+      "id": "computer-laptop-shop-7d3013db5d00",
+      "sector_slug": "computer-laptop-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "customer ko naya laptop ma manufacturing defect thiyo, brand service center lai return garya, warranty claim"
+    },
+    {
+      "id": "computer-laptop-shop-affc2ad68c41",
+      "sector_slug": "computer-laptop-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "laptop repair pura vayo, part cost 5000, labor 3000, total 8000 liyo cash"
+    },
+    {
+      "id": "computer-laptop-shop-80462a77eb88",
+      "sector_slug": "computer-laptop-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja ko din software licensing renewal garya antivirus ko, office client ko lagi, 8000 kharcha bank ma, unlai bill garne"
+    },
+    {
+      "id": "computer-laptop-shop-0ebd410c8bf7",
+      "sector_slug": "computer-laptop-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja graphic card ko due 45000 customer le tiryo cash ma pura"
+    },
+    {
+      "id": "computer-laptop-shop-77c518ed3fe9",
+      "sector_slug": "computer-laptop-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "screen replace pura vayo, advance 2000 thiyo, baki 4000 aja liyo bank ma, part cost 3500 thiyo"
+    },
+    {
+      "id": "computer-laptop-shop-73650916e32e",
+      "sector_slug": "computer-laptop-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja ko din ma naya customer aayo online course ko lagi laptop khojda, budget kam thiyo, secondhand suggest garya"
+    },
+    {
+      "id": "computer-laptop-shop-687404b1c4bb",
+      "sector_slug": "computer-laptop-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja ko din ma customer ko laptop hamro dukan bata nai chor bhayo, uslai compensate garna paryo"
+    },
+    {
+      "id": "computer-laptop-shop-bfa8858ae2ab",
+      "sector_slug": "computer-laptop-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja ko din ma dukan ko CCTV camera install garya security ko lagi, 15000 kharcha bank ma"
+    },
+    {
+      "id": "computer-laptop-shop-5d23d5f4a6af",
+      "sector_slug": "computer-laptop-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja ko din ma naya employee ko training stipend 3000 diye cash ma"
+    },
+    {
+      "id": "computer-laptop-shop-14bee56761e1",
+      "sector_slug": "computer-laptop-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja ko din ma supplier ko invoice aayo, purano goods received entry sanga match garya, 180000 ko laptop 4 piece"
+    },
+    {
+      "id": "computer-laptop-shop-ced4290d552f",
+      "sector_slug": "computer-laptop-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja ko din ma purano stock ko keyboard sabai expire jasto bhayo, discount ma becha 40% off"
+    },
+    {
+      "id": "computer-laptop-shop-91f09c374576",
+      "sector_slug": "computer-laptop-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja ko din ma customer le laptop diagnostic charge matra tiryo, repair garaudaina vanyo, 200 liyo"
+    },
+    {
+      "id": "computer-laptop-shop-2840e2fe712e",
+      "sector_slug": "computer-laptop-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja ko din ma sabai payment cheque ma liyo customer haru le, thulo order thiyo laptop ko"
+    },
+    {
+      "id": "construction-material-supplier-e4959a892215",
+      "sector_slug": "construction-material-supplier",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Cement price Rs 1450 bata Rs 1500 bhayo aaja bata, sabai lai batauna parcha"
+    },
+    {
+      "id": "construction-material-supplier-587b75a3d801",
+      "sector_slug": "construction-material-supplier",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Suresh lai 15 bag cement diyeko free ma, purano order ma short bhayeko thiyo tesko compensation"
+    },
+    {
+      "id": "construction-material-supplier-5f39db6dffcb",
+      "sector_slug": "construction-material-supplier",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Ashish steel ley advance Rs 100000 magyo naya order ko lagi"
+    },
+    {
+      "id": "construction-material-supplier-afb402a7a8a9",
+      "sector_slug": "construction-material-supplier",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Deepak lai 2 quintal rod becheko tara rate bhuli gaye, purano rate le nai record garnu?"
+    },
+    {
+      "id": "construction-material-supplier-16bf8154ea91",
+      "sector_slug": "construction-material-supplier",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "मजदुरहरुलाई अलिकति tips दिएको Rs 500, राम्रो काम गरेकोले"
+    },
+    {
+      "id": "construction-material-supplier-cedbd482f372",
+      "sector_slug": "construction-material-supplier",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Hari steel ley bhanyo aba dekhi minimum order 5 ton huna parcha rod ko lagi"
+    },
+    {
+      "id": "construction-material-supplier-ca2c4aa574f3",
+      "sector_slug": "construction-material-supplier",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja office rent tirna baaki cha, landlord le call gareko"
+    },
+    {
+      "id": "construction-material-supplier-ad723f9eeb89",
+      "sector_slug": "construction-material-supplier",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Ram bahadur lai monthly statement pathayeko email ma, October mahina ko"
+    },
+    {
+      "id": "construction-material-supplier-fe1293e4b00d",
+      "sector_slug": "construction-material-supplier",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Deepak contractor ko project site ma material deliver garna Rs 3000 extra transport charge lagyo"
+    },
+    {
+      "id": "construction-material-supplier-33cab94473c7",
+      "sector_slug": "construction-material-supplier",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Ram bahadur lai bhanya cement price change vayeko jankari dinu, naya rate Rs 1550 bhayo"
+    },
+    {
+      "id": "construction-material-supplier-18c9647d2aec",
+      "sector_slug": "construction-material-supplier",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Suresh contractor lai bhanya cement ko quality ठिक थिएन, uni le complain gareko"
+    },
+    {
+      "id": "construction-material-supplier-a23624ef6887",
+      "sector_slug": "construction-material-supplier",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Anita builders lai 2 ton rod becheko, rate market rate bata 2% kam diyeko relationship ko lagi"
+    },
+    {
+      "id": "construction-material-supplier-9db9b34ab71c",
+      "sector_slug": "construction-material-supplier",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja Rs 400000 ko cheque diyeko Hari steel lai rod purchase ko lagi"
+    },
+    {
+      "id": "construction-material-supplier-bec757dd33c0",
+      "sector_slug": "construction-material-supplier",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Ram bahadur ko purano statement herda, usle June mahina dekhi kei payment gareko chaina"
+    },
+    {
+      "id": "construction-material-supplier-b7b03023e4a0",
+      "sector_slug": "construction-material-supplier",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja Rs 30000 ko truck maintenance kharcha, service center ma"
+    },
+    {
+      "id": "construction-material-supplier-ef9089b84eb5",
+      "sector_slug": "construction-material-supplier",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Ram bahadur ko naya order aayo, 4 quintal rod ra 30 bag cement, dubai chai discount magyo"
+    },
+    {
+      "id": "construction-material-supplier-ef5219735014",
+      "sector_slug": "construction-material-supplier",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Suresh contractor ko payment aja receive vayo Rs 220000, tara invoice number bhuli gaye"
+    },
+    {
+      "id": "construction-material-supplier-310de0cf19ac",
+      "sector_slug": "construction-material-supplier",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Ram bahadur ko naam ma duita account cha system ma, merge garnu parcha"
+    },
+    {
+      "id": "construction-material-supplier-466db515db4d",
+      "sector_slug": "construction-material-supplier",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Suresh contractor ko final invoice ready cha, print garne matra baki"
+    },
+    {
+      "id": "construction-material-supplier-f715c7257198",
+      "sector_slug": "construction-material-supplier",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja Rs 100000 ko naya order confirm gareko Anita builders bata, advance Rs 30000 liyeko"
+    },
+    {
+      "id": "construction-material-supplier-f25c0fcccb0f",
+      "sector_slug": "construction-material-supplier",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja Rs 250 ko chiya kharcha vayo"
+    },
+    {
+      "id": "cosmetic-ce21654e9bbf",
+      "sector_slug": "cosmetic",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja Facebook boost ko lagi 1500 kharcha bhayo marketing ko"
+    },
+    {
+      "id": "cosmetic-9d083ae51a1c",
+      "sector_slug": "cosmetic",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 750 ko lip gloss 2 piece becheko, cash"
+    },
+    {
+      "id": "cosmetic-ee2f43f05bed",
+      "sector_slug": "cosmetic",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 550 ko kajal 2 piece becheko, cash"
+    },
+    {
+      "id": "cosmetic-0a1a67a4ae59",
+      "sector_slug": "cosmetic",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 4200 ko facial kit set becheko, esewa ma"
+    },
+    {
+      "id": "cosmetic-2cea05b85da0",
+      "sector_slug": "cosmetic",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 15000 ko premium beauty collection order gareko, VAT bill huney supplier bata"
+    },
+    {
+      "id": "cosmetic-ee2e98b1ad7b",
+      "sector_slug": "cosmetic",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "yo mahina ko VAT return file garna baki cha, accountant lai sodhne"
+    },
+    {
+      "id": "cosmetic-1f3fbf42a7f8",
+      "sector_slug": "cosmetic",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 1500 ko highlighter aur blush combo becheko wholesale rate ma parlour lai"
+    },
+    {
+      "id": "cosmetic-16ac6c73c581",
+      "sector_slug": "cosmetic",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 3400 ko men's beard oil aur trimmer combo becheko, card"
+    },
+    {
+      "id": "cosmetic-5b53978a970a",
+      "sector_slug": "cosmetic",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "supplier ko payment 2 din late hune vayo, unlai call garne"
+    },
+    {
+      "id": "cosmetic-cb94f6669d34",
+      "sector_slug": "cosmetic",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Kiran ji le 3800 ko cosmetics order gari online bata, COD payment"
+    },
+    {
+      "id": "cosmetic-696bd4284b3f",
+      "sector_slug": "cosmetic",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "shop insurance renew gareko, 1 year ko lagi 12000"
+    },
+    {
+      "id": "cosmetic-35338eb334d3",
+      "sector_slug": "cosmetic",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja total expense kati vayo herna man lagyo"
+    },
+    {
+      "id": "cosmetic-5afe0a4d334e",
+      "sector_slug": "cosmetic",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 680 ko lip liner 2 piece becheko, cash"
+    },
+    {
+      "id": "cosmetic-c7b0479ca3b2",
+      "sector_slug": "cosmetic",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja purano customer aayera bhannuhuncha discount dinu paryo, natra jane bhannuhuncha"
+    },
+    {
+      "id": "cosmetic-a11d0d352b64",
+      "sector_slug": "cosmetic",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 3900 ko premium serum aur cream combo becheko, mobile banking"
+    },
+    {
+      "id": "cosmetic-cec594d88343",
+      "sector_slug": "cosmetic",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 14000 ko winter collection order gareko showroom ko lagi, 50% advance tireko"
+    },
+    {
+      "id": "cosmetic-74044a997850",
+      "sector_slug": "cosmetic",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 3300 ko men's hair wax becheko, esewa"
+    },
+    {
+      "id": "cosmetic-e4555c5718ce",
+      "sector_slug": "cosmetic",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 1250 ko compact mirror aur makeup pouch combo becheko, cash"
+    },
+    {
+      "id": "cosmetic-faa42cce7050",
+      "sector_slug": "cosmetic",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "chor le raati 4000 ko cosmetics chorayo, police report gareko"
+    },
+    {
+      "id": "cosmetic-446596d63b9c",
+      "sector_slug": "cosmetic",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 1800 ko men's sunscreen becheko, card"
+    },
+    {
+      "id": "dairy-shop-d49c4e60e3c0",
+      "sector_slug": "dairy-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "customer lai 2 litre dahi bechyo Rs 120"
+    },
+    {
+      "id": "dairy-shop-db15c8940333",
+      "sector_slug": "dairy-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "milk bikyo tara paisa thaha chaina, customer bhagyo lagcha"
+    },
+    {
+      "id": "dairy-shop-73dc342c2e8d",
+      "sector_slug": "dairy-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "cow milk 40 litre aayo, 60 rupees liter, cash payment gare"
+    },
+    {
+      "id": "dairy-shop-b40b4c191663",
+      "sector_slug": "dairy-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "employee le ghee chori lagyo, 500gm"
+    },
+    {
+      "id": "dairy-shop-8865a87aca60",
+      "sector_slug": "dairy-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "आज दूध बिकेन, सबै फर्काउनु पर्‍यो"
+    },
+    {
+      "id": "dairy-shop-a9b258d870dd",
+      "sector_slug": "dairy-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "milk 1 litre kitty ko? 65 rupees cha"
+    },
+    {
+      "id": "dairy-shop-09b9553d0fc7",
+      "sector_slug": "dairy-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "ghar bhada ko lagi 2000 advance tiryo"
+    },
+    {
+      "id": "dairy-shop-807b0fd63a4b",
+      "sector_slug": "dairy-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "500 ml lassi bottle, 15 pcs banaayo ghar ma, bech na jani sakyo"
+    },
+    {
+      "id": "dairy-shop-700393696783",
+      "sector_slug": "dairy-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Khalti balance check gara, kati cha?"
+    },
+    {
+      "id": "dairy-shop-dc47b0ad22b6",
+      "sector_slug": "dairy-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaj ghee ko 1 kg pack 10 ta aayo, 600 each, supplier Puja Dairy"
+    },
+    {
+      "id": "dairy-shop-96af9854da64",
+      "sector_slug": "dairy-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "monthly stock compare garyam, system ma 15kg dahi cha, actual 12kg matra cha"
+    },
+    {
+      "id": "dairy-shop-3a226fe6f9ef",
+      "sector_slug": "dairy-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja discount diyera sale badhyo, 10% off diye sabailai"
+    },
+    {
+      "id": "dairy-shop-bdca8161daac",
+      "sector_slug": "dairy-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "credit card machine lina manlaagyo, EMI available cha?"
+    },
+    {
+      "id": "dairy-shop-8a967b4b2bb3",
+      "sector_slug": "dairy-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaj pikaas festival, demand badhyo, stock sakkiyo bich din ma"
+    },
+    {
+      "id": "dairy-shop-b09e0a0a2241",
+      "sector_slug": "dairy-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "milk supplier badlyo naya aaayo, contract garnu parcha"
+    },
+    {
+      "id": "dairy-shop-46d9e298af29",
+      "sector_slug": "dairy-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "sabai accounts bata report nikaal, kaha paisa cha, kaha nai cha, full picture"
+    },
+    {
+      "id": "dairy-shop-d87ac45b8c5a",
+      "sector_slug": "dairy-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "delivery boy lai ek hapta ko 1500 diye cycle petrol kharcha"
+    },
+    {
+      "id": "dairy-shop-42507bab1c4e",
+      "sector_slug": "dairy-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Pashupati Dairy bata brand ghee kinyo, 48 packs 500gm, 340 per pack, invoice aaayo VAT sita"
+    },
+    {
+      "id": "dairy-shop-c561fadead1f",
+      "sector_slug": "dairy-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "mero saathi le paisa udhaaro liyako cha shop bata, 1000 rupees, personal ho"
+    },
+    {
+      "id": "dairy-shop-4fbdb8b8464e",
+      "sector_slug": "dairy-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "sabai cheez ठीक cha, aaja koi tension chaina"
+    },
+    {
+      "id": "electrical-goods-shop-dbe1bafb9b9b",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "fan ko motor jamm bhayo, customer le return garna aayo, 2 mahina bhayo kineko"
+    },
+    {
+      "id": "electrical-goods-shop-9347d10c718a",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "1.5 sqmm wire 100 meter, 2.5 sqmm wire 80 meter Suman lai becha, rate 45 ra 65, cash"
+    },
+    {
+      "id": "electrical-goods-shop-0b8f2ce8ab3b",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja dukan ma chor pasyo, till bata 5000 chorayo"
+    },
+    {
+      "id": "electrical-goods-shop-fdbaf3b596b6",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 60000 bhanda badi ko cash sale xa, PAN linu paryo ki bhanne sodheko"
+    },
+    {
+      "id": "electrical-goods-shop-e9d40d2dc614",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "supplier le pathaya samaan ma brand galat thiyo, Havells ko satta Orient aayo, return garne"
+    },
+    {
+      "id": "electrical-goods-shop-93a638af2277",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko sale 20000, tesma 12000 cash, 8000 fonepay"
+    },
+    {
+      "id": "electrical-goods-shop-ad78e6db9151",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "customer sanga bargaining bhayo, 2500 ko fan 2200 ma diyeko"
+    },
+    {
+      "id": "electrical-goods-shop-7b5c21fc8eca",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "accounting software ko monthly subscription 1200 tireko online bata"
+    },
+    {
+      "id": "electrical-goods-shop-fba5f93375dd",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "apprentice lai mahina ko 9000 salary tireko"
+    },
+    {
+      "id": "electrical-goods-shop-cf124722da8a",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko total kharcha kati bhayo mahina bhari ko, calculate garide"
+    },
+    {
+      "id": "electrical-goods-shop-088433f070bf",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "asaar masant ma closing stock count garne ho, sabai item ko"
+    },
+    {
+      "id": "electrical-goods-shop-7898ff448bb6",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "shop ko insurance premium tireko yearly 15000"
+    },
+    {
+      "id": "electrical-goods-shop-f751a8ca2c2e",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko sale kati bhayo cash ma ra kati bank ma, alag alag hisab garide"
+    },
+    {
+      "id": "electrical-goods-shop-085f6a7018e4",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "khali space maile bhada ma diyeko xu, tesko bhada aaja aayo 10000"
+    },
+    {
+      "id": "electrical-goods-shop-0cc6232403d9",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "government office lai water meter jasto electrical panel supply gareko, government order, VAT bill sathai, Rs 45000"
+    },
+    {
+      "id": "electrical-goods-shop-0a81058b8b00",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "wire ko rate list update garide, naya rate supplier le dieko"
+    },
+    {
+      "id": "electrical-goods-shop-ee3e46ce3259",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko dukan ko total assets ra liabilities ko summary chahiyo, balance sheet jasto"
+    },
+    {
+      "id": "electrical-goods-shop-df1d9eae2e1d",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "torch light rechargeable 12 piece becha, Rs 200 each, ConnectIPS bata payment"
+    },
+    {
+      "id": "electrical-goods-shop-28a54b412a17",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "holder bulb 100 piece kinya, Rs 8 each, cash, VAT bill liyeko"
+    },
+    {
+      "id": "electrical-goods-shop-9f1afe9a83b9",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja factory lai transformer supply gareko, VAT bill, Rs 250000, LC ko madhyam bata payment huney"
+    },
+    {
+      "id": "electrical-goods-shop-88802e4e940c",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko lagi customer le maal fyakera gayo, paisa nadinu bhanera jhagada bhayo"
+    },
+    {
+      "id": "electrical-goods-shop-5693d355df00",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko lagi 2 piece geyser thermostat kharab bhayo customer ko, warranty claim garne"
+    },
+    {
+      "id": "electrical-goods-shop-8ee2aba5c71f",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko lagi customer le samaan kinera pheri return garna aayo 10 din pachi, no reason bhaneko"
+    },
+    {
+      "id": "electrical-goods-shop-61877a728285",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko lagi hamro dukan ko lagi security guard rakheko night ko lagi, salary 8000 mahina ko"
+    },
+    {
+      "id": "electrical-goods-shop-3bd26ba39123",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko lagi hamro dukan ko lagi weekly cleaning service liyeko 1000"
+    },
+    {
+      "id": "electrical-goods-shop-c164d190f275",
+      "sector_slug": "electrical-goods-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko lagi hamro dukan ko lagi naya inventory management software demo dekhyo, kharcha bhayena"
+    },
+    {
+      "id": "electronics-mobile-shop-f7ec5f38f011",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "phone kharab bhayo customer ko, 3 din agi kineko, warranty ma xa, replace garne"
+    },
+    {
+      "id": "electronics-mobile-shop-375361e091ac",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "IMEI check garda yo phone blacklist ma xa, k garne"
+    },
+    {
+      "id": "electronics-mobile-shop-04b42c7791c5",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "screen protector 30 piece becha, Rs 50 each, cash, walk-in customers"
+    },
+    {
+      "id": "electronics-mobile-shop-1a1368f08bd0",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja dukan ma chor pasyo, till bata 8000 chorayo ra 1 phone pani lagyo"
+    },
+    {
+      "id": "electronics-mobile-shop-4122280ba026",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko lagi kunai purchase bhayena, sabai stock bata sale bhayo"
+    },
+    {
+      "id": "electronics-mobile-shop-79b11bc3060c",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko sale 35000, tesma 20000 cash, 15000 fonepay/khalti mix"
+    },
+    {
+      "id": "electronics-mobile-shop-a61a4ad854f8",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "customer sanga bargaining bhayo, 30000 ko phone 28000 ma diyeko"
+    },
+    {
+      "id": "electronics-mobile-shop-27676d1c2c27",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "customer le VAT bill mangyo tara galat PAN number diyo, k garne"
+    },
+    {
+      "id": "electronics-mobile-shop-c38b27edbe06",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko lagi hamro dukan ko lagi 5 piece phone case demo unit rakheko display ko lagi, becheko haina"
+    },
+    {
+      "id": "electronics-mobile-shop-81b40b65658d",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko lagi hamro dukan ma naya delivery boy lai bike allowance dieko 2500"
+    },
+    {
+      "id": "electronics-mobile-shop-074abd46df52",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko lagi hamro dukan ko lagi 3 piece phone repair chai part order gareko, defective board thiyo"
+    },
+    {
+      "id": "electronics-mobile-shop-0b8ec9a962ad",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko lagi hamro dukan ko lagi naya generator maintenance contract signed gareko yearly 5500"
+    },
+    {
+      "id": "electronics-mobile-shop-ee0ee10a830b",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko lagi hamro dukan ko lagi 12 piece phone warranty registration card fillup gareko customer ko lagi"
+    },
+    {
+      "id": "electronics-mobile-shop-f38cef800ec7",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko lagi Ramesh Traders ko total purchase kati bhayo herna paryo yo mahina"
+    },
+    {
+      "id": "electronics-mobile-shop-44cdae7b8e9f",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko lagi hamro dukan ko lagi delivery bike ko fuel kharcha 1200 aaja"
+    },
+    {
+      "id": "electronics-mobile-shop-3d8667ff5747",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Anchor extension board 3 piece bikri 900 ma"
+    },
+    {
+      "id": "electronics-mobile-shop-0ff17022279b",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Realme distributor bata 20 phone kinyo, total 480000, cheque diyeko"
+    },
+    {
+      "id": "electronics-mobile-shop-cccde078f342",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Khalti bata 8000 ko payment aayo phone bikri ko"
+    },
+    {
+      "id": "electronics-mobile-shop-ca7909ecc71e",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "CCTV camera 4 set kinera dukan ma laayeko, 32000 kharcha vayo"
+    },
+    {
+      "id": "electronics-mobile-shop-fa3c1d984a15",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "laptop charger kharab vayo customer ko, 15 din vitra nai, free replace garne?"
+    },
+    {
+      "id": "electronics-mobile-shop-1113d1fa2adf",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Santosh ले भन्यो VAT bill नचाहिने, कम मूल्यमा दिनु"
+    },
+    {
+      "id": "electronics-mobile-shop-5849f3492f99",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Ramesh ले भनेको 20000 ko phone अहिले 18000 मा दिन सक्नुहुन्छ?"
+    },
+    {
+      "id": "electronics-mobile-shop-5c3989af7316",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Puja ले भनिन् उनको फोन को data recovery गर्न सकिन्छ कि, formatted भएको छ"
+    },
+    {
+      "id": "electronics-mobile-shop-031c287a775c",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko sales ma sabai bhanda besi bikeko item kun ho?"
+    },
+    {
+      "id": "electronics-mobile-shop-e0a0f365dbd4",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Roshan ले 2 ta memory card 64GB लिनुभयो, 1200 each, total 2400 cash"
+    },
+    {
+      "id": "electronics-mobile-shop-b2c71b43dfed",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko total accessories sales kati vayo, breakdown by item type?"
+    },
+    {
+      "id": "electronics-mobile-shop-804dace2b514",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Anish ले भन्यो gift वाला box चाहियो phone को लागि, extra charge लाग्छ?"
+    },
+    {
+      "id": "electronics-mobile-shop-b51a1e08c109",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Aashish ले 1 ta gaming controller लिनुभयो, 4500 मा, Fonepay बाट"
+    },
+    {
+      "id": "electronics-mobile-shop-22a14878d82a",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko sales ma total number of new customers kati vayo, repeat customer kati vayo?"
+    },
+    {
+      "id": "electronics-mobile-shop-c50728564b3f",
+      "sector_slug": "electronics-mobile-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko sales ma monthly recurring subscription income kati vayo, jasto AMC contract?"
+    },
+    {
+      "id": "footwear-491c5274a11f",
+      "sector_slug": "footwear",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 1800 ko formal shoes becheko, cash"
+    },
+    {
+      "id": "footwear-5cdd0ce94f8d",
+      "sector_slug": "footwear",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "shoe rack naya banayeko, Rs 15000 kharcha, cash ma"
+    },
+    {
+      "id": "footwear-d3b4b05746de",
+      "sector_slug": "footwear",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 7800 ko branded running shoes becheko, VAT bill, connectips"
+    },
+    {
+      "id": "footwear-8b0fcb21a9e0",
+      "sector_slug": "footwear",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja purano stock 15000 ko clearance ma 30% off dinthyo"
+    },
+    {
+      "id": "footwear-935f02804c8a",
+      "sector_slug": "footwear",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 4100 ko party wear heels becheko, khalti"
+    },
+    {
+      "id": "footwear-fb978fd7578c",
+      "sector_slug": "footwear",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "chor le raati 8000 ko chappal chorayo, police report gareko"
+    },
+    {
+      "id": "footwear-f966633bbde7",
+      "sector_slug": "footwear",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 2000 ko men's slipper becheko, card"
+    },
+    {
+      "id": "footwear-b58f9928a257",
+      "sector_slug": "footwear",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja mausam ramro thiyo, dherai customer aaye, sale double bhayo"
+    },
+    {
+      "id": "footwear-abb034301d91",
+      "sector_slug": "footwear",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 6900 ko premium leather boots becheko, VAT bill, connectips"
+    },
+    {
+      "id": "footwear-f250eb6c3f19",
+      "sector_slug": "footwear",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 1750 ko men's espadrille slip-on becheko, cash"
+    },
+    {
+      "id": "footwear-5cbfa7aa4877",
+      "sector_slug": "footwear",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rita ji le 2 ta sandal return gari, paisa firta magin"
+    },
+    {
+      "id": "footwear-f64f78ef4b26",
+      "sector_slug": "footwear",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja 18000 ko bikri bhayo, sabai cash"
+    },
+    {
+      "id": "footwear-48352bd3de98",
+      "sector_slug": "footwear",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 3200 ko men's velvet loafers becheko, VAT bill, card"
+    },
+    {
+      "id": "footwear-ac9c150f0700",
+      "sector_slug": "footwear",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 9000 ko purano stock 3 mahina bikeko chaina, dumping garne bicharma"
+    },
+    {
+      "id": "footwear-84d5368e1b62",
+      "sector_slug": "footwear",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "naya design ko lot aayo, 35000 ko, cash ma tireko"
+    },
+    {
+      "id": "footwear-507db3049004",
+      "sector_slug": "footwear",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "connectIPS bata 3600 aayo, boots sale, VAT bill katiyo"
+    },
+    {
+      "id": "footwear-db006162578d",
+      "sector_slug": "footwear",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 680 ko kids flip flop 5 pair becheko, cash"
+    },
+    {
+      "id": "footwear-21d1d1e584a4",
+      "sector_slug": "footwear",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 3400 ko men's Kolhapuri chappal becheko, esewa bata"
+    },
+    {
+      "id": "footwear-e9a56e87c30f",
+      "sector_slug": "footwear",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "yo saal ko total sales aru saal vanda ramro cha lagcha"
+    },
+    {
+      "id": "fruit-vegetable-shop-d6402026cc05",
+      "sector_slug": "fruit-vegetable-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja aloo 20 kg becha, 40 rupya kg ma"
+    },
+    {
+      "id": "fruit-vegetable-shop-a5c746ceb787",
+      "sector_slug": "fruit-vegetable-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja ko tarkari bikri 12000, tesma 3000 udharo, baki cash"
+    },
+    {
+      "id": "fruit-vegetable-shop-ab562a655c63",
+      "sector_slug": "fruit-vegetable-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "syau kinya 30kg, 120 rupya kg, cheque ma tireko"
+    },
+    {
+      "id": "fruit-vegetable-shop-fac2fc2a9726",
+      "sector_slug": "fruit-vegetable-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja tarkari becheko customer le vanyo aja ko tarkari fresh cha ki hoina"
+    },
+    {
+      "id": "fruit-vegetable-shop-0ca314b2b240",
+      "sector_slug": "fruit-vegetable-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja tarkari becheko customer le vanyo naya dukan kholeko, regular order garne"
+    },
+    {
+      "id": "fruit-vegetable-shop-fed36f18d90a",
+      "sector_slug": "fruit-vegetable-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja tarkari becheko customer le vanyo aba dekhi hisab weekly ma clear garne, monthly hoina"
+    },
+    {
+      "id": "fruit-vegetable-shop-1fd7d62cbb93",
+      "sector_slug": "fruit-vegetable-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja tarkari ko lagi naya thelagadi kinya 6000"
+    },
+    {
+      "id": "fruit-vegetable-shop-b62d79fb08b9",
+      "sector_slug": "fruit-vegetable-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja tarkari becheko total kati vayo mahina ko record herda profit kam dekhincha"
+    },
+    {
+      "id": "fruit-vegetable-shop-7e4c146480cf",
+      "sector_slug": "fruit-vegetable-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja tarkari ko dukan ma CCTV camera rakheko 6000 ko"
+    },
+    {
+      "id": "fruit-vegetable-shop-03ae32cfb35d",
+      "sector_slug": "fruit-vegetable-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja tarkari becheko 6000, customer le vanyo aba dekhi VAT bill maga garne"
+    },
+    {
+      "id": "fruit-vegetable-shop-0b8e15a1643d",
+      "sector_slug": "fruit-vegetable-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja tarkari becheko customer le vanyo naya sasural ma bhoj cha, 25kg chahiyo aja nai"
+    },
+    {
+      "id": "hardware-construction-materials-shop-4ea73644aed4",
+      "sector_slug": "hardware-construction-materials-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "brick 5000 piece order aayo, rate thaha bhayena ajhai"
+    },
+    {
+      "id": "hardware-construction-materials-shop-e8e56ce6c30e",
+      "sector_slug": "hardware-construction-materials-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Suman contractor le 3 mahina pahilyeko bill 150000 ko aja tirey"
+    },
+    {
+      "id": "hardware-construction-materials-shop-fa7ca873637d",
+      "sector_slug": "hardware-construction-materials-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "TDS kati katne hunxa transport service ko lai?"
+    },
+    {
+      "id": "hardware-construction-materials-shop-ef002ffc5006",
+      "sector_slug": "hardware-construction-materials-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Gita didi le hammer maglin, 350 ma dine milcha"
+    },
+    {
+      "id": "hardware-construction-materials-shop-e6d7a27599dd",
+      "sector_slug": "hardware-construction-materials-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko sabai transaction VAT ra non-VAT gari alag alag segregated report banaideu, monthly filing ko lagi"
+    },
+    {
+      "id": "hardware-construction-materials-shop-20543f7c2dce",
+      "sector_slug": "hardware-construction-materials-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "naya cement launch offer ma pre-booking 5 contractor le garisakeka, each 5000 advance"
+    },
+    {
+      "id": "hardware-construction-materials-shop-abd0db92d602",
+      "sector_slug": "hardware-construction-materials-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Deepika le 3 ta measuring tape magin different sizes ma, kati huncha?"
+    },
+    {
+      "id": "hardware-construction-materials-shop-ca2e20682843",
+      "sector_slug": "hardware-construction-materials-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "naya inventory management app use garne bhaye, existing data migrate garna paryo"
+    },
+    {
+      "id": "hardware-construction-materials-shop-12ed314b5334",
+      "sector_slug": "hardware-construction-materials-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja purano staff le resign gare, final settlement garnu paryo"
+    },
+    {
+      "id": "hardware-construction-materials-shop-7db5d1484823",
+      "sector_slug": "hardware-construction-materials-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko sales ma sabai bhanda besi bikeko item kun ho?"
+    },
+    {
+      "id": "hardware-construction-materials-shop-c343fee065c1",
+      "sector_slug": "hardware-construction-materials-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko total tax liability estimate garna paryo VAT ra income tax samet"
+    },
+    {
+      "id": "hardware-construction-materials-shop-97702432ac7f",
+      "sector_slug": "hardware-construction-materials-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko sabai transaction backup lena paryo, cloud ma save garne"
+    },
+    {
+      "id": "hardware-construction-materials-shop-98546bc216fc",
+      "sector_slug": "hardware-construction-materials-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko sales ma customer complaint count kati vayo, resolved kati vayo?"
+    },
+    {
+      "id": "hardware-construction-materials-shop-654fad185fc8",
+      "sector_slug": "hardware-construction-materials-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Bishal le construction site ko lagi safety helmet 20 piece magyo, bulk rate ma"
+    },
+    {
+      "id": "hardware-construction-materials-shop-084f884836a3",
+      "sector_slug": "hardware-construction-materials-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Nabina le bhaniin unko material ko delivery vehicle late aayo, complain garne ki?"
+    },
+    {
+      "id": "hardware-construction-materials-shop-ce9b1f7ae494",
+      "sector_slug": "hardware-construction-materials-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko sales ma kati ta return vayo defect ko karan le, kati ta customer preference le?"
+    },
+    {
+      "id": "hardware-construction-materials-shop-9b6e28b08098",
+      "sector_slug": "hardware-construction-materials-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Bikash le 1 ta cement mixer small liyo 900 mma, Khalti"
+    },
+    {
+      "id": "hardware-construction-materials-shop-a719c9085f23",
+      "sector_slug": "hardware-construction-materials-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko sales ma total number of VAT-exempt transactions kati vayo?"
+    },
+    {
+      "id": "hardware-construction-materials-shop-fbf8c9ab3ac8",
+      "sector_slug": "hardware-construction-materials-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Pramila le bhaniin unlai balcony grill design chahiyo, custom fabrication garna sakincha?"
+    },
+    {
+      "id": "hardware-construction-materials-shop-65d4f846ffdf",
+      "sector_slug": "hardware-construction-materials-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko sales ma sabai transaction ma total quantity sold in truckloads kati vayo sand ra aggregate ko?"
+    },
+    {
+      "id": "hardware-shop-d0ddd719eb47",
+      "sector_slug": "hardware-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja hammer 2 ta becha, 800 ko ek ta"
+    },
+    {
+      "id": "hardware-shop-e14753484a47",
+      "sector_slug": "hardware-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja hardware ko dukan bhada tireko 15000, connectips bata"
+    },
+    {
+      "id": "hardware-shop-e6cf723602f4",
+      "sector_slug": "hardware-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja hardware ko purano baki 30000 tirin contractor le cheque ma"
+    },
+    {
+      "id": "hardware-shop-eba8d21b5677",
+      "sector_slug": "hardware-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja hardware becheko wire mesh 20 roll, 900 rupya roll, credit ma"
+    },
+    {
+      "id": "hardware-shop-f19dc8047eb6",
+      "sector_slug": "hardware-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja hardware becheko total kati vayo mahina ko average nikalne"
+    },
+    {
+      "id": "hardware-shop-b61b29c70ead",
+      "sector_slug": "hardware-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja hardware becheko sabai record vayo, thank you"
+    },
+    {
+      "id": "hardware-shop-4fe61bf78a81",
+      "sector_slug": "hardware-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja hardware becheko customer le vanyo card ma point cha, discount milcha?"
+    },
+    {
+      "id": "hardware-shop-26e52316ce82",
+      "sector_slug": "hardware-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja hardware ko total kharcha kati vayo mahina ko, purchase + expense sabai jodne"
+    },
+    {
+      "id": "hardware-shop-7babcf7aa4f3",
+      "sector_slug": "hardware-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja hardware becheko customer le vanyo bulk ma kinne, discount 5% dinu paryo"
+    },
+    {
+      "id": "hardware-shop-6ac2e7337279",
+      "sector_slug": "hardware-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja hardware becheko 6500 sabai cash, kunai udharo chaina"
+    },
+    {
+      "id": "hardware-shop-12dc11289f56",
+      "sector_slug": "hardware-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja hardware bikri gareko customer le tips diyeko 50, kasari record garne"
+    },
+    {
+      "id": "hardware-shop-730a0027114a",
+      "sector_slug": "hardware-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja hardware ko lagi naya display crate rakheko dukan agadi, 3000"
+    },
+    {
+      "id": "hardware-shop-5c6039d92a70",
+      "sector_slug": "hardware-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja hardware ko lagi naya rack banaya dukan ma 4500"
+    },
+    {
+      "id": "hardware-shop-c0f2e2f9f9d4",
+      "sector_slug": "hardware-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja hardware becheko 6700, customer le vanyo paisa aaudai chaina bank ma, network issue"
+    },
+    {
+      "id": "hardware-shop-9975a5faa528",
+      "sector_slug": "hardware-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja hardware becheko customer le vanyo aja ko din bihe ko lagi ho, 20kg cable chahiyo"
+    },
+    {
+      "id": "hardware-shop-9255ee96a226",
+      "sector_slug": "hardware-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja hardware becheko customer le vanyo card ma point cha, aja discount milcha bhandai thiyo"
+    },
+    {
+      "id": "hardware-shop-ab16673fd94f",
+      "sector_slug": "hardware-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja hardware becheko customer le vanyo naya dukan kholeko, sasural ko lagi lini"
+    },
+    {
+      "id": "kirana-grocery-1f22a465f16f",
+      "sector_slug": "kirana-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "shop rent tireko 15000 bank baata"
+    },
+    {
+      "id": "kirana-grocery-2a1e14d7eecd",
+      "sector_slug": "kirana-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "मैले होलसेलर लाई पैसा तिरेको १०,००० चेकबाट"
+    },
+    {
+      "id": "kirana-grocery-61d631002608",
+      "sector_slug": "kirana-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "noodles 10 packet 250 ma bikri, discount 20 diyeko"
+    },
+    {
+      "id": "kirana-grocery-01bc4ae071e9",
+      "sector_slug": "kirana-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "customer le return gareko soap, paisa firta diyeko 45"
+    },
+    {
+      "id": "kirana-grocery-a86169b2c544",
+      "sector_slug": "kirana-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "cigrate 1 packet becheko 380"
+    },
+    {
+      "id": "kirana-grocery-e457d881e6b9",
+      "sector_slug": "kirana-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "supliyer ko bill aayo 8000 ko, tirna baki cha"
+    },
+    {
+      "id": "kirana-grocery-8ec1060fd7c5",
+      "sector_slug": "kirana-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "बिस्कुट को कार्टुन थोक व्यापारीलाई फिर्ता गरेँ किनकि म्याद सकिएको थियो"
+    },
+    {
+      "id": "kirana-grocery-b6cac2de366f",
+      "sector_slug": "kirana-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "अाजको हिसाब मिलेन, कता गल्ती भयो पत्ता लाग्दैन"
+    },
+    {
+      "id": "kirana-grocery-bc6826302663",
+      "sector_slug": "kirana-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja jyala dine baki cha, bihar dine bhaneko"
+    },
+    {
+      "id": "kirana-grocery-f588fc1114ef",
+      "sector_slug": "kirana-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "purano stock ma dherai chamal thiyo, ghatta ma pathayeko chalaune lai"
+    },
+    {
+      "id": "kirana-grocery-b83632163b1b",
+      "sector_slug": "kirana-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "customer le 500 ko note diyo, nakali paisa raheko jasto lagcha"
+    },
+    {
+      "id": "kirana-grocery-fc535ba97dba",
+      "sector_slug": "kirana-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja 4 packet sanitary pad becheko 320 cash"
+    },
+    {
+      "id": "kirana-grocery-d32473e55d33",
+      "sector_slug": "kirana-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "cold drink 1.5 liter becheko 3 bottle, each 130, total 390"
+    },
+    {
+      "id": "kirana-grocery-5f6e631ee8a5",
+      "sector_slug": "kirana-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaj ko chamal ko dam ekdam sasto vetayeko wholesaler bata, 5 bora kineko 22000"
+    },
+    {
+      "id": "kirana-grocery-fdd5a5deb9a9",
+      "sector_slug": "kirana-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaj 2 grahak jhagada gare dukan ma line ko lagi"
+    },
+    {
+      "id": "kirana-grocery-74a64d43ef80",
+      "sector_slug": "kirana-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "wai wai ra chocolate combo school ko bacha haru lai becheko dherai, total 850 cash"
+    },
+    {
+      "id": "kirana-grocery-c36d4f64caae",
+      "sector_slug": "kirana-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaj kunai naya kura vayena, sabai normal thiyo"
+    },
+    {
+      "id": "meat-shop-c004b847ae04",
+      "sector_slug": "meat-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja masu becheko 16000, customer le 500 note 4 ta diyo, chillar farak parcha"
+    },
+    {
+      "id": "meat-shop-a06f050f7982",
+      "sector_slug": "meat-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja masu ko lagi ice kinya 300 ko"
+    },
+    {
+      "id": "meat-shop-c53fdb985c5e",
+      "sector_slug": "meat-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja masu bikri gareko total kati vayo bhanne malai thaha chaina, sab record herna paryo"
+    },
+    {
+      "id": "meat-shop-9fee7ee1610f",
+      "sector_slug": "meat-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja masu ko dukan bhada tireko 8000, connectips bata"
+    },
+    {
+      "id": "meat-shop-713bb2a11d6f",
+      "sector_slug": "meat-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja masu bikri gareko 5000, tara customer ko phone number matra diyeko naam bhaneko chaina"
+    },
+    {
+      "id": "meat-shop-dae46f86e511",
+      "sector_slug": "meat-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja masu ko lagi generator diesel kinya 1500"
+    },
+    {
+      "id": "meat-shop-e57bbf78336e",
+      "sector_slug": "meat-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja masu becheko 7800, customer le vanyo baki paisa aja bujhauni sakina, bholi"
+    },
+    {
+      "id": "meat-shop-e227819e99ab",
+      "sector_slug": "meat-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja masu becheko 6000, customer le vanyo aba dekhi VAT bill maga garne"
+    },
+    {
+      "id": "meat-shop-bb89b707385b",
+      "sector_slug": "meat-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja masu becheko 15000, bank ma directly transfer vayo customer ko app bata"
+    },
+    {
+      "id": "meat-shop-e8cb8115a6ff",
+      "sector_slug": "meat-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja masu becheko customer le vanyo galat masu diyo, refund magyo"
+    },
+    {
+      "id": "mini-mart-93e9cd8afe1d",
+      "sector_slug": "mini-mart",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "khalti offer chalayeko customer haru lai, 10% cashback thiyo"
+    },
+    {
+      "id": "mini-mart-8c2b013b7207",
+      "sector_slug": "mini-mart",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Purchased 100 units of assorted snacks from distributor, Rs 12000, VAT bill, 15 days credit"
+    },
+    {
+      "id": "mini-mart-6c43ffc4f390",
+      "sector_slug": "mini-mart",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja mini mart ma health insurance ko premium tireko staff ko lagi 3500"
+    },
+    {
+      "id": "mini-mart-815cedf9f563",
+      "sector_slug": "mini-mart",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "grocery ra dairy section merge garne plan cha, expansion ko lagi"
+    },
+    {
+      "id": "mini-mart-cc3d3aece3f0",
+      "sector_slug": "mini-mart",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja 3 employee lai overtime paisa diyeko total 1800 cash"
+    },
+    {
+      "id": "mini-mart-c1633dd537dc",
+      "sector_slug": "mini-mart",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaj chaubis ghanta khula rakheko trial ko lagi, response herna"
+    },
+    {
+      "id": "mini-mart-303a8105fb61",
+      "sector_slug": "mini-mart",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja ekjana customer le VAT number bina bill mangeko, business ko lagi vaneko"
+    },
+    {
+      "id": "mini-mart-8425aebc7729",
+      "sector_slug": "mini-mart",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Purchased branded cosmetics for retail, Rs 25000, importer supplier, VAT bill, bank transfer"
+    },
+    {
+      "id": "mini-mart-6486e7a8f44f",
+      "sector_slug": "mini-mart",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja mini mart ko monthly rent tireko landlord Sharma ji lai 45000 bank ma"
+    },
+    {
+      "id": "mini-mart-6441b3e3be08",
+      "sector_slug": "mini-mart",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja mini mart ma insurance policy renew gareko, 8000 premium"
+    },
+    {
+      "id": "mini-mart-bbc9d514e0bf",
+      "sector_slug": "mini-mart",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja mini mart ma naya vendor ko sath contract sign gareko, monthly supply agreement"
+    },
+    {
+      "id": "mini-mart-fa125cfec51b",
+      "sector_slug": "mini-mart",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja mini mart ma customer le 2000 ko voucher kineko gift ko lagi"
+    },
+    {
+      "id": "mini-mart-efa52ba3fb94",
+      "sector_slug": "mini-mart",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Purchased 1 unit air freshener dispenser for store ambience, Rs 1200, cash"
+    },
+    {
+      "id": "mini-mart-d5f7c6b9eac1",
+      "sector_slug": "mini-mart",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja mini mart ma customer ko bill amount ma error vayo, extra 50 charge vayo galti le"
+    },
+    {
+      "id": "mobile-repair-shop-13b9f1c1f1d7",
+      "sector_slug": "mobile-repair-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Screen replace garya, 2500 liyo cash ma"
+    },
+    {
+      "id": "mobile-repair-shop-0c0a672ec7b5",
+      "sector_slug": "mobile-repair-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "screen 3 piece kharab aayo supplier bata, return garne, credit note magne"
+    },
+    {
+      "id": "mobile-repair-shop-64a5ba591510",
+      "sector_slug": "mobile-repair-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "cheque le payment diyo customer le 8000 ko, screen ra battery duibai change garya"
+    },
+    {
+      "id": "mobile-repair-shop-49a7f9cf1d6e",
+      "sector_slug": "mobile-repair-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "warranty period bhitra customer aayo phone fer kharab bhayo, free ma thik garya, kunai charge lina"
+    },
+    {
+      "id": "mobile-repair-shop-c74e440ee5a7",
+      "sector_slug": "mobile-repair-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "gaddi bhada 2 wheeler ko for delivering repaired phone, 150 kharcha"
+    },
+    {
+      "id": "mobile-repair-shop-d3d0e0993564",
+      "sector_slug": "mobile-repair-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "mahina ko end ma VAT return file garnu paryo, sabai bill ready cha?"
+    },
+    {
+      "id": "mobile-repair-shop-0db8cc79227f",
+      "sector_slug": "mobile-repair-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja ko din ma customer le part ko original vs duplicate ko farak sodhyo, original ma extra charge lagne"
+    },
+    {
+      "id": "mobile-repair-shop-4efcd879aea2",
+      "sector_slug": "mobile-repair-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "special order ko screen aayo, customer lai call garya, usle 3000 tiryo aayera cash ma, part change garya sathai"
+    },
+    {
+      "id": "paint-shop-a641a66f953a",
+      "sector_slug": "paint-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "discount 5% diyeko Deepak painter lai bulk order ko lagi, 30 tin paint ko"
+    },
+    {
+      "id": "paint-shop-374404982dfc",
+      "sector_slug": "paint-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Ram bahadur lai bhanya paint color custom mix garna Rs 200 extra lagcha"
+    },
+    {
+      "id": "paint-shop-ddca62caadd0",
+      "sector_slug": "paint-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Suresh painter ko final invoice ready cha, print garne matra baki"
+    },
+    {
+      "id": "paint-shop-ad29613f5ad4",
+      "sector_slug": "paint-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Bimala devi ko payment aja fail vayo online ma, retry garna vanya"
+    },
+    {
+      "id": "paint-shop-607204fc10e4",
+      "sector_slug": "paint-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "UV resistant exterior paint ko marketing garna Facebook ma Rs 3000 ad diyeko"
+    },
+    {
+      "id": "paint-shop-02f628182d72",
+      "sector_slug": "paint-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Ram lai paint becheko sathi brush ra roller pani becheko cross-sell gareko, total Rs 2500"
+    },
+    {
+      "id": "paint-shop-09be6a7c4460",
+      "sector_slug": "paint-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "VAT bill series exhausted vayo, naya booklet kinnu parcha"
+    },
+    {
+      "id": "paint-shop-28f6ef44effb",
+      "sector_slug": "paint-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "fire insurance premium Rs 8000 tireko yo year ko lagi"
+    },
+    {
+      "id": "paint-shop-fb2c68e79ebf",
+      "sector_slug": "paint-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "year end stock count ma Rs 5000 ko discrepancy dekhiyo, write off garne ho?"
+    },
+    {
+      "id": "paint-shop-40ba265bd31a",
+      "sector_slug": "paint-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "old stock clearance sale garyo, 20% discount sabai paint ma"
+    },
+    {
+      "id": "paint-shop-c11bb3529d82",
+      "sector_slug": "paint-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja Ram le paint ko sample dekhera order confirm gareko, 10 tin"
+    },
+    {
+      "id": "paint-shop-50d0664cf4ab",
+      "sector_slug": "paint-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Sita lai paint tin 6 piece becheko Rs 350 each, cash ma"
+    },
+    {
+      "id": "paint-shop-2686b5f48713",
+      "sector_slug": "paint-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Kamal lai sandpaper ra masking tape becheko Rs 800, cash ma"
+    },
+    {
+      "id": "paint-shop-76def9d877ef",
+      "sector_slug": "paint-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja Rs 4500 ko paint becheko Deepak lai, uni le bhanyo aba dekhi hamro shop bata matra kinne"
+    },
+    {
+      "id": "pharmacy-medical-05ad816a4cc6",
+      "sector_slug": "pharmacy-medical",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 450 ko paracetamol ra cough syrup becheko, cash"
+    },
+    {
+      "id": "pharmacy-medical-92e31edcd02b",
+      "sector_slug": "pharmacy-medical",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "naya digital BP machine kinyo Rs 8500, cash ma"
+    },
+    {
+      "id": "pharmacy-medical-45f10700c310",
+      "sector_slug": "pharmacy-medical",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja government bata subsidized medicine ko list update aayo"
+    },
+    {
+      "id": "pharmacy-medical-b3fd72bf1c53",
+      "sector_slug": "pharmacy-medical",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "distributor bata IV fluids 200 bottle Rs 40000 ma kinya, cash"
+    },
+    {
+      "id": "pharmacy-medical-82ed40616fb1",
+      "sector_slug": "pharmacy-medical",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 2100 ko protein powder becheko, card"
+    },
+    {
+      "id": "pharmacy-medical-6fb571e3e376",
+      "sector_slug": "pharmacy-medical",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 780 ko thermometer becheko, cash"
+    },
+    {
+      "id": "pharmacy-medical-adf302467d22",
+      "sector_slug": "pharmacy-medical",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "shop ko naya signboard banayeko Rs 7000, cash ma"
+    },
+    {
+      "id": "pharmacy-medical-728d5c9c2d68",
+      "sector_slug": "pharmacy-medical",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "purano computer bigriyo, naya kinya Rs 45000, EMI ma"
+    },
+    {
+      "id": "pharmacy-medical-e97934ec9dca",
+      "sector_slug": "pharmacy-medical",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 6700 ko nebulizer machine becheko, VAT bill, bank transfer"
+    },
+    {
+      "id": "pharmacy-medical-67692b6bd3dc",
+      "sector_slug": "pharmacy-medical",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Prakash dai le Rs 30000 investment garya dukan ma, partner huna"
+    },
+    {
+      "id": "pharmacy-medical-dda121cc9e80",
+      "sector_slug": "pharmacy-medical",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Everest Polyclinic lai Rs 28000 ko IV set ra syringe becheko, 15 din credit"
+    },
+    {
+      "id": "pharmacy-medical-725b5dd738fa",
+      "sector_slug": "pharmacy-medical",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "purano fridge bechera Rs 5000 payeko, cash ma"
+    },
+    {
+      "id": "pharmacy-medical-411b7c8491d7",
+      "sector_slug": "pharmacy-medical",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 3600 ko orthopedic cervical collar becheko, card"
+    },
+    {
+      "id": "pharmacy-medical-bfd1aa41c811",
+      "sector_slug": "pharmacy-medical",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Manakamana Hospital lai Rs 52000 ko medicine becheko, 30 din credit"
+    },
+    {
+      "id": "pharmacy-medical-a5f7990b899c",
+      "sector_slug": "pharmacy-medical",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "distributor bata surgical suture 300 piece Rs 30000 ma kinya, cash"
+    },
+    {
+      "id": "pharmacy-medical-22b114827960",
+      "sector_slug": "pharmacy-medical",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 5600 ko men's formal medicine box combo wholesale becheko, cash"
+    },
+    {
+      "id": "pharmacy-medical-118f3d7d4639",
+      "sector_slug": "pharmacy-medical",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "distributor lai Rs 16000 ko purano payment pending, tirna baki cha"
+    },
+    {
+      "id": "pharmacy-medical-29a2ac284908",
+      "sector_slug": "pharmacy-medical",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "pharmacist lai Rs 13000 salary bank transfer bata diyeko"
+    },
+    {
+      "id": "restaurant-cafe-332e0ee47d7f",
+      "sector_slug": "restaurant-cafe",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "chicken 15 kg kinye 4500 ma credit ma supplier bata"
+    },
+    {
+      "id": "restaurant-cafe-c6d73bb47ecd",
+      "sector_slug": "restaurant-cafe",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja customer aayena bhaneko jasto lagne din, kam bikri vayo"
+    },
+    {
+      "id": "restaurant-cafe-3cdbc08de0af",
+      "sector_slug": "restaurant-cafe",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja beer 2 case kinye 6000 ma liquor shop bata"
+    },
+    {
+      "id": "restaurant-cafe-656cec800101",
+      "sector_slug": "restaurant-cafe",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "fonepay ma 1800 aayo aja lunch bill ko"
+    },
+    {
+      "id": "restaurant-cafe-1b2a29d277dd",
+      "sector_slug": "restaurant-cafe",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Received two thousand rupees cash for a table of eight tonight"
+    },
+    {
+      "id": "restaurant-cafe-6accadd5cb6c",
+      "sector_slug": "restaurant-cafe",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja restaurant ko naya rasid book kinye 500 ko"
+    },
+    {
+      "id": "restaurant-cafe-29d7f6b406d5",
+      "sector_slug": "restaurant-cafe",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja euta customer le restaurant ko facebook page ma bad review diyo, kei paisa ko kura xaina"
+    },
+    {
+      "id": "restaurant-cafe-3497cf7e882b",
+      "sector_slug": "restaurant-cafe",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja euta customer le maagyo receipt english ma banaudinu, nepali ma matra xa"
+    },
+    {
+      "id": "restaurant-cafe-cb455ee9c8dd",
+      "sector_slug": "restaurant-cafe",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja restaurant ko naya banner design fee 800 designer lai tireko online"
+    },
+    {
+      "id": "restaurant-cafe-886eabb39284",
+      "sector_slug": "restaurant-cafe",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "regular corporate client lai 10% discount dine bhaneko sabai bill ma"
+    },
+    {
+      "id": "restaurant-cafe-295ccc6ef366",
+      "sector_slug": "restaurant-cafe",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja kamai thorai vo"
+    },
+    {
+      "id": "restaurant-cafe-e60de1e4b744",
+      "sector_slug": "restaurant-cafe",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "restaurant band garne bhayo next month, sab account settle garne"
+    },
+    {
+      "id": "restaurant-cafe-ef930f6e1aaf",
+      "sector_slug": "restaurant-cafe",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "restaurant ko naya branch kholne planning xa arko city ma"
+    },
+    {
+      "id": "sanitary-plumbing-shop-c684c32adc98",
+      "sector_slug": "sanitary-plumbing-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Ramesh lai 1 inch pipe 10 piece becha, cash liyo"
+    },
+    {
+      "id": "sanitary-plumbing-shop-d4a44eeddf4b",
+      "sector_slug": "sanitary-plumbing-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Received Fonepay payment from Gita for tap set Rs 3500"
+    },
+    {
+      "id": "sanitary-plumbing-shop-e3ccfe5838bb",
+      "sector_slug": "sanitary-plumbing-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "old due customer Ramesh le 5000 tirya, purano baki thiyo"
+    },
+    {
+      "id": "sanitary-plumbing-shop-bb2ac8e1be2c",
+      "sector_slug": "sanitary-plumbing-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "stock check garda 20 piece tap missing xa, chor bhayo ki k ho thaha bhayena"
+    },
+    {
+      "id": "sanitary-plumbing-shop-2c2068816eca",
+      "sector_slug": "sanitary-plumbing-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Hindware basin 4 piece Kalanki bata mangaya, transport kharcha 800 alag tireko"
+    },
+    {
+      "id": "sanitary-plumbing-shop-df7ea62e7871",
+      "sector_slug": "sanitary-plumbing-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "मूल्य अभिवृद्धि कर बिल चाहियो भन्दै एकजना ठेकेदार आयो, कति दिनु पर्छ थाहा भएन"
+    },
+    {
+      "id": "sanitary-plumbing-shop-890256f823b0",
+      "sector_slug": "sanitary-plumbing-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Bhawan Nirman Traders lai monthly credit 200000 ko limit dieko xam, aba yesbaita bata badi bikri nagarnu"
+    },
+    {
+      "id": "sanitary-plumbing-shop-ee3412fd2854",
+      "sector_slug": "sanitary-plumbing-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aago lageko xaina tara chimney bata dhulo aayera fittings ma kalo dag lagyo, discount ma becheko"
+    },
+    {
+      "id": "sanitary-plumbing-shop-8be991c82927",
+      "sector_slug": "sanitary-plumbing-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "architect lai sample tap free ma diyeko, project ko lagi"
+    },
+    {
+      "id": "sanitary-plumbing-shop-61e7b049c18c",
+      "sector_slug": "sanitary-plumbing-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "customer ko ghar samma delivery gareko charge 500 alag liyeko"
+    },
+    {
+      "id": "sanitary-plumbing-shop-e8db78af998d",
+      "sector_slug": "sanitary-plumbing-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "yearly audit fee CA lai tireko 15000"
+    },
+    {
+      "id": "sanitary-plumbing-shop-f2465adafbba",
+      "sector_slug": "sanitary-plumbing-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "kun item ma sabai bhanda profit margin ramro xa, check garide"
+    },
+    {
+      "id": "sanitary-plumbing-shop-3e71b0dd2949",
+      "sector_slug": "sanitary-plumbing-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "solar water heater ko naya line launch garne planning xa, purchase inquiry gareko supplier lai"
+    },
+    {
+      "id": "sanitary-plumbing-shop-9f3819c71876",
+      "sector_slug": "sanitary-plumbing-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "petty cash khali bhayo, 3000 haleko fund refill garna"
+    },
+    {
+      "id": "sanitary-plumbing-shop-85d994c1f680",
+      "sector_slug": "sanitary-plumbing-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "check valve ra foot valve combo order Rita le gareki, aaja delivery gareko, cash on delivery Rs 4200"
+    },
+    {
+      "id": "sanitary-plumbing-shop-75ccd2aede64",
+      "sector_slug": "sanitary-plumbing-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "brass fitting set purchase gareko local supplier bata, bill xaina, Rs 1800 cash"
+    },
+    {
+      "id": "sanitary-plumbing-shop-c854c5b2b606",
+      "sector_slug": "sanitary-plumbing-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja bank ma cheque deposit gareko customer ko, Rs 12000, clear huna 3 din lagxa"
+    },
+    {
+      "id": "sanitary-plumbing-shop-a14269c3d911",
+      "sector_slug": "sanitary-plumbing-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Rs 100000 bhanda badi ko cash transaction xa, PAN linu paryo ki bhanne sodheko"
+    },
+    {
+      "id": "sanitary-plumbing-shop-390355703721",
+      "sector_slug": "sanitary-plumbing-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "PVC solvent cement 1 dozen tin kineko wholesale bata, Rs 4800, cash"
+    },
+    {
+      "id": "sanitary-plumbing-shop-539d65beaa57",
+      "sector_slug": "sanitary-plumbing-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Nirmal Traders lai VAT bill number 0234 ko payment Rs 22000 aaja bank ma aayo"
+    },
+    {
+      "id": "sanitary-plumbing-shop-af8085eeef4f",
+      "sector_slug": "sanitary-plumbing-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "sanitary shop kholna lagi loksewa license chahiyo ki bhanne sodhna aayeko"
+    },
+    {
+      "id": "sanitary-plumbing-shop-659977025d90",
+      "sector_slug": "sanitary-plumbing-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja ko total kharcha kati bhayo mahina bhari ko, calculate garide"
+    },
+    {
+      "id": "sanitary-plumbing-shop-481272c7c8ab",
+      "sector_slug": "sanitary-plumbing-shop",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aaja pheri stock check garda 3 piece commode set kam bhetiyo, kata gayo pata bhayena"
+    },
+    {
+      "id": "wholesale-grocery-4b90f4c0a908",
+      "sector_slug": "wholesale-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja 5 retailer lai supply diyeko, jammai 120000, sabai credit ma"
+    },
+    {
+      "id": "wholesale-grocery-af9709fd7dfc",
+      "sector_slug": "wholesale-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja mero purano warehouse ma bijuli bill 25000 tireko, high consumption bhayera"
+    },
+    {
+      "id": "wholesale-grocery-1bb07e57acbb",
+      "sector_slug": "wholesale-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja mero purano warehouse manager le resign gareko, naya khojna paryo"
+    },
+    {
+      "id": "wholesale-grocery-8fd4ef9c5d47",
+      "sector_slug": "wholesale-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja mero purano warehouse ma naya invoice software subscribe gareko, 8000 monthly"
+    },
+    {
+      "id": "wholesale-grocery-6c44bc6de28c",
+      "sector_slug": "wholesale-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja mero purano client sanga meeting gareko naya partnership ko baare, kunai amount fix bhayena"
+    },
+    {
+      "id": "wholesale-grocery-cd83def9b71b",
+      "sector_slug": "wholesale-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja mero purano client Krishna Store lai tel 30 tin becheko each tin 2800, total 84000, 45 din credit"
+    },
+    {
+      "id": "wholesale-grocery-b36b4b0dc343",
+      "sector_slug": "wholesale-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja mero purano client sanga rate contract expire vayo, renewal ko baare kura garna paryo"
+    },
+    {
+      "id": "wholesale-grocery-bdc401ffbffd",
+      "sector_slug": "wholesale-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja mero purano gudam ma naya fire extinguisher lagayeko safety ko lagi, 8000"
+    },
+    {
+      "id": "wholesale-grocery-0ff9f283703d",
+      "sector_slug": "wholesale-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja mero purano client Shrestha Traders lai atta 20 bora becheko each bora 1950, total 39000, 20 din credit, non vat"
+    },
+    {
+      "id": "wholesale-grocery-6c321715f27b",
+      "sector_slug": "wholesale-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja mero purano gudam ma naya safety training staff lai diyeko, 5000 kharcha"
+    },
+    {
+      "id": "wholesale-grocery-30e670d431c6",
+      "sector_slug": "wholesale-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja mero purano gudam ma naya emergency exit banayeko safety code compliance ko lagi, 25000"
+    },
+    {
+      "id": "wholesale-grocery-3c36dccc3d15",
+      "sector_slug": "wholesale-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Wholesaler received government subsidy for agricultural inputs distribution, Rs 150000"
+    },
+    {
+      "id": "wholesale-grocery-f418166179b8",
+      "sector_slug": "wholesale-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja mero purano gudam ma naya stock replenishment order automatic system le gareko, 200000 ko"
+    },
+    {
+      "id": "wholesale-grocery-b1976408fb8f",
+      "sector_slug": "wholesale-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "retrieval_nlu_intent": true,
+        "enrich_intent": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "Wholesaler purchased fumigation service for warehouse stock protection, Rs 18000, cheque"
+    },
+    {
+      "id": "wholesale-grocery-606226eb26b5",
+      "sector_slug": "wholesale-grocery",
+      "passed": true,
+      "scores": {
+        "retrieval_sector_top5": true,
+        "retrieval_intent_top5": true,
+        "enrich_policy": true,
+        "enrich_skip_posting": true
+      },
+      "notes": [],
+      "input": "aja mero purano client haru ma kunai le early payment discount claim gareko, verify garna paryo"
+    }
+  ],
+  "run_at": "2026-07-07T17:00:02Z",
+  "regression": {
+    "has_baseline": true,
+    "baseline_pass_rate": 0.964,
+    "current_pass_rate": 1.0,
+    "overall_delta": 0.036,
+    "regressions": [],
+    "ok": true
+  }
+}

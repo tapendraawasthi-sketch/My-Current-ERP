@@ -36,7 +36,7 @@ from src.eval.sector_holdout import (  # noqa: E402
 
 HOLDOUT_PATH = REPO_ROOT / "data" / "ekhata" / "sector-nlu-holdout.json"
 REPORT_PATH = BOT_ROOT / "data" / "sector_nlu_eval_report.json"
-BASELINE_PATH = BOT_ROOT / "data" / "sector_nlu_eval_baseline.json"
+BASELINE_PATH = REPO_ROOT / "data" / "ekhata" / "sector_nlu_eval_baseline.json"
 
 
 def _print_summary(report: dict, regression: dict) -> None:

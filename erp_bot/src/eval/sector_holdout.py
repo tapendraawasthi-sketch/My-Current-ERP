@@ -12,7 +12,7 @@ from typing import Any
 
 SECTOR_KB_ROOT = Path("data/ekhata/knowledge/general/sector")
 DEFAULT_HOLDOUT_PATH = Path("data/ekhata/sector-nlu-holdout.json")
-DEFAULT_BASELINE_PATH = Path("erp_bot/data/sector_nlu_eval_baseline.json")
+DEFAULT_BASELINE_PATH = Path("data/ekhata/sector_nlu_eval_baseline.json")
 
 _USER_INPUT_RE = re.compile(r"^User input:\s*(.+)$", re.M)
 
