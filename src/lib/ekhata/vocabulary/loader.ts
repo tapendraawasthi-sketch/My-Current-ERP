@@ -11,13 +11,18 @@ import type {
 } from "./types";
 
 function loadCategories(): VocabularyCategory[] {
-  const globFn = (import.meta as ImportMeta & { glob?: (p: string, o: { eager: boolean }) => unknown })
-    .glob;
+  const globFn = (
+    import.meta as ImportMeta & { glob?: (p: string, o: { eager: boolean }) => unknown }
+  ).glob;
   if (typeof globFn === "function") {
     const categoryModules = globFn("../../../../data/ekhata/vocabulary/categories/*.json", {
       eager: true,
-    }) as Record<string, { default: VocabularyCategory }>;
-    return Object.values(categoryModules).map((m) => m.default);
+    }) as Record<string, VocabularyCategory | { default: VocabularyCategory }>;
+    return Object.values(categoryModules).map((m) =>
+      m && typeof m === "object" && "default" in m
+        ? (m as { default: VocabularyCategory }).default
+        : (m as VocabularyCategory),
+    );
   }
 
   const here = dirname(fileURLToPath(import.meta.url));

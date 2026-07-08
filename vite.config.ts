@@ -36,6 +36,10 @@ export default defineConfig({
     outDir: "dist",
     sourcemap: false,
     rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, "index.html"),
+        ekhataHarness: path.resolve(__dirname, "e2e/ekhata.html"),
+      },
       output: {
         manualChunks(id) {
           if (id.includes("node_modules/react") || id.includes("node_modules/react-dom"))

@@ -2,33 +2,52 @@
  * Bootstrap authenticated session for Playwright e-Khata harness (IndexedDB + admin login).
  * Uses a lightweight path — full initializeApp() is too heavy for CI headless (NAS seed + CBMS).
  */
-import { hashPassword } from "../store/store.types";
 import { openDB } from "../lib/db";
 import { useEKhataStore } from "../store/eKhataStore";
 import { useStore } from "../store/useStore";
 
-export async function bootstrapEkhataHarness(): Promise<void> {
+declare global {
+  interface Window {
+    __ekhataHarnessStep?: string;
+  }
+}
+
+function setStep(step: string): void {
+  if (typeof window !== "undefined") {
+    window.__ekhataHarnessStep = step;
+  }
+  console.log(`[ekhata-harness] ${step}`);
   // #region agent log
-  const _dbg = (msg: string, data: Record<string, unknown>) => {
-    fetch("http://localhost:7330/ingest/a7e67c06-a5cf-446a-8ca6-f81cab3c7d24", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "ab6f1a" },
-      body: JSON.stringify({
-        sessionId: "ab6f1a",
-        hypothesisId: "H2",
-        location: "bootstrapHarness.ts",
-        message: msg,
-        data,
-        timestamp: Date.now(),
-      }),
-    }).catch(() => {});
-  };
+  fetch("http://localhost:7330/ingest/a7e67c06-a5cf-446a-8ca6-f81cab3c7d24", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "ab6f1a" },
+    body: JSON.stringify({
+      sessionId: "ab6f1a",
+      hypothesisId: "H9",
+      location: "bootstrapHarness.ts",
+      message: step,
+      data: {},
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
   // #endregion
+}
 
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) => {
+      setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms);
+    }),
+  ]);
+}
+
+export async function bootstrapEkhataHarness(): Promise<void> {
   try {
-    _dbg("bootstrap start", {});
-    const db = await openDB();
+    setStep("bootstrap start");
+    const db = await withTimeout(openDB(), 20_000, "openDB");
 
+    setStep("openDB done");
     const companyCount = await db.companySettings.count();
     if (companyCount === 0) {
       await db.companySettings.add({
@@ -42,6 +61,7 @@ export async function bootstrapEkhataHarness(): Promise<void> {
       } as never);
     }
 
+    setStep("company seeded");
     const admin = await db.users.where("username").equals("admin").first();
     if (!admin) {
       await db.users.add({
@@ -50,11 +70,12 @@ export async function bootstrapEkhataHarness(): Promise<void> {
         name: "Administrator",
         email: "admin@e2e.test",
         role: "admin",
-        passwordHash: await hashPassword("admin123"),
+        passwordHash: "e2e-harness-no-login",
         isActive: true,
       } as never);
     }
 
+    setStep("admin seeded");
     useStore.setState({
       isDbReady: true,
       isInitializing: false,
@@ -73,10 +94,12 @@ export async function bootstrapEkhataHarness(): Promise<void> {
       vouchers: [],
     });
 
+    setStep("store ready");
     useEKhataStore.getState().openPanel();
-    _dbg("bootstrap complete", { panelOpen: useEKhataStore.getState().isOpen });
+    setStep("bootstrap complete");
   } catch (err) {
-    _dbg("bootstrap error", { error: err instanceof Error ? err.message : String(err) });
+    const message = err instanceof Error ? err.message : String(err);
+    setStep(`bootstrap error: ${message}`);
     throw err;
   }
 }

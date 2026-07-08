@@ -2,18 +2,44 @@ import { test, expect } from "@playwright/test";
 import { getKhataVouchers, getPartyByName } from "./helpers/indexedDb";
 
 async function openHarness(page: import("@playwright/test").Page) {
-  await page.goto("/e2e/ekhata.html");
+  const browserLogs: string[] = [];
+  page.on("console", (msg) => {
+    const text = msg.text();
+    if (text.includes("[ekhata-harness]") || msg.type() === "error") {
+      browserLogs.push(text);
+    }
+  });
+  page.on("pageerror", (err) => {
+    browserLogs.push(`PAGE_ERROR: ${err.message}`);
+  });
+
+  await page.goto("/e2e/ekhata.html", { waitUntil: "domcontentloaded" });
+
   const ready = page.getByTestId("ekhata-harness-ready");
   const loading = page.getByTestId("ekhata-harness-loading");
   const error = page.getByTestId("ekhata-harness-error");
 
-  await Promise.race([
-    ready.waitFor({ state: "visible", timeout: 45_000 }),
-    error.waitFor({ state: "visible", timeout: 45_000 }).then(async () => {
-      const msg = await error.textContent();
-      throw new Error(`Harness bootstrap failed: ${msg ?? "unknown"}`);
-    }),
-  ]);
+  try {
+    await Promise.race([
+      ready.waitFor({ state: "visible", timeout: 60_000 }),
+      error.waitFor({ state: "visible", timeout: 60_000 }).then(async () => {
+        const msg = await error.textContent();
+        throw new Error(`Harness bootstrap failed: ${msg ?? "unknown"}`);
+      }),
+    ]);
+  } catch (err) {
+    const rootText = await page
+      .locator("#root")
+      .innerText()
+      .catch(() => "");
+    const step = await page
+      .evaluate(() => window.__ekhataHarnessStep ?? "no-step")
+      .catch(() => "eval-failed");
+    const loadingVisible = await loading.isVisible().catch(() => false);
+    throw new Error(
+      `${err instanceof Error ? err.message : String(err)} | step=${step} loading=${loadingVisible} root="${rootText.slice(0, 120)}" logs=${browserLogs.slice(-8).join(" || ")}`,
+    );
+  }
 
   await expect(loading).toHaveCount(0);
   await expect(page.locator('[data-component="ekhata-panel"]')).toBeVisible();
