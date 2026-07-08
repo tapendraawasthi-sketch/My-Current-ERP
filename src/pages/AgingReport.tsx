@@ -9,6 +9,7 @@ import { ReportEmptyState } from "../components/ReportEmptyState";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
 import { mergeSystemConfiguration, getAgeingBucketIndex } from "../lib/systemConfiguration";
+import { computeInvoiceOutstanding } from "../lib/accounting";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -214,18 +215,7 @@ const AgingReport: React.FC = () => {
       const originalAmount = Number(inv.grandTotal ?? inv.total ?? 0);
       if (originalAmount <= 0) continue;
 
-      // Compute paid amount
-      let paidAmount = Number(inv.paidAmount ?? 0);
-      for (const pmt of payments as any[]) {
-        if (!pmt || pmt.partyId !== inv.partyId) continue;
-        for (const line of pmt.lines ?? []) {
-          if (line.billRefNo === inv.invoiceNo || line.billRefNo === inv.id) {
-            paidAmount += Number(line.amount ?? 0);
-          }
-        }
-      }
-
-      const balance = originalAmount - paidAmount;
+      const balance = computeInvoiceOutstanding(inv, payments as any[]);
       if (balance <= 0.005) continue;
 
       // Days overdue from dueDate or invoice date

@@ -7,6 +7,7 @@ import { Calculator, FileSpreadsheet, RefreshCw, Download, TrendingUp } from "lu
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
 import { mergeSystemConfiguration, getInterestRateForDays } from "../lib/systemConfiguration";
+import { computeInvoiceOutstanding } from "../lib/accounting";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -78,7 +79,7 @@ const InterestCalculation: React.FC = () => {
     [invoiceType],
   );
 
-  const rawPayments = useLiveQuery(
+  const payments = useLiveQuery(
     () => getDB().vouchers.where("type").equals(paymentType).toArray(),
     [paymentType],
   );
@@ -95,18 +96,7 @@ const InterestCalculation: React.FC = () => {
       const originalAmount = Number(inv.grandTotal ?? inv.total ?? 0);
       if (originalAmount <= 0) continue;
 
-      // Compute paid amount
-      let paidAmount = Number(inv.paidAmount ?? 0);
-      for (const pmt of payments as any[]) {
-        if (!pmt || pmt.partyId !== inv.partyId) continue;
-        for (const line of pmt.lines ?? []) {
-          if (line.billRefNo === inv.invoiceNo || line.billRefNo === inv.id) {
-            paidAmount += Number(line.amount ?? 0);
-          }
-        }
-      }
-
-      const outstanding = originalAmount - paidAmount;
+      const outstanding = computeInvoiceOutstanding(inv, payments as any[]);
       if (outstanding <= 0.005) continue;
 
       // Days overdue from due date
