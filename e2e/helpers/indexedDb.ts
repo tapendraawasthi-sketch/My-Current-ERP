@@ -12,7 +12,9 @@ export type KhataVoucherRow = {
   lines?: Array<{ debit: number; credit: number; accountName?: string }>;
 };
 
-export async function getKhataVouchers(page: import("@playwright/test").Page): Promise<KhataVoucherRow[]> {
+export async function getKhataVouchers(
+  page: import("@playwright/test").Page,
+): Promise<KhataVoucherRow[]> {
   return page.evaluate(async () => {
     const DB_NAME = "SutraERPDatabase";
 
@@ -68,7 +70,8 @@ export async function getPartyByName(
         req.onsuccess = () => {
           const rows = req.result ?? [];
           const hit = rows.find(
-            (p: { name?: string }) => String(p.name ?? "").toLowerCase() === partyName.toLowerCase(),
+            (p: { name?: string }) =>
+              String(p.name ?? "").toLowerCase() === partyName.toLowerCase(),
           );
           resolve(hit ?? null);
         };

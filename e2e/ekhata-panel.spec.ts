@@ -199,7 +199,9 @@ test.describe("e-Khata panel", () => {
       .toBe(before.length + 1);
 
     const vouchers = await getKhataVouchers(page);
-    const posted = vouchers.find((v) => v.type === "khata_credit_purchase" && v.grandTotal === 6000);
+    const posted = vouchers.find(
+      (v) => v.type === "khata_credit_purchase" && v.grandTotal === 6000,
+    );
     expect(posted).toBeTruthy();
     expect(posted?.status).toBe("posted");
     expect(posted?.totalDebit).toBe(6000);
