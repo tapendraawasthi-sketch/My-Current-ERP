@@ -258,7 +258,9 @@ test.describe("e-Khata panel", () => {
     await sendEkhataMessage(page, "aaja 8500 ko nagad bikri vayo, electricity kharcha 8000");
     await waitForConfirmCard(page);
     await expect(page.getByText(/2 transactions/i)).toBeVisible();
-    await expect(confirmCardAmount(page, "NPR 16,500")).toBeVisible();
+    await expect(
+      page.locator('[data-component="ekhata-panel"] span.font-mono').filter({ hasText: "16,500" }),
+    ).toBeVisible();
     await page.getByRole("button", { name: "Confirm All ✓" }).click();
 
     await expect(page.getByText(/Safalta! 2 entries save bhayo/i)).toBeVisible({ timeout: 20_000 });
