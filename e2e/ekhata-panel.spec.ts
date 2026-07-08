@@ -3,7 +3,19 @@ import { getKhataVouchers, getPartyByName } from "./helpers/indexedDb";
 
 async function openHarness(page: import("@playwright/test").Page) {
   await page.goto("/e2e/ekhata.html");
-  await expect(page.getByTestId("ekhata-harness-ready")).toBeVisible({ timeout: 45_000 });
+  const ready = page.getByTestId("ekhata-harness-ready");
+  const loading = page.getByTestId("ekhata-harness-loading");
+  const error = page.getByTestId("ekhata-harness-error");
+
+  await Promise.race([
+    ready.waitFor({ state: "visible", timeout: 45_000 }),
+    error.waitFor({ state: "visible", timeout: 45_000 }).then(async () => {
+      const msg = await error.textContent();
+      throw new Error(`Harness bootstrap failed: ${msg ?? "unknown"}`);
+    }),
+  ]);
+
+  await expect(loading).toHaveCount(0);
   await expect(page.locator('[data-component="ekhata-panel"]')).toBeVisible();
 }
 
