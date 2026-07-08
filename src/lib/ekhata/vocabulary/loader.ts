@@ -1,3 +1,7 @@
+import { readFileSync, readdirSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import registry from "../../../../data/ekhata/vocabulary/_registry.json";
 import type {
   SectorMatch,
@@ -6,13 +10,26 @@ import type {
   VocabularyTermGroup,
 } from "./types";
 
-const categoryModules = import.meta.glob("../../../../data/ekhata/vocabulary/categories/*.json", {
-  eager: true,
-}) as Record<string, { default: VocabularyCategory }>;
+function loadCategories(): VocabularyCategory[] {
+  const globFn = (import.meta as ImportMeta & { glob?: (p: string, o: { eager: boolean }) => unknown })
+    .glob;
+  if (typeof globFn === "function") {
+    const categoryModules = globFn("../../../../data/ekhata/vocabulary/categories/*.json", {
+      eager: true,
+    }) as Record<string, { default: VocabularyCategory }>;
+    return Object.values(categoryModules).map((m) => m.default);
+  }
+
+  const here = dirname(fileURLToPath(import.meta.url));
+  const dir = join(here, "../../../../data/ekhata/vocabulary/categories");
+  return readdirSync(dir)
+    .filter((name) => name.endsWith(".json"))
+    .map((name) => JSON.parse(readFileSync(join(dir, name), "utf-8")) as VocabularyCategory);
+}
 
 const VOCABULARY_REGISTRY = registry as VocabularyRegistry;
 
-const CATEGORIES: VocabularyCategory[] = Object.values(categoryModules).map((m) => m.default);
+const CATEGORIES: VocabularyCategory[] = loadCategories();
 
 let mergedSpellingCache: Record<string, string> | null = null;
 let mergedTermsCache: string[] | null = null;

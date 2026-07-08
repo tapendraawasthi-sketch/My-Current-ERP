@@ -1,0 +1,474 @@
+{
+  "version": 1,
+  "description": "Unified e-Khata vocabulary — generated from category JSON files",
+  "source": "data/ekhata/vocabulary/_registry.json + categories/*.json",
+  "category_count": 25,
+  "term_count": 1127,
+  "spelling_alias_count": 110,
+  "payment_alias_count": 94,
+  "spelling_aliases": {
+    "bechye": "becheko",
+    "bechya": "becheko",
+    "bechiyeko": "becheko",
+    "biknu": "bikri",
+    "bikda": "bikri",
+    "kinye": "kineko",
+    "kiniyo": "kineko",
+    "eutako": "euta ko",
+    "eutai": "euta",
+    "wotako": "wota ko",
+    "pratiko": "prati ko",
+    "rupiyako": "rs ko",
+    "thok": "wholesale",
+    "mahajani": "wholesaler",
+    "osadi": "medicine",
+    "osadhi": "medicine",
+    "aushadhi": "medicine",
+    "cigrate": "cigarette",
+    "chiya": "tea",
+    "chiyapatti": "tea leaves",
+    "chiya patti": "tea leaves",
+    "gyas": "gas",
+    "chini": "sugar",
+    "daal": "dal",
+    "chamal": "rice",
+    "atta": "flour",
+    "tel": "oil",
+    "sabun": "soap",
+    "dahi": "yogurt",
+    "anda": "egg",
+    "momo": "momo",
+    "samosa": "samosa",
+    "chatpate": "chatpate",
+    "pakoda": "pakoda",
+    "pakauda": "pakoda",
+    "suti": "cotton",
+    "kapada": "cloth",
+    "fabric": "cloth",
+    "moja": "socks",
+    "chappal": "slipper",
+    "byat": "vat",
+    "bhyat": "vat",
+    "karz": "udhaar",
+    "karja": "udhaar",
+    "asuli": "receivable",
+    "wasool": "tiryo",
+    "wasul": "tiryo",
+    "jami": "jamma",
+    "dam": "rate",
+    "daam": "rate",
+    "mulya": "price",
+    "saman": "stock",
+    "samaan": "stock",
+    "mal": "stock",
+    "maal": "stock",
+    "godown": "warehouse",
+    "bora": "sack",
+    "packet": "packet",
+    "carton": "carton",
+    "dozen": "dozen",
+    "kilo": "kg",
+    "liter": "ltr",
+    "litre": "ltr",
+    "mitar": "meter",
+    "ghanta": "hour",
+    "mahina": "month",
+    "hajar": "hajar",
+    "hazar": "hajar",
+    "lakh": "lakh",
+    "lac": "lakh",
+    "saya": "saya",
+    "sau": "saya",
+    "connectips": "connectips",
+    "fonepay": "fonepay",
+    "esewa": "esewa",
+    "khalti": "khalti",
+    "cheque": "cheque",
+    "chak": "cheque",
+    "bijuli": "electricity",
+    "bijli": "electricity",
+    "rent": "bhaada",
+    "bhaada": "bhaada",
+    "bhada": "bhaada",
+    "labour": "labour",
+    "mazdoor": "labour",
+    "jyala": "labour",
+    "distributor": "supplier",
+    "supliyer": "supplier",
+    "supplier": "supplier",
+    "dealer": "dealer",
+    "grahak": "customer",
+    "customer": "customer",
+    "party": "party",
+    "staff": "staff",
+    "salary": "salary",
+    "talab": "salary",
+    "bonus": "bonus",
+    "commission": "commission",
+    "discount": "discount",
+    "chhut": "discount",
+    "chut": "discount",
+    "firta": "return",
+    "wapas": "return",
+    "expire": "expired",
+    "myad": "expiry",
+    "kharab": "damaged",
+    "bigreko": "damaged",
+    "chori": "theft",
+    "haraayo": "lost",
+    "phalyo": "discarded"
+  },
+  "payment_aliases": {
+    "cash": "cash",
+    "nagad": "cash",
+    "nakad": "cash",
+    "nagar": "cash",
+    "bank": "bank",
+    "transfer": "bank",
+    "cheque": "cheque",
+    "check": "cheque",
+    "esewa": "esewa",
+    "khalti": "khalti",
+    "fonepay": "esewa",
+    "connectips": "bank",
+    "online": "esewa",
+    "digital": "esewa",
+    "wallet": "esewa",
+    "udhaar": "unknown",
+    "udhar": "unknown",
+    "credit": "unknown",
+    "in cash": "cash",
+    "cash payment": "cash",
+    "petty cash": "cash",
+    "petty": "cash",
+    "till": "cash",
+    "counter cash": "cash",
+    "counter": "cash",
+    "nakit": "cash",
+    "cash ma": "cash",
+    "nagad ma": "cash",
+    "hath ma": "cash",
+    "hath": "cash",
+    "counter bata": "cash",
+    "nagad bikri": "cash",
+    "bikri": "cash",
+    "nagad tiryo": "cash",
+    "tiryo": "cash",
+    "note ma": "cash",
+    "note": "cash",
+    "thaili bata": "cash",
+    "thaili": "cash",
+    "नगद": "cash",
+    "नकद": "cash",
+    "हातमा": "cash",
+    "nagad payment": "cash",
+    "by cash": "cash",
+    "ime pay": "esewa",
+    "ime": "esewa",
+    "digital wallet": "esewa",
+    "qr payment": "esewa",
+    "e sewa": "esewa",
+    "sewa": "esewa",
+    "connect ips": "bank",
+    "connect": "esewa",
+    "ips": "esewa",
+    "fone pay": "esewa",
+    "fone": "esewa",
+    "qr": "esewa",
+    "qr bata": "esewa",
+    "mobile banking": "esewa",
+    "mobile": "esewa",
+    "banking": "esewa",
+    "m banking": "esewa",
+    "ईसेवा": "esewa",
+    "खल्ती": "esewa",
+    "e-sewa": "esewa",
+    "khalti ma": "khalti",
+    "esewa ma": "esewa",
+    "online payment": "esewa",
+    "bank transfer": "bank",
+    "neft": "bank",
+    "rtgs": "bank",
+    "dd": "bank",
+    "demand draft": "bank",
+    "demand": "bank",
+    "draft": "bank",
+    "current account": "bank",
+    "current": "bank",
+    "account": "bank",
+    "savings account": "bank",
+    "savings": "bank",
+    "bank bata": "bank",
+    "bank ma": "bank",
+    "cheque bata": "cheque",
+    "chak": "cheque",
+    "chak bata": "cheque",
+    "jamma bank ma": "bank",
+    "jamma": "bank",
+    "bank jamma": "bank",
+    "khata ma jamma": "bank",
+    "khata": "bank",
+    "बैंक": "bank",
+    "चेक": "bank",
+    "जम्मा": "bank",
+    "cheque payment": "cheque",
+    "by cheque": "cheque"
+  },
+  "intent_hint_map": {
+    "khata_cash_sale": "cash_sale",
+    "khata_purchase": "cash_purchase",
+    "khata_payment_in": "payment_received",
+    "khata_payment_out": "payment_made",
+    "khata_expense": "expense",
+    "credit": "credit_sale",
+    "cash": "cash_sale",
+    "return": "sales_return"
+  },
+  "categories": [
+    {
+      "slug": "universal-transactions",
+      "sectorSlug": null,
+      "businessNature": "universal",
+      "tags": [
+        "all",
+        "transactions",
+        "verbs"
+      ]
+    },
+    {
+      "slug": "universal-units-pricing",
+      "sectorSlug": null,
+      "businessNature": "universal",
+      "tags": [
+        "units",
+        "pricing",
+        "quantity"
+      ]
+    },
+    {
+      "slug": "universal-payment-modes",
+      "sectorSlug": null,
+      "businessNature": "universal",
+      "tags": [
+        "payment",
+        "digital",
+        "bank"
+      ]
+    },
+    {
+      "slug": "universal-accounting-tax",
+      "sectorSlug": null,
+      "businessNature": "universal",
+      "tags": [
+        "accounting",
+        "tax",
+        "ifrs"
+      ]
+    },
+    {
+      "slug": "retail-kirana-grocery",
+      "sectorSlug": "kirana-grocery",
+      "businessNature": "retail",
+      "tags": [
+        "grocery",
+        "fmcg",
+        "kirana"
+      ]
+    },
+    {
+      "slug": "retail-mini-mart",
+      "sectorSlug": "mini-mart",
+      "businessNature": "retail",
+      "tags": [
+        "minimart",
+        "convenience"
+      ]
+    },
+    {
+      "slug": "wholesale-grocery",
+      "sectorSlug": "wholesale-grocery",
+      "businessNature": "wholesale",
+      "tags": [
+        "wholesale",
+        "trading",
+        "distribution"
+      ]
+    },
+    {
+      "slug": "clothing-fashion",
+      "sectorSlug": "clothing-fashion",
+      "businessNature": "retail",
+      "tags": [
+        "clothing",
+        "fashion",
+        "textile"
+      ]
+    },
+    {
+      "slug": "footwear",
+      "sectorSlug": "footwear",
+      "businessNature": "retail",
+      "tags": [
+        "footwear",
+        "shoes"
+      ]
+    },
+    {
+      "slug": "cosmetic-beauty",
+      "sectorSlug": "cosmetic",
+      "businessNature": "retail",
+      "tags": [
+        "cosmetic",
+        "beauty",
+        "salon"
+      ]
+    },
+    {
+      "slug": "pharmacy-medical",
+      "sectorSlug": "pharmacy-medical",
+      "businessNature": "retail",
+      "tags": [
+        "pharmacy",
+        "medical",
+        "healthcare"
+      ]
+    },
+    {
+      "slug": "clinic-health-service",
+      "sectorSlug": "clinic-health",
+      "businessNature": "services",
+      "tags": [
+        "clinic",
+        "health",
+        "medical"
+      ]
+    },
+    {
+      "slug": "hospitality-restaurant-cafe",
+      "sectorSlug": null,
+      "businessNature": "hospitality",
+      "tags": [
+        "restaurant",
+        "cafe",
+        "hotel",
+        "food"
+      ]
+    },
+    {
+      "slug": "manufacturing-production",
+      "sectorSlug": null,
+      "businessNature": "manufacturing",
+      "tags": [
+        "factory",
+        "production"
+      ]
+    },
+    {
+      "slug": "construction-realestate",
+      "sectorSlug": null,
+      "businessNature": "construction",
+      "tags": [
+        "construction",
+        "realestate",
+        "contractor"
+      ]
+    },
+    {
+      "slug": "agriculture-farming",
+      "sectorSlug": null,
+      "businessNature": "agriculture",
+      "tags": [
+        "agriculture",
+        "farming",
+        "dairy"
+      ]
+    },
+    {
+      "slug": "transport-logistics",
+      "sectorSlug": null,
+      "businessNature": "transport",
+      "tags": [
+        "transport",
+        "logistics",
+        "freight"
+      ]
+    },
+    {
+      "slug": "education-institute",
+      "sectorSlug": null,
+      "businessNature": "education",
+      "tags": [
+        "school",
+        "college",
+        "training"
+      ]
+    },
+    {
+      "slug": "banking-finance-cooperative",
+      "sectorSlug": null,
+      "businessNature": "finance",
+      "tags": [
+        "bank",
+        "mfi",
+        "cooperative"
+      ]
+    },
+    {
+      "slug": "telecom-it-services",
+      "sectorSlug": null,
+      "businessNature": "services",
+      "tags": [
+        "telecom",
+        "it",
+        "software"
+      ]
+    },
+    {
+      "slug": "insurance",
+      "sectorSlug": null,
+      "businessNature": "finance",
+      "tags": [
+        "insurance"
+      ]
+    },
+    {
+      "slug": "hydropower-energy",
+      "sectorSlug": null,
+      "businessNature": "energy",
+      "tags": [
+        "hydropower",
+        "energy"
+      ]
+    },
+    {
+      "slug": "ngo-nonprofit",
+      "sectorSlug": null,
+      "businessNature": "nonprofit",
+      "tags": [
+        "ngo",
+        "nonprofit",
+        "donor"
+      ]
+    },
+    {
+      "slug": "media-advertising",
+      "sectorSlug": null,
+      "businessNature": "media",
+      "tags": [
+        "media",
+        "advertising",
+        "publishing"
+      ]
+    },
+    {
+      "slug": "remittance-money-transfer",
+      "sectorSlug": null,
+      "businessNature": "finance",
+      "tags": [
+        "remittance",
+        "money transfer",
+        "forex"
+      ]
+    }
+  ]
+}

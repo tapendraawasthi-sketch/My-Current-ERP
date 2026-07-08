@@ -122,6 +122,30 @@ class KhataFeedbackRequest(BaseModel):
     timestamp: str | None = None
 
 
+@app.get("/health")
+def health() -> dict:
+    """Lightweight readiness probe for deploy scripts."""
+    from ..vectorstore.ca_knowledge_store import get_ca_knowledge_count
+    from ..vectorstore.nlu_knowledge_store import get_nlu_knowledge_count
+
+    ollama_ok = False
+    try:
+        resp = httpx.get(f"{OLLAMA_BASE_URL}/api/tags", timeout=5)
+        ollama_ok = resp.status_code == 200
+    except Exception:
+        pass
+
+    return {
+        "status": "online",
+        "ollama": "connected" if ollama_ok else "unreachable",
+        "khata_llm": ollama_ok,
+        "indexed_files": chroma_store.get_indexed_file_count(),
+        "ca_knowledge_chunks": get_ca_knowledge_count(),
+        "nlu_knowledge_chunks": get_nlu_knowledge_count(),
+        "model": MODEL_NAME,
+    }
+
+
 @app.get("/status")
 def status() -> dict:
     try:

@@ -1,0 +1,105 @@
+name: e-Khata CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "erp_bot/**"
+      - "data/ekhata/**"
+      - "src/lib/ekhata/**"
+      - "src/components/ekhata/**"
+      - "src/store/eKhataStore.ts"
+      - "src/e2e/**"
+      - "scripts/test-ekhata*.ts"
+      - "scripts/test-compound-splitter.ts"
+      - "scripts/eval-ekhata*.ts"
+      - "e2e/**"
+      - "playwright.config.ts"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "erp_bot/**"
+      - "data/ekhata/**"
+      - "src/lib/ekhata/**"
+      - "src/components/ekhata/**"
+      - "src/store/eKhataStore.ts"
+      - "src/e2e/**"
+      - "scripts/test-ekhata*.ts"
+      - "scripts/test-compound-splitter.ts"
+      - "scripts/eval-ekhata*.ts"
+      - "e2e/**"
+      - "playwright.config.ts"
+  workflow_dispatch:
+
+jobs:
+  ekhata-python:
+    name: Python NLU pipeline
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: erp_bot/requirements.txt
+
+      - name: Install Python dependencies
+        run: pip install -r erp_bot/requirements.txt
+
+      - name: Run e-Khata Python CI bundle
+        run: bash erp_bot/scripts/run_ekhata_ci.sh
+
+  ekhata-frontend:
+    name: Frontend panel smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Panel + brain smoke tests
+        run: |
+          npm run test:ekhata-compound
+          npm run test:ekhata-panel-smoke
+          npm run test:ekhata-brain
+
+      - name: TS/Python parser parity
+        run: npm run test:ekhata-parser-parity
+
+  ekhata-e2e:
+    name: Playwright panel E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium --with-deps
+
+      - name: Run e-Khata panel E2E
+        run: npm run test:e2e:ekhata
+        env:
+          CI: "true"

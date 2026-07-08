@@ -24,6 +24,8 @@ import { shouldTryWorkParse, extractWorkItem } from "./smartWorkBrain";
 import type { KhataConfirmationCard, KhataParseResult } from "./types";
 import type { LedgerBalanceSnapshot } from "./conversationEngine";
 import { isLedgerBalanceQuery, replyBalance } from "./conversationEngine";
+import { isCompoundMessage } from "./compound";
+import { buildCompoundBatch } from "./compoundBatch";
 
 export type EKhataEngine =
   | "brain"
@@ -55,6 +57,13 @@ export type EKhataProcessResult =
       kind: "clarify";
       reply: string;
       normalizedText: string;
+      engine: EKhataEngine;
+    }
+  | {
+      kind: "compound";
+      reply: string;
+      normalizedText: string;
+      batch: import("./compoundBatch").KhataCompoundBatchCard;
       engine: EKhataEngine;
     };
 
@@ -156,6 +165,31 @@ function tryClarificationFollowUp(
   if (parsed.clarifying_question) return null;
 
   return null;
+}
+
+function tryCompoundEntry(
+  trimmed: string,
+  normalizedText: string,
+): EKhataProcessResult | null {
+  if (!isCompoundMessage(trimmed)) return null;
+
+  const built = buildCompoundBatch(trimmed);
+  if (!built.ok) {
+    return {
+      kind: "clarify",
+      reply: built.reply,
+      normalizedText,
+      engine: "ca",
+    };
+  }
+
+  return {
+    kind: "compound",
+    reply: built.reply,
+    normalizedText,
+    batch: built.batch,
+    engine: "ca",
+  };
 }
 
 function tryJournalEntry(
@@ -263,6 +297,9 @@ export function processEKhataMessage(
     options.conversationContext,
   );
   if (clarifyFollowUp) return clarifyFollowUp;
+
+  const compound = tryCompoundEntry(trimmed, normalizedText);
+  if (compound) return compound;
 
   const entry = tryJournalEntry(trimmed, normalizedText, lang);
   if (entry) return entry;

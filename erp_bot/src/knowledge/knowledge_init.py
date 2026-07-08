@@ -10,6 +10,7 @@ from pathlib import Path
 
 from ..config import ERP_PATH
 from ..vectorstore.ca_knowledge_store import get_ca_knowledge_count, ingest_ca_knowledge
+from ..vectorstore.nlu_knowledge_store import get_nlu_knowledge_count, ingest_nlu_knowledge
 from .hybrid_rag import get_hybrid_rag
 
 logger = logging.getLogger(__name__)
@@ -72,6 +73,12 @@ def ensure_knowledge_indexes() -> dict:
         logger.info("CA knowledge ingest: %s", result["chroma"])
     else:
         result["chroma"] = {"status": "ready", "count": get_ca_knowledge_count()}
+
+    if get_nlu_knowledge_count() == 0:
+        result["nlu_embeddings"] = ingest_nlu_knowledge()
+        logger.info("NLU knowledge embeddings: %s", result["nlu_embeddings"])
+    else:
+        result["nlu_embeddings"] = {"status": "ready", "count": get_nlu_knowledge_count()}
 
     docs = _load_corpus_documents()
     try:

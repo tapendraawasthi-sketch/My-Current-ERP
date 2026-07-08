@@ -47,12 +47,14 @@ COMPLIANCE_TERMS = re.compile(
 )
 
 ENTRY_SIGNALS = re.compile(
-    r"\b(sold|sale|bought|purchase|paid|received|tiryo|diye|kineko|becheko|bikri|"
+    r"\b(sold|sale|bought|purchase|paid|received|tiryo|tireko|diye|diyeko|kineko|becheko|bikri|"
+    r"liyo|liye|liya|gare|garyo|garya|replace|repair|"
     r"kharcha|salary|vat|tds|loan|capital|return|commission|advance|jama|"
-    r"consume|khaye|liye|nikale|istimal|prayog|invest|lagani|haleko|drawings)\b.*\d|"
-    r"\d.*\b(sold|sale|bought|purchase|paid|received|tiryo|diye|kineko|becheko|"
+    r"consume|khaye|nikale|istimal|prayog|invest|lagani|haleko|drawings)\b.*\d|"
+    r"\d.*\b(sold|sale|bought|purchase|paid|received|tiryo|tireko|diye|diyeko|kineko|becheko|"
+    r"liyo|liye|liya|gare|garyo|garya|replace|repair|"
     r"kharcha|salary|vat|tds|loan|capital|return|commission|advance|"
-    r"consume|khaye|liye|nikale|istimal|prayog|invest|lagani|haleko)\b",
+    r"consume|khaye|nikale|istimal|prayog|invest|lagani|haleko)\b",
     re.I,
 )
 
@@ -65,7 +67,8 @@ OWNER_TRANSACTION = re.compile(
 
 INCOMPLETE_ENTRY = re.compile(
     r"\b(tiryo|tireko|diyo|diyeko|becheko|bikri|kineko|kharid|kharcha|"
-    r"paid|received|bech|kin|jama|aayo|consume|khaye|liye|nikale)\b",
+    r"liyo|liye|liya|gare|garyo|garya|replace|repair|"
+    r"paid|received|bech|kin|jama|aayo|consume|khaye|nikale)\b",
     re.I,
 )
 

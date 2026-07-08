@@ -10,6 +10,33 @@ Usage:
     python erp_bot/scripts/eval_khata_benchmark.py --tier llm --bucket concept --limit 10
     python erp_bot/scripts/eval_khata_benchmark.py --tier offline --report erp_bot/data/benchmark_report.json
 
+Sector NLU hold-out (Phase A v2 pipeline — retrieval + policy + enrich):
+
+    python erp_bot/scripts/eval_sector_nlu_holdout.py --build
+    python erp_bot/scripts/eval_sector_nlu_holdout.py --tier enrich --save-baseline
+    python erp_bot/scripts/eval_sector_nlu_holdout.py --compare-baseline
+
+Phase B hybrid NLU embeddings (lexical + Chroma RRF — requires Ollama for ingest):
+
+    python erp_bot/scripts/ingest_nlu_knowledge_embeddings.py
+    python erp_bot/scripts/test_hybrid_nlu_search.py
+    python erp_bot/scripts/test_nearest_neighbor_intent.py
+    python erp_bot/scripts/test_vocabulary_loader.py
+    python erp_bot/scripts/build_sector_journal_templates.py
+    python erp_bot/scripts/test_sector_journal_templates.py
+    python erp_bot/scripts/test_journal_verifier_chain.py
+    python erp_bot/scripts/test_compound_splitter.py
+    python erp_bot/scripts/test_wsd_expansion.py
+    python erp_bot/scripts/test_feedback_promoter.py
+    python erp_bot/scripts/test_ts_python_parity.py
+    python erp_bot/scripts/test_production_smoke.py
+    python erp_bot/scripts/health_check.py
+    python erp_bot/scripts/health_check.py --full
+    bash erp_bot/scripts/run_ekhata_ci.sh
+    npm run test:ekhata-panel-smoke
+    npm run test:e2e:ekhata:install && npm run test:e2e:ekhata
+    python erp_bot/scripts/promote_user_feedback.py --dry-run
+
 Tiers:
     offline — routing, RAG retrieval, regex parse (no Ollama)
     llm     — full khata_chat replies (requires Ollama + model)

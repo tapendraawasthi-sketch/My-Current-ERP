@@ -14,8 +14,6 @@ from typing import Any, Literal
 from ollama import Client
 
 from ..agent.agent_loop import agent_loop
-from ..agent.chain_verifier import chain_verify
-from ..agent.verifier import get_entry_verifier
 from ..agent.tool_registry import TOOL_MAP
 from ..bridges.session_data import set_session_context
 from ..education.accounting_tutor import get_accounting_tutor
@@ -28,6 +26,7 @@ from ..config import OLLAMA_BASE_URL, FAST_MODEL, FAST_MODEL_OPTIONS, DEEP_MODEL
 from ..knowledge.citation_qa import answer_with_citations, task_for_route
 from ..knowledge.domain_router import classify_domain
 from ..knowledge.chart_of_accounts_framework import detect_sector, format_coa_context, get_nlu_vocabulary_summary
+from ..knowledge.sector_profile import detect_sector_slug_from_text, resolve_sector_slug
 from ..knowledge.knowledge_registry import format_tiered_context
 from ..knowledge.nepal_accounting_kb import (
     format_glossary_answer,
@@ -37,14 +36,26 @@ from ..knowledge.nepal_accounting_kb import (
 )
 from ..nlu.engine import NLUEngine, ParsedEntry, get_nlu_engine
 from ..nlu.compound import split_compound_transactions
+from ..nlu.compound_entry_batch import (
+    build_batch_card,
+    build_compound_batch,
+    format_batch_confirmation,
+)
 from ..nlu.context_wsd import analyze_context_wsd
 from ..nlu.knowledge_enrich import is_likely_non_transaction
+from ..nlu.clarification_planner import (
+    build_clarification_question,
+    infer_required_slots,
+    missing_slots,
+    process_clarification_followup,
+)
 from ..reasoning.accounting_reasoner import (
     AccountingReasoner,
     JournalEntry,
     SessionContext,
     get_accounting_reasoner,
 )
+from ..reasoning.journal_verifier_chain import run_journal_verifier_chain
 from .session_store import load_session_data, save_session_data
 from .utils import (
     detect_language,
@@ -128,6 +139,7 @@ class Session:
     pending_slots: dict[str, Any] = field(default_factory=dict)
     pending_confirmation: JournalEntry | None = None
     pending_card: dict[str, Any] | None = None
+    pending_compound_batch: list[dict[str, Any]] | None = None
     last_intent: str | None = None
     balance: dict[str, Any] | None = None
     context: dict[str, Any] = field(default_factory=dict)
@@ -142,8 +154,20 @@ class Session:
             "last_amount": self.context.get("last_amount"),
             "pending_slots": dict(self.pending_slots),
             "business_sector": self.context.get("business_sector"),
+            "business_sector_slug": self.context.get("business_sector_slug"),
             "pending_clarification": bool(self.pending_clarification),
         }
+
+    def sync_sector_profile(self, message: str) -> str | None:
+        """Resolve and persist KB sector slug for retrieval boost."""
+        slug = (
+            self.context.get("business_sector_slug")
+            or resolve_sector_slug(self.context.get("business_sector"))
+            or detect_sector_slug_from_text(message)
+        )
+        if slug:
+            self.context["business_sector_slug"] = slug
+        return slug
 
     def to_reasoning_context(self) -> SessionContext:
         return SessionContext(
@@ -256,6 +280,7 @@ class ConversationManager:
         if sector:
             session.context["business_sector"] = sector["id"]
             session.context["business_sector_name"] = sector["name"]
+        session.sync_sector_profile(text)
 
         memory = get_layered_memory(session_id)
         if not text:
@@ -361,11 +386,21 @@ class ConversationManager:
                 text,
                 re.I,
             )
-        ) or bool(re.search(r"\b(sold|bought|paid|received|tiryo|kineko)\b.*\d", text, re.I))
+        ) or bool(re.search(r"\b(sold|bought|paid|received|tiryo|kineko)\b.*\d", text, re.I)) or bool(
+            re.search(
+                r"\b(becheko|kineko|tiryo|diye|bikri|kharcha|udhaar|sold|purchase|payment)\b",
+                text,
+                re.I,
+            )
+        )
 
     def _handle_entry(self, message: str, session: Session) -> Response:
         """Parse transaction, reason journal entry, request confirmation."""
-        if is_likely_non_transaction(message) and not re.search(r"\d", message):
+        if (
+            is_likely_non_transaction(message)
+            and not re.search(r"\d", message)
+            and not self._has_transaction_signals(message)
+        ):
             return Response(
                 message=(
                     "Yo transaction entry jasto chaina. Kripaya rakam, party, "
@@ -382,6 +417,7 @@ class ConversationManager:
 
         sector = session.context.get("business_sector") or detect_sector(message)
         session.context["business_sector"] = sector
+        session.sync_sector_profile(message)
 
         wsd = analyze_context_wsd(
             message, session.nlu_context(), session_id=session.session_id
@@ -404,6 +440,8 @@ class ConversationManager:
                     "intent_code": parsed.intent_code,
                     "skip_posting": True,
                     "skip_reason": parsed.skip_reason,
+                    "erp_action": parsed.erp_action,
+                    "policy_action": parsed.policy_action,
                     "knowledge_refs": parsed.knowledge_refs,
                 },
             )
@@ -420,8 +458,17 @@ class ConversationManager:
                 session.pending_slots["amount"] = parsed.amount
             if parsed.intent and parsed.intent != "unknown":
                 session.pending_slots["intent"] = parsed.intent
+            if parsed.payment_method != "unknown":
+                session.pending_slots["payment_method"] = parsed.payment_method
+            required = infer_required_slots(parsed, session.pending_slots)
+            session.context["clarification_required_slots"] = list(required)
             get_layered_memory(session.session_id).set_pending_slots(session.pending_slots)
-            q = parsed.clarification_question or self._slot_clarification_question(session)
+            still_missing = missing_slots(parsed, session.pending_slots, required)
+            q = parsed.clarification_question or build_clarification_question(
+                still_missing,
+                session.pending_slots,
+                parsed,
+            )
             return Response(
                 message=q,
                 action="clarify",
@@ -431,9 +478,17 @@ class ConversationManager:
                     "confidence": parsed.confidence,
                     "intent_code": parsed.intent_code,
                     "knowledge_refs": parsed.knowledge_refs,
+                    "required_slots": list(required),
+                    "pending_slots": dict(session.pending_slots),
                 },
             )
 
+        return self._finalize_parsed_entry(parsed, message, session)
+
+    def _finalize_parsed_entry(
+        self, parsed: ParsedEntry, message: str, session: Session
+    ) -> Response:
+        """Reason journal from a complete ParsedEntry and request confirmation."""
         try:
             journal = self._reasoner.reason_entry(parsed, session.to_reasoning_context())
         except ValueError as exc:
@@ -453,26 +508,34 @@ class ConversationManager:
             if dup.get("duplicate"):
                 verify_ctx["similar_entry_today"] = dup.get("match", {})
 
-        verification = get_entry_verifier().verify(journal, verify_ctx)
-        journal = verification.entry
-        warnings = list(verification.warnings) + list(verification.errors)
+        chain = run_journal_verifier_chain(journal, parsed, verify_ctx)
+        journal = chain.entry
+        if chain.blocked:
+            session.pending_clarification = parsed
+            err_text = "; ".join(chain.errors[:3])
+            return Response(
+                message=(
+                    f"Entry verify fail — auto-post gardina: {err_text}. "
+                    "Kripaya amount, party, ra payment mode clear garera feri lekhnus."
+                ),
+                action="clarify",
+                suggestions=["Udaharan: Ram lai 500 cash ma becheko", "Cancel"],
+                metadata={"verification_errors": chain.errors, "verification_warnings": chain.warnings},
+            )
 
-        if parsed.confidence < 0.92 or len(journal.lines) > 3 or parsed.statutory_bundle:
-            try:
-                _, chain_warnings = chain_verify(journal, verify_ctx)
-                warnings.extend(chain_warnings)
-            except Exception as exc:
-                logger.warning("chain_verify skipped: %s", exc)
-            try:
-                recent = session.context.get("recent_entries") or []
-                for anomaly in get_anomaly_detector().scan_sync(journal, recent):
-                    msg = anomaly.message
-                    if anomaly.severity == "high":
-                        warnings.insert(0, f"🚨 {msg}")
-                    else:
-                        warnings.append(f"⚠️ {msg}")
-            except Exception as exc:
-                logger.warning("anomaly scan skipped: %s", exc)
+        warnings = list(chain.warnings)
+        if chain.corrections:
+            warnings = [f"Auto-corrected: {c}" for c in chain.corrections] + warnings
+        try:
+            recent = session.context.get("recent_entries") or []
+            for anomaly in get_anomaly_detector().scan_sync(journal, recent):
+                msg = anomaly.message
+                if anomaly.severity == "high":
+                    warnings.insert(0, f"🚨 {msg}")
+                else:
+                    warnings.append(f"⚠️ {msg}")
+        except Exception as exc:
+            logger.warning("anomaly scan skipped: %s", exc)
 
         session.pending_confirmation = journal
         card = journal.to_khata_card(message)
@@ -505,79 +568,135 @@ class ConversationManager:
     def _handle_compound_entry(
         self, parts: list[str], original: str, session: Session
     ) -> Response:
-        """Merge multiple sub-transactions into one balanced compound journal."""
-        from ..reasoning.accounting_reasoner import JournalLine
-
-        all_lines: list[JournalLine] = []
-        narrations: list[str] = []
-        primary_intent = "journal"
-        min_confidence = 1.0
-        total_amount = 0.0
-
-        for part in parts:
-            parsed = self._nlu.parse(part, session.nlu_context())
-            if parsed.needs_clarification or not parsed.amount:
-                return Response(
-                    message=(
-                        f"Compound entry ko ek bhag bujhiyena: «{part}». "
-                        "Pratyek transaction alag line ma amount sahit lekhnu hola."
-                    ),
-                    action="clarify",
-                    suggestions=[original],
-                )
-            try:
-                sub = self._reasoner.reason_entry(parsed, session.to_reasoning_context())
-            except ValueError as exc:
-                return Response(message=str(exc), action="clarify")
-            all_lines.extend(sub.lines)
-            narrations.append(part)
-            primary_intent = sub.intent
-            min_confidence = min(min_confidence, sub.confidence)
-            total_amount += float(parsed.amount or 0)
-
-        merged = JournalEntry(
-            intent=primary_intent,
-            amount=total_amount,
-            party=None,
-            narration=original,
-            lines=all_lines,
-            explanation="Compound entry — multiple transactions in one voucher.",
-            explanation_nepali="संयुक्त entry — एकै voucher ma dui/vaidha transaction.",
-            confidence=min_confidence,
+        """Parse each compound part separately — batch confirm card."""
+        verify_ctx = {**session.context, "cash_balance": session.context.get("cash_balance")}
+        batch = build_compound_batch(
+            parts,
+            nlu=self._nlu,
+            reasoner=self._reasoner,
+            session_context=session.to_reasoning_context(),
+            verify_ctx=verify_ctx,
+            sector_slug=session.context.get("business_sector_slug"),
+            original_narration=original,
         )
+        if not batch.ok:
+            return Response(
+                message=batch.error_message or "Compound entry parse fail.",
+                action="clarify",
+                suggestions=[original],
+                metadata={"failed_part": batch.failed_part},
+            )
 
-        session.pending_confirmation = merged
-        card = merged.to_khata_card(original)
+        sub_entries = batch.sub_entries
+        card = build_batch_card(sub_entries, original)
+        total_amount = sum(float(s.journal.amount or 0) for s in sub_entries)
+        min_confidence = min(s.journal.confidence for s in sub_entries)
+
+        session.pending_compound_batch = [
+            {"journal": s.journal.model_dump(), "card": s.card, "text": s.text}
+            for s in sub_entries
+        ]
+        session.pending_confirmation = sub_entries[0].journal
         session.pending_card = card
-        reply = self._format_entry_confirmation(merged, session.language)
-        reply = (
-            f"📎 **Compound entry** ({len(parts)} transactions):\n"
-            + "\n".join(f"  • {n}" for n in narrations)
-            + f"\n\n{reply}"
-        )
+
+        reply = format_batch_confirmation(sub_entries, language=session.language)
+        all_warnings: list[str] = []
+        for sub in sub_entries:
+            all_warnings.extend(sub.warnings)
+        if all_warnings:
+            reply += "\n\n" + "\n".join(f"⚠️ {w}" for w in all_warnings[:4])
+
         return Response(
             message=reply,
             action="confirm",
-            entry=merged,
+            entry=sub_entries[0].journal,
             card=card,
             suggestions=["Ho ✅", "Hoina, sudhar", "Cancel"],
-            metadata={"intent": "compound", "parts": len(parts), "confidence": min_confidence},
+            metadata={
+                "intent": "compound_batch",
+                "parts": len(sub_entries),
+                "total_amount": total_amount,
+                "confidence": min_confidence,
+                "compound_batch": session.pending_compound_batch,
+            },
         )
 
     def _handle_clarification(self, message: str, session: Session) -> Response:
-        """Resolve pending clarification with follow-up message (slot filling)."""
+        """Resolve pending clarification with slot-filling follow-up."""
         pending = session.pending_clarification
+        if not pending:
+            return self._handle_entry(message, session)
+
+        if is_cancel_message(message):
+            session.pending_clarification = None
+            session.pending_slots = {}
+            session.context.pop("clarification_required_slots", None)
+            get_layered_memory(session.session_id).clear_pending_slots()
+            return Response(
+                message=(
+                    "Entry cancel garyo. Aru ke lekhnu hunthyo?"
+                    if session.language != "english"
+                    else "Entry cancelled. What would you like to enter next?"
+                ),
+                action="chat",
+            )
+
+        required = tuple(
+            session.context.get("clarification_required_slots")
+            or infer_required_slots(pending, session.pending_slots)
+        )
+
+        result = process_clarification_followup(
+            pending,
+            message,
+            session.pending_slots,
+            required,
+            recent_parties=session.recent_parties,
+        )
+
+        # User sent a full new transaction line — fall back to combined re-parse
+        if (
+            not result.slots_filled_this_turn
+            and not result.complete
+            and result.question is None
+        ):
+            session.pending_clarification = None
+            session.pending_slots = {}
+            session.context.pop("clarification_required_slots", None)
+            get_layered_memory(session.session_id).clear_pending_slots()
+            return self._handle_entry(result.parsed.narration, session)
+
+        session.pending_slots = result.filled_slots
+        get_layered_memory(session.session_id).set_pending_slots(session.pending_slots)
+
+        if not result.complete:
+            session.pending_clarification = result.parsed
+            return Response(
+                message=result.question or "Kripaya thap bhari detail dinus.",
+                action="clarify",
+                suggestions=self._clarification_suggestions(result.parsed),
+                metadata={
+                    "intent": result.parsed.intent,
+                    "confidence": result.parsed.confidence,
+                    "required_slots": result.missing_slots,
+                    "pending_slots": dict(result.filled_slots),
+                    "slots_filled": result.slots_filled_this_turn,
+                },
+            )
+
         session.pending_clarification = None
-        slots = session.pending_slots
         session.pending_slots = {}
+        session.context.pop("clarification_required_slots", None)
         get_layered_memory(session.session_id).clear_pending_slots()
 
-        combined = f"{pending.narration} {message}" if pending else message
-        if slots.get("party") and pending and not pending.party:
-            combined = f"{slots['party']} {combined}"
-        if slots.get("amount") and pending and not pending.amount:
-            combined = f"{combined} {slots['amount']}"
-        return self._handle_entry(combined, session)
+        parsed = result.parsed
+        if parsed.party and parsed.party not in session.recent_parties:
+            session.recent_parties.append(parsed.party)
+        if parsed.amount:
+            session.context["last_amount"] = parsed.amount
+        session.last_intent = parsed.intent if parsed.intent != "unknown" else session.last_intent
+
+        return self._finalize_parsed_entry(parsed, pending.narration, session)
 
     def _handle_confirmation(self, message: str, session: Session) -> Response:
         """Handle confirm / cancel on pending entry."""
@@ -588,6 +707,7 @@ class ConversationManager:
         if is_cancel_message(message):
             session.pending_confirmation = None
             session.pending_card = None
+            session.pending_compound_batch = None
             return Response(
                 message="Entry cancel garyo. Aru ke lekhnu hunthyo?"
                 if session.language != "english"
@@ -596,8 +716,35 @@ class ConversationManager:
             )
 
         if is_confirm_message(message):
+            batch = session.pending_compound_batch
             session.pending_confirmation = None
-            session.entry_count += 1
+            session.pending_compound_batch = None
+            session.entry_count += len(batch) if batch else 1
+
+            if batch and len(batch) > 1:
+                total = sum(int(item["card"].get("amount") or 0) for item in batch)
+                if card:
+                    session.context["last_posted_card"] = card
+                parts_txt = ", ".join(
+                    f"Rs {int(item['card'].get('amount') or 0):,}" for item in batch
+                )
+                msg = (
+                    f"✅ {len(batch)} entry confirm bhayo! Jamma NPR {total:,} ({parts_txt})"
+                    if session.language != "english"
+                    else f"✅ {len(batch)} entries confirmed! Total NPR {total:,} ({parts_txt})"
+                )
+                return Response(
+                    message=msg,
+                    action="posted",
+                    entry=journal,
+                    card=card,
+                    metadata={
+                        "posted": True,
+                        "entry_count": session.entry_count,
+                        "compound_batch_posted": len(batch),
+                    },
+                )
+
             if card:
                 session.context["last_posted_card"] = card
             msg = (
@@ -1027,6 +1174,7 @@ class ConversationManager:
         if sector:
             session.context["business_sector"] = sector["id"]
             session.context["business_sector_name"] = sector["name"]
+        session.sync_sector_profile(text)
 
         memory = get_layered_memory(session_id)
         if not text:

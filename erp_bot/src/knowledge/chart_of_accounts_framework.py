@@ -659,6 +659,14 @@ def format_coa_context(query: str, *, max_chars: int = 1800) -> str:
 
 def get_nlu_vocabulary_summary() -> str:
     """Compact vocabulary block for NLU LLM system prompt."""
+    try:
+        from .vocabulary_loader import build_nlu_vocabulary_summary
+
+        summary = build_nlu_vocabulary_summary()
+        if summary:
+            return summary
+    except Exception:
+        pass
     lines = [
         "CHART OF ACCOUNTS — Nepali/English alias map (understand ALL variants):",
         "Assets: nagad=cash, bank=bank, asuli/debtors= receivable, saman/mal/stock=inventory, jamin/building=land/building",

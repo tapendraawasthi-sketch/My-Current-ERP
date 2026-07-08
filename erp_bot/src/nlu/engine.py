@@ -15,6 +15,11 @@ from pydantic import BaseModel, Field
 
 from ..config import FAST_MODEL, FAST_MODEL_OPTIONS, OLLAMA_BASE_URL, REGEX_CONFIDENCE_THRESHOLD
 from ..knowledge.chart_of_accounts_framework import get_nlu_vocabulary_summary
+from ..knowledge.vocabulary_loader import (
+    detect_payment_method as vocab_detect_payment_method,
+    map_intent_hint_to_nlu,
+    match_transaction_intent_hint,
+)
 from ..falcon_trader.normalizer import parse_amount_words
 from .compound import is_payroll_with_statutory, is_rent_with_tds
 from .context_wsd import analyze_context_wsd, apply_wsd_to_parsed
@@ -111,6 +116,7 @@ class ParsedEntry(BaseModel):
     tds_applicable: bool = False
     tds_rate: Optional[float] = None
     secondary_amount: Optional[float] = None
+    tertiary_amount: Optional[float] = None
     payment_method: PaymentMethod = "unknown"
     transaction_date: Optional[str] = None
     statutory_bundle: bool = False
@@ -120,6 +126,13 @@ class ParsedEntry(BaseModel):
     knowledge_refs: list[str] = Field(default_factory=list)
     skip_posting: bool = False
     skip_reason: Optional[str] = None
+    erp_action: Optional[str] = None
+    policy_action: Optional[str] = None
+    sector_slug: Optional[str] = None
+    transaction_category: Optional[str] = None
+    debit_accounts: list[str] = Field(default_factory=list)
+    credit_accounts: list[str] = Field(default_factory=list)
+    sector_template_id: Optional[str] = None
 
     @property
     def khata_intent(self) -> str | None:
@@ -361,9 +374,21 @@ Output JSON with: intent, amount, party, narration, confidence, vat_inclusive, p
         from .knowledge_enrich import enrich_parsed_entry
 
         session_id = (session_context or {}).get("session_id", "default")
+        sector_slug = (session_context or {}).get("business_sector_slug")
+        session_sector = (session_context or {}).get("business_sector")
         wsd = analyze_context_wsd(text, session_context, session_id=session_id)
 
-        if not wsd.is_likely_transaction and not re.search(r"\d", text):
+        has_txn_signal = (
+            wsd.is_likely_transaction
+            or bool(re.search(r"\d", text))
+            or bool(wsd.verb_signals)
+            or bool(
+                wsd.top_intent
+                and wsd.top_confidence >= 0.7
+                and wsd.top_intent != "unknown"
+            )
+        )
+        if not has_txn_signal:
             return ParsedEntry(
                 intent="unknown",
                 narration=text,
@@ -383,11 +408,35 @@ Output JSON with: intent, amount, party, narration, confidence, vat_inclusive, p
                 parsed = apply_wsd_to_parsed(
                     self._apply_statutory_hints(text, regex_result), wsd
                 )
-                return enrich_parsed_entry(parsed, text)
+                return enrich_parsed_entry(
+                    parsed,
+                    text,
+                    sector_profile=sector_slug,
+                    session_sector=session_sector,
+                )
+
+        from .nearest_neighbor_intent import parse_with_nearest_neighbor
+
+        nn_parsed = parse_with_nearest_neighbor(text, session_context)
+        if nn_parsed and nn_parsed.intent != "unknown":
+            parsed = apply_wsd_to_parsed(
+                self._apply_statutory_hints(text, nn_parsed), wsd
+            )
+            return enrich_parsed_entry(
+                parsed,
+                text,
+                sector_profile=sector_slug,
+                session_sector=session_sector,
+            )
 
         llm_result = self._llm_parse(text, session_context, regex_hint=regex_result, wsd=wsd)
         parsed = apply_wsd_to_parsed(self._apply_statutory_hints(text, llm_result), wsd)
-        return enrich_parsed_entry(parsed, text)
+        return enrich_parsed_entry(
+            parsed,
+            text,
+            sector_profile=sector_slug,
+            session_sector=session_sector,
+        )
 
     def _regex_ambiguous(self, text: str, parsed: ParsedEntry) -> bool:
         """Force LLM review when regex match may be wrong."""
@@ -425,7 +474,10 @@ Output JSON with: intent, amount, party, narration, confidence, vat_inclusive, p
         party = self._extract_party(message)
 
         payment_method: PaymentMethod = "unknown"
-        if re.search(r"\b(nagad|cash|nagar)\b", normalized):
+        vocab_pm = vocab_detect_payment_method(normalized)
+        if vocab_pm != "unknown":
+            payment_method = vocab_pm  # type: ignore[assignment]
+        elif re.search(r"\b(nagad|cash|nagar)\b", normalized):
             payment_method = "cash"
         elif re.search(r"\b(bank|cheque|check)\b", normalized):
             payment_method = "bank"
@@ -524,7 +576,11 @@ Output JSON with: intent, amount, party, narration, confidence, vat_inclusive, p
 
         from .knowledge_enrich import format_nlu_knowledge_context
 
-        knowledge_text = format_nlu_knowledge_context(message)
+        knowledge_text = format_nlu_knowledge_context(
+            message,
+            sector_profile=(context or {}).get("business_sector_slug"),
+            session_sector=(context or {}).get("business_sector"),
+        )
         knowledge_block = f"\n\n{knowledge_text}" if knowledge_text else ""
         user_content = (
             f'Parse this accounting message: "{message}"'
@@ -564,6 +620,10 @@ Output JSON with: intent, amount, party, narration, confidence, vat_inclusive, p
         self, normalized: str, payment_method: PaymentMethod
     ) -> str | None:
         """Heuristic intent when regex patterns miss but amount/party are present."""
+        hint = match_transaction_intent_hint(normalized)
+        mapped = map_intent_hint_to_nlu(hint, payment_method)
+        if mapped:
+            return mapped
         if re.search(r"\b(becheko|beche|bikri|bech|sold|sell)\b", normalized):
             return "cash_sale" if payment_method == "cash" else "credit_sale"
         if re.search(r"\b(kineko|kharid|kin|bought|purchased)\b", normalized):
@@ -597,17 +657,21 @@ Output JSON with: intent, amount, party, narration, confidence, vat_inclusive, p
 
         match = re.search(r"([\d,]+(?:\.\d+)?)\s*(?:rs|rupees|rupiya|rupaiya)?", text)
         if match:
-            val = float(match.group(1).replace(",", ""))
-            if val > 0:
-                return val
+            raw = match.group(1).replace(",", "").strip()
+            if raw:
+                val = float(raw)
+                if val > 0:
+                    return val
 
         devanagari_map = str.maketrans("०१२३४५६७८९", "0123456789")
         converted = text.translate(devanagari_map)
         match = re.search(r"([\d,]+(?:\.\d+)?)", converted)
         if match:
-            val = float(match.group(1).replace(",", ""))
-            if val > 0:
-                return val
+            raw = match.group(1).replace(",", "").strip()
+            if raw:
+                val = float(raw)
+                if val > 0:
+                    return val
 
         word_amount = parse_amount_words(text)
         if word_amount and word_amount > 0:

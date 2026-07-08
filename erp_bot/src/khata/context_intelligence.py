@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+from dataclasses import dataclass, field
 from enum import Enum
 from functools import lru_cache
 from pathlib import Path
@@ -77,6 +78,57 @@ class MessageKind(str, Enum):
     ACCOUNTING_CONCEPT = "accounting_concept"
     TRANSACTION = "transaction"
     GENERAL = "general"
+
+
+@dataclass
+class MessageAnalysis:
+    """Lightweight NLU signals for contextual WSD."""
+
+    intent_keys: list[str] = field(default_factory=list)
+    party_hints: list[str] = field(default_factory=list)
+    is_transaction: bool = False
+    verb_signals: list[str] = field(default_factory=list)
+
+
+_VERB_INTENT_RULES: tuple[tuple[re.Pattern[str], str, str], ...] = (
+    (re.compile(r"\b(becheko|bikri|bech|sold)\b", re.I), "khata_cash_sale", "sale"),
+    (re.compile(r"\b(kineko|kharid|kin|bought|purchased)\b", re.I), "khata_purchase", "purchase"),
+    (re.compile(r"\b(tiryo|tireko|aayo|jama)\b", re.I), "khata_payment_in", "payment_in"),
+    (re.compile(r"\b(kharcha|expense|bill)\b", re.I), "khata_expense", "expense"),
+    (re.compile(r"\b(udhaar|credit)\b", re.I), "khata_credit_sale", "credit"),
+    (re.compile(r"\b(esewa|khalti|fonepay|digital)\b", re.I), "digital_payment", "digital"),
+)
+
+
+def analyze_message(message: str, session_id: str = "default") -> MessageAnalysis:
+    """Extract transaction signals used by contextual WSD."""
+    text = (message or "").strip()
+    if not text:
+        return MessageAnalysis()
+
+    kind = classify_message_kind(text)
+    party_hints = _party_hints(text)
+    intent_keys: list[str] = []
+    verb_signals: list[str] = []
+
+    for pattern, intent_key, verb in _VERB_INTENT_RULES:
+        if pattern.search(text):
+            intent_keys.append(intent_key)
+            verb_signals.append(verb)
+
+    if re.search(r"\b(le|lai|bata)\b", text, re.I) and "khata_credit_sale" not in intent_keys:
+        if re.search(r"\b(diye|diyo|becheko)\b", text, re.I):
+            intent_keys.append("khata_credit_sale")
+        if re.search(r"\b(tiryo|aayo)\b", text, re.I) and re.search(r"\ble\b", text, re.I):
+            intent_keys.append("khata_payment_in")
+
+    update_session_from_message(session_id, text)
+    return MessageAnalysis(
+        intent_keys=intent_keys,
+        party_hints=party_hints,
+        is_transaction=kind == MessageKind.TRANSACTION,
+        verb_signals=verb_signals,
+    )
 
 
 def _session_meta(session_id: str) -> dict[str, str]:

@@ -304,11 +304,21 @@ def search_tiered_knowledge(
     task: str = "accounting_qa",
     top_k: int = 6,
     min_relevance: float = 0.5,
+    sector_profile: str | None = None,
+    session_sector: Any = None,
 ) -> list[KnowledgeChunk]:
     """
     Search all segments, rank by relevance × authority, resolve conflicts.
     Professional beats general when scores are close.
     """
+    from .sector_profile import compute_sector_boost, effective_sector_profile
+
+    active_sector = effective_sector_profile(
+        sector_profile=sector_profile,
+        query=query,
+        session_sector=session_sector,
+    )
+
     chunks = load_all_chunks()
     scored: list[tuple[float, KnowledgeChunk]] = []
 
@@ -318,8 +328,9 @@ def search_tiered_knowledge(
             continue
         auth = authority_score(c.segment, task)
         c.authority = auth
-        # Combined score: relevance + authority weight
-        combined = rel * 2.0 + auth * 0.15
+        sector_boost = compute_sector_boost(c, active_sector, task=task)
+        # Combined score: relevance + authority + sector profile
+        combined = rel * 2.0 + auth * 0.15 + sector_boost * 0.35
         scored.append((combined, c))
 
     scored.sort(key=lambda x: -x[0])

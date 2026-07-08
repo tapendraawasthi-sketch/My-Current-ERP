@@ -36,6 +36,7 @@ KHATA_STRUCTURED_PARSE = os.getenv("KHATA_USE_STRUCTURED_PARSE", "true").lower()
 KHATA_SYNTHESIZE_CONTEXT = os.getenv("KHATA_SYNTHESIZE_CONTEXT", "true").lower() == "true"
 EMBED_MODEL = os.getenv("EMBED_MODEL", "nomic-embed-text")
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+API_PORT = int(os.getenv("API_PORT", "8765"))
 CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "1500"))
 CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "200"))
 MAX_CHUNK_CHARS = int(os.getenv("MAX_CHUNK_CHARS", "3000"))

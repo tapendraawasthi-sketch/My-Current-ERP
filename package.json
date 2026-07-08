@@ -32,7 +32,11 @@
     "test:ekhata-builtin": "npx tsx scripts/verify-builtin-brain.ts",
     "test:ekhata-corpus-benchmark": "npx tsx scripts/test-ekhata-corpus-benchmark.ts",
     "test:ekhata-parser-parity": "npx tsx scripts/test-ekhata-parser-parity.ts",
-    "test:ekhata-all": "npm run test:ekhata-benchmark && npm run test:ekhata-corpus-benchmark && npm run test:ekhata-parser-parity && npm run validate:ekhata-corpus",
+    "test:ekhata-panel-smoke": "npx tsx scripts/test-ekhata-panel-smoke.ts",
+    "test:ekhata-compound": "npx tsx scripts/test-compound-splitter.ts",
+    "test:e2e:ekhata": "playwright test e2e/ekhata-panel.spec.ts",
+    "test:e2e:ekhata:install": "playwright install chromium",
+    "test:ekhata-all": "npm run test:ekhata-benchmark && npm run test:ekhata-corpus-benchmark && npm run test:ekhata-parser-parity && npm run test:ekhata-compound && npm run test:ekhata-panel-smoke && npm run validate:ekhata-corpus",
     "generate:ekhata-corpus": "npx tsx scripts/generate-ekhata-training-corpus.ts",
     "validate:ekhata-corpus": "npx tsx scripts/validate-ekhata-corpus.ts",
     "build:ca-knowledge": "node scripts/build-conceptual-framework-knowledge.mjs"
@@ -111,6 +115,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
+    "@playwright/test": "^1.61.1",
     "@types/node": "^22.16.5",
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19.2.0",

@@ -55,6 +55,53 @@ _NON_TRANSACTION_CUES = re.compile(
     re.I,
 )
 
+# ma → payment channel vs location
+_PAYMENT_MA = re.compile(
+    r"\b(cash|nagad|nakad|esewa|e\s*sewa|khalti|bank|online|fonepay|fone\s*pay|"
+    r"connectips|wallet|qr|cheque|chak|digital|mobile)\s+ma\b",
+    re.I,
+)
+_LOCATION_MA = re.compile(
+    r"\b(kathmandu|pokhara|lalitpur|bhaktapur|biratnagar|dukan|shop|office|"
+    r"counter|warehouse|godown|store|branch)\s+ma\b",
+    re.I,
+)
+
+# bata → payment source vs supplier source
+_BATA_PAYMENT_IN = re.compile(
+    r"\b\w+\s+bata\s+.*\b(aayo|aayeko|jama|prapti|liyo|received|tiryo|tireko)\b",
+    re.I,
+)
+_BATA_PURCHASE = re.compile(
+    r"\b\w+\s+bata\s+.*\b(kineko|kin|kharid|kinyo|bought|purchase|lako|aayo\s+saman)\b",
+    re.I,
+)
+_BATA_DIGITAL = re.compile(
+    r"\b(esewa|khalti|fonepay|fone\s*pay|connectips|bank|qr)\s+bata\b",
+    re.I,
+)
+
+# ko / ko lagi — party possessive vs purpose phrase
+_KO_PARTY = re.compile(
+    r"(?:^|\s)([A-Za-z\u0900-\u097F]{2,20})\s+ko(?:\s+(?!lagi\b)[\w\u0900-\u097F]+)?",
+    re.I,
+)
+_KO_LAGI_PURPOSE = re.compile(
+    r"\b(repair|service|order|purchase|bill|vat|part|screen|battery|rent|salary|"
+    r"maintenance|delivery|transport)\s+ko\s+lagi\b",
+    re.I,
+)
+
+_PARTICLE_PATTERNS: list[tuple[str, str, float]] = [
+    (r"\b\w+\s+lai\s+.*\b(diye|diyeko|deko|diyo)\b", "credit_sale", 0.9),
+    (r"\b\w+\s+le\s+.*\b(diye|diyeko)\b", "payment_made", 0.88),
+    (r"\b\w+\s+bata\s+.*\b(aayo|aayeko|jama|prapti)\b", "payment_received", 0.88),
+    (r"\b\w+\s+bata\s+.*\b(kineko|kharid|kin)\b", "credit_purchase", 0.87),
+    (r"\b(esewa|khalti|fonepay|connectips|qr)\s+bata\b", "payment_received", 0.85),
+    (r"\b(bhada|rent|kiraya)\s+.*\b(tiryo|tireko|diye)\b", "expense", 0.88),
+    (r"\b(dukan|shop|office)\s+.*\b(bhada|rent)\b", "expense", 0.8),
+]
+
 
 @dataclass
 class WSDResult:
@@ -109,10 +156,72 @@ def _score_directions(norm: str) -> dict[str, float]:
     for pattern, intent, weight in _DIRECTION_PATTERNS:
         if re.search(pattern, norm, re.I):
             scores[intent] = max(scores.get(intent, 0.0), weight)
+    for pattern, intent, weight in _PARTICLE_PATTERNS:
+        if re.search(pattern, norm, re.I):
+            scores[intent] = max(scores.get(intent, 0.0), weight)
     return scores
 
 
+def _score_particle_disambiguation(norm: str, scores: dict[str, float]) -> dict[str, float]:
+    """Refine scores using ma/bata/ko particle semantics."""
+    out = dict(scores)
+
+    if _PAYMENT_MA.search(norm):
+        out["cash_sale"] = max(out.get("cash_sale", 0.0), 0.84)
+        if re.search(r"\b(kineko|kharid|kin|purchase)\b", norm):
+            out["cash_purchase"] = max(out.get("cash_purchase", 0.0), 0.86)
+            out.pop("cash_sale", None)
+
+    if _LOCATION_MA.search(norm) and not _PAYMENT_MA.search(norm):
+        # Location 'ma' — do not boost cash_sale from ma alone
+        out.pop("cash_sale", None)
+
+    if _BATA_DIGITAL.search(norm):
+        out["payment_received"] = max(out.get("payment_received", 0.0), 0.88)
+
+    if _BATA_PAYMENT_IN.search(norm) and not _BATA_PURCHASE.search(norm):
+        out["payment_received"] = max(out.get("payment_received", 0.0), 0.87)
+
+    if _BATA_PURCHASE.search(norm):
+        out["credit_purchase"] = max(out.get("credit_purchase", 0.0), 0.88)
+        out.pop("payment_received", None)
+
+    if _KO_LAGI_PURPOSE.search(norm):
+        # Purpose phrase — prefer expense/purchase over party sale
+        if re.search(r"\b(bill|rent|salary|vat)\b", norm):
+            out["expense"] = max(out.get("expense", 0.0), 0.8)
+
+    return out
+
+
+def analyze_particles(text: str) -> dict[str, Any]:
+    """Expose particle-level WSD signals for tests and TS parity spec."""
+    norm = normalize_for_wsd(text)
+    return {
+        "payment_ma": bool(_PAYMENT_MA.search(norm)),
+        "location_ma": bool(_LOCATION_MA.search(norm)),
+        "bata_payment_in": bool(_BATA_PAYMENT_IN.search(norm)),
+        "bata_purchase": bool(_BATA_PURCHASE.search(norm)),
+        "bata_digital": bool(_BATA_DIGITAL.search(norm)),
+        "ko_lagi_purpose": bool(_KO_LAGI_PURPOSE.search(norm)),
+        "ko_party": _KO_PARTY.search(text).group(1) if _KO_PARTY.search(text) else None,
+    }
+
+
 def _detect_payment(norm: str) -> str:
+    if _PAYMENT_MA.search(norm):
+        m = _PAYMENT_MA.search(norm)
+        if m:
+            token = m.group(1).lower()
+            if token in ("esewa", "e sewa"):
+                return "esewa"
+            if token == "khalti":
+                return "khalti"
+            if token in ("fonepay", "fone pay"):
+                return "esewa"
+            if token in ("connectips", "bank", "cheque", "chak", "online", "mobile", "digital"):
+                return "bank"
+            return "cash"
     if re.search(r"\b(nagad|cash|nakad)\b", norm):
         return "cash"
     if re.search(r"\b(esewa)\b", norm):
@@ -234,6 +343,7 @@ def analyze_context_wsd(
     analysis = analyze_message(raw, session_id=session_id)
 
     scores = _score_directions(norm)
+    scores = _score_particle_disambiguation(norm, scores)
     # Boost from context_intelligence intent keys
     _INTENT_KEY_MAP = {
         "khata_credit_sale": "credit_sale",

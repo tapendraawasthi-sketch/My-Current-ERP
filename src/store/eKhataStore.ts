@@ -20,6 +20,7 @@ import {
 import { updateContextAfterClarify } from "../lib/ekhata/conversationState";
 import { extractWorkItem } from "../lib/ekhata/smartWorkBrain";
 import type { EKhataChatMessage, KhataConfirmationCard } from "../lib/ekhata/types";
+import type { KhataCompoundBatchCard } from "../lib/ekhata/compoundBatch";
 import { isSelfContainedAi } from "../lib/selfContainedAi";
 import { useStore } from "./useStore";
 
@@ -61,6 +62,7 @@ export interface EKhataState {
   llmModel?: string;
   messages: EKhataChatMessage[];
   pendingCard: KhataConfirmationCard | null;
+  pendingCompoundBatch: KhataCompoundBatchCard | null;
   streamingText: string;
   activeTools: string[];
   engineLabel: string;
@@ -88,6 +90,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
     },
   ],
   pendingCard: null,
+  pendingCompoundBatch: null,
   streamingText: "",
   activeTools: [],
   engineLabel: "v2",
@@ -123,6 +126,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
       ],
       isLoading: true,
       pendingCard: null,
+      pendingCompoundBatch: null,
       streamingText: "",
       activeTools: [],
     }));
@@ -159,6 +163,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
             m.id === assistantId ? { ...m, text: result.reply } : m,
           ),
           pendingCard: result.kind === "entry" && result.card ? result.card : null,
+          pendingCompoundBatch: result.kind === "compound" ? result.batch : null,
           isLoading: false,
           engineLabel: "builtin",
         }));
@@ -280,6 +285,54 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
   },
 
   confirmPending: async () => {
+    const batch = get().pendingCompoundBatch;
+    if (batch) {
+      if (get().isLoading) return;
+      set({ isLoading: true });
+      try {
+        const { addVoucher } = useStore.getState();
+        const voucherNos: string[] = [];
+        for (const part of batch.parts) {
+          const { voucherNo } = await confirmKhataEntry(part.card, {
+            addVoucher: addVoucher as (voucher: Record<string, unknown>) => Promise<unknown>,
+          });
+          voucherNos.push(voucherNo);
+          recordTrainingFeedback(part.card, "confirmed");
+        }
+
+        set((s) => ({
+          pendingCompoundBatch: null,
+          isLoading: false,
+          messages: [
+            ...s.messages,
+            {
+              id: genId(),
+              role: "assistant",
+              text: `Safalta! ${batch.compoundCount} entries save bhayo ✓ (${voucherNos.join(", ")})`,
+              timestamp: new Date(),
+            },
+          ],
+        }));
+        if (voucherNos.length > 0) {
+          conversationContext = updateContextAfterConfirm(conversationContext, voucherNos[voucherNos.length - 1]);
+        }
+      } catch (error) {
+        set((s) => ({
+          isLoading: false,
+          messages: [
+            ...s.messages,
+            {
+              id: genId(),
+              role: "assistant",
+              text: error instanceof Error ? error.message : "Batch save failed",
+              timestamp: new Date(),
+            },
+          ],
+        }));
+      }
+      return;
+    }
+
     const card = get().pendingCard;
     if (!card || get().isLoading) return;
 
@@ -323,9 +376,16 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
 
   cancelPending: () => {
     const card = get().pendingCard;
+    const batch = get().pendingCompoundBatch;
     if (card) recordTrainingFeedback(card, "cancelled");
+    if (batch) {
+      for (const part of batch.parts) {
+        recordTrainingFeedback(part.card, "cancelled");
+      }
+    }
     set((s) => ({
       pendingCard: null,
+      pendingCompoundBatch: null,
       messages: [
         ...s.messages,
         {
@@ -350,6 +410,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
         },
       ],
       pendingCard: null,
+      pendingCompoundBatch: null,
       streamingText: "",
       activeTools: [],
     });

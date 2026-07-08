@@ -27,6 +27,13 @@ def append_feedback(record: dict[str, Any]) -> dict[str, Any]:
     with FEEDBACK_FILE.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps(stored, ensure_ascii=False) + "\n")
 
+    try:
+        from .feedback_promoter import maybe_auto_promote_on_append
+
+        maybe_auto_promote_on_append(stored)
+    except Exception:
+        pass
+
     return stored
 
 

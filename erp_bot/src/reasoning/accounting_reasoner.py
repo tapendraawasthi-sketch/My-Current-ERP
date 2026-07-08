@@ -22,6 +22,7 @@ from ..knowledge.nepal_accounting_kb import (
 )
 from ..knowledge.chart_of_accounts_framework import detect_sector, format_coa_context
 from ..nlu.engine import ParsedEntry
+from .sector_journal_templates import try_build_from_parsed
 
 logger = logging.getLogger(__name__)
 
@@ -183,13 +184,53 @@ class AccountingReasoner:
             except Exception as exc:
                 logger.warning("Payroll statutory template failed: %s", exc)
 
-        if parsed.confidence >= 0.85 and parsed.intent != "unknown":
+        can_use_template = parsed.intent != "unknown" and (
+            parsed.confidence >= 0.85
+            or (
+                parsed.confidence >= 0.72
+                and parsed.debit_accounts
+                and parsed.credit_accounts
+            )
+        )
+        if can_use_template:
+            try:
+                sector_lines = try_build_from_parsed(parsed)
+                if sector_lines:
+                    return self._sector_template_entry(parsed, sector_lines)
+            except (ValueError, KeyError) as exc:
+                logger.warning("Sector template entry failed: %s", exc)
             try:
                 return self._template_entry(parsed)
             except (ValueError, KeyError) as exc:
                 logger.warning("Template entry failed, falling back to LLM: %s", exc)
 
         return self._llm_reason_entry(parsed, context or SessionContext())
+
+    def _sector_template_entry(
+        self, parsed: ParsedEntry, raw_lines: list[dict[str, Any]]
+    ) -> JournalEntry:
+        """Journal from sector JSONL debit/credit template."""
+        lines = [
+            JournalLine(
+                account=row["account"],
+                name=row.get("accountName", row["account"]),
+                debit=row["debit"],
+                credit=row["credit"],
+                description=row.get("description", ""),
+            )
+            for row in raw_lines
+        ]
+        return JournalEntry(
+            intent=parsed.intent,
+            khata_intent=parsed.khata_intent,
+            amount=float(parsed.amount or 0),
+            party=parsed.party,
+            narration=parsed.narration,
+            lines=lines,
+            explanation="Sector template (debit/credit from training data)",
+            explanation_nepali="Sector anusar Dr/Cr template",
+            confidence=min(0.95, parsed.confidence + 0.05),
+        )
 
     def _template_entry(self, parsed: ParsedEntry) -> JournalEntry:
         """Instant template-based entry for high-confidence parses."""

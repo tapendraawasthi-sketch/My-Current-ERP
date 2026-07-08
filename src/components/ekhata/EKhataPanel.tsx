@@ -25,6 +25,7 @@ const EKhataPanel: React.FC = () => {
     closePanel,
     messages,
     pendingCard,
+    pendingCompoundBatch,
     isLoading,
     llmOnline,
     llmModel,
@@ -44,7 +45,7 @@ const EKhataPanel: React.FC = () => {
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, pendingCard, isLoading]);
+  }, [messages, pendingCard, pendingCompoundBatch, isLoading]);
 
   useEffect(() => {
     if (isOpen) {
@@ -61,7 +62,7 @@ const EKhataPanel: React.FC = () => {
     await sendMessage(text);
   }, [input, isLoading, sendMessage]);
 
-  const journalLines = pendingCard?.journalLines ?? [];
+  const journalLines = pendingCompoundBatch?.journalLines ?? pendingCard?.journalLines ?? [];
   const balance = journalLines.length > 0 ? validateJournalBalance(journalLines) : null;
 
   if (!isOpen) return null;
@@ -120,7 +121,114 @@ const EKhataPanel: React.FC = () => {
           </div>
         ))}
 
-        {pendingCard && (
+        {pendingCompoundBatch && (
+          <div className="rounded-md border border-gray-200 bg-white p-3 shadow-sm">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+              Confirm CA Journal Entry — {pendingCompoundBatch.compoundCount} transactions
+            </p>
+            <p className="mt-1 text-[11px] text-gray-600">
+              Combined total:{" "}
+              <span className="font-mono font-medium">NPR {pendingCompoundBatch.amount.toLocaleString()}</span>
+            </p>
+            <div className="mt-2 space-y-2">
+              {pendingCompoundBatch.parts.map((part) => (
+                <div key={part.index} className="rounded border border-gray-100 bg-[#f5f6fa] px-2 py-1.5 text-[11px]">
+                  <p className="font-medium text-gray-800">
+                    {part.index}. {part.text}
+                  </p>
+                  <p className="text-gray-600">
+                    {KHATA_INTENT_LABELS[part.card.intent]} · NPR {part.card.amount.toLocaleString()}
+                    {part.card.party ? ` · ${part.card.party}` : ""}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {journalLines.length > 0 && (
+              <div className="mt-3">
+                <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500 mb-1">
+                  Journal Lines
+                </p>
+                <table className="w-full text-[11px]">
+                  <thead>
+                    <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                      <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        Account
+                      </th>
+                      <th className="px-2 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        Dr
+                      </th>
+                      <th className="px-2 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        Cr
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {journalLines.map((line, i) => (
+                      <tr key={i} className="border-b border-gray-100">
+                        <td className="px-2 py-1.5 text-[11px] text-gray-700">
+                          {line.accountName}
+                          <span className="ml-1 text-[9px] text-gray-400">({line.accountClass})</span>
+                        </td>
+                        <td className="px-2 py-1.5 font-mono text-right text-[11px] text-gray-700">
+                          {line.debit > 0 ? line.debit.toLocaleString() : "—"}
+                        </td>
+                        <td className="px-2 py-1.5 font-mono text-right text-[11px] text-gray-700">
+                          {line.credit > 0 ? line.credit.toLocaleString() : "—"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  {balance && (
+                    <tfoot>
+                      <tr className="bg-[#eef2ff] font-bold text-[11px] border-t-2 border-[#c7d2fe]">
+                        <td className="px-2 py-1.5">Total</td>
+                        <td className="px-2 py-1.5 font-mono text-right">
+                          {balance.totalDebit.toLocaleString()}
+                        </td>
+                        <td className="px-2 py-1.5 font-mono text-right">
+                          {balance.totalCredit.toLocaleString()}
+                        </td>
+                      </tr>
+                    </tfoot>
+                  )}
+                </table>
+                {balance && (
+                  <div
+                    className={`mt-2 rounded px-2 py-1 text-[10px] font-medium border ${
+                      balance.balanced
+                        ? "bg-green-50 text-green-700 border-green-200"
+                        : "bg-red-50 text-red-700 border-red-200"
+                    }`}
+                  >
+                    {balance.balanced ? "✓ Journal Balanced" : "✗ Journal Unbalanced"}
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="mt-3 flex gap-2">
+              <button
+                type="button"
+                onClick={confirmPending}
+                disabled={isLoading || (balance !== null && !balance.balanced)}
+                className="h-8 flex-1 rounded-md bg-[#1557b0] text-[12px] font-medium text-white hover:bg-[#0f4a96] disabled:opacity-50"
+              >
+                Confirm All ✓
+              </button>
+              <button
+                type="button"
+                onClick={cancelPending}
+                disabled={isLoading}
+                className="h-8 flex-1 rounded-md border border-gray-300 bg-white text-[12px] font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              >
+                Cancel ✗
+              </button>
+            </div>
+          </div>
+        )}
+
+        {pendingCard && !pendingCompoundBatch && (
           <div className="rounded-md border border-gray-200 bg-white p-3 shadow-sm">
             <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
               Confirm CA Journal Entry

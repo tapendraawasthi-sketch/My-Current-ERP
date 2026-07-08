@@ -8,6 +8,8 @@ import re
 from typing import TYPE_CHECKING, Any
 
 from ..knowledge.knowledge_registry import KnowledgeChunk, search_tiered_knowledge
+from ..knowledge.sector_profile import effective_sector_profile
+from .hybrid_nlu_search import hybrid_search_nlu
 
 if TYPE_CHECKING:
     from .engine import ParsedEntry
@@ -650,6 +652,196 @@ SECTOR_INTENT_TO_NLU: dict[str, str] = {
     "record_invoice_correction": "unknown",
     "record_account_closure": "payment_received",
     "record_cheque_deposit": "contra",
+    # Paint shop sector batch 2
+    "record_service_charge": "expense",
+    "record_rental_income": "payment_received",
+    "record_service_note": "unknown",
+    "record_refund_receipt": "payment_received",
+    "record_deposit_payment": "prepaid",
+    "record_staff_loan": "loan_received",
+    "record_cheque_stop_payment": "unknown",
+    "record_cheque_reissue": "unknown",
+    "record_partner_distribution": "drawings",
+    "issue_tds_certificate": "unknown",
+    # Sanitary and plumbing shop sector
+    "inventory_valuation_query": "unknown",
+    "price_inquiry": "unknown",
+    "reporting_query": "unknown",
+    "record_purchase_with_customs": "credit_purchase",
+    "record_sales_return_replacement": "sales_return",
+    "record_receipt_against_due": "payment_received",
+    "record_disputed_return": "sales_return",
+    "informational_statement": "unknown",
+    "record_sale_informal": "cash_sale",
+    "inventory_and_price_inquiry": "unknown",
+    "record_purchase_with_transport": "credit_purchase",
+    "clarification_request_from_shopkeeper": "unknown",
+    "record_sale_installment": "credit_sale",
+    "record_goods_received_pending_bill": "credit_purchase",
+    "informational_no_transaction": "unknown",
+    "set_credit_policy": "unknown",
+    "record_warranty_claim": "unknown",
+    # Sanitary and plumbing shop sector batch 2
+    "record_warranty_replacement": "unknown",
+    "record_inventory_adjustment": "stock_adjustment",
+    "record_bad_debt_consideration": "bad_debt_writeoff",
+    "record_capital_introduction": "capital_introduced",
+    "record_sale_deferred_payment_intent": "unknown",
+    "record_credit_note": "unknown",
+    "record_debit_note_from_supplier": "purchase_return",
+    "record_billing_correction": "unknown",
+    "action_request": "unknown",
+    "setup_recurring_expense": "expense",
+    "record_stock_transfer": "stock_adjustment",
+    "record_consignment_stock_out": "unknown",
+    "setup_commission_structure": "unknown",
+    "record_petty_cash_replenishment": "contra",
+    "record_asset_or_expense_purchase": "expense",
+    "record_custom_order_pending": "unknown",
+    "record_cash_reconciliation": "unknown",
+    "record_special_order_request": "unknown",
+    "record_order_pending_delivery": "unknown",
+    "clarification_request_general": "unknown",
+    "record_sale_with_prior_advance": "credit_sale",
+    "record_sale_with_delivery": "cash_sale",
+    "record_exchange": "sales_return",
+    "record_unidentified_bank_credit": "unknown",
+    "record_receipt_against_invoice": "payment_received",
+    "record_exchange_with_price_difference": "sales_return",
+    "record_sale_final_settlement": "credit_sale",
+    # Electrical goods shop batch 2
+    "record_disputed_transaction": "unknown",
+    "record_free_giveaway": "expense",
+    "record_free_asset_received": "unknown",
+    "record_sale_online_marketplace": "cash_sale",
+    "record_marketplace_settlement": "payment_received",
+    "record_purchase_order_cancellation": "unknown",
+    "record_sale_pending_confirmation": "unknown",
+    "record_inventory_reclassification": "stock_adjustment",
+    "record_order_pending_pricing": "unknown",
+    "record_quotation": "unknown",
+    # Electronics/mobile shop sector
+    "record_trade_in_sale": "cash_sale",
+    "record_service_income": "cash_sale",
+    "record_recharge_transaction": "unknown",
+    "record_sale_via_third_party_finance": "credit_sale",
+    "flag_suspicious_device": "unknown",
+    "record_warranty_check": "unknown",
+    "record_theft_loss": "stock_adjustment",
+    "record_opening_stock": "stock_adjustment",
+    "record_order_confirmation": "unknown",
+    # Electronics/mobile shop sector batch 2
+    "report_query": "unknown",
+    "record_commission_income": "payment_received",
+    "record_purchase_used_item": "cash_purchase",
+    "record_advance_received": "payment_received",
+    "record_asset_purchase_financed": "loan_received",
+    "record_loan_taken": "loan_received",
+    "record_purchase_discount": "credit_purchase",
+    "record_receivable_settlement": "payment_received",
+    "record_mixed_sale": "cash_sale",
+    "record_return": "sales_return",
+    "record_sale_discount": "discount_allowed",
+    "record_sale_and_return": "sales_return",
+    "record_sale_no_vat_request": "cash_sale",
+    "record_loss": "stock_adjustment",
+    "price_negotiation_query": "unknown",
+    "price_inquiry": "unknown",
+    "query_bad_debt_handling": "unknown",
+    "query_imei_verification": "unknown",
+    "query_warranty_dispute": "unknown",
+    "query_warranty_decision": "unknown",
+    "query_depreciation_method": "unknown",
+    "query_insurance_claim": "unknown",
+    "query_stock_audit_process": "unknown",
+    "query_multi_branch_setup": "unknown",
+    "query_clearance_sale_planning": "unknown",
+    "query_dispute_promotional_offer": "unknown",
+    "record_return_or_repair_request": "unknown",
+    "record_sale_intent": "unknown",
+    "record_sale_inquiry": "unknown",
+    "record_expense_or_collection": "unknown",
+    "setup_payroll": "unknown",
+    "stock_availability_query": "unknown",
+    "tax_compliance_alert": "unknown",
+    # Electronics/mobile shop sector batch 3
+    "query_vat_price_difference": "unknown",
+    "query_unfulfilled_promotion": "unknown",
+    "record_cash_closing": "unknown",
+    "query_warranty_document_reissue": "unknown",
+    "stock_unavailable_alternative_query": "unknown",
+    "record_complaint": "unknown",
+    "record_business_agreement": "unknown",
+    "record_sale_order": "unknown",
+    # Electronics/mobile shop sector batch 4
+    "query_warranty_without_proof": "unknown",
+    "query_warranty_battery_issue": "unknown",
+    "query_warranty_claim": "unknown",
+    "query_vat_number_verification": "unknown",
+    "query_service_availability": "unknown",
+    "stock_unavailable_order_query": "unknown",
+    "report_error_correction": "unknown",
+    "query_system_migration": "unknown",
+    "query_quotation_request": "unknown",
+    "query_return_policy": "unknown",
+    "query_warranty_document_error": "unknown",
+    "query_imei_mismatch": "unknown",
+    "query_data_backup": "unknown",
+    "record_payroll_settlement": "salary",
+    "query_addon_service_price": "unknown",
+    "report_fraud_suspicion": "unknown",
+    "query_spare_part_availability": "unknown",
+    "query_product_category_clarification": "unknown",
+    "record_discrepancy_investigation": "unknown",
+    # Hardware/Construction Materials Shop sector
+    "query_dispute_resolution": "unknown",
+    # Hardware/Construction Materials Shop sector batch 2
+    "query_delivery_penalty": "unknown",
+    "query_document_error": "unknown",
+    "query_quantity_mismatch": "unknown",
+    "query_transport_damage_claim": "unknown",
+    # Hardware/Construction Materials Shop sector batch 3
+    "query_delivery_complaint": "unknown",
+    "query_invoice_consolidation": "unknown",
+    "query_unit_conversion": "unknown",
+    "query_inventory_tracking_setup": "unknown",
+    "query_data_collection_policy": "unknown",
+    "query_price_discrepancy_dispute": "unknown",
+    "record_urgent_sale_request": "unknown",
+    "query_project_estimate": "unknown",
+    "record_delivery_change": "unknown",
+    "query_return_wrong_order": "unknown",
+    "query_custom_service_availability": "unknown",
+    "query_price_trend_advice": "unknown",
+    "query_product_options": "unknown",
+    # Mobile Repair Shop sector
+    "record_repair_income": "cash_sale",
+    "record_credit_service": "credit_sale",
+    "record_retail_sale": "cash_sale",
+    "record_free_service": "unknown",
+    "record_daily_summary_income": "cash_sale",
+    "record_digital_payment_sale": "cash_sale",
+    "record_purchase_on_credit": "credit_purchase",
+    "record_secondhand_phone_sale": "cash_sale",
+    "record_salary_expense": "salary",
+    "record_rent_expense": "expense",
+    "no_financial_transaction": "unknown",
+    "record_warranty_replacement": "sales_return",
+    "record_vat_purchase": "credit_purchase",
+    "record_mixed_daily_summary": "unknown",
+    "record_utility_expense": "expense",
+    "record_customer_refund": "sales_return",
+    "record_referral_commission_expense": "expense",
+    "record_pass_through_part_sale": "cash_sale",
+    "record_estimated_income": "unknown",
+    "record_supplier_payment": "payment_made",
+    "record_partial_free_service": "discount_allowed",
+    "record_compensation_expense": "expense",
+    "deferred_recording": "unknown",
+    "record_wholesale_sale": "cash_sale",
+    "record_accrued_liability": "expense",
+    "record_mixed_payment_batch": "unknown",
+    "record_discounted_clearance_sale": "discount_allowed",
 }
 
 SECTOR_NON_TRANSACTION = frozenset(
@@ -931,6 +1123,137 @@ SECTOR_NON_TRANSACTION = frozenset(
         "record_payment_promise",
         "request_legal_action",
         "record_invoice_correction",
+        # Sanitary and plumbing shop non-transaction intents
+        "inventory_valuation_query",
+        "price_inquiry",
+        "reporting_query",
+        "informational_statement",
+        "inventory_and_price_inquiry",
+        "clarification_request_from_shopkeeper",
+        "informational_no_transaction",
+        "set_credit_policy",
+        # Sanitary and plumbing shop batch 2 non-transaction intents
+        "record_sale_deferred_payment_intent",
+        "action_request",
+        "setup_commission_structure",
+        "record_custom_order_pending",
+        "record_cash_reconciliation",
+        "record_special_order_request",
+        "record_order_pending_delivery",
+        "clarification_request_general",
+        "record_unidentified_bank_credit",
+        "record_billing_correction",
+        "record_credit_note",
+        # Electrical goods shop batch 2 non-transaction intents
+        "record_purchase_order_cancellation",
+        "record_order_pending_pricing",
+        "record_quotation",
+        "record_sale_pending_confirmation",
+        # Electronics/mobile shop non-transaction intents
+        "flag_suspicious_device",
+        "record_warranty_check",
+        # Electronics/mobile shop batch 2 non-transaction intents
+        "report_query",
+        "price_negotiation_query",
+        "price_inquiry",
+        "query_bad_debt_handling",
+        "query_imei_verification",
+        "query_warranty_dispute",
+        "query_warranty_decision",
+        "query_depreciation_method",
+        "query_insurance_claim",
+        "query_stock_audit_process",
+        "query_multi_branch_setup",
+        "query_clearance_sale_planning",
+        "query_dispute_promotional_offer",
+        "record_return_or_repair_request",
+        "record_sale_intent",
+        "record_sale_inquiry",
+        "setup_payroll",
+        "stock_availability_query",
+        "tax_compliance_alert",
+        # Electronics/mobile shop batch 3 non-transaction intents
+        "query_vat_price_difference",
+        "query_unfulfilled_promotion",
+        "query_warranty_document_reissue",
+        "stock_unavailable_alternative_query",
+        "record_complaint",
+        "record_business_agreement",
+        "record_sale_order",
+        # Electronics/mobile shop batch 4 non-transaction intents
+        "query_warranty_without_proof",
+        "query_warranty_battery_issue",
+        "query_warranty_claim",
+        "query_vat_number_verification",
+        "query_service_availability",
+        "stock_unavailable_order_query",
+        "report_error_correction",
+        "query_system_migration",
+        "query_quotation_request",
+        "query_return_policy",
+        "query_warranty_document_error",
+        "query_imei_mismatch",
+        "query_data_backup",
+        "query_addon_service_price",
+        "report_fraud_suspicion",
+        "query_spare_part_availability",
+        "query_product_category_clarification",
+        "record_discrepancy_investigation",
+        # Hardware/Construction Materials Shop non-transaction intents
+        "query_dispute_resolution",
+        "query_delivery_penalty",
+        "query_document_error",
+        "query_quantity_mismatch",
+        "query_transport_damage_claim",
+        # Hardware/Construction Materials Shop batch 3 non-transaction intents
+        "query_delivery_complaint",
+        "query_invoice_consolidation",
+        "query_unit_conversion",
+        "query_inventory_tracking_setup",
+        "query_data_collection_policy",
+        "query_price_discrepancy_dispute",
+        "query_project_estimate",
+        "record_delivery_change",
+        "query_return_wrong_order",
+        "query_custom_service_availability",
+        "query_price_trend_advice",
+        "query_product_options",
+        # Mobile Repair Shop non-transaction intents
+        "record_free_service",
+        "no_financial_transaction",
+        "record_mixed_daily_summary",
+        "record_estimated_income",
+        "deferred_recording",
+        "record_mixed_payment_batch",
+
+        # Mobile Repair Shop batch 2 + Computer/Laptop non-transaction intents
+        "flag_bad_debt_risk",
+        "flag_billing_error",
+        "flag_discrepancy",
+        "flag_inventory_discrepancy",
+        "flag_liability_risk",
+        "flag_missing_records",
+        "flag_theft_loss",
+        "future_plan_no_transaction",
+        "informational_contract_update",
+        "informational_payment_mode_summary",
+        "informational_warranty_issuance",
+        "no_current_financial_transaction_future_note",
+        "no_financial_transaction_informational",
+        "no_financial_transaction_yet",
+        "no_new_financial_transaction",
+        "record_approximate_daily_income",
+        "record_cash_on_hand_status",
+        "record_pan_bill_request",
+        "record_price_discrepancy",
+        "record_recurring_service_contract",
+        "record_special_order_pending",
+        "record_vat_billing_batch",
+        "record_vat_invoice_requirement",
+        "record_zero_income_day",
+        "record_zero_revenue_day",
+        "request_vat_filing_preparation",
+        "seek_advice_not_transaction",
     }
 )
 
@@ -977,6 +1300,12 @@ def _extract_clarify_questions(chunk: KnowledgeChunk) -> list[str]:
     return qs
 
 
+def _extract_sector_accounts(chunk: KnowledgeChunk) -> tuple[list[str], list[str]]:
+    from ..reasoning.sector_journal_templates import extract_accounts_from_chunk
+
+    return extract_accounts_from_chunk(chunk)
+
+
 def _missing_required_fields(chunk: KnowledgeChunk, parsed: ParsedEntry) -> list[str]:
     required = chunk.metadata.get("required_fields") or []
     missing: list[str] = []
@@ -987,12 +1316,37 @@ def _missing_required_fields(chunk: KnowledgeChunk, parsed: ParsedEntry) -> list
     return missing
 
 
-def search_nlu_knowledge(message: str, *, top_k: int = 5) -> list[KnowledgeChunk]:
-    return search_tiered_knowledge(message, task="nlu", top_k=top_k, min_relevance=0.2)
+def search_nlu_knowledge(
+    message: str,
+    *,
+    top_k: int = 5,
+    sector_profile: str | None = None,
+    session_sector: Any = None,
+) -> list[KnowledgeChunk]:
+    from .hybrid_nlu_search import hybrid_search_nlu
+
+    return hybrid_search_nlu(
+        message,
+        top_k=top_k,
+        min_relevance=0.2,
+        sector_profile=sector_profile,
+        session_sector=session_sector,
+    )
 
 
-def format_nlu_knowledge_context(message: str, *, max_chars: int = 900) -> str:
-    hits = search_nlu_knowledge(message, top_k=3)
+def format_nlu_knowledge_context(
+    message: str,
+    *,
+    max_chars: int = 900,
+    sector_profile: str | None = None,
+    session_sector: Any = None,
+) -> str:
+    hits = search_nlu_knowledge(
+        message,
+        top_k=3,
+        sector_profile=sector_profile,
+        session_sector=session_sector,
+    )
     if not hits:
         return ""
     lines = ["[RETRIEVED NLU KNOWLEDGE — intent/clarification only; never hard-code tax rates]"]
@@ -1008,6 +1362,30 @@ def format_nlu_knowledge_context(message: str, *, max_chars: int = 900) -> str:
     return text[:max_chars] if len(text) > max_chars else text
 
 
+def _should_trust_sector_chunk(
+    parsed: ParsedEntry,
+    message: str,
+    chunk: KnowledgeChunk,
+    intent_map: dict[str, str],
+    *,
+    min_similarity: float = 0.42,
+) -> bool:
+    """Skip weak sector retrieval from overriding a strong regex/NN parse."""
+    from .nearest_neighbor_intent import extract_example_user_input, text_similarity
+
+    if parsed.confidence < 0.85:
+        return True
+    example = extract_example_user_input(chunk)
+    sim = text_similarity(message, example)
+    if sim >= min_similarity:
+        return True
+    record_intent = str(chunk.metadata.get("intent") or "")
+    mapped = intent_map.get(record_intent)
+    if mapped and mapped != "unknown" and parsed.intent not in ("unknown", mapped):
+        return False
+    return sim >= 0.32
+
+
 def _apply_example_chunk(
     parsed: ParsedEntry,
     chunk: KnowledgeChunk,
@@ -1017,11 +1395,14 @@ def _apply_example_chunk(
     strict_clarify: bool = False,
 ) -> tuple[ParsedEntry, bool, str | None, list[str]]:
     """Apply phase3/sector example chunk; returns (parsed, skip_posting, skip_reason, refs)."""
+    from .erp_action_policy import apply_policy_to_parsed, resolve_erp_action_policy
+
     refs: list[str] = [chunk.id]
     skip_posting = False
     skip_reason: str | None = None
     record_intent = str(chunk.metadata.get("intent") or "")
     conf = float(chunk.metadata.get("confidence") or 0)
+    erp_action = str(chunk.metadata.get("erp_action") or "")
 
     if record_intent in non_transaction and conf < 0.35:
         skip_posting = True
@@ -1041,7 +1422,12 @@ def _apply_example_chunk(
             parsed.confidence = max(parsed.confidence, min(0.85, conf + 0.1))
 
     needs_clarify = bool(chunk.metadata.get("clarification_needed"))
-    if needs_clarify or (not strict_clarify and ("clarification_required" in chunk.tags)):
+    if needs_clarify:
+        parsed.needs_clarification = True
+        qs = _extract_clarify_questions(chunk)
+        if qs and not parsed.clarification_question:
+            parsed.clarification_question = qs[0]
+    elif needs_clarify or (not strict_clarify and ("clarification_required" in chunk.tags)):
         if not strict_clarify or needs_clarify:
             if parsed.confidence < 0.65 or not parsed.amount or (not strict_clarify and not parsed.party):
                 parsed.needs_clarification = True
@@ -1068,19 +1454,90 @@ def _apply_example_chunk(
                 "ra payment mode confirm garnu hola."
             )
 
+    if erp_action:
+        policy = resolve_erp_action_policy(
+            erp_action=erp_action,
+            confidence=conf,
+            parsed=parsed,
+            clarification_needed=needs_clarify or bool(parsed.needs_clarification),
+            clarification_question=parsed.clarification_question
+            or str(chunk.metadata.get("clarification_question") or "") or None,
+            required_fields=list(chunk.metadata.get("required_fields") or []),
+            tags=list(chunk.tags),
+        )
+        parsed = apply_policy_to_parsed(parsed, policy)
+        if policy.skip_posting:
+            skip_posting = True
+            skip_reason = policy.reason or erp_action or skip_reason
+
+    debits, credits = _extract_sector_accounts(chunk)
+    if debits and credits:
+        parsed.debit_accounts = debits
+        parsed.credit_accounts = credits
+        sector_slug = str(chunk.metadata.get("sector_slug") or "")
+        if sector_slug:
+            parsed.sector_slug = sector_slug
+        tx_cat = chunk.metadata.get("transaction_category")
+        if tx_cat:
+            parsed.transaction_category = str(tx_cat)
+        from ..reasoning.sector_journal_templates import lookup_sector_template, template_fingerprint
+
+        tpl = lookup_sector_template(
+            sector_slug=parsed.sector_slug,
+            nlu_intent=str(chunk.metadata.get("nlu_intent") or parsed.intent),
+            transaction_category=parsed.transaction_category,
+            record_intent=record_intent or None,
+        )
+        if tpl:
+            parsed.sector_template_id = str(tpl.get("id") or "")
+        else:
+            parsed.sector_template_id = template_fingerprint(
+                sector_slug=parsed.sector_slug or "",
+                nlu_intent=str(chunk.metadata.get("nlu_intent") or parsed.intent),
+                transaction_category=parsed.transaction_category,
+                record_intent=record_intent or None,
+            )
+
     return parsed, skip_posting, skip_reason, refs
 
 
-def enrich_parsed_entry(parsed: ParsedEntry, message: str) -> ParsedEntry:
-    hits = search_nlu_knowledge(message)
+def enrich_parsed_entry(
+    parsed: ParsedEntry,
+    message: str,
+    *,
+    sector_profile: str | None = None,
+    session_sector: Any = None,
+) -> ParsedEntry:
+    from .hybrid_nlu_search import hybrid_search_nlu_scored
+    from .nearest_neighbor_intent import try_apply_nearest_neighbor
+
+    active_sector = effective_sector_profile(
+        sector_profile=sector_profile,
+        query=message,
+        session_sector=session_sector,
+    )
+    scored_hits = hybrid_search_nlu_scored(
+        message,
+        top_k=5,
+        min_relevance=0.2,
+        sector_profile=active_sector,
+        session_sector=session_sector,
+    )
+    hits = [h.chunk for h in scored_hits]
     if not hits:
         return parsed
+
+    parsed, nn_ref = try_apply_nearest_neighbor(
+        parsed, message, scored_hits, sector_slug=active_sector
+    )
 
     phase4 = next((h for h in hits if h.id.startswith("phase4-")), None)
     phase3 = next((h for h in hits if h.id.startswith("phase3-")), None)
     sector = next((h for h in hits if h.id.startswith("sector-")), None)
 
     refs: list[str] = []
+    if nn_ref:
+        refs.append(nn_ref)
     intent_code: str | None = None
     skip_posting = False
     skip_reason: str | None = None
@@ -1118,17 +1575,20 @@ def enrich_parsed_entry(parsed: ParsedEntry, message: str) -> ParsedEntry:
             skip_reason = reason3
 
     if sector and not skip_posting:
-        parsed, skip_s, reason_s, refs_s = _apply_example_chunk(
-            parsed,
-            sector,
-            intent_map=SECTOR_INTENT_TO_NLU,
-            non_transaction=SECTOR_NON_TRANSACTION,
-            strict_clarify=True,
-        )
-        refs.extend(refs_s)
-        if skip_s:
-            skip_posting = True
-            skip_reason = reason_s
+        if _should_trust_sector_chunk(parsed, message, sector, SECTOR_INTENT_TO_NLU):
+            parsed, skip_s, reason_s, refs_s = _apply_example_chunk(
+                parsed,
+                sector,
+                intent_map=SECTOR_INTENT_TO_NLU,
+                non_transaction=SECTOR_NON_TRANSACTION,
+                strict_clarify=True,
+            )
+            refs.extend(refs_s)
+            if skip_s:
+                skip_posting = True
+                skip_reason = reason_s
+        else:
+            refs.append(sector.id)
 
     return parsed.model_copy(
         update={

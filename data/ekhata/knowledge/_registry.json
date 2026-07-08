@@ -167,6 +167,17 @@
         "journal_entry": 12
       }
     },
+    "general.sector.hardware-construction-materials-shop": {
+      "label": "General — Sector NLU: Hardware/Construction Materials Shop",
+      "tier": "general",
+      "base_authority": 28,
+      "path": "general/sector/hardware-construction-materials-shop",
+      "use_for": ["nlu", "language", "journal_entry", "casual"],
+      "task_boost": {
+        "nlu": 18,
+        "journal_entry": 12
+      }
+    },
     "general.sector.construction-material-supplier": {
       "label": "General — Sector NLU: Construction Material Supplier",
       "tier": "general",
@@ -183,6 +194,72 @@
       "tier": "general",
       "base_authority": 28,
       "path": "general/sector/cement-rod-retail-shop",
+      "use_for": ["nlu", "language", "journal_entry", "casual"],
+      "task_boost": {
+        "nlu": 18,
+        "journal_entry": 12
+      }
+    },
+    "general.sector.paint-shop": {
+      "label": "General — Sector NLU: Paint Shop",
+      "tier": "general",
+      "base_authority": 28,
+      "path": "general/sector/paint-shop",
+      "use_for": ["nlu", "language", "journal_entry", "casual"],
+      "task_boost": {
+        "nlu": 18,
+        "journal_entry": 12
+      }
+    },
+    "general.sector.sanitary-plumbing-shop": {
+      "label": "General — Sector NLU: Sanitary and Plumbing Shop",
+      "tier": "general",
+      "base_authority": 28,
+      "path": "general/sector/sanitary-plumbing-shop",
+      "use_for": ["nlu", "language", "journal_entry", "casual"],
+      "task_boost": {
+        "nlu": 18,
+        "journal_entry": 12
+      }
+    },
+    "general.sector.electrical-goods-shop": {
+      "label": "General — Sector NLU: Electrical Goods Shop",
+      "tier": "general",
+      "base_authority": 28,
+      "path": "general/sector/electrical-goods-shop",
+      "use_for": ["nlu", "language", "journal_entry", "casual"],
+      "task_boost": {
+        "nlu": 18,
+        "journal_entry": 12
+      }
+    },
+    "general.sector.electronics-mobile-shop": {
+      "label": "General — Sector NLU: Electronics/Mobile Shop",
+      "tier": "general",
+      "base_authority": 28,
+      "path": "general/sector/electronics-mobile-shop",
+      "use_for": ["nlu", "language", "journal_entry", "casual"],
+      "task_boost": {
+        "nlu": 18,
+        "journal_entry": 12
+      }
+    },
+    "general.sector.mobile-repair-shop": {
+      "label": "General — Sector NLU: Mobile Repair Shop",
+      "tier": "general",
+      "base_authority": 28,
+      "path": "general/sector/mobile-repair-shop",
+      "use_for": ["nlu", "language", "journal_entry", "casual"],
+      "task_boost": {
+        "nlu": 18,
+        "journal_entry": 12
+      }
+    },
+    "general.sector.computer-laptop-shop": {
+      "label": "General — Sector NLU: Computer/Laptop Shop",
+      "tier": "general",
+      "base_authority": 28,
+      "path": "general/sector/computer-laptop-shop",
       "use_for": ["nlu", "language", "journal_entry", "casual"],
       "task_boost": {
         "nlu": 18,
