@@ -2,6 +2,17 @@ import { test, expect } from "@playwright/test";
 import { getKhataVouchers, getPartyByName } from "./helpers/indexedDb";
 
 async function openHarness(page: import("@playwright/test").Page) {
+  await page.goto("about:blank");
+  await page.evaluate(() => {
+    return new Promise<void>((resolve) => {
+      const req = indexedDB.deleteDatabase("SutraERPDatabase");
+      const done = () => resolve();
+      req.onsuccess = done;
+      req.onerror = done;
+      req.onblocked = done;
+    });
+  });
+
   await page.goto("/e2e/ekhata.html");
   const ready = page.getByTestId("ekhata-harness-ready");
   const loading = page.getByTestId("ekhata-harness-loading");
