@@ -482,7 +482,9 @@ export function computeOutstandingPayables(
 
 export function getAccountBalance(accountId: string, vouchers: any[], accounts?: any[]): number {
   const account = accounts?.find((a) => a.id === accountId);
-  let balance = (account?.openingBalanceDr || 0) - (account?.openingBalanceCr || 0);
+  const obDr = account?.openingBalanceDr ?? 0;
+  const obCr = account?.openingBalanceCr ?? 0;
+  let balance = obDr || obCr ? obDr - obCr : (account?.openingBalance ?? 0);
   for (const v of vouchers) {
     if (v.status !== "posted") continue;
     for (const line of v.lines || []) {
