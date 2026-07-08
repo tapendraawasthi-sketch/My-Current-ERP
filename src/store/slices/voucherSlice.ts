@@ -5,6 +5,8 @@ import {
   postInvoiceJournal,
   postInvoiceStock,
   repostInvoiceJournalAndStock,
+  reverseInvoiceJournal,
+  reverseInvoiceStock,
 } from "../index";
 import {
   StoreUser,
@@ -345,6 +347,10 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
           }
         } else if (willBePosted && wasPosted) {
           await repostInvoiceJournalAndStock(merged as any, db, get, set);
+        } else if (wasPosted && !willBePosted) {
+          await reverseInvoiceJournal(id, db);
+          await reverseInvoiceStock(id, db, set);
+          await reloadAccounts(db, set);
         }
 
         const allInvoices = await db.invoices.toArray();
