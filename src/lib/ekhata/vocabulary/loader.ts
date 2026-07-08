@@ -1,6 +1,4 @@
-import { readFileSync, readdirSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { createRequire } from "node:module";
 
 import registry from "../../../../data/ekhata/vocabulary/_registry.json";
 import type {
@@ -10,26 +8,45 @@ import type {
   VocabularyTermGroup,
 } from "./types";
 
-function loadCategories(): VocabularyCategory[] {
-  const globFn = (
-    import.meta as ImportMeta & { glob?: (p: string, o: { eager: boolean }) => unknown }
-  ).glob;
-  if (typeof globFn === "function") {
-    const categoryModules = globFn("../../../../data/ekhata/vocabulary/categories/*.json", {
-      eager: true,
-    }) as Record<string, VocabularyCategory | { default: VocabularyCategory }>;
-    return Object.values(categoryModules).map((m) =>
-      m && typeof m === "object" && "default" in m
-        ? (m as { default: VocabularyCategory }).default
-        : (m as VocabularyCategory),
+/** Static glob — Vite inlines JSON at build time. Wrapped in try/catch for Node smoke tests (tsx). */
+const globbedCategories: Record<string, VocabularyCategory> = (() => {
+  try {
+    return import.meta.glob<VocabularyCategory>(
+      "../../../../data/ekhata/vocabulary/categories/*.json",
+      { eager: true, import: "default" },
     );
+  } catch {
+    return {};
   }
+})();
+
+const nodeRequire = typeof window === "undefined" ? createRequire(import.meta.url) : null;
+
+function loadCategoriesFromNodeFs(): VocabularyCategory[] {
+  if (!nodeRequire) return [];
+  const { readFileSync, readdirSync } = nodeRequire("node:fs") as typeof import("node:fs");
+  const { dirname, join } = nodeRequire("node:path") as typeof import("node:path");
+  const { fileURLToPath } = nodeRequire("node:url") as typeof import("node:url");
 
   const here = dirname(fileURLToPath(import.meta.url));
   const dir = join(here, "../../../../data/ekhata/vocabulary/categories");
   return readdirSync(dir)
-    .filter((name) => name.endsWith(".json"))
-    .map((name) => JSON.parse(readFileSync(join(dir, name), "utf-8")) as VocabularyCategory);
+    .filter((name: string) => name.endsWith(".json"))
+    .map(
+      (name: string) => JSON.parse(readFileSync(join(dir, name), "utf-8")) as VocabularyCategory,
+    );
+}
+
+function loadCategories(): VocabularyCategory[] {
+  const fromGlob = Object.values(globbedCategories);
+  if (fromGlob.length > 0) return fromGlob;
+
+  // Node smoke tests (tsx) — import.meta.glob is empty outside Vite
+  if (typeof window === "undefined") {
+    return loadCategoriesFromNodeFs();
+  }
+
+  return [];
 }
 
 const VOCABULARY_REGISTRY = registry as VocabularyRegistry;
