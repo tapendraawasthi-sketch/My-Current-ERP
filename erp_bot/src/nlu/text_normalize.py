@@ -6,6 +6,7 @@ import re
 import unicodedata
 
 from ..falcon_trader.normalizer import normalize as _base_normalize, parse_amount_words
+from .nepali_sentence_intelligence import repair_corrupted_devanagari
 
 # Hardcoded overrides — take precedence over vocabulary JSON maps
 _SPELLING_VARIANTS: dict[str, str] = {
@@ -73,6 +74,8 @@ def normalize_accounting_text(text: str) -> str:
     if not text:
         return ""
     t = unicodedata.normalize("NFKC", text.strip())
+    if re.search(r"[\u0900-\u097F]", t):
+        t = repair_corrupted_devanagari(t)
     t = t.translate(_DEVANAGARI_DIGIT)
     t = re.sub(r"\s+", " ", t)
     # Token-level variant map (preserve Devanagari tokens)

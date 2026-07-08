@@ -86,6 +86,18 @@ export {
   answerFromGrammarKnowledge,
 } from "./grammarKnowledgeBrain";
 export type { GrammarHit } from "./grammarKnowledgeBrain";
+export {
+  repairCorruptedDevanagari,
+  analyzeSentenceMeaning,
+  analyzeClause,
+  segmentClauses,
+  synthesizeSentenceContext,
+} from "./nepaliSentenceIntelligence";
+export type {
+  SentenceMeaning,
+  ClauseAnalysis,
+  PostpositionRole,
+} from "./nepaliSentenceIntelligence";
 export type { NegationResult } from "./negationDetector";
 export { computeVat, computeSsf, computeTds, computeDiscount, isVatInclusiveText } from "./calculationEngine";
 export type { VatBreakdown, SsfBreakdown, TdsBreakdown } from "./calculationEngine";

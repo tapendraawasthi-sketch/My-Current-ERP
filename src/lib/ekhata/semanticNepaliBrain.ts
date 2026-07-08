@@ -12,6 +12,7 @@
 
 import type { KhataIntent } from "./types";
 import { WORD_TO_NUMBER } from "./nepaliLanguage";
+import { analyzeClause } from "./nepaliSentenceIntelligence";
 
 /** Semantic action — what happened in the transaction */
 export type SemanticAction =
@@ -474,6 +475,16 @@ export function extractSemanticRoles(text: string): {
   const capMatch = soft.match(/\b([A-Z][a-zA-Z]{1,20})\b/);
   if (capMatch && !AGENT_STOPWORDS.has(capMatch[1].toLowerCase())) {
     return { agent: capMatch[1], recipient: null, source: null };
+  }
+
+  // Clause-level context fallback (postposition roles from sentence intelligence)
+  const clause = analyzeClause(soft);
+  if (clause.agent || clause.recipient || clause.source) {
+    return {
+      agent: clause.agent,
+      recipient: clause.recipient,
+      source: clause.source,
+    };
   }
 
   return { agent: null, recipient: null, source: null };
