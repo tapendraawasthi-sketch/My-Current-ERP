@@ -15,13 +15,13 @@ async function openHarness(page: import("@playwright/test").Page) {
 
   await page.goto("/e2e/ekhata.html", { waitUntil: "domcontentloaded" });
 
-  const ready = page.getByTestId("ekhata-harness-ready");
+  const panel = page.locator('[data-component="ekhata-panel"]');
   const loading = page.getByTestId("ekhata-harness-loading");
   const error = page.getByTestId("ekhata-harness-error");
 
   try {
     await Promise.race([
-      ready.waitFor({ state: "visible", timeout: 75_000 }),
+      panel.waitFor({ state: "visible", timeout: 75_000 }),
       error.waitFor({ state: "visible", timeout: 75_000 }).then(async () => {
         const msg = await error.textContent();
         throw new Error(`Harness bootstrap failed: ${msg ?? "unknown"}`);
@@ -42,7 +42,10 @@ async function openHarness(page: import("@playwright/test").Page) {
   }
 
   await expect(loading).toHaveCount(0);
-  await expect(page.locator('[data-component="ekhata-panel"]')).toBeVisible({ timeout: 30_000 });
+}
+
+function confirmCardAmount(page: import("@playwright/test").Page, amount: string) {
+  return page.locator('[data-component="ekhata-panel"] dd.font-mono').filter({ hasText: amount });
 }
 
 async function sendEkhataMessage(page: import("@playwright/test").Page, text: string) {
@@ -63,7 +66,7 @@ test.describe("e-Khata panel", () => {
   test("credit sale shows balanced confirm card", async ({ page }) => {
     await sendEkhataMessage(page, "Ram lai 500 udhaar diye");
     await waitForConfirmCard(page);
-    await expect(page.getByText("NPR 500")).toBeVisible();
+    await expect(confirmCardAmount(page, "NPR 500")).toBeVisible();
     await expect(page.getByText("Journal Balanced")).toBeVisible();
   });
 
@@ -83,7 +86,7 @@ test.describe("e-Khata panel", () => {
   test("payment received entry", async ({ page }) => {
     await sendEkhataMessage(page, "Shyam le 2000 tiryo");
     await waitForConfirmCard(page);
-    await expect(page.getByText("NPR 2,000")).toBeVisible();
+    await expect(confirmCardAmount(page, "NPR 2,000")).toBeVisible();
   });
 
   test("confirm posts balanced voucher to Dexie", async ({ page }) => {
@@ -132,7 +135,7 @@ test.describe("e-Khata panel", () => {
 
     await sendEkhataMessage(page, "Shyam le 2000 tiryo");
     await waitForConfirmCard(page);
-    await expect(page.getByText("NPR 2,000")).toBeVisible();
+    await expect(confirmCardAmount(page, "NPR 2,000")).toBeVisible();
     await page.getByRole("button", { name: "Confirm ✓" }).click();
 
     await expect(page.getByText(/Safalta! Entry save bhayo/i)).toBeVisible({ timeout: 20_000 });
@@ -158,7 +161,7 @@ test.describe("e-Khata panel", () => {
 
     await sendEkhataMessage(page, "Hari lai 1500 payment gareko");
     await waitForConfirmCard(page);
-    await expect(page.getByText("NPR 1,500")).toBeVisible();
+    await expect(confirmCardAmount(page, "NPR 1,500")).toBeVisible();
     await page.getByRole("button", { name: "Confirm ✓" }).click();
 
     await expect(page.getByText(/Safalta! Entry save bhayo/i)).toBeVisible({ timeout: 20_000 });
@@ -183,7 +186,7 @@ test.describe("e-Khata panel", () => {
 
     await sendEkhataMessage(page, "electricity kharcha 3500");
     await waitForConfirmCard(page);
-    await expect(page.getByText("NPR 3,500")).toBeVisible();
+    await expect(confirmCardAmount(page, "NPR 3,500")).toBeVisible();
     await page.getByRole("button", { name: "Confirm ✓" }).click();
 
     await expect(page.getByText(/Safalta! Entry save bhayo/i)).toBeVisible({ timeout: 20_000 });
@@ -205,7 +208,7 @@ test.describe("e-Khata panel", () => {
 
     await sendEkhataMessage(page, "kharid 4500 cash ma");
     await waitForConfirmCard(page);
-    await expect(page.getByText("NPR 4,500")).toBeVisible();
+    await expect(confirmCardAmount(page, "NPR 4,500")).toBeVisible();
     await page.getByRole("button", { name: "Confirm ✓" }).click();
 
     await expect(page.getByText(/Safalta! Entry save bhayo/i)).toBeVisible({ timeout: 20_000 });
@@ -227,7 +230,7 @@ test.describe("e-Khata panel", () => {
 
     await sendEkhataMessage(page, "Gita bata 6000 udhaar ma saman kineko");
     await waitForConfirmCard(page);
-    await expect(page.getByText("NPR 6,000")).toBeVisible();
+    await expect(confirmCardAmount(page, "NPR 6,000")).toBeVisible();
     await page.getByRole("button", { name: "Confirm ✓" }).click();
 
     await expect(page.getByText(/Safalta! Entry save bhayo/i)).toBeVisible({ timeout: 20_000 });
@@ -255,7 +258,7 @@ test.describe("e-Khata panel", () => {
     await sendEkhataMessage(page, "aaja 8500 ko nagad bikri vayo, electricity kharcha 8000");
     await waitForConfirmCard(page);
     await expect(page.getByText(/2 transactions/i)).toBeVisible();
-    await expect(page.getByText("NPR 16,500")).toBeVisible();
+    await expect(confirmCardAmount(page, "NPR 16,500")).toBeVisible();
     await page.getByRole("button", { name: "Confirm All ✓" }).click();
 
     await expect(page.getByText(/Safalta! 2 entries save bhayo/i)).toBeVisible({ timeout: 20_000 });

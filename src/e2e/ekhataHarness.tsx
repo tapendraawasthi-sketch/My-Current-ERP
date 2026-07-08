@@ -83,7 +83,7 @@ function EKhataHarnessApp() {
   }
 
   return (
-    <div data-testid="ekhata-harness-ready">
+    <div data-testid="ekhata-harness-ready" className="min-h-px">
       <HarnessErrorBoundary>
         <EKhataHarnessPanel />
       </HarnessErrorBoundary>

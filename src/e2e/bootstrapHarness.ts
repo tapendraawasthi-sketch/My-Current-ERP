@@ -2,6 +2,7 @@
  * Bootstrap authenticated session for Playwright e-Khata harness (IndexedDB + admin login).
  * Uses a lightweight path — full initializeApp() is too heavy for CI headless (NAS seed + CBMS).
  */
+import { DEFAULT_FISCAL_YEAR } from "../store/store.types";
 import { openDB } from "../lib/db";
 import { useEKhataStore } from "../store/eKhataStore";
 import { useStore } from "../store/useStore";
@@ -62,6 +63,11 @@ export async function bootstrapEkhataHarness(): Promise<void> {
     }
 
     setStep("company seeded");
+    const fyCount = await db.fiscalYears.count();
+    if (fyCount === 0) {
+      await db.fiscalYears.add(DEFAULT_FISCAL_YEAR as never);
+    }
+
     const admin = await db.users.where("username").equals("admin").first();
     if (!admin) {
       await db.users.add({
@@ -89,6 +95,8 @@ export async function bootstrapEkhataHarness(): Promise<void> {
         role: "admin",
       },
       companySettings: (await db.companySettings.get("main")) as never,
+      currentFiscalYear: DEFAULT_FISCAL_YEAR,
+      fiscalYears: [DEFAULT_FISCAL_YEAR],
       accounts: [],
       parties: [],
       vouchers: [],
