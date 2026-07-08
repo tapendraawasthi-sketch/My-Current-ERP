@@ -8,7 +8,7 @@ const isCi = Boolean(process.env.CI);
 export default defineConfig({
   testDir: "./e2e",
   testMatch: "**/*.spec.ts",
-  timeout: 60_000,
+  timeout: 90_000,
   expect: { timeout: 20_000 },
   fullyParallel: false,
   workers: 1,

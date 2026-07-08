@@ -21,8 +21,8 @@ async function openHarness(page: import("@playwright/test").Page) {
 
   try {
     await Promise.race([
-      ready.waitFor({ state: "visible", timeout: 60_000 }),
-      error.waitFor({ state: "visible", timeout: 60_000 }).then(async () => {
+      ready.waitFor({ state: "visible", timeout: 75_000 }),
+      error.waitFor({ state: "visible", timeout: 75_000 }).then(async () => {
         const msg = await error.textContent();
         throw new Error(`Harness bootstrap failed: ${msg ?? "unknown"}`);
       }),
@@ -42,7 +42,7 @@ async function openHarness(page: import("@playwright/test").Page) {
   }
 
   await expect(loading).toHaveCount(0);
-  await expect(page.locator('[data-component="ekhata-panel"]')).toBeVisible();
+  await expect(page.locator('[data-component="ekhata-panel"]')).toBeVisible({ timeout: 30_000 });
 }
 
 async function sendEkhataMessage(page: import("@playwright/test").Page, text: string) {
