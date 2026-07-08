@@ -10,11 +10,6 @@
 import { classifyDomain, type DomainRouteResult } from "./domainRouter";
 import { synthesizeGrammarContext } from "./grammarKnowledgeBrain";
 import {
-  analyzeSentenceMeaning,
-  synthesizeSentenceContext,
-  type SentenceMeaning,
-} from "./nepaliSentenceIntelligence";
-import {
   parseSemanticFrame,
   parseSemanticTransaction,
   type SemanticFrame,
@@ -38,8 +33,6 @@ export interface MessageMeaning {
   isTransaction: boolean;
   isQuestion: boolean;
   grammarContext: string;
-  sentenceContext: string;
-  sentenceMeaning: SentenceMeaning;
 }
 
 const CURRENCY_PARTY = new Set([
@@ -108,16 +101,11 @@ export function cleanPartyName(name: string | null | undefined): string | null {
 /** Full meaning analysis for one user message. */
 export function analyzeMessageMeaning(rawText: string): MessageMeaning {
   const text = (rawText || "").trim();
-  const sentenceMeaning = analyzeSentenceMeaning(text);
-  const nluText =
-    sentenceMeaning.repairedText !== sentenceMeaning.originalText
-      ? sentenceMeaning.repairedText
-      : text;
-  const language = detectUserLanguage(nluText);
-  const domain = classifyDomain(nluText);
-  const frame = parseSemanticFrame(nluText);
-  const semantic = parseSemanticTransaction(nluText);
-  const amounts = resolveBestAmount(nluText, text);
+  const language = detectUserLanguage(text);
+  const domain = classifyDomain(text);
+  const frame = parseSemanticFrame(text);
+  const semantic = parseSemanticTransaction(text);
+  const amounts = resolveBestAmount(text);
 
   const party = cleanPartyName(
     semantic.party ??
@@ -138,15 +126,13 @@ export function analyzeMessageMeaning(rawText: string): MessageMeaning {
   if (amounts.quantity && amounts.unitPrice) confidence = Math.min(confidence + 0.1, 0.98);
   if (party) confidence = Math.min(confidence + 0.05, 0.98);
 
-  const sentenceContext = synthesizeSentenceContext(nluText);
   const grammarContext =
-    /[\u0900-\u097F]/.test(nluText) ||
+    /[\u0900-\u097F]/.test(text) ||
     frame.action !== "UNKNOWN" ||
     domain.domain === "journal_entry" ||
-    domain.domain === "accounting_qa" ||
-    sentenceMeaning.corruptionScore > 0
-      ? [synthesizeGrammarContext(nluText), sentenceContext].filter(Boolean).join("\n\n")
-      : sentenceContext;
+    domain.domain === "accounting_qa"
+      ? synthesizeGrammarContext(text)
+      : "";
 
   return {
     rawText: text,
@@ -161,10 +147,8 @@ export function analyzeMessageMeaning(rawText: string): MessageMeaning {
     item: semantic.item,
     confidence,
     isTransaction,
-    isQuestion: frame.isQuestion || /\?/.test(text) || sentenceMeaning.clauses.some((c) => c.isQuestion),
+    isQuestion: frame.isQuestion || /\?/.test(text),
     grammarContext,
-    sentenceContext,
-    sentenceMeaning,
   };
 }
 

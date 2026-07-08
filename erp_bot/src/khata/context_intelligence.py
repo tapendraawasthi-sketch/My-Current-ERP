@@ -15,11 +15,6 @@ from ..vectorstore.ca_knowledge_store import (
     search_ca_knowledge,
 )
 from ..vectorstore.nepali_grammar_store import format_grammar_context, search_nepali_grammar
-from ..nlu.nepali_sentence_intelligence import (
-    analyze_sentence_meaning,
-    repair_corrupted_devanagari,
-    synthesize_sentence_context,
-)
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 _KNOWLEDGE_JSON = _REPO_ROOT / "data" / "ekhata" / "conceptual-framework-knowledge.json"
@@ -332,10 +327,6 @@ def build_intelligent_context(
         grammar_block = format_grammar_context(grammar_hits)
 
     parts: list[str] = []
-    sentence_block = synthesize_sentence_context(text)
-    if sentence_block:
-        parts.append(sentence_block)
-
     if kind == MessageKind.ACCOUNTING_CONCEPT:
         if ifrs_block:
             parts.append(ifrs_block)

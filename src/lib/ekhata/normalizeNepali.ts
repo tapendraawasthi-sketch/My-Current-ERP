@@ -7,7 +7,6 @@ import {
   PHRASE_ALIASES,
   SPELLING_ALIASES,
 } from "./nepaliLanguage";
-import { repairCorruptedDevanagari } from "./nepaliSentenceIntelligence";
 import { getMergedSpellingAliases } from "./vocabulary";
 
 const SORTED_PHRASES = [...PHRASE_ALIASES].sort((a, b) => b[0].length - a[0].length);
@@ -180,7 +179,6 @@ export function normalizeNepaliText(raw: string): string {
   if (!text) return "";
 
   if (hasDevanagari(text)) {
-    text = repairCorruptedDevanagari(text);
     text = transliterateDevanagari(text);
   }
 

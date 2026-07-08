@@ -12,11 +12,6 @@ import {
 } from "../src/lib/ekhata/conversationalBrain";
 import { detectEmotionalContext, isEmotionalMessage } from "../src/lib/ekhata/emotionalBrain";
 import { askAutonomousBrain } from "../src/lib/ekhata/autonomousBrain";
-import {
-  repairCorruptedDevanagari,
-  analyzeSentenceMeaning,
-} from "../src/lib/ekhata/nepaliSentenceIntelligence";
-import { analyzeMessageMeaning } from "../src/lib/ekhata/meaningEngine";
 
 let passed = 0;
 let failed = 0;
@@ -192,29 +187,6 @@ check(
   "who is pm of nepal web search",
   pmQ.searchedWeb && pmQ.engine === "web-search" && (pmQ.reply.includes("Prime Minister") || pmQ.reply.includes("Balendra") || pmQ.reply.includes("serving")),
   pmQ.reply.slice(0, 120),
-);
-
-// Nepali sentence intelligence — OCR repair + context
-const legalCorrupt =
-  "पेट्रोलियम उद्योग (आयकर) \u25A1\u25A1ियमव\u25A1\u25A1, २०४१। नेपाल \u25A1\u25A1\u25A1पत्रमा प्रकाशित \u25A1\u25A1\u25A1ति : २०४१।१२।९";
-const repaired = repairCorruptedDevanagari(legalCorrupt);
-check(
-  "OCR repair legal niyamawali",
-  repaired.includes("नियमवाली") && repaired.includes("राजपत्र") && repaired.includes("मिति"),
-  repaired.slice(0, 120),
-);
-
-const sentenceCtx = analyzeSentenceMeaning("Ram le 500 tiryo aaja");
-check(
-  "clause agent le payment",
-  sentenceCtx.clauses[0]?.agent === "Ram" && sentenceCtx.primaryIntent === "payment_received",
-);
-
-const meaningWithCtx = analyzeMessageMeaning("Shyam lai 800 udhaar diye");
-check(
-  "meaning engine sentence context",
-  meaningWithCtx.sentenceContext.includes("recipient") || meaningWithCtx.sentenceContext.includes("credit"),
-  meaningWithCtx.sentenceContext.slice(0, 100),
 );
 
 console.log(`\n${passed} passed, ${failed} failed`);
