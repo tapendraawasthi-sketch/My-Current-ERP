@@ -1,0 +1,866 @@
+{
+  "ek": {
+    "canonical_form": "ek",
+    "numeric_value": 1,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bek\\b|1\\b"
+  },
+  "1": {
+    "canonical_form": "ek",
+    "numeric_value": 1,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bek\\b|1\\b"
+  },
+  "eak": {
+    "canonical_form": "ek",
+    "numeric_value": 1,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bek\\b|1\\b"
+  },
+  "ek rupiya": {
+    "canonical_form": "ek",
+    "numeric_value": 1,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bek\\b|1\\b"
+  },
+  "1 rs": {
+    "canonical_form": "ek",
+    "numeric_value": 1,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bek\\b|1\\b"
+  },
+  "dui": {
+    "canonical_form": "dui",
+    "numeric_value": 2,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bdui\\b|2\\b"
+  },
+  "2": {
+    "canonical_form": "dui",
+    "numeric_value": 2,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bdui\\b|2\\b"
+  },
+  "duii": {
+    "canonical_form": "dui",
+    "numeric_value": 2,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bdui\\b|2\\b"
+  },
+  "dui hajar": {
+    "canonical_form": "dui",
+    "numeric_value": 2,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bdui\\b|2\\b"
+  },
+  "tin": {
+    "canonical_form": "tin",
+    "numeric_value": 3,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\btin\\b|3\\b"
+  },
+  "3": {
+    "canonical_form": "tin",
+    "numeric_value": 3,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\btin\\b|3\\b"
+  },
+  "tin saya": {
+    "canonical_form": "tin",
+    "numeric_value": 3,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\btin\\b|3\\b"
+  },
+  "char": {
+    "canonical_form": "char",
+    "numeric_value": 4,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bchar\\b|4\\b"
+  },
+  "4": {
+    "canonical_form": "char",
+    "numeric_value": 4,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bchar\\b|4\\b"
+  },
+  "chaar": {
+    "canonical_form": "char",
+    "numeric_value": 4,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bchar\\b|4\\b"
+  },
+  "char hajar": {
+    "canonical_form": "char",
+    "numeric_value": 4,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bchar\\b|4\\b"
+  },
+  "panch": {
+    "canonical_form": "panch",
+    "numeric_value": 5,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bpanch\\b|5\\b"
+  },
+  "5": {
+    "canonical_form": "panch",
+    "numeric_value": 5,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bpanch\\b|5\\b"
+  },
+  "paanch": {
+    "canonical_form": "panch",
+    "numeric_value": 5,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bpanch\\b|5\\b"
+  },
+  "panch saya": {
+    "canonical_form": "panch",
+    "numeric_value": 5,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bpanch\\b|5\\b"
+  },
+  "das": {
+    "canonical_form": "das",
+    "numeric_value": 10,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bdas\\b|10\\b"
+  },
+  "10": {
+    "canonical_form": "das",
+    "numeric_value": 10,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bdas\\b|10\\b"
+  },
+  "dus": {
+    "canonical_form": "das",
+    "numeric_value": 10,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bdas\\b|10\\b"
+  },
+  "das hajar": {
+    "canonical_form": "das",
+    "numeric_value": 10,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bdas\\b|10\\b"
+  },
+  "bis": {
+    "canonical_form": "bis",
+    "numeric_value": 20,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bbis\\b|20\\b"
+  },
+  "20": {
+    "canonical_form": "bis",
+    "numeric_value": 20,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bbis\\b|20\\b"
+  },
+  "biss": {
+    "canonical_form": "bis",
+    "numeric_value": 20,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bbis\\b|20\\b"
+  },
+  "bis hajar": {
+    "canonical_form": "bis",
+    "numeric_value": 20,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bbis\\b|20\\b"
+  },
+  "pachaas": {
+    "canonical_form": "pachaas",
+    "numeric_value": 50,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bpacha?s\\b|50\\b"
+  },
+  "50": {
+    "canonical_form": "pachaas",
+    "numeric_value": 50,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bpacha?s\\b|50\\b"
+  },
+  "pachas": {
+    "canonical_form": "pachaas",
+    "numeric_value": 50,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bpacha?s\\b|50\\b"
+  },
+  "pachis": {
+    "canonical_form": "pachaas",
+    "numeric_value": 50,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bpacha?s\\b|50\\b"
+  },
+  "pachaas rupiya": {
+    "canonical_form": "pachaas rupiya",
+    "numeric_value": 50,
+    "pattern_type": "colloquial",
+    "regex_hint": "pachas\\s+rupy"
+  },
+  "saya": {
+    "canonical_form": "saya",
+    "numeric_value": 100,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bsaya\\b|100\\b"
+  },
+  "100": {
+    "canonical_form": "saya",
+    "numeric_value": 100,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bsaya\\b|100\\b"
+  },
+  "saa": {
+    "canonical_form": "saya",
+    "numeric_value": 100,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bsaya\\b|100\\b"
+  },
+  "saye": {
+    "canonical_form": "saya",
+    "numeric_value": 100,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bsaya\\b|100\\b"
+  },
+  "paanch saya": {
+    "canonical_form": "saya",
+    "numeric_value": 100,
+    "pattern_type": "basic_number",
+    "regex_hint": "\\bsaya\\b|100\\b"
+  },
+  "hajar": {
+    "canonical_form": "hajar",
+    "numeric_value": 1000,
+    "pattern_type": "large_number",
+    "regex_hint": "haj?a+r|1k|1000"
+  },
+  "hazar": {
+    "canonical_form": "hajar",
+    "numeric_value": 1000,
+    "pattern_type": "large_number",
+    "regex_hint": "haj?a+r|1k|1000"
+  },
+  "hajaar": {
+    "canonical_form": "hajar",
+    "numeric_value": 1000,
+    "pattern_type": "large_number",
+    "regex_hint": "haj?a+r|1k|1000"
+  },
+  "1000": {
+    "canonical_form": "hajar",
+    "numeric_value": 1000,
+    "pattern_type": "large_number",
+    "regex_hint": "haj?a+r|1k|1000"
+  },
+  "1k": {
+    "canonical_form": "k_suffix",
+    "numeric_value": null,
+    "pattern_type": "shortcut",
+    "regex_hint": "\\d+k\\b"
+  },
+  "hazaar": {
+    "canonical_form": "hajar",
+    "numeric_value": 1000,
+    "pattern_type": "large_number",
+    "regex_hint": "haj?a+r|1k|1000"
+  },
+  "paanch hajar": {
+    "canonical_form": "5000",
+    "numeric_value": 5000,
+    "pattern_type": "compound",
+    "regex_hint": "pach\\s+hajar"
+  },
+  "5 hajar": {
+    "canonical_form": "hajar",
+    "numeric_value": 1000,
+    "pattern_type": "large_number",
+    "regex_hint": "haj?a+r|1k|1000"
+  },
+  "5k": {
+    "canonical_form": "k_suffix",
+    "numeric_value": null,
+    "pattern_type": "shortcut",
+    "regex_hint": "\\d+k\\b"
+  },
+  "5000": {
+    "canonical_form": "5000",
+    "numeric_value": 5000,
+    "pattern_type": "compound",
+    "regex_hint": "pach\\s+hajar"
+  },
+  "lakh": {
+    "canonical_form": "lakh",
+    "numeric_value": 100000,
+    "pattern_type": "large_number",
+    "regex_hint": "\\blakh\\b|lac|1l"
+  },
+  "lac": {
+    "canonical_form": "lakh",
+    "numeric_value": 100000,
+    "pattern_type": "large_number",
+    "regex_hint": "\\blakh\\b|lac|1l"
+  },
+  "1l": {
+    "canonical_form": "l_suffix",
+    "numeric_value": null,
+    "pattern_type": "shortcut",
+    "regex_hint": "\\d+l\\b"
+  },
+  "lak": {
+    "canonical_form": "lakh",
+    "numeric_value": 100000,
+    "pattern_type": "large_number",
+    "regex_hint": "\\blakh\\b|lac|1l"
+  },
+  "lacs": {
+    "canonical_form": "lakh",
+    "numeric_value": 100000,
+    "pattern_type": "large_number",
+    "regex_hint": "\\blakh\\b|lac|1l"
+  },
+  "ek lakh": {
+    "canonical_form": "lakh",
+    "numeric_value": 100000,
+    "pattern_type": "large_number",
+    "regex_hint": "\\blakh\\b|lac|1l"
+  },
+  "1 lakh": {
+    "canonical_form": "lakh",
+    "numeric_value": 100000,
+    "pattern_type": "large_number",
+    "regex_hint": "\\blakh\\b|lac|1l"
+  },
+  "10l": {
+    "canonical_form": "l_suffix",
+    "numeric_value": null,
+    "pattern_type": "shortcut",
+    "regex_hint": "\\d+l\\b"
+  },
+  "crore": {
+    "canonical_form": "crore",
+    "numeric_value": 10000000,
+    "pattern_type": "large_number",
+    "regex_hint": "\\bcrore\\b|cr|1cr"
+  },
+  "cr": {
+    "canonical_form": "crore",
+    "numeric_value": 10000000,
+    "pattern_type": "large_number",
+    "regex_hint": "\\bcrore\\b|cr|1cr"
+  },
+  "1cr": {
+    "canonical_form": "cr_suffix",
+    "numeric_value": null,
+    "pattern_type": "shortcut",
+    "regex_hint": "\\d+cr\\b"
+  },
+  "kror": {
+    "canonical_form": "crore",
+    "numeric_value": 10000000,
+    "pattern_type": "large_number",
+    "regex_hint": "\\bcrore\\b|cr|1cr"
+  },
+  "ek crore": {
+    "canonical_form": "crore",
+    "numeric_value": 10000000,
+    "pattern_type": "large_number",
+    "regex_hint": "\\bcrore\\b|cr|1cr"
+  },
+  "arab": {
+    "canonical_form": "arab",
+    "numeric_value": 1000000000,
+    "pattern_type": "large_number",
+    "regex_hint": "\\barab\\b"
+  },
+  "ek arab": {
+    "canonical_form": "arab",
+    "numeric_value": 1000000000,
+    "pattern_type": "large_number",
+    "regex_hint": "\\barab\\b"
+  },
+  "dedh": {
+    "canonical_form": "dedh",
+    "numeric_value": 1.5,
+    "pattern_type": "fraction",
+    "regex_hint": "\\bdedh\\b"
+  },
+  "1.5": {
+    "canonical_form": "dedh",
+    "numeric_value": 1.5,
+    "pattern_type": "fraction",
+    "regex_hint": "\\bdedh\\b"
+  },
+  "dedh hajar": {
+    "canonical_form": "dedh",
+    "numeric_value": 1.5,
+    "pattern_type": "fraction",
+    "regex_hint": "\\bdedh\\b"
+  },
+  "dhai": {
+    "canonical_form": "dhai",
+    "numeric_value": 2.5,
+    "pattern_type": "fraction",
+    "regex_hint": "\\bdhai\\b"
+  },
+  "2.5": {
+    "canonical_form": "dhai",
+    "numeric_value": 2.5,
+    "pattern_type": "fraction",
+    "regex_hint": "\\bdhai\\b"
+  },
+  "dhai lakh": {
+    "canonical_form": "dhai",
+    "numeric_value": 2.5,
+    "pattern_type": "fraction",
+    "regex_hint": "\\bdhai\\b"
+  },
+  "sawa": {
+    "canonical_form": "sawa",
+    "numeric_value": 1.25,
+    "pattern_type": "fraction",
+    "regex_hint": "\\bsawa\\b"
+  },
+  "1.25": {
+    "canonical_form": "sawa",
+    "numeric_value": 1.25,
+    "pattern_type": "fraction",
+    "regex_hint": "\\bsawa\\b"
+  },
+  "sawa lakh": {
+    "canonical_form": "sawa",
+    "numeric_value": 1.25,
+    "pattern_type": "fraction",
+    "regex_hint": "\\bsawa\\b"
+  },
+  "paune": {
+    "canonical_form": "paune",
+    "numeric_value": 0.75,
+    "pattern_type": "fraction",
+    "regex_hint": "\\bpaune\\b"
+  },
+  "paune hajar": {
+    "canonical_form": "paune",
+    "numeric_value": 0.75,
+    "pattern_type": "fraction",
+    "regex_hint": "\\bpaune\\b"
+  },
+  "lagbhag": {
+    "canonical_form": "lagbhag",
+    "numeric_value": null,
+    "pattern_type": "approximation",
+    "regex_hint": "lagbhag|around|about"
+  },
+  "around": {
+    "canonical_form": "lagbhag",
+    "numeric_value": null,
+    "pattern_type": "approximation",
+    "regex_hint": "lagbhag|around|about"
+  },
+  "about": {
+    "canonical_form": "lagbhag",
+    "numeric_value": null,
+    "pattern_type": "approximation",
+    "regex_hint": "lagbhag|around|about"
+  },
+  "almost": {
+    "canonical_form": "lagbhag",
+    "numeric_value": null,
+    "pattern_type": "approximation",
+    "regex_hint": "lagbhag|around|about"
+  },
+  "lagbag": {
+    "canonical_form": "lagbhag",
+    "numeric_value": null,
+    "pattern_type": "approximation",
+    "regex_hint": "lagbhag|around|about"
+  },
+  "lagbhag 5000": {
+    "canonical_form": "lagbhag",
+    "numeric_value": null,
+    "pattern_type": "approximation",
+    "regex_hint": "lagbhag|around|about"
+  },
+  "around 5k": {
+    "canonical_form": "lagbhag",
+    "numeric_value": null,
+    "pattern_type": "approximation",
+    "regex_hint": "lagbhag|around|about"
+  },
+  "jati": {
+    "canonical_form": "jati",
+    "numeric_value": null,
+    "pattern_type": "approximation",
+    "regex_hint": "\\bjati\\b|\\btira\\b"
+  },
+  "tira": {
+    "canonical_form": "jati",
+    "numeric_value": null,
+    "pattern_type": "approximation",
+    "regex_hint": "\\bjati\\b|\\btira\\b"
+  },
+  "5 hajar jati": {
+    "canonical_form": "jati",
+    "numeric_value": null,
+    "pattern_type": "approximation",
+    "regex_hint": "\\bjati\\b|\\btira\\b"
+  },
+  "5k tira": {
+    "canonical_form": "jati",
+    "numeric_value": null,
+    "pattern_type": "approximation",
+    "regex_hint": "\\bjati\\b|\\btira\\b"
+  },
+  "dekhi": {
+    "canonical_form": "dekhi-samma",
+    "numeric_value": null,
+    "pattern_type": "range",
+    "regex_hint": "dekhi.*samma"
+  },
+  "samma": {
+    "canonical_form": "dekhi-samma",
+    "numeric_value": null,
+    "pattern_type": "range",
+    "regex_hint": "dekhi.*samma"
+  },
+  "bich": {
+    "canonical_form": "dekhi-samma",
+    "numeric_value": null,
+    "pattern_type": "range",
+    "regex_hint": "dekhi.*samma"
+  },
+  "500 dekhi 1000 samma": {
+    "canonical_form": "dekhi-samma",
+    "numeric_value": null,
+    "pattern_type": "range",
+    "regex_hint": "dekhi.*samma"
+  },
+  "dekhi-samma": {
+    "canonical_form": "dekhi-samma",
+    "numeric_value": null,
+    "pattern_type": "range",
+    "regex_hint": "dekhi.*samma"
+  },
+  "prati": {
+    "canonical_form": "prati",
+    "numeric_value": null,
+    "pattern_type": "per_unit",
+    "regex_hint": "prati|eutako|per"
+  },
+  "eutako": {
+    "canonical_form": "prati",
+    "numeric_value": null,
+    "pattern_type": "per_unit",
+    "regex_hint": "prati|eutako|per"
+  },
+  "euta ko": {
+    "canonical_form": "prati",
+    "numeric_value": null,
+    "pattern_type": "per_unit",
+    "regex_hint": "prati|eutako|per"
+  },
+  "per": {
+    "canonical_form": "prati",
+    "numeric_value": null,
+    "pattern_type": "per_unit",
+    "regex_hint": "prati|eutako|per"
+  },
+  "prate": {
+    "canonical_form": "prati",
+    "numeric_value": null,
+    "pattern_type": "per_unit",
+    "regex_hint": "prati|eutako|per"
+  },
+  "50 prati": {
+    "canonical_form": "prati",
+    "numeric_value": null,
+    "pattern_type": "per_unit",
+    "regex_hint": "prati|eutako|per"
+  },
+  "20 samosa 50 eutako": {
+    "canonical_form": "prati",
+    "numeric_value": null,
+    "pattern_type": "per_unit",
+    "regex_hint": "prati|eutako|per"
+  },
+  "pratihajar": {
+    "canonical_form": "pratihajar",
+    "numeric_value": null,
+    "pattern_type": "per_unit",
+    "regex_hint": "pratihajar"
+  },
+  "per thousand": {
+    "canonical_form": "pratihajar",
+    "numeric_value": null,
+    "pattern_type": "per_unit",
+    "regex_hint": "pratihajar"
+  },
+  "100 pratihajar": {
+    "canonical_form": "pratihajar",
+    "numeric_value": null,
+    "pattern_type": "per_unit",
+    "regex_hint": "pratihajar"
+  },
+  "pratishat": {
+    "canonical_form": "percent",
+    "numeric_value": null,
+    "pattern_type": "percentage",
+    "regex_hint": "%|percent|pratishat"
+  },
+  "%": {
+    "canonical_form": "percent",
+    "numeric_value": null,
+    "pattern_type": "percentage",
+    "regex_hint": "%|percent|pratishat"
+  },
+  "percent": {
+    "canonical_form": "percent",
+    "numeric_value": null,
+    "pattern_type": "percentage",
+    "regex_hint": "%|percent|pratishat"
+  },
+  "vat 13%": {
+    "canonical_form": "percent",
+    "numeric_value": null,
+    "pattern_type": "percentage",
+    "regex_hint": "%|percent|pratishat"
+  },
+  "10 percent": {
+    "canonical_form": "percent",
+    "numeric_value": null,
+    "pattern_type": "percentage",
+    "regex_hint": "%|percent|pratishat"
+  },
+  "rs": {
+    "canonical_form": "rs",
+    "numeric_value": null,
+    "pattern_type": "currency",
+    "regex_hint": "\\brs\\.?\\b"
+  },
+  "500 rs": {
+    "canonical_form": "rs",
+    "numeric_value": null,
+    "pattern_type": "currency",
+    "regex_hint": "\\brs\\.?\\b"
+  },
+  "rs.500": {
+    "canonical_form": "rs_prefix",
+    "numeric_value": null,
+    "pattern_type": "written",
+    "regex_hint": "rs\\.?\\s*\\d"
+  },
+  "npr": {
+    "canonical_form": "npr",
+    "numeric_value": null,
+    "pattern_type": "currency",
+    "regex_hint": "\\bnpr\\b"
+  },
+  "npr 5000": {
+    "canonical_form": "npr",
+    "numeric_value": null,
+    "pattern_type": "currency",
+    "regex_hint": "\\bnpr\\b"
+  },
+  "rupiya": {
+    "canonical_form": "rupiya",
+    "numeric_value": null,
+    "pattern_type": "currency",
+    "regex_hint": "rupiy?a|rupaiya|rupees"
+  },
+  "rupaya": {
+    "canonical_form": "rupiya",
+    "numeric_value": null,
+    "pattern_type": "currency",
+    "regex_hint": "rupiy?a|rupaiya|rupees"
+  },
+  "rupaiya": {
+    "canonical_form": "rupiya",
+    "numeric_value": null,
+    "pattern_type": "currency",
+    "regex_hint": "rupiy?a|rupaiya|rupees"
+  },
+  "rupees": {
+    "canonical_form": "rupiya",
+    "numeric_value": null,
+    "pattern_type": "currency",
+    "regex_hint": "rupiy?a|rupaiya|rupees"
+  },
+  "rupya": {
+    "canonical_form": "rupiya",
+    "numeric_value": null,
+    "pattern_type": "currency",
+    "regex_hint": "rupiy?a|rupaiya|rupees"
+  },
+  "rupaye": {
+    "canonical_form": "rupiya",
+    "numeric_value": null,
+    "pattern_type": "currency",
+    "regex_hint": "rupiy?a|rupaiya|rupees"
+  },
+  "500 rupiya": {
+    "canonical_form": "rupiya",
+    "numeric_value": null,
+    "pattern_type": "currency",
+    "regex_hint": "rupiy?a|rupaiya|rupees"
+  },
+  "50 rupaya ko": {
+    "canonical_form": "rupiya",
+    "numeric_value": null,
+    "pattern_type": "currency",
+    "regex_hint": "rupiy?a|rupaiya|rupees"
+  },
+  "paisa": {
+    "canonical_form": "paisa",
+    "numeric_value": null,
+    "pattern_type": "currency",
+    "regex_hint": "\\bpaisa\\b"
+  },
+  "50 paisa": {
+    "canonical_form": "paisa",
+    "numeric_value": null,
+    "pattern_type": "currency",
+    "regex_hint": "\\bpaisa\\b"
+  },
+  "pachas rupya": {
+    "canonical_form": "pachaas rupiya",
+    "numeric_value": 50,
+    "pattern_type": "colloquial",
+    "regex_hint": "pachas\\s+rupy"
+  },
+  "ek hajar paanch saya": {
+    "canonical_form": "1500",
+    "numeric_value": 1500,
+    "pattern_type": "colloquial",
+    "regex_hint": "hajar.*saya"
+  },
+  "1500": {
+    "canonical_form": "1500",
+    "numeric_value": 1500,
+    "pattern_type": "colloquial",
+    "regex_hint": "hajar.*saya"
+  },
+  "10k": {
+    "canonical_form": "k_suffix",
+    "numeric_value": null,
+    "pattern_type": "shortcut",
+    "regex_hint": "\\d+k\\b"
+  },
+  "k_suffix": {
+    "canonical_form": "k_suffix",
+    "numeric_value": null,
+    "pattern_type": "shortcut",
+    "regex_hint": "\\d+k\\b"
+  },
+  "l_suffix": {
+    "canonical_form": "l_suffix",
+    "numeric_value": null,
+    "pattern_type": "shortcut",
+    "regex_hint": "\\d+l\\b"
+  },
+  "2cr": {
+    "canonical_form": "cr_suffix",
+    "numeric_value": null,
+    "pattern_type": "shortcut",
+    "regex_hint": "\\d+cr\\b"
+  },
+  "cr_suffix": {
+    "canonical_form": "cr_suffix",
+    "numeric_value": null,
+    "pattern_type": "shortcut",
+    "regex_hint": "\\d+cr\\b"
+  },
+  "500/-": {
+    "canonical_form": "slash_suffix",
+    "numeric_value": null,
+    "pattern_type": "written",
+    "regex_hint": "\\d+/-"
+  },
+  "500/=": {
+    "canonical_form": "slash_suffix",
+    "numeric_value": null,
+    "pattern_type": "written",
+    "regex_hint": "\\d+/-"
+  },
+  "slash_suffix": {
+    "canonical_form": "slash_suffix",
+    "numeric_value": null,
+    "pattern_type": "written",
+    "regex_hint": "\\d+/-"
+  },
+  "rs 500": {
+    "canonical_form": "rs_prefix",
+    "numeric_value": null,
+    "pattern_type": "written",
+    "regex_hint": "rs\\.?\\s*\\d"
+  },
+  "rs_prefix": {
+    "canonical_form": "rs_prefix",
+    "numeric_value": null,
+    "pattern_type": "written",
+    "regex_hint": "rs\\.?\\s*\\d"
+  },
+  "ath hajar": {
+    "canonical_form": "8000",
+    "numeric_value": 8000,
+    "pattern_type": "compound",
+    "regex_hint": "ath\\s+hajar"
+  },
+  "8000": {
+    "canonical_form": "8000",
+    "numeric_value": 8000,
+    "pattern_type": "compound",
+    "regex_hint": "ath\\s+hajar"
+  },
+  "pach hajar": {
+    "canonical_form": "5000",
+    "numeric_value": 5000,
+    "pattern_type": "compound",
+    "regex_hint": "pach\\s+hajar"
+  },
+  "chha hajar": {
+    "canonical_form": "6000",
+    "numeric_value": 6000,
+    "pattern_type": "compound",
+    "regex_hint": "chha\\s+hajar"
+  },
+  "6000": {
+    "canonical_form": "6000",
+    "numeric_value": 6000,
+    "pattern_type": "compound",
+    "regex_hint": "chha\\s+hajar"
+  },
+  "minimum": {
+    "canonical_form": "minimum",
+    "numeric_value": null,
+    "pattern_type": "minimum",
+    "regex_hint": "minimum|kamti"
+  },
+  "kamti": {
+    "canonical_form": "minimum",
+    "numeric_value": null,
+    "pattern_type": "minimum",
+    "regex_hint": "minimum|kamti"
+  },
+  "minimum 500": {
+    "canonical_form": "minimum",
+    "numeric_value": null,
+    "pattern_type": "minimum",
+    "regex_hint": "minimum|kamti"
+  },
+  "maximum": {
+    "canonical_form": "maximum",
+    "numeric_value": null,
+    "pattern_type": "maximum",
+    "regex_hint": "maximum|badi"
+  },
+  "badi": {
+    "canonical_form": "maximum",
+    "numeric_value": null,
+    "pattern_type": "maximum",
+    "regex_hint": "maximum|badi"
+  },
+  "maximum 5000": {
+    "canonical_form": "maximum",
+    "numeric_value": null,
+    "pattern_type": "maximum",
+    "regex_hint": "maximum|badi"
+  }
+}

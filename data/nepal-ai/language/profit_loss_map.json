@@ -1,0 +1,572 @@
+{
+  "nokshan": {
+    "term_roman": "noksan",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "loss / financial loss"
+  },
+  "noksan": {
+    "term_roman": "noksan",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "loss / financial loss"
+  },
+  "noksana": {
+    "term_roman": "noksan",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "loss / financial loss"
+  },
+  "ghateko": {
+    "term_roman": "ghata",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "decrease / loss amount"
+  },
+  "ghat": {
+    "term_roman": "depreciation",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_depreciation",
+    "meaning_en": "asset value decrease"
+  },
+  "ghata": {
+    "term_roman": "ghata",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "decrease / loss amount"
+  },
+  "ghatyo": {
+    "term_roman": "ghata",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "decrease / loss amount"
+  },
+  "kharcha": {
+    "term_roman": "kharcha",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "expense / spending"
+  },
+  "kharxa": {
+    "term_roman": "kharcha",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "expense / spending"
+  },
+  "kharcho": {
+    "term_roman": "kharcha",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "expense / spending"
+  },
+  "expense": {
+    "term_roman": "kharcha",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "expense / spending"
+  },
+  "profit": {
+    "term_roman": "nafa",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_cash_sale",
+    "meaning_en": "profit / gain"
+  },
+  "munafa": {
+    "term_roman": "munafa",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_cash_sale",
+    "meaning_en": "profit margin"
+  },
+  "nafa": {
+    "term_roman": "nafa",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_cash_sale",
+    "meaning_en": "profit / gain"
+  },
+  "aamdani": {
+    "term_roman": "aamdani",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_cash_sale",
+    "meaning_en": "income / revenue"
+  },
+  "aamdan": {
+    "term_roman": "aamdani",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_cash_sale",
+    "meaning_en": "income / revenue"
+  },
+  "income": {
+    "term_roman": "aamdani",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_cash_sale",
+    "meaning_en": "income / revenue"
+  },
+  "revenue": {
+    "term_roman": "aamdani",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_cash_sale",
+    "meaning_en": "income / revenue"
+  },
+  "munaffa": {
+    "term_roman": "munafa",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_cash_sale",
+    "meaning_en": "profit margin"
+  },
+  "ghatan": {
+    "term_roman": "ghatan",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "loss on sale"
+  },
+  "loss margin": {
+    "term_roman": "ghatan",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "loss on sale"
+  },
+  "write off": {
+    "term_roman": "write off",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_bad_debt_writeoff",
+    "meaning_en": "bad debt write-off"
+  },
+  "writeoff": {
+    "term_roman": "write off",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_bad_debt_writeoff",
+    "meaning_en": "bad debt write-off"
+  },
+  "write-off": {
+    "term_roman": "write off",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_bad_debt_writeoff",
+    "meaning_en": "bad debt write-off"
+  },
+  "baddebt": {
+    "term_roman": "bad debt",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_bad_debt_writeoff",
+    "meaning_en": "uncollectible receivable"
+  },
+  "bad debt": {
+    "term_roman": "bad debt",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_bad_debt_writeoff",
+    "meaning_en": "uncollectible receivable"
+  },
+  "hras": {
+    "term_roman": "depreciation",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_depreciation",
+    "meaning_en": "asset value decrease"
+  },
+  "depreciation": {
+    "term_roman": "depreciation",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_depreciation",
+    "meaning_en": "asset value decrease"
+  },
+  "amortization": {
+    "term_roman": "depreciation",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_depreciation",
+    "meaning_en": "asset value decrease"
+  },
+  "impairment": {
+    "term_roman": "impairment",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "asset impairment"
+  },
+  "impair": {
+    "term_roman": "impairment",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "asset impairment"
+  },
+  "provision": {
+    "term_roman": "provision",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_provision",
+    "meaning_en": "provision for loss"
+  },
+  "reserve": {
+    "term_roman": "provision",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_provision",
+    "meaning_en": "provision for loss"
+  },
+  "discount diye": {
+    "term_roman": "discount allowed",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_discount_allowed",
+    "meaning_en": "discount given to customer"
+  },
+  "discount allowed": {
+    "term_roman": "discount allowed",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_discount_allowed",
+    "meaning_en": "discount given to customer"
+  },
+  "discount received": {
+    "term_roman": "discount received",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_discount_received",
+    "meaning_en": "discount from supplier"
+  },
+  "discount paayo": {
+    "term_roman": "discount received",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_discount_received",
+    "meaning_en": "discount from supplier"
+  },
+  "commission expense": {
+    "term_roman": "commission expense",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "commission paid"
+  },
+  "commission kharcha": {
+    "term_roman": "commission expense",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "commission paid"
+  },
+  "commission income": {
+    "term_roman": "commission income",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_payment_in",
+    "meaning_en": "commission earned"
+  },
+  "commission aayo": {
+    "term_roman": "commission income",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_payment_in",
+    "meaning_en": "commission earned"
+  },
+  "rent expense": {
+    "term_roman": "rent expense",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "rent paid"
+  },
+  "bhada kharcha": {
+    "term_roman": "rent expense",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "rent paid"
+  },
+  "bhaada": {
+    "term_roman": "rent expense",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "rent paid"
+  },
+  "interest expense": {
+    "term_roman": "interest expense",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "interest paid on loan"
+  },
+  "byaj kharcha": {
+    "term_roman": "interest expense",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "interest paid on loan"
+  },
+  "byaj aamdani": {
+    "term_roman": "interest income",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_payment_in",
+    "meaning_en": "interest received"
+  },
+  "interest income": {
+    "term_roman": "interest income",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_payment_in",
+    "meaning_en": "interest received"
+  },
+  "talab kharcha": {
+    "term_roman": "salary expense",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_salary_payment",
+    "meaning_en": "payroll cost"
+  },
+  "salary expense": {
+    "term_roman": "salary expense",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_salary_payment",
+    "meaning_en": "payroll cost"
+  },
+  "stock cost": {
+    "term_roman": "cogs",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_stock_sale_cogs",
+    "meaning_en": "cost of goods sold"
+  },
+  "cogs": {
+    "term_roman": "cogs",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_stock_sale_cogs",
+    "meaning_en": "cost of goods sold"
+  },
+  "cost of goods": {
+    "term_roman": "cogs",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_stock_sale_cogs",
+    "meaning_en": "cost of goods sold"
+  },
+  "gross nafa": {
+    "term_roman": "gross profit",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": null,
+    "meaning_en": "revenue minus cogs"
+  },
+  "gross profit": {
+    "term_roman": "gross profit",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": null,
+    "meaning_en": "revenue minus cogs"
+  },
+  "safal nafa": {
+    "term_roman": "net profit",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": null,
+    "meaning_en": "final profit after all expenses"
+  },
+  "net nafa": {
+    "term_roman": "net profit",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": null,
+    "meaning_en": "final profit after all expenses"
+  },
+  "net profit": {
+    "term_roman": "net profit",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": null,
+    "meaning_en": "final profit after all expenses"
+  },
+  "operating loss": {
+    "term_roman": "operating loss",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "loss from operations"
+  },
+  "sanchalan noksan": {
+    "term_roman": "operating loss",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "loss from operations"
+  },
+  "puni noksan": {
+    "term_roman": "capital loss",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "loss on capital asset"
+  },
+  "capital loss": {
+    "term_roman": "capital loss",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "loss on capital asset"
+  },
+  "inventory shrinkage": {
+    "term_roman": "inventory shrinkage",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "stock loss / theft"
+  },
+  "stock ghateko": {
+    "term_roman": "inventory shrinkage",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "stock loss / theft"
+  },
+  "nash": {
+    "term_roman": "wastage",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "wasted goods"
+  },
+  "waste": {
+    "term_roman": "wastage",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "wasted goods"
+  },
+  "wastage": {
+    "term_roman": "wastage",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "wasted goods"
+  },
+  "chori noksan": {
+    "term_roman": "theft loss",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "theft related loss"
+  },
+  "theft loss": {
+    "term_roman": "theft loss",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "theft related loss"
+  },
+  "flood damage": {
+    "term_roman": "flood damage",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "disaster loss"
+  },
+  "bipad noksan": {
+    "term_roman": "flood damage",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "disaster loss"
+  },
+  "exchange loss": {
+    "term_roman": "exchange loss",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "currency loss"
+  },
+  "forex loss": {
+    "term_roman": "exchange loss",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "currency loss"
+  },
+  "forex gain": {
+    "term_roman": "exchange gain",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_payment_in",
+    "meaning_en": "currency gain"
+  },
+  "exchange gain": {
+    "term_roman": "exchange gain",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_payment_in",
+    "meaning_en": "currency gain"
+  },
+  "jarivana": {
+    "term_roman": "penalty",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "fine / penalty paid"
+  },
+  "penalty": {
+    "term_roman": "penalty",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "fine / penalty paid"
+  },
+  "chhut": {
+    "term_roman": "rebate",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_discount_received",
+    "meaning_en": "rebate received"
+  },
+  "rebate": {
+    "term_roman": "rebate",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_discount_received",
+    "meaning_en": "rebate received"
+  },
+  "refund expense": {
+    "term_roman": "refund expense",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "refund cost"
+  },
+  "firta kharcha": {
+    "term_roman": "refund expense",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "refund cost"
+  },
+  "sales return loss": {
+    "term_roman": "sales return loss",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_sales_return",
+    "meaning_en": "loss on returned sale"
+  },
+  "bikri firta noksan": {
+    "term_roman": "sales return loss",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_sales_return",
+    "meaning_en": "loss on returned sale"
+  },
+  "purchase return gain": {
+    "term_roman": "purchase return gain",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_purchase_return",
+    "meaning_en": "gain on purchase return"
+  },
+  "kharid firta nafa": {
+    "term_roman": "purchase return gain",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_purchase_return",
+    "meaning_en": "gain on purchase return"
+  },
+  "donation": {
+    "term_roman": "donation",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "charitable expense"
+  },
+  "dan": {
+    "term_roman": "donation",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "charitable expense"
+  },
+  "insurance claim": {
+    "term_roman": "insurance claim",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_payment_in",
+    "meaning_en": "insurance recovery"
+  },
+  "bima claim": {
+    "term_roman": "insurance claim",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_payment_in",
+    "meaning_en": "insurance recovery"
+  },
+  "anudan": {
+    "term_roman": "subsidy",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_payment_in",
+    "meaning_en": "government subsidy"
+  },
+  "subsidy": {
+    "term_roman": "subsidy",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_payment_in",
+    "meaning_en": "government subsidy"
+  },
+  "grant aayo": {
+    "term_roman": "grant",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_payment_in",
+    "meaning_en": "grant income"
+  },
+  "grant": {
+    "term_roman": "grant",
+    "accounting_class": "INCOME",
+    "journal_intent_if_entry": "khata_payment_in",
+    "meaning_en": "grant income"
+  },
+  "anya noksan": {
+    "term_roman": "misc loss",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "other losses"
+  },
+  "misc loss": {
+    "term_roman": "misc loss",
+    "accounting_class": "EXPENSE",
+    "journal_intent_if_entry": "khata_expense",
+    "meaning_en": "other losses"
+  }
+}

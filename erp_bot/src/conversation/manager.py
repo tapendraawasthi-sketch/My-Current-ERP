@@ -25,6 +25,7 @@ from ..reports.chat_reports import get_report_generator
 from ..config import OLLAMA_BASE_URL, FAST_MODEL, FAST_MODEL_OPTIONS, DEEP_MODEL, PRIMARY_MODEL_OPTIONS
 from ..knowledge.citation_qa import answer_with_citations, task_for_route
 from ..knowledge.domain_router import classify_domain
+from ..knowledge.nepal_ai_runtime import check_safety
 from ..knowledge.chart_of_accounts_framework import detect_sector, format_coa_context, get_nlu_vocabulary_summary
 from ..knowledge.sector_profile import detect_sector_slug_from_text, resolve_sector_slug
 from ..knowledge.knowledge_registry import format_tiered_context
@@ -295,6 +296,17 @@ class ConversationManager:
         memory.add_message("user", text)
         if len(session.messages) > self.MAX_HISTORY:
             session.messages = session.messages[-self.MAX_HISTORY :]
+
+        safety_reply = check_safety(text)
+        if safety_reply:
+            session.messages.append({"role": "assistant", "content": safety_reply})
+            memory.add_message("assistant", safety_reply)
+            return Response(
+                message=safety_reply,
+                action="chat",
+                session_id=session_id,
+                metadata={"latency_ms": 0, "safety_block": True},
+            )
 
         # Follow-up to pending clarification
         if session.pending_clarification:

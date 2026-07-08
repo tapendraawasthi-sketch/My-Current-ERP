@@ -1,0 +1,41 @@
+{"pattern_type": "relative_day", "terms": ["aja", "aaja", "today"], "gregorian_approx": "today", "fiscal_significance": "current_period", "usage": "aja 500 becheko"}
+{"pattern_type": "relative_day", "terms": ["hijo", "yesterday"], "gregorian_approx": "yesterday", "fiscal_significance": "prior_day", "usage": "hijo kharcha"}
+{"pattern_type": "relative_day", "terms": ["parsi", "tomorrow"], "gregorian_approx": "tomorrow", "fiscal_significance": "future", "usage": "parsi dincha"}
+{"pattern_type": "relative_day", "terms": ["abhui", "day before yesterday"], "gregorian_approx": "d-2", "fiscal_significance": "prior_day", "usage": "abhui ko"}
+{"pattern_type": "relative_day", "terms": ["naparsi", "day after tomorrow"], "gregorian_approx": "d+2", "fiscal_significance": "future", "usage": "naparsi"}
+{"pattern_type": "week", "terms": ["hapta", "week"], "gregorian_approx": "week", "fiscal_significance": "period", "usage": "yo hapta"}
+{"pattern_type": "week", "terms": ["mahina", "month"], "gregorian_approx": "month", "fiscal_significance": "period", "usage": "yo mahina"}
+{"pattern_type": "week", "terms": ["barsa", "year", "sal"], "gregorian_approx": "year", "fiscal_significance": "period", "usage": "yo barsa"}
+{"pattern_type": "fiscal_month", "terms": ["shrawan", "sawan"], "gregorian_approx": "mid-jul", "fiscal_significance": "FY_start", "usage": "shrawan 1"}
+{"pattern_type": "fiscal_month", "terms": ["bhadra"], "gregorian_approx": "mid-aug", "fiscal_significance": "FY_month_2", "usage": "bhadra"}
+{"pattern_type": "fiscal_month", "terms": ["ashwin", "aswin"], "gregorian_approx": "mid-sep", "fiscal_significance": "FY_month_3", "usage": "dashain period"}
+{"pattern_type": "fiscal_month", "terms": ["kartik"], "gregorian_approx": "mid-oct", "fiscal_significance": "FY_month_4", "usage": "tihar period"}
+{"pattern_type": "fiscal_month", "terms": ["mangsir"], "gregorian_approx": "mid-nov", "fiscal_significance": "FY_month_5", "usage": "mangsir"}
+{"pattern_type": "fiscal_month", "terms": ["poush"], "gregorian_approx": "mid-dec", "fiscal_significance": "FY_month_6", "usage": "poush"}
+{"pattern_type": "fiscal_month", "terms": ["magh"], "gregorian_approx": "mid-jan", "fiscal_significance": "FY_month_7", "usage": "magh"}
+{"pattern_type": "fiscal_month", "terms": ["falgun", "fagun"], "gregorian_approx": "mid-feb", "fiscal_significance": "FY_month_8", "usage": "falgun"}
+{"pattern_type": "fiscal_month", "terms": ["chaitra", "chait"], "gregorian_approx": "mid-mar", "fiscal_significance": "FY_month_9", "usage": "chaitra"}
+{"pattern_type": "fiscal_month", "terms": ["baishakh", "baisakh"], "gregorian_approx": "mid-apr", "fiscal_significance": "FY_month_10", "usage": "baishakh"}
+{"pattern_type": "fiscal_month", "terms": ["jestha", "jesta"], "gregorian_approx": "mid-may", "fiscal_significance": "FY_month_11", "usage": "jestha"}
+{"pattern_type": "fiscal_month", "terms": ["ashadh", "asad"], "gregorian_approx": "mid-jun", "fiscal_significance": "FY_end", "usage": "FY close ashadh"}
+{"pattern_type": "bs_date", "terms": ["bs", "vikram", "bikram sambat"], "gregorian_approx": "nepali_calendar", "fiscal_significance": "official_date", "usage": "2081/04/15"}
+{"pattern_type": "bs_date", "terms": ["ad", "english date"], "gregorian_approx": "gregorian", "fiscal_significance": "alternate_date", "usage": "2024-07-01"}
+{"pattern_type": "quarter", "terms": ["quarter", "trimasik"], "gregorian_approx": "quarter", "fiscal_significance": "reporting", "usage": "Q1 report"}
+{"pattern_type": "deadline", "terms": ["last date", "antim miti"], "gregorian_approx": "deadline", "fiscal_significance": "compliance", "usage": "VAT last date"}
+{"pattern_type": "period", "terms": ["period", "awadhi"], "gregorian_approx": "range", "fiscal_significance": "reporting", "usage": "yo awadhi"}
+{"pattern_type": "opening", "terms": ["opening", "suruwati"], "gregorian_approx": "period_start", "fiscal_significance": "opening_balance", "usage": "opening balance"}
+{"pattern_type": "closing", "terms": ["closing", "antim"], "gregorian_approx": "period_end", "fiscal_significance": "closing_balance", "usage": "month end closing"}
+{"pattern_type": "festival", "terms": ["dashain", "tihar"], "gregorian_approx": "festival", "fiscal_significance": "seasonal", "usage": "dashain bonus"}
+{"pattern_type": "festival", "terms": ["holi", "teej"], "gregorian_approx": "festival", "fiscal_significance": "seasonal", "usage": "festival kharcha"}
+{"pattern_type": "time_of_day", "terms": ["bihan", "morning"], "gregorian_approx": "am", "fiscal_significance": "timestamp", "usage": "bihan ko"}
+{"pattern_type": "time_of_day", "terms": ["dopahar", "afternoon"], "gregorian_approx": "pm", "fiscal_significance": "timestamp", "usage": "dopahar"}
+{"pattern_type": "time_of_day", "terms": ["beluka", "evening"], "gregorian_approx": "eve", "fiscal_significance": "timestamp", "usage": "beluka"}
+{"pattern_type": "time_of_day", "terms": ["rati", "night"], "gregorian_approx": "night", "fiscal_significance": "timestamp", "usage": "rati"}
+{"pattern_type": "duration", "terms": ["din", "days"], "gregorian_approx": "days", "fiscal_significance": "aging", "usage": "15 din baki"}
+{"pattern_type": "duration", "terms": ["mahina", "months"], "gregorian_approx": "months", "fiscal_significance": "aging", "usage": "3 mahina"}
+{"pattern_type": "due", "terms": ["miyad", "due date"], "gregorian_approx": "due", "fiscal_significance": "payable", "usage": "miyad ashadh"}
+{"pattern_type": "backdate", "terms": ["pahile ko date", "backdate"], "gregorian_approx": "past", "fiscal_significance": "adjustment", "usage": "hijo ko date ma"}
+{"pattern_type": "postdate", "terms": ["pachi ko", "postdate"], "gregorian_approx": "future", "fiscal_significance": "scheduled", "usage": "parsi ko lagi"}
+{"pattern_type": "instant", "terms": ["aile", "abhi", "now"], "gregorian_approx": "now", "fiscal_significance": "current", "usage": "aile tiryo"}
+{"pattern_type": "range", "terms": ["dekhi", "bata", "from"], "gregorian_approx": "range_start", "fiscal_significance": "period", "usage": "shrawan dekhi"}
+{"pattern_type": "range", "terms": ["samma", "until", "to"], "gregorian_approx": "range_end", "fiscal_significance": "period", "usage": "ashadh samma"}

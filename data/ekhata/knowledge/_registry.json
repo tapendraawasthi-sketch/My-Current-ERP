@@ -27,6 +27,163 @@
       "path": "general/language/romanized",
       "use_for": ["language", "nlu", "journal_entry", "casual"]
     },
+    "general.language.verbs": {
+      "label": "General — Nepal Universal AI verb conjugation map",
+      "tier": "general",
+      "base_authority": 38,
+      "path": "general/language/verbs",
+      "use_for": ["nlu", "language", "journal_entry"],
+      "task_boost": {
+        "nlu": 28,
+        "language": 25,
+        "journal_entry": 20
+      }
+    },
+    "general.language.particles": {
+      "label": "General — Nepal Universal AI particle direction map",
+      "tier": "general",
+      "base_authority": 36,
+      "path": "general/language/particles",
+      "use_for": ["nlu", "language", "journal_entry"],
+      "task_boost": {
+        "nlu": 26,
+        "language": 22,
+        "journal_entry": 18
+      }
+    },
+    "general.language.numbers": {
+      "label": "General — Nepal number & amount expressions",
+      "tier": "general",
+      "base_authority": 34,
+      "path": "general/language/numbers",
+      "use_for": ["nlu", "language", "journal_entry"],
+      "task_boost": { "nlu": 24, "journal_entry": 16 }
+    },
+    "general.language.profit_loss": {
+      "label": "General — Profit/loss/expense vocabulary",
+      "tier": "general",
+      "base_authority": 36,
+      "path": "general/language/profit_loss",
+      "use_for": ["nlu", "language", "journal_entry", "accounting_qa"],
+      "task_boost": { "nlu": 26, "journal_entry": 18 }
+    },
+    "general.language.credit_debt": {
+      "label": "General — Credit/debt/udhaar vocabulary",
+      "tier": "general",
+      "base_authority": 36,
+      "path": "general/language/credit_debt",
+      "use_for": ["nlu", "language", "journal_entry"],
+      "task_boost": { "nlu": 26, "journal_entry": 20 }
+    },
+    "general.language.questions": {
+      "label": "General — Question vs entry patterns",
+      "tier": "general",
+      "base_authority": 40,
+      "path": "general/language/questions",
+      "use_for": ["nlu", "language", "journal_entry", "accounting_qa"],
+      "task_boost": { "nlu": 30, "journal_entry": 22 }
+    },
+    "general.language.discourse": {
+      "label": "General — Affirmation/negation/correction",
+      "tier": "general",
+      "base_authority": 32,
+      "path": "general/language/discourse",
+      "use_for": ["nlu", "language", "casual"],
+      "task_boost": { "nlu": 20 }
+    },
+    "general.language.time": {
+      "label": "General — Time/date/fiscal calendar",
+      "tier": "general",
+      "base_authority": 30,
+      "path": "general/language/time",
+      "use_for": ["nlu", "language", "journal_entry", "compliance_qa"],
+      "task_boost": { "nlu": 18, "journal_entry": 12 }
+    },
+    "general.regulated.tax": {
+      "label": "General — Nepal tax vocabulary (IRD/VAT/TDS)",
+      "tier": "general",
+      "base_authority": 42,
+      "path": "general/regulated/tax",
+      "use_for": ["compliance_qa", "accounting_qa", "nlu"],
+      "task_boost": { "compliance_qa": 28, "accounting_qa": 15 }
+    },
+    "general.regulated.legal": {
+      "label": "General — Nepal legal vocabulary",
+      "tier": "general",
+      "base_authority": 38,
+      "path": "general/regulated/legal",
+      "use_for": ["compliance_qa", "accounting_qa"],
+      "task_boost": { "compliance_qa": 20 }
+    },
+    "general.regulated.labor": {
+      "label": "General — Labor/SSF vocabulary",
+      "tier": "general",
+      "base_authority": 38,
+      "path": "general/regulated/labor",
+      "use_for": ["compliance_qa", "journal_entry"],
+      "task_boost": { "compliance_qa": 25, "journal_entry": 12 }
+    },
+    "general.regulated.banking": {
+      "label": "General — Banking & finance vocabulary",
+      "tier": "general",
+      "base_authority": 36,
+      "path": "general/regulated/banking",
+      "use_for": ["accounting_qa", "journal_entry", "nlu"],
+      "task_boost": { "journal_entry": 10 }
+    },
+    "general.regulated.government": {
+      "label": "General — Government services vocabulary",
+      "tier": "general",
+      "base_authority": 34,
+      "path": "general/regulated/government",
+      "use_for": ["compliance_qa", "casual"],
+      "task_boost": { "compliance_qa": 18 }
+    },
+    "general.knowledge.accounting": {
+      "label": "General — Accounting concepts (plain language)",
+      "tier": "general",
+      "base_authority": 40,
+      "path": "general/knowledge/accounting",
+      "use_for": ["accounting_qa", "education", "nlu", "journal_entry"],
+      "task_boost": { "accounting_qa": 25, "education": 20 }
+    },
+    "general.knowledge.geography": {
+      "label": "General — Nepal geography",
+      "tier": "general",
+      "base_authority": 22,
+      "path": "general/knowledge/geography",
+      "use_for": ["casual", "accounting_qa"]
+    },
+    "general.knowledge.festivals": {
+      "label": "General — Nepal festivals & business impact",
+      "tier": "general",
+      "base_authority": 28,
+      "path": "general/knowledge/festivals",
+      "use_for": ["journal_entry", "accounting_qa", "casual"]
+    },
+    "general.knowledge.food": {
+      "label": "General — Nepal food menu vocabulary",
+      "tier": "general",
+      "base_authority": 30,
+      "path": "general/knowledge/food",
+      "use_for": ["nlu", "journal_entry", "language"],
+      "task_boost": { "nlu": 18, "journal_entry": 14 }
+    },
+    "general.knowledge.construction": {
+      "label": "General — Construction materials vocabulary",
+      "tier": "general",
+      "base_authority": 32,
+      "path": "general/knowledge/construction",
+      "use_for": ["nlu", "journal_entry", "language"],
+      "task_boost": { "nlu": 20, "journal_entry": 16 }
+    },
+    "general.language.proverbs": {
+      "label": "General — Nepali proverbs in business context",
+      "tier": "general",
+      "base_authority": 24,
+      "path": "general/language/proverbs",
+      "use_for": ["casual", "education", "accounting_qa"]
+    },
     "general.accounting-concepts": {
       "label": "General — Accounting concepts (plain language)",
       "tier": "general",
@@ -38,12 +195,33 @@
       "label": "General — Transaction intent taxonomy (SAL/PUR/EXP/CB/INV/AST/TAX/COR)",
       "tier": "general",
       "base_authority": 35,
-      "path": "general/intent-taxonomy",
+      "path": "general/ontology/intent_taxonomy",
       "use_for": ["nlu", "language", "journal_entry", "casual"],
       "task_boost": {
         "nlu": 25,
         "language": 20,
         "journal_entry": 15
+      }
+    },
+    "general.ontology.sectors": {
+      "label": "General — Nepal Universal AI sector ontology",
+      "tier": "general",
+      "base_authority": 32,
+      "path": "general/ontology/sectors",
+      "use_for": ["nlu", "language", "journal_entry", "accounting_qa", "casual"],
+      "task_boost": {
+        "nlu": 20,
+        "journal_entry": 10
+      }
+    },
+    "general.ontology.router": {
+      "label": "General — Sector context router phrases",
+      "tier": "general",
+      "base_authority": 30,
+      "path": "general/ontology/sector_router_phrases",
+      "use_for": ["nlu", "language", "casual"],
+      "task_boost": {
+        "nlu": 22
       }
     },
     "general.sector.kirana-grocery": {

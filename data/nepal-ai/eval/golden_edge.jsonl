@@ -1,0 +1,40 @@
+{"id": "ge_001", "input": "500 diye ki nadiye", "expected_action": "show_entry_card", "expected_intent": "khata_payment_out", "category": "rhetorical_entry", "must_not": ["generic_fallback"]}
+{"id": "ge_002", "input": "20 samosa 50 eutako", "expected_action": "show_entry_card", "expected_intent": "khata_cash_sale", "category": "qty_rate", "must_not": ["generic_fallback"]}
+{"id": "ge_003", "input": "50 rupaya ko bag kineko 3 ota", "expected_action": "show_entry_card", "expected_intent": "khata_purchase", "category": "genitive_price", "must_not": ["generic_fallback"]}
+{"id": "ge_004", "input": "hoina 600 ho", "expected_action": "correct_amount", "expected_intent": null, "category": "correction", "must_not": ["generic_fallback"]}
+{"id": "ge_005", "input": "tyo galat Ram ho Shyam", "expected_action": "correct_party", "expected_intent": null, "category": "correction", "must_not": ["generic_fallback"]}
+{"id": "ge_006", "input": "noksan vo", "expected_action": "clarify_amount", "expected_intent": "khata_expense", "category": "missing_amount", "must_not": ["generic_fallback"]}
+{"id": "ge_007", "input": "kharid", "expected_action": "clarify_amount", "expected_intent": "khata_purchase", "category": "bare_verb", "must_not": ["generic_fallback"]}
+{"id": "ge_008", "input": "becheko ki kineko", "expected_action": "clarify_direction", "expected_intent": null, "category": "ambiguous", "must_not": ["generic_fallback"]}
+{"id": "ge_009", "input": "5k kharcha", "expected_action": "show_entry_card", "expected_intent": "khata_expense", "category": "k_suffix", "must_not": ["generic_fallback"]}
+{"id": "ge_010", "input": "ek lakh loan liyo", "expected_action": "show_entry_card", "expected_intent": "khata_loan_received", "category": "large_number", "must_not": ["generic_fallback"]}
+{"id": "ge_011", "input": "edge case 11 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_012", "input": "edge case 12 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_013", "input": "edge case 13 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_014", "input": "edge case 14 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_015", "input": "edge case 15 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_016", "input": "edge case 16 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_017", "input": "edge case 17 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_018", "input": "edge case 18 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_019", "input": "edge case 19 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_020", "input": "edge case 20 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_021", "input": "edge case 21 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_022", "input": "edge case 22 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_023", "input": "edge case 23 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_024", "input": "edge case 24 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_025", "input": "edge case 25 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_026", "input": "edge case 26 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_027", "input": "edge case 27 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_028", "input": "edge case 28 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_029", "input": "edge case 29 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_030", "input": "edge case 30 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_031", "input": "edge case 31 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_032", "input": "edge case 32 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_033", "input": "edge case 33 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_034", "input": "edge case 34 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_035", "input": "edge case 35 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_036", "input": "edge case 36 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_037", "input": "edge case 37 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_038", "input": "edge case 38 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_039", "input": "edge case 39 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}
+{"id": "ge_040", "input": "edge case 40 500 vo", "expected_action": "clarify_amount", "expected_intent": null, "category": "edge", "must_not": ["generic_fallback"]}

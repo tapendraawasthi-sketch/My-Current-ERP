@@ -1,0 +1,560 @@
+{
+  "hoo": {
+    "pattern": "ho",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending"
+  },
+  "ho ni": {
+    "pattern": "ho",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending"
+  },
+  "hoe": {
+    "pattern": "ho",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending"
+  },
+  "ho": {
+    "pattern": "ho",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending"
+  },
+  "hunchha": {
+    "pattern": "huncha",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending"
+  },
+  "huncha": {
+    "pattern": "huncha",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending"
+  },
+  "thik chha": {
+    "pattern": "thik cha",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending"
+  },
+  "thik": {
+    "pattern": "thik cha",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending"
+  },
+  "thik cha": {
+    "pattern": "thik cha",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending"
+  },
+  "correct": {
+    "pattern": "sahi",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending"
+  },
+  "sahi": {
+    "pattern": "sahi",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending"
+  },
+  "sahi cha": {
+    "pattern": "sahi",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending"
+  },
+  "hajur": {
+    "pattern": "hajur",
+    "type": "affirmation",
+    "strength": "polite",
+    "multi_turn_action": "confirm_pending"
+  },
+  "ji": {
+    "pattern": "hajur",
+    "type": "affirmation",
+    "strength": "polite",
+    "multi_turn_action": "confirm_pending"
+  },
+  "la": {
+    "pattern": "la",
+    "type": "affirmation",
+    "strength": "casual",
+    "multi_turn_action": "confirm_pending"
+  },
+  "laa": {
+    "pattern": "la",
+    "type": "affirmation",
+    "strength": "casual",
+    "multi_turn_action": "confirm_pending"
+  },
+  "oke": {
+    "pattern": "ok",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending"
+  },
+  "okay": {
+    "pattern": "ok",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending"
+  },
+  "ok": {
+    "pattern": "ok",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending"
+  },
+  "yeah": {
+    "pattern": "yes",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending"
+  },
+  "yes": {
+    "pattern": "yes",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending"
+  },
+  "yep": {
+    "pattern": "yes",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending"
+  },
+  "huss la": {
+    "pattern": "huss",
+    "type": "affirmation",
+    "strength": "casual",
+    "multi_turn_action": "confirm_pending"
+  },
+  "huss": {
+    "pattern": "huss",
+    "type": "affirmation",
+    "strength": "casual",
+    "multi_turn_action": "confirm_pending"
+  },
+  "ramro cha": {
+    "pattern": "ramro",
+    "type": "affirmation",
+    "strength": "mild",
+    "multi_turn_action": "confirm_pending"
+  },
+  "ramro": {
+    "pattern": "ramro",
+    "type": "affirmation",
+    "strength": "mild",
+    "multi_turn_action": "confirm_pending"
+  },
+  "hoina": {
+    "pattern": "hoina",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending"
+  },
+  "hoina ni": {
+    "pattern": "hoina",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending"
+  },
+  "chaina": {
+    "pattern": "chaina",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending"
+  },
+  "chhaina": {
+    "pattern": "chaina",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending"
+  },
+  "xaina": {
+    "pattern": "chaina",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending"
+  },
+  "pardaina": {
+    "pattern": "pardaina",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending"
+  },
+  "mildaina": {
+    "pattern": "pardaina",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending"
+  },
+  "nah": {
+    "pattern": "no",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending"
+  },
+  "nope": {
+    "pattern": "no",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending"
+  },
+  "no": {
+    "pattern": "no",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending"
+  },
+  "hatau": {
+    "pattern": "cancel",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending"
+  },
+  "cancel": {
+    "pattern": "cancel",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending"
+  },
+  "hata": {
+    "pattern": "cancel",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending"
+  },
+  "na gar": {
+    "pattern": "nagarnu",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending"
+  },
+  "nagarnu": {
+    "pattern": "nagarnu",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending"
+  },
+  "galat": {
+    "pattern": "galat",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending"
+  },
+  "wrong": {
+    "pattern": "galat",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending"
+  },
+  "galti": {
+    "pattern": "galat",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending"
+  },
+  "error": {
+    "pattern": "mistake",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending"
+  },
+  "mistake": {
+    "pattern": "mistake",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending"
+  },
+  "tyo hoina": {
+    "pattern": "tyo hoina",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending"
+  },
+  "yo hoina": {
+    "pattern": "tyo hoina",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending"
+  },
+  "500 hoina 600": {
+    "pattern": "500 hoina 600",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_amount"
+  },
+  "500 hoina 600 ho": {
+    "pattern": "500 hoina 600",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_amount"
+  },
+  "different": {
+    "pattern": "farak cha",
+    "type": "correction",
+    "strength": "medium",
+    "multi_turn_action": "correct_pending"
+  },
+  "farak cha": {
+    "pattern": "farak cha",
+    "type": "correction",
+    "strength": "medium",
+    "multi_turn_action": "correct_pending"
+  },
+  "thikai": {
+    "pattern": "thikai",
+    "type": "partial_confirm",
+    "strength": "weak",
+    "multi_turn_action": "confirm_partial"
+  },
+  "ali ali": {
+    "pattern": "ali ali",
+    "type": "partial_confirm",
+    "strength": "weak",
+    "multi_turn_action": "confirm_partial"
+  },
+  "testo": {
+    "pattern": "thikai",
+    "type": "partial_confirm",
+    "strength": "weak",
+    "multi_turn_action": "confirm_partial"
+  },
+  "holaa": {
+    "pattern": "hola",
+    "type": "uncertainty",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed"
+  },
+  "hola": {
+    "pattern": "hola",
+    "type": "uncertainty",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed"
+  },
+  "perhaps": {
+    "pattern": "maybe",
+    "type": "uncertainty",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed"
+  },
+  "maybe": {
+    "pattern": "maybe",
+    "type": "uncertainty",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed"
+  },
+  "thaha bhayena": {
+    "pattern": "thaha bhayena",
+    "type": "uncertainty",
+    "strength": "medium",
+    "multi_turn_action": "clarify_needed"
+  },
+  "thaha chaina": {
+    "pattern": "thaha bhayena",
+    "type": "uncertainty",
+    "strength": "medium",
+    "multi_turn_action": "clarify_needed"
+  },
+  "bujhena": {
+    "pattern": "bujhena",
+    "type": "uncertainty",
+    "strength": "medium",
+    "multi_turn_action": "clarify_needed"
+  },
+  "bujhina": {
+    "pattern": "bujhena",
+    "type": "uncertainty",
+    "strength": "medium",
+    "multi_turn_action": "clarify_needed"
+  },
+  "k bhancha": {
+    "pattern": "k bhanne",
+    "type": "uncertainty",
+    "strength": "medium",
+    "multi_turn_action": "clarify_needed"
+  },
+  "k bhanne": {
+    "pattern": "k bhanne",
+    "type": "uncertainty",
+    "strength": "medium",
+    "multi_turn_action": "clarify_needed"
+  },
+  "k garne": {
+    "pattern": "kunni",
+    "type": "uncertainty",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed"
+  },
+  "kunni": {
+    "pattern": "kunni",
+    "type": "uncertainty",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed"
+  },
+  "confirm gar": {
+    "pattern": "confirm gar",
+    "type": "confirmation_request",
+    "strength": "medium",
+    "multi_turn_action": "confirm_pending"
+  },
+  "pakka gar": {
+    "pattern": "confirm gar",
+    "type": "confirmation_request",
+    "strength": "medium",
+    "multi_turn_action": "confirm_pending"
+  },
+  "lekha de": {
+    "pattern": "entry gar",
+    "type": "action_request",
+    "strength": "strong",
+    "multi_turn_action": "post_entry"
+  },
+  "entry gar": {
+    "pattern": "entry gar",
+    "type": "action_request",
+    "strength": "strong",
+    "multi_turn_action": "post_entry"
+  },
+  "feri": {
+    "pattern": "feri",
+    "type": "continuation",
+    "strength": "medium",
+    "multi_turn_action": "continue_flow"
+  },
+  "pachi": {
+    "pattern": "feri",
+    "type": "continuation",
+    "strength": "medium",
+    "multi_turn_action": "continue_flow"
+  },
+  "arko": {
+    "pattern": "aru",
+    "type": "continuation",
+    "strength": "medium",
+    "multi_turn_action": "continue_flow"
+  },
+  "aru": {
+    "pattern": "aru",
+    "type": "continuation",
+    "strength": "medium",
+    "multi_turn_action": "continue_flow"
+  },
+  "agadi ko": {
+    "pattern": "pahile ko",
+    "type": "reference",
+    "strength": "medium",
+    "multi_turn_action": "reference_prior"
+  },
+  "pahile ko": {
+    "pattern": "pahile ko",
+    "type": "reference",
+    "strength": "medium",
+    "multi_turn_action": "reference_prior"
+  },
+  "yes yo": {
+    "pattern": "yo ho",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending"
+  },
+  "yo ho": {
+    "pattern": "yo ho",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending"
+  },
+  "nai": {
+    "pattern": "nai",
+    "type": "emphasis",
+    "strength": "medium",
+    "multi_turn_action": "confirm_pending"
+  },
+  "nai ho": {
+    "pattern": "nai",
+    "type": "emphasis",
+    "strength": "medium",
+    "multi_turn_action": "confirm_pending"
+  },
+  "chaldaina": {
+    "pattern": "chaldaina",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending"
+  },
+  "hudaina": {
+    "pattern": "chaldaina",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending"
+  },
+  "rok": {
+    "pattern": "ruk",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending"
+  },
+  "ruk": {
+    "pattern": "ruk",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending"
+  },
+  "sodh": {
+    "pattern": "sodh",
+    "type": "inquiry",
+    "strength": "medium",
+    "multi_turn_action": "ask_clarify"
+  },
+  "sodhnus": {
+    "pattern": "sodh",
+    "type": "inquiry",
+    "strength": "medium",
+    "multi_turn_action": "ask_clarify"
+  },
+  "hera": {
+    "pattern": "hera",
+    "type": "review",
+    "strength": "medium",
+    "multi_turn_action": "review_card"
+  },
+  "hernu": {
+    "pattern": "hera",
+    "type": "review",
+    "strength": "medium",
+    "multi_turn_action": "review_card"
+  },
+  "change": {
+    "pattern": "change",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending"
+  },
+  "badal": {
+    "pattern": "change",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending"
+  },
+  "update": {
+    "pattern": "update",
+    "type": "correction",
+    "strength": "medium",
+    "multi_turn_action": "correct_pending"
+  },
+  "modify": {
+    "pattern": "update",
+    "type": "correction",
+    "strength": "medium",
+    "multi_turn_action": "correct_pending"
+  }
+}

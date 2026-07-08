@@ -1,0 +1,358 @@
+{
+  "x k ho": {
+    "pattern": "X k ho",
+    "type": "definition_question",
+    "intent": "question_definition",
+    "response_type": "explanation",
+    "examples": [
+      "noksan k ho",
+      "VAT k ho",
+      "journal k ho",
+      "debit k ho"
+    ]
+  },
+  "x ke ho": {
+    "pattern": "X ke ho",
+    "type": "definition_question",
+    "intent": "question_definition",
+    "response_type": "explanation",
+    "examples": [
+      "sampatti ke ho",
+      "udhaar ke ho"
+    ]
+  },
+  "kati cha": {
+    "pattern": "kati cha",
+    "type": "amount_question",
+    "intent": "question_balance",
+    "response_type": "numeric_answer",
+    "examples": [
+      "baki kati cha",
+      "balance kati cha"
+    ]
+  },
+  "kati %": {
+    "pattern": "kati %",
+    "type": "rate_question",
+    "intent": "question_tax_rate",
+    "response_type": "rate_answer",
+    "examples": [
+      "VAT kati %",
+      "TDS kati percent"
+    ]
+  },
+  "kasari": {
+    "pattern": "kasari",
+    "type": "how_question",
+    "intent": "question_howto",
+    "response_type": "explanation",
+    "examples": [
+      "kasari entry garne",
+      "kasari hisab rakhe"
+    ]
+  },
+  "kina": {
+    "pattern": "kina",
+    "type": "why_question",
+    "intent": "question_why",
+    "response_type": "explanation",
+    "examples": [
+      "kina noksan bhayo",
+      "kina mismatch"
+    ]
+  },
+  "kun ho": {
+    "pattern": "kun ho",
+    "type": "which_question",
+    "intent": "question_which",
+    "response_type": "explanation",
+    "examples": [
+      "kun account ho",
+      "kun party ho"
+    ]
+  },
+  "ko ho": {
+    "pattern": "ko ho",
+    "type": "whose_question",
+    "intent": "question_whose",
+    "response_type": "explanation",
+    "examples": [
+      "yo party ko ho",
+      "kas ko ho"
+    ]
+  },
+  "kaha": {
+    "pattern": "kaha",
+    "type": "where_question",
+    "intent": "question_where",
+    "response_type": "explanation",
+    "examples": [
+      "entry kaha dekhaune",
+      "report kaha cha"
+    ]
+  },
+  "kahile": {
+    "pattern": "kahile",
+    "type": "when_question",
+    "intent": "question_when",
+    "response_type": "explanation",
+    "examples": [
+      "kahile tiryo",
+      "kahile file garne"
+    ]
+  },
+  "k bhanne": {
+    "pattern": "k bhanne",
+    "type": "meaning_question",
+    "intent": "question_definition",
+    "response_type": "explanation",
+    "examples": [
+      "noksan k bhanne",
+      "debit k bhanne"
+    ]
+  },
+  "arth k ho": {
+    "pattern": "arth k ho",
+    "type": "meaning_question",
+    "intent": "question_definition",
+    "response_type": "explanation",
+    "examples": [
+      "sampatti ko arth k ho"
+    ]
+  },
+  "farak k ho": {
+    "pattern": "farak k ho",
+    "type": "comparison_question",
+    "intent": "question_compare",
+    "response_type": "comparison",
+    "examples": [
+      "debit credit farak",
+      "nafa noksan farak"
+    ]
+  },
+  "compare": {
+    "pattern": "compare",
+    "type": "comparison_question",
+    "intent": "question_compare",
+    "response_type": "comparison",
+    "examples": [
+      "asset liability compare"
+    ]
+  },
+  "define": {
+    "pattern": "define",
+    "type": "definition_question",
+    "intent": "question_definition",
+    "response_type": "explanation",
+    "examples": [
+      "define provision",
+      "define accrual"
+    ]
+  },
+  "explain": {
+    "pattern": "explain",
+    "type": "definition_question",
+    "intent": "question_definition",
+    "response_type": "explanation",
+    "examples": [
+      "explain double entry"
+    ]
+  },
+  "?": {
+    "pattern": "?",
+    "type": "punctuation_question",
+    "intent": "question_general",
+    "response_type": "explanation",
+    "examples": [
+      "balance?",
+      "VAT?"
+    ]
+  },
+  "k huncha": {
+    "pattern": "k huncha",
+    "type": "process_question",
+    "intent": "question_howto",
+    "response_type": "explanation",
+    "examples": [
+      "entry k huncha",
+      "VAT file k huncha"
+    ]
+  },
+  "thik ho ki": {
+    "pattern": "thik ho ki",
+    "type": "confirmation_question",
+    "intent": "confirm_pending",
+    "response_type": "confirm_flow",
+    "examples": [
+      "yo thik ho ki",
+      "500 thik ho"
+    ]
+  },
+  "ho ki hoina": {
+    "pattern": "ho ki hoina",
+    "type": "confirmation_question",
+    "intent": "confirm_pending",
+    "response_type": "confirm_flow",
+    "examples": [
+      "entry gareko ho ki hoina"
+    ]
+  },
+  "500 diye ki nadiye": {
+    "pattern": "500 diye ki nadiye",
+    "type": "rhetorical_entry",
+    "intent": "khata_payment_out",
+    "response_type": "entry",
+    "examples": [
+      "500 diye ki nadiye"
+    ]
+  },
+  "becheko ki kineko": {
+    "pattern": "becheko ki kineko",
+    "type": "ambiguous_direction",
+    "intent": "needs_clarify",
+    "response_type": "clarify",
+    "examples": [
+      "sariya becheko ki kineko"
+    ]
+  },
+  "noksan k ho": {
+    "pattern": "noksan k ho",
+    "type": "critical_distinction",
+    "intent": "question_definition",
+    "response_type": "explanation",
+    "examples": [
+      "noksan k ho"
+    ]
+  },
+  "noksan vo 400": {
+    "pattern": "noksan vo 400",
+    "type": "critical_distinction",
+    "intent": "khata_expense",
+    "response_type": "entry",
+    "examples": [
+      "noksan vo 400",
+      "nokshan bhayo 400"
+    ]
+  },
+  "vat kati %": {
+    "pattern": "VAT kati %",
+    "type": "critical_distinction",
+    "intent": "question_tax_rate",
+    "response_type": "rate_answer",
+    "examples": [
+      "VAT kati %"
+    ]
+  },
+  "vat 13% tireko": {
+    "pattern": "VAT 13% tireko",
+    "type": "critical_distinction",
+    "intent": "khata_expense",
+    "response_type": "entry",
+    "examples": [
+      "VAT 13% tireko"
+    ]
+  },
+  "balance sheet k ho": {
+    "pattern": "balance sheet k ho",
+    "type": "report_question",
+    "intent": "question_definition",
+    "response_type": "explanation",
+    "examples": [
+      "balance sheet k ho"
+    ]
+  },
+  "balance kati cha": {
+    "pattern": "balance kati cha",
+    "type": "balance_question",
+    "intent": "question_balance",
+    "response_type": "balance_answer",
+    "examples": [
+      "balance kati cha",
+      "khata balance"
+    ]
+  },
+  "ram ko baki": {
+    "pattern": "Ram ko baki",
+    "type": "party_balance_question",
+    "intent": "question_balance",
+    "response_type": "balance_answer",
+    "examples": [
+      "Ram ko baki kati"
+    ]
+  },
+  "entry kasari": {
+    "pattern": "entry kasari",
+    "type": "howto_question",
+    "intent": "question_howto",
+    "response_type": "explanation",
+    "examples": [
+      "khata entry kasari garne"
+    ]
+  },
+  "kati tirnu parcha": {
+    "pattern": "kati tirnu parcha",
+    "type": "obligation_question",
+    "intent": "question_tax",
+    "response_type": "tax_answer",
+    "examples": [
+      "tax kati tirnu parcha"
+    ]
+  },
+  "kun din": {
+    "pattern": "kun din",
+    "type": "date_question",
+    "intent": "question_when",
+    "response_type": "date_answer",
+    "examples": [
+      "file kun din"
+    ]
+  },
+  "kasto cha": {
+    "pattern": "kasto cha",
+    "type": "status_question",
+    "intent": "question_status",
+    "response_type": "status_answer",
+    "examples": [
+      "hisaab kasto cha"
+    ]
+  },
+  "sampatti k ho": {
+    "pattern": "sampatti k ho",
+    "type": "accounting_concept",
+    "intent": "question_definition",
+    "response_type": "explanation",
+    "examples": [
+      "sampatti k ho",
+      "asset k ho"
+    ]
+  },
+  "kitna": {
+    "pattern": "kitna",
+    "type": "hindi_question",
+    "intent": "question_amount",
+    "response_type": "numeric_answer",
+    "examples": [
+      "kitna baki",
+      "kitna tax"
+    ]
+  },
+  "what is": {
+    "pattern": "what is",
+    "type": "english_question",
+    "intent": "question_definition",
+    "response_type": "explanation",
+    "examples": [
+      "what is depreciation"
+    ]
+  },
+  "how much": {
+    "pattern": "how much",
+    "type": "english_amount",
+    "intent": "question_amount",
+    "response_type": "numeric_answer",
+    "examples": [
+      "how much VAT",
+      "how much balance"
+    ]
+  }
+}

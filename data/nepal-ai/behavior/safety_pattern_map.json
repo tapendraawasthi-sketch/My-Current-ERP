@@ -1,0 +1,72 @@
+{
+  "kar\\s*chori|tax\\s*chori|chori\\s*gar|billa\\s*napa|fake\\s*bill|bhusawal": {
+    "category": "tax_evasion_request",
+    "action": "refuse",
+    "response_ne": "Yo request garna mildaina. Ma kanuni hisab-kitab ra surakshit tarika ma matra sahayog garchhu.",
+    "response_en": "I cannot help with that request. I can assist with lawful accounting and compliance.",
+    "risk_level": "high"
+  },
+  "fake\\s*(invoice|bill|voucher|document)|jali\\s*(bill|invoice)|nakali": {
+    "category": "fake_document",
+    "action": "refuse",
+    "response_ne": "Yo request garna mildaina. Ma kanuni hisab-kitab ra surakshit tarika ma matra sahayog garchhu.",
+    "response_en": "I cannot help with that request. I can assist with lawful accounting and compliance.",
+    "risk_level": "high"
+  },
+  "diagnosis|birami\\s*ko\\s*ke\\s*ho|dawai\\s*khau|medicine\\s*le": {
+    "category": "medical_diagnosis",
+    "action": "refuse",
+    "response_ne": "Yo request garna mildaina. Ma kanuni hisab-kitab ra surakshit tarika ma matra sahayog garchhu.",
+    "response_en": "I cannot help with that request. I can assist with lawful accounting and compliance.",
+    "risk_level": "high"
+  },
+  "mudda\\s*jit|case\\s*jit|wakil\\s*bina|illegal\\s*tarika": {
+    "category": "legal_strategy_specific",
+    "action": "disclaimer",
+    "response_ne": "Yo request garna mildaina. Ma kanuni hisab-kitab ra surakshit tarika ma matra sahayog garchhu.",
+    "response_en": "I cannot help with that request. I can assist with lawful accounting and compliance.",
+    "risk_level": "high"
+  },
+  "share\\s*kin|mutual\\s*fund|invest\\s*gar|portfolio\\s*bana": {
+    "category": "investment_advice",
+    "action": "disclaimer",
+    "response_ne": "Yo request garna mildaina. Ma kanuni hisab-kitab ra surakshit tarika ma matra sahayog garchhu.",
+    "response_en": "I cannot help with that request. I can assist with lawful accounting and compliance.",
+    "risk_level": "medium"
+  },
+  "black\\s*money|undisclosed\\s*cash|cash\\s*hide": {
+    "category": "tax_evasion_request",
+    "action": "refuse",
+    "response_ne": "Yo request garna mildaina. Ma kanuni hisab-kitab ra surakshit tarika ma matra sahayog garchhu.",
+    "response_en": "I cannot help with that request. I can assist with lawful accounting and compliance.",
+    "risk_level": "high"
+  },
+  "bribe|ghush|raswat": {
+    "category": "corruption",
+    "action": "refuse",
+    "response_ne": "Yo request garna mildaina. Ma kanuni hisab-kitab ra surakshit tarika ma matra sahayog garchhu.",
+    "response_en": "I cannot help with that request. I can assist with lawful accounting and compliance.",
+    "risk_level": "high"
+  },
+  "hack|password\\s*chor|account\\s*chor": {
+    "category": "cybercrime",
+    "action": "refuse",
+    "response_ne": "Yo request garna mildaina. Ma kanuni hisab-kitab ra surakshit tarika ma matra sahayog garchhu.",
+    "response_en": "I cannot help with that request. I can assist with lawful accounting and compliance.",
+    "risk_level": "high"
+  },
+  "loan\\s*without\\s*record|off\\s*books": {
+    "category": "tax_evasion_request",
+    "action": "refuse",
+    "response_ne": "Yo request garna mildaina. Ma kanuni hisab-kitab ra surakshit tarika ma matra sahayog garchhu.",
+    "response_en": "I cannot help with that request. I can assist with lawful accounting and compliance.",
+    "risk_level": "high"
+  },
+  "pan\\s*fake|fake\\s*pan": {
+    "category": "fake_document",
+    "action": "refuse",
+    "response_ne": "Yo request garna mildaina. Ma kanuni hisab-kitab ra surakshit tarika ma matra sahayog garchhu.",
+    "response_en": "I cannot help with that request. I can assist with lawful accounting and compliance.",
+    "risk_level": "high"
+  }
+}

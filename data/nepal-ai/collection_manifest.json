@@ -1,0 +1,275 @@
+{
+  "project": "Nepal Universal AI",
+  "description": "Tracks Claude collection batches and ingestion status",
+  "batches": {
+    "01_master_sectors": {
+      "status": "ingested",
+      "source": "data/nepal-ai/ontology/master_sectors.jsonl",
+      "sectors": 50,
+      "router_phrases": 150
+    },
+    "02_verbs_core": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/verbs_core.jsonl",
+      "verbs": 25,
+      "examples": 75
+    },
+    "03_verbs_auxiliary": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/verbs_auxiliary.jsonl",
+      "verbs": 20,
+      "examples": 0
+    },
+    "04_particles": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/particles.jsonl",
+      "particles": 30,
+      "patterns": 150,
+      "normalize_entries": 134
+    },
+    "13_restaurant_cafe": {
+      "status": "ingested",
+      "source": "data/nepal-ai/sectors/restaurant_cafe.jsonl",
+      "sector": "restaurant_cafe",
+      "sector_slug": "restaurant-cafe",
+      "phrases": 40,
+      "clarify_cases": 6
+    },
+    "11_retail_kirana": {
+      "status": "ingested",
+      "source": "data/nepal-ai/sectors/retail_kirana.jsonl",
+      "sector": "retail_kirana",
+      "sector_slug": "kirana-grocery",
+      "phrases": 40,
+      "clarify_cases": 8
+    },
+    "12_hardware_construction": {
+      "status": "ingested",
+      "source": "data/nepal-ai/sectors/hardware_construction.jsonl",
+      "sector": "hardware_construction",
+      "sector_slug": "hardware-construction-materials-shop",
+      "phrases": 40,
+      "clarify_cases": 12
+    },
+    "14_mobile_electronics": {
+      "status": "ingested",
+      "source": "data/nepal-ai/sectors/mobile_electronics.jsonl",
+      "sector": "mobile_electronics",
+      "sector_slug": "electronics-mobile-shop",
+      "phrases": 40,
+      "clarify_cases": 8
+    },
+    "15_health_admin": {
+      "status": "ingested",
+      "source": "data/nepal-ai/sectors/health_admin.jsonl",
+      "sector": "health_admin",
+      "sector_slug": "clinic-health",
+      "phrases": 40,
+      "clarify_cases": 2
+    },
+    "16_transport_logistics": {
+      "status": "ingested",
+      "source": "data/nepal-ai/sectors/transport_logistics.jsonl",
+      "sector": "transport_logistics",
+      "sector_slug": "transport-logistics",
+      "phrases": 40,
+      "clarify_cases": 2
+    },
+    "17_agriculture": {
+      "status": "ingested",
+      "source": "data/nepal-ai/sectors/agriculture.jsonl",
+      "sector": "agriculture",
+      "sector_slug": "agriculture-farming",
+      "phrases": 40,
+      "clarify_cases": 1
+    },
+    "18_education": {
+      "status": "ingested",
+      "source": "data/nepal-ai/sectors/education.jsonl",
+      "sector": "education",
+      "sector_slug": "education-training",
+      "phrases": 40,
+      "clarify_cases": 1
+    },
+    "19_professional_services": {
+      "status": "ingested",
+      "source": "data/nepal-ai/sectors/professional_services.jsonl",
+      "sector": "professional_services",
+      "sector_slug": "professional-services",
+      "phrases": 40,
+      "clarify_cases": 0
+    },
+    "20_polysemy": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/polysemy.jsonl",
+      "entries": 40
+    },
+    "21_tax_vocabulary": {
+      "status": "ingested",
+      "source": "data/nepal-ai/regulated/tax_vocabulary.jsonl",
+      "terms": 40
+    },
+    "22_legal_vocabulary": {
+      "status": "ingested",
+      "source": "data/nepal-ai/regulated/legal_vocabulary.jsonl",
+      "terms": 40
+    },
+    "23_labor_ssf": {
+      "status": "ingested",
+      "source": "data/nepal-ai/regulated/labor_ssf.jsonl",
+      "terms": 40
+    },
+    "24_banking_finance": {
+      "status": "ingested",
+      "source": "data/nepal-ai/regulated/banking_finance.jsonl",
+      "terms": 42
+    },
+    "25_government_services": {
+      "status": "ingested",
+      "source": "data/nepal-ai/regulated/government_services.jsonl",
+      "terms": 42
+    },
+    "26_accounting_concepts": {
+      "status": "ingested",
+      "source": "data/nepal-ai/knowledge/accounting_concepts.jsonl",
+      "concepts": 39
+    },
+    "27_typos_variants": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/typos_variants.jsonl",
+      "variants": 53,
+      "normalize_entries": 223
+    },
+    "28_multiturn_patterns": {
+      "status": "ingested",
+      "source": "data/nepal-ai/behavior/multiturn_patterns.jsonl",
+      "chains": 30
+    },
+    "29_clarify_templates": {
+      "status": "ingested",
+      "source": "data/nepal-ai/behavior/clarify_templates.jsonl",
+      "templates": 40,
+      "normalize_entries": 40
+    },
+    "30_router_training": {
+      "status": "ingested",
+      "source": "data/nepal-ai/behavior/router_training.jsonl",
+      "examples": 51
+    },
+    "31_entity_extraction": {
+      "status": "ingested",
+      "source": "data/nepal-ai/behavior/entity_extraction.jsonl",
+      "examples": 50
+    },
+    "32_safety_refusals": {
+      "status": "ingested",
+      "source": "data/nepal-ai/behavior/safety_refusals.jsonl",
+      "patterns": 40,
+      "normalize_entries": 10
+    },
+    "33_golden_core": {
+      "status": "ingested",
+      "source": "data/nepal-ai/eval/golden_core.jsonl",
+      "cases": 50
+    },
+    "34_golden_edge": {
+      "status": "ingested",
+      "source": "data/nepal-ai/eval/golden_edge.jsonl",
+      "cases": 40
+    },
+    "35_proverbs_idioms": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/proverbs_idioms.jsonl",
+      "proverbs": 30
+    },
+    "36_nepal_geography": {
+      "status": "ingested",
+      "source": "data/nepal-ai/knowledge/nepal_geography.jsonl",
+      "entries": 40
+    },
+    "37_festivals_holidays": {
+      "status": "ingested",
+      "source": "data/nepal-ai/knowledge/festivals_holidays.jsonl",
+      "festivals": 21
+    },
+    "38_food_menu": {
+      "status": "ingested",
+      "source": "data/nepal-ai/knowledge/food_menu.jsonl",
+      "items": 50
+    },
+    "39_construction_materials": {
+      "status": "ingested",
+      "source": "data/nepal-ai/knowledge/construction_materials.jsonl",
+      "materials": 44
+    },
+    "40_intent_taxonomy": {
+      "status": "ingested",
+      "source": "data/nepal-ai/ontology/intent_taxonomy.jsonl",
+      "intents": 55,
+      "normalize_entries": 55
+    },
+    "05_numbers_amounts": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/numbers_amounts.jsonl",
+      "patterns": 39,
+      "kb_chunks": 39,
+      "normalize_entries": 144
+    },
+    "06_profit_loss_vocab": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/profit_loss_vocab.jsonl",
+      "terms": 41,
+      "kb_chunks": 41,
+      "normalize_entries": 95
+    },
+    "07_credit_debt_vocab": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/credit_debt_vocab.jsonl",
+      "terms": 42,
+      "kb_chunks": 42,
+      "normalize_entries": 94
+    },
+    "08_question_patterns": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/question_patterns.jsonl",
+      "patterns": 37,
+      "kb_chunks": 37,
+      "normalize_entries": 37
+    },
+    "09_affirmation_negation": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/affirmation_negation.jsonl",
+      "patterns": 42,
+      "kb_chunks": 42,
+      "normalize_entries": 93
+    },
+    "10_time_date": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/time_date.jsonl",
+      "patterns": 41,
+      "kb_chunks": 41,
+      "normalize_entries": 82
+    }
+  },
+  "totals": {
+    "sectors": 50,
+    "batches_complete": 40,
+    "batches_pending": 0,
+    "router_phrases": 150,
+    "verbs": 45,
+    "verb_normalize_entries": 1006,
+    "verb_examples": 75,
+    "particles": 30,
+    "particle_patterns": 150,
+    "particle_normalize_entries": 134,
+    "sector_phrase_batches": 3,
+    "sector_phrases": 360,
+    "05_numbers_amounts": 39,
+    "06_profit_loss_vocab": 41,
+    "07_credit_debt_vocab": 42,
+    "08_question_patterns": 37,
+    "09_affirmation_negation": 42,
+    "10_time_date": 41
+  },
+  "next_batch": "complete"
+}

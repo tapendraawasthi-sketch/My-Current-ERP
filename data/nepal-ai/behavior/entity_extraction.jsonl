@@ -1,0 +1,50 @@
+{"input": "Ram lai cement 2 bag 2800 ma becheko", "entities": {"party": {"value": "Ram", "start": 0, "end": 3}, "item": {"value": "cement"}, "quantity": {"value": "2 bag"}, "amount": {"value": 2800}, "direction": {"value": "lai", "role": "recipient"}}, "intent": "khata_credit_sale"}
+{"input": "Shyam le 500 tiryo", "entities": {"party": {"value": "Shyam", "start": 0, "end": 5}, "amount": {"value": 500}, "direction": {"value": "le", "role": "agent"}}, "intent": "khata_payment_in"}
+{"input": "Gita lai 2000 payment gareko", "entities": {"party": {"value": "Gita", "start": 0, "end": 4}, "amount": {"value": 2000}, "direction": {"value": "lai", "role": "recipient"}}, "intent": "khata_payment_out"}
+{"input": "cash ma momo 1500 becheko", "entities": {"item": {"value": "momo"}, "amount": {"value": 1500}}, "intent": "khata_cash_sale"}
+{"input": "bijuli kharcha 800", "entities": {"item": {"value": "bijuli"}, "amount": {"value": 800}}, "intent": "khata_expense"}
+{"input": "noksan vo 400", "entities": {"item": {"value": "noksan"}, "amount": {"value": 400}}, "intent": "khata_expense"}
+{"input": "sariya kineye ghar banauna", "entities": {"item": {"value": "sariya"}}, "intent": "khata_purchase"}
+{"input": "Hari bata 50 bag cement 70000 ma kineko", "entities": {"party": {"value": "Hari", "start": 0, "end": 4}, "item": {"value": "cement"}, "quantity": {"value": "50 bag"}, "amount": {"value": 70000}, "direction": {"value": "bata", "role": "agent"}}, "intent": "khata_credit_purchase"}
+{"input": "20 samosa 50 eutako becheko", "entities": {"item": {"value": "samosa"}, "quantity": {"value": "20"}, "amount": {"value": 1000}}, "intent": "khata_cash_sale"}
+{"input": "salary 45000 aaja", "entities": {"item": {"value": "salary"}, "amount": {"value": 45000}}, "intent": "khata_salary_payment"}
+{"input": "bank bata loan 200000 liyo", "entities": {"party": {"value": "bank", "start": 0, "end": 4}, "item": {"value": "loan"}, "amount": {"value": 200000}, "direction": {"value": "bata", "role": "agent"}}, "intent": "khata_loan_received"}
+{"input": "owner drawings 10000", "entities": {"party": {"value": "owner", "start": 0, "end": 5}, "item": {"value": "drawings"}, "amount": {"value": 10000}}, "intent": "khata_drawings"}
+{"input": "VAT 13% 6500 tireko", "entities": {"item": {"value": "VAT"}, "amount": {"value": 6500}}, "intent": "khata_expense"}
+{"input": "stock noksan 1500", "entities": {"item": {"value": "stock"}, "amount": {"value": 1500}}, "intent": "khata_expense"}
+{"input": "paanch hajar kharcha hijo", "entities": {"amount": {"value": 5000}}, "intent": "khata_expense"}
+{"input": "Krishna lai paint 3 bucket 4500 udhaar", "entities": {"party": {"value": "Krishna", "start": 0, "end": 7}, "item": {"value": "paint"}, "quantity": {"value": "3 bucket"}, "amount": {"value": 4500}, "direction": {"value": "lai", "role": "recipient"}}, "intent": "khata_credit_sale"}
+{"input": "supplier Nepal Steel bata rod 100000 kineko", "entities": {"party": {"value": "Nepal Steel", "start": 0, "end": 11}, "item": {"value": "rod"}, "amount": {"value": 100000}, "direction": {"value": "bata", "role": "agent"}}, "intent": "khata_purchase"}
+{"input": "customer return momo 200 firta", "entities": {"item": {"value": "momo"}, "amount": {"value": 200}}, "intent": "khata_sales_return"}
+{"input": "esewa bata 3500 aayo", "entities": {"party": {"value": "esewa", "start": 0, "end": 5}, "amount": {"value": 3500}, "direction": {"value": "bata", "role": "agent"}}, "intent": "khata_payment_in"}
+{"input": "commission agent 500 tireko", "entities": {"party": {"value": "agent", "start": 0, "end": 5}, "item": {"value": "commission"}, "amount": {"value": 500}}, "intent": "khata_expense"}
+{"input": "Party21 lai item 500 ma becheko", "entities": {"party": {"value": "Party21"}, "amount": {"value": 710}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party22 lai item 500 ma becheko", "entities": {"party": {"value": "Party22"}, "amount": {"value": 720}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party23 lai item 500 ma becheko", "entities": {"party": {"value": "Party23"}, "amount": {"value": 730}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party24 lai item 500 ma becheko", "entities": {"party": {"value": "Party24"}, "amount": {"value": 740}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party25 lai item 500 ma becheko", "entities": {"party": {"value": "Party25"}, "amount": {"value": 750}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party26 lai item 500 ma becheko", "entities": {"party": {"value": "Party26"}, "amount": {"value": 760}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party27 lai item 500 ma becheko", "entities": {"party": {"value": "Party27"}, "amount": {"value": 770}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party28 lai item 500 ma becheko", "entities": {"party": {"value": "Party28"}, "amount": {"value": 780}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party29 lai item 500 ma becheko", "entities": {"party": {"value": "Party29"}, "amount": {"value": 790}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party30 lai item 500 ma becheko", "entities": {"party": {"value": "Party30"}, "amount": {"value": 800}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party31 lai item 500 ma becheko", "entities": {"party": {"value": "Party31"}, "amount": {"value": 810}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party32 lai item 500 ma becheko", "entities": {"party": {"value": "Party32"}, "amount": {"value": 820}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party33 lai item 500 ma becheko", "entities": {"party": {"value": "Party33"}, "amount": {"value": 830}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party34 lai item 500 ma becheko", "entities": {"party": {"value": "Party34"}, "amount": {"value": 840}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party35 lai item 500 ma becheko", "entities": {"party": {"value": "Party35"}, "amount": {"value": 850}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party36 lai item 500 ma becheko", "entities": {"party": {"value": "Party36"}, "amount": {"value": 860}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party37 lai item 500 ma becheko", "entities": {"party": {"value": "Party37"}, "amount": {"value": 870}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party38 lai item 500 ma becheko", "entities": {"party": {"value": "Party38"}, "amount": {"value": 880}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party39 lai item 500 ma becheko", "entities": {"party": {"value": "Party39"}, "amount": {"value": 890}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party40 lai item 500 ma becheko", "entities": {"party": {"value": "Party40"}, "amount": {"value": 900}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party41 lai item 500 ma becheko", "entities": {"party": {"value": "Party41"}, "amount": {"value": 910}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party42 lai item 500 ma becheko", "entities": {"party": {"value": "Party42"}, "amount": {"value": 920}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party43 lai item 500 ma becheko", "entities": {"party": {"value": "Party43"}, "amount": {"value": 930}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party44 lai item 500 ma becheko", "entities": {"party": {"value": "Party44"}, "amount": {"value": 940}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party45 lai item 500 ma becheko", "entities": {"party": {"value": "Party45"}, "amount": {"value": 950}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party46 lai item 500 ma becheko", "entities": {"party": {"value": "Party46"}, "amount": {"value": 960}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party47 lai item 500 ma becheko", "entities": {"party": {"value": "Party47"}, "amount": {"value": 970}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party48 lai item 500 ma becheko", "entities": {"party": {"value": "Party48"}, "amount": {"value": 980}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party49 lai item 500 ma becheko", "entities": {"party": {"value": "Party49"}, "amount": {"value": 990}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}
+{"input": "Party50 lai item 500 ma becheko", "entities": {"party": {"value": "Party50"}, "amount": {"value": 1000}, "direction": {"value": "lai"}}, "intent": "khata_credit_sale"}

@@ -1,0 +1,940 @@
+{
+  "le": {
+    "particle": "le",
+    "direction_vector": "AGENT_IDENTIFIER",
+    "transaction_direction": "identifies_acting_party_or_instrument_of_payment",
+    "intent_hint": "khata_journal",
+    "signal_strength": "HIGH"
+  },
+  "lai": {
+    "particle": "lai",
+    "direction_vector": "OUTBOUND",
+    "transaction_direction": "money_out_or_goods_out_to_recipient",
+    "intent_hint": "khata_payment_out",
+    "signal_strength": "HIGH"
+  },
+  "laai": {
+    "particle": "lai",
+    "direction_vector": "OUTBOUND",
+    "transaction_direction": "money_out_or_goods_out_to_recipient",
+    "intent_hint": "khata_payment_out",
+    "signal_strength": "HIGH"
+  },
+  "laii": {
+    "particle": "lai",
+    "direction_vector": "OUTBOUND",
+    "transaction_direction": "money_out_or_goods_out_to_recipient",
+    "intent_hint": "khata_payment_out",
+    "signal_strength": "HIGH"
+  },
+  "lāī": {
+    "particle": "lai",
+    "direction_vector": "OUTBOUND",
+    "transaction_direction": "money_out_or_goods_out_to_recipient",
+    "intent_hint": "khata_payment_out",
+    "signal_strength": "HIGH"
+  },
+  "lé": {
+    "particle": "le",
+    "direction_vector": "AGENT_IDENTIFIER",
+    "transaction_direction": "identifies_acting_party_or_instrument_of_payment",
+    "intent_hint": "khata_journal",
+    "signal_strength": "HIGH"
+  },
+  "lee": {
+    "particle": "le",
+    "direction_vector": "AGENT_IDENTIFIER",
+    "transaction_direction": "identifies_acting_party_or_instrument_of_payment",
+    "intent_hint": "khata_journal",
+    "signal_strength": "HIGH"
+  },
+  "ley": {
+    "particle": "le",
+    "direction_vector": "AGENT_IDENTIFIER",
+    "transaction_direction": "identifies_acting_party_or_instrument_of_payment",
+    "intent_hint": "khata_journal",
+    "signal_strength": "HIGH"
+  },
+  "baata": {
+    "particle": "bata",
+    "direction_vector": "INBOUND_SOURCE",
+    "transaction_direction": "money_in_or_goods_in_from_source",
+    "intent_hint": "khata_payment_in",
+    "signal_strength": "HIGH"
+  },
+  "bata": {
+    "particle": "bata",
+    "direction_vector": "INBOUND_SOURCE",
+    "transaction_direction": "money_in_or_goods_in_from_source",
+    "intent_hint": "khata_payment_in",
+    "signal_strength": "HIGH"
+  },
+  "baat": {
+    "particle": "bata",
+    "direction_vector": "INBOUND_SOURCE",
+    "transaction_direction": "money_in_or_goods_in_from_source",
+    "intent_hint": "khata_payment_in",
+    "signal_strength": "HIGH"
+  },
+  "bat": {
+    "particle": "bata",
+    "direction_vector": "INBOUND_SOURCE",
+    "transaction_direction": "money_in_or_goods_in_from_source",
+    "intent_hint": "khata_payment_in",
+    "signal_strength": "HIGH"
+  },
+  "bāṭa": {
+    "particle": "bata",
+    "direction_vector": "INBOUND_SOURCE",
+    "transaction_direction": "money_in_or_goods_in_from_source",
+    "intent_hint": "khata_payment_in",
+    "signal_strength": "HIGH"
+  },
+  "sanga": {
+    "particle": "sanga",
+    "direction_vector": "BILATERAL_OR_HOLDER",
+    "transaction_direction": "party_holding_balance_or_joint_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "sāṃga": {
+    "particle": "sanga",
+    "direction_vector": "BILATERAL_OR_HOLDER",
+    "transaction_direction": "party_holding_balance_or_joint_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "saanga": {
+    "particle": "sanga",
+    "direction_vector": "BILATERAL_OR_HOLDER",
+    "transaction_direction": "party_holding_balance_or_joint_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "sitaa": {
+    "particle": "sanga",
+    "direction_vector": "BILATERAL_OR_HOLDER",
+    "transaction_direction": "party_holding_balance_or_joint_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "sita": {
+    "particle": "sanga",
+    "direction_vector": "BILATERAL_OR_HOLDER",
+    "transaction_direction": "party_holding_balance_or_joint_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "ko": {
+    "particle": "ko",
+    "direction_vector": "OWNERSHIP_SCOPE",
+    "transaction_direction": "ownership_or_subject_of_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "k0": {
+    "particle": "ko",
+    "direction_vector": "OWNERSHIP_SCOPE",
+    "transaction_direction": "ownership_or_subject_of_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "kō": {
+    "particle": "ko",
+    "direction_vector": "OWNERSHIP_SCOPE",
+    "transaction_direction": "ownership_or_subject_of_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "m": {
+    "particle": "ma",
+    "direction_vector": "LOCATION_OR_TARGET",
+    "transaction_direction": "location_of_transaction_or_deposit_target",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "mā": {
+    "particle": "ma",
+    "direction_vector": "LOCATION_OR_TARGET",
+    "transaction_direction": "location_of_transaction_or_deposit_target",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "maa": {
+    "particle": "ma",
+    "direction_vector": "LOCATION_OR_TARGET",
+    "transaction_direction": "location_of_transaction_or_deposit_target",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "ma": {
+    "particle": "ma",
+    "direction_vector": "LOCATION_OR_TARGET",
+    "transaction_direction": "location_of_transaction_or_deposit_target",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "dekhī": {
+    "particle": "dekhi",
+    "direction_vector": "TEMPORAL_RANGE_START",
+    "transaction_direction": "start_of_time_period_or_range_for_transaction_filter",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "deki": {
+    "particle": "dekhi",
+    "direction_vector": "TEMPORAL_RANGE_START",
+    "transaction_direction": "start_of_time_period_or_range_for_transaction_filter",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "dekhi": {
+    "particle": "dekhi",
+    "direction_vector": "TEMPORAL_RANGE_START",
+    "transaction_direction": "start_of_time_period_or_range_for_transaction_filter",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "sammaa": {
+    "particle": "samma",
+    "direction_vector": "TEMPORAL_OR_AMOUNT_CEILING",
+    "transaction_direction": "end_of_period_or_amount_ceiling_for_transaction",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "samma": {
+    "particle": "samma",
+    "direction_vector": "TEMPORAL_OR_AMOUNT_CEILING",
+    "transaction_direction": "end_of_period_or_amount_ceiling_for_transaction",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "samm": {
+    "particle": "samma",
+    "direction_vector": "TEMPORAL_OR_AMOUNT_CEILING",
+    "transaction_direction": "end_of_period_or_amount_ceiling_for_transaction",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "sam": {
+    "particle": "samma",
+    "direction_vector": "TEMPORAL_OR_AMOUNT_CEILING",
+    "transaction_direction": "end_of_period_or_amount_ceiling_for_transaction",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "sansamma": {
+    "particle": "samma",
+    "direction_vector": "TEMPORAL_OR_AMOUNT_CEILING",
+    "transaction_direction": "end_of_period_or_amount_ceiling_for_transaction",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "lāgi": {
+    "particle": "lagi",
+    "direction_vector": "PURPOSE_OR_BENEFICIARY",
+    "transaction_direction": "purpose_or_beneficiary_of_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "lagi": {
+    "particle": "lagi",
+    "direction_vector": "PURPOSE_OR_BENEFICIARY",
+    "transaction_direction": "purpose_or_beneficiary_of_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "laagi": {
+    "particle": "lagi",
+    "direction_vector": "PURPOSE_OR_BENEFICIARY",
+    "transaction_direction": "purpose_or_beneficiary_of_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "lagī": {
+    "particle": "lagi",
+    "direction_vector": "PURPOSE_OR_BENEFICIARY",
+    "transaction_direction": "purpose_or_beneficiary_of_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "parti": {
+    "particle": "prati",
+    "direction_vector": "UNIT_RATE_OR_FORMAL_ADDRESSEE",
+    "transaction_direction": "unit_rate_or_formal_addressee",
+    "intent_hint": "khata_journal",
+    "signal_strength": "HIGH_FOR_RATE"
+  },
+  "priti": {
+    "particle": "prati",
+    "direction_vector": "UNIT_RATE_OR_FORMAL_ADDRESSEE",
+    "transaction_direction": "unit_rate_or_formal_addressee",
+    "intent_hint": "khata_journal",
+    "signal_strength": "HIGH_FOR_RATE"
+  },
+  "prati": {
+    "particle": "prati",
+    "direction_vector": "UNIT_RATE_OR_FORMAL_ADDRESSEE",
+    "transaction_direction": "unit_rate_or_formal_addressee",
+    "intent_hint": "khata_journal",
+    "signal_strength": "HIGH_FOR_RATE"
+  },
+  "bina": {
+    "particle": "bina",
+    "direction_vector": "ABSENT_ELEMENT",
+    "transaction_direction": "absent_element_in_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "HIGH_FOR_COMPLIANCE"
+  },
+  "binna": {
+    "particle": "bina",
+    "direction_vector": "ABSENT_ELEMENT",
+    "transaction_direction": "absent_element_in_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "HIGH_FOR_COMPLIANCE"
+  },
+  "binaa": {
+    "particle": "bina",
+    "direction_vector": "ABSENT_ELEMENT",
+    "transaction_direction": "absent_element_in_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "HIGH_FOR_COMPLIANCE"
+  },
+  "vina": {
+    "particle": "bina",
+    "direction_vector": "ABSENT_ELEMENT",
+    "transaction_direction": "absent_element_in_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "HIGH_FOR_COMPLIANCE"
+  },
+  "baheka": {
+    "particle": "bahek",
+    "direction_vector": "EXCLUSION",
+    "transaction_direction": "excluded_party_or_item_from_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "baahek": {
+    "particle": "bahek",
+    "direction_vector": "EXCLUSION",
+    "transaction_direction": "excluded_party_or_item_from_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "baaheek": {
+    "particle": "bahek",
+    "direction_vector": "EXCLUSION",
+    "transaction_direction": "excluded_party_or_item_from_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "bahek": {
+    "particle": "bahek",
+    "direction_vector": "EXCLUSION",
+    "transaction_direction": "excluded_party_or_item_from_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "vanda": {
+    "particle": "bhanda",
+    "direction_vector": "COMPARATIVE_THRESHOLD",
+    "transaction_direction": "comparison_of_amounts_or_parties",
+    "intent_hint": "query",
+    "signal_strength": "HIGH_FOR_FILTERS"
+  },
+  "bhannda": {
+    "particle": "bhanda",
+    "direction_vector": "COMPARATIVE_THRESHOLD",
+    "transaction_direction": "comparison_of_amounts_or_parties",
+    "intent_hint": "query",
+    "signal_strength": "HIGH_FOR_FILTERS"
+  },
+  "bhanta": {
+    "particle": "bhanda",
+    "direction_vector": "COMPARATIVE_THRESHOLD",
+    "transaction_direction": "comparison_of_amounts_or_parties",
+    "intent_hint": "query",
+    "signal_strength": "HIGH_FOR_FILTERS"
+  },
+  "bhanda": {
+    "particle": "bhanda",
+    "direction_vector": "COMPARATIVE_THRESHOLD",
+    "transaction_direction": "comparison_of_amounts_or_parties",
+    "intent_hint": "query",
+    "signal_strength": "HIGH_FOR_FILTERS"
+  },
+  "bhandaa": {
+    "particle": "bhanda",
+    "direction_vector": "COMPARATIVE_THRESHOLD",
+    "transaction_direction": "comparison_of_amounts_or_parties",
+    "intent_hint": "query",
+    "signal_strength": "HIGH_FOR_FILTERS"
+  },
+  "jsto": {
+    "particle": "jasto",
+    "direction_vector": "APPROXIMATION",
+    "transaction_direction": "approximate_amount_or_analogy",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW_APPROXIMATE"
+  },
+  "jasstho": {
+    "particle": "jasto",
+    "direction_vector": "APPROXIMATION",
+    "transaction_direction": "approximate_amount_or_analogy",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW_APPROXIMATE"
+  },
+  "jestho": {
+    "particle": "jasto",
+    "direction_vector": "APPROXIMATION",
+    "transaction_direction": "approximate_amount_or_analogy",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW_APPROXIMATE"
+  },
+  "jasto": {
+    "particle": "jasto",
+    "direction_vector": "APPROXIMATION",
+    "transaction_direction": "approximate_amount_or_analogy",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW_APPROXIMATE"
+  },
+  "pachadi": {
+    "particle": "pachhadi",
+    "direction_vector": "TEMPORAL_AFTER",
+    "transaction_direction": "transaction_occurring_after_event_or_deadline",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "pachaadi": {
+    "particle": "pachhadi",
+    "direction_vector": "TEMPORAL_AFTER",
+    "transaction_direction": "transaction_occurring_after_event_or_deadline",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "pachhadi": {
+    "particle": "pachhadi",
+    "direction_vector": "TEMPORAL_AFTER",
+    "transaction_direction": "transaction_occurring_after_event_or_deadline",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "pachi": {
+    "particle": "pachhadi",
+    "direction_vector": "TEMPORAL_AFTER",
+    "transaction_direction": "transaction_occurring_after_event_or_deadline",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "pachhi": {
+    "particle": "pachhadi",
+    "direction_vector": "TEMPORAL_AFTER",
+    "transaction_direction": "transaction_occurring_after_event_or_deadline",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "agadi": {
+    "particle": "agaadi",
+    "direction_vector": "TEMPORAL_BEFORE_OR_ADVANCE",
+    "transaction_direction": "advance_payment_or_precondition_before_transaction",
+    "intent_hint": "khata_payment_out",
+    "signal_strength": "MEDIUM"
+  },
+  "aghi": {
+    "particle": "aghi",
+    "direction_vector": "PRIOR_HISTORICAL_REFERENCE",
+    "transaction_direction": "prior_to_event_or_earlier_payment_reference",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "agaade": {
+    "particle": "agaadi",
+    "direction_vector": "TEMPORAL_BEFORE_OR_ADVANCE",
+    "transaction_direction": "advance_payment_or_precondition_before_transaction",
+    "intent_hint": "khata_payment_out",
+    "signal_strength": "MEDIUM"
+  },
+  "agaadi": {
+    "particle": "agaadi",
+    "direction_vector": "TEMPORAL_BEFORE_OR_ADVANCE",
+    "transaction_direction": "advance_payment_or_precondition_before_transaction",
+    "intent_hint": "khata_payment_out",
+    "signal_strength": "MEDIUM"
+  },
+  "pehile": {
+    "particle": "agaadi",
+    "direction_vector": "TEMPORAL_BEFORE_OR_ADVANCE",
+    "transaction_direction": "advance_payment_or_precondition_before_transaction",
+    "intent_hint": "khata_payment_out",
+    "signal_strength": "MEDIUM"
+  },
+  "mathii": {
+    "particle": "mathi",
+    "direction_vector": "ABOVE_THRESHOLD_OR_ADDITIONAL",
+    "transaction_direction": "amount_above_threshold_or_additional_charge",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "maathi": {
+    "particle": "mathi",
+    "direction_vector": "ABOVE_THRESHOLD_OR_ADDITIONAL",
+    "transaction_direction": "amount_above_threshold_or_additional_charge",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "mathi": {
+    "particle": "mathi",
+    "direction_vector": "ABOVE_THRESHOLD_OR_ADDITIONAL",
+    "transaction_direction": "amount_above_threshold_or_additional_charge",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "maathhi": {
+    "particle": "mathi",
+    "direction_vector": "ABOVE_THRESHOLD_OR_ADDITIONAL",
+    "transaction_direction": "amount_above_threshold_or_additional_charge",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "mati": {
+    "particle": "mathi",
+    "direction_vector": "ABOVE_THRESHOLD_OR_ADDITIONAL",
+    "transaction_direction": "amount_above_threshold_or_additional_charge",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "tla": {
+    "particle": "tala",
+    "direction_vector": "BELOW_THRESHOLD",
+    "transaction_direction": "amount_below_threshold_or_subordinate_level",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "taala": {
+    "particle": "tala",
+    "direction_vector": "BELOW_THRESHOLD",
+    "transaction_direction": "amount_below_threshold_or_subordinate_level",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "talla": {
+    "particle": "tala",
+    "direction_vector": "BELOW_THRESHOLD",
+    "transaction_direction": "amount_below_threshold_or_subordinate_level",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "tal": {
+    "particle": "tala",
+    "direction_vector": "BELOW_THRESHOLD",
+    "transaction_direction": "amount_below_threshold_or_subordinate_level",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "tala": {
+    "particle": "tala",
+    "direction_vector": "BELOW_THRESHOLD",
+    "transaction_direction": "amount_below_threshold_or_subordinate_level",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "bhitir": {
+    "particle": "bhitra",
+    "direction_vector": "WITHIN_SCOPE_OR_DEADLINE",
+    "transaction_direction": "within_time_period_or_within_scope_of_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "HIGH_FOR_DEADLINE"
+  },
+  "bhitra": {
+    "particle": "bhitra",
+    "direction_vector": "WITHIN_SCOPE_OR_DEADLINE",
+    "transaction_direction": "within_time_period_or_within_scope_of_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "HIGH_FOR_DEADLINE"
+  },
+  "bhitri": {
+    "particle": "bhitra",
+    "direction_vector": "WITHIN_SCOPE_OR_DEADLINE",
+    "transaction_direction": "within_time_period_or_within_scope_of_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "HIGH_FOR_DEADLINE"
+  },
+  "vitara": {
+    "particle": "bhitra",
+    "direction_vector": "WITHIN_SCOPE_OR_DEADLINE",
+    "transaction_direction": "within_time_period_or_within_scope_of_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "HIGH_FOR_DEADLINE"
+  },
+  "bitra": {
+    "particle": "bhitra",
+    "direction_vector": "WITHIN_SCOPE_OR_DEADLINE",
+    "transaction_direction": "within_time_period_or_within_scope_of_transaction",
+    "intent_hint": "khata_journal",
+    "signal_strength": "HIGH_FOR_DEADLINE"
+  },
+  "baahir": {
+    "particle": "baahira",
+    "direction_vector": "OUTSIDE_SCOPE_OR_ZONE",
+    "transaction_direction": "outside_scope_additional_charge_or_outstation",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "baahira": {
+    "particle": "baahira",
+    "direction_vector": "OUTSIDE_SCOPE_OR_ZONE",
+    "transaction_direction": "outside_scope_additional_charge_or_outstation",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "bahire": {
+    "particle": "baahira",
+    "direction_vector": "OUTSIDE_SCOPE_OR_ZONE",
+    "transaction_direction": "outside_scope_additional_charge_or_outstation",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "bahira": {
+    "particle": "baahira",
+    "direction_vector": "OUTSIDE_SCOPE_OR_ZONE",
+    "transaction_direction": "outside_scope_additional_charge_or_outstation",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "baahire": {
+    "particle": "baahira",
+    "direction_vector": "OUTSIDE_SCOPE_OR_ZONE",
+    "transaction_direction": "outside_scope_additional_charge_or_outstation",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM"
+  },
+  "nira": {
+    "particle": "nira",
+    "direction_vector": "LOCATION_PROXIMITY",
+    "transaction_direction": "proximity_indicator_rarely_used_in_transaction_context",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW"
+  },
+  "nera": {
+    "particle": "nira",
+    "direction_vector": "LOCATION_PROXIMITY",
+    "transaction_direction": "proximity_indicator_rarely_used_in_transaction_context",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW"
+  },
+  "neer": {
+    "particle": "nira",
+    "direction_vector": "LOCATION_PROXIMITY",
+    "transaction_direction": "proximity_indicator_rarely_used_in_transaction_context",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW"
+  },
+  "neera": {
+    "particle": "nira",
+    "direction_vector": "LOCATION_PROXIMITY",
+    "transaction_direction": "proximity_indicator_rarely_used_in_transaction_context",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW"
+  },
+  "taadhaa": {
+    "particle": "tadha",
+    "direction_vector": "DISTANCE_OR_REMOTE",
+    "transaction_direction": "distance_surcharge_or_outstation_indicator",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW_EXCEPT_LOGISTICS"
+  },
+  "tadhaa": {
+    "particle": "tadha",
+    "direction_vector": "DISTANCE_OR_REMOTE",
+    "transaction_direction": "distance_surcharge_or_outstation_indicator",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW_EXCEPT_LOGISTICS"
+  },
+  "tadha": {
+    "particle": "tadha",
+    "direction_vector": "DISTANCE_OR_REMOTE",
+    "transaction_direction": "distance_surcharge_or_outstation_indicator",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW_EXCEPT_LOGISTICS"
+  },
+  "taadha": {
+    "particle": "tadha",
+    "direction_vector": "DISTANCE_OR_REMOTE",
+    "transaction_direction": "distance_surcharge_or_outstation_indicator",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW_EXCEPT_LOGISTICS"
+  },
+  "bichh": {
+    "particle": "bich",
+    "direction_vector": "INTER_PARTY_OR_RANGE",
+    "transaction_direction": "transaction_between_two_parties_or_within_range",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "bicch": {
+    "particle": "bich",
+    "direction_vector": "INTER_PARTY_OR_RANGE",
+    "transaction_direction": "transaction_between_two_parties_or_within_range",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "bich": {
+    "particle": "bich",
+    "direction_vector": "INTER_PARTY_OR_RANGE",
+    "transaction_direction": "transaction_between_two_parties_or_within_range",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "beech": {
+    "particle": "bich",
+    "direction_vector": "INTER_PARTY_OR_RANGE",
+    "transaction_direction": "transaction_between_two_parties_or_within_range",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "beec": {
+    "particle": "bich",
+    "direction_vector": "INTER_PARTY_OR_RANGE",
+    "transaction_direction": "transaction_between_two_parties_or_within_range",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "waari": {
+    "particle": "wari",
+    "direction_vector": "OWN_SIDE_DOMESTIC",
+    "transaction_direction": "transaction_on_our_side_of_boundary_or_domestic",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW"
+  },
+  "wari": {
+    "particle": "wari",
+    "direction_vector": "OWN_SIDE_DOMESTIC",
+    "transaction_direction": "transaction_on_our_side_of_boundary_or_domestic",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW"
+  },
+  "vari": {
+    "particle": "wari",
+    "direction_vector": "OWN_SIDE_DOMESTIC",
+    "transaction_direction": "transaction_on_our_side_of_boundary_or_domestic",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW"
+  },
+  "waare": {
+    "particle": "wari",
+    "direction_vector": "OWN_SIDE_DOMESTIC",
+    "transaction_direction": "transaction_on_our_side_of_boundary_or_domestic",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW"
+  },
+  "wāri": {
+    "particle": "wari",
+    "direction_vector": "OWN_SIDE_DOMESTIC",
+    "transaction_direction": "transaction_on_our_side_of_boundary_or_domestic",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW"
+  },
+  "paari": {
+    "particle": "pari",
+    "direction_vector": "COUNTERPARTY_OR_CROSS_BORDER",
+    "transaction_direction": "transaction_across_boundary_or_counterparty_side",
+    "intent_hint": "khata_payment_in",
+    "signal_strength": "MEDIUM"
+  },
+  "pari": {
+    "particle": "pari",
+    "direction_vector": "COUNTERPARTY_OR_CROSS_BORDER",
+    "transaction_direction": "transaction_across_boundary_or_counterparty_side",
+    "intent_hint": "khata_payment_in",
+    "signal_strength": "MEDIUM"
+  },
+  "paare": {
+    "particle": "pari",
+    "direction_vector": "COUNTERPARTY_OR_CROSS_BORDER",
+    "transaction_direction": "transaction_across_boundary_or_counterparty_side",
+    "intent_hint": "khata_payment_in",
+    "signal_strength": "MEDIUM"
+  },
+  "pāri": {
+    "particle": "pari",
+    "direction_vector": "COUNTERPARTY_OR_CROSS_BORDER",
+    "transaction_direction": "transaction_across_boundary_or_counterparty_side",
+    "intent_hint": "khata_payment_in",
+    "signal_strength": "MEDIUM"
+  },
+  "pare": {
+    "particle": "pari",
+    "direction_vector": "COUNTERPARTY_OR_CROSS_BORDER",
+    "transaction_direction": "transaction_across_boundary_or_counterparty_side",
+    "intent_hint": "khata_payment_in",
+    "signal_strength": "MEDIUM"
+  },
+  "tiir": {
+    "particle": "tira",
+    "direction_vector": "APPROXIMATE_DIRECTION",
+    "transaction_direction": "approximate_direction_of_transaction_or_approximate_time",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM_APPROXIMATE"
+  },
+  "tiri": {
+    "particle": "tira",
+    "direction_vector": "APPROXIMATE_DIRECTION",
+    "transaction_direction": "approximate_direction_of_transaction_or_approximate_time",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM_APPROXIMATE"
+  },
+  "tira": {
+    "particle": "tira",
+    "direction_vector": "APPROXIMATE_DIRECTION",
+    "transaction_direction": "approximate_direction_of_transaction_or_approximate_time",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM_APPROXIMATE"
+  },
+  "tiraa": {
+    "particle": "tira",
+    "direction_vector": "APPROXIMATE_DIRECTION",
+    "transaction_direction": "approximate_direction_of_transaction_or_approximate_time",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM_APPROXIMATE"
+  },
+  "tir": {
+    "particle": "tira",
+    "direction_vector": "APPROXIMATE_DIRECTION",
+    "transaction_direction": "approximate_direction_of_transaction_or_approximate_time",
+    "intent_hint": "khata_journal",
+    "signal_strength": "MEDIUM_APPROXIMATE"
+  },
+  "najikk": {
+    "particle": "najik",
+    "direction_vector": "PROXIMITY_OR_APPROACHING_DEADLINE",
+    "transaction_direction": "physical_proximity_for_delivery_or_service_location",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW_EXCEPT_DEADLINE"
+  },
+  "najeek": {
+    "particle": "najik",
+    "direction_vector": "PROXIMITY_OR_APPROACHING_DEADLINE",
+    "transaction_direction": "physical_proximity_for_delivery_or_service_location",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW_EXCEPT_DEADLINE"
+  },
+  "najic": {
+    "particle": "najik",
+    "direction_vector": "PROXIMITY_OR_APPROACHING_DEADLINE",
+    "transaction_direction": "physical_proximity_for_delivery_or_service_location",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW_EXCEPT_DEADLINE"
+  },
+  "najik": {
+    "particle": "najik",
+    "direction_vector": "PROXIMITY_OR_APPROACHING_DEADLINE",
+    "transaction_direction": "physical_proximity_for_delivery_or_service_location",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW_EXCEPT_DEADLINE"
+  },
+  "najīk": {
+    "particle": "najik",
+    "direction_vector": "PROXIMITY_OR_APPROACHING_DEADLINE",
+    "transaction_direction": "physical_proximity_for_delivery_or_service_location",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW_EXCEPT_DEADLINE"
+  },
+  "munī": {
+    "particle": "muni",
+    "direction_vector": "UNDER_CATEGORY_OR_AUTHORITY",
+    "transaction_direction": "under_authority_or_below_category",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW"
+  },
+  "muni": {
+    "particle": "muni",
+    "direction_vector": "UNDER_CATEGORY_OR_AUTHORITY",
+    "transaction_direction": "under_authority_or_below_category",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW"
+  },
+  "munii": {
+    "particle": "muni",
+    "direction_vector": "UNDER_CATEGORY_OR_AUTHORITY",
+    "transaction_direction": "under_authority_or_below_category",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW"
+  },
+  "mune": {
+    "particle": "muni",
+    "direction_vector": "UNDER_CATEGORY_OR_AUTHORITY",
+    "transaction_direction": "under_authority_or_below_category",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW"
+  },
+  "mooni": {
+    "particle": "muni",
+    "direction_vector": "UNDER_CATEGORY_OR_AUTHORITY",
+    "transaction_direction": "under_authority_or_below_category",
+    "intent_hint": "khata_journal",
+    "signal_strength": "LOW"
+  },
+  "upar": {
+    "particle": "upara",
+    "direction_vector": "ADDITIONAL_CHARGE_ON_BASE",
+    "transaction_direction": "additional_charge_or_levy_on_top_of_base",
+    "intent_hint": "khata_journal",
+    "signal_strength": "HIGH_FOR_TAX_SURCHARGE"
+  },
+  "upra": {
+    "particle": "upara",
+    "direction_vector": "ADDITIONAL_CHARGE_ON_BASE",
+    "transaction_direction": "additional_charge_or_levy_on_top_of_base",
+    "intent_hint": "khata_journal",
+    "signal_strength": "HIGH_FOR_TAX_SURCHARGE"
+  },
+  "upaar": {
+    "particle": "upara",
+    "direction_vector": "ADDITIONAL_CHARGE_ON_BASE",
+    "transaction_direction": "additional_charge_or_levy_on_top_of_base",
+    "intent_hint": "khata_journal",
+    "signal_strength": "HIGH_FOR_TAX_SURCHARGE"
+  },
+  "upari": {
+    "particle": "upara",
+    "direction_vector": "ADDITIONAL_CHARGE_ON_BASE",
+    "transaction_direction": "additional_charge_or_levy_on_top_of_base",
+    "intent_hint": "khata_journal",
+    "signal_strength": "HIGH_FOR_TAX_SURCHARGE"
+  },
+  "upara": {
+    "particle": "upara",
+    "direction_vector": "ADDITIONAL_CHARGE_ON_BASE",
+    "transaction_direction": "additional_charge_or_levy_on_top_of_base",
+    "intent_hint": "khata_journal",
+    "signal_strength": "HIGH_FOR_TAX_SURCHARGE"
+  },
+  "aghai": {
+    "particle": "aghi",
+    "direction_vector": "PRIOR_HISTORICAL_REFERENCE",
+    "transaction_direction": "prior_to_event_or_earlier_payment_reference",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "agi": {
+    "particle": "aghi",
+    "direction_vector": "PRIOR_HISTORICAL_REFERENCE",
+    "transaction_direction": "prior_to_event_or_earlier_payment_reference",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "aghee": {
+    "particle": "aghi",
+    "direction_vector": "PRIOR_HISTORICAL_REFERENCE",
+    "transaction_direction": "prior_to_event_or_earlier_payment_reference",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  },
+  "agee": {
+    "particle": "aghi",
+    "direction_vector": "PRIOR_HISTORICAL_REFERENCE",
+    "transaction_direction": "prior_to_event_or_earlier_payment_reference",
+    "intent_hint": "query",
+    "signal_strength": "MEDIUM"
+  }
+}

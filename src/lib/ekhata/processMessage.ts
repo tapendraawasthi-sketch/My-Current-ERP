@@ -14,6 +14,9 @@ import { understandConceptualFramework } from "./conceptualFrameworkBrain";
 import { understandAccountingLanguage } from "./accountingLanguageBrain";
 import { analyzeMessageMeaning } from "./meaningEngine";
 import { detectNegation } from "./negationDetector";
+import { checkSafetyGate } from "../nepal-ai/safetyGate";
+import { isNepaliAccountingQuestion } from "../nepal-ai/questionDetect";
+import { detectDiscourseAction } from "../nepal-ai/discourse";
 import {
   applyAmountDelta,
   buildReverseExplanation,
@@ -89,6 +92,85 @@ function localizeClarify(question: string, lang: ReturnType<typeof detectUserLan
     if (question.includes(ne.slice(0, 20))) return en;
   }
   return question;
+}
+
+function trySafetyRefusal(
+  trimmed: string,
+  normalizedText: string,
+  lang: ReturnType<typeof detectUserLanguage>,
+): EKhataProcessResult | null {
+  const gate = checkSafetyGate(trimmed);
+  if (!gate) return null;
+  return {
+    kind: "chat",
+    reply: lang === "english" ? gate.response_en : gate.response_ne,
+    normalizedText,
+    engine: "ca",
+  };
+}
+
+function tryAccountingQuestion(
+  trimmed: string,
+  normalizedText: string,
+): EKhataProcessResult | null {
+  if (!isNepaliAccountingQuestion(trimmed)) return null;
+
+  const accountingAnswer = understandAccountingLanguage(trimmed);
+  if (accountingAnswer.kind === "answer" && accountingAnswer.confidence >= 0.5) {
+    return {
+      kind: "chat",
+      reply: accountingAnswer.reply,
+      normalizedText,
+      engine: "accounting-brain",
+    };
+  }
+
+  const frameworkAnswer = understandConceptualFramework(trimmed);
+  if (frameworkAnswer.kind === "answer" && frameworkAnswer.confidence >= 0.5) {
+    return {
+      kind: "chat",
+      reply: frameworkAnswer.reply,
+      normalizedText,
+      engine: "framework-brain",
+    };
+  }
+
+  return null;
+}
+
+function tryDiscourseFollowUp(
+  trimmed: string,
+  normalizedText: string,
+  lang: ReturnType<typeof detectUserLanguage>,
+  ctx?: EKhataConversationContext,
+): EKhataProcessResult | null {
+  if (!ctx?.lastCard) return null;
+  const discourse = detectDiscourseAction(trimmed);
+  if (!discourse) return null;
+
+  if (discourse.action === "cancel_pending") {
+    return {
+      kind: "clarify",
+      reply:
+        lang === "english"
+          ? "Entry cancelled. What would you like to record instead?"
+          : "Entry radda gariyo. Aru ke lekhnu hunthyo?",
+      normalizedText,
+      engine: "ca",
+    };
+  }
+
+  if (discourse.action === "confirm_pending") {
+    return {
+      kind: "entry",
+      reply: buildLocalizedEntryReply(ctx.lastCard, lang),
+      normalizedText,
+      card: ctx.lastCard,
+      engine: "ca",
+    };
+  }
+
+  return null;
 }
 
 function tryContextualCommand(
@@ -287,6 +369,17 @@ export function processEKhataMessage(
   const contextual = tryContextualCommand(trimmed, lang, options.conversationContext);
   if (contextual) return contextual;
 
+  const safety = trySafetyRefusal(trimmed, normalizedText, lang);
+  if (safety) return safety;
+
+  const discourse = tryDiscourseFollowUp(
+    trimmed,
+    normalizedText,
+    lang,
+    options.conversationContext,
+  );
+  if (discourse) return discourse;
+
   const ledgerBalance = tryLedgerBalanceQuery(trimmed, normalizedText, options.balance);
   if (ledgerBalance) return ledgerBalance;
 
@@ -300,6 +393,9 @@ export function processEKhataMessage(
 
   const compound = tryCompoundEntry(trimmed, normalizedText);
   if (compound) return compound;
+
+  const accountingQuestion = tryAccountingQuestion(trimmed, normalizedText);
+  if (accountingQuestion) return accountingQuestion;
 
   const entry = tryJournalEntry(trimmed, normalizedText, lang);
   if (entry) return entry;

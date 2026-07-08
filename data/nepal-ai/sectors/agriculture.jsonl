@@ -1,0 +1,40 @@
+{"input": "mal kineko 10 bag 8000", "intent": "khata_purchase", "entities": {"item": "mal (fertilizer)", "quantity": "10 bag", "amount": 8000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "biu aayo cooperative bata 5000", "intent": "khata_credit_purchase", "entities": {"item": "biu (seed)", "party": "cooperative", "amount": 5000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "tarkari becheko mandi ma 12000", "intent": "khata_cash_sale", "entities": {"item": "tarkari (vegetables)", "location": "mandi", "amount": 12000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "tractor bhaada 2000", "intent": "khata_expense", "entities": {"item": "tractor rental", "amount": 2000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "majdoor 5 jana 2500", "intent": "khata_expense", "entities": {"item": "labor wage", "quantity": "5 jana", "amount": 2500}, "sector": "agriculture", "clarify_needed": false}
+{"input": "dudh collection aaja 500L 30000", "intent": "khata_cash_sale", "entities": {"item": "dudh (milk)", "quantity": "500L", "amount": 30000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "kukura dana kineko 4000", "intent": "khata_purchase", "entities": {"item": "kukura dana (chicken feed)", "amount": 4000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "anda becheko 500 piece 7500", "intent": "khata_cash_sale", "entities": {"item": "anda (egg)", "quantity": "500 piece", "amount": 7500}, "sector": "agriculture", "clarify_needed": false}
+{"input": "baadhi le bali gayo 20000 noksan", "intent": "khata_loss_write_off", "entities": {"cause": "flood/baadhi", "item": "crop/bali", "amount": 20000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "krishi rin EMI 5000", "intent": "khata_loan_repayment", "entities": {"item": "krishi rin (agri loan)", "amount": 5000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "seed subsidy aayo 2000", "intent": "khata_income", "entities": {"item": "seed subsidy", "amount": 2000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "bali bima premium 1500", "intent": "khata_insurance_premium", "entities": {"item": "bali bima (crop insurance)", "amount": 1500}, "sector": "agriculture", "clarify_needed": false}
+{"input": "cooperative bachat 1000", "intent": "khata_payment_out", "entities": {"item": "cooperative savings", "amount": 1000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "dhan becheko 20 quintal 60000", "intent": "khata_cash_sale", "entities": {"item": "dhan (paddy)", "quantity": "20 quintal", "amount": 60000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "makai kineko biu 15 kg 3000", "intent": "khata_purchase", "entities": {"item": "makai biu (corn seed)", "quantity": "15 kg", "amount": 3000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "gahu becheko 30 quintal mandi ma 45000", "intent": "khata_cash_sale", "entities": {"item": "gahu (wheat)", "quantity": "30 quintal", "amount": 45000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "tori kineko biu 5 kg 1500", "intent": "khata_purchase", "entities": {"item": "tori biu (mustard seed)", "quantity": "5 kg", "amount": 1500}, "sector": "agriculture", "clarify_needed": false}
+{"input": "phal becheko basket 20 wota 8000", "intent": "khata_cash_sale", "entities": {"item": "phal (fruits)", "quantity": "20 basket", "amount": 8000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "masu becheko farm bata 15000", "intent": "khata_cash_sale", "entities": {"item": "masu (meat)", "amount": 15000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "machha becheko pokhari bata 10000", "intent": "khata_cash_sale", "entities": {"item": "machha (fish)", "amount": 10000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "dawai kineko keet ko lagi 2500", "intent": "khata_purchase", "entities": {"item": "dawai (pesticide)", "amount": 2500}, "sector": "agriculture", "clarify_needed": false}
+{"input": "biruwa kineko tarkari ko lagi 1000", "intent": "khata_purchase", "entities": {"item": "biruwa (seedling)", "amount": 1000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "pump kineko sinchai ko lagi 12000", "intent": "khata_purchase", "entities": {"item": "pump", "amount": 12000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "pipe kineko sinchai ko lagi 3000", "intent": "khata_purchase", "entities": {"item": "pipe", "amount": 3000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "jaal kineko machha palan ko lagi 5000", "intent": "khata_purchase", "entities": {"item": "jaal (net)", "amount": 5000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "kharko kineko gaai ko lagi 2000", "intent": "khata_purchase", "entities": {"item": "kharko (fodder)", "amount": 2000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "sukha le bali sabai noksan bhayo 30000", "intent": "khata_loss_write_off", "entities": {"cause": "drought/sukha", "item": "crop/bali", "amount": 30000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "keet le tarkari kharab bhayo 8000 loss", "intent": "khata_loss_write_off", "entities": {"cause": "pest/keet", "item": "tarkari", "amount": 8000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "sarkar bata mal subsidy 3000 aayo", "intent": "khata_income", "entities": {"item": "fertilizer subsidy", "amount": 3000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "poultry farm ko lagi machine kineko 25000", "intent": "khata_asset_purchase", "entities": {"item": "poultry machine", "amount": 25000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "gaai kineko 45000", "intent": "khata_asset_purchase", "entities": {"item": "gaai (cow)", "amount": 45000}, "sector": "agriculture", "clarify_needed": true, "clarify_slot": "party"}
+{"input": "khasi becheko 15000", "intent": "khata_cash_sale", "entities": {"item": "khasi (goat)", "amount": 15000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "trolley bhaada tareko maal lyauna 1500", "intent": "khata_expense", "entities": {"item": "trolley rental", "amount": 1500}, "sector": "agriculture", "clarify_needed": false}
+{"input": "cooperative bata karja liye 20000", "intent": "khata_loan_received", "entities": {"party": "cooperative", "amount": 20000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "bihan kukura anda 200 piece becheko 3000", "intent": "khata_cash_sale", "entities": {"item": "anda (egg)", "quantity": "200 piece", "amount": 3000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "krishi bima claim 15000 payo", "intent": "khata_income", "entities": {"item": "krishi bima claim (agri insurance claim)", "amount": 15000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "trolley/tractor repair kharcha 4000", "intent": "khata_expense", "entities": {"item": "tractor repair", "amount": 4000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "greenhouse material kineko 18000", "intent": "khata_asset_purchase", "entities": {"item": "greenhouse material", "amount": 18000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "cold storage bhaada tireko 6000", "intent": "khata_expense", "entities": {"item": "cold storage rental", "amount": 6000}, "sector": "agriculture", "clarify_needed": false}
+{"input": "dana pasal bata kukura dana udhaar liyeko 5000", "intent": "khata_credit_purchase", "entities": {"item": "kukura dana", "party": "dana pasal", "amount": 5000}, "sector": "agriculture", "clarify_needed": false}

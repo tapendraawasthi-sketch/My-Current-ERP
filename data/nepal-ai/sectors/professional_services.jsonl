@@ -1,0 +1,40 @@
+{"input": "audit fee XYZ company 50000", "intent": "khata_receipt", "entities": {"service": "audit", "client": "XYZ company", "amount": 50000}, "sector": "professional_services"}
+{"input": "tax filing 20 clients 40000", "intent": "khata_receipt", "entities": {"service": "tax filing", "quantity": "20 clients", "amount": 40000}, "sector": "professional_services"}
+{"input": "NCA membership fee 5000", "intent": "khata_expense", "entities": {"item": "NCA membership fee", "amount": 5000}, "sector": "professional_services"}
+{"input": "client meeting travel 2000", "intent": "khata_expense", "entities": {"item": "client travel", "amount": 2000}, "sector": "professional_services"}
+{"input": "junior staff salary 25000", "intent": "khata_salary_payment", "entities": {"item": "junior staff salary", "amount": 25000}, "sector": "professional_services"}
+{"input": "office rent 15000", "intent": "khata_rent_expense", "entities": {"item": "office rent", "amount": 15000}, "sector": "professional_services"}
+{"input": "law library subscription 8000", "intent": "khata_expense", "entities": {"item": "law library subscription", "amount": 8000}, "sector": "professional_services"}
+{"input": "court fee stamp duty 3000", "intent": "khata_expense", "entities": {"item": "court fee/stamp duty", "amount": 3000}, "sector": "professional_services"}
+{"input": "client Ram Prasad fee baki 15000", "intent": "khata_outstanding", "entities": {"party": "Ram Prasad", "amount": 15000}, "sector": "professional_services"}
+{"input": "retainer monthly ABC Corp 20000", "intent": "khata_receipt", "entities": {"service": "retainer", "client": "ABC Corp", "amount": 20000}, "sector": "professional_services"}
+{"input": "VAT return filing 30 clients 15000", "intent": "khata_receipt", "entities": {"service": "VAT return filing", "quantity": "30 clients", "amount": 15000}, "sector": "professional_services"}
+{"input": "company registration service 25000", "intent": "khata_receipt", "entities": {"service": "company registration", "amount": 25000}, "sector": "professional_services"}
+{"input": "legal notice draft 5000", "intent": "khata_receipt", "entities": {"service": "legal notice drafting", "amount": 5000}, "sector": "professional_services"}
+{"input": "consultation fee client 3000", "intent": "khata_receipt", "entities": {"service": "consultation", "amount": 3000}, "sector": "professional_services"}
+{"input": "advisory fee corporate client 35000", "intent": "khata_receipt", "entities": {"service": "advisory", "amount": 35000}, "sector": "professional_services"}
+{"input": "case fee court matter 45000", "intent": "khata_receipt", "entities": {"service": "case handling", "amount": 45000}, "sector": "professional_services"}
+{"input": "senior partner salary 80000", "intent": "khata_salary_payment", "entities": {"item": "senior partner salary", "amount": 80000}, "sector": "professional_services"}
+{"input": "receptionist salary 15000", "intent": "khata_salary_payment", "entities": {"item": "receptionist salary", "amount": 15000}, "sector": "professional_services"}
+{"input": "CPE training kharcha 6000", "intent": "khata_expense", "entities": {"item": "CPE training", "amount": 6000}, "sector": "professional_services"}
+{"input": "client entertainment kharcha 4000", "intent": "khata_expense", "entities": {"item": "client entertainment", "amount": 4000}, "sector": "professional_services"}
+{"input": "office stationery kineko 3000", "intent": "khata_purchase", "entities": {"item": "office stationery", "amount": 3000}, "sector": "professional_services"}
+{"input": "computer software license renewal 12000", "intent": "khata_expense", "entities": {"item": "software license", "amount": 12000}, "sector": "professional_services"}
+{"input": "bar association fee 4000", "intent": "khata_expense", "entities": {"item": "bar association fee", "amount": 4000}, "sector": "professional_services"}
+{"input": "notary charge client ko lagi 1000", "intent": "khata_receipt", "entities": {"service": "notary", "amount": 1000}, "sector": "professional_services"}
+{"input": "annual return filing service 20000", "intent": "khata_receipt", "entities": {"service": "annual return filing", "amount": 20000}, "sector": "professional_services"}
+{"input": "trademark registration service 30000", "intent": "khata_receipt", "entities": {"service": "trademark registration", "amount": 30000}, "sector": "professional_services"}
+{"input": "office internet bill 2500", "intent": "khata_expense", "entities": {"item": "internet bill", "amount": 2500}, "sector": "professional_services"}
+{"input": "office electricity bill 3000", "intent": "khata_expense", "entities": {"item": "electricity bill", "amount": 3000}, "sector": "professional_services"}
+{"input": "printer toner kineko 2000", "intent": "khata_purchase", "entities": {"item": "printer toner", "amount": 2000}, "sector": "professional_services"}
+{"input": "audit team travel allowance 5000", "intent": "khata_expense", "entities": {"item": "audit team travel", "amount": 5000}, "sector": "professional_services"}
+{"input": "bookkeeping service monthly 10000", "intent": "khata_receipt", "entities": {"service": "bookkeeping", "amount": 10000}, "sector": "professional_services"}
+{"input": "payroll processing service 5 client 15000", "intent": "khata_receipt", "entities": {"service": "payroll processing", "quantity": "5 clients", "amount": 15000}, "sector": "professional_services"}
+{"input": "office furniture kineko 18000", "intent": "khata_asset_purchase", "entities": {"item": "office furniture", "amount": 18000}, "sector": "professional_services"}
+{"input": "seminar/CLE fee tireko 4000", "intent": "khata_expense", "entities": {"item": "CLE seminar fee", "amount": 4000}, "sector": "professional_services"}
+{"input": "office AC kineko 35000", "intent": "khata_asset_purchase", "entities": {"item": "office AC", "amount": 35000}, "sector": "professional_services"}
+{"input": "legal opinion drafting fee 8000", "intent": "khata_receipt", "entities": {"service": "legal opinion drafting", "amount": 8000}, "sector": "professional_services"}
+{"input": "outstation client visit kharcha 6000", "intent": "khata_expense", "entities": {"item": "outstation travel", "amount": 6000}, "sector": "professional_services"}
+{"input": "office cleaning service monthly 3000", "intent": "khata_expense", "entities": {"item": "cleaning service", "amount": 3000}, "sector": "professional_services"}
+{"input": "junior lawyer intern stipend 8000", "intent": "khata_salary_payment", "entities": {"item": "intern stipend", "amount": 8000}, "sector": "professional_services"}
+{"input": "client Sunita Sharma le retainer tireko 20000", "intent": "khata_payment_in", "entities": {"party": "Sunita Sharma", "amount": 20000}, "sector": "professional_services"}

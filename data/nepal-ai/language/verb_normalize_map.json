@@ -1,0 +1,7044 @@
+{
+  "mol linu": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kiniyo": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "nakinyo": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kharida": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kineko": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kinnu": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kinye": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kineye": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kiney": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kharida garena": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kinena": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kharid": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kin": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kinyo": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kinna": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kharida gareko": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kinne ko": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kharide": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kinne": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "khirid": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kharido": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kinenan": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kinaye": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kine": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "nakineko": {
+    "lemma": "kinnu",
+    "semantic_action": "PURCHASE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "bechyo": {
+    "lemma": "bechnu",
+    "semantic_action": "SALE",
+    "semantic_role": null,
+    "intent_hint": "khata_cash_sale",
+    "signals_completion": null
+  },
+  "bechnu": {
+    "lemma": "bechnu",
+    "semantic_action": "SALE",
+    "semantic_role": null,
+    "intent_hint": "khata_cash_sale",
+    "signals_completion": null
+  },
+  "bikri bhayo": {
+    "lemma": "bechnu",
+    "semantic_action": "SALE",
+    "semantic_role": null,
+    "intent_hint": "khata_cash_sale",
+    "signals_completion": null
+  },
+  "bechinan": {
+    "lemma": "bechnu",
+    "semantic_action": "SALE",
+    "semantic_role": null,
+    "intent_hint": "khata_cash_sale",
+    "signals_completion": null
+  },
+  "bikri gareko": {
+    "lemma": "bechnu",
+    "semantic_action": "SALE",
+    "semantic_role": null,
+    "intent_hint": "khata_cash_sale",
+    "signals_completion": null
+  },
+  "beche": {
+    "lemma": "bechnu",
+    "semantic_action": "SALE",
+    "semantic_role": null,
+    "intent_hint": "khata_cash_sale",
+    "signals_completion": null
+  },
+  "becheko": {
+    "lemma": "bechnu",
+    "semantic_action": "SALE",
+    "semantic_role": null,
+    "intent_hint": "khata_cash_sale",
+    "signals_completion": null
+  },
+  "nabecheko": {
+    "lemma": "bechnu",
+    "semantic_action": "SALE",
+    "semantic_role": null,
+    "intent_hint": "khata_cash_sale",
+    "signals_completion": null
+  },
+  "bechena": {
+    "lemma": "bechnu",
+    "semantic_action": "SALE",
+    "semantic_role": null,
+    "intent_hint": "khata_cash_sale",
+    "signals_completion": null
+  },
+  "bichyo": {
+    "lemma": "bechnu",
+    "semantic_action": "SALE",
+    "semantic_role": null,
+    "intent_hint": "khata_cash_sale",
+    "signals_completion": null
+  },
+  "becheye": {
+    "lemma": "bechnu",
+    "semantic_action": "SALE",
+    "semantic_role": null,
+    "intent_hint": "khata_cash_sale",
+    "signals_completion": null
+  },
+  "bicheko": {
+    "lemma": "bechnu",
+    "semantic_action": "SALE",
+    "semantic_role": null,
+    "intent_hint": "khata_cash_sale",
+    "signals_completion": null
+  },
+  "bechne": {
+    "lemma": "bechnu",
+    "semantic_action": "SALE",
+    "semantic_role": null,
+    "intent_hint": "khata_cash_sale",
+    "signals_completion": null
+  },
+  "bechideko": {
+    "lemma": "bechnu",
+    "semantic_action": "SALE",
+    "semantic_role": null,
+    "intent_hint": "khata_cash_sale",
+    "signals_completion": null
+  },
+  "bechna": {
+    "lemma": "bechnu",
+    "semantic_action": "SALE",
+    "semantic_role": null,
+    "intent_hint": "khata_cash_sale",
+    "signals_completion": null
+  },
+  "bechey": {
+    "lemma": "bechnu",
+    "semantic_action": "SALE",
+    "semantic_role": null,
+    "intent_hint": "khata_cash_sale",
+    "signals_completion": null
+  },
+  "becheko cha": {
+    "lemma": "bechnu",
+    "semantic_action": "SALE",
+    "semantic_role": null,
+    "intent_hint": "khata_cash_sale",
+    "signals_completion": null
+  },
+  "bech": {
+    "lemma": "bechnu",
+    "semantic_action": "SALE",
+    "semantic_role": null,
+    "intent_hint": "khata_cash_sale",
+    "signals_completion": null
+  },
+  "bikri bhayena": {
+    "lemma": "bechnu",
+    "semantic_action": "SALE",
+    "semantic_role": null,
+    "intent_hint": "khata_cash_sale",
+    "signals_completion": null
+  },
+  "nabechyo": {
+    "lemma": "bechnu",
+    "semantic_action": "SALE",
+    "semantic_role": null,
+    "intent_hint": "khata_cash_sale",
+    "signals_completion": null
+  },
+  "bikri garey": {
+    "lemma": "bechnu",
+    "semantic_action": "SALE",
+    "semantic_role": null,
+    "intent_hint": "khata_cash_sale",
+    "signals_completion": null
+  },
+  "diye ko": {
+    "lemma": "dinu",
+    "semantic_action": "GIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "dieka": {
+    "lemma": "dinu",
+    "semantic_action": "GIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "dineko": {
+    "lemma": "dinu",
+    "semantic_action": "GIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "payment deko": {
+    "lemma": "dinu",
+    "semantic_action": "GIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "deko cha": {
+    "lemma": "dinu",
+    "semantic_action": "GIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "diye": {
+    "lemma": "dinu",
+    "semantic_action": "GIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "dinu": {
+    "lemma": "dinu",
+    "semantic_action": "GIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "advance deko": {
+    "lemma": "rin dinu",
+    "semantic_action": "LEND_LOAN_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "din": {
+    "lemma": "dinu",
+    "semantic_action": "GIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "dia": {
+    "lemma": "dinu",
+    "semantic_action": "GIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "diyo ko": {
+    "lemma": "dinu",
+    "semantic_action": "GIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "dina sakina": {
+    "lemma": "dinu",
+    "semantic_action": "GIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "dinan": {
+    "lemma": "dinu",
+    "semantic_action": "GIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "diyo": {
+    "lemma": "dinu",
+    "semantic_action": "GIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "nadeko": {
+    "lemma": "dinu",
+    "semantic_action": "GIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "diyena": {
+    "lemma": "dinu",
+    "semantic_action": "GIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "deko": {
+    "lemma": "dinu",
+    "semantic_action": "GIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "dieko": {
+    "lemma": "dinu",
+    "semantic_action": "GIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "udharo deko": {
+    "lemma": "rin dinu",
+    "semantic_action": "LEND_LOAN_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "dieyo": {
+    "lemma": "dinu",
+    "semantic_action": "GIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "nadiyo": {
+    "lemma": "dinu",
+    "semantic_action": "GIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "lina ko": {
+    "lemma": "linu",
+    "semantic_action": "RECEIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "naleko": {
+    "lemma": "linu",
+    "semantic_action": "RECEIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "lia": {
+    "lemma": "linu",
+    "semantic_action": "RECEIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "receive garena": {
+    "lemma": "linu",
+    "semantic_action": "RECEIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "liyena": {
+    "lemma": "linu",
+    "semantic_action": "RECEIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "linan": {
+    "lemma": "linu",
+    "semantic_action": "RECEIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "liyo": {
+    "lemma": "linu",
+    "semantic_action": "RECEIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "receive gareko": {
+    "lemma": "linu",
+    "semantic_action": "RECEIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "lida": {
+    "lemma": "linu",
+    "semantic_action": "RECEIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "lieyo": {
+    "lemma": "linu",
+    "semantic_action": "RECEIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "leko cha": {
+    "lemma": "linu",
+    "semantic_action": "RECEIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "liye": {
+    "lemma": "linu",
+    "semantic_action": "RECEIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "lin": {
+    "lemma": "linu",
+    "semantic_action": "RECEIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "naliyo": {
+    "lemma": "linu",
+    "semantic_action": "RECEIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "leko": {
+    "lemma": "linu",
+    "semantic_action": "RECEIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "liye ko": {
+    "lemma": "linu",
+    "semantic_action": "RECEIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "lineko": {
+    "lemma": "linu",
+    "semantic_action": "RECEIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "linu": {
+    "lemma": "linu",
+    "semantic_action": "RECEIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "lieko": {
+    "lemma": "linu",
+    "semantic_action": "RECEIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "payment leko": {
+    "lemma": "linu",
+    "semantic_action": "RECEIVE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "tira": {
+    "lemma": "tirnu",
+    "semantic_action": "PAYMENT_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "bhuktaan garena": {
+    "lemma": "bhuktan garnu",
+    "semantic_action": "PAYMENT_SETTLEMENT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "tirinan": {
+    "lemma": "tirnu",
+    "semantic_action": "PAYMENT_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "tireko": {
+    "lemma": "tirnu",
+    "semantic_action": "PAYMENT_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "tirena": {
+    "lemma": "tirnu",
+    "semantic_action": "PAYMENT_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "bhuktaan gareko": {
+    "lemma": "bhuktan garnu",
+    "semantic_action": "PAYMENT_SETTLEMENT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "bhuktaan garey": {
+    "lemma": "tirnu",
+    "semantic_action": "PAYMENT_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "tireye": {
+    "lemma": "tirnu",
+    "semantic_action": "PAYMENT_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "tirina": {
+    "lemma": "tirnu",
+    "semantic_action": "PAYMENT_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "tirnu": {
+    "lemma": "tirnu",
+    "semantic_action": "PAYMENT_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "tiryo": {
+    "lemma": "tirnu",
+    "semantic_action": "PAYMENT_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "tireyo": {
+    "lemma": "tirnu",
+    "semantic_action": "PAYMENT_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "tiriye": {
+    "lemma": "tirnu",
+    "semantic_action": "PAYMENT_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "natireko": {
+    "lemma": "tirnu",
+    "semantic_action": "PAYMENT_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "payment tireko": {
+    "lemma": "tirnu",
+    "semantic_action": "PAYMENT_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "tirneko": {
+    "lemma": "tirnu",
+    "semantic_action": "PAYMENT_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "bhuktani deko": {
+    "lemma": "tirnu",
+    "semantic_action": "PAYMENT_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "tireko cha": {
+    "lemma": "tirnu",
+    "semantic_action": "PAYMENT_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "tir": {
+    "lemma": "tirnu",
+    "semantic_action": "PAYMENT_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "bujhaeko": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "natiryo": {
+    "lemma": "tirnu",
+    "semantic_action": "PAYMENT_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "aayeko cha": {
+    "lemma": "aunu",
+    "semantic_action": "INBOUND_RECEIPT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "aaye ko": {
+    "lemma": "aunu",
+    "semantic_action": "INBOUND_RECEIPT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "prapta bhayena": {
+    "lemma": "aunu",
+    "semantic_action": "INBOUND_RECEIPT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "aauna": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "aaune": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "prapta bhayo": {
+    "lemma": "aunu",
+    "semantic_action": "INBOUND_RECEIPT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "aaucha": {
+    "lemma": "aunu",
+    "semantic_action": "INBOUND_RECEIPT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "aaunay": {
+    "lemma": "aunu",
+    "semantic_action": "INBOUND_RECEIPT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "aayeko": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "aayena": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "aayo": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "payment aayeko": {
+    "lemma": "aunu",
+    "semantic_action": "INBOUND_RECEIPT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "aayo cha": {
+    "lemma": "aunu",
+    "semantic_action": "INBOUND_RECEIPT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "aai": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "aayencha": {
+    "lemma": "aunu",
+    "semantic_action": "INBOUND_RECEIPT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "naayeko": {
+    "lemma": "aunu",
+    "semantic_action": "INBOUND_RECEIPT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "receipt aayeko": {
+    "lemma": "aunu",
+    "semantic_action": "INBOUND_RECEIPT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "aayeyo": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "aaa": {
+    "lemma": "aunu",
+    "semantic_action": "INBOUND_RECEIPT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "aunu": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "aauney": {
+    "lemma": "aunu",
+    "semantic_action": "INBOUND_RECEIPT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "gayeko": {
+    "lemma": "janu",
+    "semantic_action": "OUTBOUND",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "janeko": {
+    "lemma": "janu",
+    "semantic_action": "OUTBOUND",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "gako": {
+    "lemma": "janu",
+    "semantic_action": "OUTBOUND",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "gayo bhanyo": {
+    "lemma": "janu",
+    "semantic_action": "OUTBOUND",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "gaye ko": {
+    "lemma": "janu",
+    "semantic_action": "OUTBOUND",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "gayo": {
+    "lemma": "janu",
+    "semantic_action": "OUTBOUND",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "gaeko": {
+    "lemma": "janu",
+    "semantic_action": "OUTBOUND",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "nagaeko": {
+    "lemma": "janu",
+    "semantic_action": "OUTBOUND",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "gaina": {
+    "lemma": "janu",
+    "semantic_action": "OUTBOUND",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "gaye": {
+    "lemma": "janu",
+    "semantic_action": "OUTBOUND",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "gai": {
+    "lemma": "janu",
+    "semantic_action": "OUTBOUND",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "gaena": {
+    "lemma": "janu",
+    "semantic_action": "OUTBOUND",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "nagayo": {
+    "lemma": "janu",
+    "semantic_action": "OUTBOUND",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "gako cha": {
+    "lemma": "janu",
+    "semantic_action": "OUTBOUND",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "janu": {
+    "lemma": "janu",
+    "semantic_action": "OUTBOUND",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "nikleyena": {
+    "lemma": "janu",
+    "semantic_action": "OUTBOUND",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "kharcha gaeko": {
+    "lemma": "janu",
+    "semantic_action": "OUTBOUND",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "janeko cha": {
+    "lemma": "janu",
+    "semantic_action": "OUTBOUND",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "gayeyo": {
+    "lemma": "janu",
+    "semantic_action": "OUTBOUND",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "nikle ko": {
+    "lemma": "janu",
+    "semantic_action": "OUTBOUND",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "garyo": {
+    "lemma": "garnu",
+    "semantic_action": "ACTION_GENERIC",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "gara": {
+    "lemma": "garnu",
+    "semantic_action": "ACTION_GENERIC",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "garnus": {
+    "lemma": "garnu",
+    "semantic_action": "ACTION_GENERIC",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "garne": {
+    "lemma": "garnu",
+    "semantic_action": "ACTION_GENERIC",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "gareyo": {
+    "lemma": "garnu",
+    "semantic_action": "ACTION_GENERIC",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "garey": {
+    "lemma": "garnu",
+    "semantic_action": "ACTION_GENERIC",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "gareye": {
+    "lemma": "garnu",
+    "semantic_action": "ACTION_GENERIC",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "garai": {
+    "lemma": "garnu",
+    "semantic_action": "ACTION_GENERIC",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "gariye": {
+    "lemma": "garnu",
+    "semantic_action": "ACTION_GENERIC",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "garena": {
+    "lemma": "garnu",
+    "semantic_action": "ACTION_GENERIC",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "garna sakina": {
+    "lemma": "garnu",
+    "semantic_action": "ACTION_GENERIC",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "garnu": {
+    "lemma": "garnu",
+    "semantic_action": "ACTION_GENERIC",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "gar": {
+    "lemma": "garnu",
+    "semantic_action": "ACTION_GENERIC",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "gariye ko": {
+    "lemma": "garnu",
+    "semantic_action": "ACTION_GENERIC",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "nagareko": {
+    "lemma": "garnu",
+    "semantic_action": "ACTION_GENERIC",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "garena nai": {
+    "lemma": "garnu",
+    "semantic_action": "ACTION_GENERIC",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "gareko": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "process gareko": {
+    "lemma": "garnu",
+    "semantic_action": "ACTION_GENERIC",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "complete gareko": {
+    "lemma": "garnu",
+    "semantic_action": "ACTION_GENERIC",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "nagaryo": {
+    "lemma": "garnu",
+    "semantic_action": "ACTION_GENERIC",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "gareko cha": {
+    "lemma": "garnu",
+    "semantic_action": "ACTION_GENERIC",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "rakheyo": {
+    "lemma": "rakhnu",
+    "semantic_action": "HOLD_MAINTAIN",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "rakhna sakina": {
+    "lemma": "rakhnu",
+    "semantic_action": "HOLD_MAINTAIN",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "rakhey": {
+    "lemma": "rakhnu",
+    "semantic_action": "HOLD_MAINTAIN",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "rakhena": {
+    "lemma": "rakhnu",
+    "semantic_action": "HOLD_MAINTAIN",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "jamma rakheko": {
+    "lemma": "rakhnu",
+    "semantic_action": "HOLD_MAINTAIN",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "rakhiye ko": {
+    "lemma": "rakhnu",
+    "semantic_action": "HOLD_MAINTAIN",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "rakheko": {
+    "lemma": "rakhnu",
+    "semantic_action": "HOLD_MAINTAIN",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "rakheye": {
+    "lemma": "rakhnu",
+    "semantic_action": "HOLD_MAINTAIN",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "rakh": {
+    "lemma": "rakhnu",
+    "semantic_action": "HOLD_MAINTAIN",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "rakhiye": {
+    "lemma": "rakhnu",
+    "semantic_action": "HOLD_MAINTAIN",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "rakha": {
+    "lemma": "rakhnu",
+    "semantic_action": "HOLD_MAINTAIN",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "credit rakheko": {
+    "lemma": "baki rakhnu",
+    "semantic_action": "CREDIT_OUTSTANDING",
+    "semantic_role": null,
+    "intent_hint": "khata_credit_sale",
+    "signals_completion": null
+  },
+  "narakhyo": {
+    "lemma": "rakhnu",
+    "semantic_action": "HOLD_MAINTAIN",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "rakhe": {
+    "lemma": "rakhnu",
+    "semantic_action": "HOLD_MAINTAIN",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "rakhne": {
+    "lemma": "rakhnu",
+    "semantic_action": "HOLD_MAINTAIN",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "narakheko": {
+    "lemma": "rakhnu",
+    "semantic_action": "HOLD_MAINTAIN",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "rakhnu": {
+    "lemma": "rakhnu",
+    "semantic_action": "HOLD_MAINTAIN",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "rakheko cha": {
+    "lemma": "rakhnu",
+    "semantic_action": "HOLD_MAINTAIN",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "hold rakheko": {
+    "lemma": "rakhnu",
+    "semantic_action": "HOLD_MAINTAIN",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "rakhinan": {
+    "lemma": "rakhnu",
+    "semantic_action": "HOLD_MAINTAIN",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "rakhyo": {
+    "lemma": "rakhnu",
+    "semantic_action": "HOLD_MAINTAIN",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "pathayena": {
+    "lemma": "pathaaunu",
+    "semantic_action": "SEND_DISPATCH",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "send garey": {
+    "lemma": "pathaaunu",
+    "semantic_action": "SEND_DISPATCH",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "pathayeko": {
+    "lemma": "pathaaunu",
+    "semantic_action": "SEND_DISPATCH",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "pathaideko": {
+    "lemma": "pathaaunu",
+    "semantic_action": "SEND_DISPATCH",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "pathauna": {
+    "lemma": "pathaaunu",
+    "semantic_action": "SEND_DISPATCH",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "pathaayeyo": {
+    "lemma": "pathaaunu",
+    "semantic_action": "SEND_DISPATCH",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "transfer gareko": {
+    "lemma": "pathaaunu",
+    "semantic_action": "SEND_DISPATCH",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "courier gareko": {
+    "lemma": "pathaaunu",
+    "semantic_action": "SEND_DISPATCH",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "pathaai": {
+    "lemma": "pathaaunu",
+    "semantic_action": "SEND_DISPATCH",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "pataayeko": {
+    "lemma": "pathaaunu",
+    "semantic_action": "SEND_DISPATCH",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "pathaaeko": {
+    "lemma": "pathaaunu",
+    "semantic_action": "SEND_DISPATCH",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "send garena": {
+    "lemma": "pathaaunu",
+    "semantic_action": "SEND_DISPATCH",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "pathayo": {
+    "lemma": "pathaaunu",
+    "semantic_action": "SEND_DISPATCH",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "dispatch garena": {
+    "lemma": "pathaaunu",
+    "semantic_action": "SEND_DISPATCH",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "pathaaune": {
+    "lemma": "pathaaunu",
+    "semantic_action": "SEND_DISPATCH",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "pathaaunu": {
+    "lemma": "pathaaunu",
+    "semantic_action": "SEND_DISPATCH",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "napathaayeko": {
+    "lemma": "pathaaunu",
+    "semantic_action": "SEND_DISPATCH",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "send gareko": {
+    "lemma": "pathaaunu",
+    "semantic_action": "SEND_DISPATCH",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "pathaayeko": {
+    "lemma": "pathaaunu",
+    "semantic_action": "SEND_DISPATCH",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "dispatch gareko": {
+    "lemma": "pathaaunu",
+    "semantic_action": "SEND_DISPATCH",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "pathaeko": {
+    "lemma": "pathaaunu",
+    "semantic_action": "SEND_DISPATCH",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "return gareko": {
+    "lemma": "firta garnu",
+    "semantic_action": "RETURN_REFUND",
+    "semantic_role": null,
+    "intent_hint": "khata_sales_return",
+    "signals_completion": null
+  },
+  "firta pathaaeko": {
+    "lemma": "firta garnu",
+    "semantic_action": "RETURN_REFUND",
+    "semantic_role": null,
+    "intent_hint": "khata_sales_return",
+    "signals_completion": null
+  },
+  "wapas pathaaeko": {
+    "lemma": "firta garnu",
+    "semantic_action": "RETURN_REFUND",
+    "semantic_role": null,
+    "intent_hint": "khata_sales_return",
+    "signals_completion": null
+  },
+  "firtha gareko": {
+    "lemma": "firta garnu",
+    "semantic_action": "RETURN_REFUND",
+    "semantic_role": null,
+    "intent_hint": "khata_sales_return",
+    "signals_completion": null
+  },
+  "firtaa": {
+    "lemma": "firta garnu",
+    "semantic_action": "RETURN_REFUND",
+    "semantic_role": null,
+    "intent_hint": "khata_sales_return",
+    "signals_completion": null
+  },
+  "wapas gareko": {
+    "lemma": "firta garnu",
+    "semantic_action": "RETURN_REFUND",
+    "semantic_role": null,
+    "intent_hint": "khata_sales_return",
+    "signals_completion": null
+  },
+  "refund diyena": {
+    "lemma": "firta garnu",
+    "semantic_action": "RETURN_REFUND",
+    "semantic_role": null,
+    "intent_hint": "khata_sales_return",
+    "signals_completion": null
+  },
+  "farkaaena": {
+    "lemma": "firta garnu",
+    "semantic_action": "RETURN_REFUND",
+    "semantic_role": null,
+    "intent_hint": "khata_sales_return",
+    "signals_completion": null
+  },
+  "return garena": {
+    "lemma": "firta garnu",
+    "semantic_action": "RETURN_REFUND",
+    "semantic_role": null,
+    "intent_hint": "khata_sales_return",
+    "signals_completion": null
+  },
+  "firta garey": {
+    "lemma": "firta garnu",
+    "semantic_action": "RETURN_REFUND",
+    "semantic_role": null,
+    "intent_hint": "khata_sales_return",
+    "signals_completion": null
+  },
+  "firta deko": {
+    "lemma": "firta garnu",
+    "semantic_action": "RETURN_REFUND",
+    "semantic_role": null,
+    "intent_hint": "khata_sales_return",
+    "signals_completion": null
+  },
+  "wapas garena": {
+    "lemma": "firta garnu",
+    "semantic_action": "RETURN_REFUND",
+    "semantic_role": null,
+    "intent_hint": "khata_sales_return",
+    "signals_completion": null
+  },
+  "wapas garey": {
+    "lemma": "firta garnu",
+    "semantic_action": "RETURN_REFUND",
+    "semantic_role": null,
+    "intent_hint": "khata_sales_return",
+    "signals_completion": null
+  },
+  "firta aayo": {
+    "lemma": "firta garnu",
+    "semantic_action": "RETURN_REFUND",
+    "semantic_role": null,
+    "intent_hint": "khata_sales_return",
+    "signals_completion": null
+  },
+  "return garey": {
+    "lemma": "firta garnu",
+    "semantic_action": "RETURN_REFUND",
+    "semantic_role": null,
+    "intent_hint": "khata_sales_return",
+    "signals_completion": null
+  },
+  "farkaaeko": {
+    "lemma": "firta garnu",
+    "semantic_action": "RETURN_REFUND",
+    "semantic_role": null,
+    "intent_hint": "khata_sales_return",
+    "signals_completion": null
+  },
+  "firta garena": {
+    "lemma": "firta garnu",
+    "semantic_action": "RETURN_REFUND",
+    "semantic_role": null,
+    "intent_hint": "khata_sales_return",
+    "signals_completion": null
+  },
+  "refund gareko": {
+    "lemma": "firta garnu",
+    "semantic_action": "RETURN_REFUND",
+    "semantic_role": null,
+    "intent_hint": "khata_sales_return",
+    "signals_completion": null
+  },
+  "firta garnu": {
+    "lemma": "firta garnu",
+    "semantic_action": "RETURN_REFUND",
+    "semantic_role": null,
+    "intent_hint": "khata_sales_return",
+    "signals_completion": null
+  },
+  "refund garey": {
+    "lemma": "firta garnu",
+    "semantic_action": "RETURN_REFUND",
+    "semantic_role": null,
+    "intent_hint": "khata_sales_return",
+    "signals_completion": null
+  },
+  "firta gareko": {
+    "lemma": "firta garnu",
+    "semantic_action": "RETURN_REFUND",
+    "semantic_role": null,
+    "intent_hint": "khata_sales_return",
+    "signals_completion": null
+  },
+  "jamma bhayena": {
+    "lemma": "jamma garnu",
+    "semantic_action": "DEPOSIT_COLLECT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "deposit garey": {
+    "lemma": "jamma garnu",
+    "semantic_action": "DEPOSIT_COLLECT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "jamma garena": {
+    "lemma": "jamma garnu",
+    "semantic_action": "DEPOSIT_COLLECT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "jamma bhayo": {
+    "lemma": "jamma garnu",
+    "semantic_action": "DEPOSIT_COLLECT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "jamma gareko cha": {
+    "lemma": "jamma garnu",
+    "semantic_action": "DEPOSIT_COLLECT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "jodeko": {
+    "lemma": "jamma garnu",
+    "semantic_action": "DEPOSIT_COLLECT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "deposit gareko": {
+    "lemma": "jamma garnu",
+    "semantic_action": "DEPOSIT_COLLECT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "jamma garnu": {
+    "lemma": "jamma garnu",
+    "semantic_action": "DEPOSIT_COLLECT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "jamma garey": {
+    "lemma": "jamma garnu",
+    "semantic_action": "DEPOSIT_COLLECT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "jamma gareko": {
+    "lemma": "bachaat garnu",
+    "semantic_action": "SAVE_SAVINGS",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "jamma cha": {
+    "lemma": "jamma garnu",
+    "semantic_action": "DEPOSIT_COLLECT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "jama gareko": {
+    "lemma": "jamma garnu",
+    "semantic_action": "DEPOSIT_COLLECT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "najamma gareko": {
+    "lemma": "jamma garnu",
+    "semantic_action": "DEPOSIT_COLLECT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "jamma deko": {
+    "lemma": "jamma garnu",
+    "semantic_action": "DEPOSIT_COLLECT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "deposit garena": {
+    "lemma": "jamma garnu",
+    "semantic_action": "DEPOSIT_COLLECT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "jamma garai": {
+    "lemma": "jamma garnu",
+    "semantic_action": "DEPOSIT_COLLECT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "jamma gariyo": {
+    "lemma": "jamma garnu",
+    "semantic_action": "DEPOSIT_COLLECT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "collect gareko": {
+    "lemma": "jamma garnu",
+    "semantic_action": "DEPOSIT_COLLECT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "jama deko": {
+    "lemma": "jamma garnu",
+    "semantic_action": "DEPOSIT_COLLECT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "collect garena": {
+    "lemma": "jamma garnu",
+    "semantic_action": "DEPOSIT_COLLECT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "jhikiye": {
+    "lemma": "jhiknu",
+    "semantic_action": "WITHDRAWAL",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "jhikiye ko": {
+    "lemma": "jhiknu",
+    "semantic_action": "WITHDRAWAL",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "withdraw garena": {
+    "lemma": "jhiknu",
+    "semantic_action": "WITHDRAWAL",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "jhikaeko": {
+    "lemma": "jhiknu",
+    "semantic_action": "WITHDRAWAL",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "jhika": {
+    "lemma": "jhiknu",
+    "semantic_action": "WITHDRAWAL",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "jhikeyo": {
+    "lemma": "jhiknu",
+    "semantic_action": "WITHDRAWAL",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "najhikeko": {
+    "lemma": "jhiknu",
+    "semantic_action": "WITHDRAWAL",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "jhikena": {
+    "lemma": "jhiknu",
+    "semantic_action": "WITHDRAWAL",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "withdraw garey": {
+    "lemma": "jhiknu",
+    "semantic_action": "WITHDRAWAL",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "nikaaleko": {
+    "lemma": "jhiknu",
+    "semantic_action": "WITHDRAWAL",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "cash jhikeko": {
+    "lemma": "jhiknu",
+    "semantic_action": "WITHDRAWAL",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "jhikeye": {
+    "lemma": "jhiknu",
+    "semantic_action": "WITHDRAWAL",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "jhiknu": {
+    "lemma": "jhiknu",
+    "semantic_action": "WITHDRAWAL",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "jhike": {
+    "lemma": "jhiknu",
+    "semantic_action": "WITHDRAWAL",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "jhikna": {
+    "lemma": "jhiknu",
+    "semantic_action": "WITHDRAWAL",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "nikaalna sakina": {
+    "lemma": "jhiknu",
+    "semantic_action": "WITHDRAWAL",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "withdraw gareko": {
+    "lemma": "jhiknu",
+    "semantic_action": "WITHDRAWAL",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "jhikyo": {
+    "lemma": "jhiknu",
+    "semantic_action": "WITHDRAWAL",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "jhikeko": {
+    "lemma": "jhiknu",
+    "semantic_action": "WITHDRAWAL",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "jhikinan": {
+    "lemma": "jhiknu",
+    "semantic_action": "WITHDRAWAL",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "jhikeko cha": {
+    "lemma": "jhiknu",
+    "semantic_action": "WITHDRAWAL",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "entry garena": {
+    "lemma": "lekhnu",
+    "semantic_action": "RECORD_ENTRY",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "record gareko": {
+    "lemma": "lekhnu",
+    "semantic_action": "RECORD_ENTRY",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "lipi gareko": {
+    "lemma": "lekhnu",
+    "semantic_action": "RECORD_ENTRY",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "entry garey": {
+    "lemma": "lekhnu",
+    "semantic_action": "RECORD_ENTRY",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "lekheyo": {
+    "lemma": "lekhnu",
+    "semantic_action": "RECORD_ENTRY",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "entry gareko": {
+    "lemma": "lekhnu",
+    "semantic_action": "RECORD_ENTRY",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "lekhinan": {
+    "lemma": "lekhnu",
+    "semantic_action": "RECORD_ENTRY",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "lekhena": {
+    "lemma": "lekhnu",
+    "semantic_action": "RECORD_ENTRY",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "lekhe": {
+    "lemma": "lekhnu",
+    "semantic_action": "RECORD_ENTRY",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "record garena": {
+    "lemma": "lekhnu",
+    "semantic_action": "RECORD_ENTRY",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "note gareko": {
+    "lemma": "lekhnu",
+    "semantic_action": "RECORD_ENTRY",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "note garey": {
+    "lemma": "lekhnu",
+    "semantic_action": "RECORD_ENTRY",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "lekhnu": {
+    "lemma": "lekhnu",
+    "semantic_action": "RECORD_ENTRY",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "lekhaeko": {
+    "lemma": "lekhnu",
+    "semantic_action": "RECORD_ENTRY",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "lekheko": {
+    "lemma": "lekhnu",
+    "semantic_action": "RECORD_ENTRY",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "lekhiye": {
+    "lemma": "lekhnu",
+    "semantic_action": "RECORD_ENTRY",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "lekhna": {
+    "lemma": "lekhnu",
+    "semantic_action": "RECORD_ENTRY",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "lekheye": {
+    "lemma": "lekhnu",
+    "semantic_action": "RECORD_ENTRY",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "lekhyo": {
+    "lemma": "lekhnu",
+    "semantic_action": "RECORD_ENTRY",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "nalekheko": {
+    "lemma": "lekhnu",
+    "semantic_action": "RECORD_ENTRY",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "lekheko cha": {
+    "lemma": "lekhnu",
+    "semantic_action": "RECORD_ENTRY",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "kami garey": {
+    "lemma": "ghatnu",
+    "semantic_action": "DECREASE_LOSS",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "naghate": {
+    "lemma": "ghatnu",
+    "semantic_action": "DECREASE_LOSS",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "loss bhayeko": {
+    "lemma": "ghatnu",
+    "semantic_action": "DECREASE_LOSS",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "cut gareko": {
+    "lemma": "ghatnu",
+    "semantic_action": "DECREASE_LOSS",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "loss bhayo": {
+    "lemma": "ghatnu",
+    "semantic_action": "DECREASE_LOSS",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "kami bhayo": {
+    "lemma": "ghatnu",
+    "semantic_action": "DECREASE_LOSS",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "ghateyo": {
+    "lemma": "ghatnu",
+    "semantic_action": "DECREASE_LOSS",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "loss bhayena": {
+    "lemma": "ghatnu",
+    "semantic_action": "DECREASE_LOSS",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "ghateye": {
+    "lemma": "ghatnu",
+    "semantic_action": "DECREASE_LOSS",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "ghateko cha": {
+    "lemma": "ghatnu",
+    "semantic_action": "DECREASE_LOSS",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "naghateko": {
+    "lemma": "ghatnu",
+    "semantic_action": "DECREASE_LOSS",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "ghatyo": {
+    "lemma": "ghatnu",
+    "semantic_action": "DECREASE_LOSS",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "ghate": {
+    "lemma": "ghatnu",
+    "semantic_action": "DECREASE_LOSS",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "ghatnu": {
+    "lemma": "ghatnu",
+    "semantic_action": "DECREASE_LOSS",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "ghataaeko": {
+    "lemma": "ghatnu",
+    "semantic_action": "DECREASE_LOSS",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "ghat": {
+    "lemma": "ghatnu",
+    "semantic_action": "DECREASE_LOSS",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "ghata": {
+    "lemma": "ghatnu",
+    "semantic_action": "DECREASE_LOSS",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "ghatne": {
+    "lemma": "ghatnu",
+    "semantic_action": "DECREASE_LOSS",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "ghateko": {
+    "lemma": "ghatnu",
+    "semantic_action": "DECREASE_LOSS",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "ghatena": {
+    "lemma": "ghatnu",
+    "semantic_action": "DECREASE_LOSS",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "ghatiye": {
+    "lemma": "ghatnu",
+    "semantic_action": "DECREASE_LOSS",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "ghatinan": {
+    "lemma": "ghatnu",
+    "semantic_action": "DECREASE_LOSS",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "badhne": {
+    "lemma": "badhnu",
+    "semantic_action": "INCREASE_GROWTH",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "badhe": {
+    "lemma": "badhnu",
+    "semantic_action": "INCREASE_GROWTH",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "badheye": {
+    "lemma": "badhnu",
+    "semantic_action": "INCREASE_GROWTH",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "badha": {
+    "lemma": "badhnu",
+    "semantic_action": "INCREASE_GROWTH",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "add garey": {
+    "lemma": "badhnu",
+    "semantic_action": "INCREASE_GROWTH",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "add gareko": {
+    "lemma": "badhnu",
+    "semantic_action": "INCREASE_GROWTH",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "badhinan": {
+    "lemma": "badhnu",
+    "semantic_action": "INCREASE_GROWTH",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "badhyo": {
+    "lemma": "badhnu",
+    "semantic_action": "INCREASE_GROWTH",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "badheko": {
+    "lemma": "badhnu",
+    "semantic_action": "INCREASE_GROWTH",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "badhaayeko": {
+    "lemma": "badhnu",
+    "semantic_action": "INCREASE_GROWTH",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "nabadhyo": {
+    "lemma": "badhnu",
+    "semantic_action": "INCREASE_GROWTH",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "badhnu": {
+    "lemma": "badhnu",
+    "semantic_action": "INCREASE_GROWTH",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "badheko cha": {
+    "lemma": "badhnu",
+    "semantic_action": "INCREASE_GROWTH",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "profit badhyo": {
+    "lemma": "badhnu",
+    "semantic_action": "INCREASE_GROWTH",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "nabadheko": {
+    "lemma": "badhnu",
+    "semantic_action": "INCREASE_GROWTH",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "badi": {
+    "lemma": "badhnu",
+    "semantic_action": "INCREASE_GROWTH",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "badhena": {
+    "lemma": "badhnu",
+    "semantic_action": "INCREASE_GROWTH",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "badh": {
+    "lemma": "badhnu",
+    "semantic_action": "INCREASE_GROWTH",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "increase bhayeko": {
+    "lemma": "badhnu",
+    "semantic_action": "INCREASE_GROWTH",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "badhiye": {
+    "lemma": "badhnu",
+    "semantic_action": "INCREASE_GROWTH",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "increase bhayo": {
+    "lemma": "badhnu",
+    "semantic_action": "INCREASE_GROWTH",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "badheyo": {
+    "lemma": "badhnu",
+    "semantic_action": "INCREASE_GROWTH",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "increase bhayena": {
+    "lemma": "badhnu",
+    "semantic_action": "INCREASE_GROWTH",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "baki cha": {
+    "lemma": "baki rakhnu",
+    "semantic_action": "CREDIT_OUTSTANDING",
+    "semantic_role": null,
+    "intent_hint": "khata_credit_sale",
+    "signals_completion": null
+  },
+  "credit rakheko cha": {
+    "lemma": "baki rakhnu",
+    "semantic_action": "CREDIT_OUTSTANDING",
+    "semantic_role": null,
+    "intent_hint": "khata_credit_sale",
+    "signals_completion": null
+  },
+  "panding cha": {
+    "lemma": "baki rakhnu",
+    "semantic_action": "CREDIT_OUTSTANDING",
+    "semantic_role": null,
+    "intent_hint": "khata_credit_sale",
+    "signals_completion": null
+  },
+  "zero balance cha": {
+    "lemma": "baki rakhnu",
+    "semantic_action": "CREDIT_OUTSTANDING",
+    "semantic_role": null,
+    "intent_hint": "khata_credit_sale",
+    "signals_completion": null
+  },
+  "baki rakheko": {
+    "lemma": "baki rakhnu",
+    "semantic_action": "CREDIT_OUTSTANDING",
+    "semantic_role": null,
+    "intent_hint": "khata_credit_sale",
+    "signals_completion": null
+  },
+  "udharo chhaina": {
+    "lemma": "baki rakhnu",
+    "semantic_action": "CREDIT_OUTSTANDING",
+    "semantic_role": null,
+    "intent_hint": "khata_credit_sale",
+    "signals_completion": null
+  },
+  "baki rakhnu": {
+    "lemma": "baki rakhnu",
+    "semantic_action": "CREDIT_OUTSTANDING",
+    "semantic_role": null,
+    "intent_hint": "khata_credit_sale",
+    "signals_completion": null
+  },
+  "baakie rakheko": {
+    "lemma": "baki rakhnu",
+    "semantic_action": "CREDIT_OUTSTANDING",
+    "semantic_role": null,
+    "intent_hint": "khata_credit_sale",
+    "signals_completion": null
+  },
+  "settle gareko": {
+    "lemma": "bhuktan garnu",
+    "semantic_action": "PAYMENT_SETTLEMENT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "udhaaro rakheko": {
+    "lemma": "baki rakhnu",
+    "semantic_action": "CREDIT_OUTSTANDING",
+    "semantic_role": null,
+    "intent_hint": "khata_credit_sale",
+    "signals_completion": null
+  },
+  "baaki deko": {
+    "lemma": "baki rakhnu",
+    "semantic_action": "CREDIT_OUTSTANDING",
+    "semantic_role": null,
+    "intent_hint": "khata_credit_sale",
+    "signals_completion": null
+  },
+  "baaki rakheko cha": {
+    "lemma": "baki rakhnu",
+    "semantic_action": "CREDIT_OUTSTANDING",
+    "semantic_role": null,
+    "intent_hint": "khata_credit_sale",
+    "signals_completion": null
+  },
+  "udharo rakheko": {
+    "lemma": "baki rakhnu",
+    "semantic_action": "CREDIT_OUTSTANDING",
+    "semantic_role": null,
+    "intent_hint": "khata_credit_sale",
+    "signals_completion": null
+  },
+  "due rakheko": {
+    "lemma": "baki rakhnu",
+    "semantic_action": "CREDIT_OUTSTANDING",
+    "semantic_role": null,
+    "intent_hint": "khata_credit_sale",
+    "signals_completion": null
+  },
+  "pura tireko": {
+    "lemma": "baki rakhnu",
+    "semantic_action": "CREDIT_OUTSTANDING",
+    "semantic_role": null,
+    "intent_hint": "khata_credit_sale",
+    "signals_completion": null
+  },
+  "baki chhaina": {
+    "lemma": "baki rakhnu",
+    "semantic_action": "CREDIT_OUTSTANDING",
+    "semantic_role": null,
+    "intent_hint": "khata_credit_sale",
+    "signals_completion": null
+  },
+  "baki chhodeko": {
+    "lemma": "baki rakhnu",
+    "semantic_action": "CREDIT_OUTSTANDING",
+    "semantic_role": null,
+    "intent_hint": "khata_credit_sale",
+    "signals_completion": null
+  },
+  "baakinai cha": {
+    "lemma": "baki rakhnu",
+    "semantic_action": "CREDIT_OUTSTANDING",
+    "semantic_role": null,
+    "intent_hint": "khata_credit_sale",
+    "signals_completion": null
+  },
+  "pending cha": {
+    "lemma": "baki rakhnu",
+    "semantic_action": "CREDIT_OUTSTANDING",
+    "semantic_role": null,
+    "intent_hint": "khata_credit_sale",
+    "signals_completion": null
+  },
+  "settle gareko chhaina": {
+    "lemma": "baki rakhnu",
+    "semantic_action": "CREDIT_OUTSTANDING",
+    "semantic_role": null,
+    "intent_hint": "khata_credit_sale",
+    "signals_completion": null
+  },
+  "settle garena": {
+    "lemma": "saadhnu",
+    "semantic_action": "SETTLE_RECONCILE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "saadyo": {
+    "lemma": "saadhnu",
+    "semantic_action": "SETTLE_RECONCILE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "milaaeko": {
+    "lemma": "saadhnu",
+    "semantic_action": "SETTLE_RECONCILE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "saaadeyo": {
+    "lemma": "saadhnu",
+    "semantic_action": "SETTLE_RECONCILE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "clear garena": {
+    "lemma": "saadhnu",
+    "semantic_action": "SETTLE_RECONCILE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "sadhinan": {
+    "lemma": "saadhnu",
+    "semantic_action": "SETTLE_RECONCILE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "clear garey": {
+    "lemma": "saadhnu",
+    "semantic_action": "SETTLE_RECONCILE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "saadhiye": {
+    "lemma": "saadhnu",
+    "semantic_action": "SETTLE_RECONCILE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "nasaadheko": {
+    "lemma": "saadhnu",
+    "semantic_action": "SETTLE_RECONCILE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "saadhna": {
+    "lemma": "saadhnu",
+    "semantic_action": "SETTLE_RECONCILE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "saadheko": {
+    "lemma": "saadhnu",
+    "semantic_action": "SETTLE_RECONCILE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "saadhe": {
+    "lemma": "saadhnu",
+    "semantic_action": "SETTLE_RECONCILE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "sadeko": {
+    "lemma": "saadhnu",
+    "semantic_action": "SETTLE_RECONCILE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "saadhnu": {
+    "lemma": "saadhnu",
+    "semantic_action": "SETTLE_RECONCILE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "hisab milaay": {
+    "lemma": "saadhnu",
+    "semantic_action": "SETTLE_RECONCILE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "saadhena": {
+    "lemma": "saadhnu",
+    "semantic_action": "SETTLE_RECONCILE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "settle garey": {
+    "lemma": "saadhnu",
+    "semantic_action": "SETTLE_RECONCILE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "clear gareko": {
+    "lemma": "saadhnu",
+    "semantic_action": "SETTLE_RECONCILE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "hisab milaaeko": {
+    "lemma": "saadhnu",
+    "semantic_action": "SETTLE_RECONCILE",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_in",
+    "signals_completion": null
+  },
+  "banaayeko": {
+    "lemma": "banaaunu",
+    "semantic_action": "CREATE_PREPARE",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "banaunu": {
+    "lemma": "banaaunu",
+    "semantic_action": "CREATE_PREPARE",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "banaaiyo": {
+    "lemma": "banaaunu",
+    "semantic_action": "CREATE_PREPARE",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "nabanaaeko": {
+    "lemma": "banaaunu",
+    "semantic_action": "CREATE_PREPARE",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "taiyaar gareko": {
+    "lemma": "banaaunu",
+    "semantic_action": "CREATE_PREPARE",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "banaaunu": {
+    "lemma": "banaaunu",
+    "semantic_action": "CREATE_PREPARE",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "tiyaar gareko": {
+    "lemma": "banaaunu",
+    "semantic_action": "CREATE_PREPARE",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "create garena": {
+    "lemma": "banaaunu",
+    "semantic_action": "CREATE_PREPARE",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "banayo ko": {
+    "lemma": "banaaunu",
+    "semantic_action": "CREATE_PREPARE",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "banaaina": {
+    "lemma": "banaaunu",
+    "semantic_action": "CREATE_PREPARE",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "banayo": {
+    "lemma": "banaaunu",
+    "semantic_action": "CREATE_PREPARE",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "create gareko": {
+    "lemma": "banaaunu",
+    "semantic_action": "CREATE_PREPARE",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "draft gareko": {
+    "lemma": "banaaunu",
+    "semantic_action": "CREATE_PREPARE",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "draft garey": {
+    "lemma": "banaaunu",
+    "semantic_action": "CREATE_PREPARE",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "banaaena": {
+    "lemma": "banaaunu",
+    "semantic_action": "CREATE_PREPARE",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "banaaune": {
+    "lemma": "banaaunu",
+    "semantic_action": "CREATE_PREPARE",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "banaayeyo": {
+    "lemma": "banaaunu",
+    "semantic_action": "CREATE_PREPARE",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "banaai": {
+    "lemma": "banaaunu",
+    "semantic_action": "CREATE_PREPARE",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "banaaeko": {
+    "lemma": "banaaunu",
+    "semantic_action": "CREATE_PREPARE",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "create garey": {
+    "lemma": "banaaunu",
+    "semantic_action": "CREATE_PREPARE",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "taiyaar garena": {
+    "lemma": "banaaunu",
+    "semantic_action": "CREATE_PREPARE",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "kinbech garena": {
+    "lemma": "kinbech garnu",
+    "semantic_action": "TRADE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kinbech garnu": {
+    "lemma": "kinbech garnu",
+    "semantic_action": "TRADE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "byapaar gareko": {
+    "lemma": "kinbech garnu",
+    "semantic_action": "TRADE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kinbech gareko": {
+    "lemma": "kinbech garnu",
+    "semantic_action": "TRADE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kinbhech gareko": {
+    "lemma": "kinbech garnu",
+    "semantic_action": "TRADE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "trade gareko": {
+    "lemma": "kinbech garnu",
+    "semantic_action": "TRADE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "dhandha gareko": {
+    "lemma": "kinbech garnu",
+    "semantic_action": "TRADE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "lenden gareko": {
+    "lemma": "kinbech garnu",
+    "semantic_action": "TRADE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kinbach gareko": {
+    "lemma": "kinbech garnu",
+    "semantic_action": "TRADE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "dhandha garena": {
+    "lemma": "kinbech garnu",
+    "semantic_action": "TRADE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kinbech garchhu": {
+    "lemma": "kinbech garnu",
+    "semantic_action": "TRADE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "trade garena": {
+    "lemma": "kinbech garnu",
+    "semantic_action": "TRADE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "vyaapaar gareko": {
+    "lemma": "kinbech garnu",
+    "semantic_action": "TRADE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "kharida bikri gareko": {
+    "lemma": "kinbech garnu",
+    "semantic_action": "TRADE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "lende gareko": {
+    "lemma": "kinbech garnu",
+    "semantic_action": "TRADE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "trade garey": {
+    "lemma": "kinbech garnu",
+    "semantic_action": "TRADE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "vyaapaar garena": {
+    "lemma": "kinbech garnu",
+    "semantic_action": "TRADE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "byapar gareko": {
+    "lemma": "kinbech garnu",
+    "semantic_action": "TRADE",
+    "semantic_role": null,
+    "intent_hint": "khata_purchase",
+    "signals_completion": null
+  },
+  "chukta garena": {
+    "lemma": "bhuktan garnu",
+    "semantic_action": "PAYMENT_SETTLEMENT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "receipt deko": {
+    "lemma": "bhuktan garnu",
+    "semantic_action": "PAYMENT_SETTLEMENT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "bhuktan gareko cha": {
+    "lemma": "bhuktan garnu",
+    "semantic_action": "PAYMENT_SETTLEMENT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "bhuktaan bhayena": {
+    "lemma": "bhuktan garnu",
+    "semantic_action": "PAYMENT_SETTLEMENT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "bhuktan gareko": {
+    "lemma": "bhuktan garnu",
+    "semantic_action": "PAYMENT_SETTLEMENT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "bhuktan garey": {
+    "lemma": "bhuktan garnu",
+    "semantic_action": "PAYMENT_SETTLEMENT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "bhuktaan bhayo": {
+    "lemma": "bhuktan garnu",
+    "semantic_action": "PAYMENT_SETTLEMENT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "bhuktani gareko": {
+    "lemma": "bhuktan garnu",
+    "semantic_action": "PAYMENT_SETTLEMENT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "payment garena": {
+    "lemma": "bhuktan garnu",
+    "semantic_action": "PAYMENT_SETTLEMENT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "payment garey": {
+    "lemma": "bhuktan garnu",
+    "semantic_action": "PAYMENT_SETTLEMENT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "paisa tireko": {
+    "lemma": "bhuktan garnu",
+    "semantic_action": "PAYMENT_SETTLEMENT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "chukta garey": {
+    "lemma": "bhuktan garnu",
+    "semantic_action": "PAYMENT_SETTLEMENT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "chukta gareko": {
+    "lemma": "bhuktan garnu",
+    "semantic_action": "PAYMENT_SETTLEMENT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "buktaan gareko": {
+    "lemma": "bhuktan garnu",
+    "semantic_action": "PAYMENT_SETTLEMENT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "bhuktan garena": {
+    "lemma": "bhuktan garnu",
+    "semantic_action": "PAYMENT_SETTLEMENT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "bhuktan garnu": {
+    "lemma": "bhuktan garnu",
+    "semantic_action": "PAYMENT_SETTLEMENT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "payment gareko": {
+    "lemma": "bhuktan garnu",
+    "semantic_action": "PAYMENT_SETTLEMENT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "bhujaaeko": {
+    "lemma": "bhuktan garnu",
+    "semantic_action": "PAYMENT_SETTLEMENT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "kharcha bhayena": {
+    "lemma": "kharcha garnu",
+    "semantic_action": "EXPENSE",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "kharcheko": {
+    "lemma": "kharcha garnu",
+    "semantic_action": "EXPENSE",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "kharcha garena": {
+    "lemma": "kharcha garnu",
+    "semantic_action": "EXPENSE",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "spend gareko": {
+    "lemma": "kharcha garnu",
+    "semantic_action": "EXPENSE",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "kharcha garai": {
+    "lemma": "kharcha garnu",
+    "semantic_action": "EXPENSE",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "kharcha gariyo": {
+    "lemma": "kharcha garnu",
+    "semantic_action": "EXPENSE",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "lagaayeko": {
+    "lemma": "kharcha garnu",
+    "semantic_action": "EXPENSE",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "cost gareko": {
+    "lemma": "kharcha garnu",
+    "semantic_action": "EXPENSE",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "kharca gareko": {
+    "lemma": "kharcha garnu",
+    "semantic_action": "EXPENSE",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "nalageko": {
+    "lemma": "kharcha garnu",
+    "semantic_action": "EXPENSE",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "kharcha gareko": {
+    "lemma": "kharcha garnu",
+    "semantic_action": "EXPENSE",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "kharcha bhayo": {
+    "lemma": "kharcha garnu",
+    "semantic_action": "EXPENSE",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "kharcha garnu": {
+    "lemma": "kharcha garnu",
+    "semantic_action": "EXPENSE",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "spend garey": {
+    "lemma": "kharcha garnu",
+    "semantic_action": "EXPENSE",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "spend garena": {
+    "lemma": "kharcha garnu",
+    "semantic_action": "EXPENSE",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "kharcha laaeko": {
+    "lemma": "kharcha garnu",
+    "semantic_action": "EXPENSE",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "kharcha garey": {
+    "lemma": "kharcha garnu",
+    "semantic_action": "EXPENSE",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "kharaca gareko": {
+    "lemma": "kharcha garnu",
+    "semantic_action": "EXPENSE",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "lageko cha": {
+    "lemma": "kharcha garnu",
+    "semantic_action": "EXPENSE",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "lageko": {
+    "lemma": "kharcha garnu",
+    "semantic_action": "EXPENSE",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "kharcha garena nai": {
+    "lemma": "kharcha garnu",
+    "semantic_action": "EXPENSE",
+    "semantic_role": null,
+    "intent_hint": "khata_expense",
+    "signals_completion": null
+  },
+  "faida garey": {
+    "lemma": "kamaunu",
+    "semantic_action": "EARN_INCOME",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "kamaaiyo": {
+    "lemma": "kamaunu",
+    "semantic_action": "EARN_INCOME",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "faida gareko": {
+    "lemma": "kamaunu",
+    "semantic_action": "EARN_INCOME",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "amdani gareko": {
+    "lemma": "kamaunu",
+    "semantic_action": "EARN_INCOME",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "nakamaaeko": {
+    "lemma": "kamaunu",
+    "semantic_action": "EARN_INCOME",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "kamaaina": {
+    "lemma": "kamaunu",
+    "semantic_action": "EARN_INCOME",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "kamayo": {
+    "lemma": "kamaunu",
+    "semantic_action": "EARN_INCOME",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "profit garey": {
+    "lemma": "kamaunu",
+    "semantic_action": "EARN_INCOME",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "kama": {
+    "lemma": "kamaunu",
+    "semantic_action": "EARN_INCOME",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "aamdani gareko": {
+    "lemma": "kamaunu",
+    "semantic_action": "EARN_INCOME",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "kamaai": {
+    "lemma": "kamaunu",
+    "semantic_action": "EARN_INCOME",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "profit gareko": {
+    "lemma": "kamaunu",
+    "semantic_action": "EARN_INCOME",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "income aayeko": {
+    "lemma": "kamaunu",
+    "semantic_action": "EARN_INCOME",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "aamdani bhayena": {
+    "lemma": "kamaunu",
+    "semantic_action": "EARN_INCOME",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "kamaunu": {
+    "lemma": "kamaunu",
+    "semantic_action": "EARN_INCOME",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "kamaaeko": {
+    "lemma": "kamaunu",
+    "semantic_action": "EARN_INCOME",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "kamaaena": {
+    "lemma": "kamaunu",
+    "semantic_action": "EARN_INCOME",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "kamaaune": {
+    "lemma": "kamaunu",
+    "semantic_action": "EARN_INCOME",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "kamaayeko": {
+    "lemma": "kamaunu",
+    "semantic_action": "EARN_INCOME",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "kamaayeyo": {
+    "lemma": "kamaunu",
+    "semantic_action": "EARN_INCOME",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "profit garena": {
+    "lemma": "kamaunu",
+    "semantic_action": "EARN_INCOME",
+    "semantic_role": null,
+    "intent_hint": "khata_other_income",
+    "signals_completion": null
+  },
+  "bachat gareko": {
+    "lemma": "bachaat garnu",
+    "semantic_action": "SAVE_SAVINGS",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "reserve garena": {
+    "lemma": "bachaat garnu",
+    "semantic_action": "SAVE_SAVINGS",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "savings garena": {
+    "lemma": "bachaat garnu",
+    "semantic_action": "SAVE_SAVINGS",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "bachaat gareko": {
+    "lemma": "bachaat garnu",
+    "semantic_action": "SAVE_SAVINGS",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "sanchit garey": {
+    "lemma": "bachaat garnu",
+    "semantic_action": "SAVE_SAVINGS",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "nabachaayeko": {
+    "lemma": "bachaat garnu",
+    "semantic_action": "SAVE_SAVINGS",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "bachaaina": {
+    "lemma": "bachaat garnu",
+    "semantic_action": "SAVE_SAVINGS",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "bacha": {
+    "lemma": "bachaat garnu",
+    "semantic_action": "SAVE_SAVINGS",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "bachaat garena": {
+    "lemma": "bachaat garnu",
+    "semantic_action": "SAVE_SAVINGS",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "bachaaune": {
+    "lemma": "bachaat garnu",
+    "semantic_action": "SAVE_SAVINGS",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "bachate gareko": {
+    "lemma": "bachaat garnu",
+    "semantic_action": "SAVE_SAVINGS",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "bachaai": {
+    "lemma": "bachaat garnu",
+    "semantic_action": "SAVE_SAVINGS",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "bacha garey": {
+    "lemma": "bachaat garnu",
+    "semantic_action": "SAVE_SAVINGS",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "reserve gareko": {
+    "lemma": "bachaat garnu",
+    "semantic_action": "SAVE_SAVINGS",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "bachaat garnu": {
+    "lemma": "bachaat garnu",
+    "semantic_action": "SAVE_SAVINGS",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "sanchit gareko": {
+    "lemma": "bachaat garnu",
+    "semantic_action": "SAVE_SAVINGS",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "fundo rakheko": {
+    "lemma": "bachaat garnu",
+    "semantic_action": "SAVE_SAVINGS",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "savings garey": {
+    "lemma": "bachaat garnu",
+    "semantic_action": "SAVE_SAVINGS",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "bachaayeko": {
+    "lemma": "bachaat garnu",
+    "semantic_action": "SAVE_SAVINGS",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "savings gareko": {
+    "lemma": "bachaat garnu",
+    "semantic_action": "SAVE_SAVINGS",
+    "semantic_role": null,
+    "intent_hint": "khata_journal",
+    "signals_completion": null
+  },
+  "rin dineko": {
+    "lemma": "rin dinu",
+    "semantic_action": "LEND_LOAN_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "rin dieko": {
+    "lemma": "rin dinu",
+    "semantic_action": "LEND_LOAN_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "saapo gareko": {
+    "lemma": "rin dinu",
+    "semantic_action": "LEND_LOAN_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "rin dieyo": {
+    "lemma": "rin dinu",
+    "semantic_action": "LEND_LOAN_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "credit deko": {
+    "lemma": "rin dinu",
+    "semantic_action": "LEND_LOAN_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "rin deko": {
+    "lemma": "rin dinu",
+    "semantic_action": "LEND_LOAN_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "rin laaeko": {
+    "lemma": "rin dinu",
+    "semantic_action": "LEND_LOAN_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "rin diyena": {
+    "lemma": "rin dinu",
+    "semantic_action": "LEND_LOAN_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "rin dinan": {
+    "lemma": "rin dinu",
+    "semantic_action": "LEND_LOAN_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "loan diyena": {
+    "lemma": "rin dinu",
+    "semantic_action": "LEND_LOAN_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "credit dieyo": {
+    "lemma": "rin dinu",
+    "semantic_action": "LEND_LOAN_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "rin diyo": {
+    "lemma": "rin dinu",
+    "semantic_action": "LEND_LOAN_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "narin deko": {
+    "lemma": "rin dinu",
+    "semantic_action": "LEND_LOAN_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "loan dieko": {
+    "lemma": "rin dinu",
+    "semantic_action": "LEND_LOAN_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "loan deko": {
+    "lemma": "rin dinu",
+    "semantic_action": "LEND_LOAN_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "rin dinu": {
+    "lemma": "rin dinu",
+    "semantic_action": "LEND_LOAN_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "saapo deko": {
+    "lemma": "rin dinu",
+    "semantic_action": "LEND_LOAN_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "saapo dieyo": {
+    "lemma": "rin dinu",
+    "semantic_action": "LEND_LOAN_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "saapo diyena": {
+    "lemma": "rin dinu",
+    "semantic_action": "LEND_LOAN_OUT",
+    "semantic_role": null,
+    "intent_hint": "khata_payment_out",
+    "signals_completion": null
+  },
+  "hudo raicha": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "vayeyo": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "hunu": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "xha": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "vaye": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "bho": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "thio": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "huney": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "vayo": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "huncha": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "hunchhan": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "bhaisakyo": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "vayos": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "vaira": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "vayeko": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "bhayeyo": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "bhaye": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "hos": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "bhoina": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "hola": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "hunchha": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "vaio": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "bhaio": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "hunna": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "bhai": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "hudaina": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "hunxa": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "vaisakyo": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "thi": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "hoina": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "vai": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "vo": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "bhayos": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "bhaira": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "chhaina": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhayeko": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "bhayena": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "bhayo": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "xaina": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "voina": {
+    "lemma": "hunu",
+    "semantic_action": null,
+    "semantic_role": "COPULA_EVENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "vayena": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "xhan": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "raixhan": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "thiyo": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "thiyena": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "xa": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chhe": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "rahecha": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "rahechha": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "xhu": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "tiyo": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "raichhan": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "cha": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "raixa": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "xau": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chhau": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "raicha": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chanu": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "che": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chha": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "thiye": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chhu": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chaina": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chhan": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "thyo": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "rahechha'ina": {
+    "lemma": "chanu",
+    "semantic_action": null,
+    "semantic_role": "EXISTENCE_COPULA",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "garisakeko": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "vaeko": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "vayeko cha": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "bhaeko cha": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "bhaichhaeko": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "bhayeko cha": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "baisako": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "vaisakeko": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "bhayeko chhaina": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "bhaisakeko": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "vyeko": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "vayeko xaina": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "vayeko xa nai": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "nabhayeko": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "bhaisako": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "bhaeko": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "bhai raheko": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "bhyeko": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "vaisako": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "bhayeko cha nai": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "vai raheko": {
+    "lemma": "bhayeko",
+    "semantic_action": null,
+    "semantic_role": "PERFECT_ASPECT",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "rahina sakyo": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "rahirahanchha": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "rahyo": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "rahirheko": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "base": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "rahi rako": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "rahisakeko": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "baseko": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "raheko chhaina": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "rahinchha": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "rahieko": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "rahirako": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "rahane": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "raha": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "rahiraheko": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "rahibhako": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "raheko": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "rahichhan": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "rahan": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "baseko chhaina": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "rahena": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "basena": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "rah": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "basiraheko": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "rahirako cha": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "rahanu": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "basi": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "rahichhu": {
+    "lemma": "rahanu",
+    "semantic_action": null,
+    "semantic_role": "CONTINUITY_STATE",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "sakena": {
+    "lemma": "saknu",
+    "semantic_action": null,
+    "semantic_role": "ABILITY_COMPLETION",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "sakunchha": {
+    "lemma": "saknu",
+    "semantic_action": null,
+    "semantic_role": "ABILITY_COMPLETION",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "sakchha": {
+    "lemma": "saknu",
+    "semantic_action": null,
+    "semantic_role": "ABILITY_COMPLETION",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "sakiyo": {
+    "lemma": "saknu",
+    "semantic_action": null,
+    "semantic_role": "ABILITY_COMPLETION",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "garisakyo": {
+    "lemma": "saknu",
+    "semantic_action": null,
+    "semantic_role": "ABILITY_COMPLETION",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "sakdainau": {
+    "lemma": "saknu",
+    "semantic_action": null,
+    "semantic_role": "ABILITY_COMPLETION",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "sakdina": {
+    "lemma": "saknu",
+    "semantic_action": null,
+    "semantic_role": "ABILITY_COMPLETION",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "sakyena": {
+    "lemma": "saknu",
+    "semantic_action": null,
+    "semantic_role": "ABILITY_COMPLETION",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "saknu": {
+    "lemma": "saknu",
+    "semantic_action": null,
+    "semantic_role": "ABILITY_COMPLETION",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "sakchhu": {
+    "lemma": "saknu",
+    "semantic_action": null,
+    "semantic_role": "ABILITY_COMPLETION",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "sakchhina": {
+    "lemma": "saknu",
+    "semantic_action": null,
+    "semantic_role": "ABILITY_COMPLETION",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "sakeko": {
+    "lemma": "saknu",
+    "semantic_action": null,
+    "semantic_role": "ABILITY_COMPLETION",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "sakinna": {
+    "lemma": "saknu",
+    "semantic_action": null,
+    "semantic_role": "ABILITY_COMPLETION",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "sak": {
+    "lemma": "saknu",
+    "semantic_action": null,
+    "semantic_role": "ABILITY_COMPLETION",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "sakecho": {
+    "lemma": "saknu",
+    "semantic_action": null,
+    "semantic_role": "ABILITY_COMPLETION",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "sakdaina": {
+    "lemma": "saknu",
+    "semantic_action": null,
+    "semantic_role": "ABILITY_COMPLETION",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "sakincha": {
+    "lemma": "saknu",
+    "semantic_action": null,
+    "semantic_role": "ABILITY_COMPLETION",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "sakdainna": {
+    "lemma": "saknu",
+    "semantic_action": null,
+    "semantic_role": "ABILITY_COMPLETION",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "sakine": {
+    "lemma": "saknu",
+    "semantic_action": null,
+    "semantic_role": "ABILITY_COMPLETION",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "sakisakena": {
+    "lemma": "saknu",
+    "semantic_action": null,
+    "semantic_role": "ABILITY_COMPLETION",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "sakisakyo": {
+    "lemma": "saknu",
+    "semantic_action": null,
+    "semantic_role": "ABILITY_COMPLETION",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "sakyo": {
+    "lemma": "saknu",
+    "semantic_action": null,
+    "semantic_role": "ABILITY_COMPLETION",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "parcha": {
+    "lemma": "parnu",
+    "semantic_action": null,
+    "semantic_role": "OBLIGATION_NECESSITY",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "pariyo": {
+    "lemma": "parnu",
+    "semantic_action": null,
+    "semantic_role": "OBLIGATION_NECESSITY",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "parna": {
+    "lemma": "parnu",
+    "semantic_action": null,
+    "semantic_role": "OBLIGATION_NECESSITY",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "parne chhaina": {
+    "lemma": "parnu",
+    "semantic_action": null,
+    "semantic_role": "OBLIGATION_NECESSITY",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "paro": {
+    "lemma": "parnu",
+    "semantic_action": null,
+    "semantic_role": "OBLIGATION_NECESSITY",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "pareko": {
+    "lemma": "parnu",
+    "semantic_action": null,
+    "semantic_role": "OBLIGATION_NECESSITY",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "parnu": {
+    "lemma": "parnu",
+    "semantic_action": null,
+    "semantic_role": "OBLIGATION_NECESSITY",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "parisakyo": {
+    "lemma": "parnu",
+    "semantic_action": null,
+    "semantic_role": "OBLIGATION_NECESSITY",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "pari": {
+    "lemma": "parnu",
+    "semantic_action": null,
+    "semantic_role": "OBLIGATION_NECESSITY",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "pareko cha": {
+    "lemma": "parnu",
+    "semantic_action": null,
+    "semantic_role": "OBLIGATION_NECESSITY",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "par": {
+    "lemma": "parnu",
+    "semantic_action": null,
+    "semantic_role": "OBLIGATION_NECESSITY",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "pardaina": {
+    "lemma": "parnu",
+    "semantic_action": null,
+    "semantic_role": "OBLIGATION_NECESSITY",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "paryo": {
+    "lemma": "parnu",
+    "semantic_action": null,
+    "semantic_role": "OBLIGATION_NECESSITY",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "parena": {
+    "lemma": "parnu",
+    "semantic_action": null,
+    "semantic_role": "OBLIGATION_NECESSITY",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "parla": {
+    "lemma": "parnu",
+    "semantic_action": null,
+    "semantic_role": "OBLIGATION_NECESSITY",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "parne": {
+    "lemma": "parnu",
+    "semantic_action": null,
+    "semantic_role": "OBLIGATION_NECESSITY",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "parchha": {
+    "lemma": "parnu",
+    "semantic_action": null,
+    "semantic_role": "OBLIGATION_NECESSITY",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "parbhayo": {
+    "lemma": "parnu",
+    "semantic_action": null,
+    "semantic_role": "OBLIGATION_NECESSITY",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "paryena": {
+    "lemma": "parnu",
+    "semantic_action": null,
+    "semantic_role": "OBLIGATION_NECESSITY",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "pardina": {
+    "lemma": "parnu",
+    "semantic_action": null,
+    "semantic_role": "OBLIGATION_NECESSITY",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "parxa": {
+    "lemma": "parnu",
+    "semantic_action": null,
+    "semantic_role": "OBLIGATION_NECESSITY",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "thaha payeko": {
+    "lemma": "thaha hunu",
+    "semantic_action": null,
+    "semantic_role": "KNOWLEDGE_AWARENESS",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "patta lagyo": {
+    "lemma": "thaha hunu",
+    "semantic_action": null,
+    "semantic_role": "KNOWLEDGE_AWARENESS",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "thaha thiyo": {
+    "lemma": "thaha hunu",
+    "semantic_action": null,
+    "semantic_role": "KNOWLEDGE_AWARENESS",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "pata lagyo": {
+    "lemma": "thaha hunu",
+    "semantic_action": null,
+    "semantic_role": "KNOWLEDGE_AWARENESS",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "thaha bhayo": {
+    "lemma": "thaha hunu",
+    "semantic_action": null,
+    "semantic_role": "KNOWLEDGE_AWARENESS",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "thaha chha malaai": {
+    "lemma": "thaha hunu",
+    "semantic_action": null,
+    "semantic_role": "KNOWLEDGE_AWARENESS",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "thaha vayo": {
+    "lemma": "thaha hunu",
+    "semantic_action": null,
+    "semantic_role": "KNOWLEDGE_AWARENESS",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "thaha hunu": {
+    "lemma": "thaha hunu",
+    "semantic_action": null,
+    "semantic_role": "KNOWLEDGE_AWARENESS",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "pata cha": {
+    "lemma": "thaha hunu",
+    "semantic_action": null,
+    "semantic_role": "KNOWLEDGE_AWARENESS",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "thaha chha": {
+    "lemma": "thaha hunu",
+    "semantic_action": null,
+    "semantic_role": "KNOWLEDGE_AWARENESS",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "thaha xa": {
+    "lemma": "thaha hunu",
+    "semantic_action": null,
+    "semantic_role": "KNOWLEDGE_AWARENESS",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "thaha xaina": {
+    "lemma": "thaha hunu",
+    "semantic_action": null,
+    "semantic_role": "KNOWLEDGE_AWARENESS",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "thaha thyo": {
+    "lemma": "thaha hunu",
+    "semantic_action": null,
+    "semantic_role": "KNOWLEDGE_AWARENESS",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "taha cha": {
+    "lemma": "thaha hunu",
+    "semantic_action": null,
+    "semantic_role": "KNOWLEDGE_AWARENESS",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "thaha cha": {
+    "lemma": "thaha hunu",
+    "semantic_action": null,
+    "semantic_role": "KNOWLEDGE_AWARENESS",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "thaha lagyo": {
+    "lemma": "thaha hunu",
+    "semantic_action": null,
+    "semantic_role": "KNOWLEDGE_AWARENESS",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "thaha chhaina": {
+    "lemma": "thaha hunu",
+    "semantic_action": null,
+    "semantic_role": "KNOWLEDGE_AWARENESS",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "taha chhaina": {
+    "lemma": "thaha hunu",
+    "semantic_action": null,
+    "semantic_role": "KNOWLEDGE_AWARENESS",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "patta cha": {
+    "lemma": "thaha hunu",
+    "semantic_action": null,
+    "semantic_role": "KNOWLEDGE_AWARENESS",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "pataa chhaina": {
+    "lemma": "thaha hunu",
+    "semantic_action": null,
+    "semantic_role": "KNOWLEDGE_AWARENESS",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "thaha chhu": {
+    "lemma": "thaha hunu",
+    "semantic_action": null,
+    "semantic_role": "KNOWLEDGE_AWARENESS",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "thaha nai chhaina": {
+    "lemma": "thaha hunu",
+    "semantic_action": null,
+    "semantic_role": "KNOWLEDGE_AWARENESS",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "thaha chaina": {
+    "lemma": "thaha hunu",
+    "semantic_action": null,
+    "semantic_role": "KNOWLEDGE_AWARENESS",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "chahinna": {
+    "lemma": "chahanu",
+    "semantic_action": null,
+    "semantic_role": "DESIRE_INTENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chahina": {
+    "lemma": "chahanu",
+    "semantic_action": null,
+    "semantic_role": "DESIRE_INTENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chahanchha": {
+    "lemma": "chahanu",
+    "semantic_action": null,
+    "semantic_role": "DESIRE_INTENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chahdaina": {
+    "lemma": "chahanu",
+    "semantic_action": null,
+    "semantic_role": "DESIRE_INTENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chahdina": {
+    "lemma": "chahanu",
+    "semantic_action": null,
+    "semantic_role": "DESIRE_INTENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chahana": {
+    "lemma": "chahanu",
+    "semantic_action": null,
+    "semantic_role": "DESIRE_INTENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chaayo": {
+    "lemma": "chahanu",
+    "semantic_action": null,
+    "semantic_role": "DESIRE_INTENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chahine": {
+    "lemma": "chahanu",
+    "semantic_action": null,
+    "semantic_role": "DESIRE_INTENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chahanxhu": {
+    "lemma": "chahanu",
+    "semantic_action": null,
+    "semantic_role": "DESIRE_INTENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chaahinxa": {
+    "lemma": "chahanu",
+    "semantic_action": null,
+    "semantic_role": "DESIRE_INTENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chaahiyo": {
+    "lemma": "chahanu",
+    "semantic_action": null,
+    "semantic_role": "DESIRE_INTENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chaahdaina": {
+    "lemma": "chahanu",
+    "semantic_action": null,
+    "semantic_role": "DESIRE_INTENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chahiyeko": {
+    "lemma": "chahanu",
+    "semantic_action": null,
+    "semantic_role": "DESIRE_INTENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chahinchha": {
+    "lemma": "chahanu",
+    "semantic_action": null,
+    "semantic_role": "DESIRE_INTENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chahiyo": {
+    "lemma": "chahanu",
+    "semantic_action": null,
+    "semantic_role": "DESIRE_INTENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chahanchhu": {
+    "lemma": "chahanu",
+    "semantic_action": null,
+    "semantic_role": "DESIRE_INTENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chahinchha'ina": {
+    "lemma": "chahanu",
+    "semantic_action": null,
+    "semantic_role": "DESIRE_INTENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chaheko": {
+    "lemma": "chahanu",
+    "semantic_action": null,
+    "semantic_role": "DESIRE_INTENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chahana parcha": {
+    "lemma": "chahanu",
+    "semantic_action": null,
+    "semantic_role": "DESIRE_INTENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chahanxa": {
+    "lemma": "chahanu",
+    "semantic_action": null,
+    "semantic_role": "DESIRE_INTENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chaahinchha": {
+    "lemma": "chahanu",
+    "semantic_action": null,
+    "semantic_role": "DESIRE_INTENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chahinxa": {
+    "lemma": "chahanu",
+    "semantic_action": null,
+    "semantic_role": "DESIRE_INTENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "chahanu": {
+    "lemma": "chahanu",
+    "semantic_action": null,
+    "semantic_role": "DESIRE_INTENT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "aaisako": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "aayna": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "aaudina": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "aaeko": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "aaunchha": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "aaula": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "aaisako chhaina": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "aauna sakena": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "aauxa": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "aaisakyo": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "aauna sakyo": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "aaisisakyo": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "aaunchhu": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "aauyo": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "aaudaina": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "aaisisakeko": {
+    "lemma": "aunu",
+    "semantic_action": null,
+    "semantic_role": "ARRIVAL_ABILITY",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": false
+  },
+  "pugecha": {
+    "lemma": "pugnu",
+    "semantic_action": null,
+    "semantic_role": "SUFFICIENCY_ARRIVAL",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "puganechha": {
+    "lemma": "pugnu",
+    "semantic_action": null,
+    "semantic_role": "SUFFICIENCY_ARRIVAL",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "pugna": {
+    "lemma": "pugnu",
+    "semantic_action": null,
+    "semantic_role": "SUFFICIENCY_ARRIVAL",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "alikai pugdaina": {
+    "lemma": "pugnu",
+    "semantic_action": null,
+    "semantic_role": "SUFFICIENCY_ARRIVAL",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "pugne": {
+    "lemma": "pugnu",
+    "semantic_action": null,
+    "semantic_role": "SUFFICIENCY_ARRIVAL",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "pugeko": {
+    "lemma": "pugnu",
+    "semantic_action": null,
+    "semantic_role": "SUFFICIENCY_ARRIVAL",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "pugos": {
+    "lemma": "pugnu",
+    "semantic_action": null,
+    "semantic_role": "SUFFICIENCY_ARRIVAL",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "pugnu": {
+    "lemma": "pugnu",
+    "semantic_action": null,
+    "semantic_role": "SUFFICIENCY_ARRIVAL",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "pugxa": {
+    "lemma": "pugnu",
+    "semantic_action": null,
+    "semantic_role": "SUFFICIENCY_ARRIVAL",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "pugdaina": {
+    "lemma": "pugnu",
+    "semantic_action": null,
+    "semantic_role": "SUFFICIENCY_ARRIVAL",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "pugera": {
+    "lemma": "pugnu",
+    "semantic_action": null,
+    "semantic_role": "SUFFICIENCY_ARRIVAL",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "puger": {
+    "lemma": "pugnu",
+    "semantic_action": null,
+    "semantic_role": "SUFFICIENCY_ARRIVAL",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "pugla jasto chhaina": {
+    "lemma": "pugnu",
+    "semantic_action": null,
+    "semantic_role": "SUFFICIENCY_ARRIVAL",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "pugla": {
+    "lemma": "pugnu",
+    "semantic_action": null,
+    "semantic_role": "SUFFICIENCY_ARRIVAL",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "pugiyo": {
+    "lemma": "pugnu",
+    "semantic_action": null,
+    "semantic_role": "SUFFICIENCY_ARRIVAL",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "pugisakyo": {
+    "lemma": "pugnu",
+    "semantic_action": null,
+    "semantic_role": "SUFFICIENCY_ARRIVAL",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "pugisakena": {
+    "lemma": "pugnu",
+    "semantic_action": null,
+    "semantic_role": "SUFFICIENCY_ARRIVAL",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "pugdina": {
+    "lemma": "pugnu",
+    "semantic_action": null,
+    "semantic_role": "SUFFICIENCY_ARRIVAL",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "pugchhu": {
+    "lemma": "pugnu",
+    "semantic_action": null,
+    "semantic_role": "SUFFICIENCY_ARRIVAL",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "pugyo": {
+    "lemma": "pugnu",
+    "semantic_action": null,
+    "semantic_role": "SUFFICIENCY_ARRIVAL",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "pugchha": {
+    "lemma": "pugnu",
+    "semantic_action": null,
+    "semantic_role": "SUFFICIENCY_ARRIVAL",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "pugena": {
+    "lemma": "pugnu",
+    "semantic_action": null,
+    "semantic_role": "SUFFICIENCY_ARRIVAL",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "bujhisakena": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bujheko chhaina": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bujdina": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bujhai": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bujhena": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bujhdina": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bujhine": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bujdaina": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bujhiyo": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bujheko": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bujhecho": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bujhnus": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bujhchha": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bujhera": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bujhnu": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bujhchhu": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bujhdaina": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bujhaiyo": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bujiyo": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bujheko cha": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bujhisakyo": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bujhla": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bujhyo": {
+    "lemma": "bujhnu",
+    "semantic_action": null,
+    "semantic_role": "COMPREHENSION_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "birsiyeko": {
+    "lemma": "birsanu",
+    "semantic_action": null,
+    "semantic_role": "OMISSION_FORGET",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "birsanu": {
+    "lemma": "birsanu",
+    "semantic_action": null,
+    "semantic_role": "OMISSION_FORGET",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "birsinchha": {
+    "lemma": "birsanu",
+    "semantic_action": null,
+    "semantic_role": "OMISSION_FORGET",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "birseko hoina": {
+    "lemma": "birsanu",
+    "semantic_action": null,
+    "semantic_role": "OMISSION_FORGET",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "birsichhu": {
+    "lemma": "birsanu",
+    "semantic_action": null,
+    "semantic_role": "OMISSION_FORGET",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "birsisakyo": {
+    "lemma": "birsanu",
+    "semantic_action": null,
+    "semantic_role": "OMISSION_FORGET",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "birse ko": {
+    "lemma": "birsanu",
+    "semantic_action": null,
+    "semantic_role": "OMISSION_FORGET",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "birseko": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "birsisakena": {
+    "lemma": "birsanu",
+    "semantic_action": null,
+    "semantic_role": "OMISSION_FORGET",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "birsaeko": {
+    "lemma": "birsanu",
+    "semantic_action": null,
+    "semantic_role": "OMISSION_FORGET",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "birsidechha": {
+    "lemma": "birsanu",
+    "semantic_action": null,
+    "semantic_role": "OMISSION_FORGET",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "birsichha": {
+    "lemma": "birsanu",
+    "semantic_action": null,
+    "semantic_role": "OMISSION_FORGET",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "birsiyo": {
+    "lemma": "birsanu",
+    "semantic_action": null,
+    "semantic_role": "OMISSION_FORGET",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "biriseko": {
+    "lemma": "birsanu",
+    "semantic_action": null,
+    "semantic_role": "OMISSION_FORGET",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "birsyo": {
+    "lemma": "birsanu",
+    "semantic_action": null,
+    "semantic_role": "OMISSION_FORGET",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "birse": {
+    "lemma": "birsanu",
+    "semantic_action": null,
+    "semantic_role": "OMISSION_FORGET",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "birsine": {
+    "lemma": "birsanu",
+    "semantic_action": null,
+    "semantic_role": "OMISSION_FORGET",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "birseko cha": {
+    "lemma": "birsanu",
+    "semantic_action": null,
+    "semantic_role": "OMISSION_FORGET",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "nai birseko": {
+    "lemma": "birsanu",
+    "semantic_action": null,
+    "semantic_role": "OMISSION_FORGET",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "birseko nai": {
+    "lemma": "birsanu",
+    "semantic_action": null,
+    "semantic_role": "OMISSION_FORGET",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "birsiye": {
+    "lemma": "birsanu",
+    "semantic_action": null,
+    "semantic_role": "OMISSION_FORGET",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "birsideko": {
+    "lemma": "birsanu",
+    "semantic_action": null,
+    "semantic_role": "OMISSION_FORGET",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "birseko chhaina": {
+    "lemma": "birsanu",
+    "semantic_action": null,
+    "semantic_role": "OMISSION_FORGET",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "birsina": {
+    "lemma": "birsanu",
+    "semantic_action": null,
+    "semantic_role": "OMISSION_FORGET",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjheko chhaina": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjhichhu": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjhideko": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjhna": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjhi": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjhine": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjhera": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjhidina": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjhaeko": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjhichha": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjha": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjhyo": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjhena": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjhidiyo": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjhecho": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjhinchha": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjheko": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjhanu": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjhiyera": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjhisakyo": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjhnus": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjhisakena": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjhiyo": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjheko cha": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "samjiyo": {
+    "lemma": "samjhanu",
+    "semantic_action": null,
+    "semantic_role": "RECALL_CONSIDERATION",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "sodh": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodhnus": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodhdaina": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodhiyeko": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodhecho": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodhi": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodhera": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodhisakena": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodhidina": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodheko cha": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodhideko": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodhyo": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodhinchha": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodhchha": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodhiyo": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodheko": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodhena": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodheko chhaina": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodhne": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodhchhu": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodiyo": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodhna": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "nasodheko": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodna": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodhnu": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "sodhisakyo": {
+    "lemma": "sodhnu",
+    "semantic_action": null,
+    "semantic_role": "INQUIRY_QUERY",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "nabhanyo": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhanxa": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhaniyo": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhanyo": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhanchha": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhanxhu": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "nabhaneko": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhanera": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhancha": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhanchhu": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhane": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhaneko": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "nabhannus": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhaneko cha": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhan": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhaneko chhaina": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhanera ko": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhanisakyo": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhanxha": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhandaicha": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhanneko": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhannus": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhaniye": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhandai": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhanena": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhannu": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "bhaney": {
+    "lemma": "bhannu",
+    "semantic_action": null,
+    "semantic_role": "SPEECH_LABEL",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "sundina": {
+    "lemma": "sunnu",
+    "semantic_action": null,
+    "semantic_role": "AUDITORY_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "sunchhu": {
+    "lemma": "sunnu",
+    "semantic_action": null,
+    "semantic_role": "AUDITORY_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "sunideko": {
+    "lemma": "sunnu",
+    "semantic_action": null,
+    "semantic_role": "AUDITORY_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "sunisakena": {
+    "lemma": "sunnu",
+    "semantic_action": null,
+    "semantic_role": "AUDITORY_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "sunera": {
+    "lemma": "sunnu",
+    "semantic_action": null,
+    "semantic_role": "AUDITORY_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "sunnus": {
+    "lemma": "sunnu",
+    "semantic_action": null,
+    "semantic_role": "AUDITORY_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "suneko": {
+    "lemma": "sunnu",
+    "semantic_action": null,
+    "semantic_role": "AUDITORY_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "suninchha": {
+    "lemma": "sunnu",
+    "semantic_action": null,
+    "semantic_role": "AUDITORY_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "sunne": {
+    "lemma": "sunnu",
+    "semantic_action": null,
+    "semantic_role": "AUDITORY_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "suneko cha": {
+    "lemma": "sunnu",
+    "semantic_action": null,
+    "semantic_role": "AUDITORY_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "suniyeko": {
+    "lemma": "sunnu",
+    "semantic_action": null,
+    "semantic_role": "AUDITORY_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "sunecho": {
+    "lemma": "sunnu",
+    "semantic_action": null,
+    "semantic_role": "AUDITORY_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "sunyo": {
+    "lemma": "sunnu",
+    "semantic_action": null,
+    "semantic_role": "AUDITORY_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "sunnu": {
+    "lemma": "sunnu",
+    "semantic_action": null,
+    "semantic_role": "AUDITORY_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "suneko chhaina": {
+    "lemma": "sunnu",
+    "semantic_action": null,
+    "semantic_role": "AUDITORY_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "sunisakyo": {
+    "lemma": "sunnu",
+    "semantic_action": null,
+    "semantic_role": "AUDITORY_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "sunchha": {
+    "lemma": "sunnu",
+    "semantic_action": null,
+    "semantic_role": "AUDITORY_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "sun na": {
+    "lemma": "sunnu",
+    "semantic_action": null,
+    "semantic_role": "AUDITORY_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "sunena": {
+    "lemma": "sunnu",
+    "semantic_action": null,
+    "semantic_role": "AUDITORY_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "sun": {
+    "lemma": "sunnu",
+    "semantic_action": null,
+    "semantic_role": "AUDITORY_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "suni": {
+    "lemma": "sunnu",
+    "semantic_action": null,
+    "semantic_role": "AUDITORY_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "sundaina": {
+    "lemma": "sunnu",
+    "semantic_action": null,
+    "semantic_role": "AUDITORY_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "suniyo": {
+    "lemma": "sunnu",
+    "semantic_action": null,
+    "semantic_role": "AUDITORY_RECEIPT",
+    "intent_hint": "khata_journal",
+    "signals_completion": false
+  },
+  "dekhdina": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "dekhi": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "dekhena": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "dekhchhu": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "dekhchha": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "dekhera": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "dekh na": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "dekhnus": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "dekheko": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "dekhyo": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "dekheko cha": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "dekhdaina": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "dekh": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "dekhiyo": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "dekhaideko": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "dekheko chhaina": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "dekhisakena": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "dekhinchha": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "dekhecho": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "dekhnu": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "dekhideko": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "dekhne": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "dekhisakyo": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "dekhiyeko": {
+    "lemma": "dekhnu",
+    "semantic_action": null,
+    "semantic_role": "VISUAL_CHECK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khojisakyo": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khojisakena": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khojeko cha": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khojinchha": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khojeko chhaina": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khojchha": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khojchhu": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khojiyeko": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khojyo": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khojne": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khojeko": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khojdaina": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khojideko": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khojena": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khoj": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khojnu": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khojiyo": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khojnus": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khojera": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khojaeko": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khojdina": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khojera ko": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khojecho": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "khoji": {
+    "lemma": "khojnu",
+    "semantic_action": null,
+    "semantic_role": "SEARCH_SEEK",
+    "intent_hint": "query",
+    "signals_completion": false
+  },
+  "paudina": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "paine": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "payeko": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "payo": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "paaisakyo": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "paayo": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "paaeko": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "paai": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "paeko": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "paunu": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "paiyo": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "paiena": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "painchha": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "paudaina": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "paaiyo": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "pai": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "paena": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "pauna": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "paayeko": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "pauna sakena": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "paiyeko": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "paunchha": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "paunchhu": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "painxa": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "payena": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "pauna sakyo": {
+    "lemma": "paunu",
+    "semantic_action": null,
+    "semantic_role": "OBTAIN_RECEIVE",
+    "intent_hint": "khata_payment_in",
+    "signals_completion": true
+  },
+  "haalne": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "haaleko chhaina": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "haalera": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "haalena": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "haali": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "haalinchha": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "haalisakena": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "haaleko": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "haaliyeko": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "halideko": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "haalaeko": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "haalecho": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "haaleko cha": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "haalyo": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "haalchha": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "haal": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "haalisakyo": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "haaliyo": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "haaldina": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "haalideko": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "haaldaina": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "haalchhu": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "haalnu": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "haalnus": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  },
+  "haali deko": {
+    "lemma": "haalnu",
+    "semantic_action": null,
+    "semantic_role": "INPUT_ENTRY",
+    "intent_hint": "khata_journal",
+    "signals_completion": true
+  }
+}

@@ -1,0 +1,753 @@
+{
+  "aja": {
+    "pattern_type": "relative_day",
+    "gregorian_approx": "today",
+    "fiscal_significance": "current_period",
+    "terms": [
+      "aja",
+      "aaja",
+      "today"
+    ]
+  },
+  "aaja": {
+    "pattern_type": "relative_day",
+    "gregorian_approx": "today",
+    "fiscal_significance": "current_period",
+    "terms": [
+      "aja",
+      "aaja",
+      "today"
+    ]
+  },
+  "today": {
+    "pattern_type": "relative_day",
+    "gregorian_approx": "today",
+    "fiscal_significance": "current_period",
+    "terms": [
+      "aja",
+      "aaja",
+      "today"
+    ]
+  },
+  "hijo": {
+    "pattern_type": "relative_day",
+    "gregorian_approx": "yesterday",
+    "fiscal_significance": "prior_day",
+    "terms": [
+      "hijo",
+      "yesterday"
+    ]
+  },
+  "yesterday": {
+    "pattern_type": "relative_day",
+    "gregorian_approx": "yesterday",
+    "fiscal_significance": "prior_day",
+    "terms": [
+      "hijo",
+      "yesterday"
+    ]
+  },
+  "parsi": {
+    "pattern_type": "relative_day",
+    "gregorian_approx": "tomorrow",
+    "fiscal_significance": "future",
+    "terms": [
+      "parsi",
+      "tomorrow"
+    ]
+  },
+  "tomorrow": {
+    "pattern_type": "relative_day",
+    "gregorian_approx": "tomorrow",
+    "fiscal_significance": "future",
+    "terms": [
+      "parsi",
+      "tomorrow"
+    ]
+  },
+  "abhui": {
+    "pattern_type": "relative_day",
+    "gregorian_approx": "d-2",
+    "fiscal_significance": "prior_day",
+    "terms": [
+      "abhui",
+      "day before yesterday"
+    ]
+  },
+  "day before yesterday": {
+    "pattern_type": "relative_day",
+    "gregorian_approx": "d-2",
+    "fiscal_significance": "prior_day",
+    "terms": [
+      "abhui",
+      "day before yesterday"
+    ]
+  },
+  "naparsi": {
+    "pattern_type": "relative_day",
+    "gregorian_approx": "d+2",
+    "fiscal_significance": "future",
+    "terms": [
+      "naparsi",
+      "day after tomorrow"
+    ]
+  },
+  "day after tomorrow": {
+    "pattern_type": "relative_day",
+    "gregorian_approx": "d+2",
+    "fiscal_significance": "future",
+    "terms": [
+      "naparsi",
+      "day after tomorrow"
+    ]
+  },
+  "hapta": {
+    "pattern_type": "week",
+    "gregorian_approx": "week",
+    "fiscal_significance": "period",
+    "terms": [
+      "hapta",
+      "week"
+    ]
+  },
+  "week": {
+    "pattern_type": "week",
+    "gregorian_approx": "week",
+    "fiscal_significance": "period",
+    "terms": [
+      "hapta",
+      "week"
+    ]
+  },
+  "mahina": {
+    "pattern_type": "duration",
+    "gregorian_approx": "months",
+    "fiscal_significance": "aging",
+    "terms": [
+      "mahina",
+      "months"
+    ]
+  },
+  "month": {
+    "pattern_type": "week",
+    "gregorian_approx": "month",
+    "fiscal_significance": "period",
+    "terms": [
+      "mahina",
+      "month"
+    ]
+  },
+  "barsa": {
+    "pattern_type": "week",
+    "gregorian_approx": "year",
+    "fiscal_significance": "period",
+    "terms": [
+      "barsa",
+      "year",
+      "sal"
+    ]
+  },
+  "year": {
+    "pattern_type": "week",
+    "gregorian_approx": "year",
+    "fiscal_significance": "period",
+    "terms": [
+      "barsa",
+      "year",
+      "sal"
+    ]
+  },
+  "sal": {
+    "pattern_type": "week",
+    "gregorian_approx": "year",
+    "fiscal_significance": "period",
+    "terms": [
+      "barsa",
+      "year",
+      "sal"
+    ]
+  },
+  "shrawan": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-jul",
+    "fiscal_significance": "FY_start",
+    "terms": [
+      "shrawan",
+      "sawan"
+    ]
+  },
+  "sawan": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-jul",
+    "fiscal_significance": "FY_start",
+    "terms": [
+      "shrawan",
+      "sawan"
+    ]
+  },
+  "bhadra": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-aug",
+    "fiscal_significance": "FY_month_2",
+    "terms": [
+      "bhadra"
+    ]
+  },
+  "ashwin": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-sep",
+    "fiscal_significance": "FY_month_3",
+    "terms": [
+      "ashwin",
+      "aswin"
+    ]
+  },
+  "aswin": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-sep",
+    "fiscal_significance": "FY_month_3",
+    "terms": [
+      "ashwin",
+      "aswin"
+    ]
+  },
+  "kartik": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-oct",
+    "fiscal_significance": "FY_month_4",
+    "terms": [
+      "kartik"
+    ]
+  },
+  "mangsir": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-nov",
+    "fiscal_significance": "FY_month_5",
+    "terms": [
+      "mangsir"
+    ]
+  },
+  "poush": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-dec",
+    "fiscal_significance": "FY_month_6",
+    "terms": [
+      "poush"
+    ]
+  },
+  "magh": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-jan",
+    "fiscal_significance": "FY_month_7",
+    "terms": [
+      "magh"
+    ]
+  },
+  "falgun": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-feb",
+    "fiscal_significance": "FY_month_8",
+    "terms": [
+      "falgun",
+      "fagun"
+    ]
+  },
+  "fagun": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-feb",
+    "fiscal_significance": "FY_month_8",
+    "terms": [
+      "falgun",
+      "fagun"
+    ]
+  },
+  "chaitra": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-mar",
+    "fiscal_significance": "FY_month_9",
+    "terms": [
+      "chaitra",
+      "chait"
+    ]
+  },
+  "chait": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-mar",
+    "fiscal_significance": "FY_month_9",
+    "terms": [
+      "chaitra",
+      "chait"
+    ]
+  },
+  "baishakh": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-apr",
+    "fiscal_significance": "FY_month_10",
+    "terms": [
+      "baishakh",
+      "baisakh"
+    ]
+  },
+  "baisakh": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-apr",
+    "fiscal_significance": "FY_month_10",
+    "terms": [
+      "baishakh",
+      "baisakh"
+    ]
+  },
+  "jestha": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-may",
+    "fiscal_significance": "FY_month_11",
+    "terms": [
+      "jestha",
+      "jesta"
+    ]
+  },
+  "jesta": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-may",
+    "fiscal_significance": "FY_month_11",
+    "terms": [
+      "jestha",
+      "jesta"
+    ]
+  },
+  "ashadh": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-jun",
+    "fiscal_significance": "FY_end",
+    "terms": [
+      "ashadh",
+      "asad"
+    ]
+  },
+  "asad": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-jun",
+    "fiscal_significance": "FY_end",
+    "terms": [
+      "ashadh",
+      "asad"
+    ]
+  },
+  "bs": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "nepali_calendar",
+    "fiscal_significance": "official_date",
+    "terms": [
+      "bs",
+      "vikram",
+      "bikram sambat"
+    ]
+  },
+  "vikram": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "nepali_calendar",
+    "fiscal_significance": "official_date",
+    "terms": [
+      "bs",
+      "vikram",
+      "bikram sambat"
+    ]
+  },
+  "bikram sambat": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "nepali_calendar",
+    "fiscal_significance": "official_date",
+    "terms": [
+      "bs",
+      "vikram",
+      "bikram sambat"
+    ]
+  },
+  "ad": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "gregorian",
+    "fiscal_significance": "alternate_date",
+    "terms": [
+      "ad",
+      "english date"
+    ]
+  },
+  "english date": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "gregorian",
+    "fiscal_significance": "alternate_date",
+    "terms": [
+      "ad",
+      "english date"
+    ]
+  },
+  "quarter": {
+    "pattern_type": "quarter",
+    "gregorian_approx": "quarter",
+    "fiscal_significance": "reporting",
+    "terms": [
+      "quarter",
+      "trimasik"
+    ]
+  },
+  "trimasik": {
+    "pattern_type": "quarter",
+    "gregorian_approx": "quarter",
+    "fiscal_significance": "reporting",
+    "terms": [
+      "quarter",
+      "trimasik"
+    ]
+  },
+  "last date": {
+    "pattern_type": "deadline",
+    "gregorian_approx": "deadline",
+    "fiscal_significance": "compliance",
+    "terms": [
+      "last date",
+      "antim miti"
+    ]
+  },
+  "antim miti": {
+    "pattern_type": "deadline",
+    "gregorian_approx": "deadline",
+    "fiscal_significance": "compliance",
+    "terms": [
+      "last date",
+      "antim miti"
+    ]
+  },
+  "period": {
+    "pattern_type": "period",
+    "gregorian_approx": "range",
+    "fiscal_significance": "reporting",
+    "terms": [
+      "period",
+      "awadhi"
+    ]
+  },
+  "awadhi": {
+    "pattern_type": "period",
+    "gregorian_approx": "range",
+    "fiscal_significance": "reporting",
+    "terms": [
+      "period",
+      "awadhi"
+    ]
+  },
+  "opening": {
+    "pattern_type": "opening",
+    "gregorian_approx": "period_start",
+    "fiscal_significance": "opening_balance",
+    "terms": [
+      "opening",
+      "suruwati"
+    ]
+  },
+  "suruwati": {
+    "pattern_type": "opening",
+    "gregorian_approx": "period_start",
+    "fiscal_significance": "opening_balance",
+    "terms": [
+      "opening",
+      "suruwati"
+    ]
+  },
+  "closing": {
+    "pattern_type": "closing",
+    "gregorian_approx": "period_end",
+    "fiscal_significance": "closing_balance",
+    "terms": [
+      "closing",
+      "antim"
+    ]
+  },
+  "antim": {
+    "pattern_type": "closing",
+    "gregorian_approx": "period_end",
+    "fiscal_significance": "closing_balance",
+    "terms": [
+      "closing",
+      "antim"
+    ]
+  },
+  "dashain": {
+    "pattern_type": "festival",
+    "gregorian_approx": "festival",
+    "fiscal_significance": "seasonal",
+    "terms": [
+      "dashain",
+      "tihar"
+    ]
+  },
+  "tihar": {
+    "pattern_type": "festival",
+    "gregorian_approx": "festival",
+    "fiscal_significance": "seasonal",
+    "terms": [
+      "dashain",
+      "tihar"
+    ]
+  },
+  "holi": {
+    "pattern_type": "festival",
+    "gregorian_approx": "festival",
+    "fiscal_significance": "seasonal",
+    "terms": [
+      "holi",
+      "teej"
+    ]
+  },
+  "teej": {
+    "pattern_type": "festival",
+    "gregorian_approx": "festival",
+    "fiscal_significance": "seasonal",
+    "terms": [
+      "holi",
+      "teej"
+    ]
+  },
+  "bihan": {
+    "pattern_type": "time_of_day",
+    "gregorian_approx": "am",
+    "fiscal_significance": "timestamp",
+    "terms": [
+      "bihan",
+      "morning"
+    ]
+  },
+  "morning": {
+    "pattern_type": "time_of_day",
+    "gregorian_approx": "am",
+    "fiscal_significance": "timestamp",
+    "terms": [
+      "bihan",
+      "morning"
+    ]
+  },
+  "dopahar": {
+    "pattern_type": "time_of_day",
+    "gregorian_approx": "pm",
+    "fiscal_significance": "timestamp",
+    "terms": [
+      "dopahar",
+      "afternoon"
+    ]
+  },
+  "afternoon": {
+    "pattern_type": "time_of_day",
+    "gregorian_approx": "pm",
+    "fiscal_significance": "timestamp",
+    "terms": [
+      "dopahar",
+      "afternoon"
+    ]
+  },
+  "beluka": {
+    "pattern_type": "time_of_day",
+    "gregorian_approx": "eve",
+    "fiscal_significance": "timestamp",
+    "terms": [
+      "beluka",
+      "evening"
+    ]
+  },
+  "evening": {
+    "pattern_type": "time_of_day",
+    "gregorian_approx": "eve",
+    "fiscal_significance": "timestamp",
+    "terms": [
+      "beluka",
+      "evening"
+    ]
+  },
+  "rati": {
+    "pattern_type": "time_of_day",
+    "gregorian_approx": "night",
+    "fiscal_significance": "timestamp",
+    "terms": [
+      "rati",
+      "night"
+    ]
+  },
+  "night": {
+    "pattern_type": "time_of_day",
+    "gregorian_approx": "night",
+    "fiscal_significance": "timestamp",
+    "terms": [
+      "rati",
+      "night"
+    ]
+  },
+  "din": {
+    "pattern_type": "duration",
+    "gregorian_approx": "days",
+    "fiscal_significance": "aging",
+    "terms": [
+      "din",
+      "days"
+    ]
+  },
+  "days": {
+    "pattern_type": "duration",
+    "gregorian_approx": "days",
+    "fiscal_significance": "aging",
+    "terms": [
+      "din",
+      "days"
+    ]
+  },
+  "months": {
+    "pattern_type": "duration",
+    "gregorian_approx": "months",
+    "fiscal_significance": "aging",
+    "terms": [
+      "mahina",
+      "months"
+    ]
+  },
+  "miyad": {
+    "pattern_type": "due",
+    "gregorian_approx": "due",
+    "fiscal_significance": "payable",
+    "terms": [
+      "miyad",
+      "due date"
+    ]
+  },
+  "due date": {
+    "pattern_type": "due",
+    "gregorian_approx": "due",
+    "fiscal_significance": "payable",
+    "terms": [
+      "miyad",
+      "due date"
+    ]
+  },
+  "pahile ko date": {
+    "pattern_type": "backdate",
+    "gregorian_approx": "past",
+    "fiscal_significance": "adjustment",
+    "terms": [
+      "pahile ko date",
+      "backdate"
+    ]
+  },
+  "backdate": {
+    "pattern_type": "backdate",
+    "gregorian_approx": "past",
+    "fiscal_significance": "adjustment",
+    "terms": [
+      "pahile ko date",
+      "backdate"
+    ]
+  },
+  "pachi ko": {
+    "pattern_type": "postdate",
+    "gregorian_approx": "future",
+    "fiscal_significance": "scheduled",
+    "terms": [
+      "pachi ko",
+      "postdate"
+    ]
+  },
+  "postdate": {
+    "pattern_type": "postdate",
+    "gregorian_approx": "future",
+    "fiscal_significance": "scheduled",
+    "terms": [
+      "pachi ko",
+      "postdate"
+    ]
+  },
+  "aile": {
+    "pattern_type": "instant",
+    "gregorian_approx": "now",
+    "fiscal_significance": "current",
+    "terms": [
+      "aile",
+      "abhi",
+      "now"
+    ]
+  },
+  "abhi": {
+    "pattern_type": "instant",
+    "gregorian_approx": "now",
+    "fiscal_significance": "current",
+    "terms": [
+      "aile",
+      "abhi",
+      "now"
+    ]
+  },
+  "now": {
+    "pattern_type": "instant",
+    "gregorian_approx": "now",
+    "fiscal_significance": "current",
+    "terms": [
+      "aile",
+      "abhi",
+      "now"
+    ]
+  },
+  "dekhi": {
+    "pattern_type": "range",
+    "gregorian_approx": "range_start",
+    "fiscal_significance": "period",
+    "terms": [
+      "dekhi",
+      "bata",
+      "from"
+    ]
+  },
+  "bata": {
+    "pattern_type": "range",
+    "gregorian_approx": "range_start",
+    "fiscal_significance": "period",
+    "terms": [
+      "dekhi",
+      "bata",
+      "from"
+    ]
+  },
+  "from": {
+    "pattern_type": "range",
+    "gregorian_approx": "range_start",
+    "fiscal_significance": "period",
+    "terms": [
+      "dekhi",
+      "bata",
+      "from"
+    ]
+  },
+  "samma": {
+    "pattern_type": "range",
+    "gregorian_approx": "range_end",
+    "fiscal_significance": "period",
+    "terms": [
+      "samma",
+      "until",
+      "to"
+    ]
+  },
+  "until": {
+    "pattern_type": "range",
+    "gregorian_approx": "range_end",
+    "fiscal_significance": "period",
+    "terms": [
+      "samma",
+      "until",
+      "to"
+    ]
+  },
+  "to": {
+    "pattern_type": "range",
+    "gregorian_approx": "range_end",
+    "fiscal_significance": "period",
+    "terms": [
+      "samma",
+      "until",
+      "to"
+    ]
+  }
+}

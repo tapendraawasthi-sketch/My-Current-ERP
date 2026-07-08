@@ -23,7 +23,7 @@ export interface WorkSignals {
 }
 
 const WORK_VERBS =
-  /\b(sold|sale|sales|sell|selling|bought|buy|purchase|purchased|paid|pay|payment|received|receive|spent|spend|expense|expenses|income|revenue|earned|earning|invoice|invoiced|billed|billing|udhaar|udhar|credit|tiryo|tireko|kineko|kharid|becheko|bikri|kharcha|salary|vat|tds|depreciation|loan|drawings|capital|stock|discount|provision|accrual|contra|deposit|withdraw|transfer|refund|advance|prepaid|outstanding|write\s*off|recover\w*)\b/i;
+  /\b(sold|sale|sales|sell|selling|bought|buy|purchase|purchased|paid|pay|payment|received|receive|spent|spend|expense|expenses|income|revenue|earned|earning|invoice|invoiced|billed|billing|udhaar|udhar|credit|tiryo|tireko|kineko|kineye|kinye|kinyo|kine|kiniyo|kharid|kinne|kinna|becheko|bikri|kharcha|noksan|nokshan|ghateko|ghatyo|loss|salary|vat|tds|depreciation|loan|drawings|capital|stock|discount|provision|accrual|contra|deposit|withdraw|transfer|refund|advance|prepaid|outstanding|write\s*off|recover\w*)\b/i;
 
 const QUESTION =
   /\b(what|how|why|when|where|who|which|k\s*ho|ke\s*ho|kasari|kina|is\s|are\s|do\s+you|does\s|can\s|could\s|would\s|should\s|\?)\b/i;
@@ -46,6 +46,12 @@ export function shouldTryWorkParse(text: string): boolean {
   if (WORK_VERBS.test(t) && hasNumber) return true;
   if (WORK_VERBS.test(t) && /\b(for|worth|total|amount|rs|npr|rupees|each|per)\b/i.test(t))
     return true;
+
+  // Purchase/expense/loss without amount — clarify, not chat
+  if (WORK_VERBS.test(t) && !QUESTION.test(t)) return true;
+
+  // Loss + amount even without classic work verb
+  if (hasNumber && /\b(noksan|nokshan|loss|ghatyo|ghateko)\b/i.test(t)) return true;
 
   // Nepali/English amount + weak verb (including all kinne conjugations)
   if (

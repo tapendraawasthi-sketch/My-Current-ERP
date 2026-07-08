@@ -1,0 +1,53 @@
+{"correct": "udhaar", "variants": ["udhaar", "udhar", "udhaaro", "udaro", "udhare", "udhaare"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "kharcha", "variants": ["kharcha", "kharxa", "kharchaa", "kharch", "kharcho", "kharca"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "noksan", "variants": ["noksan", "nokshan", "noksane", "noxan", "noksana"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "baki", "variants": ["baki", "bakii", "baaki", "bakia", "bakie"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "kineko", "variants": ["kineko", "kinekoe", "kineku", "kinneko", "kinyeko"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "kineye", "variants": ["kineye", "kinye", "kinyo", "kine", "kiniyo", "kinne"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "becheko", "variants": ["becheko", "bexeko", "becheku", "bechyo", "bechheko"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "tiryo", "variants": ["tiryo", "tirio", "tiryoe", "tireko", "tireku"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "jamma", "variants": ["jamma", "jama", "jammae", "jamaa", "jamah"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "diye", "variants": ["diye", "diyo", "die", "diya", "diyeu"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "aayo", "variants": ["aayo", "ayo", "aayeko", "aayoo", "aaye"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "paisa", "variants": ["paisa", "pisa", "paise", "paisaa", "pyasa"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "rupiya", "variants": ["rupiya", "rupya", "rupaye", "rupaiya"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "hajar", "variants": ["hajar", "hazar", "hajaar", "hazaar", "hjar"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "lakh", "variants": ["lakh", "lak", "lac", "laksh", "lax"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "sampatti", "variants": ["sampatti", "sampati", "sampatii", "sampat"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "hisab", "variants": ["hisab", "hisaab", "hisap", "hisāb"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "lekha", "variants": ["lekha", "lekhaa", "lekhā"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "bikri", "variants": ["bikri", "bikree", "bikrii", "bikry"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "talab", "variants": ["talab", "tallab", "talāb", "taleb"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "byaj", "variants": ["byaj", "biyaj", "byaaj", "byaz", "interest"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "commission", "variants": ["commission", "komision", "commision", "comission", "komishan"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "invoice", "variants": ["invoice", "invois", "invioce", "invice", "invos"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "receipt", "variants": ["receipt", "reciept", "receit", "recipt", "rasid"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "voucher", "variants": ["voucher", "vouxer", "vouchre", "vouture", "bauchar"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "balance", "variants": ["balance", "balans", "balence", "balanse", "baki"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "debit", "variants": ["debit", "debite", "debet", "namme"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "credit", "variants": ["credit", "credite", "crdit", "kredit", "jamā"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "salary", "variants": ["salary", "salery", "salry", "celery", "talab"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "expense", "variants": ["expense", "expence", "expens", "xpense", "kharcha"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "payment", "variants": ["payment", "paiment", "paymnt", "peymant", "bhugtan"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "discount", "variants": ["discount", "discont", "discunt", "chhut"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "provision", "variants": ["provision", "provizion", "provisione", "prabision"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "depreciation", "variants": ["depreciation", "depriciation", "depresiation", "hras"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "capital", "variants": ["capital", "capitol", "kapital", "puni"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "drawings", "variants": ["drawings", "drawing", "nikasne", "nikasna"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "contra", "variants": ["contra", "kontra", "contraa"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "journal", "variants": ["journal", "jurnal", "jornal"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "ledger", "variants": ["ledger", "ledgar", "lejhar", "khata"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "party", "variants": ["party", "parti", "partii"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "supplier", "variants": ["supplier", "suplier", "suppliar"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "customer", "variants": ["customer", "custmer", "kastomer", "grahak"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "stock", "variants": ["stock", "stok", "stockk", "saman"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "cement", "variants": ["cement", "simant", "cemnt", "siment"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "sariya", "variants": ["sariya", "saria", "sariyaa", "rod"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "momo", "variants": ["momo", "mumu", "momos"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "chowmein", "variants": ["chowmein", "chowmin", "choumin", "chomin"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "esewa", "variants": ["esewa", "esewaa", "e-sewa", "eswa"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "khalti", "variants": ["khalti", "khaltii"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "nagad", "variants": ["nagad", "nakad", "nagat", "cash"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "udharo", "variants": ["udharo", "udhaaro", "udaro"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "ramro", "variants": ["ramro", "ramroo"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "thik", "variants": ["thik", "thik cha", "thikxa", "thik chha"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}

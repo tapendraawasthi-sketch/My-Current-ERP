@@ -1,4 +1,6 @@
 import { detectNegation } from "./negationDetector";
+import { CLARIFY_TEMPLATES } from "../nepal-ai/generated/runtimeMaps";
+import { inferTransactionDirection } from "../nepal-ai/particleDirection";
 import { parseCommaAmount } from "./calculationEngine";
 import { generateCAEntry } from "./caEntryEngine";
 import { findTemplateByKeywords } from "./caEntryTemplates";
@@ -500,7 +502,7 @@ function hasPaymentOutCue(text: string): boolean {
 }
 
 function hasExpenseCue(text: string): boolean {
-  return /\b(kharcha|kharcho|expense|kharch)\b/i.test(text);
+  return /\b(kharcha|kharcho|expense|kharch|noksan|nokshan|loss|ghata|ghateko|ghatyo)\b/i.test(text);
 }
 
 function needsPartyRoleClarification(text: string): boolean {
@@ -573,6 +575,14 @@ function classifyIntent(rawText: string, normalizedText: string): KhataIntent | 
     const template = findTemplateByKeywords(q);
     if (template) return template.intent;
 
+    const particleDir = inferTransactionDirection(q);
+    if (particleDir.direction === "inbound" && particleDir.confidence !== "low") {
+      if (/\b(tiryo|tireko|aayo|payo|liyo)\b/i.test(q)) return "khata_payment_in";
+    }
+    if (particleDir.direction === "outbound" && particleDir.confidence !== "low") {
+      if (/\b(diye|diyo|tireko|tiryo)\b/i.test(q) && /\blai\b/i.test(q)) return "khata_payment_out";
+    }
+
     if (/\b(diye|die|diya|diae)\b/i.test(q) && /\blai\b/i.test(q)) {
       return "khata_credit_sale";
     }
@@ -635,7 +645,15 @@ export function parseKhataMessage(rawText: string, preNormalized?: string): Khat
   const semantic = parseSemanticTransaction(displayText);
   const amount = resolveAmount(displayText, text);
   if (!amount || amount <= 0) {
-    return { clarifying_question: "Rakam kati ho? Number lekhnus." };
+    const tpl =
+      intent === "khata_purchase"
+        ? CLARIFY_TEMPLATES.missing_amount_purchase?.template_ne
+        : intent === "khata_expense"
+          ? CLARIFY_TEMPLATES.expense_or_loss?.template_ne
+          : intent === "khata_cash_sale"
+            ? CLARIFY_TEMPLATES.missing_amount_sale?.template_ne
+            : null;
+    return { clarifying_question: tpl ?? "Rakam kati ho? Number lekhnus." };
   }
 
   const party = cleanPartyName(semantic.party ?? extractParty(displayText, text));

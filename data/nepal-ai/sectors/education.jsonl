@@ -1,0 +1,40 @@
+{"input": "10 class fee collection 45000", "intent": "khata_receipt", "entities": {"item": "student fee", "class": "10", "amount": 45000}, "sector": "education"}
+{"input": "admission fee 5 jana 25000", "intent": "khata_receipt", "entities": {"item": "admission fee", "quantity": "5 students", "amount": 25000}, "sector": "education"}
+{"input": "teacher salary 4 jana 60000", "intent": "khata_salary_payment", "entities": {"item": "teacher salary", "quantity": "4 teachers", "amount": 60000}, "sector": "education"}
+{"input": "stationery kineko 5000", "intent": "khata_purchase", "entities": {"item": "stationery", "amount": 5000}, "sector": "education"}
+{"input": "projector kineko EMI 3000", "intent": "khata_asset_purchase", "entities": {"item": "projector", "amount": 3000, "payment_type": "EMI"}, "sector": "education"}
+{"input": "copy kitab becheko 8000", "intent": "khata_cash_sale", "entities": {"item": "copy kitab (notebooks/books)", "amount": 8000}, "sector": "education"}
+{"input": "exam form fee collection 10000", "intent": "khata_receipt", "entities": {"item": "exam form fee", "amount": 10000}, "sector": "education"}
+{"input": "student Ram ko fee baki 2 months", "intent": "khata_outstanding", "entities": {"party": "Ram", "duration": "2 months"}, "sector": "education", "clarify_needed": true, "clarify_slot": "amount"}
+{"input": "scholarship student fee waive 5000", "intent": "khata_discount_allowed", "entities": {"item": "scholarship fee waiver", "amount": 5000}, "sector": "education"}
+{"input": "building rent 20000", "intent": "khata_rent_expense", "entities": {"item": "building rent", "amount": 20000}, "sector": "education"}
+{"input": "internet bill 2000", "intent": "khata_expense", "entities": {"item": "internet bill", "amount": 2000}, "sector": "education"}
+{"input": "sports equipment 8000", "intent": "khata_purchase", "entities": {"item": "sports equipment", "amount": 8000}, "sector": "education"}
+{"input": "annual function kharcha 15000", "intent": "khata_expense", "entities": {"item": "annual function", "amount": 15000}, "sector": "education"}
+{"input": "monthly fee class 8 30 student 30000", "intent": "khata_receipt", "entities": {"item": "monthly fee", "class": "8", "quantity": "30 students", "amount": 30000}, "sector": "education"}
+{"input": "registration fee naya student 5 jana 15000", "intent": "khata_receipt", "entities": {"item": "registration fee", "quantity": "5 students", "amount": 15000}, "sector": "education"}
+{"input": "tuition fee 3 student 6000", "intent": "khata_receipt", "entities": {"item": "tuition fee", "quantity": "3 students", "amount": 6000}, "sector": "education"}
+{"input": "coaching fee IELTS batch 10 jana 50000", "intent": "khata_receipt", "entities": {"item": "coaching fee", "quantity": "10 students", "amount": 50000}, "sector": "education"}
+{"input": "books kineko library ko lagi 12000", "intent": "khata_purchase", "entities": {"item": "books", "amount": 12000}, "sector": "education"}
+{"input": "furniture kineko classroom ko lagi 20000", "intent": "khata_asset_purchase", "entities": {"item": "furniture", "amount": 20000}, "sector": "education"}
+{"input": "computer kineko lab ko lagi 55000", "intent": "khata_asset_purchase", "entities": {"item": "computer", "amount": 55000}, "sector": "education"}
+{"input": "printer kineko office ko lagi 8000", "intent": "khata_asset_purchase", "entities": {"item": "printer", "amount": 8000}, "sector": "education"}
+{"input": "electricity bill school ko 3500", "intent": "khata_expense", "entities": {"item": "electricity bill", "amount": 3500}, "sector": "education"}
+{"input": "peon salary 1 jana 12000", "intent": "khata_salary_payment", "entities": {"item": "peon salary", "quantity": "1 person", "amount": 12000}, "sector": "education"}
+{"input": "principal salary 40000", "intent": "khata_salary_payment", "entities": {"item": "principal salary", "amount": 40000}, "sector": "education"}
+{"input": "van driver salary 15000", "intent": "khata_salary_payment", "entities": {"item": "driver salary", "amount": 15000}, "sector": "education"}
+{"input": "school van repair kharcha 5000", "intent": "khata_expense", "entities": {"item": "school van repair", "amount": 5000}, "sector": "education"}
+{"input": "exam paper printing kharcha 3000", "intent": "khata_expense", "entities": {"item": "exam paper printing", "amount": 3000}, "sector": "education"}
+{"input": "uniform sale students lai 25000", "intent": "khata_cash_sale", "entities": {"item": "school uniform", "amount": 25000}, "sector": "education"}
+{"input": "hostel fee collection 10 student 50000", "intent": "khata_receipt", "entities": {"item": "hostel fee", "quantity": "10 students", "amount": 50000}, "sector": "education"}
+{"input": "transportation fee monthly 8 jana 16000", "intent": "khata_receipt", "entities": {"item": "transportation fee", "quantity": "8 students", "amount": 16000}, "sector": "education"}
+{"input": "library subscription fee 5000", "intent": "khata_expense", "entities": {"item": "library subscription", "amount": 5000}, "sector": "education"}
+{"input": "science lab equipment kineko 18000", "intent": "khata_asset_purchase", "entities": {"item": "science lab equipment", "amount": 18000}, "sector": "education"}
+{"input": "school bag becheko 40 wota 20000", "intent": "khata_cash_sale", "entities": {"item": "school bags", "quantity": "40 pieces", "amount": 20000}, "sector": "education"}
+{"input": "teacher training kharcha 10000", "intent": "khata_expense", "entities": {"item": "teacher training", "amount": 10000}, "sector": "education"}
+{"input": "extra class fee 2 student 4000", "intent": "khata_receipt", "entities": {"item": "extra class fee", "quantity": "2 students", "amount": 4000}, "sector": "education"}
+{"input": "id card printing kharcha 2000", "intent": "khata_expense", "entities": {"item": "ID card printing", "amount": 2000}, "sector": "education"}
+{"input": "cleaning staff salary 1 jana 10000", "intent": "khata_salary_payment", "entities": {"item": "cleaning staff salary", "quantity": "1 person", "amount": 10000}, "sector": "education"}
+{"input": "school bata sikai samagri kineko 6000", "intent": "khata_purchase", "entities": {"item": "learning materials", "amount": 6000}, "sector": "education"}
+{"input": "diploma certificate printing 3000", "intent": "khata_expense", "entities": {"item": "certificate printing", "amount": 3000}, "sector": "education"}
+{"input": "Sushma le fee tireko 3000 baki ko", "intent": "khata_payment_in", "entities": {"party": "Sushma", "amount": 3000}, "sector": "education"}

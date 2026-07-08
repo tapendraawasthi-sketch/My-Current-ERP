@@ -1,0 +1,40 @@
+{"entity_type": "province", "name_en": "Koshi Province", "name_ne": "कोशी प्रदेश", "capital": "Biratnagar", "major_districts": ["Morang", "Sunsari", "Jhapa", "Ilam"], "area_km2": 25906, "common_references": ["Koshi", "कोशी", "Biratnagar"]}
+{"entity_type": "province", "name_en": "Madhesh Province", "name_ne": "मधेश प्रदेश", "capital": "Janakpur", "major_districts": ["Parsa", "Bara", "Dhanusha", "Saptari"], "area_km2": 9661, "common_references": ["Madhesh", "मधेश", "Janakpur"]}
+{"entity_type": "province", "name_en": "Bagmati Province", "name_ne": "बागमती प्रदेश", "capital": "Hetauda", "major_districts": ["Kathmandu", "Lalitpur", "Bhaktapur", "Chitwan"], "area_km2": 20300, "common_references": ["Bagmati", "बागमती", "Hetauda"]}
+{"entity_type": "province", "name_en": "Gandaki Province", "name_ne": "गण्डकी प्रदेश", "capital": "Pokhara", "major_districts": ["Kaski", "Syangja", "Tanahu", "Gorkha"], "area_km2": 21856, "common_references": ["Gandaki", "गण्डकी", "Pokhara"]}
+{"entity_type": "province", "name_en": "Lumbini Province", "name_ne": "लुम्बिनी प्रदेश", "capital": "Deukhuri", "major_districts": ["Rupandehi", "Kapilvastu", "Dang", "Banke"], "area_km2": 22388, "common_references": ["Lumbini", "लुम्बिनी", "Deukhuri"]}
+{"entity_type": "province", "name_en": "Karnali Province", "name_ne": "कर्णाली प्रदेश", "capital": "Birendranagar", "major_districts": ["Surkhet", "Jumla", "Dailekh", "Kalikot"], "area_km2": 27984, "common_references": ["Karnali", "कर्णाली", "Birendranagar"]}
+{"entity_type": "province", "name_en": "Sudurpashchim Province", "name_ne": "सुदूरपश्चिम प्रदेश", "capital": "Godawari", "major_districts": ["Kailali", "Kanchanpur", "Doti", "Achham"], "area_km2": 19539, "common_references": ["Sudurpashchim", "सुदूरपश्चिम", "Godawari"]}
+{"entity_type": "city", "name_en": "Kathmandu", "name_ne": "काठमाडौं", "province": "Bagmati", "note": "Capital city — major business hub", "common_references": ["kathmandu", "काठमाडौं"]}
+{"entity_type": "city", "name_en": "Pokhara", "name_ne": "पोखरा", "province": "Gandaki", "note": "Tourism and trade center", "common_references": ["pokhara", "पोखरा"]}
+{"entity_type": "city", "name_en": "Biratnagar", "name_ne": "विराटनगर", "province": "Koshi", "note": "Industrial eastern hub", "common_references": ["biratnagar", "विराटनगर"]}
+{"entity_type": "city", "name_en": "Bharatpur", "name_ne": "भरतपुर", "province": "Bagmati", "note": "Chitwan commercial center", "common_references": ["bharatpur", "भरतपुर"]}
+{"entity_type": "city", "name_en": "Butwal", "name_ne": "बुटवल", "province": "Lumbini", "note": "Trade gateway west", "common_references": ["butwal", "बुटवल"]}
+{"entity_type": "city", "name_en": "Nepalgunj", "name_ne": "नेपालगञ्ज", "province": "Lumbini", "note": "Mid-west trade hub", "common_references": ["nepalgunj", "नेपालगञ्ज"]}
+{"entity_type": "city", "name_en": "Dhangadhi", "name_ne": "धनगढी", "province": "Sudurpashchim", "note": "Far-west commercial center", "common_references": ["dhangadhi", "धनगढी"]}
+{"entity_type": "city", "name_en": "Hetauda", "name_ne": "हेटौडा", "province": "Bagmati", "note": "Industrial corridor", "common_references": ["hetauda", "हेटौडा"]}
+{"entity_type": "city", "name_en": "Janakpur", "name_ne": "जनकपुर", "province": "Madhesh", "note": "Religious and trade center", "common_references": ["janakpur", "जनकपुर"]}
+{"entity_type": "city", "name_en": "Itahari", "name_ne": "ईटहरी", "province": "Koshi", "note": "Eastern logistics hub", "common_references": ["itahari", "ईटहरी"]}
+{"entity_type": "region", "name_en": "India border", "name_ne": "भारत सीमा", "note": "Open border trade — Birgunj, Bhairahawa, Kakarbhitta", "common_references": ["India"]}
+{"entity_type": "region", "name_en": "China border", "name_ne": "चीन सीमा", "note": "Kerung, Tatopani — limited trade crossings", "common_references": ["China"]}
+{"entity_type": "region", "name_en": "Terai", "name_ne": "तराई", "note": "Southern plains — agriculture, trade", "common_references": ["Terai"]}
+{"entity_type": "region", "name_en": "Pahad", "name_ne": "पहाड", "note": "Hill region — mid elevation", "common_references": ["Pahad"]}
+{"entity_type": "region", "name_en": "Himal", "name_ne": "हिमाल", "note": "Mountain region — tourism, remoteness", "common_references": ["Himal"]}
+{"entity_type": "province", "name_en": "Karnali Province", "name_ne": "कर्णाली प्रदेश", "capital": "Birendranagar", "major_districts": ["Surkhet", "Jumla", "Dailekh", "Kalikot"], "area_km2": 27984, "common_references": ["Karnali", "कर्णाली", "Birendranagar"]}
+{"entity_type": "province", "name_en": "Sudurpashchim Province", "name_ne": "सुदूरपश्चिम प्रदेश", "capital": "Godawari", "major_districts": ["Kailali", "Kanchanpur", "Doti", "Achham"], "area_km2": 19539, "common_references": ["Sudurpashchim", "सुदूरपश्चिम", "Godawari"]}
+{"entity_type": "city", "name_en": "Kathmandu", "name_ne": "काठमाडौं", "province": "Bagmati", "note": "Capital city — major business hub", "common_references": ["kathmandu", "काठमाडौं"]}
+{"entity_type": "city", "name_en": "Pokhara", "name_ne": "पोखरा", "province": "Gandaki", "note": "Tourism and trade center", "common_references": ["pokhara", "पोखरा"]}
+{"entity_type": "city", "name_en": "Biratnagar", "name_ne": "विराटनगर", "province": "Koshi", "note": "Industrial eastern hub", "common_references": ["biratnagar", "विराटनगर"]}
+{"entity_type": "city", "name_en": "Bharatpur", "name_ne": "भरतपुर", "province": "Bagmati", "note": "Chitwan commercial center", "common_references": ["bharatpur", "भरतपुर"]}
+{"entity_type": "city", "name_en": "Butwal", "name_ne": "बुटवल", "province": "Lumbini", "note": "Trade gateway west", "common_references": ["butwal", "बुटवल"]}
+{"entity_type": "city", "name_en": "Nepalgunj", "name_ne": "नेपालगञ्ज", "province": "Lumbini", "note": "Mid-west trade hub", "common_references": ["nepalgunj", "नेपालगञ्ज"]}
+{"entity_type": "city", "name_en": "Dhangadhi", "name_ne": "धनगढी", "province": "Sudurpashchim", "note": "Far-west commercial center", "common_references": ["dhangadhi", "धनगढी"]}
+{"entity_type": "city", "name_en": "Hetauda", "name_ne": "हेटौडा", "province": "Bagmati", "note": "Industrial corridor", "common_references": ["hetauda", "हेटौडा"]}
+{"entity_type": "city", "name_en": "Janakpur", "name_ne": "जनकपुर", "province": "Madhesh", "note": "Religious and trade center", "common_references": ["janakpur", "जनकपुर"]}
+{"entity_type": "city", "name_en": "Itahari", "name_ne": "ईटहरी", "province": "Koshi", "note": "Eastern logistics hub", "common_references": ["itahari", "ईटहरी"]}
+{"entity_type": "province", "name_en": "Koshi Province", "name_ne": "कोशी प्रदेश", "capital": "Biratnagar", "major_districts": ["Morang", "Sunsari", "Jhapa", "Ilam"], "area_km2": 25906, "common_references": ["Koshi", "कोशी", "Biratnagar"]}
+{"entity_type": "province", "name_en": "Madhesh Province", "name_ne": "मधेश प्रदेश", "capital": "Janakpur", "major_districts": ["Parsa", "Bara", "Dhanusha", "Saptari"], "area_km2": 9661, "common_references": ["Madhesh", "मधेश", "Janakpur"]}
+{"entity_type": "province", "name_en": "Bagmati Province", "name_ne": "बागमती प्रदेश", "capital": "Hetauda", "major_districts": ["Kathmandu", "Lalitpur", "Bhaktapur", "Chitwan"], "area_km2": 20300, "common_references": ["Bagmati", "बागमती", "Hetauda"]}
+{"entity_type": "province", "name_en": "Gandaki Province", "name_ne": "गण्डकी प्रदेश", "capital": "Pokhara", "major_districts": ["Kaski", "Syangja", "Tanahu", "Gorkha"], "area_km2": 21856, "common_references": ["Gandaki", "गण्डकी", "Pokhara"]}
+{"entity_type": "province", "name_en": "Lumbini Province", "name_ne": "लुम्बिनी प्रदेश", "capital": "Deukhuri", "major_districts": ["Rupandehi", "Kapilvastu", "Dang", "Banke"], "area_km2": 22388, "common_references": ["Lumbini", "लुम्बिनी", "Deukhuri"]}
+{"entity_type": "province", "name_en": "Karnali Province", "name_ne": "कर्णाली प्रदेश", "capital": "Birendranagar", "major_districts": ["Surkhet", "Jumla", "Dailekh", "Kalikot"], "area_km2": 27984, "common_references": ["Karnali", "कर्णाली", "Birendranagar"]}

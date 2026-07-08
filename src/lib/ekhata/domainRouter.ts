@@ -4,6 +4,7 @@
  */
 
 import { isSemanticTransaction, parseSemanticFrame } from "./semanticNepaliBrain";
+import { isNepaliAccountingQuestion } from "../nepal-ai/questionDetect";
 
 export type EKhataDomain =
   | "journal_entry"
@@ -53,6 +54,11 @@ export function classifyDomain(text: string): DomainRouteResult {
 
   if (META_SYSTEM.test(t)) {
     return { domain: "meta_system", confidence: 0.95, blockWebSearch: true };
+  }
+
+  // Nepal AI question patterns — "noksan k ho" before journal path
+  if (isNepaliAccountingQuestion(t)) {
+    return { domain: "accounting_qa", confidence: 0.9, blockWebSearch: true };
   }
 
   // Semantic transaction detection — understands meaning, not just keyword co-occurrence

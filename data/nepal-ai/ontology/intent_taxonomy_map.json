@@ -1,0 +1,1137 @@
+{
+  "khata_cash_sale": {
+    "intent": "khata_cash_sale",
+    "description": "khata_cash_sale intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata cash sale",
+      "khata_cash_sale sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_credit_sale": {
+    "intent": "khata_credit_sale",
+    "description": "khata_credit_sale intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata credit sale",
+      "khata_credit_sale sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_cash_purchase": {
+    "intent": "khata_cash_purchase",
+    "description": "khata_cash_purchase intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata cash purchase",
+      "khata_cash_purchase sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_credit_purchase": {
+    "intent": "khata_credit_purchase",
+    "description": "khata_credit_purchase intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata credit purchase",
+      "khata_credit_purchase sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_payment_in": {
+    "intent": "khata_payment_in",
+    "description": "khata_payment_in intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata payment in",
+      "khata_payment_in sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_payment_out": {
+    "intent": "khata_payment_out",
+    "description": "khata_payment_out intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata payment out",
+      "khata_payment_out sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_expense": {
+    "intent": "khata_expense",
+    "description": "khata_expense intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata expense",
+      "khata_expense sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_income": {
+    "intent": "khata_income",
+    "description": "khata_income intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata income",
+      "khata_income sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_salary_payment": {
+    "intent": "khata_salary_payment",
+    "description": "khata_salary_payment intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata salary payment",
+      "khata_salary_payment sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_rent_expense": {
+    "intent": "khata_rent_expense",
+    "description": "khata_rent_expense intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata rent expense",
+      "khata_rent_expense sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_loan_received": {
+    "intent": "khata_loan_received",
+    "description": "khata_loan_received intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata loan received",
+      "khata_loan_received sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_loan_repayment": {
+    "intent": "khata_loan_repayment",
+    "description": "khata_loan_repayment intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata loan repayment",
+      "khata_loan_repayment sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_capital_introduced": {
+    "intent": "khata_capital_introduced",
+    "description": "khata_capital_introduced intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata capital introduced",
+      "khata_capital_introduced sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_drawings": {
+    "intent": "khata_drawings",
+    "description": "khata_drawings intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata drawings",
+      "khata_drawings sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_contra": {
+    "intent": "khata_contra",
+    "description": "khata_contra intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata contra",
+      "khata_contra sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_journal": {
+    "intent": "khata_journal",
+    "description": "khata_journal intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata journal",
+      "khata_journal sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_sales_return": {
+    "intent": "khata_sales_return",
+    "description": "khata_sales_return intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata sales return",
+      "khata_sales_return sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_purchase_return": {
+    "intent": "khata_purchase_return",
+    "description": "khata_purchase_return intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata purchase return",
+      "khata_purchase_return sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_discount_allowed": {
+    "intent": "khata_discount_allowed",
+    "description": "khata_discount_allowed intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata discount allowed",
+      "khata_discount_allowed sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_discount_received": {
+    "intent": "khata_discount_received",
+    "description": "khata_discount_received intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata discount received",
+      "khata_discount_received sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_bad_debt": {
+    "intent": "khata_bad_debt",
+    "description": "khata_bad_debt intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata bad debt",
+      "khata_bad_debt sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_inventory_loss": {
+    "intent": "khata_inventory_loss",
+    "description": "khata_inventory_loss intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata inventory loss",
+      "khata_inventory_loss sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_depreciation": {
+    "intent": "khata_depreciation",
+    "description": "khata_depreciation intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata depreciation",
+      "khata_depreciation sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_vat_payment": {
+    "intent": "khata_vat_payment",
+    "description": "khata_vat_payment intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata vat payment",
+      "khata_vat_payment sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_tds_deducted": {
+    "intent": "khata_tds_deducted",
+    "description": "khata_tds_deducted intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata tds deducted",
+      "khata_tds_deducted sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_tds_paid": {
+    "intent": "khata_tds_paid",
+    "description": "khata_tds_paid intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata tds paid",
+      "khata_tds_paid sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_ssf_payment": {
+    "intent": "khata_ssf_payment",
+    "description": "khata_ssf_payment intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata ssf payment",
+      "khata_ssf_payment sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_gratuity": {
+    "intent": "khata_gratuity",
+    "description": "khata_gratuity intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata gratuity",
+      "khata_gratuity sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_advance_received": {
+    "intent": "khata_advance_received",
+    "description": "khata_advance_received intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata advance received",
+      "khata_advance_received sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_advance_paid": {
+    "intent": "khata_advance_paid",
+    "description": "khata_advance_paid intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata advance paid",
+      "khata_advance_paid sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_receivable_created": {
+    "intent": "khata_receivable_created",
+    "description": "khata_receivable_created intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata receivable created",
+      "khata_receivable_created sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_receivable_settlement": {
+    "intent": "khata_receivable_settlement",
+    "description": "khata_receivable_settlement intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata receivable settlement",
+      "khata_receivable_settlement sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_payable_created": {
+    "intent": "khata_payable_created",
+    "description": "khata_payable_created intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata payable created",
+      "khata_payable_created sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_payable_settlement": {
+    "intent": "khata_payable_settlement",
+    "description": "khata_payable_settlement intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata payable settlement",
+      "khata_payable_settlement sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_bank_deposit": {
+    "intent": "khata_bank_deposit",
+    "description": "khata_bank_deposit intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata bank deposit",
+      "khata_bank_deposit sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_bank_withdrawal": {
+    "intent": "khata_bank_withdrawal",
+    "description": "khata_bank_withdrawal intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata bank withdrawal",
+      "khata_bank_withdrawal sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_transfer": {
+    "intent": "khata_transfer",
+    "description": "khata_transfer intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata transfer",
+      "khata_transfer sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_opening_balance": {
+    "intent": "khata_opening_balance",
+    "description": "khata_opening_balance intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata opening balance",
+      "khata_opening_balance sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_closing_adjustment": {
+    "intent": "khata_closing_adjustment",
+    "description": "khata_closing_adjustment intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata closing adjustment",
+      "khata_closing_adjustment sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "khata_inventory_write_down": {
+    "intent": "khata_inventory_write_down",
+    "description": "khata_inventory_write_down intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [
+      "amount"
+    ],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "khata inventory write down",
+      "khata_inventory_write_down sample phrase"
+    ],
+    "clarify_if_missing": [
+      "amount",
+      "party"
+    ]
+  },
+  "query_balance": {
+    "intent": "query_balance",
+    "description": "query_balance intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "query balance",
+      "query_balance sample phrase"
+    ],
+    "clarify_if_missing": []
+  },
+  "query_outstanding": {
+    "intent": "query_outstanding",
+    "description": "query_outstanding intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "query outstanding",
+      "query_outstanding sample phrase"
+    ],
+    "clarify_if_missing": []
+  },
+  "query_sales_report": {
+    "intent": "query_sales_report",
+    "description": "query_sales_report intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "query sales report",
+      "query_sales_report sample phrase"
+    ],
+    "clarify_if_missing": []
+  },
+  "query_purchase_report": {
+    "intent": "query_purchase_report",
+    "description": "query_purchase_report intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "query purchase report",
+      "query_purchase_report sample phrase"
+    ],
+    "clarify_if_missing": []
+  },
+  "query_profit_loss": {
+    "intent": "query_profit_loss",
+    "description": "query_profit_loss intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "query profit loss",
+      "query_profit_loss sample phrase"
+    ],
+    "clarify_if_missing": []
+  },
+  "query_tax_due": {
+    "intent": "query_tax_due",
+    "description": "query_tax_due intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "query tax due",
+      "query_tax_due sample phrase"
+    ],
+    "clarify_if_missing": []
+  },
+  "query_definition": {
+    "intent": "query_definition",
+    "description": "query_definition intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "query definition",
+      "query_definition sample phrase"
+    ],
+    "clarify_if_missing": []
+  },
+  "query_process": {
+    "intent": "query_process",
+    "description": "query_process intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "query process",
+      "query_process sample phrase"
+    ],
+    "clarify_if_missing": []
+  },
+  "query_compliance_deadline": {
+    "intent": "query_compliance_deadline",
+    "description": "query_compliance_deadline intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "query compliance deadline",
+      "query_compliance_deadline sample phrase"
+    ],
+    "clarify_if_missing": []
+  },
+  "cmd_cancel": {
+    "intent": "cmd_cancel",
+    "description": "cmd_cancel intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "cmd cancel",
+      "cmd_cancel sample phrase"
+    ],
+    "clarify_if_missing": []
+  },
+  "cmd_edit": {
+    "intent": "cmd_edit",
+    "description": "cmd_edit intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "cmd edit",
+      "cmd_edit sample phrase"
+    ],
+    "clarify_if_missing": []
+  },
+  "cmd_delete": {
+    "intent": "cmd_delete",
+    "description": "cmd_delete intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "cmd delete",
+      "cmd_delete sample phrase"
+    ],
+    "clarify_if_missing": []
+  },
+  "cmd_repeat": {
+    "intent": "cmd_repeat",
+    "description": "cmd_repeat intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "cmd repeat",
+      "cmd_repeat sample phrase"
+    ],
+    "clarify_if_missing": []
+  },
+  "cmd_reverse": {
+    "intent": "cmd_reverse",
+    "description": "cmd_reverse intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "cmd reverse",
+      "cmd_reverse sample phrase"
+    ],
+    "clarify_if_missing": []
+  },
+  "cmd_confirm": {
+    "intent": "cmd_confirm",
+    "description": "cmd_confirm intent ko prayog",
+    "debit_account": "context based",
+    "credit_account": "context based",
+    "required_entities": [],
+    "optional_entities": [
+      "party",
+      "item",
+      "date"
+    ],
+    "trigger_phrases": [
+      "cmd confirm",
+      "cmd_confirm sample phrase"
+    ],
+    "clarify_if_missing": []
+  }
+}

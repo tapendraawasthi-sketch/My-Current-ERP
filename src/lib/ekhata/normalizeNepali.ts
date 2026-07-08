@@ -8,6 +8,8 @@ import {
   SPELLING_ALIASES,
 } from "./nepaliLanguage";
 import { getMergedSpellingAliases } from "./vocabulary";
+import { expandVerbAliases } from "../nepal-ai/verbNormalize";
+import { TYPO_ALIASES } from "../nepal-ai/generated/runtimeMaps";
 
 const SORTED_PHRASES = [...PHRASE_ALIASES].sort((a, b) => b[0].length - a[0].length);
 const SORTED_WORDS = Object.entries({ ...SPELLING_ALIASES, ...getMergedSpellingAliases() }).sort(
@@ -150,6 +152,8 @@ const ENGLISH_VERB_ALIASES = new Set([
   "procure",
 ]);
 
+const SORTED_TYPO = Object.entries(TYPO_ALIASES).sort((a, b) => b[0].length - a[0].length);
+
 function foldSpelling(text: string): string {
   let value = text.toLowerCase();
   const preserveEnglish = ENGLISH_PRESERVE.test(text);
@@ -161,6 +165,9 @@ function foldSpelling(text: string): string {
   const tokens = value.split(/\s+/);
   const folded = tokens.map((token) => {
     if (preserveEnglish && ENGLISH_VERB_ALIASES.has(token)) return token;
+    for (const [from, to] of SORTED_TYPO) {
+      if (token === from) return to;
+    }
     for (const [from, to] of SORTED_WORDS) {
       if (token === from) return to;
     }
@@ -185,6 +192,7 @@ export function normalizeNepaliText(raw: string): string {
   text = foldDigits(text);
   text = text.replace(/[^\w\s.\u0900-\u097F₨]/g, " ");
   text = text.replace(/\s+/g, " ").trim();
+  text = expandVerbAliases(text);
   text = foldSpelling(text);
 
   return text.replace(/\s+/g, " ").trim();

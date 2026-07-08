@@ -1,0 +1,42 @@
+{"term_roman": "udhaar", "variants": ["udhar", "udharo", "udaro", "credit"], "direction_ambiguity": "outbound_credit", "typical_patterns": ["Ram lai 500 udhaar", "udharo ma becheko"], "meaning_en": "credit given / receivable"}
+{"term_roman": "baki", "variants": ["baki cha", "outstanding"], "direction_ambiguity": "ambiguous", "typical_patterns": ["500 baki cha", "baki tirnu baki"], "meaning_en": "remaining balance — direction from context"}
+{"term_roman": "rin", "variants": ["loan", "karz", "karja"], "direction_ambiguity": "inbound_debt", "typical_patterns": ["bank bata rin liyo", "loan liye"], "meaning_en": "loan / debt"}
+{"term_roman": "debtor", "variants": ["debtor", "lenewala"], "direction_ambiguity": "receivable", "typical_patterns": ["debtor Ram"], "meaning_en": "party who owes us"}
+{"term_roman": "creditor", "variants": ["creditor", "dinewala"], "direction_ambiguity": "payable", "typical_patterns": ["creditor Gita"], "meaning_en": "party we owe"}
+{"term_roman": "receivable", "variants": ["prapti yogya", "lina baki"], "direction_ambiguity": "receivable", "typical_patterns": ["receivable 5000"], "meaning_en": "amount to receive"}
+{"term_roman": "payable", "variants": ["tirnu baki", "dina baki"], "direction_ambiguity": "payable", "typical_patterns": ["payable 3000"], "meaning_en": "amount to pay"}
+{"term_roman": "advance received", "variants": ["advance liyo", "agadi liyo"], "direction_ambiguity": "liability", "typical_patterns": ["customer advance 2000"], "meaning_en": "advance from customer"}
+{"term_roman": "advance paid", "variants": ["advance diyo", "agadi diyo"], "direction_ambiguity": "asset", "typical_patterns": ["supplier advance 5000"], "meaning_en": "advance to supplier"}
+{"term_roman": "karja", "variants": ["rin"], "direction_ambiguity": "inbound_debt", "typical_patterns": ["karja liyo"], "meaning_en": "loan colloquial"}
+{"term_roman": "tirnu baki", "variants": ["payment due"], "direction_ambiguity": "payable", "typical_patterns": ["supplier tirnu baki"], "meaning_en": "amount due to pay"}
+{"term_roman": "lina baki", "variants": ["collection due"], "direction_ambiguity": "receivable", "typical_patterns": ["Ram bata lina baki"], "meaning_en": "amount due to collect"}
+{"term_roman": "udhaar ma kineko", "variants": ["credit purchase"], "direction_ambiguity": "payable", "typical_patterns": ["udhaar ma sariya kineko"], "meaning_en": "purchased on credit"}
+{"term_roman": "udhaar ma becheko", "variants": ["credit sale"], "direction_ambiguity": "receivable", "typical_patterns": ["udhaar ma becheko"], "meaning_en": "sold on credit"}
+{"term_roman": "Ram lai diye", "variants": ["diyo", "diye"], "direction_ambiguity": "receivable", "typical_patterns": ["Ram lai 500 diye"], "meaning_en": "gave on credit to Ram"}
+{"term_roman": "Shyam le tiryo", "variants": ["tireko"], "direction_ambiguity": "receivable_collection", "typical_patterns": ["Shyam le 300 tiryo"], "meaning_en": "Shyam paid us"}
+{"term_roman": "Gita lai tireko", "variants": ["payment out"], "direction_ambiguity": "payable_payment", "typical_patterns": ["Gita lai 200 tireko"], "meaning_en": "we paid Gita"}
+{"term_roman": "jama", "variants": ["deposit", "aayo"], "direction_ambiguity": "receivable_collection", "typical_patterns": ["cash jama 5000"], "meaning_en": "money received / deposited"}
+{"term_roman": "nikasne", "variants": ["withdrawal", "drawings"], "direction_ambiguity": "outbound_payment", "typical_patterns": ["owner nikasne 10000"], "meaning_en": "withdrawal"}
+{"term_roman": "opening balance", "variants": ["suruwati baki"], "direction_ambiguity": "ambiguous", "typical_patterns": ["opening balance debtor"], "meaning_en": "opening ledger balance"}
+{"term_roman": "closing balance", "variants": ["antim baki"], "direction_ambiguity": "ambiguous", "typical_patterns": ["closing balance"], "meaning_en": "closing ledger balance"}
+{"term_roman": "overdue", "variants": ["miyad vitiyo"], "direction_ambiguity": "receivable", "typical_patterns": ["overdue 15 din"], "meaning_en": "past due receivable"}
+{"term_roman": "installment", "variants": ["kista"], "direction_ambiguity": "ambiguous", "typical_patterns": ["kista 5000"], "meaning_en": "installment payment"}
+{"term_roman": "emi", "variants": ["monthly payment"], "direction_ambiguity": "payable", "typical_patterns": ["emi 15000"], "meaning_en": "loan EMI"}
+{"term_roman": "cheque bounce", "variants": ["cheque return"], "direction_ambiguity": "receivable", "typical_patterns": ["cheque bounce"], "meaning_en": "dishonored cheque"}
+{"term_roman": "post dated cheque", "variants": ["pdc"], "direction_ambiguity": "receivable", "typical_patterns": ["PDC 10000"], "meaning_en": "future dated cheque"}
+{"term_roman": "security deposit", "variants": ["dhara"], "direction_ambiguity": "asset", "typical_patterns": ["dhara 50000"], "meaning_en": "refundable deposit paid"}
+{"term_roman": "earnest money", "variants": ["jama rashi"], "direction_ambiguity": "asset", "typical_patterns": ["earnest 25000"], "meaning_en": "advance deposit"}
+{"term_roman": "retention money", "variants": ["rakam hold"], "direction_ambiguity": "receivable", "typical_patterns": ["retention 10%"], "meaning_en": "held payment"}
+{"term_roman": "contra", "variants": ["cash bank transfer"], "direction_ambiguity": "neutral", "typical_patterns": ["cash bank contra"], "meaning_en": "internal transfer not debt"}
+{"term_roman": "write off receivable", "variants": ["bad debt write"], "direction_ambiguity": "expense", "typical_patterns": ["Ram 500 write off"], "meaning_en": "uncollectible debt"}
+{"term_roman": "recovery", "variants": ["recover", "firta aayo"], "direction_ambiguity": "income", "typical_patterns": ["bad debt recover 200"], "meaning_en": "recovered written off debt"}
+{"term_roman": "interest on loan", "variants": ["byaj"], "direction_ambiguity": "expense", "typical_patterns": ["loan byaj 2000"], "meaning_en": "interest on borrowed money"}
+{"term_roman": "principal", "variants": ["mooldhana"], "direction_ambiguity": "payable", "typical_patterns": ["principal 100000"], "meaning_en": "loan principal"}
+{"term_roman": "maturity", "variants": ["paripakwata"], "direction_ambiguity": "neutral", "typical_patterns": ["loan maturity"], "meaning_en": "loan due date"}
+{"term_roman": "guarantee", "variants": ["jamin"], "direction_ambiguity": "contingent", "typical_patterns": ["jamin diye"], "meaning_en": "guarantee given"}
+{"term_roman": "mortgage", "variants": ["dhito"], "direction_ambiguity": "secured_debt", "typical_patterns": ["ghar dhito"], "meaning_en": "secured loan"}
+{"term_roman": "unsecured loan", "variants": ["adhikar rahit rin"], "direction_ambiguity": "inbound_debt", "typical_patterns": ["unsecured loan"], "meaning_en": "loan without collateral"}
+{"term_roman": "intercompany", "variants": ["sambandhit company"], "direction_ambiguity": "ambiguous", "typical_patterns": ["intercompany udhaar"], "meaning_en": "related party balance"}
+{"term_roman": "staff advance", "variants": ["karmachari advance"], "direction_ambiguity": "asset", "typical_patterns": ["staff advance 5000"], "meaning_en": "advance to employee"}
+{"term_roman": "salary payable", "variants": ["talab tirnu baki"], "direction_ambiguity": "payable", "typical_patterns": ["salary payable"], "meaning_en": "unpaid salary"}
+{"term_roman": "dividend payable", "variants": ["labhanash tirnu"], "direction_ambiguity": "payable", "typical_patterns": ["dividend payable"], "meaning_en": "dividend owed"}

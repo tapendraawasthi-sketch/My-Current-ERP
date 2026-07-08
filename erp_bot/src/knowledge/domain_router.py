@@ -9,6 +9,8 @@ import re
 from dataclasses import dataclass
 from typing import Literal
 
+from .nepal_ai_runtime import check_safety, is_accounting_question, is_incomplete_transaction
+
 ConversationMode = Literal[
     "journal_entry",
     "accounting_qa",
@@ -47,13 +49,13 @@ COMPLIANCE_TERMS = re.compile(
 )
 
 ENTRY_SIGNALS = re.compile(
-    r"\b(sold|sale|bought|purchase|paid|received|tiryo|tireko|diye|diyeko|kineko|becheko|bikri|"
+    r"\b(sold|sale|bought|purchase|paid|received|tiryo|tireko|diye|diyeko|kineko|kineye|kinye|becheko|bikri|"
     r"liyo|liye|liya|gare|garyo|garya|replace|repair|"
-    r"kharcha|salary|vat|tds|loan|capital|return|commission|advance|jama|"
+    r"kharcha|noksan|nokshan|ghateko|ghatyo|loss|salary|vat|tds|loan|capital|return|commission|advance|jama|"
     r"consume|khaye|nikale|istimal|prayog|invest|lagani|haleko|drawings)\b.*\d|"
-    r"\d.*\b(sold|sale|bought|purchase|paid|received|tiryo|tireko|diye|diyeko|kineko|becheko|"
+    r"\d.*\b(sold|sale|bought|purchase|paid|received|tiryo|tireko|diye|diyeko|kineko|kineye|kinye|becheko|"
     r"liyo|liye|liya|gare|garyo|garya|replace|repair|"
-    r"kharcha|salary|vat|tds|loan|capital|return|commission|advance|"
+    r"kharcha|noksan|nokshan|ghateko|loss|salary|vat|tds|loan|capital|return|commission|advance|"
     r"consume|khaye|nikale|istimal|prayog|invest|lagani|haleko)\b",
     re.I,
 )
@@ -66,7 +68,7 @@ OWNER_TRANSACTION = re.compile(
 )
 
 INCOMPLETE_ENTRY = re.compile(
-    r"\b(tiryo|tireko|diyo|diyeko|becheko|bikri|kineko|kharid|kharcha|"
+    r"\b(tiryo|tireko|diyo|diyeko|becheko|bikri|kineko|kineye|kinye|kharid|kharcha|noksan|"
     r"liyo|liye|liya|gare|garyo|garya|replace|repair|"
     r"paid|received|bech|kin|jama|aayo|consume|khaye|nikale)\b",
     re.I,
@@ -119,6 +121,14 @@ def classify_domain(text: str) -> DomainRoute:
     if not t:
         return DomainRoute("casual", 1.0, True)
 
+    if check_safety(t):
+        return DomainRoute("casual", 0.95, True)
+
+    if is_accounting_question(t):
+        if COMPLIANCE_TERMS.search(t) or re.search(r"\b(vat|tds|ssf|tax|kar)\b", t, re.I):
+            return DomainRoute("compliance_qa", 0.9, True)
+        return DomainRoute("accounting_qa", 0.92, True)
+
     if CORRECTION.search(t):
         return DomainRoute("correction", 0.9, True)
     if REPORT.search(t):
@@ -132,6 +142,9 @@ def classify_domain(text: str) -> DomainRoute:
 
     if INCOMPLETE_ENTRY.search(t) and not re.search(r"\d", t) and not QUESTION.search(t):
         return DomainRoute("journal_entry", 0.88, True)
+
+    if is_incomplete_transaction(t):
+        return DomainRoute("journal_entry", 0.86, True)
 
     if FRAMEWORK_TERMS.search(t):
         return DomainRoute("framework_qa", 0.88, True)

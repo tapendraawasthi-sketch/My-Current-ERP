@@ -12,6 +12,7 @@
 
 import type { KhataIntent } from "./types";
 import { WORD_TO_NUMBER } from "./nepaliLanguage";
+import { isNepaliAccountingQuestion } from "../nepal-ai/questionDetect";
 
 /** Semantic action — what happened in the transaction */
 export type SemanticAction =
@@ -146,6 +147,12 @@ const VERB_MORPHOLOGY: Record<SemanticAction, string[]> = {
     "spend",
     "kharcha garyo",
     "kharcha gareko",
+    "noksan",
+    "nokshan",
+    "ghata",
+    "ghateko",
+    "ghatyo",
+    "loss",
   ],
   CREDIT_SALE: [], // derived from diye + lai context
   CREDIT_PURCHASE: [], // derived from udhaar + purchase
@@ -192,7 +199,8 @@ const PHRASE_ACTIONS: [RegExp, SemanticAction][] = [
   [/\b(bought|purchase|purchased|kharid|kineko|kinyo|kinye|kine)\b/i, "PURCHASE"],
   [/\b(sold|sale|becheko|beche|bikri|bik)\b/i, "SALE"],
   [/\b(tiryo|tireko|aayo|payo|received|jama)\b/i, "PAY_IN"],
-  [/\b(kharcha|kharcho|expense|spent)\b/i, "EXPENSE"],
+  [/\b(kharcha|kharcho|expense|spent|noksan|nokshan|ghata|ghateko|ghatyo|loss)\b/i, "EXPENSE"],
+  [/\b(noksan|nokshan)\s+(vo|vayo|bhayo|bho)\b/i, "EXPENSE"],
 ];
 
 const CREDIT_MARKERS = /\b(udhaar|udhar|udharo|udaro|credit|karz|karja)\b/i;
@@ -623,7 +631,7 @@ export function parseSemanticFrame(text: string): SemanticFrame {
   const amount = extractSemanticAmount(text);
   const item = extractSemanticItem(text, action);
   const paymentMode = detectPaymentMode(text);
-  const isQuestion = QUESTION_MARKERS.test(text);
+  const isQuestion = isNepaliAccountingQuestion(text) || QUESTION_MARKERS.test(text);
   const isNegated = NEGATION_MARKERS.test(text);
 
   let confidence = actionConf;
