@@ -10,6 +10,7 @@ import {
   detectUserLanguage,
 } from "./accountingLanguageBrain";
 import { generateConversationalReply, analyzeQuestion, type ConversationTurn } from "./conversationalBrain";
+import { processWithUnifiedIntelligence } from "./unifiedIntelligence";
 import { understandConceptualFramework } from "./conceptualFrameworkBrain";
 import { understandAccountingLanguage } from "./accountingLanguageBrain";
 import { analyzeMessageMeaning } from "./meaningEngine";
@@ -813,6 +814,40 @@ function tryKnowledgeBrains(trimmed: string, normalizedText: string): EKhataProc
   return null;
 }
 
+/**
+ * Human-like semantic understanding layer.
+ * This catches questions and commands that pattern matchers miss.
+ */
+function tryUnifiedIntelligence(
+  trimmed: string,
+  normalizedText: string,
+  options: ProcessMessageOptions,
+): EKhataProcessResult | null {
+  const result = processWithUnifiedIntelligence(trimmed, {
+    history: options.history,
+    balance: options.balance,
+    userName: options.userName,
+  });
+
+  // Only use unified intelligence for high-confidence results
+  if (result.confidence < 0.7) return null;
+
+  // For transactions, let the existing CA engine handle it
+  if (result.isTransaction) return null;
+
+  // Use unified intelligence for questions and commands
+  if (result.source === "concepts" || result.source === "semantic") {
+    return {
+      kind: "chat",
+      reply: result.answer,
+      normalizedText,
+      engine: "accounting-brain",
+    };
+  }
+
+  return null;
+}
+
 /** Offline-only local brain pipeline — used when erp_bot is unreachable. */
 export function processEKhataMessage(
   rawText: string,
@@ -839,6 +874,10 @@ export function processEKhataMessage(
 
   const safety = trySafetyRefusal(trimmed, normalizedText, lang);
   if (safety) return safety;
+
+  // Try unified semantic intelligence early for questions that pattern matchers miss
+  const unified = tryUnifiedIntelligence(trimmed, normalizedText, options);
+  if (unified) return unified;
 
   const discourse = tryDiscourseFollowUp(
     trimmed,
