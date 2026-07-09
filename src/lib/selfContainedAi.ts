@@ -1,45 +1,26 @@
 /**
  * Self-contained AI mode detection and status.
  *
- * PHASE 1 — CONVERSATION BRAIN: The LLM path is now PRIMARY.
- * The built-in rule-based brain is only an OFFLINE EMERGENCY FALLBACK.
+ * QWEN-ONLY MODE: The LLM path is PRIMARY everywhere (local + Render).
+ * The built-in rule-based brain runs ONLY when:
+ *   - VITE_SELF_CONTAINED_AI=true is set explicitly, OR
+ *   - erp_bot/Ollama is unreachable after a live /erp-bot/status check
  *
- * Priority order:
- * 1. If erp_bot backend is available → use LLM (conversational, natural, tri-lingual)
- * 2. If erp_bot is unreachable → fall back to built-in (labeled as "OFFLINE MODE")
- *
- * Local (vite dev OR production build on localhost):
- *   → Always try erp_bot on :8765 (via serve.mjs proxy)
- *   → Fall back to builtin only if /erp-bot/status returns mode=builtin
- *
- * Render/production host:
- *   → Set ERP_BOT_BACKEND_URL to your erp_bot instance
- *   → Without it, falls back to builtin (clearly labeled as degraded)
+ * Render/production:
+ *   → Frontend always calls same-origin /erp-bot (serve.mjs proxy)
+ *   → Set ERP_BOT_BACKEND_URL on Render to your GPU server (erp_bot :8765)
+ *   → No VITE_ERP_BOT_URL required at build time
  */
-
-function isLocalMachine(): boolean {
-  if (typeof window === "undefined") return false;
-  const host = window.location.hostname;
-  return host === "localhost" || host === "127.0.0.1" || host === "[::1]";
-}
 
 /**
  * Whether to use the self-contained (rule-based) AI mode.
  *
- * In Phase 1, we ALWAYS prefer the LLM path. This function returns true
- * only when explicitly forced via env var, which should be rare.
+ * Returns true ONLY when explicitly forced — never auto-fallback on Render.
+ * Call checkErpBotStatus() / checkEKhataLlmStatus() to detect live LLM availability.
  */
 export function isSelfContainedAi(): boolean {
   const forceBuiltin = (import.meta.env.VITE_SELF_CONTAINED_AI as string | undefined)?.trim();
-  if (forceBuiltin === "true" || forceBuiltin === "1") return true;
-
-  const explicit = (import.meta.env.VITE_ERP_BOT_URL as string | undefined)?.trim();
-
-  // Local machine: ALWAYS try the LLM path first
-  if (import.meta.env.DEV || isLocalMachine()) return false;
-
-  // Remote production (Render): try LLM if URL was baked in at build, else builtin
-  return !explicit;
+  return forceBuiltin === "true" || forceBuiltin === "1";
 }
 
 /**

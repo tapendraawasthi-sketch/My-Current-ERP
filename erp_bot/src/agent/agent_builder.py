@@ -447,6 +447,94 @@ async def run_routed_agent(
     return result
 
 
+async def _stream_text_chunks(text: str, chunk_size: int = 16) -> AsyncIterator[str]:
+    """Yield pre-computed text in small chunks for streaming UX."""
+    for i in range(0, len(text), chunk_size):
+        yield text[i : i + chunk_size]
+        await asyncio.sleep(0)
+
+
+async def run_routed_agent_stream(
+    question: str,
+    history: list[dict[str, str]] | None = None,
+) -> AsyncIterator[dict]:
+    """Stream a routed Qwen response (Orbix ultra stack).
+    
+    Yields event dicts:
+      {"type": "route", "route": {...}}
+      {"type": "token", "content": "..."}
+      {"type": "complete", "message": "...", "card": {...}|None, "route": {...}}
+    """
+    from .intent_router import classify_intent, get_rag_query
+
+    route = await classify_intent(question)
+    route_dict = {
+        "intent": route.intent,
+        "confidence": route.confidence,
+        "method": route.method,
+        "reasoning": route.reasoning,
+    }
+    yield {"type": "route", "route": route_dict}
+
+    card = None
+    parts: list[str] = []
+
+    try:
+        if route.intent == "khata_entry":
+            answer, card = await _handle_khata_entry(question, history)
+            async for chunk in _stream_text_chunks(answer):
+                parts.append(chunk)
+                yield {"type": "token", "content": chunk}
+
+        elif route.intent in ("chitchat", "general_qa"):
+            async for chunk in run_agent_stream(question, history):
+                parts.append(chunk)
+                yield {"type": "token", "content": chunk}
+
+        elif route.intent == "accounting_qa":
+            rag_query = get_rag_query(question, route.intent)
+            rag_context = await _fetch_rag_context(rag_query, route.rag_collection)
+            if rag_context:
+                augmented = f"""Based on the following reference information:
+
+{rag_context}
+
+---
+
+User question: {question}
+
+Answer using the reference above. Cite sources when possible."""
+            else:
+                augmented = question
+            async for chunk in run_agent_stream(augmented, history):
+                parts.append(chunk)
+                yield {"type": "token", "content": chunk}
+
+        elif route.intent in ("erp_howto", "code_qa"):
+            answer = await run_agent(question, history)
+            async for chunk in _stream_text_chunks(answer):
+                parts.append(chunk)
+                yield {"type": "token", "content": chunk}
+
+        else:
+            async for chunk in run_agent_stream(question, history):
+                parts.append(chunk)
+                yield {"type": "token", "content": chunk}
+
+    except Exception as e:
+        logger.exception("Routed stream failed")
+        err = f"माफ गर्नुहोस्, कुनै समस्या भयो। (Error: {e})"
+        parts = [err]
+        yield {"type": "token", "content": err}
+
+    yield {
+        "type": "complete",
+        "message": "".join(parts),
+        "card": card,
+        "route": route_dict,
+    }
+
+
 async def _direct_llm_response(
     question: str,
     history: list[dict[str, str]] | None = None,

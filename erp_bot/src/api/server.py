@@ -200,6 +200,8 @@ def status() -> dict:
         "khata_llm": ollama_status == "connected",
         "conversation_memory": True,
         "streaming": True,
+        "orbix_qwen_stream": True,
+        "stack": "qwen3:4b router + qwen3:32b brain + hybrid RAG",
     }
 
 
@@ -275,11 +277,7 @@ class StreamChatRequest(BaseModel):
 
 @app.post("/chat/stream")
 async def chat_stream(req: StreamChatRequest):
-    """Streaming chat endpoint using Server-Sent Events.
-    
-    Returns tokens as they're generated for responsive UX.
-    Use with EventSource or fetch with streaming on the frontend.
-    """
+    """Streaming chat endpoint using Server-Sent Events (Falcon — plain text)."""
     if not req.message.strip():
         async def empty_response():
             yield "data: Message cannot be empty.\n\n"
@@ -311,6 +309,75 @@ async def chat_stream(req: StreamChatRequest):
             yield "data: [DONE]\n\n"
     
     return StreamingResponse(generate(), media_type="text/event-stream")
+
+
+def _sse_json(data: dict) -> str:
+    import json
+    return f"data: {json.dumps(data, default=str)}\n\n"
+
+
+@app.post("/orbix/chat/stream")
+async def orbix_chat_stream(req: StreamChatRequest):
+    """Orbix Qwen-only stream — routed agent with JSON SSE events.
+    
+    Stack: qwen3:4b router → RAG/khata/tools → qwen3:32b brain → stream tokens.
+    """
+    if not req.message.strip():
+        async def empty_response():
+            yield _sse_json({"type": "error", "message": "Message cannot be empty."})
+        return StreamingResponse(
+            empty_response(),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+                "X-Accel-Buffering": "no",
+            },
+        )
+
+    history = agent_builder.get_session_history(req.session_id)
+    agent_builder.add_to_history(req.session_id, "user", req.message)
+
+    async def generate():
+        yield _sse_json({"type": "thinking_start"})
+        full_message = ""
+        card = None
+        route_info = None
+        try:
+            async for event in agent_builder.run_routed_agent_stream(req.message, history):
+                if event.get("type") == "route":
+                    route_info = event.get("route")
+                    yield _sse_json({"type": "route", "route": route_info})
+                elif event.get("type") == "token":
+                    yield _sse_json({"type": "token", "content": event.get("content", "")})
+                elif event.get("type") == "complete":
+                    full_message = str(event.get("message") or "")
+                    card = event.get("card")
+                    route_info = event.get("route") or route_info
+
+            agent_builder.add_to_history(req.session_id, "assistant", full_message)
+            yield _sse_json({"type": "thinking_done"})
+            yield _sse_json(
+                {
+                    "type": "complete",
+                    "message": full_message,
+                    "card": card,
+                    "route": route_info,
+                    "action": "confirm" if card else "chat",
+                }
+            )
+        except Exception as exc:
+            yield _sse_json({"type": "error", "message": str(exc)})
+
+    return StreamingResponse(
+        generate(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+        },
+    )
 
 
 @app.delete("/chat/session/{session_id}")

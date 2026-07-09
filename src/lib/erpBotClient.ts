@@ -16,25 +16,25 @@ import {
 } from "./selfContainedAi";
 
 export function resolveErpBotUrl(): string {
-  // In production via serve.mjs, always use the proxy path
-  if (typeof window !== "undefined" && window.location.hostname !== "localhost") {
-    return "/erp-bot";
-  }
-
-  if (isSelfContainedAi()) return "";
-
   const configured = (import.meta.env.VITE_ERP_BOT_URL as string | undefined)?.trim();
   if (configured) return configured.replace(/\/$/, "");
 
-  // Dev mode: direct to local erp_bot OR via serve.mjs proxy
-  // Check if we're behind serve.mjs (port 3000) or direct vite (port 5173)
   if (typeof window !== "undefined") {
+    const host = window.location.hostname;
     const port = window.location.port;
+
+    // Production / staging: same-origin proxy (serve.mjs → ERP_BOT_BACKEND_URL)
+    if (host !== "localhost" && host !== "127.0.0.1" && host !== "[::1]") {
+      return "/erp-bot";
+    }
+
+    // Local serve.mjs (port 3000) uses proxy
     if (port === "3000") {
-      return "/erp-bot"; // serve.mjs proxy
+      return "/erp-bot";
     }
   }
 
+  // Vite dev (5173) — direct to local erp_bot
   return "http://localhost:8765";
 }
 
@@ -72,6 +72,15 @@ export interface ErpBotStatus {
 
 export async function checkErpBotStatus(): Promise<ErpBotStatus> {
   if (isSelfContainedAi()) {
+    return {
+      online: false,
+      indexedFiles: 0,
+      mode: "builtin",
+      modeStatus: SELF_CONTAINED_STATUS,
+    };
+  }
+
+  if (!ERP_BOT_URL) {
     return {
       online: false,
       indexedFiles: 0,

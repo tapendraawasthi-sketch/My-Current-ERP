@@ -1,6 +1,7 @@
-/** e-Khata — optional external LLM client (disabled in self-contained production). */
+/** e-Khata / Orbix — Qwen backend client (erp_bot + Ollama). */
 
 import { isSelfContainedAi } from "../selfContainedAi";
+import { checkOrbixQwenStatus } from "./orbixQwenClient";
 import { resolveErpBotUrl } from "../erpBotClient";
 import type { KhataConfirmationCard } from "./types";
 
@@ -45,30 +46,22 @@ export interface EKhataLlmStatus {
 }
 
 export async function checkEKhataLlmStatus(): Promise<EKhataLlmStatus> {
-  if (isSelfContainedAi() || !EKHATA_BOT_URL) {
+  if (isSelfContainedAi()) {
     return {
       online: false,
       khataLlm: false,
-      error: "Set VITE_ERP_BOT_URL=http://localhost:8765 in .env.local",
+      error: "VITE_SELF_CONTAINED_AI=true — built-in brain only",
     };
   }
 
-  try {
-    const resp = await fetch(`${EKHATA_BOT_URL}/status`, { signal: AbortSignal.timeout(8000) });
-    if (!resp.ok) return { online: false, khataLlm: false, error: `HTTP ${resp.status}` };
-    const data = await resp.json();
-    const botOk = data.status === "online";
-    const ollamaOk = data.ollama === "connected";
-    return {
-      online: botOk,
-      khataLlm: Boolean(data.khata_llm) && ollamaOk,
-      degraded: botOk && !ollamaOk,
-      model: data.model,
-    };
-  } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : "Unreachable";
-    return { online: false, khataLlm: false, error: msg };
-  }
+  const status = await checkOrbixQwenStatus();
+  return {
+    online: status.qwenReady || status.degraded,
+    khataLlm: status.qwenReady,
+    degraded: status.degraded,
+    model: status.conversationalModel || status.model,
+    error: status.error,
+  };
 }
 
 export interface EKhataLlmResponse {

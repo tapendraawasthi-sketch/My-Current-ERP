@@ -1,16 +1,18 @@
 import { create } from "zustand";
 import { confirmKhataEntry } from "../lib/ekhata/confirmKhata";
-import { buildSessionSnapshot } from "../lib/ekhata/dexieBridge";
 import {
-  askEKhataV2,
   checkEKhataLlmStatus,
   getEKhataSessionId,
   setEKhataSessionId,
 } from "../lib/ekhata/ekhataLlmClient";
 import { replyCancel, replySaved } from "../lib/ekhata/conversationEngine";
 import { recordTrainingFeedback } from "../lib/ekhata/trainingFeedback";
-import { streamChat } from "../lib/ekhata/streamingClient";
 import type { ConversationTurn } from "../lib/ekhata/conversationalBrain";
+import {
+  askOrbixQwen,
+  ORBIX_OFFLINE_MESSAGE,
+  streamOrbixQwen,
+} from "../lib/ekhata/orbixQwenClient";
 import {
   createConversationContext,
   processEKhataMessageAsync,
@@ -58,10 +60,6 @@ function getKhataBalance() {
     udhaarOut: Math.max(0, debt?.balance ?? 0),
     udhaarIn: Math.max(0, cred?.balance ?? 0),
   };
-}
-
-function formatAssistantText(message: string, insight?: string | null): string {
-  return insight ? `${message}\n\n${insight}` : message;
 }
 
 function syncSession(
@@ -170,7 +168,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
   pendingCompoundBatch: null,
   streamingText: "",
   activeTools: [],
-  engineLabel: "v2",
+  engineLabel: "qwen3",
 
   openPanel: () => set({ isOpen: true, windowMode: "normal" }),
 
@@ -303,9 +301,13 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
     try {
       const status = await checkEKhataLlmStatus();
       set({
-        llmOnline: status.online,
+        llmOnline: status.khataLlm,
         llmModel: status.khataLlm ? status.model : status.degraded ? "KB-only" : status.model,
-        engineLabel: status.degraded ? "v2 (KB)" : status.khataLlm ? "v2" : "offline",
+        engineLabel: status.khataLlm
+          ? `qwen3 (${status.model || "32b"})`
+          : status.degraded
+            ? "degraded"
+            : "offline",
       });
     } catch {
       set({ llmOnline: false, llmModel: undefined, engineLabel: "offline" });
@@ -372,6 +374,87 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
     const balance = getKhataBalance();
     const userName = useStore.getState().currentUser?.name || useStore.getState().currentUser?.username;
 
+    // Refresh live Qwen status on every message
+    await get().refreshLlmStatus();
+    const llmStatus = await checkEKhataLlmStatus();
+    const sessionId = getEKhataSessionId();
+
+    // ── QWEN-ONLY PATH (ultra stack: router + RAG + qwen3:32b) ─────────────────
+    if (llmStatus.khataLlm && !isSelfContainedAi()) {
+      try {
+        await streamOrbixQwen(trimmed, sessionId, {
+          onThinkingStart: () => {
+            set({ streamingText: "", activeTools: [] });
+          },
+          onThinkingDone: () => undefined,
+          onRoute: (route) => {
+            if (route.intent) {
+              set({ activeTools: [route.intent] });
+            }
+          },
+          onToken: (token) => {
+            set((s) => {
+              const next = s.streamingText + token;
+              const nextMessages = s.messages.map((m) =>
+                m.id === assistantId ? { ...m, text: next } : m,
+              );
+              return { streamingText: next, messages: nextMessages };
+            });
+          },
+          onComplete: ({ message, card, action }) => {
+            if (action === "confirm" && card) {
+              conversationContext = updateContextAfterEntry(conversationContext, card, trimmed);
+            }
+            finalize({
+              messages: get().messages.map((m) =>
+                m.id === assistantId ? { ...m, text: message } : m,
+              ),
+              pendingCard: action === "confirm" ? card : null,
+              streamingText: "",
+              activeTools: [],
+              engineLabel: `qwen3 (${llmStatus.model || "32b"})`,
+              llmOnline: true,
+              llmModel: llmStatus.model,
+            });
+          },
+          onError: async () => {
+            const fallback = await askOrbixQwen(trimmed, sessionId);
+            if (fallback.card) {
+              conversationContext = updateContextAfterEntry(
+                conversationContext,
+                fallback.card,
+                trimmed,
+              );
+            }
+            finalize({
+              messages: get().messages.map((m) =>
+                m.id === assistantId ? { ...m, text: fallback.answer } : m,
+              ),
+              pendingCard: fallback.card,
+              streamingText: "",
+              activeTools: [],
+              engineLabel: `qwen3 (${llmStatus.model || "32b"})`,
+            });
+          },
+        });
+        return;
+      } catch (error) {
+        finalize({
+          streamingText: "",
+          messages: get().messages.map((m) =>
+            m.id === assistantId
+              ? {
+                  ...m,
+                  text: error instanceof Error ? error.message : "Qwen connection failed.",
+                }
+              : m,
+          ),
+        });
+        return;
+      }
+    }
+
+    // ── FORCED OFFLINE TEMPLATES (VITE_SELF_CONTAINED_AI=true only) ───────────
     if (isSelfContainedAi()) {
       try {
         const history: ConversationTurn[] = get()
@@ -404,7 +487,8 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
           ),
           pendingCard: result.kind === "entry" && result.card ? result.card : null,
           pendingCompoundBatch: result.kind === "compound" ? result.batch : null,
-          engineLabel: "builtin",
+          engineLabel: "builtin (forced)",
+          llmOnline: false,
         });
       } catch (error) {
         finalize({
@@ -421,104 +505,14 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
       return;
     }
 
-    if (!get().llmOnline) {
-      finalize({
-        messages: get().messages.map((m) =>
-          m.id === assistantId
-            ? {
-                ...m,
-                text:
-                  "erp_bot reach vayena. Dev setup:\n" +
-                  "1. `.env.local` ma `VITE_ERP_BOT_URL=http://localhost:8765`\n" +
-                  "2. `cd erp_bot && python3 -m uvicorn src.api.server:app --port 8765`\n" +
-                  "3. Ports tab ma **8765** forward garnus, panel refresh\n" +
-                  "4. Full AI: `ollama serve` (local machine ma)",
-              }
-            : m,
-        ),
-      });
-      return;
-    }
-
-    try {
-      const snapshot = await buildSessionSnapshot();
-      const sessionId = getEKhataSessionId();
-
-      await streamChat(
-        trimmed,
-        sessionId,
-        {
-          onThinkingStart: () => {
-            set({ streamingText: "", activeTools: [] });
-          },
-          onThinkingDone: () => undefined,
-          onToken: (token) => {
-            set((s) => {
-              const next = s.streamingText + token;
-              const nextMessages = s.messages.map((m) =>
-                m.id === assistantId ? { ...m, text: next } : m,
-              );
-              return { streamingText: next, messages: nextMessages };
-            });
-          },
-          onToolCalling: (tools) => set({ activeTools: tools }),
-          onComplete: (meta) => {
-            const action = meta.action as string | undefined;
-            const card = (meta.card as KhataConfirmationCard | null) ?? null;
-            const message = String(meta.message || get().streamingText || "");
-            const insight = meta.insight as string | null | undefined;
-            const finalText = formatAssistantText(message, insight);
-
-            if (action === "confirm" && card) {
-              conversationContext = updateContextAfterEntry(conversationContext, card, trimmed);
-            }
-
-            finalize({
-              messages: get().messages.map((m) =>
-                m.id === assistantId ? { ...m, text: finalText } : m,
-              ),
-              pendingCard: action === "confirm" ? card : null,
-              streamingText: "",
-              activeTools: [],
-              engineLabel: "v2-stream",
-            });
-          },
-          onError: async () => {
-            const v2 = await askEKhataV2(trimmed, sessionId, { balance, context: snapshot });
-            const finalText = formatAssistantText(v2.message, v2.insight);
-            if (v2.action === "confirm" && v2.card) {
-              conversationContext = updateContextAfterEntry(
-                conversationContext,
-                v2.card as KhataConfirmationCard,
-                trimmed,
-              );
-            }
-            finalize({
-              messages: get().messages.map((m) =>
-                m.id === assistantId ? { ...m, text: finalText } : m,
-              ),
-              pendingCard: v2.action === "confirm" ? (v2.card ?? null) : null,
-              streamingText: "",
-              activeTools: [],
-              engineLabel: "v2",
-            });
-          },
-        },
-        { context: snapshot, balance },
-      );
-    } catch (error) {
-      finalize({
-        streamingText: "",
-        messages: get().messages.map((m) =>
-          m.id === assistantId
-            ? {
-                ...m,
-                text: error instanceof Error ? error.message : "Parse garna sakina.",
-              }
-            : m,
-        ),
-      });
-    }
+    // ── QWEN NOT CONNECTED — clear instructions (no template brain) ───────────
+    finalize({
+      messages: get().messages.map((m) =>
+        m.id === assistantId ? { ...m, text: ORBIX_OFFLINE_MESSAGE } : m,
+      ),
+      llmOnline: false,
+      engineLabel: "offline",
+    });
   },
 
   generateOrbixReport: async (pending: PendingOrbixReport) => {

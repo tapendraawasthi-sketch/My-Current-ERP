@@ -30,10 +30,18 @@ if (!existsSync(INDEX_PATH)) {
 
 console.log(`✅ dist/ folder verified at ${DIST_DIR}`);
 
-// Set ERP_BOT_BACKEND_URL in the environment (e.g. http://YOUR_VPS_IP:8765) to
-// forward /erp-bot/* to your self-hosted Ollama-backed erp_bot service.
-// Leave unset to keep the built-in rule-based brain (no external process needed).
+// Set ERP_BOT_BACKEND_URL on Render to your GPU server running erp_bot + Ollama.
+// Example: ERP_BOT_BACKEND_URL=http://YOUR_GPU_IP:8765
+// Frontend always calls /erp-bot (same-origin proxy) — no VITE_ERP_BOT_URL required.
 const ERP_BOT_BACKEND = (process.env.ERP_BOT_BACKEND_URL || "").trim().replace(/\/$/, "");
+
+if (ERP_BOT_BACKEND) {
+  console.log(`🧠 Orbix Qwen proxy: /erp-bot → ${ERP_BOT_BACKEND}`);
+} else {
+  console.warn(
+    "⚠️  ERP_BOT_BACKEND_URL not set — Orbix will show offline until you connect a GPU server with Ollama + erp_bot",
+  );
+}
 
 async function readRequestBody(req) {
   const chunks = [];
