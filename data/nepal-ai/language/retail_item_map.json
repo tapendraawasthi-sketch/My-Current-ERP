@@ -1,0 +1,5503 @@
+{
+  "chamal": {
+    "canonical": "chamal",
+    "item_id": "ri-001",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "चामल": {
+    "canonical": "chamal",
+    "item_id": "ri-001",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "rice": {
+    "canonical": "chamal",
+    "item_id": "ri-001",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "basmati chamal": {
+    "canonical": "chamal",
+    "item_id": "ri-001",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "sona mansuli": {
+    "canonical": "chamal",
+    "item_id": "ri-001",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "dal": {
+    "canonical": "dal",
+    "item_id": "ri-002",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "दाल": {
+    "canonical": "dal",
+    "item_id": "ri-002",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "masura dal": {
+    "canonical": "dal",
+    "item_id": "ri-002",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "moong dal": {
+    "canonical": "dal",
+    "item_id": "ri-002",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "chana dal": {
+    "canonical": "dal",
+    "item_id": "ri-002",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "lentils": {
+    "canonical": "dal",
+    "item_id": "ri-002",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "tel": {
+    "canonical": "tel",
+    "item_id": "ri-003",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "litre"
+  },
+  "तेल": {
+    "canonical": "tel",
+    "item_id": "ri-003",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "litre"
+  },
+  "cooking oil": {
+    "canonical": "tel",
+    "item_id": "ri-003",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "litre"
+  },
+  "sunflower tel": {
+    "canonical": "tel",
+    "item_id": "ri-003",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "litre"
+  },
+  "mustard tel": {
+    "canonical": "tel",
+    "item_id": "ri-003",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "litre"
+  },
+  "chini": {
+    "canonical": "chini",
+    "item_id": "ri-004",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "चिनी": {
+    "canonical": "chini",
+    "item_id": "ri-004",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "sugar": {
+    "canonical": "chini",
+    "item_id": "ri-004",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "chini daana": {
+    "canonical": "chini",
+    "item_id": "ri-004",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "white sugar": {
+    "canonical": "chini",
+    "item_id": "ri-004",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "nun": {
+    "canonical": "nun",
+    "item_id": "ri-005",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "नुन": {
+    "canonical": "nun",
+    "item_id": "ri-005",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "salt": {
+    "canonical": "nun",
+    "item_id": "ri-005",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "iodine nun": {
+    "canonical": "nun",
+    "item_id": "ri-005",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "sendhe nun": {
+    "canonical": "nun",
+    "item_id": "ri-005",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "masala": {
+    "canonical": "masala",
+    "item_id": "ri-006",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet (gm)"
+  },
+  "मसला": {
+    "canonical": "masala",
+    "item_id": "ri-006",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet (gm)"
+  },
+  "spices": {
+    "canonical": "masala",
+    "item_id": "ri-006",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet (gm)"
+  },
+  "garam masala": {
+    "canonical": "masala",
+    "item_id": "ri-006",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet (gm)"
+  },
+  "jira": {
+    "canonical": "masala",
+    "item_id": "ri-006",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet (gm)"
+  },
+  "khursani": {
+    "canonical": "hariyo khursani",
+    "item_id": "ri-027",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg / packet"
+  },
+  "haldi": {
+    "canonical": "masala",
+    "item_id": "ri-006",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet (gm)"
+  },
+  "sabun": {
+    "canonical": "sabun",
+    "item_id": "ri-007",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece"
+  },
+  "साबुन": {
+    "canonical": "sabun",
+    "item_id": "ri-007",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece"
+  },
+  "soap": {
+    "canonical": "sabun",
+    "item_id": "ri-007",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece"
+  },
+  "laundry sabun": {
+    "canonical": "sabun",
+    "item_id": "ri-007",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece"
+  },
+  "nahaune sabun": {
+    "canonical": "sabun",
+    "item_id": "ri-007",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece"
+  },
+  "lux sabun": {
+    "canonical": "sabun",
+    "item_id": "ri-007",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece"
+  },
+  "toothpaste": {
+    "canonical": "toothpaste",
+    "item_id": "ri-008",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "tube"
+  },
+  "टुथपेस्ट": {
+    "canonical": "toothpaste",
+    "item_id": "ri-008",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "tube"
+  },
+  "dant manjan": {
+    "canonical": "toothpaste",
+    "item_id": "ri-008",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "tube"
+  },
+  "paste": {
+    "canonical": "toothpaste",
+    "item_id": "ri-008",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "tube"
+  },
+  "colgate": {
+    "canonical": "toothpaste",
+    "item_id": "ri-008",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "tube"
+  },
+  "biscuit": {
+    "canonical": "biscuit",
+    "item_id": "ri-009",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet"
+  },
+  "बिस्कुट": {
+    "canonical": "biscuit",
+    "item_id": "ri-009",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet"
+  },
+  "cookies": {
+    "canonical": "biscuit",
+    "item_id": "ri-009",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet"
+  },
+  "glucose biscuit": {
+    "canonical": "biscuit",
+    "item_id": "ri-009",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet"
+  },
+  "kaju biscuit": {
+    "canonical": "biscuit",
+    "item_id": "ri-009",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet"
+  },
+  "biskut": {
+    "canonical": "biscuit",
+    "item_id": "ri-009",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet"
+  },
+  "chah": {
+    "canonical": "chah",
+    "item_id": "ri-010",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "gm / packet"
+  },
+  "चिया": {
+    "canonical": "chah",
+    "item_id": "ri-010",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "gm / packet",
+    "alternatives": [
+      {
+        "canonical": "tea",
+        "item_id": "ri-084",
+        "sector": "food_restaurant",
+        "sector_slug": "restaurant-cafe"
+      }
+    ]
+  },
+  "tea": {
+    "canonical": "chah",
+    "item_id": "ri-010",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "gm / packet",
+    "alternatives": [
+      {
+        "canonical": "tea",
+        "item_id": "ri-084",
+        "sector": "food_restaurant",
+        "sector_slug": "restaurant-cafe"
+      }
+    ]
+  },
+  "chiya": {
+    "canonical": "chah",
+    "item_id": "ri-010",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "gm / packet",
+    "alternatives": [
+      {
+        "canonical": "tea",
+        "item_id": "ri-084",
+        "sector": "food_restaurant",
+        "sector_slug": "restaurant-cafe"
+      }
+    ]
+  },
+  "dust tea": {
+    "canonical": "chah",
+    "item_id": "ri-010",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "gm / packet"
+  },
+  "green tea": {
+    "canonical": "chah",
+    "item_id": "ri-010",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "gm / packet"
+  },
+  "chiya patti": {
+    "canonical": "chah",
+    "item_id": "ri-010",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "gm / packet"
+  },
+  "doodh": {
+    "canonical": "doodh",
+    "item_id": "ri-011",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "litre"
+  },
+  "दुध": {
+    "canonical": "doodh",
+    "item_id": "ri-011",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "litre"
+  },
+  "milk": {
+    "canonical": "doodh",
+    "item_id": "ri-011",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "litre"
+  },
+  "dudh": {
+    "canonical": "doodh",
+    "item_id": "ri-011",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "litre"
+  },
+  "gai ko doodh": {
+    "canonical": "doodh",
+    "item_id": "ri-011",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "litre"
+  },
+  "bhainsi doodh": {
+    "canonical": "doodh",
+    "item_id": "ri-011",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "litre"
+  },
+  "dahi": {
+    "canonical": "dahi",
+    "item_id": "ri-012",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "litre / cup",
+    "alternatives": []
+  },
+  "दही": {
+    "canonical": "dahi",
+    "item_id": "ri-012",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "litre / cup"
+  },
+  "yogurt": {
+    "canonical": "dahi",
+    "item_id": "ri-012",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "litre / cup"
+  },
+  "curd": {
+    "canonical": "dahi",
+    "item_id": "ri-012",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "litre / cup"
+  },
+  "ghee": {
+    "canonical": "ghee",
+    "item_id": "ri-013",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "litre / kg",
+    "alternatives": []
+  },
+  "घिउ": {
+    "canonical": "ghee",
+    "item_id": "ri-013",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "litre / kg"
+  },
+  "clarified butter": {
+    "canonical": "ghee",
+    "item_id": "ri-013",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "litre / kg"
+  },
+  "ghew": {
+    "canonical": "ghee",
+    "item_id": "ri-013",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "litre / kg"
+  },
+  "katahar ko achaar": {
+    "canonical": "katahar ko achaar",
+    "item_id": "ri-014",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "bottle / kg"
+  },
+  "कटहरको अचार": {
+    "canonical": "katahar ko achaar",
+    "item_id": "ri-014",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "bottle / kg"
+  },
+  "pickle": {
+    "canonical": "katahar ko achaar",
+    "item_id": "ri-014",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "bottle / kg"
+  },
+  "achaar": {
+    "canonical": "katahar ko achaar",
+    "item_id": "ri-014",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "bottle / kg"
+  },
+  "gundruk achaar": {
+    "canonical": "katahar ko achaar",
+    "item_id": "ri-014",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "bottle / kg"
+  },
+  "mango achaar": {
+    "canonical": "katahar ko achaar",
+    "item_id": "ri-014",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "bottle / kg"
+  },
+  "chino": {
+    "canonical": "chino",
+    "item_id": "ri-015",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "चिनो": {
+    "canonical": "chino",
+    "item_id": "ri-015",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "buckwheat": {
+    "canonical": "chino",
+    "item_id": "ri-015",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "phapar ko pitho": {
+    "canonical": "chino",
+    "item_id": "ri-015",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "chino ko pitho": {
+    "canonical": "chino",
+    "item_id": "ri-015",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "nauni ghee": {
+    "canonical": "nauni ghee",
+    "item_id": "ri-016",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet / gm"
+  },
+  "नौनी घिउ": {
+    "canonical": "nauni ghee",
+    "item_id": "ri-016",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet / gm"
+  },
+  "butter": {
+    "canonical": "nauni ghee",
+    "item_id": "ri-016",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet / gm"
+  },
+  "makhan": {
+    "canonical": "nauni ghee",
+    "item_id": "ri-016",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet / gm"
+  },
+  "nauni": {
+    "canonical": "nauni ghee",
+    "item_id": "ri-016",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet / gm"
+  },
+  "suji": {
+    "canonical": "suji",
+    "item_id": "ri-017",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg",
+    "alternatives": []
+  },
+  "सुजी": {
+    "canonical": "suji",
+    "item_id": "ri-017",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "semolina": {
+    "canonical": "suji",
+    "item_id": "ri-017",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "suji ko pitho": {
+    "canonical": "suji",
+    "item_id": "ri-017",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "maida": {
+    "canonical": "maida",
+    "item_id": "ri-018",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "मैदा": {
+    "canonical": "maida",
+    "item_id": "ri-018",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "refined flour": {
+    "canonical": "maida",
+    "item_id": "ri-018",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "white flour": {
+    "canonical": "maida",
+    "item_id": "ri-018",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "maida pitho": {
+    "canonical": "maida",
+    "item_id": "ri-018",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "pitho": {
+    "canonical": "pitho",
+    "item_id": "ri-019",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "पिठो": {
+    "canonical": "pitho",
+    "item_id": "ri-019",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "flour": {
+    "canonical": "pitho",
+    "item_id": "ri-019",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "aata": {
+    "canonical": "pitho",
+    "item_id": "ri-019",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "ghar ko pitho": {
+    "canonical": "pitho",
+    "item_id": "ri-019",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "chamal ko pitho": {
+    "canonical": "pitho",
+    "item_id": "ri-019",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "chiso padartha": {
+    "canonical": "chiso padartha",
+    "item_id": "ri-020",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "bottle"
+  },
+  "चिसो पदार्थ": {
+    "canonical": "chiso padartha",
+    "item_id": "ri-020",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "bottle",
+    "alternatives": [
+      {
+        "canonical": "cold drinks",
+        "item_id": "ri-086",
+        "sector": "food_restaurant",
+        "sector_slug": "restaurant-cafe"
+      }
+    ]
+  },
+  "cold drinks": {
+    "canonical": "chiso padartha",
+    "item_id": "ri-020",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "bottle",
+    "alternatives": [
+      {
+        "canonical": "cold drinks",
+        "item_id": "ri-086",
+        "sector": "food_restaurant",
+        "sector_slug": "restaurant-cafe"
+      }
+    ]
+  },
+  "pepsi": {
+    "canonical": "chiso padartha",
+    "item_id": "ri-020",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "bottle",
+    "alternatives": [
+      {
+        "canonical": "cold drinks",
+        "item_id": "ri-086",
+        "sector": "food_restaurant",
+        "sector_slug": "restaurant-cafe"
+      }
+    ]
+  },
+  "coca cola": {
+    "canonical": "chiso padartha",
+    "item_id": "ri-020",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "bottle"
+  },
+  "sprite": {
+    "canonical": "chiso padartha",
+    "item_id": "ri-020",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "bottle",
+    "alternatives": [
+      {
+        "canonical": "cold drinks",
+        "item_id": "ri-086",
+        "sector": "food_restaurant",
+        "sector_slug": "restaurant-cafe"
+      }
+    ]
+  },
+  "fanta": {
+    "canonical": "chiso padartha",
+    "item_id": "ri-020",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "bottle",
+    "alternatives": [
+      {
+        "canonical": "cold drinks",
+        "item_id": "ri-086",
+        "sector": "food_restaurant",
+        "sector_slug": "restaurant-cafe"
+      }
+    ]
+  },
+  "pani": {
+    "canonical": "pani",
+    "item_id": "ri-021",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "jar / litre"
+  },
+  "पानी": {
+    "canonical": "pani",
+    "item_id": "ri-021",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "jar / litre"
+  },
+  "drinking water": {
+    "canonical": "pani",
+    "item_id": "ri-021",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "jar / litre"
+  },
+  "mineral pani": {
+    "canonical": "pani",
+    "item_id": "ri-021",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "jar / litre"
+  },
+  "jar ko pani": {
+    "canonical": "pani",
+    "item_id": "ri-021",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "jar / litre"
+  },
+  "rice flour": {
+    "canonical": "rice flour",
+    "item_id": "ri-022",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "चामलको पिठो": {
+    "canonical": "rice flour",
+    "item_id": "ri-022",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "chamal pitho": {
+    "canonical": "rice flour",
+    "item_id": "ri-022",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "kharbuja": {
+    "canonical": "kharbuja",
+    "item_id": "ri-023",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece"
+  },
+  "खरबुजा": {
+    "canonical": "kharbuja",
+    "item_id": "ri-023",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece"
+  },
+  "melon": {
+    "canonical": "kharbuja",
+    "item_id": "ri-023",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece"
+  },
+  "muskmelon": {
+    "canonical": "kharbuja",
+    "item_id": "ri-023",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece"
+  },
+  "kharbuja fruit": {
+    "canonical": "kharbuja",
+    "item_id": "ri-023",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece"
+  },
+  "aalu": {
+    "canonical": "aalu",
+    "item_id": "ri-024",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "आलु": {
+    "canonical": "aalu",
+    "item_id": "ri-024",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "potato": {
+    "canonical": "aalu",
+    "item_id": "ri-024",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "aloo": {
+    "canonical": "aalu",
+    "item_id": "ri-024",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "rato aalu": {
+    "canonical": "aalu",
+    "item_id": "ri-024",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "pyaj": {
+    "canonical": "pyaj",
+    "item_id": "ri-025",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg",
+    "alternatives": []
+  },
+  "प्याज": {
+    "canonical": "pyaj",
+    "item_id": "ri-025",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "onion": {
+    "canonical": "pyaj",
+    "item_id": "ri-025",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "sukeko pyaj": {
+    "canonical": "pyaj",
+    "item_id": "ri-025",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "golbhenda": {
+    "canonical": "golbhenda",
+    "item_id": "ri-026",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "गोलभेडा": {
+    "canonical": "golbhenda",
+    "item_id": "ri-026",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "tomato": {
+    "canonical": "golbhenda",
+    "item_id": "ri-026",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "tamatar": {
+    "canonical": "golbhenda",
+    "item_id": "ri-026",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "golbheda": {
+    "canonical": "golbhenda",
+    "item_id": "ri-026",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "hariyo khursani": {
+    "canonical": "hariyo khursani",
+    "item_id": "ri-027",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg / packet"
+  },
+  "हरियो खुर्सानी": {
+    "canonical": "hariyo khursani",
+    "item_id": "ri-027",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg / packet"
+  },
+  "green chili": {
+    "canonical": "hariyo khursani",
+    "item_id": "ri-027",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg / packet"
+  },
+  "hariyo chili": {
+    "canonical": "hariyo khursani",
+    "item_id": "ri-027",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg / packet"
+  },
+  "lasun": {
+    "canonical": "lasun",
+    "item_id": "ri-028",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg",
+    "alternatives": []
+  },
+  "लसुन": {
+    "canonical": "lasun",
+    "item_id": "ri-028",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "garlic": {
+    "canonical": "lasun",
+    "item_id": "ri-028",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "suke lasun": {
+    "canonical": "lasun",
+    "item_id": "ri-028",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "adhuwa": {
+    "canonical": "adhuwa",
+    "item_id": "ri-029",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg",
+    "alternatives": []
+  },
+  "अदुवा": {
+    "canonical": "adhuwa",
+    "item_id": "ri-029",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "ginger": {
+    "canonical": "adhuwa",
+    "item_id": "ri-029",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "adhuwa khana": {
+    "canonical": "adhuwa",
+    "item_id": "ri-029",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "sariya": {
+    "canonical": "sariya",
+    "item_id": "ri-030",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "kg / length"
+  },
+  "सरिया": {
+    "canonical": "sariya",
+    "item_id": "ri-030",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "kg / length"
+  },
+  "rod": {
+    "canonical": "sariya",
+    "item_id": "ri-030",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "kg / length",
+    "alternatives": [
+      {
+        "canonical": "rod",
+        "item_id": "ri-032",
+        "sector": "hardware_construction",
+        "sector_slug": "hardware-construction-materials-shop"
+      }
+    ]
+  },
+  "steel rod": {
+    "canonical": "sariya",
+    "item_id": "ri-030",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "kg / length",
+    "alternatives": [
+      {
+        "canonical": "rod",
+        "item_id": "ri-032",
+        "sector": "hardware_construction",
+        "sector_slug": "hardware-construction-materials-shop"
+      }
+    ]
+  },
+  "iron rod": {
+    "canonical": "sariya",
+    "item_id": "ri-030",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "kg / length"
+  },
+  "siment": {
+    "canonical": "siment",
+    "item_id": "ri-031",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "bag (50kg)"
+  },
+  "सिमेन्ट": {
+    "canonical": "siment",
+    "item_id": "ri-031",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "bag (50kg)"
+  },
+  "cement": {
+    "canonical": "siment",
+    "item_id": "ri-031",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "bag (50kg)"
+  },
+  "opi si si": {
+    "canonical": "siment",
+    "item_id": "ri-031",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "bag (50kg)"
+  },
+  "opc cement": {
+    "canonical": "siment",
+    "item_id": "ri-031",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "bag (50kg)"
+  },
+  "ppc cement": {
+    "canonical": "siment",
+    "item_id": "ri-031",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "bag (50kg)"
+  },
+  "रड": {
+    "canonical": "rod",
+    "item_id": "ri-032",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "meter / kg"
+  },
+  "sariya rod": {
+    "canonical": "rod",
+    "item_id": "ri-032",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "meter / kg"
+  },
+  "bajri": {
+    "canonical": "bajri",
+    "item_id": "ri-033",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "tipper / cubic feet"
+  },
+  "बज्री": {
+    "canonical": "bajri",
+    "item_id": "ri-033",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "tipper / cubic feet"
+  },
+  "gravel": {
+    "canonical": "bajri",
+    "item_id": "ri-033",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "tipper / cubic feet"
+  },
+  "aggregate": {
+    "canonical": "bajri",
+    "item_id": "ri-033",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "tipper / cubic feet"
+  },
+  "gitti": {
+    "canonical": "bajri",
+    "item_id": "ri-033",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "tipper / cubic feet",
+    "alternatives": [
+      {
+        "canonical": "gitti",
+        "item_id": "ri-034",
+        "sector": "hardware_construction",
+        "sector_slug": "hardware-construction-materials-shop"
+      }
+    ]
+  },
+  "baujri": {
+    "canonical": "bajri",
+    "item_id": "ri-033",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "tipper / cubic feet"
+  },
+  "गिट्टी": {
+    "canonical": "gitti",
+    "item_id": "ri-034",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "cubic feet / truck"
+  },
+  "stone chips": {
+    "canonical": "gitti",
+    "item_id": "ri-034",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "cubic feet / truck"
+  },
+  "gitti bajri": {
+    "canonical": "gitti",
+    "item_id": "ri-034",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "cubic feet / truck"
+  },
+  "crusher gitti": {
+    "canonical": "gitti",
+    "item_id": "ri-034",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "cubic feet / truck"
+  },
+  "pipe": {
+    "canonical": "pipe",
+    "item_id": "ri-035",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "meter / piece"
+  },
+  "पाइप": {
+    "canonical": "pipe",
+    "item_id": "ri-035",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "meter / piece"
+  },
+  "pvc pipe": {
+    "canonical": "pipe",
+    "item_id": "ri-035",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "meter / piece"
+  },
+  "polythene pipe": {
+    "canonical": "pipe",
+    "item_id": "ri-035",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "meter / piece"
+  },
+  "plumbing pipe": {
+    "canonical": "pipe",
+    "item_id": "ri-035",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "meter / piece"
+  },
+  "pipeline": {
+    "canonical": "pipe",
+    "item_id": "ri-035",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "meter / piece"
+  },
+  "wire": {
+    "canonical": "wire",
+    "item_id": "ri-036",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "roll / meter"
+  },
+  "तार": {
+    "canonical": "wire",
+    "item_id": "ri-036",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "roll / meter"
+  },
+  "electric wire": {
+    "canonical": "wire",
+    "item_id": "ri-036",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "roll / meter"
+  },
+  "wiring": {
+    "canonical": "wire",
+    "item_id": "ri-036",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "roll / meter"
+  },
+  "copper wire": {
+    "canonical": "wire",
+    "item_id": "ri-036",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "roll / meter"
+  },
+  "aluminium wire": {
+    "canonical": "wire",
+    "item_id": "ri-036",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "roll / meter"
+  },
+  "paint": {
+    "canonical": "paint",
+    "item_id": "ri-037",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "litre / can"
+  },
+  "पेन्ट": {
+    "canonical": "paint",
+    "item_id": "ri-037",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "litre / can"
+  },
+  "colour": {
+    "canonical": "paint",
+    "item_id": "ri-037",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "litre / can"
+  },
+  "wall paint": {
+    "canonical": "paint",
+    "item_id": "ri-037",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "litre / can"
+  },
+  "enamel paint": {
+    "canonical": "paint",
+    "item_id": "ri-037",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "litre / can"
+  },
+  "distemper": {
+    "canonical": "paint",
+    "item_id": "ri-037",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "litre / can"
+  },
+  "lakadi": {
+    "canonical": "lakadi",
+    "item_id": "ri-038",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "cubic feet"
+  },
+  "लकडी": {
+    "canonical": "lakadi",
+    "item_id": "ri-038",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "cubic feet"
+  },
+  "wood": {
+    "canonical": "lakadi",
+    "item_id": "ri-038",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "cubic feet"
+  },
+  "timber": {
+    "canonical": "lakadi",
+    "item_id": "ri-038",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "cubic feet"
+  },
+  "kath": {
+    "canonical": "lakadi",
+    "item_id": "ri-038",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "cubic feet"
+  },
+  "sal lakadi": {
+    "canonical": "lakadi",
+    "item_id": "ri-038",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "cubic feet"
+  },
+  "bhatta": {
+    "canonical": "bhatta",
+    "item_id": "ri-039",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece"
+  },
+  "भट्टा": {
+    "canonical": "bhatta",
+    "item_id": "ri-039",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece"
+  },
+  "brick": {
+    "canonical": "bhatta",
+    "item_id": "ri-039",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece"
+  },
+  "eeta": {
+    "canonical": "bhatta",
+    "item_id": "ri-039",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece"
+  },
+  "red brick": {
+    "canonical": "bhatta",
+    "item_id": "ri-039",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece"
+  },
+  "cement brick": {
+    "canonical": "bhatta",
+    "item_id": "ri-039",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece"
+  },
+  "dhoka": {
+    "canonical": "dhoka",
+    "item_id": "ri-040",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece"
+  },
+  "ढोका": {
+    "canonical": "dhoka",
+    "item_id": "ri-040",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece"
+  },
+  "door": {
+    "canonical": "dhoka",
+    "item_id": "ri-040",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece"
+  },
+  "wooden dhoka": {
+    "canonical": "dhoka",
+    "item_id": "ri-040",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece"
+  },
+  "steel dhoka": {
+    "canonical": "dhoka",
+    "item_id": "ri-040",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece"
+  },
+  "entrance door": {
+    "canonical": "dhoka",
+    "item_id": "ri-040",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece"
+  },
+  "jhhyal": {
+    "canonical": "jhhyal",
+    "item_id": "ri-041",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece"
+  },
+  "झ्याल": {
+    "canonical": "jhhyal",
+    "item_id": "ri-041",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece"
+  },
+  "window": {
+    "canonical": "jhhyal",
+    "item_id": "ri-041",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece"
+  },
+  "aluminium jhhyal": {
+    "canonical": "jhhyal",
+    "item_id": "ri-041",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece"
+  },
+  "khidki": {
+    "canonical": "jhhyal",
+    "item_id": "ri-041",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece"
+  },
+  "sliding jhhyal": {
+    "canonical": "jhhyal",
+    "item_id": "ri-041",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece"
+  },
+  "slaab": {
+    "canonical": "slaab",
+    "item_id": "ri-042",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "square metre"
+  },
+  "स्लाब": {
+    "canonical": "slaab",
+    "item_id": "ri-042",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "square metre"
+  },
+  "slab": {
+    "canonical": "slaab",
+    "item_id": "ri-042",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "square metre"
+  },
+  "concrete slab": {
+    "canonical": "slaab",
+    "item_id": "ri-042",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "square metre"
+  },
+  "floor slab": {
+    "canonical": "slaab",
+    "item_id": "ri-042",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "square metre"
+  },
+  "sand": {
+    "canonical": "sand",
+    "item_id": "ri-043",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "tipper / cubic feet",
+    "alternatives": []
+  },
+  "बालुवा": {
+    "canonical": "sand",
+    "item_id": "ri-043",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "tipper / cubic feet"
+  },
+  "baluwa": {
+    "canonical": "sand",
+    "item_id": "ri-043",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "tipper / cubic feet"
+  },
+  "river sand": {
+    "canonical": "sand",
+    "item_id": "ri-043",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "tipper / cubic feet"
+  },
+  "crusher sand": {
+    "canonical": "sand",
+    "item_id": "ri-043",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "tipper / cubic feet"
+  },
+  "killa": {
+    "canonical": "killa",
+    "item_id": "ri-044",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "kg / packet"
+  },
+  "किल्ला": {
+    "canonical": "killa",
+    "item_id": "ri-044",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "kg / packet"
+  },
+  "nail": {
+    "canonical": "killa",
+    "item_id": "ri-044",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "kg / packet"
+  },
+  "steel nail": {
+    "canonical": "killa",
+    "item_id": "ri-044",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "kg / packet"
+  },
+  "kaathe killa": {
+    "canonical": "killa",
+    "item_id": "ri-044",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "kg / packet"
+  },
+  "dhoka ko handle": {
+    "canonical": "dhoka ko handle",
+    "item_id": "ri-045",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece"
+  },
+  "ढोकाको ह्याण्डल": {
+    "canonical": "dhoka ko handle",
+    "item_id": "ri-045",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece"
+  },
+  "door handle": {
+    "canonical": "dhoka ko handle",
+    "item_id": "ri-045",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece"
+  },
+  "handle": {
+    "canonical": "dhoka ko handle",
+    "item_id": "ri-045",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece"
+  },
+  "latch": {
+    "canonical": "dhoka ko handle",
+    "item_id": "ri-045",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece"
+  },
+  "powder": {
+    "canonical": "powder",
+    "item_id": "ri-046",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "bag (kg)"
+  },
+  "पाउडर": {
+    "canonical": "powder",
+    "item_id": "ri-046",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "bag (kg)"
+  },
+  "white cement powder": {
+    "canonical": "powder",
+    "item_id": "ri-046",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "bag (kg)"
+  },
+  "plaster powder": {
+    "canonical": "powder",
+    "item_id": "ri-046",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "bag (kg)"
+  },
+  "putty": {
+    "canonical": "powder",
+    "item_id": "ri-046",
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "bag (kg)"
+  },
+  "mobile": {
+    "canonical": "mobile",
+    "item_id": "ri-047",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "मोबाइल": {
+    "canonical": "mobile",
+    "item_id": "ri-047",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "phone": {
+    "canonical": "mobile",
+    "item_id": "ri-047",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "smartphone": {
+    "canonical": "mobile",
+    "item_id": "ri-047",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "handset": {
+    "canonical": "mobile",
+    "item_id": "ri-047",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "mobile phone": {
+    "canonical": "mobile",
+    "item_id": "ri-047",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "laptop": {
+    "canonical": "laptop",
+    "item_id": "ri-048",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "ल्यापटप": {
+    "canonical": "laptop",
+    "item_id": "ri-048",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "notebook": {
+    "canonical": "notebook",
+    "item_id": "ri-123",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "alternatives": [
+      {
+        "canonical": "laptop",
+        "item_id": "ri-048",
+        "sector": "electronics",
+        "sector_slug": "electronics-mobile-shop"
+      }
+    ]
+  },
+  "computer": {
+    "canonical": "laptop",
+    "item_id": "ri-048",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "laptap": {
+    "canonical": "laptop",
+    "item_id": "ri-048",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "tv": {
+    "canonical": "tv",
+    "item_id": "ri-049",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "टिभी": {
+    "canonical": "tv",
+    "item_id": "ri-049",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "television": {
+    "canonical": "tv",
+    "item_id": "ri-049",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "led tv": {
+    "canonical": "tv",
+    "item_id": "ri-049",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "smart tv": {
+    "canonical": "tv",
+    "item_id": "ri-049",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "tv set": {
+    "canonical": "tv",
+    "item_id": "ri-049",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "fridge": {
+    "canonical": "fridge",
+    "item_id": "ri-050",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "फ्रिज": {
+    "canonical": "fridge",
+    "item_id": "ri-050",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "refrigerator": {
+    "canonical": "fridge",
+    "item_id": "ri-050",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "fridg": {
+    "canonical": "fridge",
+    "item_id": "ri-050",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "single door fridge": {
+    "canonical": "fridge",
+    "item_id": "ri-050",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "double door fridge": {
+    "canonical": "fridge",
+    "item_id": "ri-050",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "washing machine": {
+    "canonical": "washing machine",
+    "item_id": "ri-051",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "वासिङ मेसिन": {
+    "canonical": "washing machine",
+    "item_id": "ri-051",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "semi automatic": {
+    "canonical": "washing machine",
+    "item_id": "ri-051",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "fully automatic": {
+    "canonical": "washing machine",
+    "item_id": "ri-051",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "charger": {
+    "canonical": "charger",
+    "item_id": "ri-052",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "चार्जर": {
+    "canonical": "charger",
+    "item_id": "ri-052",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "phone charger": {
+    "canonical": "charger",
+    "item_id": "ri-052",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "mobile charger": {
+    "canonical": "charger",
+    "item_id": "ri-052",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "charger cable": {
+    "canonical": "charger",
+    "item_id": "ri-052",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "cable": {
+    "canonical": "cable",
+    "item_id": "ri-053",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "केबल": {
+    "canonical": "cable",
+    "item_id": "ri-053",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "usb cable": {
+    "canonical": "cable",
+    "item_id": "ri-053",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "data cable": {
+    "canonical": "cable",
+    "item_id": "ri-053",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "hdmi cable": {
+    "canonical": "cable",
+    "item_id": "ri-053",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "charging cable": {
+    "canonical": "cable",
+    "item_id": "ri-053",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "headphone": {
+    "canonical": "headphone",
+    "item_id": "ri-054",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "हेडफोन": {
+    "canonical": "headphone",
+    "item_id": "ri-054",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "earphone": {
+    "canonical": "headphone",
+    "item_id": "ri-054",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "earbuds": {
+    "canonical": "headphone",
+    "item_id": "ri-054",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "headset": {
+    "canonical": "headphone",
+    "item_id": "ri-054",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "bluetooth headphone": {
+    "canonical": "headphone",
+    "item_id": "ri-054",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "power bank": {
+    "canonical": "power bank",
+    "item_id": "ri-055",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "पावर बैंक": {
+    "canonical": "power bank",
+    "item_id": "ri-055",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "powerbank": {
+    "canonical": "power bank",
+    "item_id": "ri-055",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "battery pack": {
+    "canonical": "power bank",
+    "item_id": "ri-055",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "usb drive": {
+    "canonical": "usb drive",
+    "item_id": "ri-056",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "usb ड्राइभ": {
+    "canonical": "usb drive",
+    "item_id": "ri-056",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "pendrive": {
+    "canonical": "usb drive",
+    "item_id": "ri-056",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "flash drive": {
+    "canonical": "usb drive",
+    "item_id": "ri-056",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "memory stick": {
+    "canonical": "usb drive",
+    "item_id": "ri-056",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "smartwatch": {
+    "canonical": "smartwatch",
+    "item_id": "ri-057",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "स्मार्टवाच": {
+    "canonical": "smartwatch",
+    "item_id": "ri-057",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "smart watch": {
+    "canonical": "smartwatch",
+    "item_id": "ri-057",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "fitness band": {
+    "canonical": "smartwatch",
+    "item_id": "ri-057",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "galaxy watch": {
+    "canonical": "smartwatch",
+    "item_id": "ri-057",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "tablet": {
+    "canonical": "tablet",
+    "item_id": "ri-058",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece",
+    "alternatives": [
+      {
+        "canonical": "tablet medicine",
+        "item_id": "ri-102",
+        "sector": "pharmacy",
+        "sector_slug": "pharmacy-clinic"
+      }
+    ]
+  },
+  "ट्याब्लेट": {
+    "canonical": "tablet medicine",
+    "item_id": "ri-102",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "strip / piece"
+  },
+  "ipad": {
+    "canonical": "tablet",
+    "item_id": "ri-058",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "android tablet": {
+    "canonical": "tablet",
+    "item_id": "ri-058",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "tablet computer": {
+    "canonical": "tablet",
+    "item_id": "ri-058",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "ac": {
+    "canonical": "ac",
+    "item_id": "ri-059",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "एसी": {
+    "canonical": "ac",
+    "item_id": "ri-059",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "air conditioner": {
+    "canonical": "ac",
+    "item_id": "ri-059",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "split ac": {
+    "canonical": "ac",
+    "item_id": "ri-059",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "inverter ac": {
+    "canonical": "ac",
+    "item_id": "ri-059",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "iron": {
+    "canonical": "iron",
+    "item_id": "ri-060",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "आइरन": {
+    "canonical": "iron",
+    "item_id": "ri-060",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "press": {
+    "canonical": "iron",
+    "item_id": "ri-060",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "electric iron": {
+    "canonical": "iron",
+    "item_id": "ri-060",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "steam iron": {
+    "canonical": "iron",
+    "item_id": "ri-060",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "mixer grinder": {
+    "canonical": "mixer grinder",
+    "item_id": "ri-061",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "मिक्सर ग्राइन्डर": {
+    "canonical": "mixer grinder",
+    "item_id": "ri-061",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "blender": {
+    "canonical": "mixer grinder",
+    "item_id": "ri-061",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "juicer mixer": {
+    "canonical": "mixer grinder",
+    "item_id": "ri-061",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "grinder": {
+    "canonical": "mixer grinder",
+    "item_id": "ri-061",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "induction cooker": {
+    "canonical": "induction cooker",
+    "item_id": "ri-062",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "इन्डक्सन कूकर": {
+    "canonical": "induction cooker",
+    "item_id": "ri-062",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "induction": {
+    "canonical": "induction cooker",
+    "item_id": "ri-062",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "electric stove": {
+    "canonical": "induction cooker",
+    "item_id": "ri-062",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "electric kettle": {
+    "canonical": "electric kettle",
+    "item_id": "ri-063",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "इलेक्ट्रिक केतली": {
+    "canonical": "electric kettle",
+    "item_id": "ri-063",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "kettle": {
+    "canonical": "electric kettle",
+    "item_id": "ri-063",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "panni taapne": {
+    "canonical": "electric kettle",
+    "item_id": "ri-063",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "hot pot": {
+    "canonical": "electric kettle",
+    "item_id": "ri-063",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "camera": {
+    "canonical": "camera",
+    "item_id": "ri-064",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "क्यामेरा": {
+    "canonical": "camera",
+    "item_id": "ri-064",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "dslr": {
+    "canonical": "camera",
+    "item_id": "ri-064",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "digital camera": {
+    "canonical": "camera",
+    "item_id": "ri-064",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "security camera": {
+    "canonical": "camera",
+    "item_id": "ri-064",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "cctv": {
+    "canonical": "camera",
+    "item_id": "ri-064",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "shirt": {
+    "canonical": "shirt",
+    "item_id": "ri-065",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "सर्ट": {
+    "canonical": "shirt",
+    "item_id": "ri-065",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "formal shirt": {
+    "canonical": "shirt",
+    "item_id": "ri-065",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "cotton shirt": {
+    "canonical": "shirt",
+    "item_id": "ri-065",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "pant": {
+    "canonical": "pant",
+    "item_id": "ri-066",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "पाइन्ट": {
+    "canonical": "pant",
+    "item_id": "ri-066",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "trousers": {
+    "canonical": "pant",
+    "item_id": "ri-066",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "jeans": {
+    "canonical": "pant",
+    "item_id": "ri-066",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "casual pant": {
+    "canonical": "pant",
+    "item_id": "ri-066",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "formal pant": {
+    "canonical": "pant",
+    "item_id": "ri-066",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "saree": {
+    "canonical": "saree",
+    "item_id": "ri-067",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "सारी": {
+    "canonical": "saree",
+    "item_id": "ri-067",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "sari": {
+    "canonical": "saree",
+    "item_id": "ri-067",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "silk saree": {
+    "canonical": "saree",
+    "item_id": "ri-067",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "cotton saree": {
+    "canonical": "saree",
+    "item_id": "ri-067",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "designer saree": {
+    "canonical": "saree",
+    "item_id": "ri-067",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "kurta": {
+    "canonical": "kurta",
+    "item_id": "ri-068",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "कुर्ता": {
+    "canonical": "kurta",
+    "item_id": "ri-068",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "kurta pajama": {
+    "canonical": "kurta",
+    "item_id": "ri-068",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "cotton kurta": {
+    "canonical": "kurta",
+    "item_id": "ri-068",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "kurta set": {
+    "canonical": "kurta",
+    "item_id": "ri-068",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "ladies kurta": {
+    "canonical": "kurta",
+    "item_id": "ri-068",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "cap": {
+    "canonical": "cap",
+    "item_id": "ri-069",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "क्याप": {
+    "canonical": "cap",
+    "item_id": "ri-069",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "topi": {
+    "canonical": "dhaka topi",
+    "item_id": "ri-076",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "hat": {
+    "canonical": "cap",
+    "item_id": "ri-069",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "sports cap": {
+    "canonical": "cap",
+    "item_id": "ri-069",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "shoes": {
+    "canonical": "shoes",
+    "item_id": "ri-070",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "pair",
+    "alternatives": []
+  },
+  "जुत्ता": {
+    "canonical": "shoes",
+    "item_id": "ri-070",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "pair"
+  },
+  "jutta": {
+    "canonical": "shoes",
+    "item_id": "ri-070",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "pair"
+  },
+  "formal shoes": {
+    "canonical": "shoes",
+    "item_id": "ri-070",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "pair"
+  },
+  "sports shoes": {
+    "canonical": "shoes",
+    "item_id": "ri-070",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "pair"
+  },
+  "slippers": {
+    "canonical": "slippers",
+    "item_id": "ri-071",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "pair",
+    "alternatives": [
+      {
+        "canonical": "sandal",
+        "item_id": "ri-145",
+        "sector": "clothing_apparel",
+        "sector_slug": "clothing-apparel"
+      }
+    ]
+  },
+  "चप्पल": {
+    "canonical": "slippers",
+    "item_id": "ri-071",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "pair"
+  },
+  "chappal": {
+    "canonical": "slippers",
+    "item_id": "ri-071",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "pair"
+  },
+  "hawai chappal": {
+    "canonical": "slippers",
+    "item_id": "ri-071",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "pair"
+  },
+  "kath ko chappal": {
+    "canonical": "slippers",
+    "item_id": "ri-071",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "pair"
+  },
+  "jacket": {
+    "canonical": "jacket",
+    "item_id": "ri-072",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "ज्याकेट": {
+    "canonical": "jacket",
+    "item_id": "ri-072",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "coat": {
+    "canonical": "jacket",
+    "item_id": "ri-072",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "leather jacket": {
+    "canonical": "jacket",
+    "item_id": "ri-072",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "hoodie jacket": {
+    "canonical": "jacket",
+    "item_id": "ri-072",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "shal": {
+    "canonical": "shal",
+    "item_id": "ri-073",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "शल": {
+    "canonical": "shal",
+    "item_id": "ri-073",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "shawl": {
+    "canonical": "shal",
+    "item_id": "ri-073",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "wrap": {
+    "canonical": "shal",
+    "item_id": "ri-073",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "pashmina shal": {
+    "canonical": "shal",
+    "item_id": "ri-073",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "muffler": {
+    "canonical": "muffler",
+    "item_id": "ri-074",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "मफ्लर": {
+    "canonical": "muffler",
+    "item_id": "ri-074",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "winter scarf": {
+    "canonical": "muffler",
+    "item_id": "ri-074",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "muffler topi": {
+    "canonical": "muffler",
+    "item_id": "ri-074",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "daura suruwal": {
+    "canonical": "daura suruwal",
+    "item_id": "ri-075",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "set",
+    "alternatives": []
+  },
+  "दौरा सुरुवाल": {
+    "canonical": "daura suruwal",
+    "item_id": "ri-075",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "set"
+  },
+  "nepali topi suruwal": {
+    "canonical": "daura suruwal",
+    "item_id": "ri-075",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "set"
+  },
+  "dhaka topi": {
+    "canonical": "dhaka topi",
+    "item_id": "ri-076",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "ढाका टोपी": {
+    "canonical": "dhaka topi",
+    "item_id": "ri-076",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "nepali cap": {
+    "canonical": "dhaka topi",
+    "item_id": "ri-076",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "fariya": {
+    "canonical": "fariya",
+    "item_id": "ri-077",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "फरिया": {
+    "canonical": "fariya",
+    "item_id": "ri-077",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "cotton fariya": {
+    "canonical": "fariya",
+    "item_id": "ri-077",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "semi sariya": {
+    "canonical": "fariya",
+    "item_id": "ri-077",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "sweater": {
+    "canonical": "sweater",
+    "item_id": "ri-078",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "स्विटर": {
+    "canonical": "sweater",
+    "item_id": "ri-078",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "woolen sweater": {
+    "canonical": "sweater",
+    "item_id": "ri-078",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "switer": {
+    "canonical": "sweater",
+    "item_id": "ri-078",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "lehnga": {
+    "canonical": "lehnga",
+    "item_id": "ri-079",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "लेहङ्गा": {
+    "canonical": "lehnga",
+    "item_id": "ri-079",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "lehenga": {
+    "canonical": "lehnga",
+    "item_id": "ri-079",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "party lehnga": {
+    "canonical": "lehnga",
+    "item_id": "ri-079",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "bridal lehnga": {
+    "canonical": "lehnga",
+    "item_id": "ri-079",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "shorts": {
+    "canonical": "shorts",
+    "item_id": "ri-080",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "सर्ट्स": {
+    "canonical": "shorts",
+    "item_id": "ri-080",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "half pant": {
+    "canonical": "shorts",
+    "item_id": "ri-080",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "short pant": {
+    "canonical": "shorts",
+    "item_id": "ri-080",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "casual shorts": {
+    "canonical": "shorts",
+    "item_id": "ri-080",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "momo": {
+    "canonical": "momo",
+    "item_id": "ri-081",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate",
+    "alternatives": []
+  },
+  "मःम": {
+    "canonical": "momo",
+    "item_id": "ri-081",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "dumplings": {
+    "canonical": "momo",
+    "item_id": "ri-081",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "chicken momo": {
+    "canonical": "momo",
+    "item_id": "ri-081",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "buff momo": {
+    "canonical": "momo",
+    "item_id": "ri-081",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "veg momo": {
+    "canonical": "momo",
+    "item_id": "ri-081",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "chowmein": {
+    "canonical": "chowmein",
+    "item_id": "ri-082",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate",
+    "alternatives": []
+  },
+  "चाउमिन": {
+    "canonical": "chowmein",
+    "item_id": "ri-082",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "fried noodles": {
+    "canonical": "chowmein",
+    "item_id": "ri-082",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "noodle": {
+    "canonical": "chowmein",
+    "item_id": "ri-082",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "chicken chowmein": {
+    "canonical": "chowmein",
+    "item_id": "ri-082",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "dal bhat": {
+    "canonical": "dal bhat",
+    "item_id": "ri-083",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "set",
+    "alternatives": []
+  },
+  "दाल भात": {
+    "canonical": "dal bhat",
+    "item_id": "ri-083",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "set"
+  },
+  "dal bhat tarkari": {
+    "canonical": "dal bhat",
+    "item_id": "ri-083",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "set"
+  },
+  "thali": {
+    "canonical": "dal bhat",
+    "item_id": "ri-083",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "set"
+  },
+  "doodh chiya": {
+    "canonical": "tea",
+    "item_id": "ri-084",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "cup"
+  },
+  "black tea": {
+    "canonical": "tea",
+    "item_id": "ri-084",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "cup"
+  },
+  "coffee": {
+    "canonical": "coffee",
+    "item_id": "ri-085",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "cup",
+    "alternatives": []
+  },
+  "कफी": {
+    "canonical": "coffee",
+    "item_id": "ri-085",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "cup"
+  },
+  "hot coffee": {
+    "canonical": "coffee",
+    "item_id": "ri-085",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "cup"
+  },
+  "cold coffee": {
+    "canonical": "coffee",
+    "item_id": "ri-085",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "cup"
+  },
+  "cappuccino": {
+    "canonical": "coffee",
+    "item_id": "ri-085",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "cup"
+  },
+  "coke": {
+    "canonical": "cold drinks",
+    "item_id": "ri-086",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "bottle"
+  },
+  "sel roti": {
+    "canonical": "sel roti",
+    "item_id": "ri-087",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "सेल रोटी": {
+    "canonical": "sel roti",
+    "item_id": "ri-087",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "piece"
+  },
+  "ring bread": {
+    "canonical": "sel roti",
+    "item_id": "ri-087",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "piece"
+  },
+  "nepali sel": {
+    "canonical": "sel roti",
+    "item_id": "ri-087",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "piece"
+  },
+  "gundruk": {
+    "canonical": "gundruk",
+    "item_id": "ri-088",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate",
+    "alternatives": []
+  },
+  "गुन्द्रुक": {
+    "canonical": "gundruk",
+    "item_id": "ri-088",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "fermented greens": {
+    "canonical": "gundruk",
+    "item_id": "ri-088",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "gundruk soup": {
+    "canonical": "gundruk",
+    "item_id": "ri-088",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "yomari": {
+    "canonical": "yomari",
+    "item_id": "ri-089",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "योमरी": {
+    "canonical": "yomari",
+    "item_id": "ri-089",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "piece"
+  },
+  "newari sweet": {
+    "canonical": "yomari",
+    "item_id": "ri-089",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "piece"
+  },
+  "chaku yomari": {
+    "canonical": "yomari",
+    "item_id": "ri-089",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "piece"
+  },
+  "chana chat": {
+    "canonical": "chana chat",
+    "item_id": "ri-090",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate",
+    "alternatives": []
+  },
+  "चना चट": {
+    "canonical": "chana chat",
+    "item_id": "ri-090",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "chana masala": {
+    "canonical": "chana chat",
+    "item_id": "ri-090",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "spicy chana": {
+    "canonical": "chana chat",
+    "item_id": "ri-090",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "pani puri": {
+    "canonical": "pani puri",
+    "item_id": "ri-091",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate",
+    "alternatives": []
+  },
+  "पानी पुरी": {
+    "canonical": "pani puri",
+    "item_id": "ri-091",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "golgappa": {
+    "canonical": "pani puri",
+    "item_id": "ri-091",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "puchka": {
+    "canonical": "pani puri",
+    "item_id": "ri-091",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "biryani": {
+    "canonical": "biryani",
+    "item_id": "ri-092",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate",
+    "alternatives": []
+  },
+  "बिर्यानी": {
+    "canonical": "biryani",
+    "item_id": "ri-092",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "chicken biryani": {
+    "canonical": "biryani",
+    "item_id": "ri-092",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "biryani rice": {
+    "canonical": "biryani",
+    "item_id": "ri-092",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "puri tarkari": {
+    "canonical": "puri tarkari",
+    "item_id": "ri-093",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate",
+    "alternatives": []
+  },
+  "पुरी तरकारी": {
+    "canonical": "puri tarkari",
+    "item_id": "ri-093",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "puri aloo": {
+    "canonical": "puri tarkari",
+    "item_id": "ri-093",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "puri bhaji": {
+    "canonical": "puri tarkari",
+    "item_id": "ri-093",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "thakali khana": {
+    "canonical": "thakali khana",
+    "item_id": "ri-094",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "set"
+  },
+  "थकाली खाना": {
+    "canonical": "thakali khana",
+    "item_id": "ri-094",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "set"
+  },
+  "thakali set": {
+    "canonical": "thakali khana",
+    "item_id": "ri-094",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "set"
+  },
+  "thakali bhat": {
+    "canonical": "thakali khana",
+    "item_id": "ri-094",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "set"
+  },
+  "dal bhat set thakali": {
+    "canonical": "thakali khana",
+    "item_id": "ri-094",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "set"
+  },
+  "chicken roast": {
+    "canonical": "chicken roast",
+    "item_id": "ri-095",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "piece / plate"
+  },
+  "चिकेन रोस्ट": {
+    "canonical": "chicken roast",
+    "item_id": "ri-095",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "piece / plate"
+  },
+  "roast chicken": {
+    "canonical": "chicken roast",
+    "item_id": "ri-095",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "piece / plate"
+  },
+  "tandoori chicken": {
+    "canonical": "chicken roast",
+    "item_id": "ri-095",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "piece / plate"
+  },
+  "jalebi": {
+    "canonical": "jalebi",
+    "item_id": "ri-096",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate",
+    "alternatives": []
+  },
+  "जिलेबी": {
+    "canonical": "jalebi",
+    "item_id": "ri-096",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "sweet jalebi": {
+    "canonical": "jalebi",
+    "item_id": "ri-096",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "jalebi swari": {
+    "canonical": "jalebi",
+    "item_id": "ri-096",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "samosa": {
+    "canonical": "samosa",
+    "item_id": "ri-097",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "समोसा": {
+    "canonical": "samosa",
+    "item_id": "ri-097",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "piece"
+  },
+  "samosa chana": {
+    "canonical": "samosa",
+    "item_id": "ri-097",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "piece"
+  },
+  "aloo samosa": {
+    "canonical": "samosa",
+    "item_id": "ri-097",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "piece"
+  },
+  "bhatmas sadeko": {
+    "canonical": "bhatmas sadeko",
+    "item_id": "ri-098",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "भटमास साँदेको": {
+    "canonical": "bhatmas sadeko",
+    "item_id": "ri-098",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "bhatmas": {
+    "canonical": "bhatmas sadeko",
+    "item_id": "ri-098",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "soybean sadeko": {
+    "canonical": "bhatmas sadeko",
+    "item_id": "ri-098",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "sadeko bhatmas": {
+    "canonical": "bhatmas sadeko",
+    "item_id": "ri-098",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "chicken curry": {
+    "canonical": "chicken curry",
+    "item_id": "ri-099",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate",
+    "alternatives": []
+  },
+  "चिकेन करी": {
+    "canonical": "chicken curry",
+    "item_id": "ri-099",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "chicken tarkari": {
+    "canonical": "chicken curry",
+    "item_id": "ri-099",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "kukhura ko masu": {
+    "canonical": "chicken curry",
+    "item_id": "ri-099",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate"
+  },
+  "mango lassi": {
+    "canonical": "mango lassi",
+    "item_id": "ri-100",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "glass",
+    "alternatives": []
+  },
+  "आँप लस्सी": {
+    "canonical": "mango lassi",
+    "item_id": "ri-100",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "glass"
+  },
+  "lassi": {
+    "canonical": "mango lassi",
+    "item_id": "ri-100",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "glass"
+  },
+  "aam ko lassi": {
+    "canonical": "mango lassi",
+    "item_id": "ri-100",
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "glass"
+  },
+  "ausadhi": {
+    "canonical": "ausadhi",
+    "item_id": "ri-101",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece / strip"
+  },
+  "औषधी": {
+    "canonical": "ausadhi",
+    "item_id": "ri-101",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece / strip"
+  },
+  "medicine": {
+    "canonical": "ausadhi",
+    "item_id": "ri-101",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece / strip"
+  },
+  "dawai": {
+    "canonical": "ausadhi",
+    "item_id": "ri-101",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece / strip"
+  },
+  "ausadhi pasal": {
+    "canonical": "ausadhi",
+    "item_id": "ri-101",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece / strip"
+  },
+  "tablet medicine": {
+    "canonical": "tablet medicine",
+    "item_id": "ri-102",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "strip / piece",
+    "alternatives": []
+  },
+  "goli": {
+    "canonical": "tablet medicine",
+    "item_id": "ri-102",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "strip / piece"
+  },
+  "medicine tablet": {
+    "canonical": "tablet medicine",
+    "item_id": "ri-102",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "strip / piece"
+  },
+  "syrup": {
+    "canonical": "syrup",
+    "item_id": "ri-103",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "bottle",
+    "alternatives": []
+  },
+  "सिरप": {
+    "canonical": "syrup",
+    "item_id": "ri-103",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "bottle"
+  },
+  "ausadhi syrup": {
+    "canonical": "syrup",
+    "item_id": "ri-103",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "bottle"
+  },
+  "cough syrup": {
+    "canonical": "syrup",
+    "item_id": "ri-103",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "bottle"
+  },
+  "paracetamol": {
+    "canonical": "paracetamol",
+    "item_id": "ri-104",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "tablet / strip",
+    "alternatives": []
+  },
+  "पारासिटामोल": {
+    "canonical": "paracetamol",
+    "item_id": "ri-104",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "tablet / strip"
+  },
+  "cetamol": {
+    "canonical": "paracetamol",
+    "item_id": "ri-104",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "tablet / strip"
+  },
+  "flexon": {
+    "canonical": "paracetamol",
+    "item_id": "ri-104",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "tablet / strip"
+  },
+  "bandage": {
+    "canonical": "bandage",
+    "item_id": "ri-105",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "roll",
+    "alternatives": []
+  },
+  "पट्टी": {
+    "canonical": "bandage",
+    "item_id": "ri-105",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "roll"
+  },
+  "patti": {
+    "canonical": "bandage",
+    "item_id": "ri-105",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "roll"
+  },
+  "elastic bandage": {
+    "canonical": "bandage",
+    "item_id": "ri-105",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "roll"
+  },
+  "antacid": {
+    "canonical": "antacid",
+    "item_id": "ri-106",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "bottle / strip",
+    "alternatives": []
+  },
+  "एन्ट्यासिड": {
+    "canonical": "antacid",
+    "item_id": "ri-106",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "bottle / strip"
+  },
+  "gastric": {
+    "canonical": "antacid",
+    "item_id": "ri-106",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "bottle / strip"
+  },
+  "digene": {
+    "canonical": "antacid",
+    "item_id": "ri-106",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "bottle / strip"
+  },
+  "muci gel": {
+    "canonical": "antacid",
+    "item_id": "ri-106",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "bottle / strip"
+  },
+  "antibiotic": {
+    "canonical": "antibiotic",
+    "item_id": "ri-107",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "strip",
+    "alternatives": []
+  },
+  "एन्टिबायोटिक": {
+    "canonical": "antibiotic",
+    "item_id": "ri-107",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "strip"
+  },
+  "azithromycin": {
+    "canonical": "antibiotic",
+    "item_id": "ri-107",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "strip"
+  },
+  "amoxicillin": {
+    "canonical": "antibiotic",
+    "item_id": "ri-107",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "strip"
+  },
+  "painkiller": {
+    "canonical": "painkiller",
+    "item_id": "ri-108",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "tablet / strip",
+    "alternatives": []
+  },
+  "पेनकिलर": {
+    "canonical": "painkiller",
+    "item_id": "ri-108",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "tablet / strip"
+  },
+  "brufen": {
+    "canonical": "painkiller",
+    "item_id": "ri-108",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "tablet / strip"
+  },
+  "ibuprofen": {
+    "canonical": "painkiller",
+    "item_id": "ri-108",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "tablet / strip"
+  },
+  "diclofenac": {
+    "canonical": "painkiller",
+    "item_id": "ri-108",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "tablet / strip"
+  },
+  "multivitamin": {
+    "canonical": "multivitamin",
+    "item_id": "ri-109",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "strip / bottle",
+    "alternatives": []
+  },
+  "मल्टिभिटामिन": {
+    "canonical": "multivitamin",
+    "item_id": "ri-109",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "strip / bottle"
+  },
+  "vitamin tablet": {
+    "canonical": "multivitamin",
+    "item_id": "ri-109",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "strip / bottle"
+  },
+  "becosules": {
+    "canonical": "multivitamin",
+    "item_id": "ri-109",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "strip / bottle"
+  },
+  "cetirizine": {
+    "canonical": "cetirizine",
+    "item_id": "ri-110",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "tablet / strip",
+    "alternatives": []
+  },
+  "सेटिरिजिन": {
+    "canonical": "cetirizine",
+    "item_id": "ri-110",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "tablet / strip"
+  },
+  "allergy tablet": {
+    "canonical": "cetirizine",
+    "item_id": "ri-110",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "tablet / strip"
+  },
+  "citrizin": {
+    "canonical": "cetirizine",
+    "item_id": "ri-110",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "tablet / strip"
+  },
+  "band-aid": {
+    "canonical": "band-aid",
+    "item_id": "ri-111",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "ब्यान्डएड": {
+    "canonical": "band-aid",
+    "item_id": "ri-111",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece"
+  },
+  "sticking plaster": {
+    "canonical": "band-aid",
+    "item_id": "ri-111",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece"
+  },
+  "adhesive bandage": {
+    "canonical": "band-aid",
+    "item_id": "ri-111",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece"
+  },
+  "thermometer": {
+    "canonical": "thermometer",
+    "item_id": "ri-112",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "थर्मोमिटर": {
+    "canonical": "thermometer",
+    "item_id": "ri-112",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece"
+  },
+  "digital thermometer": {
+    "canonical": "thermometer",
+    "item_id": "ri-112",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece"
+  },
+  "jwar nappne": {
+    "canonical": "thermometer",
+    "item_id": "ri-112",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece"
+  },
+  "sanitary pad": {
+    "canonical": "sanitary pad",
+    "item_id": "ri-113",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "packet",
+    "alternatives": []
+  },
+  "स्यानिटरी प्याड": {
+    "canonical": "sanitary pad",
+    "item_id": "ri-113",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "packet"
+  },
+  "pad": {
+    "canonical": "sanitary pad",
+    "item_id": "ri-113",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "packet"
+  },
+  "stayfree": {
+    "canonical": "sanitary pad",
+    "item_id": "ri-113",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "packet"
+  },
+  "whisper": {
+    "canonical": "sanitary pad",
+    "item_id": "ri-113",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "packet"
+  },
+  "condom": {
+    "canonical": "condom",
+    "item_id": "ri-114",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "packet (3s)",
+    "alternatives": []
+  },
+  "कन्डम": {
+    "canonical": "condom",
+    "item_id": "ri-114",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "packet (3s)"
+  },
+  "nippon": {
+    "canonical": "condom",
+    "item_id": "ri-114",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "packet (3s)"
+  },
+  "durex": {
+    "canonical": "condom",
+    "item_id": "ri-114",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "packet (3s)"
+  },
+  "protective": {
+    "canonical": "condom",
+    "item_id": "ri-114",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "packet (3s)"
+  },
+  "inhaler": {
+    "canonical": "inhaler",
+    "item_id": "ri-115",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "इन्हेलर": {
+    "canonical": "inhaler",
+    "item_id": "ri-115",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece"
+  },
+  "asthma pump": {
+    "canonical": "inhaler",
+    "item_id": "ri-115",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece"
+  },
+  "ventolin": {
+    "canonical": "inhaler",
+    "item_id": "ri-115",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece"
+  },
+  "eye drops": {
+    "canonical": "eye drops",
+    "item_id": "ri-116",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "bottle",
+    "alternatives": []
+  },
+  "आइ ड्रप्स": {
+    "canonical": "eye drops",
+    "item_id": "ri-116",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "bottle"
+  },
+  "aankha ko ausadhi": {
+    "canonical": "eye drops",
+    "item_id": "ri-116",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "bottle"
+  },
+  "red eye drops": {
+    "canonical": "eye drops",
+    "item_id": "ri-116",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "bottle"
+  },
+  "first aid kit": {
+    "canonical": "first aid kit",
+    "item_id": "ri-117",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "box",
+    "alternatives": []
+  },
+  "फर्स्ट एड किट": {
+    "canonical": "first aid kit",
+    "item_id": "ri-117",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "box"
+  },
+  "first aid box": {
+    "canonical": "first aid kit",
+    "item_id": "ri-117",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "box"
+  },
+  "copy": {
+    "canonical": "copy",
+    "item_id": "ri-118",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "कपी": {
+    "canonical": "copy",
+    "item_id": "ri-118",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "exercise copy": {
+    "canonical": "copy",
+    "item_id": "ri-118",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "kapi": {
+    "canonical": "copy",
+    "item_id": "ri-118",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "kitab": {
+    "canonical": "kitab",
+    "item_id": "ri-119",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "किताब": {
+    "canonical": "kitab",
+    "item_id": "ri-119",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "book": {
+    "canonical": "kitab",
+    "item_id": "ri-119",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "textbook": {
+    "canonical": "kitab",
+    "item_id": "ri-119",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "nepali kitab": {
+    "canonical": "kitab",
+    "item_id": "ri-119",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "reference kitab": {
+    "canonical": "kitab",
+    "item_id": "ri-119",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "pen": {
+    "canonical": "pen",
+    "item_id": "ri-120",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "पेन": {
+    "canonical": "pen",
+    "item_id": "ri-120",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "ball pen": {
+    "canonical": "pen",
+    "item_id": "ri-120",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "dot pen": {
+    "canonical": "pen",
+    "item_id": "ri-120",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "ink pen": {
+    "canonical": "pen",
+    "item_id": "ri-120",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "gel pen": {
+    "canonical": "pen",
+    "item_id": "ri-120",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "pencil": {
+    "canonical": "pencil",
+    "item_id": "ri-121",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "पेन्सिल": {
+    "canonical": "pencil",
+    "item_id": "ri-121",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "lead pencil": {
+    "canonical": "pencil",
+    "item_id": "ri-121",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "colour pencil": {
+    "canonical": "pencil",
+    "item_id": "ri-121",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "eraser": {
+    "canonical": "eraser",
+    "item_id": "ri-122",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "इरेजर": {
+    "canonical": "eraser",
+    "item_id": "ri-122",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "rubber": {
+    "canonical": "eraser",
+    "item_id": "ri-122",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "metne": {
+    "canonical": "eraser",
+    "item_id": "ri-122",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "pencil eraser": {
+    "canonical": "eraser",
+    "item_id": "ri-122",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "नोटबुक": {
+    "canonical": "notebook",
+    "item_id": "ri-123",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "diary": {
+    "canonical": "notebook",
+    "item_id": "ri-123",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "register": {
+    "canonical": "notebook",
+    "item_id": "ri-123",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "sharpener": {
+    "canonical": "sharpener",
+    "item_id": "ri-124",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "स्यार्पनर": {
+    "canonical": "sharpener",
+    "item_id": "ri-124",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "pencil sharpener": {
+    "canonical": "sharpener",
+    "item_id": "ri-124",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "scale": {
+    "canonical": "scale",
+    "item_id": "ri-125",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "स्केल": {
+    "canonical": "scale",
+    "item_id": "ri-125",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "ruler": {
+    "canonical": "scale",
+    "item_id": "ri-125",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "measuring scale": {
+    "canonical": "scale",
+    "item_id": "ri-125",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "geometry box": {
+    "canonical": "geometry box",
+    "item_id": "ri-126",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "box"
+  },
+  "जियोमेट्री बक्स": {
+    "canonical": "geometry box",
+    "item_id": "ri-126",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "box"
+  },
+  "geometry set": {
+    "canonical": "geometry box",
+    "item_id": "ri-126",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "box"
+  },
+  "math set": {
+    "canonical": "geometry box",
+    "item_id": "ri-126",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "box"
+  },
+  "compass box": {
+    "canonical": "geometry box",
+    "item_id": "ri-126",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "box"
+  },
+  "glue stick": {
+    "canonical": "glue stick",
+    "item_id": "ri-127",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "ग्लु स्टिक": {
+    "canonical": "glue stick",
+    "item_id": "ri-127",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "paper glue": {
+    "canonical": "glue stick",
+    "item_id": "ri-127",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "fevicol stick": {
+    "canonical": "glue stick",
+    "item_id": "ri-127",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "stapler": {
+    "canonical": "stapler",
+    "item_id": "ri-128",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "स्ट्यापलर": {
+    "canonical": "stapler",
+    "item_id": "ri-128",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "staple machine": {
+    "canonical": "stapler",
+    "item_id": "ri-128",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "paper stapler": {
+    "canonical": "stapler",
+    "item_id": "ri-128",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "punch machine": {
+    "canonical": "punch machine",
+    "item_id": "ri-129",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "पन्च मेसिन": {
+    "canonical": "punch machine",
+    "item_id": "ri-129",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "punch": {
+    "canonical": "punch machine",
+    "item_id": "ri-129",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "paper punch": {
+    "canonical": "punch machine",
+    "item_id": "ri-129",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "file": {
+    "canonical": "file",
+    "item_id": "ri-130",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "फाइल": {
+    "canonical": "file",
+    "item_id": "ri-130",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "file folder": {
+    "canonical": "file",
+    "item_id": "ri-130",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "office file": {
+    "canonical": "file",
+    "item_id": "ri-130",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "paper file": {
+    "canonical": "file",
+    "item_id": "ri-130",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "highlighter": {
+    "canonical": "highlighter",
+    "item_id": "ri-131",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "हाइलाइटर": {
+    "canonical": "highlighter",
+    "item_id": "ri-131",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "marker pen": {
+    "canonical": "highlighter",
+    "item_id": "ri-131",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "alternatives": [
+      {
+        "canonical": "marker",
+        "item_id": "ri-134",
+        "sector": "stationery",
+        "sector_slug": "stationery-bookstore"
+      }
+    ]
+  },
+  "sticky notes": {
+    "canonical": "sticky notes",
+    "item_id": "ri-132",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "pad",
+    "alternatives": []
+  },
+  "स्टिकी नोट्स": {
+    "canonical": "sticky notes",
+    "item_id": "ri-132",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "pad"
+  },
+  "post-it": {
+    "canonical": "sticky notes",
+    "item_id": "ri-132",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "pad"
+  },
+  "notes pad": {
+    "canonical": "sticky notes",
+    "item_id": "ri-132",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "pad"
+  },
+  "white board": {
+    "canonical": "white board",
+    "item_id": "ri-133",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "ह्वाइट बोर्ड": {
+    "canonical": "white board",
+    "item_id": "ri-133",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "writing board": {
+    "canonical": "white board",
+    "item_id": "ri-133",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "board marker": {
+    "canonical": "white board",
+    "item_id": "ri-133",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "alternatives": [
+      {
+        "canonical": "marker",
+        "item_id": "ri-134",
+        "sector": "stationery",
+        "sector_slug": "stationery-bookstore"
+      }
+    ]
+  },
+  "marker": {
+    "canonical": "marker",
+    "item_id": "ri-134",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "मार्कर": {
+    "canonical": "marker",
+    "item_id": "ri-134",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "permanent marker": {
+    "canonical": "marker",
+    "item_id": "ri-134",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "envelope": {
+    "canonical": "envelope",
+    "item_id": "ri-135",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "खाम": {
+    "canonical": "envelope",
+    "item_id": "ri-135",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "kham": {
+    "canonical": "envelope",
+    "item_id": "ri-135",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "paper envelope": {
+    "canonical": "envelope",
+    "item_id": "ri-135",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece"
+  },
+  "broom": {
+    "canonical": "broom",
+    "item_id": "ri-136",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "कुचो": {
+    "canonical": "broom",
+    "item_id": "ri-136",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece"
+  },
+  "kucho": {
+    "canonical": "broom",
+    "item_id": "ri-136",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece"
+  },
+  "jhadu": {
+    "canonical": "broom",
+    "item_id": "ri-136",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece"
+  },
+  "phool kucho": {
+    "canonical": "broom",
+    "item_id": "ri-136",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece"
+  },
+  "harpi": {
+    "canonical": "harpi",
+    "item_id": "ri-137",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "bottle"
+  },
+  "हार्पी": {
+    "canonical": "harpi",
+    "item_id": "ri-137",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "bottle"
+  },
+  "floor cleaner": {
+    "canonical": "harpi",
+    "item_id": "ri-137",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "bottle"
+  },
+  "phenyl": {
+    "canonical": "harpi",
+    "item_id": "ri-137",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "bottle"
+  },
+  "floor liquid": {
+    "canonical": "harpi",
+    "item_id": "ri-137",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "bottle"
+  },
+  "harpic": {
+    "canonical": "harpi",
+    "item_id": "ri-137",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "bottle"
+  },
+  "bucket": {
+    "canonical": "bucket",
+    "item_id": "ri-138",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "बाल्टी": {
+    "canonical": "bucket",
+    "item_id": "ri-138",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece"
+  },
+  "balti": {
+    "canonical": "bucket",
+    "item_id": "ri-138",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece"
+  },
+  "plastic bucket": {
+    "canonical": "bucket",
+    "item_id": "ri-138",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece"
+  },
+  "steel bucket": {
+    "canonical": "bucket",
+    "item_id": "ri-138",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece"
+  },
+  "mop": {
+    "canonical": "mop",
+    "item_id": "ri-139",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "मप": {
+    "canonical": "mop",
+    "item_id": "ri-139",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece"
+  },
+  "pocha": {
+    "canonical": "mop",
+    "item_id": "ri-139",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece"
+  },
+  "floor mop": {
+    "canonical": "mop",
+    "item_id": "ri-139",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece"
+  },
+  "dustbin": {
+    "canonical": "dustbin",
+    "item_id": "ri-140",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "डस्टबिन": {
+    "canonical": "dustbin",
+    "item_id": "ri-140",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece"
+  },
+  "fohor tokari": {
+    "canonical": "dustbin",
+    "item_id": "ri-140",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece"
+  },
+  "waste bin": {
+    "canonical": "dustbin",
+    "item_id": "ri-140",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece"
+  },
+  "polish": {
+    "canonical": "polish",
+    "item_id": "ri-141",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "bottle / can",
+    "alternatives": []
+  },
+  "पोलिस": {
+    "canonical": "polish",
+    "item_id": "ri-141",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "bottle / can"
+  },
+  "shoe polish": {
+    "canonical": "polish",
+    "item_id": "ri-141",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "bottle / can"
+  },
+  "wax polish": {
+    "canonical": "polish",
+    "item_id": "ri-141",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "bottle / can"
+  },
+  "jhola": {
+    "canonical": "jhola",
+    "item_id": "ri-142",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "झोला": {
+    "canonical": "jhola",
+    "item_id": "ri-142",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "bag": {
+    "canonical": "jhola",
+    "item_id": "ri-142",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "school jhola": {
+    "canonical": "jhola",
+    "item_id": "ri-142",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "backpack": {
+    "canonical": "jhola",
+    "item_id": "ri-142",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "travel jhola": {
+    "canonical": "jhola",
+    "item_id": "ri-142",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "ghadi": {
+    "canonical": "ghadi",
+    "item_id": "ri-143",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "घडी": {
+    "canonical": "ghadi",
+    "item_id": "ri-143",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "watch": {
+    "canonical": "ghadi",
+    "item_id": "ri-143",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "wrist ghadi": {
+    "canonical": "ghadi",
+    "item_id": "ri-143",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "digital ghadi": {
+    "canonical": "ghadi",
+    "item_id": "ri-143",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "mask": {
+    "canonical": "mask",
+    "item_id": "ri-144",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece / packet",
+    "alternatives": []
+  },
+  "मास्क": {
+    "canonical": "mask",
+    "item_id": "ri-144",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece / packet"
+  },
+  "face mask": {
+    "canonical": "mask",
+    "item_id": "ri-144",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece / packet"
+  },
+  "surgical mask": {
+    "canonical": "mask",
+    "item_id": "ri-144",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece / packet"
+  },
+  "cloth mask": {
+    "canonical": "mask",
+    "item_id": "ri-144",
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece / packet"
+  },
+  "sandal": {
+    "canonical": "sandal",
+    "item_id": "ri-145",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "pair"
+  },
+  "स्यान्डल": {
+    "canonical": "sandal",
+    "item_id": "ri-145",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "pair"
+  },
+  "sandals": {
+    "canonical": "sandal",
+    "item_id": "ri-145",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "pair"
+  },
+  "open shoes": {
+    "canonical": "sandal",
+    "item_id": "ri-145",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "pair"
+  },
+  "hair oil": {
+    "canonical": "hair oil",
+    "item_id": "ri-146",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "bottle",
+    "alternatives": []
+  },
+  "कपालको तेल": {
+    "canonical": "hair oil",
+    "item_id": "ri-146",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "bottle"
+  },
+  "coconut oil": {
+    "canonical": "hair oil",
+    "item_id": "ri-146",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "bottle"
+  },
+  "badam tel": {
+    "canonical": "hair oil",
+    "item_id": "ri-146",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "bottle"
+  },
+  "washing powder": {
+    "canonical": "washing powder",
+    "item_id": "ri-147",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet"
+  },
+  "वासिङ पाउडर": {
+    "canonical": "washing powder",
+    "item_id": "ri-147",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet"
+  },
+  "detergent": {
+    "canonical": "washing powder",
+    "item_id": "ri-147",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet"
+  },
+  "surf": {
+    "canonical": "washing powder",
+    "item_id": "ri-147",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet"
+  },
+  "nirma": {
+    "canonical": "washing powder",
+    "item_id": "ri-147",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet"
+  },
+  "tide": {
+    "canonical": "washing powder",
+    "item_id": "ri-147",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet"
+  },
+  "mosquito coil": {
+    "canonical": "mosquito coil",
+    "item_id": "ri-148",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece / box",
+    "alternatives": []
+  },
+  "मस्किटो कोइल": {
+    "canonical": "mosquito coil",
+    "item_id": "ri-148",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece / box"
+  },
+  "machhad ko coil": {
+    "canonical": "mosquito coil",
+    "item_id": "ri-148",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece / box"
+  },
+  "all out": {
+    "canonical": "mosquito coil",
+    "item_id": "ri-148",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece / box"
+  },
+  "matchbox": {
+    "canonical": "matchbox",
+    "item_id": "ri-149",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece / packet"
+  },
+  "माचिस": {
+    "canonical": "matchbox",
+    "item_id": "ri-149",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece / packet"
+  },
+  "matches": {
+    "canonical": "matchbox",
+    "item_id": "ri-149",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece / packet"
+  },
+  "lighter": {
+    "canonical": "matchbox",
+    "item_id": "ri-149",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece / packet"
+  },
+  "gas lighter": {
+    "canonical": "matchbox",
+    "item_id": "ri-149",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece / packet"
+  },
+  "candle": {
+    "canonical": "candle",
+    "item_id": "ri-150",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "क्यान्डल": {
+    "canonical": "candle",
+    "item_id": "ri-150",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece"
+  },
+  "mombatti": {
+    "canonical": "candle",
+    "item_id": "ri-150",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece"
+  },
+  "light candle": {
+    "canonical": "candle",
+    "item_id": "ri-150",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece"
+  },
+  "battery": {
+    "canonical": "battery",
+    "item_id": "ri-151",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "ब्याट्री": {
+    "canonical": "battery",
+    "item_id": "ri-151",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "dry cell": {
+    "canonical": "battery",
+    "item_id": "ri-151",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "triple a": {
+    "canonical": "battery",
+    "item_id": "ri-151",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "double a": {
+    "canonical": "battery",
+    "item_id": "ri-151",
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece"
+  },
+  "umbrella": {
+    "canonical": "umbrella",
+    "item_id": "ri-152",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "छाता": {
+    "canonical": "umbrella",
+    "item_id": "ri-152",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "chhata": {
+    "canonical": "umbrella",
+    "item_id": "ri-152",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "foldable umbrella": {
+    "canonical": "umbrella",
+    "item_id": "ri-152",
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece"
+  },
+  "photocopy": {
+    "canonical": "photocopy",
+    "item_id": "ri-153",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "page",
+    "alternatives": []
+  },
+  "फोटोकपी": {
+    "canonical": "photocopy",
+    "item_id": "ri-153",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "page"
+  },
+  "xerox": {
+    "canonical": "photocopy",
+    "item_id": "ri-153",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "page"
+  },
+  "photocopy service": {
+    "canonical": "photocopy",
+    "item_id": "ri-153",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "page"
+  },
+  "printout": {
+    "canonical": "printout",
+    "item_id": "ri-154",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "page",
+    "alternatives": []
+  },
+  "प्रिन्टआउट": {
+    "canonical": "printout",
+    "item_id": "ri-154",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "page"
+  },
+  "print": {
+    "canonical": "printout",
+    "item_id": "ri-154",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "page"
+  },
+  "colour print": {
+    "canonical": "printout",
+    "item_id": "ri-154",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "page"
+  },
+  "black white print": {
+    "canonical": "printout",
+    "item_id": "ri-154",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "page"
+  },
+  "resume": {
+    "canonical": "resume",
+    "item_id": "ri-155",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "document",
+    "alternatives": []
+  },
+  "रेसुमे": {
+    "canonical": "resume",
+    "item_id": "ri-155",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "document"
+  },
+  "cv": {
+    "canonical": "resume",
+    "item_id": "ri-155",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "document"
+  },
+  "job resume": {
+    "canonical": "resume",
+    "item_id": "ri-155",
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "document"
+  },
+  "bus ticket": {
+    "canonical": "bus ticket",
+    "item_id": "ri-156",
+    "sector": "travel_transport",
+    "sector_slug": "travel-transport",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "बस टिकट": {
+    "canonical": "bus ticket",
+    "item_id": "ri-156",
+    "sector": "travel_transport",
+    "sector_slug": "travel-transport",
+    "typical_unit": "piece"
+  },
+  "yaatayat ticket": {
+    "canonical": "bus ticket",
+    "item_id": "ri-156",
+    "sector": "travel_transport",
+    "sector_slug": "travel-transport",
+    "typical_unit": "piece"
+  },
+  "long route ticket": {
+    "canonical": "bus ticket",
+    "item_id": "ri-156",
+    "sector": "travel_transport",
+    "sector_slug": "travel-transport",
+    "typical_unit": "piece"
+  },
+  "petrol": {
+    "canonical": "petrol",
+    "item_id": "ri-157",
+    "sector": "fuel_energy",
+    "sector_slug": "fuel-energy",
+    "typical_unit": "litre",
+    "alternatives": []
+  },
+  "पेट्रोल": {
+    "canonical": "petrol",
+    "item_id": "ri-157",
+    "sector": "fuel_energy",
+    "sector_slug": "fuel-energy",
+    "typical_unit": "litre"
+  },
+  "gasoline": {
+    "canonical": "petrol",
+    "item_id": "ri-157",
+    "sector": "fuel_energy",
+    "sector_slug": "fuel-energy",
+    "typical_unit": "litre"
+  },
+  "fuel": {
+    "canonical": "petrol",
+    "item_id": "ri-157",
+    "sector": "fuel_energy",
+    "sector_slug": "fuel-energy",
+    "typical_unit": "litre"
+  },
+  "diesel": {
+    "canonical": "diesel",
+    "item_id": "ri-158",
+    "sector": "fuel_energy",
+    "sector_slug": "fuel-energy",
+    "typical_unit": "litre",
+    "alternatives": []
+  },
+  "डिजेल": {
+    "canonical": "diesel",
+    "item_id": "ri-158",
+    "sector": "fuel_energy",
+    "sector_slug": "fuel-energy",
+    "typical_unit": "litre"
+  },
+  "gas cylinder": {
+    "canonical": "gas cylinder",
+    "item_id": "ri-159",
+    "sector": "fuel_energy",
+    "sector_slug": "fuel-energy",
+    "typical_unit": "cylinder",
+    "alternatives": []
+  },
+  "ग्यास सिलिन्डर": {
+    "canonical": "gas cylinder",
+    "item_id": "ri-159",
+    "sector": "fuel_energy",
+    "sector_slug": "fuel-energy",
+    "typical_unit": "cylinder"
+  },
+  "lpg gas": {
+    "canonical": "gas cylinder",
+    "item_id": "ri-159",
+    "sector": "fuel_energy",
+    "sector_slug": "fuel-energy",
+    "typical_unit": "cylinder"
+  },
+  "cooking gas": {
+    "canonical": "gas cylinder",
+    "item_id": "ri-159",
+    "sector": "fuel_energy",
+    "sector_slug": "fuel-energy",
+    "typical_unit": "cylinder"
+  },
+  "firewood": {
+    "canonical": "firewood",
+    "item_id": "ri-160",
+    "sector": "fuel_energy",
+    "sector_slug": "fuel-energy",
+    "typical_unit": "bhari / kg",
+    "alternatives": []
+  },
+  "दाउरा": {
+    "canonical": "firewood",
+    "item_id": "ri-160",
+    "sector": "fuel_energy",
+    "sector_slug": "fuel-energy",
+    "typical_unit": "bhari / kg"
+  },
+  "daaura": {
+    "canonical": "firewood",
+    "item_id": "ri-160",
+    "sector": "fuel_energy",
+    "sector_slug": "fuel-energy",
+    "typical_unit": "bhari / kg"
+  },
+  "wood log": {
+    "canonical": "firewood",
+    "item_id": "ri-160",
+    "sector": "fuel_energy",
+    "sector_slug": "fuel-energy",
+    "typical_unit": "bhari / kg"
+  },
+  "kerosene": {
+    "canonical": "kerosene",
+    "item_id": "ri-161",
+    "sector": "fuel_energy",
+    "sector_slug": "fuel-energy",
+    "typical_unit": "litre",
+    "alternatives": []
+  },
+  "मट्टितेल": {
+    "canonical": "kerosene",
+    "item_id": "ri-161",
+    "sector": "fuel_energy",
+    "sector_slug": "fuel-energy",
+    "typical_unit": "litre"
+  },
+  "mattitel": {
+    "canonical": "kerosene",
+    "item_id": "ri-161",
+    "sector": "fuel_energy",
+    "sector_slug": "fuel-energy",
+    "typical_unit": "litre"
+  },
+  "lantern oil": {
+    "canonical": "kerosene",
+    "item_id": "ri-161",
+    "sector": "fuel_energy",
+    "sector_slug": "fuel-energy",
+    "typical_unit": "litre"
+  },
+  "lantern": {
+    "canonical": "lantern",
+    "item_id": "ri-162",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece",
+    "alternatives": []
+  },
+  "लाल्टीन": {
+    "canonical": "lantern",
+    "item_id": "ri-162",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece"
+  },
+  "batti": {
+    "canonical": "lantern",
+    "item_id": "ri-162",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece"
+  },
+  "hurricane lamp": {
+    "canonical": "lantern",
+    "item_id": "ri-162",
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece"
+  },
+  "chai": {
+    "canonical": "chah",
+    "item_id": "ri-010",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "gm / packet",
+    "alternatives": [
+      {
+        "canonical": "tea",
+        "item_id": "ri-084",
+        "sector": "food_restaurant",
+        "sector_slug": "restaurant-cafe"
+      }
+    ]
+  },
+  "chawal": {
+    "canonical": "chamal",
+    "item_id": "ri-001",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  },
+  "alu": {
+    "canonical": "aalu",
+    "item_id": "ri-024",
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg"
+  }
+}

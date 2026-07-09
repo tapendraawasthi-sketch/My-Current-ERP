@@ -1,0 +1,632 @@
+{
+  "ram ko invoice ma mistake cha, correct karo 500 hoina 600": {
+    "id": "cmix-001",
+    "intent": "correction_request",
+    "intentKey": "correction_request"
+  },
+  "ram ko invoice ma galti cha, 500 hoina 600 gara": {
+    "id": "cmix-001",
+    "intent": "correction_request",
+    "intentKey": "correction_request"
+  },
+  "mero bank balance kati cha? please check": {
+    "id": "cmix-002",
+    "intent": "balance_inquiry",
+    "intentKey": "balance_inquiry"
+  },
+  "payment gareko? invoice pathau hai": {
+    "id": "cmix-003",
+    "intent": "request_payment",
+    "intentKey": "request_payment"
+  },
+  "give me the hisab of last month": {
+    "id": "cmix-004",
+    "intent": "account_request",
+    "intentKey": "account_request"
+  },
+  "kitna paisa baki cha? batao": {
+    "id": "cmix-005",
+    "intent": "outstanding_inquiry",
+    "intentKey": "outstanding_inquiry"
+  },
+  "kati paisa baki cha? bhana": {
+    "id": "cmix-005",
+    "intent": "outstanding_inquiry",
+    "intentKey": "outstanding_inquiry"
+  },
+  "kab tak dega? vanna ta": {
+    "id": "cmix-006",
+    "intent": "deadline_inquiry",
+    "intentKey": "deadline_inquiry"
+  },
+  "kahile samma dinchha? vanna": {
+    "id": "cmix-006",
+    "intent": "deadline_inquiry",
+    "intentKey": "deadline_inquiry"
+  },
+  "rs ५०० tireko? verify gardinu": {
+    "id": "cmix-007",
+    "intent": "payment_verification",
+    "intentKey": "payment_verification"
+  },
+  "rs 500 tireko? verify gardinu": {
+    "id": "cmix-007",
+    "intent": "payment_verification",
+    "intentKey": "payment_verification"
+  },
+  "paanch thousand rupees transfer gar": {
+    "id": "cmix-008",
+    "intent": "transfer_request",
+    "intentKey": "transfer_request"
+  },
+  "paanch hajar rupees transfer gara": {
+    "id": "cmix-008",
+    "intent": "transfer_request",
+    "intentKey": "transfer_request"
+  },
+  "10 hajar jamma gareko? receipt patha": {
+    "id": "cmix-009",
+    "intent": "deposit_confirmation",
+    "intentKey": "deposit_confirmation"
+  },
+  "10 hajar jamma gareko? receipt pathau": {
+    "id": "cmix-009",
+    "intent": "deposit_confirmation",
+    "intentKey": "deposit_confirmation"
+  },
+  "debit karo mero account bata": {
+    "id": "cmix-010",
+    "intent": "debit_request",
+    "intentKey": "debit_request"
+  },
+  "debit gara mero account bata": {
+    "id": "cmix-010",
+    "intent": "debit_request",
+    "intentKey": "debit_request"
+  },
+  "vat file garnu bhayo? tax clear cha": {
+    "id": "cmix-011",
+    "intent": "tax_inquiry",
+    "intentKey": "tax_inquiry"
+  },
+  "today ko meeting cancel karo": {
+    "id": "cmix-012",
+    "intent": "cancellation_request",
+    "intentKey": "cancellation_request"
+  },
+  "aaja ko meeting cancel gara": {
+    "id": "cmix-012",
+    "intent": "cancellation_request",
+    "intentKey": "cancellation_request"
+  },
+  "mero phone ma problem cha, reboot handinu": {
+    "id": "cmix-013",
+    "intent": "technical_support",
+    "intentKey": "technical_support"
+  },
+  "mero phone ma problem cha, reboot garnu": {
+    "id": "cmix-013",
+    "intent": "technical_support",
+    "intentKey": "technical_support"
+  },
+  "battery backup kati dincha? full charge ma": {
+    "id": "cmix-014",
+    "intent": "battery_inquiry",
+    "intentKey": "battery_inquiry"
+  },
+  "new laptop order garne ho? specs patha": {
+    "id": "cmix-015",
+    "intent": "order_inquiry",
+    "intentKey": "order_inquiry"
+  },
+  "new laptop order garne ho? specs pathau": {
+    "id": "cmix-015",
+    "intent": "order_inquiry",
+    "intentKey": "order_inquiry"
+  },
+  "delivery time kati ho? 5 baje samma": {
+    "id": "cmix-016",
+    "intent": "delivery_inquiry",
+    "intentKey": "delivery_inquiry"
+  },
+  "discount cha? 20% off ma dinchhan": {
+    "id": "cmix-017",
+    "intent": "discount_inquiry",
+    "intentKey": "discount_inquiry"
+  },
+  "mero address update garnu paryo, new location ho": {
+    "id": "cmix-018",
+    "intent": "update_request",
+    "intentKey": "update_request"
+  },
+  "payment confirmation aayo? sms check gar": {
+    "id": "cmix-019",
+    "intent": "confirmation_check",
+    "intentKey": "confirmation_check"
+  },
+  "payment confirmation aayo? sms check gara": {
+    "id": "cmix-019",
+    "intent": "confirmation_check",
+    "intentKey": "confirmation_check"
+  },
+  "kina eti late? deadline miss bhayo": {
+    "id": "cmix-020",
+    "intent": "complaint",
+    "intentKey": "complaint"
+  },
+  "kina yeti late? deadline miss bhayo": {
+    "id": "cmix-020",
+    "intent": "complaint",
+    "intentKey": "complaint"
+  },
+  "new project ko budget approve bhayo": {
+    "id": "cmix-021",
+    "intent": "approval_inquiry",
+    "intentKey": "approval_inquiry"
+  },
+  "salary transfer gareko? amount mismatch": {
+    "id": "cmix-022",
+    "intent": "salary_inquiry",
+    "intentKey": "salary_inquiry"
+  },
+  "baki paisa kab clear hunchha? remind karo": {
+    "id": "cmix-023",
+    "intent": "reminder_request",
+    "intentKey": "reminder_request"
+  },
+  "baki paisa kahile clear hunchha? remind gara": {
+    "id": "cmix-023",
+    "intent": "reminder_request",
+    "intentKey": "reminder_request"
+  },
+  "tax invoice generate garidinu, please": {
+    "id": "cmix-024",
+    "intent": "invoice_request",
+    "intentKey": "invoice_request"
+  },
+  "esewa bata payment garna milcha": {
+    "id": "cmix-025",
+    "intent": "payment_method_inquiry",
+    "intentKey": "payment_method_inquiry"
+  },
+  "mero account ma 2000 jamma bhayo? balance check": {
+    "id": "cmix-026",
+    "intent": "deposit_inquiry",
+    "intentKey": "deposit_inquiry"
+  },
+  "हाम्रो कामको status के छ? update गर": {
+    "id": "cmix-027",
+    "intent": "status_inquiry",
+    "intentKey": "status_inquiry"
+  },
+  "hamro kaam ko status ke cha? update gara": {
+    "id": "cmix-027",
+    "intent": "status_inquiry",
+    "intentKey": "status_inquiry"
+  },
+  "bill pay garna birsechhu, abba k garne": {
+    "id": "cmix-028",
+    "intent": "forgotten_payment",
+    "intentKey": "forgotten_payment"
+  },
+  "data entry complete bhayo? verify karo": {
+    "id": "cmix-029",
+    "intent": "verification_request",
+    "intentKey": "verification_request"
+  },
+  "data entry complete bhayo? verify gara": {
+    "id": "cmix-029",
+    "intent": "verification_request",
+    "intentKey": "verification_request"
+  },
+  "सबै documents scan गरि पठाउनु": {
+    "id": "cmix-030",
+    "intent": "document_submission",
+    "intentKey": "document_submission"
+  },
+  "sabai documents scan garera pathaunu": {
+    "id": "cmix-030",
+    "intent": "document_submission",
+    "intentKey": "document_submission"
+  },
+  "report ko draft ready cha? final karo": {
+    "id": "cmix-031",
+    "intent": "finalization_request",
+    "intentKey": "finalization_request"
+  },
+  "report ko draft ready cha? final gara": {
+    "id": "cmix-031",
+    "intent": "finalization_request",
+    "intentKey": "finalization_request"
+  },
+  "price hike bhayo? purano rate ma dinu": {
+    "id": "cmix-032",
+    "intent": "price_inquiry",
+    "intentKey": "price_inquiry"
+  },
+  "user id ra password reset garnu paryo": {
+    "id": "cmix-033",
+    "intent": "reset_request",
+    "intentKey": "reset_request"
+  },
+  "server down cha? check gar na": {
+    "id": "cmix-034",
+    "intent": "system_status_inquiry",
+    "intentKey": "system_status_inquiry"
+  },
+  "server down cha? check gara na": {
+    "id": "cmix-034",
+    "intent": "system_status_inquiry",
+    "intentKey": "system_status_inquiry"
+  },
+  "कति पैसा बाँकी छ? batao jaldi": {
+    "id": "cmix-035",
+    "intent": "balance_due_inquiry",
+    "intentKey": "balance_due_inquiry"
+  },
+  "kati paisa baki cha? bhana chito": {
+    "id": "cmix-035",
+    "intent": "balance_due_inquiry",
+    "intentKey": "balance_due_inquiry"
+  },
+  "loan apply garna process k ho": {
+    "id": "cmix-036",
+    "intent": "process_inquiry",
+    "intentKey": "process_inquiry"
+  },
+  "cheque bounce bhayo? penalty cha": {
+    "id": "cmix-037",
+    "intent": "cheque_status",
+    "intentKey": "cheque_status"
+  },
+  "व्यवसायको ledger हेर्नु छ, access दिनु": {
+    "id": "cmix-038",
+    "intent": "access_request",
+    "intentKey": "access_request"
+  },
+  "business ko ledger hernu cha, access dinu": {
+    "id": "cmix-038",
+    "intent": "access_request",
+    "intentKey": "access_request"
+  },
+  "stock market ma investment garne soch cha": {
+    "id": "cmix-039",
+    "intent": "investment_inquiry",
+    "intentKey": "investment_inquiry"
+  },
+  "attendance sheet ma correction chahiyo": {
+    "id": "cmix-040",
+    "intent": "correction_request",
+    "intentKey": "correction_request"
+  },
+  "कृपया मलाई invoice पठाउनुहोस्, urgent cha": {
+    "id": "cmix-041",
+    "intent": "invoice_request",
+    "intentKey": "invoice_request"
+  },
+  "kripaya malai invoice pathaunuhos, urgent cha": {
+    "id": "cmix-041",
+    "intent": "invoice_request",
+    "intentKey": "invoice_request"
+  },
+  "payment method change garna milcha? card bata": {
+    "id": "cmix-042",
+    "intent": "payment_update",
+    "intentKey": "payment_update"
+  },
+  "ऋण चुक्ता गर्न कति बाँकी? tell me": {
+    "id": "cmix-043",
+    "intent": "loan_balance_inquiry",
+    "intentKey": "loan_balance_inquiry"
+  },
+  "rin chukta garna kati baki? tell me": {
+    "id": "cmix-043",
+    "intent": "loan_balance_inquiry",
+    "intentKey": "loan_balance_inquiry"
+  },
+  "budget exceed bhayo, approve garnu paryo": {
+    "id": "cmix-044",
+    "intent": "approval_request",
+    "intentKey": "approval_request"
+  },
+  "project deadline extend karo, thulo issue cha": {
+    "id": "cmix-045",
+    "intent": "extension_request",
+    "intentKey": "extension_request"
+  },
+  "project deadline extend gara, thulo issue cha": {
+    "id": "cmix-045",
+    "intent": "extension_request",
+    "intentKey": "extension_request"
+  },
+  "सबै रकम transfer गर, 5000 hoina 7000": {
+    "id": "cmix-046",
+    "intent": "correction_request",
+    "intentKey": "correction_request"
+  },
+  "sabai rakam transfer gara, 5000 hoina 7000": {
+    "id": "cmix-046",
+    "intent": "correction_request",
+    "intentKey": "correction_request"
+  },
+  "interest rate kati cha? loan ko": {
+    "id": "cmix-047",
+    "intent": "rate_inquiry",
+    "intentKey": "rate_inquiry"
+  },
+  "account statement download garna mildai": {
+    "id": "cmix-048",
+    "intent": "statement_request",
+    "intentKey": "statement_request"
+  },
+  "tax payment ko receipt chahiyo, please": {
+    "id": "cmix-049",
+    "intent": "receipt_request",
+    "intentKey": "receipt_request"
+  },
+  "mero monthly expense report tayar cha": {
+    "id": "cmix-050",
+    "intent": "report_inquiry",
+    "intentKey": "report_inquiry"
+  },
+  "ओटीपी आयो? verify गर": {
+    "id": "cmix-051",
+    "intent": "otp_verification",
+    "intentKey": "otp_verification"
+  },
+  "otp aayo? verify gara": {
+    "id": "cmix-051",
+    "intent": "otp_verification",
+    "intentKey": "otp_verification"
+  },
+  "payment due date kati ho? remind karo": {
+    "id": "cmix-052",
+    "intent": "due_date_inquiry",
+    "intentKey": "due_date_inquiry"
+  },
+  "payment due date kati ho? remind gara": {
+    "id": "cmix-052",
+    "intent": "due_date_inquiry",
+    "intentKey": "due_date_inquiry"
+  },
+  "new employee ko account create gar": {
+    "id": "cmix-053",
+    "intent": "account_creation",
+    "intentKey": "account_creation"
+  },
+  "new employee ko account create gara": {
+    "id": "cmix-053",
+    "intent": "account_creation",
+    "intentKey": "account_creation"
+  },
+  "attendance ma mistake cha, correct karo": {
+    "id": "cmix-054",
+    "intent": "correction_request",
+    "intentKey": "correction_request"
+  },
+  "attendance ma mistake cha, correct gara": {
+    "id": "cmix-054",
+    "intent": "correction_request",
+    "intentKey": "correction_request"
+  },
+  "फाइल अपलोड गर, size ठूलो छ": {
+    "id": "cmix-055",
+    "intent": "upload_request",
+    "intentKey": "upload_request"
+  },
+  "file upload gara, size thulo cha": {
+    "id": "cmix-055",
+    "intent": "upload_request",
+    "intentKey": "upload_request"
+  },
+  "kitta kitna amount baki? clear gara": {
+    "id": "cmix-056",
+    "intent": "balance_inquiry",
+    "intentKey": "balance_inquiry"
+  },
+  "kati amount baki? clear gara": {
+    "id": "cmix-056",
+    "intent": "balance_inquiry",
+    "intentKey": "balance_inquiry"
+  },
+  "credit card bill generate bhayo? pay garnu": {
+    "id": "cmix-057",
+    "intent": "bill_inquiry",
+    "intentKey": "bill_inquiry"
+  },
+  "सबै खाता मिलान गर, mismatch dekhiyo": {
+    "id": "cmix-058",
+    "intent": "reconciliation_request",
+    "intentKey": "reconciliation_request"
+  },
+  "sabai khata milan gara, mismatch dekhiyo": {
+    "id": "cmix-058",
+    "intent": "reconciliation_request",
+    "intentKey": "reconciliation_request"
+  },
+  "office ko wifi slow cha, reboot karo": {
+    "id": "cmix-059",
+    "intent": "technical_request",
+    "intentKey": "technical_request"
+  },
+  "office ko wifi slow cha, reboot gara": {
+    "id": "cmix-059",
+    "intent": "technical_request",
+    "intentKey": "technical_request"
+  },
+  "मेरो डाटा सुरक्षित छ? encryption छ": {
+    "id": "cmix-060",
+    "intent": "security_inquiry",
+    "intentKey": "security_inquiry"
+  },
+  "mero data surakshit cha? encryption cha": {
+    "id": "cmix-060",
+    "intent": "security_inquiry",
+    "intentKey": "security_inquiry"
+  },
+  "website ma login garna problem cha, help": {
+    "id": "cmix-061",
+    "intent": "login_support",
+    "intentKey": "login_support"
+  },
+  "transaction id patha, confirm karo": {
+    "id": "cmix-062",
+    "intent": "transaction_confirmation",
+    "intentKey": "transaction_confirmation"
+  },
+  "transaction id patha, confirm gara": {
+    "id": "cmix-062",
+    "intent": "transaction_confirmation",
+    "intentKey": "transaction_confirmation"
+  },
+  "ग्राहकको invoice मा error छ, rectify गर": {
+    "id": "cmix-063",
+    "intent": "correction_request",
+    "intentKey": "correction_request"
+  },
+  "grahak ko invoice ma error cha, rectify gara": {
+    "id": "cmix-063",
+    "intent": "correction_request",
+    "intentKey": "correction_request"
+  },
+  "salary slip download garna milcha": {
+    "id": "cmix-064",
+    "intent": "document_request",
+    "intentKey": "document_request"
+  },
+  "subscription renew garna birsiye, extend karo": {
+    "id": "cmix-065",
+    "intent": "renewal_request",
+    "intentKey": "renewal_request"
+  },
+  "subscription renew garna birsiye, extend gara": {
+    "id": "cmix-065",
+    "intent": "renewal_request",
+    "intentKey": "renewal_request"
+  },
+  "मेरो पासवर्ड परिवर्तन गर, new password पठाउ": {
+    "id": "cmix-066",
+    "intent": "password_change",
+    "intentKey": "password_change"
+  },
+  "mero password parivartan gara, new password patha": {
+    "id": "cmix-066",
+    "intent": "password_change",
+    "intentKey": "password_change"
+  },
+  "balance transfer garna kati lagchha? fee kati": {
+    "id": "cmix-067",
+    "intent": "fee_inquiry",
+    "intentKey": "fee_inquiry"
+  },
+  "cheque book request garna kasari": {
+    "id": "cmix-068",
+    "intent": "request_process",
+    "intentKey": "request_process"
+  },
+  "कामको प्रगति के छ? update share गर": {
+    "id": "cmix-069",
+    "intent": "progress_inquiry",
+    "intentKey": "progress_inquiry"
+  },
+  "kam ko pragati ke cha? update share gara": {
+    "id": "cmix-069",
+    "intent": "progress_inquiry",
+    "intentKey": "progress_inquiry"
+  },
+  "loan repayment schedule ma change garnu cha": {
+    "id": "cmix-070",
+    "intent": "modification_request",
+    "intentKey": "modification_request"
+  },
+  "customer care ma call garna bhayo? number dinu": {
+    "id": "cmix-071",
+    "intent": "contact_request",
+    "intentKey": "contact_request"
+  },
+  "रकम jamma गर्नुपर्छ, bank account ma": {
+    "id": "cmix-072",
+    "intent": "deposit_request",
+    "intentKey": "deposit_request"
+  },
+  "rakam jamma garnuparcha, bank account ma": {
+    "id": "cmix-072",
+    "intent": "deposit_request",
+    "intentKey": "deposit_request"
+  },
+  "software update aayo? install garnu": {
+    "id": "cmix-073",
+    "intent": "update_inquiry",
+    "intentKey": "update_inquiry"
+  },
+  "सबै errors fix गर, testing pachi deploy karo": {
+    "id": "cmix-074",
+    "intent": "deployment_request",
+    "intentKey": "deployment_request"
+  },
+  "sabai errors fix gara, testing pachi deploy gara": {
+    "id": "cmix-074",
+    "intent": "deployment_request",
+    "intentKey": "deployment_request"
+  },
+  "gadi ko insurance renewal garna baki cha": {
+    "id": "cmix-075",
+    "intent": "insurance_inquiry",
+    "intentKey": "insurance_inquiry"
+  },
+  "मेरो खातामा पैसा आयो? check gar": {
+    "id": "cmix-076",
+    "intent": "credit_inquiry",
+    "intentKey": "credit_inquiry"
+  },
+  "mero khatama paisa aayo? check gara": {
+    "id": "cmix-076",
+    "intent": "credit_inquiry",
+    "intentKey": "credit_inquiry"
+  },
+  "project update ready cha? present karo": {
+    "id": "cmix-077",
+    "intent": "presentation_request",
+    "intentKey": "presentation_request"
+  },
+  "project update ready cha? present gara": {
+    "id": "cmix-077",
+    "intent": "presentation_request",
+    "intentKey": "presentation_request"
+  },
+  "नयाँ फोनको बिल print गर, copy चाहियो": {
+    "id": "cmix-078",
+    "intent": "document_request",
+    "intentKey": "document_request"
+  },
+  "naya phone ko bill print gara, copy chahiyo": {
+    "id": "cmix-078",
+    "intent": "document_request",
+    "intentKey": "document_request"
+  },
+  "refund process start garna time lagchha": {
+    "id": "cmix-079",
+    "intent": "refund_inquiry",
+    "intentKey": "refund_inquiry"
+  },
+  "टिकट booking confirm छ? pnr check गर": {
+    "id": "cmix-080",
+    "intent": "booking_confirmation",
+    "intentKey": "booking_confirmation"
+  },
+  "ticket booking confirm cha? pnr check gara": {
+    "id": "cmix-080",
+    "intent": "booking_confirmation",
+    "intentKey": "booking_confirmation"
+  },
+  "mero proposal submit bhayo? status k ho": {
+    "id": "cmix-081",
+    "intent": "status_inquiry",
+    "intentKey": "status_inquiry"
+  },
+  "payment reconcile garna data chahiyo": {
+    "id": "cmix-082",
+    "intent": "data_request",
+    "intentKey": "data_request"
+  }
+}

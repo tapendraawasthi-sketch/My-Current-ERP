@@ -1,0 +1,2348 @@
+{
+  "erp k ho": {
+    "id": "faq-001",
+    "topic": "software",
+    "question_type": "definition",
+    "question_normalized": "erp k ho"
+  },
+  "erp software k ho": {
+    "id": "faq-001",
+    "topic": "software",
+    "question_type": "definition",
+    "question_normalized": "erp k ho"
+  },
+  "accounting software k ho": {
+    "id": "faq-002",
+    "topic": "software",
+    "question_type": "definition",
+    "question_normalized": "accounting software k ho"
+  },
+  "tally k ho": {
+    "id": "faq-001",
+    "topic": "software",
+    "question_type": "definition",
+    "question_normalized": "erp k ho"
+  },
+  "busy software k ho": {
+    "id": "faq-004",
+    "topic": "software",
+    "question_type": "definition",
+    "question_normalized": "busy software k ho"
+  },
+  "accounting kya garnu": {
+    "id": "faq-002",
+    "topic": "software",
+    "question_type": "definition",
+    "question_normalized": "accounting software k ho"
+  },
+  "accounting software": {
+    "id": "faq-002",
+    "topic": "software",
+    "question_type": "definition",
+    "question_normalized": "accounting software k ho"
+  },
+  "tally software k ho": {
+    "id": "faq-003",
+    "topic": "software",
+    "question_type": "definition",
+    "question_normalized": "tally software k ho"
+  },
+  "tally vs busy": {
+    "id": "faq-003",
+    "topic": "software",
+    "question_type": "definition",
+    "question_normalized": "tally software k ho"
+  },
+  "tally kasari use garnu": {
+    "id": "faq-003",
+    "topic": "software",
+    "question_type": "definition",
+    "question_normalized": "tally software k ho"
+  },
+  "tally ko cost kati": {
+    "id": "faq-003",
+    "topic": "software",
+    "question_type": "definition",
+    "question_normalized": "tally software k ho"
+  },
+  "tally software": {
+    "id": "faq-003",
+    "topic": "software",
+    "question_type": "definition",
+    "question_normalized": "tally software k ho"
+  },
+  "busy vs tally": {
+    "id": "faq-004",
+    "topic": "software",
+    "question_type": "definition",
+    "question_normalized": "busy software k ho"
+  },
+  "busy kasari use garnu": {
+    "id": "faq-004",
+    "topic": "software",
+    "question_type": "definition",
+    "question_normalized": "busy software k ho"
+  },
+  "busy ka license cost": {
+    "id": "faq-004",
+    "topic": "software",
+    "question_type": "definition",
+    "question_normalized": "busy software k ho"
+  },
+  "busy software": {
+    "id": "faq-004",
+    "topic": "software",
+    "question_type": "definition",
+    "question_normalized": "busy software k ho"
+  },
+  "vat k ho": {
+    "id": "faq-005",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "vat k ho"
+  },
+  "vat kasari calculate garnu": {
+    "id": "faq-036",
+    "topic": "tax",
+    "question_type": "calculation",
+    "question_normalized": "vat kasari calculate garnu"
+  },
+  "vat deposit kasari garnu": {
+    "id": "faq-005",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "vat k ho"
+  },
+  "vat exempt products": {
+    "id": "faq-005",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "vat k ho"
+  },
+  "tds k ho": {
+    "id": "faq-006",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "tds k ho"
+  },
+  "tds rate k ho": {
+    "id": "faq-006",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "tds k ho"
+  },
+  "tds kasari calculate garnu": {
+    "id": "faq-037",
+    "topic": "tax",
+    "question_type": "calculation",
+    "question_normalized": "tds kasari calculate garnu"
+  },
+  "tds deposit kasari garnu": {
+    "id": "faq-081",
+    "topic": "tax",
+    "question_type": "process",
+    "question_normalized": "tds deposit kasari garnu"
+  },
+  "pan registration k ho": {
+    "id": "faq-007",
+    "topic": "registration",
+    "question_type": "definition",
+    "question_normalized": "pan registration k ho"
+  },
+  "pan registration kasari garnu": {
+    "id": "faq-007",
+    "topic": "registration",
+    "question_type": "definition",
+    "question_normalized": "pan registration k ho"
+  },
+  "pan application form": {
+    "id": "faq-007",
+    "topic": "registration",
+    "question_type": "definition",
+    "question_normalized": "pan registration k ho"
+  },
+  "pan certificate kaise milta hai": {
+    "id": "faq-007",
+    "topic": "registration",
+    "question_type": "definition",
+    "question_normalized": "pan registration k ho"
+  },
+  "pan registration": {
+    "id": "faq-078",
+    "topic": "registration",
+    "question_type": "process",
+    "question_normalized": "pan certificate kaise laye"
+  },
+  "company registration kasari garnu": {
+    "id": "faq-008",
+    "topic": "registration",
+    "question_type": "process",
+    "question_normalized": "company registration kasari garnu"
+  },
+  "company registration ke liye documents": {
+    "id": "faq-008",
+    "topic": "registration",
+    "question_type": "process",
+    "question_normalized": "company registration kasari garnu"
+  },
+  "registration cost": {
+    "id": "faq-008",
+    "topic": "registration",
+    "question_type": "process",
+    "question_normalized": "company registration kasari garnu"
+  },
+  "registration time": {
+    "id": "faq-008",
+    "topic": "registration",
+    "question_type": "process",
+    "question_normalized": "company registration kasari garnu"
+  },
+  "company registration": {
+    "id": "faq-008",
+    "topic": "registration",
+    "question_type": "process",
+    "question_normalized": "company registration kasari garnu"
+  },
+  "trade license k ho": {
+    "id": "faq-009",
+    "topic": "registration",
+    "question_type": "definition",
+    "question_normalized": "trade license k ho"
+  },
+  "trade license kasari karau": {
+    "id": "faq-009",
+    "topic": "registration",
+    "question_type": "definition",
+    "question_normalized": "trade license k ho"
+  },
+  "trade license cost": {
+    "id": "faq-009",
+    "topic": "registration",
+    "question_type": "definition",
+    "question_normalized": "trade license k ho"
+  },
+  "trade license validity": {
+    "id": "faq-009",
+    "topic": "registration",
+    "question_type": "definition",
+    "question_normalized": "trade license k ho"
+  },
+  "trade license": {
+    "id": "faq-009",
+    "topic": "registration",
+    "question_type": "definition",
+    "question_normalized": "trade license k ho"
+  },
+  "invoice k ho": {
+    "id": "faq-010",
+    "topic": "documents",
+    "question_type": "definition",
+    "question_normalized": "invoice k ho"
+  },
+  "invoice template": {
+    "id": "faq-010",
+    "topic": "documents",
+    "question_type": "definition",
+    "question_normalized": "invoice k ho"
+  },
+  "invoice kasari banau": {
+    "id": "faq-010",
+    "topic": "documents",
+    "question_type": "definition",
+    "question_normalized": "invoice k ho"
+  },
+  "invoice number system": {
+    "id": "faq-010",
+    "topic": "documents",
+    "question_type": "definition",
+    "question_normalized": "invoice k ho"
+  },
+  "bill aur invoice ma k farak ho": {
+    "id": "faq-011",
+    "topic": "documents",
+    "question_type": "comparison",
+    "question_normalized": "bill aur invoice ma k farak ho"
+  },
+  "receipt k ho": {
+    "id": "faq-012",
+    "topic": "documents",
+    "question_type": "definition",
+    "question_normalized": "receipt k ho"
+  },
+  "invoice vs receipt": {
+    "id": "faq-011",
+    "topic": "documents",
+    "question_type": "comparison",
+    "question_normalized": "bill aur invoice ma k farak ho"
+  },
+  "bill ka format": {
+    "id": "faq-011",
+    "topic": "documents",
+    "question_type": "comparison",
+    "question_normalized": "bill aur invoice ma k farak ho"
+  },
+  "receipt format": {
+    "id": "faq-012",
+    "topic": "documents",
+    "question_type": "definition",
+    "question_normalized": "receipt k ho"
+  },
+  "receipt numbering": {
+    "id": "faq-012",
+    "topic": "documents",
+    "question_type": "definition",
+    "question_normalized": "receipt k ho"
+  },
+  "digital receipt": {
+    "id": "faq-012",
+    "topic": "documents",
+    "question_type": "definition",
+    "question_normalized": "receipt k ho"
+  },
+  "voucher k ho": {
+    "id": "faq-013",
+    "topic": "documents",
+    "question_type": "definition",
+    "question_normalized": "voucher k ho"
+  },
+  "voucher types": {
+    "id": "faq-013",
+    "topic": "documents",
+    "question_type": "definition",
+    "question_normalized": "voucher k ho"
+  },
+  "voucher numbering": {
+    "id": "faq-013",
+    "topic": "documents",
+    "question_type": "definition",
+    "question_normalized": "voucher k ho"
+  },
+  "journal voucher": {
+    "id": "faq-013",
+    "topic": "documents",
+    "question_type": "definition",
+    "question_normalized": "voucher k ho"
+  },
+  "ssf k ho": {
+    "id": "faq-014",
+    "topic": "employee_benefits",
+    "question_type": "definition",
+    "question_normalized": "ssf k ho"
+  },
+  "ssf contribution": {
+    "id": "faq-014",
+    "topic": "employee_benefits",
+    "question_type": "definition",
+    "question_normalized": "ssf k ho"
+  },
+  "ssf calculation": {
+    "id": "faq-014",
+    "topic": "employee_benefits",
+    "question_type": "definition",
+    "question_normalized": "ssf k ho"
+  },
+  "ssf withdrawal": {
+    "id": "faq-014",
+    "topic": "employee_benefits",
+    "question_type": "definition",
+    "question_normalized": "ssf k ho"
+  },
+  "gratuity k ho": {
+    "id": "faq-015",
+    "topic": "employee_benefits",
+    "question_type": "definition",
+    "question_normalized": "gratuity k ho"
+  },
+  "gratuity calculation": {
+    "id": "faq-015",
+    "topic": "employee_benefits",
+    "question_type": "definition",
+    "question_normalized": "gratuity k ho"
+  },
+  "gratuity policy": {
+    "id": "faq-015",
+    "topic": "employee_benefits",
+    "question_type": "definition",
+    "question_normalized": "gratuity k ho"
+  },
+  "gratuity eligibility": {
+    "id": "faq-015",
+    "topic": "employee_benefits",
+    "question_type": "definition",
+    "question_normalized": "gratuity k ho"
+  },
+  "minimum wage nepal ma kati ho": {
+    "id": "faq-016",
+    "topic": "employee_benefits",
+    "question_type": "calculation",
+    "question_normalized": "minimum wage nepal ma kati ho"
+  },
+  "minimum wage 2024": {
+    "id": "faq-016",
+    "topic": "employee_benefits",
+    "question_type": "calculation",
+    "question_normalized": "minimum wage nepal ma kati ho"
+  },
+  "minimum wage calculation": {
+    "id": "faq-016",
+    "topic": "employee_benefits",
+    "question_type": "calculation",
+    "question_normalized": "minimum wage nepal ma kati ho"
+  },
+  "minimum wage violation": {
+    "id": "faq-016",
+    "topic": "employee_benefits",
+    "question_type": "calculation",
+    "question_normalized": "minimum wage nepal ma kati ho"
+  },
+  "minimum wage nepal ma": {
+    "id": "faq-016",
+    "topic": "employee_benefits",
+    "question_type": "calculation",
+    "question_normalized": "minimum wage nepal ma kati ho"
+  },
+  "bank account kaise kholu": {
+    "id": "faq-017",
+    "topic": "banking",
+    "question_type": "process",
+    "question_normalized": "bank account kaise kholu"
+  },
+  "bank account types": {
+    "id": "faq-017",
+    "topic": "banking",
+    "question_type": "process",
+    "question_normalized": "bank account kaise kholu"
+  },
+  "joint account": {
+    "id": "faq-017",
+    "topic": "banking",
+    "question_type": "process",
+    "question_normalized": "bank account kaise kholu"
+  },
+  "nri account": {
+    "id": "faq-017",
+    "topic": "banking",
+    "question_type": "process",
+    "question_normalized": "bank account kaise kholu"
+  },
+  "bank account": {
+    "id": "faq-017",
+    "topic": "banking",
+    "question_type": "process",
+    "question_normalized": "bank account kaise kholu"
+  },
+  "cheque kaise likhu": {
+    "id": "faq-018",
+    "topic": "banking",
+    "question_type": "process",
+    "question_normalized": "cheque kaise likhu"
+  },
+  "cheque bounce": {
+    "id": "faq-018",
+    "topic": "banking",
+    "question_type": "process",
+    "question_normalized": "cheque kaise likhu"
+  },
+  "post dated cheque": {
+    "id": "faq-018",
+    "topic": "banking",
+    "question_type": "process",
+    "question_normalized": "cheque kaise likhu"
+  },
+  "cheque clearing time": {
+    "id": "faq-018",
+    "topic": "banking",
+    "question_type": "process",
+    "question_normalized": "cheque kaise likhu"
+  },
+  "online banking kasari use garnu": {
+    "id": "faq-019",
+    "topic": "banking",
+    "question_type": "process",
+    "question_normalized": "online banking kasari use garnu"
+  },
+  "online banking safety": {
+    "id": "faq-019",
+    "topic": "banking",
+    "question_type": "process",
+    "question_normalized": "online banking kasari use garnu"
+  },
+  "mobile banking app": {
+    "id": "faq-019",
+    "topic": "banking",
+    "question_type": "process",
+    "question_normalized": "online banking kasari use garnu"
+  },
+  "password change": {
+    "id": "faq-019",
+    "topic": "banking",
+    "question_type": "process",
+    "question_normalized": "online banking kasari use garnu"
+  },
+  "ledger k ho": {
+    "id": "faq-020",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "ledger k ho"
+  },
+  "journal vs ledger": {
+    "id": "faq-020",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "ledger k ho"
+  },
+  "ledger posting": {
+    "id": "faq-020",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "ledger k ho"
+  },
+  "subsidiary ledger": {
+    "id": "faq-020",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "ledger k ho"
+  },
+  "journal k ho": {
+    "id": "faq-021",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "journal k ho"
+  },
+  "journal entry": {
+    "id": "faq-021",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "journal k ho"
+  },
+  "subsidiary journal": {
+    "id": "faq-021",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "journal k ho"
+  },
+  "trial balance k ho": {
+    "id": "faq-022",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "trial balance k ho"
+  },
+  "trial balance format": {
+    "id": "faq-022",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "trial balance k ho"
+  },
+  "trial balance preparation": {
+    "id": "faq-022",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "trial balance k ho"
+  },
+  "errors in trial balance": {
+    "id": "faq-022",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "trial balance k ho"
+  },
+  "trial balance": {
+    "id": "faq-022",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "trial balance k ho"
+  },
+  "financial statements k ho": {
+    "id": "faq-023",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "financial statements k ho"
+  },
+  "income statement": {
+    "id": "faq-023",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "financial statements k ho"
+  },
+  "balance sheet": {
+    "id": "faq-023",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "financial statements k ho"
+  },
+  "cash flow statement": {
+    "id": "faq-023",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "financial statements k ho"
+  },
+  "financial statements": {
+    "id": "faq-023",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "financial statements k ho"
+  },
+  "income statement kaise banau": {
+    "id": "faq-024",
+    "topic": "accounting",
+    "question_type": "process",
+    "question_normalized": "income statement kaise banau"
+  },
+  "income statement format": {
+    "id": "faq-024",
+    "topic": "accounting",
+    "question_type": "process",
+    "question_normalized": "income statement kaise banau"
+  },
+  "revenue recognition": {
+    "id": "faq-024",
+    "topic": "accounting",
+    "question_type": "process",
+    "question_normalized": "income statement kaise banau"
+  },
+  "expense classification": {
+    "id": "faq-024",
+    "topic": "accounting",
+    "question_type": "process",
+    "question_normalized": "income statement kaise banau"
+  },
+  "balance sheet kaise banau": {
+    "id": "faq-025",
+    "topic": "accounting",
+    "question_type": "process",
+    "question_normalized": "balance sheet kaise banau"
+  },
+  "balance sheet format": {
+    "id": "faq-025",
+    "topic": "accounting",
+    "question_type": "process",
+    "question_normalized": "balance sheet kaise banau"
+  },
+  "current assets": {
+    "id": "faq-025",
+    "topic": "accounting",
+    "question_type": "process",
+    "question_normalized": "balance sheet kaise banau"
+  },
+  "non-current assets": {
+    "id": "faq-025",
+    "topic": "accounting",
+    "question_type": "process",
+    "question_normalized": "balance sheet kaise banau"
+  },
+  "debit aur credit ka matlab kya ho": {
+    "id": "faq-026",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "debit aur credit ka matlab kya ho"
+  },
+  "debit credit rules": {
+    "id": "faq-026",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "debit aur credit ka matlab kya ho"
+  },
+  "debit credit examples": {
+    "id": "faq-026",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "debit aur credit ka matlab kya ho"
+  },
+  "t account": {
+    "id": "faq-026",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "debit aur credit ka matlab kya ho"
+  },
+  "debit aur credit": {
+    "id": "faq-026",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "debit aur credit ka matlab kya ho"
+  },
+  "assets ka matlab kya ho": {
+    "id": "faq-027",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "assets ka matlab kya ho"
+  },
+  "asset classification": {
+    "id": "faq-027",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "assets ka matlab kya ho"
+  },
+  "liabilities ka matlab kya ho": {
+    "id": "faq-028",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "liabilities ka matlab kya ho"
+  },
+  "current liabilities": {
+    "id": "faq-028",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "liabilities ka matlab kya ho"
+  },
+  "non-current liabilities": {
+    "id": "faq-028",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "liabilities ka matlab kya ho"
+  },
+  "liability examples": {
+    "id": "faq-028",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "liabilities ka matlab kya ho"
+  },
+  "equity ka matlab kya ho": {
+    "id": "faq-029",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "equity ka matlab kya ho"
+  },
+  "stockholders equity": {
+    "id": "faq-029",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "equity ka matlab kya ho"
+  },
+  "owners equity": {
+    "id": "faq-029",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "equity ka matlab kya ho"
+  },
+  "retained earnings": {
+    "id": "faq-029",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "equity ka matlab kya ho"
+  },
+  "revenue ka matlab kya ho": {
+    "id": "faq-030",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "revenue ka matlab kya ho"
+  },
+  "sales revenue": {
+    "id": "faq-030",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "revenue ka matlab kya ho"
+  },
+  "operating vs non-operating revenue": {
+    "id": "faq-030",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "revenue ka matlab kya ho"
+  },
+  "expense ka matlab kya ho": {
+    "id": "faq-031",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "expense ka matlab kya ho"
+  },
+  "operating expenses": {
+    "id": "faq-031",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "expense ka matlab kya ho"
+  },
+  "capital expenditure": {
+    "id": "faq-031",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "expense ka matlab kya ho"
+  },
+  "profit ka matlab kya ho": {
+    "id": "faq-032",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "profit ka matlab kya ho"
+  },
+  "gross profit": {
+    "id": "faq-032",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "profit ka matlab kya ho"
+  },
+  "net profit": {
+    "id": "faq-032",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "profit ka matlab kya ho"
+  },
+  "operating profit": {
+    "id": "faq-032",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "profit ka matlab kya ho"
+  },
+  "loss ka matlab kya ho": {
+    "id": "faq-033",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "loss ka matlab kya ho"
+  },
+  "loss analysis": {
+    "id": "faq-033",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "loss ka matlab kya ho"
+  },
+  "breakeven": {
+    "id": "faq-033",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "loss ka matlab kya ho"
+  },
+  "cost control": {
+    "id": "faq-033",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "loss ka matlab kya ho"
+  },
+  "cash flow ka matlab kya ho": {
+    "id": "faq-034",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "cash flow ka matlab kya ho"
+  },
+  "operating cash flow": {
+    "id": "faq-034",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "cash flow ka matlab kya ho"
+  },
+  "investing cash flow": {
+    "id": "faq-034",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "cash flow ka matlab kya ho"
+  },
+  "financing cash flow": {
+    "id": "faq-034",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "cash flow ka matlab kya ho"
+  },
+  "cash flow": {
+    "id": "faq-056",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "cash management ka matlab kya ho"
+  },
+  "reconciliation ka matlab kya ho": {
+    "id": "faq-035",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "reconciliation ka matlab kya ho"
+  },
+  "bank reconciliation": {
+    "id": "faq-035",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "reconciliation ka matlab kya ho"
+  },
+  "cash reconciliation": {
+    "id": "faq-035",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "reconciliation ka matlab kya ho"
+  },
+  "receivable reconciliation": {
+    "id": "faq-035",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "reconciliation ka matlab kya ho"
+  },
+  "vat on different products": {
+    "id": "faq-036",
+    "topic": "tax",
+    "question_type": "calculation",
+    "question_normalized": "vat kasari calculate garnu"
+  },
+  "vat exempted items": {
+    "id": "faq-036",
+    "topic": "tax",
+    "question_type": "calculation",
+    "question_normalized": "vat kasari calculate garnu"
+  },
+  "vat return": {
+    "id": "faq-036",
+    "topic": "tax",
+    "question_type": "calculation",
+    "question_normalized": "vat kasari calculate garnu"
+  },
+  "tds rates": {
+    "id": "faq-037",
+    "topic": "tax",
+    "question_type": "calculation",
+    "question_normalized": "tds kasari calculate garnu"
+  },
+  "tds deposit": {
+    "id": "faq-037",
+    "topic": "tax",
+    "question_type": "calculation",
+    "question_normalized": "tds kasari calculate garnu"
+  },
+  "tds certificate": {
+    "id": "faq-037",
+    "topic": "tax",
+    "question_type": "calculation",
+    "question_normalized": "tds kasari calculate garnu"
+  },
+  "gratuity kasari calculate garnu": {
+    "id": "faq-038",
+    "topic": "employee_benefits",
+    "question_type": "calculation",
+    "question_normalized": "gratuity kasari calculate garnu"
+  },
+  "gratuity deduction": {
+    "id": "faq-038",
+    "topic": "employee_benefits",
+    "question_type": "calculation",
+    "question_normalized": "gratuity kasari calculate garnu"
+  },
+  "ssf contribution kasari calculate garnu": {
+    "id": "faq-039",
+    "topic": "employee_benefits",
+    "question_type": "calculation",
+    "question_normalized": "ssf contribution kasari calculate garnu"
+  },
+  "ssf benefits": {
+    "id": "faq-039",
+    "topic": "employee_benefits",
+    "question_type": "calculation",
+    "question_normalized": "ssf contribution kasari calculate garnu"
+  },
+  "ssf contribution late": {
+    "id": "faq-039",
+    "topic": "employee_benefits",
+    "question_type": "calculation",
+    "question_normalized": "ssf contribution kasari calculate garnu"
+  },
+  "double entry bookkeeping ka matlab kya ho": {
+    "id": "faq-040",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "double entry bookkeeping ka matlab kya ho"
+  },
+  "single entry": {
+    "id": "faq-040",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "double entry bookkeeping ka matlab kya ho"
+  },
+  "chart of accounts": {
+    "id": "faq-040",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "double entry bookkeeping ka matlab kya ho"
+  },
+  "double entry bookkeeping": {
+    "id": "faq-040",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "double entry bookkeeping ka matlab kya ho"
+  },
+  "depreciation ka matlab kya ho": {
+    "id": "faq-041",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "depreciation ka matlab kya ho"
+  },
+  "depreciation methods": {
+    "id": "faq-041",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "depreciation ka matlab kya ho"
+  },
+  "accumulated depreciation": {
+    "id": "faq-041",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "depreciation ka matlab kya ho"
+  },
+  "salvage value": {
+    "id": "faq-041",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "depreciation ka matlab kya ho"
+  },
+  "amortization ka matlab kya ho": {
+    "id": "faq-042",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "amortization ka matlab kya ho"
+  },
+  "intangible assets": {
+    "id": "faq-042",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "amortization ka matlab kya ho"
+  },
+  "amortization schedule": {
+    "id": "faq-042",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "amortization ka matlab kya ho"
+  },
+  "goodwill amortization": {
+    "id": "faq-042",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "amortization ka matlab kya ho"
+  },
+  "provision ka matlab kya ho": {
+    "id": "faq-043",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "provision ka matlab kya ho"
+  },
+  "doubtful debts": {
+    "id": "faq-043",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "provision ka matlab kya ho"
+  },
+  "bad debts provision": {
+    "id": "faq-043",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "provision ka matlab kya ho"
+  },
+  "contingent liabilities": {
+    "id": "faq-043",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "provision ka matlab kya ho"
+  },
+  "goodwill ka matlab kya ho": {
+    "id": "faq-044",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "goodwill ka matlab kya ho"
+  },
+  "goodwill impairment": {
+    "id": "faq-044",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "goodwill ka matlab kya ho"
+  },
+  "asset ka valuation kaise hota hai": {
+    "id": "faq-045",
+    "topic": "accounting",
+    "question_type": "process",
+    "question_normalized": "asset ka valuation kaise hota hai"
+  },
+  "inventory valuation": {
+    "id": "faq-045",
+    "topic": "accounting",
+    "question_type": "process",
+    "question_normalized": "asset ka valuation kaise hota hai"
+  },
+  "fixed asset valuation": {
+    "id": "faq-045",
+    "topic": "accounting",
+    "question_type": "process",
+    "question_normalized": "asset ka valuation kaise hota hai"
+  },
+  "fair value": {
+    "id": "faq-045",
+    "topic": "accounting",
+    "question_type": "process",
+    "question_normalized": "asset ka valuation kaise hota hai"
+  },
+  "inventory management ka matlab kya ho": {
+    "id": "faq-046",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "inventory management ka matlab kya ho"
+  },
+  "fifo method": {
+    "id": "faq-046",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "inventory management ka matlab kya ho"
+  },
+  "lifo method": {
+    "id": "faq-046",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "inventory management ka matlab kya ho"
+  },
+  "weighted average method": {
+    "id": "faq-046",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "inventory management ka matlab kya ho"
+  },
+  "inventory management": {
+    "id": "faq-092",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "inventory turnover ratio ka matlab kya ho"
+  },
+  "fifo method ka matlab kya ho": {
+    "id": "faq-047",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "fifo method ka matlab kya ho"
+  },
+  "fifo vs lifo": {
+    "id": "faq-047",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "fifo method ka matlab kya ho"
+  },
+  "weighted average": {
+    "id": "faq-047",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "fifo method ka matlab kya ho"
+  },
+  "lifo method ka matlab kya ho": {
+    "id": "faq-048",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "lifo method ka matlab kya ho"
+  },
+  "cost of goods sold cogs ka matlab kya ho": {
+    "id": "faq-049",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "cost of goods sold cogs ka matlab kya ho"
+  },
+  "cost of goods sold (cogs) ka matlab kya ho": {
+    "id": "faq-049",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "cost of goods sold cogs ka matlab kya ho"
+  },
+  "cost of goods purchased": {
+    "id": "faq-049",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "cost of goods sold cogs ka matlab kya ho"
+  },
+  "cost of goods sold cogs": {
+    "id": "faq-049",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "cost of goods sold cogs ka matlab kya ho"
+  },
+  "account receivable ka matlab kya ho": {
+    "id": "faq-050",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "account receivable ka matlab kya ho"
+  },
+  "accounts payable": {
+    "id": "faq-050",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "account receivable ka matlab kya ho"
+  },
+  "bad debts": {
+    "id": "faq-050",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "account receivable ka matlab kya ho"
+  },
+  "aged receivables": {
+    "id": "faq-050",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "account receivable ka matlab kya ho"
+  },
+  "account receivable": {
+    "id": "faq-050",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "account receivable ka matlab kya ho"
+  },
+  "account payable ka matlab kya ho": {
+    "id": "faq-051",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "account payable ka matlab kya ho"
+  },
+  "accounts receivable": {
+    "id": "faq-051",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "account payable ka matlab kya ho"
+  },
+  "payable aging": {
+    "id": "faq-051",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "account payable ka matlab kya ho"
+  },
+  "payment terms": {
+    "id": "faq-051",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "account payable ka matlab kya ho"
+  },
+  "account payable": {
+    "id": "faq-051",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "account payable ka matlab kya ho"
+  },
+  "audit ka matlab kya ho": {
+    "id": "faq-052",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "audit ka matlab kya ho"
+  },
+  "internal audit": {
+    "id": "faq-052",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "audit ka matlab kya ho"
+  },
+  "external audit": {
+    "id": "faq-052",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "audit ka matlab kya ho"
+  },
+  "audit report": {
+    "id": "faq-052",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "audit ka matlab kya ho"
+  },
+  "tax audit ka matlab kya ho": {
+    "id": "faq-053",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "tax audit ka matlab kya ho"
+  },
+  "tax return": {
+    "id": "faq-053",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "tax audit ka matlab kya ho"
+  },
+  "tax compliance": {
+    "id": "faq-053",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "tax audit ka matlab kya ho"
+  },
+  "tax liability": {
+    "id": "faq-053",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "tax audit ka matlab kya ho"
+  },
+  "tax audit": {
+    "id": "faq-053",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "tax audit ka matlab kya ho"
+  },
+  "tax return kasari bharu": {
+    "id": "faq-054",
+    "topic": "tax",
+    "question_type": "process",
+    "question_normalized": "tax return kasari bharu"
+  },
+  "tax return deadline": {
+    "id": "faq-054",
+    "topic": "tax",
+    "question_type": "process",
+    "question_normalized": "tax return kasari bharu"
+  },
+  "tax return form": {
+    "id": "faq-054",
+    "topic": "tax",
+    "question_type": "process",
+    "question_normalized": "tax return kasari bharu"
+  },
+  "internal control ka matlab kya ho": {
+    "id": "faq-055",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "internal control ka matlab kya ho"
+  },
+  "segregation of duties": {
+    "id": "faq-055",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "internal control ka matlab kya ho"
+  },
+  "control procedures": {
+    "id": "faq-055",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "internal control ka matlab kya ho"
+  },
+  "internal control": {
+    "id": "faq-101",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "fraud detection ka matlab kya ho"
+  },
+  "cash management ka matlab kya ho": {
+    "id": "faq-056",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "cash management ka matlab kya ho"
+  },
+  "working capital": {
+    "id": "faq-056",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "cash management ka matlab kya ho"
+  },
+  "liquidity management": {
+    "id": "faq-056",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "cash management ka matlab kya ho"
+  },
+  "cash management": {
+    "id": "faq-056",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "cash management ka matlab kya ho"
+  },
+  "working capital ka matlab kya ho": {
+    "id": "faq-057",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "working capital ka matlab kya ho"
+  },
+  "current ratio": {
+    "id": "faq-057",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "working capital ka matlab kya ho"
+  },
+  "quick ratio": {
+    "id": "faq-057",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "working capital ka matlab kya ho"
+  },
+  "liquidity ratios": {
+    "id": "faq-057",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "working capital ka matlab kya ho"
+  },
+  "current ratio ka matlab kya ho": {
+    "id": "faq-058",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "current ratio ka matlab kya ho"
+  },
+  "debt ratio": {
+    "id": "faq-058",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "current ratio ka matlab kya ho"
+  },
+  "liquidity analysis": {
+    "id": "faq-058",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "current ratio ka matlab kya ho"
+  },
+  "debt to equity ratio ka matlab kya ho": {
+    "id": "faq-059",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "debt to equity ratio ka matlab kya ho"
+  },
+  "equity ratio": {
+    "id": "faq-059",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "debt to equity ratio ka matlab kya ho"
+  },
+  "financial leverage": {
+    "id": "faq-059",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "debt to equity ratio ka matlab kya ho"
+  },
+  "debt to equity ratio": {
+    "id": "faq-059",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "debt to equity ratio ka matlab kya ho"
+  },
+  "roa ka matlab kya ho": {
+    "id": "faq-060",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "roa ka matlab kya ho"
+  },
+  "roe": {
+    "id": "faq-060",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "roa ka matlab kya ho"
+  },
+  "profit margin": {
+    "id": "faq-060",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "roa ka matlab kya ho"
+  },
+  "return ratios": {
+    "id": "faq-060",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "roa ka matlab kya ho"
+  },
+  "roe ka matlab kya ho": {
+    "id": "faq-061",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "roe ka matlab kya ho"
+  },
+  "roa": {
+    "id": "faq-061",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "roe ka matlab kya ho"
+  },
+  "return metrics": {
+    "id": "faq-061",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "roe ka matlab kya ho"
+  },
+  "consolidation ka matlab kya ho": {
+    "id": "faq-062",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "consolidation ka matlab kya ho"
+  },
+  "subsidiary": {
+    "id": "faq-062",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "consolidation ka matlab kya ho"
+  },
+  "parent company": {
+    "id": "faq-062",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "consolidation ka matlab kya ho"
+  },
+  "consolidated balance sheet": {
+    "id": "faq-062",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "consolidation ka matlab kya ho"
+  },
+  "forex accounting ka matlab kya ho": {
+    "id": "faq-063",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "forex accounting ka matlab kya ho"
+  },
+  "exchange rate": {
+    "id": "faq-063",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "forex accounting ka matlab kya ho"
+  },
+  "exchange gain loss": {
+    "id": "faq-063",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "forex accounting ka matlab kya ho"
+  },
+  "foreign currency translation": {
+    "id": "faq-063",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "forex accounting ka matlab kya ho"
+  },
+  "forex accounting": {
+    "id": "faq-063",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "forex accounting ka matlab kya ho"
+  },
+  "budget ka matlab kya ho": {
+    "id": "faq-064",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "budget ka matlab kya ho"
+  },
+  "budgeting process": {
+    "id": "faq-064",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "budget ka matlab kya ho"
+  },
+  "budget variance": {
+    "id": "faq-064",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "budget ka matlab kya ho"
+  },
+  "variance analysis ka matlab kya ho": {
+    "id": "faq-065",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "variance analysis ka matlab kya ho"
+  },
+  "cost variance": {
+    "id": "faq-065",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "variance analysis ka matlab kya ho"
+  },
+  "volume variance": {
+    "id": "faq-065",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "variance analysis ka matlab kya ho"
+  },
+  "variance analysis": {
+    "id": "faq-067",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "standard costing ka matlab kya ho"
+  },
+  "cost accounting ka matlab kya ho": {
+    "id": "faq-066",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "cost accounting ka matlab kya ho"
+  },
+  "direct costs": {
+    "id": "faq-066",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "cost accounting ka matlab kya ho"
+  },
+  "indirect costs": {
+    "id": "faq-066",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "cost accounting ka matlab kya ho"
+  },
+  "costing methods": {
+    "id": "faq-066",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "cost accounting ka matlab kya ho"
+  },
+  "cost accounting": {
+    "id": "faq-066",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "cost accounting ka matlab kya ho"
+  },
+  "standard costing ka matlab kya ho": {
+    "id": "faq-067",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "standard costing ka matlab kya ho"
+  },
+  "standard cost": {
+    "id": "faq-067",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "standard costing ka matlab kya ho"
+  },
+  "standard costing": {
+    "id": "faq-067",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "standard costing ka matlab kya ho"
+  },
+  "break-even point ka matlab kya ho": {
+    "id": "faq-068",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "break-even point ka matlab kya ho"
+  },
+  "contribution margin": {
+    "id": "faq-068",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "break-even point ka matlab kya ho"
+  },
+  "fixed costs": {
+    "id": "faq-068",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "break-even point ka matlab kya ho"
+  },
+  "variable costs": {
+    "id": "faq-068",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "break-even point ka matlab kya ho"
+  },
+  "break-even point": {
+    "id": "faq-068",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "break-even point ka matlab kya ho"
+  },
+  "contribution margin ka matlab kya ho": {
+    "id": "faq-069",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "contribution margin ka matlab kya ho"
+  },
+  "break-even": {
+    "id": "faq-069",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "contribution margin ka matlab kya ho"
+  },
+  "fixed costs ka matlab kya ho": {
+    "id": "faq-070",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "fixed costs ka matlab kya ho"
+  },
+  "semi-variable costs": {
+    "id": "faq-070",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "fixed costs ka matlab kya ho"
+  },
+  "cost behavior": {
+    "id": "faq-070",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "fixed costs ka matlab kya ho"
+  },
+  "variable costs ka matlab kya ho": {
+    "id": "faq-071",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "variable costs ka matlab kya ho"
+  },
+  "semi-variable costs ka matlab kya ho": {
+    "id": "faq-072",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "semi-variable costs ka matlab kya ho"
+  },
+  "product costing ka matlab kya ho": {
+    "id": "faq-073",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "product costing ka matlab kya ho"
+  },
+  "absorption costing": {
+    "id": "faq-073",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "product costing ka matlab kya ho"
+  },
+  "variable costing": {
+    "id": "faq-073",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "product costing ka matlab kya ho"
+  },
+  "pricing": {
+    "id": "faq-073",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "product costing ka matlab kya ho"
+  },
+  "product costing": {
+    "id": "faq-073",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "product costing ka matlab kya ho"
+  },
+  "cash basis accounting ka matlab kya ho": {
+    "id": "faq-074",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "cash basis accounting ka matlab kya ho"
+  },
+  "accrual basis": {
+    "id": "faq-074",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "cash basis accounting ka matlab kya ho"
+  },
+  "cash vs accrual": {
+    "id": "faq-074",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "cash basis accounting ka matlab kya ho"
+  },
+  "accounting methods": {
+    "id": "faq-074",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "cash basis accounting ka matlab kya ho"
+  },
+  "cash basis accounting": {
+    "id": "faq-074",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "cash basis accounting ka matlab kya ho"
+  },
+  "accrual basis accounting ka matlab kya ho": {
+    "id": "faq-075",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "accrual basis accounting ka matlab kya ho"
+  },
+  "cash basis": {
+    "id": "faq-075",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "accrual basis accounting ka matlab kya ho"
+  },
+  "accrual basis accounting": {
+    "id": "faq-075",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "accrual basis accounting ka matlab kya ho"
+  },
+  "tally kasari use karnu": {
+    "id": "faq-076",
+    "topic": "software",
+    "question_type": "process",
+    "question_normalized": "tally kasari use karnu"
+  },
+  "tally shortcut keys": {
+    "id": "faq-076",
+    "topic": "software",
+    "question_type": "process",
+    "question_normalized": "tally kasari use karnu"
+  },
+  "tally chart of accounts": {
+    "id": "faq-076",
+    "topic": "software",
+    "question_type": "process",
+    "question_normalized": "tally kasari use karnu"
+  },
+  "tally reports": {
+    "id": "faq-076",
+    "topic": "software",
+    "question_type": "process",
+    "question_normalized": "tally kasari use karnu"
+  },
+  "busy kasari use karnu": {
+    "id": "faq-077",
+    "topic": "software",
+    "question_type": "process",
+    "question_normalized": "busy kasari use karnu"
+  },
+  "busy features": {
+    "id": "faq-077",
+    "topic": "software",
+    "question_type": "process",
+    "question_normalized": "busy kasari use karnu"
+  },
+  "busy chart of accounts": {
+    "id": "faq-077",
+    "topic": "software",
+    "question_type": "process",
+    "question_normalized": "busy kasari use karnu"
+  },
+  "busy reporting": {
+    "id": "faq-077",
+    "topic": "software",
+    "question_type": "process",
+    "question_normalized": "busy kasari use karnu"
+  },
+  "pan certificate kaise laye": {
+    "id": "faq-078",
+    "topic": "registration",
+    "question_type": "process",
+    "question_normalized": "pan certificate kaise laye"
+  },
+  "pan number": {
+    "id": "faq-078",
+    "topic": "registration",
+    "question_type": "process",
+    "question_normalized": "pan certificate kaise laye"
+  },
+  "pan certificate copy": {
+    "id": "faq-078",
+    "topic": "registration",
+    "question_type": "process",
+    "question_normalized": "pan certificate kaise laye"
+  },
+  "pan certificate": {
+    "id": "faq-078",
+    "topic": "registration",
+    "question_type": "process",
+    "question_normalized": "pan certificate kaise laye"
+  },
+  "vat registration kasari garnu": {
+    "id": "faq-079",
+    "topic": "tax",
+    "question_type": "process",
+    "question_normalized": "vat registration kasari garnu"
+  },
+  "vat compliance": {
+    "id": "faq-079",
+    "topic": "tax",
+    "question_type": "process",
+    "question_normalized": "vat registration kasari garnu"
+  },
+  "vat invoice": {
+    "id": "faq-079",
+    "topic": "tax",
+    "question_type": "process",
+    "question_normalized": "vat registration kasari garnu"
+  },
+  "vat registration": {
+    "id": "faq-080",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "gst registration ka matlab kya ho"
+  },
+  "gst registration ka matlab kya ho": {
+    "id": "faq-080",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "gst registration ka matlab kya ho"
+  },
+  "gst compliance": {
+    "id": "faq-080",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "gst registration ka matlab kya ho"
+  },
+  "tax registration": {
+    "id": "faq-080",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "gst registration ka matlab kya ho"
+  },
+  "gst registration": {
+    "id": "faq-080",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "gst registration ka matlab kya ho"
+  },
+  "tds calculation": {
+    "id": "faq-081",
+    "topic": "tax",
+    "question_type": "process",
+    "question_normalized": "tds deposit kasari garnu"
+  },
+  "tds return": {
+    "id": "faq-081",
+    "topic": "tax",
+    "question_type": "process",
+    "question_normalized": "tds deposit kasari garnu"
+  },
+  "income tax nepal ma kati ho": {
+    "id": "faq-082",
+    "topic": "tax",
+    "question_type": "calculation",
+    "question_normalized": "income tax nepal ma kati ho"
+  },
+  "income tax slab": {
+    "id": "faq-082",
+    "topic": "tax",
+    "question_type": "calculation",
+    "question_normalized": "income tax nepal ma kati ho"
+  },
+  "income tax return": {
+    "id": "faq-082",
+    "topic": "tax",
+    "question_type": "calculation",
+    "question_normalized": "income tax nepal ma kati ho"
+  },
+  "tax deduction": {
+    "id": "faq-082",
+    "topic": "tax",
+    "question_type": "calculation",
+    "question_normalized": "income tax nepal ma kati ho"
+  },
+  "income tax nepal ma": {
+    "id": "faq-082",
+    "topic": "tax",
+    "question_type": "calculation",
+    "question_normalized": "income tax nepal ma kati ho"
+  },
+  "corporate tax ka matlab kya ho": {
+    "id": "faq-083",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "corporate tax ka matlab kya ho"
+  },
+  "income tax": {
+    "id": "faq-083",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "corporate tax ka matlab kya ho"
+  },
+  "corporate tax rate": {
+    "id": "faq-083",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "corporate tax ka matlab kya ho"
+  },
+  "corporate tax": {
+    "id": "faq-083",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "corporate tax ka matlab kya ho"
+  },
+  "tax deduction ka matlab kya ho": {
+    "id": "faq-084",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "tax deduction ka matlab kya ho"
+  },
+  "tax credit": {
+    "id": "faq-084",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "tax deduction ka matlab kya ho"
+  },
+  "tax planning": {
+    "id": "faq-084",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "tax deduction ka matlab kya ho"
+  },
+  "deductible expenses": {
+    "id": "faq-084",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "tax deduction ka matlab kya ho"
+  },
+  "tax credit ka matlab kya ho": {
+    "id": "faq-085",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "tax credit ka matlab kya ho"
+  },
+  "tax credits": {
+    "id": "faq-085",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "tax credit ka matlab kya ho"
+  },
+  "tax planning ka matlab kya ho": {
+    "id": "faq-086",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "tax planning ka matlab kya ho"
+  },
+  "tax strategy": {
+    "id": "faq-086",
+    "topic": "tax",
+    "question_type": "definition",
+    "question_normalized": "tax planning ka matlab kya ho"
+  },
+  "fiscal year ka matlab kya ho": {
+    "id": "faq-087",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "fiscal year ka matlab kya ho"
+  },
+  "financial year": {
+    "id": "faq-087",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "fiscal year ka matlab kya ho"
+  },
+  "year end closing": {
+    "id": "faq-087",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "fiscal year ka matlab kya ho"
+  },
+  "fiscal year reporting": {
+    "id": "faq-087",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "fiscal year ka matlab kya ho"
+  },
+  "fiscal year": {
+    "id": "faq-087",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "fiscal year ka matlab kya ho"
+  },
+  "year-end closing ka matlab kya ho": {
+    "id": "faq-088",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "year-end closing ka matlab kya ho"
+  },
+  "closing entries": {
+    "id": "faq-088",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "year-end closing ka matlab kya ho"
+  },
+  "profit & loss account": {
+    "id": "faq-088",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "year-end closing ka matlab kya ho"
+  },
+  "year-end closing": {
+    "id": "faq-088",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "year-end closing ka matlab kya ho"
+  },
+  "profit and loss account ka matlab kya ho": {
+    "id": "faq-089",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "profit and loss account ka matlab kya ho"
+  },
+  "revenue": {
+    "id": "faq-089",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "profit and loss account ka matlab kya ho"
+  },
+  "profit and loss account": {
+    "id": "faq-089",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "profit and loss account ka matlab kya ho"
+  },
+  "retained earnings ka matlab kya ho": {
+    "id": "faq-090",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "retained earnings ka matlab kya ho"
+  },
+  "dividend": {
+    "id": "faq-090",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "retained earnings ka matlab kya ho"
+  },
+  "equity": {
+    "id": "faq-090",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "retained earnings ka matlab kya ho"
+  },
+  "owner withdrawal": {
+    "id": "faq-090",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "retained earnings ka matlab kya ho"
+  },
+  "dividend ka matlab kya ho": {
+    "id": "faq-091",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "dividend ka matlab kya ho"
+  },
+  "dividend payment": {
+    "id": "faq-091",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "dividend ka matlab kya ho"
+  },
+  "dividend policy": {
+    "id": "faq-091",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "dividend ka matlab kya ho"
+  },
+  "inventory turnover ratio ka matlab kya ho": {
+    "id": "faq-092",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "inventory turnover ratio ka matlab kya ho"
+  },
+  "days inventory outstanding": {
+    "id": "faq-092",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "inventory turnover ratio ka matlab kya ho"
+  },
+  "inventory turnover ratio": {
+    "id": "faq-092",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "inventory turnover ratio ka matlab kya ho"
+  },
+  "receivable turnover ratio ka matlab kya ho": {
+    "id": "faq-093",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "receivable turnover ratio ka matlab kya ho"
+  },
+  "days sales outstanding": {
+    "id": "faq-093",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "receivable turnover ratio ka matlab kya ho"
+  },
+  "credit policy": {
+    "id": "faq-093",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "receivable turnover ratio ka matlab kya ho"
+  },
+  "collection efficiency": {
+    "id": "faq-093",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "receivable turnover ratio ka matlab kya ho"
+  },
+  "receivable turnover ratio": {
+    "id": "faq-093",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "receivable turnover ratio ka matlab kya ho"
+  },
+  "payable turnover ratio ka matlab kya ho": {
+    "id": "faq-094",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "payable turnover ratio ka matlab kya ho"
+  },
+  "days payable outstanding": {
+    "id": "faq-094",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "payable turnover ratio ka matlab kya ho"
+  },
+  "payable turnover ratio": {
+    "id": "faq-094",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "payable turnover ratio ka matlab kya ho"
+  },
+  "operating cycle ka matlab kya ho": {
+    "id": "faq-095",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "operating cycle ka matlab kya ho"
+  },
+  "cash conversion cycle": {
+    "id": "faq-095",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "operating cycle ka matlab kya ho"
+  },
+  "operating efficiency": {
+    "id": "faq-095",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "operating cycle ka matlab kya ho"
+  },
+  "operating cycle": {
+    "id": "faq-095",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "operating cycle ka matlab kya ho"
+  },
+  "accounting standards ka matlab kya ho": {
+    "id": "faq-096",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "accounting standards ka matlab kya ho"
+  },
+  "ifrs": {
+    "id": "faq-096",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "accounting standards ka matlab kya ho"
+  },
+  "gaap": {
+    "id": "faq-096",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "accounting standards ka matlab kya ho"
+  },
+  "accounting policies": {
+    "id": "faq-096",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "accounting standards ka matlab kya ho"
+  },
+  "accounting standards": {
+    "id": "faq-096",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "accounting standards ka matlab kya ho"
+  },
+  "revenue recognition ka matlab kya ho": {
+    "id": "faq-097",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "revenue recognition ka matlab kya ho"
+  },
+  "revenue policy": {
+    "id": "faq-097",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "revenue recognition ka matlab kya ho"
+  },
+  "income recognition": {
+    "id": "faq-097",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "revenue recognition ka matlab kya ho"
+  },
+  "matching principle ka matlab kya ho": {
+    "id": "faq-098",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "matching principle ka matlab kya ho"
+  },
+  "accounting principles": {
+    "id": "faq-098",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "matching principle ka matlab kya ho"
+  },
+  "matching principle": {
+    "id": "faq-098",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "matching principle ka matlab kya ho"
+  },
+  "materiality ka matlab kya ho": {
+    "id": "faq-099",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "materiality ka matlab kya ho"
+  },
+  "accounting estimates": {
+    "id": "faq-099",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "materiality ka matlab kya ho"
+  },
+  "going concern assumption ka matlab kya ho": {
+    "id": "faq-100",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "going concern assumption ka matlab kya ho"
+  },
+  "accounting assumptions": {
+    "id": "faq-100",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "going concern assumption ka matlab kya ho"
+  },
+  "liquidation value": {
+    "id": "faq-100",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "going concern assumption ka matlab kya ho"
+  },
+  "bankruptcy": {
+    "id": "faq-100",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "going concern assumption ka matlab kya ho"
+  },
+  "going concern assumption": {
+    "id": "faq-100",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "going concern assumption ka matlab kya ho"
+  },
+  "fraud detection ka matlab kya ho": {
+    "id": "faq-101",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "fraud detection ka matlab kya ho"
+  },
+  "audit": {
+    "id": "faq-101",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "fraud detection ka matlab kya ho"
+  },
+  "fraud prevention": {
+    "id": "faq-101",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "fraud detection ka matlab kya ho"
+  },
+  "fraud detection": {
+    "id": "faq-101",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "fraud detection ka matlab kya ho"
+  },
+  "financial analysis ka matlab kya ho": {
+    "id": "faq-102",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "financial analysis ka matlab kya ho"
+  },
+  "financial ratios": {
+    "id": "faq-102",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "financial analysis ka matlab kya ho"
+  },
+  "trend analysis": {
+    "id": "faq-102",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "financial analysis ka matlab kya ho"
+  },
+  "comparative analysis": {
+    "id": "faq-102",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "financial analysis ka matlab kya ho"
+  },
+  "financial analysis": {
+    "id": "faq-102",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "financial analysis ka matlab kya ho"
+  },
+  "investment analysis ka matlab kya ho": {
+    "id": "faq-103",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "investment analysis ka matlab kya ho"
+  },
+  "investment returns": {
+    "id": "faq-103",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "investment analysis ka matlab kya ho"
+  },
+  "risk analysis": {
+    "id": "faq-103",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "investment analysis ka matlab kya ho"
+  },
+  "portfolio management": {
+    "id": "faq-103",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "investment analysis ka matlab kya ho"
+  },
+  "investment analysis": {
+    "id": "faq-103",
+    "topic": "accounting",
+    "question_type": "definition",
+    "question_normalized": "investment analysis ka matlab kya ho"
+  }
+}

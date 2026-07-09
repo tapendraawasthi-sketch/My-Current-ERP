@@ -1,0 +1,3038 @@
+[
+  {
+    "id": "taxfaq-001",
+    "topic": "VAT registration threshold",
+    "topic_key": "vat_registration_threshold",
+    "question": "VAT register garna kati turnover chahiyo?",
+    "question_ne": "VAT register garna kati turnover chahiyo?",
+    "question_en": "What is the VAT registration threshold?",
+    "question_normalized": "vat register garna kati turnover chahiyo",
+    "question_type": "definition",
+    "answer_ne": "Annual turnover Rs 50 lakh (goods) athawa Rs 20 lakh (services) bhanda badhi bhaye VAT mandatory registration garna parcha. Voluntary registration pani garna sakincha.",
+    "answer_en": "VAT registration is mandatory if annual turnover exceeds Rs 50 lakh for goods or Rs 20 lakh for services. Voluntary registration is also allowed.",
+    "answer_short_ne": "Annual turnover Rs 50 lakh (goods) athawa Rs 20 lakh (services) bhanda badhi bhaye VAT mandatory registration garna parcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "VAT Act 2052",
+    "related_topics": [
+      "VAT rate",
+      "VAT return",
+      "VAT refund"
+    ],
+    "common_followups": [
+      "VAT kati % ho?",
+      "VAT return kahile file garne?"
+    ],
+    "related_questions": [
+      "VAT kati % ho?",
+      "VAT return kahile file garne?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-002",
+    "topic": "VAT rate",
+    "topic_key": "vat_rate",
+    "question": "Nepal ma VAT ko dar kati cha?",
+    "question_ne": "Nepal ma VAT ko dar kati cha?",
+    "question_en": "What is the VAT rate in Nepal?",
+    "question_normalized": "nepal ma vat ko dar kati cha",
+    "question_type": "definition",
+    "answer_ne": "Nepal ma VAT ko single standard rate 13% cha. Kehi specific goods ra services ma exemption cha.",
+    "answer_en": "Nepal has a single standard VAT rate of 13%. Some specific goods and services are exempt.",
+    "answer_short_ne": "Nepal ma VAT ko single standard rate 13% cha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "VAT Act 2052, Schedule 1",
+    "related_topics": [
+      "VAT exemption",
+      "VAT registration threshold",
+      "VAT return"
+    ],
+    "common_followups": [
+      "Kun saman ma VAT chhut cha?",
+      "VAT register garna kati turnover chahiyo?"
+    ],
+    "related_questions": [
+      "Kun saman ma VAT chhut cha?",
+      "VAT register garna kati turnover chahiyo?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-003",
+    "topic": "VAT return filing",
+    "topic_key": "vat_return_filing",
+    "question": "VAT return kahile file garne?",
+    "question_ne": "VAT return kahile file garne?",
+    "question_en": "When to file VAT return?",
+    "question_normalized": "vat return kahile file garne",
+    "question_type": "definition",
+    "answer_ne": "VAT return har mahina ko 25 gate bhanda agadi file garera tax tirda huncha. Barsa ma 12 wata monthly return file garne parcha.",
+    "answer_en": "VAT returns must be filed by the 25th of the following month. A total of 12 monthly returns must be filed per year.",
+    "answer_short_ne": "VAT return har mahina ko 25 gate bhanda agadi file garera tax tirda huncha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "VAT Act 2052, Section 18",
+    "related_topics": [
+      "VAT registration threshold",
+      "VAT refund",
+      "Penalty"
+    ],
+    "common_followups": [
+      "VAT register garna kati turnover chahiyo?",
+      "Monthly return file nagare ke huncha?"
+    ],
+    "related_questions": [
+      "VAT register garna kati turnover chahiyo?",
+      "Monthly return file nagare ke huncha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-004",
+    "topic": "VAT refund",
+    "topic_key": "vat_refund",
+    "question": "VAT refund kasari paune?",
+    "question_ne": "VAT refund kasari paune?",
+    "question_en": "How to get VAT refund?",
+    "question_normalized": "vat refund kasari paune",
+    "question_type": "definition",
+    "answer_ne": "Zero rated goods ko bikri athawa excess input tax bhayema VAT refund claim garna sakincha. Niyam anusar IRD ma niwedan gari refund pauna sakcha.",
+    "answer_en": "VAT refund can be claimed for zero-rated goods sales or excess input tax. A claim application must be submitted to IRD as per rules.",
+    "answer_short_ne": "Zero rated goods ko bikri athawa excess input tax bhayema VAT refund claim garna sakincha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "VAT Act 2052, Section 24",
+    "related_topics": [
+      "VAT return",
+      "Input tax credit",
+      "Zero rate"
+    ],
+    "common_followups": [
+      "Zero rate ke ho?",
+      "Refund aauna kati time lagcha?"
+    ],
+    "related_questions": [
+      "Zero rate ke ho?",
+      "Refund aauna kati time lagcha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-005",
+    "topic": "Input tax credit",
+    "topic_key": "input_tax_credit",
+    "question": "Input tax credit ke ho?",
+    "question_ne": "Input tax credit ke ho?",
+    "question_en": "What is input tax credit?",
+    "question_normalized": "input tax credit ke ho",
+    "question_type": "definition",
+    "answer_ne": "Business ko lagi kinmel garda tireko VAT lai bikri garda uthayeko VAT bata ghatayera net tax nikalna sakine wyawastha lai input tax credit bhanincha.",
+    "answer_en": "Input tax credit is a mechanism that allows businesses to deduct the VAT paid on purchases from the VAT collected on sales to calculate net tax payable.",
+    "answer_short_ne": "Business ko lagi kinmel garda tireko VAT lai bikri garda uthayeko VAT bata ghatayera net tax nikalna sakine wyawastha lai input tax credit bhanincha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "VAT Act 2052, Section 12",
+    "related_topics": [
+      "VAT return",
+      "VAT refund",
+      "Tax invoice"
+    ],
+    "common_followups": [
+      "Kohi pani saman kinna le credit pauncha?",
+      "Tax invoice bina credit pauncha?"
+    ],
+    "related_questions": [
+      "Kohi pani saman kinna le credit pauncha?",
+      "Tax invoice bina credit pauncha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-006",
+    "topic": "VAT exemption",
+    "topic_key": "vat_exemption",
+    "question": "Nepal ma kun saman ma VAT chhut cha?",
+    "question_ne": "Nepal ma kun saman ma VAT chhut cha?",
+    "question_en": "Which goods are VAT exempt in Nepal?",
+    "question_normalized": "nepal ma kun saman ma vat chhut cha",
+    "question_type": "definition",
+    "answer_ne": "Krishna ko aadharbhut saman (chamal, pitho, dal), shikshya ra swasthya sewa, suwa ko saaman, kehi krishi upaj haru ma VAT chhut cha.",
+    "answer_en": "VAT exemption applies to basic food items (rice, flour, lentils), education and health services, infant supplies, and certain agricultural products.",
+    "answer_short_ne": "Krishna ko aadharbhut saman (chamal, pitho, dal), shikshya ra swasthya sewa, suwa ko saaman, kehi krishi upaj haru ma VAT chhut cha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "VAT Act 2052, Schedule 1",
+    "related_topics": [
+      "VAT rate",
+      "Zero rate",
+      "VAT registration threshold"
+    ],
+    "common_followups": [
+      "VAT rate kati ho?",
+      "Zero rate ra exempt ma ke farak cha?"
+    ],
+    "related_questions": [
+      "VAT rate kati ho?",
+      "Zero rate ra exempt ma ke farak cha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-007",
+    "topic": "Individual Income Tax Slab",
+    "topic_key": "individual_income_tax_slab",
+    "question": "Nepal ma natural person ko income tax rate kati ho?",
+    "question_ne": "Nepal ma natural person ko income tax rate kati ho?",
+    "question_en": "What are the individual income tax slabs in Nepal?",
+    "question_normalized": "nepal ma natural person ko income tax rate kati ho",
+    "question_type": "definition",
+    "answer_ne": "FY 2080/81 ma yearly income Rs 500,000 samma 1% (natural person), 5 lakh dekhi 7 lakh samma 10%, 7 lakh dekhi 20 lakh samma 20%, 20 lakh dekhi 50 lakh samma 30% ra 50 lakh bhanda mathi 36% cha.",
+    "answer_en": "For FY 2080/81, annual income up to 500k 1% (natural person), 500k-700k 10%, 700k-2M 20%, 2M-5M 30%, and above 5M 36%.",
+    "answer_short_ne": "FY 2080/81 ma yearly income Rs 500,000 samma 1% (natural person), 5 lakh dekhi 7 lakh samma 10%, 7 lakh dekhi 20 lakh samma 20%, 20 lakh dekhi 50 lakh samma 30%",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Schedule 1",
+    "related_topics": [
+      "Tax deduction",
+      "Advance tax",
+      "Tax return"
+    ],
+    "common_followups": [
+      "Couple ko lagi slab ke ho?",
+      "1% social security fund ho?"
+    ],
+    "related_questions": [
+      "Couple ko lagi slab ke ho?",
+      "1% social security fund ho?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-008",
+    "topic": "Corporate Tax Rate",
+    "topic_key": "corporate_tax_rate",
+    "question": "Nepal ma company lai corporate tax kati lagcha?",
+    "question_ne": "Nepal ma company lai corporate tax kati lagcha?",
+    "question_en": "What is the corporate tax rate in Nepal?",
+    "question_normalized": "nepal ma company lai corporate tax kati lagcha",
+    "question_type": "definition",
+    "answer_ne": "Normal business ko lagi 25% corporate tax lagcha. Banks ra financial institutions lai 30%, hydropower ra special industries lai 10-20% samma cha.",
+    "answer_en": "The normal corporate tax rate is 25%. Banks and financial institutions pay 30%, while hydropower and special industries have rates ranging from 10-20%.",
+    "answer_short_ne": "Normal business ko lagi 25% corporate tax lagcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 2",
+    "related_topics": [
+      "Tax exemption",
+      "Advance tax",
+      "TDS"
+    ],
+    "common_followups": [
+      "Micro/Small enterprise ko rate ke cha?",
+      "Dividend ma tax lagcha?"
+    ],
+    "related_questions": [
+      "Micro/Small enterprise ko rate ke cha?",
+      "Dividend ma tax lagcha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-009",
+    "topic": "Tax Deduction at Source (TDS) Rates",
+    "topic_key": "tax_deduction_at_source_tds_rates",
+    "question": "TDS rate kati kati cha?",
+    "question_ne": "TDS rate kati kati cha?",
+    "question_en": "What are the TDS rates in Nepal?",
+    "question_normalized": "tds rate kati kati cha",
+    "question_type": "definition",
+    "answer_ne": "Interest ma 5%, dividend ma 5%, rent ma 10%, commission/meeting fee ma 15%, contract payment ma 1.5% TDS kataincha. Praya 15% rate general payment ma lagu huncha.",
+    "answer_en": "TDS rates are 5% on interest, 5% on dividends, 10% on rent, 15% on commission/meeting fees, 1.5% on contract payments. Generally 15% applies to miscellaneous payments.",
+    "answer_short_ne": "Interest ma 5%, dividend ma 5%, rent ma 10%, commission/meeting fee ma 15%, contract payment ma 1.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 87/88",
+    "related_topics": [
+      "TDS deposit",
+      "TDS return",
+      "Tax credit"
+    ],
+    "common_followups": [
+      "TDS kateko paisa ka bharne?",
+      "TDS kahile katni?"
+    ],
+    "related_questions": [
+      "TDS kateko paisa ka bharne?",
+      "TDS kahile katni?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-010",
+    "topic": "TDS Deposit Timeline",
+    "topic_key": "tds_deposit_timeline",
+    "question": "TDS ko raka deposit kahile garne?",
+    "question_ne": "TDS ko raka deposit kahile garne?",
+    "question_en": "When should TDS be deposited?",
+    "question_normalized": "tds ko raka deposit kahile garne",
+    "question_type": "definition",
+    "answer_ne": "TDS katayeko mahina ko aaudo mahina 25 gate bhanda agadi Revenue Account ma jamma garne garnu parcha.",
+    "answer_en": "TDS deducted must be deposited into the Revenue Account by the 25th of the following month.",
+    "answer_short_ne": "TDS katayeko mahina ko aaudo mahina 25 gate bhanda agadi Revenue Account ma jamma garne garnu parcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 90",
+    "related_topics": [
+      "TDS return",
+      "Penalty",
+      "TDS rates"
+    ],
+    "common_followups": [
+      "Der bhayo bhane ke huncha?",
+      "eTDS garnu parcha?"
+    ],
+    "related_questions": [
+      "Der bhayo bhane ke huncha?",
+      "eTDS garnu parcha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-011",
+    "topic": "TDS Return Filing",
+    "topic_key": "tds_return_filing",
+    "question": "TDS return kahile file garne?",
+    "question_ne": "TDS return kahile file garne?",
+    "question_en": "When to file TDS return?",
+    "question_normalized": "tds return kahile file garne",
+    "question_type": "definition",
+    "answer_ne": "TDS return har mahina katayeko mahina aawadhi pachi 15 gate bhanda agadi file garna parcha. Barsa ko 12 wota return file garna parcha.",
+    "answer_en": "TDS return must be filed by the 15th of the following month after the deduction month. 12 returns must be filed annually.",
+    "answer_short_ne": "TDS return har mahina katayeko mahina aawadhi pachi 15 gate bhanda agadi file garna parcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 90",
+    "related_topics": [
+      "TDS rates",
+      "TDS deposit",
+      "Penalty"
+    ],
+    "common_followups": [
+      "TDS kateko rakam kata dekhaune?",
+      "File nagare ke fine lagcha?"
+    ],
+    "related_questions": [
+      "TDS kateko rakam kata dekhaune?",
+      "File nagare ke fine lagcha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-012",
+    "topic": "Advance Tax Installment",
+    "topic_key": "advance_tax_installment",
+    "question": "Advance tax kati kishthama tirne?",
+    "question_ne": "Advance tax kati kishthama tirne?",
+    "question_en": "How many installments for advance tax?",
+    "question_normalized": "advance tax kati kishthama tirne",
+    "question_type": "definition",
+    "answer_ne": "Assessed income ko aadhar ma 40%, 30%, 30% ko dar le Poush end, Chaitra end, ra Ashad end ma advance tax tirna parcha.",
+    "answer_en": "Advance tax is paid in three installments of 40%, 30%, 30% based on the assessed income by the end of Poush, Chaitra, and Ashad.",
+    "answer_short_ne": "Assessed income ko aadhar ma 40%, 30%, 30% ko dar le Poush end, Chaitra end, ra Ashad end ma advance tax tirna parcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 94",
+    "related_topics": [
+      "Income tax return",
+      "Penalty",
+      "Tax assessment"
+    ],
+    "common_followups": [
+      "Naya business le kati advance tax tirne?",
+      "Time ma tiriyena bhane ke huncha?"
+    ],
+    "related_questions": [
+      "Naya business le kati advance tax tirne?",
+      "Time ma tiriyena bhane ke huncha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-013",
+    "topic": "Permanent Account Number (PAN)",
+    "topic_key": "permanent_account_number_pan",
+    "question": "PAN card kasaile banauna parcha?",
+    "question_ne": "PAN card kasaile banauna parcha?",
+    "question_en": "Who needs a PAN card?",
+    "question_normalized": "pan card kasaile banauna parcha",
+    "question_type": "definition",
+    "answer_ne": "Taxable income bhaye darta huna sabai byakti ra sanstha lai PAN chaincha. Rs 500 jari kharcha tirera IRD bata PAN liya jana sakincha.",
+    "answer_en": "All individuals and entities with taxable income must register for a PAN. It can be obtained from IRD by paying a registration fee of Rs 500.",
+    "answer_short_ne": "Taxable income bhaye darta huna sabai byakti ra sanstha lai PAN chaincha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 100",
+    "related_topics": [
+      "Income tax return",
+      "TDS",
+      "Tax clearance"
+    ],
+    "common_followups": [
+      "PAN banauna ke chahincha?",
+      "Online banauna milcha?"
+    ],
+    "related_questions": [
+      "PAN banauna ke chahincha?",
+      "Online banauna milcha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-014",
+    "topic": "Income Tax Return Due Date",
+    "topic_key": "income_tax_return_due_date",
+    "question": "Income tax return kahile file garne?",
+    "question_ne": "Income tax return kahile file garne?",
+    "question_en": "When to file income tax return?",
+    "question_normalized": "income tax return kahile file garne",
+    "question_type": "definition",
+    "answer_ne": "Vyaktigat income tax return Poush end samma (3 months extension) file garna milcha. Company le aafno year end ko 6 mahina bhanda dhilo garna hudaina.",
+    "answer_en": "Personal income tax returns can be filed by the end of Poush (3 months extension). Companies must file within 6 months of their fiscal year end.",
+    "answer_short_ne": "Vyaktigat income tax return Poush end samma (3 months extension) file garna milcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 96",
+    "related_topics": [
+      "Advance tax",
+      "Penalty",
+      "Audit report"
+    ],
+    "common_followups": [
+      "Date extend garna milcha?",
+      "Return late bhaye kati penalty?"
+    ],
+    "related_questions": [
+      "Date extend garna milcha?",
+      "Return late bhaye kati penalty?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-015",
+    "topic": "Customs Import Duty",
+    "topic_key": "customs_import_duty",
+    "question": "Nepal ma customs duty kati lagcha?",
+    "question_ne": "Nepal ma customs duty kati lagcha?",
+    "question_en": "What is the customs duty in Nepal?",
+    "question_normalized": "nepal ma customs duty kati lagcha",
+    "question_type": "definition",
+    "answer_ne": "Customs duty rates 0% dekhi 60% samma HS code anusar farak parcha. Aadharbhut khadya saman ma 5-15%, luxury ma 40%+, raw materials ma 1-10% dastoor lagcha.",
+    "answer_en": "Customs duty rates vary from 0% to 60% based on HS codes. Basic food items 5-15%, luxury goods 40%+, raw materials 1-10% duty applies.",
+    "answer_short_ne": "Customs duty rates 0% dekhi 60% samma HS code anusar farak parcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Customs Act 2064",
+    "related_topics": [
+      "HS Code",
+      "Excise duty",
+      "Anti-dumping"
+    ],
+    "common_followups": [
+      "HS code kaha bata thaha paune?",
+      "Customs calculator cha?"
+    ],
+    "related_questions": [
+      "HS code kaha bata thaha paune?",
+      "Customs calculator cha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-016",
+    "topic": "Excise Duty",
+    "topic_key": "excise_duty",
+    "question": "Excise duty kati lagcha?",
+    "question_ne": "Excise duty kati lagcha?",
+    "question_en": "What is the excise duty rate?",
+    "question_normalized": "excise duty kati lagcha",
+    "question_type": "definition",
+    "answer_ne": "Excise duty surti, madyapadarth, soft drinks, luxury items ra gadi ma lagcha. Rate ad valorem (%, e.g., 25-60%) athawa specific rate (per unit) ma huncha.",
+    "answer_en": "Excise duty applies to tobacco, alcohol, soft drinks, luxury items, and vehicles. Rates are either ad valorem (%, e.g., 25-60%) or specific rates (per unit).",
+    "answer_short_ne": "Excise duty surti, madyapadarth, soft drinks, luxury items ra gadi ma lagcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Excise Act 2058",
+    "related_topics": [
+      "Customs duty",
+      "VAT",
+      "HS Code"
+    ],
+    "common_followups": [
+      "Excise duty ko sworup ke ho?",
+      "Excise return kasari file garne?"
+    ],
+    "related_questions": [
+      "Excise duty ko sworup ke ho?",
+      "Excise return kasari file garne?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-017",
+    "topic": "HS Code",
+    "topic_key": "hs_code",
+    "question": "HS code ke ho?",
+    "question_ne": "HS code ke ho?",
+    "question_en": "What is HS code?",
+    "question_normalized": "hs code ke ho",
+    "question_type": "definition",
+    "answer_ne": "Harmonized System (HS) code biswabhar ma mannyata prapt saman ko classification system ho, jasle customs valuation ra duty determinate garcha.",
+    "answer_en": "The Harmonized System (HS) code is a globally standardized classification system for goods that determines customs valuation and duty rates.",
+    "answer_short_ne": "Harmonized System (HS) code biswabhar ma mannyata prapt saman ko classification system ho, jasle customs valuation ra duty determinate garcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Customs Tariff Act",
+    "related_topics": [
+      "Customs duty",
+      "Export",
+      "Import license"
+    ],
+    "common_followups": [
+      "HS code kaha pauncha?",
+      "Customs rate table kaha cha?"
+    ],
+    "related_questions": [
+      "HS code kaha pauncha?",
+      "Customs rate table kaha cha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-018",
+    "topic": "Property Tax",
+    "topic_key": "property_tax",
+    "question": "Sampati kar kati tirne?",
+    "question_ne": "Sampati kar kati tirne?",
+    "question_en": "What is the property tax rate?",
+    "question_normalized": "sampati kar kati tirne",
+    "question_type": "definition",
+    "answer_ne": "Sthaniya sarkar (Gaupalika/Nagarpalika) le sampati ko prakar ra location adi anusar sampati kar nirdharan garcha. Dharauti mulya ya area aadhar ma progressive rate huncha.",
+    "answer_en": "Local governments (Rural/Municipal) determine property tax based on property type and location. Progressive rates apply based on assessed value or area.",
+    "answer_short_ne": "Sthaniya sarkar (Gaupalika/Nagarpalika) le sampati ko prakar ra location adi anusar sampati kar nirdharan garcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Local Government Operation Act 2074, Section 55",
+    "related_topics": [
+      "Local tax",
+      "Vehicle tax",
+      "Rental tax"
+    ],
+    "common_followups": [
+      "Calculation kasari garne?",
+      "Fine lagcha bhane kati?"
+    ],
+    "related_questions": [
+      "Calculation kasari garne?",
+      "Fine lagcha bhane kati?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-019",
+    "topic": "Vehicle Tax",
+    "topic_key": "vehicle_tax",
+    "question": "Gadi ko tax kati tirne?",
+    "question_ne": "Gadi ko tax kati tirne?",
+    "question_en": "What is the vehicle tax rate?",
+    "question_normalized": "gadi ko tax kati tirne",
+    "question_type": "definition",
+    "answer_ne": "Sawari sadhan kar engine capacity (CC) ra prakar anusar prabesh ma eak patak ra barshik navikaran garne gari staniya sarkar le rate nirdharan garcha.",
+    "answer_en": "Vehicle tax is determined by the local government based on engine capacity (CC) and type, payable as a one-time entry tax and annual renewal.",
+    "answer_short_ne": "Sawari sadhan kar engine capacity (CC) ra prakar anusar prabesh ma eak patak ra barshik navikaran garne gari staniya sarkar le rate nirdharan garcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Local Government Operation Act 2074",
+    "related_topics": [
+      "Property tax",
+      "Road tax",
+      "Customs duty"
+    ],
+    "common_followups": [
+      "Tax kaha tirne?",
+      "Purano gadi ko tax ke huncha?"
+    ],
+    "related_questions": [
+      "Tax kaha tirne?",
+      "Purano gadi ko tax ke huncha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-020",
+    "topic": "Penalty for Late Filing",
+    "topic_key": "penalty_for_late_filing",
+    "question": "Tax return dhila file garda kati penalty?",
+    "question_ne": "Tax return dhila file garda kati penalty?",
+    "question_en": "What is the penalty for late tax filing?",
+    "question_normalized": "tax return dhila file garda kati penalty",
+    "question_type": "definition",
+    "answer_ne": "File nagarema Income Tax Act anushar 0.01% to 0.05% per day late fee, plus Rs 5,000 prabarsa samma extra penalty huna sakcha. VAT ma per return Rs 2000 dekhi Rs 8000 penalty cha.",
+    "answer_en": "Under the Income Tax Act, late fees range from 0.01% to 0.05% per day, plus up to Rs 5,000 extra penalty per instance. VAT penalties range from Rs 2,000 to Rs 8,000 per return.",
+    "answer_short_ne": "File nagarema Income Tax Act anushar 0.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, VAT Act 2052",
+    "related_topics": [
+      "Tax return",
+      "TDS return",
+      "Interest"
+    ],
+    "common_followups": [
+      "Penalty chhut garne milecha?",
+      "Punishment pani huncha?"
+    ],
+    "related_questions": [
+      "Penalty chhut garne milecha?",
+      "Punishment pani huncha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-021",
+    "topic": "Corporate Tax for Micro/SSE",
+    "topic_key": "corporate_tax_for_micro_sse",
+    "question": "Micro business ko tax rate kati cha?",
+    "question_ne": "Micro business ko tax rate kati cha?",
+    "question_en": "What is the tax rate for micro businesses?",
+    "question_normalized": "micro business ko tax rate kati cha",
+    "question_type": "definition",
+    "answer_ne": "Classification anusar micro, small ra medium enterprises lai kehi sarsahuliyat cha. Nepal ma Micro (10 lakh samma capital) ra Small business ko lagi certain income threshold ma 0.75% ya turnover based tax lagcha.",
+    "answer_en": "Micro (capital up to 10 lakh) and small enterprises enjoy concessions. Certain thresholds allow for a 0.75% turnover-based tax or prescribed slab rates.",
+    "answer_short_ne": "Classification anusar micro, small ra medium enterprises lai kehi sarsahuliyat cha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Industrial Enterprises Act 2076, Income Tax Act",
+    "related_topics": [
+      "VAT threshold",
+      "PAN",
+      "Tax exemption"
+    ],
+    "common_followups": [
+      "Registration process ke cha?",
+      "Audit garna parcha?"
+    ],
+    "related_questions": [
+      "Registration process ke cha?",
+      "Audit garna parcha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-022",
+    "topic": "Tax Clearance Certificate",
+    "topic_key": "tax_clearance_certificate",
+    "question": "Tax clearance certificate kasari paune?",
+    "question_ne": "Tax clearance certificate kasari paune?",
+    "question_en": "How to get a tax clearance certificate?",
+    "question_normalized": "tax clearance certificate kasari paune",
+    "question_type": "definition",
+    "answer_ne": "Sabai tax details updated gari, audit report (company ko lagi) ra applicable documents submit garera IRD ko online system bata niwedan dine.",
+    "answer_en": "Submit an application via IRD's online system with all tax details updated, audit report (for companies), and applicable documents.",
+    "answer_short_ne": "Sabai tax details updated gari, audit report (company ko lagi) ra applicable documents submit garera IRD ko online system bata niwedan dine.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 105",
+    "related_topics": [
+      "PAN",
+      "Tax audit",
+      "VAT clearance"
+    ],
+    "common_followups": [
+      "Lina kati din lagcha?",
+      "Purpose ke ke ma chahincha?"
+    ],
+    "related_questions": [
+      "Lina kati din lagcha?",
+      "Purpose ke ke ma chahincha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-023",
+    "topic": "Withholding on Rent",
+    "topic_key": "withholding_on_rent",
+    "question": "Rent ma TDS kati katne?",
+    "question_ne": "Rent ma TDS kati katne?",
+    "question_en": "What is TDS on rent?",
+    "question_normalized": "rent ma tds kati katne",
+    "question_type": "definition",
+    "answer_ne": "Basobas arthath ghar bhada ma 10% TDS katni parcha. Byawasayik prayojan ko lagi tireko bhadai ma 10% TDS kataincha.",
+    "answer_en": "10% TDS must be deducted on residential house rent. 10% TDS is also deducted on rent paid for business purposes.",
+    "answer_short_ne": "Basobas arthath ghar bhada ma 10% TDS katni parcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 87",
+    "related_topics": [
+      "TDS deposit",
+      "Rental income",
+      "Tax credit"
+    ],
+    "common_followups": [
+      "Ghar dhani lai TDS dina parcha?",
+      "Contract rent ma kati lagcha?"
+    ],
+    "related_questions": [
+      "Ghar dhani lai TDS dina parcha?",
+      "Contract rent ma kati lagcha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-024",
+    "topic": "Withholding on Interest",
+    "topic_key": "withholding_on_interest",
+    "question": "Interest income ma TDS kati katne?",
+    "question_ne": "Interest income ma TDS kati katne?",
+    "question_en": "What is TDS on interest income?",
+    "question_normalized": "interest income ma tds kati katne",
+    "question_type": "definition",
+    "answer_ne": "Nepal ma bank ko nikshep ra debenture ma 5% TDS kataincha. Anya byakti bata liyeko rin ko interest ma 15% TDS lagcha.",
+    "answer_en": "TDS of 5% applies to bank deposits and debentures. Interest on loans from other individuals attracts 15% TDS.",
+    "answer_short_ne": "Nepal ma bank ko nikshep ra debenture ma 5% TDS kataincha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 87",
+    "related_topics": [
+      "TDS rates",
+      "Investment",
+      "Savings"
+    ],
+    "common_followups": [
+      "Banks le automatic katne ho?",
+      "Tax return ma adjust huncha?"
+    ],
+    "related_questions": [
+      "Banks le automatic katne ho?",
+      "Tax return ma adjust huncha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-025",
+    "topic": "Medical Tax Credit",
+    "topic_key": "medical_tax_credit",
+    "question": "Income tax ma medical kharcha credit kati pauncha?",
+    "question_ne": "Income tax ma medical kharcha credit kati pauncha?",
+    "question_en": "What is the medical tax credit limit?",
+    "question_normalized": "income tax ma medical kharcha credit kati pauncha",
+    "question_type": "definition",
+    "answer_ne": "Byakti le chikitsha kharach bapat 15% athawa adhikatam Rs 750 prabarsa samma credit pauna sakne byawastha cha.",
+    "answer_en": "Individuals can claim a medical tax credit of up to 15% of the expense or a maximum of Rs 750 per year.",
+    "answer_short_ne": "Byakti le chikitsha kharach bapat 15% athawa adhikatam Rs 750 prabarsa samma credit pauna sakne byawastha cha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 51",
+    "related_topics": [
+      "Insurance premium",
+      "Tax rebate",
+      "Income slab"
+    ],
+    "common_followups": [
+      "Insurance premium ma pani pauncha?",
+      "Bill rakhnai parcha?"
+    ],
+    "related_questions": [
+      "Insurance premium ma pani pauncha?",
+      "Bill rakhnai parcha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-026",
+    "topic": "Remote Area Tax Benefit",
+    "topic_key": "remote_area_tax_benefit",
+    "question": "Durgam kshetra ma tax chhut ke cha?",
+    "question_ne": "Durgam kshetra ma tax chhut ke cha?",
+    "question_en": "What is the tax benefit for remote areas?",
+    "question_normalized": "durgam kshetra ma tax chhut ke cha",
+    "question_type": "definition",
+    "answer_ne": "Durgam kshetra ma karyarat karmachari lai 20% dekhi 50% samma tax exemption cha. Company lai pani certain areas ma 20% dekhi 50% samma discount cha.",
+    "answer_en": "Employees working in remote areas get 20% to 50% tax exemption. Companies also receive 20% to 50% tax discounts in certain designated areas.",
+    "answer_short_ne": "Durgam kshetra ma karyarat karmachari lai 20% dekhi 50% samma tax exemption cha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Schedule 1",
+    "related_topics": [
+      "Corporate tax",
+      "Salary tax",
+      "Investment"
+    ],
+    "common_followups": [
+      "Kun kshetra durgam ma parcha?",
+      "Log book rakhnu parcha?"
+    ],
+    "related_questions": [
+      "Kun kshetra durgam ma parcha?",
+      "Log book rakhnu parcha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-027",
+    "topic": "Export Tax",
+    "topic_key": "export_tax",
+    "question": "Export ma tax lagcha ki nai?",
+    "question_ne": "Export ma tax lagcha ki nai?",
+    "question_en": "Is there tax on exports?",
+    "question_normalized": "export ma tax lagcha ki nai",
+    "question_type": "definition",
+    "answer_ne": "Export ma customs duty lagdaina (Zero rated). VAT ko lagi pani zero rate hunale input tax credit refund garna milcha.",
+    "answer_en": "Exports are zero-rated for customs duty. For VAT, it is also zero-rated, allowing a refund of input tax credits.",
+    "answer_short_ne": "Export ma customs duty lagdaina (Zero rated).",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "VAT Act 2052, Customs Act",
+    "related_topics": [
+      "VAT refund",
+      "Export incentive",
+      "Customs"
+    ],
+    "common_followups": [
+      "Rebate paincha?",
+      "Export VAT kasari claim garne?"
+    ],
+    "related_questions": [
+      "Rebate paincha?",
+      "Export VAT kasari claim garne?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-028",
+    "topic": "Local Professional Tax",
+    "topic_key": "local_professional_tax",
+    "question": "Professional tax ke ho?",
+    "question_ne": "Professional tax ke ho?",
+    "question_en": "What is professional tax?",
+    "question_normalized": "professional tax ke ho",
+    "question_type": "definition",
+    "answer_ne": "Sthaniya sarkar le doctor, engineer, lawyer, auditor jasta pesagat byakti lai barshik swikriti kar (professional tax) lagau garna sakcha.",
+    "answer_en": "Local governments can levy an annual license tax (professional tax) on professionals such as doctors, engineers, lawyers, and auditors.",
+    "answer_short_ne": "Sthaniya sarkar le doctor, engineer, lawyer, auditor jasta pesagat byakti lai barshik swikriti kar (professional tax) lagau garna sakcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Local Government Operation Act 2074",
+    "related_topics": [
+      "Local tax",
+      "Business license",
+      "PAN"
+    ],
+    "common_followups": [
+      "Kati amount tirne?",
+      "Multiple profession bhaye k garne?"
+    ],
+    "related_questions": [
+      "Kati amount tirne?",
+      "Multiple profession bhaye k garne?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-029",
+    "topic": "Capital Gains Tax",
+    "topic_key": "capital_gains_tax",
+    "question": "Capital gains tax kati lagcha?",
+    "question_ne": "Capital gains tax kati lagcha?",
+    "question_en": "What is the capital gains tax rate?",
+    "question_normalized": "capital gains tax kati lagcha",
+    "question_type": "definition",
+    "answer_ne": "Sampati/security bikri garda natural person lai 5% (fixed deposit) ra listed shares ma 5%/7.5% (individual/institutional) lagcha. Jagga ma 5% dekhi 10% samma cha.",
+    "answer_en": "Natural persons pay 5% on fixed deposit gains, and 5%/7.5% on listed shares (individual/institutional). Land sales attract 5% to 10%.",
+    "answer_short_ne": "Sampati/security bikri garda natural person lai 5% (fixed deposit) ra listed shares ma 5%/7.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 95",
+    "related_topics": [
+      "Land tax",
+      "Shares",
+      "Investment income"
+    ],
+    "common_followups": [
+      "Short term ra long term rate ke ho?",
+      "Dharauti mulya dekhi farak?"
+    ],
+    "related_questions": [
+      "Short term ra long term rate ke ho?",
+      "Dharauti mulya dekhi farak?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-030",
+    "topic": "E-Commerce Tax",
+    "topic_key": "e_commerce_tax",
+    "question": "Online business lai tax ke cha?",
+    "question_ne": "Online business lai tax ke cha?",
+    "question_en": "What is the tax for e-commerce?",
+    "question_normalized": "online business lai tax ke cha",
+    "question_type": "definition",
+    "answer_ne": "E-commerce business lai pani normal business jastai income tax ra VAT lagcha. Foreign entity le digital service provide garda 2% turnover tax (VAT) lagcha.",
+    "answer_en": "E-commerce businesses are subject to normal income tax and VAT. Foreign entities providing digital services face a 2% turnover tax (VAT).",
+    "answer_short_ne": "E-commerce business lai pani normal business jastai income tax ra VAT lagcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act, Finance Act",
+    "related_topics": [
+      "VAT registration",
+      "Digital service",
+      "Tax return"
+    ],
+    "common_followups": [
+      "Foreign company lai PAN chaincha?",
+      "Payment gateway ma tax katne ki?"
+    ],
+    "related_questions": [
+      "Foreign company lai PAN chaincha?",
+      "Payment gateway ma tax katne ki?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-031",
+    "topic": "Gift Tax",
+    "topic_key": "gift_tax",
+    "question": "Gift tax Nepal ma lagcha?",
+    "question_ne": "Gift tax Nepal ma lagcha?",
+    "question_en": "Is there gift tax in Nepal?",
+    "question_normalized": "gift tax nepal ma lagcha",
+    "question_type": "definition",
+    "answer_ne": "Kehi paristhiti ma gift amount lai income manine byabastha cha. Afanta bata property transfer ma nalagepani unnatural/undue influence bhayema tax lagcha.",
+    "answer_en": "In some circumstances, gift amounts can be treated as income. While family property transfers may be exempt, unnatural transfers may attract tax.",
+    "answer_short_ne": "Kehi paristhiti ma gift amount lai income manine byabastha cha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058",
+    "related_topics": [
+      "Income tax",
+      "Property transfer",
+      "Capital gains"
+    ],
+    "common_followups": [
+      "Close family ko list ke cha?",
+      "Gift tax rate kati ho?"
+    ],
+    "related_questions": [
+      "Close family ko list ke cha?",
+      "Gift tax rate kati ho?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-032",
+    "topic": "Tax on NGOs",
+    "topic_key": "tax_on_ngos",
+    "question": "NGO lai tax lagcha ki nai?",
+    "question_ne": "NGO lai tax lagcha ki nai?",
+    "question_en": "Are NGOs taxed in Nepal?",
+    "question_normalized": "ngo lai tax lagcha ki nai",
+    "question_type": "definition",
+    "answer_ne": "NGO lai certain conditions pura bhaye income tax chhut huncha. Tara PAN line, audit garne ra return file garne daayitwa huncha. VAT ma chai 13% lagcha.",
+    "answer_en": "NGOs can get income tax exemption if they meet certain conditions. However, they must obtain PAN, conduct audits, and file returns. VAT at 13% applies.",
+    "answer_short_ne": "NGO lai certain conditions pura bhaye income tax chhut huncha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 2",
+    "related_topics": [
+      "PAN",
+      "Tax exemption",
+      "Audit"
+    ],
+    "common_followups": [
+      "NGO le TDS katnu parcha?",
+      "SWC ma darta chaincha?"
+    ],
+    "related_questions": [
+      "NGO le TDS katnu parcha?",
+      "SWC ma darta chaincha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-033",
+    "topic": "Business Vehicle Tax",
+    "topic_key": "business_vehicle_tax",
+    "question": "Byawasayik gadi ko tax ke ho?",
+    "question_ne": "Byawasayik gadi ko tax ke ho?",
+    "question_en": "What is the tax for business vehicles?",
+    "question_normalized": "byawasayik gadi ko tax ke ho",
+    "question_type": "definition",
+    "answer_ne": "Company le gadi leaunda customs, excise ra VAT tirna parcha. Barseni staniya sarkar lai sawari kar tire pani byawasaya ko kharcha ma dekhai tax ghatayera faida lina sakcha.",
+    "answer_en": "Companies must pay customs, excise, and VAT when purchasing vehicles. Annual local vehicle tax can be shown as business expenses, reducing taxable income.",
+    "answer_short_ne": "Company le gadi leaunda customs, excise ra VAT tirna parcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act, Local Govt Act",
+    "related_topics": [
+      "Vehicle tax",
+      "Depreciation",
+      "Customs duty"
+    ],
+    "common_followups": [
+      "Depreciation rate kati ho?",
+      "Personal use gadi ko tax?"
+    ],
+    "related_questions": [
+      "Depreciation rate kati ho?",
+      "Personal use gadi ko tax?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-034",
+    "topic": "Pension Tax",
+    "topic_key": "pension_tax",
+    "question": "Pension ma income tax lagcha?",
+    "question_ne": "Pension ma income tax lagcha?",
+    "question_en": "Is pension taxable in Nepal?",
+    "question_normalized": "pension ma income tax lagcha",
+    "question_type": "definition",
+    "answer_ne": "Sarkari nijamati ra sangathit sector ko pension ma 25% exemption pachi bakhi rakam ma slab anusar tax lagcha. Deposit based pension yojana ma kehi suwidha cha.",
+    "answer_en": "Government, civil service, and organized sector pensions get a 25% exemption, and the remaining amount is taxed as per slabs. Deposit-based pension schemes have some benefits.",
+    "answer_short_ne": "Sarkari nijamati ra sangathit sector ko pension ma 25% exemption pachi bakhi rakam ma slab anusar tax lagcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Finance Act",
+    "related_topics": [
+      "Salary tax",
+      "Retirement fund",
+      "Insurance"
+    ],
+    "common_followups": [
+      "Gratuity ma tax lagcha?",
+      "Commuted pension k ho?"
+    ],
+    "related_questions": [
+      "Gratuity ma tax lagcha?",
+      "Commuted pension k ho?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-035",
+    "topic": "Penalty for Not Deducting TDS",
+    "topic_key": "penalty_for_not_deducting_tds",
+    "question": "TDS na kate ke huncha?",
+    "question_ne": "TDS na kate ke huncha?",
+    "question_en": "What happens if TDS is not deducted?",
+    "question_normalized": "tds na kate ke huncha",
+    "question_type": "definition",
+    "answer_ne": "TDS na kateko rakam, 15% interest ra total amount ko 20% penalty tirai dine dayitwa huncha, katai nakatayeko apradh maninchha.",
+    "answer_en": "The undeducted TDS amount, plus 15% interest and a 20% penalty on the total amount, must be paid. It is treated as an offense.",
+    "answer_short_ne": "TDS na kateko rakam, 15% interest ra total amount ko 20% penalty tirai dine dayitwa huncha, katai nakatayeko apradh maninchha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 87",
+    "related_topics": [
+      "TDS deposit",
+      "Penalty",
+      "Tax audit"
+    ],
+    "common_followups": [
+      "Principal amount ma credit paincha?",
+      "Court case lagcha?"
+    ],
+    "related_questions": [
+      "Principal amount ma credit paincha?",
+      "Court case lagcha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-036",
+    "topic": "Tax Residency",
+    "topic_key": "tax_residency",
+    "question": "Tax resident kasaile manincha?",
+    "question_ne": "Tax resident kasaile manincha?",
+    "question_en": "Who is considered a tax resident?",
+    "question_normalized": "tax resident kasaile manincha",
+    "question_type": "definition",
+    "answer_ne": "Aay barsa ma 183 din Nepal ma basne byakti athawa Nepal bata income ko source bhako byakti lai tax resident manincha.",
+    "answer_en": "An individual staying in Nepal for 183 days in an income year or having a source of income in Nepal is considered a tax resident.",
+    "answer_short_ne": "Aay barsa ma 183 din Nepal ma basne byakti athawa Nepal bata income ko source bhako byakti lai tax resident manincha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 2",
+    "related_topics": [
+      "Income tax return",
+      "Double taxation",
+      "PAN"
+    ],
+    "common_followups": [
+      "NRN lai ke suwidha cha?",
+      "Double tax avoidance ke ho?"
+    ],
+    "related_questions": [
+      "NRN lai ke suwidha cha?",
+      "Double tax avoidance ke ho?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-037",
+    "topic": "Digital Service Tax",
+    "topic_key": "digital_service_tax",
+    "question": "Digital service provider lai tax ke cha?",
+    "question_ne": "Digital service provider lai tax ke cha?",
+    "question_en": "What is the tax for digital service providers?",
+    "question_normalized": "digital service provider lai tax ke cha",
+    "question_type": "definition",
+    "answer_ne": "Non-resident digital service provider lai 2% turnover based tax (VAT) registration garera quarterly return file garne byabastha cha.",
+    "answer_en": "Non-resident digital service providers must register for a 2% turnover-based tax (VAT) and file quarterly returns.",
+    "answer_short_ne": "Non-resident digital service provider lai 2% turnover based tax (VAT) registration garera quarterly return file garne byabastha cha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Finance Act 2079",
+    "related_topics": [
+      "E-commerce tax",
+      "VAT registration",
+      "Foreign income"
+    ],
+    "common_followups": [
+      "Nepal ma office chaine ho?",
+      "Netflix/Google lai kati tax lagcha?"
+    ],
+    "related_questions": [
+      "Nepal ma office chaine ho?",
+      "Netflix/Google lai kati tax lagcha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-038",
+    "topic": "Cooperative Tax",
+    "topic_key": "cooperative_tax",
+    "question": "Sahakari sanstha ko tax rate ke ho?",
+    "question_ne": "Sahakari sanstha ko tax rate ke ho?",
+    "question_en": "What is the tax rate for cooperatives?",
+    "question_normalized": "sahakari sanstha ko tax rate ke ho",
+    "question_type": "definition",
+    "answer_ne": "Bachat ra rin sahakari lai kehi limit samma tax chut huncha. General cooperative lai 25% ra special sectors lai 20% corporate tax lagcha.",
+    "answer_en": "Savings and loan cooperatives get tax exemptions up to certain limits. General cooperatives pay 25% and special sectors pay 20% corporate tax.",
+    "answer_short_ne": "Bachat ra rin sahakari lai kehi limit samma tax chut huncha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058",
+    "related_topics": [
+      "Corporate tax",
+      "Dividend tax",
+      "Microfinance"
+    ],
+    "common_followups": [
+      "Sadasya transaction ma TDS lagcha?",
+      "Audit garna parcha?"
+    ],
+    "related_questions": [
+      "Sadasya transaction ma TDS lagcha?",
+      "Audit garna parcha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-039",
+    "topic": "Inheritance Tax",
+    "topic_key": "inheritance_tax",
+    "question": "Nepal ma Inheritance tax lagcha?",
+    "question_ne": "Nepal ma Inheritance tax lagcha?",
+    "question_en": "Is there inheritance tax in Nepal?",
+    "question_normalized": "nepal ma inheritance tax lagcha",
+    "question_type": "definition",
+    "answer_ne": "Nepal ma aanshik aakar ma pani Inheritance/Estate tax lagu chaina. Tara sampati transfer garda capital gains tax ra registration fee lagcha.",
+    "answer_en": "Nepal does not have Inheritance/Estate tax in any form. However, property transfer involves capital gains tax and registration fees.",
+    "answer_short_ne": "Nepal ma aanshik aakar ma pani Inheritance/Estate tax lagu chaina.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act, Muluki Dewani Samhita",
+    "related_topics": [
+      "Gift tax",
+      "Property tax",
+      "Capital gains"
+    ],
+    "common_followups": [
+      "Kunai tax change hudai cha?",
+      "Property registration fee kati ho?"
+    ],
+    "related_questions": [
+      "Kunai tax change hudai cha?",
+      "Property registration fee kati ho?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-040",
+    "topic": "Tax on Share Transactions",
+    "topic_key": "tax_on_share_transactions",
+    "question": "Share market ma tax kati ho?",
+    "question_ne": "Share market ma tax kati ho?",
+    "question_en": "What is the tax on share transactions?",
+    "question_normalized": "share market ma tax kati ho",
+    "question_type": "definition",
+    "answer_ne": "Dharauti saraah bikri garda 0.015% sebi tax lagcha. Capital gains ma natural person lai 5% ya 7.5% income tax cha.",
+    "answer_en": "SEBI tax of 0.015% applies on share collateral sales. Capital gains tax of 5% or 7.5% applies to natural persons.",
+    "answer_short_ne": "Dharauti saraah bikri garda 0.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act, Securities Act",
+    "related_topics": [
+      "Capital gains tax",
+      "Broker commission",
+      "IPO tax"
+    ],
+    "common_followups": [
+      "Broker commission ma tax cha?",
+      "NRN le share bechda tax ke cha?"
+    ],
+    "related_questions": [
+      "Broker commission ma tax cha?",
+      "NRN le share bechda tax ke cha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-041",
+    "topic": "Electric Vehicle Tax",
+    "topic_key": "electric_vehicle_tax",
+    "question": "Electric gadi ko tax ke cha?",
+    "question_ne": "Electric gadi ko tax ke cha?",
+    "question_en": "What is the tax on electric vehicles?",
+    "question_normalized": "electric gadi ko tax ke cha",
+    "question_type": "definition",
+    "answer_ne": "Electric gadi ko customs duty 10% matra cha ra excise pani chhut gariyeko cha. 40-50% tax suwidha cha petrol gadi bhanda.",
+    "answer_en": "Customs duty on electric vehicles is only 10%, and excise is exempted. There is a 40-50% tax benefit compared to petrol vehicles.",
+    "answer_short_ne": "Electric gadi ko customs duty 10% matra cha ra excise pani chhut gariyeko cha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Finance Act, Customs Tariff",
+    "related_topics": [
+      "Vehicle tax",
+      "Customs duty",
+      "Excise duty"
+    ],
+    "common_followups": [
+      "Charger ma tax ke cha?",
+      "Luxury EV lai pani same ho?"
+    ],
+    "related_questions": [
+      "Charger ma tax ke cha?",
+      "Luxury EV lai pani same ho?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-042",
+    "topic": "Contract Payment Tax",
+    "topic_key": "contract_payment_tax",
+    "question": "Contract payment ma TDS kati katne?",
+    "question_ne": "Contract payment ma TDS kati katne?",
+    "question_en": "What is TDS on contract payments?",
+    "question_normalized": "contract payment ma tds kati katne",
+    "question_type": "definition",
+    "answer_ne": "Thekedari bhukhtani ma 1.5% TDS kataincha. Tenant/consultant lai 15%, mechanic lai 10% TDS lagu huncha.",
+    "answer_en": "1.5% TDS is deducted on contract payments. 15% applies to tenants/consultants and 10% to mechanics.",
+    "answer_short_ne": "Thekedari bhukhtani ma 1.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 88",
+    "related_topics": [
+      "TDS deposit",
+      "Work contract",
+      "VAT on contract"
+    ],
+    "common_followups": [
+      "Construction contract ho bhane ke rate?",
+      "Bills ma VAT pani jodne ho?"
+    ],
+    "related_questions": [
+      "Construction contract ho bhane ke rate?",
+      "Bills ma VAT pani jodne ho?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-043",
+    "topic": "Foreign Investment Tax",
+    "topic_key": "foreign_investment_tax",
+    "question": "Nepal ma foreign investment lai ke tax cha?",
+    "question_ne": "Nepal ma foreign investment lai ke tax cha?",
+    "question_en": "What is the tax on foreign investment?",
+    "question_normalized": "nepal ma foreign investment lai ke tax cha",
+    "question_type": "definition",
+    "answer_ne": "Foreign investment lai Nepal ma normal tax lagcha. 50% had samma foreign loan ko interest (thin cap rule) capital manincha ra tax lagcha.",
+    "answer_en": "Normal tax applies to foreign investment in Nepal. Under thin capitalization rules, up to 50% of foreign loan interest can be treated as capital and taxed.",
+    "answer_short_ne": "Foreign investment lai Nepal ma normal tax lagcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act, FITTA",
+    "related_topics": [
+      "Repatriation",
+      "Tax holiday",
+      "TDS on royalty"
+    ],
+    "common_followups": [
+      "Profit repatriate garda tax ke cha?",
+      "DTAA ke ke cha?"
+    ],
+    "related_questions": [
+      "Profit repatriate garda tax ke cha?",
+      "DTAA ke ke cha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-044",
+    "topic": "Agriculture Tax",
+    "topic_key": "agriculture_tax",
+    "question": "Krishi income ma tax lagcha?",
+    "question_ne": "Krishi income ma tax lagcha?",
+    "question_en": "Is agricultural income taxable?",
+    "question_normalized": "krishi income ma tax lagcha",
+    "question_type": "definition",
+    "answer_ne": "Vyaktigat krishi aaya kar mukt cha. Tara company dwara garine commercial farming ra tea estate ma normal tax lagcha.",
+    "answer_en": "Personal agricultural income is tax-exempt. However, commercial farming and tea estates operated by companies are subject to normal tax.",
+    "answer_short_ne": "Vyaktigat krishi aaya kar mukt cha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058",
+    "related_topics": [
+      "Tax exemption",
+      "Land tax",
+      "Commercial farming"
+    ],
+    "common_followups": [
+      "Pashupalan ma tax lagcha?",
+      "Greenhouse farming ko tax?"
+    ],
+    "related_questions": [
+      "Pashupalan ma tax lagcha?",
+      "Greenhouse farming ko tax?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-045",
+    "topic": "Insurance Premium Tax Credit",
+    "topic_key": "insurance_premium_tax_credit",
+    "question": "Insurance premium ma tax credit pauncha?",
+    "question_ne": "Insurance premium ma tax credit pauncha?",
+    "question_en": "Is there a tax credit on insurance premiums?",
+    "question_normalized": "insurance premium ma tax credit pauncha",
+    "question_type": "definition",
+    "answer_ne": "Jeevan bima premium ko 40% athawa adhikatam Rs 25,000 prabarsa income tax credit pauncha. Swasthya bima ma pani similar suwidha cha.",
+    "answer_en": "A tax credit of 40% of the life insurance premium or a maximum of Rs 25,000 per year is available. Similar benefits apply to health insurance.",
+    "answer_short_ne": "Jeevan bima premium ko 40% athawa adhikatam Rs 25,000 prabarsa income tax credit pauncha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 51",
+    "related_topics": [
+      "Medical credit",
+      "Tax rebate",
+      "Insurance"
+    ],
+    "common_followups": [
+      "Couple lai double pauncha?",
+      "Bima maturity ma tax lagcha?"
+    ],
+    "related_questions": [
+      "Couple lai double pauncha?",
+      "Bima maturity ma tax lagcha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-046",
+    "topic": "Bootstrap Penalty",
+    "topic_key": "bootstrap_penalty",
+    "question": "Tax officer le dhamki diyo bhane?",
+    "question_ne": "Tax officer le dhamki diyo bhane?",
+    "question_en": "What if a tax officer threatens?",
+    "question_normalized": "tax officer le dhamki diyo bhane",
+    "question_type": "definition",
+    "answer_ne": "Tax officer le manomanni garda Department ya Revenue Board ma ujoor garna paaincha. Tax audit unfair bhayema admin review ma jana sakincha.",
+    "answer_en": "If a tax officer acts arbitrarily, complaints can be filed with the Department or Revenue Board. Unfair tax audits can be taken up for administrative review.",
+    "answer_short_ne": "Tax officer le manomanni garda Department ya Revenue Board ma ujoor garna paaincha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Right to information",
+    "related_topics": [
+      "Tax audit",
+      "Penalty",
+      "Appeal"
+    ],
+    "common_followups": [
+      "Notice ayo, k garne?",
+      "Revenue Tribunal kahile jane?"
+    ],
+    "related_questions": [
+      "Notice ayo, k garne?",
+      "Revenue Tribunal kahile jane?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-047",
+    "topic": "Double Taxation Avoidance",
+    "topic_key": "double_taxation_avoidance",
+    "question": "DTAA Nepal ko sanga sanga cha?",
+    "question_ne": "DTAA Nepal ko sanga sanga cha?",
+    "question_en": "DTAA is with which countries?",
+    "question_normalized": "dtaa nepal ko sanga sanga cha",
+    "question_type": "definition",
+    "answer_ne": "Nepal le 11 desh sanga DTAA gareko cha. Jastai India, China, Qatar ra South Korea. Bank interest 5-15% dependent ma reduce bhayeko cha.",
+    "answer_en": "Nepal has DTAA with 11 countries, including India, China, Qatar, and South Korea. Bank interest is reduced to 5-15% dependent on the agreement.",
+    "answer_short_ne": "Nepal le 11 desh sanga DTAA gareko cha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Treaties",
+    "related_topics": [
+      "Tax residency",
+      "Foreign tax credit",
+      "TDS"
+    ],
+    "common_followups": [
+      "USA sanga DTAA cha?",
+      "Foreign income declare garne ki nai?"
+    ],
+    "related_questions": [
+      "USA sanga DTAA cha?",
+      "Foreign income declare garne ki nai?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-048",
+    "topic": "VAT Reconciliation",
+    "topic_key": "vat_reconciliation",
+    "question": "VAT reconciliation ke ho?",
+    "question_ne": "VAT reconciliation ke ho?",
+    "question_en": "What is VAT reconciliation?",
+    "question_normalized": "vat reconciliation ke ho",
+    "question_type": "definition",
+    "answer_ne": "Bikri ra khata bahi anusar file gareko VAT return milan garne kaam reconciliation ho. Barsa bhari 12 wota return ra audit report milan anibaraya cha.",
+    "answer_en": "VAT reconciliation is matching filed VAT returns with sales and account books. Matching 12 monthly returns with the audit report is mandatory.",
+    "answer_short_ne": "Bikri ra khata bahi anusar file gareko VAT return milan garne kaam reconciliation ho.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "VAT Act 2052",
+    "related_topics": [
+      "VAT return",
+      "Audit report",
+      "Income tax return"
+    ],
+    "common_followups": [
+      "ETDS sanga milena bhane?",
+      "Milan audit garne ko ho?"
+    ],
+    "related_questions": [
+      "ETDS sanga milena bhane?",
+      "Milan audit garne ko ho?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-049",
+    "topic": "Audit Report Submission",
+    "topic_key": "audit_report_submission",
+    "question": "Tax audit report kasko chaine?",
+    "question_ne": "Tax audit report kasko chaine?",
+    "question_en": "Who needs a tax audit report?",
+    "question_normalized": "tax audit report kasko chaine",
+    "question_type": "definition",
+    "answer_ne": "Company ra certain limit bhanda mathi turnover bhayeko byawasaya lai income tax ra VAT audit report IRD ma file garna parcha.",
+    "answer_en": "Companies and businesses exceeding a certain turnover limit must file income tax and VAT audit reports with IRD.",
+    "answer_short_ne": "Company ra certain limit bhanda mathi turnover bhayeko byawasaya lai income tax ra VAT audit report IRD ma file garna parcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 97",
+    "related_topics": [
+      "Auditor",
+      "Tax return",
+      "Penalty"
+    ],
+    "common_followups": [
+      "Auditor ko yogyata ke ho?",
+      "Report date kati ho?"
+    ],
+    "related_questions": [
+      "Auditor ko yogyata ke ho?",
+      "Report date kati ho?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-050",
+    "topic": "Map based tax",
+    "topic_key": "map_based_tax",
+    "question": "Naksha pass bina ghar ko tax kati?",
+    "question_ne": "Naksha pass bina ghar ko tax kati?",
+    "question_en": "What is the tax for houses without map approval?",
+    "question_normalized": "naksha pass bina ghar ko tax kati",
+    "question_type": "definition",
+    "answer_ne": "Naksha pass nabhai baneko ghar lai staniya sarkar le 25% dekhi 50% samma extra sampati kar lagau garna sakcha.",
+    "answer_en": "Local governments can impose an additional 25% to 50% property tax on houses built without map approval.",
+    "answer_short_ne": "Naksha pass nabhai baneko ghar lai staniya sarkar le 25% dekhi 50% samma extra sampati kar lagau garna sakcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Local Govt Operation Act",
+    "related_topics": [
+      "Property tax",
+      "Building permit",
+      "Local tax"
+    ],
+    "common_followups": [
+      "Regularize garna milcha?",
+      "Fine tirera pass huncha?"
+    ],
+    "related_questions": [
+      "Regularize garna milcha?",
+      "Fine tirera pass huncha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-051",
+    "topic": "Tax on Royalty",
+    "topic_key": "tax_on_royalty",
+    "question": "Royalty ma tax kati lagcha?",
+    "question_ne": "Royalty ma tax kati lagcha?",
+    "question_en": "What is the tax on royalty?",
+    "question_normalized": "royalty ma tax kati lagcha",
+    "question_type": "definition",
+    "answer_ne": "Non-resident lai tireko royalty ma 15% final withholding tax lagcha (DTAA dependent). Resident lai normal income tax nai lagcha.",
+    "answer_en": "A 15% final withholding tax applies to royalties paid to non-residents (DTAA dependent). Residents are subject to normal income tax.",
+    "answer_short_ne": "Non-resident lai tireko royalty ma 15% final withholding tax lagcha (DTAA dependent).",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 87",
+    "related_topics": [
+      "TDS",
+      "Foreign payment",
+      "DTAA"
+    ],
+    "common_followups": [
+      "Copyright fee pani same ho?",
+      "Technical service fee ma kati?"
+    ],
+    "related_questions": [
+      "Copyright fee pani same ho?",
+      "Technical service fee ma kati?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-052",
+    "topic": "Payment of Tax",
+    "topic_key": "payment_of_tax",
+    "question": "Tax payment kasari garne?",
+    "question_ne": "Tax payment kasari garne?",
+    "question_en": "How to pay taxes?",
+    "question_normalized": "tax payment kasari garne",
+    "question_type": "definition",
+    "answer_ne": "IRD bata generate gareko PAN based Revenue Receipts (PRN) prayog gari online banking, eSewa, athawa bank counter bata tirna sakincha.",
+    "answer_en": "Taxes can be paid via online banking, eSewa, or bank counters using PAN-based Revenue Receipts (PRN) generated from IRD.",
+    "answer_short_ne": "IRD bata generate gareko PAN based Revenue Receipts (PRN) prayog gari online banking, eSewa, athawa bank counter bata tirna sakincha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Manual",
+    "related_topics": [
+      "eTDS",
+      "PAN",
+      "Tax return"
+    ],
+    "common_followups": [
+      "Cash tire ke huncha?",
+      "International payment milcha?"
+    ],
+    "related_questions": [
+      "Cash tire ke huncha?",
+      "International payment milcha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-053",
+    "topic": "Inward Investment Tax",
+    "topic_key": "inward_investment_tax",
+    "question": "Investment ma ke tax chhut cha?",
+    "question_ne": "Investment ma ke tax chhut cha?",
+    "question_en": "What tax incentives exist for investment?",
+    "question_normalized": "investment ma ke tax chhut cha",
+    "question_type": "definition",
+    "answer_ne": "Hydropower, manufacturing, infrastructure ra tourism ma 5-10 barsa samma tax holiday pauna sakcha. 100% depreciation pani suwidha cha.",
+    "answer_en": "Tax holidays of 5-10 years are available for hydropower, manufacturing, infrastructure, and tourism. 100% depreciation benefits also exist.",
+    "answer_short_ne": "Hydropower, manufacturing, infrastructure ra tourism ma 5-10 barsa samma tax holiday pauna sakcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act, Industry Act",
+    "related_topics": [
+      "Corporate tax",
+      "Depreciation",
+      "Tax holiday"
+    ],
+    "common_followups": [
+      "Hotel industry ma ke cha?",
+      "Special Economic Zone ma k huncha?"
+    ],
+    "related_questions": [
+      "Hotel industry ma ke cha?",
+      "Special Economic Zone ma k huncha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-054",
+    "topic": "Non-Resident Tax",
+    "topic_key": "non_resident_tax",
+    "question": "Non-resident lai Nepal ma tax kati lagcha?",
+    "question_ne": "Non-resident lai Nepal ma tax kati lagcha?",
+    "question_en": "What is the tax rate for non-residents?",
+    "question_normalized": "non-resident lai nepal ma tax kati lagcha",
+    "question_type": "definition",
+    "answer_ne": "Non-resident lai Nepal srot ko income ma 25% samma withholding tax lagcha. Certain service ma 15% ra 5% pani lagcha.",
+    "answer_en": "Non-residents pay up to 25% withholding tax on income sourced in Nepal. Certain services attract 15% and 5%.",
+    "answer_short_ne": "Non-resident lai Nepal srot ko income ma 25% samma withholding tax lagcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 87",
+    "related_topics": [
+      "DTAA",
+      "TDS",
+      "Foreign employment"
+    ],
+    "common_followups": [
+      "Nepal ma ghar bhada ma tax lagcha?",
+      "Retired abroad ho bhane pension tax?"
+    ],
+    "related_questions": [
+      "Nepal ma ghar bhada ma tax lagcha?",
+      "Retired abroad ho bhane pension tax?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-055",
+    "topic": "Property Gain Tax",
+    "topic_key": "property_gain_tax",
+    "question": "Jagga bechda tax kati lagcha?",
+    "question_ne": "Jagga bechda tax kati lagcha?",
+    "question_en": "What is the tax on land sales?",
+    "question_normalized": "jagga bechda tax kati lagcha",
+    "question_type": "definition",
+    "answer_ne": "Vyaktigat jagga bikri garda dharauti mulya ka aadhar ma 5% dekhi 10% samma capital gains tax lagcha. Holding period anusar exemptions cha.",
+    "answer_en": "Individual land sales attract 5% to 10% capital gains tax based on the assessed value. Exemptions exist based on the holding period.",
+    "answer_short_ne": "Vyaktigat jagga bikri garda dharauti mulya ka aadhar ma 5% dekhi 10% samma capital gains tax lagcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Land Revenue Act",
+    "related_topics": [
+      "Capital gains",
+      "Registration fee",
+      "Inheritance tax"
+    ],
+    "common_followups": [
+      "Primary residence bechda kati?",
+      "Long term lai chhut cha?"
+    ],
+    "related_questions": [
+      "Primary residence bechda kati?",
+      "Long term lai chhut cha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-056",
+    "topic": "Tax on Dividends",
+    "topic_key": "tax_on_dividends",
+    "question": "Dividend ma tax kati katne?",
+    "question_ne": "Dividend ma tax kati katne?",
+    "question_en": "What is the tax on dividends?",
+    "question_normalized": "dividend ma tax kati katne",
+    "question_type": "definition",
+    "answer_ne": "Company le dividend bhand garda 5% withholding tax kataincha. Byakti ma aaipugda final tax treatment huncha.",
+    "answer_en": "Companies withhold a 5% tax when distributing dividends. This is treated as final tax for individuals.",
+    "answer_short_ne": "Company le dividend bhand garda 5% withholding tax kataincha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 87",
+    "related_topics": [
+      "Corporate tax",
+      "Investment",
+      "Shareholder"
+    ],
+    "common_followups": [
+      "Bonus share ma tax cha?",
+      "Reinvest bhaye ke huncha?"
+    ],
+    "related_questions": [
+      "Bonus share ma tax cha?",
+      "Reinvest bhaye ke huncha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-057",
+    "topic": "Local Business Tax",
+    "topic_key": "local_business_tax",
+    "question": "Pasalko tax kati tirne?",
+    "question_ne": "Pasalko tax kati tirne?",
+    "question_en": "What is the local business tax?",
+    "question_normalized": "pasalko tax kati tirne",
+    "question_type": "definition",
+    "answer_ne": "Sthaniya sarkar le byawasaya ko prakar anusar bersik byawasaya kar (business tax) nirdharan garcha, jo pachhi sampati kar sangai tirna parcha.",
+    "answer_en": "Local governments determine annual business tax based on the type of business, which must be paid along with property tax.",
+    "answer_short_ne": "Sthaniya sarkar le byawasaya ko prakar anusar bersik byawasaya kar (business tax) nirdharan garcha, jo pachhi sampati kar sangai tirna parcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Local Government Operation Act 2074, Section 55",
+    "related_topics": [
+      "Property tax",
+      "Business license",
+      "Professional tax"
+    ],
+    "common_followups": [
+      "Kati amount tirne?",
+      "Renewal process ke ho?"
+    ],
+    "related_questions": [
+      "Kati amount tirne?",
+      "Renewal process ke ho?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-058",
+    "topic": "Tax on Interest from Abroad",
+    "topic_key": "tax_on_interest_from_abroad",
+    "question": "Bidesh ko interest income ma tax?",
+    "question_ne": "Bidesh ko interest income ma tax?",
+    "question_en": "Is foreign interest income taxable?",
+    "question_normalized": "bidesh ko interest income ma tax",
+    "question_type": "definition",
+    "answer_ne": "Nepal ma basne tax resident le bidesh ko bank interest income dekhayema foreign tax credit claim garna sakcha, tara Nepal ma pani tax dina sakcha.",
+    "answer_en": "Nepal resident tax residents declaring foreign bank interest can claim foreign tax credits, but tax may also be due in Nepal.",
+    "answer_short_ne": "Nepal ma basne tax resident le bidesh ko bank interest income dekhayema foreign tax credit claim garna sakcha, tara Nepal ma pani tax dina sakcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act, DTAA",
+    "related_topics": [
+      "Foreign income",
+      "Tax credit",
+      "Non-resident"
+    ],
+    "common_followups": [
+      "NRN account ko interest tax free ho?",
+      "Report kasari garne?"
+    ],
+    "related_questions": [
+      "NRN account ko interest tax free ho?",
+      "Report kasari garne?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-059",
+    "topic": "Turnover Tax",
+    "topic_key": "turnover_tax",
+    "question": "Turnover tax ke ho?",
+    "question_ne": "Turnover tax ke ho?",
+    "question_en": "What is turnover tax?",
+    "question_normalized": "turnover tax ke ho",
+    "question_type": "definition",
+    "answer_ne": "Small taxpayers lai Rs 1 lakh samma chhut, 1L-2.5L ma 0.25%, 2.5L-5L ma 0.5%, 5L-10L ma 1.5% samma turnover tax tirne suwidha cha.",
+    "answer_en": "Small taxpayers have turnover tax benefits: up to Rs 1L exempt, 1L-2.5L 0.25%, 2.5L-5L 0.5%, 5L-10L up to 1.5%.",
+    "answer_short_ne": "Small taxpayers lai Rs 1 lakh samma chhut, 1L-2.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Finance Act",
+    "related_topics": [
+      "VAT registration",
+      "Income tax slab",
+      "Micro tax"
+    ],
+    "common_followups": [
+      "VAT register garna parcha?",
+      "Income tax separate tirne ho?"
+    ],
+    "related_questions": [
+      "VAT register garna parcha?",
+      "Income tax separate tirne ho?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-060",
+    "topic": "Hotel Tax",
+    "topic_key": "hotel_tax",
+    "question": "Hotel lai tax ke cha?",
+    "question_ne": "Hotel lai tax ke cha?",
+    "question_en": "What is the tax for hotels?",
+    "question_normalized": "hotel lai tax ke cha",
+    "question_type": "definition",
+    "answer_ne": "Hotel lai normal 25% corporate tax lagcha, tara tourist standard ko hotel le 20% tirna paune suwidha cha. VAT 13% ra sewa soolka pani cha.",
+    "answer_en": "Normal 25% corporate tax applies, but tourist-standard hotels benefit from a 20% rate. VAT 13% and service charges also apply.",
+    "answer_short_ne": "Hotel lai normal 25% corporate tax lagcha, tara tourist standard ko hotel le 20% tirna paune suwidha cha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act, VAT Act",
+    "related_topics": [
+      "Corporate tax",
+      "Tourism tax",
+      "VAT"
+    ],
+    "common_followups": [
+      "Restaurant ko rate kati?",
+      "Foreign currency ma bill?"
+    ],
+    "related_questions": [
+      "Restaurant ko rate kati?",
+      "Foreign currency ma bill?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-061",
+    "topic": "Education Tax",
+    "topic_key": "education_tax",
+    "question": "School ko income ma tax lagcha?",
+    "question_ne": "School ko income ma tax lagcha?",
+    "question_en": "Is school income taxable?",
+    "question_normalized": "school ko income ma tax lagcha",
+    "question_type": "definition",
+    "answer_ne": "Sarkari school ko income tax exempt cha. Private school chai company saraha 25% income tax ra VAT (educational service ma chhut) bujhaunu parcha.",
+    "answer_en": "Government school income is tax-exempt. Private schools must pay 25% income tax like companies and VAT (educational services are exempt).",
+    "answer_short_ne": "Sarkari school ko income tax exempt cha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act, Education Act",
+    "related_topics": [
+      "Tax exemption",
+      "NGO tax",
+      "Corporate tax"
+    ],
+    "common_followups": [
+      "Books ma VAT lagcha?",
+      "Consultancy lai tax chhut cha?"
+    ],
+    "related_questions": [
+      "Books ma VAT lagcha?",
+      "Consultancy lai tax chhut cha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-062",
+    "topic": "Permanent Establishment",
+    "topic_key": "permanent_establishment",
+    "question": "PE concept Nepal ma ke ho?",
+    "question_ne": "PE concept Nepal ma ke ho?",
+    "question_en": "What is the PE concept in Nepal?",
+    "question_normalized": "pe concept nepal ma ke ho",
+    "question_type": "definition",
+    "answer_ne": "Foreign company ko Nepal ma fixed base bhaye PE kaim garincha ra Nepal ma bhako income/asset ma tax tirna parcha.",
+    "answer_en": "A PE is established if a foreign company has a fixed base in Nepal, making income/assets in Nepal taxable.",
+    "answer_short_ne": "Foreign company ko Nepal ma fixed base bhaye PE kaim garincha ra Nepal ma bhako income/asset ma tax tirna parcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act, DTAA",
+    "related_topics": [
+      "DTAA",
+      "Non-resident tax",
+      "Liaison office"
+    ],
+    "common_followups": [
+      "Liaison office PE huncha?",
+      "Site office 6 months bhanda mathi?"
+    ],
+    "related_questions": [
+      "Liaison office PE huncha?",
+      "Site office 6 months bhanda mathi?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-063",
+    "topic": "Assessable Income",
+    "topic_key": "assessable_income",
+    "question": "Assessable income ke ho?",
+    "question_ne": "Assessable income ke ho?",
+    "question_en": "What is assessable income?",
+    "question_normalized": "assessable income ke ho",
+    "question_type": "definition",
+    "answer_ne": "Business profit, salary, house rent, investment return sabai jodera prasashkiya kharcha ghatayera aauda aako rakam assessable income ho.",
+    "answer_en": "Assessable income is the total of business profit, salary, house rent, and investment returns after deducting administrative expenses.",
+    "answer_short_ne": "Business profit, salary, house rent, investment return sabai jodera prasashkiya kharcha ghatayera aauda aako rakam assessable income ho.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 7",
+    "related_topics": [
+      "Taxable income",
+      "Deduction",
+      "Loss adjustment"
+    ],
+    "common_followups": [
+      "Loss set off kasari garne?",
+      "Donation deduct huncha?"
+    ],
+    "related_questions": [
+      "Loss set off kasari garne?",
+      "Donation deduct huncha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-064",
+    "topic": "Penalty for Not Filing ETDS",
+    "topic_key": "penalty_for_not_filing_etds",
+    "question": "E-TDS file nagare ke huncha?",
+    "question_ne": "E-TDS file nagare ke huncha?",
+    "question_en": "What is the penalty for not filing E-TDS?",
+    "question_normalized": "e-tds file nagare ke huncha",
+    "question_type": "definition",
+    "answer_ne": "E-TDS return file nagare Rs 50,000 samma penalty ra lagat ko byabstha cha. Mahina ko 15 gate pachi daily late fee lagcha.",
+    "answer_en": "A penalty of up to Rs 50,000 and daily late fees apply if the E-TDS return is not filed after the 15th of the month.",
+    "answer_short_ne": "E-TDS return file nagare Rs 50,000 samma penalty ra lagat ko byabstha cha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Finance Act",
+    "related_topics": [
+      "TDS return",
+      "Penalty",
+      "eTDS"
+    ],
+    "common_followups": [
+      "Correction file garna milcha?",
+      "Interest kati din?"
+    ],
+    "related_questions": [
+      "Correction file garna milcha?",
+      "Interest kati din?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-065",
+    "topic": "Crypto Tax",
+    "topic_key": "crypto_tax",
+    "question": "Cryptocurrency ma tax lagcha?",
+    "question_ne": "Cryptocurrency ma tax lagcha?",
+    "question_en": "Is cryptocurrency taxed?",
+    "question_normalized": "cryptocurrency ma tax lagcha",
+    "question_type": "definition",
+    "answer_ne": "Nepal ma cryptocurrency karobar awaidha cha, ra jabardast kar hataune jariwana sahit sambhawit kar darkar cha.",
+    "answer_en": "Cryptocurrency trading is illegal in Nepal and carries severe penalties including potential confiscation, though tax implications apply if income is detected.",
+    "answer_short_ne": "Nepal ma cryptocurrency karobar awaidha cha, ra jabardast kar hataune jariwana sahit sambhawit kar darkar cha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "NRB Act, Income Tax",
+    "related_topics": [
+      "Asset tax",
+      "Capital gains",
+      "Legal income"
+    ],
+    "common_followups": [
+      "Mining ma tax lagcha?",
+      "Foreign wallet use garchu?"
+    ],
+    "related_questions": [
+      "Mining ma tax lagcha?",
+      "Foreign wallet use garchu?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-066",
+    "topic": "Bank Guarantee Tax",
+    "topic_key": "bank_guarantee_tax",
+    "question": "Bank guarantee ma tax cha?",
+    "question_ne": "Bank guarantee ma tax cha?",
+    "question_en": "Is there tax on bank guarantees?",
+    "question_normalized": "bank guarantee ma tax cha",
+    "question_type": "definition",
+    "answer_ne": "Bank guarantee charge income le bank lai tax liability dincha. Grahak le tirne guarantee fee ma 15% TDS kataincha.",
+    "answer_en": "Bank guarantee charge income creates tax liability for the bank. The guarantee fee paid by the customer is subject to 15% TDS.",
+    "answer_short_ne": "Bank guarantee charge income le bank lai tax liability dincha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058",
+    "related_topics": [
+      "TDS on commission",
+      "Banking tax",
+      "VAT on banking"
+    ],
+    "common_followups": [
+      "Bid bond ma kati TDS?",
+      "Performance guarantee ke rate?"
+    ],
+    "related_questions": [
+      "Bid bond ma kati TDS?",
+      "Performance guarantee ke rate?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-067",
+    "topic": "VAT Registration Process",
+    "topic_key": "vat_registration_process",
+    "question": "VAT registration kasari garne?",
+    "question_ne": "VAT registration kasari garne?",
+    "question_en": "How to register for VAT?",
+    "question_normalized": "vat registration kasari garne",
+    "question_type": "definition",
+    "answer_ne": "IRD ko online portal bari nivedan garda PAN, sthaniya sarkar ko darta, ra byawasaya sthala ko details sahita file garda VAT darta huncha.",
+    "answer_en": "Apply via the IRD online portal with PAN, local government registration, and business premise details to obtain VAT registration.",
+    "answer_short_ne": "IRD ko online portal bari nivedan garda PAN, sthaniya sarkar ko darta, ra byawasaya sthala ko details sahita file garda VAT darta huncha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "VAT Act 2052, VAT Rules",
+    "related_topics": [
+      "PAN",
+      "VAT threshold",
+      "VAT return"
+    ],
+    "common_followups": [
+      "Online apply garna milcha?",
+      "Documents ke ke chaincha?"
+    ],
+    "related_questions": [
+      "Online apply garna milcha?",
+      "Documents ke ke chaincha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-068",
+    "topic": "Tax on Retirement Fund",
+    "topic_key": "tax_on_retirement_fund",
+    "question": "Retirement fund (EPF/SSF) ma tax?",
+    "question_ne": "Retirement fund (EPF/SSF) ma tax?",
+    "question_en": "Is retirement fund (EPF/SSF) taxed?",
+    "question_normalized": "retirement fund (epf/ssf) ma tax",
+    "question_type": "definition",
+    "answer_ne": "Yogdan garda 1% social security tax lagcha. Nikalda 5% TDS katine byabastha cha, tara 25% exemption suwidha cha.",
+    "answer_en": "A 1% social security tax applies on contribution. On withdrawal, 5% TDS applies, but a 25% exemption benefit is available.",
+    "answer_short_ne": "Yogdan garda 1% social security tax lagcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act, SSF Act",
+    "related_topics": [
+      "Pension tax",
+      "Gratuity",
+      "Salary tax"
+    ],
+    "common_followups": [
+      "Anivarya ho ki swechhik?",
+      "Interest ma tax kati?"
+    ],
+    "related_questions": [
+      "Anivarya ho ki swechhik?",
+      "Interest ma tax kati?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-069",
+    "topic": "Transfer Pricing",
+    "topic_key": "transfer_pricing",
+    "question": "Transfer pricing ke ho?",
+    "question_ne": "Transfer pricing ke ho?",
+    "question_en": "What is transfer pricing?",
+    "question_normalized": "transfer pricing ke ho",
+    "question_type": "definition",
+    "answer_ne": "Sambandhit pakshya bich transactions ma arm's length price kayam garna parcha. Nabhaye tax officer le adjustment garne adhikar rakhcha.",
+    "answer_en": "Transactions between associated parties must be at arm's length price. Otherwise, the tax officer has the right to make adjustments.",
+    "answer_short_ne": "Sambandhit pakshya bich transactions ma arm's length price kayam garna parcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 33",
+    "related_topics": [
+      "Tax audit",
+      "Associated person",
+      "International tax"
+    ],
+    "common_followups": [
+      "Documentation ke chaincha?",
+      "Penalty kati huncha?"
+    ],
+    "related_questions": [
+      "Documentation ke chaincha?",
+      "Penalty kati huncha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-070",
+    "topic": "Tax Appeal Process",
+    "topic_key": "tax_appeal_process",
+    "question": "Tax order ma chitta nabujhe ke garne?",
+    "question_ne": "Tax order ma chitta nabujhe ke garne?",
+    "question_en": "What to do if unsatisfied with a tax order?",
+    "question_normalized": "tax order ma chitta nabujhe ke garne",
+    "question_type": "definition",
+    "answer_ne": "Tax officer ko nirnaya birudh 30 din bhitra administrative review, tespachhi Revenue Tribunal ma appeal garna sakincha.",
+    "answer_en": "An administrative review can be filed within 30 days against a tax officer's decision, followed by an appeal to the Revenue Tribunal.",
+    "answer_short_ne": "Tax officer ko nirnaya birudh 30 din bhitra administrative review, tespachhi Revenue Tribunal ma appeal garna sakincha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Revenue Tribunal Act",
+    "related_topics": [
+      "Tax audit",
+      "Penalty",
+      "Tax clearance"
+    ],
+    "common_followups": [
+      "Court jana kati kharcha?",
+      "Stay order pauncha?"
+    ],
+    "related_questions": [
+      "Court jana kati kharcha?",
+      "Stay order pauncha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-071",
+    "topic": "Tax on Sale of Business",
+    "topic_key": "tax_on_sale_of_business",
+    "question": "Business bechda tax ke huncha?",
+    "question_ne": "Business bechda tax ke huncha?",
+    "question_en": "What is the tax on selling a business?",
+    "question_normalized": "business bechda tax ke huncha",
+    "question_type": "definition",
+    "answer_ne": "Slump sale ya itemized sale anusar capital gains tax lagcha. Assets ko valuation anusar 5% dekhi 25% samma effective tax lagcha.",
+    "answer_en": "Capital gains tax applies on slump sale or itemized sale, with an effective rate of 5% to 25% based on asset valuation.",
+    "answer_short_ne": "Slump sale ya itemized sale anusar capital gains tax lagcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058",
+    "related_topics": [
+      "Capital gains",
+      "VAT",
+      "Depreciation"
+    ],
+    "common_followups": [
+      "Stock transfer ma kati tax?",
+      "Liabilities transfer bhaye tax?"
+    ],
+    "related_questions": [
+      "Stock transfer ma kati tax?",
+      "Liabilities transfer bhaye tax?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-072",
+    "topic": "Private Vehicle Import Tax",
+    "topic_key": "private_vehicle_import_tax",
+    "question": "Nijji gadi import ma kati tax?",
+    "question_ne": "Nijji gadi import ma kati tax?",
+    "question_en": "What is the tax on private vehicle imports?",
+    "question_normalized": "nijji gadi import ma kati tax",
+    "question_type": "definition",
+    "answer_ne": "Petrol/Diesel gadi ma 60% dekhi 300% samma customs, excise, ra VAT lagera kul tax 200%+ pugcha.",
+    "answer_en": "For petrol/diesel vehicles, customs, excise, and VAT range from 60% to 300%, bringing total taxes to 200%+.",
+    "answer_short_ne": "Petrol/Diesel gadi ma 60% dekhi 300% samma customs, excise, ra VAT lagera kul tax 200%+ pugcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Customs Act, Finance Act",
+    "related_topics": [
+      "Electric vehicle tax",
+      "Customs duty",
+      "Excise duty"
+    ],
+    "common_followups": [
+      "Motorcycle ma kati ho?",
+      "Old vehicle import garna milcha?"
+    ],
+    "related_questions": [
+      "Motorcycle ma kati ho?",
+      "Old vehicle import garna milcha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-073",
+    "topic": "Tax on Books and Stationery",
+    "topic_key": "tax_on_books_and_stationery",
+    "question": "Kitab ra stationary ma tax cha?",
+    "question_ne": "Kitab ra stationary ma tax cha?",
+    "question_en": "Is there tax on books and stationery?",
+    "question_normalized": "kitab ra stationary ma tax cha",
+    "question_type": "definition",
+    "answer_ne": "Kitab ma VAT chhut cha, stationary ma 13% VAT lagcha. Import ma kitab duty-free, stationary ma 5-15% duty cha.",
+    "answer_en": "VAT is exempt on books, while stationery attracts 13% VAT. Book imports are duty-free; stationery imports have 5-15% duty.",
+    "answer_short_ne": "Kitab ma VAT chhut cha, stationary ma 13% VAT lagcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "VAT Act, Customs Tariff",
+    "related_topics": [
+      "Customs duty",
+      "Education tax",
+      "Printing"
+    ],
+    "common_followups": [
+      "School bag ma ke cha?",
+      "Online book ma tax?"
+    ],
+    "related_questions": [
+      "School bag ma ke cha?",
+      "Online book ma tax?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-074",
+    "topic": "Tax on Rent Income",
+    "topic_key": "tax_on_rent_income",
+    "question": "Rent income ma tax kati lagcha?",
+    "question_ne": "Rent income ma tax kati lagcha?",
+    "question_en": "What is the tax on rental income?",
+    "question_normalized": "rent income ma tax kati lagcha",
+    "question_type": "definition",
+    "answer_ne": "Byakti lai rent income ma salary jastai slab anusar tax lagcha. Company lai 25% lagcha. 10% TDS credit lincha.",
+    "answer_en": "Individuals are taxed on rental income as per slabs, similar to salary. Companies pay 25%. 10% TDS credit is taken.",
+    "answer_short_ne": "Byakti lai rent income ma salary jastai slab anusar tax lagcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058",
+    "related_topics": [
+      "TDS on rent",
+      "Property tax",
+      "Income slab"
+    ],
+    "common_followups": [
+      "Ghar repair kharcha ghatna milcha?",
+      "Multiple ghar bhaye k garne?"
+    ],
+    "related_questions": [
+      "Ghar repair kharcha ghatna milcha?",
+      "Multiple ghar bhaye k garne?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-075",
+    "topic": "Tax on Lottery/Gift",
+    "topic_key": "tax_on_lottery_gift",
+    "question": "Lottery ra gift ma tax cha?",
+    "question_ne": "Lottery ra gift ma tax cha?",
+    "question_en": "Is there tax on lottery and gifts?",
+    "question_normalized": "lottery ra gift ma tax cha",
+    "question_type": "definition",
+    "answer_ne": "Lottery ma 25% final withholding tax lagcha. Gift ma unnatural transaction bhaye income manine byabastha cha.",
+    "answer_en": "A 25% final withholding tax applies to lottery winnings. Unnatural gifts are treated as income.",
+    "answer_short_ne": "Lottery ma 25% final withholding tax lagcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058",
+    "related_topics": [
+      "Gift tax",
+      "Inheritance tax",
+      "TDS rates"
+    ],
+    "common_followups": [
+      "Prize bond ko tax kati ho?",
+      "Cash gift ma tax lagcha?"
+    ],
+    "related_questions": [
+      "Prize bond ko tax kati ho?",
+      "Cash gift ma tax lagcha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-076",
+    "topic": "Loss Carry Forward",
+    "topic_key": "loss_carry_forward",
+    "question": "Business loss carry forward kati barsa?",
+    "question_ne": "Business loss carry forward kati barsa?",
+    "question_en": "How many years for business loss carry forward?",
+    "question_normalized": "business loss carry forward kati barsa",
+    "question_type": "definition",
+    "answer_ne": "General business loss 7 barsa samma ra hydropower/priority industry ma 12 barsa samma loss carry forward garera future profit ma adjust garna sakincha.",
+    "answer_en": "General business losses can be carried forward for 7 years, and for hydropower/priority industries, up to 12 years, to adjust against future profits.",
+    "answer_short_ne": "General business loss 7 barsa samma ra hydropower/priority industry ma 12 barsa samma loss carry forward garera future profit ma adjust garna sakincha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 12",
+    "related_topics": [
+      "Assessable income",
+      "Tax calculation",
+      "Depreciation"
+    ],
+    "common_followups": [
+      "Capital loss ko rule ke ho?",
+      "Merger ma loss jancha?"
+    ],
+    "related_questions": [
+      "Capital loss ko rule ke ho?",
+      "Merger ma loss jancha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-077",
+    "topic": "Tax on Commission",
+    "topic_key": "tax_on_commission",
+    "question": "Commission income ma tax ke ho?",
+    "question_ne": "Commission income ma tax ke ho?",
+    "question_en": "What is the tax on commission income?",
+    "question_normalized": "commission income ma tax ke ho",
+    "question_type": "definition",
+    "answer_ne": "Commission bhukhtani garda 15% TDS kataincha. Byakti ko lagi final tax manincha athawa return file garera claim garna milcha.",
+    "answer_en": "15% TDS is deducted on commission payments. It is treated as final tax for individuals or can be claimed by filing a return.",
+    "answer_short_ne": "Commission bhukhtani garda 15% TDS kataincha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058, Section 87",
+    "related_topics": [
+      "TDS rates",
+      "Agency income",
+      "Salary tax"
+    ],
+    "common_followups": [
+      "Agent lai VAT pani lagcha?",
+      "TDS credit kasari line?"
+    ],
+    "related_questions": [
+      "Agent lai VAT pani lagcha?",
+      "TDS credit kasari line?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-078",
+    "topic": "Tax on Foreign Travel",
+    "topic_key": "tax_on_foreign_travel",
+    "question": "Bidesh jada airport tax kati?",
+    "question_ne": "Bidesh jada airport tax kati?",
+    "question_en": "What is the airport tax for foreign travel?",
+    "question_normalized": "bidesh jada airport tax kati",
+    "question_type": "definition",
+    "answer_ne": "Bidesh jada TIA bata Rs 2,500 (SAARC) ra Rs 3,500 (Anya) barshik sewa soolka tireko huna parcha, jaslai tourism service fee pani bhanincha.",
+    "answer_en": "When traveling abroad from TIA, an annual service fee of Rs 2,500 (SAARC) or Rs 3,500 (Other) must be paid, also known as tourism service fee.",
+    "answer_short_ne": "Bidesh jada TIA bata Rs 2,500 (SAARC) ra Rs 3,500 (Anya) barshik sewa soolka tireko huna parcha, jaslai tourism service fee pani bhanincha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Finance Act, Aviation Policy",
+    "related_topics": [
+      "Customs duty",
+      "Travel tax",
+      "Airline ticket tax"
+    ],
+    "common_followups": [
+      "Ticket ma included huncha?",
+      "Labour lai ke cha?"
+    ],
+    "related_questions": [
+      "Ticket ma included huncha?",
+      "Labour lai ke cha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-079",
+    "topic": "Tax on Sale of Shares",
+    "topic_key": "tax_on_sale_of_shares",
+    "question": "Share bechda kati tax lagcha?",
+    "question_ne": "Share bechda kati tax lagcha?",
+    "question_en": "What is the tax on selling shares?",
+    "question_normalized": "share bechda kati tax lagcha",
+    "question_type": "definition",
+    "answer_ne": "Listed shares ma natural person lai 5% ra institutional lai 7.5% capital gains tax lagcha. Unlisted shares ma 10% lagcha.",
+    "answer_en": "Listed shares: 5% for natural persons and 7.5% for institutional. Unlisted shares attract 10% capital gains tax.",
+    "answer_short_ne": "Listed shares ma natural person lai 5% ra institutional lai 7.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058",
+    "related_topics": [
+      "Capital gains",
+      "Broker commission",
+      "IPO"
+    ],
+    "common_followups": [
+      "Bonus share ma tax?",
+      "Right share bechda?"
+    ],
+    "related_questions": [
+      "Bonus share ma tax?",
+      "Right share bechda?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-080",
+    "topic": "Tax on Hydropower",
+    "topic_key": "tax_on_hydropower",
+    "question": "Hydropower project lai ke tax chhut cha?",
+    "question_ne": "Hydropower project lai ke tax chhut cha?",
+    "question_en": "What tax exemptions do hydropower projects get?",
+    "question_normalized": "hydropower project lai ke tax chhut cha",
+    "question_type": "definition",
+    "answer_ne": "Hydropower lai 10 barsa samma income tax chhut, 1% turnover tax tirna suwidha, ra construction period ma VAT exemption jasta suwidha chan.",
+    "answer_en": "Hydropower projects get income tax exemption for 10 years, a 1% turnover tax option, and VAT exemption during the construction period.",
+    "answer_short_ne": "Hydropower lai 10 barsa samma income tax chhut, 1% turnover tax tirna suwidha, ra construction period ma VAT exemption jasta suwidha chan.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act, Electricity Act",
+    "related_topics": [
+      "Tax holiday",
+      "Loss carry forward",
+      "Royalty"
+    ],
+    "common_followups": [
+      "Royalty kati ho?",
+      "Project bechda ke huncha?"
+    ],
+    "related_questions": [
+      "Royalty kati ho?",
+      "Project bechda ke huncha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-081",
+    "topic": "Tax on Medical Equipment",
+    "topic_key": "tax_on_medical_equipment",
+    "question": "Medical equipment ma tax cha?",
+    "question_ne": "Medical equipment ma tax cha?",
+    "question_en": "Is there tax on medical equipment?",
+    "question_normalized": "medical equipment ma tax cha",
+    "question_type": "definition",
+    "answer_ne": "Aatayasiik ausadhi ra equipment ma customs duty 1% ra VAT chhut cha. Anya equipment ma 5% customs ra 13% VAT cha.",
+    "answer_en": "Essential medicines and equipment have 1% customs duty and VAT exemption. Other equipment faces 5% customs and 13% VAT.",
+    "answer_short_ne": "Aatayasiik ausadhi ra equipment ma customs duty 1% ra VAT chhut cha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Customs Tariff, VAT Act",
+    "related_topics": [
+      "Excise duty",
+      "Health tax",
+      "Customs duty"
+    ],
+    "common_followups": [
+      "Hospital le import garda ke chhut cha?",
+      "Diagnostic kit ma tax?"
+    ],
+    "related_questions": [
+      "Hospital le import garda ke chhut cha?",
+      "Diagnostic kit ma tax?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-082",
+    "topic": "Tax on Marriage Expenses",
+    "topic_key": "tax_on_marriage_expenses",
+    "question": "Bihe kharcha ma tax chhut cha?",
+    "question_ne": "Bihe kharcha ma tax chhut cha?",
+    "question_en": "Is there a tax exemption on marriage expenses?",
+    "question_normalized": "bihe kharcha ma tax chhut cha",
+    "question_type": "definition",
+    "answer_ne": "Nepal ma bihe kharcha ma kunai tax chhut chaina. Tara bihe ko upahar (gift) ma unnatural transaction bhaye matra tax lagcha.",
+    "answer_en": "There is no tax exemption on marriage expenses in Nepal. Marriage gifts are only taxed if deemed an unnatural transaction.",
+    "answer_short_ne": "Nepal ma bihe kharcha ma kunai tax chhut chaina.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058",
+    "related_topics": [
+      "Gift tax",
+      "Inheritance tax",
+      "Income source"
+    ],
+    "common_followups": [
+      "Bihe ko gift tax free ho?",
+      "Gold/jewellery ma tax?"
+    ],
+    "related_questions": [
+      "Bihe ko gift tax free ho?",
+      "Gold/jewellery ma tax?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-083",
+    "topic": "Tax on Import of Gold",
+    "topic_key": "tax_on_import_of_gold",
+    "question": "Gold import ma tax kati lagcha?",
+    "question_ne": "Gold import ma tax kati lagcha?",
+    "question_en": "What is the tax on gold imports?",
+    "question_normalized": "gold import ma tax kati lagcha",
+    "question_type": "definition",
+    "answer_ne": "Commercial banks le matra gold import garna paune ra 20% customs duty lagcha. Vyaktigat 50 gram samma sun lyauda Rs 8,500/10 gram tax cha.",
+    "answer_en": "Only commercial banks can import gold, attracting 20% customs duty. Individuals can bring up to 50 grams with a tax of Rs 8,500 per 10 grams.",
+    "answer_short_ne": "Commercial banks le matra gold import garna paune ra 20% customs duty lagcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Customs Act, NRB Act",
+    "related_topics": [
+      "Customs duty",
+      "Excise",
+      "NRB regulation"
+    ],
+    "common_followups": [
+      "Airport ma gold kurne tax ke cha?",
+      "Silver ma tax kati?"
+    ],
+    "related_questions": [
+      "Airport ma gold kurne tax ke cha?",
+      "Silver ma tax kati?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-084",
+    "topic": "Tax on Heavy Equipment",
+    "topic_key": "tax_on_heavy_equipment",
+    "question": "Excavator, crane ma tax kati ho?",
+    "question_ne": "Excavator, crane ma tax kati ho?",
+    "question_en": "What is the tax on heavy equipment?",
+    "question_normalized": "excavator, crane ma tax kati ho",
+    "question_type": "definition",
+    "answer_ne": "Excavator, crane ma 5% customs duty ra 13% VAT lagcha. Construction work ma prayog hune ho bhane depreciation 20% pauncha.",
+    "answer_en": "Excavators and cranes face 5% customs duty and 13% VAT. If used for construction work, 20% depreciation is available.",
+    "answer_short_ne": "Excavator, crane ma 5% customs duty ra 13% VAT lagcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Customs Tariff, Income Tax Act",
+    "related_topics": [
+      "Customs duty",
+      "Depreciation",
+      "VAT refund"
+    ],
+    "common_followups": [
+      "Second hand import garna milcha?",
+      "Excise duty lagcha?"
+    ],
+    "related_questions": [
+      "Second hand import garna milcha?",
+      "Excise duty lagcha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-085",
+    "topic": "Tax on Tobacco",
+    "topic_key": "tax_on_tobacco",
+    "question": "Surti janaya padartha ma tax kati ho?",
+    "question_ne": "Surti janaya padartha ma tax kati ho?",
+    "question_en": "What is the tax on tobacco products?",
+    "question_normalized": "surti janaya padartha ma tax kati ho",
+    "question_type": "definition",
+    "answer_ne": "Churot ma 60% customs, 30% excise, 13% VAT. Bidi ra surti ma specific excise rate cha.",
+    "answer_en": "Cigarettes attract 60% customs, 30% excise, and 13% VAT. Bidi and chewing tobacco have specific excise rates.",
+    "answer_short_ne": "Churot ma 60% customs, 30% excise, 13% VAT.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Excise Act, Customs Act",
+    "related_topics": [
+      "Excise duty",
+      "Health tax",
+      "Customs"
+    ],
+    "common_followups": [
+      "E-cigarette ma kati tax?",
+      "Gutka ma kati?"
+    ],
+    "related_questions": [
+      "E-cigarette ma kati tax?",
+      "Gutka ma kati?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-086",
+    "topic": "Tax on Sale of Property",
+    "topic_key": "tax_on_sale_of_property",
+    "question": "Ghar bechda tax kati lagcha?",
+    "question_ne": "Ghar bechda tax kati lagcha?",
+    "question_en": "What is the tax on selling a house?",
+    "question_normalized": "ghar bechda tax kati lagcha",
+    "question_type": "definition",
+    "answer_ne": "Ghar jagga bikri ma 5%-10% samma capital gains tax lagcha. Owner occupier lai 2 barsa bhanda purano bhaye chhut cha.",
+    "answer_en": "Capital gains tax of 5%-10% applies to house/land sales. Owner-occupiers are exempt if the property is older than 2 years.",
+    "answer_short_ne": "Ghar jagga bikri ma 5%-10% samma capital gains tax lagcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act, Land Revenue Act",
+    "related_topics": [
+      "Capital gains",
+      "Property tax",
+      "Registration fee"
+    ],
+    "common_followups": [
+      "Multiple ghar bhaye?",
+      "Apartment ko tax ke cha?"
+    ],
+    "related_questions": [
+      "Multiple ghar bhaye?",
+      "Apartment ko tax ke cha?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-087",
+    "topic": "Tax on Advertisement",
+    "topic_key": "tax_on_advertisement",
+    "question": "Advertisement ma tax kati lagcha?",
+    "question_ne": "Advertisement ma tax kati lagcha?",
+    "question_en": "What is the tax on advertisements?",
+    "question_normalized": "advertisement ma tax kati lagcha",
+    "question_type": "definition",
+    "answer_ne": "Vigyapan service ma 15% TDS ra 13% VAT lagcha. Hoarding, newspaper, radio sabai ma lagu huncha.",
+    "answer_en": "15% TDS and 13% VAT apply to advertisement services across hoardings, newspapers, and radio.",
+    "answer_short_ne": "Vigyapan service ma 15% TDS ra 13% VAT lagcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act, VAT Act",
+    "related_topics": [
+      "TDS rates",
+      "Media tax",
+      "Service tax"
+    ],
+    "common_followups": [
+      "Facebook/Google ads ma tax?",
+      "Local advertising agency lai kati?"
+    ],
+    "related_questions": [
+      "Facebook/Google ads ma tax?",
+      "Local advertising agency lai kati?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-088",
+    "topic": "Tax on Motorcycle Import",
+    "topic_key": "tax_on_motorcycle_import",
+    "question": "Motorcycle import ma kati tax?",
+    "question_ne": "Motorcycle import ma kati tax?",
+    "question_en": "What is the tax on motorcycle imports?",
+    "question_normalized": "motorcycle import ma kati tax",
+    "question_type": "definition",
+    "answer_ne": "Motorcycle import ma 40% dekhi 60% customs, 13% VAT ra 20% excise lagcha. Engine capacity 225cc samma ma kehi chhut cha.",
+    "answer_en": "Motorcycle imports face 40% to 60% customs, 13% VAT, and 20% excise. Some exemption exists for engine capacities up to 225cc.",
+    "answer_short_ne": "Motorcycle import ma 40% dekhi 60% customs, 13% VAT ra 20% excise lagcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Customs Act, Excise Act",
+    "related_topics": [
+      "Vehicle tax",
+      "Customs duty",
+      "Electric vehicle"
+    ],
+    "common_followups": [
+      "Electric scooter ko tax ke cha?",
+      "Parts import ma kati?"
+    ],
+    "related_questions": [
+      "Electric scooter ko tax ke cha?",
+      "Parts import ma kati?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-089",
+    "topic": "Tax on Freelance Services",
+    "topic_key": "tax_on_freelance_services",
+    "question": "Freelance income ma tax kati ho?",
+    "question_ne": "Freelance income ma tax kati ho?",
+    "question_en": "What is the tax on freelance income?",
+    "question_normalized": "freelance income ma tax kati ho",
+    "question_type": "definition",
+    "answer_ne": "Freelance income lai business income manine ra slab anusar tax lagcha. Bidesh bata income bhayema 2% VAT lagne byabastha cha.",
+    "answer_en": "Freelance income is treated as business income and taxed per slabs. Income from abroad faces a 2% VAT rule.",
+    "answer_short_ne": "Freelance income lai business income manine ra slab anusar tax lagcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act, Finance Act",
+    "related_topics": [
+      "E-commerce tax",
+      "Digital service",
+      "Foreign income"
+    ],
+    "common_followups": [
+      "Dollar income ko tax?",
+      "PayPal bata Nepal lyauda tax?"
+    ],
+    "related_questions": [
+      "Dollar income ko tax?",
+      "PayPal bata Nepal lyauda tax?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-090",
+    "topic": "Tax on Capital Reduction",
+    "topic_key": "tax_on_capital_reduction",
+    "question": "Capital reduction ma tax cha?",
+    "question_ne": "Capital reduction ma tax cha?",
+    "question_en": "Is there tax on capital reduction?",
+    "question_normalized": "capital reduction ma tax cha",
+    "question_type": "definition",
+    "answer_ne": "Company le capital reduce garda shareholder le prapta garne raka lai dividend distribution manincha ra 5% withholding tax lagcha.",
+    "answer_en": "When a company reduces capital, the amount received by shareholders is treated as dividend distribution, attracting a 5% withholding tax.",
+    "answer_short_ne": "Company le capital reduce garda shareholder le prapta garne raka lai dividend distribution manincha ra 5% withholding tax lagcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058",
+    "related_topics": [
+      "Dividend tax",
+      "Share buyback",
+      "Capital gains"
+    ],
+    "common_followups": [
+      "Share buy back ma tax?",
+      "Loss ma capital reduce garda?"
+    ],
+    "related_questions": [
+      "Share buy back ma tax?",
+      "Loss ma capital reduce garda?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-091",
+    "topic": "Tax on House Rent Allowance",
+    "topic_key": "tax_on_house_rent_allowance",
+    "question": "Ghar bhada bhatta ma tax kati?",
+    "question_ne": "Ghar bhada bhatta ma tax kati?",
+    "question_en": "Is house rent allowance taxable?",
+    "question_normalized": "ghar bhada bhatta ma tax kati",
+    "question_type": "definition",
+    "answer_ne": "Salary ko hisab ma ghar bhada bhatta prapta garne karmachari lai Rs 25,000 barshik samma suwidha kar mukt cha.",
+    "answer_en": "Employees receiving house rent allowance as part of salary get a tax-free benefit of up to Rs 25,000 per year.",
+    "answer_short_ne": "Salary ko hisab ma ghar bhada bhatta prapta garne karmachari lai Rs 25,000 barshik samma suwidha kar mukt cha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act 2058",
+    "related_topics": [
+      "Salary tax",
+      "Medical allowance",
+      "Deduction"
+    ],
+    "common_followups": [
+      "Dashain allowance ma tax cha?",
+      "Remote area allowance?"
+    ],
+    "related_questions": [
+      "Dashain allowance ma tax cha?",
+      "Remote area allowance?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  },
+  {
+    "id": "taxfaq-092",
+    "topic": "Tax on Royalty and License Fees",
+    "topic_key": "tax_on_royalty_and_license_fees",
+    "question": "License renewal garda tax kati?",
+    "question_ne": "License renewal garda tax kati?",
+    "question_en": "What is the tax on license renewal?",
+    "question_normalized": "license renewal garda tax kati",
+    "question_type": "definition",
+    "answer_ne": "Byawasaya license renewal garda staniya sarkar le nirdharit garne soolka matra ho, tara royalty/rights bhuktanima 15% TDS lagcha.",
+    "answer_en": "Business license renewal only involves local government fees, but 15% TDS applies to royalty/rights payments.",
+    "answer_short_ne": "Byawasaya license renewal garda staniya sarkar le nirdharit garne soolka matra ho, tara royalty/rights bhuktanima 15% TDS lagcha.",
+    "current_as_of": "FY 2080/81",
+    "legal_reference": "Income Tax Act, Local Govt Act",
+    "related_topics": [
+      "Royalty",
+      "TDS",
+      "Local tax"
+    ],
+    "common_followups": [
+      "Software license ma kati?",
+      "Franchise fee ma tax?"
+    ],
+    "related_questions": [
+      "Software license ma kati?",
+      "Franchise fee ma tax?"
+    ],
+    "intent": "accounting_qa",
+    "NOT_transaction": true,
+    "not_transaction": true,
+    "domain": "nepal_tax",
+    "source": "user_exact"
+  }
+]

@@ -1,0 +1,64 @@
+{
+  "frustrated": [
+    "empath-001",
+    "empath-002",
+    "empath-003",
+    "empath-004",
+    "empath-005",
+    "empath-006",
+    "empath-007",
+    "empath-008",
+    "empath-049"
+  ],
+  "confused": [
+    "empath-009",
+    "empath-010",
+    "empath-011",
+    "empath-012",
+    "empath-013",
+    "empath-014",
+    "empath-015",
+    "empath-016"
+  ],
+  "stressed": [
+    "empath-017",
+    "empath-018",
+    "empath-019",
+    "empath-020",
+    "empath-021",
+    "empath-022",
+    "empath-023",
+    "empath-024",
+    "empath-050"
+  ],
+  "happy": [
+    "empath-025",
+    "empath-026",
+    "empath-027",
+    "empath-028",
+    "empath-029",
+    "empath-030",
+    "empath-031",
+    "empath-032"
+  ],
+  "angry": [
+    "empath-033",
+    "empath-034",
+    "empath-035",
+    "empath-036",
+    "empath-037",
+    "empath-038",
+    "empath-039",
+    "empath-040"
+  ],
+  "sad": [
+    "empath-041",
+    "empath-042",
+    "empath-043",
+    "empath-044",
+    "empath-045",
+    "empath-046",
+    "empath-047",
+    "empath-048"
+  ]
+}

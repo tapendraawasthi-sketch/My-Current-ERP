@@ -1,0 +1,902 @@
+{
+  "namaste": {
+    "id": "sd-001",
+    "input": "namaste",
+    "type": "greeting",
+    "appropriate_responses": [
+      "Namaste! Kasari help garnu?",
+      "Namaste, k kaam thiyo?"
+    ],
+    "tone": "warm_professional",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "namaskar": {
+    "id": "sd-002",
+    "input": "namaskar",
+    "type": "greeting",
+    "appropriate_responses": [
+      "Namaskar! Tapaai lai ke chahinchha?",
+      "Namaskar! Aaja k cha khabar?"
+    ],
+    "tone": "warm_professional",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "kasto cha": {
+    "id": "sd-003",
+    "input": "kasto cha",
+    "type": "greeting",
+    "appropriate_responses": [
+      "Ramro cha, dhanyabaad! Tapaai ko kasto cha?",
+      "Thik cha, hajur! Kasto cha hajur lai?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "sanchai hunuhuncha": {
+    "id": "sd-004",
+    "input": "sanchai hunuhuncha",
+    "type": "greeting",
+    "appropriate_responses": [
+      "Hajur, sanchai chu. Tapaai pani sanchai hunuhunchha?",
+      "Sanchai chu, dhanyabaad! Tapaai ko pani khabar sunaunus."
+    ],
+    "tone": "polite_formal",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "k cha khabar": {
+    "id": "sd-005",
+    "input": "k cha khabar",
+    "type": "greeting",
+    "appropriate_responses": [
+      "Sab thik cha, tapaai ko k cha?",
+      "Khabar ta ramrai cha. Tapaai sunaunus na."
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "k cha halkhabar": {
+    "id": "sd-006",
+    "input": "k cha halkhabar",
+    "type": "greeting",
+    "appropriate_responses": [
+      "Halkhabar ramrai cha, tapaai ko?",
+      "Thikai cha. Tapaai sunaunus aaja k cha?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "ramro cha": {
+    "id": "sd-007",
+    "input": "ramro cha",
+    "type": "greeting",
+    "appropriate_responses": [
+      "Ramro ta ho, tapaai pani ramrai hunuhuncha?",
+      "Ah, ramrai cha. Tapaai lai ni ramro hoss."
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "subha prabhat": {
+    "id": "sd-008",
+    "input": "subha prabhat",
+    "type": "greeting",
+    "appropriate_responses": [
+      "Subha prabhat! Tapaai lai aaja k sahayog chahiyo?",
+      "Subha prabhat! Aaja ko din ramro hos."
+    ],
+    "tone": "warm_professional",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "subha din": {
+    "id": "sd-009",
+    "input": "subha din",
+    "type": "greeting",
+    "appropriate_responses": [
+      "Subha din! Kasarilai sahayog garnu?",
+      "Subha din tapaai lai. K bhanne ichha?"
+    ],
+    "tone": "warm_professional",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "subha sandhya": {
+    "id": "sd-010",
+    "input": "subha sandhya",
+    "type": "greeting",
+    "appropriate_responses": [
+      "Subha sandhya! Aaja ke cha kura?",
+      "Subha sandhya. K bhanne man thiyo?"
+    ],
+    "tone": "polite_formal",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "shubha ratri": {
+    "id": "sd-011",
+    "input": "shubha ratri",
+    "type": "greeting",
+    "appropriate_responses": [
+      "Shubha ratri! Bholi bhetaula.",
+      "Shubha ratri! Mitho nidra hos."
+    ],
+    "tone": "warm_professional",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "jai nepal": {
+    "id": "sd-012",
+    "input": "jai nepal",
+    "type": "greeting",
+    "appropriate_responses": [
+      "Jai Nepal! Tapai lai ke sahayog chahiyo?",
+      "Jai Nepal! K cha halkhabar?"
+    ],
+    "tone": "patriotic_warm",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "dhanyabaad": {
+    "id": "sd-013",
+    "input": "dhanyabaad",
+    "type": "thanks",
+    "appropriate_responses": [
+      "Kehi chhaina, sahayog garna paauda khusi lagyo.",
+      "Dhanyabaad! Thap sahayog chahiyo bhane bhanidinu."
+    ],
+    "tone": "polite_formal",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "thank you": {
+    "id": "sd-014",
+    "input": "thank you",
+    "type": "thanks",
+    "appropriate_responses": [
+      "You're welcome! Kehi help chahiyo bhane bhanidinu.",
+      "Welcome! K cha ajha?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "dherai dherai dhanyabaad": {
+    "id": "sd-015",
+    "input": "dherai dherai dhanyabaad",
+    "type": "thanks",
+    "appropriate_responses": [
+      "Kehi chhaina, yahi ta kaam ho mero.",
+      "Khushi lagyo sahayog garna paauda. Feri pheri bhanidinu."
+    ],
+    "tone": "warm_professional",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "aabhari chhu": {
+    "id": "sd-016",
+    "input": "aabhari chhu",
+    "type": "thanks",
+    "appropriate_responses": [
+      "Ma pani aabhari chhu tapaai ko samaya ko laagi.",
+      "Aabhar ta mero tapaai prati, sahayog garna paayen."
+    ],
+    "tone": "polite_formal",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "dhanyabaad cha": {
+    "id": "sd-017",
+    "input": "dhanyabaad cha",
+    "type": "thanks",
+    "appropriate_responses": [
+      "Hajur, kehi chhaina. Bholi pani bhetaula.",
+      "Welcome! Aaj feri kehi chahiyo bhane bhanidinu."
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "thank you so much": {
+    "id": "sd-018",
+    "input": "thank you so much",
+    "type": "thanks",
+    "appropriate_responses": [
+      "You are most welcome. Kehi kehi bhaye bhanidinu hai.",
+      "Thank you back! Have a great day."
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "pheri bhetaula": {
+    "id": "sd-019",
+    "input": "pheri bhetaula",
+    "type": "goodbye",
+    "appropriate_responses": [
+      "Pheri bhetaula! Ramro din.",
+      "La pheri bhetaula, aayeko ma khushi lagi."
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "bye": {
+    "id": "sd-020",
+    "input": "bye",
+    "type": "goodbye",
+    "appropriate_responses": [
+      "Bye bye! Feri pani aaunu hai.",
+      "Bye! Tapaai ko din ramro hos."
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "alvida": {
+    "id": "sd-021",
+    "input": "alvida",
+    "type": "goodbye",
+    "appropriate_responses": [
+      "Alvida! Tapaai sanga bhetera khusi lagyo.",
+      "Alvida, ramro sanga jaanuhos."
+    ],
+    "tone": "warm_professional",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "ramro sanga jaanuhos": {
+    "id": "sd-022",
+    "input": "ramro sanga jaanuhos",
+    "type": "goodbye",
+    "appropriate_responses": [
+      "Tapaai pani ramro sanga jaanuhos, dhanyabaad!",
+      "Huncha, pheri bhetaula. Alvida!"
+    ],
+    "tone": "polite_formal",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "la bhetaula": {
+    "id": "sd-023",
+    "input": "la bhetaula",
+    "type": "goodbye",
+    "appropriate_responses": [
+      "La, pheri bhetaula. Dhanyabaad aayeko ma.",
+      "Bhetaula, chittai bhetaun."
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "pheri bhetaunla": {
+    "id": "sd-024",
+    "input": "pheri bhetaunla",
+    "type": "goodbye",
+    "appropriate_responses": [
+      "Huncha, bholi milera bhetau la.",
+      "Pheri bhetaunla, have a good one!"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "la ta ta": {
+    "id": "sd-025",
+    "input": "la ta ta",
+    "type": "goodbye",
+    "appropriate_responses": [
+      "La ta ta! Pheri bolchau hai.",
+      "Ta ta! Ramro sanga jaane."
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "aba jaanchu": {
+    "id": "sd-026",
+    "input": "aba jaanchu",
+    "type": "goodbye",
+    "appropriate_responses": [
+      "Huncha, ramro sanga jaanuhos. Pheri bhetaula.",
+      "La thik cha, bato ko khyal garnu."
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "khana khayo": {
+    "id": "sd-027",
+    "input": "khana khayo",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Khayen, tapaai le khayau?",
+      "Ahile nai khayen. Tapaai le?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "kaam kasto cha": {
+    "id": "sd-028",
+    "input": "kaam kasto cha",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Kaam thik thak cha, dherai cha. Tapaai ko?",
+      "Kaam ta busy nai cha. K cha kura?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "busy cha ki": {
+    "id": "sd-029",
+    "input": "busy cha ki",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Ahile ta ali free chu. Tapaai lai ke kaam thiyo?",
+      "Busy nai ho, tara ke cha bhandinu."
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "aaja ke gardai hunuhunchha": {
+    "id": "sd-030",
+    "input": "aaja ke gardai hunuhunchha",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Aaja ghar maa kehi kaam gardai chu. Tapaai?",
+      "Aaja ta dherai meeting cha. K cha?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "ghar ma sabai sanchai hunuhunchha": {
+    "id": "sd-031",
+    "input": "ghar ma sabai sanchai hunuhunchha",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Hajur, sabai sanchai hunuhunchha. Tapaai ko ghar maa?",
+      "Sanchai chhan, dhanyabaad. Tapaai ko pani sunaunus."
+    ],
+    "tone": "polite_formal",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "timi lai ke cha": {
+    "id": "sd-032",
+    "input": "timi lai ke cha",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Malai ta thik cha, timi lai?",
+      "Kehi chhaina, timi suna na."
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "mausam kasto cha": {
+    "id": "sd-033",
+    "input": "mausam kasto cha",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Mausam ta ramrai cha, ali chiso huna thalecha. Tapaai lai?",
+      "Aaja mausam khatam cha! K cha?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "ajha k cha": {
+    "id": "sd-034",
+    "input": "ajha k cha",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Ajha ta sab thikai. K cha tapaai ko?",
+      "Thikai cha, kehi naya cha ki?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "kati time bhayo bheta nabhaeko": {
+    "id": "sd-035",
+    "input": "kati time bhayo bheta nabhaeko",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Ah, dherai bhayo. Tapaai lai ni bheteko dherai bho.",
+      "Sachai dherai bhayo, k cha haalchaal?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "k garnu hunchha aajkal": {
+    "id": "sd-036",
+    "input": "k garnu hunchha aajkal",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Aajkal ma yo project maa busy chu. Tapaai?",
+      "Kaam nai ho, aru kehi. Tapaai sunaunus."
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "padhai kasto cha": {
+    "id": "sd-037",
+    "input": "padhai kasto cha",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Padhai ramrai chaliracha, ali pressure cha. Tapaai ko?",
+      "Padhai ta thik cha, timro?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "ghar ko khabar ke cha": {
+    "id": "sd-038",
+    "input": "ghar ko khabar ke cha",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Ghar ko khabar ramro cha, sabai sanchai. Tapaai ko?",
+      "Sab thik, dhanyabaad. Tapaai ko ghar ko?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "sanchai cha ni": {
+    "id": "sd-039",
+    "input": "sanchai cha ni",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Sanchai chu ni, timi?",
+      "Ah, sanchai cha. K cha ta?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "tapaai lai kehi kaam chha": {
+    "id": "sd-040",
+    "input": "tapaai lai kehi kaam chha",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Kaam ta kehi chhaina, aise bheteko. Tapaai lai?",
+      "Kehi kaam chhaina, k bhanne man thiyo?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "kati dherai din pachi bhete": {
+    "id": "sd-041",
+    "input": "kati dherai din pachi bhete",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Sachai dherai bhayo, k cha? Bistritai sunaunus.",
+      "Ah, dherai din! Kura garau na."
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "maaf garnus": {
+    "id": "sd-042",
+    "input": "maaf garnus",
+    "type": "politeness",
+    "appropriate_responses": [
+      "Kehi chhaina, bholi bhetau hai.",
+      "Maaf garnus ta kehi bhayena. Kura agadi badhaun."
+    ],
+    "tone": "polite_formal",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "sorry": {
+    "id": "sd-043",
+    "input": "sorry",
+    "type": "politeness",
+    "appropriate_responses": [
+      "No problem! K cha aru?",
+      "It's okay. Kehi chhaina."
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "excuse me": {
+    "id": "sd-044",
+    "input": "excuse me",
+    "type": "politeness",
+    "appropriate_responses": [
+      "Yes, bhanidinus na.",
+      "Hajur, ke cha kura?"
+    ],
+    "tone": "polite_formal",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "kripaya": {
+    "id": "sd-045",
+    "input": "kripaya",
+    "type": "politeness",
+    "appropriate_responses": [
+      "Hajur, bhanidinus. K sahayog garnu?",
+      "Kripaya aagman. Ke chahinchha?"
+    ],
+    "tone": "polite_formal",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "please": {
+    "id": "sd-046",
+    "input": "please",
+    "type": "politeness",
+    "appropriate_responses": [
+      "Hajur, ke cha please? Bhanidinus.",
+      "Sure, k bhanne man thiyo?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "maaf pau": {
+    "id": "sd-047",
+    "input": "maaf pau",
+    "type": "politeness",
+    "appropriate_responses": [
+      "Maaf garidiyen, kehi chhaina. Pheri kehi bhaye bhandinu.",
+      "Huncha, maaf gariyo. Kura agadi badhaun."
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "ek chin": {
+    "id": "sd-048",
+    "input": "ek chin",
+    "type": "politeness",
+    "appropriate_responses": [
+      "Huncha, time cha. K bhanne?",
+      "Ek chin? Huncha, bhandai garnus."
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "kripaya basnus": {
+    "id": "sd-049",
+    "input": "kripaya basnus",
+    "type": "politeness",
+    "appropriate_responses": [
+      "Dhanyabaad! Base. Tapaai lai ke cha?",
+      "Huncha, baschu. Bhandinu."
+    ],
+    "tone": "polite_formal",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "kripaya dhairya rakhnus": {
+    "id": "sd-050",
+    "input": "kripaya dhairya rakhnus",
+    "type": "politeness",
+    "appropriate_responses": [
+      "Huncha, dhairya raakheko chu. K cha?",
+      "Dhairya rakhchu, bhandai garnus."
+    ],
+    "tone": "polite_formal",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "tapai ko din ramro rahos": {
+    "id": "sd-051",
+    "input": "tapai ko din ramro rahos",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Dhanyabaad! Tapaai ko pani din ramro rahos.",
+      "Thank you! Same to you."
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "aba aaye": {
+    "id": "sd-052",
+    "input": "aba aaye",
+    "type": "greeting",
+    "appropriate_responses": [
+      "Aaye! Ke cha khabar?",
+      "Ah, aayau! K cha?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "feri bhetaula hai": {
+    "id": "sd-053",
+    "input": "feri bhetaula hai",
+    "type": "goodbye",
+    "appropriate_responses": [
+      "Huncha, feri bhetaula. Dhanyabaad.",
+      "Bye bye, feri bhetaula!"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "subha yatra": {
+    "id": "sd-054",
+    "input": "subha yatra",
+    "type": "goodbye",
+    "appropriate_responses": [
+      "Subha yatra! Tapaai lai ni.",
+      "Dhanyabaad! Pheri bhetaula."
+    ],
+    "tone": "warm_professional",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "aaja kati busy": {
+    "id": "sd-055",
+    "input": "aaja kati busy",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Aaja dherai busy, dherai kaam cha. Tapaai?",
+      "Busy ta chu, tara kehi bhanidinu na."
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "kasto lagi rako cha": {
+    "id": "sd-056",
+    "input": "kasto lagi rako cha",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Thikai lagi rako cha, din nai yestai ho. Tapaai?",
+      "Ramrai lagi rako cha, dhanyabaad! Tapaai?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "timi sanga pani tehi ho": {
+    "id": "sd-057",
+    "input": "timi sanga pani tehi ho",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Tehi ho ni, k garnu. K cha aru?",
+      "Ah, sabai ustai ho. K cha?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "aba chhito bhetau": {
+    "id": "sd-058",
+    "input": "aba chhito bhetau",
+    "type": "goodbye",
+    "appropriate_responses": [
+      "Huncha, chittai bhetaula. Take care.",
+      "La chhito bhetaun, feri bolchu."
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "dherai din dekheko chaina": {
+    "id": "sd-059",
+    "input": "dherai din dekheko chaina",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Sachai dherai bhayo, k cha halkhabar?",
+      "Ah, k garnu byasta le. K cha?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "tapaai ko phone number dinus na": {
+    "id": "sd-060",
+    "input": "tapaai ko phone number dinus na",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Huncha, mero number 98XXXXXX ho. Kina?",
+      "Sure, yo ho mero. Tapaai ko pani dinus."
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "aba ta jaanai parcha": {
+    "id": "sd-061",
+    "input": "aba ta jaanai parcha",
+    "type": "goodbye",
+    "appropriate_responses": [
+      "La thik cha, ramro sanga jaanuhos.",
+      "Huncha, pheri bhetaula!"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "ramailo garna jaane ho": {
+    "id": "sd-062",
+    "input": "ramailo garna jaane ho",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Ramailo garna jaane? Kaha jaane?",
+      "Wah, ramailo garna! K cha programme?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "aaja kehi kaam chha": {
+    "id": "sd-063",
+    "input": "aaja kehi kaam chha",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Kaam chha, bhandinu ma k garum?",
+      "Kasto kaam? K help chahiyo?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "subha bihani": {
+    "id": "sd-064",
+    "input": "subha bihani",
+    "type": "greeting",
+    "appropriate_responses": [
+      "Subha bihani! K cha haal?",
+      "Subha bihani! Aaja ke cha?"
+    ],
+    "tone": "warm_professional",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "timro naam k ho": {
+    "id": "sd-065",
+    "input": "timro naam k ho",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Mero naam assistant ho. Tapaai ko?",
+      "Namaskar, mero naam bot ho. Tapaai?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "tapai ko ghar kaha ho": {
+    "id": "sd-066",
+    "input": "tapai ko ghar kaha ho",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Mero ghar ta Kathmandu ho. Tapaai ko?",
+      "Ghar ta digital duniya ma ho. Tapaai ko?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "feri bhetaula, dhanyabaad": {
+    "id": "sd-067",
+    "input": "feri bhetaula, dhanyabaad",
+    "type": "goodbye",
+    "appropriate_responses": [
+      "Dhanyabaad! Pheri bhetaula, have a nice day.",
+      "Thank you! Pheri bhetaula."
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "aaj kati garmi": {
+    "id": "sd-068",
+    "input": "aaj kati garmi",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Aaj ta dherai garmi cha, pani piunu. Tapaai lai?",
+      "Garmi le hairaan! K cha?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "aba jau hai": {
+    "id": "sd-069",
+    "input": "aba jau hai",
+    "type": "goodbye",
+    "appropriate_responses": [
+      "La jau, feri bhetaula.",
+      "Huncha, bye!"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "tapaai ko sahayog ma agaadi badauna chahanchu": {
+    "id": "sd-070",
+    "input": "tapaai ko sahayog ma agaadi badauna chahanchu",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Pakkai, k sahayog chahiyo?",
+      "Sahayog garna ta ma yahi chu. K cha?"
+    ],
+    "tone": "polite_formal",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "ekdum ramro": {
+    "id": "sd-071",
+    "input": "ekdum ramro",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "K ramro? Bistaarai bhandinu.",
+      "Ramro cha bhane, ma khusi chu. K cha?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "kasto majja aayo": {
+    "id": "sd-072",
+    "input": "kasto majja aayo",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Majja aayo? K bhayo ra?",
+      "Wah, ramro! K bhayeko thiyo?"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "aba lunch time": {
+    "id": "sd-073",
+    "input": "aba lunch time",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Ah, lunch time? Ramrari khana khaanu. K cha?",
+      "Lunch time bhayo, khana jaau hai."
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "break linchu hai": {
+    "id": "sd-074",
+    "input": "break linchu hai",
+    "type": "small_talk",
+    "appropriate_responses": [
+      "Huncha, break linus. Pheri bhetaula.",
+      "La break liu, feri aau hai."
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  },
+  "aba ma niskinchhu": {
+    "id": "sd-075",
+    "input": "aba ma niskinchhu",
+    "type": "goodbye",
+    "appropriate_responses": [
+      "Huncha, ramro sanga jaanuhos.",
+      "La ta ta, pheri bhetaula!"
+    ],
+    "tone": "casual_friendly",
+    "NOT_transaction": true,
+    "NOT_question": true
+  }
+}

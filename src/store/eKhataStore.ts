@@ -5,6 +5,7 @@ import {
   askEKhataV2,
   checkEKhataLlmStatus,
   getEKhataSessionId,
+  setEKhataSessionId,
 } from "../lib/ekhata/ekhataLlmClient";
 import { replyCancel, replySaved } from "../lib/ekhata/conversationEngine";
 import { recordTrainingFeedback } from "../lib/ekhata/trainingFeedback";
@@ -22,24 +23,32 @@ import { extractWorkItem } from "../lib/ekhata/smartWorkBrain";
 import type { EKhataChatMessage, KhataConfirmationCard } from "../lib/ekhata/types";
 import type { KhataCompoundBatchCard } from "../lib/ekhata/compoundBatch";
 import { isSelfContainedAi } from "../lib/selfContainedAi";
+import {
+  createEmptySession,
+  deriveSessionTitle,
+  deserializeMessage,
+  loadOrbixSessions,
+  saveOrbixSessions,
+  serializeMessage,
+  type OrbixChatSession,
+  type OrbixWindowMode,
+} from "../lib/ekhata/orbixChatStorage";
+import { handleOrbixReportQuery } from "../lib/ekhata/orbixReportEngine";
+import type { PendingOrbixReport } from "../lib/ekhata/orbixReportTypes";
 import { useStore } from "./useStore";
 
 function genId(): string {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
-function buildWelcome(): string {
-  return (
-    "Namaste! Ma **e-Khata CA Brain** — tapaiko accounting intelligence sahayogi.\n\n" +
-    "Ma bujhchhu ra jawaf dinchhu:\n" +
-    "• **Accounting entries** — Nepali, English, Roman Nepali\n" +
-    "• **IFRS/NAS concepts** — sampatti, dayitwo, recognition, VAT/SSF/TDS\n" +
-    "• **Real ledger data** — party balance, reports, trial balance\n\n" +
-    "📒 CA Entries · 📘 Framework Q&A · 🔧 Agentic tools"
-  );
-}
+const boot = loadOrbixSessions();
+const bootSession = boot.sessions.find((s) => s.id === boot.activeSessionId) ?? boot.sessions[0];
 
 let conversationContext: EKhataConversationContext = createConversationContext();
+
+if (bootSession.llmSessionId) {
+  setEKhataSessionId(bootSession.llmSessionId);
+}
 
 function getKhataBalance() {
   const accounts = useStore.getState().accounts ?? [];
@@ -55,11 +64,74 @@ function formatAssistantText(message: string, insight?: string | null): string {
   return insight ? `${message}\n\n${insight}` : message;
 }
 
+function syncSession(
+  sessions: OrbixChatSession[],
+  activeSessionId: string,
+  messages: EKhataChatMessage[],
+): OrbixChatSession[] {
+  const now = new Date().toISOString();
+  return sessions.map((s) => {
+    if (s.id !== activeSessionId) return s;
+    return {
+      ...s,
+      title: deriveSessionTitle(messages),
+      updatedAt: now,
+      messages: messages.map(serializeMessage),
+    };
+  });
+}
+
+function getReportContext() {
+  const store = useStore.getState();
+  return {
+    parties: (store.parties ?? []).map((p) => ({ id: p.id, name: p.name })),
+    fyStart: store.currentFiscalYear?.startDate,
+    fyEnd: store.currentFiscalYear?.endDate,
+    companyName:
+      store.companySettings?.companyNameEn ||
+      store.companySettings?.name ||
+      undefined,
+  };
+}
+
+function applyReportToMessage(
+  msg: EKhataChatMessage,
+  result: Awaited<ReturnType<typeof handleOrbixReportQuery>>,
+): EKhataChatMessage {
+  if (!result) return { ...msg, text: "Could not generate report." };
+  if (result.type === "report") {
+    return {
+      ...msg,
+      text: result.text,
+      report: result.report,
+      reportClarify: undefined,
+    };
+  }
+  return {
+    ...msg,
+    text: result.text,
+    reportClarify: result.pending,
+    report: undefined,
+  };
+}
+
+function persist(
+  sessions: OrbixChatSession[],
+  activeSessionId: string,
+  windowMode?: OrbixWindowMode,
+): void {
+  saveOrbixSessions(sessions, activeSessionId, windowMode);
+}
+
 export interface EKhataState {
   isOpen: boolean;
+  windowMode: OrbixWindowMode;
+  sidebarCollapsed: boolean;
   isLoading: boolean;
   llmOnline: boolean;
   llmModel?: string;
+  sessions: OrbixChatSession[];
+  activeSessionId: string;
   messages: EKhataChatMessage[];
   pendingCard: KhataConfirmationCard | null;
   pendingCompoundBatch: KhataCompoundBatchCard | null;
@@ -67,37 +139,165 @@ export interface EKhataState {
   activeTools: string[];
   engineLabel: string;
   openPanel: () => void;
+  openWithPendingCard: (card: KhataConfirmationCard) => void;
   closePanel: () => void;
   togglePanel: () => void;
+  minimizePanel: () => void;
+  maximizePanel: () => void;
+  restorePanel: () => void;
+  toggleSidebar: () => void;
+  newChat: () => void;
+  selectSession: (id: string) => void;
+  deleteSession: (id: string) => void;
   refreshLlmStatus: () => Promise<void>;
   sendMessage: (text: string) => Promise<void>;
+  generateOrbixReport: (pending: PendingOrbixReport) => Promise<void>;
   confirmPending: () => Promise<void>;
   cancelPending: () => void;
-  clearHistory: () => void;
 }
 
 export const useEKhataStore = create<EKhataState>((set, get) => ({
   isOpen: false,
+  windowMode: boot.windowMode === "minimized" ? "normal" : boot.windowMode,
+  sidebarCollapsed: false,
   isLoading: false,
   llmOnline: false,
   llmModel: undefined,
-  messages: [
-    {
-      id: "welcome",
-      role: "assistant",
-      text: buildWelcome(),
-      timestamp: new Date(),
-    },
-  ],
+  sessions: boot.sessions,
+  activeSessionId: boot.activeSessionId,
+  messages: bootSession.messages.map(deserializeMessage),
   pendingCard: null,
   pendingCompoundBatch: null,
   streamingText: "",
   activeTools: [],
   engineLabel: "v2",
 
-  openPanel: () => set({ isOpen: true }),
-  closePanel: () => set({ isOpen: false }),
-  togglePanel: () => set((s) => ({ isOpen: !s.isOpen })),
+  openPanel: () => set({ isOpen: true, windowMode: "normal" }),
+
+  openWithPendingCard: (card: KhataConfirmationCard) =>
+    set({ isOpen: true, windowMode: "normal", pendingCard: card }),
+
+  closePanel: () => {
+    const { sessions, activeSessionId, messages, windowMode } = get();
+    const updated = syncSession(sessions, activeSessionId, messages);
+    persist(updated, activeSessionId, windowMode);
+    set({ isOpen: false, windowMode: "normal", pendingCard: null, pendingCompoundBatch: null });
+  },
+
+  togglePanel: () => {
+    const { isOpen, windowMode } = get();
+    if (!isOpen) {
+      set({ isOpen: true, windowMode: windowMode === "minimized" ? "normal" : windowMode });
+      return;
+    }
+    if (windowMode === "minimized") {
+      set({ windowMode: "normal" });
+      return;
+    }
+    get().closePanel();
+  },
+
+  minimizePanel: () => {
+    const { sessions, activeSessionId, messages, windowMode } = get();
+    const updated = syncSession(sessions, activeSessionId, messages);
+    persist(updated, activeSessionId, "minimized");
+    set({ windowMode: "minimized", sessions: updated });
+  },
+
+  maximizePanel: () => {
+    const { windowMode } = get();
+    const next: OrbixWindowMode = windowMode === "maximized" ? "normal" : "maximized";
+    persist(get().sessions, get().activeSessionId, next);
+    set({
+      windowMode: next,
+      sidebarCollapsed: next === "maximized" ? false : get().sidebarCollapsed,
+    });
+  },
+
+  restorePanel: () => {
+    persist(get().sessions, get().activeSessionId, "normal");
+    set({ windowMode: "normal" });
+  },
+
+  toggleSidebar: () => set((s) => ({ sidebarCollapsed: !s.sidebarCollapsed })),
+
+  newChat: () => {
+    const { sessions, activeSessionId, messages, isLoading } = get();
+    if (isLoading) return;
+
+    const hasContent = messages.some((m) => m.text.trim());
+    if (!hasContent) return;
+
+    const updated = [createEmptySession(), ...syncSession(sessions, activeSessionId, messages)];
+    const fresh = updated[0];
+
+    conversationContext = createConversationContext();
+    setEKhataSessionId(fresh.llmSessionId!);
+
+    persist(updated, fresh.id, get().windowMode);
+    set({
+      sessions: updated,
+      activeSessionId: fresh.id,
+      messages: [],
+      pendingCard: null,
+      pendingCompoundBatch: null,
+      streamingText: "",
+      activeTools: [],
+    });
+  },
+
+  selectSession: (id: string) => {
+    const { sessions, activeSessionId, messages, isLoading } = get();
+    if (isLoading || id === activeSessionId) return;
+
+    let updated = syncSession(sessions, activeSessionId, messages);
+    const target = updated.find((s) => s.id === id);
+    if (!target) return;
+
+    conversationContext = createConversationContext();
+    if (target.llmSessionId) setEKhataSessionId(target.llmSessionId);
+
+    persist(updated, id, get().windowMode);
+    set({
+      sessions: updated,
+      activeSessionId: id,
+      messages: target.messages.map(deserializeMessage),
+      pendingCard: null,
+      pendingCompoundBatch: null,
+      streamingText: "",
+      activeTools: [],
+    });
+  },
+
+  deleteSession: (id: string) => {
+    const { sessions, activeSessionId, messages, isLoading } = get();
+    if (isLoading) return;
+
+    let updated = syncSession(sessions, activeSessionId, messages);
+    updated = updated.filter((s) => s.id !== id);
+
+    if (updated.length === 0) {
+      updated = [createEmptySession()];
+    }
+
+    if (id === activeSessionId) {
+      const next = updated[0];
+      conversationContext = createConversationContext();
+      if (next.llmSessionId) setEKhataSessionId(next.llmSessionId);
+      persist(updated, next.id, get().windowMode);
+      set({
+        sessions: updated,
+        activeSessionId: next.id,
+        messages: next.messages.map(deserializeMessage),
+        pendingCard: null,
+        pendingCompoundBatch: null,
+      });
+      return;
+    }
+
+    persist(updated, activeSessionId, get().windowMode);
+    set({ sessions: updated });
+  },
 
   refreshLlmStatus: async () => {
     try {
@@ -118,25 +318,63 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
 
     const assistantId = genId();
 
-    set((s) => ({
-      messages: [
+    set((s) => {
+      const nextMessages: EKhataChatMessage[] = [
         ...s.messages,
         { id: genId(), role: "user", text: trimmed, timestamp: new Date() },
         { id: assistantId, role: "assistant", text: "", timestamp: new Date() },
-      ],
-      isLoading: true,
-      pendingCard: null,
-      pendingCompoundBatch: null,
-      streamingText: "",
-      activeTools: [],
-    }));
+      ];
+      const updatedSessions = syncSession(s.sessions, s.activeSessionId, nextMessages);
+      persist(updatedSessions, s.activeSessionId, s.windowMode);
+      return {
+        messages: nextMessages,
+        sessions: updatedSessions,
+        isLoading: true,
+        pendingCard: null,
+        pendingCompoundBatch: null,
+        streamingText: "",
+        activeTools: [],
+      };
+    });
+
+    const finalize = (patch: Partial<EKhataState>) => {
+      set((s) => {
+        const merged = { ...s, ...patch, isLoading: false };
+        const updatedSessions = syncSession(merged.sessions, merged.activeSessionId, merged.messages);
+        persist(updatedSessions, merged.activeSessionId, merged.windowMode);
+        return { ...merged, sessions: updatedSessions };
+      });
+    };
+
+    try {
+      const pendingFromChat = [...get().messages]
+        .reverse()
+        .find((m) => m.reportClarify)?.reportClarify;
+
+      const reportResult = await handleOrbixReportQuery(trimmed, {
+        pendingReport: pendingFromChat,
+        ...getReportContext(),
+      });
+
+      if (reportResult) {
+        finalize({
+          messages: get().messages.map((m) =>
+            m.id === assistantId ? applyReportToMessage(m, reportResult) : m,
+          ),
+          engineLabel: "orbix-report",
+        });
+        return;
+      }
+    } catch {
+      /* fall through to normal chat */
+    }
 
     const balance = getKhataBalance();
 
     if (isSelfContainedAi()) {
       try {
         const history: ConversationTurn[] = get()
-          .messages.filter((m) => m.id !== "welcome" && m.id !== assistantId)
+          .messages.filter((m) => m.id !== assistantId)
           .slice(-10)
           .map((m) => ({ role: m.role, text: m.text }));
 
@@ -158,19 +396,17 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
           );
         }
 
-        set((s) => ({
-          messages: s.messages.map((m) =>
+        finalize({
+          messages: get().messages.map((m) =>
             m.id === assistantId ? { ...m, text: result.reply } : m,
           ),
           pendingCard: result.kind === "entry" && result.card ? result.card : null,
           pendingCompoundBatch: result.kind === "compound" ? result.batch : null,
-          isLoading: false,
           engineLabel: "builtin",
-        }));
+        });
       } catch (error) {
-        set((s) => ({
-          isLoading: false,
-          messages: s.messages.map((m) =>
+        finalize({
+          messages: get().messages.map((m) =>
             m.id === assistantId
               ? {
                   ...m,
@@ -178,15 +414,14 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
                 }
               : m,
           ),
-        }));
+        });
       }
       return;
     }
 
     if (!get().llmOnline) {
-      set((s) => ({
-        isLoading: false,
-        messages: s.messages.map((m) =>
+      finalize({
+        messages: get().messages.map((m) =>
           m.id === assistantId
             ? {
                 ...m,
@@ -199,7 +434,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
               }
             : m,
         ),
-      }));
+      });
       return;
     }
 
@@ -218,10 +453,10 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
           onToken: (token) => {
             set((s) => {
               const next = s.streamingText + token;
-              return {
-                streamingText: next,
-                messages: s.messages.map((m) => (m.id === assistantId ? { ...m, text: next } : m)),
-              };
+              const nextMessages = s.messages.map((m) =>
+                m.id === assistantId ? { ...m, text: next } : m,
+              );
+              return { streamingText: next, messages: nextMessages };
             });
           },
           onToolCalling: (tools) => set({ activeTools: tools }),
@@ -236,16 +471,15 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
               conversationContext = updateContextAfterEntry(conversationContext, card, trimmed);
             }
 
-            set((s) => ({
-              messages: s.messages.map((m) =>
+            finalize({
+              messages: get().messages.map((m) =>
                 m.id === assistantId ? { ...m, text: finalText } : m,
               ),
               pendingCard: action === "confirm" ? card : null,
-              isLoading: false,
               streamingText: "",
               activeTools: [],
               engineLabel: "v2-stream",
-            }));
+            });
           },
           onError: async () => {
             const v2 = await askEKhataV2(trimmed, sessionId, { balance, context: snapshot });
@@ -257,25 +491,23 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
                 trimmed,
               );
             }
-            set((s) => ({
-              messages: s.messages.map((m) =>
+            finalize({
+              messages: get().messages.map((m) =>
                 m.id === assistantId ? { ...m, text: finalText } : m,
               ),
               pendingCard: v2.action === "confirm" ? (v2.card ?? null) : null,
-              isLoading: false,
               streamingText: "",
               activeTools: [],
               engineLabel: "v2",
-            }));
+            });
           },
         },
         { context: snapshot, balance },
       );
     } catch (error) {
-      set((s) => ({
-        isLoading: false,
+      finalize({
         streamingText: "",
-        messages: s.messages.map((m) =>
+        messages: get().messages.map((m) =>
           m.id === assistantId
             ? {
                 ...m,
@@ -283,7 +515,68 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
               }
             : m,
         ),
-      }));
+      });
+    }
+  },
+
+  generateOrbixReport: async (pending: PendingOrbixReport) => {
+    if (get().isLoading) return;
+
+    const existing = [...get().messages].reverse().find((m) => m.reportClarify);
+    const assistantId = existing?.id ?? genId();
+
+    set((s) => {
+      const nextMessages = existing
+        ? s.messages.map((m) =>
+            m.id === assistantId
+              ? { ...m, text: "", reportClarify: undefined, report: undefined }
+              : m,
+          )
+        : [
+            ...s.messages,
+            { id: assistantId, role: "assistant" as const, text: "", timestamp: new Date() },
+          ];
+      return {
+        messages: nextMessages,
+        isLoading: true,
+        activeTools: ["ledger-report"],
+        streamingText: "",
+      };
+    });
+
+    const finalize = (patch: Partial<EKhataState>) => {
+      set((s) => {
+        const merged = { ...s, ...patch, isLoading: false, activeTools: [] };
+        const updatedSessions = syncSession(merged.sessions, merged.activeSessionId, merged.messages);
+        persist(updatedSessions, merged.activeSessionId, merged.windowMode);
+        return { ...merged, sessions: updatedSessions };
+      });
+    };
+
+    try {
+      const synthetic = `${pending.kind} ${pending.fromDate} to ${pending.toDate}${pending.partyName ? ` ${pending.partyName}` : ""}`;
+      const reportResult = await handleOrbixReportQuery(synthetic, {
+        pendingReport: pending,
+        ...getReportContext(),
+      });
+
+      finalize({
+        messages: get().messages.map((m) =>
+          m.id === assistantId ? applyReportToMessage(m, reportResult) : m,
+        ),
+        engineLabel: "orbix-report",
+      });
+    } catch (error) {
+      finalize({
+        messages: get().messages.map((m) =>
+          m.id === assistantId
+            ? {
+                ...m,
+                text: error instanceof Error ? error.message : "Report generation failed.",
+              }
+            : m,
+        ),
+      });
     }
   },
 
@@ -303,19 +596,23 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
           recordTrainingFeedback(part.card, "confirmed");
         }
 
-        set((s) => ({
-          pendingCompoundBatch: null,
-          isLoading: false,
-          messages: [
-            ...s.messages,
-            {
-              id: genId(),
-              role: "assistant",
-              text: `Safalta! ${batch.compoundCount} entries save bhayo ✓ (${voucherNos.join(", ")})`,
-              timestamp: new Date(),
-            },
-          ],
-        }));
+        const appendMsg: EKhataChatMessage = {
+          id: genId(),
+          role: "assistant",
+          text: `Safalta! ${batch.compoundCount} entries save bhayo ✓ (${voucherNos.join(", ")})`,
+          timestamp: new Date(),
+        };
+        set((s) => {
+          const nextMessages = [...s.messages, appendMsg];
+          const updatedSessions = syncSession(s.sessions, s.activeSessionId, nextMessages);
+          persist(updatedSessions, s.activeSessionId, s.windowMode);
+          return {
+            pendingCompoundBatch: null,
+            isLoading: false,
+            messages: nextMessages,
+            sessions: updatedSessions,
+          };
+        });
         if (voucherNos.length > 0) {
           conversationContext = updateContextAfterConfirm(
             conversationContext,
@@ -349,19 +646,23 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
         addVoucher: addVoucher as (voucher: Record<string, unknown>) => Promise<unknown>,
       });
 
-      set((s) => ({
-        pendingCard: null,
-        isLoading: false,
-        messages: [
-          ...s.messages,
-          {
-            id: genId(),
-            role: "assistant",
-            text: replySaved(voucherNo),
-            timestamp: new Date(),
-          },
-        ],
-      }));
+      const appendMsg: EKhataChatMessage = {
+        id: genId(),
+        role: "assistant",
+        text: replySaved(voucherNo),
+        timestamp: new Date(),
+      };
+      set((s) => {
+        const nextMessages = [...s.messages, appendMsg];
+        const updatedSessions = syncSession(s.sessions, s.activeSessionId, nextMessages);
+        persist(updatedSessions, s.activeSessionId, s.windowMode);
+        return {
+          pendingCard: null,
+          isLoading: false,
+          messages: nextMessages,
+          sessions: updatedSessions,
+        };
+      });
       conversationContext = updateContextAfterConfirm(conversationContext, voucherNo);
       recordTrainingFeedback(card, "confirmed");
     } catch (error) {
@@ -389,36 +690,22 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
         recordTrainingFeedback(part.card, "cancelled");
       }
     }
-    set((s) => ({
-      pendingCard: null,
-      pendingCompoundBatch: null,
-      messages: [
-        ...s.messages,
-        {
-          id: genId(),
-          role: "assistant",
-          text: replyCancel(),
-          timestamp: new Date(),
-        },
-      ],
-    }));
-  },
-
-  clearHistory: () => {
-    conversationContext = createConversationContext();
-    set({
-      messages: [
-        {
-          id: "welcome",
-          role: "assistant",
-          text: buildWelcome(),
-          timestamp: new Date(),
-        },
-      ],
-      pendingCard: null,
-      pendingCompoundBatch: null,
-      streamingText: "",
-      activeTools: [],
+    set((s) => {
+      const appendMsg: EKhataChatMessage = {
+        id: genId(),
+        role: "assistant",
+        text: replyCancel(),
+        timestamp: new Date(),
+      };
+      const nextMessages = [...s.messages, appendMsg];
+      const updatedSessions = syncSession(s.sessions, s.activeSessionId, nextMessages);
+      persist(updatedSessions, s.activeSessionId, s.windowMode);
+      return {
+        pendingCard: null,
+        pendingCompoundBatch: null,
+        messages: nextMessages,
+        sessions: updatedSessions,
+      };
     });
   },
 }));

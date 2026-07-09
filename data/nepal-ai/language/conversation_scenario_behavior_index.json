@@ -1,0 +1,852 @@
+{
+  "warm greeting": [
+    "scene_001"
+  ],
+  "capability explanation with examples": [
+    "scene_001"
+  ],
+  "confirmation with running summary": [
+    "scene_001"
+  ],
+  "encouragement": [
+    "scene_001"
+  ],
+  "time-appropriate greeting": [
+    "scene_002"
+  ],
+  "categorization": [
+    "scene_002",
+    "scene_017"
+  ],
+  "running subtotal": [
+    "scene_002"
+  ],
+  "net calculation": [
+    "scene_002"
+  ],
+  "clear definition with example": [
+    "scene_003"
+  ],
+  "progressive disclosure": [
+    "scene_003"
+  ],
+  "context preservation": [
+    "scene_003"
+  ],
+  "affirmation": [
+    "scene_003"
+  ],
+  "non-judgmental correction": [
+    "scene_004"
+  ],
+  "explicit confirmation": [
+    "scene_004",
+    "scene_009",
+    "scene_029"
+  ],
+  "audit trail (cancel id)": [
+    "scene_004"
+  ],
+  "reassurance": [
+    "scene_004",
+    "scene_011"
+  ],
+  "clarifying questions": [
+    "scene_005"
+  ],
+  "structured summary": [
+    "scene_005"
+  ],
+  "drill-down": [
+    "scene_005"
+  ],
+  "export offer": [
+    "scene_005"
+  ],
+  "personalized setup": [
+    "scene_006"
+  ],
+  "domain-aware suggestion": [
+    "scene_006"
+  ],
+  "contextual praise": [
+    "scene_006"
+  ],
+  "path to next step": [
+    "scene_006"
+  ],
+  "accepts shorthand math": [
+    "scene_007"
+  ],
+  "informal tone": [
+    "scene_007"
+  ],
+  "quick confirmation": [
+    "scene_007"
+  ],
+  "running motivation": [
+    "scene_007"
+  ],
+  "hierarchical explanation": [
+    "scene_008"
+  ],
+  "connects concepts": [
+    "scene_008"
+  ],
+  "spontaneous offer": [
+    "scene_008"
+  ],
+  "practical summary": [
+    "scene_008"
+  ],
+  "date precision": [
+    "scene_009"
+  ],
+  "duplicate check": [
+    "scene_009"
+  ],
+  "transparency": [
+    "scene_009",
+    "scene_054"
+  ],
+  "tax awareness": [
+    "scene_010"
+  ],
+  "formal format (IRDA)": [
+    "scene_010"
+  ],
+  "multiple channels": [
+    "scene_010"
+  ],
+  "precise delivery": [
+    "scene_010"
+  ],
+  "empathetic start": [
+    "scene_011"
+  ],
+  "domain-aware demo": [
+    "scene_011"
+  ],
+  "simple walkthrough": [
+    "scene_011"
+  ],
+  "intelligent typo correction (kasi->khasi)": [
+    "scene_012"
+  ],
+  "unit tracking": [
+    "scene_012"
+  ],
+  "proactive expense question": [
+    "scene_012"
+  ],
+  "encouraging tone": [
+    "scene_012"
+  ],
+  "identifies niche use-case": [
+    "scene_013"
+  ],
+  "bulk operation explanation": [
+    "scene_013"
+  ],
+  "proactive upselling (reminders)": [
+    "scene_013"
+  ],
+  "youth-friendly tone": [
+    "scene_013"
+  ],
+  "rate awareness": [
+    "scene_014"
+  ],
+  "recalculation": [
+    "scene_014"
+  ],
+  "future-proofing (default change)": [
+    "scene_014"
+  ],
+  "clear audit trail": [
+    "scene_014"
+  ],
+  "visual representation (text-based chart)": [
+    "scene_015"
+  ],
+  "highest point identification": [
+    "scene_015"
+  ],
+  "product-level drill down": [
+    "scene_015"
+  ],
+  "multimedia export": [
+    "scene_015"
+  ],
+  "service categorization": [
+    "scene_016"
+  ],
+  "commission handling": [
+    "scene_016"
+  ],
+  "profit split": [
+    "scene_016"
+  ],
+  "automation suggestion": [
+    "scene_016"
+  ],
+  "fast entry": [
+    "scene_017"
+  ],
+  "margin tracking": [
+    "scene_017"
+  ],
+  "proactive missing info": [
+    "scene_017"
+  ],
+  "complex inventory handling": [
+    "scene_018"
+  ],
+  "link between modules": [
+    "scene_018"
+  ],
+  "proactive feature discovery": [
+    "scene_018"
+  ],
+  "data import": [
+    "scene_018"
+  ],
+  "confirmation on destructive action": [
+    "scene_019"
+  ],
+  "undelete/restore capability": [
+    "scene_019"
+  ],
+  "modification after restore": [
+    "scene_019"
+  ],
+  "calm reassurance": [
+    "scene_019"
+  ],
+  "specific regulatory awareness (pharma)": [
+    "scene_020"
+  ],
+  "batch tracking": [
+    "scene_020"
+  ],
+  "actionable suggestion (return/clear)": [
+    "scene_020"
+  ],
+  "secure link": [
+    "scene_020"
+  ],
+  "warm familial tone": [
+    "scene_021"
+  ],
+  "unit/quantity tracking": [
+    "scene_021"
+  ],
+  "simple demo": [
+    "scene_021",
+    "scene_026",
+    "scene_036"
+  ],
+  "gradual complexity intro": [
+    "scene_021"
+  ],
+  "route tracking": [
+    "scene_022"
+  ],
+  "unit/price consistency": [
+    "scene_022"
+  ],
+  "cargo separate": [
+    "scene_022"
+  ],
+  "cash management hint": [
+    "scene_022"
+  ],
+  "structured billing (invoice)": [
+    "scene_023"
+  ],
+  "profile linking": [
+    "scene_023"
+  ],
+  "sample generation": [
+    "scene_023"
+  ],
+  "multi-channel sending": [
+    "scene_023"
+  ],
+  "high value flag": [
+    "scene_024"
+  ],
+  "security pin": [
+    "scene_024"
+  ],
+  "audit trail": [
+    "scene_024"
+  ],
+  "reassurance on security": [
+    "scene_024"
+  ],
+  "hourly tracking": [
+    "scene_025"
+  ],
+  "client segmentation": [
+    "scene_025"
+  ],
+  "billable hours": [
+    "scene_025"
+  ],
+  "professional invoicing": [
+    "scene_025",
+    "scene_032"
+  ],
+  "customer-centric": [
+    "scene_026"
+  ],
+  "service history": [
+    "scene_026"
+  ],
+  "future value reminder": [
+    "scene_026"
+  ],
+  "festival awareness": [
+    "scene_027"
+  ],
+  "bulk mode": [
+    "scene_027"
+  ],
+  "unit price breakdown": [
+    "scene_027"
+  ],
+  "financial advice": [
+    "scene_027"
+  ],
+  "cooperative terms": [
+    "scene_028"
+  ],
+  "complex calculation": [
+    "scene_028"
+  ],
+  "annual cycle awareness": [
+    "scene_028"
+  ],
+  "automation": [
+    "scene_028"
+  ],
+  "bulk reversal": [
+    "scene_029"
+  ],
+  "paired reversal entries": [
+    "scene_029"
+  ],
+  "net effect clarity": [
+    "scene_029"
+  ],
+  "collection rate": [
+    "scene_030"
+  ],
+  "due list with location": [
+    "scene_030"
+  ],
+  "agent/warden sharing": [
+    "scene_030"
+  ],
+  "percentage metrics": [
+    "scene_030"
+  ],
+  "voice-first interaction": [
+    "scene_031"
+  ],
+  "transcription demonstration": [
+    "scene_031"
+  ],
+  "shy user encouragement": [
+    "scene_031"
+  ],
+  "next step prompt": [
+    "scene_031"
+  ],
+  "split billing": [
+    "scene_032"
+  ],
+  "customer linkage": [
+    "scene_032"
+  ],
+  "costing module": [
+    "scene_033"
+  ],
+  "breakdown": [
+    "scene_033"
+  ],
+  "margin highlight": [
+    "scene_033",
+    "scene_052"
+  ],
+  "upselling analytics": [
+    "scene_033"
+  ],
+  "plan linking": [
+    "scene_034"
+  ],
+  "future-proofing": [
+    "scene_034"
+  ],
+  "complete profile update": [
+    "scene_034"
+  ],
+  "compliance (Tax)": [
+    "scene_035"
+  ],
+  "valuation basis": [
+    "scene_035"
+  ],
+  "professional PDF": [
+    "scene_035"
+  ],
+  "CA-friendly": [
+    "scene_035"
+  ],
+  "industry-specific (dairy)": [
+    "scene_036"
+  ],
+  "unit/rate tracking": [
+    "scene_036"
+  ],
+  "routine building": [
+    "scene_036"
+  ],
+  "employee tracking": [
+    "scene_037"
+  ],
+  "commission auto-calc": [
+    "scene_037"
+  ],
+  "net profit after salary": [
+    "scene_037"
+  ],
+  "e-commerce terms": [
+    "scene_038"
+  ],
+  "reconciliation": [
+    "scene_038",
+    "scene_063"
+  ],
+  "tax integration": [
+    "scene_038"
+  ],
+  "clear illustration": [
+    "scene_038"
+  ],
+  "typo understanding": [
+    "scene_039"
+  ],
+  "quantity inference": [
+    "scene_039"
+  ],
+  "inventory adjustment": [
+    "scene_039"
+  ],
+  "confirmation": [
+    "scene_039"
+  ],
+  "meter/cash reconciliation": [
+    "scene_040"
+  ],
+  "variance explanation": [
+    "scene_040"
+  ],
+  "source identification": [
+    "scene_040"
+  ],
+  "final assurance": [
+    "scene_040"
+  ],
+  "respect for manual history": [
+    "scene_041"
+  ],
+  "opening balance migration": [
+    "scene_041"
+  ],
+  "gradual digital transition": [
+    "scene_041"
+  ],
+  "room-level tracking": [
+    "scene_041"
+  ],
+  "godown management": [
+    "scene_042"
+  ],
+  "bulk dispatch": [
+    "scene_042"
+  ],
+  "credit period tracking": [
+    "scene_042"
+  ],
+  "auto invoice": [
+    "scene_042"
+  ],
+  "regulatory compliance": [
+    "scene_043"
+  ],
+  "mandatory fields": [
+    "scene_043"
+  ],
+  "inspection readiness": [
+    "scene_043"
+  ],
+  "inter-account transfer": [
+    "scene_044"
+  ],
+  "non-judgmental": [
+    "scene_044"
+  ],
+  "quick fix": [
+    "scene_044"
+  ],
+  "bestseller analytics": [
+    "scene_045"
+  ],
+  "restock suggestion": [
+    "scene_045"
+  ],
+  "purchase order generation": [
+    "scene_045"
+  ],
+  "batch management": [
+    "scene_046"
+  ],
+  "student/fee linking": [
+    "scene_046"
+  ],
+  "simple add process": [
+    "scene_046"
+  ],
+  "peg/full bottle mode": [
+    "scene_047"
+  ],
+  "inventory deduction": [
+    "scene_047"
+  ],
+  "upsell snack tracking": [
+    "scene_047"
+  ],
+  "forex integration": [
+    "scene_048"
+  ],
+  "dual balance display": [
+    "scene_048"
+  ],
+  "auto rate fetching": [
+    "scene_048"
+  ],
+  "sample conversion": [
+    "scene_048"
+  ],
+  "change order management": [
+    "scene_049"
+  ],
+  "invoice versioning": [
+    "scene_049"
+  ],
+  "transparent add-on": [
+    "scene_049"
+  ],
+  "chit specific module": [
+    "scene_050"
+  ],
+  "passbook generation": [
+    "scene_050"
+  ],
+  "dividend calculation": [
+    "scene_050"
+  ],
+  "whatsapp integration": [
+    "scene_050"
+  ],
+  "respectful military tone": [
+    "scene_051"
+  ],
+  "portfolio creation": [
+    "scene_051"
+  ],
+  "trade recording": [
+    "scene_051"
+  ],
+  "encouraging banter": [
+    "scene_051"
+  ],
+  "dynamic pricing": [
+    "scene_052"
+  ],
+  "buy/sell spread": [
+    "scene_052"
+  ],
+  "fee splitting": [
+    "scene_053"
+  ],
+  "partial payment handling": [
+    "scene_053"
+  ],
+  "due tracking": [
+    "scene_053"
+  ],
+  "reminder": [
+    "scene_053"
+  ],
+  "partial payment correction": [
+    "scene_054"
+  ],
+  "balance query": [
+    "scene_054"
+  ],
+  "reversal": [
+    "scene_054"
+  ],
+  "fleet management": [
+    "scene_055"
+  ],
+  "vehicle-wise P&L": [
+    "scene_055"
+  ],
+  "contribution margin": [
+    "scene_055"
+  ],
+  "informal sibling tone": [
+    "scene_056"
+  ],
+  "simple item listing": [
+    "scene_056"
+  ],
+  "auto calculation": [
+    "scene_056"
+  ],
+  "motivational": [
+    "scene_056"
+  ],
+  "custom order tracking": [
+    "scene_057"
+  ],
+  "cost/revenue split": [
+    "scene_057"
+  ],
+  "delivery schedule": [
+    "scene_057"
+  ],
+  "automated alert": [
+    "scene_057"
+  ],
+  "weight unit tracking": [
+    "scene_058"
+  ],
+  "shrinkage handling": [
+    "scene_058"
+  ],
+  "per kg profitability": [
+    "scene_058"
+  ],
+  "serial number tracking": [
+    "scene_059"
+  ],
+  "warranty check": [
+    "scene_059"
+  ],
+  "precision on IMEI": [
+    "scene_059"
+  ],
+  "segment reporting": [
+    "scene_060"
+  ],
+  "rate per segment": [
+    "scene_060"
+  ],
+  "trend comparison": [
+    "scene_060"
+  ],
+  "NGO specific": [
+    "scene_061"
+  ],
+  "grant tracking": [
+    "scene_061"
+  ],
+  "donor reporting hint": [
+    "scene_061"
+  ],
+  "livestock tracking": [
+    "scene_062"
+  ],
+  "detail capture (breed/age)": [
+    "scene_062"
+  ],
+  "document linking": [
+    "scene_062"
+  ],
+  "wastage formula": [
+    "scene_063"
+  ],
+  "threshold alert": [
+    "scene_063"
+  ],
+  "sales return handling": [
+    "scene_064"
+  ],
+  "exchange logic": [
+    "scene_064"
+  ],
+  "dual stock adjustment": [
+    "scene_064"
+  ],
+  "vendor wise reporting": [
+    "scene_065"
+  ],
+  "commission tracking": [
+    "scene_065"
+  ],
+  "recovery invoice": [
+    "scene_065"
+  ],
+  "youth encouragement": [
+    "scene_066"
+  ],
+  "simple math": [
+    "scene_066"
+  ],
+  "early financial education": [
+    "scene_066"
+  ],
+  "fun tone": [
+    "scene_066"
+  ],
+  "event booking": [
+    "scene_067"
+  ],
+  "advance/due split": [
+    "scene_067"
+  ],
+  "service add-on": [
+    "scene_067"
+  ],
+  "job card concept": [
+    "scene_068"
+  ],
+  "auto inventory deduction": [
+    "scene_068"
+  ],
+  "mechanic ledger": [
+    "scene_068"
+  ],
+  "split payment handling": [
+    "scene_069"
+  ],
+  "bill modification": [
+    "scene_069"
+  ],
+  "total integrity": [
+    "scene_069"
+  ],
+  "expiry urgency": [
+    "scene_070"
+  ],
+  "clearance strategy": [
+    "scene_070"
+  ],
+  "doctor coordination": [
+    "scene_070"
+  ],
+  "smart messaging": [
+    "scene_070"
+  ],
+  "home budgeting": [
+    "scene_071"
+  ],
+  "category preset": [
+    "scene_071"
+  ],
+  "remaining budget": [
+    "scene_071"
+  ],
+  "tax compliance": [
+    "scene_072"
+  ],
+  "MRP/discount": [
+    "scene_072"
+  ],
+  "VAT auto-calc": [
+    "scene_072"
+  ],
+  "royalty calculation": [
+    "scene_073"
+  ],
+  "co-author split": [
+    "scene_073"
+  ],
+  "annual statement": [
+    "scene_073"
+  ],
+  "rate adjustment": [
+    "scene_074"
+  ],
+  "hallmark compliance": [
+    "scene_074"
+  ],
+  "high value precision": [
+    "scene_074"
+  ],
+  "per unit economics": [
+    "scene_075"
+  ],
+  "route analysis": [
+    "scene_075"
+  ],
+  "cost/profit per kg": [
+    "scene_075"
+  ],
+  "informal respectful tone": [
+    "scene_076"
+  ],
+  "minimal data use": [
+    "scene_076"
+  ],
+  "rate preset": [
+    "scene_076"
+  ],
+  "simple start": [
+    "scene_076"
+  ],
+  "multi counter": [
+    "scene_077"
+  ],
+  "department wise": [
+    "scene_077"
+  ],
+  "cash vs udhaar reconciliation": [
+    "scene_077"
+  ],
+  "manufacturing BOM": [
+    "scene_078"
+  ],
+  "cost build-up": [
+    "scene_078"
+  ],
+  "margin analysis": [
+    "scene_078"
+  ],
+  "plan change handling": [
+    "scene_079"
+  ],
+  "prorated billing": [
+    "scene_079"
+  ],
+  "future billing setup": [
+    "scene_079"
+  ],
+  "occasion-based report": [
+    "scene_080"
+  ],
+  "bestseller highlight": [
+    "scene_080"
+  ],
+  "future planning": [
+    "scene_080"
+  ],
+  "smart reminder": [
+    "scene_080"
+  ]
+}

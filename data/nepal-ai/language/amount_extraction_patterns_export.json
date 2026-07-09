@@ -1,0 +1,1326 @@
+[
+  {
+    "id": "amt-001",
+    "input": "500 ko 10 piece",
+    "raw_numbers": [
+      "500",
+      "10"
+    ],
+    "calculation": "500 * 10 = 5000",
+    "final_amount": 5000,
+    "extraction_rule": "unit_price * quantity = total",
+    "entities": {
+      "unit_price": 500,
+      "quantity": 10,
+      "amount": 5000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-002",
+    "input": "2081/82 ma 500 tiryo",
+    "raw_numbers": [
+      "2081",
+      "82",
+      "500"
+    ],
+    "calculation": "500",
+    "final_amount": 500,
+    "extraction_rule": "fiscal_year_context_ignored",
+    "entities": {
+      "year_start": 2081,
+      "year_end": 82,
+      "amount": 500
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-003",
+    "input": "50 eutako 20 wota becheko",
+    "raw_numbers": [
+      "50",
+      "20"
+    ],
+    "calculation": "50 * 20 = 1000",
+    "final_amount": 1000,
+    "extraction_rule": "unit_price * quantity = total",
+    "entities": {
+      "unit_price": 50,
+      "quantity": 20,
+      "amount": 1000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-004",
+    "input": "dedh lakh ko ghar",
+    "raw_numbers": [
+      "dedh",
+      "lakh"
+    ],
+    "calculation": "1.5 * 100000 = 150000",
+    "final_amount": 150000,
+    "extraction_rule": "fractional_nepali_word_to_number",
+    "entities": {
+      "multiplier": 1.5,
+      "unit": "lakh",
+      "amount": 150000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-005",
+    "input": "sawa saya rupaiya",
+    "raw_numbers": [
+      "sawa",
+      "saya"
+    ],
+    "calculation": "1.25 * 100 = 125",
+    "final_amount": 125,
+    "extraction_rule": "fractional_nepali_word_to_number",
+    "entities": {
+      "multiplier": 1.25,
+      "unit": "saya",
+      "amount": 125
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-006",
+    "input": "paune char hajar tireko",
+    "raw_numbers": [
+      "paune",
+      "char",
+      "hajar"
+    ],
+    "calculation": "0.75 * 4000 = 3750",
+    "final_amount": 3750,
+    "extraction_rule": "fraction_less_than_unit",
+    "entities": {
+      "fraction": 0.75,
+      "base_unit": 4000,
+      "amount": 3750
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-007",
+    "input": "around 5000 jati lagyo",
+    "raw_numbers": [
+      "5000"
+    ],
+    "calculation": "~5000",
+    "final_amount": "~5000",
+    "extraction_rule": "approximate_amount",
+    "entities": {
+      "approximate_amount": 5000,
+      "modifier": "around"
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-008",
+    "input": "5-6 hajar bechyo",
+    "raw_numbers": [
+      "5",
+      "6"
+    ],
+    "calculation": "range 5000-6000",
+    "final_amount": "5000-6000",
+    "extraction_rule": "range_with_shared_unit",
+    "entities": {
+      "min_amount": 5000,
+      "max_amount": 6000,
+      "unit": "hajar"
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-009",
+    "input": "2.5 kg ko 800 le hisab gare",
+    "raw_numbers": [
+      "2.5",
+      "800"
+    ],
+    "calculation": "2.5 * 800 = 2000",
+    "final_amount": 2000,
+    "extraction_rule": "weight * unit_price = total",
+    "entities": {
+      "weight": 2.5,
+      "unit_price": 800,
+      "amount": 2000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-010",
+    "input": "sawa 2 hajar ma kineko",
+    "raw_numbers": [
+      "sawa",
+      "2"
+    ],
+    "calculation": "1.25 * 2000 = 2500",
+    "final_amount": 2500,
+    "extraction_rule": "fractional_nepali_before_number",
+    "entities": {
+      "multiplier": 1.25,
+      "base": 2000,
+      "amount": 2500
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-011",
+    "input": "dedh hajar ko 3 ota",
+    "raw_numbers": [
+      "dedh",
+      "hajar",
+      "3"
+    ],
+    "calculation": "1500 * 3 = 4500",
+    "final_amount": 4500,
+    "extraction_rule": "unit_price_with_fraction * quantity",
+    "entities": {
+      "unit_price": 1500,
+      "quantity": 3,
+      "amount": 4500
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-012",
+    "input": "10 rupaiya ko 5 wota",
+    "raw_numbers": [
+      "10",
+      "5"
+    ],
+    "calculation": "10 * 5 = 50",
+    "final_amount": 50,
+    "extraction_rule": "unit_price * quantity = total",
+    "entities": {
+      "unit_price": 10,
+      "quantity": 5,
+      "amount": 50
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-013",
+    "input": "paune 8 hajar jamma",
+    "raw_numbers": [
+      "paune",
+      "8"
+    ],
+    "calculation": "0.75 * 8000 = 6000",
+    "final_amount": 6000,
+    "extraction_rule": "fraction_less_than_unit",
+    "entities": {
+      "fraction": 0.75,
+      "base_unit": 8000,
+      "amount": 6000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-014",
+    "input": "sawa 4 lakh",
+    "raw_numbers": [
+      "sawa",
+      "4",
+      "lakh"
+    ],
+    "calculation": "1.25 * 400000 = 500000",
+    "final_amount": 500000,
+    "extraction_rule": "fractional_nepali_before_number",
+    "entities": {
+      "multiplier": 1.25,
+      "base": 400000,
+      "amount": 500000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-015",
+    "input": "50-60 hajar ko range ma",
+    "raw_numbers": [
+      "50",
+      "60"
+    ],
+    "calculation": "range 50000-60000",
+    "final_amount": "50000-60000",
+    "extraction_rule": "range_with_shared_unit_thousands",
+    "entities": {
+      "min_amount": 50000,
+      "max_amount": 60000,
+      "unit": "hajar"
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-016",
+    "input": "lagbhag 1200 parcha",
+    "raw_numbers": [
+      "1200"
+    ],
+    "calculation": "~1200",
+    "final_amount": "~1200",
+    "extraction_rule": "approximate_amount",
+    "entities": {
+      "approximate_amount": 1200,
+      "modifier": "lagbhag"
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-017",
+    "input": "saya ko 7 piece",
+    "raw_numbers": [
+      "saya",
+      "7"
+    ],
+    "calculation": "100 * 7 = 700",
+    "final_amount": 700,
+    "extraction_rule": "unit_price_with_word * quantity",
+    "entities": {
+      "unit_price": 100,
+      "quantity": 7,
+      "amount": 700
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-018",
+    "input": "dedh saya rupaiya ko saman",
+    "raw_numbers": [
+      "dedh",
+      "saya"
+    ],
+    "calculation": "1.5 * 100 = 150",
+    "final_amount": 150,
+    "extraction_rule": "fractional_nepali_word_to_number",
+    "entities": {
+      "multiplier": 1.5,
+      "unit": "saya",
+      "amount": 150
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-019",
+    "input": "4 hajar 5 saya ma beche",
+    "raw_numbers": [
+      "4",
+      "5"
+    ],
+    "calculation": "4000 + 500 = 4500",
+    "final_amount": 4500,
+    "extraction_rule": "compound_nepali_number",
+    "entities": {
+      "thousands": 4000,
+      "hundreds": 500,
+      "amount": 4500
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-020",
+    "input": "ek karod bata 50 lakh nafa",
+    "raw_numbers": [
+      "ek",
+      "karod",
+      "50",
+      "lakh"
+    ],
+    "calculation": "5000000",
+    "final_amount": 5000000,
+    "extraction_rule": "subset_from_larger_context",
+    "entities": {
+      "amount": 5000000,
+      "context": "profit_from_crore"
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-021",
+    "input": "rate 1500 ko dar le 12 kg",
+    "raw_numbers": [
+      "1500",
+      "12"
+    ],
+    "calculation": "1500 * 12 = 18000",
+    "final_amount": 18000,
+    "extraction_rule": "unit_price * quantity = total",
+    "entities": {
+      "unit_price": 1500,
+      "quantity": 12,
+      "amount": 18000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-022",
+    "input": "paune 2 lakh ma ghar kinyo",
+    "raw_numbers": [
+      "paune",
+      "2",
+      "lakh"
+    ],
+    "calculation": "0.75 * 200000 = 150000",
+    "final_amount": 150000,
+    "extraction_rule": "fraction_less_than_unit",
+    "entities": {
+      "fraction": 0.75,
+      "base_unit": 200000,
+      "amount": 150000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-023",
+    "input": "sawa 1 karod ko project",
+    "raw_numbers": [
+      "sawa",
+      "1",
+      "karod"
+    ],
+    "calculation": "1.25 * 10000000 = 12500000",
+    "final_amount": 12500000,
+    "extraction_rule": "fractional_nepali_large_number",
+    "entities": {
+      "multiplier": 1.25,
+      "base": 10000000,
+      "amount": 12500000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-024",
+    "input": "10 ko 20 ra 15 ko 30 gare",
+    "raw_numbers": [
+      "10",
+      "20",
+      "15",
+      "30"
+    ],
+    "calculation": "(10*20) + (15*30) = 200 + 450 = 650",
+    "final_amount": 650,
+    "extraction_rule": "sum_of_multiple_products",
+    "entities": {
+      "items": [
+        {
+          "unit_price": 10,
+          "quantity": 20,
+          "subtotal": 200
+        },
+        {
+          "unit_price": 15,
+          "quantity": 30,
+          "subtotal": 450
+        }
+      ],
+      "amount": 650
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-025",
+    "input": "aadha lakh ko gadi",
+    "raw_numbers": [
+      "aadha",
+      "lakh"
+    ],
+    "calculation": "0.5 * 100000 = 50000",
+    "final_amount": 50000,
+    "extraction_rule": "fraction_nepali_word",
+    "entities": {
+      "fraction": 0.5,
+      "unit": "lakh",
+      "amount": 50000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-026",
+    "input": "pauna 3 hajar bhayo",
+    "raw_numbers": [
+      "pauna",
+      "3"
+    ],
+    "calculation": "0.75 * 3000 = 2250",
+    "final_amount": 2250,
+    "extraction_rule": "fraction_less_than_unit_variant",
+    "entities": {
+      "fraction": 0.75,
+      "base_unit": 3000,
+      "amount": 2250
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-027",
+    "input": "din ko 500 ko hisab le 30 din",
+    "raw_numbers": [
+      "500",
+      "30"
+    ],
+    "calculation": "500 * 30 = 15000",
+    "final_amount": 15000,
+    "extraction_rule": "daily_rate * days = total",
+    "entities": {
+      "daily_rate": 500,
+      "days": 30,
+      "amount": 15000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-028",
+    "input": "7 rupaiya ko 50 wota kinbe",
+    "raw_numbers": [
+      "7",
+      "50"
+    ],
+    "calculation": "7 * 50 = 350",
+    "final_amount": 350,
+    "extraction_rule": "unit_price * quantity = total",
+    "entities": {
+      "unit_price": 7,
+      "quantity": 50,
+      "amount": 350
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-029",
+    "input": "kati bhayo 10 ko 12 le",
+    "raw_numbers": [
+      "10",
+      "12"
+    ],
+    "calculation": "10 * 12 = 120",
+    "final_amount": 120,
+    "extraction_rule": "unit_price * quantity = total",
+    "entities": {
+      "unit_price": 10,
+      "quantity": 12,
+      "amount": 120
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-030",
+    "input": "dherai bhayo 50 eutako 200 ota",
+    "raw_numbers": [
+      "50",
+      "200"
+    ],
+    "calculation": "50 * 200 = 10000",
+    "final_amount": 10000,
+    "extraction_rule": "unit_price * quantity = total",
+    "entities": {
+      "unit_price": 50,
+      "quantity": 200,
+      "amount": 10000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-031",
+    "input": "mahango 25 rupaiya ko 8 piece",
+    "raw_numbers": [
+      "25",
+      "8"
+    ],
+    "calculation": "25 * 8 = 200",
+    "final_amount": 200,
+    "extraction_rule": "unit_price * quantity = total",
+    "entities": {
+      "unit_price": 25,
+      "quantity": 8,
+      "amount": 200
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-032",
+    "input": "saya ko 15 ota kinya",
+    "raw_numbers": [
+      "saya",
+      "15"
+    ],
+    "calculation": "100 * 15 = 1500",
+    "final_amount": 1500,
+    "extraction_rule": "unit_price_word * quantity",
+    "entities": {
+      "unit_price": 100,
+      "quantity": 15,
+      "amount": 1500
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-033",
+    "input": "3-4 hajar jati parla",
+    "raw_numbers": [
+      "3",
+      "4"
+    ],
+    "calculation": "range 3000-4000",
+    "final_amount": "3000-4000",
+    "extraction_rule": "range_with_shared_unit",
+    "entities": {
+      "min_amount": 3000,
+      "max_amount": 4000,
+      "unit": "hajar"
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-034",
+    "input": "jamma 12 hajar 3 saya",
+    "raw_numbers": [
+      "12",
+      "3"
+    ],
+    "calculation": "12000 + 300 = 12300",
+    "final_amount": 12300,
+    "extraction_rule": "compound_nepali_number",
+    "entities": {
+      "thousands": 12000,
+      "hundreds": 300,
+      "amount": 12300
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-035",
+    "input": "lagbhag 2500-2600 ko bich ma",
+    "raw_numbers": [
+      "2500",
+      "2600"
+    ],
+    "calculation": "range 2500-2600",
+    "final_amount": "2500-2600",
+    "extraction_rule": "approximate_range",
+    "entities": {
+      "min_amount": 2500,
+      "max_amount": 2600
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-036",
+    "input": "paune 5 hajar tirna baki cha",
+    "raw_numbers": [
+      "paune",
+      "5"
+    ],
+    "calculation": "0.75 * 5000 = 3750",
+    "final_amount": 3750,
+    "extraction_rule": "fraction_less_than_unit",
+    "entities": {
+      "fraction": 0.75,
+      "base_unit": 5000,
+      "amount": 3750
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-037",
+    "input": "20 wota lai 5000 ma thik bhayo",
+    "raw_numbers": [
+      "20",
+      "5000"
+    ],
+    "calculation": "5000",
+    "final_amount": 5000,
+    "extraction_rule": "total_for_bulk_quantity",
+    "entities": {
+      "quantity": 20,
+      "amount": 5000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-038",
+    "input": "sawa 3 lakh 50 hajar",
+    "raw_numbers": [
+      "sawa",
+      "3",
+      "50"
+    ],
+    "calculation": "1.25 * 300000 + 50000 = 425000",
+    "final_amount": 425000,
+    "extraction_rule": "fractional_lakh_plus_thousands",
+    "entities": {
+      "base_lakh": 300000,
+      "fraction_multiplier": 1.25,
+      "additional_thousand": 50000,
+      "amount": 425000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-039",
+    "input": "rate 80 rupaiya kilo ko 5.5 kg",
+    "raw_numbers": [
+      "80",
+      "5.5"
+    ],
+    "calculation": "80 * 5.5 = 440",
+    "final_amount": 440,
+    "extraction_rule": "unit_price * decimal_quantity",
+    "entities": {
+      "unit_price": 80,
+      "quantity": 5.5,
+      "amount": 440
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-040",
+    "input": "dedh hajar jati cha hai",
+    "raw_numbers": [
+      "dedh",
+      "hajar"
+    ],
+    "calculation": "1.5 * 1000 = 1500",
+    "final_amount": 1500,
+    "extraction_rule": "fractional_nepali_approximate",
+    "entities": {
+      "multiplier": 1.5,
+      "unit": "hajar",
+      "amount": 1500,
+      "modifier": "jati"
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-041",
+    "input": "paune 1 karod invest",
+    "raw_numbers": [
+      "paune",
+      "1",
+      "karod"
+    ],
+    "calculation": "0.75 * 10000000 = 7500000",
+    "final_amount": 7500000,
+    "extraction_rule": "fraction_less_than_crore",
+    "entities": {
+      "fraction": 0.75,
+      "base_unit": 10000000,
+      "amount": 7500000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-042",
+    "input": "2 ota ko 500 ra 3 ota ko 200",
+    "raw_numbers": [
+      "2",
+      "500",
+      "3",
+      "200"
+    ],
+    "calculation": "(2*500) + (3*200) = 1000 + 600 = 1600",
+    "final_amount": 1600,
+    "extraction_rule": "sum_of_multiple_products",
+    "entities": {
+      "items": [
+        {
+          "quantity": 2,
+          "unit_price": 500,
+          "subtotal": 1000
+        },
+        {
+          "quantity": 3,
+          "unit_price": 200,
+          "subtotal": 600
+        }
+      ],
+      "amount": 1600
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-043",
+    "input": "ek saya 50 rupaiya",
+    "raw_numbers": [
+      "ek",
+      "saya",
+      "50"
+    ],
+    "calculation": "100 + 50 = 150",
+    "final_amount": 150,
+    "extraction_rule": "compound_nepali_number_hundreds",
+    "entities": {
+      "hundreds": 100,
+      "tens": 50,
+      "amount": 150
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-044",
+    "input": "aadha karod ko malik",
+    "raw_numbers": [
+      "aadha",
+      "karod"
+    ],
+    "calculation": "0.5 * 10000000 = 5000000",
+    "final_amount": 5000000,
+    "extraction_rule": "fraction_of_crore",
+    "entities": {
+      "fraction": 0.5,
+      "unit": "karod",
+      "amount": 5000000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-045",
+    "input": "5000 ko hisab le 4 jana",
+    "raw_numbers": [
+      "5000",
+      "4"
+    ],
+    "calculation": "5000 * 4 = 20000",
+    "final_amount": 20000,
+    "extraction_rule": "per_person_rate * people",
+    "entities": {
+      "per_person": 5000,
+      "people": 4,
+      "amount": 20000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-046",
+    "input": "25 eutako 40 wota saman",
+    "raw_numbers": [
+      "25",
+      "40"
+    ],
+    "calculation": "25 * 40 = 1000",
+    "final_amount": 1000,
+    "extraction_rule": "unit_price * quantity = total",
+    "entities": {
+      "unit_price": 25,
+      "quantity": 40,
+      "amount": 1000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-047",
+    "input": "7.5 ko dar le 100 piece",
+    "raw_numbers": [
+      "7.5",
+      "100"
+    ],
+    "calculation": "7.5 * 100 = 750",
+    "final_amount": 750,
+    "extraction_rule": "decimal_unit_price * quantity",
+    "entities": {
+      "unit_price": 7.5,
+      "quantity": 100,
+      "amount": 750
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-048",
+    "input": "kharcha 2 hajar 5 saya bhayo",
+    "raw_numbers": [
+      "2",
+      "5"
+    ],
+    "calculation": "2000 + 500 = 2500",
+    "final_amount": 2500,
+    "extraction_rule": "compound_nepali_number",
+    "entities": {
+      "thousands": 2000,
+      "hundreds": 500,
+      "amount": 2500
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-049",
+    "input": "sawa 8 hajar talab",
+    "raw_numbers": [
+      "sawa",
+      "8"
+    ],
+    "calculation": "1.25 * 8000 = 10000",
+    "final_amount": 10000,
+    "extraction_rule": "fractional_nepali_before_number",
+    "entities": {
+      "multiplier": 1.25,
+      "base": 8000,
+      "amount": 10000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-050",
+    "input": "300 ko 12 kg bechyo",
+    "raw_numbers": [
+      "300",
+      "12"
+    ],
+    "calculation": "300 * 12 = 3600",
+    "final_amount": 3600,
+    "extraction_rule": "unit_price_per_kg * weight",
+    "entities": {
+      "unit_price_per_kg": 300,
+      "weight": 12,
+      "amount": 3600
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-051",
+    "input": "pauna 2 hajar rupaiya",
+    "raw_numbers": [
+      "pauna",
+      "2"
+    ],
+    "calculation": "0.75 * 2000 = 1500",
+    "final_amount": 1500,
+    "extraction_rule": "fraction_less_than_unit_variant",
+    "entities": {
+      "fraction": 0.75,
+      "base_unit": 2000,
+      "amount": 1500
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-052",
+    "input": "hajar ko 5 ota kitab",
+    "raw_numbers": [
+      "hajar",
+      "5"
+    ],
+    "calculation": "1000 * 5 = 5000",
+    "final_amount": 5000,
+    "extraction_rule": "unit_price_word * quantity",
+    "entities": {
+      "unit_price": 1000,
+      "quantity": 5,
+      "amount": 5000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-053",
+    "input": "lagbhag 10-12 hajar ko saman",
+    "raw_numbers": [
+      "10",
+      "12"
+    ],
+    "calculation": "range 10000-12000",
+    "final_amount": "10000-12000",
+    "extraction_rule": "approximate_range_with_unit",
+    "entities": {
+      "min_amount": 10000,
+      "max_amount": 12000,
+      "modifier": "lagbhag"
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-054",
+    "input": "dedh saya ko 3 ota",
+    "raw_numbers": [
+      "dedh",
+      "saya",
+      "3"
+    ],
+    "calculation": "150 * 3 = 450",
+    "final_amount": 450,
+    "extraction_rule": "unit_price_fraction_word * quantity",
+    "entities": {
+      "unit_price": 150,
+      "quantity": 3,
+      "amount": 450
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-055",
+    "input": "50 eutako 20 wota 30 eutako 10 wota",
+    "raw_numbers": [
+      "50",
+      "20",
+      "30",
+      "10"
+    ],
+    "calculation": "(50*20) + (30*10) = 1000 + 300 = 1300",
+    "final_amount": 1300,
+    "extraction_rule": "sum_of_multiple_products",
+    "entities": {
+      "items": [
+        {
+          "unit_price": 50,
+          "quantity": 20,
+          "subtotal": 1000
+        },
+        {
+          "unit_price": 30,
+          "quantity": 10,
+          "subtotal": 300
+        }
+      ],
+      "amount": 1300
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-056",
+    "input": "sawa 2 karod budget",
+    "raw_numbers": [
+      "sawa",
+      "2",
+      "karod"
+    ],
+    "calculation": "1.25 * 20000000 = 25000000",
+    "final_amount": 25000000,
+    "extraction_rule": "fractional_nepali_crore",
+    "entities": {
+      "multiplier": 1.25,
+      "base": 20000000,
+      "amount": 25000000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-057",
+    "input": "paune 10 lakh jamma gare",
+    "raw_numbers": [
+      "paune",
+      "10",
+      "lakh"
+    ],
+    "calculation": "0.75 * 1000000 = 750000",
+    "final_amount": 750000,
+    "extraction_rule": "fraction_less_than_unit",
+    "entities": {
+      "fraction": 0.75,
+      "base_unit": 1000000,
+      "amount": 750000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-058",
+    "input": "6-7 hajar 5 saya",
+    "raw_numbers": [
+      "6",
+      "7",
+      "5"
+    ],
+    "calculation": "range 6500-7500",
+    "final_amount": "6500-7500",
+    "extraction_rule": "range_with_compound_shared_unit",
+    "entities": {
+      "min_amount": 6500,
+      "max_amount": 7500
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-059",
+    "input": "15 rupaiya piece ko 60 ota",
+    "raw_numbers": [
+      "15",
+      "60"
+    ],
+    "calculation": "15 * 60 = 900",
+    "final_amount": 900,
+    "extraction_rule": "unit_price * quantity = total",
+    "entities": {
+      "unit_price": 15,
+      "quantity": 60,
+      "amount": 900
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-060",
+    "input": "dedh hajar 2 saya ma gako",
+    "raw_numbers": [
+      "dedh",
+      "hajar",
+      "2",
+      "saya"
+    ],
+    "calculation": "1500 + 200 = 1700",
+    "final_amount": 1700,
+    "extraction_rule": "fractional_thousand_plus_hundreds",
+    "entities": {
+      "thousands": 1500,
+      "hundreds": 200,
+      "amount": 1700
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-061",
+    "input": "8 hajar ma 4 ota saman",
+    "raw_numbers": [
+      "8",
+      "4"
+    ],
+    "calculation": "8000",
+    "final_amount": 8000,
+    "extraction_rule": "total_for_bulk_quantity",
+    "entities": {
+      "amount": 8000,
+      "quantity": 4
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-062",
+    "input": "aadha saya ko 10 ota",
+    "raw_numbers": [
+      "aadha",
+      "saya",
+      "10"
+    ],
+    "calculation": "50 * 10 = 500",
+    "final_amount": 500,
+    "extraction_rule": "fractional_hundred_unit_price * quantity",
+    "entities": {
+      "unit_price": 50,
+      "quantity": 10,
+      "amount": 500
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-063",
+    "input": "almost 5000 jati lagyo",
+    "raw_numbers": [
+      "5000"
+    ],
+    "calculation": "~5000",
+    "final_amount": "~5000",
+    "extraction_rule": "approximate_amount",
+    "entities": {
+      "approximate_amount": 5000,
+      "modifier": "almost"
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-064",
+    "input": "sawa 1 hajar 2 saya",
+    "raw_numbers": [
+      "sawa",
+      "1",
+      "2"
+    ],
+    "calculation": "1250 + 200 = 1450",
+    "final_amount": 1450,
+    "extraction_rule": "fractional_thousand_plus_hundreds",
+    "entities": {
+      "fractional_thousand": 1250,
+      "hundreds": 200,
+      "amount": 1450
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-065",
+    "input": "kilo ko 1200 le 3.5 kilo",
+    "raw_numbers": [
+      "1200",
+      "3.5"
+    ],
+    "calculation": "1200 * 3.5 = 4200",
+    "final_amount": 4200,
+    "extraction_rule": "unit_price * decimal_quantity",
+    "entities": {
+      "unit_price": 1200,
+      "quantity": 3.5,
+      "amount": 4200
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-066",
+    "input": "paune 4 hajar 3 saya",
+    "raw_numbers": [
+      "paune",
+      "4",
+      "3"
+    ],
+    "calculation": "3750 + 300 = 4050",
+    "final_amount": 4050,
+    "extraction_rule": "fractional_thousand_plus_hundreds",
+    "entities": {
+      "fractional_thousand": 3750,
+      "hundreds": 300,
+      "amount": 4050
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-067",
+    "input": "25 ko patak ma 8 patak diyo",
+    "raw_numbers": [
+      "25",
+      "8"
+    ],
+    "calculation": "25 * 8 = 200",
+    "final_amount": 200,
+    "extraction_rule": "per_instance * instances",
+    "entities": {
+      "per_instance": 25,
+      "instances": 8,
+      "amount": 200
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-068",
+    "input": "saya ko 50 piece bhaneko",
+    "raw_numbers": [
+      "saya",
+      "50"
+    ],
+    "calculation": "100 * 50 = 5000",
+    "final_amount": 5000,
+    "extraction_rule": "unit_price_word * quantity",
+    "entities": {
+      "unit_price": 100,
+      "quantity": 50,
+      "amount": 5000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-069",
+    "input": "1.5 lakh ka 3 ghar",
+    "raw_numbers": [
+      "1.5",
+      "lakh",
+      "3"
+    ],
+    "calculation": "150000 * 3 = 450000",
+    "final_amount": 450000,
+    "extraction_rule": "unit_price_mixed * quantity",
+    "entities": {
+      "unit_price": 150000,
+      "quantity": 3,
+      "amount": 450000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-070",
+    "input": "around 20-25 hajar lagcha",
+    "raw_numbers": [
+      "20",
+      "25"
+    ],
+    "calculation": "range ~20000-25000",
+    "final_amount": "~20000-25000",
+    "extraction_rule": "approximate_range_with_unit",
+    "entities": {
+      "min_amount": 20000,
+      "max_amount": 25000,
+      "modifier": "around"
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-071",
+    "input": "dedh karod investment thyo",
+    "raw_numbers": [
+      "dedh",
+      "karod"
+    ],
+    "calculation": "1.5 * 10000000 = 15000000",
+    "final_amount": 15000000,
+    "extraction_rule": "fractional_nepali_crore",
+    "entities": {
+      "multiplier": 1.5,
+      "unit": "karod",
+      "amount": 15000000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-072",
+    "input": "500 rupaiya per head 20 jana",
+    "raw_numbers": [
+      "500",
+      "20"
+    ],
+    "calculation": "500 * 20 = 10000",
+    "final_amount": 10000,
+    "extraction_rule": "per_person_rate * people",
+    "entities": {
+      "per_person": 500,
+      "people": 20,
+      "amount": 10000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-073",
+    "input": "pauna 1 lakh bhanthyo",
+    "raw_numbers": [
+      "pauna",
+      "1",
+      "lakh"
+    ],
+    "calculation": "0.75 * 100000 = 75000",
+    "final_amount": 75000,
+    "extraction_rule": "fraction_less_than_unit_variant",
+    "entities": {
+      "fraction": 0.75,
+      "base_unit": 100000,
+      "amount": 75000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-074",
+    "input": "3.5 hajar ko 4 ota beche",
+    "raw_numbers": [
+      "3.5",
+      "4"
+    ],
+    "calculation": "3500 * 4 = 14000",
+    "final_amount": 14000,
+    "extraction_rule": "unit_price_decimal_thousand * quantity",
+    "entities": {
+      "unit_price": 3500,
+      "quantity": 4,
+      "amount": 14000
+    },
+    "source": "user_exact"
+  },
+  {
+    "id": "amt-075",
+    "input": "khaja 80 eutako 5 plate",
+    "raw_numbers": [
+      "80",
+      "5"
+    ],
+    "calculation": "80 * 5 = 400",
+    "final_amount": 400,
+    "extraction_rule": "unit_price * quantity = total",
+    "entities": {
+      "unit_price": 80,
+      "quantity": 5,
+      "amount": 400
+    },
+    "source": "user_exact"
+  }
+]

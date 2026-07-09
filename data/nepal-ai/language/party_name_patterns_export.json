@@ -1,0 +1,1414 @@
+[
+  {
+    "id": "pp-001",
+    "pattern": "first_name + lai",
+    "examples": [
+      "Ram lai",
+      "Shyam lai",
+      "Sita lai"
+    ],
+    "transaction_role": "recipient/customer",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'lai' is the party name",
+    "name_kind": "first_name",
+    "marker": "lai",
+    "marker_alts": [
+      "lai",
+      "लाई"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "pp-002",
+    "pattern": "first_name + le",
+    "examples": [
+      "Ram le",
+      "Shyam le",
+      "Sita le"
+    ],
+    "transaction_role": "payer/actor",
+    "role_bucket": "agent",
+    "extraction_hint": "word before 'le' is the party name",
+    "name_kind": "first_name",
+    "marker": "le",
+    "marker_alts": [
+      "le",
+      "ले"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "pp-003",
+    "pattern": "first_name + ko",
+    "examples": [
+      "Ram ko",
+      "Shyam ko",
+      "Sita ko"
+    ],
+    "transaction_role": "owner/possessor",
+    "role_bucket": "owner",
+    "extraction_hint": "word before 'ko' is the party name",
+    "name_kind": "first_name",
+    "marker": "ko",
+    "marker_alts": [
+      "ko",
+      "को"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "pp-004",
+    "pattern": "first_name + sanga",
+    "examples": [
+      "Ram sanga",
+      "Shyam sanga",
+      "Sita sanga"
+    ],
+    "transaction_role": "counterparty",
+    "role_bucket": "counterparty",
+    "extraction_hint": "word before 'sanga' is the party name",
+    "name_kind": "first_name",
+    "marker": "sanga",
+    "marker_alts": [
+      "sanga",
+      "सँग",
+      "संग"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "pp-005",
+    "pattern": "first_name + bata",
+    "examples": [
+      "Ram bata",
+      "Shyam bata",
+      "Sita bata"
+    ],
+    "transaction_role": "source/sender",
+    "role_bucket": "source",
+    "extraction_hint": "word before 'bata' is the party name",
+    "name_kind": "first_name",
+    "marker": "bata",
+    "marker_alts": [
+      "bata",
+      "बाट"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "pp-006",
+    "pattern": "first_name + tira",
+    "examples": [
+      "Ram tira",
+      "Shyam tira",
+      "Sita tira"
+    ],
+    "transaction_role": "direction/recipient",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'tira' is the party name",
+    "name_kind": "first_name",
+    "marker": "tira",
+    "marker_alts": [
+      "tira"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "pp-007",
+    "pattern": "first_name + ko lagi",
+    "examples": [
+      "Ram ko lagi",
+      "Shyam ko lagi",
+      "Sita ko lagi"
+    ],
+    "transaction_role": "beneficiary",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'ko lagi' is the party name",
+    "name_kind": "first_name",
+    "marker": "ko lagi",
+    "marker_alts": [
+      "ko lagi"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "pp-008",
+    "pattern": "first_name + dwara",
+    "examples": [
+      "Ram dwara",
+      "Shyam dwara",
+      "Sita dwara"
+    ],
+    "transaction_role": "agent/payer (formal)",
+    "role_bucket": "agent",
+    "extraction_hint": "word before 'dwara' is the party name",
+    "name_kind": "first_name",
+    "marker": "dwara",
+    "marker_alts": [
+      "dwara"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "pp-009",
+    "pattern": "first_name + lai diyo",
+    "examples": [
+      "Ram lai diyo",
+      "Shyam lai diyo",
+      "Sita lai diyo"
+    ],
+    "transaction_role": "recipient",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'lai diyo' is the party name",
+    "name_kind": "first_name",
+    "marker": "lai diyo",
+    "marker_alts": [
+      "lai diyo"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "pp-010",
+    "pattern": "first_name + le diyo",
+    "examples": [
+      "Ram le diyo",
+      "Shyam le diyo",
+      "Sita le diyo"
+    ],
+    "transaction_role": "payer/giver",
+    "role_bucket": "agent",
+    "extraction_hint": "word before 'le diyo' is the party name",
+    "name_kind": "first_name",
+    "marker": "le diyo",
+    "marker_alts": [
+      "le diyo"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "pp-011",
+    "pattern": "first_name + lai bechyo",
+    "examples": [
+      "Ram lai bechyo",
+      "Shyam lai bechyo",
+      "Sita lai bechyo"
+    ],
+    "transaction_role": "buyer/recipient",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'lai bechyo' is the party name",
+    "name_kind": "first_name",
+    "marker": "lai bechyo",
+    "marker_alts": [
+      "lai bechyo"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "pp-012",
+    "pattern": "first_name + le kin yo",
+    "examples": [
+      "Ram le kin yo",
+      "Shyam le kin yo",
+      "Sita le kin yo"
+    ],
+    "transaction_role": "buyer",
+    "role_bucket": "agent",
+    "extraction_hint": "word before 'le kin yo' is the party name",
+    "name_kind": "first_name",
+    "marker": "le kin yo",
+    "marker_alts": [
+      "le kin yo",
+      "le kinyo",
+      "le kineko"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-013",
+    "pattern": "first_name + bata kin yo",
+    "examples": [
+      "Ram bata kin yo",
+      "Shyam bata kin yo",
+      "Sita bata kin yo"
+    ],
+    "transaction_role": "seller/source",
+    "role_bucket": "source",
+    "extraction_hint": "word before 'bata kin yo' is the party name",
+    "name_kind": "first_name",
+    "marker": "bata kin yo",
+    "marker_alts": [
+      "bata kin yo",
+      "bata kinyo",
+      "bata kineko"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-014",
+    "pattern": "first_name + sanga bechyo",
+    "examples": [
+      "Ram sanga bechyo",
+      "Shyam sanga bechyo",
+      "Sita sanga bechyo"
+    ],
+    "transaction_role": "buyer/counterparty",
+    "role_bucket": "counterparty",
+    "extraction_hint": "word before 'sanga bechyo' is the party name",
+    "name_kind": "first_name",
+    "marker": "sanga bechyo",
+    "marker_alts": [
+      "sanga bechyo"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "pp-015",
+    "pattern": "first_name + lai rupaiya diyo",
+    "examples": [
+      "Ram lai rupaiya diyo",
+      "Shyam lai rupaiya diyo",
+      "Sita lai rupaiya diyo"
+    ],
+    "transaction_role": "recipient",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'lai rupaiya diyo' is the party name",
+    "name_kind": "first_name",
+    "marker": "lai rupaiya diyo",
+    "marker_alts": [
+      "lai rupaiya diyo"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-016",
+    "pattern": "first_name + bata rupaiya liyo",
+    "examples": [
+      "Ram bata rupaiya liyo",
+      "Shyam bata rupaiya liyo",
+      "Sita bata rupaiya liyo"
+    ],
+    "transaction_role": "source/sender",
+    "role_bucket": "source",
+    "extraction_hint": "word before 'bata rupaiya liyo' is the party name",
+    "name_kind": "first_name",
+    "marker": "bata rupaiya liyo",
+    "marker_alts": [
+      "bata rupaiya liyo"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-017",
+    "pattern": "full_name + lai",
+    "examples": [
+      "Ram Bahadur lai",
+      "Krishna Prasad lai",
+      "Sita Devi lai"
+    ],
+    "transaction_role": "recipient/customer",
+    "role_bucket": "recipient",
+    "extraction_hint": "words before 'lai' form the party full name",
+    "name_kind": "full_name",
+    "marker": "lai",
+    "marker_alts": [
+      "lai",
+      "लाई"
+    ],
+    "priority": 15
+  },
+  {
+    "id": "pp-018",
+    "pattern": "full_name + le",
+    "examples": [
+      "Ram Bahadur le",
+      "Krishna Prasad le",
+      "Sita Devi le"
+    ],
+    "transaction_role": "payer/actor",
+    "role_bucket": "agent",
+    "extraction_hint": "words before 'le' form the party full name",
+    "name_kind": "full_name",
+    "marker": "le",
+    "marker_alts": [
+      "le",
+      "ले"
+    ],
+    "priority": 15
+  },
+  {
+    "id": "pp-019",
+    "pattern": "full_name + bata",
+    "examples": [
+      "Ram Bahadur bata",
+      "Krishna Prasad bata",
+      "Sita Devi bata"
+    ],
+    "transaction_role": "source",
+    "role_bucket": "source",
+    "extraction_hint": "words before 'bata' form the party full name",
+    "name_kind": "full_name",
+    "marker": "bata",
+    "marker_alts": [
+      "bata",
+      "बाट"
+    ],
+    "priority": 15
+  },
+  {
+    "id": "pp-020",
+    "pattern": "full_name + sanga",
+    "examples": [
+      "Ram Bahadur sanga",
+      "Krishna Prasad sanga",
+      "Sita Devi sanga"
+    ],
+    "transaction_role": "counterparty",
+    "role_bucket": "counterparty",
+    "extraction_hint": "words before 'sanga' form the party full name",
+    "name_kind": "full_name",
+    "marker": "sanga",
+    "marker_alts": [
+      "sanga",
+      "सँग",
+      "संग"
+    ],
+    "priority": 15
+  },
+  {
+    "id": "pp-021",
+    "pattern": "honorific_first_name + lai",
+    "examples": [
+      "Ram ji lai",
+      "Shyam dai lai",
+      "Sita didi lai"
+    ],
+    "transaction_role": "recipient",
+    "role_bucket": "recipient",
+    "extraction_hint": "words before 'lai' form name with honorific; extract name (e.g. Ram, Shyam) and honorific",
+    "name_kind": "honorific",
+    "marker": "lai",
+    "marker_alts": [
+      "lai",
+      "लाई"
+    ],
+    "priority": 15
+  },
+  {
+    "id": "pp-022",
+    "pattern": "honorific_first_name + le",
+    "examples": [
+      "Ram ji le",
+      "Shyam dai le",
+      "Sita didi le"
+    ],
+    "transaction_role": "payer/actor",
+    "role_bucket": "agent",
+    "extraction_hint": "words before 'le' form name with honorific",
+    "name_kind": "honorific",
+    "marker": "le",
+    "marker_alts": [
+      "le",
+      "ले"
+    ],
+    "priority": 15
+  },
+  {
+    "id": "pp-023",
+    "pattern": "honorific_first_name + bata",
+    "examples": [
+      "Ram ji bata",
+      "Shyam dai bata",
+      "Sita didi bata"
+    ],
+    "transaction_role": "source",
+    "role_bucket": "source",
+    "extraction_hint": "words before 'bata' form name with honorific",
+    "name_kind": "honorific",
+    "marker": "bata",
+    "marker_alts": [
+      "bata",
+      "बाट"
+    ],
+    "priority": 15
+  },
+  {
+    "id": "pp-024",
+    "pattern": "relationship_term + lai",
+    "examples": [
+      "bhai lai",
+      "didi lai",
+      "uncle lai"
+    ],
+    "transaction_role": "recipient",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'lai' is a relationship term (bhai, didi, uncle, aunty)",
+    "name_kind": "relationship",
+    "marker": "lai",
+    "marker_alts": [
+      "lai",
+      "लाई"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "pp-025",
+    "pattern": "relationship_term + le",
+    "examples": [
+      "bhai le",
+      "didi le",
+      "uncle le"
+    ],
+    "transaction_role": "payer/actor",
+    "role_bucket": "agent",
+    "extraction_hint": "word before 'le' is a relationship term",
+    "name_kind": "relationship",
+    "marker": "le",
+    "marker_alts": [
+      "le",
+      "ले"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "pp-026",
+    "pattern": "sahu/malik + lai",
+    "examples": [
+      "sahu lai",
+      "malik lai",
+      "sahuji lai"
+    ],
+    "transaction_role": "recipient/business owner",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'lai' is 'sahu' or 'malik'",
+    "name_kind": "title",
+    "marker": "lai",
+    "marker_alts": [
+      "lai",
+      "लाई"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "pp-027",
+    "pattern": "shop_name + bata",
+    "examples": [
+      "Ram Store bata",
+      "Shyam Hardware bata",
+      "Krishna Electronics bata"
+    ],
+    "transaction_role": "vendor/source",
+    "role_bucket": "source",
+    "extraction_hint": "multi-word phrase before 'bata' is the shop name",
+    "name_kind": "shop_name",
+    "marker": "bata",
+    "marker_alts": [
+      "bata",
+      "बाट"
+    ],
+    "priority": 15
+  },
+  {
+    "id": "pp-028",
+    "pattern": "shop_name + ma",
+    "examples": [
+      "Ram Store ma",
+      "Shyam Hardware ma",
+      "New Fancy ma"
+    ],
+    "transaction_role": "location/venue",
+    "role_bucket": "location",
+    "extraction_hint": "multi-word phrase before 'ma' is the shop name",
+    "name_kind": "shop_name",
+    "marker": "ma",
+    "marker_alts": [
+      "ma"
+    ],
+    "priority": 15
+  },
+  {
+    "id": "pp-029",
+    "pattern": "shop_name + lai",
+    "examples": [
+      "Ram Store lai",
+      "Shyam Hardware lai",
+      "Krishna Electronics lai"
+    ],
+    "transaction_role": "recipient (business)",
+    "role_bucket": "recipient",
+    "extraction_hint": "multi-word phrase before 'lai' is the shop name",
+    "name_kind": "shop_name",
+    "marker": "lai",
+    "marker_alts": [
+      "lai",
+      "लाई"
+    ],
+    "priority": 15
+  },
+  {
+    "id": "pp-030",
+    "pattern": "shop_name + ko",
+    "examples": [
+      "Ram Store ko",
+      "Shyam Hardware ko",
+      "New Fancy ko"
+    ],
+    "transaction_role": "owner/possessor (business)",
+    "role_bucket": "owner",
+    "extraction_hint": "multi-word phrase before 'ko' is the shop name",
+    "name_kind": "shop_name",
+    "marker": "ko",
+    "marker_alts": [
+      "ko",
+      "को"
+    ],
+    "priority": 15
+  },
+  {
+    "id": "pp-031",
+    "pattern": "shop_name + sanga",
+    "examples": [
+      "Ram Store sanga",
+      "Shyam Hardware sanga",
+      "Krishna Electronics sanga"
+    ],
+    "transaction_role": "counterparty (business)",
+    "role_bucket": "counterparty",
+    "extraction_hint": "multi-word phrase before 'sanga' is the shop name",
+    "name_kind": "shop_name",
+    "marker": "sanga",
+    "marker_alts": [
+      "sanga",
+      "सँग",
+      "संग"
+    ],
+    "priority": 15
+  },
+  {
+    "id": "pp-032",
+    "pattern": "nickname + lai",
+    "examples": [
+      "Ramu lai",
+      "Shyamu lai",
+      "Sitaji lai"
+    ],
+    "transaction_role": "recipient",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'lai' is a nickname",
+    "name_kind": "nickname",
+    "marker": "lai",
+    "marker_alts": [
+      "lai",
+      "लाई"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "pp-033",
+    "pattern": "nickname + le",
+    "examples": [
+      "Ramu le",
+      "Shyamu le",
+      "Sitaji le"
+    ],
+    "transaction_role": "payer/actor",
+    "role_bucket": "agent",
+    "extraction_hint": "word before 'le' is a nickname",
+    "name_kind": "nickname",
+    "marker": "le",
+    "marker_alts": [
+      "le",
+      "ले"
+    ],
+    "priority": 10
+  },
+  {
+    "id": "pp-034",
+    "pattern": "first_name + ko pasal",
+    "examples": [
+      "Ram ko pasal",
+      "Shyam ko pasal",
+      "Sita ko pasal"
+    ],
+    "transaction_role": "owner (of shop)",
+    "role_bucket": "owner",
+    "extraction_hint": "word before 'ko pasal' is the shop owner name",
+    "name_kind": "first_name",
+    "marker": "ko pasal",
+    "marker_alts": [
+      "ko pasal"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "pp-035",
+    "pattern": "first_name + ko account",
+    "examples": [
+      "Ram ko account",
+      "Shyam ko account",
+      "Sita ko account"
+    ],
+    "transaction_role": "account owner",
+    "role_bucket": "owner",
+    "extraction_hint": "word before 'ko account' is the account holder name",
+    "name_kind": "first_name",
+    "marker": "ko account",
+    "marker_alts": [
+      "ko account"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "pp-036",
+    "pattern": "first_name + ko bill",
+    "examples": [
+      "Ram ko bill",
+      "Shyam ko bill",
+      "Sita ko bill"
+    ],
+    "transaction_role": "bill owner",
+    "role_bucket": "owner",
+    "extraction_hint": "word before 'ko bill' is the party name",
+    "name_kind": "first_name",
+    "marker": "ko bill",
+    "marker_alts": [
+      "ko bill"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "pp-037",
+    "pattern": "first_name + ko maal",
+    "examples": [
+      "Ram ko maal",
+      "Shyam ko maal",
+      "Sita ko maal"
+    ],
+    "transaction_role": "goods owner",
+    "role_bucket": "owner",
+    "extraction_hint": "word before 'ko maal' is the party name",
+    "name_kind": "first_name",
+    "marker": "ko maal",
+    "marker_alts": [
+      "ko maal"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "pp-038",
+    "pattern": "first_name + lai bill pathaunu",
+    "examples": [
+      "Ram lai bill pathaunu",
+      "Shyam lai bill pathaunu"
+    ],
+    "transaction_role": "recipient (bill)",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'lai bill' is the recipient name",
+    "name_kind": "first_name",
+    "marker": "lai bill pathaunu",
+    "marker_alts": [
+      "lai bill pathaunu"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-039",
+    "pattern": "first_name + lai paisa bhayo",
+    "examples": [
+      "Ram lai paisa bhayo",
+      "Shyam lai paisa bhayo"
+    ],
+    "transaction_role": "payee",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'lai paisa bhayo' is the party name",
+    "name_kind": "first_name",
+    "marker": "lai paisa bhayo",
+    "marker_alts": [
+      "lai paisa bhayo"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-040",
+    "pattern": "first_name + le paisa diyo",
+    "examples": [
+      "Ram le paisa diyo",
+      "Shyam le paisa diyo"
+    ],
+    "transaction_role": "payer",
+    "role_bucket": "agent",
+    "extraction_hint": "word before 'le paisa diyo' is the party name",
+    "name_kind": "first_name",
+    "marker": "le paisa diyo",
+    "marker_alts": [
+      "le paisa diyo"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-041",
+    "pattern": "first_name + bata rupaiya aayo",
+    "examples": [
+      "Ram bata rupaiya aayo",
+      "Shyam bata rupaiya aayo"
+    ],
+    "transaction_role": "source of funds",
+    "role_bucket": "source",
+    "extraction_hint": "word before 'bata rupaiya aayo' is the source name",
+    "name_kind": "first_name",
+    "marker": "bata rupaiya aayo",
+    "marker_alts": [
+      "bata rupaiya aayo"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-042",
+    "pattern": "party_label: name",
+    "examples": [
+      "Party: Ram",
+      "Customer: Sita",
+      "Vendor: Ram Store"
+    ],
+    "transaction_role": "varies by label",
+    "role_bucket": "label",
+    "extraction_hint": "extract the name after colon; label before colon indicates role",
+    "name_kind": "party_label",
+    "marker": null,
+    "marker_alts": [],
+    "priority": 0
+  },
+  {
+    "id": "pp-043",
+    "pattern": "name + lai credit diyo",
+    "examples": [
+      "Ram lai credit diyo",
+      "Shyam lai credit diyo"
+    ],
+    "transaction_role": "credit recipient",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'lai credit diyo' is the party name",
+    "name_kind": "name",
+    "marker": "lai credit diyo",
+    "marker_alts": [
+      "lai credit diyo"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-044",
+    "pattern": "name + bata credit liyo",
+    "examples": [
+      "Ram bata credit liyo",
+      "Shyam bata credit liyo"
+    ],
+    "transaction_role": "credit provider",
+    "role_bucket": "source",
+    "extraction_hint": "word before 'bata credit liyo' is the party name",
+    "name_kind": "name",
+    "marker": "bata credit liyo",
+    "marker_alts": [
+      "bata credit liyo"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-045",
+    "pattern": "name + lai udhar diyo",
+    "examples": [
+      "Ram lai udhar diyo",
+      "Shyam lai udhar diyo"
+    ],
+    "transaction_role": "debtor/recipient",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'lai udhar diyo' is the debtor name",
+    "name_kind": "name",
+    "marker": "lai udhar diyo",
+    "marker_alts": [
+      "lai udhar diyo",
+      "lai udhaar diyo",
+      "lai udharo diyo"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-046",
+    "pattern": "name + le udhar liyo",
+    "examples": [
+      "Ram le udhar liyo",
+      "Shyam le udhar liyo"
+    ],
+    "transaction_role": "debtor",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'le udhar liyo' is the debtor name",
+    "name_kind": "name",
+    "marker": "le udhar liyo",
+    "marker_alts": [
+      "le udhar liyo",
+      "le udhaar liyo",
+      "le udharo liyo"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-047",
+    "pattern": "name + sanga paisa mageko",
+    "examples": [
+      "Ram sanga paisa mageko",
+      "Shyam sanga paisa mageko"
+    ],
+    "transaction_role": "debtor/asked party",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'sanga paisa mageko' is the party name",
+    "name_kind": "name",
+    "marker": "sanga paisa mageko",
+    "marker_alts": [
+      "sanga paisa mageko"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-048",
+    "pattern": "name + ko naam ma cheque",
+    "examples": [
+      "Ram ko naam ma cheque",
+      "Shyam ko naam ma cheque"
+    ],
+    "transaction_role": "payee (cheque)",
+    "role_bucket": "owner",
+    "extraction_hint": "word before 'ko naam ma cheque' is the party name",
+    "name_kind": "name",
+    "marker": "ko naam ma cheque",
+    "marker_alts": [
+      "ko naam ma cheque"
+    ],
+    "priority": 40
+  },
+  {
+    "id": "pp-049",
+    "pattern": "name + lai draft kateko",
+    "examples": [
+      "Ram lai draft kateko",
+      "Shyam lai draft kateko"
+    ],
+    "transaction_role": "draft beneficiary",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'lai draft kateko' is the party name",
+    "name_kind": "name",
+    "marker": "lai draft kateko",
+    "marker_alts": [
+      "lai draft kateko"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-050",
+    "pattern": "name + le voucher diyo",
+    "examples": [
+      "Ram le voucher diyo",
+      "Shyam le voucher diyo"
+    ],
+    "transaction_role": "issuer",
+    "role_bucket": "agent",
+    "extraction_hint": "word before 'le voucher diyo' is the issuer name",
+    "name_kind": "name",
+    "marker": "le voucher diyo",
+    "marker_alts": [
+      "le voucher diyo"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-051",
+    "pattern": "name + lai voucher diyo",
+    "examples": [
+      "Ram lai voucher diyo",
+      "Shyam lai voucher diyo"
+    ],
+    "transaction_role": "voucher recipient",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'lai voucher diyo' is the recipient name",
+    "name_kind": "name",
+    "marker": "lai voucher diyo",
+    "marker_alts": [
+      "lai voucher diyo"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-052",
+    "pattern": "first_name + ko bhansar",
+    "examples": [
+      "Ram ko bhansar",
+      "Shyam ko bhansar"
+    ],
+    "transaction_role": "warehouse owner",
+    "role_bucket": "owner",
+    "extraction_hint": "word before 'ko bhansar' is the party name",
+    "name_kind": "first_name",
+    "marker": "ko bhansar",
+    "marker_alts": [
+      "ko bhansar"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "pp-053",
+    "pattern": "first_name + ko hisab",
+    "examples": [
+      "Ram ko hisab",
+      "Shyam ko hisab"
+    ],
+    "transaction_role": "account owner",
+    "role_bucket": "owner",
+    "extraction_hint": "word before 'ko hisab' is the party name",
+    "name_kind": "first_name",
+    "marker": "ko hisab",
+    "marker_alts": [
+      "ko hisab"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "pp-054",
+    "pattern": "first_name + lai settle gareko",
+    "examples": [
+      "Ram lai settle gareko",
+      "Shyam lai settle gareko"
+    ],
+    "transaction_role": "payment recipient",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'lai settle gareko' is the party name",
+    "name_kind": "first_name",
+    "marker": "lai settle gareko",
+    "marker_alts": [
+      "lai settle gareko"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-055",
+    "pattern": "first_name + bata settle liyo",
+    "examples": [
+      "Ram bata settle liyo",
+      "Shyam bata settle liyo"
+    ],
+    "transaction_role": "payer",
+    "role_bucket": "agent",
+    "extraction_hint": "word before 'bata settle liyo' is the party name",
+    "name_kind": "first_name",
+    "marker": "bata settle liyo",
+    "marker_alts": [
+      "bata settle liyo"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-056",
+    "pattern": "first_name + sanga hisab milayo",
+    "examples": [
+      "Ram sanga hisab milayo",
+      "Shyam sanga hisab milayo"
+    ],
+    "transaction_role": "counterparty",
+    "role_bucket": "counterparty",
+    "extraction_hint": "word before 'sanga hisab milayo' is the party name",
+    "name_kind": "first_name",
+    "marker": "sanga hisab milayo",
+    "marker_alts": [
+      "sanga hisab milayo"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-057",
+    "pattern": "nickname + ko pasal",
+    "examples": [
+      "Ramu ko pasal",
+      "Shyamu ko pasal"
+    ],
+    "transaction_role": "shop owner (nickname)",
+    "role_bucket": "owner",
+    "extraction_hint": "word before 'ko pasal' is a nickname",
+    "name_kind": "nickname",
+    "marker": "ko pasal",
+    "marker_alts": [
+      "ko pasal"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "pp-058",
+    "pattern": "relationship + ko pasal",
+    "examples": [
+      "bhai ko pasal",
+      "didi ko pasal",
+      "uncle ko pasal"
+    ],
+    "transaction_role": "shop owner (relationship)",
+    "role_bucket": "owner",
+    "extraction_hint": "word before 'ko pasal' is a relationship term",
+    "name_kind": "relationship",
+    "marker": "ko pasal",
+    "marker_alts": [
+      "ko pasal"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "pp-059",
+    "pattern": "first_name + lai maal pathayo",
+    "examples": [
+      "Ram lai maal pathayo",
+      "Shyam lai maal pathayo"
+    ],
+    "transaction_role": "goods receiver",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'lai maal pathayo' is the receiver name",
+    "name_kind": "first_name",
+    "marker": "lai maal pathayo",
+    "marker_alts": [
+      "lai maal pathayo"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-060",
+    "pattern": "first_name + bata maal aayo",
+    "examples": [
+      "Ram bata maal aayo",
+      "Shyam bata maal aayo"
+    ],
+    "transaction_role": "goods sender/source",
+    "role_bucket": "source",
+    "extraction_hint": "word before 'bata maal aayo' is the sender name",
+    "name_kind": "first_name",
+    "marker": "bata maal aayo",
+    "marker_alts": [
+      "bata maal aayo"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-061",
+    "pattern": "shop_name + bata maal kineko",
+    "examples": [
+      "Ram Store bata maal kineko",
+      "Shyam Hardware bata maal kineko"
+    ],
+    "transaction_role": "vendor",
+    "role_bucket": "source",
+    "extraction_hint": "phrase before 'bata maal kineko' is the shop name",
+    "name_kind": "shop_name",
+    "marker": "bata maal kineko",
+    "marker_alts": [
+      "bata maal kineko"
+    ],
+    "priority": 35
+  },
+  {
+    "id": "pp-062",
+    "pattern": "shop_name + lai order diyo",
+    "examples": [
+      "Ram Store lai order diyo",
+      "Shyam Hardware lai order diyo"
+    ],
+    "transaction_role": "order recipient (shop)",
+    "role_bucket": "recipient",
+    "extraction_hint": "phrase before 'lai order diyo' is the shop name",
+    "name_kind": "shop_name",
+    "marker": "lai order diyo",
+    "marker_alts": [
+      "lai order diyo"
+    ],
+    "priority": 35
+  },
+  {
+    "id": "pp-063",
+    "pattern": "first_name + lai phone gare",
+    "examples": [
+      "Ram lai phone gare",
+      "Shyam lai phone gare"
+    ],
+    "transaction_role": "callee",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'lai phone gare' is the party name",
+    "name_kind": "first_name",
+    "marker": "lai phone gare",
+    "marker_alts": [
+      "lai phone gare"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-064",
+    "pattern": "first_name + le phone gare",
+    "examples": [
+      "Ram le phone gare",
+      "Shyam le phone gare"
+    ],
+    "transaction_role": "caller",
+    "role_bucket": "agent",
+    "extraction_hint": "word before 'le phone gare' is the party name",
+    "name_kind": "first_name",
+    "marker": "le phone gare",
+    "marker_alts": [
+      "le phone gare"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-065",
+    "pattern": "first_name + sanga deal gare",
+    "examples": [
+      "Ram sanga deal gare",
+      "Shyam sanga deal gare"
+    ],
+    "transaction_role": "deal counterparty",
+    "role_bucket": "counterparty",
+    "extraction_hint": "word before 'sanga deal gare' is the party name",
+    "name_kind": "first_name",
+    "marker": "sanga deal gare",
+    "marker_alts": [
+      "sanga deal gare"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-066",
+    "pattern": "first_name + lai invoice",
+    "examples": [
+      "Ram lai invoice",
+      "Shyam lai invoice"
+    ],
+    "transaction_role": "invoice recipient",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'lai invoice' is the recipient name",
+    "name_kind": "first_name",
+    "marker": "lai invoice",
+    "marker_alts": [
+      "lai invoice"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "pp-067",
+    "pattern": "first_name + ko receipt",
+    "examples": [
+      "Ram ko receipt",
+      "Shyam ko receipt"
+    ],
+    "transaction_role": "receipt owner",
+    "role_bucket": "owner",
+    "extraction_hint": "word before 'ko receipt' is the party name",
+    "name_kind": "first_name",
+    "marker": "ko receipt",
+    "marker_alts": [
+      "ko receipt"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "pp-068",
+    "pattern": "first_name + bata cash liyo",
+    "examples": [
+      "Ram bata cash liyo",
+      "Shyam bata cash liyo"
+    ],
+    "transaction_role": "cash source",
+    "role_bucket": "source",
+    "extraction_hint": "word before 'bata cash liyo' is the source name",
+    "name_kind": "first_name",
+    "marker": "bata cash liyo",
+    "marker_alts": [
+      "bata cash liyo"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-069",
+    "pattern": "first_name + lai cash diyo",
+    "examples": [
+      "Ram lai cash diyo",
+      "Shyam lai cash diyo"
+    ],
+    "transaction_role": "cash recipient",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'lai cash diyo' is the recipient name",
+    "name_kind": "first_name",
+    "marker": "lai cash diyo",
+    "marker_alts": [
+      "lai cash diyo"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-070",
+    "pattern": "full_name + ko account ma",
+    "examples": [
+      "Ram Bahadur ko account ma",
+      "Krishna Prasad ko account ma"
+    ],
+    "transaction_role": "account owner",
+    "role_bucket": "owner",
+    "extraction_hint": "words before 'ko account ma' form the party full name",
+    "name_kind": "full_name",
+    "marker": "ko account ma",
+    "marker_alts": [
+      "ko account ma"
+    ],
+    "priority": 35
+  },
+  {
+    "id": "pp-071",
+    "pattern": "shop_name + ko account ma",
+    "examples": [
+      "Ram Store ko account ma",
+      "Shyam Hardware ko account ma"
+    ],
+    "transaction_role": "account owner (business)",
+    "role_bucket": "owner",
+    "extraction_hint": "phrase before 'ko account ma' is the shop name",
+    "name_kind": "shop_name",
+    "marker": "ko account ma",
+    "marker_alts": [
+      "ko account ma"
+    ],
+    "priority": 35
+  },
+  {
+    "id": "pp-072",
+    "pattern": "first_name + lai esewa pathayo",
+    "examples": [
+      "Ram lai esewa pathayo",
+      "Shyam lai esewa pathayo"
+    ],
+    "transaction_role": "eSewa recipient",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'lai esewa pathayo' is the recipient name",
+    "name_kind": "first_name",
+    "marker": "lai esewa pathayo",
+    "marker_alts": [
+      "lai esewa pathayo"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-073",
+    "pattern": "first_name + bata esewa aayo",
+    "examples": [
+      "Ram bata esewa aayo",
+      "Shyam bata esewa aayo"
+    ],
+    "transaction_role": "eSewa sender",
+    "role_bucket": "source",
+    "extraction_hint": "word before 'bata esewa aayo' is the sender name",
+    "name_kind": "first_name",
+    "marker": "bata esewa aayo",
+    "marker_alts": [
+      "bata esewa aayo"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-074",
+    "pattern": "first_name + lai khalti ma",
+    "examples": [
+      "Ram lai khalti ma",
+      "Shyam lai khalti ma"
+    ],
+    "transaction_role": "Khalti wallet recipient",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'lai khalti ma' is the recipient name",
+    "name_kind": "first_name",
+    "marker": "lai khalti ma",
+    "marker_alts": [
+      "lai khalti ma"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-075",
+    "pattern": "first_name + bata khalti bata",
+    "examples": [
+      "Ram bata khalti bata",
+      "Shyam bata khalti bata"
+    ],
+    "transaction_role": "Khalti sender",
+    "role_bucket": "source",
+    "extraction_hint": "word before 'bata khalti bata' is the sender name",
+    "name_kind": "first_name",
+    "marker": "bata khalti bata",
+    "marker_alts": [
+      "bata khalti bata"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-076",
+    "pattern": "shop_name + le bill diyo",
+    "examples": [
+      "Ram Store le bill diyo",
+      "Shyam Hardware le bill diyo"
+    ],
+    "transaction_role": "bill issuer (shop)",
+    "role_bucket": "agent",
+    "extraction_hint": "phrase before 'le bill diyo' is the shop name",
+    "name_kind": "shop_name",
+    "marker": "le bill diyo",
+    "marker_alts": [
+      "le bill diyo"
+    ],
+    "priority": 35
+  },
+  {
+    "id": "pp-077",
+    "pattern": "first_name + lai baki",
+    "examples": [
+      "Ram lai baki",
+      "Shyam lai baki"
+    ],
+    "transaction_role": "debtor",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'lai baki' is the debtor name",
+    "name_kind": "first_name",
+    "marker": "lai baki",
+    "marker_alts": [
+      "lai baki"
+    ],
+    "priority": 20
+  },
+  {
+    "id": "pp-078",
+    "pattern": "first_name + bata baki uthaunu",
+    "examples": [
+      "Ram bata baki uthaunu",
+      "Shyam bata baki uthaunu"
+    ],
+    "transaction_role": "creditor (to collect)",
+    "role_bucket": "source",
+    "extraction_hint": "word before 'bata baki uthaunu' is the debtor name from whom to collect",
+    "name_kind": "first_name",
+    "marker": "bata baki uthaunu",
+    "marker_alts": [
+      "bata baki uthaunu"
+    ],
+    "priority": 30
+  },
+  {
+    "id": "pp-079",
+    "pattern": "first_name + lai baki tirna",
+    "examples": [
+      "Ram lai baki tirna",
+      "Shyam lai baki tirna"
+    ],
+    "transaction_role": "creditor (to pay)",
+    "role_bucket": "recipient",
+    "extraction_hint": "word before 'lai baki tirna' is the creditor name",
+    "name_kind": "first_name",
+    "marker": "lai baki tirna",
+    "marker_alts": [
+      "lai baki tirna"
+    ],
+    "priority": 30
+  }
+]

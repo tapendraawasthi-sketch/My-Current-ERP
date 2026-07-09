@@ -1,0 +1,1830 @@
+[
+  {
+    "id": "novel_001",
+    "source": "user_exact",
+    "novel_id": "novel_001",
+    "input": "solar tukra 12 bechi 24000 kamae",
+    "input_normalized": "solar tukra 12 bechi 24000 kamae",
+    "why_novel": "solar panel micro-units sold as 'tukra' not in training",
+    "nearest_known_pattern": "sale of goods with revenue",
+    "reasoning_to_handle": [
+      "tukra = piece/unit",
+      "12 = quantity",
+      "24000 = amount earned",
+      "solar = product type (novel phrasing)",
+      "Pattern: sold Q units for amount = income from goods sale"
+    ],
+    "suggested_handling": {
+      "intent": "khata_income",
+      "entities": {
+        "item": "solar tukra",
+        "quantity": 12,
+        "amount": 24000
+      },
+      "clarify_if_needed": "Per unit price or total? Was this retail sale or installation contract?"
+    },
+    "suggested_intent": "khata_income",
+    "suggested_intent_key": "khata_income",
+    "suggested_entities": {
+      "item": "solar tukra",
+      "quantity": 12,
+      "amount": 24000
+    },
+    "clarify_if_needed": "Per unit price or total? Was this retail sale or installation contract?",
+    "generalization_lesson": "Treat novel product compound nouns as item types and map quantity+amount to sales income.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_002",
+    "source": "user_exact",
+    "novel_id": "novel_002",
+    "input": "rent-to-own fridge 3 mahina bhada 15000",
+    "input_normalized": "rent-to-own fridge 3 mahina bhada 15000",
+    "why_novel": "rent-to-own transaction model phrased with mixed English-Nepali",
+    "nearest_known_pattern": "rental payment / installment",
+    "reasoning_to_handle": [
+      "rent-to-own = hybrid rental+purchase",
+      "fridge = appliance",
+      "3 mahina = 3 months",
+      "bhada = rent/payment",
+      "15000 = amount",
+      "Pattern: recurring payment toward ownership"
+    ],
+    "suggested_handling": {
+      "intent": "installment_payment",
+      "entities": {
+        "item": "fridge",
+        "term_months": 3,
+        "amount": 15000,
+        "model": "rent-to-own"
+      },
+      "clarify_if_needed": "Is 15000 monthly or total for 3 months?"
+    },
+    "suggested_intent": "installment_payment",
+    "suggested_intent_key": "installment_payment",
+    "suggested_entities": {
+      "item": "fridge",
+      "term_months": 3,
+      "amount": 15000,
+      "model": "rent-to-own"
+    },
+    "clarify_if_needed": "Is 15000 monthly or total for 3 months?",
+    "generalization_lesson": "Hybrid transaction types can be handled by splitting into rental and purchase intents and tracking term length.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_003",
+    "source": "user_exact",
+    "novel_id": "novel_003",
+    "input": "peer-to-peer loan from bhai 20000 interest 2%/mahina",
+    "input_normalized": "peer-to-peer loan from bhai 20000 interest 2%/mahina",
+    "why_novel": "informal family P2P loan with monthly interest notation",
+    "nearest_known_pattern": "loan with interest",
+    "reasoning_to_handle": [
+      "peer-to-peer = person-to-person loan",
+      "bhai = lender relation",
+      "20000 = principal",
+      "2%/mahina = monthly interest rate",
+      "Pattern: loan record with interest terms"
+    ],
+    "suggested_handling": {
+      "intent": "loan_record",
+      "entities": {
+        "counterparty": "bhai",
+        "principal": 20000,
+        "interest_rate_monthly": "2%"
+      },
+      "clarify_if_needed": "Start date and repayment schedule?"
+    },
+    "suggested_intent": "loan_record",
+    "suggested_intent_key": "loan_record",
+    "suggested_entities": {
+      "counterparty": "bhai",
+      "principal": 20000,
+      "interest_rate_monthly": "2%"
+    },
+    "clarify_if_needed": "Start date and repayment schedule?",
+    "generalization_lesson": "Informal loans use relational labels; treat counterparty as party and capture rate and schedule.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_004",
+    "source": "user_exact",
+    "novel_id": "novel_004",
+    "input": "chhito delivery tip 50 rs from customer 'sita'",
+    "input_normalized": "chhito delivery tip 50 rs from customer 'sita'",
+    "why_novel": "tip labeled 'chhito' (fast) as adjective and includes quoted name",
+    "nearest_known_pattern": "service tip/gratuity",
+    "reasoning_to_handle": [
+      "chhito = fast (descriptor)",
+      "delivery tip = gratuity",
+      "50 rs = amount",
+      "'sita' = customer name",
+      "Pattern: service tip with metadata"
+    ],
+    "suggested_handling": {
+      "intent": "tip_received",
+      "entities": {
+        "service": "delivery",
+        "amount": 50,
+        "customer": "sita",
+        "note": "chhito"
+      },
+      "clarify_if_needed": "Is 'chhito' a tag for service speed or internal label?"
+    },
+    "suggested_intent": "tip_received",
+    "suggested_intent_key": "tip_received",
+    "suggested_entities": {
+      "service": "delivery",
+      "amount": 50,
+      "customer": "sita",
+      "note": "chhito"
+    },
+    "clarify_if_needed": "Is 'chhito' a tag for service speed or internal label?",
+    "generalization_lesson": "Adjectival tags and quoted names can be parsed as metadata for service transactions.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_005",
+    "source": "user_exact",
+    "novel_id": "novel_005",
+    "input": "NFT art bechera royalty 5% ongoing",
+    "input_normalized": "nft art bechera royalty 5% ongoing",
+    "why_novel": "NFT and royalty concept not in traditional training",
+    "nearest_known_pattern": "digital asset sale with recurring royalty",
+    "reasoning_to_handle": [
+      "NFT = digital asset",
+      "bechera = sold",
+      "royalty 5% ongoing = future recurring income",
+      "Pattern: sale plus entitlement to future royalties"
+    ],
+    "suggested_handling": {
+      "intent": "asset_sale_with_royalty",
+      "entities": {
+        "item": "NFT art",
+        "sale_amount": null,
+        "royalty_rate": "5%",
+        "royalty_type": "ongoing"
+      },
+      "clarify_if_needed": "Sale amount and platform for royalty tracking?"
+    },
+    "suggested_intent": "asset_sale_with_royalty",
+    "suggested_intent_key": "asset_sale_with_royalty",
+    "suggested_entities": {
+      "item": "NFT art",
+      "sale_amount": null,
+      "royalty_rate": "5%",
+      "royalty_type": "ongoing"
+    },
+    "clarify_if_needed": "Sale amount and platform for royalty tracking?",
+    "generalization_lesson": "Treat digital assets like physical assets and capture royalty clauses as future receivables.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_006",
+    "source": "user_exact",
+    "novel_id": "novel_006",
+    "input": "khata: 'chai-pani' barter 2 cups for 1 samosa",
+    "input_normalized": "khata: 'chai-pani' barter 2 cups for 1 samosa",
+    "why_novel": "barter transaction with colloquial 'chai-pani' term",
+    "nearest_known_pattern": "goods exchange/barter",
+    "reasoning_to_handle": [
+      "chai-pani = informal exchange phrase",
+      "2 cups = quantity of beverage",
+      "1 samosa = exchanged item",
+      "Pattern: barter where goods swapped without currency"
+    ],
+    "suggested_handling": {
+      "intent": "barter_record",
+      "entities": {
+        "offer": "2 cups chai",
+        "request": "1 samosa",
+        "type": "barter"
+      },
+      "clarify_if_needed": "Any monetary equivalent to record?"
+    },
+    "suggested_intent": "barter_record",
+    "suggested_intent_key": "barter_record",
+    "suggested_entities": {
+      "offer": "2 cups chai",
+      "request": "1 samosa",
+      "type": "barter"
+    },
+    "clarify_if_needed": "Any monetary equivalent to record?",
+    "generalization_lesson": "Barter can be modeled as paired item exchange with optional monetary equivalence.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_007",
+    "source": "user_exact",
+    "novel_id": "novel_007",
+    "input": "microloan app payout 'KisanFund' 7500",
+    "input_normalized": "microloan app payout 'kisanfund' 7500",
+    "why_novel": "microloan platform name 'KisanFund' unseen in training",
+    "nearest_known_pattern": "loan disbursement",
+    "reasoning_to_handle": [
+      "microloan app = fintech disbursement",
+      "'KisanFund' = platform name",
+      "7500 = payout amount",
+      "Pattern: incoming funds from lending platform"
+    ],
+    "suggested_handling": {
+      "intent": "incoming_transfer",
+      "entities": {
+        "source": "KisanFund",
+        "amount": 7500,
+        "type": "microloan_payout"
+      },
+      "clarify_if_needed": "Is this disbursement or repayment?"
+    },
+    "suggested_intent": "incoming_transfer",
+    "suggested_intent_key": "incoming_transfer",
+    "suggested_entities": {
+      "source": "KisanFund",
+      "amount": 7500,
+      "type": "microloan_payout"
+    },
+    "clarify_if_needed": "Is this disbursement or repayment?",
+    "generalization_lesson": "Unknown platform names should be captured as source entities for transfers.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_008",
+    "source": "user_exact",
+    "novel_id": "novel_008",
+    "input": "sahayog ko rup ma donation 3000 'ward 7'",
+    "input_normalized": "sahayog ko rup ma donation 3000 'ward 7'",
+    "why_novel": "local civic donation phrased with Nepali civic unit",
+    "nearest_known_pattern": "donation/charity contribution",
+    "reasoning_to_handle": [
+      "sahayog = support/donation",
+      "3000 = amount",
+      "'ward 7' = recipient unit",
+      "Pattern: donation to local civic body"
+    ],
+    "suggested_handling": {
+      "intent": "donation_out",
+      "entities": {
+        "amount": 3000,
+        "recipient": "ward 7",
+        "purpose": "sahayog"
+      },
+      "clarify_if_needed": "Is this official receipt needed?"
+    },
+    "suggested_intent": "donation_out",
+    "suggested_intent_key": "donation_out",
+    "suggested_entities": {
+      "amount": 3000,
+      "recipient": "ward 7",
+      "purpose": "sahayog"
+    },
+    "clarify_if_needed": "Is this official receipt needed?",
+    "generalization_lesson": "Local administrative recipients should be stored as recipient entities for donations.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_009",
+    "source": "user_exact",
+    "novel_id": "novel_009",
+    "input": "pre-order 'momo box' 50 units advance 10000",
+    "input_normalized": "pre-order 'momo box' 50 units advance 10000",
+    "why_novel": "pre-order advance payment for future goods",
+    "nearest_known_pattern": "advance payment / order deposit",
+    "reasoning_to_handle": [
+      "pre-order = future delivery",
+      "50 units = quantity reserved",
+      "advance 10000 = deposit amount",
+      "'momo box' = product name",
+      "Pattern: deposit for future sale"
+    ],
+    "suggested_handling": {
+      "intent": "deposit_received",
+      "entities": {
+        "product": "momo box",
+        "quantity_reserved": 50,
+        "deposit_amount": 10000,
+        "order_type": "pre-order"
+      },
+      "clarify_if_needed": "Expected delivery date and refund policy?"
+    },
+    "suggested_intent": "deposit_received",
+    "suggested_intent_key": "deposit_received",
+    "suggested_entities": {
+      "product": "momo box",
+      "quantity_reserved": 50,
+      "deposit_amount": 10000,
+      "order_type": "pre-order"
+    },
+    "clarify_if_needed": "Expected delivery date and refund policy?",
+    "generalization_lesson": "Advance payments map to liabilities until goods delivered; record reservation details.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_010",
+    "source": "user_exact",
+    "novel_id": "novel_010",
+    "input": "bhatta commission 3% on cement 120 bags",
+    "input_normalized": "bhatta commission 3% on cement 120 bags",
+    "why_novel": "commission called 'bhatta' used regionally",
+    "nearest_known_pattern": "sales commission on goods",
+    "reasoning_to_handle": [
+      "bhatta = commission/fee",
+      "3% = rate",
+      "cement 120 bags = base goods and quantity",
+      "Pattern: commission calculation on sale volume"
+    ],
+    "suggested_handling": {
+      "intent": "commission_expense",
+      "entities": {
+        "rate": "3%",
+        "base_item": "cement",
+        "quantity": 120
+      },
+      "clarify_if_needed": "Base price per bag to compute amount?"
+    },
+    "suggested_intent": "commission_expense",
+    "suggested_intent_key": "commission_expense",
+    "suggested_entities": {
+      "rate": "3%",
+      "base_item": "cement",
+      "quantity": 120
+    },
+    "clarify_if_needed": "Base price per bag to compute amount?",
+    "generalization_lesson": "Regional terms for fees should be normalized to commission and linked to base amounts.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_011",
+    "source": "user_exact",
+    "novel_id": "novel_011",
+    "input": "crypto bechera 50000 kmaaye",
+    "input_normalized": "crypto bechera 50000 kmaaye",
+    "why_novel": "cryptocurrency not in traditional Nepal business training",
+    "nearest_known_pattern": "asset sale with profit",
+    "reasoning_to_handle": [
+      "bechera = sold (verb bechnu)",
+      "kmaaye = earned (verb kamaunu)",
+      "50000 = amount",
+      "crypto = asset type (novel, but treat as goods/investment)",
+      "Pattern: sold X, earned Y = income from sale"
+    ],
+    "suggested_handling": {
+      "intent": "khata_income",
+      "entities": {
+        "item": "crypto",
+        "amount": 50000
+      },
+      "clarify_if_needed": "Crypto becheko ki crypto trading income?"
+    },
+    "suggested_intent": "khata_income",
+    "suggested_intent_key": "khata_income",
+    "suggested_entities": {
+      "item": "crypto",
+      "amount": 50000
+    },
+    "clarify_if_needed": "Crypto becheko ki crypto trading income?",
+    "generalization_lesson": "Unknown item types can be handled as generic goods/assets if verb patterns are clear.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_012",
+    "source": "user_exact",
+    "novel_id": "novel_012",
+    "input": "subscription 'KhanaBox' monthly 799 auto-debit",
+    "input_normalized": "subscription 'khanabox' monthly 799 auto-debit",
+    "why_novel": "subscription service with auto-debit flagged",
+    "nearest_known_pattern": "recurring expense/subscription",
+    "reasoning_to_handle": [
+      "subscription = recurring service",
+      "KhanaBox = service name",
+      "monthly 799 = periodic amount and frequency",
+      "auto-debit = payment method automation",
+      "Pattern: recurring expense setup"
+    ],
+    "suggested_handling": {
+      "intent": "recurring_expense",
+      "entities": {
+        "service": "KhanaBox",
+        "frequency": "monthly",
+        "amount": 799,
+        "payment_method": "auto-debit"
+      },
+      "clarify_if_needed": "Start date and cancellation terms?"
+    },
+    "suggested_intent": "recurring_expense",
+    "suggested_intent_key": "recurring_expense",
+    "suggested_entities": {
+      "service": "KhanaBox",
+      "frequency": "monthly",
+      "amount": 799,
+      "payment_method": "auto-debit"
+    },
+    "clarify_if_needed": "Start date and cancellation terms?",
+    "generalization_lesson": "Treat subscriptions as recurring expense templates with payment method metadata.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_013",
+    "source": "user_exact",
+    "novel_id": "novel_013",
+    "input": "bacha ko pocket money 200 weekly 'school' tag",
+    "input_normalized": "bacha ko pocket money 200 weekly 'school' tag",
+    "why_novel": "generation-specific language (child pocket money) with tag",
+    "nearest_known_pattern": "personal allowance expense",
+    "reasoning_to_handle": [
+      "bacha = child",
+      "pocket money = allowance",
+      "200 weekly = amount and frequency",
+      "'school' tag = purpose tag",
+      "Pattern: recurring allowance expense with purpose tag"
+    ],
+    "suggested_handling": {
+      "intent": "allowance_expense",
+      "entities": {
+        "recipient": "child",
+        "amount": 200,
+        "frequency": "weekly",
+        "tag": "school"
+      },
+      "clarify_if_needed": "Is this per child or total?"
+    },
+    "suggested_intent": "allowance_expense",
+    "suggested_intent_key": "allowance_expense",
+    "suggested_entities": {
+      "recipient": "child",
+      "amount": 200,
+      "frequency": "weekly",
+      "tag": "school"
+    },
+    "clarify_if_needed": "Is this per child or total?",
+    "generalization_lesson": "Age-specific transactions should include recipient role and purpose tags for budgeting.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_014",
+    "source": "user_exact",
+    "novel_id": "novel_014",
+    "input": "bulk SMS charge 0.25 per msg 4000 msgs",
+    "input_normalized": "bulk sms charge 0.25 per msg 4000 msgs",
+    "why_novel": "telecom bulk pricing with per-message micro-rate",
+    "nearest_known_pattern": "service usage billing",
+    "reasoning_to_handle": [
+      "0.25 per msg = unit rate",
+      "4000 msgs = usage quantity",
+      "bulk SMS charge = service expense",
+      "Pattern: usage-based billing = rate * quantity"
+    ],
+    "suggested_handling": {
+      "intent": "service_expense",
+      "entities": {
+        "service": "bulk SMS",
+        "unit_rate": 0.25,
+        "quantity": 4000,
+        "total_amount": 1000
+      },
+      "clarify_if_needed": "Currency unit confirmation (rs or paise)?"
+    },
+    "suggested_intent": "service_expense",
+    "suggested_intent_key": "service_expense",
+    "suggested_entities": {
+      "service": "bulk SMS",
+      "unit_rate": 0.25,
+      "quantity": 4000,
+      "total_amount": 1000
+    },
+    "clarify_if_needed": "Currency unit confirmation (rs or paise)?",
+    "generalization_lesson": "Micro-unit pricing should be multiplied by quantity to compute totals and stored as usage records.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_015",
+    "source": "user_exact",
+    "novel_id": "novel_015",
+    "input": "supply chain 'cold storage' rent share 40%",
+    "input_normalized": "supply chain 'cold storage' rent share 40%",
+    "why_novel": "shared cost model for infrastructure rent",
+    "nearest_known_pattern": "cost-sharing expense",
+    "reasoning_to_handle": [
+      "cold storage = facility",
+      "rent share 40% = percentage responsibility",
+      "Pattern: allocate shared expense proportionally"
+    ],
+    "suggested_handling": {
+      "intent": "shared_cost_allocation",
+      "entities": {
+        "facility": "cold storage",
+        "share_percentage": "40%"
+      },
+      "clarify_if_needed": "Total rent amount and other parties?"
+    },
+    "suggested_intent": "shared_cost_allocation",
+    "suggested_intent_key": "shared_cost_allocation",
+    "suggested_entities": {
+      "facility": "cold storage",
+      "share_percentage": "40%"
+    },
+    "clarify_if_needed": "Total rent amount and other parties?",
+    "generalization_lesson": "Shared infrastructure costs map to allocation records with percentage and total base.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_016",
+    "source": "user_exact",
+    "novel_id": "novel_016",
+    "input": "refund from e-market 'BazaarX' -1200",
+    "input_normalized": "refund from e-market 'bazaarx' -1200",
+    "why_novel": "negative amount with platform name indicating refund",
+    "nearest_known_pattern": "refund/credit transaction",
+    "reasoning_to_handle": [
+      "-1200 = negative amount (credit back)",
+      "BazaarX = platform",
+      "Pattern: incoming refund reduces expense or increases cash"
+    ],
+    "suggested_handling": {
+      "intent": "refund_received",
+      "entities": {
+        "source": "BazaarX",
+        "amount": 1200
+      },
+      "clarify_if_needed": "Original purchase reference for reconciliation?"
+    },
+    "suggested_intent": "refund_received",
+    "suggested_intent_key": "refund_received",
+    "suggested_entities": {
+      "source": "BazaarX",
+      "amount": 1200
+    },
+    "clarify_if_needed": "Original purchase reference for reconciliation?",
+    "generalization_lesson": "Negative amounts with platform tags should be treated as refunds and linked to original transactions when possible.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_017",
+    "source": "user_exact",
+    "novel_id": "novel_017",
+    "input": "advance salary 'temporary' 5000 deducted next month",
+    "input_normalized": "advance salary 'temporary' 5000 deducted next month",
+    "why_novel": "salary advance with explicit deduction plan",
+    "nearest_known_pattern": "employee advance/loan",
+    "reasoning_to_handle": [
+      "advance salary = employee loan",
+      "5000 = amount",
+      "deducted next month = repayment schedule",
+      "'temporary' = note on nature",
+      "Pattern: advance with scheduled deduction"
+    ],
+    "suggested_handling": {
+      "intent": "salary_advance",
+      "entities": {
+        "amount": 5000,
+        "repayment": "next_month",
+        "note": "temporary"
+      },
+      "clarify_if_needed": "Employee ID and payroll code?"
+    },
+    "suggested_intent": "salary_advance",
+    "suggested_intent_key": "salary_advance",
+    "suggested_entities": {
+      "amount": 5000,
+      "repayment": "next_month",
+      "note": "temporary"
+    },
+    "clarify_if_needed": "Employee ID and payroll code?",
+    "generalization_lesson": "Salary advances should be recorded as receivable with repayment schedule metadata.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_018",
+    "source": "user_exact",
+    "novel_id": "novel_018",
+    "input": "eco-credit 'green tag' earned 12 points",
+    "input_normalized": "eco-credit 'green tag' earned 12 points",
+    "why_novel": "non-monetary eco-credit points system",
+    "nearest_known_pattern": "loyalty/reward points",
+    "reasoning_to_handle": [
+      "eco-credit = environmental reward points",
+      "12 points = quantity",
+      "'green tag' = category",
+      "Pattern: reward accrual not currency"
+    ],
+    "suggested_handling": {
+      "intent": "reward_accrual",
+      "entities": {
+        "program": "eco-credit",
+        "points": 12,
+        "category": "green tag"
+      },
+      "clarify_if_needed": "Point-to-currency conversion if any?"
+    },
+    "suggested_intent": "reward_accrual",
+    "suggested_intent_key": "reward_accrual",
+    "suggested_entities": {
+      "program": "eco-credit",
+      "points": 12,
+      "category": "green tag"
+    },
+    "clarify_if_needed": "Point-to-currency conversion if any?",
+    "generalization_lesson": "Point systems should be tracked as non-monetary balances with optional conversion rules.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_019",
+    "source": "user_exact",
+    "novel_id": "novel_019",
+    "input": "freelance 'gig' payout via UPI 4200",
+    "input_normalized": "freelance 'gig' payout via upi 4200",
+    "why_novel": "gig economy payout with payment rail specified",
+    "nearest_known_pattern": "service income via transfer",
+    "reasoning_to_handle": [
+      "freelance gig = service provided",
+      "payout via UPI = payment method",
+      "4200 = amount",
+      "Pattern: income with payment channel metadata"
+    ],
+    "suggested_handling": {
+      "intent": "service_income",
+      "entities": {
+        "source": "freelance gig",
+        "amount": 4200,
+        "payment_method": "UPI"
+      },
+      "clarify_if_needed": "Client name and invoice reference?"
+    },
+    "suggested_intent": "service_income",
+    "suggested_intent_key": "service_income",
+    "suggested_entities": {
+      "source": "freelance gig",
+      "amount": 4200,
+      "payment_method": "UPI"
+    },
+    "clarify_if_needed": "Client name and invoice reference?",
+    "generalization_lesson": "Capture payment rails as metadata for income transactions to aid reconciliation.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_020",
+    "source": "user_exact",
+    "novel_id": "novel_020",
+    "input": "import duty 'saman' 18% on 250000 invoice",
+    "input_normalized": "import duty 'saman' 18% on 250000 invoice",
+    "why_novel": "import duty phrased with Nepali word 'saman' and percent on invoice",
+    "nearest_known_pattern": "tax/fee on imported goods",
+    "reasoning_to_handle": [
+      "saman = goods",
+      "18% = duty rate",
+      "250000 = invoice base",
+      "Pattern: tax calculation on import invoice"
+    ],
+    "suggested_handling": {
+      "intent": "tax_expense",
+      "entities": {
+        "base_amount": 250000,
+        "tax_rate": "18%",
+        "type": "import_duty",
+        "item": "saman"
+      },
+      "clarify_if_needed": "Is duty already paid or payable?"
+    },
+    "suggested_intent": "tax_expense",
+    "suggested_intent_key": "tax_expense",
+    "suggested_entities": {
+      "base_amount": 250000,
+      "tax_rate": "18%",
+      "type": "import_duty",
+      "item": "saman"
+    },
+    "clarify_if_needed": "Is duty already paid or payable?",
+    "generalization_lesson": "Taxes on invoices should be recorded as calculated fees linked to base invoice amounts.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_021",
+    "source": "user_exact",
+    "novel_id": "novel_021",
+    "input": "loan write-off 'small vendor' 3000 goodwill",
+    "input_normalized": "loan write-off 'small vendor' 3000 goodwill",
+    "why_novel": "write-off labeled as goodwill for small vendor",
+    "nearest_known_pattern": "bad debt expense/write-off",
+    "reasoning_to_handle": [
+      "write-off = debt removal",
+      "small vendor = counterparty",
+      "3000 = amount",
+      "goodwill = rationale tag",
+      "Pattern: expense to clear uncollectible receivable"
+    ],
+    "suggested_handling": {
+      "intent": "bad_debt_writeoff",
+      "entities": {
+        "counterparty": "small vendor",
+        "amount": 3000,
+        "reason": "goodwill"
+      },
+      "clarify_if_needed": "Was there prior provision for this receivable?"
+    },
+    "suggested_intent": "bad_debt_writeoff",
+    "suggested_intent_key": "bad_debt_writeoff",
+    "suggested_entities": {
+      "counterparty": "small vendor",
+      "amount": 3000,
+      "reason": "goodwill"
+    },
+    "clarify_if_needed": "Was there prior provision for this receivable?",
+    "generalization_lesson": "Write-offs can include rationale tags like goodwill and should adjust receivables and expense accounts.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_022",
+    "source": "user_exact",
+    "novel_id": "novel_022",
+    "input": "crowdfund 'community well' raised 125000 pledged 50 donors",
+    "input_normalized": "crowdfund 'community well' raised 125000 pledged 50 donors",
+    "why_novel": "crowdfunding campaign with pledges and donor count",
+    "nearest_known_pattern": "fundraising income",
+    "reasoning_to_handle": [
+      "raised 125000 = funds collected",
+      "pledged = commitment status",
+      "50 donors = contributor count",
+      "Pattern: campaign income with metadata"
+    ],
+    "suggested_handling": {
+      "intent": "fundraising_income",
+      "entities": {
+        "project": "community well",
+        "amount": 125000,
+        "pledged": true,
+        "donor_count": 50
+      },
+      "clarify_if_needed": "Are pledges collected or outstanding?"
+    },
+    "suggested_intent": "fundraising_income",
+    "suggested_intent_key": "fundraising_income",
+    "suggested_entities": {
+      "project": "community well",
+      "amount": 125000,
+      "pledged": true,
+      "donor_count": 50
+    },
+    "clarify_if_needed": "Are pledges collected or outstanding?",
+    "generalization_lesson": "Crowdfund entries need fields for pledged vs collected and contributor counts.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_023",
+    "source": "user_exact",
+    "novel_id": "novel_023",
+    "input": "swap: old phone + 2000 for new model 'X1'",
+    "input_normalized": "swap: old phone + 2000 for new model 'x1'",
+    "why_novel": "trade-in swap with top-up amount",
+    "nearest_known_pattern": "trade-in plus cash payment",
+    "reasoning_to_handle": [
+      "old phone traded in",
+      "+2000 = additional cash paid",
+      "new model X1 = received item",
+      "Pattern: exchange with cash differential"
+    ],
+    "suggested_handling": {
+      "intent": "trade_in_transaction",
+      "entities": {
+        "given_item": "old phone",
+        "received_item": "X1",
+        "cash_topup": 2000
+      },
+      "clarify_if_needed": "Valuation of old phone for accounting?"
+    },
+    "suggested_intent": "trade_in_transaction",
+    "suggested_intent_key": "trade_in_transaction",
+    "suggested_entities": {
+      "given_item": "old phone",
+      "received_item": "X1",
+      "cash_topup": 2000
+    },
+    "clarify_if_needed": "Valuation of old phone for accounting?",
+    "generalization_lesson": "Trade-ins should record both items and any cash differential as part of transaction.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_024",
+    "source": "user_exact",
+    "novel_id": "novel_024",
+    "input": "royalty split 60/40 with co-creator 'Ramesh' on song",
+    "input_normalized": "royalty split 60/40 with co-creator 'ramesh' on song",
+    "why_novel": "creative royalty split agreement phrased informally",
+    "nearest_known_pattern": "revenue sharing agreement",
+    "reasoning_to_handle": [
+      "60/40 = split ratio",
+      "co-creator Ramesh = counterparty",
+      "song = asset",
+      "Pattern: future revenue allocation between parties"
+    ],
+    "suggested_handling": {
+      "intent": "revenue_share_agreement",
+      "entities": {
+        "asset": "song",
+        "party": "Ramesh",
+        "split": "60/40"
+      },
+      "clarify_if_needed": "Effective date and revenue sources covered?"
+    },
+    "suggested_intent": "revenue_share_agreement",
+    "suggested_intent_key": "revenue_share_agreement",
+    "suggested_entities": {
+      "asset": "song",
+      "party": "Ramesh",
+      "split": "60/40"
+    },
+    "clarify_if_needed": "Effective date and revenue sources covered?",
+    "generalization_lesson": "Informal split ratios should be stored as agreements to allocate future receipts.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_025",
+    "source": "user_exact",
+    "novel_id": "novel_025",
+    "input": "tokenized land share 'plot#9' 0.5 token units",
+    "input_normalized": "tokenized land share 'plot#9' 0.5 token units",
+    "why_novel": "tokenization of real estate into fractional tokens",
+    "nearest_known_pattern": "fractional ownership / asset tokenization",
+    "reasoning_to_handle": [
+      "tokenized land = fractional ownership",
+      "plot#9 = asset identifier",
+      "0.5 token units = fractional share",
+      "Pattern: ownership record not traditional currency"
+    ],
+    "suggested_handling": {
+      "intent": "fractional_ownership_record",
+      "entities": {
+        "asset": "plot#9",
+        "fraction": 0.5,
+        "unit": "token"
+      },
+      "clarify_if_needed": "Token valuation and transferability?"
+    },
+    "suggested_intent": "fractional_ownership_record",
+    "suggested_intent_key": "fractional_ownership_record",
+    "suggested_entities": {
+      "asset": "plot#9",
+      "fraction": 0.5,
+      "unit": "token"
+    },
+    "clarify_if_needed": "Token valuation and transferability?",
+    "generalization_lesson": "Fractional token units should be recorded as ownership percentages with valuation metadata.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_026",
+    "source": "user_exact",
+    "novel_id": "novel_026",
+    "input": "late fee 'library' 15 per day 3 days total 45",
+    "input_normalized": "late fee 'library' 15 per day 3 days total 45",
+    "why_novel": "micro-fee per day with explicit total and tag",
+    "nearest_known_pattern": "penalty/late fee",
+    "reasoning_to_handle": [
+      "15 per day = rate",
+      "3 days = duration",
+      "total 45 = computed amount",
+      "'library' = context tag",
+      "Pattern: penalty calculation"
+    ],
+    "suggested_handling": {
+      "intent": "penalty_charge",
+      "entities": {
+        "context": "library",
+        "rate_per_day": 15,
+        "days": 3,
+        "total": 45
+      },
+      "clarify_if_needed": "Is this charged to account or collected in cash?"
+    },
+    "suggested_intent": "penalty_charge",
+    "suggested_intent_key": "penalty_charge",
+    "suggested_entities": {
+      "context": "library",
+      "rate_per_day": 15,
+      "days": 3,
+      "total": 45
+    },
+    "clarify_if_needed": "Is this charged to account or collected in cash?",
+    "generalization_lesson": "Daily micro-fees should be computed and stored with context tags for clarity.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_027",
+    "source": "user_exact",
+    "novel_id": "novel_027",
+    "input": "gift voucher 'Annapurna' used -500 balance 1500 left",
+    "input_normalized": "gift voucher 'annapurna' used -500 balance 1500 left",
+    "why_novel": "voucher redemption with remaining balance tracking",
+    "nearest_known_pattern": "gift card usage",
+    "reasoning_to_handle": [
+      "used -500 = redemption amount",
+      "balance 1500 left = remaining value",
+      "Annapurna = issuer/store",
+      "Pattern: partial voucher redemption"
+    ],
+    "suggested_handling": {
+      "intent": "voucher_redemption",
+      "entities": {
+        "issuer": "Annapurna",
+        "redeemed": 500,
+        "remaining_balance": 1500
+      },
+      "clarify_if_needed": "Voucher ID for reconciliation?"
+    },
+    "suggested_intent": "voucher_redemption",
+    "suggested_intent_key": "voucher_redemption",
+    "suggested_entities": {
+      "issuer": "Annapurna",
+      "redeemed": 500,
+      "remaining_balance": 1500
+    },
+    "clarify_if_needed": "Voucher ID for reconciliation?",
+    "generalization_lesson": "Partial redemptions require tracking remaining balances and issuer identifiers.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_028",
+    "source": "user_exact",
+    "novel_id": "novel_028",
+    "input": "carbon offset purchase 2 tonnes 2200",
+    "input_normalized": "carbon offset purchase 2 tonnes 2200",
+    "why_novel": "environmental offset purchase as tradable commodity",
+    "nearest_known_pattern": "purchase of credits/offsets",
+    "reasoning_to_handle": [
+      "2 tonnes = quantity of CO2 offset",
+      "2200 = amount paid",
+      "carbon offset = product type",
+      "Pattern: purchase of environmental credits"
+    ],
+    "suggested_handling": {
+      "intent": "purchase_expense",
+      "entities": {
+        "item": "carbon offset",
+        "quantity": "2 tonnes",
+        "amount": 2200
+      },
+      "clarify_if_needed": "Certificate ID or registry?"
+    },
+    "suggested_intent": "purchase_expense",
+    "suggested_intent_key": "purchase_expense",
+    "suggested_entities": {
+      "item": "carbon offset",
+      "quantity": "2 tonnes",
+      "amount": 2200
+    },
+    "clarify_if_needed": "Certificate ID or registry?",
+    "generalization_lesson": "Environmental credits should be treated as purchasable assets with registry metadata.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_029",
+    "source": "user_exact",
+    "novel_id": "novel_029",
+    "input": "micro-insurance premium 'crop' 350 yearly via agent 'Sita'",
+    "input_normalized": "micro-insurance premium 'crop' 350 yearly via agent 'sita'",
+    "why_novel": "micro-insurance product with agent name and crop tag",
+    "nearest_known_pattern": "insurance premium payment",
+    "reasoning_to_handle": [
+      "micro-insurance = small-scale policy",
+      "crop = policy type",
+      "350 yearly = amount and frequency",
+      "agent Sita = intermediary",
+      "Pattern: premium payment with agent metadata"
+    ],
+    "suggested_handling": {
+      "intent": "insurance_premium",
+      "entities": {
+        "policy_type": "crop",
+        "amount": 350,
+        "frequency": "yearly",
+        "agent": "Sita"
+      },
+      "clarify_if_needed": "Policy number and coverage start date?"
+    },
+    "suggested_intent": "insurance_premium",
+    "suggested_intent_key": "insurance_premium",
+    "suggested_entities": {
+      "policy_type": "crop",
+      "amount": 350,
+      "frequency": "yearly",
+      "agent": "Sita"
+    },
+    "clarify_if_needed": "Policy number and coverage start date?",
+    "generalization_lesson": "Micro-insurance entries need policy identifiers and agent attribution for claims.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_030",
+    "source": "user_exact",
+    "novel_id": "novel_030",
+    "input": "warehouse 'consignment' goods in 2000 value",
+    "input_normalized": "warehouse 'consignment' goods in 2000 value",
+    "why_novel": "consignment goods recorded as inventory with owner tag",
+    "nearest_known_pattern": "consigned inventory record",
+    "reasoning_to_handle": [
+      "consignment = goods held for sale by third party",
+      "goods in = inventory received",
+      "2000 value = valuation",
+      "Pattern: inventory not owned but held"
+    ],
+    "suggested_handling": {
+      "intent": "consignment_inventory",
+      "entities": {
+        "location": "warehouse",
+        "value": 2000,
+        "ownership": "consignor"
+      },
+      "clarify_if_needed": "Consignor identity and sale terms?"
+    },
+    "suggested_intent": "consignment_inventory",
+    "suggested_intent_key": "consignment_inventory",
+    "suggested_entities": {
+      "location": "warehouse",
+      "value": 2000,
+      "ownership": "consignor"
+    },
+    "clarify_if_needed": "Consignor identity and sale terms?",
+    "generalization_lesson": "Consigned inventory must track ownership separately from physical custody.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_031",
+    "source": "user_exact",
+    "novel_id": "novel_031",
+    "input": "peer reward 'kudos' 10 points given to 'Maya'",
+    "input_normalized": "peer reward 'kudos' 10 points given to 'maya'",
+    "why_novel": "internal non-monetary peer reward system",
+    "nearest_known_pattern": "employee recognition points",
+    "reasoning_to_handle": [
+      "kudos = reward program",
+      "10 points = amount",
+      "Maya = recipient",
+      "Pattern: internal recognition accrual"
+    ],
+    "suggested_handling": {
+      "intent": "recognition_award",
+      "entities": {
+        "program": "kudos",
+        "points": 10,
+        "recipient": "Maya"
+      },
+      "clarify_if_needed": "Redeemable value or purely symbolic?"
+    },
+    "suggested_intent": "recognition_award",
+    "suggested_intent_key": "recognition_award",
+    "suggested_entities": {
+      "program": "kudos",
+      "points": 10,
+      "recipient": "Maya"
+    },
+    "clarify_if_needed": "Redeemable value or purely symbolic?",
+    "generalization_lesson": "Internal point systems should be tracked separately from financial ledgers unless convertible.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_032",
+    "source": "user_exact",
+    "novel_id": "novel_032",
+    "input": "freemium upgrade 'Pro' one-time 1499 promo 'earlybird'",
+    "input_normalized": "freemium upgrade 'pro' one-time 1499 promo 'earlybird'",
+    "why_novel": "freemium model upgrade with promo tag",
+    "nearest_known_pattern": "one-time product purchase with discount code",
+    "reasoning_to_handle": [
+      "Pro = tier name",
+      "one-time 1499 = amount",
+      "promo earlybird = discount campaign",
+      "Pattern: product sale with promotional metadata"
+    ],
+    "suggested_handling": {
+      "intent": "product_sale",
+      "entities": {
+        "product_tier": "Pro",
+        "amount": 1499,
+        "promo": "earlybird"
+      },
+      "clarify_if_needed": "Was discount applied or is 1499 post-discount?"
+    },
+    "suggested_intent": "product_sale",
+    "suggested_intent_key": "product_sale",
+    "suggested_entities": {
+      "product_tier": "Pro",
+      "amount": 1499,
+      "promo": "earlybird"
+    },
+    "clarify_if_needed": "Was discount applied or is 1499 post-discount?",
+    "generalization_lesson": "Digital tier upgrades should include promo codes and whether price is net or gross.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_033",
+    "source": "user_exact",
+    "novel_id": "novel_033",
+    "input": "community labor exchange 'shramdaan' 5 hours logged",
+    "input_normalized": "community labor exchange 'shramdaan' 5 hours logged",
+    "why_novel": "non-monetary community labor logged as hours",
+    "nearest_known_pattern": "volunteer time tracking",
+    "reasoning_to_handle": [
+      "shramdaan = voluntary labor",
+      "5 hours = time logged",
+      "Pattern: non-monetary contribution record"
+    ],
+    "suggested_handling": {
+      "intent": "volunteer_time_entry",
+      "entities": {
+        "activity": "shramdaan",
+        "hours": 5
+      },
+      "clarify_if_needed": "Assign monetary equivalent for accounting?"
+    },
+    "suggested_intent": "volunteer_time_entry",
+    "suggested_intent_key": "volunteer_time_entry",
+    "suggested_entities": {
+      "activity": "shramdaan",
+      "hours": 5
+    },
+    "clarify_if_needed": "Assign monetary equivalent for accounting?",
+    "generalization_lesson": "Volunteer labor should be tracked as hours with optional valuation for project accounting.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_034",
+    "source": "user_exact",
+    "novel_id": "novel_034",
+    "input": "fractional subscription 'news-lite' 0.5 month charge 199",
+    "input_normalized": "fractional subscription 'news-lite' 0.5 month charge 199",
+    "why_novel": "fractional subscription billing for partial month",
+    "nearest_known_pattern": "prorated subscription charge",
+    "reasoning_to_handle": [
+      "0.5 month = prorated period",
+      "199 = charge amount",
+      "news-lite = service",
+      "Pattern: prorated recurring billing"
+    ],
+    "suggested_handling": {
+      "intent": "prorated_charge",
+      "entities": {
+        "service": "news-lite",
+        "period_fraction": 0.5,
+        "amount": 199
+      },
+      "clarify_if_needed": "Full monthly rate to verify prorate calculation?"
+    },
+    "suggested_intent": "prorated_charge",
+    "suggested_intent_key": "prorated_charge",
+    "suggested_entities": {
+      "service": "news-lite",
+      "period_fraction": 0.5,
+      "amount": 199
+    },
+    "clarify_if_needed": "Full monthly rate to verify prorate calculation?",
+    "generalization_lesson": "Prorated charges require base rate metadata to validate computed amounts.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_035",
+    "source": "user_exact",
+    "novel_id": "novel_035",
+    "input": "vendor credit note 'Suresh Traders' CN-2026-07 -800",
+    "input_normalized": "vendor credit note 'suresh traders' cn-2026-07 -800",
+    "why_novel": "credit note with vendor code and negative amount",
+    "nearest_known_pattern": "supplier credit/adjustment",
+    "reasoning_to_handle": [
+      "CN-2026-07 = credit note identifier",
+      "-800 = credit amount",
+      "Suresh Traders = vendor",
+      "Pattern: supplier credit reduces payable"
+    ],
+    "suggested_handling": {
+      "intent": "supplier_credit",
+      "entities": {
+        "vendor": "Suresh Traders",
+        "credit_note": "CN-2026-07",
+        "amount": 800
+      },
+      "clarify_if_needed": "Apply to which invoice?"
+    },
+    "suggested_intent": "supplier_credit",
+    "suggested_intent_key": "supplier_credit",
+    "suggested_entities": {
+      "vendor": "Suresh Traders",
+      "credit_note": "CN-2026-07",
+      "amount": 800
+    },
+    "clarify_if_needed": "Apply to which invoice?",
+    "generalization_lesson": "Credit notes should be linked to vendor and original invoice for reconciliation.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_036",
+    "source": "user_exact",
+    "novel_id": "novel_036",
+    "input": "timebank exchange 'skillshare' 3h painting for 2h tutoring",
+    "input_normalized": "timebank exchange 'skillshare' 3h painting for 2h tutoring",
+    "why_novel": "timebank barter of skills rather than goods",
+    "nearest_known_pattern": "service barter/timebanking",
+    "reasoning_to_handle": [
+      "3h painting = offered time",
+      "2h tutoring = received time",
+      "skillshare = platform/context",
+      "Pattern: time-based exchange with unequal hours"
+    ],
+    "suggested_handling": {
+      "intent": "timebank_transaction",
+      "entities": {
+        "offered": "painting 3h",
+        "received": "tutoring 2h",
+        "platform": "skillshare"
+      },
+      "clarify_if_needed": "Is there a credit balance or adjustment for unequal hours?"
+    },
+    "suggested_intent": "timebank_transaction",
+    "suggested_intent_key": "timebank_transaction",
+    "suggested_entities": {
+      "offered": "painting 3h",
+      "received": "tutoring 2h",
+      "platform": "skillshare"
+    },
+    "clarify_if_needed": "Is there a credit balance or adjustment for unequal hours?",
+    "generalization_lesson": "Timebank exchanges need to record hours and any balancing credits for unequal exchanges.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_037",
+    "source": "user_exact",
+    "novel_id": "novel_037",
+    "input": "utility split 'flatmates' electricity 420 each",
+    "input_normalized": "utility split 'flatmates' electricity 420 each",
+    "why_novel": "group-split phrasing with per-person amount",
+    "nearest_known_pattern": "shared expense split",
+    "reasoning_to_handle": [
+      "flatmates = group",
+      "electricity 420 each = per-person share",
+      "Pattern: split expense allocation per person"
+    ],
+    "suggested_handling": {
+      "intent": "shared_expense_split",
+      "entities": {
+        "category": "electricity",
+        "per_person": 420,
+        "group": "flatmates"
+      },
+      "clarify_if_needed": "Total bill amount and number of flatmates?"
+    },
+    "suggested_intent": "shared_expense_split",
+    "suggested_intent_key": "shared_expense_split",
+    "suggested_entities": {
+      "category": "electricity",
+      "per_person": 420,
+      "group": "flatmates"
+    },
+    "clarify_if_needed": "Total bill amount and number of flatmates?",
+    "generalization_lesson": "Per-person splits should capture group size and total for verification.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_038",
+    "source": "user_exact",
+    "novel_id": "novel_038",
+    "input": "royalty advance 'book' 25000 recoupable",
+    "input_normalized": "royalty advance 'book' 25000 recoupable",
+    "why_novel": "advance labeled recoupable for creative work",
+    "nearest_known_pattern": "advance payment against future royalties",
+    "reasoning_to_handle": [
+      "book = asset",
+      "25000 = advance amount",
+      "recoupable = will be recovered from future royalties",
+      "Pattern: advance as liability against future income"
+    ],
+    "suggested_handling": {
+      "intent": "advance_payment_liability",
+      "entities": {
+        "asset": "book",
+        "amount": 25000,
+        "recoupable": true
+      },
+      "clarify_if_needed": "Recoupment terms and schedule?"
+    },
+    "suggested_intent": "advance_payment_liability",
+    "suggested_intent_key": "advance_payment_liability",
+    "suggested_entities": {
+      "asset": "book",
+      "amount": 25000,
+      "recoupable": true
+    },
+    "clarify_if_needed": "Recoupment terms and schedule?",
+    "generalization_lesson": "Advances against royalties should be recorded as liabilities with recoupment rules.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_039",
+    "source": "user_exact",
+    "novel_id": "novel_039",
+    "input": "savings circle 'dhukuti' contribution 1500 due next week",
+    "input_normalized": "savings circle 'dhukuti' contribution 1500 due next week",
+    "why_novel": "traditional savings group term 'dhukuti' used",
+    "nearest_known_pattern": "rotating savings contribution",
+    "reasoning_to_handle": [
+      "dhukuti = rotating savings group",
+      "contribution 1500 = amount due",
+      "due next week = schedule",
+      "Pattern: communal savings contribution"
+    ],
+    "suggested_handling": {
+      "intent": "savings_contribution",
+      "entities": {
+        "group": "dhukuti",
+        "amount": 1500,
+        "due": "next_week"
+      },
+      "clarify_if_needed": "Which cycle and beneficiary?"
+    },
+    "suggested_intent": "savings_contribution",
+    "suggested_intent_key": "savings_contribution",
+    "suggested_entities": {
+      "group": "dhukuti",
+      "amount": 1500,
+      "due": "next_week"
+    },
+    "clarify_if_needed": "Which cycle and beneficiary?",
+    "generalization_lesson": "Cultural savings mechanisms should be supported with group and cycle metadata.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_040",
+    "source": "user_exact",
+    "novel_id": "novel_040",
+    "input": "platform fee 'ride-share' 12% deducted 180 fare",
+    "input_normalized": "platform fee 'ride-share' 12% deducted 180 fare",
+    "why_novel": "platform fee percentage applied to fare with deduction phrasing",
+    "nearest_known_pattern": "service platform commission",
+    "reasoning_to_handle": [
+      "12% = fee rate",
+      "deducted 180 fare = base fare amount",
+      "Pattern: commission deducted from gross fare"
+    ],
+    "suggested_handling": {
+      "intent": "platform_fee",
+      "entities": {
+        "platform": "ride-share",
+        "fee_rate": "12%",
+        "fare": 180
+      },
+      "clarify_if_needed": "Is 180 gross fare or net after other fees?"
+    },
+    "suggested_intent": "platform_fee",
+    "suggested_intent_key": "platform_fee",
+    "suggested_entities": {
+      "platform": "ride-share",
+      "fee_rate": "12%",
+      "fare": 180
+    },
+    "clarify_if_needed": "Is 180 gross fare or net after other fees?",
+    "generalization_lesson": "Platform fees should be computed from gross amounts and stored as deductions.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_041",
+    "source": "user_exact",
+    "novel_id": "novel_041",
+    "input": "gift-in-kind 'blankets' received 30 units valuation 9000",
+    "input_normalized": "gift-in-kind 'blankets' received 30 units valuation 9000",
+    "why_novel": "in-kind donation with valuation for accounting",
+    "nearest_known_pattern": "donation in-kind inventory",
+    "reasoning_to_handle": [
+      "blankets = donated goods",
+      "30 units = quantity",
+      "valuation 9000 = monetary equivalent",
+      "Pattern: non-cash donation recorded with valuation"
+    ],
+    "suggested_handling": {
+      "intent": "in_kind_donation",
+      "entities": {
+        "item": "blankets",
+        "quantity": 30,
+        "valuation": 9000
+      },
+      "clarify_if_needed": "Donor identity and acceptance documentation?"
+    },
+    "suggested_intent": "in_kind_donation",
+    "suggested_intent_key": "in_kind_donation",
+    "suggested_entities": {
+      "item": "blankets",
+      "quantity": 30,
+      "valuation": 9000
+    },
+    "clarify_if_needed": "Donor identity and acceptance documentation?",
+    "generalization_lesson": "In-kind donations require valuation and donor metadata for proper recognition.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_042",
+    "source": "user_exact",
+    "novel_id": "novel_042",
+    "input": "escrow release 'property sale' 450000 to seller after inspection",
+    "input_normalized": "escrow release 'property sale' 450000 to seller after inspection",
+    "why_novel": "escrow release instruction with condition noted",
+    "nearest_known_pattern": "conditional funds release",
+    "reasoning_to_handle": [
+      "escrow release = conditional transfer",
+      "450000 = amount",
+      "after inspection = release condition",
+      "Pattern: conditional payment upon milestone"
+    ],
+    "suggested_handling": {
+      "intent": "conditional_release",
+      "entities": {
+        "transaction": "property sale",
+        "amount": 450000,
+        "condition": "inspection_passed"
+      },
+      "clarify_if_needed": "Escrow ID and inspection report reference?"
+    },
+    "suggested_intent": "conditional_release",
+    "suggested_intent_key": "conditional_release",
+    "suggested_entities": {
+      "transaction": "property sale",
+      "amount": 450000,
+      "condition": "inspection_passed"
+    },
+    "clarify_if_needed": "Escrow ID and inspection report reference?",
+    "generalization_lesson": "Conditional releases should link amount to milestone and supporting documents.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_043",
+    "source": "user_exact",
+    "novel_id": "novel_043",
+    "input": "micro-donation 'round-up' 0.75 per txn 120 txns total 90",
+    "input_normalized": "micro-donation 'round-up' 0.75 per txn 120 txns total 90",
+    "why_novel": "round-up micro-donations aggregated across transactions",
+    "nearest_known_pattern": "round-up charitable donations",
+    "reasoning_to_handle": [
+      "0.75 per txn = micro amount",
+      "120 txns = count",
+      "total 90 = aggregated amount",
+      "Pattern: aggregated micro-donations from rounding"
+    ],
+    "suggested_handling": {
+      "intent": "micro_donation_aggregate",
+      "entities": {
+        "per_txn": 0.75,
+        "transactions": 120,
+        "total": 90,
+        "method": "round-up"
+      },
+      "clarify_if_needed": "Time period for aggregation?"
+    },
+    "suggested_intent": "micro_donation_aggregate",
+    "suggested_intent_key": "micro_donation_aggregate",
+    "suggested_entities": {
+      "per_txn": 0.75,
+      "transactions": 120,
+      "total": 90,
+      "method": "round-up"
+    },
+    "clarify_if_needed": "Time period for aggregation?",
+    "generalization_lesson": "Micro-donations should be aggregated and linked to source transactions for auditability.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_044",
+    "source": "user_exact",
+    "novel_id": "novel_044",
+    "input": "equipment lease-to-own 'tractor' monthly 25000 term 36 months",
+    "input_normalized": "equipment lease-to-own 'tractor' monthly 25000 term 36 months",
+    "why_novel": "lease-to-own agricultural equipment with term details",
+    "nearest_known_pattern": "equipment lease/installment purchase",
+    "reasoning_to_handle": [
+      "tractor = asset",
+      "monthly 25000 = payment",
+      "term 36 months = duration",
+      "Pattern: lease with ownership transfer at end"
+    ],
+    "suggested_handling": {
+      "intent": "lease_agreement",
+      "entities": {
+        "asset": "tractor",
+        "monthly_payment": 25000,
+        "term_months": 36,
+        "model": "lease-to-own"
+      },
+      "clarify_if_needed": "Residual value or buyout terms?"
+    },
+    "suggested_intent": "lease_agreement",
+    "suggested_intent_key": "lease_agreement",
+    "suggested_entities": {
+      "asset": "tractor",
+      "monthly_payment": 25000,
+      "term_months": 36,
+      "model": "lease-to-own"
+    },
+    "clarify_if_needed": "Residual value or buyout terms?",
+    "generalization_lesson": "Lease-to-own contracts require schedule, asset, and end-of-term ownership details.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_045",
+    "source": "user_exact",
+    "novel_id": "novel_045",
+    "input": "subscription barter 'ad credits' exchanged for service 300 credits",
+    "input_normalized": "subscription barter 'ad credits' exchanged for service 300 credits",
+    "why_novel": "ad credits used as currency in barter for services",
+    "nearest_known_pattern": "non-cash credit exchange",
+    "reasoning_to_handle": [
+      "ad credits = platform currency",
+      "exchanged for service = barter-like transaction",
+      "300 credits = amount",
+      "Pattern: non-monetary payment for service"
+    ],
+    "suggested_handling": {
+      "intent": "non_cash_payment",
+      "entities": {
+        "currency": "ad credits",
+        "amount": 300,
+        "exchange_for": "service"
+      },
+      "clarify_if_needed": "Monetary equivalent of credits?"
+    },
+    "suggested_intent": "non_cash_payment",
+    "suggested_intent_key": "non_cash_payment",
+    "suggested_entities": {
+      "currency": "ad credits",
+      "amount": 300,
+      "exchange_for": "service"
+    },
+    "clarify_if_needed": "Monetary equivalent of credits?",
+    "generalization_lesson": "Platform credits should be tracked as alternative currency with conversion metadata.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_046",
+    "source": "user_exact",
+    "novel_id": "novel_046",
+    "input": "supply return 'defective' 25 pcs refund pending",
+    "input_normalized": "supply return 'defective' 25 pcs refund pending",
+    "why_novel": "return with status 'pending' and defect tag",
+    "nearest_known_pattern": "returns and refunds process",
+    "reasoning_to_handle": [
+      "defective = reason for return",
+      "25 pcs = quantity returned",
+      "refund pending = status",
+      "Pattern: return awaiting refund processing"
+    ],
+    "suggested_handling": {
+      "intent": "return_initiated",
+      "entities": {
+        "reason": "defective",
+        "quantity": 25,
+        "status": "refund_pending"
+      },
+      "clarify_if_needed": "Return authorization number and expected refund date?"
+    },
+    "suggested_intent": "return_initiated",
+    "suggested_intent_key": "return_initiated",
+    "suggested_entities": {
+      "reason": "defective",
+      "quantity": 25,
+      "status": "refund_pending"
+    },
+    "clarify_if_needed": "Return authorization number and expected refund date?",
+    "generalization_lesson": "Returns should include reason, quantity, and processing status for workflow tracking.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_047",
+    "source": "user_exact",
+    "novel_id": "novel_047",
+    "input": "community loan 'rotating' received 10000 interest-free",
+    "input_normalized": "community loan 'rotating' received 10000 interest-free",
+    "why_novel": "community rotating loan interest-free cultural practice",
+    "nearest_known_pattern": "interest-free community loan",
+    "reasoning_to_handle": [
+      "rotating = lending circle mechanism",
+      "10000 = amount received",
+      "interest-free = no interest terms",
+      "Pattern: temporary loan with rotation schedule"
+    ],
+    "suggested_handling": {
+      "intent": "community_loan_received",
+      "entities": {
+        "amount": 10000,
+        "interest": "0%",
+        "type": "rotating"
+      },
+      "clarify_if_needed": "Repayment schedule and group name?"
+    },
+    "suggested_intent": "community_loan_received",
+    "suggested_intent_key": "community_loan_received",
+    "suggested_entities": {
+      "amount": 10000,
+      "interest": "0%",
+      "type": "rotating"
+    },
+    "clarify_if_needed": "Repayment schedule and group name?",
+    "generalization_lesson": "Community lending practices require group and schedule metadata even when interest is zero.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_048",
+    "source": "user_exact",
+    "novel_id": "novel_048",
+    "input": "digital tip 'stream' 0.003 BTC from viewer 'alex'",
+    "input_normalized": "digital tip 'stream' 0.003 btc from viewer 'alex'",
+    "why_novel": "micro-tip in cryptocurrency from streaming platform",
+    "nearest_known_pattern": "digital gratuity/tip",
+    "reasoning_to_handle": [
+      "0.003 BTC = crypto amount",
+      "viewer alex = sender",
+      "stream = context",
+      "Pattern: micro-donation in crypto"
+    ],
+    "suggested_handling": {
+      "intent": "tip_received",
+      "entities": {
+        "amount_crypto": "0.003 BTC",
+        "sender": "alex",
+        "context": "stream"
+      },
+      "clarify_if_needed": "Convert to local currency for accounting?"
+    },
+    "suggested_intent": "tip_received",
+    "suggested_intent_key": "tip_received",
+    "suggested_entities": {
+      "amount_crypto": "0.003 BTC",
+      "sender": "alex",
+      "context": "stream"
+    },
+    "clarify_if_needed": "Convert to local currency for accounting?",
+    "generalization_lesson": "Crypto micro-payments should record currency type and optional fiat conversion.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_049",
+    "source": "user_exact",
+    "novel_id": "novel_049",
+    "input": "maintenance pool 'building A' contribution 250 per owner 8 owners",
+    "input_normalized": "maintenance pool 'building a' contribution 250 per owner 8 owners",
+    "why_novel": "shared maintenance pool with per-owner contribution and owner count",
+    "nearest_known_pattern": "shared reserve fund contributions",
+    "reasoning_to_handle": [
+      "250 per owner = per-person amount",
+      "8 owners = group size",
+      "building A = context",
+      "Pattern: pooled fund collection"
+    ],
+    "suggested_handling": {
+      "intent": "pooled_contribution",
+      "entities": {
+        "context": "building A",
+        "per_owner": 250,
+        "owners": 8,
+        "total": 2000
+      },
+      "clarify_if_needed": "Is contribution recurring or one-time?"
+    },
+    "suggested_intent": "pooled_contribution",
+    "suggested_intent_key": "pooled_contribution",
+    "suggested_entities": {
+      "context": "building A",
+      "per_owner": 250,
+      "owners": 8,
+      "total": 2000
+    },
+    "clarify_if_needed": "Is contribution recurring or one-time?",
+    "generalization_lesson": "Pooled funds should compute totals from per-owner contributions and record recurrence.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  },
+  {
+    "id": "novel_050",
+    "source": "user_exact",
+    "novel_id": "novel_050",
+    "input": "subscription pause 'gym' freeze 2 months no charge",
+    "input_normalized": "subscription pause 'gym' freeze 2 months no charge",
+    "why_novel": "subscription freeze/pause instruction with no charge period",
+    "nearest_known_pattern": "suspension of recurring service",
+    "reasoning_to_handle": [
+      "freeze 2 months = suspension period",
+      "no charge = billing pause",
+      "gym = service",
+      "Pattern: temporary suspension of recurring billing"
+    ],
+    "suggested_handling": {
+      "intent": "subscription_pause",
+      "entities": {
+        "service": "gym",
+        "duration_months": 2,
+        "billing_paused": true
+      },
+      "clarify_if_needed": "Resume date and membership extension terms?"
+    },
+    "suggested_intent": "subscription_pause",
+    "suggested_intent_key": "subscription_pause",
+    "suggested_entities": {
+      "service": "gym",
+      "duration_months": 2,
+      "billing_paused": true
+    },
+    "clarify_if_needed": "Resume date and membership extension terms?",
+    "generalization_lesson": "Subscription pauses must record duration and billing implications for future billing cycles.",
+    "intent": "novel_pattern_handler",
+    "NOT_transaction": false,
+    "domain": "novel_pattern_generalization"
+  }
+]

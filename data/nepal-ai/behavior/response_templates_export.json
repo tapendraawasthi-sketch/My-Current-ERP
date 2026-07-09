@@ -1,0 +1,776 @@
+[
+  {
+    "id": "rtpl-001",
+    "intent": "khata_credit_sale",
+    "template_ne": "{party} lai Rs {amount} ko udhaar bikri entry. Dr {party}, Cr Sales. Kripaya confirm garnuhos.",
+    "template_en": "Credit sale of Rs {amount} to {party}. Dr {party}, Cr Sales. Please confirm.",
+    "required_entities": [
+      "party",
+      "amount"
+    ],
+    "optional_entities": [
+      "item",
+      "date"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-002",
+    "intent": "khata_credit_sale",
+    "template_ne": "Hajur, {party} lai Rs {amount} udhaar ma becheko record gareko chhu. Dr Debtors, Cr Sales. Thik chha?",
+    "template_en": "Recorded credit sale of Rs {amount} to {party}. Dr Debtors, Cr Sales. Is that correct?",
+    "required_entities": [
+      "party",
+      "amount"
+    ],
+    "optional_entities": [
+      "item",
+      "date"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-003",
+    "intent": "khata_credit_sale",
+    "template_ne": "{party} ko khata ma Rs {amount} udhaar bikri jodiyo. Debtor Debit, Sales Credit. Heri haalnu na.",
+    "template_en": "Added credit sale of Rs {amount} to {party}'s account. Debtor Debit, Sales Credit. Please review.",
+    "required_entities": [
+      "party",
+      "amount"
+    ],
+    "optional_entities": [
+      "item",
+      "date"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-004",
+    "intent": "khata_credit_sale",
+    "template_ne": "Udhaar bikri confirm: {party} - Rs {amount}. Entry: Dr {party}, Cr Sales. Ke yeso gardim?",
+    "template_en": "Confirm credit sale: {party} - Rs {amount}. Entry: Dr {party}, Cr Sales. Shall I proceed?",
+    "required_entities": [
+      "party",
+      "amount"
+    ],
+    "optional_entities": [
+      "item",
+      "date"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-005",
+    "intent": "khata_credit_sale",
+    "template_ne": "Samjhana: {party} lai Rs {amount} ko saamaan udhaar. Dr Debtors A/c, Cr Sales A/c. Confirm gardinuhos.",
+    "template_en": "Reminder: Credit sale of Rs {amount} to {party}. Dr Debtors A/c, Cr Sales A/c. Please confirm.",
+    "required_entities": [
+      "party",
+      "amount"
+    ],
+    "optional_entities": [
+      "item",
+      "date"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-006",
+    "intent": "khata_credit_sale",
+    "template_ne": "{party} lai {item} bikri Rs {amount} udhaar ma. Entry Dr {party}, Cr Sales. Tapaiko sahmati chahanchhu.",
+    "template_en": "Credit sale of {item} to {party} for Rs {amount}. Entry Dr {party}, Cr Sales. I need your agreement.",
+    "required_entities": [
+      "party",
+      "amount"
+    ],
+    "optional_entities": [
+      "item",
+      "date"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-007",
+    "intent": "khata_credit_sale",
+    "template_ne": "Mailye {party} ko udhaar bikri entry ready gare: Rs {amount}. Dr Debtors, Cr Sales. Post garau?",
+    "template_en": "I have prepared the credit sale entry for {party}: Rs {amount}. Dr Debtors, Cr Sales. Shall I post it?",
+    "required_entities": [
+      "party",
+      "amount"
+    ],
+    "optional_entities": [
+      "item",
+      "date"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-008",
+    "intent": "khata_cash_purchase",
+    "template_ne": "{party} bata Rs {amount} ko nagad khridi entry. Dr Purchases, Cr Cash. Kripaya confirm garnuhos.",
+    "template_en": "Cash purchase of Rs {amount} from {party}. Dr Purchases, Cr Cash. Please confirm.",
+    "required_entities": [
+      "party",
+      "amount"
+    ],
+    "optional_entities": [
+      "item",
+      "date"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-009",
+    "intent": "khata_cash_purchase",
+    "template_ne": "Nagad ma {party} bata saamaan kinidai chha Rs {amount} ko. Dr Purchase, Cr Cash. Thik chha?",
+    "template_en": "Buying goods from {party} in cash for Rs {amount}. Dr Purchase, Cr Cash. Correct?",
+    "required_entities": [
+      "party",
+      "amount"
+    ],
+    "optional_entities": [
+      "item",
+      "date"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-010",
+    "intent": "khata_cash_purchase",
+    "template_ne": "{party} lai Rs {amount} nagad diye saamaan kharid. Entry: Dr Purchases A/c, Cr Cash A/c. Confirm gardinus.",
+    "template_en": "Paid Rs {amount} cash to {party} for purchase. Entry: Dr Purchases A/c, Cr Cash A/c. Please confirm.",
+    "required_entities": [
+      "party",
+      "amount"
+    ],
+    "optional_entities": [
+      "item",
+      "date"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-011",
+    "intent": "khata_cash_purchase",
+    "template_ne": "Cash Purchase ready: {party} - Rs {amount}. Dr Purchase, Cr Cash. K gardim?",
+    "template_en": "Cash Purchase ready: {party} - Rs {amount}. Dr Purchase, Cr Cash. What should I do?",
+    "required_entities": [
+      "party",
+      "amount"
+    ],
+    "optional_entities": [
+      "item",
+      "date"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-012",
+    "intent": "khata_cash_purchase",
+    "template_ne": "Mailye {party} bata nagad khridi entry banaye: Rs {amount}. Dr Purchases, Cr Cash. Review garnuhos.",
+    "template_en": "I have created the cash purchase entry from {party}: Rs {amount}. Dr Purchases, Cr Cash. Please review.",
+    "required_entities": [
+      "party",
+      "amount"
+    ],
+    "optional_entities": [
+      "item",
+      "date"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-013",
+    "intent": "khata_cash_purchase",
+    "template_ne": "{item} ko lagi {party} lai Rs {amount} cash diyeko record. Dr Purchases, Cr Cash. Sahi chha?",
+    "template_en": "Recorded paying Rs {amount} cash to {party} for {item}. Dr Purchases, Cr Cash. Is it correct?",
+    "required_entities": [
+      "party",
+      "amount"
+    ],
+    "optional_entities": [
+      "item",
+      "date"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-014",
+    "intent": "khata_cash_purchase",
+    "template_ne": "Hajur, nagad khridi entry: {party} - Rs {amount}. Purchases Debit, Cash Credit. Ok garnu hunchha?",
+    "template_en": "Here, cash purchase entry: {party} - Rs {amount}. Purchases Debit, Cash Credit. Will you okay it?",
+    "required_entities": [
+      "party",
+      "amount"
+    ],
+    "optional_entities": [
+      "item",
+      "date"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-015",
+    "intent": "accounting_qa",
+    "template_ne": "Hajurko prashna anusar, {concept} ko matlab {definition}. {explanation} Kripaya yaad garnuhos.",
+    "template_en": "According to your question, {concept} means {definition}. {explanation} Please keep in mind.",
+    "required_entities": [
+      "concept"
+    ],
+    "optional_entities": [
+      "definition",
+      "explanation"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-016",
+    "intent": "accounting_qa",
+    "template_ne": "Lekhankan niyam anusar, {answer}. Tapain lai help chahiyeko ma khusi lagyo.",
+    "template_en": "As per accounting rules, {answer}. Glad to help you with that.",
+    "required_entities": [
+      "answer"
+    ],
+    "optional_entities": [
+      "concept"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-017",
+    "intent": "accounting_qa",
+    "template_ne": "Sidha jawaf: {answer}. {reference} anusar yo sahi ho.",
+    "template_en": "Straight answer: {answer}. This is correct as per {reference}.",
+    "required_entities": [
+      "answer"
+    ],
+    "optional_entities": [
+      "reference"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-018",
+    "intent": "accounting_qa",
+    "template_ne": "Tapaiko prashna: {question}? Mero bujhai ma, {answer}.",
+    "template_en": "Your question: {question}? In my understanding, {answer}.",
+    "required_entities": [
+      "answer"
+    ],
+    "optional_entities": [
+      "question",
+      "concept"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-019",
+    "intent": "accounting_qa",
+    "template_ne": "Yas bare ma, {concept} lai bujhna {explanation}. Aasha chha spasta bhayo.",
+    "template_en": "Regarding this, to understand {concept}, {explanation}. Hope that clarifies.",
+    "required_entities": [
+      "concept"
+    ],
+    "optional_entities": [
+      "explanation"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-020",
+    "intent": "accounting_qa",
+    "template_ne": "Anumaanit jawaf: {answer}. Tapaiko khata sahikata yasai ma nirbhar hunchha.",
+    "template_en": "Probable answer: {answer}. The accuracy of your account depends on this.",
+    "required_entities": [
+      "answer"
+    ],
+    "optional_entities": [
+      "concept"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-021",
+    "intent": "accounting_qa",
+    "template_ne": "Aajako din ma, {concept} ko bare ma tapainle sodhnu bhako {question}? Yo ho {answer}.",
+    "template_en": "As of today, you asked about {concept}? This is {answer}.",
+    "required_entities": [
+      "answer"
+    ],
+    "optional_entities": [
+      "concept",
+      "question"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-022",
+    "intent": "accounting_qa",
+    "template_ne": "Yadi {concept} khojnu bhayeko, {answer} nai thik hunchha. Anyathaa kripaya spasta parnu.",
+    "template_en": "If you are looking for {concept}, {answer} is correct. Otherwise please clarify.",
+    "required_entities": [
+      "concept",
+      "answer"
+    ],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-023",
+    "intent": "accounting_qa",
+    "template_ne": "Lekhankan hisab kitab anusar, {answer}. Thap sahayog chahinchha?",
+    "template_en": "According to the account books, {answer}. Need further assistance?",
+    "required_entities": [
+      "answer"
+    ],
+    "optional_entities": [
+      "concept"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-024",
+    "intent": "accounting_qa",
+    "template_ne": "Tapainko jigyasa ko samadhan: {answer}. Yo golden rule ma aadharit chha.",
+    "template_en": "Solution to your query: {answer}. This is based on the golden rule.",
+    "required_entities": [
+      "answer"
+    ],
+    "optional_entities": [
+      "concept"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-025",
+    "intent": "clarify_amount",
+    "template_ne": "Kripaya rakam spasta parnu. Tapainle Rs {detected_amount} bhannu bhayeko ho? Anyathaa thik number lekhnus.",
+    "template_en": "Please clarify the amount. Did you mean Rs {detected_amount}? Otherwise write the exact number.",
+    "required_entities": [
+      "detected_amount"
+    ],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-026",
+    "intent": "clarify_amount",
+    "template_ne": "Maile rakam bujhna sakena. Kripaya thik amount Rs format ma dinuhos. Jastai: 5000",
+    "template_en": "I could not understand the amount. Please provide the correct amount in Rs format. Example: 5000",
+    "required_entities": [],
+    "optional_entities": [
+      "detected_amount"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-027",
+    "intent": "clarify_amount",
+    "template_ne": "Amount confirm garau: {detected_amount}? Haina bhane kripaya sahi rakam bataunuhos.",
+    "template_en": "Confirm amount: {detected_amount}? If not, please tell the correct amount.",
+    "required_entities": [
+      "detected_amount"
+    ],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-028",
+    "intent": "clarify_amount",
+    "template_ne": "Sodh k cha? Tapainle lekhnu bhayeko amount {detected_amount} jasto lagyo. Sahi ho?",
+    "template_en": "What's the query? The amount you wrote seems to be {detected_amount}. Is it correct?",
+    "required_entities": [
+      "detected_amount"
+    ],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-029",
+    "intent": "clarify_amount",
+    "template_ne": "Entry ko lagi, rakam ra party dono chahinchha. Kripaya Rs ko thik hisab dinuhos.",
+    "template_en": "For the entry, both amount and party are needed. Please provide the exact Rs figure.",
+    "required_entities": [],
+    "optional_entities": [
+      "party"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-030",
+    "intent": "clarify_amount",
+    "template_ne": "Maaf garnuhos, tapainko amount {detected_amount} ma kehi confusion chha. Saaf-saaf lekhidinus.",
+    "template_en": "Sorry, there is some confusion in your amount {detected_amount}. Please write it clearly.",
+    "required_entities": [
+      "detected_amount"
+    ],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-031",
+    "intent": "clarify_amount",
+    "template_ne": "Yadi tapainle {detected_amount} sochnu bhayeko thiyo bhane confirm garnus. Nahitra sahi number pathaunus.",
+    "template_en": "If you were thinking {detected_amount} please confirm. Otherwise send the correct number.",
+    "required_entities": [
+      "detected_amount"
+    ],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-032",
+    "intent": "clarify_amount",
+    "template_ne": "Hisab rakhna maado, rakam spasta hunai paryo. Kripaya Rs {detected_amount}? ke yeso ho?",
+    "template_en": "To keep accounts, the amount must be clear. Please, is it Rs {detected_amount}?",
+    "required_entities": [
+      "detected_amount"
+    ],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-033",
+    "intent": "clarify_party",
+    "template_ne": "Kripaya party (vyakti ya company) ko naam spasta parnu. Tapainle {detected_party} bhannu bhayeko ho?",
+    "template_en": "Please clarify the party (person or company) name. Did you mean {detected_party}?",
+    "required_entities": [
+      "detected_party"
+    ],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-034",
+    "intent": "clarify_party",
+    "template_ne": "Maile party ko naam thahapayena. Kripaya sahi naam dinus. Tapainko entry adhuro chha.",
+    "template_en": "I could not detect the party name. Please give the correct name. Your entry is incomplete.",
+    "required_entities": [],
+    "optional_entities": [
+      "detected_party"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-035",
+    "intent": "clarify_party",
+    "template_ne": "Party confirm gardinus: {detected_party}? Haina bhane kasko naam rakham?",
+    "template_en": "Confirm the party: {detected_party}? If not, whose name should I put?",
+    "required_entities": [
+      "detected_party"
+    ],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-036",
+    "intent": "clarify_party",
+    "template_ne": "Yas karyoko lagi sahi pakshya ko naam dinuhos. {detected_party} valid dekhina.",
+    "template_en": "For this transaction, provide the correct party name. {detected_party} does not seem valid.",
+    "required_entities": [
+      "detected_party"
+    ],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-037",
+    "intent": "clarify_party",
+    "template_ne": "Khata ma entry garna, debtor ya creditor ko naam chahiyo. Kripaya thik naam bataunu.",
+    "template_en": "To enter in account, debtor or creditor name is needed. Please tell the correct name.",
+    "required_entities": [],
+    "optional_entities": [
+      "detected_party"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-038",
+    "intent": "clarify_party",
+    "template_ne": "Maaf garnus, tapainle bhaneko party {detected_party} ma kehi doubt chha. Ali spasta hunuhos.",
+    "template_en": "Sorry, there is some doubt about the party {detected_party} you mentioned. Please be clearer.",
+    "required_entities": [
+      "detected_party"
+    ],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-039",
+    "intent": "clarify_party",
+    "template_ne": "Kripaya {detected_party} ko full name ya ali detail dinus taki entry perfect hos.",
+    "template_en": "Please give the full name or some detail of {detected_party} so the entry is perfect.",
+    "required_entities": [
+      "detected_party"
+    ],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-040",
+    "intent": "clarify_party",
+    "template_ne": "Party ko naam bina debit/credit fix hudaina. Kripaya sahi pakshya bataunus. {detected_party}?",
+    "template_en": "Debit/Credit cannot be fixed without the party name. Please tell the correct party. {detected_party}?",
+    "required_entities": [
+      "detected_party"
+    ],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-041",
+    "intent": "greeting",
+    "template_ne": "Namaste! Hajurko hisab kitab assistant. Aaj ke help chahiyo?",
+    "template_en": "Hello! Your accounting assistant here. How can I help today?",
+    "required_entities": [],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-042",
+    "intent": "greeting",
+    "template_ne": "Namaskar! Tapaiko khata sahik ra safa rakhna ma yahan chhu. Bhanidinus.",
+    "template_en": "Greetings! I am here to keep your account accurate and clean. Tell me.",
+    "required_entities": [],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-043",
+    "intent": "greeting",
+    "template_ne": "Hajur, subha din. Hisab-kitab related jigyasa bhaye sodhna saknuhunchha.",
+    "template_en": "Good day. You can ask any accounting-related queries.",
+    "required_entities": [],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-044",
+    "intent": "greeting",
+    "template_ne": "Namaste! Hisab kitab ready garna aadesh dinus. Udhaar, nagad, ya prasna.",
+    "template_en": "Namaste! Command me to prepare accounts. Credit, Cash, or Query.",
+    "required_entities": [],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-045",
+    "intent": "greeting",
+    "template_ne": "Swagat chha! Tapaiko lekhankan saathi boliraheko chhu. Ke garna baki chha?",
+    "template_en": "Welcome! Your accounting buddy is speaking. What's left to do?",
+    "required_entities": [],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-046",
+    "intent": "greeting",
+    "template_ne": "Namaste, sir/madam. Khata entry, query, ya clarification, j cha bhanidinus.",
+    "template_en": "Hello, sir/madam. Please say what's there: account entry, query, or clarification.",
+    "required_entities": [],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-047",
+    "intent": "greeting",
+    "template_ne": "Jai Nepal! Hisab-kitab sambandhi madat chahiyeko ho? Ma tayar chhu.",
+    "template_en": "Jai Nepal! Need help regarding accounts? I am ready.",
+    "required_entities": [],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-048",
+    "intent": "greeting",
+    "template_ne": "Lekhankan Assistant ma tapainko swagat chha. Thik hisab rakham sajilai.",
+    "template_en": "Welcome to Accounting Assistant. Let's keep the correct accounts easily.",
+    "required_entities": [],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-049",
+    "intent": "thanks",
+    "template_ne": "Dhanyabad! Hisab kitab ma kehi aru sahayog chainchhe bhane bhannus.",
+    "template_en": "Thank you! Let me know if you need any other help with the accounts.",
+    "required_entities": [],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-050",
+    "intent": "thanks",
+    "template_ne": "Swagat chha. Tapainko khata ramro hune kura ma khushi lagyo.",
+    "template_en": "You are welcome. Glad that your account will be good.",
+    "required_entities": [],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-051",
+    "intent": "thanks",
+    "template_ne": "Dhanyabad! Ma sadhai hisab thik rakhna sahayog garna yahan chhu.",
+    "template_en": "Thank you! I am always here to help keep the accounts correct.",
+    "required_entities": [],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-052",
+    "intent": "thanks",
+    "template_ne": "Tapainko dhanyabad le utsahit bhaye. Boli rakhnus.",
+    "template_en": "Your thanks have encouraged me. Keep in touch.",
+    "required_entities": [],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-053",
+    "intent": "thanks",
+    "template_ne": "Khusi lagyo sahayog garna. Hisab milan ya naya entry ko lagi bhandai garnuhos.",
+    "template_en": "Happy to help. Just say for reconciliation or a new entry.",
+    "required_entities": [],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-054",
+    "intent": "thanks",
+    "template_ne": "Hajurlai pani dhanyabad. Tapaiko hisab kitab sudridh garau.",
+    "template_en": "Thank you too. Let's make your account books stronger.",
+    "required_entities": [],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-055",
+    "intent": "thanks",
+    "template_ne": "Dhanyabad ko patra! Ma yahi chhu jab pani hisab garne bela.",
+    "template_en": "A token of thanks! I am here whenever it's time to do accounts.",
+    "required_entities": [],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-056",
+    "intent": "thanks",
+    "template_ne": "Aabhari chhu. Financial management ma thap sahayog linu hola.",
+    "template_en": "Grateful. Please take more help in financial management.",
+    "required_entities": [],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-057",
+    "intent": "error",
+    "template_ne": "Maaf garnuhos, tyo bujhna sakina. Kripaya ali arkai tarikale lekhnus.",
+    "template_en": "Sorry, I could not understand that. Please write it in a different way.",
+    "required_entities": [],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-058",
+    "intent": "error",
+    "template_ne": "Mero galti, maile tyo process garna sakina. Feripani ra entry detail sahita bhanidinus.",
+    "template_en": "My mistake, I could not process that. Please say again with entry details.",
+    "required_entities": [],
+    "optional_entities": [
+      "party",
+      "amount"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-059",
+    "intent": "error",
+    "template_ne": "Hisab bigryo jasto lagyo. Maile tyo command liyena. Kripaya Udhaar ya Nagad shabda prayog garidinus.",
+    "template_en": "Seems like the account is messed up. I did not get that command. Please use words like Credit or Cash.",
+    "required_entities": [],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-060",
+    "intent": "error",
+    "template_ne": "Trikuti bhayo. Maile bujheko chhaina. Kripaya paisa ra party ko naam firta lekhnus.",
+    "template_en": "Error occurred. I did not understand. Please write the money and party name again.",
+    "required_entities": [],
+    "optional_entities": [
+      "party",
+      "amount"
+    ],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  },
+  {
+    "id": "rtpl-061",
+    "intent": "error",
+    "template_ne": "Maaf chahanchhu, tapainko prashna clear bhayena. Entry, Udhaar, Nagad ki Question?",
+    "template_en": "I apologize, your question wasn't clear. Entry, Credit, Cash or Question?",
+    "required_entities": [],
+    "optional_entities": [],
+    "tone": "professional_friendly",
+    "source": "user_exact"
+  }
+]

@@ -1,0 +1,242 @@
+{
+  "prompt_v1": {
+    "id": "prompt_v1",
+    "variantId": "prompt_v1",
+    "targetBehavior": "professional_accurate",
+    "targetBehaviorKey": "professional_accurate"
+  },
+  "professional_accurate": {
+    "id": "prompt_v1",
+    "variantId": "prompt_v1",
+    "targetBehavior": "professional_accurate",
+    "targetBehaviorKey": "professional_accurate"
+  },
+  "prompt_v2": {
+    "id": "prompt_v2",
+    "variantId": "prompt_v2",
+    "targetBehavior": "friendly_helpful",
+    "targetBehaviorKey": "friendly_helpful"
+  },
+  "friendly_helpful": {
+    "id": "prompt_v2",
+    "variantId": "prompt_v2",
+    "targetBehavior": "friendly_helpful",
+    "targetBehaviorKey": "friendly_helpful"
+  },
+  "prompt_v3": {
+    "id": "prompt_v3",
+    "variantId": "prompt_v3",
+    "targetBehavior": "concise_actionable",
+    "targetBehaviorKey": "concise_actionable"
+  },
+  "concise_actionable": {
+    "id": "prompt_v3",
+    "variantId": "prompt_v3",
+    "targetBehavior": "concise_actionable",
+    "targetBehaviorKey": "concise_actionable"
+  },
+  "prompt_v4": {
+    "id": "prompt_v4",
+    "variantId": "prompt_v4",
+    "targetBehavior": "explanatory_educational",
+    "targetBehaviorKey": "explanatory_educational"
+  },
+  "explanatory_educational": {
+    "id": "prompt_v4",
+    "variantId": "prompt_v4",
+    "targetBehavior": "explanatory_educational",
+    "targetBehaviorKey": "explanatory_educational"
+  },
+  "prompt_v5": {
+    "id": "prompt_v5",
+    "variantId": "prompt_v5",
+    "targetBehavior": "audit_focused",
+    "targetBehaviorKey": "audit_focused"
+  },
+  "audit_focused": {
+    "id": "prompt_v5",
+    "variantId": "prompt_v5",
+    "targetBehavior": "audit_focused",
+    "targetBehaviorKey": "audit_focused"
+  },
+  "prompt_v6": {
+    "id": "prompt_v6",
+    "variantId": "prompt_v6",
+    "targetBehavior": "creative_concise",
+    "targetBehaviorKey": "creative_concise"
+  },
+  "creative_concise": {
+    "id": "prompt_v6",
+    "variantId": "prompt_v6",
+    "targetBehavior": "creative_concise",
+    "targetBehaviorKey": "creative_concise"
+  },
+  "prompt_v7": {
+    "id": "prompt_v7",
+    "variantId": "prompt_v7",
+    "targetBehavior": "multi_lingual_support",
+    "targetBehaviorKey": "multi_lingual_support"
+  },
+  "multi_lingual_support": {
+    "id": "prompt_v7",
+    "variantId": "prompt_v7",
+    "targetBehavior": "multi_lingual_support",
+    "targetBehaviorKey": "multi_lingual_support"
+  },
+  "prompt_v8": {
+    "id": "prompt_v8",
+    "variantId": "prompt_v8",
+    "targetBehavior": "verbose_documentation",
+    "targetBehaviorKey": "verbose_documentation"
+  },
+  "verbose_documentation": {
+    "id": "prompt_v8",
+    "variantId": "prompt_v8",
+    "targetBehavior": "verbose_documentation",
+    "targetBehaviorKey": "verbose_documentation"
+  },
+  "prompt_v9": {
+    "id": "prompt_v9",
+    "variantId": "prompt_v9",
+    "targetBehavior": "qa_driven",
+    "targetBehaviorKey": "qa_driven"
+  },
+  "qa_driven": {
+    "id": "prompt_v9",
+    "variantId": "prompt_v9",
+    "targetBehavior": "qa_driven",
+    "targetBehaviorKey": "qa_driven"
+  },
+  "prompt_v10": {
+    "id": "prompt_v10",
+    "variantId": "prompt_v10",
+    "targetBehavior": "empathetic_supportive",
+    "targetBehaviorKey": "empathetic_supportive"
+  },
+  "empathetic_supportive": {
+    "id": "prompt_v10",
+    "variantId": "prompt_v10",
+    "targetBehavior": "empathetic_supportive",
+    "targetBehaviorKey": "empathetic_supportive"
+  },
+  "prompt_v11": {
+    "id": "prompt_v11",
+    "variantId": "prompt_v11",
+    "targetBehavior": "strict_compliance",
+    "targetBehaviorKey": "strict_compliance"
+  },
+  "strict_compliance": {
+    "id": "prompt_v11",
+    "variantId": "prompt_v11",
+    "targetBehavior": "strict_compliance",
+    "targetBehaviorKey": "strict_compliance"
+  },
+  "prompt_v12": {
+    "id": "prompt_v12",
+    "variantId": "prompt_v12",
+    "targetBehavior": "prototype_explorer",
+    "targetBehaviorKey": "prototype_explorer"
+  },
+  "prototype_explorer": {
+    "id": "prompt_v12",
+    "variantId": "prompt_v12",
+    "targetBehavior": "prototype_explorer",
+    "targetBehaviorKey": "prototype_explorer"
+  },
+  "prompt_v13": {
+    "id": "prompt_v13",
+    "variantId": "prompt_v13",
+    "targetBehavior": "example_rich",
+    "targetBehaviorKey": "example_rich"
+  },
+  "example_rich": {
+    "id": "prompt_v13",
+    "variantId": "prompt_v13",
+    "targetBehavior": "example_rich",
+    "targetBehaviorKey": "example_rich"
+  },
+  "prompt_v14": {
+    "id": "prompt_v14",
+    "variantId": "prompt_v14",
+    "targetBehavior": "minimalist_safe",
+    "targetBehaviorKey": "minimalist_safe"
+  },
+  "minimalist_safe": {
+    "id": "prompt_v14",
+    "variantId": "prompt_v14",
+    "targetBehavior": "minimalist_safe",
+    "targetBehaviorKey": "minimalist_safe"
+  },
+  "prompt_v15": {
+    "id": "prompt_v15",
+    "variantId": "prompt_v15",
+    "targetBehavior": "step_by_step_wizard",
+    "targetBehaviorKey": "step_by_step_wizard"
+  },
+  "step_by_step_wizard": {
+    "id": "prompt_v15",
+    "variantId": "prompt_v15",
+    "targetBehavior": "step_by_step_wizard",
+    "targetBehaviorKey": "step_by_step_wizard"
+  },
+  "prompt_v16": {
+    "id": "prompt_v16",
+    "variantId": "prompt_v16",
+    "targetBehavior": "data_validation_specialist",
+    "targetBehaviorKey": "data_validation_specialist"
+  },
+  "data_validation_specialist": {
+    "id": "prompt_v16",
+    "variantId": "prompt_v16",
+    "targetBehavior": "data_validation_specialist",
+    "targetBehaviorKey": "data_validation_specialist"
+  },
+  "prompt_v17": {
+    "id": "prompt_v17",
+    "variantId": "prompt_v17",
+    "targetBehavior": "policy_conscious",
+    "targetBehaviorKey": "policy_conscious"
+  },
+  "policy_conscious": {
+    "id": "prompt_v17",
+    "variantId": "prompt_v17",
+    "targetBehavior": "policy_conscious",
+    "targetBehaviorKey": "policy_conscious"
+  },
+  "prompt_v18": {
+    "id": "prompt_v18",
+    "variantId": "prompt_v18",
+    "targetBehavior": "persona_accountant_friend",
+    "targetBehaviorKey": "persona_accountant_friend"
+  },
+  "persona_accountant_friend": {
+    "id": "prompt_v18",
+    "variantId": "prompt_v18",
+    "targetBehavior": "persona_accountant_friend",
+    "targetBehaviorKey": "persona_accountant_friend"
+  },
+  "prompt_v19": {
+    "id": "prompt_v19",
+    "variantId": "prompt_v19",
+    "targetBehavior": "few_shot_heavy",
+    "targetBehaviorKey": "few_shot_heavy"
+  },
+  "few_shot_heavy": {
+    "id": "prompt_v19",
+    "variantId": "prompt_v19",
+    "targetBehavior": "few_shot_heavy",
+    "targetBehaviorKey": "few_shot_heavy"
+  },
+  "prompt_v20": {
+    "id": "prompt_v20",
+    "variantId": "prompt_v20",
+    "targetBehavior": "adaptive_length",
+    "targetBehaviorKey": "adaptive_length"
+  },
+  "adaptive_length": {
+    "id": "prompt_v20",
+    "variantId": "prompt_v20",
+    "targetBehavior": "adaptive_length",
+    "targetBehaviorKey": "adaptive_length"
+  }
+}

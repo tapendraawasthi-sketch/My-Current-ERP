@@ -1,0 +1,1589 @@
+[
+  {
+    "document_type": "Income Tax Act 2058",
+    "section": "Section 88 - TDS on Rent",
+    "original_text_ne": "कुनै व्यक्तिले अर्को व्यक्तिलाई भाडामा रकम तिर्दा भाडा रकमको दश प्रतिशत कर कट्टी गरी...",
+    "original_text_en": "When any person pays rent to another person, they shall deduct tax at the rate of ten percent of the rent amount...",
+    "plain_language_ne": "Bhada tirda 10% TDS katnu parcha. Landlord lai 90% matra dinus, 10% sarkar lai.",
+    "plain_language_en": "When paying rent, deduct 10% TDS. Pay only 90% to landlord, deposit 10% to government.",
+    "practical_example": "Monthly rent Rs 20000 → Pay Rs 18000 to landlord, deposit Rs 2000 TDS to IRD",
+    "common_questions": [
+      "Sabai bhada ma TDS katnu parcha?",
+      "TDS deposit kahile garne?"
+    ],
+    "exceptions": [
+      "Residential rent below threshold may be exempt"
+    ],
+    "related_sections": [
+      "Section 89 - TDS on Fees"
+    ],
+    "id": "legsec-001",
+    "source": "user_exact",
+    "document_type_key": "income_tax_act_2058",
+    "section_key": "section_88_tds_on_rent",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Income Tax Act 2058",
+    "section": "Section 89 - TDS on Fees for Professional Services",
+    "original_text_ne": "व्यावसायिक सेवा शुल्क तिर्दा शुल्क रकमको पन्ध्र प्रतिशत कर कट्टी गरी राजश्व खातामा जम्मा गर्नु पर्नेछ।",
+    "original_text_en": "While making payment for professional services, tax shall be deducted at the rate of fifteen percent of the fee amount and deposited to the revenue account.",
+    "plain_language_ne": "Professional service ko shulk tirda 15% TDS katnu. Service provider lai 85% matra dinu, baki 15% sarkar lai bujhau.",
+    "plain_language_en": "Deduct 15% TDS on professional fees. Pay 85% to the service provider, remit 15% to government.",
+    "practical_example": "Legal fee Rs 50,000 → Pay Rs 42,500 to lawyer, deposit Rs 7,500 TDS",
+    "common_questions": [
+      "Kun service ma TDS lagcha?",
+      "TDS cut nagare ke huncha?"
+    ],
+    "exceptions": [
+      "Payments to non-residents may have different rates"
+    ],
+    "related_sections": [
+      "Section 88 - TDS on Rent",
+      "Section 90 - TDS on Interest"
+    ],
+    "id": "legsec-002",
+    "source": "user_exact",
+    "document_type_key": "income_tax_act_2058",
+    "section_key": "section_89_tds_on_fees_for_professional_services",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Income Tax Act 2058",
+    "section": "Section 90 - TDS on Interest",
+    "original_text_ne": "बैंक तथा वित्तीय संस्थाले बचत खातामा ब्याज दिँदा ब्याज रकमको पाँच प्रतिशत कर कट्टी गरी राजश्व जम्मा गर्नु पर्नेछ।",
+    "original_text_en": "Banks and financial institutions shall deduct tax at five percent on interest paid on savings accounts and deposit to the revenue.",
+    "plain_language_ne": "Bank bata paune byaj ma 5% TDS katkincha. Tumlai 95% matra pauchau, 5% sarkar lai jane.",
+    "plain_language_en": "5% TDS is deducted on interest earned from bank savings. You get 95%, 5% goes to government.",
+    "practical_example": "Annual interest Rs 10,000 → Receive Rs 9,500, TDS Rs 500",
+    "common_questions": [
+      "Fixed deposit ma pani TDS lagcha?",
+      "TDS cut bhako byaj income tax return ma k show garne?"
+    ],
+    "exceptions": [
+      "Interest below Rs 2,000 per year may be exempt"
+    ],
+    "related_sections": [
+      "Section 91 - TDS on Dividend"
+    ],
+    "id": "legsec-003",
+    "source": "user_exact",
+    "document_type_key": "income_tax_act_2058",
+    "section_key": "section_90_tds_on_interest",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Income Tax Act 2058",
+    "section": "Section 91 - TDS on Dividend",
+    "original_text_ne": "कम्पनीले आफ्ना सेयरधनीलाई लाभांश वितरण गर्दा लाभांश रकमको पाँच प्रतिशत कर कट्टी गरी राजश्व जम्मा गर्नु पर्नेछ।",
+    "original_text_en": "A company distributing dividend to its shareholders shall deduct tax at five percent of the dividend amount and deposit to revenue.",
+    "plain_language_ne": "Company le diye ko dividend ma 5% TDS katnu. Shareholders lai 95% matra paunchan, 5% sarkar jane.",
+    "plain_language_en": "Deduct 5% TDS on dividend paid to shareholders. Shareholders get 95%, 5% goes to government.",
+    "practical_example": "Dividend Rs 100,000 → Pay Rs 95,000 to shareholder, TDS Rs 5,000",
+    "common_questions": [
+      "Kun dividend ma TDS lagcha?",
+      "Non-resident shareholder lai kati TDS?"
+    ],
+    "exceptions": [
+      "Dividend from exempt entities may be exempt"
+    ],
+    "related_sections": [
+      "Section 90 - TDS on Interest"
+    ],
+    "id": "legsec-004",
+    "source": "user_exact",
+    "document_type_key": "income_tax_act_2058",
+    "section_key": "section_91_tds_on_dividend",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Income Tax Act 2058",
+    "section": "Section 92 - Tax on Business Income",
+    "original_text_ne": "व्यवसायबाट प्राप्त आयमा कर लाग्नेछ। करको दर वार्षिक आयको आधारमा निर्धारण गरिनेछ।",
+    "original_text_en": "Tax is levied on income derived from business. The tax rate shall be determined based on annual income.",
+    "plain_language_ne": "Business ko nafa ma income tax tirnu parcha. Jati dherai kamauchau, teti dherai tax tirnu parcha.",
+    "plain_language_en": "You must pay income tax on business profits. The more you earn, the more tax you pay.",
+    "practical_example": "Annual profit Rs 500,000 → Tax approx Rs 50,000 (for individual, slab rate)",
+    "common_questions": [
+      "Business income ma kati tax lagcha?",
+      "Ghati bhaye ke garne?"
+    ],
+    "exceptions": [
+      "Small businesses may be eligible for presumptive taxation"
+    ],
+    "related_sections": [
+      "Section 93 - Deductions for Business"
+    ],
+    "id": "legsec-005",
+    "source": "user_exact",
+    "document_type_key": "income_tax_act_2058",
+    "section_key": "section_92_tax_on_business_income",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Income Tax Act 2058",
+    "section": "Section 93 - Deductions for Business Expenses",
+    "original_text_ne": "व्यवसाय सञ्चालन गर्न खर्च भएको रकम आयबाट कट्टी गर्न पाइनेछ। तर व्यक्तिगत खर्च कट्टी हुँदैन।",
+    "original_text_en": "Expenses incurred for business operations may be deducted from income. However, personal expenses shall not be deducted.",
+    "plain_language_ne": "Business chalau kharcha (rent, salary, raw materials) lai income bata ghatayera tax calculate garna milcha. Tara personal kharcha mildeina.",
+    "plain_language_en": "You can deduct business expenses (rent, salary, materials) from your income before calculating tax. Personal expenses are not deductible.",
+    "practical_example": "Income Rs 800,000, expenses Rs 300,000 → Taxable income Rs 500,000",
+    "common_questions": [
+      "Kun kun kharcha deductible?",
+      "Bill chaincha?"
+    ],
+    "exceptions": [
+      "Capital expenditure may be depreciated, not fully deducted"
+    ],
+    "related_sections": [
+      "Section 94 - Depreciation"
+    ],
+    "id": "legsec-006",
+    "source": "user_exact",
+    "document_type_key": "income_tax_act_2058",
+    "section_key": "section_93_deductions_for_business_expenses",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Income Tax Act 2058",
+    "section": "Section 94 - Depreciation Allowance",
+    "original_text_ne": "स्थायी सम्पत्तिमा भएको मूल्य ह्रासलाई आयकर गणना गर्दा कट्टी गर्न पाइनेछ। ह्रास दर सम्पत्तिको प्रकार अनुसार फरक हुनेछ।",
+    "original_text_en": "Depreciation on fixed assets shall be allowed as a deduction in computing income tax. The rate of depreciation varies according to the type of asset.",
+    "plain_language_ne": "Sampati ko value ghatda tyo ghati lai pani income bata ghatayera tax kam garna milcha. Different assets ko different depreciation rate.",
+    "plain_language_en": "You can deduct the decrease in value of assets (depreciation) from your income to reduce tax. Different asset types have different rates.",
+    "practical_example": "Machinery cost Rs 1,000,000, depreciation rate 15% → Deduct Rs 150,000 per year",
+    "common_questions": [
+      "Kun asset ma depreciation lagcha?",
+      "Depreciation kasaari calculate garne?"
+    ],
+    "exceptions": [
+      "Land does not depreciate"
+    ],
+    "related_sections": [
+      "Section 93 - Deductions"
+    ],
+    "id": "legsec-007",
+    "source": "user_exact",
+    "document_type_key": "income_tax_act_2058",
+    "section_key": "section_94_depreciation_allowance",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Income Tax Act 2058",
+    "section": "Section 95 - Loss Carry Forward",
+    "original_text_ne": "कुनै वर्षमा घाटा भएमा सो घाटालाई अर्को ७ वर्षसम्म आयसँग साट्न पाइनेछ।",
+    "original_text_en": "If there is a loss in any year, such loss may be set off against income for up to 7 subsequent years.",
+    "plain_language_ne": "Yadi kunai saal business ma ghati bhayo bhane tyo ghati lai aune 7 saal samma ko nafa sanga jodera tax kam garna sakinchha.",
+    "plain_language_en": "If you have a business loss, you can carry it forward and set it off against profits for up to 7 years, reducing tax.",
+    "practical_example": "Loss of Rs 200,000 in 2023, profit Rs 300,000 in 2024 → Tax on Rs 100,000 only",
+    "common_questions": [
+      "Kati saal samma carry forward garna milcha?",
+      "Loss carry forward garda ke form bharnu parcha?"
+    ],
+    "exceptions": [
+      "Certain losses cannot be carried forward if ownership changes"
+    ],
+    "related_sections": [
+      "Section 96 - Group Relief"
+    ],
+    "id": "legsec-008",
+    "source": "user_exact",
+    "document_type_key": "income_tax_act_2058",
+    "section_key": "section_95_loss_carry_forward",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Income Tax Act 2058",
+    "section": "Section 96 - Tax Rates for Individuals",
+    "original_text_ne": "व्यक्तिगत आयकर दर वार्षिक आयको आधारमा निम्नानुसार हुनेछ: ५ लाखसम्म १%, ५–१० लाख १०%, १०–२० लाख २०%, २० लाखभन्दा माथि ३०%।",
+    "original_text_en": "Personal income tax rates shall be as follows based on annual income: up to 500,000 – 1%, 500,001–1,000,000 – 10%, 1,000,001–2,000,000 – 20%, above 2,000,000 – 30%.",
+    "plain_language_ne": "Tapaiko annual income anusar tax rate: 5 lakhs samma 1%, 5–10 lakhs 10%, 10–20 lakhs 20%, 20 lakhs mathi 30%.",
+    "plain_language_en": "Income tax rates: up to NPR 500k – 1%, 500k-1M – 10%, 1M-2M – 20%, above 2M – 30%.",
+    "practical_example": "Income Rs 1,500,000 → Tax = 1% on 500k + 10% on 500k + 20% on 500k = 5,000+50,000+100,000 = 155,000",
+    "common_questions": [
+      "Social security tax pani lagcha?",
+      "Senior citizen lai discount?"
+    ],
+    "exceptions": [
+      "Senior citizens get an additional 10% discount on tax liability"
+    ],
+    "related_sections": [
+      "Section 97 - Tax Rebates"
+    ],
+    "id": "legsec-009",
+    "source": "user_exact",
+    "document_type_key": "income_tax_act_2058",
+    "section_key": "section_96_tax_rates_for_individuals",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Income Tax Act 2058",
+    "section": "Section 97 - Tax Rebates for Investment",
+    "original_text_ne": "निर्धारित क्षेत्रमा लगानी गरेमा आयकरमा छुट वा रियायत प्राप्त हुनेछ।",
+    "original_text_en": "Investment in specified sectors shall be eligible for tax rebates or concessions.",
+    "plain_language_ne": "Kunai special sector (jaise agriculture, tourism) ma lagaani garyo bhane tax ma discount paucha.",
+    "plain_language_en": "If you invest in specified sectors (e.g., agriculture, tourism), you may get tax rebates.",
+    "practical_example": "Invest Rs 500,000 in approved tourism project → Get 10% rebate on tax liability",
+    "common_questions": [
+      "Kun sector ma lagani garda rebate pauncha?",
+      "Rebate kasari claim garne?"
+    ],
+    "exceptions": [
+      "Rebate limited to 50% of tax liability"
+    ],
+    "related_sections": [
+      "Section 98 - Special Tax Incentives"
+    ],
+    "id": "legsec-010",
+    "source": "user_exact",
+    "document_type_key": "income_tax_act_2058",
+    "section_key": "section_97_tax_rebates_for_investment",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Income Tax Act 2058",
+    "section": "Section 98 - Filing of Return",
+    "original_text_ne": "प्रत्येक करदाताले प्रत्येक आर्थिक वर्षको मध्य माघसम्म कर विवरण पेश गर्नु पर्नेछ।",
+    "original_text_en": "Every taxpayer shall file a tax return by mid-Magh (end of January) of each fiscal year.",
+    "plain_language_ne": "Hare sal magh mas samma income tax return bharnu parcha. Natra fine lagna sakcha.",
+    "plain_language_en": "File your income tax return by the end of January each year. Late filing incurs penalties.",
+    "practical_example": "Fiscal year ends Ashadh (July). Return due by Magh (Jan) – about 6 months later.",
+    "common_questions": [
+      "Return online kasari bharne?",
+      "Kati galti bhaye ke garne?"
+    ],
+    "exceptions": [
+      "Extension may be granted for valid reasons"
+    ],
+    "related_sections": [
+      "Section 99 - Penalty for Non-compliance"
+    ],
+    "id": "legsec-011",
+    "source": "user_exact",
+    "document_type_key": "income_tax_act_2058",
+    "section_key": "section_98_filing_of_return",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Income Tax Act 2058",
+    "section": "Section 99 - Penalty for Non-compliance",
+    "original_text_ne": "कर विवरण पेश गर्न नसकेमा वा गलत विवरण पेश गरेमा जरिवाना र थप कर लाग्नेछ।",
+    "original_text_en": "Failure to file return or filing incorrect return shall attract penalties and additional tax.",
+    "plain_language_ne": "Return time ma nahalyam or galat halyam bhane jariwana tirnu parcha. Ani tax pani tirnu parcha.",
+    "plain_language_en": "Late or incorrect filing leads to penalties and interest. Be careful.",
+    "practical_example": "Return filed 3 months late → Penalty 10% of tax + interest 15% per annum",
+    "common_questions": [
+      "Penalty kati ho?",
+      "Galti correction garna milcha?"
+    ],
+    "exceptions": [
+      "No penalty if reasonable cause is shown"
+    ],
+    "related_sections": [
+      "Section 100 - Appeals"
+    ],
+    "id": "legsec-012",
+    "source": "user_exact",
+    "document_type_key": "income_tax_act_2058",
+    "section_key": "section_99_penalty_for_non_compliance",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "VAT Act 2052",
+    "section": "Section 3 - Registration for VAT",
+    "original_text_ne": "वार्षिक कारोबार रू. २० लाखभन्दा बढी हुने प्रत्येक व्यवसायीले VAT दर्ता गर्नु पर्नेछ।",
+    "original_text_en": "Every business with annual turnover exceeding NPR 2 million shall register for VAT.",
+    "plain_language_ne": "Yadi tapaiko business ko sal ko karobar 20 lakhs bhanda badhi cha bhane VAT registration garnu parcha.",
+    "plain_language_en": "If your annual turnover exceeds NPR 2 million, you must register for VAT.",
+    "practical_example": "Turnover Rs 2.5 million → Must register; turnover Rs 1.8 million → optional registration",
+    "common_questions": [
+      "VAT registration kaile garne?",
+      "Registration nagare ke huncha?"
+    ],
+    "exceptions": [
+      "Certain goods/services exempt from VAT registration"
+    ],
+    "related_sections": [
+      "Section 4 - Deregistration"
+    ],
+    "id": "legsec-013",
+    "source": "user_exact",
+    "document_type_key": "vat_act_2052",
+    "section_key": "section_3_registration_for_vat",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "VAT Act 2052",
+    "section": "Section 4 - Deregistration",
+    "original_text_ne": "VAT दर्ता भएको व्यवसायीले व्यवसाय बन्द गरेमा वा कारोबार सीमा घटेमा VAT दर्ता रद्द गर्न सकिन्छ।",
+    "original_text_en": "A VAT-registered business may deregister if it closes down or turnover falls below the threshold.",
+    "plain_language_ne": "Business banda bhayo ya turnover ghatyo bhane VAT registration cancel garna milcha.",
+    "plain_language_en": "You can cancel VAT registration if you stop business or turnover drops below the limit.",
+    "practical_example": "Business closed → Apply for deregistration within 15 days",
+    "common_questions": [
+      "Deregistration ko lagi ke form cha?",
+      "Deregister nagare ke huncha?"
+    ],
+    "exceptions": [
+      "Deregistration may be refused if tax dues are pending"
+    ],
+    "related_sections": [
+      "Section 3 - Registration"
+    ],
+    "id": "legsec-014",
+    "source": "user_exact",
+    "document_type_key": "vat_act_2052",
+    "section_key": "section_4_deregistration",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "VAT Act 2052",
+    "section": "Section 5 - Tax Invoice",
+    "original_text_ne": "VAT दर्ता भएका व्यवसायीले प्रत्येक बिक्रीको VAT सहितको इनभ्वाइस जारी गर्नु पर्नेछ।",
+    "original_text_en": "A registered business shall issue a tax invoice with VAT for each sale.",
+    "plain_language_ne": "VAT registered bhaye pachi har bechdai ma VAT sahit ko bill dinu parcha.",
+    "plain_language_en": "If registered, you must issue invoices showing VAT for every sale.",
+    "practical_example": "Sale Rs 10,000 + VAT 13% = Rs 11,300 → Invoice shows VAT Rs 1,300",
+    "common_questions": [
+      "Bill ma VAT clearly dekhna parcha?",
+      "VAT na dekhaaye ke huncha?"
+    ],
+    "exceptions": [
+      "Small cash sales below Rs 500 may not require invoice"
+    ],
+    "related_sections": [
+      "Section 6 - VAT Collection"
+    ],
+    "id": "legsec-015",
+    "source": "user_exact",
+    "document_type_key": "vat_act_2052",
+    "section_key": "section_5_tax_invoice",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "VAT Act 2052",
+    "section": "Section 6 - VAT Collection and Payment",
+    "original_text_ne": "VAT दर्ता व्यवसायीले बिक्री गर्दा VAT असुल गरी मासिक रूपमा राजश्व खातामा जम्मा गर्नु पर्नेछ।",
+    "original_text_en": "A VAT-registered business shall collect VAT on sales and deposit it to the revenue account monthly.",
+    "plain_language_ne": "Bechda VAT collect garne ani mahine ko 25 gate samma tyo VAT sarkar lai bujhau.",
+    "plain_language_en": "Collect VAT on sales and deposit to government by 25th of each month.",
+    "practical_example": "Monthly sales Rs 500,000, VAT 13% = Rs 65,000 → Deposit by 25th of next month",
+    "common_questions": [
+      "VAT kasari calculate garne?",
+      "VAT deposit na gare ke huncha?"
+    ],
+    "exceptions": [
+      "Small businesses may file quarterly"
+    ],
+    "related_sections": [
+      "Section 7 - Input Tax Credit"
+    ],
+    "id": "legsec-016",
+    "source": "user_exact",
+    "document_type_key": "vat_act_2052",
+    "section_key": "section_6_vat_collection_and_payment",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "VAT Act 2052",
+    "section": "Section 7 - Input Tax Credit",
+    "original_text_ne": "व्यवसायको लागि खरिद गर्दा तिरेको VAT (इनपुट VAT) लाई बिक्री गर्दा उठाएको VAT (आउटपुट VAT) बाट कट्टी गर्न पाइनेछ।",
+    "original_text_en": "Input VAT paid on purchases for business may be deducted from output VAT collected on sales.",
+    "plain_language_ne": "Kina gareko saman ko VAT (input) lai bechda collect gareko VAT (output) bata ghatayera net VAT matra bujhnu parcha.",
+    "plain_language_en": "You can deduct the VAT you paid on purchases (input VAT) from the VAT you collected on sales (output VAT), and pay only the net amount.",
+    "practical_example": "Input VAT Rs 30,000, Output VAT Rs 50,000 → Pay net Rs 20,000",
+    "common_questions": [
+      "Kun kun kura ma input VAT claim garna milcha?",
+      "Input VAT claim garna ke chahincha?"
+    ],
+    "exceptions": [
+      "Input VAT on personal items not claimable"
+    ],
+    "related_sections": [
+      "Section 8 - VAT Returns"
+    ],
+    "id": "legsec-017",
+    "source": "user_exact",
+    "document_type_key": "vat_act_2052",
+    "section_key": "section_7_input_tax_credit",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "VAT Act 2052",
+    "section": "Section 8 - Filing VAT Returns",
+    "original_text_ne": "VAT दर्ता व्यवसायीले प्रत्येक महिनाको २५ गतेभित्र VAT विवरण पेश गर्नु पर्नेछ।",
+    "original_text_en": "VAT-registered businesses shall file VAT returns by the 25th of each month.",
+    "plain_language_ne": "Hare mahina ko 25 gate samma VAT return online bharnu parcha. Natra jariwana.",
+    "plain_language_en": "File VAT return by 25th of each month. Late filing attracts penalties.",
+    "practical_example": "Return for July due by Aug 25",
+    "common_questions": [
+      "Return online kaha bharne?",
+      "Late filing ko kati penalty?"
+    ],
+    "exceptions": [
+      "Quarterly filing for certain businesses"
+    ],
+    "related_sections": [
+      "Section 9 - Assessment"
+    ],
+    "id": "legsec-018",
+    "source": "user_exact",
+    "document_type_key": "vat_act_2052",
+    "section_key": "section_8_filing_vat_returns",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "VAT Act 2052",
+    "section": "Section 9 - Assessment and Penalty",
+    "original_text_ne": "VAT विवरण नपेश गरेमा वा गलत विवरण पेश गरेमा कर अधिकृतले पुनः मूल्यांकन गरी जरिवाना लगाउन सक्छ।",
+    "original_text_en": "If return is not filed or is incorrect, the tax officer may reassess and impose penalties.",
+    "plain_language_ne": "Return nahalya ya galat halya bhane tax officer le check garera penalty lagauna sakcha.",
+    "plain_language_en": "Failure to file or incorrect filing may lead to reassessment and penalties by tax authorities.",
+    "practical_example": "Underpaid VAT by Rs 10,000 → Penalty 50% of tax = Rs 5,000",
+    "common_questions": [
+      "Penalty kati lagcha?",
+      "Appeal garna milcha?"
+    ],
+    "exceptions": [
+      "Penalty waived if voluntary disclosure"
+    ],
+    "related_sections": [
+      "Section 10 - Appeal"
+    ],
+    "id": "legsec-019",
+    "source": "user_exact",
+    "document_type_key": "vat_act_2052",
+    "section_key": "section_9_assessment_and_penalty",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "VAT Act 2052",
+    "section": "Section 10 - Exempt Goods and Services",
+    "original_text_ne": "निर्दिष्ट वस्तु र सेवाहरू (जस्तै, शिक्षा, स्वास्थ्य) VAT बाट मुक्त हुनेछन्।",
+    "original_text_en": "Specified goods and services (e.g., education, health) are exempt from VAT.",
+    "plain_language_ne": "Kunai saman ra sewa (school, hospital) ma VAT lagdaina.",
+    "plain_language_en": "Some goods/services like education and healthcare are VAT-free.",
+    "practical_example": "School fees – no VAT; Health services – no VAT",
+    "common_questions": [
+      "Kun kun saman VAT exempt?",
+      "Exempt ra zero-rated ma k farak?"
+    ],
+    "exceptions": [
+      "Exemption applies only if provided by registered entities"
+    ],
+    "related_sections": [
+      "Section 11 - Zero-rated Supplies"
+    ],
+    "id": "legsec-020",
+    "source": "user_exact",
+    "document_type_key": "vat_act_2052",
+    "section_key": "section_10_exempt_goods_and_services",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "VAT Act 2052",
+    "section": "Section 11 - Zero-rated Supplies",
+    "original_text_ne": "निर्यात गरिने वस्तु तथा सेवामा VAT दर शून्य प्रतिशत हुनेछ, तर इनपुट VAT कट्टी गर्न पाइनेछ।",
+    "original_text_en": "Exported goods and services are zero-rated (0% VAT), but input VAT can be claimed.",
+    "plain_language_ne": "Export ma VAT 0% lagcha, tara input VAT bhanne claim garna paucha.",
+    "plain_language_en": "Exports are zero-rated – you don't charge VAT, but you can still claim input VAT credits.",
+    "practical_example": "Export sales Rs 1,000,000, input VAT Rs 50,000 → Can claim Rs 50,000 refund",
+    "common_questions": [
+      "Zero-rated ra exempt ma k farak?",
+      "Refund kasari paune?"
+    ],
+    "exceptions": [
+      "Must have export documentation"
+    ],
+    "related_sections": [
+      "Section 10 - Exempt Goods"
+    ],
+    "id": "legsec-021",
+    "source": "user_exact",
+    "document_type_key": "vat_act_2052",
+    "section_key": "section_11_zero_rated_supplies",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "VAT Act 2052",
+    "section": "Section 12 - VAT Refund",
+    "original_text_ne": "यदि इनपुट VAT आउटपुट VAT भन्दा बढी भएमा सो फरक रकम फिर्ता पाउन सकिन्छ।",
+    "original_text_en": "If input VAT exceeds output VAT, the excess amount may be refunded.",
+    "plain_language_ne": "Input VAT output VAT bhanda badhi bhaye tyo farak sarkar le phirta dincha.",
+    "plain_language_en": "If you paid more VAT on purchases than you collected on sales, you can get a refund of the excess.",
+    "practical_example": "Input VAT Rs 70,000, Output Rs 50,000 → Claim refund Rs 20,000",
+    "common_questions": [
+      "Refund kasari claim garne?",
+      "Refund pauna kati samay lagcha?"
+    ],
+    "exceptions": [
+      "Refund may be adjusted against other tax dues"
+    ],
+    "related_sections": [
+      "Section 11 - Zero-rated Supplies"
+    ],
+    "id": "legsec-022",
+    "source": "user_exact",
+    "document_type_key": "vat_act_2052",
+    "section_key": "section_12_vat_refund",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Company Act 2063",
+    "section": "Section 4 - Incorporation of Company",
+    "original_text_ne": "कम्पनी दर्ताको लागि आवेदन दिनु पर्नेछ र नाम स्वीकृत गर्नु पर्नेछ।",
+    "original_text_en": "An application must be submitted for company registration and the name must be approved.",
+    "plain_language_ne": "Company banuna lagi naam swikriti ra registration apply garnu parcha.",
+    "plain_language_en": "To form a company, you must apply for registration and get name approval.",
+    "practical_example": "Apply with proposed name and MOA/AOA; get certificate of incorporation",
+    "common_questions": [
+      "Kati din ma company register huncha?",
+      "Kun documents chaincha?"
+    ],
+    "exceptions": [
+      "Name must not be identical to existing company"
+    ],
+    "related_sections": [
+      "Section 5 - Memorandum and Articles"
+    ],
+    "id": "legsec-023",
+    "source": "user_exact",
+    "document_type_key": "company_act_2063",
+    "section_key": "section_4_incorporation_of_company",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Company Act 2063",
+    "section": "Section 5 - Memorandum and Articles of Association",
+    "original_text_ne": "कम्पनी दर्ताका लागि प्रबन्धपत्र र नियमावली पेश गर्नु पर्नेछ।",
+    "original_text_en": "Memorandum and Articles of Association must be submitted for company registration.",
+    "plain_language_ne": "Company register garda MOA ra AOA submit garnu parcha.",
+    "plain_language_en": "Submit MOA (objectives) and AOA (rules) for registration.",
+    "practical_example": "MOA states business objectives; AOA contains internal management rules",
+    "common_questions": [
+      "MOA ra AOA ma ke lekhnu parcha?",
+      "Kati jana director chaincha?"
+    ],
+    "exceptions": [
+      "One-person company may have simpler AOA"
+    ],
+    "related_sections": [
+      "Section 4 - Incorporation"
+    ],
+    "id": "legsec-024",
+    "source": "user_exact",
+    "document_type_key": "company_act_2063",
+    "section_key": "section_5_memorandum_and_articles_of_association",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Company Act 2063",
+    "section": "Section 6 - Directors and Their Duties",
+    "original_text_ne": "प्रत्येक कम्पनीमा कम्तीमा एक जना सञ्चालक हुनु पर्नेछ र उसले कम्पनीको हितमा काम गर्नु पर्नेछ।",
+    "original_text_en": "Every company shall have at least one director, who shall act in the best interests of the company.",
+    "plain_language_ne": "Company ma kamti ma 1 director hunu parcha, ra usle company ko hit ma matra kaam garnu parcha.",
+    "plain_language_en": "Each company must have at least one director. The director must act in the company's best interests.",
+    "practical_example": "Director decides on business strategies and ensures compliance",
+    "common_questions": [
+      "Director ko duty k ho?",
+      "Director lai salary dinu parcha?"
+    ],
+    "exceptions": [
+      "Public companies need at least 3 directors"
+    ],
+    "related_sections": [
+      "Section 7 - Director's Liability"
+    ],
+    "id": "legsec-025",
+    "source": "user_exact",
+    "document_type_key": "company_act_2063",
+    "section_key": "section_6_directors_and_their_duties",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Company Act 2063",
+    "section": "Section 7 - Director's Liability",
+    "original_text_ne": "सञ्चालकले आफ्नो कर्तव्य पालना नगरेमा वा कम्पनीलाई नोक्सानी पुर्याएमा उसले क्षतिपूर्ति दिनु पर्नेछ।",
+    "original_text_en": "A director who fails to perform duties or causes loss to the company shall be liable for compensation.",
+    "plain_language_ne": "Director le duty palana nagarya ya company lai ghata diye bhane usle tyo ghata tirnu parcha.",
+    "plain_language_en": "Directors are personally liable if they breach duties or cause damage to the company.",
+    "practical_example": "Director makes unauthorized loan causing loss → Must reimburse",
+    "common_questions": [
+      "Director ko personal liability kati samma?",
+      "Insurance le cover garcha?"
+    ],
+    "exceptions": [
+      "Liability may be limited if acting in good faith"
+    ],
+    "related_sections": [
+      "Section 6 - Directors"
+    ],
+    "id": "legsec-026",
+    "source": "user_exact",
+    "document_type_key": "company_act_2063",
+    "section_key": "section_7_director_s_liability",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Company Act 2063",
+    "section": "Section 8 - Share Capital and Shares",
+    "original_text_ne": "कम्पनीको सेयर पूँजी सेयरमा विभाजन गरिनेछ र सेयरधनीहरूको दायित्व सीमित हुनेछ।",
+    "original_text_en": "The share capital of the company shall be divided into shares, and shareholders' liability shall be limited.",
+    "plain_language_ne": "Company ko paisa lai shares ma bhaag garincha, ra share dhani ko limit tinka shares ko amount samma matra.",
+    "plain_language_en": "Company capital is divided into shares; shareholders' liability is limited to unpaid share amount.",
+    "practical_example": "Authorized capital Rs 1 crore, divided into 100,000 shares of Rs 100 each",
+    "common_questions": [
+      "Share k ho?",
+      "Shareholder ko liability kati ho?"
+    ],
+    "exceptions": [
+      "Unlimited companies have unlimited liability"
+    ],
+    "related_sections": [
+      "Section 9 - Issue of Shares"
+    ],
+    "id": "legsec-027",
+    "source": "user_exact",
+    "document_type_key": "company_act_2063",
+    "section_key": "section_8_share_capital_and_shares",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Company Act 2063",
+    "section": "Section 9 - Issue of Shares",
+    "original_text_ne": "कम्पनीले निर्देशिका (prospectus) जारी गरी सर्वसाधारणलाई सेयर बिक्री गर्न सक्छ।",
+    "original_text_en": "A company may issue a prospectus and offer shares to the public.",
+    "plain_language_ne": "Company le public lai share bechna prospectus nikalna sakcha.",
+    "plain_language_en": "A company can issue shares to the public through a prospectus.",
+    "practical_example": "IPO issue of 500,000 shares at Rs 100 each",
+    "common_questions": [
+      "IPO ma kasari apply garne?",
+      "Minimum shares kati?"
+    ],
+    "exceptions": [
+      "Private companies cannot issue shares to public"
+    ],
+    "related_sections": [
+      "Section 8 - Share Capital"
+    ],
+    "id": "legsec-028",
+    "source": "user_exact",
+    "document_type_key": "company_act_2063",
+    "section_key": "section_9_issue_of_shares",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Company Act 2063",
+    "section": "Section 10 - Annual General Meeting",
+    "original_text_ne": "प्रत्येक कम्पनीले प्रत्येक आर्थिक वर्षको अन्त्यमा वार्षिक साधारण सभा गर्नु पर्नेछ।",
+    "original_text_en": "Every company shall hold an Annual General Meeting (AGM) at the end of each fiscal year.",
+    "plain_language_ne": "Hare company le har sal AGM garnu parcha. Shareholders lai bulaera report sunaunu parcha.",
+    "plain_language_en": "Hold AGM yearly to present financials and elect directors.",
+    "practical_example": "AGM within 6 months of year-end; shareholders vote on accounts",
+    "common_questions": [
+      "AGM kab garne?",
+      "AGM ma ke discuss garne?"
+    ],
+    "exceptions": [
+      "One-person company may not need AGM"
+    ],
+    "related_sections": [
+      "Section 11 - Special Resolution"
+    ],
+    "id": "legsec-029",
+    "source": "user_exact",
+    "document_type_key": "company_act_2063",
+    "section_key": "section_10_annual_general_meeting",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Company Act 2063",
+    "section": "Section 11 - Special Resolution",
+    "original_text_ne": "कम्पनीको ठूलो निर्णय (जस्तै, नाम परिवर्तन, पूँजी वृद्धि) का लागि विशेष प्रस्ताव पारित गर्नु पर्नेछ।",
+    "original_text_en": "Major decisions (e.g., change of name, increase of capital) require a special resolution.",
+    "plain_language_ne": "Company ko thulo nirnaya (name change, capital badhaune) lai special resolution chahincha, jasma 75% shareholder ko sahamati.",
+    "plain_language_en": "Special resolution (75% votes) needed for major changes like name, capital, etc.",
+    "practical_example": "Increase capital from Rs 1 crore to Rs 2 crore → Special resolution required",
+    "common_questions": [
+      "Special resolution kasari pass garne?",
+      "Kati percent chahincha?"
+    ],
+    "exceptions": [
+      "Certain changes may not need special resolution if AOA allows"
+    ],
+    "related_sections": [
+      "Section 10 - AGM"
+    ],
+    "id": "legsec-030",
+    "source": "user_exact",
+    "document_type_key": "company_act_2063",
+    "section_key": "section_11_special_resolution",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Company Act 2063",
+    "section": "Section 12 - Audit and Accounts",
+    "original_text_ne": "प्रत्येक कम्पनीले आफ्नो लेखा अडिट गराउनु पर्नेछ र अडिटर नियुक्त गर्नु पर्नेछ।",
+    "original_text_en": "Every company shall have its accounts audited and appoint an auditor.",
+    "plain_language_ne": "Company ko account haru auditor le check garnu parcha, ra auditor appoint garnu parcha.",
+    "plain_language_en": "Every company must appoint an auditor and get accounts audited annually.",
+    "practical_example": "Appoint a chartered accountant as auditor; submit audited financials to ROC",
+    "common_questions": [
+      "Auditor kasaari chhane?",
+      "Audit kab garne?"
+    ],
+    "exceptions": [
+      "Small companies may be exempt from audit"
+    ],
+    "related_sections": [
+      "Section 13 - Financial Statements"
+    ],
+    "id": "legsec-031",
+    "source": "user_exact",
+    "document_type_key": "company_act_2063",
+    "section_key": "section_12_audit_and_accounts",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Labor Act 2074",
+    "section": "Section 10 - Employment Contract",
+    "original_text_ne": "रोजगारीको सर्तहरू लिखित रूपमा उल्लेख गर्नु पर्नेछ र दुवै पक्षले हस्ताक्षर गर्नु पर्नेछ।",
+    "original_text_en": "Terms of employment must be in writing and signed by both parties.",
+    "plain_language_ne": "Job ko condition haru paper ma lekhera dui jana le signature garnu parcha.",
+    "plain_language_en": "Employment terms must be documented in a written contract signed by both employer and employee.",
+    "practical_example": "Contract includes job role, salary, working hours, leave, termination",
+    "common_questions": [
+      "Contract ma ke lekhnu parcha?",
+      "Contract na bhaye ke huncha?"
+    ],
+    "exceptions": [
+      "Oral contracts for casual work may be allowed"
+    ],
+    "related_sections": [
+      "Section 11 - Working Hours"
+    ],
+    "id": "legsec-032",
+    "source": "user_exact",
+    "document_type_key": "labor_act_2074",
+    "section_key": "section_10_employment_contract",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Labor Act 2074",
+    "section": "Section 11 - Working Hours",
+    "original_text_ne": "दैनिक कामको समय ८ घण्टा र साप्ताहिक ४८ घण्टा भन्दा बढी हुनु हुँदैन।",
+    "original_text_en": "Daily working hours shall not exceed 8 hours and weekly hours shall not exceed 48 hours.",
+    "plain_language_ne": "Hare din 8 ghanta, hapta ma 48 ghanta bhanda dherai kaam garna mildaina.",
+    "plain_language_en": "Maximum 8 hours/day and 48 hours/week.",
+    "practical_example": "Work from 9am to 5pm with 1-hour lunch break = 7 hours? Actually 8 hours net, so 9-6 with 1 hour break.",
+    "common_questions": [
+      "Break time pani count huncha?",
+      "Overtime ma kati extra pay?"
+    ],
+    "exceptions": [
+      "Certain industries (e.g., hospitality) may have different arrangements"
+    ],
+    "related_sections": [
+      "Section 12 - Overtime"
+    ],
+    "id": "legsec-033",
+    "source": "user_exact",
+    "document_type_key": "labor_act_2074",
+    "section_key": "section_11_working_hours",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Labor Act 2074",
+    "section": "Section 12 - Overtime",
+    "original_text_ne": "अतिरिक्त समयमा काम गराउँदा सामान्य ज्यालाको दोब्बर भत्ता दिनु पर्नेछ।",
+    "original_text_en": "Overtime work shall be compensated at double the normal wage rate.",
+    "plain_language_ne": "Regular time bhayeko kaam garema tyas ko double pay dinu parcha.",
+    "plain_language_en": "Overtime pay = 2x normal hourly rate.",
+    "practical_example": "Normal hourly rate Rs 500; overtime hour = Rs 1,000",
+    "common_questions": [
+      "Overtime kasari count garne?",
+      "Overtime garna mann chaina bhane?"
+    ],
+    "exceptions": [
+      "Some managerial staff may be exempt from overtime"
+    ],
+    "related_sections": [
+      "Section 11 - Working Hours"
+    ],
+    "id": "legsec-034",
+    "source": "user_exact",
+    "document_type_key": "labor_act_2074",
+    "section_key": "section_12_overtime",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Labor Act 2074",
+    "section": "Section 13 - Leave Entitlement",
+    "original_text_ne": "कर्मचारीले वार्षिक १३ दिन सार्वजनिक बिदा, १२ दिन चाडपर्व बिदा, र १५ दिन बिरामी बिदा पाउनेछन्।",
+    "original_text_en": "Employees are entitled to 13 days public holiday, 12 days festival leave, and 15 days sick leave per year.",
+    "plain_language_ne": "Hare saal 13 din public holiday, 12 din festival leave, 15 din sick leave pauncha.",
+    "plain_language_en": "Annual leave: 13 public, 12 festival, 15 sick days.",
+    "practical_example": "Employee takes 10 days festival leave; remaining 2 days to be encashed or carried over",
+    "common_questions": [
+      "Leave carry forward huncha?",
+      "Napaye paisa paucha?"
+    ],
+    "exceptions": [
+      "Probation period may not get full leave"
+    ],
+    "related_sections": [
+      "Section 14 - Maternity Leave"
+    ],
+    "id": "legsec-035",
+    "source": "user_exact",
+    "document_type_key": "labor_act_2074",
+    "section_key": "section_13_leave_entitlement",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Labor Act 2074",
+    "section": "Section 14 - Maternity Leave",
+    "original_text_ne": "महिला कर्मचारीले सुत्केरी बिदा ६० दिन पाउनेछिन् र त्यस अवधिमा पूर्ण तलब पाउनेछिन्।",
+    "original_text_en": "Female employees are entitled to 60 days maternity leave with full pay.",
+    "plain_language_ne": "Mahila karmachari lai 60 din maternity leave paucha, tyo bela full salary dinu parcha.",
+    "plain_language_en": "60 days fully paid maternity leave for female employees.",
+    "practical_example": "Employee takes maternity leave; receives salary as usual for 60 days",
+    "common_questions": [
+      "Maternity leave pachi ke garnu parcha?",
+      "Adoption ma pani paucha?"
+    ],
+    "exceptions": [
+      "Only for employees who have worked for certain period"
+    ],
+    "related_sections": [
+      "Section 15 - Paternity Leave"
+    ],
+    "id": "legsec-036",
+    "source": "user_exact",
+    "document_type_key": "labor_act_2074",
+    "section_key": "section_14_maternity_leave",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Labor Act 2074",
+    "section": "Section 15 - Paternity Leave",
+    "original_text_ne": "पुरुष कर्मचारीले आफ्नो बच्चा जन्मिएको १५ दिनभित्र १५ दिन पितृत्व बिदा पाउनेछन्।",
+    "original_text_en": "Male employees are entitled to 15 days paternity leave within 15 days of childbirth.",
+    "plain_language_ne": "Purush karmachari lai baccha janme pachi 15 din paternity leave paucha.",
+    "plain_language_en": "15 days paternity leave for male employees, to be taken soon after child's birth.",
+    "practical_example": "Child born on Jan 1 → Take leave from Jan 2-16",
+    "common_questions": [
+      "Paternity leave kaile line?",
+      "Kun bela apply garne?"
+    ],
+    "exceptions": [
+      "Leave may be granted only once per year"
+    ],
+    "related_sections": [
+      "Section 14 - Maternity Leave"
+    ],
+    "id": "legsec-037",
+    "source": "user_exact",
+    "document_type_key": "labor_act_2074",
+    "section_key": "section_15_paternity_leave",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Labor Act 2074",
+    "section": "Section 16 - Termination of Employment",
+    "original_text_ne": "रोजगारी समाप्त गर्नु अघि ३० दिनको नोटिस दिनु पर्नेछ वा सो बराबरको ज्याला दिनु पर्नेछ।",
+    "original_text_en": "Employment termination requires 30 days' notice or pay in lieu of notice.",
+    "plain_language_ne": "Job chodna ya nikalna lai 30 din agadi bhanu parcha, natra 30 din ko paisa tirnu parcha.",
+    "plain_language_en": "30 days' notice or 30 days' pay must be given for termination.",
+    "practical_example": "Employer terminates without notice → Pays 30 days salary in lieu",
+    "common_questions": [
+      "Notice period kati ho?",
+      "Termination pay kasari calculate garne?"
+    ],
+    "exceptions": [
+      "Summary dismissal for gross misconduct may not require notice"
+    ],
+    "related_sections": [
+      "Section 17 - Severance Pay"
+    ],
+    "id": "legsec-038",
+    "source": "user_exact",
+    "document_type_key": "labor_act_2074",
+    "section_key": "section_16_termination_of_employment",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Labor Act 2074",
+    "section": "Section 17 - Severance Pay",
+    "original_text_ne": "रोजगारी समाप्त भएमा कर्मचारीले काम गरेको अवधिको आधारमा अलग्याउने पारिश्रमिक पाउनेछ।",
+    "original_text_en": "Upon termination, the employee shall receive severance pay based on length of service.",
+    "plain_language_ne": "Job chhode pachi kaam gareko barsa anusar severance pay paucha.",
+    "plain_language_en": "Severance pay = at least 30 days' salary for each year of service, plus remaining leave encashment.",
+    "practical_example": "5 years service → 5 x 30 days = 150 days salary as severance",
+    "common_questions": [
+      "Severance pay kati ho?",
+      "Kaile paucha?"
+    ],
+    "exceptions": [
+      "May be less if termination for cause"
+    ],
+    "related_sections": [
+      "Section 16 - Termination"
+    ],
+    "id": "legsec-039",
+    "source": "user_exact",
+    "document_type_key": "labor_act_2074",
+    "section_key": "section_17_severance_pay",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Labor Act 2074",
+    "section": "Section 18 - Prohibition of Discrimination",
+    "original_text_ne": "रोजगारीमा जात, लिङ्ग, धर्म, क्षेत्र, वा अपांगताको आधारमा भेदभाव गर्न पाइँदैन।",
+    "original_text_en": "Discrimination in employment on grounds of caste, gender, religion, region, or disability is prohibited.",
+    "plain_language_ne": "Job ma jati, ling, dharma, thau, apangata ko aadhar ma bhedbhav garna paudaina.",
+    "plain_language_en": "No discrimination in hiring, promotion, or termination based on caste, gender, etc.",
+    "practical_example": "Cannot reject applicant solely because of gender or caste",
+    "common_questions": [
+      "Discrimination bhaye ke garne?",
+      "Complaint kaha garne?"
+    ],
+    "exceptions": [
+      "Affirmative action may be allowed for disadvantaged groups"
+    ],
+    "related_sections": [
+      "Section 19 - Grievance Procedure"
+    ],
+    "id": "legsec-040",
+    "source": "user_exact",
+    "document_type_key": "labor_act_2074",
+    "section_key": "section_18_prohibition_of_discrimination",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Labor Act 2074",
+    "section": "Section 19 - Grievance Procedure",
+    "original_text_ne": "कर्मचारीले आफ्नो गुनासो लिखित रूपमा व्यवस्थापनलाई दिनु पर्नेछ र १५ दिनभित्र समाधान गर्नु पर्नेछ।",
+    "original_text_en": "Employees shall submit grievances in writing to management, which shall resolve within 15 days.",
+    "plain_language_ne": "Karmachari le kunai problem bhayeko paper ma management lai dinu, ra management le 15 din bhitra samadhan garnu.",
+    "plain_language_en": "Write a complaint to management; they must resolve within 15 days.",
+    "practical_example": "Employee complains about harassment; management investigates and acts within 15 days",
+    "common_questions": [
+      "Grievance kasari register garne?",
+      "Samadhan na bhaye ke garne?"
+    ],
+    "exceptions": [
+      "Urgent matters may be escalated immediately"
+    ],
+    "related_sections": [
+      "Section 20 - Labor Tribunal"
+    ],
+    "id": "legsec-041",
+    "source": "user_exact",
+    "document_type_key": "labor_act_2074",
+    "section_key": "section_19_grievance_procedure",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Contract Clause - Employment",
+    "section": "Clause 5 - Confidentiality",
+    "original_text_ne": "कर्मचारीले रोजगारीको अवधिमा र पछि पनि कम्पनीको गोप्य जानकारी खुलाउनु हुँदैन।",
+    "original_text_en": "The employee shall not disclose confidential information of the company during and after employment.",
+    "plain_language_ne": "Job ma ra job chhode pachi pani company ko gopya kura kasaile bhandina.",
+    "plain_language_en": "Keep company secrets confidential, even after leaving.",
+    "practical_example": "Employee signs NDA; cannot share trade secrets or client lists",
+    "common_questions": [
+      "Confidentiality kati samma ko?",
+      "Ullanghan bhaye ke huncha?"
+    ],
+    "exceptions": [
+      "Information already public is not confidential"
+    ],
+    "related_sections": [
+      "Clause 6 - Non-compete"
+    ],
+    "id": "legsec-042",
+    "source": "user_exact",
+    "document_type_key": "contract_clause_employment",
+    "section_key": "clause_5_confidentiality",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Contract Clause - Employment",
+    "section": "Clause 6 - Non-Compete",
+    "original_text_ne": "रोजगारी समाप्त भएको १ वर्षसम्म कर्मचारीले प्रतिस्पर्धी कम्पनीमा काम गर्न वा आफ्नै प्रतिस्पर्धी व्यवसाय सुरु गर्न पाउँदैन।",
+    "original_text_en": "The employee shall not work for a competitor or start a competing business for 1 year after termination.",
+    "plain_language_ne": "Job chhode pachi 1 saal samma competitor company ma kaam garna paudaina, ani aafno competitor business suru garna paudaina.",
+    "plain_language_en": "Non-compete for 1 year after leaving; cannot join or start a competing business.",
+    "practical_example": "Employee leaves IT firm; cannot join another IT firm for 1 year",
+    "common_questions": [
+      "Non-compete enforceable ho?",
+      "Kati distance samma?"
+    ],
+    "exceptions": [
+      "May be void if too broad or unreasonable"
+    ],
+    "related_sections": [
+      "Clause 5 - Confidentiality"
+    ],
+    "id": "legsec-043",
+    "source": "user_exact",
+    "document_type_key": "contract_clause_employment",
+    "section_key": "clause_6_non_compete",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Contract Clause - Lease",
+    "section": "Clause 3 - Rent Payment",
+    "original_text_ne": "भाडादारले प्रत्येक महिनाको १ गतेभित्र भाडा तिर्नु पर्नेछ। ढिला गरेमा १०% जरिवाना लाग्नेछ।",
+    "original_text_en": "The lessee shall pay rent by the 1st of each month. Late payment shall incur a 10% penalty.",
+    "plain_language_ne": "Hare mahina ko 1 gate samma bhada tirnu parcha. Dherai bhaye 10% fine.",
+    "plain_language_en": "Pay rent by 1st of each month; late fee 10%.",
+    "practical_example": "Rent Rs 20,000; if paid on 5th → pay Rs 22,000 (10% fine)",
+    "common_questions": [
+      "Fine kati ho?",
+      "Kun method ma tirne?"
+    ],
+    "exceptions": [
+      "Grace period may be allowed in contract"
+    ],
+    "related_sections": [
+      "Clause 4 - Security Deposit"
+    ],
+    "id": "legsec-044",
+    "source": "user_exact",
+    "document_type_key": "contract_clause_lease",
+    "section_key": "clause_3_rent_payment",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Contract Clause - Lease",
+    "section": "Clause 4 - Security Deposit",
+    "original_text_ne": "भाडादारले घरधनीलाई २ महिनाको भाडा बराबरको जमानत रकम जम्मा गर्नु पर्नेछ, जुन सम्झौता अन्त्यमा फिर्ता गरिनेछ।",
+    "original_text_en": "The lessee shall deposit a security deposit equivalent to 2 months' rent, refundable at the end of the lease.",
+    "plain_language_ne": "2 mahina ko bhada barabar ko security deposit rakhnu parcha, lease sakkepachi firta pauncha.",
+    "plain_language_en": "Pay 2 months rent as security deposit; refundable at lease end (less damages).",
+    "practical_example": "Rent Rs 25,000 → Deposit Rs 50,000; returned after inspection",
+    "common_questions": [
+      "Deposit kahile firta paucha?",
+      "Kati katnu?"
+    ],
+    "exceptions": [
+      "Deposit may be used to cover unpaid rent or damages"
+    ],
+    "related_sections": [
+      "Clause 3 - Rent"
+    ],
+    "id": "legsec-045",
+    "source": "user_exact",
+    "document_type_key": "contract_clause_lease",
+    "section_key": "clause_4_security_deposit",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Contract Clause - Lease",
+    "section": "Clause 5 - Maintenance and Repairs",
+    "original_text_ne": "घरधनीले प्रमुख मर्मत (छाना, पाइपलाइन) को खर्च बेहोर्नु पर्नेछ, र भाडादारले साना मर्मत (बत्ती, फिटिङ) को खर्च बेहोर्नु पर्नेछ।",
+    "original_text_en": "The lessor shall bear major repairs (roof, pipes); the lessee shall bear minor repairs (lights, fittings).",
+    "plain_language_ne": "Thulo mermat (chhana, pipeline) ghar dhani le garne; sano mermat (batti, fitting) bhadadar le garne.",
+    "plain_language_en": "Major repairs by owner, minor repairs by tenant.",
+    "practical_example": "Leaking roof → owner pays; broken bulb → tenant pays",
+    "common_questions": [
+      "Kun mermat ko paisa kasle tirne?",
+      "Emergency mermat?"
+    ],
+    "exceptions": [
+      "If damage caused by tenant, tenant pays"
+    ],
+    "related_sections": [
+      "Clause 6 - Termination"
+    ],
+    "id": "legsec-046",
+    "source": "user_exact",
+    "document_type_key": "contract_clause_lease",
+    "section_key": "clause_5_maintenance_and_repairs",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Contract Clause - Lease",
+    "section": "Clause 6 - Termination of Lease",
+    "original_text_ne": "कुनै पक्षले १ महिनाको पूर्व सूचना दिएर सम्झौता समाप्त गर्न सक्छ।",
+    "original_text_en": "Either party may terminate the lease with 1 month's prior notice.",
+    "plain_language_ne": "Pahile 1 mahina agadi bhanera lease todna milcha.",
+    "plain_language_en": "Terminate with 1 month notice.",
+    "practical_example": "Tenant wants to leave; gives 30 days notice, vacates, gets deposit back",
+    "common_questions": [
+      "Notice period kati ho?",
+      "Notice na diye ke huncha?"
+    ],
+    "exceptions": [
+      "If lease has fixed term, early termination may incur penalty"
+    ],
+    "related_sections": [
+      "Clause 4 - Security Deposit"
+    ],
+    "id": "legsec-047",
+    "source": "user_exact",
+    "document_type_key": "contract_clause_lease",
+    "section_key": "clause_6_termination_of_lease",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Contract Clause - Sale",
+    "section": "Clause 7 - Price and Payment Terms",
+    "original_text_ne": "खरिदकर्ताले बिक्री मूल्यको ५०% पूर्वभुक्तानी र बाँकी ५०% डेलिभरीको १५ दिनभित्र तिर्नु पर्नेछ।",
+    "original_text_en": "The buyer shall pay 50% advance and the remaining 50% within 15 days of delivery.",
+    "plain_language_ne": "50% pehle dinu, baki 50% delivery pachi 15 din bhitra tirnu.",
+    "plain_language_en": "50% upfront, 50% within 15 days after delivery.",
+    "practical_example": "Total Rs 100,000 → Pay Rs 50,000 now, Rs 50,000 on delivery+15 days",
+    "common_questions": [
+      "Payment delay bhaye kati interest?",
+      "Kun method ma tirne?"
+    ],
+    "exceptions": [
+      "Cash discount for full payment upfront"
+    ],
+    "related_sections": [
+      "Clause 8 - Delivery"
+    ],
+    "id": "legsec-048",
+    "source": "user_exact",
+    "document_type_key": "contract_clause_sale",
+    "section_key": "clause_7_price_and_payment_terms",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Contract Clause - Sale",
+    "section": "Clause 8 - Delivery",
+    "original_text_ne": "विक्रेताले खरिद आदेश प्राप्त भएको ३० दिनभित्र वस्तु डेलिभर गर्नु पर्नेछ। ढिला गरेमा ०.५% दैनिक जरिवाना।",
+    "original_text_en": "The seller shall deliver goods within 30 days of purchase order. Late delivery incurs a daily penalty of 0.5% of the order value.",
+    "plain_language_ne": "Order aayeko 30 din bhitra saman puraunai parcha. Dherai bhaye 0.5% din ko fine.",
+    "plain_language_en": "Deliver within 30 days; delay penalty 0.5% per day.",
+    "practical_example": "Order Rs 500,000, delivery 10 days late → Penalty 500,000*0.5%*10 = 25,000",
+    "common_questions": [
+      "Delivery time limit kati ho?",
+      "Force majeure ma ke huncha?"
+    ],
+    "exceptions": [
+      "Force majeure events may excuse delay"
+    ],
+    "related_sections": [
+      "Clause 7 - Payment"
+    ],
+    "id": "legsec-049",
+    "source": "user_exact",
+    "document_type_key": "contract_clause_sale",
+    "section_key": "clause_8_delivery",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Contract Clause - Sale",
+    "section": "Clause 9 - Warranty",
+    "original_text_ne": "विक्रेताले बिक्री गरेको वस्तु १ वर्षसम्मको वारेन्टी प्रदान गर्नेछ। दोषपूर्ण वस्तुको मर्मत वा प्रतिस्थापन गरिनेछ।",
+    "original_text_en": "The seller warrants the goods for 1 year. Defective goods will be repaired or replaced.",
+    "plain_language_ne": "1 saal ko guarantee; saman bigriya bhane repair ya naya dinu parcha.",
+    "plain_language_en": "1-year warranty: repair or replace defective items.",
+    "practical_example": "Product fails within 6 months → Seller repairs free of charge",
+    "common_questions": [
+      "Warranty ma ke cover huncha?",
+      "Claim kasari garne?"
+    ],
+    "exceptions": [
+      "Warranty excludes damage due to misuse"
+    ],
+    "related_sections": [
+      "Clause 10 - Returns"
+    ],
+    "id": "legsec-050",
+    "source": "user_exact",
+    "document_type_key": "contract_clause_sale",
+    "section_key": "clause_9_warranty",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Contract Clause - Sale",
+    "section": "Clause 10 - Returns and Refunds",
+    "original_text_ne": "खरिदकर्ताले डेलिभरीको ७ दिनभित्र दोषपूर्ण वस्तु फिर्ता गर्न सक्छ र पूरा रकम फिर्ता पाउन सक्छ।",
+    "original_text_en": "The buyer may return defective goods within 7 days of delivery and receive a full refund.",
+    "plain_language_ne": "Saman aako 7 din bhitra bigriyeko saman firta garna milcha, paisa firta paucha.",
+    "plain_language_en": "Full refund for defective goods returned within 7 days.",
+    "practical_example": "Return faulty laptop within 7 days → get full Rs 100,000 back",
+    "common_questions": [
+      "Return policy kati ho?",
+      "Shipping cost kasle tirne?"
+    ],
+    "exceptions": [
+      "Customized goods may not be returnable"
+    ],
+    "related_sections": [
+      "Clause 9 - Warranty"
+    ],
+    "id": "legsec-051",
+    "source": "user_exact",
+    "document_type_key": "contract_clause_sale",
+    "section_key": "clause_10_returns_and_refunds",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Government Circular",
+    "section": "Circular No. 1/2078 - Tax Filing Deadlines",
+    "original_text_ne": "आर्थिक वर्ष २०७८/७९ को आयकर विवरण पेश गर्ने म्याद २०७९ माघ १५ गतेसम्म रहेको छ।",
+    "original_text_en": "The deadline for filing income tax return for FY 2078/79 is extended to Magh 15, 2079 (January 30, 2023).",
+    "plain_language_ne": "Income tax return bharna ko lagi time badayera Magh 15 samma diyeko cha.",
+    "plain_language_en": "Tax return filing deadline extended to Jan 30.",
+    "practical_example": "Return must be filed by Jan 30, otherwise penalty",
+    "common_questions": [
+      "Deadline kati ho?",
+      "Extension chaincha bhane ke garne?"
+    ],
+    "exceptions": [
+      "Individual taxpayers may have different deadlines"
+    ],
+    "related_sections": [
+      "Circular No. 2/2078 - Late Filing"
+    ],
+    "id": "legsec-052",
+    "source": "user_exact",
+    "document_type_key": "government_circular",
+    "section_key": "circular_no_1_2078_tax_filing_deadlines",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Government Circular",
+    "section": "Circular No. 2/2078 - Late Filing Penalty",
+    "original_text_ne": "समयमा कर विवरण नपेश गर्ने करदातालाई १०,००० रुपैयाँ जरिवाना तथा बाँकी करमा १५% ब्याज लाग्नेछ।",
+    "original_text_en": "Taxpayers failing to file returns on time shall be subject to a penalty of NPR 10,000 and interest at 15% on tax due.",
+    "plain_language_ne": "Return time ma nahalne lai 10,000 jariwana ra baaki tax ma 15% byaaj lagcha.",
+    "plain_language_en": "Late filing: NPR 10,000 penalty + 15% interest on unpaid tax.",
+    "practical_example": "Tax due Rs 50,000, filed 2 months late → Penalty 10,000 + interest 50,000*15%*2/12 = 1,250",
+    "common_questions": [
+      "Penalty kati ho?",
+      "Byaaj kati lagcha?"
+    ],
+    "exceptions": [
+      "Penalty may be waived for first-time offenders"
+    ],
+    "related_sections": [
+      "Circular No. 1/2078"
+    ],
+    "id": "legsec-053",
+    "source": "user_exact",
+    "document_type_key": "government_circular",
+    "section_key": "circular_no_2_2078_late_filing_penalty",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Government Circular",
+    "section": "Circular No. 3/2079 - VAT Compliance Checklist",
+    "original_text_ne": "VAT दर्ता व्यवसायीहरूले अनिवार्य रूपमा इलेक्ट्रोनिक बिलिङ प्रणाली अपनाउनु पर्नेछ र मासिक विवरण पेश गर्नु पर्नेछ।",
+    "original_text_en": "VAT-registered businesses must adopt electronic billing system and file monthly returns.",
+    "plain_language_ne": "VAT registered business le electronic bill system use garnu parcha, ani mahina ko return bharnu parcha.",
+    "plain_language_en": "Mandatory e-billing and monthly returns for VAT registered entities.",
+    "practical_example": "Implement billing software; send electronic invoices to customers",
+    "common_questions": [
+      "E-billing system kasari suru garne?",
+      "Kehi exemption cha?"
+    ],
+    "exceptions": [
+      "Small businesses may get extension"
+    ],
+    "related_sections": [
+      "Circular No. 4/2079 - E-billing"
+    ],
+    "id": "legsec-054",
+    "source": "user_exact",
+    "document_type_key": "government_circular",
+    "section_key": "circular_no_3_2079_vat_compliance_checklist",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Government Circular",
+    "section": "Circular No. 4/2079 - E-billing Implementation",
+    "original_text_ne": "आर्थिक वर्ष २०७९/८० देखि सबै VAT दर्ता व्यवसायीले अनिवार्य रूपमा इलेक्ट्रोनिक बिलिङ गर्नु पर्नेछ।",
+    "original_text_en": "From FY 2079/80, all VAT-registered businesses must implement electronic billing.",
+    "plain_language_ne": "Yo aarthik barsa dekhi sabai le electronic bill garna parcha.",
+    "plain_language_en": "Mandatory e-billing for all from this fiscal year.",
+    "practical_example": "Generate QR code invoices; customers can verify VAT",
+    "common_questions": [
+      "E-billing ko lagi ke software?",
+      "Penalty for non-compliance?"
+    ],
+    "exceptions": [
+      "Business in remote areas may get exemption"
+    ],
+    "related_sections": [
+      "Circular No. 3/2079"
+    ],
+    "id": "legsec-055",
+    "source": "user_exact",
+    "document_type_key": "government_circular",
+    "section_key": "circular_no_4_2079_e_billing_implementation",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Government Circular",
+    "section": "Circular No. 5/2079 - Tax Deduction at Source for Rental",
+    "original_text_ne": "भाडा भुक्तानी गर्दा १०% TDS कट्टा गर्ने र राजश्व जम्मा गर्ने प्रक्रिया स्पष्ट पारिएको छ।",
+    "original_text_en": "Clarification issued on deducting 10% TDS on rent payments and depositing to revenue.",
+    "plain_language_ne": "Bhada ko 10% TDS kasari cut garne ra bujhaune, tyo process clear gariyeko cha.",
+    "plain_language_en": "Guidance on 10% TDS on rent: deduction and deposition process.",
+    "practical_example": "Deduct TDS, deposit via e-payment within 25 days of month end",
+    "common_questions": [
+      "TDS deposit kahile garne?",
+      "Kun form use garne?"
+    ],
+    "exceptions": [
+      "Residential rent below Rs 50,000 per month exempt"
+    ],
+    "related_sections": [
+      "Income Tax Act Section 88"
+    ],
+    "id": "legsec-056",
+    "source": "user_exact",
+    "document_type_key": "government_circular",
+    "section_key": "circular_no_5_2079_tax_deduction_at_source_for_rental",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Government Circular",
+    "section": "Circular No. 6/2080 - Social Security Contribution",
+    "original_text_ne": "सबै नियोक्ताले कर्मचारीको सामाजिक सुरक्षा कोषमा ११% र कर्मचारीबाट ११% कट्टी गरी जम्मा गर्नु पर्नेछ।",
+    "original_text_en": "All employers must contribute 11% to social security fund and deduct 11% from employee salary.",
+    "plain_language_ne": "Employer le 11% ra employee ko 11% social security fund ma bujhau.",
+    "plain_language_en": "Employer 11% + employee 11% social security contribution.",
+    "practical_example": "Salary Rs 50,000 → Employer pays Rs 5,500, employee pays Rs 5,500",
+    "common_questions": [
+      "Contribution kab garne?",
+      "Exemption cha?"
+    ],
+    "exceptions": [
+      "Certain temporary employees may be excluded"
+    ],
+    "related_sections": [
+      "Circular No. 7/2080 - SSF"
+    ],
+    "id": "legsec-057",
+    "source": "user_exact",
+    "document_type_key": "government_circular",
+    "section_key": "circular_no_6_2080_social_security_contribution",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Government Circular",
+    "section": "Circular No. 7/2080 - SSF Registration Deadline",
+    "original_text_ne": "सबै नियोक्ताले सामाजिक सुरक्षा कोषमा दर्ता गर्ने अन्तिम मिति २०८० असार १५ गते रहेको छ।",
+    "original_text_en": "Deadline for employers to register with Social Security Fund is Ashad 15, 2080 (June 29, 2023).",
+    "plain_language_ne": "SSF ma register garna last date Ashad 15 ho.",
+    "plain_language_en": "Register with SSF by June 29.",
+    "practical_example": "Submit registration documents to SSF by the deadline",
+    "common_questions": [
+      "Register nagare ke huncha?",
+      "Late fee?"
+    ],
+    "exceptions": [
+      "New businesses must register within 30 days of establishment"
+    ],
+    "related_sections": [
+      "Circular No. 6/2080"
+    ],
+    "id": "legsec-058",
+    "source": "user_exact",
+    "document_type_key": "government_circular",
+    "section_key": "circular_no_7_2080_ssf_registration_deadline",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Government Circular",
+    "section": "Circular No. 8/2080 - Tax Rates for FY 2080/81",
+    "original_text_ne": "आगामी आर्थिक वर्ष २०८०/८१ को लागि आयकर दरहरू यथावत राखिएको छ।",
+    "original_text_en": "Income tax rates for the upcoming FY 2080/81 remain unchanged from previous year.",
+    "plain_language_ne": "Naya barsa ko income tax rates pahile jasto nai cha.",
+    "plain_language_en": "Tax rates unchanged for next fiscal year.",
+    "practical_example": "Same slab rates: 1%,10%,20%,30%",
+    "common_questions": [
+      "New rates kati ho?",
+      "Kunai change cha?"
+    ],
+    "exceptions": [
+      "Rebates for senior citizens remain"
+    ],
+    "related_sections": [
+      "Circular No. 9/2080 - Rebates"
+    ],
+    "id": "legsec-059",
+    "source": "user_exact",
+    "document_type_key": "government_circular",
+    "section_key": "circular_no_8_2080_tax_rates_for_fy_2080_81",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Government Circular",
+    "section": "Circular No. 9/2080 - Tax Rebates for Senior Citizens",
+    "original_text_ne": "७५ वर्षभन्दा माथिका करदातालाई आयकरमा १०% थप छुट दिइनेछ।",
+    "original_text_en": "Taxpayers above 75 years shall receive an additional 10% discount on income tax.",
+    "plain_language_ne": "75 barsa mathi ko lai tax ma 10% discount.",
+    "plain_language_en": "10% extra rebate for senior citizens aged 75+.",
+    "practical_example": "Tax liability Rs 100,000 → after rebate Rs 90,000",
+    "common_questions": [
+      "Rebate kasari claim garne?",
+      "Age proof chaincha?"
+    ],
+    "exceptions": [
+      "Only for resident individuals"
+    ],
+    "related_sections": [
+      "Circular No. 8/2080"
+    ],
+    "id": "legsec-060",
+    "source": "user_exact",
+    "document_type_key": "government_circular",
+    "section_key": "circular_no_9_2080_tax_rebates_for_senior_citizens",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  },
+  {
+    "document_type": "Government Circular",
+    "section": "Circular No. 10/2080 - e-Payment of Taxes",
+    "original_text_ne": "सबै कर भुक्तानी अनलाइन माध्यमबाट गर्न अनिवार्य गरिएको छ। बैंक काउन्टरबाट भुक्तानी स्वीकार नगर्ने।",
+    "original_text_en": "All tax payments must be made online. Bank counter payments will no longer be accepted.",
+    "plain_language_ne": "Sabai tax online tirnu parcha. Bank ma gayera tirna mildaina.",
+    "plain_language_en": "Mandatory online tax payment; cash/cheque at bank counters not accepted.",
+    "practical_example": "Use IRD's online portal to pay taxes",
+    "common_questions": [
+      "Online payment kasari garne?",
+      "Payment failed bhane ke garne?"
+    ],
+    "exceptions": [
+      "Rural areas may have offline options"
+    ],
+    "related_sections": [
+      "Circular No. 3/2079"
+    ],
+    "id": "legsec-061",
+    "source": "user_exact",
+    "document_type_key": "government_circular",
+    "section_key": "circular_no_10_2080_e_payment_of_taxes",
+    "intent": "legal_qa",
+    "NOT_transaction": true,
+    "domain": "nepal_legal"
+  }
+]

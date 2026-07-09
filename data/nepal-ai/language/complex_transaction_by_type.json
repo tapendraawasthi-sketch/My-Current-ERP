@@ -1,0 +1,414 @@
+{
+  "account_reconciliation": [
+    "ctxn-082"
+  ],
+  "accounting_error_correction": [
+    "ctxn-054"
+  ],
+  "advance_adjustment": [
+    "ctxn-004"
+  ],
+  "advance_fulfillment_installment": [
+    "ctxn-099"
+  ],
+  "advance_given_for_purchase": [
+    "ctxn-012"
+  ],
+  "advance_order_pending": [
+    "ctxn-043"
+  ],
+  "advance_recovery_pending": [
+    "ctxn-119"
+  ],
+  "advance_to_supplier_digital": [
+    "ctxn-088"
+  ],
+  "annual_rent_split": [
+    "ctxn-122"
+  ],
+  "asset_creation_split_payment": [
+    "ctxn-114"
+  ],
+  "asset_purchase_emi": [
+    "ctxn-052"
+  ],
+  "asset_purchase_with_installation": [
+    "ctxn-098"
+  ],
+  "asset_replacement": [
+    "ctxn-106"
+  ],
+  "asset_sale": [
+    "ctxn-048"
+  ],
+  "asset_sale_at_loss": [
+    "ctxn-093"
+  ],
+  "bank_deposit_debt_clearance": [
+    "ctxn-025"
+  ],
+  "bank_withdrawal": [
+    "ctxn-070"
+  ],
+  "barter_service_settlement": [
+    "ctxn-037"
+  ],
+  "business_expense_from_cash": [
+    "ctxn-019"
+  ],
+  "capital_introduction": [
+    "ctxn-029"
+  ],
+  "card_payment_with_charges": [
+    "ctxn-125"
+  ],
+  "chain_payment_via_intermediary": [
+    "ctxn-094"
+  ],
+  "change_shortage_credit": [
+    "ctxn-128"
+  ],
+  "cheque_bounce": [
+    "ctxn-022"
+  ],
+  "compensation_expense": [
+    "ctxn-137"
+  ],
+  "conditional_discount": [
+    "ctxn-021"
+  ],
+  "conditional_discount_fulfilled": [
+    "ctxn-044"
+  ],
+  "conditional_future": [
+    "ctxn-027"
+  ],
+  "conditional_negotiation": [
+    "ctxn-090"
+  ],
+  "conditional_price_match": [
+    "ctxn-138"
+  ],
+  "contra_adjustment": [
+    "ctxn-076"
+  ],
+  "credit_note_received": [
+    "ctxn-126"
+  ],
+  "credit_purchase_partial_payment": [
+    "ctxn-024"
+  ],
+  "credit_sale_institutional": [
+    "ctxn-069"
+  ],
+  "credit_under_different_name": [
+    "ctxn-074"
+  ],
+  "daily_summary_split": [
+    "ctxn-034"
+  ],
+  "damage_claim_adjustment": [
+    "ctxn-032"
+  ],
+  "deferred_payment_promise": [
+    "ctxn-113"
+  ],
+  "digital_payment_partial": [
+    "ctxn-018"
+  ],
+  "disputed_payment": [
+    "ctxn-031"
+  ],
+  "disputed_payment_with_evidence": [
+    "ctxn-059"
+  ],
+  "drawings": [
+    "ctxn-030"
+  ],
+  "dual_discount_purchase": [
+    "ctxn-115"
+  ],
+  "duplicate_receipt_request": [
+    "ctxn-111"
+  ],
+  "early_payment_discount": [
+    "ctxn-073"
+  ],
+  "exchange_transaction": [
+    "ctxn-068"
+  ],
+  "expense_charged_to_party": [
+    "ctxn-066"
+  ],
+  "expense_no_receipt": [
+    "ctxn-047"
+  ],
+  "expense_with_vat": [
+    "ctxn-065"
+  ],
+  "family_credit_sale": [
+    "ctxn-038"
+  ],
+  "fire_loss_uncertain": [
+    "ctxn-123"
+  ],
+  "fixed_cost_acknowledgment": [
+    "ctxn-112"
+  ],
+  "freight_inward": [
+    "ctxn-100"
+  ],
+  "friend_bad_debt": [
+    "ctxn-134"
+  ],
+  "goods_withdrawn_personal": [
+    "ctxn-101"
+  ],
+  "guaranteed_credit": [
+    "ctxn-028"
+  ],
+  "high_volume_day_with_return": [
+    "ctxn-064"
+  ],
+  "hire_purchase": [
+    "ctxn-129"
+  ],
+  "historical_concession_ended": [
+    "ctxn-130"
+  ],
+  "income_and_expenses": [
+    "ctxn-016"
+  ],
+  "institutional_credit_sale": [
+    "ctxn-071"
+  ],
+  "inter_branch_transfer": [
+    "ctxn-105"
+  ],
+  "interest_free_loan_taken": [
+    "ctxn-083"
+  ],
+  "joint_purchase": [
+    "ctxn-121"
+  ],
+  "large_payment_partial": [
+    "ctxn-033"
+  ],
+  "loan_emi_payment": [
+    "ctxn-061"
+  ],
+  "loan_taken": [
+    "ctxn-060"
+  ],
+  "loan_with_interest_return": [
+    "ctxn-035"
+  ],
+  "missed_entry_correction": [
+    "ctxn-041"
+  ],
+  "mixed_salary_payment": [
+    "ctxn-103"
+  ],
+  "monthly_settlement": [
+    "ctxn-086"
+  ],
+  "multi_installment_time_spanning": [
+    "ctxn-007"
+  ],
+  "multi_item_cash_purchase": [
+    "ctxn-055"
+  ],
+  "multi_item_credit": [
+    "ctxn-006"
+  ],
+  "multi_party_credit_sale": [
+    "ctxn-014"
+  ],
+  "multi_party_multi_transaction": [
+    "ctxn-023"
+  ],
+  "multi_party_payment": [
+    "ctxn-013"
+  ],
+  "multi_party_payment_out": [
+    "ctxn-039"
+  ],
+  "multi_party_salary": [
+    "ctxn-058"
+  ],
+  "multi_supplier_credit_purchase": [
+    "ctxn-046"
+  ],
+  "multiple_utility_payments": [
+    "ctxn-085"
+  ],
+  "mutual_transaction_netting": [
+    "ctxn-020"
+  ],
+  "new_partner_investment": [
+    "ctxn-096"
+  ],
+  "operational_expense": [
+    "ctxn-080"
+  ],
+  "order_cancellation": [
+    "ctxn-116"
+  ],
+  "order_with_advance": [
+    "ctxn-056"
+  ],
+  "outstanding_summary": [
+    "ctxn-067"
+  ],
+  "partnership_capital": [
+    "ctxn-072"
+  ],
+  "payment_and_new_credit": [
+    "ctxn-008"
+  ],
+  "payment_and_new_credit_net": [
+    "ctxn-104"
+  ],
+  "payment_in_kind": [
+    "ctxn-079"
+  ],
+  "payment_reassignment": [
+    "ctxn-062"
+  ],
+  "payment_to_wrong_account": [
+    "ctxn-124"
+  ],
+  "perishable_goods_trading": [
+    "ctxn-135"
+  ],
+  "personal_loan_from_business": [
+    "ctxn-057"
+  ],
+  "phone_order_advance": [
+    "ctxn-049"
+  ],
+  "prepaid_expense": [
+    "ctxn-063"
+  ],
+  "prior_period_adjustment": [
+    "ctxn-109"
+  ],
+  "profit_distribution": [
+    "ctxn-120"
+  ],
+  "profit_summary": [
+    "ctxn-110"
+  ],
+  "profit_withdrawal_deferred": [
+    "ctxn-102"
+  ],
+  "promotional_discount_day": [
+    "ctxn-095"
+  ],
+  "property_tax": [
+    "ctxn-131"
+  ],
+  "purchase_and_partial_sale": [
+    "ctxn-081"
+  ],
+  "purchase_return_conditional": [
+    "ctxn-017"
+  ],
+  "purchase_with_discount": [
+    "ctxn-040"
+  ],
+  "qr_payment_sale": [
+    "ctxn-108"
+  ],
+  "receivables_reminder": [
+    "ctxn-118"
+  ],
+  "recurring_expense": [
+    "ctxn-127"
+  ],
+  "regulatory_expense": [
+    "ctxn-092"
+  ],
+  "relocation_expenses": [
+    "ctxn-133"
+  ],
+  "rental_income_advance": [
+    "ctxn-078"
+  ],
+  "running_account_update": [
+    "ctxn-015"
+  ],
+  "salary_advance_deduction": [
+    "ctxn-050"
+  ],
+  "salary_with_bonus": [
+    "ctxn-107"
+  ],
+  "sale_below_cost_employee_error": [
+    "ctxn-117"
+  ],
+  "sales_return": [
+    "ctxn-036"
+  ],
+  "sales_return_credit_adjust": [
+    "ctxn-097"
+  ],
+  "seasonal_discount_day": [
+    "ctxn-053"
+  ],
+  "settlement_discount": [
+    "ctxn-042"
+  ],
+  "simple_credit_sale": [
+    "ctxn-009"
+  ],
+  "split_payment": [
+    "ctxn-002"
+  ],
+  "split_payment_bank": [
+    "ctxn-010"
+  ],
+  "split_payment_with_promise": [
+    "ctxn-005"
+  ],
+  "split_payment_with_timeline": [
+    "ctxn-026"
+  ],
+  "stock_damage_insurance": [
+    "ctxn-087"
+  ],
+  "stock_write_off": [
+    "ctxn-075"
+  ],
+  "tax_payment_with_penalty": [
+    "ctxn-089"
+  ],
+  "temporary_drawings": [
+    "ctxn-136"
+  ],
+  "theft_loss": [
+    "ctxn-051"
+  ],
+  "third_party_payment": [
+    "ctxn-011",
+    "ctxn-045"
+  ],
+  "time_based_daily_summary": [
+    "ctxn-084"
+  ],
+  "time_spanning_bad_debt": [
+    "ctxn-003"
+  ],
+  "time_spanning_partial_payment": [
+    "ctxn-001"
+  ],
+  "travel_expense": [
+    "ctxn-077"
+  ],
+  "uncleared_cheque": [
+    "ctxn-091"
+  ],
+  "underpayment_uncertain": [
+    "ctxn-132"
+  ]
+}

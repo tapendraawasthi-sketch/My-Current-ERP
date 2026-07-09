@@ -4,7 +4,11 @@
  */
 
 import { isSemanticTransaction, parseSemanticFrame } from "./semanticNepaliBrain";
-import { isNepaliAccountingQuestion } from "../nepal-ai/questionDetect";
+import {
+  isNepaliAccountingQuestion,
+  isNotTransactionUtterance,
+} from "../nepal-ai/questionDetect";
+import { isSocialDiscourseUtterance } from "../nepal-ai/socialDiscourse";
 
 export type EKhataDomain =
   | "journal_entry"
@@ -56,13 +60,19 @@ export function classifyDomain(text: string): DomainRouteResult {
     return { domain: "meta_system", confidence: 0.95, blockWebSearch: true };
   }
 
-  // Nepal AI question patterns — "noksan k ho" before journal path
-  if (isNepaliAccountingQuestion(t)) {
+  // Social discourse (greeting/thanks/goodbye/small talk/politeness) — never journal or QA
+  if (isSocialDiscourseUtterance(t)) {
+    return { domain: "emotional_chat", confidence: 0.95, blockWebSearch: true };
+  }
+
+  // Nepal AI question patterns + multi-sense question words (k/ko/kun/kahile…)
+  // Never treat these as journal entries.
+  if (isNepaliAccountingQuestion(t) || isNotTransactionUtterance(t)) {
     return { domain: "accounting_qa", confidence: 0.9, blockWebSearch: true };
   }
 
   // Semantic transaction detection — understands meaning, not just keyword co-occurrence
-  if (isSemanticTransaction(t) && !QUESTION.test(t)) {
+  if (isSemanticTransaction(t) && !QUESTION.test(t) && !isNotTransactionUtterance(t)) {
     return { domain: "journal_entry", confidence: 0.92, blockWebSearch: true };
   }
 

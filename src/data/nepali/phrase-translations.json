@@ -1,0 +1,78 @@
+{
+  "phrases": [
+    { "roman": "maile bechye", "nepali": "मैले बेचें", "english": "I sold" },
+    { "roman": "maile kinyo", "nepali": "मैले किनें", "english": "I bought" },
+    { "roman": "maile becheko", "nepali": "मैले बेचेको", "english": "I have sold" },
+    { "roman": "maile kineko", "nepali": "मैले किनेको", "english": "I have bought" },
+    { "roman": "usle bechyo", "nepali": "उसले बेच्यो", "english": "he/she sold" },
+    { "roman": "usle kinyo", "nepali": "उसले किन्यो", "english": "he/she bought" },
+    { "roman": "udhaar ma", "nepali": "उधारमा", "english": "on credit" },
+    { "roman": "nagad ma", "nepali": "नगदमा", "english": "in cash" },
+    { "roman": "hisaab kitab", "nepali": "हिसाब किताब", "english": "accounts and books" },
+    { "roman": "hisaab hernu", "nepali": "हिसाब हेर्नु", "english": "check accounts" },
+    { "roman": "hisaab milaunu", "nepali": "हिसाब मिलाउनु", "english": "reconcile accounts" },
+    { "roman": "debit credit", "nepali": "डेबिट क्रेडिट", "english": "debit and credit" },
+    { "roman": "trial balance", "nepali": "ट्रायल ब्यालेन्स", "english": "trial balance" },
+    { "roman": "sales register", "nepali": "बिक्री रजिष्टर", "english": "sales register" },
+    { "roman": "purchase register", "nepali": "खरिद रजिष्टर", "english": "purchase register" },
+    { "roman": "stock summary", "nepali": "स्टक सारांश", "english": "stock summary" },
+    { "roman": "party ledger", "nepali": "पार्टी खाता", "english": "party ledger" },
+    { "roman": "opening balance", "nepali": "सुरुवाती ब्यालेन्स", "english": "opening balance" },
+    { "roman": "closing balance", "nepali": "अन्तिम ब्यालेन्स", "english": "closing balance" },
+    { "roman": "vat return", "nepali": "भ्याट फिर्ता", "english": "VAT return" },
+    { "roman": "did you mean", "nepali": "के तपाईं यसको मतलब", "english": "did you mean" },
+    { "roman": "tapai janubhayo", "nepali": "तपाईं जानुभयो", "english": "you went (honorific)" },
+    { "roman": "hajur khayo", "nepali": "हजुर खानुभयो", "english": "you ate (honorific)" }
+  ],
+  "words": {
+    "maile": { "nepali": "मैले", "english": "I" },
+    "usle": { "nepali": "उसले", "english": "he/she" },
+    "tapai": { "nepali": "तपाईं", "english": "you (formal)" },
+    "hajur": { "nepali": "हजुर", "english": "you (honorific)" },
+    "bechye": { "nepali": "बेचें", "english": "sold" },
+    "becheko": { "nepali": "बेचेको", "english": "sold" },
+    "kinyo": { "nepali": "किनें", "english": "bought" },
+    "kineko": { "nepali": "किनेको", "english": "bought" },
+    "kakro": { "nepali": "काक्रो", "english": "cucumber" },
+    "aalu": { "nepali": "आलु", "english": "potato" },
+    "tomatar": { "nepali": "टमाटर", "english": "tomato" },
+    "pyaj": { "nepali": "प्याज", "english": "onion" },
+    "tarkari": { "nepali": "तरकारी", "english": "vegetables" },
+    "bikri": { "nepali": "बिक्री", "english": "sales" },
+    "kharid": { "nepali": "खरिद", "english": "purchase" },
+    "udhaar": { "nepali": "उधार", "english": "credit" },
+    "nagad": { "nepali": "नगद", "english": "cash" },
+    "hisaab": { "nepali": "हिसाब", "english": "accounts" },
+    "nafa": { "nepali": "नाफा", "english": "profit" },
+    "noksan": { "nepali": "नोक्सान", "english": "loss" },
+    "debit": { "nepali": "डेबिट", "english": "debit" },
+    "credit": { "nepali": "क्रेडिट", "english": "credit" },
+    "ko": { "nepali": "को", "english": "of/worth" },
+    "lai": { "nepali": "लाई", "english": "to" },
+    "le": { "nepali": "ले", "english": "(ergative)" },
+    "rs": { "nepali": "रु", "english": "Rs." },
+    "rupiya": { "nepali": "रुपैयाँ", "english": "rupees" }
+  },
+  "templates": {
+    "sales_understood": {
+      "english": "Sales: {product} worth Rs. {amount}",
+      "nepali": "बिक्री: {productNepali} रु. {amount}",
+      "roman": "Bikri: {product} {amount} ko"
+    },
+    "purchase_understood": {
+      "english": "Purchase: {product} worth Rs. {amount}",
+      "nepali": "खरिद: {productNepali} रु. {amount}",
+      "roman": "Kharid: {product} {amount} ko"
+    },
+    "sales_qty": {
+      "english": "Sold {quantity} {unit} of {product}",
+      "nepali": "{productNepali} {quantity} {unit} बेचियो",
+      "roman": "{product} {quantity} {unit} bechye"
+    },
+    "credit_sale": {
+      "english": "Credit sale to {party}: {product} Rs. {amount}",
+      "nepali": "{party} लाई उधार: {productNepali} रु. {amount}",
+      "roman": "{party} lai udhaar: {product} {amount} ko"
+    }
+  }
+}

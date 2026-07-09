@@ -1,0 +1,5294 @@
+{
+  "khaja khana aako": {
+    "id": "stv-001",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "khaja",
+    "concept_key": "khaja"
+  },
+  "khaja ko paisa": {
+    "id": "stv-001",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "khaja",
+    "concept_key": "khaja"
+  },
+  "khaja pasal": {
+    "id": "stv-001",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "khaja",
+    "concept_key": "khaja"
+  },
+  "khaajaa": {
+    "id": "stv-001",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "khaja",
+    "concept_key": "khaja"
+  },
+  "khaja": {
+    "id": "stv-001",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "khaja",
+    "concept_key": "khaja"
+  },
+  "khaza": {
+    "id": "stv-001",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "khaja",
+    "concept_key": "khaja"
+  },
+  "bhoj ko order": {
+    "id": "stv-002",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "bhoj",
+    "concept_key": "bhoj"
+  },
+  "bhoj bhatter": {
+    "id": "stv-002",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "bhoj",
+    "concept_key": "bhoj"
+  },
+  "bihako bhoj": {
+    "id": "stv-002",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "bhoj",
+    "concept_key": "bhoj"
+  },
+  "bhoj ghar": {
+    "id": "stv-002",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "bhoj",
+    "concept_key": "bhoj"
+  },
+  "bhoj": {
+    "id": "stv-002",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "bhoj",
+    "concept_key": "bhoj"
+  },
+  "50 jana ko party order": {
+    "id": "stv-003",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "party order",
+    "concept_key": "party_order"
+  },
+  "party order aako cha": {
+    "id": "stv-003",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "party order",
+    "concept_key": "party_order"
+  },
+  "party ko order": {
+    "id": "stv-003",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "party order",
+    "concept_key": "party_order"
+  },
+  "party order": {
+    "id": "stv-003",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "party order",
+    "concept_key": "party_order"
+  },
+  "bulk order": {
+    "id": "stv-003",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "party order",
+    "concept_key": "party_order"
+  },
+  "catering service": {
+    "id": "stv-004",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "catering",
+    "concept_key": "catering"
+  },
+  "catering ko kam": {
+    "id": "stv-004",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "catering",
+    "concept_key": "catering"
+  },
+  "catering order": {
+    "id": "stv-004",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "catering",
+    "concept_key": "catering"
+  },
+  "catering": {
+    "id": "stv-004",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "catering",
+    "concept_key": "catering"
+  },
+  "ketering": {
+    "id": "stv-004",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "catering",
+    "concept_key": "catering"
+  },
+  "customer le tip diyo": {
+    "id": "stv-005",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "tip",
+    "concept_key": "tip"
+  },
+  "tip paisa": {
+    "id": "stv-005",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "tip",
+    "concept_key": "tip"
+  },
+  "tip diyo": {
+    "id": "stv-005",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "tip",
+    "concept_key": "tip"
+  },
+  "baksis": {
+    "id": "stv-005",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "tip",
+    "concept_key": "tip"
+  },
+  "tips": {
+    "id": "stv-005",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "tip",
+    "concept_key": "tip"
+  },
+  "tip": {
+    "id": "stv-005",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "tip",
+    "concept_key": "tip"
+  },
+  "service charge include cha": {
+    "id": "stv-006",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "service charge",
+    "concept_key": "service_charge"
+  },
+  "service charge jodeko": {
+    "id": "stv-006",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "service charge",
+    "concept_key": "service_charge"
+  },
+  "10% service charge": {
+    "id": "stv-006",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "service charge",
+    "concept_key": "service_charge"
+  },
+  "service charge": {
+    "id": "stv-006",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "service charge",
+    "concept_key": "service_charge"
+  },
+  "service tax": {
+    "id": "stv-006",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "service charge",
+    "concept_key": "service_charge"
+  },
+  "sewa sulka": {
+    "id": "stv-006",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "service charge",
+    "concept_key": "service_charge"
+  },
+  "vegetarian": {
+    "id": "stv-007",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "veg",
+    "concept_key": "veg"
+  },
+  "veg thali": {
+    "id": "stv-007",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "veg",
+    "concept_key": "veg"
+  },
+  "veg khana": {
+    "id": "stv-007",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "veg",
+    "concept_key": "veg"
+  },
+  "sakahari": {
+    "id": "stv-007",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "veg",
+    "concept_key": "veg"
+  },
+  "veg momo": {
+    "id": "stv-007",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "veg",
+    "concept_key": "veg"
+  },
+  "veg": {
+    "id": "stv-007",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "veg",
+    "concept_key": "veg"
+  },
+  "non-veg thali": {
+    "id": "stv-008",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "non-veg",
+    "concept_key": "non_veg"
+  },
+  "non-veg items": {
+    "id": "stv-008",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "non-veg",
+    "concept_key": "non_veg"
+  },
+  "non-veg momo": {
+    "id": "stv-008",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "non-veg",
+    "concept_key": "non_veg"
+  },
+  "non veg": {
+    "id": "stv-008",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "non-veg",
+    "concept_key": "non_veg"
+  },
+  "non-veg": {
+    "id": "stv-008",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "non-veg",
+    "concept_key": "non_veg"
+  },
+  "nonveg": {
+    "id": "stv-008",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "non-veg",
+    "concept_key": "non_veg"
+  },
+  "masu": {
+    "id": "stv-008",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "non-veg",
+    "concept_key": "non_veg"
+  },
+  "dining service": {
+    "id": "stv-009",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "dining",
+    "concept_key": "dining"
+  },
+  "table booking": {
+    "id": "stv-009",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "dining",
+    "concept_key": "dining"
+  },
+  "dining table": {
+    "id": "stv-009",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "dining",
+    "concept_key": "dining"
+  },
+  "dining hall": {
+    "id": "stv-009",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "dining",
+    "concept_key": "dining"
+  },
+  "dine-in": {
+    "id": "stv-009",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "dining",
+    "concept_key": "dining"
+  },
+  "dining": {
+    "id": "stv-009",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "dining",
+    "concept_key": "dining"
+  },
+  "parcel pack gardinu": {
+    "id": "stv-010",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "takeaway",
+    "concept_key": "takeaway"
+  },
+  "takeaway counter": {
+    "id": "stv-010",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "takeaway",
+    "concept_key": "takeaway"
+  },
+  "takeaway order": {
+    "id": "stv-010",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "takeaway",
+    "concept_key": "takeaway"
+  },
+  "take away": {
+    "id": "stv-010",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "takeaway",
+    "concept_key": "takeaway"
+  },
+  "takeaway": {
+    "id": "stv-010",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "takeaway",
+    "concept_key": "takeaway"
+  },
+  "parcel": {
+    "id": "stv-010",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "takeaway",
+    "concept_key": "takeaway"
+  },
+  "home delivery charge": {
+    "id": "stv-011",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "home delivery",
+    "concept_key": "home_delivery"
+  },
+  "free home delivery": {
+    "id": "stv-011",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "home delivery",
+    "concept_key": "home_delivery"
+  },
+  "ghar delivery": {
+    "id": "stv-011",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "home delivery",
+    "concept_key": "home_delivery"
+  },
+  "home delivery": {
+    "id": "stv-011",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "home delivery",
+    "concept_key": "home_delivery"
+  },
+  "delivery boy": {
+    "id": "stv-011",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "home delivery",
+    "concept_key": "home_delivery"
+  },
+  "delivery": {
+    "id": "stv-011",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "home delivery",
+    "concept_key": "home_delivery"
+  },
+  "family combo": {
+    "id": "stv-012",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "combo",
+    "concept_key": "combo"
+  },
+  "combo price": {
+    "id": "stv-012",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "combo",
+    "concept_key": "combo"
+  },
+  "combo offer": {
+    "id": "stv-012",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "combo",
+    "concept_key": "combo"
+  },
+  "combo pack": {
+    "id": "stv-012",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "combo",
+    "concept_key": "combo"
+  },
+  "meal combo": {
+    "id": "stv-012",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "combo",
+    "concept_key": "combo"
+  },
+  "combo": {
+    "id": "stv-012",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "combo",
+    "concept_key": "combo"
+  },
+  "mistri ko majdoori": {
+    "id": "stv-013",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "mistri",
+    "concept_key": "mistri"
+  },
+  "mistri lai payment": {
+    "id": "stv-013",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "mistri",
+    "concept_key": "mistri"
+  },
+  "head mistri": {
+    "id": "stv-013",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "mistri",
+    "concept_key": "mistri"
+  },
+  "mistri": {
+    "id": "stv-013",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "mistri",
+    "concept_key": "mistri"
+  },
+  "mistry": {
+    "id": "stv-013",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "mistri",
+    "concept_key": "mistri"
+  },
+  "mason": {
+    "id": "stv-013",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "mistri",
+    "concept_key": "mistri"
+  },
+  "contractor lai bhuktani": {
+    "id": "stv-014",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "contractor",
+    "concept_key": "contractor"
+  },
+  "contractor sanga deal": {
+    "id": "stv-014",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "contractor",
+    "concept_key": "contractor"
+  },
+  "building contractor": {
+    "id": "stv-014",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "contractor",
+    "concept_key": "contractor"
+  },
+  "contractor": {
+    "id": "stv-014",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "contractor",
+    "concept_key": "contractor"
+  },
+  "thikadar": {
+    "id": "stv-014",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "contractor",
+    "concept_key": "contractor"
+  },
+  "thekdar": {
+    "id": "stv-014",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "contractor",
+    "concept_key": "contractor"
+  },
+  "quotation magaunu": {
+    "id": "stv-015",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "quotation",
+    "concept_key": "quotation"
+  },
+  "cheap quotation": {
+    "id": "stv-015",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "quotation",
+    "concept_key": "quotation"
+  },
+  "quotation diyo": {
+    "id": "stv-015",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "quotation",
+    "concept_key": "quotation"
+  },
+  "quotation": {
+    "id": "stv-015",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "quotation",
+    "concept_key": "quotation"
+  },
+  "quote": {
+    "id": "stv-015",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "quotation",
+    "concept_key": "quotation"
+  },
+  "bhav": {
+    "id": "stv-015",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "quotation",
+    "concept_key": "quotation"
+  },
+  "site measurement": {
+    "id": "stv-016",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "measurement",
+    "concept_key": "measurement"
+  },
+  "measurement book": {
+    "id": "stv-016",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "measurement",
+    "concept_key": "measurement"
+  },
+  "measurement linu": {
+    "id": "stv-016",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "measurement",
+    "concept_key": "measurement"
+  },
+  "measurement": {
+    "id": "stv-016",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "measurement",
+    "concept_key": "measurement"
+  },
+  "measure": {
+    "id": "stv-016",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "measurement",
+    "concept_key": "measurement"
+  },
+  "napai": {
+    "id": "stv-016",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "measurement",
+    "concept_key": "measurement"
+  },
+  "site visit charge": {
+    "id": "stv-017",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "site visit",
+    "concept_key": "site_visit"
+  },
+  "site visit report": {
+    "id": "stv-017",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "site visit",
+    "concept_key": "site_visit"
+  },
+  "site visit garya": {
+    "id": "stv-017",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "site visit",
+    "concept_key": "site_visit"
+  },
+  "field visit": {
+    "id": "stv-017",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "site visit",
+    "concept_key": "site_visit"
+  },
+  "site hernu": {
+    "id": "stv-017",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "site visit",
+    "concept_key": "site_visit"
+  },
+  "site visit": {
+    "id": "stv-017",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "site visit",
+    "concept_key": "site_visit"
+  },
+  "rod ko bhav": {
+    "id": "stv-018",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "rod",
+    "concept_key": "rod"
+  },
+  "rod supply": {
+    "id": "stv-018",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "rod",
+    "concept_key": "rod"
+  },
+  "10 mm rod": {
+    "id": "stv-018",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "rod",
+    "concept_key": "rod"
+  },
+  "sariya": {
+    "id": "stv-018",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "rod",
+    "concept_key": "rod"
+  },
+  "rebar": {
+    "id": "stv-018",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "rod",
+    "concept_key": "rod"
+  },
+  "rod": {
+    "id": "stv-018",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "rod",
+    "concept_key": "rod"
+  },
+  "cement ko bora": {
+    "id": "stv-019",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "cement",
+    "concept_key": "cement"
+  },
+  "cement price": {
+    "id": "stv-019",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "cement",
+    "concept_key": "cement"
+  },
+  "opc cement": {
+    "id": "stv-019",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "cement",
+    "concept_key": "cement"
+  },
+  "simenti": {
+    "id": "stv-019",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "cement",
+    "concept_key": "cement"
+  },
+  "siment": {
+    "id": "stv-019",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "cement",
+    "concept_key": "cement"
+  },
+  "cement": {
+    "id": "stv-019",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "cement",
+    "concept_key": "cement"
+  },
+  "paint ko tin": {
+    "id": "stv-020",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "paint",
+    "concept_key": "paint"
+  },
+  "wall paint": {
+    "id": "stv-020",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "paint",
+    "concept_key": "paint"
+  },
+  "paint kam": {
+    "id": "stv-020",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "paint",
+    "concept_key": "paint"
+  },
+  "painting": {
+    "id": "stv-020",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "paint",
+    "concept_key": "paint"
+  },
+  "paint": {
+    "id": "stv-020",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "paint",
+    "concept_key": "paint"
+  },
+  "rang": {
+    "id": "stv-020",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "paint",
+    "concept_key": "paint"
+  },
+  "sanitary fitting": {
+    "id": "stv-021",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "sanitary",
+    "concept_key": "sanitary"
+  },
+  "sanitary saman": {
+    "id": "stv-021",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "sanitary",
+    "concept_key": "sanitary"
+  },
+  "sanitary item": {
+    "id": "stv-021",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "sanitary",
+    "concept_key": "sanitary"
+  },
+  "sanitary pipe": {
+    "id": "stv-021",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "sanitary",
+    "concept_key": "sanitary"
+  },
+  "sanitaryware": {
+    "id": "stv-021",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "sanitary",
+    "concept_key": "sanitary"
+  },
+  "sanitary": {
+    "id": "stv-021",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "sanitary",
+    "concept_key": "sanitary"
+  },
+  "tiles lagaune": {
+    "id": "stv-022",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "tiles",
+    "concept_key": "tiles"
+  },
+  "tiles ko rate": {
+    "id": "stv-022",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "tiles",
+    "concept_key": "tiles"
+  },
+  "floor tiles": {
+    "id": "stv-022",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "tiles",
+    "concept_key": "tiles"
+  },
+  "tiles": {
+    "id": "stv-022",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "tiles",
+    "concept_key": "tiles"
+  },
+  "taail": {
+    "id": "stv-022",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "tiles",
+    "concept_key": "tiles"
+  },
+  "tile": {
+    "id": "stv-022",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "tiles",
+    "concept_key": "tiles"
+  },
+  "advance payment gare": {
+    "id": "stv-023",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "advance payment",
+    "concept_key": "advance_payment"
+  },
+  "contractor advance": {
+    "id": "stv-023",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "advance payment",
+    "concept_key": "advance_payment"
+  },
+  "mistri lai advance": {
+    "id": "stv-023",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "advance payment",
+    "concept_key": "advance_payment"
+  },
+  "advance payment": {
+    "id": "stv-023",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "advance payment",
+    "concept_key": "advance_payment"
+  },
+  "advance": {
+    "id": "stv-023",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "advance payment",
+    "concept_key": "advance_payment"
+  },
+  "peshgi": {
+    "id": "stv-023",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "advance payment",
+    "concept_key": "advance_payment"
+  },
+  "medicine pasal": {
+    "id": "stv-024",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "medicine",
+    "concept_key": "medicine"
+  },
+  "medicine kinbe": {
+    "id": "stv-024",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "medicine",
+    "concept_key": "medicine"
+  },
+  "medicine dinu": {
+    "id": "stv-024",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "medicine",
+    "concept_key": "medicine"
+  },
+  "aushadhi": {
+    "id": "stv-024",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "medicine",
+    "concept_key": "medicine"
+  },
+  "medicine": {
+    "id": "stv-024",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "medicine",
+    "concept_key": "medicine"
+  },
+  "aushadi": {
+    "id": "stv-024",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "medicine",
+    "concept_key": "medicine"
+  },
+  "doctor ko prescription": {
+    "id": "stv-025",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "prescription",
+    "concept_key": "prescription"
+  },
+  "prescription required": {
+    "id": "stv-025",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "prescription",
+    "concept_key": "prescription"
+  },
+  "prescription anusar": {
+    "id": "stv-025",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "prescription",
+    "concept_key": "prescription"
+  },
+  "prescription slip": {
+    "id": "stv-025",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "prescription",
+    "concept_key": "prescription"
+  },
+  "prescription": {
+    "id": "stv-025",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "prescription",
+    "concept_key": "prescription"
+  },
+  "parcha": {
+    "id": "stv-025",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "prescription",
+    "concept_key": "prescription"
+  },
+  "over the counter": {
+    "id": "stv-026",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "OTC",
+    "concept_key": "otc"
+  },
+  "otc medicine": {
+    "id": "stv-026",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "OTC",
+    "concept_key": "otc"
+  },
+  "bina parcha": {
+    "id": "stv-026",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "OTC",
+    "concept_key": "otc"
+  },
+  "otc section": {
+    "id": "stv-026",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "OTC",
+    "concept_key": "otc"
+  },
+  "otc sales": {
+    "id": "stv-026",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "OTC",
+    "concept_key": "otc"
+  },
+  "otc": {
+    "id": "stv-026",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "OTC",
+    "concept_key": "otc"
+  },
+  "batch number check": {
+    "id": "stv-027",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "batch",
+    "concept_key": "batch"
+  },
+  "batch recall": {
+    "id": "stv-027",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "batch",
+    "concept_key": "batch"
+  },
+  "batch number": {
+    "id": "stv-027",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "batch",
+    "concept_key": "batch"
+  },
+  "same batch": {
+    "id": "stv-027",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "batch",
+    "concept_key": "batch"
+  },
+  "lot number": {
+    "id": "stv-027",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "batch",
+    "concept_key": "batch"
+  },
+  "batch": {
+    "id": "stv-027",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "batch",
+    "concept_key": "batch"
+  },
+  "expiry date hernu": {
+    "id": "stv-028",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "expiry",
+    "concept_key": "expiry"
+  },
+  "near expiry stock": {
+    "id": "stv-028",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "expiry",
+    "concept_key": "expiry"
+  },
+  "expiry nageko": {
+    "id": "stv-028",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "expiry",
+    "concept_key": "expiry"
+  },
+  "expiry date": {
+    "id": "stv-028",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "expiry",
+    "concept_key": "expiry"
+  },
+  "expired": {
+    "id": "stv-028",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "expiry",
+    "concept_key": "expiry"
+  },
+  "expiry": {
+    "id": "stv-028",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "expiry",
+    "concept_key": "expiry"
+  },
+  "generic prescribe gare": {
+    "id": "stv-029",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "generic",
+    "concept_key": "generic"
+  },
+  "generic cheaper cha": {
+    "id": "stv-029",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "generic",
+    "concept_key": "generic"
+  },
+  "generic medicine": {
+    "id": "stv-029",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "generic",
+    "concept_key": "generic"
+  },
+  "generic version": {
+    "id": "stv-029",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "generic",
+    "concept_key": "generic"
+  },
+  "salt name": {
+    "id": "stv-029",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "generic",
+    "concept_key": "generic"
+  },
+  "generic": {
+    "id": "stv-029",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "generic",
+    "concept_key": "generic"
+  },
+  "branded mahango cha": {
+    "id": "stv-030",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "branded",
+    "concept_key": "branded"
+  },
+  "company medicine": {
+    "id": "stv-030",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "branded",
+    "concept_key": "branded"
+  },
+  "branded medicine": {
+    "id": "stv-030",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "branded",
+    "concept_key": "branded"
+  },
+  "branded company": {
+    "id": "stv-030",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "branded",
+    "concept_key": "branded"
+  },
+  "branded": {
+    "id": "stv-030",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "branded",
+    "concept_key": "branded"
+  },
+  "brand": {
+    "id": "stv-030",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "branded",
+    "concept_key": "branded"
+  },
+  "wholesaler lai order": {
+    "id": "stv-031",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "wholesaler",
+    "concept_key": "wholesaler"
+  },
+  "wholesaler bata line": {
+    "id": "stv-031",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "wholesaler",
+    "concept_key": "wholesaler"
+  },
+  "wholesaler price": {
+    "id": "stv-031",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "wholesaler",
+    "concept_key": "wholesaler"
+  },
+  "thok bhandar": {
+    "id": "stv-031",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "wholesaler",
+    "concept_key": "wholesaler"
+  },
+  "wholesaler": {
+    "id": "stv-031",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "wholesaler",
+    "concept_key": "wholesaler"
+  },
+  "stockist": {
+    "id": "stv-031",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "wholesaler",
+    "concept_key": "wholesaler"
+  },
+  "composition hernu": {
+    "id": "stv-032",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "composition",
+    "concept_key": "composition"
+  },
+  "composition mildo": {
+    "id": "stv-032",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "composition",
+    "concept_key": "composition"
+  },
+  "same composition": {
+    "id": "stv-032",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "composition",
+    "concept_key": "composition"
+  },
+  "composition": {
+    "id": "stv-032",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "composition",
+    "concept_key": "composition"
+  },
+  "content": {
+    "id": "stv-032",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "composition",
+    "concept_key": "composition"
+  },
+  "salt": {
+    "id": "stv-032",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "composition",
+    "concept_key": "composition"
+  },
+  "dosage instruction": {
+    "id": "stv-033",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "dosage",
+    "concept_key": "dosage"
+  },
+  "dosage milaunu": {
+    "id": "stv-033",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "dosage",
+    "concept_key": "dosage"
+  },
+  "daily dosage": {
+    "id": "stv-033",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "dosage",
+    "concept_key": "dosage"
+  },
+  "dosage": {
+    "id": "stv-033",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "dosage",
+    "concept_key": "dosage"
+  },
+  "matra": {
+    "id": "stv-033",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "dosage",
+    "concept_key": "dosage"
+  },
+  "dose": {
+    "id": "stv-033",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "dosage",
+    "concept_key": "dosage"
+  },
+  "restricted medicine": {
+    "id": "stv-034",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "schedule H",
+    "concept_key": "schedule_h"
+  },
+  "prescription drug": {
+    "id": "stv-034",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "schedule H",
+    "concept_key": "schedule_h"
+  },
+  "schedule h drug": {
+    "id": "stv-034",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "schedule H",
+    "concept_key": "schedule_h"
+  },
+  "h1 category": {
+    "id": "stv-034",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "schedule H",
+    "concept_key": "schedule_h"
+  },
+  "schedule h": {
+    "id": "stv-034",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "schedule H",
+    "concept_key": "schedule_h"
+  },
+  "h drug": {
+    "id": "stv-034",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "schedule H",
+    "concept_key": "schedule_h"
+  },
+  "margin kam cha": {
+    "id": "stv-035",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "margin",
+    "concept_key": "margin"
+  },
+  "profit margin": {
+    "id": "stv-035",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "margin",
+    "concept_key": "margin"
+  },
+  "margin fixing": {
+    "id": "stv-035",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "margin",
+    "concept_key": "margin"
+  },
+  "20% margin": {
+    "id": "stv-035",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "margin",
+    "concept_key": "margin"
+  },
+  "margin": {
+    "id": "stv-035",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "margin",
+    "concept_key": "margin"
+  },
+  "nafa": {
+    "id": "stv-035",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "margin",
+    "concept_key": "margin"
+  },
+  "bhada tireko": {
+    "id": "stv-036",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "bhada",
+    "concept_key": "bhada"
+  },
+  "truck bhada": {
+    "id": "stv-036",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "bhada",
+    "concept_key": "bhada"
+  },
+  "bhada aayo": {
+    "id": "stv-036",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "bhada",
+    "concept_key": "bhada"
+  },
+  "bhaada": {
+    "id": "stv-036",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "bhada",
+    "concept_key": "bhada"
+  },
+  "bhada": {
+    "id": "stv-036",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "bhada",
+    "concept_key": "bhada"
+  },
+  "bhara": {
+    "id": "stv-036",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "bhada",
+    "concept_key": "bhada"
+  },
+  "ek trip ko bhada": {
+    "id": "stv-037",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "trip",
+    "concept_key": "trip"
+  },
+  "kati trip hanyo": {
+    "id": "stv-037",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "trip",
+    "concept_key": "trip"
+  },
+  "trip wise hisab": {
+    "id": "stv-037",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "trip",
+    "concept_key": "trip"
+  },
+  "phera": {
+    "id": "stv-037",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "trip",
+    "concept_key": "trip"
+  },
+  "yatra": {
+    "id": "stv-037",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "trip",
+    "concept_key": "trip"
+  },
+  "trip": {
+    "id": "stv-037",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "trip",
+    "concept_key": "trip"
+  },
+  "loading unloading": {
+    "id": "stv-038",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "loading",
+    "concept_key": "loading"
+  },
+  "loading gareko": {
+    "id": "stv-038",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "loading",
+    "concept_key": "loading"
+  },
+  "loading charge": {
+    "id": "stv-038",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "loading",
+    "concept_key": "loading"
+  },
+  "load garna": {
+    "id": "stv-038",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "loading",
+    "concept_key": "loading"
+  },
+  "chadhaune": {
+    "id": "stv-038",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "loading",
+    "concept_key": "loading"
+  },
+  "loading": {
+    "id": "stv-038",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "loading",
+    "concept_key": "loading"
+  },
+  "unloading charge": {
+    "id": "stv-039",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "unloading",
+    "concept_key": "unloading"
+  },
+  "unloading garna": {
+    "id": "stv-039",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "unloading",
+    "concept_key": "unloading"
+  },
+  "unloading time": {
+    "id": "stv-039",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "unloading",
+    "concept_key": "unloading"
+  },
+  "unloading": {
+    "id": "stv-039",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "unloading",
+    "concept_key": "unloading"
+  },
+  "jharne": {
+    "id": "stv-039",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "unloading",
+    "concept_key": "unloading"
+  },
+  "unload": {
+    "id": "stv-039",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "unloading",
+    "concept_key": "unloading"
+  },
+  "toll receipt": {
+    "id": "stv-040",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "toll",
+    "concept_key": "toll"
+  },
+  "toll plaza": {
+    "id": "stv-040",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "toll",
+    "concept_key": "toll"
+  },
+  "toll tirna": {
+    "id": "stv-040",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "toll",
+    "concept_key": "toll"
+  },
+  "toll tax": {
+    "id": "stv-040",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "toll",
+    "concept_key": "toll"
+  },
+  "road tax": {
+    "id": "stv-040",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "toll",
+    "concept_key": "toll"
+  },
+  "toll": {
+    "id": "stv-040",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "toll",
+    "concept_key": "toll"
+  },
+  "gadi ko permit": {
+    "id": "stv-041",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "permit",
+    "concept_key": "permit"
+  },
+  "route permit": {
+    "id": "stv-041",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "permit",
+    "concept_key": "permit"
+  },
+  "permit renew": {
+    "id": "stv-041",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "permit",
+    "concept_key": "permit"
+  },
+  "permit check": {
+    "id": "stv-041",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "permit",
+    "concept_key": "permit"
+  },
+  "anumati": {
+    "id": "stv-041",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "permit",
+    "concept_key": "permit"
+  },
+  "permit": {
+    "id": "stv-041",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "permit",
+    "concept_key": "permit"
+  },
+  "diesel ko rate": {
+    "id": "stv-042",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "diesel",
+    "concept_key": "diesel"
+  },
+  "diesel kharcha": {
+    "id": "stv-042",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "diesel",
+    "concept_key": "diesel"
+  },
+  "diesel halnu": {
+    "id": "stv-042",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "diesel",
+    "concept_key": "diesel"
+  },
+  "diesel": {
+    "id": "stv-042",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "diesel",
+    "concept_key": "diesel"
+  },
+  "dijel": {
+    "id": "stv-042",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "diesel",
+    "concept_key": "diesel"
+  },
+  "fuel": {
+    "id": "stv-042",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "diesel",
+    "concept_key": "diesel"
+  },
+  "driver lai payment": {
+    "id": "stv-043",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "chauffer",
+    "concept_key": "chauffer"
+  },
+  "chauffer ko talab": {
+    "id": "stv-043",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "chauffer",
+    "concept_key": "chauffer"
+  },
+  "chauffer rakhya": {
+    "id": "stv-043",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "chauffer",
+    "concept_key": "chauffer"
+  },
+  "chauffer": {
+    "id": "stv-043",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "chauffer",
+    "concept_key": "chauffer"
+  },
+  "chalak": {
+    "id": "stv-043",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "chauffer",
+    "concept_key": "chauffer"
+  },
+  "driver": {
+    "id": "stv-043",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "chauffer",
+    "concept_key": "chauffer"
+  },
+  "freight forward": {
+    "id": "stv-044",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "freight",
+    "concept_key": "freight"
+  },
+  "freight invoice": {
+    "id": "stv-044",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "freight",
+    "concept_key": "freight"
+  },
+  "freight charge": {
+    "id": "stv-044",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "freight",
+    "concept_key": "freight"
+  },
+  "cargo charge": {
+    "id": "stv-044",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "freight",
+    "concept_key": "freight"
+  },
+  "mal bhada": {
+    "id": "stv-044",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "freight",
+    "concept_key": "freight"
+  },
+  "freight": {
+    "id": "stv-044",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "freight",
+    "concept_key": "freight"
+  },
+  "rental agreement": {
+    "id": "stv-045",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "rental",
+    "concept_key": "rental"
+  },
+  "vehicle rental": {
+    "id": "stv-045",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "rental",
+    "concept_key": "rental"
+  },
+  "bus rental": {
+    "id": "stv-045",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "rental",
+    "concept_key": "rental"
+  },
+  "bhaade": {
+    "id": "stv-045",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "rental",
+    "concept_key": "rental"
+  },
+  "rental": {
+    "id": "stv-045",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "rental",
+    "concept_key": "rental"
+  },
+  "rent": {
+    "id": "stv-045",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "rental",
+    "concept_key": "rental"
+  },
+  "fee bhareko": {
+    "id": "stv-046",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "fee",
+    "concept_key": "fee"
+  },
+  "school fee": {
+    "id": "stv-046",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "fee",
+    "concept_key": "fee"
+  },
+  "exam fee": {
+    "id": "stv-046",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "fee",
+    "concept_key": "fee"
+  },
+  "sulka": {
+    "id": "stv-046",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "fee",
+    "concept_key": "fee"
+  },
+  "fees": {
+    "id": "stv-046",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "fee",
+    "concept_key": "fee"
+  },
+  "fee": {
+    "id": "stv-046",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "fee",
+    "concept_key": "fee"
+  },
+  "admission open": {
+    "id": "stv-047",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "admission",
+    "concept_key": "admission"
+  },
+  "admission fee": {
+    "id": "stv-047",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "admission",
+    "concept_key": "admission"
+  },
+  "new admission": {
+    "id": "stv-047",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "admission",
+    "concept_key": "admission"
+  },
+  "naam lekhne": {
+    "id": "stv-047",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "admission",
+    "concept_key": "admission"
+  },
+  "admission": {
+    "id": "stv-047",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "admission",
+    "concept_key": "admission"
+  },
+  "bharti": {
+    "id": "stv-047",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "admission",
+    "concept_key": "admission"
+  },
+  "scholarship paune": {
+    "id": "stv-048",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "scholarship",
+    "concept_key": "scholarship"
+  },
+  "merit scholarship": {
+    "id": "stv-048",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "scholarship",
+    "concept_key": "scholarship"
+  },
+  "full scholarship": {
+    "id": "stv-048",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "scholarship",
+    "concept_key": "scholarship"
+  },
+  "chhatrabritti": {
+    "id": "stv-048",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "scholarship",
+    "concept_key": "scholarship"
+  },
+  "scholarship": {
+    "id": "stv-048",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "scholarship",
+    "concept_key": "scholarship"
+  },
+  "waiver": {
+    "id": "stv-048",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "scholarship",
+    "concept_key": "scholarship"
+  },
+  "examination": {
+    "id": "stv-049",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "exam",
+    "concept_key": "exam"
+  },
+  "exam result": {
+    "id": "stv-049",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "exam",
+    "concept_key": "exam"
+  },
+  "final exam": {
+    "id": "stv-049",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "exam",
+    "concept_key": "exam"
+  },
+  "parikshya": {
+    "id": "stv-049",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "exam",
+    "concept_key": "exam"
+  },
+  "exam": {
+    "id": "stv-049",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "exam",
+    "concept_key": "exam"
+  },
+  "tuition padhne": {
+    "id": "stv-050",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "tuition",
+    "concept_key": "tuition"
+  },
+  "home tuition": {
+    "id": "stv-050",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "tuition",
+    "concept_key": "tuition"
+  },
+  "tuition fee": {
+    "id": "stv-050",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "tuition",
+    "concept_key": "tuition"
+  },
+  "coaching": {
+    "id": "stv-050",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "tuition",
+    "concept_key": "tuition"
+  },
+  "tuition": {
+    "id": "stv-050",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "tuition",
+    "concept_key": "tuition"
+  },
+  "tuisan": {
+    "id": "stv-050",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "tuition",
+    "concept_key": "tuition"
+  },
+  "school stationery": {
+    "id": "stv-051",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "stationery",
+    "concept_key": "stationery"
+  },
+  "stationery saman": {
+    "id": "stv-051",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "stationery",
+    "concept_key": "stationery"
+  },
+  "stationery shop": {
+    "id": "stv-051",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "stationery",
+    "concept_key": "stationery"
+  },
+  "lekhan samagri": {
+    "id": "stv-051",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "stationery",
+    "concept_key": "stationery"
+  },
+  "stationary": {
+    "id": "stv-051",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "stationery",
+    "concept_key": "stationery"
+  },
+  "stationery": {
+    "id": "stv-051",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "stationery",
+    "concept_key": "stationery"
+  },
+  "uniform stitching": {
+    "id": "stv-052",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "uniform",
+    "concept_key": "uniform"
+  },
+  "school uniform": {
+    "id": "stv-052",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "uniform",
+    "concept_key": "uniform"
+  },
+  "uniform kinbe": {
+    "id": "stv-052",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "uniform",
+    "concept_key": "uniform"
+  },
+  "uniform": {
+    "id": "stv-052",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "uniform",
+    "concept_key": "uniform"
+  },
+  "poshak": {
+    "id": "stv-052",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "uniform",
+    "concept_key": "uniform"
+  },
+  "dress": {
+    "id": "stv-052",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "uniform",
+    "concept_key": "uniform"
+  },
+  "school hostel": {
+    "id": "stv-053",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "hostel",
+    "concept_key": "hostel"
+  },
+  "hostel basne": {
+    "id": "stv-053",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "hostel",
+    "concept_key": "hostel"
+  },
+  "hostel fee": {
+    "id": "stv-053",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "hostel",
+    "concept_key": "hostel"
+  },
+  "boarding": {
+    "id": "stv-053",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "hostel",
+    "concept_key": "hostel"
+  },
+  "hostel": {
+    "id": "stv-053",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "hostel",
+    "concept_key": "hostel"
+  },
+  "aawas": {
+    "id": "stv-053",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "hostel",
+    "concept_key": "hostel"
+  },
+  "end semester exam": {
+    "id": "stv-054",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "semester",
+    "concept_key": "semester"
+  },
+  "semester break": {
+    "id": "stv-054",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "semester",
+    "concept_key": "semester"
+  },
+  "semester fee": {
+    "id": "stv-054",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "semester",
+    "concept_key": "semester"
+  },
+  "semester": {
+    "id": "stv-054",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "semester",
+    "concept_key": "semester"
+  },
+  "terminal": {
+    "id": "stv-054",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "semester",
+    "concept_key": "semester"
+  },
+  "sem": {
+    "id": "stv-054",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "semester",
+    "concept_key": "semester"
+  },
+  "library books": {
+    "id": "stv-055",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "library",
+    "concept_key": "library"
+  },
+  "library card": {
+    "id": "stv-055",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "library",
+    "concept_key": "library"
+  },
+  "library fee": {
+    "id": "stv-055",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "library",
+    "concept_key": "library"
+  },
+  "pustakalaya": {
+    "id": "stv-055",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "library",
+    "concept_key": "library"
+  },
+  "book room": {
+    "id": "stv-055",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "library",
+    "concept_key": "library"
+  },
+  "library": {
+    "id": "stv-055",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "library",
+    "concept_key": "library"
+  },
+  "monthly transport fee": {
+    "id": "stv-056",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "transport fee",
+    "concept_key": "transport_fee"
+  },
+  "transportation charge": {
+    "id": "stv-056",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "transport fee",
+    "concept_key": "transport_fee"
+  },
+  "transport fee bhare": {
+    "id": "stv-056",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "transport fee",
+    "concept_key": "transport_fee"
+  },
+  "school bus fee": {
+    "id": "stv-056",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "transport fee",
+    "concept_key": "transport_fee"
+  },
+  "transport fee": {
+    "id": "stv-056",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "transport fee",
+    "concept_key": "transport_fee"
+  },
+  "bus fee": {
+    "id": "stv-056",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "transport fee",
+    "concept_key": "transport_fee"
+  },
+  "bali ramro bhayo": {
+    "id": "stv-057",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "bali",
+    "concept_key": "bali"
+  },
+  "harko bali": {
+    "id": "stv-057",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "bali",
+    "concept_key": "bali"
+  },
+  "dhan bali": {
+    "id": "stv-057",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "bali",
+    "concept_key": "bali"
+  },
+  "kheti": {
+    "id": "stv-057",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "bali",
+    "concept_key": "bali"
+  },
+  "bali": {
+    "id": "stv-057",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "bali",
+    "concept_key": "bali"
+  },
+  "crop": {
+    "id": "stv-057",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "bali",
+    "concept_key": "bali"
+  },
+  "rasayanik mal": {
+    "id": "stv-058",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "mal",
+    "concept_key": "mal"
+  },
+  "compost mal": {
+    "id": "stv-058",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "mal",
+    "concept_key": "mal"
+  },
+  "mal ko bora": {
+    "id": "stv-058",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "mal",
+    "concept_key": "mal"
+  },
+  "fertilizer": {
+    "id": "stv-058",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "mal",
+    "concept_key": "mal"
+  },
+  "mal halne": {
+    "id": "stv-058",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "mal",
+    "concept_key": "mal"
+  },
+  "mal": {
+    "id": "stv-058",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "mal",
+    "concept_key": "mal"
+  },
+  "dhan ko biu": {
+    "id": "stv-059",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "biu",
+    "concept_key": "biu"
+  },
+  "hybrid biu": {
+    "id": "stv-059",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "biu",
+    "concept_key": "biu"
+  },
+  "biu kinbe": {
+    "id": "stv-059",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "biu",
+    "concept_key": "biu"
+  },
+  "biu bijan": {
+    "id": "stv-059",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "biu",
+    "concept_key": "biu"
+  },
+  "seed": {
+    "id": "stv-059",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "biu",
+    "concept_key": "biu"
+  },
+  "biu": {
+    "id": "stv-059",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "biu",
+    "concept_key": "biu"
+  },
+  "krishi bikas": {
+    "id": "stv-060",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "krishi",
+    "concept_key": "krishi"
+  },
+  "krishi upaj": {
+    "id": "stv-060",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "krishi",
+    "concept_key": "krishi"
+  },
+  "krishi farm": {
+    "id": "stv-060",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "krishi",
+    "concept_key": "krishi"
+  },
+  "farming": {
+    "id": "stv-060",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "krishi",
+    "concept_key": "krishi"
+  },
+  "krishi": {
+    "id": "stv-060",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "krishi",
+    "concept_key": "krishi"
+  },
+  "cooperative ma bachat": {
+    "id": "stv-061",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "cooperative",
+    "concept_key": "cooperative"
+  },
+  "krishi cooperative": {
+    "id": "stv-061",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "cooperative",
+    "concept_key": "cooperative"
+  },
+  "cooperative loan": {
+    "id": "stv-061",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "cooperative",
+    "concept_key": "cooperative"
+  },
+  "krishi sahakari": {
+    "id": "stv-061",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "cooperative",
+    "concept_key": "cooperative"
+  },
+  "cooperative": {
+    "id": "stv-061",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "cooperative",
+    "concept_key": "cooperative"
+  },
+  "sahakari": {
+    "id": "stv-061",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "cooperative",
+    "concept_key": "cooperative"
+  },
+  "subsidy paune kisan": {
+    "id": "stv-062",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "subsidy",
+    "concept_key": "subsidy"
+  },
+  "sarkari subsidy": {
+    "id": "stv-062",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "subsidy",
+    "concept_key": "subsidy"
+  },
+  "mal ma subsidy": {
+    "id": "stv-062",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "subsidy",
+    "concept_key": "subsidy"
+  },
+  "sahayog rashi": {
+    "id": "stv-062",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "subsidy",
+    "concept_key": "subsidy"
+  },
+  "subsidy": {
+    "id": "stv-062",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "subsidy",
+    "concept_key": "subsidy"
+  },
+  "anudan": {
+    "id": "stv-062",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "subsidy",
+    "concept_key": "subsidy"
+  },
+  "sichai ko paisa": {
+    "id": "stv-063",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "sichai",
+    "concept_key": "sichai"
+  },
+  "borewell sichai": {
+    "id": "stv-063",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "sichai",
+    "concept_key": "sichai"
+  },
+  "sichai suwida": {
+    "id": "stv-063",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "sichai",
+    "concept_key": "sichai"
+  },
+  "irrigation": {
+    "id": "stv-063",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "sichai",
+    "concept_key": "sichai"
+  },
+  "sinchai": {
+    "id": "stv-063",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "sichai",
+    "concept_key": "sichai"
+  },
+  "sichai": {
+    "id": "stv-063",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "sichai",
+    "concept_key": "sichai"
+  },
+  "banso hataune": {
+    "id": "stv-064",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "banso",
+    "concept_key": "banso"
+  },
+  "banso nasak": {
+    "id": "stv-064",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "banso",
+    "concept_key": "banso"
+  },
+  "banso godne": {
+    "id": "stv-064",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "banso",
+    "concept_key": "banso"
+  },
+  "banso": {
+    "id": "stv-064",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "banso",
+    "concept_key": "banso"
+  },
+  "jhara": {
+    "id": "stv-064",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "banso",
+    "concept_key": "banso"
+  },
+  "weed": {
+    "id": "stv-064",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "banso",
+    "concept_key": "banso"
+  },
+  "tractor le godai": {
+    "id": "stv-065",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "godai",
+    "concept_key": "godai"
+  },
+  "godai mazdoori": {
+    "id": "stv-065",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "godai",
+    "concept_key": "godai"
+  },
+  "godai garnu": {
+    "id": "stv-065",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "godai",
+    "concept_key": "godai"
+  },
+  "tilling": {
+    "id": "stv-065",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "godai",
+    "concept_key": "godai"
+  },
+  "gorne": {
+    "id": "stv-065",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "godai",
+    "concept_key": "godai"
+  },
+  "godai": {
+    "id": "stv-065",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "godai",
+    "concept_key": "godai"
+  },
+  "fasal ramro bhayo": {
+    "id": "stv-066",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "fasal",
+    "concept_key": "fasal"
+  },
+  "fasal uthne bela": {
+    "id": "stv-066",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "fasal",
+    "concept_key": "fasal"
+  },
+  "fasal bechne": {
+    "id": "stv-066",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "fasal",
+    "concept_key": "fasal"
+  },
+  "yield": {
+    "id": "stv-066",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "fasal",
+    "concept_key": "fasal"
+  },
+  "fasal": {
+    "id": "stv-066",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "fasal",
+    "concept_key": "fasal"
+  },
+  "upaj": {
+    "id": "stv-066",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "fasal",
+    "concept_key": "fasal"
+  },
+  "bakhra palan business": {
+    "id": "stv-067",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "bakhra palan",
+    "concept_key": "bakhra_palan"
+  },
+  "bakhra ko paatho": {
+    "id": "stv-067",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "bakhra palan",
+    "concept_key": "bakhra_palan"
+  },
+  "bakhra bechne": {
+    "id": "stv-067",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "bakhra palan",
+    "concept_key": "bakhra_palan"
+  },
+  "bakhra palan": {
+    "id": "stv-067",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "bakhra palan",
+    "concept_key": "bakhra_palan"
+  },
+  "bakhra farm": {
+    "id": "stv-067",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "bakhra palan",
+    "concept_key": "bakhra_palan"
+  },
+  "goat farm": {
+    "id": "stv-067",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "bakhra palan",
+    "concept_key": "bakhra_palan"
+  },
+  "mandi ma bechne": {
+    "id": "stv-068",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "mandi",
+    "concept_key": "mandi"
+  },
+  "wholesale mandi": {
+    "id": "stv-068",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "mandi",
+    "concept_key": "mandi"
+  },
+  "sabji mandi": {
+    "id": "stv-068",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "mandi",
+    "concept_key": "mandi"
+  },
+  "mandi bhav": {
+    "id": "stv-068",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "mandi",
+    "concept_key": "mandi"
+  },
+  "mandi": {
+    "id": "stv-068",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "mandi",
+    "concept_key": "mandi"
+  },
+  "bajar": {
+    "id": "stv-068",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "mandi",
+    "concept_key": "mandi"
+  },
+  "crop insurance": {
+    "id": "stv-069",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "bima",
+    "concept_key": "bima"
+  },
+  "bima premium": {
+    "id": "stv-069",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "bima",
+    "concept_key": "bima"
+  },
+  "krishi bima": {
+    "id": "stv-069",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "bima",
+    "concept_key": "bima"
+  },
+  "bima claim": {
+    "id": "stv-069",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "bima",
+    "concept_key": "bima"
+  },
+  "bali bima": {
+    "id": "stv-069",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "bima",
+    "concept_key": "bima"
+  },
+  "bima": {
+    "id": "stv-069",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "bima",
+    "concept_key": "bima"
+  },
+  "jhula order gare": {
+    "id": "stv-070",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "jhula",
+    "concept_key": "jhula"
+  },
+  "jhula pakaune": {
+    "id": "stv-070",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "jhula",
+    "concept_key": "jhula"
+  },
+  "jhula items": {
+    "id": "stv-070",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "jhula",
+    "concept_key": "jhula"
+  },
+  "appetizer": {
+    "id": "stv-070",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "jhula",
+    "concept_key": "jhula"
+  },
+  "starter": {
+    "id": "stv-070",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "jhula",
+    "concept_key": "jhula"
+  },
+  "jhula": {
+    "id": "stv-070",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "jhula",
+    "concept_key": "jhula"
+  },
+  "special thali": {
+    "id": "stv-071",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "thali",
+    "concept_key": "thali"
+  },
+  "thali price": {
+    "id": "stv-071",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "thali",
+    "concept_key": "thali"
+  },
+  "set meal": {
+    "id": "stv-071",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "thali",
+    "concept_key": "thali"
+  },
+  "thali": {
+    "id": "stv-071",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "thali",
+    "concept_key": "thali"
+  },
+  "meal": {
+    "id": "stv-071",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "thali",
+    "concept_key": "thali"
+  },
+  "commercial chulo": {
+    "id": "stv-072",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "chulo",
+    "concept_key": "chulo"
+  },
+  "chulo ma bhayo": {
+    "id": "stv-072",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "chulo",
+    "concept_key": "chulo"
+  },
+  "chulo gas": {
+    "id": "stv-072",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "chulo",
+    "concept_key": "chulo"
+  },
+  "gas chulo": {
+    "id": "stv-072",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "chulo",
+    "concept_key": "chulo"
+  },
+  "stove": {
+    "id": "stv-072",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "chulo",
+    "concept_key": "chulo"
+  },
+  "chulo": {
+    "id": "stv-072",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "chulo",
+    "concept_key": "chulo"
+  },
+  "masala powder": {
+    "id": "stv-073",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "masala",
+    "concept_key": "masala"
+  },
+  "garam masala": {
+    "id": "stv-073",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "masala",
+    "concept_key": "masala"
+  },
+  "masala kinbe": {
+    "id": "stv-073",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "masala",
+    "concept_key": "masala"
+  },
+  "masala haru": {
+    "id": "stv-073",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "masala",
+    "concept_key": "masala"
+  },
+  "masala": {
+    "id": "stv-073",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "masala",
+    "concept_key": "masala"
+  },
+  "spice": {
+    "id": "stv-073",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "masala",
+    "concept_key": "masala"
+  },
+  "drill machine bhada ma": {
+    "id": "stv-074",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "drill machine",
+    "concept_key": "drill_machine"
+  },
+  "drill machine le pweda": {
+    "id": "stv-074",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "drill machine",
+    "concept_key": "drill_machine"
+  },
+  "drilling machine": {
+    "id": "stv-074",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "drill machine",
+    "concept_key": "drill_machine"
+  },
+  "drill machine": {
+    "id": "stv-074",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "drill machine",
+    "concept_key": "drill_machine"
+  },
+  "drill bit": {
+    "id": "stv-074",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "drill machine",
+    "concept_key": "drill_machine"
+  },
+  "drill": {
+    "id": "stv-074",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "drill machine",
+    "concept_key": "drill_machine"
+  },
+  "rolling shutter": {
+    "id": "stv-075",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "shutter",
+    "concept_key": "shutter"
+  },
+  "shutter repair": {
+    "id": "stv-075",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "shutter",
+    "concept_key": "shutter"
+  },
+  "shutter halne": {
+    "id": "stv-075",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "shutter",
+    "concept_key": "shutter"
+  },
+  "shutter door": {
+    "id": "stv-075",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "shutter",
+    "concept_key": "shutter"
+  },
+  "shop shutter": {
+    "id": "stv-075",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "shutter",
+    "concept_key": "shutter"
+  },
+  "shutter": {
+    "id": "stv-075",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "shutter",
+    "concept_key": "shutter"
+  },
+  "authorized distributor": {
+    "id": "stv-076",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "distributor",
+    "concept_key": "distributor"
+  },
+  "distributor bata line": {
+    "id": "stv-076",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "distributor",
+    "concept_key": "distributor"
+  },
+  "company distributor": {
+    "id": "stv-076",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "distributor",
+    "concept_key": "distributor"
+  },
+  "distributor": {
+    "id": "stv-076",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "distributor",
+    "concept_key": "distributor"
+  },
+  "supplier": {
+    "id": "stv-076",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "distributor",
+    "concept_key": "distributor"
+  },
+  "pharmacy license": {
+    "id": "stv-077",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "license",
+    "concept_key": "license"
+  },
+  "license number": {
+    "id": "stv-077",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "license",
+    "concept_key": "license"
+  },
+  "anumati patra": {
+    "id": "stv-077",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "license",
+    "concept_key": "license"
+  },
+  "license renew": {
+    "id": "stv-077",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "license",
+    "concept_key": "license"
+  },
+  "drug license": {
+    "id": "stv-077",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "license",
+    "concept_key": "license"
+  },
+  "license": {
+    "id": "stv-077",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "license",
+    "concept_key": "license"
+  },
+  "octroi bhansar": {
+    "id": "stv-078",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "octroi",
+    "concept_key": "octroi"
+  },
+  "octroi receipt": {
+    "id": "stv-078",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "octroi",
+    "concept_key": "octroi"
+  },
+  "octroi tirna": {
+    "id": "stv-078",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "octroi",
+    "concept_key": "octroi"
+  },
+  "nagar kar": {
+    "id": "stv-078",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "octroi",
+    "concept_key": "octroi"
+  },
+  "entry tax": {
+    "id": "stv-078",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "octroi",
+    "concept_key": "octroi"
+  },
+  "octroi": {
+    "id": "stv-078",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "octroi",
+    "concept_key": "octroi"
+  },
+  "consignment delivery": {
+    "id": "stv-079",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "consignment",
+    "concept_key": "consignment"
+  },
+  "consignment note": {
+    "id": "stv-079",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "consignment",
+    "concept_key": "consignment"
+  },
+  "consignment aayo": {
+    "id": "stv-079",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "consignment",
+    "concept_key": "consignment"
+  },
+  "consignment": {
+    "id": "stv-079",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "consignment",
+    "concept_key": "consignment"
+  },
+  "shipment": {
+    "id": "stv-079",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "consignment",
+    "concept_key": "consignment"
+  },
+  "lot": {
+    "id": "stv-079",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "consignment",
+    "concept_key": "consignment"
+  },
+  "bus pass banaune": {
+    "id": "stv-080",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "bus pass",
+    "concept_key": "bus_pass"
+  },
+  "transport pass": {
+    "id": "stv-080",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "bus pass",
+    "concept_key": "bus_pass"
+  },
+  "bus pass renew": {
+    "id": "stv-080",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "bus pass",
+    "concept_key": "bus_pass"
+  },
+  "bus pass fee": {
+    "id": "stv-080",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "bus pass",
+    "concept_key": "bus_pass"
+  },
+  "bus card": {
+    "id": "stv-080",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "bus pass",
+    "concept_key": "bus_pass"
+  },
+  "bus pass": {
+    "id": "stv-080",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "bus pass",
+    "concept_key": "bus_pass"
+  },
+  "pustak bhandar": {
+    "id": "stv-081",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "pustak",
+    "concept_key": "pustak"
+  },
+  "course pustak": {
+    "id": "stv-081",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "pustak",
+    "concept_key": "pustak"
+  },
+  "pustak kinbe": {
+    "id": "stv-081",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "pustak",
+    "concept_key": "pustak"
+  },
+  "pustak": {
+    "id": "stv-081",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "pustak",
+    "concept_key": "pustak"
+  },
+  "kitab": {
+    "id": "stv-081",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "pustak",
+    "concept_key": "pustak"
+  },
+  "book": {
+    "id": "stv-081",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "pustak",
+    "concept_key": "pustak"
+  },
+  "polyhouse ma tarkari": {
+    "id": "stv-082",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "polyhouse",
+    "concept_key": "polyhouse"
+  },
+  "polyhouse banaune": {
+    "id": "stv-082",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "polyhouse",
+    "concept_key": "polyhouse"
+  },
+  "polyhouse kheti": {
+    "id": "stv-082",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "polyhouse",
+    "concept_key": "polyhouse"
+  },
+  "plastic ghar": {
+    "id": "stv-082",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "polyhouse",
+    "concept_key": "polyhouse"
+  },
+  "polyhouse": {
+    "id": "stv-082",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "polyhouse",
+    "concept_key": "polyhouse"
+  },
+  "tunnel": {
+    "id": "stv-082",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "polyhouse",
+    "concept_key": "polyhouse"
+  },
+  "dairy bata dudh bechne": {
+    "id": "stv-083",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "dudh dairy",
+    "concept_key": "dudh_dairy"
+  },
+  "dudh dairy ko hisab": {
+    "id": "stv-083",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "dudh dairy",
+    "concept_key": "dudh_dairy"
+  },
+  "milk business": {
+    "id": "stv-083",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "dudh dairy",
+    "concept_key": "dudh_dairy"
+  },
+  "dudh ko bhav": {
+    "id": "stv-083",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "dudh dairy",
+    "concept_key": "dudh_dairy"
+  },
+  "dudh dairy": {
+    "id": "stv-083",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "dudh dairy",
+    "concept_key": "dudh_dairy"
+  },
+  "dairy": {
+    "id": "stv-083",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "dudh dairy",
+    "concept_key": "dudh_dairy"
+  },
+  "inverter battery": {
+    "id": "stv-084",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "inverter",
+    "concept_key": "inverter"
+  },
+  "inverter repair": {
+    "id": "stv-084",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "inverter",
+    "concept_key": "inverter"
+  },
+  "inverter kinbe": {
+    "id": "stv-084",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "inverter",
+    "concept_key": "inverter"
+  },
+  "inverter": {
+    "id": "stv-084",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "inverter",
+    "concept_key": "inverter"
+  },
+  "invertor": {
+    "id": "stv-084",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "inverter",
+    "concept_key": "inverter"
+  },
+  "battery": {
+    "id": "stv-084",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "inverter",
+    "concept_key": "inverter"
+  },
+  "heater ko mulya": {
+    "id": "stv-085",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "room heater",
+    "concept_key": "room_heater"
+  },
+  "heater bechne": {
+    "id": "stv-085",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "room heater",
+    "concept_key": "room_heater"
+  },
+  "room heater": {
+    "id": "stv-085",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "room heater",
+    "concept_key": "room_heater"
+  },
+  "gas heater": {
+    "id": "stv-085",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "room heater",
+    "concept_key": "room_heater"
+  },
+  "heater": {
+    "id": "stv-085",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "room heater",
+    "concept_key": "room_heater"
+  },
+  "blower": {
+    "id": "stv-085",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "room heater",
+    "concept_key": "room_heater"
+  },
+  "mineral water ko bottle": {
+    "id": "stv-086",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "mineral water",
+    "concept_key": "mineral_water"
+  },
+  "mineral water price": {
+    "id": "stv-086",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "mineral water",
+    "concept_key": "mineral_water"
+  },
+  "cold mineral water": {
+    "id": "stv-086",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "mineral water",
+    "concept_key": "mineral_water"
+  },
+  "mineral water": {
+    "id": "stv-086",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "mineral water",
+    "concept_key": "mineral_water"
+  },
+  "bottled water": {
+    "id": "stv-086",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "mineral water",
+    "concept_key": "mineral_water"
+  },
+  "pani": {
+    "id": "stv-086",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "mineral water",
+    "concept_key": "mineral_water"
+  },
+  "table reservation gareko": {
+    "id": "stv-087",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "table reservation",
+    "concept_key": "table_reservation"
+  },
+  "reservation confirm": {
+    "id": "stv-087",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "table reservation",
+    "concept_key": "table_reservation"
+  },
+  "table reservation": {
+    "id": "stv-087",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "table reservation",
+    "concept_key": "table_reservation"
+  },
+  "reserved table": {
+    "id": "stv-087",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "table reservation",
+    "concept_key": "table_reservation"
+  },
+  "table reserve": {
+    "id": "stv-087",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "table reservation",
+    "concept_key": "table_reservation"
+  },
+  "reservation": {
+    "id": "stv-087",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "table reservation",
+    "concept_key": "table_reservation"
+  },
+  "chicken chilly order": {
+    "id": "stv-088",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "chicken chilly",
+    "concept_key": "chicken_chilly"
+  },
+  "chicken chilly price": {
+    "id": "stv-088",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "chicken chilly",
+    "concept_key": "chicken_chilly"
+  },
+  "chicken chilly plate": {
+    "id": "stv-088",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "chicken chilly",
+    "concept_key": "chicken_chilly"
+  },
+  "chicken chilli": {
+    "id": "stv-088",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "chicken chilly",
+    "concept_key": "chicken_chilly"
+  },
+  "chilly chicken": {
+    "id": "stv-088",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "chicken chilly",
+    "concept_key": "chicken_chilly"
+  },
+  "chicken chilly": {
+    "id": "stv-088",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "chicken chilly",
+    "concept_key": "chicken_chilly"
+  },
+  "grilled sandwich": {
+    "id": "stv-089",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "sandwich",
+    "concept_key": "sandwich"
+  },
+  "sandwich order": {
+    "id": "stv-089",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "sandwich",
+    "concept_key": "sandwich"
+  },
+  "veg sandwich": {
+    "id": "stv-089",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "sandwich",
+    "concept_key": "sandwich"
+  },
+  "bread snack": {
+    "id": "stv-089",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "sandwich",
+    "concept_key": "sandwich"
+  },
+  "sandwitch": {
+    "id": "stv-089",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "sandwich",
+    "concept_key": "sandwich"
+  },
+  "sandwich": {
+    "id": "stv-089",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "sandwich",
+    "concept_key": "sandwich"
+  },
+  "grill section": {
+    "id": "stv-090",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "grill",
+    "concept_key": "grill"
+  },
+  "grill chicken": {
+    "id": "stv-090",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "grill",
+    "concept_key": "grill"
+  },
+  "grill items": {
+    "id": "stv-090",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "grill",
+    "concept_key": "grill"
+  },
+  "tandoori": {
+    "id": "stv-090",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "grill",
+    "concept_key": "grill"
+  },
+  "grilled": {
+    "id": "stv-090",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "grill",
+    "concept_key": "grill"
+  },
+  "grill": {
+    "id": "stv-090",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "grill",
+    "concept_key": "grill"
+  },
+  "bottled cold drinks": {
+    "id": "stv-091",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "cold drinks",
+    "concept_key": "cold_drinks"
+  },
+  "cold drinks kinbe": {
+    "id": "stv-091",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "cold drinks",
+    "concept_key": "cold_drinks"
+  },
+  "cold drinks rate": {
+    "id": "stv-091",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "cold drinks",
+    "concept_key": "cold_drinks"
+  },
+  "cold drinks": {
+    "id": "stv-091",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "cold drinks",
+    "concept_key": "cold_drinks"
+  },
+  "soft drinks": {
+    "id": "stv-091",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "cold drinks",
+    "concept_key": "cold_drinks"
+  },
+  "cold drink": {
+    "id": "stv-091",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "cold drinks",
+    "concept_key": "cold_drinks"
+  },
+  "chicken chowmein": {
+    "id": "stv-092",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "chowmein",
+    "concept_key": "chowmein"
+  },
+  "chowmein plate": {
+    "id": "stv-092",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "chowmein",
+    "concept_key": "chowmein"
+  },
+  "chowmein banau": {
+    "id": "stv-092",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "chowmein",
+    "concept_key": "chowmein"
+  },
+  "chow mein": {
+    "id": "stv-092",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "chowmein",
+    "concept_key": "chowmein"
+  },
+  "chowmein": {
+    "id": "stv-092",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "chowmein",
+    "concept_key": "chowmein"
+  },
+  "noodles": {
+    "id": "stv-092",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "chowmein",
+    "concept_key": "chowmein"
+  },
+  "steam momo": {
+    "id": "stv-093",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "mo:mo",
+    "concept_key": "mo_mo"
+  },
+  "momo plate": {
+    "id": "stv-093",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "mo:mo",
+    "concept_key": "mo_mo"
+  },
+  "buff momo": {
+    "id": "stv-093",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "mo:mo",
+    "concept_key": "mo_mo"
+  },
+  "dumpling": {
+    "id": "stv-093",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "mo:mo",
+    "concept_key": "mo_mo"
+  },
+  "mo:mo": {
+    "id": "stv-093",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "mo:mo",
+    "concept_key": "mo_mo"
+  },
+  "mo mo": {
+    "id": "stv-093",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "mo:mo",
+    "concept_key": "mo_mo"
+  },
+  "momo": {
+    "id": "stv-093",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "mo:mo",
+    "concept_key": "mo_mo"
+  },
+  "chicken biryani": {
+    "id": "stv-094",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "biryani",
+    "concept_key": "biryani"
+  },
+  "mutton biryani": {
+    "id": "stv-094",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "biryani",
+    "concept_key": "biryani"
+  },
+  "biryani price": {
+    "id": "stv-094",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "biryani",
+    "concept_key": "biryani"
+  },
+  "biryani order": {
+    "id": "stv-094",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "biryani",
+    "concept_key": "biryani"
+  },
+  "biriyani": {
+    "id": "stv-094",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "biryani",
+    "concept_key": "biryani"
+  },
+  "biryani": {
+    "id": "stv-094",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "biryani",
+    "concept_key": "biryani"
+  },
+  "tandoori roti": {
+    "id": "stv-095",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "roti",
+    "concept_key": "roti"
+  },
+  "roti pakaune": {
+    "id": "stv-095",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "roti",
+    "concept_key": "roti"
+  },
+  "roti order": {
+    "id": "stv-095",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "roti",
+    "concept_key": "roti"
+  },
+  "chapati": {
+    "id": "stv-095",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "roti",
+    "concept_key": "roti"
+  },
+  "roti": {
+    "id": "stv-095",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "roti",
+    "concept_key": "roti"
+  },
+  "electrician le fitting garyo": {
+    "id": "stv-096",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "electrician",
+    "concept_key": "electrician"
+  },
+  "electrician ko majdoori": {
+    "id": "stv-096",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "electrician",
+    "concept_key": "electrician"
+  },
+  "electrician lai bolau": {
+    "id": "stv-096",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "electrician",
+    "concept_key": "electrician"
+  },
+  "electrician": {
+    "id": "stv-096",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "electrician",
+    "concept_key": "electrician"
+  },
+  "wireman": {
+    "id": "stv-096",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "electrician",
+    "concept_key": "electrician"
+  },
+  "plumber lai paisa diyo": {
+    "id": "stv-097",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "plumber",
+    "concept_key": "plumber"
+  },
+  "plumbing mistri": {
+    "id": "stv-097",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "plumber",
+    "concept_key": "plumber"
+  },
+  "plumber service": {
+    "id": "stv-097",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "plumber",
+    "concept_key": "plumber"
+  },
+  "plumber aako": {
+    "id": "stv-097",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "plumber",
+    "concept_key": "plumber"
+  },
+  "pipe mistri": {
+    "id": "stv-097",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "plumber",
+    "concept_key": "plumber"
+  },
+  "plumber": {
+    "id": "stv-097",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "plumber",
+    "concept_key": "plumber"
+  },
+  "plywood furniture": {
+    "id": "stv-098",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "plywood",
+    "concept_key": "plywood"
+  },
+  "plywood ko patta": {
+    "id": "stv-098",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "plywood",
+    "concept_key": "plywood"
+  },
+  "plywood price": {
+    "id": "stv-098",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "plywood",
+    "concept_key": "plywood"
+  },
+  "ply sheet": {
+    "id": "stv-098",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "plywood",
+    "concept_key": "plywood"
+  },
+  "plywood": {
+    "id": "stv-098",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "plywood",
+    "concept_key": "plywood"
+  },
+  "ply": {
+    "id": "stv-098",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "plywood",
+    "concept_key": "plywood"
+  },
+  "sanitary pad kinbe": {
+    "id": "stv-099",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "sanitary pad",
+    "concept_key": "sanitary_pad"
+  },
+  "sanitary pad": {
+    "id": "stv-099",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "sanitary pad",
+    "concept_key": "sanitary_pad"
+  },
+  "pad packet": {
+    "id": "stv-099",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "sanitary pad",
+    "concept_key": "sanitary_pad"
+  },
+  "pad brand": {
+    "id": "stv-099",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "sanitary pad",
+    "concept_key": "sanitary_pad"
+  },
+  "whisper": {
+    "id": "stv-099",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "sanitary pad",
+    "concept_key": "sanitary_pad"
+  },
+  "pad": {
+    "id": "stv-099",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "sanitary pad",
+    "concept_key": "sanitary_pad"
+  },
+  "first aid required": {
+    "id": "stv-100",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "first aid",
+    "concept_key": "first_aid"
+  },
+  "first aid saman": {
+    "id": "stv-100",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "first aid",
+    "concept_key": "first_aid"
+  },
+  "emergency kit": {
+    "id": "stv-100",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "first aid",
+    "concept_key": "first_aid"
+  },
+  "first aid kit": {
+    "id": "stv-100",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "first aid",
+    "concept_key": "first_aid"
+  },
+  "first aid box": {
+    "id": "stv-100",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "first aid",
+    "concept_key": "first_aid"
+  },
+  "first aid": {
+    "id": "stv-100",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "first aid",
+    "concept_key": "first_aid"
+  },
+  "syrup bottle": {
+    "id": "stv-101",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "syrup",
+    "concept_key": "syrup"
+  },
+  "cough syrup": {
+    "id": "stv-101",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "syrup",
+    "concept_key": "syrup"
+  },
+  "syrup dinu": {
+    "id": "stv-101",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "syrup",
+    "concept_key": "syrup"
+  },
+  "syrup dose": {
+    "id": "stv-101",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "syrup",
+    "concept_key": "syrup"
+  },
+  "liquid": {
+    "id": "stv-101",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "syrup",
+    "concept_key": "syrup"
+  },
+  "syrup": {
+    "id": "stv-101",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "syrup",
+    "concept_key": "syrup"
+  },
+  "tablet ko patti": {
+    "id": "stv-102",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "tablet",
+    "concept_key": "tablet"
+  },
+  "tablet strip": {
+    "id": "stv-102",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "tablet",
+    "concept_key": "tablet"
+  },
+  "tablet dinu": {
+    "id": "stv-102",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "tablet",
+    "concept_key": "tablet"
+  },
+  "tablet": {
+    "id": "stv-102",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "tablet",
+    "concept_key": "tablet"
+  },
+  "chakki": {
+    "id": "stv-102",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "tablet",
+    "concept_key": "tablet"
+  },
+  "pill": {
+    "id": "stv-102",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "tablet",
+    "concept_key": "tablet"
+  },
+  "insulin mahango cha": {
+    "id": "stv-103",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "insulin",
+    "concept_key": "insulin"
+  },
+  "insulin injection": {
+    "id": "stv-103",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "insulin",
+    "concept_key": "insulin"
+  },
+  "insulin kinbe": {
+    "id": "stv-103",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "insulin",
+    "concept_key": "insulin"
+  },
+  "insulin cost": {
+    "id": "stv-103",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "insulin",
+    "concept_key": "insulin"
+  },
+  "insulin pen": {
+    "id": "stv-103",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "insulin",
+    "concept_key": "insulin"
+  },
+  "insulin": {
+    "id": "stv-103",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "insulin",
+    "concept_key": "insulin"
+  },
+  "tyre puncture": {
+    "id": "stv-104",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "tyre",
+    "concept_key": "tyre"
+  },
+  "tyre change": {
+    "id": "stv-104",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "tyre",
+    "concept_key": "tyre"
+  },
+  "tyre kinbe": {
+    "id": "stv-104",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "tyre",
+    "concept_key": "tyre"
+  },
+  "tube": {
+    "id": "stv-104",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "tyre",
+    "concept_key": "tyre"
+  },
+  "tire": {
+    "id": "stv-104",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "tyre",
+    "concept_key": "tyre"
+  },
+  "tyre": {
+    "id": "stv-104",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "tyre",
+    "concept_key": "tyre"
+  },
+  "petrol pump operator": {
+    "id": "stv-105",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "petrol pump",
+    "concept_key": "petrol_pump"
+  },
+  "petrol pump ma gayo": {
+    "id": "stv-105",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "petrol pump",
+    "concept_key": "petrol_pump"
+  },
+  "petrol pump bill": {
+    "id": "stv-105",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "petrol pump",
+    "concept_key": "petrol_pump"
+  },
+  "petrol station": {
+    "id": "stv-105",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "petrol pump",
+    "concept_key": "petrol_pump"
+  },
+  "petrol pump": {
+    "id": "stv-105",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "petrol pump",
+    "concept_key": "petrol_pump"
+  },
+  "fuel pump": {
+    "id": "stv-105",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "petrol pump",
+    "concept_key": "petrol_pump"
+  },
+  "authorized service center": {
+    "id": "stv-106",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "service center",
+    "concept_key": "service_center"
+  },
+  "service center ma lagyo": {
+    "id": "stv-106",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "service center",
+    "concept_key": "service_center"
+  },
+  "service center bill": {
+    "id": "stv-106",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "service center",
+    "concept_key": "service_center"
+  },
+  "service center": {
+    "id": "stv-106",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "service center",
+    "concept_key": "service_center"
+  },
+  "workshop": {
+    "id": "stv-106",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "service center",
+    "concept_key": "service_center"
+  },
+  "garage": {
+    "id": "stv-106",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "service center",
+    "concept_key": "service_center"
+  },
+  "fitness certificate": {
+    "id": "stv-107",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "fitness test",
+    "concept_key": "fitness_test"
+  },
+  "fitness test pass": {
+    "id": "stv-107",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "fitness test",
+    "concept_key": "fitness_test"
+  },
+  "vehicle fitness": {
+    "id": "stv-107",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "fitness test",
+    "concept_key": "fitness_test"
+  },
+  "fitness check": {
+    "id": "stv-107",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "fitness test",
+    "concept_key": "fitness_test"
+  },
+  "fitness renew": {
+    "id": "stv-107",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "fitness test",
+    "concept_key": "fitness_test"
+  },
+  "fitness test": {
+    "id": "stv-107",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "fitness test",
+    "concept_key": "fitness_test"
+  },
+  "fitness": {
+    "id": "stv-107",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "fitness test",
+    "concept_key": "fitness_test"
+  },
+  "practical notebook": {
+    "id": "stv-108",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "notebook",
+    "concept_key": "notebook"
+  },
+  "notebook price": {
+    "id": "stv-108",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "notebook",
+    "concept_key": "notebook"
+  },
+  "notebook kinbe": {
+    "id": "stv-108",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "notebook",
+    "concept_key": "notebook"
+  },
+  "notebook": {
+    "id": "stv-108",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "notebook",
+    "concept_key": "notebook"
+  },
+  "kaapi": {
+    "id": "stv-108",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "notebook",
+    "concept_key": "notebook"
+  },
+  "copy": {
+    "id": "stv-108",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "notebook",
+    "concept_key": "notebook"
+  },
+  "extra class": {
+    "id": "stv-109",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "excel",
+    "concept_key": "excel"
+  },
+  "excel class": {
+    "id": "stv-109",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "excel",
+    "concept_key": "excel"
+  },
+  "excel batch": {
+    "id": "stv-109",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "excel",
+    "concept_key": "excel"
+  },
+  "excel fee": {
+    "id": "stv-109",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "excel",
+    "concept_key": "excel"
+  },
+  "excel": {
+    "id": "stv-109",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "excel",
+    "concept_key": "excel"
+  },
+  "report card distribution": {
+    "id": "stv-110",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "report card",
+    "concept_key": "report_card"
+  },
+  "report card charge": {
+    "id": "stv-110",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "report card",
+    "concept_key": "report_card"
+  },
+  "report card aayo": {
+    "id": "stv-110",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "report card",
+    "concept_key": "report_card"
+  },
+  "report card": {
+    "id": "stv-110",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "report card",
+    "concept_key": "report_card"
+  },
+  "marksheet": {
+    "id": "stv-110",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "report card",
+    "concept_key": "report_card"
+  },
+  "result": {
+    "id": "stv-110",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "report card",
+    "concept_key": "report_card"
+  },
+  "practical exam": {
+    "id": "stv-111",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "practical",
+    "concept_key": "practical"
+  },
+  "practical file": {
+    "id": "stv-111",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "practical",
+    "concept_key": "practical"
+  },
+  "practical fee": {
+    "id": "stv-111",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "practical",
+    "concept_key": "practical"
+  },
+  "prayogatmak": {
+    "id": "stv-111",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "practical",
+    "concept_key": "practical"
+  },
+  "practical": {
+    "id": "stv-111",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "practical",
+    "concept_key": "practical"
+  },
+  "lab": {
+    "id": "stv-111",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "practical",
+    "concept_key": "practical"
+  },
+  "prospectus ma form": {
+    "id": "stv-112",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "prospectus",
+    "concept_key": "prospectus"
+  },
+  "prospectus price": {
+    "id": "stv-112",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "prospectus",
+    "concept_key": "prospectus"
+  },
+  "prospectus kinbe": {
+    "id": "stv-112",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "prospectus",
+    "concept_key": "prospectus"
+  },
+  "prospectus form": {
+    "id": "stv-112",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "prospectus",
+    "concept_key": "prospectus"
+  },
+  "prospectus": {
+    "id": "stv-112",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "prospectus",
+    "concept_key": "prospectus"
+  },
+  "brochure": {
+    "id": "stv-112",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "prospectus",
+    "concept_key": "prospectus"
+  },
+  "farming tools kinbe": {
+    "id": "stv-113",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "farming tools",
+    "concept_key": "farming_tools"
+  },
+  "kheti ko aujaar": {
+    "id": "stv-113",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "farming tools",
+    "concept_key": "farming_tools"
+  },
+  "krishi aujaar": {
+    "id": "stv-113",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "farming tools",
+    "concept_key": "farming_tools"
+  },
+  "farming tools": {
+    "id": "stv-113",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "farming tools",
+    "concept_key": "farming_tools"
+  },
+  "tools haru": {
+    "id": "stv-113",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "farming tools",
+    "concept_key": "farming_tools"
+  },
+  "aujaar": {
+    "id": "stv-113",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "farming tools",
+    "concept_key": "farming_tools"
+  },
+  "tools": {
+    "id": "stv-113",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "farming tools",
+    "concept_key": "farming_tools"
+  },
+  "submersible pump": {
+    "id": "stv-114",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "pump set",
+    "concept_key": "pump_set"
+  },
+  "pump set kinbe": {
+    "id": "stv-114",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "pump set",
+    "concept_key": "pump_set"
+  },
+  "pump chalau": {
+    "id": "stv-114",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "pump set",
+    "concept_key": "pump_set"
+  },
+  "water pump": {
+    "id": "stv-114",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "pump set",
+    "concept_key": "pump_set"
+  },
+  "motor pump": {
+    "id": "stv-114",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "pump set",
+    "concept_key": "pump_set"
+  },
+  "pump set": {
+    "id": "stv-114",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "pump set",
+    "concept_key": "pump_set"
+  },
+  "pump": {
+    "id": "stv-114",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "pump set",
+    "concept_key": "pump_set"
+  },
+  "pashu chikitsa": {
+    "id": "stv-115",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "pashu",
+    "concept_key": "pashu"
+  },
+  "pashu aahar": {
+    "id": "stv-115",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "pashu",
+    "concept_key": "pashu"
+  },
+  "pashu palan": {
+    "id": "stv-115",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "pashu",
+    "concept_key": "pashu"
+  },
+  "livestock": {
+    "id": "stv-115",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "pashu",
+    "concept_key": "pashu"
+  },
+  "chaupaya": {
+    "id": "stv-115",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "pashu",
+    "concept_key": "pashu"
+  },
+  "pashu": {
+    "id": "stv-115",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "pashu",
+    "concept_key": "pashu"
+  },
+  "kukhura ko daana": {
+    "id": "stv-116",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "aahar",
+    "concept_key": "aahar"
+  },
+  "aahar kinbe": {
+    "id": "stv-116",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "aahar",
+    "concept_key": "aahar"
+  },
+  "aahar": {
+    "id": "stv-116",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "aahar",
+    "concept_key": "aahar"
+  },
+  "daana": {
+    "id": "stv-116",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "aahar",
+    "concept_key": "aahar"
+  },
+  "feed": {
+    "id": "stv-116",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "aahar",
+    "concept_key": "aahar"
+  },
+  "krishi rin ma subsidy": {
+    "id": "stv-117",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "krishi rin",
+    "concept_key": "krishi_rin"
+  },
+  "agriculture loan": {
+    "id": "stv-117",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "krishi rin",
+    "concept_key": "krishi_rin"
+  },
+  "krishi rin tirne": {
+    "id": "stv-117",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "krishi rin",
+    "concept_key": "krishi_rin"
+  },
+  "krishi rin line": {
+    "id": "stv-117",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "krishi rin",
+    "concept_key": "krishi_rin"
+  },
+  "krishi loan": {
+    "id": "stv-117",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "krishi rin",
+    "concept_key": "krishi_rin"
+  },
+  "krishi rin": {
+    "id": "stv-117",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "krishi rin",
+    "concept_key": "krishi_rin"
+  },
+  "kisan rin": {
+    "id": "stv-117",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "krishi rin",
+    "concept_key": "krishi_rin"
+  },
+  "haali ko majdoori": {
+    "id": "stv-118",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "haali",
+    "concept_key": "haali"
+  },
+  "haali lai paisa": {
+    "id": "stv-118",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "haali",
+    "concept_key": "haali"
+  },
+  "haali le jote": {
+    "id": "stv-118",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "haali",
+    "concept_key": "haali"
+  },
+  "ploughman": {
+    "id": "stv-118",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "haali",
+    "concept_key": "haali"
+  },
+  "haali": {
+    "id": "stv-118",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "haali",
+    "concept_key": "haali"
+  },
+  "hali": {
+    "id": "stv-118",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "haali",
+    "concept_key": "haali"
+  },
+  "bhatti ko hisab": {
+    "id": "stv-119",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "bhatti",
+    "concept_key": "bhatti"
+  },
+  "bhatti ma gayo": {
+    "id": "stv-119",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "bhatti",
+    "concept_key": "bhatti"
+  },
+  "bhatti pasal": {
+    "id": "stv-119",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "bhatti",
+    "concept_key": "bhatti"
+  },
+  "raksi pasal": {
+    "id": "stv-119",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "bhatti",
+    "concept_key": "bhatti"
+  },
+  "local bar": {
+    "id": "stv-119",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "bhatti",
+    "concept_key": "bhatti"
+  },
+  "bhatti": {
+    "id": "stv-119",
+    "sector": "restaurant",
+    "sector_slug": "restaurant-cafe",
+    "term": "bhatti",
+    "concept_key": "bhatti"
+  },
+  "hammer le thokne": {
+    "id": "stv-120",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "hammer",
+    "concept_key": "hammer"
+  },
+  "heavy hammer": {
+    "id": "stv-120",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "hammer",
+    "concept_key": "hammer"
+  },
+  "hammer kinbe": {
+    "id": "stv-120",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "hammer",
+    "concept_key": "hammer"
+  },
+  "hathauda": {
+    "id": "stv-120",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "hammer",
+    "concept_key": "hammer"
+  },
+  "hathoda": {
+    "id": "stv-120",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "hammer",
+    "concept_key": "hammer"
+  },
+  "hammer": {
+    "id": "stv-120",
+    "sector": "hardware",
+    "sector_slug": "hardware-construction-materials-shop",
+    "term": "hammer",
+    "concept_key": "hammer"
+  },
+  "injection kinbe": {
+    "id": "stv-121",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "injection",
+    "concept_key": "injection"
+  },
+  "injection laune": {
+    "id": "stv-121",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "injection",
+    "concept_key": "injection"
+  },
+  "injection cost": {
+    "id": "stv-121",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "injection",
+    "concept_key": "injection"
+  },
+  "injectable": {
+    "id": "stv-121",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "injection",
+    "concept_key": "injection"
+  },
+  "injection": {
+    "id": "stv-121",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "injection",
+    "concept_key": "injection"
+  },
+  "sui": {
+    "id": "stv-121",
+    "sector": "pharmacy",
+    "sector_slug": "clinic-health",
+    "term": "injection",
+    "concept_key": "injection"
+  },
+  "airport taxi stand": {
+    "id": "stv-122",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "taxi stand",
+    "concept_key": "taxi_stand"
+  },
+  "taxi stand ma gayo": {
+    "id": "stv-122",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "taxi stand",
+    "concept_key": "taxi_stand"
+  },
+  "taxi stand bhada": {
+    "id": "stv-122",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "taxi stand",
+    "concept_key": "taxi_stand"
+  },
+  "taxi parking": {
+    "id": "stv-122",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "taxi stand",
+    "concept_key": "taxi_stand"
+  },
+  "taxi stand": {
+    "id": "stv-122",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "taxi stand",
+    "concept_key": "taxi_stand"
+  },
+  "taxi stop": {
+    "id": "stv-122",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "taxi stand",
+    "concept_key": "taxi_stand"
+  },
+  "school diary price": {
+    "id": "stv-123",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "diary",
+    "concept_key": "diary"
+  },
+  "diary ma note": {
+    "id": "stv-123",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "diary",
+    "concept_key": "diary"
+  },
+  "student diary": {
+    "id": "stv-123",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "diary",
+    "concept_key": "diary"
+  },
+  "school diary": {
+    "id": "stv-123",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "diary",
+    "concept_key": "diary"
+  },
+  "diary kinbe": {
+    "id": "stv-123",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "diary",
+    "concept_key": "diary"
+  },
+  "diary": {
+    "id": "stv-123",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "diary",
+    "concept_key": "diary"
+  },
+  "computer training": {
+    "id": "stv-124",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "training",
+    "concept_key": "training"
+  },
+  "training center": {
+    "id": "stv-124",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "training",
+    "concept_key": "training"
+  },
+  "training fee": {
+    "id": "stv-124",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "training",
+    "concept_key": "training"
+  },
+  "training": {
+    "id": "stv-124",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "training",
+    "concept_key": "training"
+  },
+  "talim": {
+    "id": "stv-124",
+    "sector": "education",
+    "sector_slug": "education-training",
+    "term": "training",
+    "concept_key": "training"
+  },
+  "tunnel banaune cost": {
+    "id": "stv-125",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "tunnel kheti",
+    "concept_key": "tunnel_kheti"
+  },
+  "tunnel kheti garnu": {
+    "id": "stv-125",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "tunnel kheti",
+    "concept_key": "tunnel_kheti"
+  },
+  "tunnel ko tarkari": {
+    "id": "stv-125",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "tunnel kheti",
+    "concept_key": "tunnel_kheti"
+  },
+  "protected farming": {
+    "id": "stv-125",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "tunnel kheti",
+    "concept_key": "tunnel_kheti"
+  },
+  "tunnel farming": {
+    "id": "stv-125",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "tunnel kheti",
+    "concept_key": "tunnel_kheti"
+  },
+  "tunnel kheti": {
+    "id": "stv-125",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "tunnel kheti",
+    "concept_key": "tunnel_kheti"
+  },
+  "mulching ko fayda": {
+    "id": "stv-126",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "mulching",
+    "concept_key": "mulching"
+  },
+  "plastic mulching": {
+    "id": "stv-126",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "mulching",
+    "concept_key": "mulching"
+  },
+  "mulching gareko": {
+    "id": "stv-126",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "mulching",
+    "concept_key": "mulching"
+  },
+  "mulching paper": {
+    "id": "stv-126",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "mulching",
+    "concept_key": "mulching"
+  },
+  "mulching": {
+    "id": "stv-126",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "mulching",
+    "concept_key": "mulching"
+  },
+  "mulch": {
+    "id": "stv-126",
+    "sector": "agriculture",
+    "sector_slug": "agriculture-farming",
+    "term": "mulching",
+    "concept_key": "mulching"
+  },
+  "tarpauline kinbe": {
+    "id": "stv-127",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "tarpauline",
+    "concept_key": "tarpauline"
+  },
+  "tarpauline halne": {
+    "id": "stv-127",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "tarpauline",
+    "concept_key": "tarpauline"
+  },
+  "tarpauline cover": {
+    "id": "stv-127",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "tarpauline",
+    "concept_key": "tarpauline"
+  },
+  "tarpauline": {
+    "id": "stv-127",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "tarpauline",
+    "concept_key": "tarpauline"
+  },
+  "tarpaulin": {
+    "id": "stv-127",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "tarpauline",
+    "concept_key": "tarpauline"
+  },
+  "tripaal": {
+    "id": "stv-127",
+    "sector": "transport",
+    "sector_slug": "transport-logistics",
+    "term": "tarpauline",
+    "concept_key": "tarpauline"
+  }
+}

@@ -40,7 +40,7 @@
     "nepal-ai:export": "python3 erp_bot/scripts/export_nepal_ai_runtime_maps.py",
     "test:e2e:ekhata": "playwright test e2e/ekhata-panel.spec.ts",
     "test:e2e:ekhata:install": "playwright install chromium",
-    "test:ekhata-all": "npm run test:ekhata-benchmark && npm run test:ekhata-corpus-benchmark && npm run test:ekhata-parser-parity && npm run test:ekhata-compound && npm run test:ekhata-panel-smoke && npm run validate:ekhata-corpus",
+    "test:sutra-ai": "npx tsx scripts/test-sutra-ai.ts",
     "generate:ekhata-corpus": "npx tsx scripts/generate-ekhata-training-corpus.ts",
     "validate:ekhata-corpus": "npx tsx scripts/validate-ekhata-corpus.ts",
     "build:ca-knowledge": "node scripts/build-conceptual-framework-knowledge.mjs"

@@ -1,0 +1,118 @@
+{"wrong": "kineyo", "correct": "kineko", "lemma": "kinnu", "error_type": "vowel_ending", "frequency": "very_high", "example_sentence": "maile saman kineyo 500 ma", "id": "spell-001"}
+{"wrong": "gareyo", "correct": "gareko", "lemma": "garnu", "error_type": "vowel_ending", "frequency": "very_high", "example_sentence": "yo kaam maile gareyo", "id": "spell-002"}
+{"wrong": "bhayeyo", "correct": "bhayeko", "lemma": "hunu", "error_type": "vowel_ending", "frequency": "high", "example_sentence": "kina yasto bhayeyo", "id": "spell-003"}
+{"wrong": "aayeyo", "correct": "aayeko", "lemma": "aaunu", "error_type": "vowel_ending", "frequency": "high", "example_sentence": "u ghar aayeyo", "id": "spell-004"}
+{"wrong": "gayeyo", "correct": "gayeko", "lemma": "jaanu", "error_type": "vowel_ending", "frequency": "medium", "example_sentence": "kahile gayeyo?", "id": "spell-005"}
+{"wrong": "khayeyo", "correct": "khayeko", "lemma": "khaanu", "error_type": "vowel_ending", "frequency": "medium", "example_sentence": "khana khayeyo?", "id": "spell-006"}
+{"wrong": "diyeyo", "correct": "diyeko", "lemma": "dinu", "error_type": "vowel_ending", "frequency": "medium", "example_sentence": "paisa diyeyo?", "id": "spell-007"}
+{"wrong": "liyeyo", "correct": "liyeko", "lemma": "linu", "error_type": "vowel_ending", "frequency": "medium", "example_sentence": "kitab liyeyo", "id": "spell-008"}
+{"wrong": "bhetyo", "correct": "bheteko", "lemma": "bhetnu", "error_type": "vowel_ending", "frequency": "medium", "example_sentence": "timilai bhetyo", "id": "spell-009"}
+{"wrong": "dekheyo", "correct": "dekheko", "lemma": "dekhnu", "error_type": "vowel_ending", "frequency": "medium", "example_sentence": "yo film dekheyo", "id": "spell-010"}
+{"wrong": "suneyo", "correct": "suneko", "lemma": "sunnu", "error_type": "vowel_ending", "frequency": "medium", "example_sentence": "khabar suneyo", "id": "spell-011"}
+{"wrong": "padheyo", "correct": "padheko", "lemma": "padhnu", "error_type": "vowel_ending", "frequency": "medium", "example_sentence": "kitab padheyo", "id": "spell-012"}
+{"wrong": "bhanyo", "correct": "bhaneko", "lemma": "bhannu", "error_type": "vowel_ending", "frequency": "high", "example_sentence": "usle bhanyo", "id": "spell-013"}
+{"wrong": "lekhuyo", "correct": "lekheko", "lemma": "lekhnu", "error_type": "vowel_ending", "frequency": "medium", "example_sentence": "patra lekhuyo", "id": "spell-014"}
+{"wrong": "banyo", "correct": "baneko", "lemma": "banaunu", "error_type": "vowel_ending", "frequency": "medium", "example_sentence": "ghar banyo", "id": "spell-015"}
+{"wrong": "pathayo", "correct": "pathaeko", "lemma": "pathaunu", "error_type": "vowel_ending", "frequency": "high", "example_sentence": "email pathayo", "id": "spell-016"}
+{"wrong": "audaa", "correct": "aaundaa", "lemma": "aaunu", "error_type": "vowel_missing", "frequency": "medium", "example_sentence": "ghar audaa", "id": "spell-017"}
+{"wrong": "jaadaa", "correct": "jaandaa", "lemma": "jaanu", "error_type": "vowel_missing", "frequency": "medium", "example_sentence": "bazaar jaadaa", "id": "spell-018"}
+{"wrong": "khaadaa", "correct": "khaandaa", "lemma": "khaanu", "error_type": "vowel_missing", "frequency": "medium", "example_sentence": "khana khaadaa", "id": "spell-019"}
+{"wrong": "huda", "correct": "hundaa", "lemma": "hunu", "error_type": "vowel_missing", "frequency": "high", "example_sentence": "tyasto huda", "id": "spell-020"}
+{"wrong": "garnus", "correct": "garnuhos", "lemma": "garnu", "error_type": "missing_ho", "frequency": "very_high", "example_sentence": "yo garnus", "id": "spell-021"}
+{"wrong": "aaunus", "correct": "aaunuhos", "lemma": "aaunu", "error_type": "missing_ho", "frequency": "high", "example_sentence": "ghar aaunus", "id": "spell-022"}
+{"wrong": "basnus", "correct": "basnuhos", "lemma": "basnu", "error_type": "missing_ho", "frequency": "high", "example_sentence": "ekchin basnus", "id": "spell-023"}
+{"wrong": "cha", "correct": "chha", "lemma": "hunu", "error_type": "consonant_confusion", "frequency": "very_high", "example_sentence": "yo k cha", "id": "spell-024"}
+{"wrong": "xa", "correct": "chha", "lemma": "hunu", "error_type": "consonant_confusion", "frequency": "very_high", "example_sentence": "tyo k ho xa?", "id": "spell-025"}
+{"wrong": "xaina", "correct": "chaina", "lemma": "hunu", "error_type": "consonant_confusion", "frequency": "very_high", "example_sentence": "paisa xaina", "id": "spell-026"}
+{"wrong": "chhaina", "correct": "chaina", "lemma": "hunu", "error_type": "consonant_confusion", "frequency": "high", "example_sentence": "time chhaina", "id": "spell-027"}
+{"wrong": "vayo", "correct": "bhayo", "lemma": "hunu", "error_type": "consonant_confusion", "frequency": "very_high", "example_sentence": "k vayo", "id": "spell-028"}
+{"wrong": "vaneko", "correct": "bhaneko", "lemma": "bhannu", "error_type": "consonant_confusion", "frequency": "high", "example_sentence": "maile vaneko", "id": "spell-029"}
+{"wrong": "vet", "correct": "bhet", "lemma": "bhetnu", "error_type": "consonant_confusion", "frequency": "high", "example_sentence": "kahile vet huncha", "id": "spell-030"}
+{"wrong": "voli", "correct": "bholi", "lemma": "bholi", "error_type": "consonant_confusion", "frequency": "high", "example_sentence": "voli aaune", "id": "spell-031"}
+{"wrong": "vul", "correct": "bhul", "lemma": "bhul", "error_type": "consonant_confusion", "frequency": "medium", "example_sentence": "malai vul bhayo", "id": "spell-032"}
+{"wrong": "xito", "correct": "chito", "lemma": "chito", "error_type": "consonant_confusion", "frequency": "medium", "example_sentence": "xito aau", "id": "spell-033"}
+{"wrong": "chin", "correct": "chhin", "lemma": "chhin", "error_type": "consonant_confusion", "frequency": "high", "example_sentence": "ek chin parkha", "id": "spell-034"}
+{"wrong": "chadnu", "correct": "chhadnu", "lemma": "chhadnu", "error_type": "consonant_confusion", "frequency": "medium", "example_sentence": "malai chadera jaane", "id": "spell-035"}
+{"wrong": "bhara", "correct": "bhar", "lemma": "bhar", "error_type": "consonant_confusion", "frequency": "medium", "example_sentence": "form bhara", "id": "spell-036"}
+{"wrong": "greko", "correct": "gareko", "lemma": "garnu", "error_type": "missing_letter", "frequency": "high", "example_sentence": "kaam greko", "id": "spell-037"}
+{"wrong": "bcheko", "correct": "becheko", "lemma": "bechnu", "error_type": "missing_letter", "frequency": "medium", "example_sentence": "saman bcheko", "id": "spell-038"}
+{"wrong": "dekhko", "correct": "dekheko", "lemma": "dekhnu", "error_type": "missing_letter", "frequency": "medium", "example_sentence": "maile dekhko", "id": "spell-039"}
+{"wrong": "sunko", "correct": "suneko", "lemma": "sunnu", "error_type": "missing_letter", "frequency": "medium", "example_sentence": "khabar sunko", "id": "spell-040"}
+{"wrong": "pathko", "correct": "pathaeko", "lemma": "pathaunu", "error_type": "missing_letter", "frequency": "high", "example_sentence": "paisa pathko", "id": "spell-041"}
+{"wrong": "lekhe", "correct": "lekheko", "lemma": "lekhnu", "error_type": "missing_syllable", "frequency": "medium", "example_sentence": "chiṭṭhi lekhe", "id": "spell-042"}
+{"wrong": "gaye", "correct": "gayeko", "lemma": "jaanu", "error_type": "missing_syllable", "frequency": "medium", "example_sentence": "ghar gaye", "id": "spell-043"}
+{"wrong": "aaye", "correct": "aayeko", "lemma": "aaunu", "error_type": "missing_syllable", "frequency": "medium", "example_sentence": "u aaye", "id": "spell-044"}
+{"wrong": "bhakyo", "correct": "bhayeko", "lemma": "hunu", "error_type": "missing_letter", "frequency": "high", "example_sentence": "kina bhakyo", "id": "spell-045"}
+{"wrong": "banayo", "correct": "banaayo", "lemma": "banaunu", "error_type": "missing_letter", "frequency": "medium", "example_sentence": "khaana banayo", "id": "spell-046"}
+{"wrong": "hjar", "correct": "hajar", "lemma": "hajar", "error_type": "missing_letter", "frequency": "medium", "example_sentence": "ek hjar rupiya", "id": "spell-047"}
+{"wrong": "manch", "correct": "manchhe", "lemma": "manchhe", "error_type": "missing_letter", "frequency": "medium", "example_sentence": "kati manch", "id": "spell-048"}
+{"wrong": "bhnne", "correct": "bhanne", "lemma": "bhannu", "error_type": "missing_letter", "frequency": "high", "example_sentence": "k bhnne", "id": "spell-049"}
+{"wrong": "garira", "correct": "garirahe", "lemma": "garnu", "error_type": "missing_letter", "frequency": "medium", "example_sentence": "kaam garira", "id": "spell-050"}
+{"wrong": "hajaar", "correct": "hajar", "lemma": "hajar", "error_type": "extra_letter", "frequency": "very_high", "example_sentence": "10 hajaar", "id": "spell-051"}
+{"wrong": "rupiyaa", "correct": "rupiya", "lemma": "rupiya", "error_type": "extra_letter", "frequency": "high", "example_sentence": "500 rupiyaa", "id": "spell-052"}
+{"wrong": "paaisa", "correct": "paisa", "lemma": "paisa", "error_type": "extra_letter", "frequency": "high", "example_sentence": "kati paaisa", "id": "spell-053"}
+{"wrong": "aajaa", "correct": "aaja", "lemma": "aaja", "error_type": "extra_letter", "frequency": "medium", "example_sentence": "aajaa aaune?", "id": "spell-054"}
+{"wrong": "kitaaba", "correct": "kitab", "lemma": "kitab", "error_type": "extra_letter", "frequency": "medium", "example_sentence": "yo kitaaba", "id": "spell-055"}
+{"wrong": "bhaayeko", "correct": "bhayeko", "lemma": "hunu", "error_type": "extra_letter", "frequency": "medium", "example_sentence": "ke bhaayeko", "id": "spell-056"}
+{"wrong": "gaarho", "correct": "garho", "lemma": "garho", "error_type": "extra_letter", "frequency": "medium", "example_sentence": "yo kaam gaarho cha", "id": "spell-057"}
+{"wrong": "chaahanu", "correct": "chahanu", "lemma": "chahanu", "error_type": "extra_letter", "frequency": "medium", "example_sentence": "malai chaahanu", "id": "spell-058"}
+{"wrong": "bihanaa", "correct": "bihana", "lemma": "bihana", "error_type": "extra_letter", "frequency": "medium", "example_sentence": "bihanaa uthe", "id": "spell-059"}
+{"wrong": "saajhaa", "correct": "saajha", "lemma": "saajha", "error_type": "extra_letter", "frequency": "medium", "example_sentence": "saajhaa ma", "id": "spell-060"}
+{"wrong": "malai", "correct": "maile", "lemma": "ma", "error_type": "case_marker_swap", "frequency": "very_high", "example_sentence": "malai yo kaam gareko", "id": "spell-061"}
+{"wrong": "timilai", "correct": "timile", "lemma": "timi", "error_type": "case_marker_swap", "frequency": "very_high", "example_sentence": "timilai vanyeko", "id": "spell-062"}
+{"wrong": "uslai", "correct": "usle", "lemma": "u", "error_type": "case_marker_swap", "frequency": "high", "example_sentence": "uslai aaja gareko", "id": "spell-063"}
+{"wrong": "uniharulai", "correct": "uniharule", "lemma": "uniharu", "error_type": "case_marker_swap", "frequency": "medium", "example_sentence": "uniharulai bhaneko", "id": "spell-064"}
+{"wrong": "hamilai", "correct": "hamile", "lemma": "hami", "error_type": "case_marker_swap", "frequency": "medium", "example_sentence": "hamilai garna parcha", "id": "spell-065"}
+{"wrong": "ka", "correct": "ke", "lemma": "ke", "error_type": "question_word_swap", "frequency": "high", "example_sentence": "ka bhayo", "id": "spell-066"}
+{"wrong": "ki ho", "correct": "ke ho", "lemma": "ke", "error_type": "question_word_swap", "frequency": "medium", "example_sentence": "yo ki ho?", "id": "spell-067"}
+{"wrong": "payement", "correct": "payment", "lemma": "payment", "error_type": "english_mix", "frequency": "high", "example_sentence": "payement gardinu", "id": "spell-068"}
+{"wrong": "recieved", "correct": "received", "lemma": "received", "error_type": "english_mix", "frequency": "high", "example_sentence": "paisa recieved bhayo", "id": "spell-069"}
+{"wrong": "ammount", "correct": "amount", "lemma": "amount", "error_type": "english_mix", "frequency": "high", "example_sentence": "ammount kati ho", "id": "spell-070"}
+{"wrong": "acount", "correct": "account", "lemma": "account", "error_type": "english_mix", "frequency": "high", "example_sentence": "acount number dinus", "id": "spell-071"}
+{"wrong": "mobail", "correct": "mobile", "lemma": "mobile", "error_type": "english_mix", "frequency": "high", "example_sentence": "mobail number pathaunus", "id": "spell-072"}
+{"wrong": "rechareg", "correct": "recharge", "lemma": "recharge", "error_type": "english_mix", "frequency": "medium", "example_sentence": "mobile rechareg garnu", "id": "spell-073"}
+{"wrong": "transection", "correct": "transaction", "lemma": "transaction", "error_type": "english_mix", "frequency": "high", "example_sentence": "transection ID dinus", "id": "spell-074"}
+{"wrong": "balence", "correct": "balance", "lemma": "balance", "error_type": "english_mix", "frequency": "high", "example_sentence": "mero balence check garnus", "id": "spell-075"}
+{"wrong": "conferm", "correct": "confirm", "lemma": "confirm", "error_type": "english_mix", "frequency": "medium", "example_sentence": "conferm bhayo?", "id": "spell-076"}
+{"wrong": "sucess", "correct": "success", "lemma": "success", "error_type": "english_mix", "frequency": "medium", "example_sentence": "payment sucess", "id": "spell-077"}
+{"wrong": "failur", "correct": "failure", "lemma": "failure", "error_type": "english_mix", "frequency": "low", "example_sentence": "transection failur", "id": "spell-078"}
+{"wrong": "cancle", "correct": "cancel", "lemma": "cancel", "error_type": "english_mix", "frequency": "medium", "example_sentence": "order cancle garne", "id": "spell-079"}
+{"wrong": "refundd", "correct": "refund", "lemma": "refund", "error_type": "extra_letter_english", "frequency": "medium", "example_sentence": "refundd dine?", "id": "spell-080"}
+{"wrong": "banke", "correct": "bank", "lemma": "bank", "error_type": "extra_letter_english", "frequency": "medium", "example_sentence": "banke ma paisa pathaunus", "id": "spell-081"}
+{"wrong": "chek", "correct": "cheque", "lemma": "cheque", "error_type": "english_mix", "frequency": "medium", "example_sentence": "chek paunu", "id": "spell-082"}
+{"wrong": "detial", "correct": "detail", "lemma": "detail", "error_type": "english_mix", "frequency": "medium", "example_sentence": "detial pathaunus", "id": "spell-083"}
+{"wrong": "bhett", "correct": "bhet", "lemma": "bhet", "error_type": "extra_letter", "frequency": "medium", "example_sentence": "kahile bhett huncha", "id": "spell-084"}
+{"wrong": "chhittai", "correct": "chittai", "lemma": "chittai", "error_type": "consonant_confusion", "frequency": "medium", "example_sentence": "chhittai aunus", "id": "spell-085"}
+{"wrong": "bhannus", "correct": "bhannuhos", "lemma": "bhannu", "error_type": "missing_ho", "frequency": "high", "example_sentence": "k bhannus", "id": "spell-086"}
+{"wrong": "sunnus", "correct": "sunnuhos", "lemma": "sunnu", "error_type": "missing_ho", "frequency": "medium", "example_sentence": "khabar sunnus", "id": "spell-087"}
+{"wrong": "lekhus", "correct": "lekhnuhos", "lemma": "lekhnu", "error_type": "missing_ho", "frequency": "medium", "example_sentence": "patra lekhus", "id": "spell-088"}
+{"wrong": "pathaus", "correct": "pathaaunuhos", "lemma": "pathaunu", "error_type": "missing_ho", "frequency": "medium", "example_sentence": "email pathaus", "id": "spell-089"}
+{"wrong": "auchha", "correct": "aunchha", "lemma": "aaunu", "error_type": "consonant_confusion", "frequency": "high", "example_sentence": "u bholi auchha", "id": "spell-090"}
+{"wrong": "jancha", "correct": "janchha", "lemma": "jaanu", "error_type": "consonant_confusion", "frequency": "medium", "example_sentence": "u jancha", "id": "spell-091"}
+{"wrong": "khancha", "correct": "khanchha", "lemma": "khaanu", "error_type": "consonant_confusion", "frequency": "medium", "example_sentence": "usle khancha", "id": "spell-092"}
+{"wrong": "dincha", "correct": "dinchha", "lemma": "dinu", "error_type": "consonant_confusion", "frequency": "medium", "example_sentence": "malai dincha", "id": "spell-093"}
+{"wrong": "tapailai", "correct": "tapaailai", "lemma": "tapaai", "error_type": "vowel_missing", "frequency": "very_high", "example_sentence": "tapailai k cha", "id": "spell-094"}
+{"wrong": "hjur", "correct": "hajur", "lemma": "hajur", "error_type": "missing_letter", "frequency": "medium", "example_sentence": "hjur, ke cha", "id": "spell-095"}
+{"wrong": "namste", "correct": "namaste", "lemma": "namaste", "error_type": "missing_letter", "frequency": "medium", "example_sentence": "namste sir", "id": "spell-096"}
+{"wrong": "kast", "correct": "kasto", "lemma": "kasto", "error_type": "missing_letter", "frequency": "medium", "example_sentence": "kast cha", "id": "spell-097"}
+{"wrong": "ramr", "correct": "ramro", "lemma": "ramro", "error_type": "missing_letter", "frequency": "medium", "example_sentence": "ramr cha", "id": "spell-098"}
+{"wrong": "feri", "correct": "pheri", "lemma": "pheri", "error_type": "consonant_confusion", "frequency": "high", "example_sentence": "feri bhetaula", "id": "spell-099"}
+{"wrong": "farkera", "correct": "pharkera", "lemma": "pharkinu", "error_type": "consonant_confusion", "frequency": "medium", "example_sentence": "farkera aaune", "id": "spell-100"}
+{"wrong": "phursad", "correct": "fursad", "lemma": "fursad", "error_type": "consonant_confusion", "frequency": "medium", "example_sentence": "phursad ma", "id": "spell-101"}
+{"wrong": "saphai", "correct": "safai", "lemma": "safai", "error_type": "consonant_confusion", "frequency": "medium", "example_sentence": "saphai garne", "id": "spell-102"}
+{"wrong": "mesage", "correct": "message", "lemma": "message", "error_type": "english_mix", "frequency": "high", "example_sentence": "mesage pathaunus", "id": "spell-103"}
+{"wrong": "adress", "correct": "address", "lemma": "address", "error_type": "english_mix", "frequency": "high", "example_sentence": "adress dinus", "id": "spell-104"}
+{"wrong": "teephone", "correct": "telephone", "lemma": "telephone", "error_type": "english_mix", "frequency": "low", "example_sentence": "teephone number", "id": "spell-105"}
+{"wrong": "nambar", "correct": "number", "lemma": "number", "error_type": "english_mix", "frequency": "high", "example_sentence": "phone nambar", "id": "spell-106"}
+{"wrong": "bhand", "correct": "bhanda", "lemma": "bhanda", "error_type": "missing_letter", "frequency": "medium", "example_sentence": "timi bhanda ma", "id": "spell-107"}
+{"wrong": "hunch", "correct": "huncha", "lemma": "hunu", "error_type": "missing_letter", "frequency": "high", "example_sentence": "yo hunch", "id": "spell-108"}
+{"wrong": "sakch", "correct": "sakcha", "lemma": "saknu", "error_type": "missing_letter", "frequency": "high", "example_sentence": "yo kaam sakch", "id": "spell-109"}
+{"wrong": "auch", "correct": "aucha", "lemma": "aaunu", "error_type": "missing_letter", "frequency": "medium", "example_sentence": "u ghar auch", "id": "spell-110"}
+{"wrong": "janch", "correct": "jancha", "lemma": "jaanu", "error_type": "missing_letter", "frequency": "medium", "example_sentence": "u bazaar janch", "id": "spell-111"}
+{"wrong": "kharch", "correct": "kharcha", "lemma": "kharch", "error_type": "missing_letter", "frequency": "medium", "example_sentence": "kati kharch", "id": "spell-112"}
+{"wrong": "khus", "correct": "khusi", "lemma": "khusi", "error_type": "missing_letter", "frequency": "medium", "example_sentence": "ma khus chu", "id": "spell-113"}
+{"wrong": "thikch", "correct": "thik cha", "lemma": "thik", "error_type": "missing_space", "frequency": "medium", "example_sentence": "sab thikch", "id": "spell-114"}
+{"wrong": "kech", "correct": "ke cha", "lemma": "ke", "error_type": "missing_space", "frequency": "medium", "example_sentence": "timi lai kech", "id": "spell-115"}
+{"wrong": "kch", "correct": "ke cha", "lemma": "ke", "error_type": "missing_letter", "frequency": "medium", "example_sentence": "kch bhayeko", "id": "spell-116"}
+{"wrong": "bhannai", "correct": "bhanne", "lemma": "bhannu", "error_type": "vowel_ending", "frequency": "low", "example_sentence": "k bhannai", "id": "spell-117"}
+{"wrong": "timro", "correct": "timro", "lemma": "timi", "error_type": "none", "frequency": "none", "example_sentence": "", "id": "spell-118"}

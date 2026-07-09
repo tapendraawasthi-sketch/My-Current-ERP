@@ -1,0 +1,1055 @@
+{
+  "kineyo": {
+    "id": "spell-001",
+    "correct": "kineko",
+    "lemma": "kinnu",
+    "error_type": "vowel_ending",
+    "frequency": "very_high",
+    "auto_normalize": true,
+    "example_sentence": "maile saman kineyo 500 ma"
+  },
+  "gareyo": {
+    "id": "spell-002",
+    "correct": "gareko",
+    "lemma": "garnu",
+    "error_type": "vowel_ending",
+    "frequency": "very_high",
+    "auto_normalize": true,
+    "example_sentence": "yo kaam maile gareyo"
+  },
+  "bhayeyo": {
+    "id": "spell-003",
+    "correct": "bhayeko",
+    "lemma": "hunu",
+    "error_type": "vowel_ending",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "kina yasto bhayeyo"
+  },
+  "aayeyo": {
+    "id": "spell-004",
+    "correct": "aayeko",
+    "lemma": "aaunu",
+    "error_type": "vowel_ending",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "u ghar aayeyo"
+  },
+  "gayeyo": {
+    "id": "spell-005",
+    "correct": "gayeko",
+    "lemma": "jaanu",
+    "error_type": "vowel_ending",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "kahile gayeyo?"
+  },
+  "khayeyo": {
+    "id": "spell-006",
+    "correct": "khayeko",
+    "lemma": "khaanu",
+    "error_type": "vowel_ending",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "khana khayeyo?"
+  },
+  "diyeyo": {
+    "id": "spell-007",
+    "correct": "diyeko",
+    "lemma": "dinu",
+    "error_type": "vowel_ending",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "paisa diyeyo?"
+  },
+  "liyeyo": {
+    "id": "spell-008",
+    "correct": "liyeko",
+    "lemma": "linu",
+    "error_type": "vowel_ending",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "kitab liyeyo"
+  },
+  "bhetyo": {
+    "id": "spell-009",
+    "correct": "bheteko",
+    "lemma": "bhetnu",
+    "error_type": "vowel_ending",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "timilai bhetyo"
+  },
+  "dekheyo": {
+    "id": "spell-010",
+    "correct": "dekheko",
+    "lemma": "dekhnu",
+    "error_type": "vowel_ending",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "yo film dekheyo"
+  },
+  "suneyo": {
+    "id": "spell-011",
+    "correct": "suneko",
+    "lemma": "sunnu",
+    "error_type": "vowel_ending",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "khabar suneyo"
+  },
+  "padheyo": {
+    "id": "spell-012",
+    "correct": "padheko",
+    "lemma": "padhnu",
+    "error_type": "vowel_ending",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "kitab padheyo"
+  },
+  "bhanyo": {
+    "id": "spell-013",
+    "correct": "bhaneko",
+    "lemma": "bhannu",
+    "error_type": "vowel_ending",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "usle bhanyo"
+  },
+  "lekhuyo": {
+    "id": "spell-014",
+    "correct": "lekheko",
+    "lemma": "lekhnu",
+    "error_type": "vowel_ending",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "patra lekhuyo"
+  },
+  "banyo": {
+    "id": "spell-015",
+    "correct": "baneko",
+    "lemma": "banaunu",
+    "error_type": "vowel_ending",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "ghar banyo"
+  },
+  "pathayo": {
+    "id": "spell-016",
+    "correct": "pathaeko",
+    "lemma": "pathaunu",
+    "error_type": "vowel_ending",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "email pathayo"
+  },
+  "audaa": {
+    "id": "spell-017",
+    "correct": "aaundaa",
+    "lemma": "aaunu",
+    "error_type": "vowel_missing",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "ghar audaa"
+  },
+  "jaadaa": {
+    "id": "spell-018",
+    "correct": "jaandaa",
+    "lemma": "jaanu",
+    "error_type": "vowel_missing",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "bazaar jaadaa"
+  },
+  "khaadaa": {
+    "id": "spell-019",
+    "correct": "khaandaa",
+    "lemma": "khaanu",
+    "error_type": "vowel_missing",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "khana khaadaa"
+  },
+  "huda": {
+    "id": "spell-020",
+    "correct": "hundaa",
+    "lemma": "hunu",
+    "error_type": "vowel_missing",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "tyasto huda"
+  },
+  "garnus": {
+    "id": "spell-021",
+    "correct": "garnuhos",
+    "lemma": "garnu",
+    "error_type": "missing_ho",
+    "frequency": "very_high",
+    "auto_normalize": true,
+    "example_sentence": "yo garnus"
+  },
+  "aaunus": {
+    "id": "spell-022",
+    "correct": "aaunuhos",
+    "lemma": "aaunu",
+    "error_type": "missing_ho",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "ghar aaunus"
+  },
+  "basnus": {
+    "id": "spell-023",
+    "correct": "basnuhos",
+    "lemma": "basnu",
+    "error_type": "missing_ho",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "ekchin basnus"
+  },
+  "cha": {
+    "id": "spell-024",
+    "correct": "chha",
+    "lemma": "hunu",
+    "error_type": "consonant_confusion",
+    "frequency": "very_high",
+    "auto_normalize": false,
+    "example_sentence": "yo k cha"
+  },
+  "xa": {
+    "id": "spell-025",
+    "correct": "chha",
+    "lemma": "hunu",
+    "error_type": "consonant_confusion",
+    "frequency": "very_high",
+    "auto_normalize": false,
+    "example_sentence": "tyo k ho xa?"
+  },
+  "xaina": {
+    "id": "spell-026",
+    "correct": "chaina",
+    "lemma": "hunu",
+    "error_type": "consonant_confusion",
+    "frequency": "very_high",
+    "auto_normalize": true,
+    "example_sentence": "paisa xaina"
+  },
+  "chhaina": {
+    "id": "spell-027",
+    "correct": "chaina",
+    "lemma": "hunu",
+    "error_type": "consonant_confusion",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "time chhaina"
+  },
+  "vayo": {
+    "id": "spell-028",
+    "correct": "bhayo",
+    "lemma": "hunu",
+    "error_type": "consonant_confusion",
+    "frequency": "very_high",
+    "auto_normalize": true,
+    "example_sentence": "k vayo"
+  },
+  "vaneko": {
+    "id": "spell-029",
+    "correct": "bhaneko",
+    "lemma": "bhannu",
+    "error_type": "consonant_confusion",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "maile vaneko"
+  },
+  "vet": {
+    "id": "spell-030",
+    "correct": "bhet",
+    "lemma": "bhetnu",
+    "error_type": "consonant_confusion",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "kahile vet huncha"
+  },
+  "voli": {
+    "id": "spell-031",
+    "correct": "bholi",
+    "lemma": "bholi",
+    "error_type": "consonant_confusion",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "voli aaune"
+  },
+  "vul": {
+    "id": "spell-032",
+    "correct": "bhul",
+    "lemma": "bhul",
+    "error_type": "consonant_confusion",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "malai vul bhayo"
+  },
+  "xito": {
+    "id": "spell-033",
+    "correct": "chito",
+    "lemma": "chito",
+    "error_type": "consonant_confusion",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "xito aau"
+  },
+  "chin": {
+    "id": "spell-034",
+    "correct": "chhin",
+    "lemma": "chhin",
+    "error_type": "consonant_confusion",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "ek chin parkha"
+  },
+  "chadnu": {
+    "id": "spell-035",
+    "correct": "chhadnu",
+    "lemma": "chhadnu",
+    "error_type": "consonant_confusion",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "malai chadera jaane"
+  },
+  "bhara": {
+    "id": "spell-036",
+    "correct": "bhar",
+    "lemma": "bhar",
+    "error_type": "consonant_confusion",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "form bhara"
+  },
+  "greko": {
+    "id": "spell-037",
+    "correct": "gareko",
+    "lemma": "garnu",
+    "error_type": "missing_letter",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "kaam greko"
+  },
+  "bcheko": {
+    "id": "spell-038",
+    "correct": "becheko",
+    "lemma": "bechnu",
+    "error_type": "missing_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "saman bcheko"
+  },
+  "dekhko": {
+    "id": "spell-039",
+    "correct": "dekheko",
+    "lemma": "dekhnu",
+    "error_type": "missing_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "maile dekhko"
+  },
+  "sunko": {
+    "id": "spell-040",
+    "correct": "suneko",
+    "lemma": "sunnu",
+    "error_type": "missing_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "khabar sunko"
+  },
+  "pathko": {
+    "id": "spell-041",
+    "correct": "pathaeko",
+    "lemma": "pathaunu",
+    "error_type": "missing_letter",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "paisa pathko"
+  },
+  "lekhe": {
+    "id": "spell-042",
+    "correct": "lekheko",
+    "lemma": "lekhnu",
+    "error_type": "missing_syllable",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "chiṭṭhi lekhe"
+  },
+  "gaye": {
+    "id": "spell-043",
+    "correct": "gayeko",
+    "lemma": "jaanu",
+    "error_type": "missing_syllable",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "ghar gaye"
+  },
+  "aaye": {
+    "id": "spell-044",
+    "correct": "aayeko",
+    "lemma": "aaunu",
+    "error_type": "missing_syllable",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "u aaye"
+  },
+  "bhakyo": {
+    "id": "spell-045",
+    "correct": "bhayeko",
+    "lemma": "hunu",
+    "error_type": "missing_letter",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "kina bhakyo"
+  },
+  "banayo": {
+    "id": "spell-046",
+    "correct": "banaayo",
+    "lemma": "banaunu",
+    "error_type": "missing_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "khaana banayo"
+  },
+  "hjar": {
+    "id": "spell-047",
+    "correct": "hajar",
+    "lemma": "hajar",
+    "error_type": "missing_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "ek hjar rupiya"
+  },
+  "manch": {
+    "id": "spell-048",
+    "correct": "manchhe",
+    "lemma": "manchhe",
+    "error_type": "missing_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "kati manch"
+  },
+  "bhnne": {
+    "id": "spell-049",
+    "correct": "bhanne",
+    "lemma": "bhannu",
+    "error_type": "missing_letter",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "k bhnne"
+  },
+  "garira": {
+    "id": "spell-050",
+    "correct": "garirahe",
+    "lemma": "garnu",
+    "error_type": "missing_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "kaam garira"
+  },
+  "hajaar": {
+    "id": "spell-051",
+    "correct": "hajar",
+    "lemma": "hajar",
+    "error_type": "extra_letter",
+    "frequency": "very_high",
+    "auto_normalize": true,
+    "example_sentence": "10 hajaar"
+  },
+  "rupiyaa": {
+    "id": "spell-052",
+    "correct": "rupiya",
+    "lemma": "rupiya",
+    "error_type": "extra_letter",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "500 rupiyaa"
+  },
+  "paaisa": {
+    "id": "spell-053",
+    "correct": "paisa",
+    "lemma": "paisa",
+    "error_type": "extra_letter",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "kati paaisa"
+  },
+  "aajaa": {
+    "id": "spell-054",
+    "correct": "aaja",
+    "lemma": "aaja",
+    "error_type": "extra_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "aajaa aaune?"
+  },
+  "kitaaba": {
+    "id": "spell-055",
+    "correct": "kitab",
+    "lemma": "kitab",
+    "error_type": "extra_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "yo kitaaba"
+  },
+  "bhaayeko": {
+    "id": "spell-056",
+    "correct": "bhayeko",
+    "lemma": "hunu",
+    "error_type": "extra_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "ke bhaayeko"
+  },
+  "gaarho": {
+    "id": "spell-057",
+    "correct": "garho",
+    "lemma": "garho",
+    "error_type": "extra_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "yo kaam gaarho cha"
+  },
+  "chaahanu": {
+    "id": "spell-058",
+    "correct": "chahanu",
+    "lemma": "chahanu",
+    "error_type": "extra_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "malai chaahanu"
+  },
+  "bihanaa": {
+    "id": "spell-059",
+    "correct": "bihana",
+    "lemma": "bihana",
+    "error_type": "extra_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "bihanaa uthe"
+  },
+  "saajhaa": {
+    "id": "spell-060",
+    "correct": "saajha",
+    "lemma": "saajha",
+    "error_type": "extra_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "saajhaa ma"
+  },
+  "malai": {
+    "id": "spell-061",
+    "correct": "maile",
+    "lemma": "ma",
+    "error_type": "case_marker_swap",
+    "frequency": "very_high",
+    "auto_normalize": false,
+    "example_sentence": "malai yo kaam gareko"
+  },
+  "timilai": {
+    "id": "spell-062",
+    "correct": "timile",
+    "lemma": "timi",
+    "error_type": "case_marker_swap",
+    "frequency": "very_high",
+    "auto_normalize": false,
+    "example_sentence": "timilai vanyeko"
+  },
+  "uslai": {
+    "id": "spell-063",
+    "correct": "usle",
+    "lemma": "u",
+    "error_type": "case_marker_swap",
+    "frequency": "high",
+    "auto_normalize": false,
+    "example_sentence": "uslai aaja gareko"
+  },
+  "uniharulai": {
+    "id": "spell-064",
+    "correct": "uniharule",
+    "lemma": "uniharu",
+    "error_type": "case_marker_swap",
+    "frequency": "medium",
+    "auto_normalize": false,
+    "example_sentence": "uniharulai bhaneko"
+  },
+  "hamilai": {
+    "id": "spell-065",
+    "correct": "hamile",
+    "lemma": "hami",
+    "error_type": "case_marker_swap",
+    "frequency": "medium",
+    "auto_normalize": false,
+    "example_sentence": "hamilai garna parcha"
+  },
+  "ka": {
+    "id": "spell-066",
+    "correct": "ke",
+    "lemma": "ke",
+    "error_type": "question_word_swap",
+    "frequency": "high",
+    "auto_normalize": false,
+    "example_sentence": "ka bhayo"
+  },
+  "ki ho": {
+    "id": "spell-067",
+    "correct": "ke ho",
+    "lemma": "ke",
+    "error_type": "question_word_swap",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "yo ki ho?"
+  },
+  "payement": {
+    "id": "spell-068",
+    "correct": "payment",
+    "lemma": "payment",
+    "error_type": "english_mix",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "payement gardinu"
+  },
+  "recieved": {
+    "id": "spell-069",
+    "correct": "received",
+    "lemma": "received",
+    "error_type": "english_mix",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "paisa recieved bhayo"
+  },
+  "ammount": {
+    "id": "spell-070",
+    "correct": "amount",
+    "lemma": "amount",
+    "error_type": "english_mix",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "ammount kati ho"
+  },
+  "acount": {
+    "id": "spell-071",
+    "correct": "account",
+    "lemma": "account",
+    "error_type": "english_mix",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "acount number dinus"
+  },
+  "mobail": {
+    "id": "spell-072",
+    "correct": "mobile",
+    "lemma": "mobile",
+    "error_type": "english_mix",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "mobail number pathaunus"
+  },
+  "rechareg": {
+    "id": "spell-073",
+    "correct": "recharge",
+    "lemma": "recharge",
+    "error_type": "english_mix",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "mobile rechareg garnu"
+  },
+  "transection": {
+    "id": "spell-074",
+    "correct": "transaction",
+    "lemma": "transaction",
+    "error_type": "english_mix",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "transection ID dinus"
+  },
+  "balence": {
+    "id": "spell-075",
+    "correct": "balance",
+    "lemma": "balance",
+    "error_type": "english_mix",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "mero balence check garnus"
+  },
+  "conferm": {
+    "id": "spell-076",
+    "correct": "confirm",
+    "lemma": "confirm",
+    "error_type": "english_mix",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "conferm bhayo?"
+  },
+  "sucess": {
+    "id": "spell-077",
+    "correct": "success",
+    "lemma": "success",
+    "error_type": "english_mix",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "payment sucess"
+  },
+  "failur": {
+    "id": "spell-078",
+    "correct": "failure",
+    "lemma": "failure",
+    "error_type": "english_mix",
+    "frequency": "low",
+    "auto_normalize": true,
+    "example_sentence": "transection failur"
+  },
+  "cancle": {
+    "id": "spell-079",
+    "correct": "cancel",
+    "lemma": "cancel",
+    "error_type": "english_mix",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "order cancle garne"
+  },
+  "refundd": {
+    "id": "spell-080",
+    "correct": "refund",
+    "lemma": "refund",
+    "error_type": "extra_letter_english",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "refundd dine?"
+  },
+  "banke": {
+    "id": "spell-081",
+    "correct": "bank",
+    "lemma": "bank",
+    "error_type": "extra_letter_english",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "banke ma paisa pathaunus"
+  },
+  "chek": {
+    "id": "spell-082",
+    "correct": "cheque",
+    "lemma": "cheque",
+    "error_type": "english_mix",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "chek paunu"
+  },
+  "detial": {
+    "id": "spell-083",
+    "correct": "detail",
+    "lemma": "detail",
+    "error_type": "english_mix",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "detial pathaunus"
+  },
+  "bhett": {
+    "id": "spell-084",
+    "correct": "bhet",
+    "lemma": "bhet",
+    "error_type": "extra_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "kahile bhett huncha"
+  },
+  "chhittai": {
+    "id": "spell-085",
+    "correct": "chittai",
+    "lemma": "chittai",
+    "error_type": "consonant_confusion",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "chhittai aunus"
+  },
+  "bhannus": {
+    "id": "spell-086",
+    "correct": "bhannuhos",
+    "lemma": "bhannu",
+    "error_type": "missing_ho",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "k bhannus"
+  },
+  "sunnus": {
+    "id": "spell-087",
+    "correct": "sunnuhos",
+    "lemma": "sunnu",
+    "error_type": "missing_ho",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "khabar sunnus"
+  },
+  "lekhus": {
+    "id": "spell-088",
+    "correct": "lekhnuhos",
+    "lemma": "lekhnu",
+    "error_type": "missing_ho",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "patra lekhus"
+  },
+  "pathaus": {
+    "id": "spell-089",
+    "correct": "pathaaunuhos",
+    "lemma": "pathaunu",
+    "error_type": "missing_ho",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "email pathaus"
+  },
+  "auchha": {
+    "id": "spell-090",
+    "correct": "aunchha",
+    "lemma": "aaunu",
+    "error_type": "consonant_confusion",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "u bholi auchha"
+  },
+  "jancha": {
+    "id": "spell-091",
+    "correct": "janchha",
+    "lemma": "jaanu",
+    "error_type": "consonant_confusion",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "u jancha"
+  },
+  "khancha": {
+    "id": "spell-092",
+    "correct": "khanchha",
+    "lemma": "khaanu",
+    "error_type": "consonant_confusion",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "usle khancha"
+  },
+  "dincha": {
+    "id": "spell-093",
+    "correct": "dinchha",
+    "lemma": "dinu",
+    "error_type": "consonant_confusion",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "malai dincha"
+  },
+  "tapailai": {
+    "id": "spell-094",
+    "correct": "tapaailai",
+    "lemma": "tapaai",
+    "error_type": "vowel_missing",
+    "frequency": "very_high",
+    "auto_normalize": true,
+    "example_sentence": "tapailai k cha"
+  },
+  "hjur": {
+    "id": "spell-095",
+    "correct": "hajur",
+    "lemma": "hajur",
+    "error_type": "missing_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "hjur, ke cha"
+  },
+  "namste": {
+    "id": "spell-096",
+    "correct": "namaste",
+    "lemma": "namaste",
+    "error_type": "missing_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "namste sir"
+  },
+  "kast": {
+    "id": "spell-097",
+    "correct": "kasto",
+    "lemma": "kasto",
+    "error_type": "missing_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "kast cha"
+  },
+  "ramr": {
+    "id": "spell-098",
+    "correct": "ramro",
+    "lemma": "ramro",
+    "error_type": "missing_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "ramr cha"
+  },
+  "feri": {
+    "id": "spell-099",
+    "correct": "pheri",
+    "lemma": "pheri",
+    "error_type": "consonant_confusion",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "feri bhetaula"
+  },
+  "farkera": {
+    "id": "spell-100",
+    "correct": "pharkera",
+    "lemma": "pharkinu",
+    "error_type": "consonant_confusion",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "farkera aaune"
+  },
+  "phursad": {
+    "id": "spell-101",
+    "correct": "fursad",
+    "lemma": "fursad",
+    "error_type": "consonant_confusion",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "phursad ma"
+  },
+  "saphai": {
+    "id": "spell-102",
+    "correct": "safai",
+    "lemma": "safai",
+    "error_type": "consonant_confusion",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "saphai garne"
+  },
+  "mesage": {
+    "id": "spell-103",
+    "correct": "message",
+    "lemma": "message",
+    "error_type": "english_mix",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "mesage pathaunus"
+  },
+  "adress": {
+    "id": "spell-104",
+    "correct": "address",
+    "lemma": "address",
+    "error_type": "english_mix",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "adress dinus"
+  },
+  "teephone": {
+    "id": "spell-105",
+    "correct": "telephone",
+    "lemma": "telephone",
+    "error_type": "english_mix",
+    "frequency": "low",
+    "auto_normalize": true,
+    "example_sentence": "teephone number"
+  },
+  "nambar": {
+    "id": "spell-106",
+    "correct": "number",
+    "lemma": "number",
+    "error_type": "english_mix",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "phone nambar"
+  },
+  "bhand": {
+    "id": "spell-107",
+    "correct": "bhanda",
+    "lemma": "bhanda",
+    "error_type": "missing_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "timi bhanda ma"
+  },
+  "hunch": {
+    "id": "spell-108",
+    "correct": "huncha",
+    "lemma": "hunu",
+    "error_type": "missing_letter",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "yo hunch"
+  },
+  "sakch": {
+    "id": "spell-109",
+    "correct": "sakcha",
+    "lemma": "saknu",
+    "error_type": "missing_letter",
+    "frequency": "high",
+    "auto_normalize": true,
+    "example_sentence": "yo kaam sakch"
+  },
+  "auch": {
+    "id": "spell-110",
+    "correct": "aucha",
+    "lemma": "aaunu",
+    "error_type": "missing_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "u ghar auch"
+  },
+  "janch": {
+    "id": "spell-111",
+    "correct": "jancha",
+    "lemma": "jaanu",
+    "error_type": "missing_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "u bazaar janch"
+  },
+  "kharch": {
+    "id": "spell-112",
+    "correct": "kharcha",
+    "lemma": "kharch",
+    "error_type": "missing_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "kati kharch"
+  },
+  "khus": {
+    "id": "spell-113",
+    "correct": "khusi",
+    "lemma": "khusi",
+    "error_type": "missing_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "ma khus chu"
+  },
+  "thikch": {
+    "id": "spell-114",
+    "correct": "thik cha",
+    "lemma": "thik",
+    "error_type": "missing_space",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "sab thikch"
+  },
+  "kech": {
+    "id": "spell-115",
+    "correct": "ke cha",
+    "lemma": "ke",
+    "error_type": "missing_space",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "timi lai kech"
+  },
+  "kch": {
+    "id": "spell-116",
+    "correct": "ke cha",
+    "lemma": "ke",
+    "error_type": "missing_letter",
+    "frequency": "medium",
+    "auto_normalize": true,
+    "example_sentence": "kch bhayeko"
+  },
+  "bhannai": {
+    "id": "spell-117",
+    "correct": "bhanne",
+    "lemma": "bhannu",
+    "error_type": "vowel_ending",
+    "frequency": "low",
+    "auto_normalize": true,
+    "example_sentence": "k bhannai"
+  }
+}

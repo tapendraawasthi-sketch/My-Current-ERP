@@ -1,0 +1,2181 @@
+{
+  "ho": {
+    "id": "yn-001",
+    "meaning": "yes",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "ho",
+      "hoo",
+      "hau"
+    ],
+    "usage_context": [
+      "confirmation after question",
+      "agreement"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Ram lai 500 udhaar, thik ho?",
+        "user": "ho",
+        "meaning": "confirmed"
+      }
+    ]
+  },
+  "hoo": {
+    "id": "yn-001",
+    "meaning": "yes",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "ho",
+      "hoo",
+      "hau"
+    ],
+    "usage_context": [
+      "confirmation after question",
+      "agreement"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Ram lai 500 udhaar, thik ho?",
+        "user": "ho",
+        "meaning": "confirmed"
+      }
+    ]
+  },
+  "hau": {
+    "id": "yn-001",
+    "meaning": "yes",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "ho",
+      "hoo",
+      "hau"
+    ],
+    "usage_context": [
+      "confirmation after question",
+      "agreement"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Ram lai 500 udhaar, thik ho?",
+        "user": "ho",
+        "meaning": "confirmed"
+      }
+    ]
+  },
+  "hajur": {
+    "id": "yn-002",
+    "meaning": "yes (polite/formal)",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "hajur",
+      "hajoor"
+    ],
+    "usage_context": [
+      "polite acknowledgement",
+      "formal agreement"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Kripaya aafno account number dinus.",
+        "user": "hajur",
+        "meaning": "acknowledged, I will provide"
+      }
+    ]
+  },
+  "hajoor": {
+    "id": "yn-002",
+    "meaning": "yes (polite/formal)",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "hajur",
+      "hajoor"
+    ],
+    "usage_context": [
+      "polite acknowledgement",
+      "formal agreement"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Kripaya aafno account number dinus.",
+        "user": "hajur",
+        "meaning": "acknowledged, I will provide"
+      }
+    ]
+  },
+  "thik cha": {
+    "id": "yn-003",
+    "meaning": "yes, okay/alright",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "thik cha",
+      "thik chha",
+      "thik xa"
+    ],
+    "usage_context": [
+      "acceptance",
+      "approval"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Bholi 2 baje bhetaula?",
+        "user": "thik cha",
+        "meaning": "okay, agreed"
+      }
+    ]
+  },
+  "thik chha": {
+    "id": "yn-019",
+    "meaning": "yes, all right",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "thik chha",
+      "thik cha"
+    ],
+    "usage_context": [
+      "acceptance",
+      "okay"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Parsi 3 baje milcha?",
+        "user": "thik chha",
+        "meaning": "alright"
+      }
+    ]
+  },
+  "thik xa": {
+    "id": "yn-003",
+    "meaning": "yes, okay/alright",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "thik cha",
+      "thik chha",
+      "thik xa"
+    ],
+    "usage_context": [
+      "acceptance",
+      "approval"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Bholi 2 baje bhetaula?",
+        "user": "thik cha",
+        "meaning": "okay, agreed"
+      }
+    ]
+  },
+  "huncha": {
+    "id": "yn-004",
+    "meaning": "yes, it will happen/is fine",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "huncha",
+      "hunchha",
+      "huncha ni"
+    ],
+    "usage_context": [
+      "permission",
+      "agreement",
+      "confirmation of future action"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Ma feri call garchu huncha?",
+        "user": "huncha",
+        "meaning": "yes, that's fine"
+      }
+    ]
+  },
+  "hunchha": {
+    "id": "yn-004",
+    "meaning": "yes, it will happen/is fine",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "huncha",
+      "hunchha",
+      "huncha ni"
+    ],
+    "usage_context": [
+      "permission",
+      "agreement",
+      "confirmation of future action"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Ma feri call garchu huncha?",
+        "user": "huncha",
+        "meaning": "yes, that's fine"
+      }
+    ]
+  },
+  "huncha ni": {
+    "id": "yn-017",
+    "meaning": "yes, surely/definitely",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "huncha ni",
+      "hunchha ni"
+    ],
+    "usage_context": [
+      "strong agreement",
+      "assurance"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Paisa time ma aucha?",
+        "user": "huncha ni",
+        "meaning": "definitely, it will"
+      }
+    ]
+  },
+  "chha": {
+    "id": "yn-005",
+    "meaning": "yes, exists/is available",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "chha",
+      "cha",
+      "xa"
+    ],
+    "usage_context": [
+      "confirmation of existence",
+      "availability"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Tapaiko khata ma paisa chha?",
+        "user": "chha",
+        "meaning": "yes, there is"
+      }
+    ]
+  },
+  "cha": {
+    "id": "yn-005",
+    "meaning": "yes, exists/is available",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "chha",
+      "cha",
+      "xa"
+    ],
+    "usage_context": [
+      "confirmation of existence",
+      "availability"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Tapaiko khata ma paisa chha?",
+        "user": "chha",
+        "meaning": "yes, there is"
+      }
+    ]
+  },
+  "xa": {
+    "id": "yn-005",
+    "meaning": "yes, exists/is available",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "chha",
+      "cha",
+      "xa"
+    ],
+    "usage_context": [
+      "confirmation of existence",
+      "availability"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Tapaiko khata ma paisa chha?",
+        "user": "chha",
+        "meaning": "yes, there is"
+      }
+    ]
+  },
+  "aaja": {
+    "id": "yn-006",
+    "meaning": "yes (informal/casual)",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "aaja",
+      "ajaa"
+    ],
+    "usage_context": [
+      "casual agreement",
+      "informal confirmation"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Khana khana aaune?",
+        "user": "aaja",
+        "meaning": "yeah (casual yes)"
+      }
+    ]
+  },
+  "ajaa": {
+    "id": "yn-006",
+    "meaning": "yes (informal/casual)",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "aaja",
+      "ajaa"
+    ],
+    "usage_context": [
+      "casual agreement",
+      "informal confirmation"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Khana khana aaune?",
+        "user": "aaja",
+        "meaning": "yeah (casual yes)"
+      }
+    ]
+  },
+  "ok": {
+    "id": "yn-007",
+    "meaning": "yes, okay",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "ok",
+      "okay"
+    ],
+    "usage_context": [
+      "modern acceptance",
+      "understanding"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Bholi 10 baje milcha?",
+        "user": "ok",
+        "meaning": "okay"
+      }
+    ]
+  },
+  "okay": {
+    "id": "yn-008",
+    "meaning": "yes, okay (emphatic)",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "okay",
+      "ok"
+    ],
+    "usage_context": [
+      "confirmation",
+      "agreement"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Ma document email gardinchu okay?",
+        "user": "okay",
+        "meaning": "sure, okay"
+      }
+    ]
+  },
+  "huss": {
+    "id": "yn-009",
+    "meaning": "yes (polite, understood)",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "huss",
+      "hus"
+    ],
+    "usage_context": [
+      "acknowledgement",
+      "obedience"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Tapai ko request process bhayo.",
+        "user": "huss",
+        "meaning": "understood, thank you"
+      }
+    ]
+  },
+  "hus": {
+    "id": "yn-010",
+    "meaning": "yes (affirmative)",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "hus",
+      "huss"
+    ],
+    "usage_context": [
+      "agreement",
+      "acceptance"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "La ta voli aunus hai.",
+        "user": "hus",
+        "meaning": "okay, I will come"
+      }
+    ]
+  },
+  "yes": {
+    "id": "yn-011",
+    "meaning": "yes (English loan)",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "yes"
+    ],
+    "usage_context": [
+      "bilingual agreement",
+      "quick affirmative"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "You want to continue?",
+        "user": "yes",
+        "meaning": "yes"
+      }
+    ]
+  },
+  "ji": {
+    "id": "yn-012",
+    "meaning": "yes (respectful)",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "ji",
+      "jee"
+    ],
+    "usage_context": [
+      "deferential agreement",
+      "formal response"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Ke tapai lai sahayog chahiyo?",
+        "user": "ji",
+        "meaning": "yes, please"
+      }
+    ]
+  },
+  "jee": {
+    "id": "yn-012",
+    "meaning": "yes (respectful)",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "ji",
+      "jee"
+    ],
+    "usage_context": [
+      "deferential agreement",
+      "formal response"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Ke tapai lai sahayog chahiyo?",
+        "user": "ji",
+        "meaning": "yes, please"
+      }
+    ]
+  },
+  "ah": {
+    "id": "yn-013",
+    "meaning": "yes (casual uh-huh)",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "ah",
+      "aha"
+    ],
+    "usage_context": [
+      "informal acknowledgement",
+      "conversational yes"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Timile khana khayau?",
+        "user": "ah",
+        "meaning": "yep"
+      }
+    ]
+  },
+  "aha": {
+    "id": "yn-013",
+    "meaning": "yes (casual uh-huh)",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "ah",
+      "aha"
+    ],
+    "usage_context": [
+      "informal acknowledgement",
+      "conversational yes"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Timile khana khayau?",
+        "user": "ah",
+        "meaning": "yep"
+      }
+    ]
+  },
+  "ahaa": {
+    "id": "yn-014",
+    "meaning": "yes (emphatic, surprised)",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "ahaa",
+      "aha"
+    ],
+    "usage_context": [
+      "emphatic confirmation",
+      "exclamatory yes"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Sachi tyo timro ghar ho?",
+        "user": "ahaa",
+        "meaning": "yes indeed!"
+      }
+    ]
+  },
+  "ho ni": {
+    "id": "yn-015",
+    "meaning": "yes, of course",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "ho ni",
+      "ho ni ta"
+    ],
+    "usage_context": [
+      "obvious confirmation",
+      "assurance"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Timro janmadin aaja ho?",
+        "user": "ho ni",
+        "meaning": "yes, indeed"
+      }
+    ]
+  },
+  "ho ni ta": {
+    "id": "yn-015",
+    "meaning": "yes, of course",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "ho ni",
+      "ho ni ta"
+    ],
+    "usage_context": [
+      "obvious confirmation",
+      "assurance"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Timro janmadin aaja ho?",
+        "user": "ho ni",
+        "meaning": "yes, indeed"
+      }
+    ]
+  },
+  "la": {
+    "id": "yn-016",
+    "meaning": "yes, okay/let's go",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "la",
+      "laa"
+    ],
+    "usage_context": [
+      "casual acceptance",
+      "signal to start"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Aba ghar jaau?",
+        "user": "la",
+        "meaning": "okay, let's"
+      }
+    ]
+  },
+  "laa": {
+    "id": "yn-016",
+    "meaning": "yes, okay/let's go",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "la",
+      "laa"
+    ],
+    "usage_context": [
+      "casual acceptance",
+      "signal to start"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Aba ghar jaau?",
+        "user": "la",
+        "meaning": "okay, let's"
+      }
+    ]
+  },
+  "hunchha ni": {
+    "id": "yn-017",
+    "meaning": "yes, surely/definitely",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "huncha ni",
+      "hunchha ni"
+    ],
+    "usage_context": [
+      "strong agreement",
+      "assurance"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Paisa time ma aucha?",
+        "user": "huncha ni",
+        "meaning": "definitely, it will"
+      }
+    ]
+  },
+  "um": {
+    "id": "yn-018",
+    "meaning": "yes (mumbled)",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "um",
+      "umm"
+    ],
+    "usage_context": [
+      "hesitant agreement",
+      "low-energy yes"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Yo sahi cha?",
+        "user": "um",
+        "meaning": "uh-huh"
+      }
+    ]
+  },
+  "umm": {
+    "id": "yn-018",
+    "meaning": "yes (mumbled)",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "um",
+      "umm"
+    ],
+    "usage_context": [
+      "hesitant agreement",
+      "low-energy yes"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Yo sahi cha?",
+        "user": "um",
+        "meaning": "uh-huh"
+      }
+    ]
+  },
+  "ho ta": {
+    "id": "yn-020",
+    "meaning": "yes, obviously",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "ho ta",
+      "ho ta ni"
+    ],
+    "usage_context": [
+      "emphatic agreement",
+      "dismissing doubt"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Ke yo bato sahi ho?",
+        "user": "ho ta",
+        "meaning": "of course"
+      }
+    ]
+  },
+  "ho ta ni": {
+    "id": "yn-020",
+    "meaning": "yes, obviously",
+    "type": "affirmation",
+    "multi_turn_action": "confirm_pending",
+    "variants": [
+      "ho ta",
+      "ho ta ni"
+    ],
+    "usage_context": [
+      "emphatic agreement",
+      "dismissing doubt"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Ke yo bato sahi ho?",
+        "user": "ho ta",
+        "meaning": "of course"
+      }
+    ]
+  },
+  "hoina": {
+    "id": "yn-021",
+    "meaning": "no",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "hoina",
+      "hoina ni",
+      "haina"
+    ],
+    "usage_context": [
+      "negation",
+      "correction",
+      "disagreement"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Yo sahi number ho?",
+        "user": "hoina",
+        "meaning": "no, it's wrong"
+      }
+    ]
+  },
+  "hoina ni": {
+    "id": "yn-021",
+    "meaning": "no",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "hoina",
+      "hoina ni",
+      "haina"
+    ],
+    "usage_context": [
+      "negation",
+      "correction",
+      "disagreement"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Yo sahi number ho?",
+        "user": "hoina",
+        "meaning": "no, it's wrong"
+      }
+    ]
+  },
+  "haina": {
+    "id": "yn-030",
+    "meaning": "no (alternate form)",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "haina",
+      "hoina"
+    ],
+    "usage_context": [
+      "negation",
+      "informal correction"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Testo bhanya haina?",
+        "user": "haina",
+        "meaning": "no, that's not it"
+      }
+    ]
+  },
+  "chhaina": {
+    "id": "yn-022",
+    "meaning": "no, not exist/not available",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "chhaina",
+      "chaina",
+      "xaina"
+    ],
+    "usage_context": [
+      "lack",
+      "absence",
+      "non-completion"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Paisa pathaisakeko cha?",
+        "user": "chhaina",
+        "meaning": "no, not yet"
+      }
+    ]
+  },
+  "chaina": {
+    "id": "yn-022",
+    "meaning": "no, not exist/not available",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "chhaina",
+      "chaina",
+      "xaina"
+    ],
+    "usage_context": [
+      "lack",
+      "absence",
+      "non-completion"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Paisa pathaisakeko cha?",
+        "user": "chhaina",
+        "meaning": "no, not yet"
+      }
+    ]
+  },
+  "xaina": {
+    "id": "yn-023",
+    "meaning": "no, there isn't (written variant)",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "xaina",
+      "chaina",
+      "chhaina"
+    ],
+    "usage_context": [
+      "denial of existence",
+      "negative availability"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Timi sanga mobile xa?",
+        "user": "xaina",
+        "meaning": "no, I don't have"
+      }
+    ]
+  },
+  "hudaina": {
+    "id": "yn-024",
+    "meaning": "no, cannot/not allowed",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "hudaina",
+      "hudeina"
+    ],
+    "usage_context": [
+      "prohibition",
+      "impossibility"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Ma yo garnu hudaina?",
+        "user": "hudaina",
+        "meaning": "no, you shouldn't"
+      }
+    ]
+  },
+  "hudeina": {
+    "id": "yn-024",
+    "meaning": "no, cannot/not allowed",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "hudaina",
+      "hudeina"
+    ],
+    "usage_context": [
+      "prohibition",
+      "impossibility"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Ma yo garnu hudaina?",
+        "user": "hudaina",
+        "meaning": "no, you shouldn't"
+      }
+    ]
+  },
+  "na": {
+    "id": "yn-025",
+    "meaning": "no (informal)",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "na",
+      "naa"
+    ],
+    "usage_context": [
+      "casual refusal",
+      "denial"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Timilai bhatmas manparcha?",
+        "user": "na",
+        "meaning": "no, I don't like"
+      }
+    ]
+  },
+  "naa": {
+    "id": "yn-025",
+    "meaning": "no (informal)",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "na",
+      "naa"
+    ],
+    "usage_context": [
+      "casual refusal",
+      "denial"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Timilai bhatmas manparcha?",
+        "user": "na",
+        "meaning": "no, I don't like"
+      }
+    ]
+  },
+  "nope": {
+    "id": "yn-026",
+    "meaning": "no (English casual)",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "nope"
+    ],
+    "usage_context": [
+      "informal denial",
+      "bilingual no"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "You coming?",
+        "user": "nope",
+        "meaning": "no"
+      }
+    ]
+  },
+  "no": {
+    "id": "yn-027",
+    "meaning": "no (English)",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "no"
+    ],
+    "usage_context": [
+      "direct negation",
+      "code-switched no"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Ke yo possible cha?",
+        "user": "no",
+        "meaning": "no"
+      }
+    ]
+  },
+  "nahola": {
+    "id": "yn-028",
+    "meaning": "no, probably not",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "nahola",
+      "nahola ni"
+    ],
+    "usage_context": [
+      "uncertain negation",
+      "doubtful no"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Bholi paani parla?",
+        "user": "nahola",
+        "meaning": "probably not"
+      }
+    ]
+  },
+  "nahola ni": {
+    "id": "yn-028",
+    "meaning": "no, probably not",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "nahola",
+      "nahola ni"
+    ],
+    "usage_context": [
+      "uncertain negation",
+      "doubtful no"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Bholi paani parla?",
+        "user": "nahola",
+        "meaning": "probably not"
+      }
+    ]
+  },
+  "pardaina": {
+    "id": "yn-029",
+    "meaning": "no need/not required",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "pardaina",
+      "pardaincha"
+    ],
+    "usage_context": [
+      "refusal of offer",
+      "rejection of necessity"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Receipt chahiyo?",
+        "user": "pardaina",
+        "meaning": "no need"
+      }
+    ]
+  },
+  "pardaincha": {
+    "id": "yn-029",
+    "meaning": "no need/not required",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "pardaina",
+      "pardaincha"
+    ],
+    "usage_context": [
+      "refusal of offer",
+      "rejection of necessity"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Receipt chahiyo?",
+        "user": "pardaina",
+        "meaning": "no need"
+      }
+    ]
+  },
+  "naai": {
+    "id": "yn-031",
+    "meaning": "no, emphatic no",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "naai",
+      "nai"
+    ],
+    "usage_context": [
+      "strong denial",
+      "refusal"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Timi jaane ho?",
+        "user": "naai",
+        "meaning": "no, absolutely not"
+      }
+    ]
+  },
+  "nai": {
+    "id": "yn-031",
+    "meaning": "no, emphatic no",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "naai",
+      "nai"
+    ],
+    "usage_context": [
+      "strong denial",
+      "refusal"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Timi jaane ho?",
+        "user": "naai",
+        "meaning": "no, absolutely not"
+      }
+    ]
+  },
+  "hunna": {
+    "id": "yn-032",
+    "meaning": "no, cannot happen",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "hunna",
+      "hunnna"
+    ],
+    "usage_context": [
+      "impossibility",
+      "strong negation"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Yo kaam huna sakcha?",
+        "user": "hunna",
+        "meaning": "no, impossible"
+      }
+    ]
+  },
+  "hunnna": {
+    "id": "yn-032",
+    "meaning": "no, cannot happen",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "hunna",
+      "hunnna"
+    ],
+    "usage_context": [
+      "impossibility",
+      "strong negation"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Yo kaam huna sakcha?",
+        "user": "hunna",
+        "meaning": "no, impossible"
+      }
+    ]
+  },
+  "paainna": {
+    "id": "yn-033",
+    "meaning": "no, not available/not found",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "paainna",
+      "paaincha"
+    ],
+    "usage_context": [
+      "unavailability",
+      "lack of access"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Yo bajar ma paaincha?",
+        "user": "paainna",
+        "meaning": "no, not available"
+      }
+    ]
+  },
+  "paaincha": {
+    "id": "yn-033",
+    "meaning": "no, not available/not found",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "paainna",
+      "paaincha"
+    ],
+    "usage_context": [
+      "unavailability",
+      "lack of access"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Yo bajar ma paaincha?",
+        "user": "paainna",
+        "meaning": "no, not available"
+      }
+    ]
+  },
+  "mildaina": {
+    "id": "yn-034",
+    "meaning": "no, not allowed/doesn't match",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "mildaina"
+    ],
+    "usage_context": [
+      "denial of permission",
+      "incompatibility"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Aja time mildaina?",
+        "user": "mildaina",
+        "meaning": "no, it doesn't work"
+      }
+    ]
+  },
+  "sakidaina": {
+    "id": "yn-035",
+    "meaning": "no, cannot be done",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "sakidaina",
+      "sakidaincha"
+    ],
+    "usage_context": [
+      "infeasibility",
+      "helplessness"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Aaja pugna sakcha?",
+        "user": "sakidaina",
+        "meaning": "no, it's not possible"
+      }
+    ]
+  },
+  "sakidaincha": {
+    "id": "yn-035",
+    "meaning": "no, cannot be done",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "sakidaina",
+      "sakidaincha"
+    ],
+    "usage_context": [
+      "infeasibility",
+      "helplessness"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Aaja pugna sakcha?",
+        "user": "sakidaina",
+        "meaning": "no, it's not possible"
+      }
+    ]
+  },
+  "kaha": {
+    "id": "yn-036",
+    "meaning": "no, impossible (where?)",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "kaha",
+      "kahaa"
+    ],
+    "usage_context": [
+      "rhetorical negation",
+      "strong disbelief"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Tyo kaam usle garna sakcha?",
+        "user": "kaha",
+        "meaning": "no way"
+      }
+    ]
+  },
+  "kahaa": {
+    "id": "yn-036",
+    "meaning": "no, impossible (where?)",
+    "type": "negation",
+    "multi_turn_action": "cancel_pending",
+    "variants": [
+      "kaha",
+      "kahaa"
+    ],
+    "usage_context": [
+      "rhetorical negation",
+      "strong disbelief"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Tyo kaam usle garna sakcha?",
+        "user": "kaha",
+        "meaning": "no way"
+      }
+    ]
+  },
+  "hola": {
+    "id": "yn-037",
+    "meaning": "maybe/probably",
+    "type": "uncertainty",
+    "multi_turn_action": "clarify_needed",
+    "variants": [
+      "hola",
+      "hola ni"
+    ],
+    "usage_context": [
+      "uncertainty",
+      "possibility"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "U aaula?",
+        "user": "hola",
+        "meaning": "maybe"
+      }
+    ]
+  },
+  "hola ni": {
+    "id": "yn-037",
+    "meaning": "maybe/probably",
+    "type": "uncertainty",
+    "multi_turn_action": "clarify_needed",
+    "variants": [
+      "hola",
+      "hola ni"
+    ],
+    "usage_context": [
+      "uncertainty",
+      "possibility"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "U aaula?",
+        "user": "hola",
+        "meaning": "maybe"
+      }
+    ]
+  },
+  "sakcha": {
+    "id": "yn-038",
+    "meaning": "maybe, it's possible",
+    "type": "uncertainty",
+    "multi_turn_action": "clarify_needed",
+    "variants": [
+      "sakcha",
+      "sakchha"
+    ],
+    "usage_context": [
+      "expressing possibility",
+      "conditional yes"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Yo kaam bholi samma huncha?",
+        "user": "sakcha",
+        "meaning": "it's possible"
+      }
+    ]
+  },
+  "sakchha": {
+    "id": "yn-038",
+    "meaning": "maybe, it's possible",
+    "type": "uncertainty",
+    "multi_turn_action": "clarify_needed",
+    "variants": [
+      "sakcha",
+      "sakchha"
+    ],
+    "usage_context": [
+      "expressing possibility",
+      "conditional yes"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Yo kaam bholi samma huncha?",
+        "user": "sakcha",
+        "meaning": "it's possible"
+      }
+    ]
+  },
+  "tha chaina": {
+    "id": "yn-039",
+    "meaning": "maybe, I don't know",
+    "type": "uncertainty",
+    "multi_turn_action": "clarify_needed",
+    "variants": [
+      "tha chaina",
+      "thaha chaina",
+      "thachaina"
+    ],
+    "usage_context": [
+      "uncertainty",
+      "lack of knowledge"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Kati time lagcha?",
+        "user": "tha chaina",
+        "meaning": "I don't know"
+      }
+    ]
+  },
+  "thaha chaina": {
+    "id": "yn-039",
+    "meaning": "maybe, I don't know",
+    "type": "uncertainty",
+    "multi_turn_action": "clarify_needed",
+    "variants": [
+      "tha chaina",
+      "thaha chaina",
+      "thachaina"
+    ],
+    "usage_context": [
+      "uncertainty",
+      "lack of knowledge"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Kati time lagcha?",
+        "user": "tha chaina",
+        "meaning": "I don't know"
+      }
+    ]
+  },
+  "thachaina": {
+    "id": "yn-039",
+    "meaning": "maybe, I don't know",
+    "type": "uncertainty",
+    "multi_turn_action": "clarify_needed",
+    "variants": [
+      "tha chaina",
+      "thaha chaina",
+      "thachaina"
+    ],
+    "usage_context": [
+      "uncertainty",
+      "lack of knowledge"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Kati time lagcha?",
+        "user": "tha chaina",
+        "meaning": "I don't know"
+      }
+    ]
+  },
+  "herum": {
+    "id": "yn-040",
+    "meaning": "maybe, let's see",
+    "type": "uncertainty",
+    "multi_turn_action": "clarify_needed",
+    "variants": [
+      "herum",
+      "herum na"
+    ],
+    "usage_context": [
+      "hesitation",
+      "deferred decision"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Bholi aau?",
+        "user": "herum",
+        "meaning": "we'll see"
+      }
+    ]
+  },
+  "herum na": {
+    "id": "yn-040",
+    "meaning": "maybe, let's see",
+    "type": "uncertainty",
+    "multi_turn_action": "clarify_needed",
+    "variants": [
+      "herum",
+      "herum na"
+    ],
+    "usage_context": [
+      "hesitation",
+      "deferred decision"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Bholi aau?",
+        "user": "herum",
+        "meaning": "we'll see"
+      }
+    ]
+  },
+  "pachi": {
+    "id": "yn-041",
+    "meaning": "maybe later",
+    "type": "uncertainty",
+    "multi_turn_action": "clarify_needed",
+    "variants": [
+      "pachi",
+      "pachhi"
+    ],
+    "usage_context": [
+      "postponement",
+      "not now"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Ahile paisa pathaune?",
+        "user": "pachi",
+        "meaning": "later"
+      }
+    ]
+  },
+  "pachhi": {
+    "id": "yn-041",
+    "meaning": "maybe later",
+    "type": "uncertainty",
+    "multi_turn_action": "clarify_needed",
+    "variants": [
+      "pachi",
+      "pachhi"
+    ],
+    "usage_context": [
+      "postponement",
+      "not now"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Ahile paisa pathaune?",
+        "user": "pachi",
+        "meaning": "later"
+      }
+    ]
+  },
+  "ali ali": {
+    "id": "yn-042",
+    "meaning": "maybe, just a little (so-so)",
+    "type": "partial_confirm",
+    "multi_turn_action": "clarify_needed",
+    "variants": [
+      "ali ali",
+      "alikati"
+    ],
+    "usage_context": [
+      "vague quantity",
+      "indecisive"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Kati bhayo?",
+        "user": "ali ali",
+        "meaning": "just a little, not sure"
+      }
+    ]
+  },
+  "alikati": {
+    "id": "yn-042",
+    "meaning": "maybe, just a little (so-so)",
+    "type": "partial_confirm",
+    "multi_turn_action": "clarify_needed",
+    "variants": [
+      "ali ali",
+      "alikati"
+    ],
+    "usage_context": [
+      "vague quantity",
+      "indecisive"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Kati bhayo?",
+        "user": "ali ali",
+        "meaning": "just a little, not sure"
+      }
+    ]
+  },
+  "sayad": {
+    "id": "yn-043",
+    "meaning": "maybe",
+    "type": "uncertainty",
+    "multi_turn_action": "clarify_needed",
+    "variants": [
+      "sayad",
+      "saayad"
+    ],
+    "usage_context": [
+      "possibility",
+      "guess"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Parsi office aaula?",
+        "user": "sayad",
+        "meaning": "maybe"
+      }
+    ]
+  },
+  "saayad": {
+    "id": "yn-043",
+    "meaning": "maybe",
+    "type": "uncertainty",
+    "multi_turn_action": "clarify_needed",
+    "variants": [
+      "sayad",
+      "saayad"
+    ],
+    "usage_context": [
+      "possibility",
+      "guess"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Parsi office aaula?",
+        "user": "sayad",
+        "meaning": "maybe"
+      }
+    ]
+  },
+  "huna sakcha": {
+    "id": "yn-044",
+    "meaning": "maybe, might happen",
+    "type": "uncertainty",
+    "multi_turn_action": "clarify_needed",
+    "variants": [
+      "huna sakcha",
+      "hunasakcha"
+    ],
+    "usage_context": [
+      "possibility",
+      "speculation"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Yo ramro hola?",
+        "user": "huna sakcha",
+        "meaning": "it might be"
+      }
+    ]
+  },
+  "hunasakcha": {
+    "id": "yn-044",
+    "meaning": "maybe, might happen",
+    "type": "uncertainty",
+    "multi_turn_action": "clarify_needed",
+    "variants": [
+      "huna sakcha",
+      "hunasakcha"
+    ],
+    "usage_context": [
+      "possibility",
+      "speculation"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Yo ramro hola?",
+        "user": "huna sakcha",
+        "meaning": "it might be"
+      }
+    ]
+  },
+  "sochera bhanchu": {
+    "id": "yn-045",
+    "meaning": "maybe, I'll think and tell",
+    "type": "uncertainty",
+    "multi_turn_action": "clarify_needed",
+    "variants": [
+      "sochera bhanchu"
+    ],
+    "usage_context": [
+      "deferred response",
+      "thoughtful maybe"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Proposal ma k bichar cha?",
+        "user": "sochera bhanchu",
+        "meaning": "I'll think about it"
+      }
+    ]
+  },
+  "aba herum": {
+    "id": "yn-046",
+    "meaning": "maybe, now let's see",
+    "type": "uncertainty",
+    "multi_turn_action": "clarify_needed",
+    "variants": [
+      "aba herum",
+      "aba hernu"
+    ],
+    "usage_context": [
+      "wait and see",
+      "immediate deferral"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Ke garnu huncha?",
+        "user": "aba herum",
+        "meaning": "let's see now"
+      }
+    ]
+  },
+  "aba hernu": {
+    "id": "yn-046",
+    "meaning": "maybe, now let's see",
+    "type": "uncertainty",
+    "multi_turn_action": "clarify_needed",
+    "variants": [
+      "aba herum",
+      "aba hernu"
+    ],
+    "usage_context": [
+      "wait and see",
+      "immediate deferral"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Ke garnu huncha?",
+        "user": "aba herum",
+        "meaning": "let's see now"
+      }
+    ]
+  },
+  "sambhawatah": {
+    "id": "yn-047",
+    "meaning": "maybe, probably",
+    "type": "uncertainty",
+    "multi_turn_action": "clarify_needed",
+    "variants": [
+      "sambhawatah",
+      "sambhavatah"
+    ],
+    "usage_context": [
+      "probability",
+      "formal speculation"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Samaya ma kaam sakiyela?",
+        "user": "sambhawatah",
+        "meaning": "probably"
+      }
+    ]
+  },
+  "sambhavatah": {
+    "id": "yn-047",
+    "meaning": "maybe, probably",
+    "type": "uncertainty",
+    "multi_turn_action": "clarify_needed",
+    "variants": [
+      "sambhawatah",
+      "sambhavatah"
+    ],
+    "usage_context": [
+      "probability",
+      "formal speculation"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Samaya ma kaam sakiyela?",
+        "user": "sambhawatah",
+        "meaning": "probably"
+      }
+    ]
+  },
+  "hoina tyo": {
+    "id": "yn-048",
+    "meaning": "no, that's not it (correction)",
+    "type": "correction",
+    "multi_turn_action": "correct_pending",
+    "variants": [
+      "hoina tyo",
+      "haina tyo"
+    ],
+    "usage_context": [
+      "correcting mistake",
+      "clarification"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Amount 1000 thiyo?",
+        "user": "hoina tyo",
+        "meaning": "no, that's wrong"
+      }
+    ]
+  },
+  "haina tyo": {
+    "id": "yn-048",
+    "meaning": "no, that's not it (correction)",
+    "type": "correction",
+    "multi_turn_action": "correct_pending",
+    "variants": [
+      "hoina tyo",
+      "haina tyo"
+    ],
+    "usage_context": [
+      "correcting mistake",
+      "clarification"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Amount 1000 thiyo?",
+        "user": "hoina tyo",
+        "meaning": "no, that's wrong"
+      }
+    ]
+  },
+  "galat": {
+    "id": "yn-049",
+    "meaning": "wrong (correction)",
+    "type": "correction",
+    "multi_turn_action": "correct_pending",
+    "variants": [
+      "galat",
+      "galat ho"
+    ],
+    "usage_context": [
+      "pointing error",
+      "disagreement"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "NPR 500 bhaneko?",
+        "user": "galat",
+        "meaning": "wrong amount"
+      }
+    ]
+  },
+  "galat ho": {
+    "id": "yn-049",
+    "meaning": "wrong (correction)",
+    "type": "correction",
+    "multi_turn_action": "correct_pending",
+    "variants": [
+      "galat",
+      "galat ho"
+    ],
+    "usage_context": [
+      "pointing error",
+      "disagreement"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "NPR 500 bhaneko?",
+        "user": "galat",
+        "meaning": "wrong amount"
+      }
+    ]
+  },
+  "wrong": {
+    "id": "yn-050",
+    "meaning": "wrong (English loan)",
+    "type": "correction",
+    "multi_turn_action": "correct_pending",
+    "variants": [
+      "wrong"
+    ],
+    "usage_context": [
+      "correction",
+      "English code-switch"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "The account is 12345?",
+        "user": "wrong",
+        "meaning": "incorrect"
+      }
+    ]
+  },
+  "mistake": {
+    "id": "yn-051",
+    "meaning": "mistake (correction)",
+    "type": "correction",
+    "multi_turn_action": "correct_pending",
+    "variants": [
+      "mistake",
+      "mistek"
+    ],
+    "usage_context": [
+      "acknowledging error",
+      "pointing out error"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Transfer to Ram?",
+        "user": "mistake",
+        "meaning": "that's a mistake"
+      }
+    ]
+  },
+  "mistek": {
+    "id": "yn-051",
+    "meaning": "mistake (correction)",
+    "type": "correction",
+    "multi_turn_action": "correct_pending",
+    "variants": [
+      "mistake",
+      "mistek"
+    ],
+    "usage_context": [
+      "acknowledging error",
+      "pointing out error"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Transfer to Ram?",
+        "user": "mistake",
+        "meaning": "that's a mistake"
+      }
+    ]
+  },
+  "maile bhanya tyo hoina": {
+    "id": "yn-052",
+    "meaning": "no, what I said was different (correction)",
+    "type": "correction",
+    "multi_turn_action": "correct_pending",
+    "variants": [
+      "maile bhanya tyo hoina"
+    ],
+    "usage_context": [
+      "clarifying miscommunication",
+      "correction of intent"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "So you want to cancel?",
+        "user": "maile bhanya tyo hoina",
+        "meaning": "I didn't mean that"
+      }
+    ]
+  },
+  "testai hoina": {
+    "id": "yn-053",
+    "meaning": "no, not like that (correction)",
+    "type": "correction",
+    "multi_turn_action": "correct_pending",
+    "variants": [
+      "testai hoina",
+      "testo hoina"
+    ],
+    "usage_context": [
+      "style correction",
+      "method disagreement"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Aba yo garna milcha?",
+        "user": "testai hoina",
+        "meaning": "not like that, differently"
+      }
+    ]
+  },
+  "testo hoina": {
+    "id": "yn-053",
+    "meaning": "no, not like that (correction)",
+    "type": "correction",
+    "multi_turn_action": "correct_pending",
+    "variants": [
+      "testai hoina",
+      "testo hoina"
+    ],
+    "usage_context": [
+      "style correction",
+      "method disagreement"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Aba yo garna milcha?",
+        "user": "testai hoina",
+        "meaning": "not like that, differently"
+      }
+    ]
+  },
+  "galati bhayo": {
+    "id": "yn-054",
+    "meaning": "mistake happened (correction)",
+    "type": "correction",
+    "multi_turn_action": "correct_pending",
+    "variants": [
+      "galati bhayo",
+      "galati bhaecha"
+    ],
+    "usage_context": [
+      "acknowledging error",
+      "apologetic correction"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Tapaile 5000 pathaudinu bhannu bhayo.",
+        "user": "galati bhayo",
+        "meaning": "that was a mistake"
+      }
+    ]
+  },
+  "galati bhaecha": {
+    "id": "yn-054",
+    "meaning": "mistake happened (correction)",
+    "type": "correction",
+    "multi_turn_action": "correct_pending",
+    "variants": [
+      "galati bhayo",
+      "galati bhaecha"
+    ],
+    "usage_context": [
+      "acknowledging error",
+      "apologetic correction"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Tapaile 5000 pathaudinu bhannu bhayo.",
+        "user": "galati bhayo",
+        "meaning": "that was a mistake"
+      }
+    ]
+  },
+  "ulto bhayo": {
+    "id": "yn-055",
+    "meaning": "opposite happened / wrong (correction)",
+    "type": "correction",
+    "multi_turn_action": "correct_pending",
+    "variants": [
+      "ulto bhayo",
+      "ulto"
+    ],
+    "usage_context": [
+      "direction error",
+      "misunderstanding"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Mero khata ma jamma bhayo?",
+        "user": "ulto bhayo",
+        "meaning": "it's the opposite"
+      }
+    ]
+  },
+  "ulto": {
+    "id": "yn-055",
+    "meaning": "opposite happened / wrong (correction)",
+    "type": "correction",
+    "multi_turn_action": "correct_pending",
+    "variants": [
+      "ulto bhayo",
+      "ulto"
+    ],
+    "usage_context": [
+      "direction error",
+      "misunderstanding"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Mero khata ma jamma bhayo?",
+        "user": "ulto bhayo",
+        "meaning": "it's the opposite"
+      }
+    ]
+  },
+  "yo hoina": {
+    "id": "yn-056",
+    "meaning": "this is not it (correction)",
+    "type": "correction",
+    "multi_turn_action": "correct_pending",
+    "variants": [
+      "yo hoina"
+    ],
+    "usage_context": [
+      "item correction",
+      "identity denial"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Yo number ho?",
+        "user": "yo hoina",
+        "meaning": "this is not the one"
+      }
+    ]
+  },
+  "sudhar": {
+    "id": "yn-057",
+    "meaning": "correction, rectify",
+    "type": "correction",
+    "multi_turn_action": "correct_pending",
+    "variants": [
+      "sudhar",
+      "sudhaar"
+    ],
+    "usage_context": [
+      "request to correct",
+      "pointing out need to fix"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Name list ma error cha.",
+        "user": "sudhar",
+        "meaning": "correct it"
+      }
+    ]
+  },
+  "sudhaar": {
+    "id": "yn-057",
+    "meaning": "correction, rectify",
+    "type": "correction",
+    "multi_turn_action": "correct_pending",
+    "variants": [
+      "sudhar",
+      "sudhaar"
+    ],
+    "usage_context": [
+      "request to correct",
+      "pointing out need to fix"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Name list ma error cha.",
+        "user": "sudhar",
+        "meaning": "correct it"
+      }
+    ]
+  },
+  "maile galat bhanen": {
+    "id": "yn-058",
+    "meaning": "I said wrong (correction)",
+    "type": "correction",
+    "multi_turn_action": "correct_pending",
+    "variants": [
+      "maile galat bhanen",
+      "galat bhanen"
+    ],
+    "usage_context": [
+      "self-correction",
+      "withdrawing statement"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Tapaile 5 bhaneko.",
+        "user": "maile galat bhanen",
+        "meaning": "I misspoke"
+      }
+    ]
+  },
+  "galat bhanen": {
+    "id": "yn-058",
+    "meaning": "I said wrong (correction)",
+    "type": "correction",
+    "multi_turn_action": "correct_pending",
+    "variants": [
+      "maile galat bhanen",
+      "galat bhanen"
+    ],
+    "usage_context": [
+      "self-correction",
+      "withdrawing statement"
+    ],
+    "example_dialogues": [
+      {
+        "ai": "Tapaile 5 bhaneko.",
+        "user": "maile galat bhanen",
+        "meaning": "I misspoke"
+      }
+    ]
+  }
+}

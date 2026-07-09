@@ -1,8 +1,18 @@
 // @ts-nocheck
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { getDB } from "../lib/db";
 import { useStore } from "../store/useStore";
+import { consumeAiAgingReportDraft, peekAiAgingReportDraft } from "@/ai/actions/agingReportDraft";
+import { buildSetPhoneHandoffQuery, saveAgingSetphoneReturnDraft } from "@/ai/actions/chatQueryDraft";
+import { agingWaButtonLabel, formatAgingSearchPlaceholder, formatAgingReminderModalTitle, formatAgingRemindWaButton, formatAgingRemindCopyButton } from "@/ai/intelligence/DigestPinPreference";
+import {
+  formatPayableReminder,
+  formatReceivableReminder,
+  openWhatsAppShare,
+  copyWhatsAppText,
+} from "@/ai/conversation/WhatsAppShareFormatter";
+import { useSutraAiStore } from "@/store/sutraAiStore";
 import { FileSpreadsheet, RefreshCw, TrendingUp, TrendingDown } from "lucide-react";
 import ReportDateRangePicker, { DateRange } from "../components/ui/ReportDateRangePicker";
 import { ReportEmptyState } from "../components/ReportEmptyState";
@@ -168,7 +178,10 @@ const AgingBar: React.FC<{ totals: AgingBucket; direction: "receivable" | "payab
 };
 
 const AgingReport: React.FC = () => {
-  const { parties, companySettings } = useStore();
+  const { parties, companySettings, currentPage } = useStore();
+  const handoffAgingReminder = useSutraAiStore((s) => s.handoffAgingReminder);
+  const handoffChatQuery = useSutraAiStore((s) => s.handoffChatQuery);
+  const outputLanguage = useSutraAiStore((s) => s.languageConfig.outputLanguage);
   const ageingSlabs = mergeSystemConfiguration(companySettings?.systemConfiguration).ageingSlabs;
   const slabLabels = ageingSlabs.map((s) => s.label);
 
@@ -179,12 +192,53 @@ const AgingReport: React.FC = () => {
   const asOfDate = dateRange.toDate;
   const [direction, setDirection] = useState<"receivable" | "payable">("receivable");
   const [searchTerm, setSearchTerm] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const handoffSetPhoneFromAging = (
+    partyName: string,
+    opts?: { outstanding?: number; daysOverdue?: number },
+  ) => {
+    saveAgingSetphoneReturnDraft({
+      direction,
+      searchTerm: partyName,
+      outstanding: opts?.outstanding,
+      daysOverdue: opts?.daysOverdue,
+    });
+    handoffChatQuery(buildSetPhoneHandoffQuery(partyName));
+  };
+
+  const applyAgingReportDraft = useCallback(() => {
+    const draft = peekAiAgingReportDraft();
+    if (!draft) return false;
+    consumeAiAgingReportDraft();
+    if (draft.direction) setDirection(draft.direction);
+    if (draft.searchTerm) {
+      setSearchTerm(draft.searchTerm);
+      window.setTimeout(() => searchInputRef.current?.focus(), 0);
+    }
+    return Boolean(draft.searchTerm);
+  }, []);
+
+  useEffect(() => {
+    if (currentPage !== "aging-report") return;
+    applyAgingReportDraft();
+  }, [currentPage, applyAgingReportDraft]);
+
   const [reminderParty, setReminderParty] = useState<{
     name: string;
     phone?: string;
     outstanding: number;
     days: number;
   } | null>(null);
+
+  const reminderShareText = useMemo(() => {
+    if (!reminderParty) return "";
+    const opts =
+      reminderParty.days > 0 ? { daysOverdue: reminderParty.days } : undefined;
+    return direction === "payable"
+      ? formatPayableReminder(reminderParty.name, reminderParty.outstanding, "english", opts)
+      : formatReceivableReminder(reminderParty.name, reminderParty.outstanding, "english", opts);
+  }, [reminderParty, direction]);
 
   // Fix: use getDB() — default import, not named { db }
   const db = getDB();
@@ -400,10 +454,11 @@ const AgingReport: React.FC = () => {
 
         <div className="flex-1 min-w-[180px]">
           <input
+            ref={searchInputRef}
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search party name or PAN…"
+            placeholder={formatAgingSearchPlaceholder(outputLanguage)}
             className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
           />
         </div>
@@ -498,27 +553,93 @@ const AgingReport: React.FC = () => {
                       )}
                     </td>
                     <td className="px-3 py-2.5 text-center">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setReminderParty({
-                            name: row.partyName || "Party",
-                            phone: row.partyPhone,
-                            outstanding: row.buckets.total,
-                            days:
-                              row.buckets.over90 > 0
-                                ? 90
-                                : row.buckets.days61to90 > 0
-                                  ? 60
-                                  : row.buckets.days31to60 > 0
-                                    ? 30
-                                    : 0,
-                          })
-                        }
-                        className="h-6 whitespace-nowrap rounded border border-amber-300 bg-amber-50 px-2 text-[10px] font-semibold text-amber-700 hover:bg-amber-100"
-                      >
-                        Remind
-                      </button>
+                      <div className="flex items-center justify-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setReminderParty({
+                              name: row.partyName || "Party",
+                              phone: row.partyPhone,
+                              outstanding: row.buckets.total,
+                              days:
+                                row.buckets.over90 > 0
+                                  ? 90
+                                  : row.buckets.days61to90 > 0
+                                    ? 60
+                                    : row.buckets.days31to60 > 0
+                                      ? 30
+                                      : 0,
+                            })
+                          }
+                          className="h-6 whitespace-nowrap rounded border border-amber-300 bg-amber-50 px-2 text-[10px] font-semibold text-amber-700 hover:bg-amber-100"
+                        >
+                          Remind
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handoffAgingReminder({
+                              partyName: row.partyName || "Party",
+                              direction,
+                              outstanding: row.buckets.total,
+                              daysOverdue:
+                                row.buckets.over90 > 0
+                                  ? 90
+                                  : row.buckets.days61to90 > 0
+                                    ? 60
+                                    : row.buckets.days31to60 > 0
+                                      ? 30
+                                      : undefined,
+                            })
+                          }
+                          className="h-6 whitespace-nowrap rounded border border-[#c7d2fe] bg-[#eef2ff] px-1.5 text-[10px] font-semibold text-[#1557b0] hover:bg-[#e0e7ff]"
+                          title="Open SUTRA AI with reminder"
+                        >
+                          SUTRA
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const partyName = row.partyName || "Party";
+                            if (row.partyPhone) {
+                              handoffAgingReminder({
+                                partyName,
+                                direction,
+                                outstanding: row.buckets.total,
+                                daysOverdue:
+                                  row.buckets.over90 > 0
+                                    ? 90
+                                    : row.buckets.days61to90 > 0
+                                      ? 60
+                                      : row.buckets.days31to60 > 0
+                                        ? 30
+                                        : undefined,
+                                autoOpenWhatsApp: true,
+                              });
+                            } else {
+                              handoffSetPhoneFromAging(partyName, {
+                                outstanding: row.buckets.total,
+                                daysOverdue:
+                                  row.buckets.over90 > 0
+                                    ? 90
+                                    : row.buckets.days61to90 > 0
+                                      ? 60
+                                      : row.buckets.days31to60 > 0
+                                        ? 30
+                                        : undefined,
+                              });
+                            }
+                          }}
+                          className="h-6 whitespace-nowrap rounded border px-1.5 text-[10px] font-semibold border-[#1557b0] bg-white text-[#1557b0] hover:bg-[#eef2ff]"
+                          title={
+                            row.partyPhone
+                              ? "Open SUTRA AI and send via WhatsApp"
+                              : `Set phone in SUTRA AI (${buildSetPhoneHandoffQuery(row.partyName || "Party").trim()})`
+                          }
+                        >
+                          {agingWaButtonLabel(Boolean(row.partyPhone), outputLanguage)}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -556,6 +677,97 @@ const AgingReport: React.FC = () => {
           </div>
         )}
       </div>
+
+      {reminderParty && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg border border-gray-200 w-full max-w-md shadow-xl">
+            <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between bg-gray-50 rounded-t-lg">
+              <div>
+                <h2 className="text-[14px] font-semibold text-gray-800">
+                  {formatAgingReminderModalTitle(direction, outputLanguage)}
+                </h2>
+                <p className="text-[11px] text-gray-500 mt-0.5">{reminderParty.name}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setReminderParty(null)}
+                className="text-gray-400 hover:text-gray-700 font-bold text-[16px] leading-none"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="p-4">
+              <p className="text-[11px] text-gray-600 whitespace-pre-wrap leading-relaxed border border-gray-200 rounded-md bg-gray-50 p-3">
+                {reminderShareText}
+              </p>
+              <div className="flex flex-wrap items-center gap-2 mt-3">
+                <button
+                  type="button"
+                  onClick={() => openWhatsAppShare(reminderShareText, reminderParty.phone)}
+                  className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
+                >
+                  {formatAgingRemindWaButton(Boolean(reminderParty.phone), outputLanguage)}
+                </button>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const ok = await copyWhatsAppText(reminderShareText);
+                    if (ok) toast.success("Copied to clipboard");
+                    else toast.error("Copy failed");
+                  }}
+                  className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+                >
+                  {formatAgingRemindCopyButton(outputLanguage)}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handoffAgingReminder({
+                      partyName: reminderParty.name,
+                      direction,
+                      outstanding: reminderParty.outstanding,
+                      daysOverdue: reminderParty.days > 0 ? reminderParty.days : undefined,
+                    });
+                    setReminderParty(null);
+                  }}
+                  className="h-8 px-3 bg-[#eef2ff] border border-[#c7d2fe] text-[#1557b0] text-[12px] font-medium rounded-md hover:bg-[#e0e7ff]"
+                  title="Open SUTRA AI with reminder"
+                >
+                  SUTRA AI
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (reminderParty.phone) {
+                      handoffAgingReminder({
+                        partyName: reminderParty.name,
+                        direction,
+                        outstanding: reminderParty.outstanding,
+                        daysOverdue: reminderParty.days > 0 ? reminderParty.days : undefined,
+                        autoOpenWhatsApp: true,
+                      });
+                    } else {
+                      handoffSetPhoneFromAging(reminderParty.name, {
+                        outstanding: reminderParty.outstanding,
+                        daysOverdue: reminderParty.days > 0 ? reminderParty.days : undefined,
+                      });
+                    }
+                    setReminderParty(null);
+                  }}
+                  className="h-8 px-3 bg-white border text-[12px] font-medium rounded-md border-[#1557b0] text-[#1557b0] hover:bg-[#eef2ff]"
+                  title={
+                    reminderParty.phone
+                      ? "Open SUTRA AI and send via WhatsApp"
+                      : `Set phone in SUTRA AI (${buildSetPhoneHandoffQuery(reminderParty.name).trim()})`
+                  }
+                >
+                  {agingWaButtonLabel(Boolean(reminderParty.phone), outputLanguage)}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

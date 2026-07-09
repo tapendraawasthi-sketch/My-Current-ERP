@@ -1,0 +1,68 @@
+{
+  "vat_invoice": [
+    "docu-001",
+    "docu-002",
+    "docu-003",
+    "docu-004",
+    "docu-005",
+    "docu-006",
+    "docu-007",
+    "docu-008",
+    "docu-009",
+    "docu-010"
+  ],
+  "pan_certificate": [
+    "docu-011",
+    "docu-012",
+    "docu-013",
+    "docu-014",
+    "docu-015",
+    "docu-016"
+  ],
+  "company_registration_certificate": [
+    "docu-017",
+    "docu-018",
+    "docu-019",
+    "docu-020",
+    "docu-021",
+    "docu-022"
+  ],
+  "bank_statement": [
+    "docu-023",
+    "docu-024",
+    "docu-025",
+    "docu-026",
+    "docu-027",
+    "docu-028"
+  ],
+  "cheque": [
+    "docu-029",
+    "docu-030",
+    "docu-031",
+    "docu-032",
+    "docu-033",
+    "docu-034"
+  ],
+  "receipt_bill": [
+    "docu-035",
+    "docu-036",
+    "docu-037",
+    "docu-038",
+    "docu-039",
+    "docu-040"
+  ],
+  "purchase_order": [
+    "docu-041",
+    "docu-042",
+    "docu-043",
+    "docu-044",
+    "docu-045"
+  ],
+  "delivery_challan": [
+    "docu-046",
+    "docu-047",
+    "docu-048",
+    "docu-049",
+    "docu-050"
+  ]
+}

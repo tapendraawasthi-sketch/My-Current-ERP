@@ -1,0 +1,182 @@
+{
+  "vocabulary": {
+    "काक्रो": {
+      "romanVariants": ["kakro", "kaakro", "kakaro", "caakro"],
+      "english": "cucumber",
+      "category": "vegetable",
+      "unit": ["kg", "piece", "dozen"],
+      "relatedWords": ["तरकारी", "सब्जी", "हरियो"],
+      "commonMisspellings": ["kakor", "kakroo", "kakrao"],
+      "pronunciation": "kaa-kro",
+      "frequency": 0.85,
+      "context": { "market": 0.95, "kitchen": 0.8, "farming": 0.7 }
+    },
+    "टमाटर": {
+      "romanVariants": ["tomatar", "tomato"],
+      "english": "tomato",
+      "category": "vegetable",
+      "unit": ["kg", "piece"],
+      "relatedWords": ["तरकारी", "गोलभेडा"],
+      "commonMisspellings": ["tomater"],
+      "pronunciation": "ta-maa-tar",
+      "frequency": 0.9,
+      "context": { "market": 0.95, "kitchen": 0.85 }
+    },
+    "आलु": {
+      "romanVariants": ["aalu", "alu"],
+      "english": "potato",
+      "category": "vegetable",
+      "unit": ["kg", "piece", "sack"],
+      "relatedWords": ["तरकारी"],
+      "commonMisspellings": ["aallu"],
+      "pronunciation": "aa-lu",
+      "frequency": 0.95,
+      "context": { "market": 0.95, "kitchen": 0.9 }
+    },
+    "प्याज": {
+      "romanVariants": ["pyaj", "piyaj"],
+      "english": "onion",
+      "category": "vegetable",
+      "unit": ["kg", "piece"],
+      "relatedWords": ["तरकारी"],
+      "commonMisspellings": ["pyaaz"],
+      "pronunciation": "pyaaj",
+      "frequency": 0.88,
+      "context": { "market": 0.95, "kitchen": 0.85 }
+    },
+    "तरकारी": {
+      "romanVariants": ["tarkari", "tarkaari"],
+      "english": "vegetables",
+      "category": "vegetable",
+      "unit": ["kg"],
+      "relatedWords": ["सब्जी"],
+      "commonMisspellings": ["tarkaree"],
+      "pronunciation": "tar-kaa-ri",
+      "frequency": 0.92,
+      "context": { "market": 0.98, "kitchen": 0.9 }
+    },
+    "बेच्नु": {
+      "romanVariants": ["bechnu", "bechye", "becheko", "bech"],
+      "english": "to sell",
+      "category": "verb",
+      "unit": [],
+      "relatedWords": ["बिक्री"],
+      "commonMisspellings": ["bechya", "beche"],
+      "pronunciation": "bech-nu",
+      "frequency": 0.9,
+      "context": { "transaction": 0.98 }
+    },
+    "किन्नु": {
+      "romanVariants": ["kinna", "kinyo", "kineko"],
+      "english": "to buy",
+      "category": "verb",
+      "unit": [],
+      "relatedWords": ["खरिद"],
+      "commonMisspellings": ["kiniyo"],
+      "pronunciation": "kin-nu",
+      "frequency": 0.9,
+      "context": { "transaction": 0.98 }
+    },
+    "मैले": {
+      "romanVariants": ["maile", "maele", "mai"],
+      "english": "I (ergative)",
+      "category": "pronoun",
+      "unit": [],
+      "relatedWords": ["म"],
+      "commonMisspellings": ["maele", "maaile"],
+      "pronunciation": "mai-le",
+      "frequency": 0.95,
+      "context": { "conversation": 0.9 }
+    },
+    "उधार": {
+      "romanVariants": ["udhaar", "udhar"],
+      "english": "credit/debt",
+      "category": "accounting",
+      "unit": [],
+      "relatedWords": ["रिन", "बाँकी"],
+      "commonMisspellings": ["udar"],
+      "pronunciation": "ud-haar",
+      "frequency": 0.85,
+      "context": { "accounting": 0.98, "transaction": 0.9 }
+    },
+    "नगद": {
+      "romanVariants": ["nagad", "cash"],
+      "english": "cash",
+      "category": "accounting",
+      "unit": [],
+      "relatedWords": ["पैसा", "रुपैयाँ"],
+      "commonMisspellings": ["nagada"],
+      "pronunciation": "na-gad",
+      "frequency": 0.88,
+      "context": { "accounting": 0.95, "transaction": 0.9 }
+    },
+    "बिक्री": {
+      "romanVariants": ["bikri", "bikree"],
+      "english": "sales",
+      "category": "accounting",
+      "unit": [],
+      "relatedWords": ["बेच्नु"],
+      "commonMisspellings": ["bikree"],
+      "pronunciation": "bik-ri",
+      "frequency": 0.9,
+      "context": { "accounting": 0.98 }
+    },
+    "खरिद": {
+      "romanVariants": ["kharid", "kharida"],
+      "english": "purchase",
+      "category": "accounting",
+      "unit": [],
+      "relatedWords": ["किन्नु"],
+      "commonMisspellings": ["kharida"],
+      "pronunciation": "kha-rid",
+      "frequency": 0.88,
+      "context": { "accounting": 0.98 }
+    },
+    "पैसा": {
+      "romanVariants": ["paisa", "paesa"],
+      "english": "money",
+      "category": "accounting",
+      "unit": [],
+      "relatedWords": ["रुपैयाँ", "नगद"],
+      "commonMisspellings": ["paesa"],
+      "pronunciation": "pai-sa",
+      "frequency": 0.92,
+      "context": { "accounting": 0.9, "transaction": 0.85 }
+    },
+    "रुपैयाँ": {
+      "romanVariants": ["rupiya", "rupaya", "rs", "rupee"],
+      "english": "rupees",
+      "category": "accounting",
+      "unit": [],
+      "relatedWords": ["पैसा", "नगद"],
+      "commonMisspellings": ["rupaya"],
+      "pronunciation": "ru-pai-yaan",
+      "frequency": 0.95,
+      "context": { "accounting": 0.95, "transaction": 0.9 }
+    }
+  },
+  "grammar": {
+    "verbConjugation": {
+      "बेच्नु": {
+        "root": "बेच्",
+        "pastSimple": {
+          "1stPerson": { "singular": "बेचें", "plural": "बेच्यौं" },
+          "2ndPerson": { "informal": "बेचिस्", "formal": "बेच्नुभयो" },
+          "3rdPerson": { "singular": "बेच्यो", "plural": "बेचे" }
+        },
+        "romanForms": {
+          "बेचें": ["bechye", "beche", "bechey", "bechye"],
+          "बेचेको": ["becheko", "bechya"]
+        }
+      }
+    }
+  },
+  "idioms": {
+    "हात खाली": {
+      "literal": "hands empty",
+      "meaning": "broke, penniless",
+      "usage": "financial context",
+      "example": "आज हात खाली छ"
+    }
+  }
+}

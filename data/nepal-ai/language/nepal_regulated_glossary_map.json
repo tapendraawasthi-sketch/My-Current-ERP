@@ -1,0 +1,5132 @@
+{
+  "vat बिल कसरी बनाउने": {
+    "id": "nr-001",
+    "domain": "tax",
+    "term_en": "VAT",
+    "concept_key": "vat"
+  },
+  "VAT": {
+    "id": "nr-001",
+    "domain": "tax",
+    "term_en": "VAT",
+    "concept_key": "vat"
+  },
+  "vat फिर्ता कसरी पाउने": {
+    "id": "nr-001",
+    "domain": "tax",
+    "term_en": "VAT",
+    "concept_key": "vat"
+  },
+  "मूल्य अभिवृद्धि कर": {
+    "id": "nr-001",
+    "domain": "tax",
+    "term_en": "VAT",
+    "concept_key": "vat"
+  },
+  "vat कति बुझाउने": {
+    "id": "nr-001",
+    "domain": "tax",
+    "term_en": "VAT",
+    "concept_key": "vat"
+  },
+  "value added tax": {
+    "id": "nr-001",
+    "domain": "tax",
+    "term_en": "VAT",
+    "concept_key": "vat"
+  },
+  "vat": {
+    "id": "nr-001",
+    "domain": "tax",
+    "term_en": "VAT",
+    "concept_key": "vat"
+  },
+  "tds return kailae file garne": {
+    "id": "nr-002",
+    "domain": "tax",
+    "term_en": "TDS",
+    "concept_key": "tds"
+  },
+  "TDS": {
+    "id": "nr-002",
+    "domain": "tax",
+    "term_en": "TDS",
+    "concept_key": "tds"
+  },
+  "tds kasari calculate garne": {
+    "id": "nr-002",
+    "domain": "tax",
+    "term_en": "TDS",
+    "concept_key": "tds"
+  },
+  "स्रोतमा कर कट्टी": {
+    "id": "nr-002",
+    "domain": "tax",
+    "term_en": "TDS",
+    "concept_key": "tds"
+  },
+  "tax deducted at source": {
+    "id": "nr-002",
+    "domain": "tax",
+    "term_en": "TDS",
+    "concept_key": "tds"
+  },
+  "tds kati kata": {
+    "id": "nr-002",
+    "domain": "tax",
+    "term_en": "TDS",
+    "concept_key": "tds"
+  },
+  "tds": {
+    "id": "nr-002",
+    "domain": "tax",
+    "term_en": "TDS",
+    "concept_key": "tds"
+  },
+  "अग्रिम करको किस्ता कहिले तिर्ने": {
+    "id": "nr-003",
+    "domain": "tax",
+    "term_en": "Advance Tax",
+    "concept_key": "advance_tax"
+  },
+  "advance_tax": {
+    "id": "nr-003",
+    "domain": "tax",
+    "term_en": "Advance Tax",
+    "concept_key": "advance_tax"
+  },
+  "अग्रिम कर नतिरे के हुन्छ": {
+    "id": "nr-003",
+    "domain": "tax",
+    "term_en": "Advance Tax",
+    "concept_key": "advance_tax"
+  },
+  "अग्रिम कर": {
+    "id": "nr-003",
+    "domain": "tax",
+    "term_en": "Advance Tax",
+    "concept_key": "advance_tax"
+  },
+  "अग्रिम कर कसले तिर्नुपर्छ": {
+    "id": "nr-003",
+    "domain": "tax",
+    "term_en": "Advance Tax",
+    "concept_key": "advance_tax"
+  },
+  "advance tax": {
+    "id": "nr-003",
+    "domain": "tax",
+    "term_en": "Advance Tax",
+    "concept_key": "advance_tax"
+  },
+  "कति दिनमा पाइन्छ": {
+    "id": "nr-004",
+    "domain": "tax",
+    "term_en": "Tax Clearance Certificate",
+    "concept_key": "tax_clearance_certificate"
+  },
+  "कर चुक्ता प्रमाणपत्र कसरी लिने": {
+    "id": "nr-004",
+    "domain": "tax",
+    "term_en": "Tax Clearance Certificate",
+    "concept_key": "tax_clearance_certificate"
+  },
+  "tax clearance certificate": {
+    "id": "nr-004",
+    "domain": "tax",
+    "term_en": "Tax Clearance Certificate",
+    "concept_key": "tax_clearance_certificate"
+  },
+  "अनलाइन निकाल्न मिल्छ": {
+    "id": "nr-004",
+    "domain": "tax",
+    "term_en": "Tax Clearance Certificate",
+    "concept_key": "tax_clearance_certificate"
+  },
+  "कर चुक्ता प्रमाणपत्र": {
+    "id": "nr-004",
+    "domain": "tax",
+    "term_en": "Tax Clearance Certificate",
+    "concept_key": "tax_clearance_certificate"
+  },
+  "tax_clearance_certificate": {
+    "id": "nr-004",
+    "domain": "tax",
+    "term_en": "Tax Clearance Certificate",
+    "concept_key": "tax_clearance_certificate"
+  },
+  "स्थायी लेखा नम्बर": {
+    "id": "nr-005",
+    "domain": "tax",
+    "term_en": "PAN",
+    "concept_key": "pan"
+  },
+  "pan": {
+    "id": "nr-005",
+    "domain": "tax",
+    "term_en": "PAN",
+    "concept_key": "pan"
+  },
+  "permanent account number": {
+    "id": "nr-005",
+    "domain": "tax",
+    "term_en": "PAN",
+    "concept_key": "pan"
+  },
+  "pan हरायो भने के गर्ने": {
+    "id": "nr-005",
+    "domain": "tax",
+    "term_en": "PAN",
+    "concept_key": "pan"
+  },
+  "pan update कसरी गर्ने": {
+    "id": "nr-005",
+    "domain": "tax",
+    "term_en": "PAN",
+    "concept_key": "pan"
+  },
+  "PAN": {
+    "id": "nr-005",
+    "domain": "tax",
+    "term_en": "PAN",
+    "concept_key": "pan"
+  },
+  "pan कसरी बनाउने": {
+    "id": "nr-005",
+    "domain": "tax",
+    "term_en": "PAN",
+    "concept_key": "pan"
+  },
+  "inland revenue department": {
+    "id": "nr-006",
+    "domain": "tax",
+    "term_en": "IRD",
+    "concept_key": "ird"
+  },
+  "आन्तरिक राजस्व विभाग": {
+    "id": "nr-006",
+    "domain": "tax",
+    "term_en": "IRD",
+    "concept_key": "ird"
+  },
+  "कर तिर्न ird मा कसरी जाने": {
+    "id": "nr-006",
+    "domain": "tax",
+    "term_en": "IRD",
+    "concept_key": "ird"
+  },
+  "ird office कहाँ छ": {
+    "id": "nr-006",
+    "domain": "tax",
+    "term_en": "IRD",
+    "concept_key": "ird"
+  },
+  "IRD": {
+    "id": "nr-006",
+    "domain": "tax",
+    "term_en": "IRD",
+    "concept_key": "ird"
+  },
+  "ird": {
+    "id": "nr-006",
+    "domain": "tax",
+    "term_en": "IRD",
+    "concept_key": "ird"
+  },
+  "ird को वेबसाइट के हो": {
+    "id": "nr-006",
+    "domain": "tax",
+    "term_en": "IRD",
+    "concept_key": "ird"
+  },
+  "कर्मचारीको आयकर गणना कसरी गर्ने": {
+    "id": "nr-007",
+    "domain": "tax",
+    "term_en": "Income Tax",
+    "concept_key": "income_tax"
+  },
+  "आयकर दर कति छ": {
+    "id": "nr-007",
+    "domain": "tax",
+    "term_en": "Income Tax",
+    "concept_key": "income_tax"
+  },
+  "आयकर": {
+    "id": "nr-007",
+    "domain": "tax",
+    "term_en": "Income Tax",
+    "concept_key": "income_tax"
+  },
+  "income_tax": {
+    "id": "nr-007",
+    "domain": "tax",
+    "term_en": "Income Tax",
+    "concept_key": "income_tax"
+  },
+  "income tax": {
+    "id": "nr-007",
+    "domain": "tax",
+    "term_en": "Income Tax",
+    "concept_key": "income_tax"
+  },
+  "आयकर छूट सीमा के हो": {
+    "id": "nr-007",
+    "domain": "tax",
+    "term_en": "Income Tax",
+    "concept_key": "income_tax"
+  },
+  "excise duty": {
+    "id": "nr-008",
+    "domain": "tax",
+    "term_en": "Excise Duty",
+    "concept_key": "excise_duty"
+  },
+  "अन्तःशुल्क दर कति": {
+    "id": "nr-008",
+    "domain": "tax",
+    "term_en": "Excise Duty",
+    "concept_key": "excise_duty"
+  },
+  "अन्तःशुल्क कुन सामानमा लाग्छ": {
+    "id": "nr-008",
+    "domain": "tax",
+    "term_en": "Excise Duty",
+    "concept_key": "excise_duty"
+  },
+  "excise_duty": {
+    "id": "nr-008",
+    "domain": "tax",
+    "term_en": "Excise Duty",
+    "concept_key": "excise_duty"
+  },
+  "अन्तःशुल्क": {
+    "id": "nr-008",
+    "domain": "tax",
+    "term_en": "Excise Duty",
+    "concept_key": "excise_duty"
+  },
+  "अन्तःशुल्क स्टिकर अनिवार्य हो": {
+    "id": "nr-008",
+    "domain": "tax",
+    "term_en": "Excise Duty",
+    "concept_key": "excise_duty"
+  },
+  "भन्सार महसुल": {
+    "id": "nr-009",
+    "domain": "tax",
+    "term_en": "Customs Duty",
+    "concept_key": "customs_duty"
+  },
+  "भन्सार दर कसरी थाहा पाउने": {
+    "id": "nr-009",
+    "domain": "tax",
+    "term_en": "Customs Duty",
+    "concept_key": "customs_duty"
+  },
+  "customs_duty": {
+    "id": "nr-009",
+    "domain": "tax",
+    "term_en": "Customs Duty",
+    "concept_key": "customs_duty"
+  },
+  "customs duty": {
+    "id": "nr-009",
+    "domain": "tax",
+    "term_en": "Customs Duty",
+    "concept_key": "customs_duty"
+  },
+  "व्यक्तिगत सामानमा भन्सार कति लाग्छ": {
+    "id": "nr-009",
+    "domain": "tax",
+    "term_en": "Customs Duty",
+    "concept_key": "customs_duty"
+  },
+  "भन्सार छूट के छ": {
+    "id": "nr-009",
+    "domain": "tax",
+    "term_en": "Customs Duty",
+    "concept_key": "customs_duty"
+  },
+  "विवरणी नबुझाए के सजाय": {
+    "id": "nr-010",
+    "domain": "tax",
+    "term_en": "Tax Return",
+    "concept_key": "tax_return"
+  },
+  "tax return": {
+    "id": "nr-010",
+    "domain": "tax",
+    "term_en": "Tax Return",
+    "concept_key": "tax_return"
+  },
+  "विवरणी कसरी भर्ने": {
+    "id": "nr-010",
+    "domain": "tax",
+    "term_en": "Tax Return",
+    "concept_key": "tax_return"
+  },
+  "कर विवरणी": {
+    "id": "nr-010",
+    "domain": "tax",
+    "term_en": "Tax Return",
+    "concept_key": "tax_return"
+  },
+  "tax_return": {
+    "id": "nr-010",
+    "domain": "tax",
+    "term_en": "Tax Return",
+    "concept_key": "tax_return"
+  },
+  "अन्तिम म्याद कहिले": {
+    "id": "nr-010",
+    "domain": "tax",
+    "term_en": "Tax Return",
+    "concept_key": "tax_return"
+  },
+  "रोक्का कर जम्मा कसरी गर्ने": {
+    "id": "nr-011",
+    "domain": "tax",
+    "term_en": "Withholding Tax",
+    "concept_key": "withholding_tax"
+  },
+  "रोक्का कर दर कति": {
+    "id": "nr-011",
+    "domain": "tax",
+    "term_en": "Withholding Tax",
+    "concept_key": "withholding_tax"
+  },
+  "रोक्का कर": {
+    "id": "nr-011",
+    "domain": "tax",
+    "term_en": "Withholding Tax",
+    "concept_key": "withholding_tax"
+  },
+  "withholding tax": {
+    "id": "nr-011",
+    "domain": "tax",
+    "term_en": "Withholding Tax",
+    "concept_key": "withholding_tax"
+  },
+  "रोक्का कर tds एउटै हो": {
+    "id": "nr-011",
+    "domain": "tax",
+    "term_en": "Withholding Tax",
+    "concept_key": "withholding_tax"
+  },
+  "withholding_tax": {
+    "id": "nr-011",
+    "domain": "tax",
+    "term_en": "Withholding Tax",
+    "concept_key": "withholding_tax"
+  },
+  "सेयर बिक्रीको कर दर": {
+    "id": "nr-012",
+    "domain": "tax",
+    "term_en": "Capital Gains Tax",
+    "concept_key": "capital_gains_tax"
+  },
+  "पूँजी लाभ कर": {
+    "id": "nr-012",
+    "domain": "tax",
+    "term_en": "Capital Gains Tax",
+    "concept_key": "capital_gains_tax"
+  },
+  "capital_gains_tax": {
+    "id": "nr-012",
+    "domain": "tax",
+    "term_en": "Capital Gains Tax",
+    "concept_key": "capital_gains_tax"
+  },
+  "capital gains tax": {
+    "id": "nr-012",
+    "domain": "tax",
+    "term_en": "Capital Gains Tax",
+    "concept_key": "capital_gains_tax"
+  },
+  "पूँजी लाभ कर छूट छ": {
+    "id": "nr-012",
+    "domain": "tax",
+    "term_en": "Capital Gains Tax",
+    "concept_key": "capital_gains_tax"
+  },
+  "जग्गा बिक्रीमा पूँजी लाभ कर कति": {
+    "id": "nr-012",
+    "domain": "tax",
+    "term_en": "Capital Gains Tax",
+    "concept_key": "capital_gains_tax"
+  },
+  "tax assessment": {
+    "id": "nr-013",
+    "domain": "tax",
+    "term_en": "Tax Assessment",
+    "concept_key": "tax_assessment"
+  },
+  "कर निर्धारण पत्र आएमा के गर्ने": {
+    "id": "nr-013",
+    "domain": "tax",
+    "term_en": "Tax Assessment",
+    "concept_key": "tax_assessment"
+  },
+  "कर निर्धारण": {
+    "id": "nr-013",
+    "domain": "tax",
+    "term_en": "Tax Assessment",
+    "concept_key": "tax_assessment"
+  },
+  "कर निर्धारणको समय सीमा": {
+    "id": "nr-013",
+    "domain": "tax",
+    "term_en": "Tax Assessment",
+    "concept_key": "tax_assessment"
+  },
+  "tax_assessment": {
+    "id": "nr-013",
+    "domain": "tax",
+    "term_en": "Tax Assessment",
+    "concept_key": "tax_assessment"
+  },
+  "निर्धारणविरुद्ध पुनरावेदन कहाँ गर्ने": {
+    "id": "nr-013",
+    "domain": "tax",
+    "term_en": "Tax Assessment",
+    "concept_key": "tax_assessment"
+  },
+  "लेखापरीक्षणको सूचना कहिले आउँछ": {
+    "id": "nr-014",
+    "domain": "tax",
+    "term_en": "Tax Audit",
+    "concept_key": "tax_audit"
+  },
+  "tax_audit": {
+    "id": "nr-014",
+    "domain": "tax",
+    "term_en": "Tax Audit",
+    "concept_key": "tax_audit"
+  },
+  "लेखापरीक्षण रिपोर्ट पेश गर्ने अन्तिम मिति": {
+    "id": "nr-014",
+    "domain": "tax",
+    "term_en": "Tax Audit",
+    "concept_key": "tax_audit"
+  },
+  "tax audit": {
+    "id": "nr-014",
+    "domain": "tax",
+    "term_en": "Tax Audit",
+    "concept_key": "tax_audit"
+  },
+  "कर लेखापरीक्षण": {
+    "id": "nr-014",
+    "domain": "tax",
+    "term_en": "Tax Audit",
+    "concept_key": "tax_audit"
+  },
+  "कर लेखापरीक्षणमा के के जाँच हुन्छ": {
+    "id": "nr-014",
+    "domain": "tax",
+    "term_en": "Tax Audit",
+    "concept_key": "tax_audit"
+  },
+  "महिला कर छूट सीमा के हो": {
+    "id": "nr-015",
+    "domain": "tax",
+    "term_en": "Tax Exemption",
+    "concept_key": "tax_exemption"
+  },
+  "विदेशी लगानीलाई कर छूट छ": {
+    "id": "nr-015",
+    "domain": "tax",
+    "term_en": "Tax Exemption",
+    "concept_key": "tax_exemption"
+  },
+  "tax_exemption": {
+    "id": "nr-015",
+    "domain": "tax",
+    "term_en": "Tax Exemption",
+    "concept_key": "tax_exemption"
+  },
+  "tax exemption": {
+    "id": "nr-015",
+    "domain": "tax",
+    "term_en": "Tax Exemption",
+    "concept_key": "tax_exemption"
+  },
+  "आयकर छूट सीमा कति": {
+    "id": "nr-015",
+    "domain": "tax",
+    "term_en": "Tax Exemption",
+    "concept_key": "tax_exemption"
+  },
+  "कर छूट": {
+    "id": "nr-015",
+    "domain": "tax",
+    "term_en": "Tax Exemption",
+    "concept_key": "tax_exemption"
+  },
+  "डीटीएए सुविधा लिन के चाहिन्छ": {
+    "id": "nr-016",
+    "domain": "tax",
+    "term_en": "Double Taxation Avoidance Agreement",
+    "concept_key": "double_taxation_avoidance_agreement"
+  },
+  "double taxation avoidance agreement": {
+    "id": "nr-016",
+    "domain": "tax",
+    "term_en": "Double Taxation Avoidance Agreement",
+    "concept_key": "double_taxation_avoidance_agreement"
+  },
+  "नेपालका दोहोरो कर सम्झौता भएका देश कुन कुन हुन्": {
+    "id": "nr-016",
+    "domain": "tax",
+    "term_en": "Double Taxation Avoidance Agreement",
+    "concept_key": "double_taxation_avoidance_agreement"
+  },
+  "दोहोरो करबाट बच्ने सम्झौता": {
+    "id": "nr-016",
+    "domain": "tax",
+    "term_en": "Double Taxation Avoidance Agreement",
+    "concept_key": "double_taxation_avoidance_agreement"
+  },
+  "double_taxation_avoidance_agreement": {
+    "id": "nr-016",
+    "domain": "tax",
+    "term_en": "Double Taxation Avoidance Agreement",
+    "concept_key": "double_taxation_avoidance_agreement"
+  },
+  "कर छली पत्ता लागे के गर्ने": {
+    "id": "nr-017",
+    "domain": "tax",
+    "term_en": "Tax Evasion",
+    "concept_key": "tax_evasion"
+  },
+  "कर छलीको सजाय के छ": {
+    "id": "nr-017",
+    "domain": "tax",
+    "term_en": "Tax Evasion",
+    "concept_key": "tax_evasion"
+  },
+  "स्वेच्छिक सहमति कार्यक्रम के हो": {
+    "id": "nr-017",
+    "domain": "tax",
+    "term_en": "Tax Evasion",
+    "concept_key": "tax_evasion"
+  },
+  "tax evasion": {
+    "id": "nr-017",
+    "domain": "tax",
+    "term_en": "Tax Evasion",
+    "concept_key": "tax_evasion"
+  },
+  "कर छली": {
+    "id": "nr-017",
+    "domain": "tax",
+    "term_en": "Tax Evasion",
+    "concept_key": "tax_evasion"
+  },
+  "tax_evasion": {
+    "id": "nr-017",
+    "domain": "tax",
+    "term_en": "Tax Evasion",
+    "concept_key": "tax_evasion"
+  },
+  "फिर्ता कति समयमा आउँछ": {
+    "id": "nr-018",
+    "domain": "tax",
+    "term_en": "Tax Refund",
+    "concept_key": "tax_refund"
+  },
+  "tax refund": {
+    "id": "nr-018",
+    "domain": "tax",
+    "term_en": "Tax Refund",
+    "concept_key": "tax_refund"
+  },
+  "कर फिर्ता कसरी पाउने": {
+    "id": "nr-018",
+    "domain": "tax",
+    "term_en": "Tax Refund",
+    "concept_key": "tax_refund"
+  },
+  "vat refund claim कसरी गर्ने": {
+    "id": "nr-018",
+    "domain": "tax",
+    "term_en": "Tax Refund",
+    "concept_key": "tax_refund"
+  },
+  "कर फिर्ता": {
+    "id": "nr-018",
+    "domain": "tax",
+    "term_en": "Tax Refund",
+    "concept_key": "tax_refund"
+  },
+  "tax_refund": {
+    "id": "nr-018",
+    "domain": "tax",
+    "term_en": "Tax Refund",
+    "concept_key": "tax_refund"
+  },
+  "tax_year": {
+    "id": "nr-019",
+    "domain": "tax",
+    "term_en": "Tax Year",
+    "concept_key": "tax_year"
+  },
+  "कर वर्ष र आर्थिक वर्ष एउटै हो": {
+    "id": "nr-019",
+    "domain": "tax",
+    "term_en": "Tax Year",
+    "concept_key": "tax_year"
+  },
+  "कर वर्षको अन्तिम म्याद": {
+    "id": "nr-019",
+    "domain": "tax",
+    "term_en": "Tax Year",
+    "concept_key": "tax_year"
+  },
+  "कर वर्ष": {
+    "id": "nr-019",
+    "domain": "tax",
+    "term_en": "Tax Year",
+    "concept_key": "tax_year"
+  },
+  "कर वर्ष कहिले सुरु हुन्छ": {
+    "id": "nr-019",
+    "domain": "tax",
+    "term_en": "Tax Year",
+    "concept_key": "tax_year"
+  },
+  "tax year": {
+    "id": "nr-019",
+    "domain": "tax",
+    "term_en": "Tax Year",
+    "concept_key": "tax_year"
+  },
+  "लगानी घटाइले कर घटाउन मिल्छ": {
+    "id": "nr-020",
+    "domain": "tax",
+    "term_en": "Taxable Income",
+    "concept_key": "taxable_income"
+  },
+  "करयोग्य आय": {
+    "id": "nr-020",
+    "domain": "tax",
+    "term_en": "Taxable Income",
+    "concept_key": "taxable_income"
+  },
+  "स्वरोजगार आय कसरी जोड्ने": {
+    "id": "nr-020",
+    "domain": "tax",
+    "term_en": "Taxable Income",
+    "concept_key": "taxable_income"
+  },
+  "taxable income": {
+    "id": "nr-020",
+    "domain": "tax",
+    "term_en": "Taxable Income",
+    "concept_key": "taxable_income"
+  },
+  "taxable_income": {
+    "id": "nr-020",
+    "domain": "tax",
+    "term_en": "Taxable Income",
+    "concept_key": "taxable_income"
+  },
+  "करयोग्य आय कसरी गणना गर्ने": {
+    "id": "nr-020",
+    "domain": "tax",
+    "term_en": "Taxable Income",
+    "concept_key": "taxable_income"
+  },
+  "के सबै सम्पत्तिमा ह्रास कटाउन पाइन्छ": {
+    "id": "nr-021",
+    "domain": "tax",
+    "term_en": "Depreciation Allowance",
+    "concept_key": "depreciation_allowance"
+  },
+  "ह्रास भत्ता दर कति": {
+    "id": "nr-021",
+    "domain": "tax",
+    "term_en": "Depreciation Allowance",
+    "concept_key": "depreciation_allowance"
+  },
+  "depreciation_allowance": {
+    "id": "nr-021",
+    "domain": "tax",
+    "term_en": "Depreciation Allowance",
+    "concept_key": "depreciation_allowance"
+  },
+  "ह्रास भत्ता गणना विधि": {
+    "id": "nr-021",
+    "domain": "tax",
+    "term_en": "Depreciation Allowance",
+    "concept_key": "depreciation_allowance"
+  },
+  "ह्रास भत्ता": {
+    "id": "nr-021",
+    "domain": "tax",
+    "term_en": "Depreciation Allowance",
+    "concept_key": "depreciation_allowance"
+  },
+  "depreciation allowance": {
+    "id": "nr-021",
+    "domain": "tax",
+    "term_en": "Depreciation Allowance",
+    "concept_key": "depreciation_allowance"
+  },
+  "taxpayer service center": {
+    "id": "nr-022",
+    "domain": "tax",
+    "term_en": "Taxpayer Service Center",
+    "concept_key": "taxpayer_service_center"
+  },
+  "सेवा केन्द्रले के सहयोग गर्छ": {
+    "id": "nr-022",
+    "domain": "tax",
+    "term_en": "Taxpayer Service Center",
+    "concept_key": "taxpayer_service_center"
+  },
+  "pan बनाउन सेवा केन्द्रमा जान मिल्छ": {
+    "id": "nr-022",
+    "domain": "tax",
+    "term_en": "Taxpayer Service Center",
+    "concept_key": "taxpayer_service_center"
+  },
+  "taxpayer_service_center": {
+    "id": "nr-022",
+    "domain": "tax",
+    "term_en": "Taxpayer Service Center",
+    "concept_key": "taxpayer_service_center"
+  },
+  "करदाता सेवा केन्द्र": {
+    "id": "nr-022",
+    "domain": "tax",
+    "term_en": "Taxpayer Service Center",
+    "concept_key": "taxpayer_service_center"
+  },
+  "etds र tds मा फरक के छ": {
+    "id": "nr-023",
+    "domain": "tax",
+    "term_en": "ETDS",
+    "concept_key": "etds"
+  },
+  "विद्युतीय स्रोत कर कट्टी": {
+    "id": "nr-023",
+    "domain": "tax",
+    "term_en": "ETDS",
+    "concept_key": "etds"
+  },
+  "etds": {
+    "id": "nr-023",
+    "domain": "tax",
+    "term_en": "ETDS",
+    "concept_key": "etds"
+  },
+  "etds कसरी प्रयोग गर्ने": {
+    "id": "nr-023",
+    "domain": "tax",
+    "term_en": "ETDS",
+    "concept_key": "etds"
+  },
+  "ETDS": {
+    "id": "nr-023",
+    "domain": "tax",
+    "term_en": "ETDS",
+    "concept_key": "etds"
+  },
+  "electronic tax deducted at source": {
+    "id": "nr-023",
+    "domain": "tax",
+    "term_en": "ETDS",
+    "concept_key": "etds"
+  },
+  "etds रिटर्न अनलाइन भर्न सकिन्छ": {
+    "id": "nr-023",
+    "domain": "tax",
+    "term_en": "ETDS",
+    "concept_key": "etds"
+  },
+  "विवरणी नबुझाउने": {
+    "id": "nr-024",
+    "domain": "tax",
+    "term_en": "Non-Filer",
+    "concept_key": "non_filer"
+  },
+  "पुरानो विवरणी बुझाउन मिल्छ": {
+    "id": "nr-024",
+    "domain": "tax",
+    "term_en": "Non-Filer",
+    "concept_key": "non_filer"
+  },
+  "अब नबुझाएपछि कसरी नियमित हुने": {
+    "id": "nr-024",
+    "domain": "tax",
+    "term_en": "Non-Filer",
+    "concept_key": "non_filer"
+  },
+  "विवरणी नबुझाए के हुन्छ": {
+    "id": "nr-024",
+    "domain": "tax",
+    "term_en": "Non-Filer",
+    "concept_key": "non_filer"
+  },
+  "non filer": {
+    "id": "nr-024",
+    "domain": "tax",
+    "term_en": "Non-Filer",
+    "concept_key": "non_filer"
+  },
+  "non_filer": {
+    "id": "nr-024",
+    "domain": "tax",
+    "term_en": "Non-Filer",
+    "concept_key": "non_filer"
+  },
+  "non-filer": {
+    "id": "nr-024",
+    "domain": "tax",
+    "term_en": "Non-Filer",
+    "concept_key": "non_filer"
+  },
+  "किस्ताबन्दी सुविधा छ": {
+    "id": "nr-025",
+    "domain": "tax",
+    "term_en": "Tax Arrears",
+    "concept_key": "tax_arrears"
+  },
+  "tax arrears": {
+    "id": "nr-025",
+    "domain": "tax",
+    "term_en": "Tax Arrears",
+    "concept_key": "tax_arrears"
+  },
+  "बक्यौता कर कसरी तिर्ने": {
+    "id": "nr-025",
+    "domain": "tax",
+    "term_en": "Tax Arrears",
+    "concept_key": "tax_arrears"
+  },
+  "tax_arrears": {
+    "id": "nr-025",
+    "domain": "tax",
+    "term_en": "Tax Arrears",
+    "concept_key": "tax_arrears"
+  },
+  "कर बक्यौता": {
+    "id": "nr-025",
+    "domain": "tax",
+    "term_en": "Tax Arrears",
+    "concept_key": "tax_arrears"
+  },
+  "बक्यौतामा ब्याज लाग्छ": {
+    "id": "nr-025",
+    "domain": "tax",
+    "term_en": "Tax Arrears",
+    "concept_key": "tax_arrears"
+  },
+  "दर्ता शुल्क कति": {
+    "id": "nr-026",
+    "domain": "company",
+    "term_en": "Company Registration",
+    "concept_key": "company_registration"
+  },
+  "अनलाइन दर्ता गर्न मिल्छ": {
+    "id": "nr-026",
+    "domain": "company",
+    "term_en": "Company Registration",
+    "concept_key": "company_registration"
+  },
+  "company registration": {
+    "id": "nr-026",
+    "domain": "company",
+    "term_en": "Company Registration",
+    "concept_key": "company_registration"
+  },
+  "कम्पनी दर्ता गर्न के के कागजात चाहिन्छ": {
+    "id": "nr-026",
+    "domain": "company",
+    "term_en": "Company Registration",
+    "concept_key": "company_registration"
+  },
+  "company_registration": {
+    "id": "nr-026",
+    "domain": "company",
+    "term_en": "Company Registration",
+    "concept_key": "company_registration"
+  },
+  "कम्पनी दर्ता": {
+    "id": "nr-026",
+    "domain": "company",
+    "term_en": "Company Registration",
+    "concept_key": "company_registration"
+  },
+  "memorandum_of_association": {
+    "id": "nr-027",
+    "domain": "company",
+    "term_en": "Memorandum of Association",
+    "concept_key": "memorandum_of_association"
+  },
+  "प्रबन्धपत्र": {
+    "id": "nr-027",
+    "domain": "company",
+    "term_en": "Memorandum of Association",
+    "concept_key": "memorandum_of_association"
+  },
+  "प्रबन्धपत्रमा के लेखिन्छ": {
+    "id": "nr-027",
+    "domain": "company",
+    "term_en": "Memorandum of Association",
+    "concept_key": "memorandum_of_association"
+  },
+  "प्रबन्धपत्र संशोधन कसरी गर्ने": {
+    "id": "nr-027",
+    "domain": "company",
+    "term_en": "Memorandum of Association",
+    "concept_key": "memorandum_of_association"
+  },
+  "memorandum of association": {
+    "id": "nr-027",
+    "domain": "company",
+    "term_en": "Memorandum of Association",
+    "concept_key": "memorandum_of_association"
+  },
+  "नियमावली अनिवार्य हो": {
+    "id": "nr-028",
+    "domain": "company",
+    "term_en": "Articles of Association",
+    "concept_key": "articles_of_association"
+  },
+  "articles of association": {
+    "id": "nr-028",
+    "domain": "company",
+    "term_en": "Articles of Association",
+    "concept_key": "articles_of_association"
+  },
+  "नियमावली": {
+    "id": "nr-028",
+    "domain": "company",
+    "term_en": "Articles of Association",
+    "concept_key": "articles_of_association"
+  },
+  "नियमावली र प्रबन्धपत्रमा के फरक छ": {
+    "id": "nr-028",
+    "domain": "company",
+    "term_en": "Articles of Association",
+    "concept_key": "articles_of_association"
+  },
+  "articles_of_association": {
+    "id": "nr-028",
+    "domain": "company",
+    "term_en": "Articles of Association",
+    "concept_key": "articles_of_association"
+  },
+  "director": {
+    "id": "nr-029",
+    "domain": "company",
+    "term_en": "Director",
+    "concept_key": "director"
+  },
+  "सञ्चालकको दायित्व": {
+    "id": "nr-029",
+    "domain": "company",
+    "term_en": "Director",
+    "concept_key": "director"
+  },
+  "गैरआवासीय सञ्चालक बन्न मिल्छ": {
+    "id": "nr-029",
+    "domain": "company",
+    "term_en": "Director",
+    "concept_key": "director"
+  },
+  "सञ्चालकको योग्यता के": {
+    "id": "nr-029",
+    "domain": "company",
+    "term_en": "Director",
+    "concept_key": "director"
+  },
+  "सञ्चालक": {
+    "id": "nr-029",
+    "domain": "company",
+    "term_en": "Director",
+    "concept_key": "director"
+  },
+  "shareholder": {
+    "id": "nr-030",
+    "domain": "company",
+    "term_en": "Shareholder",
+    "concept_key": "shareholder"
+  },
+  "सेयरधनीको अधिकार के के हुन्": {
+    "id": "nr-030",
+    "domain": "company",
+    "term_en": "Shareholder",
+    "concept_key": "shareholder"
+  },
+  "सेयरधनी": {
+    "id": "nr-030",
+    "domain": "company",
+    "term_en": "Shareholder",
+    "concept_key": "shareholder"
+  },
+  "सेयरधनी र ऋणदातामा फरक": {
+    "id": "nr-030",
+    "domain": "company",
+    "term_en": "Shareholder",
+    "concept_key": "shareholder"
+  },
+  "सेयर बिक्री कसरी गर्ने": {
+    "id": "nr-030",
+    "domain": "company",
+    "term_en": "Shareholder",
+    "concept_key": "shareholder"
+  },
+  "प्राइभेट लिमिटेड कम्पनी": {
+    "id": "nr-031",
+    "domain": "company",
+    "term_en": "Private Limited Company",
+    "concept_key": "private_limited_company"
+  },
+  "नाफा बाँडफाँड कसरी": {
+    "id": "nr-031",
+    "domain": "company",
+    "term_en": "Private Limited Company",
+    "concept_key": "private_limited_company"
+  },
+  "private_limited_company": {
+    "id": "nr-031",
+    "domain": "company",
+    "term_en": "Private Limited Company",
+    "concept_key": "private_limited_company"
+  },
+  "न्यूनतम पूँजी कति चाहिन्छ": {
+    "id": "nr-031",
+    "domain": "company",
+    "term_en": "Private Limited Company",
+    "concept_key": "private_limited_company"
+  },
+  "प्राइभेट लिमिटेड कम्पनी खोल्ने प्रक्रिया": {
+    "id": "nr-031",
+    "domain": "company",
+    "term_en": "Private Limited Company",
+    "concept_key": "private_limited_company"
+  },
+  "private limited company": {
+    "id": "nr-031",
+    "domain": "company",
+    "term_en": "Private Limited Company",
+    "concept_key": "private_limited_company"
+  },
+  "public_limited_company": {
+    "id": "nr-032",
+    "domain": "company",
+    "term_en": "Public Limited Company",
+    "concept_key": "public_limited_company"
+  },
+  "ipo जारी कसरी गर्ने": {
+    "id": "nr-032",
+    "domain": "company",
+    "term_en": "Public Limited Company",
+    "concept_key": "public_limited_company"
+  },
+  "पब्लिक लिमिटेड र प्राइभेटमा के अन्तर छ": {
+    "id": "nr-032",
+    "domain": "company",
+    "term_en": "Public Limited Company",
+    "concept_key": "public_limited_company"
+  },
+  "पूँजीवृद्धि प्रक्रिया": {
+    "id": "nr-032",
+    "domain": "company",
+    "term_en": "Public Limited Company",
+    "concept_key": "public_limited_company"
+  },
+  "public limited company": {
+    "id": "nr-032",
+    "domain": "company",
+    "term_en": "Public Limited Company",
+    "concept_key": "public_limited_company"
+  },
+  "पब्लिक लिमिटेड कम्पनी": {
+    "id": "nr-032",
+    "domain": "company",
+    "term_en": "Public Limited Company",
+    "concept_key": "public_limited_company"
+  },
+  "board_meeting": {
+    "id": "nr-033",
+    "domain": "company",
+    "term_en": "Board Meeting",
+    "concept_key": "board_meeting"
+  },
+  "सञ्चालक समितिको बैठक": {
+    "id": "nr-033",
+    "domain": "company",
+    "term_en": "Board Meeting",
+    "concept_key": "board_meeting"
+  },
+  "भर्चुअल बैठक गर्न मिल्छ": {
+    "id": "nr-033",
+    "domain": "company",
+    "term_en": "Board Meeting",
+    "concept_key": "board_meeting"
+  },
+  "बैठक कति पटक बस्नुपर्छ": {
+    "id": "nr-033",
+    "domain": "company",
+    "term_en": "Board Meeting",
+    "concept_key": "board_meeting"
+  },
+  "board meeting": {
+    "id": "nr-033",
+    "domain": "company",
+    "term_en": "Board Meeting",
+    "concept_key": "board_meeting"
+  },
+  "बैठकको कोरम के हो": {
+    "id": "nr-033",
+    "domain": "company",
+    "term_en": "Board Meeting",
+    "concept_key": "board_meeting"
+  },
+  "annual general meeting": {
+    "id": "nr-034",
+    "domain": "company",
+    "term_en": "Annual General Meeting",
+    "concept_key": "annual_general_meeting"
+  },
+  "agm को सूचना कसरी दिने": {
+    "id": "nr-034",
+    "domain": "company",
+    "term_en": "Annual General Meeting",
+    "concept_key": "annual_general_meeting"
+  },
+  "वार्षिक साधारण सभा": {
+    "id": "nr-034",
+    "domain": "company",
+    "term_en": "Annual General Meeting",
+    "concept_key": "annual_general_meeting"
+  },
+  "agm कहिले गर्नुपर्छ": {
+    "id": "nr-034",
+    "domain": "company",
+    "term_en": "Annual General Meeting",
+    "concept_key": "annual_general_meeting"
+  },
+  "annual_general_meeting": {
+    "id": "nr-034",
+    "domain": "company",
+    "term_en": "Annual General Meeting",
+    "concept_key": "annual_general_meeting"
+  },
+  "एजेन्डा के के हुन्": {
+    "id": "nr-034",
+    "domain": "company",
+    "term_en": "Annual General Meeting",
+    "concept_key": "annual_general_meeting"
+  },
+  "company_secretary": {
+    "id": "nr-035",
+    "domain": "company",
+    "term_en": "Company Secretary",
+    "concept_key": "company_secretary"
+  },
+  "company secretary": {
+    "id": "nr-035",
+    "domain": "company",
+    "term_en": "Company Secretary",
+    "concept_key": "company_secretary"
+  },
+  "सचिवको जिम्मेवारी के": {
+    "id": "nr-035",
+    "domain": "company",
+    "term_en": "Company Secretary",
+    "concept_key": "company_secretary"
+  },
+  "सचिवको योग्यता के": {
+    "id": "nr-035",
+    "domain": "company",
+    "term_en": "Company Secretary",
+    "concept_key": "company_secretary"
+  },
+  "कम्पनी सचिव": {
+    "id": "nr-035",
+    "domain": "company",
+    "term_en": "Company Secretary",
+    "concept_key": "company_secretary"
+  },
+  "कम्पनी सचिव अनिवार्य छ": {
+    "id": "nr-035",
+    "domain": "company",
+    "term_en": "Company Secretary",
+    "concept_key": "company_secretary"
+  },
+  "अधिकृत पूँजी": {
+    "id": "nr-036",
+    "domain": "company",
+    "term_en": "Authorized Capital",
+    "concept_key": "authorized_capital"
+  },
+  "authorized_capital": {
+    "id": "nr-036",
+    "domain": "company",
+    "term_en": "Authorized Capital",
+    "concept_key": "authorized_capital"
+  },
+  "अधिकृत पूँजी परिवर्तन कसरी गर्ने": {
+    "id": "nr-036",
+    "domain": "company",
+    "term_en": "Authorized Capital",
+    "concept_key": "authorized_capital"
+  },
+  "अधिकृत पूँजी र चुक्ता पूँजीमा के फरक": {
+    "id": "nr-036",
+    "domain": "company",
+    "term_en": "Authorized Capital",
+    "concept_key": "authorized_capital"
+  },
+  "authorized capital": {
+    "id": "nr-036",
+    "domain": "company",
+    "term_en": "Authorized Capital",
+    "concept_key": "authorized_capital"
+  },
+  "paid-up capital": {
+    "id": "nr-037",
+    "domain": "company",
+    "term_en": "Paid-up Capital",
+    "concept_key": "paid_up_capital"
+  },
+  "चुक्ता पूँजी": {
+    "id": "nr-037",
+    "domain": "company",
+    "term_en": "Paid-up Capital",
+    "concept_key": "paid_up_capital"
+  },
+  "चुक्ता पूँजी कति हुनुपर्छ": {
+    "id": "nr-037",
+    "domain": "company",
+    "term_en": "Paid-up Capital",
+    "concept_key": "paid_up_capital"
+  },
+  "paid_up_capital": {
+    "id": "nr-037",
+    "domain": "company",
+    "term_en": "Paid-up Capital",
+    "concept_key": "paid_up_capital"
+  },
+  "paid up capital": {
+    "id": "nr-037",
+    "domain": "company",
+    "term_en": "Paid-up Capital",
+    "concept_key": "paid_up_capital"
+  },
+  "चुक्ता पूँजी वृद्धि कसरी गर्ने": {
+    "id": "nr-037",
+    "domain": "company",
+    "term_en": "Paid-up Capital",
+    "concept_key": "paid_up_capital"
+  },
+  "स्थापना प्रमाणपत्र कसरी पाउने": {
+    "id": "nr-038",
+    "domain": "company",
+    "term_en": "Incorporation Certificate",
+    "concept_key": "incorporation_certificate"
+  },
+  "incorporation certificate": {
+    "id": "nr-038",
+    "domain": "company",
+    "term_en": "Incorporation Certificate",
+    "concept_key": "incorporation_certificate"
+  },
+  "incorporation_certificate": {
+    "id": "nr-038",
+    "domain": "company",
+    "term_en": "Incorporation Certificate",
+    "concept_key": "incorporation_certificate"
+  },
+  "स्थापना प्रमाणपत्र": {
+    "id": "nr-038",
+    "domain": "company",
+    "term_en": "Incorporation Certificate",
+    "concept_key": "incorporation_certificate"
+  },
+  "यो नभए के हुन्छ": {
+    "id": "nr-038",
+    "domain": "company",
+    "term_en": "Incorporation Certificate",
+    "concept_key": "incorporation_certificate"
+  },
+  "name_reservation": {
+    "id": "nr-039",
+    "domain": "company",
+    "term_en": "Name Reservation",
+    "concept_key": "name_reservation"
+  },
+  "नाम आरक्षण": {
+    "id": "nr-039",
+    "domain": "company",
+    "term_en": "Name Reservation",
+    "concept_key": "name_reservation"
+  },
+  "नाम आरक्षण शुल्क कति": {
+    "id": "nr-039",
+    "domain": "company",
+    "term_en": "Name Reservation",
+    "concept_key": "name_reservation"
+  },
+  "नाम आरक्षण कति समयको लागि हुन्छ": {
+    "id": "nr-039",
+    "domain": "company",
+    "term_en": "Name Reservation",
+    "concept_key": "name_reservation"
+  },
+  "name reservation": {
+    "id": "nr-039",
+    "domain": "company",
+    "term_en": "Name Reservation",
+    "concept_key": "name_reservation"
+  },
+  "अनलाइन नवीकरण मिल्छ": {
+    "id": "nr-040",
+    "domain": "company",
+    "term_en": "Company Renewal",
+    "concept_key": "company_renewal"
+  },
+  "कम्पनी नवीकरण": {
+    "id": "nr-040",
+    "domain": "company",
+    "term_en": "Company Renewal",
+    "concept_key": "company_renewal"
+  },
+  "company renewal": {
+    "id": "nr-040",
+    "domain": "company",
+    "term_en": "Company Renewal",
+    "concept_key": "company_renewal"
+  },
+  "company_renewal": {
+    "id": "nr-040",
+    "domain": "company",
+    "term_en": "Company Renewal",
+    "concept_key": "company_renewal"
+  },
+  "नवीकरणको म्याद कहिले": {
+    "id": "nr-040",
+    "domain": "company",
+    "term_en": "Company Renewal",
+    "concept_key": "company_renewal"
+  },
+  "नवीकरण नगरे के हुन्छ": {
+    "id": "nr-040",
+    "domain": "company",
+    "term_en": "Company Renewal",
+    "concept_key": "company_renewal"
+  },
+  "foreign_investment": {
+    "id": "nr-041",
+    "domain": "company",
+    "term_en": "Foreign Investment",
+    "concept_key": "foreign_investment"
+  },
+  "प्रतिशत सीमा के छ": {
+    "id": "nr-041",
+    "domain": "company",
+    "term_en": "Foreign Investment",
+    "concept_key": "foreign_investment"
+  },
+  "foreign investment": {
+    "id": "nr-041",
+    "domain": "company",
+    "term_en": "Foreign Investment",
+    "concept_key": "foreign_investment"
+  },
+  "विदेशी लगानी गर्न के प्रक्रिया छ": {
+    "id": "nr-041",
+    "domain": "company",
+    "term_en": "Foreign Investment",
+    "concept_key": "foreign_investment"
+  },
+  "लगानी फिर्ता लैजान पाइन्छ": {
+    "id": "nr-041",
+    "domain": "company",
+    "term_en": "Foreign Investment",
+    "concept_key": "foreign_investment"
+  },
+  "वैदेशिक लगानी": {
+    "id": "nr-041",
+    "domain": "company",
+    "term_en": "Foreign Investment",
+    "concept_key": "foreign_investment"
+  },
+  "joint_venture": {
+    "id": "nr-042",
+    "domain": "company",
+    "term_en": "Joint Venture",
+    "concept_key": "joint_venture"
+  },
+  "jv सम्झौता कसरी गर्ने": {
+    "id": "nr-042",
+    "domain": "company",
+    "term_en": "Joint Venture",
+    "concept_key": "joint_venture"
+  },
+  "संयुक्त उपक्रम": {
+    "id": "nr-042",
+    "domain": "company",
+    "term_en": "Joint Venture",
+    "concept_key": "joint_venture"
+  },
+  "jv मा कर कसरी लाग्छ": {
+    "id": "nr-042",
+    "domain": "company",
+    "term_en": "Joint Venture",
+    "concept_key": "joint_venture"
+  },
+  "joint venture": {
+    "id": "nr-042",
+    "domain": "company",
+    "term_en": "Joint Venture",
+    "concept_key": "joint_venture"
+  },
+  "कति समयसम्म चलाउन पाइन्छ": {
+    "id": "nr-043",
+    "domain": "company",
+    "term_en": "Branch Office",
+    "concept_key": "branch_office"
+  },
+  "शाखा कार्यालय खोल्न के चाहिन्छ": {
+    "id": "nr-043",
+    "domain": "company",
+    "term_en": "Branch Office",
+    "concept_key": "branch_office"
+  },
+  "branch office": {
+    "id": "nr-043",
+    "domain": "company",
+    "term_en": "Branch Office",
+    "concept_key": "branch_office"
+  },
+  "branch_office": {
+    "id": "nr-043",
+    "domain": "company",
+    "term_en": "Branch Office",
+    "concept_key": "branch_office"
+  },
+  "शाखा कार्यालय": {
+    "id": "nr-043",
+    "domain": "company",
+    "term_en": "Branch Office",
+    "concept_key": "branch_office"
+  },
+  "कागजात के के चाहिन्छ": {
+    "id": "nr-044",
+    "domain": "company",
+    "term_en": "Liquidation",
+    "concept_key": "liquidation"
+  },
+  "खारेजी": {
+    "id": "nr-044",
+    "domain": "company",
+    "term_en": "Liquidation",
+    "concept_key": "liquidation"
+  },
+  "कम्पनी खारेजी कसरी गर्ने": {
+    "id": "nr-044",
+    "domain": "company",
+    "term_en": "Liquidation",
+    "concept_key": "liquidation"
+  },
+  "liquidation": {
+    "id": "nr-044",
+    "domain": "company",
+    "term_en": "Liquidation",
+    "concept_key": "liquidation"
+  },
+  "स्वेच्छिक खारेजी के हो": {
+    "id": "nr-045",
+    "domain": "company",
+    "term_en": "Winding Up",
+    "concept_key": "winding_up"
+  },
+  "winding_up": {
+    "id": "nr-045",
+    "domain": "company",
+    "term_en": "Winding Up",
+    "concept_key": "winding_up"
+  },
+  "winding up र liquidation मा के फरक": {
+    "id": "nr-045",
+    "domain": "company",
+    "term_en": "Winding Up",
+    "concept_key": "winding_up"
+  },
+  "winding up": {
+    "id": "nr-045",
+    "domain": "company",
+    "term_en": "Winding Up",
+    "concept_key": "winding_up"
+  },
+  "कम्पनी खारेज": {
+    "id": "nr-045",
+    "domain": "company",
+    "term_en": "Winding Up",
+    "concept_key": "winding_up"
+  },
+  "ऋणपत्र र सेयरमा के फरक": {
+    "id": "nr-046",
+    "domain": "company",
+    "term_en": "Debenture",
+    "concept_key": "debenture"
+  },
+  "ऋणपत्र": {
+    "id": "nr-046",
+    "domain": "company",
+    "term_en": "Debenture",
+    "concept_key": "debenture"
+  },
+  "debenture": {
+    "id": "nr-046",
+    "domain": "company",
+    "term_en": "Debenture",
+    "concept_key": "debenture"
+  },
+  "ऋणपत्र जारी गर्ने प्रक्रिया": {
+    "id": "nr-046",
+    "domain": "company",
+    "term_en": "Debenture",
+    "concept_key": "debenture"
+  },
+  "prospectus": {
+    "id": "nr-047",
+    "domain": "company",
+    "term_en": "Prospectus",
+    "concept_key": "prospectus"
+  },
+  "विवरणपत्रमा के समावेश हुन्छ": {
+    "id": "nr-047",
+    "domain": "company",
+    "term_en": "Prospectus",
+    "concept_key": "prospectus"
+  },
+  "गलत विवरणपत्रको दायित्व": {
+    "id": "nr-047",
+    "domain": "company",
+    "term_en": "Prospectus",
+    "concept_key": "prospectus"
+  },
+  "विवरणपत्र": {
+    "id": "nr-047",
+    "domain": "company",
+    "term_en": "Prospectus",
+    "concept_key": "prospectus"
+  },
+  "कसले गर्ने": {
+    "id": "nr-048",
+    "domain": "company",
+    "term_en": "Audit Report",
+    "concept_key": "audit_report"
+  },
+  "audit report": {
+    "id": "nr-048",
+    "domain": "company",
+    "term_en": "Audit Report",
+    "concept_key": "audit_report"
+  },
+  "audit_report": {
+    "id": "nr-048",
+    "domain": "company",
+    "term_en": "Audit Report",
+    "concept_key": "audit_report"
+  },
+  "लेखापरीक्षण प्रतिवेदन": {
+    "id": "nr-048",
+    "domain": "company",
+    "term_en": "Audit Report",
+    "concept_key": "audit_report"
+  },
+  "लेखापरीक्षण अनिवार्य छ": {
+    "id": "nr-048",
+    "domain": "company",
+    "term_en": "Audit Report",
+    "concept_key": "audit_report"
+  },
+  "registrar of companies": {
+    "id": "nr-049",
+    "domain": "company",
+    "term_en": "Registrar of Companies",
+    "concept_key": "registrar_of_companies"
+  },
+  "registrar_of_companies": {
+    "id": "nr-049",
+    "domain": "company",
+    "term_en": "Registrar of Companies",
+    "concept_key": "registrar_of_companies"
+  },
+  "अनलाइन सेवा के छ": {
+    "id": "nr-049",
+    "domain": "company",
+    "term_en": "Registrar of Companies",
+    "concept_key": "registrar_of_companies"
+  },
+  "रजिष्ट्रार कार्यालय कहाँ छ": {
+    "id": "nr-049",
+    "domain": "company",
+    "term_en": "Registrar of Companies",
+    "concept_key": "registrar_of_companies"
+  },
+  "कम्पनी रजिष्ट्रार": {
+    "id": "nr-049",
+    "domain": "company",
+    "term_en": "Registrar of Companies",
+    "concept_key": "registrar_of_companies"
+  },
+  "निष्क्रिय कम्पनी बनाउन मिल्छ": {
+    "id": "nr-050",
+    "domain": "company",
+    "term_en": "Dormant Company",
+    "concept_key": "dormant_company"
+  },
+  "dormant_company": {
+    "id": "nr-050",
+    "domain": "company",
+    "term_en": "Dormant Company",
+    "concept_key": "dormant_company"
+  },
+  "यसको दायित्व के हो": {
+    "id": "nr-050",
+    "domain": "company",
+    "term_en": "Dormant Company",
+    "concept_key": "dormant_company"
+  },
+  "निष्क्रिय कम्पनी": {
+    "id": "nr-050",
+    "domain": "company",
+    "term_en": "Dormant Company",
+    "concept_key": "dormant_company"
+  },
+  "dormant company": {
+    "id": "nr-050",
+    "domain": "company",
+    "term_en": "Dormant Company",
+    "concept_key": "dormant_company"
+  },
+  "ssf बाट कस्तो सेवा पाइन्छ": {
+    "id": "nr-051",
+    "domain": "labor",
+    "term_en": "SSF",
+    "concept_key": "ssf"
+  },
+  "SSF": {
+    "id": "nr-051",
+    "domain": "labor",
+    "term_en": "SSF",
+    "concept_key": "ssf"
+  },
+  "योगदान दर कति": {
+    "id": "nr-051",
+    "domain": "labor",
+    "term_en": "SSF",
+    "concept_key": "ssf"
+  },
+  "ssf": {
+    "id": "nr-051",
+    "domain": "labor",
+    "term_en": "SSF",
+    "concept_key": "ssf"
+  },
+  "सामाजिक सुरक्षा कोष": {
+    "id": "nr-051",
+    "domain": "labor",
+    "term_en": "SSF",
+    "concept_key": "ssf"
+  },
+  "ssf दर्ता कसरी गर्ने": {
+    "id": "nr-051",
+    "domain": "labor",
+    "term_en": "SSF",
+    "concept_key": "ssf"
+  },
+  "social security fund": {
+    "id": "nr-051",
+    "domain": "labor",
+    "term_en": "SSF",
+    "concept_key": "ssf"
+  },
+  "उपदान": {
+    "id": "nr-052",
+    "domain": "labor",
+    "term_en": "Gratuity",
+    "concept_key": "gratuity"
+  },
+  "उपदान कहिले पाइन्छ": {
+    "id": "nr-052",
+    "domain": "labor",
+    "term_en": "Gratuity",
+    "concept_key": "gratuity"
+  },
+  "ssf आएपछि उपदान लागू हुन्छ कि हुँदैन": {
+    "id": "nr-052",
+    "domain": "labor",
+    "term_en": "Gratuity",
+    "concept_key": "gratuity"
+  },
+  "उपदानको गणना कसरी गर्ने": {
+    "id": "nr-052",
+    "domain": "labor",
+    "term_en": "Gratuity",
+    "concept_key": "gratuity"
+  },
+  "gratuity": {
+    "id": "nr-052",
+    "domain": "labor",
+    "term_en": "Gratuity",
+    "concept_key": "gratuity"
+  },
+  "minimum wage": {
+    "id": "nr-053",
+    "domain": "labor",
+    "term_en": "Minimum Wage",
+    "concept_key": "minimum_wage"
+  },
+  "न्यूनतम पारिश्रमिक नदिए के सजाय": {
+    "id": "nr-053",
+    "domain": "labor",
+    "term_en": "Minimum Wage",
+    "concept_key": "minimum_wage"
+  },
+  "न्यूनतम पारिश्रमिक": {
+    "id": "nr-053",
+    "domain": "labor",
+    "term_en": "Minimum Wage",
+    "concept_key": "minimum_wage"
+  },
+  "minimum_wage": {
+    "id": "nr-053",
+    "domain": "labor",
+    "term_en": "Minimum Wage",
+    "concept_key": "minimum_wage"
+  },
+  "न्यूनतम पारिश्रमिक कति हो": {
+    "id": "nr-053",
+    "domain": "labor",
+    "term_en": "Minimum Wage",
+    "concept_key": "minimum_wage"
+  },
+  "बिदा बचत हुन्छ": {
+    "id": "nr-054",
+    "domain": "labor",
+    "term_en": "Leave",
+    "concept_key": "leave"
+  },
+  "सार्वजनिक बिदा कति": {
+    "id": "nr-054",
+    "domain": "labor",
+    "term_en": "Leave",
+    "concept_key": "leave"
+  },
+  "बिदा नगएको पैसा पाइन्छ": {
+    "id": "nr-054",
+    "domain": "labor",
+    "term_en": "Leave",
+    "concept_key": "leave"
+  },
+  "बिदा": {
+    "id": "nr-054",
+    "domain": "labor",
+    "term_en": "Leave",
+    "concept_key": "leave"
+  },
+  "leave": {
+    "id": "nr-054",
+    "domain": "labor",
+    "term_en": "Leave",
+    "concept_key": "leave"
+  },
+  "बर्खास्ती": {
+    "id": "nr-055",
+    "domain": "labor",
+    "term_en": "Termination",
+    "concept_key": "termination"
+  },
+  "termination": {
+    "id": "nr-055",
+    "domain": "labor",
+    "term_en": "Termination",
+    "concept_key": "termination"
+  },
+  "बर्खास्तीपछि के पाइन्छ": {
+    "id": "nr-055",
+    "domain": "labor",
+    "term_en": "Termination",
+    "concept_key": "termination"
+  },
+  "बर्खास्ती कारण के हुन्": {
+    "id": "nr-055",
+    "domain": "labor",
+    "term_en": "Termination",
+    "concept_key": "termination"
+  },
+  "गलत बर्खास्ती विरुद्ध उपाय": {
+    "id": "nr-055",
+    "domain": "labor",
+    "term_en": "Termination",
+    "concept_key": "termination"
+  },
+  "epf र ssf मा के फरक": {
+    "id": "nr-056",
+    "domain": "labor",
+    "term_en": "EPF",
+    "concept_key": "epf"
+  },
+  "EPF": {
+    "id": "nr-056",
+    "domain": "labor",
+    "term_en": "EPF",
+    "concept_key": "epf"
+  },
+  "employees provident fund": {
+    "id": "nr-056",
+    "domain": "labor",
+    "term_en": "EPF",
+    "concept_key": "epf"
+  },
+  "पुरानो epf रकम कहाँ छ": {
+    "id": "nr-056",
+    "domain": "labor",
+    "term_en": "EPF",
+    "concept_key": "epf"
+  },
+  "epf": {
+    "id": "nr-056",
+    "domain": "labor",
+    "term_en": "EPF",
+    "concept_key": "epf"
+  },
+  "epf रकम निकाल्ने प्रक्रिया": {
+    "id": "nr-056",
+    "domain": "labor",
+    "term_en": "EPF",
+    "concept_key": "epf"
+  },
+  "कर्मचारी सञ्चय कोष": {
+    "id": "nr-056",
+    "domain": "labor",
+    "term_en": "EPF",
+    "concept_key": "epf"
+  },
+  "श्रम सम्झौता अनिवार्य हो": {
+    "id": "nr-057",
+    "domain": "labor",
+    "term_en": "Labor Contract",
+    "concept_key": "labor_contract"
+  },
+  "सम्झौतामा के लेख्नुपर्छ": {
+    "id": "nr-057",
+    "domain": "labor",
+    "term_en": "Labor Contract",
+    "concept_key": "labor_contract"
+  },
+  "श्रम सम्झौता": {
+    "id": "nr-057",
+    "domain": "labor",
+    "term_en": "Labor Contract",
+    "concept_key": "labor_contract"
+  },
+  "labor contract": {
+    "id": "nr-057",
+    "domain": "labor",
+    "term_en": "Labor Contract",
+    "concept_key": "labor_contract"
+  },
+  "labor_contract": {
+    "id": "nr-057",
+    "domain": "labor",
+    "term_en": "Labor Contract",
+    "concept_key": "labor_contract"
+  },
+  "working hours": {
+    "id": "nr-058",
+    "domain": "labor",
+    "term_en": "Working Hours",
+    "concept_key": "working_hours"
+  },
+  "कार्य घण्टा": {
+    "id": "nr-058",
+    "domain": "labor",
+    "term_en": "Working Hours",
+    "concept_key": "working_hours"
+  },
+  "ब्रेक कति समय": {
+    "id": "nr-058",
+    "domain": "labor",
+    "term_en": "Working Hours",
+    "concept_key": "working_hours"
+  },
+  "working_hours": {
+    "id": "nr-058",
+    "domain": "labor",
+    "term_en": "Working Hours",
+    "concept_key": "working_hours"
+  },
+  "ओभरटाइम कति घण्टा": {
+    "id": "nr-058",
+    "domain": "labor",
+    "term_en": "Working Hours",
+    "concept_key": "working_hours"
+  },
+  "ओभरटाइम दर कति": {
+    "id": "nr-059",
+    "domain": "labor",
+    "term_en": "Overtime",
+    "concept_key": "overtime"
+  },
+  "ओभरटाइम": {
+    "id": "nr-059",
+    "domain": "labor",
+    "term_en": "Overtime",
+    "concept_key": "overtime"
+  },
+  "overtime": {
+    "id": "nr-059",
+    "domain": "labor",
+    "term_en": "Overtime",
+    "concept_key": "overtime"
+  },
+  "ओभरटाइम गणना कसरी गर्ने": {
+    "id": "nr-059",
+    "domain": "labor",
+    "term_en": "Overtime",
+    "concept_key": "overtime"
+  },
+  "labor_audit": {
+    "id": "nr-060",
+    "domain": "labor",
+    "term_en": "Labor Audit",
+    "concept_key": "labor_audit"
+  },
+  "श्रम लेखापरीक्षण": {
+    "id": "nr-060",
+    "domain": "labor",
+    "term_en": "Labor Audit",
+    "concept_key": "labor_audit"
+  },
+  "कमजोरी भेटिए के सजाय": {
+    "id": "nr-060",
+    "domain": "labor",
+    "term_en": "Labor Audit",
+    "concept_key": "labor_audit"
+  },
+  "labor audit": {
+    "id": "nr-060",
+    "domain": "labor",
+    "term_en": "Labor Audit",
+    "concept_key": "labor_audit"
+  },
+  "श्रम लेखापरीक्षण कसले गर्छ": {
+    "id": "nr-060",
+    "domain": "labor",
+    "term_en": "Labor Audit",
+    "concept_key": "labor_audit"
+  },
+  "सुरक्षा सामग्री दिनुपर्छ": {
+    "id": "nr-061",
+    "domain": "labor",
+    "term_en": "Occupational Safety and Health",
+    "concept_key": "occupational_safety_and_health"
+  },
+  "occupational safety and health": {
+    "id": "nr-061",
+    "domain": "labor",
+    "term_en": "Occupational Safety and Health",
+    "concept_key": "occupational_safety_and_health"
+  },
+  "occupational_safety_and_health": {
+    "id": "nr-061",
+    "domain": "labor",
+    "term_en": "Occupational Safety and Health",
+    "concept_key": "occupational_safety_and_health"
+  },
+  "दुर्घटनामा क्षतिपूर्ति": {
+    "id": "nr-061",
+    "domain": "labor",
+    "term_en": "Occupational Safety and Health",
+    "concept_key": "occupational_safety_and_health"
+  },
+  "व्यावसायिक सुरक्षा र स्वास्थ्य": {
+    "id": "nr-061",
+    "domain": "labor",
+    "term_en": "Occupational Safety and Health",
+    "concept_key": "occupational_safety_and_health"
+  },
+  "श्रमिक संघ": {
+    "id": "nr-062",
+    "domain": "labor",
+    "term_en": "Trade Union",
+    "concept_key": "trade_union"
+  },
+  "trade union": {
+    "id": "nr-062",
+    "domain": "labor",
+    "term_en": "Trade Union",
+    "concept_key": "trade_union"
+  },
+  "ट्रेड युनियन": {
+    "id": "nr-062",
+    "domain": "labor",
+    "term_en": "Trade Union",
+    "concept_key": "trade_union"
+  },
+  "trade_union": {
+    "id": "nr-062",
+    "domain": "labor",
+    "term_en": "Trade Union",
+    "concept_key": "trade_union"
+  },
+  "ट्रेड युनियन दर्ता कसरी गर्ने": {
+    "id": "nr-062",
+    "domain": "labor",
+    "term_en": "Trade Union",
+    "concept_key": "trade_union"
+  },
+  "एउटा संस्थामा कति युनियन बनाउन मिल्छ": {
+    "id": "nr-062",
+    "domain": "labor",
+    "term_en": "Trade Union",
+    "concept_key": "trade_union"
+  },
+  "collective_bargaining": {
+    "id": "nr-063",
+    "domain": "labor",
+    "term_en": "Collective Bargaining",
+    "concept_key": "collective_bargaining"
+  },
+  "सामूहिक सम्झौता बाध्यकारी हुन्छ": {
+    "id": "nr-063",
+    "domain": "labor",
+    "term_en": "Collective Bargaining",
+    "concept_key": "collective_bargaining"
+  },
+  "सामूहिक सौदाबाजी": {
+    "id": "nr-063",
+    "domain": "labor",
+    "term_en": "Collective Bargaining",
+    "concept_key": "collective_bargaining"
+  },
+  "collective bargaining": {
+    "id": "nr-063",
+    "domain": "labor",
+    "term_en": "Collective Bargaining",
+    "concept_key": "collective_bargaining"
+  },
+  "ट्रेड युनियन नभए के गर्ने": {
+    "id": "nr-063",
+    "domain": "labor",
+    "term_en": "Collective Bargaining",
+    "concept_key": "collective_bargaining"
+  },
+  "कारबाही गर्ने प्रक्रिया के हो": {
+    "id": "nr-064",
+    "domain": "labor",
+    "term_en": "Disciplinary Action",
+    "concept_key": "disciplinary_action"
+  },
+  "निलम्बनमा तलब पाइन्छ": {
+    "id": "nr-064",
+    "domain": "labor",
+    "term_en": "Disciplinary Action",
+    "concept_key": "disciplinary_action"
+  },
+  "अनुशासनात्मक कारबाही": {
+    "id": "nr-064",
+    "domain": "labor",
+    "term_en": "Disciplinary Action",
+    "concept_key": "disciplinary_action"
+  },
+  "disciplinary action": {
+    "id": "nr-064",
+    "domain": "labor",
+    "term_en": "Disciplinary Action",
+    "concept_key": "disciplinary_action"
+  },
+  "disciplinary_action": {
+    "id": "nr-064",
+    "domain": "labor",
+    "term_en": "Disciplinary Action",
+    "concept_key": "disciplinary_action"
+  },
+  "सूचना नदिई जान मिल्छ": {
+    "id": "nr-065",
+    "domain": "labor",
+    "term_en": "Notice Period",
+    "concept_key": "notice_period"
+  },
+  "notice period": {
+    "id": "nr-065",
+    "domain": "labor",
+    "term_en": "Notice Period",
+    "concept_key": "notice_period"
+  },
+  "सूचनाबाट मुक्त हुने सर्त": {
+    "id": "nr-065",
+    "domain": "labor",
+    "term_en": "Notice Period",
+    "concept_key": "notice_period"
+  },
+  "सूचना अवधि": {
+    "id": "nr-065",
+    "domain": "labor",
+    "term_en": "Notice Period",
+    "concept_key": "notice_period"
+  },
+  "notice_period": {
+    "id": "nr-065",
+    "domain": "labor",
+    "term_en": "Notice Period",
+    "concept_key": "notice_period"
+  },
+  "राजीनामापछि उपदान": {
+    "id": "nr-066",
+    "domain": "labor",
+    "term_en": "Resignation",
+    "concept_key": "resignation"
+  },
+  "resignation": {
+    "id": "nr-066",
+    "domain": "labor",
+    "term_en": "Resignation",
+    "concept_key": "resignation"
+  },
+  "राजीनामा दिने प्रक्रिया": {
+    "id": "nr-066",
+    "domain": "labor",
+    "term_en": "Resignation",
+    "concept_key": "resignation"
+  },
+  "राजीनामा": {
+    "id": "nr-066",
+    "domain": "labor",
+    "term_en": "Resignation",
+    "concept_key": "resignation"
+  },
+  "severance pay": {
+    "id": "nr-067",
+    "domain": "labor",
+    "term_en": "Severance Pay",
+    "concept_key": "severance_pay"
+  },
+  "पृथकता भुक्तानी": {
+    "id": "nr-067",
+    "domain": "labor",
+    "term_en": "Severance Pay",
+    "concept_key": "severance_pay"
+  },
+  "यो उपदानसँगै पाइन्छ": {
+    "id": "nr-067",
+    "domain": "labor",
+    "term_en": "Severance Pay",
+    "concept_key": "severance_pay"
+  },
+  "severance_pay": {
+    "id": "nr-067",
+    "domain": "labor",
+    "term_en": "Severance Pay",
+    "concept_key": "severance_pay"
+  },
+  "पृथकता भुक्तानी कसले पाउँछ": {
+    "id": "nr-067",
+    "domain": "labor",
+    "term_en": "Severance Pay",
+    "concept_key": "severance_pay"
+  },
+  "maternity_leave": {
+    "id": "nr-068",
+    "domain": "labor",
+    "term_en": "Maternity Leave",
+    "concept_key": "maternity_leave"
+  },
+  "सुत्केरी बिदा": {
+    "id": "nr-068",
+    "domain": "labor",
+    "term_en": "Maternity Leave",
+    "concept_key": "maternity_leave"
+  },
+  "ssf बाट पनि पैसा पाइन्छ": {
+    "id": "nr-068",
+    "domain": "labor",
+    "term_en": "Maternity Leave",
+    "concept_key": "maternity_leave"
+  },
+  "maternity leave": {
+    "id": "nr-068",
+    "domain": "labor",
+    "term_en": "Maternity Leave",
+    "concept_key": "maternity_leave"
+  },
+  "सुत्केरी बिदामा तलब कसले दिने": {
+    "id": "nr-068",
+    "domain": "labor",
+    "term_en": "Maternity Leave",
+    "concept_key": "maternity_leave"
+  },
+  "paternity_leave": {
+    "id": "nr-069",
+    "domain": "labor",
+    "term_en": "Paternity Leave",
+    "concept_key": "paternity_leave"
+  },
+  "बाबु बिदा कहिले लिन मिल्छ": {
+    "id": "nr-069",
+    "domain": "labor",
+    "term_en": "Paternity Leave",
+    "concept_key": "paternity_leave"
+  },
+  "बाबु बिदा": {
+    "id": "nr-069",
+    "domain": "labor",
+    "term_en": "Paternity Leave",
+    "concept_key": "paternity_leave"
+  },
+  "यो बिदा पाउने शर्त": {
+    "id": "nr-069",
+    "domain": "labor",
+    "term_en": "Paternity Leave",
+    "concept_key": "paternity_leave"
+  },
+  "paternity leave": {
+    "id": "nr-069",
+    "domain": "labor",
+    "term_en": "Paternity Leave",
+    "concept_key": "paternity_leave"
+  },
+  "annual increment": {
+    "id": "nr-070",
+    "domain": "labor",
+    "term_en": "Annual Increment",
+    "concept_key": "annual_increment"
+  },
+  "कति रकम": {
+    "id": "nr-070",
+    "domain": "labor",
+    "term_en": "Annual Increment",
+    "concept_key": "annual_increment"
+  },
+  "annual_increment": {
+    "id": "nr-070",
+    "domain": "labor",
+    "term_en": "Annual Increment",
+    "concept_key": "annual_increment"
+  },
+  "वृद्धि कहिले हुन्छ": {
+    "id": "nr-070",
+    "domain": "labor",
+    "term_en": "Annual Increment",
+    "concept_key": "annual_increment"
+  },
+  "वार्षिक तलब वृद्धि": {
+    "id": "nr-070",
+    "domain": "labor",
+    "term_en": "Annual Increment",
+    "concept_key": "annual_increment"
+  },
+  "labor court": {
+    "id": "nr-071",
+    "domain": "labor",
+    "term_en": "Labor Court",
+    "concept_key": "labor_court"
+  },
+  "श्रम अदालतमा मुद्दा कसरी हाल्ने": {
+    "id": "nr-071",
+    "domain": "labor",
+    "term_en": "Labor Court",
+    "concept_key": "labor_court"
+  },
+  "labor_court": {
+    "id": "nr-071",
+    "domain": "labor",
+    "term_en": "Labor Court",
+    "concept_key": "labor_court"
+  },
+  "श्रम अदालतको क्षेत्राधिकार के हो": {
+    "id": "nr-071",
+    "domain": "labor",
+    "term_en": "Labor Court",
+    "concept_key": "labor_court"
+  },
+  "श्रम अदालत": {
+    "id": "nr-071",
+    "domain": "labor",
+    "term_en": "Labor Court",
+    "concept_key": "labor_court"
+  },
+  "बाल श्रममा के सजाय": {
+    "id": "nr-072",
+    "domain": "labor",
+    "term_en": "Child Labor",
+    "concept_key": "child_labor"
+  },
+  "बाल श्रम": {
+    "id": "nr-072",
+    "domain": "labor",
+    "term_en": "Child Labor",
+    "concept_key": "child_labor"
+  },
+  "child labor": {
+    "id": "nr-072",
+    "domain": "labor",
+    "term_en": "Child Labor",
+    "concept_key": "child_labor"
+  },
+  "child_labor": {
+    "id": "nr-072",
+    "domain": "labor",
+    "term_en": "Child Labor",
+    "concept_key": "child_labor"
+  },
+  "केही काममा अनुमति छ": {
+    "id": "nr-072",
+    "domain": "labor",
+    "term_en": "Child Labor",
+    "concept_key": "child_labor"
+  },
+  "forced_labor": {
+    "id": "nr-073",
+    "domain": "labor",
+    "term_en": "Forced Labor",
+    "concept_key": "forced_labor"
+  },
+  "बाध्यकारी श्रम": {
+    "id": "nr-073",
+    "domain": "labor",
+    "term_en": "Forced Labor",
+    "concept_key": "forced_labor"
+  },
+  "forced labor": {
+    "id": "nr-073",
+    "domain": "labor",
+    "term_en": "Forced Labor",
+    "concept_key": "forced_labor"
+  },
+  "जबरजस्ती श्रम भएको थाहा पाए कहाँ उजुरी गर्ने": {
+    "id": "nr-073",
+    "domain": "labor",
+    "term_en": "Forced Labor",
+    "concept_key": "forced_labor"
+  },
+  "नवीकरण प्रक्रिया": {
+    "id": "nr-074",
+    "domain": "labor",
+    "term_en": "Labor Permit",
+    "concept_key": "labor_permit"
+  },
+  "श्रम अनुमति": {
+    "id": "nr-074",
+    "domain": "labor",
+    "term_en": "Labor Permit",
+    "concept_key": "labor_permit"
+  },
+  "शुल्क कति": {
+    "id": "nr-074",
+    "domain": "labor",
+    "term_en": "Labor Permit",
+    "concept_key": "labor_permit"
+  },
+  "श्रम अनुमति कसरी लिने": {
+    "id": "nr-074",
+    "domain": "labor",
+    "term_en": "Labor Permit",
+    "concept_key": "labor_permit"
+  },
+  "labor permit": {
+    "id": "nr-074",
+    "domain": "labor",
+    "term_en": "Labor Permit",
+    "concept_key": "labor_permit"
+  },
+  "labor_permit": {
+    "id": "nr-074",
+    "domain": "labor",
+    "term_en": "Labor Permit",
+    "concept_key": "labor_permit"
+  },
+  "क्षतिपूर्ति रकम कति": {
+    "id": "nr-075",
+    "domain": "labor",
+    "term_en": "Workmen's Compensation",
+    "concept_key": "workmen_s_compensation"
+  },
+  "दुर्घटना भए के गर्ने": {
+    "id": "nr-075",
+    "domain": "labor",
+    "term_en": "Workmen's Compensation",
+    "concept_key": "workmen_s_compensation"
+  },
+  "workmen's compensation": {
+    "id": "nr-075",
+    "domain": "labor",
+    "term_en": "Workmen's Compensation",
+    "concept_key": "workmen_s_compensation"
+  },
+  "workmen_s_compensation": {
+    "id": "nr-075",
+    "domain": "labor",
+    "term_en": "Workmen's Compensation",
+    "concept_key": "workmen_s_compensation"
+  },
+  "श्रमिक क्षतिपूर्ति": {
+    "id": "nr-075",
+    "domain": "labor",
+    "term_en": "Workmen's Compensation",
+    "concept_key": "workmen_s_compensation"
+  },
+  "workmen s compensation": {
+    "id": "nr-075",
+    "domain": "labor",
+    "term_en": "Workmen's Compensation",
+    "concept_key": "workmen_s_compensation"
+  },
+  "बचत र चालु खातामा के फरक": {
+    "id": "nr-076",
+    "domain": "banking",
+    "term_en": "Bank Account",
+    "concept_key": "bank_account"
+  },
+  "खाता खोल्न के कागजात चाहिन्छ": {
+    "id": "nr-076",
+    "domain": "banking",
+    "term_en": "Bank Account",
+    "concept_key": "bank_account"
+  },
+  "bank account": {
+    "id": "nr-076",
+    "domain": "banking",
+    "term_en": "Bank Account",
+    "concept_key": "bank_account"
+  },
+  "bank_account": {
+    "id": "nr-076",
+    "domain": "banking",
+    "term_en": "Bank Account",
+    "concept_key": "bank_account"
+  },
+  "बैंक खाता कसरी खोल्ने": {
+    "id": "nr-076",
+    "domain": "banking",
+    "term_en": "Bank Account",
+    "concept_key": "bank_account"
+  },
+  "बैंक खाता": {
+    "id": "nr-076",
+    "domain": "banking",
+    "term_en": "Bank Account",
+    "concept_key": "bank_account"
+  },
+  "एकाउन्ट पेयी चेक के हो": {
+    "id": "nr-077",
+    "domain": "banking",
+    "term_en": "Cheque",
+    "concept_key": "cheque"
+  },
+  "पोस्ट डेटेड चेक मान्य हो": {
+    "id": "nr-077",
+    "domain": "banking",
+    "term_en": "Cheque",
+    "concept_key": "cheque"
+  },
+  "चेक": {
+    "id": "nr-077",
+    "domain": "banking",
+    "term_en": "Cheque",
+    "concept_key": "cheque"
+  },
+  "cheque": {
+    "id": "nr-077",
+    "domain": "banking",
+    "term_en": "Cheque",
+    "concept_key": "cheque"
+  },
+  "चेक बाउन्स भए के हुन्छ": {
+    "id": "nr-077",
+    "domain": "banking",
+    "term_en": "Cheque",
+    "concept_key": "cheque"
+  },
+  "डिडी र चेकमा फरक के": {
+    "id": "nr-078",
+    "domain": "banking",
+    "term_en": "Demand Draft",
+    "concept_key": "demand_draft"
+  },
+  "डिडी कति दिनसम्म मान्य": {
+    "id": "nr-078",
+    "domain": "banking",
+    "term_en": "Demand Draft",
+    "concept_key": "demand_draft"
+  },
+  "डिडी रद्द गर्न मिल्छ": {
+    "id": "nr-078",
+    "domain": "banking",
+    "term_en": "Demand Draft",
+    "concept_key": "demand_draft"
+  },
+  "demand draft": {
+    "id": "nr-078",
+    "domain": "banking",
+    "term_en": "Demand Draft",
+    "concept_key": "demand_draft"
+  },
+  "डिमाण्ड ड्राफ्ट": {
+    "id": "nr-078",
+    "domain": "banking",
+    "term_en": "Demand Draft",
+    "concept_key": "demand_draft"
+  },
+  "demand_draft": {
+    "id": "nr-078",
+    "domain": "banking",
+    "term_en": "Demand Draft",
+    "concept_key": "demand_draft"
+  },
+  "डकुमेन्टरी क्रेडिट के हो": {
+    "id": "nr-079",
+    "domain": "banking",
+    "term_en": "Letter of Credit",
+    "concept_key": "letter_of_credit"
+  },
+  "letter_of_credit": {
+    "id": "nr-079",
+    "domain": "banking",
+    "term_en": "Letter of Credit",
+    "concept_key": "letter_of_credit"
+  },
+  "letter of credit": {
+    "id": "nr-079",
+    "domain": "banking",
+    "term_en": "Letter of Credit",
+    "concept_key": "letter_of_credit"
+  },
+  "एलसी कसरी खोल्ने": {
+    "id": "nr-079",
+    "domain": "banking",
+    "term_en": "Letter of Credit",
+    "concept_key": "letter_of_credit"
+  },
+  "एलसीको मार्जिन कति लाग्छ": {
+    "id": "nr-079",
+    "domain": "banking",
+    "term_en": "Letter of Credit",
+    "concept_key": "letter_of_credit"
+  },
+  "क्रेडिट पत्र": {
+    "id": "nr-079",
+    "domain": "banking",
+    "term_en": "Letter of Credit",
+    "concept_key": "letter_of_credit"
+  },
+  "एलसी": {
+    "id": "nr-079",
+    "domain": "banking",
+    "term_en": "Letter of Credit",
+    "concept_key": "letter_of_credit"
+  },
+  "tt": {
+    "id": "nr-080",
+    "domain": "banking",
+    "term_en": "TT",
+    "concept_key": "tt"
+  },
+  "टिटी कति समयमा पुग्छ": {
+    "id": "nr-080",
+    "domain": "banking",
+    "term_en": "TT",
+    "concept_key": "tt"
+  },
+  "टेलिग्राफिक ट्रान्सफर": {
+    "id": "nr-080",
+    "domain": "banking",
+    "term_en": "TT",
+    "concept_key": "tt"
+  },
+  "विदेश पठाउन टिटी मिल्छ": {
+    "id": "nr-080",
+    "domain": "banking",
+    "term_en": "TT",
+    "concept_key": "tt"
+  },
+  "telegraphic transfer": {
+    "id": "nr-080",
+    "domain": "banking",
+    "term_en": "TT",
+    "concept_key": "tt"
+  },
+  "टिटी र स्वीफ्टमा फरक": {
+    "id": "nr-080",
+    "domain": "banking",
+    "term_en": "TT",
+    "concept_key": "tt"
+  },
+  "टिटी": {
+    "id": "nr-080",
+    "domain": "banking",
+    "term_en": "TT",
+    "concept_key": "tt"
+  },
+  "स्विफ्ट": {
+    "id": "nr-081",
+    "domain": "banking",
+    "term_en": "SWIFT",
+    "concept_key": "swift"
+  },
+  "स्विफ्ट ट्रान्सफर कति दिन लाग्छ": {
+    "id": "nr-081",
+    "domain": "banking",
+    "term_en": "SWIFT",
+    "concept_key": "swift"
+  },
+  "स्विफ्ट कोड कहाँ पाउने": {
+    "id": "nr-081",
+    "domain": "banking",
+    "term_en": "SWIFT",
+    "concept_key": "swift"
+  },
+  "society for worldwide interbank financial telecommunication": {
+    "id": "nr-081",
+    "domain": "banking",
+    "term_en": "SWIFT",
+    "concept_key": "swift"
+  },
+  "swift": {
+    "id": "nr-081",
+    "domain": "banking",
+    "term_en": "SWIFT",
+    "concept_key": "swift"
+  },
+  "मध्यस्थ बैंक के हो": {
+    "id": "nr-081",
+    "domain": "banking",
+    "term_en": "SWIFT",
+    "concept_key": "swift"
+  },
+  "fixed_deposit": {
+    "id": "nr-082",
+    "domain": "banking",
+    "term_en": "Fixed Deposit",
+    "concept_key": "fixed_deposit"
+  },
+  "स्थिर निक्षेप": {
+    "id": "nr-082",
+    "domain": "banking",
+    "term_en": "Fixed Deposit",
+    "concept_key": "fixed_deposit"
+  },
+  "मुद्दती निक्षेप": {
+    "id": "nr-082",
+    "domain": "banking",
+    "term_en": "Fixed Deposit",
+    "concept_key": "fixed_deposit"
+  },
+  "एफडी अगावै तोड्न मिल्छ": {
+    "id": "nr-082",
+    "domain": "banking",
+    "term_en": "Fixed Deposit",
+    "concept_key": "fixed_deposit"
+  },
+  "ब्याज कति पाइन्छ": {
+    "id": "nr-082",
+    "domain": "banking",
+    "term_en": "Fixed Deposit",
+    "concept_key": "fixed_deposit"
+  },
+  "एफडी धितो राखेर ऋण मिल्छ": {
+    "id": "nr-082",
+    "domain": "banking",
+    "term_en": "Fixed Deposit",
+    "concept_key": "fixed_deposit"
+  },
+  "fixed deposit": {
+    "id": "nr-082",
+    "domain": "banking",
+    "term_en": "Fixed Deposit",
+    "concept_key": "fixed_deposit"
+  },
+  "बचत खाता": {
+    "id": "nr-083",
+    "domain": "banking",
+    "term_en": "Saving Account",
+    "concept_key": "saving_account"
+  },
+  "saving_account": {
+    "id": "nr-083",
+    "domain": "banking",
+    "term_en": "Saving Account",
+    "concept_key": "saving_account"
+  },
+  "saving account": {
+    "id": "nr-083",
+    "domain": "banking",
+    "term_en": "Saving Account",
+    "concept_key": "saving_account"
+  },
+  "बचत खातामा ब्याज कति": {
+    "id": "nr-083",
+    "domain": "banking",
+    "term_en": "Saving Account",
+    "concept_key": "saving_account"
+  },
+  "न्यूनतम मौज्दात कति चाहिन्छ": {
+    "id": "nr-083",
+    "domain": "banking",
+    "term_en": "Saving Account",
+    "concept_key": "saving_account"
+  },
+  "मोबाइल बैंकिङ जोडिन्छ": {
+    "id": "nr-083",
+    "domain": "banking",
+    "term_en": "Saving Account",
+    "concept_key": "saving_account"
+  },
+  "चेकबुक कति पाउने": {
+    "id": "nr-084",
+    "domain": "banking",
+    "term_en": "Current Account",
+    "concept_key": "current_account"
+  },
+  "चालु खाता कसका लागि": {
+    "id": "nr-084",
+    "domain": "banking",
+    "term_en": "Current Account",
+    "concept_key": "current_account"
+  },
+  "current_account": {
+    "id": "nr-084",
+    "domain": "banking",
+    "term_en": "Current Account",
+    "concept_key": "current_account"
+  },
+  "चल्ती खाता": {
+    "id": "nr-084",
+    "domain": "banking",
+    "term_en": "Current Account",
+    "concept_key": "current_account"
+  },
+  "ओभरड्राफ्ट जोडिन्छ": {
+    "id": "nr-084",
+    "domain": "banking",
+    "term_en": "Current Account",
+    "concept_key": "current_account"
+  },
+  "current account": {
+    "id": "nr-084",
+    "domain": "banking",
+    "term_en": "Current Account",
+    "concept_key": "current_account"
+  },
+  "ब्याज कसरी लाग्छ": {
+    "id": "nr-085",
+    "domain": "banking",
+    "term_en": "Overdraft",
+    "concept_key": "overdraft"
+  },
+  "धितो चाहिन्छ": {
+    "id": "nr-085",
+    "domain": "banking",
+    "term_en": "Overdraft",
+    "concept_key": "overdraft"
+  },
+  "ओभरड्राफ्ट": {
+    "id": "nr-085",
+    "domain": "banking",
+    "term_en": "Overdraft",
+    "concept_key": "overdraft"
+  },
+  "ओभरड्राफ्ट सीमा कसरी तोकिन्छ": {
+    "id": "nr-085",
+    "domain": "banking",
+    "term_en": "Overdraft",
+    "concept_key": "overdraft"
+  },
+  "overdraft": {
+    "id": "nr-085",
+    "domain": "banking",
+    "term_en": "Overdraft",
+    "concept_key": "overdraft"
+  },
+  "सीआईबी रिपोर्ट किन चाहिन्छ": {
+    "id": "nr-086",
+    "domain": "banking",
+    "term_en": "Loan",
+    "concept_key": "loan"
+  },
+  "ऋण": {
+    "id": "nr-086",
+    "domain": "banking",
+    "term_en": "Loan",
+    "concept_key": "loan"
+  },
+  "ईएमआई कसरी गणना हुन्छ": {
+    "id": "nr-086",
+    "domain": "banking",
+    "term_en": "Loan",
+    "concept_key": "loan"
+  },
+  "कर्जाका प्रकार के के हुन्": {
+    "id": "nr-086",
+    "domain": "banking",
+    "term_en": "Loan",
+    "concept_key": "loan"
+  },
+  "loan": {
+    "id": "nr-086",
+    "domain": "banking",
+    "term_en": "Loan",
+    "concept_key": "loan"
+  },
+  "कर्जा": {
+    "id": "nr-086",
+    "domain": "banking",
+    "term_en": "Loan",
+    "concept_key": "loan"
+  },
+  "आधार दर के हो": {
+    "id": "nr-087",
+    "domain": "banking",
+    "term_en": "Interest Rate",
+    "concept_key": "interest_rate"
+  },
+  "interest_rate": {
+    "id": "nr-087",
+    "domain": "banking",
+    "term_en": "Interest Rate",
+    "concept_key": "interest_rate"
+  },
+  "फ्लोटिङ र फिक्स्ड दरमा फरक": {
+    "id": "nr-087",
+    "domain": "banking",
+    "term_en": "Interest Rate",
+    "concept_key": "interest_rate"
+  },
+  "ब्याज दर": {
+    "id": "nr-087",
+    "domain": "banking",
+    "term_en": "Interest Rate",
+    "concept_key": "interest_rate"
+  },
+  "interest rate": {
+    "id": "nr-087",
+    "domain": "banking",
+    "term_en": "Interest Rate",
+    "concept_key": "interest_rate"
+  },
+  "ब्याजदर कहिले परिवर्तन हुन्छ": {
+    "id": "nr-087",
+    "domain": "banking",
+    "term_en": "Interest Rate",
+    "concept_key": "interest_rate"
+  },
+  "पर्फमेन्स ग्यारेन्टी कति अवधिको": {
+    "id": "nr-088",
+    "domain": "banking",
+    "term_en": "Bank Guarantee",
+    "concept_key": "bank_guarantee"
+  },
+  "मार्जिन कति राख्नुपर्छ": {
+    "id": "nr-088",
+    "domain": "banking",
+    "term_en": "Bank Guarantee",
+    "concept_key": "bank_guarantee"
+  },
+  "बिड बन्ड ग्यारेन्टी के हो": {
+    "id": "nr-088",
+    "domain": "banking",
+    "term_en": "Bank Guarantee",
+    "concept_key": "bank_guarantee"
+  },
+  "bank guarantee": {
+    "id": "nr-088",
+    "domain": "banking",
+    "term_en": "Bank Guarantee",
+    "concept_key": "bank_guarantee"
+  },
+  "बैंक ग्यारेन्टी": {
+    "id": "nr-088",
+    "domain": "banking",
+    "term_en": "Bank Guarantee",
+    "concept_key": "bank_guarantee"
+  },
+  "bank_guarantee": {
+    "id": "nr-088",
+    "domain": "banking",
+    "term_en": "Bank Guarantee",
+    "concept_key": "bank_guarantee"
+  },
+  "neft/rtgs": {
+    "id": "nr-089",
+    "domain": "banking",
+    "term_en": "NEFT/RTGS",
+    "concept_key": "neft_rtgs"
+  },
+  "सेटलमेन्ट समय कति": {
+    "id": "nr-089",
+    "domain": "banking",
+    "term_en": "NEFT/RTGS",
+    "concept_key": "neft_rtgs"
+  },
+  "आरटिजिस": {
+    "id": "nr-089",
+    "domain": "banking",
+    "term_en": "NEFT/RTGS",
+    "concept_key": "neft_rtgs"
+  },
+  "नेफ्ट": {
+    "id": "nr-089",
+    "domain": "banking",
+    "term_en": "NEFT/RTGS",
+    "concept_key": "neft_rtgs"
+  },
+  "नेफ्ट र आरटिजिसमा फरक के": {
+    "id": "nr-089",
+    "domain": "banking",
+    "term_en": "NEFT/RTGS",
+    "concept_key": "neft_rtgs"
+  },
+  "neft_rtgs": {
+    "id": "nr-089",
+    "domain": "banking",
+    "term_en": "NEFT/RTGS",
+    "concept_key": "neft_rtgs"
+  },
+  "neft rtgs": {
+    "id": "nr-089",
+    "domain": "banking",
+    "term_en": "NEFT/RTGS",
+    "concept_key": "neft_rtgs"
+  },
+  "national electronic fund transfer / real time gross settlement": {
+    "id": "nr-089",
+    "domain": "banking",
+    "term_en": "NEFT/RTGS",
+    "concept_key": "neft_rtgs"
+  },
+  "सीमा कति छ": {
+    "id": "nr-089",
+    "domain": "banking",
+    "term_en": "NEFT/RTGS",
+    "concept_key": "neft_rtgs"
+  },
+  "केवाईसी": {
+    "id": "nr-090",
+    "domain": "banking",
+    "term_en": "KYC",
+    "concept_key": "kyc"
+  },
+  "के कागजात चाहिन्छ": {
+    "id": "nr-090",
+    "domain": "banking",
+    "term_en": "KYC",
+    "concept_key": "kyc"
+  },
+  "ग्राहक पहिचान": {
+    "id": "nr-090",
+    "domain": "banking",
+    "term_en": "KYC",
+    "concept_key": "kyc"
+  },
+  "केवाईसी नभए के हुन्छ": {
+    "id": "nr-090",
+    "domain": "banking",
+    "term_en": "KYC",
+    "concept_key": "kyc"
+  },
+  "kyc": {
+    "id": "nr-090",
+    "domain": "banking",
+    "term_en": "KYC",
+    "concept_key": "kyc"
+  },
+  "know your customer": {
+    "id": "nr-090",
+    "domain": "banking",
+    "term_en": "KYC",
+    "concept_key": "kyc"
+  },
+  "केवाईसी अपडेट कहिले गर्ने": {
+    "id": "nr-090",
+    "domain": "banking",
+    "term_en": "KYC",
+    "concept_key": "kyc"
+  },
+  "ब्ल्याकलिस्ट के हो": {
+    "id": "nr-091",
+    "domain": "banking",
+    "term_en": "NPL",
+    "concept_key": "npl"
+  },
+  "non-performing loan": {
+    "id": "nr-091",
+    "domain": "banking",
+    "term_en": "NPL",
+    "concept_key": "npl"
+  },
+  "npl": {
+    "id": "nr-091",
+    "domain": "banking",
+    "term_en": "NPL",
+    "concept_key": "npl"
+  },
+  "एनपीएल": {
+    "id": "nr-091",
+    "domain": "banking",
+    "term_en": "NPL",
+    "concept_key": "npl"
+  },
+  "एनपीएल कहिले मानिन्छ": {
+    "id": "nr-091",
+    "domain": "banking",
+    "term_en": "NPL",
+    "concept_key": "npl"
+  },
+  "पुनर्तालिकीकरण मिल्छ": {
+    "id": "nr-091",
+    "domain": "banking",
+    "term_en": "NPL",
+    "concept_key": "npl"
+  },
+  "भाखा नाघेको कर्जा": {
+    "id": "nr-091",
+    "domain": "banking",
+    "term_en": "NPL",
+    "concept_key": "npl"
+  },
+  "सीआरआर": {
+    "id": "nr-092",
+    "domain": "banking",
+    "term_en": "CRR",
+    "concept_key": "crr"
+  },
+  "crr": {
+    "id": "nr-092",
+    "domain": "banking",
+    "term_en": "CRR",
+    "concept_key": "crr"
+  },
+  "सीआरआर कति छ": {
+    "id": "nr-092",
+    "domain": "banking",
+    "term_en": "CRR",
+    "concept_key": "crr"
+  },
+  "सीआरआर र एसएलआरमा फरक": {
+    "id": "nr-092",
+    "domain": "banking",
+    "term_en": "CRR",
+    "concept_key": "crr"
+  },
+  "नगद आरक्षित अनुपात": {
+    "id": "nr-092",
+    "domain": "banking",
+    "term_en": "CRR",
+    "concept_key": "crr"
+  },
+  "cash reserve ratio": {
+    "id": "nr-092",
+    "domain": "banking",
+    "term_en": "CRR",
+    "concept_key": "crr"
+  },
+  "यसले ब्याजदरमा प्रभाव पर्छ": {
+    "id": "nr-092",
+    "domain": "banking",
+    "term_en": "CRR",
+    "concept_key": "crr"
+  },
+  "किन लागू गरिन्छ": {
+    "id": "nr-093",
+    "domain": "banking",
+    "term_en": "SLR",
+    "concept_key": "slr"
+  },
+  "एसएलआर कति हो": {
+    "id": "nr-093",
+    "domain": "banking",
+    "term_en": "SLR",
+    "concept_key": "slr"
+  },
+  "वैधानिक तरलता अनुपात": {
+    "id": "nr-093",
+    "domain": "banking",
+    "term_en": "SLR",
+    "concept_key": "slr"
+  },
+  "statutory liquidity ratio": {
+    "id": "nr-093",
+    "domain": "banking",
+    "term_en": "SLR",
+    "concept_key": "slr"
+  },
+  "तरल सम्पत्ति के के गनिन्छ": {
+    "id": "nr-093",
+    "domain": "banking",
+    "term_en": "SLR",
+    "concept_key": "slr"
+  },
+  "slr": {
+    "id": "nr-093",
+    "domain": "banking",
+    "term_en": "SLR",
+    "concept_key": "slr"
+  },
+  "एसएलआर": {
+    "id": "nr-093",
+    "domain": "banking",
+    "term_en": "SLR",
+    "concept_key": "slr"
+  },
+  "रेमिट्यान्स": {
+    "id": "nr-094",
+    "domain": "banking",
+    "term_en": "Remittance",
+    "concept_key": "remittance"
+  },
+  "remittance": {
+    "id": "nr-094",
+    "domain": "banking",
+    "term_en": "Remittance",
+    "concept_key": "remittance"
+  },
+  "प्रेषण": {
+    "id": "nr-094",
+    "domain": "banking",
+    "term_en": "Remittance",
+    "concept_key": "remittance"
+  },
+  "बैंक वा आईएमई कुन छान्ने": {
+    "id": "nr-094",
+    "domain": "banking",
+    "term_en": "Remittance",
+    "concept_key": "remittance"
+  },
+  "कति दिनमा आउँछ": {
+    "id": "nr-094",
+    "domain": "banking",
+    "term_en": "Remittance",
+    "concept_key": "remittance"
+  },
+  "रेमिट्यान्स कसरी प्राप्त गर्ने": {
+    "id": "nr-094",
+    "domain": "banking",
+    "term_en": "Remittance",
+    "concept_key": "remittance"
+  },
+  "foreign exchange": {
+    "id": "nr-095",
+    "domain": "banking",
+    "term_en": "Forex",
+    "concept_key": "forex"
+  },
+  "फोरेक्स": {
+    "id": "nr-095",
+    "domain": "banking",
+    "term_en": "Forex",
+    "concept_key": "forex"
+  },
+  "विदेशी मुद्रा किन्न सीमा के": {
+    "id": "nr-095",
+    "domain": "banking",
+    "term_en": "Forex",
+    "concept_key": "forex"
+  },
+  "फोरेक्स लाभ–हानि हिसाब कसरी": {
+    "id": "nr-095",
+    "domain": "banking",
+    "term_en": "Forex",
+    "concept_key": "forex"
+  },
+  "forex": {
+    "id": "nr-095",
+    "domain": "banking",
+    "term_en": "Forex",
+    "concept_key": "forex"
+  },
+  "विदेशी मुद्रा": {
+    "id": "nr-095",
+    "domain": "banking",
+    "term_en": "Forex",
+    "concept_key": "forex"
+  },
+  "आजको डलर दर कति": {
+    "id": "nr-095",
+    "domain": "banking",
+    "term_en": "Forex",
+    "concept_key": "forex"
+  },
+  "बैंक दर र रेपो दरमा फरक": {
+    "id": "nr-096",
+    "domain": "banking",
+    "term_en": "Bank Rate",
+    "concept_key": "bank_rate"
+  },
+  "हालको बैंक दर कति": {
+    "id": "nr-096",
+    "domain": "banking",
+    "term_en": "Bank Rate",
+    "concept_key": "bank_rate"
+  },
+  "बैंक दर": {
+    "id": "nr-096",
+    "domain": "banking",
+    "term_en": "Bank Rate",
+    "concept_key": "bank_rate"
+  },
+  "bank rate": {
+    "id": "nr-096",
+    "domain": "banking",
+    "term_en": "Bank Rate",
+    "concept_key": "bank_rate"
+  },
+  "बैंक दर बढ्दा कर्जा महँगो हुन्छ": {
+    "id": "nr-096",
+    "domain": "banking",
+    "term_en": "Bank Rate",
+    "concept_key": "bank_rate"
+  },
+  "bank_rate": {
+    "id": "nr-096",
+    "domain": "banking",
+    "term_en": "Bank Rate",
+    "concept_key": "bank_rate"
+  },
+  "कुन सम्पत्ति धितो राख्न मिल्छ": {
+    "id": "nr-097",
+    "domain": "banking",
+    "term_en": "Collateral",
+    "concept_key": "collateral"
+  },
+  "धितो": {
+    "id": "nr-097",
+    "domain": "banking",
+    "term_en": "Collateral",
+    "concept_key": "collateral"
+  },
+  "collateral": {
+    "id": "nr-097",
+    "domain": "banking",
+    "term_en": "Collateral",
+    "concept_key": "collateral"
+  },
+  "जमानत": {
+    "id": "nr-097",
+    "domain": "banking",
+    "term_en": "Collateral",
+    "concept_key": "collateral"
+  },
+  "धितो फुकुवा कहिले हुन्छ": {
+    "id": "nr-097",
+    "domain": "banking",
+    "term_en": "Collateral",
+    "concept_key": "collateral"
+  },
+  "धितो मूल्याङ्कन कसरी हुन्छ": {
+    "id": "nr-097",
+    "domain": "banking",
+    "term_en": "Collateral",
+    "concept_key": "collateral"
+  },
+  "mortgage": {
+    "id": "nr-098",
+    "domain": "banking",
+    "term_en": "Mortgage",
+    "concept_key": "mortgage"
+  },
+  "धितोबन्धक": {
+    "id": "nr-098",
+    "domain": "banking",
+    "term_en": "Mortgage",
+    "concept_key": "mortgage"
+  },
+  "बन्धकी दर्ता कहाँ हुन्छ": {
+    "id": "nr-098",
+    "domain": "banking",
+    "term_en": "Mortgage",
+    "concept_key": "mortgage"
+  },
+  "बन्धकी": {
+    "id": "nr-098",
+    "domain": "banking",
+    "term_en": "Mortgage",
+    "concept_key": "mortgage"
+  },
+  "कर्जा तिरेपछि फुकुवा कसरी": {
+    "id": "nr-098",
+    "domain": "banking",
+    "term_en": "Mortgage",
+    "concept_key": "mortgage"
+  },
+  "लालपुर्जा बैंकमा किन लिन्छ": {
+    "id": "nr-098",
+    "domain": "banking",
+    "term_en": "Mortgage",
+    "concept_key": "mortgage"
+  },
+  "hypothecation": {
+    "id": "nr-099",
+    "domain": "banking",
+    "term_en": "Hypothecation",
+    "concept_key": "hypothecation"
+  },
+  "दर्ता अनिवार्य हो": {
+    "id": "nr-099",
+    "domain": "banking",
+    "term_en": "Hypothecation",
+    "concept_key": "hypothecation"
+  },
+  "हाइपोथेकेशन": {
+    "id": "nr-099",
+    "domain": "banking",
+    "term_en": "Hypothecation",
+    "concept_key": "hypothecation"
+  },
+  "गाडी कर्जा हाइपोथेकेशन हो": {
+    "id": "nr-099",
+    "domain": "banking",
+    "term_en": "Hypothecation",
+    "concept_key": "hypothecation"
+  },
+  "हाइपोथेकेशन र मोर्टगेजमा फरक": {
+    "id": "nr-099",
+    "domain": "banking",
+    "term_en": "Hypothecation",
+    "concept_key": "hypothecation"
+  },
+  "बैंक खातासँग लिंक गर्न मिल्छ": {
+    "id": "nr-100",
+    "domain": "banking",
+    "term_en": "Digital Wallet",
+    "concept_key": "digital_wallet"
+  },
+  "वालेट केवाईसी कसरी गर्ने": {
+    "id": "nr-100",
+    "domain": "banking",
+    "term_en": "Digital Wallet",
+    "concept_key": "digital_wallet"
+  },
+  "दैनिक कारोबार सीमा कति": {
+    "id": "nr-100",
+    "domain": "banking",
+    "term_en": "Digital Wallet",
+    "concept_key": "digital_wallet"
+  },
+  "digital wallet": {
+    "id": "nr-100",
+    "domain": "banking",
+    "term_en": "Digital Wallet",
+    "concept_key": "digital_wallet"
+  },
+  "डिजिटल वालेट": {
+    "id": "nr-100",
+    "domain": "banking",
+    "term_en": "Digital Wallet",
+    "concept_key": "digital_wallet"
+  },
+  "ई–वालेट": {
+    "id": "nr-100",
+    "domain": "banking",
+    "term_en": "Digital Wallet",
+    "concept_key": "digital_wallet"
+  },
+  "digital_wallet": {
+    "id": "nr-100",
+    "domain": "banking",
+    "term_en": "Digital Wallet",
+    "concept_key": "digital_wallet"
+  },
+  "लालपुर्जा": {
+    "id": "nr-101",
+    "domain": "land",
+    "term_en": "Lalpurja",
+    "concept_key": "lalpurja"
+  },
+  "land ownership certificate": {
+    "id": "nr-101",
+    "domain": "land",
+    "term_en": "Lalpurja",
+    "concept_key": "lalpurja"
+  },
+  "लालपुर्जा कहाँबाट लिने": {
+    "id": "nr-101",
+    "domain": "land",
+    "term_en": "Lalpurja",
+    "concept_key": "lalpurja"
+  },
+  "lalpurja": {
+    "id": "nr-101",
+    "domain": "land",
+    "term_en": "Lalpurja",
+    "concept_key": "lalpurja"
+  },
+  "नामसारीपछि नयाँ लालपुर्जा कहिले": {
+    "id": "nr-101",
+    "domain": "land",
+    "term_en": "Lalpurja",
+    "concept_key": "lalpurja"
+  },
+  "हराएमा प्रतिलिपि कसरी निकाल्ने": {
+    "id": "nr-101",
+    "domain": "land",
+    "term_en": "Lalpurja",
+    "concept_key": "lalpurja"
+  },
+  "jagga": {
+    "id": "nr-102",
+    "domain": "land",
+    "term_en": "Jagga",
+    "concept_key": "jagga"
+  },
+  "जग्गाको वर्गीकरण के–के हुन्छ": {
+    "id": "nr-102",
+    "domain": "land",
+    "term_en": "Jagga",
+    "concept_key": "jagga"
+  },
+  "कृषि र आवासीय जग्गामा फरक": {
+    "id": "nr-102",
+    "domain": "land",
+    "term_en": "Jagga",
+    "concept_key": "jagga"
+  },
+  "जग्गा किन्दा के हेर्ने": {
+    "id": "nr-102",
+    "domain": "land",
+    "term_en": "Jagga",
+    "concept_key": "jagga"
+  },
+  "land": {
+    "id": "nr-102",
+    "domain": "land",
+    "term_en": "Jagga",
+    "concept_key": "jagga"
+  },
+  "जग्गा": {
+    "id": "nr-102",
+    "domain": "land",
+    "term_en": "Jagga",
+    "concept_key": "jagga"
+  },
+  "घर निर्माण अनुमति चाहिन्छ": {
+    "id": "nr-103",
+    "domain": "land",
+    "term_en": "Ghar",
+    "concept_key": "ghar"
+  },
+  "घर": {
+    "id": "nr-103",
+    "domain": "land",
+    "term_en": "Ghar",
+    "concept_key": "ghar"
+  },
+  "house": {
+    "id": "nr-103",
+    "domain": "land",
+    "term_en": "Ghar",
+    "concept_key": "ghar"
+  },
+  "घर कर कहाँ तिर्ने": {
+    "id": "nr-103",
+    "domain": "land",
+    "term_en": "Ghar",
+    "concept_key": "ghar"
+  },
+  "घर धितो राखेर कर्जा मिल्छ": {
+    "id": "nr-103",
+    "domain": "land",
+    "term_en": "Ghar",
+    "concept_key": "ghar"
+  },
+  "ghar": {
+    "id": "nr-103",
+    "domain": "land",
+    "term_en": "Ghar",
+    "concept_key": "ghar"
+  },
+  "property_registration": {
+    "id": "nr-104",
+    "domain": "land",
+    "term_en": "Property Registration",
+    "concept_key": "property_registration"
+  },
+  "दर्ता शुल्क ~४.५% कहाँ लाग्छ": {
+    "id": "nr-104",
+    "domain": "land",
+    "term_en": "Property Registration",
+    "concept_key": "property_registration"
+  },
+  "property registration": {
+    "id": "nr-104",
+    "domain": "land",
+    "term_en": "Property Registration",
+    "concept_key": "property_registration"
+  },
+  "जग्गा रजिस्ट्री": {
+    "id": "nr-104",
+    "domain": "land",
+    "term_en": "Property Registration",
+    "concept_key": "property_registration"
+  },
+  "मालपोतमा कसरी दर्ता गर्ने": {
+    "id": "nr-104",
+    "domain": "land",
+    "term_en": "Property Registration",
+    "concept_key": "property_registration"
+  },
+  "दाखिल खारिज कति दिनमा हुन्छ": {
+    "id": "nr-105",
+    "domain": "land",
+    "term_en": "Mutation",
+    "concept_key": "mutation"
+  },
+  "dakhil kharij": {
+    "id": "nr-105",
+    "domain": "land",
+    "term_en": "Mutation",
+    "concept_key": "mutation"
+  },
+  "mutation": {
+    "id": "nr-105",
+    "domain": "land",
+    "term_en": "Mutation",
+    "concept_key": "mutation"
+  },
+  "अंशबन्डापछि नामसारी चाहिन्छ": {
+    "id": "nr-105",
+    "domain": "land",
+    "term_en": "Mutation",
+    "concept_key": "mutation"
+  },
+  "दाखिल खारिज": {
+    "id": "nr-105",
+    "domain": "land",
+    "term_en": "Mutation",
+    "concept_key": "mutation"
+  },
+  "मालपोत": {
+    "id": "nr-106",
+    "domain": "land",
+    "term_en": "Malpot",
+    "concept_key": "malpot"
+  },
+  "land revenue": {
+    "id": "nr-106",
+    "domain": "land",
+    "term_en": "Malpot",
+    "concept_key": "malpot"
+  },
+  "अनलाइन सेवा के के छन्": {
+    "id": "nr-106",
+    "domain": "land",
+    "term_en": "Malpot",
+    "concept_key": "malpot"
+  },
+  "सेवा समय के हो": {
+    "id": "nr-106",
+    "domain": "land",
+    "term_en": "Malpot",
+    "concept_key": "malpot"
+  },
+  "मालपोत कार्यालय कहाँ छ": {
+    "id": "nr-106",
+    "domain": "land",
+    "term_en": "Malpot",
+    "concept_key": "malpot"
+  },
+  "malpot": {
+    "id": "nr-106",
+    "domain": "land",
+    "term_en": "Malpot",
+    "concept_key": "malpot"
+  },
+  "सर्वे नक्सा कहाँबाट लिने": {
+    "id": "nr-107",
+    "domain": "land",
+    "term_en": "Land Survey",
+    "concept_key": "land_survey"
+  },
+  "land_survey": {
+    "id": "nr-107",
+    "domain": "land",
+    "term_en": "Land Survey",
+    "concept_key": "land_survey"
+  },
+  "नापी": {
+    "id": "nr-107",
+    "domain": "land",
+    "term_en": "Land Survey",
+    "concept_key": "land_survey"
+  },
+  "सीमाना विवादमा के गर्ने": {
+    "id": "nr-107",
+    "domain": "land",
+    "term_en": "Land Survey",
+    "concept_key": "land_survey"
+  },
+  "land survey": {
+    "id": "nr-107",
+    "domain": "land",
+    "term_en": "Land Survey",
+    "concept_key": "land_survey"
+  },
+  "survey": {
+    "id": "nr-107",
+    "domain": "land",
+    "term_en": "Land Survey",
+    "concept_key": "land_survey"
+  },
+  "पुनर्नाप कहिले चाहिन्छ": {
+    "id": "nr-107",
+    "domain": "land",
+    "term_en": "Land Survey",
+    "concept_key": "land_survey"
+  },
+  "कित्ता नम्बर कहाँ हेर्ने": {
+    "id": "nr-108",
+    "domain": "land",
+    "term_en": "Cadastral Map",
+    "concept_key": "cadastral_map"
+  },
+  "नक्सा प्रतिलिपि कसरी लिने": {
+    "id": "nr-108",
+    "domain": "land",
+    "term_en": "Cadastral Map",
+    "concept_key": "cadastral_map"
+  },
+  "map": {
+    "id": "nr-108",
+    "domain": "land",
+    "term_en": "Cadastral Map",
+    "concept_key": "cadastral_map"
+  },
+  "cadastral_map": {
+    "id": "nr-108",
+    "domain": "land",
+    "term_en": "Cadastral Map",
+    "concept_key": "cadastral_map"
+  },
+  "cadastral map": {
+    "id": "nr-108",
+    "domain": "land",
+    "term_en": "Cadastral Map",
+    "concept_key": "cadastral_map"
+  },
+  "नक्सा र लालपुर्जा बाझियो भने": {
+    "id": "nr-108",
+    "domain": "land",
+    "term_en": "Cadastral Map",
+    "concept_key": "cadastral_map"
+  },
+  "नक्शा": {
+    "id": "nr-108",
+    "domain": "land",
+    "term_en": "Cadastral Map",
+    "concept_key": "cadastral_map"
+  },
+  "land_ceiling": {
+    "id": "nr-109",
+    "domain": "land",
+    "term_en": "Land Ceiling",
+    "concept_key": "land_ceiling"
+  },
+  "जग्गाको हदबन्दी": {
+    "id": "nr-109",
+    "domain": "land",
+    "term_en": "Land Ceiling",
+    "concept_key": "land_ceiling"
+  },
+  "land ceiling": {
+    "id": "nr-109",
+    "domain": "land",
+    "term_en": "Land Ceiling",
+    "concept_key": "land_ceiling"
+  },
+  "काठमाडौंमा कति रोपनी": {
+    "id": "nr-109",
+    "domain": "land",
+    "term_en": "Land Ceiling",
+    "concept_key": "land_ceiling"
+  },
+  "तराईमा कति बिघा": {
+    "id": "nr-109",
+    "domain": "land",
+    "term_en": "Land Ceiling",
+    "concept_key": "land_ceiling"
+  },
+  "हदबन्दी कति छ": {
+    "id": "nr-109",
+    "domain": "land",
+    "term_en": "Land Ceiling",
+    "concept_key": "land_ceiling"
+  },
+  "भार प्रमाणपत्र": {
+    "id": "nr-110",
+    "domain": "land",
+    "term_en": "Encumbrance Certificate",
+    "concept_key": "encumbrance_certificate"
+  },
+  "भार प्रमाणपत्र कहाँबाट लिने": {
+    "id": "nr-110",
+    "domain": "land",
+    "term_en": "Encumbrance Certificate",
+    "concept_key": "encumbrance_certificate"
+  },
+  "बैंकले किन माग्छ": {
+    "id": "nr-110",
+    "domain": "land",
+    "term_en": "Encumbrance Certificate",
+    "concept_key": "encumbrance_certificate"
+  },
+  "encumbrance certificate": {
+    "id": "nr-110",
+    "domain": "land",
+    "term_en": "Encumbrance Certificate",
+    "concept_key": "encumbrance_certificate"
+  },
+  "encumbrance_certificate": {
+    "id": "nr-110",
+    "domain": "land",
+    "term_en": "Encumbrance Certificate",
+    "concept_key": "encumbrance_certificate"
+  },
+  "कति अवधिको चाहिन्छ": {
+    "id": "nr-110",
+    "domain": "land",
+    "term_en": "Encumbrance Certificate",
+    "concept_key": "encumbrance_certificate"
+  },
+  "legal document": {
+    "id": "nr-111",
+    "domain": "land",
+    "term_en": "Deed",
+    "concept_key": "deed"
+  },
+  "दस्ताबेज": {
+    "id": "nr-111",
+    "domain": "land",
+    "term_en": "Deed",
+    "concept_key": "deed"
+  },
+  "साक्षी कति चाहिन्छ": {
+    "id": "nr-111",
+    "domain": "land",
+    "term_en": "Deed",
+    "concept_key": "deed"
+  },
+  "लिखत रजिस्ट्रेसन अनिवार्य हो": {
+    "id": "nr-111",
+    "domain": "land",
+    "term_en": "Deed",
+    "concept_key": "deed"
+  },
+  "deed": {
+    "id": "nr-111",
+    "domain": "land",
+    "term_en": "Deed",
+    "concept_key": "deed"
+  },
+  "बिक्री र दान दस्ताबेजमा फरक": {
+    "id": "nr-111",
+    "domain": "land",
+    "term_en": "Deed",
+    "concept_key": "deed"
+  },
+  "sale_deed": {
+    "id": "nr-112",
+    "domain": "land",
+    "term_en": "Sale Deed",
+    "concept_key": "sale_deed"
+  },
+  "मालपोतमा दर्ता चाहिन्छ": {
+    "id": "nr-112",
+    "domain": "land",
+    "term_en": "Sale Deed",
+    "concept_key": "sale_deed"
+  },
+  "कर के के तिर्नुपर्छ": {
+    "id": "nr-112",
+    "domain": "land",
+    "term_en": "Sale Deed",
+    "concept_key": "sale_deed"
+  },
+  "बिक्री दस्ताबेजमा के लेख्नुपर्छ": {
+    "id": "nr-112",
+    "domain": "land",
+    "term_en": "Sale Deed",
+    "concept_key": "sale_deed"
+  },
+  "sale deed": {
+    "id": "nr-112",
+    "domain": "land",
+    "term_en": "Sale Deed",
+    "concept_key": "sale_deed"
+  },
+  "बिक्री दस्ताबेज": {
+    "id": "nr-112",
+    "domain": "land",
+    "term_en": "Sale Deed",
+    "concept_key": "sale_deed"
+  },
+  "gift deed": {
+    "id": "nr-113",
+    "domain": "land",
+    "term_en": "Gift Deed",
+    "concept_key": "gift_deed"
+  },
+  "gift_deed": {
+    "id": "nr-113",
+    "domain": "land",
+    "term_en": "Gift Deed",
+    "concept_key": "gift_deed"
+  },
+  "दान दस्ताबेज फिर्ता गर्न मिल्छ": {
+    "id": "nr-113",
+    "domain": "land",
+    "term_en": "Gift Deed",
+    "concept_key": "gift_deed"
+  },
+  "दान दस्ताबेज": {
+    "id": "nr-113",
+    "domain": "land",
+    "term_en": "Gift Deed",
+    "concept_key": "gift_deed"
+  },
+  "परिवारभित्र दान सजिलो हो": {
+    "id": "nr-113",
+    "domain": "land",
+    "term_en": "Gift Deed",
+    "concept_key": "gift_deed"
+  },
+  "अन्तिम इच्छापत्र चाहिन्छ": {
+    "id": "nr-114",
+    "domain": "land",
+    "term_en": "Inheritance",
+    "concept_key": "inheritance"
+  },
+  "inheritance": {
+    "id": "nr-114",
+    "domain": "land",
+    "term_en": "Inheritance",
+    "concept_key": "inheritance"
+  },
+  "hak hastantaran": {
+    "id": "nr-114",
+    "domain": "land",
+    "term_en": "Inheritance",
+    "concept_key": "inheritance"
+  },
+  "नामसारी कसरी हुन्छ": {
+    "id": "nr-114",
+    "domain": "land",
+    "term_en": "Inheritance",
+    "concept_key": "inheritance"
+  },
+  "हक हस्तान्तरण कसरी गर्ने": {
+    "id": "nr-114",
+    "domain": "land",
+    "term_en": "Inheritance",
+    "concept_key": "inheritance"
+  },
+  "हक हस्तान्तरण": {
+    "id": "nr-114",
+    "domain": "land",
+    "term_en": "Inheritance",
+    "concept_key": "inheritance"
+  },
+  "अंशबन्डा": {
+    "id": "nr-115",
+    "domain": "land",
+    "term_en": "Partition",
+    "concept_key": "partition"
+  },
+  "कित्ता काट्न सर्वे चाहिन्छ": {
+    "id": "nr-115",
+    "domain": "land",
+    "term_en": "Partition",
+    "concept_key": "partition"
+  },
+  "नामसारी कहिले गर्ने": {
+    "id": "nr-115",
+    "domain": "land",
+    "term_en": "Partition",
+    "concept_key": "partition"
+  },
+  "मिल्ने बाँडफाँड र अदालती अंशबन्डामा फरक": {
+    "id": "nr-115",
+    "domain": "land",
+    "term_en": "Partition",
+    "concept_key": "partition"
+  },
+  "anshabanda": {
+    "id": "nr-115",
+    "domain": "land",
+    "term_en": "Partition",
+    "concept_key": "partition"
+  },
+  "partition": {
+    "id": "nr-115",
+    "domain": "land",
+    "term_en": "Partition",
+    "concept_key": "partition"
+  },
+  "सरकारी जग्गा बस्तीमा हक मिल्छ": {
+    "id": "nr-116",
+    "domain": "land",
+    "term_en": "Landless",
+    "concept_key": "landless"
+  },
+  "भूमिहीन प्रमाण कहाँबाट": {
+    "id": "nr-116",
+    "domain": "land",
+    "term_en": "Landless",
+    "concept_key": "landless"
+  },
+  "आयोगले के गर्छ": {
+    "id": "nr-116",
+    "domain": "land",
+    "term_en": "Landless",
+    "concept_key": "landless"
+  },
+  "landless": {
+    "id": "nr-116",
+    "domain": "land",
+    "term_en": "Landless",
+    "concept_key": "landless"
+  },
+  "भूमिहीन": {
+    "id": "nr-116",
+    "domain": "land",
+    "term_en": "Landless",
+    "concept_key": "landless"
+  },
+  "गुठी संस्थान ऐन के हो": {
+    "id": "nr-117",
+    "domain": "land",
+    "term_en": "Guthi",
+    "concept_key": "guthi"
+  },
+  "मोही हक लाग्छ": {
+    "id": "nr-117",
+    "domain": "land",
+    "term_en": "Guthi",
+    "concept_key": "guthi"
+  },
+  "गुठी": {
+    "id": "nr-117",
+    "domain": "land",
+    "term_en": "Guthi",
+    "concept_key": "guthi"
+  },
+  "गुठी जग्गा किनबेच हुन्छ": {
+    "id": "nr-117",
+    "domain": "land",
+    "term_en": "Guthi",
+    "concept_key": "guthi"
+  },
+  "trust": {
+    "id": "nr-117",
+    "domain": "land",
+    "term_en": "Guthi",
+    "concept_key": "guthi"
+  },
+  "guthi": {
+    "id": "nr-117",
+    "domain": "land",
+    "term_en": "Guthi",
+    "concept_key": "guthi"
+  },
+  "विरोध कहाँ गर्ने": {
+    "id": "nr-118",
+    "domain": "land",
+    "term_en": "Land Acquisition",
+    "concept_key": "land_acquisition"
+  },
+  "मुआब्जा कसरी निर्धारण हुन्छ": {
+    "id": "nr-118",
+    "domain": "land",
+    "term_en": "Land Acquisition",
+    "concept_key": "land_acquisition"
+  },
+  "जग्गा प्राप्ति": {
+    "id": "nr-118",
+    "domain": "land",
+    "term_en": "Land Acquisition",
+    "concept_key": "land_acquisition"
+  },
+  "land_acquisition": {
+    "id": "nr-118",
+    "domain": "land",
+    "term_en": "Land Acquisition",
+    "concept_key": "land_acquisition"
+  },
+  "land acquisition": {
+    "id": "nr-118",
+    "domain": "land",
+    "term_en": "Land Acquisition",
+    "concept_key": "land_acquisition"
+  },
+  "जग्गा प्राप्ति ऐन के हो": {
+    "id": "nr-118",
+    "domain": "land",
+    "term_en": "Land Acquisition",
+    "concept_key": "land_acquisition"
+  },
+  "घर बनाउँदा सेटब्याक चाहिन्छ": {
+    "id": "nr-119",
+    "domain": "land",
+    "term_en": "Right of Way",
+    "concept_key": "right_of_way"
+  },
+  "right of way": {
+    "id": "nr-119",
+    "domain": "land",
+    "term_en": "Right of Way",
+    "concept_key": "right_of_way"
+  },
+  "right_of_way": {
+    "id": "nr-119",
+    "domain": "land",
+    "term_en": "Right of Way",
+    "concept_key": "right_of_way"
+  },
+  "बाटो अधिकार": {
+    "id": "nr-119",
+    "domain": "land",
+    "term_en": "Right of Way",
+    "concept_key": "right_of_way"
+  },
+  "बाटो बन्द भए के गर्ने": {
+    "id": "nr-119",
+    "domain": "land",
+    "term_en": "Right of Way",
+    "concept_key": "right_of_way"
+  },
+  "सार्वजनिक बाटो मिचे के हुन्छ": {
+    "id": "nr-119",
+    "domain": "land",
+    "term_en": "Right of Way",
+    "concept_key": "right_of_way"
+  },
+  "सार्वजनिक जग्गा कब्जा गैरकानूनी हो": {
+    "id": "nr-120",
+    "domain": "land",
+    "term_en": "Public Land",
+    "concept_key": "public_land"
+  },
+  "public_land": {
+    "id": "nr-120",
+    "domain": "land",
+    "term_en": "Public Land",
+    "concept_key": "public_land"
+  },
+  "ऐलानी जग्गा के हो": {
+    "id": "nr-120",
+    "domain": "land",
+    "term_en": "Public Land",
+    "concept_key": "public_land"
+  },
+  "निजी जग्गासँग फरक": {
+    "id": "nr-120",
+    "domain": "land",
+    "term_en": "Public Land",
+    "concept_key": "public_land"
+  },
+  "सार्वजनिक जग्गा": {
+    "id": "nr-120",
+    "domain": "land",
+    "term_en": "Public Land",
+    "concept_key": "public_land"
+  },
+  "public land": {
+    "id": "nr-120",
+    "domain": "land",
+    "term_en": "Public Land",
+    "concept_key": "public_land"
+  },
+  "private_land": {
+    "id": "nr-121",
+    "domain": "land",
+    "term_en": "Private Land",
+    "concept_key": "private_land"
+  },
+  "निजी जग्गा": {
+    "id": "nr-121",
+    "domain": "land",
+    "term_en": "Private Land",
+    "concept_key": "private_land"
+  },
+  "निजी जग्गा प्रमाण के हो": {
+    "id": "nr-121",
+    "domain": "land",
+    "term_en": "Private Land",
+    "concept_key": "private_land"
+  },
+  "सह–स्वामित्व के हो": {
+    "id": "nr-121",
+    "domain": "land",
+    "term_en": "Private Land",
+    "concept_key": "private_land"
+  },
+  "बेचबिखन प्रतिबन्ध कहिले लाग्छ": {
+    "id": "nr-121",
+    "domain": "land",
+    "term_en": "Private Land",
+    "concept_key": "private_land"
+  },
+  "private land": {
+    "id": "nr-121",
+    "domain": "land",
+    "term_en": "Private Land",
+    "concept_key": "private_land"
+  },
+  "खारेजी कसरी हुन्छ": {
+    "id": "nr-122",
+    "domain": "land",
+    "term_en": "Tenancy",
+    "concept_key": "tenancy"
+  },
+  "बटैया हक दर्ता हुन्छ": {
+    "id": "nr-122",
+    "domain": "land",
+    "term_en": "Tenancy",
+    "concept_key": "tenancy"
+  },
+  "बहाल करार चाहिन्छ": {
+    "id": "nr-122",
+    "domain": "land",
+    "term_en": "Tenancy",
+    "concept_key": "tenancy"
+  },
+  "tenancy": {
+    "id": "nr-122",
+    "domain": "land",
+    "term_en": "Tenancy",
+    "concept_key": "tenancy"
+  },
+  "टेनन्सी": {
+    "id": "nr-122",
+    "domain": "land",
+    "term_en": "Tenancy",
+    "concept_key": "tenancy"
+  },
+  "बटैया": {
+    "id": "nr-122",
+    "domain": "land",
+    "term_en": "Tenancy",
+    "concept_key": "tenancy"
+  },
+  "निकाल्न नोटिस कति दिनको": {
+    "id": "nr-123",
+    "domain": "land",
+    "term_en": "Rent Control Act",
+    "concept_key": "rent_control_act"
+  },
+  "भाडा नियन्त्रण ऐन": {
+    "id": "nr-123",
+    "domain": "land",
+    "term_en": "Rent Control Act",
+    "concept_key": "rent_control_act"
+  },
+  "बहाल कति बढाउन मिल्छ": {
+    "id": "nr-123",
+    "domain": "land",
+    "term_en": "Rent Control Act",
+    "concept_key": "rent_control_act"
+  },
+  "rent control act": {
+    "id": "nr-123",
+    "domain": "land",
+    "term_en": "Rent Control Act",
+    "concept_key": "rent_control_act"
+  },
+  "rent_control_act": {
+    "id": "nr-123",
+    "domain": "land",
+    "term_en": "Rent Control Act",
+    "concept_key": "rent_control_act"
+  },
+  "करार लेख्नुपर्छ": {
+    "id": "nr-123",
+    "domain": "land",
+    "term_en": "Rent Control Act",
+    "concept_key": "rent_control_act"
+  },
+  "घर नक्सा स्वीकृति": {
+    "id": "nr-124",
+    "domain": "land",
+    "term_en": "Building Permit",
+    "concept_key": "building_permit"
+  },
+  "building_permit": {
+    "id": "nr-124",
+    "domain": "land",
+    "term_en": "Building Permit",
+    "concept_key": "building_permit"
+  },
+  "बिना अनुमति बनाए के हुन्छ": {
+    "id": "nr-124",
+    "domain": "land",
+    "term_en": "Building Permit",
+    "concept_key": "building_permit"
+  },
+  "building permit": {
+    "id": "nr-124",
+    "domain": "land",
+    "term_en": "Building Permit",
+    "concept_key": "building_permit"
+  },
+  "नक्सा पास कसरी गर्ने": {
+    "id": "nr-124",
+    "domain": "land",
+    "term_en": "Building Permit",
+    "concept_key": "building_permit"
+  },
+  "कति तल्ला बनाउन पाइन्छ": {
+    "id": "nr-124",
+    "domain": "land",
+    "term_en": "Building Permit",
+    "concept_key": "building_permit"
+  },
+  "kitta number": {
+    "id": "nr-125",
+    "domain": "land",
+    "term_en": "Kitta Number",
+    "concept_key": "kitta_number"
+  },
+  "kitta_number": {
+    "id": "nr-125",
+    "domain": "land",
+    "term_en": "Kitta Number",
+    "concept_key": "kitta_number"
+  },
+  "कित्ता काट्दा नम्बर बदलिन्छ": {
+    "id": "nr-125",
+    "domain": "land",
+    "term_en": "Kitta Number",
+    "concept_key": "kitta_number"
+  },
+  "नक्शामा कित्ता कहाँ छ": {
+    "id": "nr-125",
+    "domain": "land",
+    "term_en": "Kitta Number",
+    "concept_key": "kitta_number"
+  },
+  "कित्ता नम्बर": {
+    "id": "nr-125",
+    "domain": "land",
+    "term_en": "Kitta Number",
+    "concept_key": "kitta_number"
+  },
+  "plot number": {
+    "id": "nr-125",
+    "domain": "land",
+    "term_en": "Kitta Number",
+    "concept_key": "kitta_number"
+  },
+  "महसुल कति लाग्छ": {
+    "id": "nr-126",
+    "domain": "legal",
+    "term_en": "Mudda",
+    "concept_key": "mudda"
+  },
+  "वकिल अनिवार्य हो": {
+    "id": "nr-126",
+    "domain": "legal",
+    "term_en": "Mudda",
+    "concept_key": "mudda"
+  },
+  "मुद्दा कहाँ दर्ता गर्ने": {
+    "id": "nr-126",
+    "domain": "legal",
+    "term_en": "Mudda",
+    "concept_key": "mudda"
+  },
+  "case": {
+    "id": "nr-126",
+    "domain": "legal",
+    "term_en": "Mudda",
+    "concept_key": "mudda"
+  },
+  "mudda": {
+    "id": "nr-126",
+    "domain": "legal",
+    "term_en": "Mudda",
+    "concept_key": "mudda"
+  },
+  "मुद्दा": {
+    "id": "nr-126",
+    "domain": "legal",
+    "term_en": "Mudda",
+    "concept_key": "mudda"
+  },
+  "कुन अदालतमा जाने": {
+    "id": "nr-127",
+    "domain": "legal",
+    "term_en": "Appeal",
+    "concept_key": "appeal"
+  },
+  "पुनरावेदन": {
+    "id": "nr-127",
+    "domain": "legal",
+    "term_en": "Appeal",
+    "concept_key": "appeal"
+  },
+  "appeal": {
+    "id": "nr-127",
+    "domain": "legal",
+    "term_en": "Appeal",
+    "concept_key": "appeal"
+  },
+  "पुनरावेदनको म्याद कति दिन": {
+    "id": "nr-127",
+    "domain": "legal",
+    "term_en": "Appeal",
+    "concept_key": "appeal"
+  },
+  "स्टे अर्डर मिल्छ": {
+    "id": "nr-127",
+    "domain": "legal",
+    "term_en": "Appeal",
+    "concept_key": "appeal"
+  },
+  "अन्तरिम आदेश चाहिन्छ": {
+    "id": "nr-128",
+    "domain": "legal",
+    "term_en": "Writ",
+    "concept_key": "writ"
+  },
+  "रिट कहिले दायर गर्ने": {
+    "id": "nr-128",
+    "domain": "legal",
+    "term_en": "Writ",
+    "concept_key": "writ"
+  },
+  "कुन प्रकारको रिट उपयुक्त": {
+    "id": "nr-128",
+    "domain": "legal",
+    "term_en": "Writ",
+    "concept_key": "writ"
+  },
+  "रिट": {
+    "id": "nr-128",
+    "domain": "legal",
+    "term_en": "Writ",
+    "concept_key": "writ"
+  },
+  "writ": {
+    "id": "nr-128",
+    "domain": "legal",
+    "term_en": "Writ",
+    "concept_key": "writ"
+  },
+  "स्टे अर्डर": {
+    "id": "nr-129",
+    "domain": "legal",
+    "term_en": "Stay Order",
+    "concept_key": "stay_order"
+  },
+  "stay_order": {
+    "id": "nr-129",
+    "domain": "legal",
+    "term_en": "Stay Order",
+    "concept_key": "stay_order"
+  },
+  "स्टे कति अवधिको हुन्छ": {
+    "id": "nr-129",
+    "domain": "legal",
+    "term_en": "Stay Order",
+    "concept_key": "stay_order"
+  },
+  "अन्तरिम आदेश": {
+    "id": "nr-129",
+    "domain": "legal",
+    "term_en": "Stay Order",
+    "concept_key": "stay_order"
+  },
+  "stay order": {
+    "id": "nr-129",
+    "domain": "legal",
+    "term_en": "Stay Order",
+    "concept_key": "stay_order"
+  },
+  "जमानत चाहिन्छ": {
+    "id": "nr-129",
+    "domain": "legal",
+    "term_en": "Stay Order",
+    "concept_key": "stay_order"
+  },
+  "उल्लंघन भए के हुन्छ": {
+    "id": "nr-129",
+    "domain": "legal",
+    "term_en": "Stay Order",
+    "concept_key": "stay_order"
+  },
+  "verdict": {
+    "id": "nr-130",
+    "domain": "legal",
+    "term_en": "Verdict",
+    "concept_key": "verdict"
+  },
+  "फैसला प्रतिलिपि कसरी लिने": {
+    "id": "nr-130",
+    "domain": "legal",
+    "term_en": "Verdict",
+    "concept_key": "verdict"
+  },
+  "कार्यान्वयन कसरी हुन्छ": {
+    "id": "nr-130",
+    "domain": "legal",
+    "term_en": "Verdict",
+    "concept_key": "verdict"
+  },
+  "फैसला": {
+    "id": "nr-130",
+    "domain": "legal",
+    "term_en": "Verdict",
+    "concept_key": "verdict"
+  },
+  "पुनरावेदन म्याद कहिलेबाट सुरु": {
+    "id": "nr-130",
+    "domain": "legal",
+    "term_en": "Verdict",
+    "concept_key": "verdict"
+  },
+  "प्रतिउत्तर कहिले दिनुपर्छ": {
+    "id": "nr-131",
+    "domain": "legal",
+    "term_en": "Summons",
+    "concept_key": "summons"
+  },
+  "म्याद": {
+    "id": "nr-131",
+    "domain": "legal",
+    "term_en": "Summons",
+    "concept_key": "summons"
+  },
+  "नगए के हुन्छ": {
+    "id": "nr-131",
+    "domain": "legal",
+    "term_en": "Summons",
+    "concept_key": "summons"
+  },
+  "म्याद आए के गर्ने": {
+    "id": "nr-131",
+    "domain": "legal",
+    "term_en": "Summons",
+    "concept_key": "summons"
+  },
+  "myad": {
+    "id": "nr-131",
+    "domain": "legal",
+    "term_en": "Summons",
+    "concept_key": "summons"
+  },
+  "summons": {
+    "id": "nr-131",
+    "domain": "legal",
+    "term_en": "Summons",
+    "concept_key": "summons"
+  },
+  "धरौटी": {
+    "id": "nr-132",
+    "domain": "legal",
+    "term_en": "Bail",
+    "concept_key": "bail"
+  },
+  "धरौटी तोडे के हुन्छ": {
+    "id": "nr-132",
+    "domain": "legal",
+    "term_en": "Bail",
+    "concept_key": "bail"
+  },
+  "रोक्का सम्पत्ति चाहिन्छ": {
+    "id": "nr-132",
+    "domain": "legal",
+    "term_en": "Bail",
+    "concept_key": "bail"
+  },
+  "bail": {
+    "id": "nr-132",
+    "domain": "legal",
+    "term_en": "Bail",
+    "concept_key": "bail"
+  },
+  "धरौटी कहिले मिल्छ": {
+    "id": "nr-132",
+    "domain": "legal",
+    "term_en": "Bail",
+    "concept_key": "bail"
+  },
+  "बन्धपत्र रद्द कहिले": {
+    "id": "nr-133",
+    "domain": "legal",
+    "term_en": "Bond",
+    "concept_key": "bond"
+  },
+  "bond": {
+    "id": "nr-133",
+    "domain": "legal",
+    "term_en": "Bond",
+    "concept_key": "bond"
+  },
+  "जमानतकर्ता को हुन सक्छ": {
+    "id": "nr-133",
+    "domain": "legal",
+    "term_en": "Bond",
+    "concept_key": "bond"
+  },
+  "बन्ड": {
+    "id": "nr-133",
+    "domain": "legal",
+    "term_en": "Bond",
+    "concept_key": "bond"
+  },
+  "रकम जफत हुन्छ": {
+    "id": "nr-133",
+    "domain": "legal",
+    "term_en": "Bond",
+    "concept_key": "bond"
+  },
+  "जमानत पत्र": {
+    "id": "nr-133",
+    "domain": "legal",
+    "term_en": "Bond",
+    "concept_key": "bond"
+  },
+  "फिरादीले के प्रमाण दिनुपर्छ": {
+    "id": "nr-134",
+    "domain": "legal",
+    "term_en": "Plaintiff",
+    "concept_key": "plaintiff"
+  },
+  "मुद्दा फिर्ता गर्न मिल्छ": {
+    "id": "nr-134",
+    "domain": "legal",
+    "term_en": "Plaintiff",
+    "concept_key": "plaintiff"
+  },
+  "फिरादी": {
+    "id": "nr-134",
+    "domain": "legal",
+    "term_en": "Plaintiff",
+    "concept_key": "plaintiff"
+  },
+  "प्रतिवादी को हो": {
+    "id": "nr-134",
+    "domain": "legal",
+    "term_en": "Plaintiff",
+    "concept_key": "plaintiff"
+  },
+  "plaintiff": {
+    "id": "nr-134",
+    "domain": "legal",
+    "term_en": "Plaintiff",
+    "concept_key": "plaintiff"
+  },
+  "गैरहाजिरी फैसला के हो": {
+    "id": "nr-135",
+    "domain": "legal",
+    "term_en": "Defendant",
+    "concept_key": "defendant"
+  },
+  "बचाउ वकिल अधिकार": {
+    "id": "nr-135",
+    "domain": "legal",
+    "term_en": "Defendant",
+    "concept_key": "defendant"
+  },
+  "प्रतिउत्तर कहिले पेश गर्ने": {
+    "id": "nr-135",
+    "domain": "legal",
+    "term_en": "Defendant",
+    "concept_key": "defendant"
+  },
+  "defendant": {
+    "id": "nr-135",
+    "domain": "legal",
+    "term_en": "Defendant",
+    "concept_key": "defendant"
+  },
+  "प्रतिवादी": {
+    "id": "nr-135",
+    "domain": "legal",
+    "term_en": "Defendant",
+    "concept_key": "defendant"
+  },
+  "साक्षी": {
+    "id": "nr-136",
+    "domain": "legal",
+    "term_en": "Witness",
+    "concept_key": "witness"
+  },
+  "साक्षी बक्न बाध्य हुन्छ": {
+    "id": "nr-136",
+    "domain": "legal",
+    "term_en": "Witness",
+    "concept_key": "witness"
+  },
+  "झूटो बयानको सजाय": {
+    "id": "nr-136",
+    "domain": "legal",
+    "term_en": "Witness",
+    "concept_key": "witness"
+  },
+  "जिरह के हो": {
+    "id": "nr-136",
+    "domain": "legal",
+    "term_en": "Witness",
+    "concept_key": "witness"
+  },
+  "witness": {
+    "id": "nr-136",
+    "domain": "legal",
+    "term_en": "Witness",
+    "concept_key": "witness"
+  },
+  "विद्युतीय प्रमाण मान्य हो": {
+    "id": "nr-137",
+    "domain": "legal",
+    "term_en": "Evidence",
+    "concept_key": "evidence"
+  },
+  "मौखिक प्रमाण पर्याप्त हो": {
+    "id": "nr-137",
+    "domain": "legal",
+    "term_en": "Evidence",
+    "concept_key": "evidence"
+  },
+  "प्रमाण सूची कहिले पेश": {
+    "id": "nr-137",
+    "domain": "legal",
+    "term_en": "Evidence",
+    "concept_key": "evidence"
+  },
+  "evidence": {
+    "id": "nr-137",
+    "domain": "legal",
+    "term_en": "Evidence",
+    "concept_key": "evidence"
+  },
+  "प्रमाण": {
+    "id": "nr-137",
+    "domain": "legal",
+    "term_en": "Evidence",
+    "concept_key": "evidence"
+  },
+  "उपस्थित नभई तारिख सार्न मिल्छ": {
+    "id": "nr-138",
+    "domain": "legal",
+    "term_en": "Adjournment",
+    "concept_key": "adjournment"
+  },
+  "कति पटक स्थगन हुन्छ": {
+    "id": "nr-138",
+    "domain": "legal",
+    "term_en": "Adjournment",
+    "concept_key": "adjournment"
+  },
+  "मुद्दा स्थगित": {
+    "id": "nr-138",
+    "domain": "legal",
+    "term_en": "Adjournment",
+    "concept_key": "adjournment"
+  },
+  "लागत लाग्छ": {
+    "id": "nr-138",
+    "domain": "legal",
+    "term_en": "Adjournment",
+    "concept_key": "adjournment"
+  },
+  "adjournment": {
+    "id": "nr-138",
+    "domain": "legal",
+    "term_en": "Adjournment",
+    "concept_key": "adjournment"
+  },
+  "contempt of court": {
+    "id": "nr-139",
+    "domain": "legal",
+    "term_en": "Contempt of Court",
+    "concept_key": "contempt_of_court"
+  },
+  "अवहेलना मुद्दा कसले चलाउँछ": {
+    "id": "nr-139",
+    "domain": "legal",
+    "term_en": "Contempt of Court",
+    "concept_key": "contempt_of_court"
+  },
+  "अदालतको अवहेलना": {
+    "id": "nr-139",
+    "domain": "legal",
+    "term_en": "Contempt of Court",
+    "concept_key": "contempt_of_court"
+  },
+  "contempt_of_court": {
+    "id": "nr-139",
+    "domain": "legal",
+    "term_en": "Contempt of Court",
+    "concept_key": "contempt_of_court"
+  },
+  "माफीले समाधान हुन्छ": {
+    "id": "nr-139",
+    "domain": "legal",
+    "term_en": "Contempt of Court",
+    "concept_key": "contempt_of_court"
+  },
+  "सजाय के हुन सक्छ": {
+    "id": "nr-139",
+    "domain": "legal",
+    "term_en": "Contempt of Court",
+    "concept_key": "contempt_of_court"
+  },
+  "एकपक्षीय आदेश के हो": {
+    "id": "nr-140",
+    "domain": "legal",
+    "term_en": "Interim Order",
+    "concept_key": "interim_order"
+  },
+  "फेरबदल गर्न मिल्छ": {
+    "id": "nr-140",
+    "domain": "legal",
+    "term_en": "Interim Order",
+    "concept_key": "interim_order"
+  },
+  "interim_order": {
+    "id": "nr-140",
+    "domain": "legal",
+    "term_en": "Interim Order",
+    "concept_key": "interim_order"
+  },
+  "interim order": {
+    "id": "nr-140",
+    "domain": "legal",
+    "term_en": "Interim Order",
+    "concept_key": "interim_order"
+  },
+  "अन्तरिम आदेश कति छिटो हुन्छ": {
+    "id": "nr-140",
+    "domain": "legal",
+    "term_en": "Interim Order",
+    "concept_key": "interim_order"
+  },
+  "injunction": {
+    "id": "nr-141",
+    "domain": "legal",
+    "term_en": "Injunction",
+    "concept_key": "injunction"
+  },
+  "उल्लंघन भए के": {
+    "id": "nr-141",
+    "domain": "legal",
+    "term_en": "Injunction",
+    "concept_key": "injunction"
+  },
+  "अस्थायी र स्थायी निषेधाज्ञामा फरक": {
+    "id": "nr-141",
+    "domain": "legal",
+    "term_en": "Injunction",
+    "concept_key": "injunction"
+  },
+  "निषेधाज्ञा": {
+    "id": "nr-141",
+    "domain": "legal",
+    "term_en": "Injunction",
+    "concept_key": "injunction"
+  },
+  "कसले दायर गर्न सक्छ": {
+    "id": "nr-142",
+    "domain": "legal",
+    "term_en": "Habeas Corpus",
+    "concept_key": "habeas_corpus"
+  },
+  "habeas_corpus": {
+    "id": "nr-142",
+    "domain": "legal",
+    "term_en": "Habeas Corpus",
+    "concept_key": "habeas_corpus"
+  },
+  "habeas corpus": {
+    "id": "nr-142",
+    "domain": "legal",
+    "term_en": "Habeas Corpus",
+    "concept_key": "habeas_corpus"
+  },
+  "कति छिटो सुनुवाइ हुन्छ": {
+    "id": "nr-142",
+    "domain": "legal",
+    "term_en": "Habeas Corpus",
+    "concept_key": "habeas_corpus"
+  },
+  "कुन अदालतमा": {
+    "id": "nr-142",
+    "domain": "legal",
+    "term_en": "Habeas Corpus",
+    "concept_key": "habeas_corpus"
+  },
+  "बन्दी प्रत्यक्षीकरण": {
+    "id": "nr-142",
+    "domain": "legal",
+    "term_en": "Habeas Corpus",
+    "concept_key": "habeas_corpus"
+  },
+  "निजी विरुद्ध मिल्छ": {
+    "id": "nr-143",
+    "domain": "legal",
+    "term_en": "Mandamus",
+    "concept_key": "mandamus"
+  },
+  "mandamus": {
+    "id": "nr-143",
+    "domain": "legal",
+    "term_en": "Mandamus",
+    "concept_key": "mandamus"
+  },
+  "परमादेश": {
+    "id": "nr-143",
+    "domain": "legal",
+    "term_en": "Mandamus",
+    "concept_key": "mandamus"
+  },
+  "अवहेलना के हुन्छ": {
+    "id": "nr-143",
+    "domain": "legal",
+    "term_en": "Mandamus",
+    "concept_key": "mandamus"
+  },
+  "परमादेश कहिले प्रयोग हुन्छ": {
+    "id": "nr-143",
+    "domain": "legal",
+    "term_en": "Mandamus",
+    "concept_key": "mandamus"
+  },
+  "कुन निर्णयमा लगाउने": {
+    "id": "nr-144",
+    "domain": "legal",
+    "term_en": "Certiorari",
+    "concept_key": "certiorari"
+  },
+  "म्याद के हो": {
+    "id": "nr-144",
+    "domain": "legal",
+    "term_en": "Certiorari",
+    "concept_key": "certiorari"
+  },
+  "प्रमाणपत्र": {
+    "id": "nr-144",
+    "domain": "legal",
+    "term_en": "Certiorari",
+    "concept_key": "certiorari"
+  },
+  "उत्प्रेषण र पुनरावेदनमा फरक": {
+    "id": "nr-144",
+    "domain": "legal",
+    "term_en": "Certiorari",
+    "concept_key": "certiorari"
+  },
+  "certiorari": {
+    "id": "nr-144",
+    "domain": "legal",
+    "term_en": "Certiorari",
+    "concept_key": "certiorari"
+  },
+  "पदाधिकार पृच्छा कसले दायर गर्छ": {
+    "id": "nr-145",
+    "domain": "legal",
+    "term_en": "Quo Warranto",
+    "concept_key": "quo_warranto"
+  },
+  "quo warranto": {
+    "id": "nr-145",
+    "domain": "legal",
+    "term_en": "Quo Warranto",
+    "concept_key": "quo_warranto"
+  },
+  "quo_warranto": {
+    "id": "nr-145",
+    "domain": "legal",
+    "term_en": "Quo Warranto",
+    "concept_key": "quo_warranto"
+  },
+  "पदाधिकार पृच्छा": {
+    "id": "nr-145",
+    "domain": "legal",
+    "term_en": "Quo Warranto",
+    "concept_key": "quo_warranto"
+  },
+  "पद रिक्त हुन्छ": {
+    "id": "nr-145",
+    "domain": "legal",
+    "term_en": "Quo Warranto",
+    "concept_key": "quo_warranto"
+  },
+  "राजनीतिक नियुक्तिमा लाग्छ": {
+    "id": "nr-145",
+    "domain": "legal",
+    "term_en": "Quo Warranto",
+    "concept_key": "quo_warranto"
+  },
+  "judicial custody": {
+    "id": "nr-146",
+    "domain": "legal",
+    "term_en": "Judicial Custody",
+    "concept_key": "judicial_custody"
+  },
+  "कति दिनसम्म": {
+    "id": "nr-146",
+    "domain": "legal",
+    "term_en": "Judicial Custody",
+    "concept_key": "judicial_custody"
+  },
+  "न्यायिक हिरासत": {
+    "id": "nr-146",
+    "domain": "legal",
+    "term_en": "Judicial Custody",
+    "concept_key": "judicial_custody"
+  },
+  "judicial_custody": {
+    "id": "nr-146",
+    "domain": "legal",
+    "term_en": "Judicial Custody",
+    "concept_key": "judicial_custody"
+  },
+  "भेटघाट अधिकार": {
+    "id": "nr-146",
+    "domain": "legal",
+    "term_en": "Judicial Custody",
+    "concept_key": "judicial_custody"
+  },
+  "न्यायिक र प्रहरी हिरासतमा फरक": {
+    "id": "nr-146",
+    "domain": "legal",
+    "term_en": "Judicial Custody",
+    "concept_key": "judicial_custody"
+  },
+  "रिमाण्ड कति दिनसम्म (अधिकतम २५)": {
+    "id": "nr-147",
+    "domain": "legal",
+    "term_en": "Remand",
+    "concept_key": "remand"
+  },
+  "जमानतसँगै मिल्छ": {
+    "id": "nr-147",
+    "domain": "legal",
+    "term_en": "Remand",
+    "concept_key": "remand"
+  },
+  "रिमाण्ड": {
+    "id": "nr-147",
+    "domain": "legal",
+    "term_en": "Remand",
+    "concept_key": "remand"
+  },
+  "remand": {
+    "id": "nr-147",
+    "domain": "legal",
+    "term_en": "Remand",
+    "concept_key": "remand"
+  },
+  "कति पटक हुन्छ": {
+    "id": "nr-147",
+    "domain": "legal",
+    "term_en": "Remand",
+    "concept_key": "remand"
+  },
+  "public_prosecutor": {
+    "id": "nr-148",
+    "domain": "legal",
+    "term_en": "Public Prosecutor",
+    "concept_key": "public_prosecutor"
+  },
+  "पीडितले छुट्टै वकिल राख्न मिल्छ": {
+    "id": "nr-148",
+    "domain": "legal",
+    "term_en": "Public Prosecutor",
+    "concept_key": "public_prosecutor"
+  },
+  "public prosecutor": {
+    "id": "nr-148",
+    "domain": "legal",
+    "term_en": "Public Prosecutor",
+    "concept_key": "public_prosecutor"
+  },
+  "सरकारी वकिल": {
+    "id": "nr-148",
+    "domain": "legal",
+    "term_en": "Public Prosecutor",
+    "concept_key": "public_prosecutor"
+  },
+  "सरकारी वकिल कहाँ भेटिन्छ": {
+    "id": "nr-148",
+    "domain": "legal",
+    "term_en": "Public Prosecutor",
+    "concept_key": "public_prosecutor"
+  },
+  "मिलापत्रमा भूमिका के": {
+    "id": "nr-148",
+    "domain": "legal",
+    "term_en": "Public Prosecutor",
+    "concept_key": "public_prosecutor"
+  },
+  "बयान": {
+    "id": "nr-149",
+    "domain": "legal",
+    "term_en": "Pleading",
+    "concept_key": "pleading"
+  },
+  "प्रतिउत्तर म्याद कति": {
+    "id": "nr-149",
+    "domain": "legal",
+    "term_en": "Pleading",
+    "concept_key": "pleading"
+  },
+  "संशोधन गर्न मिल्छ": {
+    "id": "nr-149",
+    "domain": "legal",
+    "term_en": "Pleading",
+    "concept_key": "pleading"
+  },
+  "फिरादपत्र के हो": {
+    "id": "nr-149",
+    "domain": "legal",
+    "term_en": "Pleading",
+    "concept_key": "pleading"
+  },
+  "pleading": {
+    "id": "nr-149",
+    "domain": "legal",
+    "term_en": "Pleading",
+    "concept_key": "pleading"
+  },
+  "settlement": {
+    "id": "nr-150",
+    "domain": "legal",
+    "term_en": "Settlement",
+    "concept_key": "settlement"
+  },
+  "मिलापत्र अदालतमा दर्ता हुन्छ": {
+    "id": "nr-150",
+    "domain": "legal",
+    "term_en": "Settlement",
+    "concept_key": "settlement"
+  },
+  "मिलापत्र": {
+    "id": "nr-150",
+    "domain": "legal",
+    "term_en": "Settlement",
+    "concept_key": "settlement"
+  },
+  "फौजदारीमा मिलापत्र हुन्छ": {
+    "id": "nr-150",
+    "domain": "legal",
+    "term_en": "Settlement",
+    "concept_key": "settlement"
+  },
+  "पछि उल्ट्याउन मिल्छ": {
+    "id": "nr-150",
+    "domain": "legal",
+    "term_en": "Settlement",
+    "concept_key": "settlement"
+  }
+}

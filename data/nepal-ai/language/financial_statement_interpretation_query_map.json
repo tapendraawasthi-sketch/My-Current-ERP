@@ -1,0 +1,722 @@
+{
+  "balance sheet": {
+    "id": "finstmt-001",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "vertical balance sheet": {
+    "id": "finstmt-001",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "abc pvt. ltd": {
+    "id": "finstmt-001",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "abc pvt. ltd. balance sheet": {
+    "id": "finstmt-001",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "total assets kati": {
+    "id": "finstmt-001",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "current ratio kati": {
+    "id": "finstmt-001",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "debt to equity ratio": {
+    "id": "finstmt-001",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "xyz trading": {
+    "id": "finstmt-002",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "xyz trading balance sheet": {
+    "id": "finstmt-002",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "total liabilities kati": {
+    "id": "finstmt-002",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "net working capital kati": {
+    "id": "finstmt-002",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "quick ratio": {
+    "id": "finstmt-002",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "horizontal balance sheet": {
+    "id": "finstmt-003",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "mno enterprises": {
+    "id": "finstmt-003",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "mno enterprises balance sheet": {
+    "id": "finstmt-003",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "total assets": {
+    "id": "finstmt-003",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "net worth": {
+    "id": "finstmt-003",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "debt ratio": {
+    "id": "finstmt-003",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "pqr supplies": {
+    "id": "finstmt-004",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "pqr supplies balance sheet": {
+    "id": "finstmt-004",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "total current assets": {
+    "id": "finstmt-004",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "total current liabilities": {
+    "id": "finstmt-004",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "working capital": {
+    "id": "finstmt-004",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "stu manufacturing": {
+    "id": "finstmt-005",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "stu manufacturing balance sheet": {
+    "id": "finstmt-005",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "total fixed assets": {
+    "id": "finstmt-005",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "debt-equity ratio": {
+    "id": "finstmt-005",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "vwx retail": {
+    "id": "finstmt-006",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "vwx retail balance sheet": {
+    "id": "finstmt-006",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "total liabilities": {
+    "id": "finstmt-006",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "is balance sheet balanced": {
+    "id": "finstmt-006",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "yza holdings": {
+    "id": "finstmt-007",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "yza holdings balance sheet": {
+    "id": "finstmt-007",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "current ratio": {
+    "id": "finstmt-007",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "net assets": {
+    "id": "finstmt-007",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "bcd solutions": {
+    "id": "finstmt-008",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "bcd solutions balance sheet": {
+    "id": "finstmt-008",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "efg exporters": {
+    "id": "finstmt-009",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "efg exporters balance sheet": {
+    "id": "finstmt-009",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "hij construction": {
+    "id": "finstmt-010",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "hij construction balance sheet": {
+    "id": "finstmt-010",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "net working capital": {
+    "id": "finstmt-010",
+    "statement_type": "Balance Sheet",
+    "statement_type_key": "balance_sheet"
+  },
+  "profit & loss": {
+    "id": "finstmt-011",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "profit loss": {
+    "id": "finstmt-011",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "vertical profit & loss": {
+    "id": "finstmt-011",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "abc pvt. ltd. profit & loss": {
+    "id": "finstmt-011",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "gross profit margin": {
+    "id": "finstmt-011",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "net profit margin": {
+    "id": "finstmt-011",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "total expenses": {
+    "id": "finstmt-011",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "xyz trading profit & loss": {
+    "id": "finstmt-012",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "gross profit": {
+    "id": "finstmt-012",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "operating profit (ebit)": {
+    "id": "finstmt-012",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "net profit": {
+    "id": "finstmt-012",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "horizontal profit & loss": {
+    "id": "finstmt-013",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "mno enterprises profit & loss": {
+    "id": "finstmt-013",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "total operating expenses": {
+    "id": "finstmt-013",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "pqr supplies profit & loss": {
+    "id": "finstmt-014",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "operating profit": {
+    "id": "finstmt-014",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "stu manufacturing profit & loss": {
+    "id": "finstmt-015",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "gross margin": {
+    "id": "finstmt-015",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "net margin": {
+    "id": "finstmt-015",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "vwx retail profit & loss": {
+    "id": "finstmt-016",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "gross profit ratio": {
+    "id": "finstmt-016",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "net profit ratio": {
+    "id": "finstmt-016",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "operating expenses to revenue": {
+    "id": "finstmt-016",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "yza holdings profit & loss": {
+    "id": "finstmt-017",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "what is the effective tax rate if tax is not included": {
+    "id": "finstmt-017",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "bcd solutions profit & loss": {
+    "id": "finstmt-018",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "efg exporters profit & loss": {
+    "id": "finstmt-019",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "hij construction profit & loss": {
+    "id": "finstmt-020",
+    "statement_type": "Profit & Loss",
+    "statement_type_key": "profit_loss"
+  },
+  "cash flow statement": {
+    "id": "finstmt-021",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "vertical cash flow statement": {
+    "id": "finstmt-021",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "abc pvt. ltd. cash flow statement": {
+    "id": "finstmt-021",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "net cash from operating activities": {
+    "id": "finstmt-021",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "net increase in cash": {
+    "id": "finstmt-021",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "free cash flow": {
+    "id": "finstmt-021",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "xyz trading cash flow statement": {
+    "id": "finstmt-022",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "cash from operations": {
+    "id": "finstmt-022",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "net cash used in investing": {
+    "id": "finstmt-022",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "closing cash balance": {
+    "id": "finstmt-022",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "horizontal cash flow statement": {
+    "id": "finstmt-023",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "mno enterprises cash flow statement": {
+    "id": "finstmt-023",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "operating cash flow": {
+    "id": "finstmt-023",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "net cash from financing": {
+    "id": "finstmt-023",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "closing cash": {
+    "id": "finstmt-023",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "pqr supplies cash flow statement": {
+    "id": "finstmt-024",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "stu manufacturing cash flow statement": {
+    "id": "finstmt-025",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "vwx retail cash flow statement": {
+    "id": "finstmt-026",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "net increase": {
+    "id": "finstmt-026",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "yza holdings cash flow statement": {
+    "id": "finstmt-027",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "net cash from operations": {
+    "id": "finstmt-027",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "bcd solutions cash flow statement": {
+    "id": "finstmt-028",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "efg exporters cash flow statement": {
+    "id": "finstmt-029",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "hij construction cash flow statement": {
+    "id": "finstmt-030",
+    "statement_type": "Cash Flow Statement",
+    "statement_type_key": "cash_flow_statement"
+  },
+  "trial balance": {
+    "id": "finstmt-031",
+    "statement_type": "Trial Balance",
+    "statement_type_key": "trial_balance"
+  },
+  "vertical trial balance": {
+    "id": "finstmt-031",
+    "statement_type": "Trial Balance",
+    "statement_type_key": "trial_balance"
+  },
+  "abc pvt. ltd. trial balance": {
+    "id": "finstmt-031",
+    "statement_type": "Trial Balance",
+    "statement_type_key": "trial_balance"
+  },
+  "total debits": {
+    "id": "finstmt-031",
+    "statement_type": "Trial Balance",
+    "statement_type_key": "trial_balance"
+  },
+  "total credits": {
+    "id": "finstmt-031",
+    "statement_type": "Trial Balance",
+    "statement_type_key": "trial_balance"
+  },
+  "does trial balance balance": {
+    "id": "finstmt-031",
+    "statement_type": "Trial Balance",
+    "statement_type_key": "trial_balance"
+  },
+  "xyz trading trial balance": {
+    "id": "finstmt-032",
+    "statement_type": "Trial Balance",
+    "statement_type_key": "trial_balance"
+  },
+  "list all debit balances": {
+    "id": "finstmt-032",
+    "statement_type": "Trial Balance",
+    "statement_type_key": "trial_balance"
+  },
+  "horizontal trial balance": {
+    "id": "finstmt-033",
+    "statement_type": "Trial Balance",
+    "statement_type_key": "trial_balance"
+  },
+  "mno enterprises trial balance": {
+    "id": "finstmt-033",
+    "statement_type": "Trial Balance",
+    "statement_type_key": "trial_balance"
+  },
+  "difference": {
+    "id": "finstmt-033",
+    "statement_type": "Trial Balance",
+    "statement_type_key": "trial_balance"
+  },
+  "which accounts have credit balances": {
+    "id": "finstmt-033",
+    "statement_type": "Trial Balance",
+    "statement_type_key": "trial_balance"
+  },
+  "pqr supplies trial balance": {
+    "id": "finstmt-034",
+    "statement_type": "Trial Balance",
+    "statement_type_key": "trial_balance"
+  },
+  "largest debit balance": {
+    "id": "finstmt-034",
+    "statement_type": "Trial Balance",
+    "statement_type_key": "trial_balance"
+  },
+  "stu manufacturing trial balance": {
+    "id": "finstmt-035",
+    "statement_type": "Trial Balance",
+    "statement_type_key": "trial_balance"
+  },
+  "which account has highest credit": {
+    "id": "finstmt-035",
+    "statement_type": "Trial Balance",
+    "statement_type_key": "trial_balance"
+  },
+  "vwx retail trial balance": {
+    "id": "finstmt-036",
+    "statement_type": "Trial Balance",
+    "statement_type_key": "trial_balance"
+  },
+  "any suspense": {
+    "id": "finstmt-036",
+    "statement_type": "Trial Balance",
+    "statement_type_key": "trial_balance"
+  },
+  "yza holdings trial balance": {
+    "id": "finstmt-037",
+    "statement_type": "Trial Balance",
+    "statement_type_key": "trial_balance"
+  },
+  "is it balanced": {
+    "id": "finstmt-037",
+    "statement_type": "Trial Balance",
+    "statement_type_key": "trial_balance"
+  },
+  "bcd solutions trial balance": {
+    "id": "finstmt-038",
+    "statement_type": "Trial Balance",
+    "statement_type_key": "trial_balance"
+  },
+  "balance": {
+    "id": "finstmt-038",
+    "statement_type": "Trial Balance",
+    "statement_type_key": "trial_balance"
+  },
+  "bank reconciliation": {
+    "id": "finstmt-039",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "vertical bank reconciliation": {
+    "id": "finstmt-039",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "abc pvt. ltd. bank reconciliation": {
+    "id": "finstmt-039",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "adjusted bank balance": {
+    "id": "finstmt-039",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "adjusted book balance": {
+    "id": "finstmt-039",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "total outstanding checks": {
+    "id": "finstmt-039",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "xyz trading bank reconciliation": {
+    "id": "finstmt-040",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "net effect of outstanding checks": {
+    "id": "finstmt-040",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "horizontal bank reconciliation": {
+    "id": "finstmt-041",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "mno enterprises bank reconciliation": {
+    "id": "finstmt-041",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "adjusted balance": {
+    "id": "finstmt-041",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "deposits in transit amount": {
+    "id": "finstmt-041",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "book balance before adjustment": {
+    "id": "finstmt-041",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "pqr supplies bank reconciliation": {
+    "id": "finstmt-042",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "total deductions from book balance": {
+    "id": "finstmt-042",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "stu manufacturing bank reconciliation": {
+    "id": "finstmt-043",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "outstanding checks": {
+    "id": "finstmt-043",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "bank error effect": {
+    "id": "finstmt-043",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "vwx retail bank reconciliation": {
+    "id": "finstmt-044",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "net book adjustment": {
+    "id": "finstmt-044",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "yza holdings bank reconciliation": {
+    "id": "finstmt-045",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "book adjustments net": {
+    "id": "finstmt-045",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "bcd solutions bank reconciliation": {
+    "id": "finstmt-046",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "bank error amount": {
+    "id": "finstmt-046",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "efg exporters bank reconciliation": {
+    "id": "finstmt-047",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "deposits in transit": {
+    "id": "finstmt-047",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "hij construction bank reconciliation": {
+    "id": "finstmt-048",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  },
+  "net effect of outstanding checks and deposits": {
+    "id": "finstmt-048",
+    "statement_type": "Bank Reconciliation",
+    "statement_type_key": "bank_reconciliation"
+  }
+}

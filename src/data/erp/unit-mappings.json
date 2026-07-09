@@ -1,0 +1,45 @@
+{
+  "units": {
+    "kg": {
+      "nepali": ["किलो", "केजी", "के.जी."],
+      "roman": ["kg", "kilo", "keji", "k.g."],
+      "english": "kilogram"
+    },
+    "piece": {
+      "nepali": ["वटा", "पिस", "टुक्रा"],
+      "roman": ["piece", "wata", "pisa", "tukra"],
+      "english": "piece"
+    },
+    "dozen": {
+      "nepali": ["दर्जन"],
+      "roman": ["dozen", "darjan"],
+      "english": "dozen"
+    },
+    "liter": {
+      "nepali": ["लिटर"],
+      "roman": ["liter", "litre", "litr"],
+      "english": "liter"
+    },
+    "sack": {
+      "nepali": ["बोरा", "बोरी"],
+      "roman": ["bora", "bori", "sack"],
+      "english": "sack"
+    },
+    "pathi": {
+      "nepali": ["पाथी"],
+      "roman": ["pathi", "paathi"],
+      "english": "pathi (traditional measure)"
+    },
+    "mutthi": {
+      "nepali": ["मुठी"],
+      "roman": ["mutthi", "muthi"],
+      "english": "handful"
+    }
+  },
+  "productUnitCompatibility": {
+    "vegetable": ["kg", "piece", "dozen", "pathi", "mutthi"],
+    "grain": ["kg", "sack", "pathi"],
+    "liquid": ["liter"],
+    "countable": ["piece", "dozen"]
+  }
+}

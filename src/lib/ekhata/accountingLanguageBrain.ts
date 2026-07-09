@@ -9,6 +9,86 @@ import { CLASSIFICATION_GUIDE } from "./caAccountClassification";
 import { formatJournalPreview } from "./caEntryEngine";
 import { isAccountingDomain } from "./domainRouter";
 import { answerFromGrammarKnowledge } from "./grammarKnowledgeBrain";
+import {
+  formatGlossaryDefinition,
+  getGlossaryByConceptKey,
+  matchAccountingGlossary,
+} from "@/lib/nepal-ai/accountingGlossary";
+import {
+  formatRegulatedDefinition,
+  matchRegulatedGlossary,
+} from "@/lib/nepal-ai/regulatedGlossary";
+import {
+  formatFaqAnswer,
+  matchAccountingFaq,
+} from "@/lib/nepal-ai/accountingFaq";
+import {
+  formatNepalTaxFaqAnswer,
+  matchNepalTaxFaq,
+} from "@/lib/nepal-ai/nepalTaxFaq";
+import {
+  formatLegalSectionExplainerAnswer,
+  matchLegalSectionExplainer,
+} from "@/lib/nepal-ai/legalSectionExplainers";
+import {
+  formatNepalProcessGuideAnswer,
+  matchNepalProcessGuide,
+} from "@/lib/nepal-ai/nepalProcessGuides";
+import {
+  formatDocumentUnderstandingAnswer,
+  isDocumentUnderstandingQuery,
+  matchDocumentUnderstandingType,
+} from "@/lib/nepal-ai/documentUnderstanding";
+import {
+  formatDocumentComprehensionAnswer,
+  isDocumentComprehensionQuery,
+  matchDocumentComprehensionScenario,
+} from "@/lib/nepal-ai/documentComprehensionScenarios";
+import {
+  formatPromptVariantSummary,
+  isPromptVariantQuery,
+  matchPromptVariant,
+} from "@/lib/nepal-ai/promptVariants";
+import {
+  formatDocumentOcrExtractionAnswer,
+  isDocumentOcrExtractionQuery,
+  matchDocumentOcrExtraction,
+} from "@/lib/nepal-ai/documentOcrExtraction";
+import {
+  formatFinancialStatementInterpretationAnswer,
+  isFinancialStatementInterpretationQuery,
+  matchFinancialStatementInterpretation,
+} from "@/lib/nepal-ai/financialStatementInterpretation";
+import {
+  formatAccountingComparisonAnswer,
+  isAccountingComparisonQuery,
+  matchAccountingComparison,
+} from "@/lib/nepal-ai/accountingComparisons";
+import {
+  formatComplexReasoningAnswer,
+  matchComplexReasoningScenario,
+} from "@/lib/nepal-ai/complexReasoningScenarios";
+import {
+  formatCrossDomainAnswer,
+  matchCrossDomainScenario,
+} from "@/lib/nepal-ai/crossDomainScenarios";
+import {
+  formatClassificationExplanation,
+  matchClassificationExplanation,
+} from "@/lib/nepal-ai/classificationExplanations";
+import {
+  formatNovelPatternAnswer,
+  formatNovelPatternClarify,
+  matchNovelPatternHandler,
+} from "@/lib/nepal-ai/novelPatternHandlers";
+import {
+  formatSectorTermDefinition,
+  matchSectorTerm,
+} from "@/lib/nepal-ai/sectorTerms";
+import {
+  confirmationTemplateIntent,
+  renderResponseTemplate,
+} from "@/lib/nepal-ai/responseTemplates";
 import type { KhataIntent, KhataConfirmationCard } from "./types";
 import { KHATA_INTENT_LABELS } from "./types";
 
@@ -84,6 +164,7 @@ const QUESTION_PATTERNS: Array<{ type: AccountingQuestionType; pattern: RegExp; 
   { type: "entry_effect", pattern: /\b(what\s+entry|which\s+entry|entry\s+for|journal\s+entry|debit.*credit|dr.*cr|k\s+entry|entry\s+k\s+hunchha|kata\s+janchha|lekha\s+k\s+hunchha)\b/i, weight: 10 },
   { type: "entry_effect", pattern: /\b(k\s+hunchha|kasari\s+record|how\s+to\s+record|post\s+entry|confirm\s+entry)\b/i, weight: 8 },
   { type: "definition", pattern: /\b(what\s+is|what\s+are|define|explain|meaning|k\s+ho|k\s+hunchha|arth|matlab|bujhaunu|bujhnus|sodhchu)\b/i, weight: 9 },
+  { type: "definition", pattern: /(के\s*हो|क\s*हो|भनेको\s*के|अर्थ\s*के|बताउनु|भन्ने\s*के)/i, weight: 9 },
   { type: "classification", pattern: /\b(classify|classification|asset\s+or|income\s+or|liability\s+or|type\s+of|k\s+prakar|kun\s+shreni|khata\s+prakar|is\s+\w+\s+an?\s+(asset|liability|income|expense))\b/i, weight: 9 },
   { type: "how_to", pattern: /\b(how\s+to|how\s+do|kasari|k\s+garne|steps|process|tarika)\b/i, weight: 8 },
   { type: "comparison", pattern: /\b(difference\s+between|vs\.?|versus|farak|bich\s+ko\s+antar|compare)\b/i, weight: 9 },
@@ -161,6 +242,22 @@ function isAccountingLanguageQuery(text: string): boolean {
   if (/\b(accounting|hisab|lekha|journal|debit|credit|double\s*entry|balance\s*sheet|trial\s*balance|vat|tds|ssf|gratuity|provision|depreciation|receivable|payable|accrual|prepaid|outstanding|cogs|equity|asset|liability)\b/i.test(text)) {
     return /\b(what|how|when|which|k\s|kasari|explain|define|entry|classify|difference|scenario|situation|bujh|sodh|bhannu|matlab)\b/i.test(text);
   }
+  // Glossary / FAQ / regulated lexicon: allow "FIFO k ho", "VAT k ho", "लालपुर्जा के हो", etc.
+  if (
+    (qType === "definition" ||
+      qType === "how_to" ||
+      qType === "comparison" ||
+      /\b(k\s*ho|ke\s*ho|what\s+is|define|explain|arth|matlab|kasari|kaise|kati)\b/i.test(text) ||
+      /(के\s*हो|क\s*हो|भनेको\s*के|अर्थ)/.test(text)) &&
+    (matchNepalProcessGuide(text) ||
+      matchNepalTaxFaq(text) ||
+      matchAccountingFaq(text) ||
+      matchAccountingGlossary(text) ||
+      matchRegulatedGlossary(text) ||
+      matchSectorTerm(text))
+  ) {
+    return true;
+  }
   return false;
 }
 
@@ -210,83 +307,30 @@ function answerEntryEffect(concept: string, intent: KhataIntent | undefined, lan
   );
 }
 
-function answerDefinition(concept: string, lang: UserLanguage): string | null {
+/** Prefer lexicon glossary; fall back to a few Nepal-specific hard defs not in the user batch. */
+function answerDefinition(concept: string, lang: UserLanguage, rawText?: string): string | null {
+  const regulated =
+    matchRegulatedGlossary(rawText || concept) || matchRegulatedGlossary(concept);
+  if (regulated) {
+    return formatRegulatedDefinition(regulated, lang);
+  }
+
+  const glossary =
+    matchAccountingGlossary(rawText || concept) ||
+    matchAccountingGlossary(concept) ||
+    getGlossaryByConceptKey(concept) ||
+    getGlossaryByConceptKey(concept.replace(/\s+/g, "_")) ||
+    getGlossaryByConceptKey(concept.replace(/-/g, "_"));
+
+  if (glossary) {
+    return formatGlossaryDefinition(glossary, lang);
+  }
+
+  // Nepal-specific extras not covered (or more precise) than the plain glossary rows
   const defs: Record<string, { en: string; ne: string }> = {
-    debit: {
-      en: "Debit (Dr) is the left side of an account. Assets and expenses increase with a debit. Think: money/asset coming IN to the business.",
-      ne: "Debit (Dr) lekh ko baaya paalo ho. Asset ra Expense badhda Debit hunchha. Business ma paisa/sampatti aauda Debit.",
-    },
-    credit: {
-      en: "Credit (Cr) is the right side. Liabilities, equity, and income increase with a credit. Think: obligation or income created.",
-      ne: "Credit (Cr) lekh ko daaya paalo ho. Liability, Equity, ra Income badhda Credit hunchha.",
-    },
-    asset: {
-      en: "Asset (sampatti) — a present economic resource controlled by the entity from past events (IFRS Para 4.3). In khata: Cash, Bank, Debtors, Stock, Fixed Assets, Prepaid, Input VAT.",
-      ne: "Sampatti (Asset) — entity le niyantran ma liyeko present economic resource (IFRS Para 4.3). Khata ma: Cash, Bank, Debtors, Stock, Fixed Assets, Prepaid, Input VAT.",
-    },
-    goodwill: {
-      en: "Goodwill is an intangible asset — excess paid over fair value of net assets in a business acquisition. Not charity/goodwill in ordinary English.",
-      ne: "Goodwill intangible asset ho — business kharid garda net asset ko fair value bhanda badhi tireko rakam. Sadharan 'goodwill' (dharma) hoina.",
-    },
-    provision: {
-      en: "Accounting provision = liability of uncertain timing/amount (e.g. provision for bad debts, warranty). Dr Expense, Cr Provision.",
-      ne: "Accounting provision = uncertain timing/amount ko liability (jastai bad debt provision). Dr Expense, Cr Provision.",
-    },
-    stock: {
-      en: "Stock/Inventory = goods held for sale. Asset on balance sheet; COGS matched on sale.",
-      ne: "Stock/Inventory = becna lai rakheko saman. Balance sheet ma asset; becda COGS match hunchha.",
-    },
-    capital: {
-      en: "Capital (equity) = owner's investment in the business. Distinct from 'capital city' or loan.",
-      ne: "Capital (puni/equity) = malik ko business ma lagaani. Shahar ko capital wa loan hoina.",
-    },
     bank_overdraft: {
       en: "Bank overdraft is a **liability** — you owe the bank, not an asset.",
       ne: "Bank overdraft **liability** ho — tapai bank lai tirna baki, asset hoina.",
-    },
-    trial_balance: {
-      en: "Trial balance lists all ledger balances; total debits must equal total credits before financial statements.",
-      ne: "Trial balance ma sabai ledger balance hunchha; financial statement banaunu agi total Dr = Cr hunu parchha.",
-    },
-    balance_sheet: {
-      en: "Balance sheet shows Assets = Liabilities + Equity at a point in time.",
-      ne: "Balance sheet ma ek samaya ma Assets = Liabilities + Equity dekhauchha.",
-    },
-    commission: {
-      en: "Commission income: Dr Cash/Debtor, Cr Other Income when earned/received.",
-      ne: "Commission aamdani: Dr Cash/Debtor, Cr Other Income jaba earn/receive hunchha.",
-    },
-    rent: {
-      en: "Rent expense: Dr Rent/Operating Expense, Cr Cash/Creditor when incurred or paid.",
-      ne: "Bhada kharcha: Dr Expense, Cr Cash/Creditor jaba kharcha incur wa tirnu parchha.",
-    },
-    sales_return: {
-      en: "Sales return reverses sale: Dr Sales (or Sales Return), Cr Debtor/Cash. Reduces revenue and receivable.",
-      ne: "Sales return le bikri ultaauchha: Dr Sales, Cr Debtor/Cash. Revenue ra receivable ghanchha.",
-    },
-    liability: {
-      en: CLASSIFICATION_GUIDE.liability.definition + " Examples: Creditors, Loan, SSF Payable, VAT Payable.",
-      ne: "Dayitwo (Liability) — bahira ko rin/obligation. Udaharan: Creditors, Loan, SSF Payable, VAT Payable.",
-    },
-    equity: {
-      en: CLASSIFICATION_GUIDE.equity.definition + " Examples: Capital, Retained Earnings, Drawings.",
-      ne: "Puni/Equity — malik ko business ma hissa. Udaharan: Capital, Retained Earnings, Drawings.",
-    },
-    income: {
-      en: CLASSIFICATION_GUIDE.income.definition + " Examples: Sales, Interest Received, Rent Received.",
-      ne: "Aamdani (Income) — business bata aune revenue. Udaharan: Sales, Interest, Rent Received.",
-    },
-    expense: {
-      en: CLASSIFICATION_GUIDE.expense.definition + " Examples: Salary, Rent, Electricity, Depreciation.",
-      ne: "Kharcha (Expense) — revenue kamuna lagi lagne cost. Udaharan: Salary, Rent, Electricity.",
-    },
-    outstanding: {
-      en: "Outstanding = amount not yet settled. Receivable outstanding = customer owes you. Payable outstanding = you owe supplier. Record via accrual entries.",
-      ne: "Outstanding = abhi settle na bhayeko rakam. Receivable = customer le dina baki. Payable = tapai le tirna baki. Accrual entry le record garchha.",
-    },
-    vat: {
-      en: "Nepal VAT is 13%. Output VAT on sales (liability), Input VAT on purchases (asset/credit). Net VAT = Output − Input, paid to IRD.",
-      ne: "Nepal ma VAT 13% ho. Sales ma Output VAT (liability), Purchase ma Input VAT (asset). Net VAT = Output − Input, IRD lai tirnu parchha.",
     },
     ssf_employee: {
       en: "SSF Employee contribution = 10% of basic salary, deducted from employee and remitted to Social Security Fund.",
@@ -299,18 +343,6 @@ function answerDefinition(concept: string, lang: UserLanguage): string | null {
     gratuity: {
       en: "Gratuity is retirement benefit per Nepal labour law. Provision: Dr Gratuity Expense, Cr Gratuity Provision. Payment: Dr Provision, Cr Bank.",
       ne: "Gratuity retirement benefit ho. Provision: Dr Gratuity Expense, Cr Gratuity Provision. Payment: Dr Provision, Cr Bank.",
-    },
-    bad_debt: {
-      en: "Bad debt = irrecoverable receivable. Write-off: Dr Bad Debts Expense, Cr Debtors. Provision (conservative): Dr Bad Debts Exp, Cr Provision.",
-      ne: "Bad debt = nasakne receivable. Write-off: Dr Bad Debts Expense, Cr Debtors. Provision: Dr Bad Debts Exp, Cr Provision.",
-    },
-    depreciation: {
-      en: "Depreciation allocates fixed asset cost over useful life. Entry: Dr Depreciation Expense, Cr Accumulated Depreciation.",
-      ne: "Depreciation le fixed asset ko cost useful life ma baantcha. Entry: Dr Depreciation Expense, Cr Accumulated Depreciation.",
-    },
-    "double entry": {
-      en: "Double-entry: every transaction has equal debit and credit. Assets = Liabilities + Equity. This keeps books balanced.",
-      ne: "Double-entry: har transaction ma Debit = Credit. Assets = Liabilities + Equity. Yo le books balanced rakhchha.",
     },
   };
 
@@ -395,6 +427,256 @@ export function understandAccountingLanguage(text: string): AccountingLanguageRe
   const topConcept = concepts[0];
   const relatedIntent = topConcept?.entry?.intent;
 
+  const wantsDefinition =
+    qType === "definition" ||
+    qType === "how_to" ||
+    /\b(k\s*ho|ke\s*ho|what\s+is|what\s+are|define|explain|meaning|arth|matlab|kasari|kaise|kati)\b/i.test(text) ||
+    /(के\s*हो|क\s*हो|भनेको\s*के|अर्थ)/.test(text);
+
+  // Process how-tos (company/PAN/VAT/bank/SSF/loan) before rate/policy tax FAQ
+  const processHit = matchNepalProcessGuide(text);
+  if (
+    processHit &&
+    (qType === "how_to" || wantsDefinition || qType === "general" || qType === "comparison")
+  ) {
+    return {
+      kind: "answer",
+      reply: formatNepalProcessGuideAnswer(processHit, lang),
+      language: lang,
+      confidence: 0.93,
+      questionType: "how_to",
+      relatedIntent,
+    };
+  }
+
+  // Scanned document schemas (VAT invoice, cheque, bank statement, etc.)
+  if (
+    isDocumentUnderstandingQuery(text) ||
+    isDocumentOcrExtractionQuery(text) ||
+    isDocumentComprehensionQuery(text)
+  ) {
+    const docCmp = matchDocumentComprehensionScenario(text);
+    if (docCmp) {
+      return {
+        kind: "answer",
+        reply: formatDocumentComprehensionAnswer(docCmp, lang),
+        language: lang,
+        confidence: 0.93,
+        questionType: "definition",
+        relatedIntent,
+      };
+    }
+    const ocrHit = matchDocumentOcrExtraction(text);
+    if (ocrHit) {
+      return {
+        kind: "answer",
+        reply: formatDocumentOcrExtractionAnswer(ocrHit, lang),
+        language: lang,
+        confidence: 0.92,
+        questionType: "definition",
+        relatedIntent,
+      };
+    }
+    const docHit = matchDocumentUnderstandingType(text);
+    if (docHit) {
+      return {
+        kind: "answer",
+        reply: formatDocumentUnderstandingAnswer(docHit, lang),
+        language: lang,
+        confidence: 0.9,
+        questionType: "definition",
+        relatedIntent,
+      };
+    }
+  }
+
+  // Novel unseen phrasing — generalize to nearest pattern + suggested intent
+  const novelPattern = matchNovelPatternHandler(text);
+  if (novelPattern) {
+    return {
+      kind: "answer",
+      reply: formatNovelPatternAnswer(novelPattern, lang),
+      language: lang,
+      confidence: 0.88,
+      questionType: "scenario",
+      relatedIntent,
+    };
+  }
+
+  // System-prompt A/B variant metadata (variant_id / target_behavior lookups only)
+  if (isPromptVariantQuery(text)) {
+    const promptVariant = matchPromptVariant(text);
+    if (promptVariant) {
+      return {
+        kind: "answer",
+        reply: formatPromptVariantSummary(promptVariant, lang),
+        language: lang,
+        confidence: 0.94,
+        questionType: "definition",
+        relatedIntent,
+      };
+    }
+  }
+
+  // Classification transparency teaching (why AI classified / asked / corrected)
+  const classExplain = matchClassificationExplanation(text);
+  if (classExplain) {
+    return {
+      kind: "answer",
+      reply: formatClassificationExplanation(classExplain, lang),
+      language: lang,
+      confidence: 0.93,
+      questionType: "how_to",
+      relatedIntent,
+    };
+  }
+
+  // Complex Nepal business reasoning (exact golden scenario inputs)
+  const complexScenario = matchComplexReasoningScenario(text);
+  if (complexScenario) {
+    return {
+      kind: "answer",
+      reply: formatComplexReasoningAnswer(complexScenario, lang),
+      language: lang,
+      confidence: 0.91,
+      questionType: "scenario",
+      relatedIntent,
+    };
+  }
+
+  // Cross-domain reasoning (labor/tax/import/property/banking goldens)
+  const crossDomain = matchCrossDomainScenario(text);
+  if (crossDomain) {
+    return {
+      kind: "answer",
+      reply: formatCrossDomainAnswer(crossDomain, lang),
+      language: lang,
+      confidence: 0.92,
+      questionType: "scenario",
+      relatedIntent,
+    };
+  }
+
+  // Financial statement ratio / interpretation Q&A (sample BS, P&L, CF, TB, bank recon)
+  if (isFinancialStatementInterpretationQuery(text)) {
+    const finHit = matchFinancialStatementInterpretation(text);
+    if (finHit) {
+      return {
+        kind: "answer",
+        reply: formatFinancialStatementInterpretationAnswer(finHit, lang),
+        language: lang,
+        confidence: finHit.matchedQa ? 0.94 : 0.9,
+        questionType: finHit.matchedQa ? "scenario" : "definition",
+        relatedIntent,
+      };
+    }
+  }
+
+  // Concept comparisons (Asset vs Liability, VAT vs Income Tax, etc.)
+  if (isAccountingComparisonQuery(text) || qType === "comparison") {
+    const cmpHit = matchAccountingComparison(text);
+    if (cmpHit) {
+      return {
+        kind: "answer",
+        reply: formatAccountingComparisonAnswer(cmpHit, lang),
+        language: lang,
+        confidence: 0.93,
+        questionType: "comparison",
+        relatedIntent,
+      };
+    }
+  }
+
+  // Nepal tax FAQ (VAT/TDS/customs — dated legal answers) before generic accounting FAQ
+  const taxFaqHit = matchNepalTaxFaq(text);
+  if (taxFaqHit && (wantsDefinition || qType === "comparison" || qType === "general")) {
+    return {
+      kind: "answer",
+      reply: formatNepalTaxFaqAnswer(taxFaqHit, lang),
+      language: lang,
+      confidence: 0.94,
+      questionType: "definition",
+      relatedIntent,
+    };
+  }
+
+  // Statutory section / circular / contract clause plain-language explainers
+  const legalHit = matchLegalSectionExplainer(text);
+  if (
+    legalHit &&
+    (wantsDefinition || qType === "comparison" || qType === "general" || qType === "how_to")
+  ) {
+    return {
+      kind: "answer",
+      reply: formatLegalSectionExplainerAnswer(legalHit, lang),
+      language: lang,
+      confidence: 0.93,
+      questionType: "definition",
+      relatedIntent,
+    };
+  }
+
+  // FAQ (full Q&A) wins over short glossary definitions
+  const faqHit = matchAccountingFaq(text);
+  if (faqHit && (wantsDefinition || qType === "comparison" || qType === "general")) {
+    const faqQType: AccountingQuestionType =
+      faqHit.questionType === "process"
+        ? "how_to"
+        : faqHit.questionType === "comparison"
+          ? "comparison"
+          : faqHit.questionType === "calculation"
+            ? "definition"
+            : "definition";
+    return {
+      kind: "answer",
+      reply: formatFaqAnswer(faqHit, lang),
+      language: lang,
+      confidence: 0.92,
+      questionType: faqQType,
+      relatedIntent,
+    };
+  }
+
+  // Nepal regulated terms (VAT, SSF, Lalpurja, company/labor/legal) before plain accounting glossary
+  const regulatedHit = matchRegulatedGlossary(text);
+  if (regulatedHit && wantsDefinition) {
+    return {
+      kind: "answer",
+      reply: formatRegulatedDefinition(regulatedHit, lang),
+      language: lang,
+      confidence: 0.9,
+      questionType: "definition",
+      relatedIntent,
+    };
+  }
+
+  // Multi-sector business terms (khaja, rod, OTC, bhada, bali…)
+  const sectorTermHit = matchSectorTerm(text);
+  if (sectorTermHit && wantsDefinition) {
+    return {
+      kind: "answer",
+      reply: formatSectorTermDefinition(sectorTermHit, lang),
+      language: lang,
+      confidence: 0.89,
+      questionType: "definition",
+      relatedIntent,
+    };
+  }
+
+  // Glossary definitions win over entry-effect when user asks "X k ho" / "what is X"
+  // (e.g. "journal entry k ho" would otherwise match the entry_effect pattern).
+  const glossaryHit = matchAccountingGlossary(text);
+  if (glossaryHit && wantsDefinition) {
+    return {
+      kind: "answer",
+      reply: formatGlossaryDefinition(glossaryHit, lang),
+      language: lang,
+      confidence: 0.88,
+      questionType: "definition",
+      relatedIntent,
+    };
+  }
+
   if (qType === "entry_effect" || (qType === "scenario" && relatedIntent)) {
     const reply = answerEntryEffect(topConcept?.concept ?? text, relatedIntent, lang);
     return { kind: "answer", reply, language: lang, confidence: 0.9, questionType: qType, relatedIntent };
@@ -409,7 +691,7 @@ export function understandAccountingLanguage(text: string): AccountingLanguageRe
   }
 
   const defKey = topConcept?.concept ?? (/\bdouble\s*entry\b/i.test(text) ? "double entry" : null);
-  const defAnswer = defKey ? answerDefinition(defKey, lang) : null;
+  const defAnswer = defKey ? answerDefinition(defKey, lang, text) : null;
   if (defAnswer) {
     return { kind: "answer", reply: defAnswer, language: lang, confidence: 0.8, questionType: "definition", relatedIntent };
   }
@@ -441,6 +723,34 @@ export function understandAccountingLanguage(text: string): AccountingLanguageRe
 /** Build language-aware entry confirmation reply */
 export function buildLocalizedEntryReply(card: KhataConfirmationCard, lang?: UserLanguage): string {
   const language = lang ?? detectUserLanguage(card.raw_text);
+
+  const bucket = confirmationTemplateIntent(card.intent);
+  if (bucket) {
+    const prefer = [
+      ...(card.party ? ["party"] : []),
+      "amount",
+      ...(card.item ? ["item"] : []),
+    ];
+    const rendered = renderResponseTemplate(
+      bucket,
+      language === "english" ? "english" : "nepali",
+      {
+        party: card.party || (language === "english" ? "party" : "party"),
+        amount: card.amount,
+        item: card.item || (language === "english" ? "goods" : "saamaan"),
+        date: card.date,
+      },
+      { preferEntities: prefer },
+    );
+    if (rendered) {
+      const lines = card.journalLines ?? [];
+      if (lines.length > 0) {
+        return `${rendered}\n\n📋 **Journal:**\n${formatJournalPreview(lines)}`;
+      }
+      return rendered;
+    }
+  }
+
   const label = localize(KHATA_INTENT_LABELS[card.intent], language);
   const party = card.party || (language === "english" ? "(no party)" : "(party chaina)");
   const lines = card.journalLines ?? [];

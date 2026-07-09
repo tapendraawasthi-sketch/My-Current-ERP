@@ -1,0 +1,79 @@
+{
+  "khata_credit_sale": [
+    "rtpl-001",
+    "rtpl-002",
+    "rtpl-003",
+    "rtpl-004",
+    "rtpl-005",
+    "rtpl-006",
+    "rtpl-007"
+  ],
+  "khata_cash_purchase": [
+    "rtpl-008",
+    "rtpl-009",
+    "rtpl-010",
+    "rtpl-011",
+    "rtpl-012",
+    "rtpl-013",
+    "rtpl-014"
+  ],
+  "accounting_qa": [
+    "rtpl-015",
+    "rtpl-016",
+    "rtpl-017",
+    "rtpl-018",
+    "rtpl-019",
+    "rtpl-020",
+    "rtpl-021",
+    "rtpl-022",
+    "rtpl-023",
+    "rtpl-024"
+  ],
+  "clarify_amount": [
+    "rtpl-025",
+    "rtpl-026",
+    "rtpl-027",
+    "rtpl-028",
+    "rtpl-029",
+    "rtpl-030",
+    "rtpl-031",
+    "rtpl-032"
+  ],
+  "clarify_party": [
+    "rtpl-033",
+    "rtpl-034",
+    "rtpl-035",
+    "rtpl-036",
+    "rtpl-037",
+    "rtpl-038",
+    "rtpl-039",
+    "rtpl-040"
+  ],
+  "greeting": [
+    "rtpl-041",
+    "rtpl-042",
+    "rtpl-043",
+    "rtpl-044",
+    "rtpl-045",
+    "rtpl-046",
+    "rtpl-047",
+    "rtpl-048"
+  ],
+  "thanks": [
+    "rtpl-049",
+    "rtpl-050",
+    "rtpl-051",
+    "rtpl-052",
+    "rtpl-053",
+    "rtpl-054",
+    "rtpl-055",
+    "rtpl-056"
+  ],
+  "error": [
+    "rtpl-057",
+    "rtpl-058",
+    "rtpl-059",
+    "rtpl-060",
+    "rtpl-061"
+  ]
+}

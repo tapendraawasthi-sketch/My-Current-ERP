@@ -17,6 +17,8 @@ import { VoucherType, VoucherStatus, PaymentStatus } from "../lib/types";
 import { generateInvoicePDF } from "../lib/printUtils";
 import toast from "react-hot-toast";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { peekAiInvoiceDraft } from "@/ai/actions/invoiceDraft";
+import { useSutraAiStore } from "@/store/sutraAiStore";
 
 type TabKey = "sales" | "purchase" | "sales-return" | "purchase-return";
 
@@ -51,6 +53,8 @@ const statusBadge = (status: string) => {
 
 const BillingInvoice: React.FC = () => {
   const { invoices, accounts, parties, companySettings, currentPage, setCurrentPage } = useStore();
+  const pendingInvoiceOpen = useSutraAiStore((s) => s.pendingInvoiceOpen);
+  const clearPendingInvoiceOpen = useSutraAiStore((s) => s.clearPendingInvoiceOpen);
   const symbol = companySettings?.currencySymbol || "Rs.";
 
   const [tab, setTab] = useState<TabKey>("sales");
@@ -73,6 +77,24 @@ const BillingInvoice: React.FC = () => {
     else if (currentPage === "sales-return") setTab("sales-return");
     else if (currentPage === "purchase-return") setTab("purchase-return");
   }, [currentPage]);
+
+  useEffect(() => {
+    const draft = peekAiInvoiceDraft();
+    if (!draft && !pendingInvoiceOpen) return;
+    if (!draft) return;
+    const tabMap: Record<string, TabKey> = {
+      sales: "sales",
+      purchase: "purchase",
+      "sales-return": "sales-return",
+      "purchase-return": "purchase-return",
+    };
+    const t = tabMap[draft.type] ?? "sales";
+    setTab(t);
+    setEditType(t);
+    setActiveId(null);
+    setMode("new");
+    clearPendingInvoiceOpen();
+  }, [pendingInvoiceOpen, currentPage, clearPendingInvoiceOpen]);
 
   const handleTabChange = (k: TabKey) => {
     setTab(k);

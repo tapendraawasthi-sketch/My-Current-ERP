@@ -1,59 +1,89 @@
 {
-  "hoo": {
-    "pattern": "ho",
-    "type": "affirmation",
-    "strength": "strong",
-    "multi_turn_action": "confirm_pending"
-  },
-  "ho ni": {
-    "pattern": "ho",
-    "type": "affirmation",
-    "strength": "strong",
-    "multi_turn_action": "confirm_pending"
-  },
   "hoe": {
     "pattern": "ho",
     "type": "affirmation",
     "strength": "strong",
-    "multi_turn_action": "confirm_pending"
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes"
+  },
+  "ho ni": {
+    "pattern": "ho ni",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes, of course"
+  },
+  "hoo": {
+    "pattern": "ho",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes"
+  },
+  "hau": {
+    "pattern": "ho",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes"
   },
   "ho": {
     "pattern": "ho",
     "type": "affirmation",
     "strength": "strong",
-    "multi_turn_action": "confirm_pending"
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes"
   },
-  "hunchha": {
-    "pattern": "huncha",
+  "huncha ni": {
+    "pattern": "huncha ni",
     "type": "affirmation",
     "strength": "strong",
-    "multi_turn_action": "confirm_pending"
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes, surely/definitely"
   },
   "huncha": {
     "pattern": "huncha",
     "type": "affirmation",
     "strength": "strong",
-    "multi_turn_action": "confirm_pending"
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes, it will happen/is fine"
   },
-  "thik chha": {
-    "pattern": "thik cha",
+  "hunchha": {
+    "pattern": "huncha",
     "type": "affirmation",
     "strength": "strong",
-    "multi_turn_action": "confirm_pending"
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes, it will happen/is fine"
+  },
+  "thik chha": {
+    "pattern": "thik chha",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes, all right"
   },
   "thik": {
     "pattern": "thik cha",
     "type": "affirmation",
     "strength": "strong",
-    "multi_turn_action": "confirm_pending"
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes, okay/alright"
   },
   "thik cha": {
+    "pattern": "thik chha",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes, all right"
+  },
+  "thik xa": {
     "pattern": "thik cha",
     "type": "affirmation",
     "strength": "strong",
-    "multi_turn_action": "confirm_pending"
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes, okay/alright"
   },
-  "correct": {
+  "sahi cha": {
     "pattern": "sahi",
     "type": "affirmation",
     "strength": "strong",
@@ -65,83 +95,109 @@
     "strength": "strong",
     "multi_turn_action": "confirm_pending"
   },
-  "sahi cha": {
+  "correct": {
     "pattern": "sahi",
     "type": "affirmation",
     "strength": "strong",
     "multi_turn_action": "confirm_pending"
   },
+  "hajoor": {
+    "pattern": "hajur",
+    "type": "affirmation",
+    "strength": "polite",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes (polite/formal)"
+  },
   "hajur": {
     "pattern": "hajur",
     "type": "affirmation",
     "strength": "polite",
-    "multi_turn_action": "confirm_pending"
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes (polite/formal)"
   },
   "ji": {
-    "pattern": "hajur",
+    "pattern": "ji",
     "type": "affirmation",
     "strength": "polite",
-    "multi_turn_action": "confirm_pending"
-  },
-  "la": {
-    "pattern": "la",
-    "type": "affirmation",
-    "strength": "casual",
-    "multi_turn_action": "confirm_pending"
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes (respectful)"
   },
   "laa": {
     "pattern": "la",
     "type": "affirmation",
     "strength": "casual",
-    "multi_turn_action": "confirm_pending"
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes, okay/let's go"
+  },
+  "la": {
+    "pattern": "la",
+    "type": "affirmation",
+    "strength": "casual",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes, okay/let's go"
+  },
+  "ok": {
+    "pattern": "okay",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes, okay (emphatic)"
+  },
+  "okay": {
+    "pattern": "okay",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes, okay (emphatic)"
   },
   "oke": {
     "pattern": "ok",
     "type": "affirmation",
     "strength": "strong",
-    "multi_turn_action": "confirm_pending"
-  },
-  "okay": {
-    "pattern": "ok",
-    "type": "affirmation",
-    "strength": "strong",
-    "multi_turn_action": "confirm_pending"
-  },
-  "ok": {
-    "pattern": "ok",
-    "type": "affirmation",
-    "strength": "strong",
-    "multi_turn_action": "confirm_pending"
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes, okay"
   },
   "yeah": {
     "pattern": "yes",
     "type": "affirmation",
     "strength": "strong",
-    "multi_turn_action": "confirm_pending"
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes (English loan)"
   },
   "yes": {
     "pattern": "yes",
     "type": "affirmation",
     "strength": "strong",
-    "multi_turn_action": "confirm_pending"
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes (English loan)"
   },
   "yep": {
     "pattern": "yes",
     "type": "affirmation",
     "strength": "strong",
-    "multi_turn_action": "confirm_pending"
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes (English loan)"
+  },
+  "hus": {
+    "pattern": "hus",
+    "type": "affirmation",
+    "strength": "casual",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes (affirmative)"
+  },
+  "huss": {
+    "pattern": "hus",
+    "type": "affirmation",
+    "strength": "casual",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes (affirmative)"
   },
   "huss la": {
     "pattern": "huss",
     "type": "affirmation",
     "strength": "casual",
-    "multi_turn_action": "confirm_pending"
-  },
-  "huss": {
-    "pattern": "huss",
-    "type": "affirmation",
-    "strength": "casual",
-    "multi_turn_action": "confirm_pending"
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes (polite, understood)"
   },
   "ramro cha": {
     "pattern": "ramro",
@@ -156,61 +212,91 @@
     "multi_turn_action": "confirm_pending"
   },
   "hoina": {
-    "pattern": "hoina",
+    "pattern": "haina",
     "type": "negation",
     "strength": "strong",
-    "multi_turn_action": "cancel_pending"
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no (alternate form)"
   },
   "hoina ni": {
     "pattern": "hoina",
     "type": "negation",
     "strength": "strong",
-    "multi_turn_action": "cancel_pending"
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no"
+  },
+  "haina": {
+    "pattern": "haina",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no (alternate form)"
   },
   "chaina": {
-    "pattern": "chaina",
+    "pattern": "xaina",
     "type": "negation",
     "strength": "strong",
-    "multi_turn_action": "cancel_pending"
-  },
-  "chhaina": {
-    "pattern": "chaina",
-    "type": "negation",
-    "strength": "strong",
-    "multi_turn_action": "cancel_pending"
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no, there isn't (written variant)"
   },
   "xaina": {
-    "pattern": "chaina",
+    "pattern": "xaina",
     "type": "negation",
     "strength": "strong",
-    "multi_turn_action": "cancel_pending"
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no, there isn't (written variant)"
+  },
+  "chhaina": {
+    "pattern": "xaina",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no, there isn't (written variant)"
   },
   "pardaina": {
     "pattern": "pardaina",
     "type": "negation",
     "strength": "strong",
-    "multi_turn_action": "cancel_pending"
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no need/not required"
   },
   "mildaina": {
+    "pattern": "mildaina",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no, not allowed/doesn't match"
+  },
+  "pardaincha": {
     "pattern": "pardaina",
     "type": "negation",
     "strength": "strong",
-    "multi_turn_action": "cancel_pending"
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no need/not required"
   },
   "nah": {
     "pattern": "no",
     "type": "negation",
     "strength": "strong",
-    "multi_turn_action": "cancel_pending"
-  },
-  "nope": {
-    "pattern": "no",
-    "type": "negation",
-    "strength": "strong",
-    "multi_turn_action": "cancel_pending"
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no (English)"
   },
   "no": {
     "pattern": "no",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no (English)"
+  },
+  "nope": {
+    "pattern": "nope",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no (English casual)"
+  },
+  "hata": {
+    "pattern": "cancel",
     "type": "negation",
     "strength": "strong",
     "multi_turn_action": "cancel_pending"
@@ -227,8 +313,8 @@
     "strength": "strong",
     "multi_turn_action": "cancel_pending"
   },
-  "hata": {
-    "pattern": "cancel",
+  "nagarnu": {
+    "pattern": "nagarnu",
     "type": "negation",
     "strength": "strong",
     "multi_turn_action": "cancel_pending"
@@ -239,41 +325,54 @@
     "strength": "strong",
     "multi_turn_action": "cancel_pending"
   },
-  "nagarnu": {
-    "pattern": "nagarnu",
-    "type": "negation",
-    "strength": "strong",
-    "multi_turn_action": "cancel_pending"
-  },
-  "galat": {
+  "galat ho": {
     "pattern": "galat",
     "type": "correction",
     "strength": "strong",
-    "multi_turn_action": "correct_pending"
-  },
-  "wrong": {
-    "pattern": "galat",
-    "type": "correction",
-    "strength": "strong",
-    "multi_turn_action": "correct_pending"
+    "multi_turn_action": "correct_pending",
+    "meaning": "wrong (correction)"
   },
   "galti": {
     "pattern": "galat",
     "type": "correction",
     "strength": "strong",
-    "multi_turn_action": "correct_pending"
+    "multi_turn_action": "correct_pending",
+    "meaning": "wrong (correction)"
   },
-  "error": {
-    "pattern": "mistake",
+  "galat": {
+    "pattern": "galat",
     "type": "correction",
     "strength": "strong",
-    "multi_turn_action": "correct_pending"
+    "multi_turn_action": "correct_pending",
+    "meaning": "wrong (correction)"
+  },
+  "wrong": {
+    "pattern": "wrong",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending",
+    "meaning": "wrong (English loan)"
   },
   "mistake": {
     "pattern": "mistake",
     "type": "correction",
     "strength": "strong",
-    "multi_turn_action": "correct_pending"
+    "multi_turn_action": "correct_pending",
+    "meaning": "mistake (correction)"
+  },
+  "mistek": {
+    "pattern": "mistake",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending",
+    "meaning": "mistake (correction)"
+  },
+  "error": {
+    "pattern": "mistake",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending",
+    "meaning": "mistake (correction)"
   },
   "tyo hoina": {
     "pattern": "tyo hoina",
@@ -282,16 +381,11 @@
     "multi_turn_action": "correct_pending"
   },
   "yo hoina": {
-    "pattern": "tyo hoina",
+    "pattern": "yo hoina",
     "type": "correction",
     "strength": "strong",
-    "multi_turn_action": "correct_pending"
-  },
-  "500 hoina 600": {
-    "pattern": "500 hoina 600",
-    "type": "correction",
-    "strength": "strong",
-    "multi_turn_action": "correct_amount"
+    "multi_turn_action": "correct_pending",
+    "meaning": "this is not it (correction)"
   },
   "500 hoina 600 ho": {
     "pattern": "500 hoina 600",
@@ -299,11 +393,11 @@
     "strength": "strong",
     "multi_turn_action": "correct_amount"
   },
-  "different": {
-    "pattern": "farak cha",
+  "500 hoina 600": {
+    "pattern": "500 hoina 600",
     "type": "correction",
-    "strength": "medium",
-    "multi_turn_action": "correct_pending"
+    "strength": "strong",
+    "multi_turn_action": "correct_amount"
   },
   "farak cha": {
     "pattern": "farak cha",
@@ -311,17 +405,32 @@
     "strength": "medium",
     "multi_turn_action": "correct_pending"
   },
-  "thikai": {
-    "pattern": "thikai",
-    "type": "partial_confirm",
-    "strength": "weak",
-    "multi_turn_action": "confirm_partial"
+  "different": {
+    "pattern": "farak cha",
+    "type": "correction",
+    "strength": "medium",
+    "multi_turn_action": "correct_pending"
   },
   "ali ali": {
     "pattern": "ali ali",
     "type": "partial_confirm",
     "strength": "weak",
-    "multi_turn_action": "confirm_partial"
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe, just a little (so-so)"
+  },
+  "alikati": {
+    "pattern": "ali ali",
+    "type": "partial_confirm",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe, just a little (so-so)"
+  },
+  "thikai": {
+    "pattern": "ali ali",
+    "type": "partial_confirm",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe, just a little (so-so)"
   },
   "testo": {
     "pattern": "thikai",
@@ -333,13 +442,22 @@
     "pattern": "hola",
     "type": "uncertainty",
     "strength": "weak",
-    "multi_turn_action": "clarify_needed"
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe/probably"
+  },
+  "hola ni": {
+    "pattern": "hola",
+    "type": "uncertainty",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe/probably"
   },
   "hola": {
     "pattern": "hola",
     "type": "uncertainty",
     "strength": "weak",
-    "multi_turn_action": "clarify_needed"
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe/probably"
   },
   "perhaps": {
     "pattern": "maybe",
@@ -360,10 +478,11 @@
     "multi_turn_action": "clarify_needed"
   },
   "thaha chaina": {
-    "pattern": "thaha bhayena",
+    "pattern": "tha chaina",
     "type": "uncertainty",
-    "strength": "medium",
-    "multi_turn_action": "clarify_needed"
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe, I don't know"
   },
   "bujhena": {
     "pattern": "bujhena",
@@ -377,25 +496,25 @@
     "strength": "medium",
     "multi_turn_action": "clarify_needed"
   },
-  "k bhancha": {
-    "pattern": "k bhanne",
-    "type": "uncertainty",
-    "strength": "medium",
-    "multi_turn_action": "clarify_needed"
-  },
   "k bhanne": {
     "pattern": "k bhanne",
     "type": "uncertainty",
     "strength": "medium",
     "multi_turn_action": "clarify_needed"
   },
-  "k garne": {
+  "k bhancha": {
+    "pattern": "k bhanne",
+    "type": "uncertainty",
+    "strength": "medium",
+    "multi_turn_action": "clarify_needed"
+  },
+  "kunni": {
     "pattern": "kunni",
     "type": "uncertainty",
     "strength": "weak",
     "multi_turn_action": "clarify_needed"
   },
-  "kunni": {
+  "k garne": {
     "pattern": "kunni",
     "type": "uncertainty",
     "strength": "weak",
@@ -425,13 +544,14 @@
     "strength": "strong",
     "multi_turn_action": "post_entry"
   },
-  "feri": {
-    "pattern": "feri",
-    "type": "continuation",
-    "strength": "medium",
-    "multi_turn_action": "continue_flow"
-  },
   "pachi": {
+    "pattern": "pachi",
+    "type": "uncertainty",
+    "strength": "medium",
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe later"
+  },
+  "feri": {
     "pattern": "feri",
     "type": "continuation",
     "strength": "medium",
@@ -449,13 +569,13 @@
     "strength": "medium",
     "multi_turn_action": "continue_flow"
   },
-  "agadi ko": {
+  "pahile ko": {
     "pattern": "pahile ko",
     "type": "reference",
     "strength": "medium",
     "multi_turn_action": "reference_prior"
   },
-  "pahile ko": {
+  "agadi ko": {
     "pattern": "pahile ko",
     "type": "reference",
     "strength": "medium",
@@ -473,32 +593,35 @@
     "strength": "strong",
     "multi_turn_action": "confirm_pending"
   },
-  "nai": {
-    "pattern": "nai",
-    "type": "emphasis",
-    "strength": "medium",
-    "multi_turn_action": "confirm_pending"
-  },
   "nai ho": {
     "pattern": "nai",
-    "type": "emphasis",
-    "strength": "medium",
-    "multi_turn_action": "confirm_pending"
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending"
+  },
+  "nai": {
+    "pattern": "naai",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no, emphatic no"
+  },
+  "naai": {
+    "pattern": "naai",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no, emphatic no"
+  },
+  "hudaina": {
+    "pattern": "hudaina",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no, cannot/not allowed"
   },
   "chaldaina": {
     "pattern": "chaldaina",
-    "type": "negation",
-    "strength": "strong",
-    "multi_turn_action": "cancel_pending"
-  },
-  "hudaina": {
-    "pattern": "chaldaina",
-    "type": "negation",
-    "strength": "strong",
-    "multi_turn_action": "cancel_pending"
-  },
-  "rok": {
-    "pattern": "ruk",
     "type": "negation",
     "strength": "strong",
     "multi_turn_action": "cancel_pending"
@@ -509,13 +632,19 @@
     "strength": "strong",
     "multi_turn_action": "cancel_pending"
   },
-  "sodh": {
+  "rok": {
+    "pattern": "ruk",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending"
+  },
+  "sodhnus": {
     "pattern": "sodh",
     "type": "inquiry",
     "strength": "medium",
     "multi_turn_action": "ask_clarify"
   },
-  "sodhnus": {
+  "sodh": {
     "pattern": "sodh",
     "type": "inquiry",
     "strength": "medium",
@@ -533,13 +662,13 @@
     "strength": "medium",
     "multi_turn_action": "review_card"
   },
-  "change": {
+  "badal": {
     "pattern": "change",
     "type": "correction",
     "strength": "strong",
     "multi_turn_action": "correct_pending"
   },
-  "badal": {
+  "change": {
     "pattern": "change",
     "type": "correction",
     "strength": "strong",
@@ -556,5 +685,404 @@
     "type": "correction",
     "strength": "medium",
     "multi_turn_action": "correct_pending"
+  },
+  "cha": {
+    "pattern": "chha",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes, exists/is available"
+  },
+  "xa": {
+    "pattern": "chha",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes, exists/is available"
+  },
+  "chha": {
+    "pattern": "chha",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes, exists/is available"
+  },
+  "ajaa": {
+    "pattern": "aaja",
+    "type": "affirmation",
+    "strength": "casual",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes (informal/casual)"
+  },
+  "aaja": {
+    "pattern": "aaja",
+    "type": "affirmation",
+    "strength": "casual",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes (informal/casual)"
+  },
+  "jee": {
+    "pattern": "ji",
+    "type": "affirmation",
+    "strength": "polite",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes (respectful)"
+  },
+  "aha": {
+    "pattern": "ahaa",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes (emphatic, surprised)"
+  },
+  "ah": {
+    "pattern": "ah",
+    "type": "affirmation",
+    "strength": "casual",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes (casual uh-huh)"
+  },
+  "ahaa": {
+    "pattern": "ahaa",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes (emphatic, surprised)"
+  },
+  "ho ni ta": {
+    "pattern": "ho ni",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes, of course"
+  },
+  "hunchha ni": {
+    "pattern": "huncha ni",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes, surely/definitely"
+  },
+  "um": {
+    "pattern": "um",
+    "type": "affirmation",
+    "strength": "casual",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes (mumbled)"
+  },
+  "umm": {
+    "pattern": "um",
+    "type": "affirmation",
+    "strength": "casual",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes (mumbled)"
+  },
+  "ho ta ni": {
+    "pattern": "ho ta",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes, obviously"
+  },
+  "ho ta": {
+    "pattern": "ho ta",
+    "type": "affirmation",
+    "strength": "strong",
+    "multi_turn_action": "confirm_pending",
+    "meaning": "yes, obviously"
+  },
+  "hudeina": {
+    "pattern": "hudaina",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no, cannot/not allowed"
+  },
+  "naa": {
+    "pattern": "na",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no (informal)"
+  },
+  "na": {
+    "pattern": "na",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no (informal)"
+  },
+  "nahola ni": {
+    "pattern": "nahola",
+    "type": "negation",
+    "strength": "medium",
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no, probably not"
+  },
+  "nahola": {
+    "pattern": "nahola",
+    "type": "negation",
+    "strength": "medium",
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no, probably not"
+  },
+  "hunna": {
+    "pattern": "hunna",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no, cannot happen"
+  },
+  "hunnna": {
+    "pattern": "hunna",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no, cannot happen"
+  },
+  "paainna": {
+    "pattern": "paainna",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no, not available/not found"
+  },
+  "paaincha": {
+    "pattern": "paainna",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no, not available/not found"
+  },
+  "sakidaincha": {
+    "pattern": "sakidaina",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no, cannot be done"
+  },
+  "sakidaina": {
+    "pattern": "sakidaina",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no, cannot be done"
+  },
+  "kahaa": {
+    "pattern": "kaha",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no, impossible (where?)"
+  },
+  "kaha": {
+    "pattern": "kaha",
+    "type": "negation",
+    "strength": "strong",
+    "multi_turn_action": "cancel_pending",
+    "meaning": "no, impossible (where?)"
+  },
+  "sakcha": {
+    "pattern": "sakcha",
+    "type": "uncertainty",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe, it's possible"
+  },
+  "sakchha": {
+    "pattern": "sakcha",
+    "type": "uncertainty",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe, it's possible"
+  },
+  "thachaina": {
+    "pattern": "tha chaina",
+    "type": "uncertainty",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe, I don't know"
+  },
+  "tha chaina": {
+    "pattern": "tha chaina",
+    "type": "uncertainty",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe, I don't know"
+  },
+  "herum": {
+    "pattern": "herum",
+    "type": "uncertainty",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe, let's see"
+  },
+  "herum na": {
+    "pattern": "herum",
+    "type": "uncertainty",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe, let's see"
+  },
+  "pachhi": {
+    "pattern": "pachi",
+    "type": "uncertainty",
+    "strength": "medium",
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe later"
+  },
+  "saayad": {
+    "pattern": "sayad",
+    "type": "uncertainty",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe"
+  },
+  "sayad": {
+    "pattern": "sayad",
+    "type": "uncertainty",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe"
+  },
+  "hunasakcha": {
+    "pattern": "huna sakcha",
+    "type": "uncertainty",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe, might happen"
+  },
+  "huna sakcha": {
+    "pattern": "huna sakcha",
+    "type": "uncertainty",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe, might happen"
+  },
+  "sochera bhanchu": {
+    "pattern": "sochera bhanchu",
+    "type": "uncertainty",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe, I'll think and tell"
+  },
+  "aba herum": {
+    "pattern": "aba herum",
+    "type": "uncertainty",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe, now let's see"
+  },
+  "aba hernu": {
+    "pattern": "aba herum",
+    "type": "uncertainty",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe, now let's see"
+  },
+  "sambhawatah": {
+    "pattern": "sambhawatah",
+    "type": "uncertainty",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe, probably"
+  },
+  "sambhavatah": {
+    "pattern": "sambhawatah",
+    "type": "uncertainty",
+    "strength": "weak",
+    "multi_turn_action": "clarify_needed",
+    "meaning": "maybe, probably"
+  },
+  "hoina tyo": {
+    "pattern": "hoina tyo",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending",
+    "meaning": "no, that's not it (correction)"
+  },
+  "haina tyo": {
+    "pattern": "hoina tyo",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending",
+    "meaning": "no, that's not it (correction)"
+  },
+  "maile bhanya tyo hoina": {
+    "pattern": "maile bhanya tyo hoina",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending",
+    "meaning": "no, what I said was different (correction)"
+  },
+  "testo hoina": {
+    "pattern": "testai hoina",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending",
+    "meaning": "no, not like that (correction)"
+  },
+  "testai hoina": {
+    "pattern": "testai hoina",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending",
+    "meaning": "no, not like that (correction)"
+  },
+  "galati bhayo": {
+    "pattern": "galati bhayo",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending",
+    "meaning": "mistake happened (correction)"
+  },
+  "galati bhaecha": {
+    "pattern": "galati bhayo",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending",
+    "meaning": "mistake happened (correction)"
+  },
+  "ulto bhayo": {
+    "pattern": "ulto bhayo",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending",
+    "meaning": "opposite happened / wrong (correction)"
+  },
+  "ulto": {
+    "pattern": "ulto bhayo",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending",
+    "meaning": "opposite happened / wrong (correction)"
+  },
+  "sudhar": {
+    "pattern": "sudhar",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending",
+    "meaning": "correction, rectify"
+  },
+  "sudhaar": {
+    "pattern": "sudhar",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending",
+    "meaning": "correction, rectify"
+  },
+  "maile galat bhanen": {
+    "pattern": "maile galat bhanen",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending",
+    "meaning": "I said wrong (correction)"
+  },
+  "galat bhanen": {
+    "pattern": "maile galat bhanen",
+    "type": "correction",
+    "strength": "strong",
+    "multi_turn_action": "correct_pending",
+    "meaning": "I said wrong (correction)"
   }
 }

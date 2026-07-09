@@ -1,0 +1,1250 @@
+{
+  "Nepal ma company kasari register garne?": {
+    "id": "proc-001",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "How to register a company in Nepal?": {
+    "id": "proc-001",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "nepal ma company kasari register garne": {
+    "id": "proc-001",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "Company registration steps": {
+    "id": "proc-001",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "company_registration_steps": {
+    "id": "proc-001",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "PAN kasari banaaune?": {
+    "id": "proc-002",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "How to get PAN number?": {
+    "id": "proc-002",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "pan kasari banaaune": {
+    "id": "proc-002",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "PAN registration": {
+    "id": "proc-002",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "pan_registration": {
+    "id": "proc-002",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "VAT ma kasari register garne?": {
+    "id": "proc-003",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "How to register for VAT in Nepal?": {
+    "id": "proc-003",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "vat ma kasari register garne": {
+    "id": "proc-003",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "VAT registration": {
+    "id": "proc-003",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "vat_registration": {
+    "id": "proc-003",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "Company ko bank account kasari kholne?": {
+    "id": "proc-004",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "How to open a company bank account?": {
+    "id": "proc-004",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "company ko bank account kasari kholne": {
+    "id": "proc-004",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "Bank account opening": {
+    "id": "proc-004",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "bank_account_opening": {
+    "id": "proc-004",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "Trade license renewal kasari garne?": {
+    "id": "proc-005",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "How to renew trade license?": {
+    "id": "proc-005",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "trade license renewal kasari garne": {
+    "id": "proc-005",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "Trade license renewal": {
+    "id": "proc-005",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "trade_license_renewal": {
+    "id": "proc-005",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "Karmachari ko SSF ma kasari register garne?": {
+    "id": "proc-006",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "How to register employees in Social Security Fund?": {
+    "id": "proc-006",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "karmachari ko ssf ma kasari register garne": {
+    "id": "proc-006",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "Employee SSF registration": {
+    "id": "proc-006",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "employee_ssf_registration": {
+    "id": "proc-006",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "Nepal bata import/export garda kagajpatra ke chahincha?": {
+    "id": "proc-007",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "What documents needed for import/export in Nepal?": {
+    "id": "proc-007",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "nepal bata import/export garda kagajpatra ke chahincha": {
+    "id": "proc-007",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "Import/export documentation": {
+    "id": "proc-007",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "import_export_documentation": {
+    "id": "proc-007",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "Bank bata loan kasari line?": {
+    "id": "proc-008",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "How to apply for a bank loan in Nepal?": {
+    "id": "proc-008",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "bank bata loan kasari line": {
+    "id": "proc-008",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "Loan application process": {
+    "id": "proc-008",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "loan_application_process": {
+    "id": "proc-008",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "Private limited company register garne prakriya ke ho?": {
+    "id": "proc-009",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "What is the process to register a private limited company?": {
+    "id": "proc-009",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "private limited company register garne prakriya ke ho": {
+    "id": "proc-009",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "Byakti gat PAN number kasari line?": {
+    "id": "proc-010",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "How to get a personal PAN number?": {
+    "id": "proc-010",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "byakti gat pan number kasari line": {
+    "id": "proc-010",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "VAT compulsory hune threshold ke ho?": {
+    "id": "proc-011",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "What is the mandatory threshold for VAT registration?": {
+    "id": "proc-011",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "vat compulsory hune threshold ke ho": {
+    "id": "proc-011",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "Solo proprietor ko bank account kholne tarika?": {
+    "id": "proc-012",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "How to open a sole proprietor bank account?": {
+    "id": "proc-012",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "solo proprietor ko bank account kholne tarika": {
+    "id": "proc-012",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "Trade license renewal late bhayo bhane ke garne?": {
+    "id": "proc-013",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "What to do if trade license renewal is late?": {
+    "id": "proc-013",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "trade license renewal late bhayo bhane ke garne": {
+    "id": "proc-013",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "SSF contribution rate ke ho Nepal ma?": {
+    "id": "proc-014",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "What is the SSF contribution rate in Nepal?": {
+    "id": "proc-014",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "ssf contribution rate ke ho nepal ma": {
+    "id": "proc-014",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "Nepal bata export garda custom clearance kasari garne?": {
+    "id": "proc-015",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "How to do customs clearance for export from Nepal?": {
+    "id": "proc-015",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "nepal bata export garda custom clearance kasari garne": {
+    "id": "proc-015",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "Nepal ma small business loan kati samma pauna sakkincha?": {
+    "id": "proc-016",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "How much small business loan can I get in Nepal?": {
+    "id": "proc-016",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "nepal ma small business loan kati samma pauna sakkincha": {
+    "id": "proc-016",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "Public limited company registration ke farak cha?": {
+    "id": "proc-017",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "How different is public limited company registration?": {
+    "id": "proc-017",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "public limited company registration ke farak cha": {
+    "id": "proc-017",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "Company ko PAN renewal garnu parcha ki nai?": {
+    "id": "proc-018",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "Does company PAN need renewal?": {
+    "id": "proc-018",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "company ko pan renewal garnu parcha ki nai": {
+    "id": "proc-018",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "VAT return filing process ke ho?": {
+    "id": "proc-019",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "What is the VAT return filing process?": {
+    "id": "proc-019",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "vat return filing process ke ho": {
+    "id": "proc-019",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "NGO / Non-profit ko bank account kasari kholne?": {
+    "id": "proc-020",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "How to open an NGO/non-profit bank account?": {
+    "id": "proc-020",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "ngo / non-profit ko bank account kasari kholne": {
+    "id": "proc-020",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "Online trade license renewal milcha Nepal ma?": {
+    "id": "proc-021",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "Can I renew trade license online in Nepal?": {
+    "id": "proc-021",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "online trade license renewal milcha nepal ma": {
+    "id": "proc-021",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "Employer SSF ID kasari paune?": {
+    "id": "proc-022",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "How to get employer SSF ID?": {
+    "id": "proc-022",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "employer ssf id kasari paune": {
+    "id": "proc-022",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "Nepal ma import garda Letter of Credit (LC) process ke ho?": {
+    "id": "proc-023",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "What is the Letter of Credit (LC) process for import in Nepal?": {
+    "id": "proc-023",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "nepal ma import garda letter of credit (lc) process ke ho": {
+    "id": "proc-023",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "Collateral bina loan pauna sakincha Nepal ma?": {
+    "id": "proc-024",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "Can I get loan without collateral in Nepal?": {
+    "id": "proc-024",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "collateral bina loan pauna sakincha nepal ma": {
+    "id": "proc-024",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "Company registration pachi bank account kholna ke ke chaincha?": {
+    "id": "proc-025",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "What needed for bank account after company registration?": {
+    "id": "proc-025",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "company registration pachi bank account kholna ke ke chaincha": {
+    "id": "proc-025",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "PAN card harayo bhane ke garne?": {
+    "id": "proc-026",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "What to do if PAN card lost?": {
+    "id": "proc-026",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "pan card harayo bhane ke garne": {
+    "id": "proc-026",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "VAT registration cancel garne process?": {
+    "id": "proc-027",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "How to cancel VAT registration?": {
+    "id": "proc-027",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "vat registration cancel garne process": {
+    "id": "proc-027",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "Dollar account USD ma company account kholna milcha?": {
+    "id": "proc-028",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "Can a company open USD dollar account in Nepal?": {
+    "id": "proc-028",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "dollar account usd ma company account kholna milcha": {
+    "id": "proc-028",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "Trade license ma address change kasari garne?": {
+    "id": "proc-029",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "How to change address on trade license?": {
+    "id": "proc-029",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "trade license ma address change kasari garne": {
+    "id": "proc-029",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "SSF bata employee le kati paisa nikalna sakcha?": {
+    "id": "proc-030",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "How much can employee withdraw from SSF?": {
+    "id": "proc-030",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "ssf bata employee le kati paisa nikalna sakcha": {
+    "id": "proc-030",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "Nepal bata handicraft export ko additional documents ke chaincha?": {
+    "id": "proc-031",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "What additional documents needed for handicraft export from Nepal?": {
+    "id": "proc-031",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "nepal bata handicraft export ko additional documents ke chaincha": {
+    "id": "proc-031",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "Agricultural loan process ke ho Nepal ma?": {
+    "id": "proc-032",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "What is the agricultural loan process in Nepal?": {
+    "id": "proc-032",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "agricultural loan process ke ho nepal ma": {
+    "id": "proc-032",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "Company close/ deregister garne process ke ho?": {
+    "id": "proc-033",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "How to close/deregister a company in Nepal?": {
+    "id": "proc-033",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "company close/ deregister garne process ke ho": {
+    "id": "proc-033",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "Non-resident Nepali le PAN kasari banaune?": {
+    "id": "proc-034",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "How can Non-resident Nepali get PAN?": {
+    "id": "proc-034",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "non-resident nepali le pan kasari banaune": {
+    "id": "proc-034",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "VAT invoice ma ke ke compulsory cha?": {
+    "id": "proc-035",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "What is mandatory on a VAT invoice?": {
+    "id": "proc-035",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "vat invoice ma ke ke compulsory cha": {
+    "id": "proc-035",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "Joint company account kasari kholne?": {
+    "id": "proc-036",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "How to open a joint company account?": {
+    "id": "proc-036",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "joint company account kasari kholne": {
+    "id": "proc-036",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "New business ko trade license renewal kati barsa pachi?": {
+    "id": "proc-037",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "After how many years do new business renew trade license?": {
+    "id": "proc-037",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "new business ko trade license renewal kati barsa pachi": {
+    "id": "proc-037",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "SSF contribution online submit kasari garne?": {
+    "id": "proc-038",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "How to submit SSF contribution online?": {
+    "id": "proc-038",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "ssf contribution online submit kasari garne": {
+    "id": "proc-038",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "Nepal ma gold import ko legal process ke ho?": {
+    "id": "proc-039",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "What is the legal process for gold import in Nepal?": {
+    "id": "proc-039",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "nepal ma gold import ko legal process ke ho": {
+    "id": "proc-039",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "Home loan process ke ho Nepal ma?": {
+    "id": "proc-040",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "What is the home loan process in Nepal?": {
+    "id": "proc-040",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "home loan process ke ho nepal ma": {
+    "id": "proc-040",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "Foreign investment company registration Nepal ma milcha?": {
+    "id": "proc-041",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "Can foreign company be registered in Nepal?": {
+    "id": "proc-041",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "foreign investment company registration nepal ma milcha": {
+    "id": "proc-041",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "PAN bina business operation legal ho?": {
+    "id": "proc-042",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "Is business operation legal without PAN?": {
+    "id": "proc-042",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "pan bina business operation legal ho": {
+    "id": "proc-042",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "VAT paid refund kasari paune?": {
+    "id": "proc-043",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "How to get VAT paid refund?": {
+    "id": "proc-043",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "vat paid refund kasari paune": {
+    "id": "proc-043",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "Online company account opening milcha ki office visit chaincha?": {
+    "id": "proc-044",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "Can company account be opened online or office visit required?": {
+    "id": "proc-044",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "online company account opening milcha ki office visit chaincha": {
+    "id": "proc-044",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "Trade license renewal ma tax clearance certificate compulsory ho?": {
+    "id": "proc-045",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "Is tax clearance compulsory for trade license renewal?": {
+    "id": "proc-045",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "trade license renewal ma tax clearance certificate compulsory ho": {
+    "id": "proc-045",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "SSF ID number nabhayeko karmachari lai salary din milcha?": {
+    "id": "proc-046",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "Can salary be given without SSF ID?": {
+    "id": "proc-046",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "ssf id number nabhayeko karmachari lai salary din milcha": {
+    "id": "proc-046",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "Nepal-India border ma customs documents ke farak cha?": {
+    "id": "proc-047",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "What documents differ at Nepal-India border customs?": {
+    "id": "proc-047",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "nepal-india border ma customs documents ke farak cha": {
+    "id": "proc-047",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "Startup loan ke ho ra kasari paune?": {
+    "id": "proc-048",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "What is startup loan and how to get it?": {
+    "id": "proc-048",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "startup loan ke ho ra kasari paune": {
+    "id": "proc-048",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "One person company (OPC) Nepal ma milcha?": {
+    "id": "proc-049",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "Is One Person Company (OPC) possible in Nepal?": {
+    "id": "proc-049",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "one person company (opc) nepal ma milcha": {
+    "id": "proc-049",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "PAN number format ke ho Nepal ma?": {
+    "id": "proc-050",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "What is PAN number format in Nepal?": {
+    "id": "proc-050",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "pan number format ke ho nepal ma": {
+    "id": "proc-050",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "VAT audit process ke ho Nepal ma?": {
+    "id": "proc-051",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "What is VAT audit process in Nepal?": {
+    "id": "proc-051",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "vat audit process ke ho nepal ma": {
+    "id": "proc-051",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "Startup company ko bank account kholna sajilo bank kun ho?": {
+    "id": "proc-052",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "Which bank is easiest for startup company account?": {
+    "id": "proc-052",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "startup company ko bank account kholna sajilo bank kun ho": {
+    "id": "proc-052",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "Trade license municipality ward office ma line ki municipality headquarters ma?": {
+    "id": "proc-053",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "Get trade license from ward office or municipality HQ?": {
+    "id": "proc-053",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "trade license municipality ward office ma line ki municipality headquarters ma": {
+    "id": "proc-053",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "Contract employee lai SSF compulsory ho ki optional?": {
+    "id": "proc-054",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "Is SSF compulsory or optional for contract employees?": {
+    "id": "proc-054",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "contract employee lai ssf compulsory ho ki optional": {
+    "id": "proc-054",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "Nepal bata ready-made garments export process ke ho?": {
+    "id": "proc-055",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "What is process for ready-made garment export from Nepal?": {
+    "id": "proc-055",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "nepal bata ready-made garments export process ke ho": {
+    "id": "proc-055",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "Women entrepreneur loan ke cha Nepal ma?": {
+    "id": "proc-056",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "Is there women entrepreneur loan in Nepal?": {
+    "id": "proc-056",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "women entrepreneur loan ke cha nepal ma": {
+    "id": "proc-056",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "Company registration pachi audit compulsory ke ho?": {
+    "id": "proc-057",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "Is audit compulsory after company registration?": {
+    "id": "proc-057",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "company registration pachi audit compulsory ke ho": {
+    "id": "proc-057",
+    "process": "Company registration steps",
+    "process_key": "company_registration_steps",
+    "question_type": "process"
+  },
+  "PAN correction / naam change kasari garne?": {
+    "id": "proc-058",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "How to correct name on PAN?": {
+    "id": "proc-058",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "pan correction / naam change kasari garne": {
+    "id": "proc-058",
+    "process": "PAN registration",
+    "process_key": "pan_registration",
+    "question_type": "process"
+  },
+  "VAT ma multiple branch registration ekai PAN ma milcha?": {
+    "id": "proc-059",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "Can multiple branches be registered under single PAN for VAT?": {
+    "id": "proc-059",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "vat ma multiple branch registration ekai pan ma milcha": {
+    "id": "proc-059",
+    "process": "VAT registration",
+    "process_key": "vat_registration",
+    "question_type": "process"
+  },
+  "Current account ra saving account company ko lagi ke farak cha?": {
+    "id": "proc-060",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "What is difference between current and saving account for company?": {
+    "id": "proc-060",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "current account ra saving account company ko lagi ke farak cha": {
+    "id": "proc-060",
+    "process": "Bank account opening",
+    "process_key": "bank_account_opening",
+    "question_type": "process"
+  },
+  "Poush 15 pachi trade license renewal garda penalty kati?": {
+    "id": "proc-061",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "What is penalty for trade license renewal after Poush 15?": {
+    "id": "proc-061",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "poush 15 pachi trade license renewal garda penalty kati": {
+    "id": "proc-061",
+    "process": "Trade license renewal",
+    "process_key": "trade_license_renewal",
+    "question_type": "process"
+  },
+  "SSF ID activate kasari garne?": {
+    "id": "proc-062",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "How to activate SSF ID?": {
+    "id": "proc-062",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "ssf id activate kasari garne": {
+    "id": "proc-062",
+    "process": "Employee SSF registration",
+    "process_key": "employee_ssf_registration",
+    "question_type": "process"
+  },
+  "Customs broker license kasari line?": {
+    "id": "proc-063",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "How to get customs broker license?": {
+    "id": "proc-063",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "customs broker license kasari line": {
+    "id": "proc-063",
+    "process": "Import/export documentation",
+    "process_key": "import_export_documentation",
+    "question_type": "process"
+  },
+  "Loan restructure/reschedule ke ho ra kasari garne?": {
+    "id": "proc-064",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "What is loan restructure/reschedule and how to do it?": {
+    "id": "proc-064",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  },
+  "loan restructure/reschedule ke ho ra kasari garne": {
+    "id": "proc-064",
+    "process": "Loan application process",
+    "process_key": "loan_application_process",
+    "question_type": "process"
+  }
+}

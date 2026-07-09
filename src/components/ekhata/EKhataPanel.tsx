@@ -1,59 +1,99 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { BookOpen, Loader2, Send, Trash2, X } from "lucide-react";
+import { MessageSquarePlus, PanelLeft, Send } from "lucide-react";
 import { useEKhataStore } from "../../store/eKhataStore";
 import { useFalconStore } from "../../store/falconStore";
-import { KHATA_INTENT_LABELS } from "../../lib/ekhata/types";
+import { useStore } from "../../store/useStore";
 import { validateJournalBalance } from "../../lib/ekhata/caEntryTemplates";
-
 import AchievementSystem from "./AchievementSystem";
-import { isSelfContainedAi, SELF_CONTAINED_STATUS } from "../../lib/selfContainedAi";
+import OrbixLogo from "./OrbixLogo";
+import OrbixMessageContent from "./OrbixMessageContent";
+import OrbixJournalCard from "./OrbixJournalCard";
+import OrbixWindowControls from "./OrbixWindowControls";
+import OrbixChatSidebar from "./OrbixChatSidebar";
+import OrbixNeuronThinking from "./OrbixNeuronThinking";
+import OrbixReportTable from "./OrbixReportTable";
+import OrbixReportDateClarify from "./OrbixReportDateClarify";
 
-function statusLabel(llmOnline: boolean, llmModel?: string): string {
-  if (llmOnline) {
-    const model = llmModel?.split(":")[0] ?? "Ollama";
-    return `${model} · Agentic · CA Entries`;
-  }
-  if (isSelfContainedAi()) {
-    return `${SELF_CONTAINED_STATUS.label} · Web Search · CA Entries`;
-  }
-  return `erp_bot offline · ${SELF_CONTAINED_STATUS.label} fallback`;
+/** TopMenuBar (40px) + BusyMenuBar (40px) on desktop — panel stays below ERP menus */
+const ORBIX_CHROME_TOP_DESKTOP = 80;
+const ORBIX_CHROME_TOP_MOBILE = 88;
+const ORBIX_CHROME_BOTTOM = 28;
+
+function useOrbixChromeInsets() {
+  const [top, setTop] = React.useState(ORBIX_CHROME_TOP_DESKTOP);
+  React.useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setTop(mq.matches ? ORBIX_CHROME_TOP_MOBILE : ORBIX_CHROME_TOP_DESKTOP);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  return { top, bottom: ORBIX_CHROME_BOTTOM };
 }
+
+const EmptyChatState: React.FC = () => (
+  <div className="flex flex-col items-center justify-center h-full min-h-[200px] px-6 text-center">
+    <div className="relative mb-4">
+      <div className="absolute inset-0 rounded-full bg-cyan-500/20 blur-xl scale-150" />
+      <OrbixLogo size={48} variant="full" className="relative opacity-80" />
+    </div>
+    <p className="text-[13px] font-medium text-slate-300">Orbix — Accounting Mode</p>
+    <p className="mt-1.5 text-[11px] text-slate-600 max-w-[260px] leading-relaxed">
+      Record entries, check balances, or ask accounting questions in Nepali or English.
+    </p>
+  </div>
+);
 
 const EKhataPanel: React.FC = () => {
   const {
     isOpen,
+    windowMode,
+    sidebarCollapsed,
     closePanel,
+    minimizePanel,
+    maximizePanel,
+    toggleSidebar,
+    newChat,
+    sessions,
+    activeSessionId,
+    selectSession,
+    deleteSession,
     messages,
     pendingCard,
     pendingCompoundBatch,
     isLoading,
     llmOnline,
-    llmModel,
     activeTools,
-    engineLabel,
     sendMessage,
     confirmPending,
     cancelPending,
-    clearHistory,
     refreshLlmStatus,
+    generateOrbixReport,
   } = useEKhataStore();
   const closeFalcon = useFalconStore((state) => state.closePanel);
+  const parties = useStore((s) => s.parties ?? []);
+  const chrome = useOrbixChromeInsets();
 
   const [input, setInput] = useState("");
+  const [historyOpen, setHistoryOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const isMaximized = windowMode === "maximized";
+  const showSidebar = isMaximized && !sidebarCollapsed;
+  const showCollapsedRail = isMaximized && sidebarCollapsed;
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, pendingCard, pendingCompoundBatch, isLoading]);
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && windowMode !== "minimized") {
       closeFalcon();
       refreshLlmStatus();
       setTimeout(() => inputRef.current?.focus(), 100);
     }
-  }, [isOpen, closeFalcon, refreshLlmStatus]);
+  }, [isOpen, windowMode, closeFalcon, refreshLlmStatus]);
 
   const handleSend = useCallback(async () => {
     const text = input.trim();
@@ -65,346 +105,250 @@ const EKhataPanel: React.FC = () => {
   const journalLines = pendingCompoundBatch?.journalLines ?? pendingCard?.journalLines ?? [];
   const balance = journalLines.length > 0 ? validateJournalBalance(journalLines) : null;
 
-  if (!isOpen) return null;
+  const lastMessage = messages[messages.length - 1];
+  const showTyping =
+    isLoading && lastMessage?.role === "assistant" && !lastMessage.text;
+
+  if (!isOpen || windowMode === "minimized") return null;
+
+  const panelShell = isMaximized
+    ? {
+        className:
+          "fixed left-0 right-0 z-[45] flex flex-col overflow-hidden border-t border-white/10 shadow-2xl shadow-black/50",
+        style: {
+          top: chrome.top,
+          bottom: chrome.bottom,
+          background: "linear-gradient(180deg, #0f1420 0%, #0a0e17 100%)",
+        },
+      }
+    : {
+        className:
+          "fixed bottom-4 right-4 z-[9998] flex flex-col rounded-xl overflow-hidden border border-white/10 shadow-2xl shadow-black/40",
+        style: {
+          width: historyOpen ? 560 : 440,
+          maxHeight: "min(85vh, 720px)",
+          minHeight: 460,
+          background: "linear-gradient(180deg, #0f1420 0%, #0a0e17 100%)",
+          transition: "width 0.2s ease",
+        },
+      };
 
   return (
-    <div
-      className="fixed bottom-4 right-4 z-[9999] w-[420px] flex flex-col bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden"
-      style={{ maxHeight: "min(82vh, 700px)", minHeight: 420 }}
-      data-component="ekhata-panel"
-    >
-      <div className="flex items-center gap-2 px-3 py-2.5 bg-[#059669] text-white flex-shrink-0">
-        <BookOpen className="h-4 w-4 flex-shrink-0" />
-        <div className="flex-1 min-w-0">
-          <span className="font-bold text-[13px] tracking-tight">e-KHATA</span>
-          <p className="text-[10px] text-emerald-100 truncate">
-            {statusLabel(llmOnline, llmModel)}
-            {llmOnline ? ` · ${engineLabel}` : ""}
-          </p>
-        </div>
-        <AchievementSystem compact />
-        <button
-          type="button"
-          onClick={() => {
-            if (window.confirm("Clear all messages?")) clearHistory();
-          }}
-          title="Clear history"
-          className="p-1 rounded hover:bg-white/20 transition-colors"
-        >
-          <Trash2 className="h-3.5 w-3.5" />
-        </button>
-        <button
-          type="button"
-          onClick={closePanel}
-          title="Close"
-          className="p-1 rounded hover:bg-white/20 transition-colors"
-        >
-          <X className="h-4 w-4" />
-        </button>
-      </div>
+    <div {...panelShell} data-component="ekhata-panel">
+      {/* Title bar */}
+      <div className="relative flex-shrink-0 overflow-hidden select-none">
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-600/10 via-violet-600/10 to-orange-500/5" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+        <div className="relative flex items-center gap-2 px-3 py-2">
+          <div className="relative flex-shrink-0">
+            <div className="absolute inset-0 rounded-full bg-cyan-500/20 blur-md scale-150" />
+            <OrbixLogo size={28} variant="full" className="relative" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h2 className="text-[13px] font-semibold text-white tracking-tight leading-none">
+              Orbix
+              <span className="text-cyan-400 font-normal"> — AI</span>
+            </h2>
+            <p className="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1.5">
+              <span
+                className={`inline-block h-1.5 w-1.5 rounded-full ${llmOnline ? "bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.6)]" : "bg-amber-400"}`}
+              />
+              Accounting Mode
+            </p>
+          </div>
 
-      <div className="flex-1 overflow-y-auto px-3 py-3 space-y-2 min-h-0">
-        {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-          >
-            <div
-              className={`max-w-[90%] rounded-md px-3 py-2 text-[12px] whitespace-pre-wrap ${
-                msg.role === "user"
-                  ? "bg-[#1557b0] text-white"
-                  : "border border-gray-200 bg-white text-gray-700"
-              }`}
+          {!isMaximized && (
+            <button
+              type="button"
+              onClick={() => setHistoryOpen((v) => !v)}
+              title="Chat history"
+              className="p-1.5 rounded-md text-slate-500 hover:text-slate-300 hover:bg-white/10"
             >
-              {msg.text}
-            </div>
-          </div>
-        ))}
-
-        {pendingCompoundBatch && (
-          <div className="rounded-md border border-gray-200 bg-white p-3 shadow-sm">
-            <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
-              Confirm CA Journal Entry — {pendingCompoundBatch.compoundCount} transactions
-            </p>
-            <p className="mt-1 text-[11px] text-gray-600">
-              Combined total:{" "}
-              <span className="font-mono font-medium">
-                NPR {pendingCompoundBatch.amount.toLocaleString()}
-              </span>
-            </p>
-            <div className="mt-2 space-y-2">
-              {pendingCompoundBatch.parts.map((part) => (
-                <div
-                  key={part.index}
-                  className="rounded border border-gray-100 bg-[#f5f6fa] px-2 py-1.5 text-[11px]"
-                >
-                  <p className="font-medium text-gray-800">
-                    {part.index}. {part.text}
-                  </p>
-                  <p className="text-gray-600">
-                    {KHATA_INTENT_LABELS[part.card.intent]} · NPR{" "}
-                    {part.card.amount.toLocaleString()}
-                    {part.card.party ? ` · ${part.card.party}` : ""}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            {journalLines.length > 0 && (
-              <div className="mt-3">
-                <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500 mb-1">
-                  Journal Lines
-                </p>
-                <table className="w-full text-[11px]">
-                  <thead>
-                    <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                      <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                        Account
-                      </th>
-                      <th className="px-2 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                        Dr
-                      </th>
-                      <th className="px-2 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                        Cr
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {journalLines.map((line, i) => (
-                      <tr key={i} className="border-b border-gray-100">
-                        <td className="px-2 py-1.5 text-[11px] text-gray-700">
-                          {line.accountName}
-                          <span className="ml-1 text-[9px] text-gray-400">
-                            ({line.accountClass})
-                          </span>
-                        </td>
-                        <td className="px-2 py-1.5 font-mono text-right text-[11px] text-gray-700">
-                          {line.debit > 0 ? line.debit.toLocaleString() : "—"}
-                        </td>
-                        <td className="px-2 py-1.5 font-mono text-right text-[11px] text-gray-700">
-                          {line.credit > 0 ? line.credit.toLocaleString() : "—"}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                  {balance && (
-                    <tfoot>
-                      <tr className="bg-[#eef2ff] font-bold text-[11px] border-t-2 border-[#c7d2fe]">
-                        <td className="px-2 py-1.5">Total</td>
-                        <td className="px-2 py-1.5 font-mono text-right">
-                          {balance.totalDebit.toLocaleString()}
-                        </td>
-                        <td className="px-2 py-1.5 font-mono text-right">
-                          {balance.totalCredit.toLocaleString()}
-                        </td>
-                      </tr>
-                    </tfoot>
-                  )}
-                </table>
-                {balance && (
-                  <div
-                    className={`mt-2 rounded px-2 py-1 text-[10px] font-medium border ${
-                      balance.balanced
-                        ? "bg-green-50 text-green-700 border-green-200"
-                        : "bg-red-50 text-red-700 border-red-200"
-                    }`}
-                  >
-                    {balance.balanced ? "✓ Journal Balanced" : "✗ Journal Unbalanced"}
-                  </div>
-                )}
-              </div>
-            )}
-
-            <div className="mt-3 flex gap-2">
-              <button
-                type="button"
-                onClick={confirmPending}
-                disabled={isLoading || (balance !== null && !balance.balanced)}
-                className="h-8 flex-1 rounded-md bg-[#1557b0] text-[12px] font-medium text-white hover:bg-[#0f4a96] disabled:opacity-50"
-              >
-                Confirm All ✓
-              </button>
-              <button
-                type="button"
-                onClick={cancelPending}
-                disabled={isLoading}
-                className="h-8 flex-1 rounded-md border border-gray-300 bg-white text-[12px] font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-              >
-                Cancel ✗
-              </button>
-            </div>
-          </div>
-        )}
-
-        {pendingCard && !pendingCompoundBatch && (
-          <div className="rounded-md border border-gray-200 bg-white p-3 shadow-sm">
-            <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
-              Confirm CA Journal Entry
-            </p>
-            <dl className="mt-2 space-y-1 text-[12px] text-gray-700">
-              <div className="flex justify-between gap-4">
-                <dt>Type</dt>
-                <dd>{KHATA_INTENT_LABELS[pendingCard.intent]}</dd>
-              </div>
-              {pendingCard.primaryClass && (
-                <div className="flex justify-between gap-4">
-                  <dt>Class</dt>
-                  <dd>
-                    <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 text-blue-700">
-                      {pendingCard.primaryClass}
-                    </span>
-                  </dd>
-                </div>
-              )}
-              <div className="flex justify-between gap-4">
-                <dt>Party</dt>
-                <dd>{pendingCard.party ?? "—"}</dd>
-              </div>
-              <div className="flex justify-between gap-4">
-                <dt>Amount</dt>
-                <dd className="font-mono">NPR {pendingCard.amount.toLocaleString()}</dd>
-              </div>
-              <div className="flex justify-between gap-4">
-                <dt>Item</dt>
-                <dd>{pendingCard.item ?? "—"}</dd>
-              </div>
-              <div className="flex justify-between gap-4">
-                <dt>Date</dt>
-                <dd>{pendingCard.date}</dd>
-              </div>
-            </dl>
-
-            {journalLines.length > 0 && (
-              <div className="mt-3">
-                <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500 mb-1">
-                  Journal Lines
-                </p>
-                <table className="w-full text-[11px]">
-                  <thead>
-                    <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                      <th className="px-2 py-1.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                        Account
-                      </th>
-                      <th className="px-2 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                        Dr
-                      </th>
-                      <th className="px-2 py-1.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                        Cr
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {journalLines.map((line, i) => (
-                      <tr key={i} className="border-b border-gray-100">
-                        <td className="px-2 py-1.5 text-[11px] text-gray-700">
-                          {line.accountName}
-                          <span className="ml-1 text-[9px] text-gray-400">
-                            ({line.accountClass})
-                          </span>
-                        </td>
-                        <td className="px-2 py-1.5 font-mono text-right text-[11px] text-gray-700">
-                          {line.debit > 0 ? line.debit.toLocaleString() : "—"}
-                        </td>
-                        <td className="px-2 py-1.5 font-mono text-right text-[11px] text-gray-700">
-                          {line.credit > 0 ? line.credit.toLocaleString() : "—"}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                  {balance && (
-                    <tfoot>
-                      <tr className="bg-[#eef2ff] font-bold text-[11px] border-t-2 border-[#c7d2fe]">
-                        <td className="px-2 py-1.5">Total</td>
-                        <td className="px-2 py-1.5 font-mono text-right">
-                          {balance.totalDebit.toLocaleString()}
-                        </td>
-                        <td className="px-2 py-1.5 font-mono text-right">
-                          {balance.totalCredit.toLocaleString()}
-                        </td>
-                      </tr>
-                    </tfoot>
-                  )}
-                </table>
-                {balance && (
-                  <div
-                    className={`mt-2 rounded px-2 py-1 text-[10px] font-medium border ${
-                      balance.balanced
-                        ? "bg-green-50 text-green-700 border-green-200"
-                        : "bg-red-50 text-red-700 border-red-200"
-                    }`}
-                  >
-                    {balance.balanced ? "✓ Journal Balanced" : "✗ Journal Unbalanced"}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {pendingCard.caExplanation && (
-              <p className="mt-2 text-[10px] text-gray-500 italic">{pendingCard.caExplanation}</p>
-            )}
-
-            <div className="mt-3 flex gap-2">
-              <button
-                type="button"
-                onClick={confirmPending}
-                disabled={isLoading || (balance !== null && !balance.balanced)}
-                className="h-8 flex-1 rounded-md bg-[#1557b0] text-[12px] font-medium text-white hover:bg-[#0f4a96] disabled:opacity-50"
-              >
-                Confirm ✓
-              </button>
-              <button
-                type="button"
-                onClick={cancelPending}
-                disabled={isLoading}
-                className="h-8 flex-1 rounded-md border border-gray-300 bg-white text-[12px] font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-              >
-                Cancel ✗
-              </button>
-            </div>
-          </div>
-        )}
-
-        {isLoading && (
-          <div className="flex flex-col gap-1 text-[11px] text-gray-500">
-            <div className="flex items-center gap-2">
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              Sochdai cha...
-            </div>
-            {activeTools.length > 0 && (
-              <p className="text-[10px] text-gray-400 pl-5">Tools: {activeTools.join(", ")}</p>
-            )}
-          </div>
-        )}
-        <div ref={messagesEndRef} />
+              <PanelLeft className="h-3.5 w-3.5" />
+            </button>
+          )}
+          {!isMaximized && (
+            <button
+              type="button"
+              onClick={newChat}
+              title="New chat"
+              className="p-1.5 rounded-md text-slate-500 hover:text-cyan-400 hover:bg-white/10"
+            >
+              <MessageSquarePlus className="h-3.5 w-3.5" />
+            </button>
+          )}
+          <AchievementSystem compact />
+          <OrbixWindowControls
+            windowMode={windowMode}
+            onMinimize={minimizePanel}
+            onMaximize={maximizePanel}
+            onClose={closePanel}
+          />
+        </div>
       </div>
 
-      <div className="border-t border-gray-200 bg-white p-2 flex-shrink-0">
-        <div className="flex items-center gap-2">
-          <input
-            ref={inputRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleSend();
-            }}
-            placeholder="Nepali/English ma entry lekhnu hola..."
-            disabled={isLoading}
-            className="h-8 flex-1 rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[#1557b0] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 disabled:opacity-50"
-            data-component="ekhata-input"
+      <div className="flex flex-1 min-h-0 overflow-hidden">
+        {/* Sidebar — maximized mode */}
+        {showSidebar && (
+          <OrbixChatSidebar
+            sessions={sessions}
+            activeSessionId={activeSessionId}
+            collapsed={false}
+            onToggleCollapse={toggleSidebar}
+            onNewChat={newChat}
+            onSelectSession={selectSession}
+            onDeleteSession={deleteSession}
           />
-          <button
-            type="button"
-            onClick={handleSend}
-            disabled={isLoading || !input.trim()}
-            className="h-8 w-8 rounded-md bg-[#1557b0] text-white flex items-center justify-center hover:bg-[#0f4a96] disabled:opacity-50"
-            aria-label="Send message"
-          >
-            <Send className="h-3.5 w-3.5" />
-          </button>
+        )}
+        {showCollapsedRail && (
+          <OrbixChatSidebar
+            sessions={sessions}
+            activeSessionId={activeSessionId}
+            collapsed
+            onToggleCollapse={toggleSidebar}
+            onNewChat={newChat}
+            onSelectSession={selectSession}
+            onDeleteSession={deleteSession}
+          />
+        )}
+
+        {/* Floating history drawer */}
+        {!isMaximized && historyOpen && (
+          <div className="w-[220px] flex-shrink-0 border-r border-white/10">
+            <OrbixChatSidebar
+              sessions={sessions}
+              activeSessionId={activeSessionId}
+              collapsed={false}
+              onToggleCollapse={() => setHistoryOpen(false)}
+              onNewChat={() => {
+                newChat();
+              }}
+              onSelectSession={(id) => {
+                selectSession(id);
+              }}
+              onDeleteSession={deleteSession}
+            />
+          </div>
+        )}
+
+        {/* Chat area */}
+        <div className="flex flex-col flex-1 min-w-0">
+          <div className="flex-1 overflow-y-auto px-3 py-3 min-h-0">
+            {messages.length === 0 && !pendingCard && !pendingCompoundBatch && !showTyping ? (
+              <EmptyChatState />
+            ) : (
+              <div className="space-y-3">
+                {messages.map((msg) => {
+                  if (
+                    msg.role === "assistant" &&
+                    !msg.text &&
+                    !msg.report &&
+                    !msg.reportClarify
+                  ) {
+                    return null;
+                  }
+                  const hasWideContent = Boolean(msg.report || msg.reportClarify);
+                  return (
+                    <div
+                      key={msg.id}
+                      className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} ${
+                        hasWideContent && isMaximized ? "w-full" : ""
+                      }`}
+                    >
+                      {msg.role === "assistant" && (
+                        <div className="mr-2 mt-1 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500/15 to-violet-500/15 border border-white/10">
+                          <OrbixLogo size={14} />
+                        </div>
+                      )}
+                      <div
+                        className={`${
+                          hasWideContent
+                            ? isMaximized
+                              ? "flex-1 min-w-0 max-w-full"
+                              : "max-w-[96%] min-w-0"
+                            : "max-w-[88%] min-w-0"
+                        } ${
+                          msg.role === "user"
+                            ? "rounded-xl rounded-br-sm bg-gradient-to-br from-cyan-600 to-blue-700 px-3 py-2 text-[12px] text-white shadow-lg shadow-cyan-900/20"
+                            : "rounded-xl rounded-tl-sm border border-white/10 bg-white/[0.04] px-3 py-2.5"
+                        }`}
+                      >
+                        {msg.role === "user" ? (
+                          <p className="text-[12px] leading-relaxed whitespace-pre-wrap">{msg.text}</p>
+                        ) : (
+                          <>
+                            {msg.text && <OrbixMessageContent text={msg.text} />}
+                            {msg.report && (
+                              <OrbixReportTable report={msg.report} maximized={isMaximized} />
+                            )}
+                            {msg.reportClarify && (
+                              <OrbixReportDateClarify
+                                pending={msg.reportClarify}
+                                parties={parties.map((p) => ({ id: p.id, name: p.name }))}
+                                disabled={isLoading}
+                                onSubmit={(pending) => void generateOrbixReport(pending)}
+                              />
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {(pendingCard || pendingCompoundBatch) && (
+                  <OrbixJournalCard
+                    pendingCard={pendingCard}
+                    pendingCompoundBatch={pendingCompoundBatch}
+                    journalLines={journalLines}
+                    balance={balance}
+                    isLoading={isLoading}
+                    onConfirm={confirmPending}
+                    onCancel={cancelPending}
+                  />
+                )}
+
+                {showTyping && (
+                  <OrbixNeuronThinking label="Connecting Neurons" tools={activeTools} />
+                )}
+                <div ref={messagesEndRef} />
+              </div>
+            )}
+          </div>
+
+          {/* Input */}
+          <div className="flex-shrink-0 border-t border-white/10 bg-[#0a0e17]/80 backdrop-blur-sm p-3">
+            <div className="flex items-center gap-2 max-w-3xl mx-auto w-full">
+              <input
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSend();
+                  }
+                }}
+                placeholder="Ask in Nepali or English — entries, balances, reports..."
+                disabled={isLoading}
+                className="h-9 flex-1 rounded-lg border border-white/10 bg-white/[0.05] px-3 text-[12px] text-slate-200 placeholder:text-slate-600 focus:border-cyan-500/40 focus:outline-none focus:ring-1 focus:ring-cyan-500/20 disabled:opacity-50 transition-colors"
+                data-component="ekhata-input"
+              />
+              <button
+                type="button"
+                onClick={handleSend}
+                disabled={isLoading || !input.trim()}
+                className="h-9 w-9 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 text-white flex items-center justify-center hover:from-cyan-400 hover:to-blue-500 disabled:opacity-30 transition-all shadow-lg shadow-cyan-900/30"
+                aria-label="Send message"
+              >
+                <Send className="h-3.5 w-3.5" />
+              </button>
+            </div>
+            <p className="mt-1.5 text-center text-[9px] text-slate-600">
+              Ctrl+Shift+K · Chats saved 7 days · Saves to ledger
+            </p>
+          </div>
         </div>
-        <p className="mt-1 text-[10px] text-gray-400">
-          Ctrl+Shift+K · Autonomous AI · Web Search · Saves to ledger
-        </p>
       </div>
     </div>
   );

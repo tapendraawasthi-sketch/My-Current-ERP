@@ -1,0 +1,34 @@
+{
+  "spelling": {
+    "phonetic": [
+      { "wrong": "kakor", "correct": "kakro", "type": "consonant_swap" },
+      { "wrong": "tarkaari", "correct": "tarkari", "type": "vowel_length" },
+      { "wrong": "maele", "correct": "maile", "type": "vowel_confusion" },
+      { "wrong": "bechya", "correct": "bechye", "type": "suffix_error" },
+      { "wrong": "ksha", "correct": "kshya", "type": "transliteration" },
+      { "wrong": "gyna", "correct": "gyan", "type": "transliteration" }
+    ],
+    "keyboard": [
+      { "wrong": "teh", "correct": "the", "language": "english" },
+      { "wrong": "adn", "correct": "and", "language": "english" },
+      { "wrong": "nepla", "correct": "nepal", "language": "english" }
+    ]
+  },
+  "grammar": {
+    "caseMarkers": [
+      { "wrong": "maile...bechyo", "correct": "maile...bechye", "rule": "ergative_agreement" },
+      { "wrong": "usle...bhane", "correct": "usle...bhanyo", "rule": "verb_agreement" }
+    ],
+    "honorific": [
+      { "wrong": "tapai gayo", "correct": "tapai janubhayo", "rule": "honorific_verb" },
+      { "wrong": "hajur khayo", "correct": "hajur khanubhayo", "rule": "honorific_verb" }
+    ]
+  },
+  "globalPatterns": {
+    "romanVowelConfusion": {
+      "pattern": "e↔a in unstressed syllables",
+      "examples": ["maele↔maile", "bechye↔bechya"],
+      "weight": 0.15
+    }
+  }
+}

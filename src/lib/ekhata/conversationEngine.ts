@@ -1,5 +1,4 @@
 import type { KhataConfirmationCard, KhataIntent, KhataParseResult } from "./types";
-import { KHATA_INTENT_LABELS } from "./types";
 import {
   CHAT_BALANCE,
   CHAT_BYE,
@@ -10,6 +9,12 @@ import {
   VOCABULARY,
 } from "./nepaliLanguage";
 import { normalizeNepaliText } from "./normalizeNepali";
+import {
+  confirmationTemplateIntent,
+  renderResponseTemplate,
+} from "../nepal-ai/responseTemplates";
+import { sampleScenarioAiReply } from "../nepal-ai/conversationScenarios";
+import { buildLocalizedEntryReply } from "./accountingLanguageBrain";
 
 export type ChatIntent = "greeting" | "casual" | "thanks" | "help" | "balance" | "bye" | "unknown";
 
@@ -52,10 +57,12 @@ export function isLikelyKhataEntry(text: string): boolean {
 
 export function replyGreeting(): string {
   return (
+    renderResponseTemplate("greeting", "nepali") ??
+    sampleScenarioAiReply("new_user_onboarding", { preferTurnIndex: 0 }) ??
     "Namaste! Ma e-Khata — tapai ko khata sakhi.\n\n" +
-    "Nepali, Roman Nepali, aru Hindi-mixed bhasa ma lekhna milcha. " +
-    "Jastai: `Ram lai 500 udhaar diye`, `aaja 200 ko nagad bikri vayo`, `Shyam le 200 tiryo`.\n\n" +
-    "Entry confirm garnu agadi card dekhauchu. `madat` bhannu bhaye udaharan dinchu."
+      "Nepali, Roman Nepali, aru Hindi-mixed bhasa ma lekhna milcha. " +
+      "Jastai: `Ram lai 500 udhaar diye`, `aaja 200 ko nagad bikri vayo`, `Shyam le 200 tiryo`.\n\n" +
+      "Entry confirm garnu agadi card dekhauchu. `madat` bhannu bhaye udaharan dinchu."
   );
 }
 
@@ -69,10 +76,17 @@ export function replyCasual(): string {
 }
 
 export function replyThanks(): string {
-  return "Swagat cha! Aru entry cha bhane sodhnus. Khata safa rakhna ma tayar chu.";
+  return (
+    renderResponseTemplate("thanks", "nepali") ??
+    "Swagat cha! Aru entry cha bhane sodhnus. Khata safa rakhna ma tayar chu."
+  );
 }
 
 export function replyHelp(): string {
+  const fromScenario = sampleScenarioAiReply("new_user_onboarding", {
+    preferTurnIndex: 1,
+  });
+  if (fromScenario) return fromScenario;
   return (
     "**e-Khata bhasa udaharan:**\n\n" +
     "• Udharo: `Ram lai 500 udhaar diye` / `Ram lai paanch saya udharo diyo`\n" +
@@ -138,8 +152,21 @@ export function replyBye(): string {
 }
 
 export function replyClarify(question: string): string {
+  const amtTpl = renderResponseTemplate("clarify_amount", "nepali", {
+    detected_amount: "",
+  });
+  const partyTpl = renderResponseTemplate("clarify_party", "nepali", {
+    detected_party: "",
+  });
+
   if (question.includes("Aaple")) {
     return `${question}\n\n(Udhaar dine ho ki payment dine? Ram lai 500 diye = udhaar; Shyam le 500 diye = payment.)`;
+  }
+  if (/rakam|amount|Rs|paisa/i.test(question) && amtTpl) {
+    return `${question}\n\n${amtTpl.replace(/\s*Rs\s*\{\w+\}|\{\w+\}/g, "").trim()}\nJastai: 500, paanch saya, 1 hajar, 1.5k`;
+  }
+  if (/party|naam|kasle|kaslai|kasko/i.test(question) && partyTpl) {
+    return `${question}\n\n${partyTpl.replace(/\{[^}]+\}/g, "…")}`;
   }
   if (question.includes("Rakam")) {
     return `${question}\n\nJastai: 500, paanch saya, 1 hajar, 1.5k`;
@@ -150,16 +177,27 @@ export function replyClarify(question: string): string {
 }
 
 export function replyConfirmPrompt(card: KhataConfirmationCard): string {
-  const label = KHATA_INTENT_LABELS[card.intent as KhataIntent];
-  const party = card.party ? `**${card.party}**` : "(party chaina)";
-  return (
-    `Maile yo transaction bujhe:\n` +
-    `• Prakar: ${label}\n` +
-    `• Party: ${party}\n` +
-    `• Rakam: NPR ${card.amount}\n` +
-    `• Miti: ${card.date}\n\n` +
-    `Sahi cha bhane **Confirm** thichnus.`
-  );
+  const bucket = confirmationTemplateIntent(card.intent);
+  if (bucket) {
+    const prefer = [
+      ...(card.party ? ["party"] : []),
+      "amount",
+      ...(card.item ? ["item"] : []),
+    ];
+    const rendered = renderResponseTemplate(
+      bucket,
+      "nepali",
+      {
+        party: card.party || "party",
+        amount: card.amount,
+        item: card.item || "saamaan",
+        date: card.date,
+      },
+      { preferEntities: prefer },
+    );
+    if (rendered) return rendered;
+  }
+  return buildLocalizedEntryReply(card, "nepali");
 }
 
 export function replySaved(voucherNo: string): string {
@@ -171,6 +209,8 @@ export function replyCancel(): string {
 }
 
 export function replyParseError(message: string): string {
+  const tpl = renderResponseTemplate("error", "nepali");
+  if (tpl) return `${tpl}\n\n${message}`;
   return `${message}\n\nRoman Nepali, Devanagari, athaba Hindi-mixed — sabai try garna milcha.`;
 }
 

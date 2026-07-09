@@ -14,6 +14,10 @@ import {
   detectEmotionalContext,
   isEmotionalMessage,
 } from "./emotionalBrain";
+import {
+  matchSocialDiscourse,
+  replySocialDiscourse,
+} from "../nepal-ai/socialDiscourse";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -124,6 +128,28 @@ export function analyzeQuestion(text: string, history: ConversationTurn[] = []):
       language: lang,
       confidence: 0.95,
       rawIntent: "abuse",
+    };
+  }
+
+  // Lexicon social discourse first (greeting/thanks/goodbye/small_talk/politeness)
+  // Wins over question-word / emotional branching for exact phrases like "kasto cha", "namaste".
+  const socialEarly = matchSocialDiscourse(t);
+  if (socialEarly) {
+    const kindMap: Record<string, QuestionKind> = {
+      greeting: "greeting",
+      thanks: "thanks",
+      goodbye: "farewell",
+      small_talk: "small_talk",
+      politeness: "small_talk",
+    };
+    return {
+      kind: kindMap[socialEarly.phrase.type] || "small_talk",
+      topic: socialEarly.phrase.type,
+      subject: null,
+      isQuestion: false,
+      language: lang,
+      confidence: 0.95,
+      rawIntent: socialEarly.phrase.type,
     };
   }
 
@@ -670,6 +696,23 @@ function buildBaseReply(
 ): string {
   if (analysis.kind === "balance" && balance) {
     return replyBalance(balance);
+  }
+
+  // Prefer curated human-tone replies from social discourse lexicon
+  const socialReply = replySocialDiscourse(text);
+  if (
+    socialReply &&
+    (analysis.kind === "greeting" ||
+      analysis.kind === "farewell" ||
+      analysis.kind === "thanks" ||
+      analysis.kind === "small_talk" ||
+      analysis.topic === "greeting" ||
+      analysis.topic === "thanks" ||
+      analysis.topic === "goodbye" ||
+      analysis.topic === "small_talk" ||
+      analysis.topic === "politeness")
+  ) {
+    return socialReply;
   }
 
   const knowledgeAnswer = searchKnowledge(text);

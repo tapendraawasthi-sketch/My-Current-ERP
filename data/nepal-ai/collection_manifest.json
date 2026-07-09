@@ -232,16 +232,16 @@
     "08_question_patterns": {
       "status": "ingested",
       "source": "data/nepal-ai/language/question_patterns.jsonl",
-      "patterns": 37,
+      "patterns": 256,
       "kb_chunks": 37,
-      "normalize_entries": 37
+      "normalize_entries": 256
     },
     "09_affirmation_negation": {
       "status": "ingested",
       "source": "data/nepal-ai/language/affirmation_negation.jsonl",
-      "patterns": 42,
+      "patterns": 85,
       "kb_chunks": 42,
-      "normalize_entries": 93
+      "normalize_entries": 162
     },
     "10_time_date": {
       "status": "ingested",
@@ -249,15 +249,552 @@
       "patterns": 41,
       "kb_chunks": 41,
       "normalize_entries": 82
+    },
+    "08b_question_words": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/question_words.jsonl",
+      "senses": 91,
+      "sense_map_keys": 19,
+      "patterns_extended": 256,
+      "note": "Multi-sense Nepali question words (k/ko/kun/kata/kahile/kasari/kasto/kasle/kati/kina/ho/hola/huncha) — NOT_transaction"
+    },
+    "08c_social_discourse": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/social_discourse.jsonl",
+      "phrases": 75,
+      "types": [
+        "goodbye",
+        "greeting",
+        "politeness",
+        "small_talk",
+        "thanks"
+      ],
+      "note": "Greeting/thanks/goodbye/small_talk/politeness — NOT_transaction NOT_question"
+    },
+    "09b_yes_no_discourse": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/yes_no_discourse.jsonl",
+      "words": 58,
+      "affirmation": 20,
+      "negation": 16,
+      "uncertainty": 11,
+      "correction": 11,
+      "discourse_map_keys": 162
+    },
+    "05b_number_words": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/number_words.jsonl",
+      "entries": 129,
+      "normalize_keys": 412,
+      "word_tokens": 114,
+      "numbers_amounts_added": 110
+    },
+    "27b_spelling_corrections": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/spelling_corrections.jsonl",
+      "entries": 118,
+      "auto_applied": 109,
+      "skipped_unsafe": 9,
+      "typo_map_keys": 407,
+      "note": "Skipped case_marker_swap and bare cha/xa/ka to avoid semantic damage"
+    },
+    "10b_bikram_calendar": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/bikram_calendar.jsonl",
+      "entries": 80,
+      "months": 12,
+      "dates": 48,
+      "relative": 11,
+      "fiscal_years": 7,
+      "time_date_map_keys": 317,
+      "note": "Fixed parsi = day after tomorrow (not tomorrow); bholi = tomorrow"
+    },
+    "11b_retail_items": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/retail_items.jsonl",
+      "entries": 162,
+      "alias_keys": 752,
+      "by_sector": {
+        "kirana_grocery": 34,
+        "hardware_construction": 17,
+        "electronics": 20,
+        "clothing_apparel": 19,
+        "food_restaurant": 20,
+        "pharmacy": 18,
+        "stationery": 21,
+        "household_cleaning": 7,
+        "travel_transport": 1,
+        "fuel_energy": 5
+      },
+      "notes": [
+        "Renamed pharmacy \"tablet\" -> \"tablet medicine\" to reduce clash with electronics tablet",
+        "Removed bare \"tel\" from petrol variants (cooking oil owns tel)",
+        "Longest-form match preferred at runtime"
+      ]
+    },
+    "12_party_name_patterns": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/party_name_patterns.jsonl",
+      "entries": 79,
+      "unique_markers": 73,
+      "role_buckets": {
+        "recipient": 30,
+        "agent": 13,
+        "owner": 14,
+        "counterparty": 6,
+        "source": 14,
+        "location": 1,
+        "label": 1
+      }
+    },
+    "02b_verb_conjugations": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/verb_conjugations.jsonl",
+      "entries": 100,
+      "added_to_verb_map": 81,
+      "updated_in_verb_map": 28,
+      "verb_map_keys": 1087,
+      "by_lemma": {
+        "kinnu": 12,
+        "bechnu": 11,
+        "dinu": 11,
+        "linu": 11,
+        "tirnu": 11,
+        "aunu": 11,
+        "pathaaunu": 11,
+        "jamma garnu": 11,
+        "jhiknu": 11
+      },
+      "by_txn": {
+        "purchase": 12,
+        "sale": 11,
+        "payment": 22,
+        "receipt": 22,
+        "remittance": 11,
+        "deposit": 11,
+        "withdrawal": 11
+      }
+    },
+    "13_accounting_glossary": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/accounting_glossary.jsonl",
+      "entries": 136,
+      "alias_keys": 291
+    },
+    "14_accounting_faq": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/accounting_faq.jsonl",
+      "entries": 103,
+      "alias_keys": 391
+    },
+    "15_multi_turn_conversations": {
+      "status": "partial",
+      "source": "data/nepal-ai/language/multi_turn_conversations.jsonl",
+      "entries": 10,
+      "alias_keys": 25,
+      "scenarios": 10,
+      "pattern_types": 6,
+      "note": "Only 10/100 exact conversations found (source: _mt_part01.jsonl). Full transcript payload with conv_001–conv_100 / multi_turn_confirm_cancel not on disk."
+    },
+    "16_nepali_orthography": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/nepali_orthography.jsonl",
+      "entries": 153,
+      "devanagari_keys": 148,
+      "roman_alias_keys": 156,
+      "ortho_alias_keys": 441,
+      "note": "numbers 16-20 (sohra..bis) appended after pandhra"
+    },
+    "17_clarify_error_patterns": {
+      "status": "ingested",
+      "source": "data/nepal-ai/behavior/clarify_error_patterns.jsonl",
+      "entries": 80,
+      "alias_keys": 158,
+      "error_types": {
+        "missing_amount": 17,
+        "missing_party": 15,
+        "ambiguous_direction": 17,
+        "unclear_intent": 14,
+        "multiple_interpretations": 17
+      }
+    },
+    "18_journal_entry_rules": {
+      "status": "ingested",
+      "source": "data/nepal-ai/behavior/journal_entry_rules.jsonl",
+      "entries": 100,
+      "example_keys": 100,
+      "unique_then_intents": 100,
+      "bridged_base_intents": 27
+    },
+    "19_context_resolution_patterns": {
+      "status": "ingested",
+      "source": "data/nepal-ai/behavior/context_resolution_patterns.jsonl",
+      "entries": 60,
+      "trigger_keys": 60,
+      "families": {
+        "pronoun": 12,
+        "amount_continuation": 6,
+        "correction": 6,
+        "addition": 6,
+        "time_reference": 6,
+        "implicit_continue": 5,
+        "confirm": 2,
+        "negate": 2,
+        "affirm": 1,
+        "ask": 5,
+        "ordinal": 3,
+        "demonstrative": 2,
+        "location": 2,
+        "self_subject": 1,
+        "error_reference": 1
+      }
+    },
+    "20_nepal_regulated_glossary": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/nepal_regulated_glossary.jsonl",
+      "entries": 150,
+      "alias_keys": 855,
+      "domains": {
+        "tax": 25,
+        "company": 25,
+        "labor": 25,
+        "banking": 25,
+        "land": 25,
+        "legal": 25
+      }
+    },
+    "05c_amount_extraction_patterns": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/amount_extraction_patterns.jsonl",
+      "entries": 75,
+      "rules": [
+        "approximate_amount",
+        "approximate_range",
+        "approximate_range_with_unit",
+        "compound_nepali_number",
+        "compound_nepali_number_hundreds",
+        "daily_rate * days = total",
+        "decimal_unit_price * quantity",
+        "fiscal_year_context_ignored",
+        "fraction_less_than_crore",
+        "fraction_less_than_unit",
+        "fraction_less_than_unit_variant",
+        "fraction_nepali_word",
+        "fraction_of_crore",
+        "fractional_hundred_unit_price * quantity",
+        "fractional_lakh_plus_thousands",
+        "fractional_nepali_approximate",
+        "fractional_nepali_before_number",
+        "fractional_nepali_crore",
+        "fractional_nepali_large_number",
+        "fractional_nepali_word_to_number",
+        "fractional_thousand_plus_hundreds",
+        "per_instance * instances",
+        "per_person_rate * people",
+        "range_with_compound_shared_unit",
+        "range_with_shared_unit",
+        "range_with_shared_unit_thousands",
+        "subset_from_larger_context",
+        "sum_of_multiple_products",
+        "total_for_bulk_quantity",
+        "unit_price * decimal_quantity",
+        "unit_price * quantity = total",
+        "unit_price_decimal_thousand * quantity",
+        "unit_price_fraction_word * quantity",
+        "unit_price_mixed * quantity",
+        "unit_price_per_kg * weight",
+        "unit_price_with_fraction * quantity",
+        "unit_price_with_word * quantity",
+        "unit_price_word * quantity",
+        "weight * unit_price = total"
+      ]
+    },
+    "11c_sector_term_vocabulary": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/sector_term_vocabulary.jsonl",
+      "entries": 127,
+      "alias_keys": 756,
+      "domains": {
+        "restaurant": 27,
+        "hardware": 19,
+        "pharmacy": 20,
+        "transport": 18,
+        "education": 20,
+        "agriculture": 23
+      },
+      "note": "120-term target: prior 80 + remaining 40 (actual prior count was 87; now complete set)"
+    },
+    "29b_response_templates": {
+      "status": "ingested",
+      "source": "data/nepal-ai/behavior/response_templates.jsonl",
+      "templates": 61,
+      "by_intent": {
+        "khata_credit_sale": 7,
+        "khata_cash_purchase": 7,
+        "accounting_qa": 10,
+        "clarify_amount": 8,
+        "clarify_party": 8,
+        "greeting": 8,
+        "thanks": 8,
+        "error": 5
+      },
+      "note": "user re-paste; error templates without nested quotes"
+    },
+    "15b_conversation_scenarios": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/conversation_scenarios.jsonl",
+      "scenarios": 80,
+      "scenario_types": {
+        "new_user_onboarding": 16,
+        "daily_transaction_recording": 16,
+        "question_session": 16,
+        "error_correction_session": 16,
+        "report_request": 16
+      },
+      "user_turn_keys": 262,
+      "unique_behaviors": 280,
+      "note": "80 e-KHATA end-to-end dialogue goldens (16 per type); separate from partial 15_multi_turn_conversations"
+    },
+    "17b_ambiguity_resolution_patterns": {
+      "status": "ingested",
+      "source": "data/nepal-ai/behavior/ambiguity_resolution_patterns.jsonl",
+      "entries": 87,
+      "alias_keys": 87,
+      "ambiguity_types": {
+        "direction_unclear": 15,
+        "intent_unclear": 18,
+        "amount_unclear": 13,
+        "party_unclear": 20,
+        "time_unclear": 15,
+        "multiple_entities": 6
+      },
+      "resolution_strategies": {
+        "ask_direction": 15,
+        "ask_intent": 18,
+        "ask_amount_context": 13,
+        "ask_party": 20,
+        "ask_time_context": 15,
+        "ask_relationship": 6
+      },
+      "note": "87 multi-interpretation ambiguity goldens; wired ahead of clarify_error_patterns in parseKhata"
+    },
+    "21_nepal_tax_faq": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/nepal_tax_faq.jsonl",
+      "entries": 92,
+      "alias_keys": 639,
+      "current_as_of": "FY 2080/81",
+      "note": "92 Nepal tax/VAT/TDS/customs FAQ with legal_reference; wired ahead of accounting_faq in language brain"
+    },
+    "22_nepal_process_guides": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/nepal_process_guides.jsonl",
+      "entries": 64,
+      "alias_keys": 208,
+      "processes": {
+        "Company registration steps": 8,
+        "PAN registration": 8,
+        "VAT registration": 8,
+        "Bank account opening": 8,
+        "Trade license renewal": 8,
+        "Employee SSF registration": 8,
+        "Import/export documentation": 8,
+        "Loan application process": 8
+      },
+      "note": "64 how-to process guides (8 processes × 8 variants); wired ahead of tax FAQ for how_to Q&A"
+    },
+    "23_accounting_mistake_patterns": {
+      "status": "ingested",
+      "source": "data/nepal-ai/behavior/accounting_mistake_patterns.jsonl",
+      "entries": 68,
+      "mistake_types": {
+        "wrong_terminology": 10,
+        "reversed_entry": 10,
+        "wrong_party": 9,
+        "date_error": 9,
+        "amount_error": 10,
+        "double_entry": 10,
+        "category_error": 10
+      },
+      "note": "68 accounting mistake clarifications + teaching moments; wrong_terminology + reversed_entry early in parseKhata; other types lexicon-only for contextual detectors"
+    },
+    "24_document_understanding_patterns": {
+      "status": "ingested",
+      "source": "data/nepal-ai/documents/document_understanding_patterns.jsonl",
+      "entries": 50,
+      "document_types": {
+        "vat_invoice": 10,
+        "pan_certificate": 6,
+        "company_registration_certificate": 6,
+        "bank_statement": 6,
+        "cheque": 6,
+        "receipt_bill": 6,
+        "purchase_order": 5,
+        "delivery_challan": 5
+      },
+      "type_alias_keys": 35,
+      "note": "50 Nepal document OCR schemas (8 types × layout variants); wired in accountingLanguageBrain for scan/extract Q&A"
+    },
+    "25_empathetic_response_patterns": {
+      "status": "ingested",
+      "source": "data/nepal-ai/behavior/empathetic_response_patterns.jsonl",
+      "entries": 50,
+      "emotions": {
+        "frustrated": 9,
+        "confused": 8,
+        "stressed": 9,
+        "happy": 8,
+        "angry": 8,
+        "sad": 8
+      },
+      "note": "50 empathetic support goldens; wired in emotionalBrain before generic emotional templates"
+    },
+    "26_complex_transaction_narratives": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/complex_transaction_narratives.jsonl",
+      "entries": 138,
+      "alias_keys": 272,
+      "unique_complexity_types": 137,
+      "needs_clarify_count": 54,
+      "note": "138 multi-clause shop transaction goldens (user paste had 138 rows); needs_clarify wired in parseKhata"
+    },
+    "27_reasoning_chain_patterns": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/reasoning_chain_patterns.jsonl",
+      "entries": 80,
+      "alias_keys": 125,
+      "unique_intents": 24,
+      "early_clarify_intents": ["ambiguous", "error_detection"],
+      "note": "80 step-by-step parse goldens (tokenize→classify); ambiguous/error_detection early in parseKhata; other intents lexicon-only"
+    },
+    "28_legal_section_explainers": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/legal_section_explainers.jsonl",
+      "entries": 61,
+      "alias_keys": 421,
+      "document_types": {
+        "Income Tax Act 2058": 12,
+        "VAT Act 2052": 10,
+        "Company Act 2063": 9,
+        "Labor Act 2074": 10,
+        "Contract Clause - Employment": 2,
+        "Contract Clause - Lease": 4,
+        "Contract Clause - Sale": 4,
+        "Government Circular": 10
+      },
+      "note": "61 plain-language legal section explainers; wired in accountingLanguageBrain after tax FAQ"
+    },
+    "29_document_ocr_extraction_patterns": {
+      "status": "ingested",
+      "source": "data/nepal-ai/documents/document_ocr_extractions.jsonl",
+      "entries": 86,
+      "alias_keys": 150,
+      "unique_document_type_keys": 86,
+      "note": "86 OCR goldens (raw→corrected→extracted); wired in accountingLanguageBrain before schema patterns"
+    },
+    "30_financial_statement_interpretations": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/financial_statement_interpretations.jsonl",
+      "entries": 48,
+      "alias_keys": 144,
+      "statement_types": {
+        "balance_sheet": 10,
+        "profit_loss": 10,
+        "cash_flow_statement": 10,
+        "trial_balance": 8,
+        "bank_reconciliation": 10
+      },
+      "note": "48 sample statement Q&A goldens (BS/P&L/CF/TB/bank recon); wired in accountingLanguageBrain before tax FAQ"
+    },
+    "31_accounting_comparisons": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/accounting_comparisons.jsonl",
+      "entries": 60,
+      "alias_keys": 82,
+      "topics": 11,
+      "note": "60 side-by-side comparison goldens (11 topic pairs); wired in accountingLanguageBrain for comparison questions"
+    },
+    "32_code_mixed_utterances": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/code_mixed_utterances.jsonl",
+      "entries": 82,
+      "alias_keys": 126,
+      "unique_intents": 74,
+      "note": "82 multilingual code-mixed NLU goldens (Nepali/English/Hindi/Devanagari); wired in processMessage + parseKhata early guard"
+    },
+    "33_word_sense_contexts": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/word_sense_contexts.jsonl",
+      "entries": 50,
+      "alias_keys": 350,
+      "words": 50,
+      "note": "50 English polysemy goldens with Nepali meanings + domain cues; wired in processMessage + parseKhata for WSD clarify"
+    },
+    "34_edge_case_handlers": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/edge_case_handlers.jsonl",
+      "entries": 100,
+      "alias_keys": 199,
+      "categories": 10,
+      "note": "100 edge-case NLU goldens (minimal input, ambiguity, boundaries, adversarial); wired in processMessage + parseKhata"
+    },
+    "35_complex_reasoning_scenarios": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/complex_reasoning_scenarios.jsonl",
+      "entries": 50,
+      "alias_keys": 150,
+      "scenario_types": 8,
+      "clarify_needed": 47,
+      "note": "50 multi-step Nepal business reasoning goldens; wired in accountingLanguageBrain + processMessage + parseKhata"
+    },
+    "36_cross_domain_scenarios": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/cross_domain_scenarios.jsonl",
+      "entries": 40,
+      "alias_keys": 97,
+      "domains": 7,
+      "note": "40 cross-domain Nepal business reasoning goldens (labor/tax/import/property/banking); wired in accountingLanguageBrain + processMessage + parseKhata"
+    },
+    "37_classification_explanations": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/classification_explanations.jsonl",
+      "entries": 78,
+      "alias_keys": 230,
+      "explanation_types": 6,
+      "note": "78 AI transparency teaching goldens (why classified/asked/corrected/sourced); wired in accountingLanguageBrain + processMessage + parseKhata"
+    },
+    "38_novel_pattern_handlers": {
+      "status": "ingested",
+      "source": "data/nepal-ai/language/novel_pattern_handlers.jsonl",
+      "entries": 50,
+      "alias_keys": 115,
+      "suggested_intents": 48,
+      "note": "50 novel phrasing generalization goldens; wired in accountingLanguageBrain + processMessage + parseKhata (clarify before journal)"
+    },
+    "39_document_comprehension_scenarios": {
+      "status": "ingested",
+      "source": "data/nepal-ai/documents/document_comprehension_scenarios.jsonl",
+      "entries": 40,
+      "alias_keys": 171,
+      "document_types": 6,
+      "note": "40 multi-page document comprehension goldens (financial report, contract, bank stmt, tax return, audit, board resolution); wired in accountingLanguageBrain + processMessage + parseKhata"
+    },
+    "40_prompt_variants": {
+      "status": "ingested",
+      "source": "data/nepal-ai/behavior/prompt_variants.jsonl",
+      "entries": 20,
+      "alias_keys": 40,
+      "target_behaviors": 20,
+      "note": "20 system-prompt A/B variant goldens for eval routing; wired in accountingLanguageBrain + processMessage (NOT_transaction; test_inputs excluded from alias map)"
     }
   },
   "totals": {
     "sectors": 50,
-    "batches_complete": 40,
+    "batches_complete": 77,
     "batches_pending": 0,
     "router_phrases": 150,
     "verbs": 45,
-    "verb_normalize_entries": 1006,
+    "verb_normalize_entries": 1087,
     "verb_examples": 75,
     "particles": 30,
     "particle_patterns": 150,
@@ -269,7 +806,46 @@
     "07_credit_debt_vocab": 42,
     "08_question_patterns": 37,
     "09_affirmation_negation": 42,
-    "10_time_date": 41
+    "10_time_date": 41,
+    "08b_question_words": 91,
+    "08c_social_discourse": 75,
+    "09b_yes_no_discourse": 58,
+    "05b_number_words": 129,
+    "27b_spelling_corrections": 118,
+    "10b_bikram_calendar": 80,
+    "11b_retail_items": 162,
+    "12_party_name_patterns": 79,
+    "02b_verb_conjugations": 100,
+    "13_accounting_glossary": 136,
+    "14_accounting_faq": 103,
+    "15_multi_turn_conversations": 10,
+    "16_nepali_orthography": 153,
+    "17_clarify_error_patterns": 80,
+    "18_journal_entry_rules": 100,
+    "19_context_resolution_patterns": 60,
+    "20_nepal_regulated_glossary": 150,
+    "05c_amount_extraction_patterns": 75,
+    "11c_sector_term_vocabulary": 127,
+    "29b_response_templates": 61,
+    "15b_conversation_scenarios": 80,
+    "17b_ambiguity_resolution_patterns": 87,
+    "21_nepal_tax_faq": 92,
+    "22_nepal_process_guides": 64,
+    "23_accounting_mistake_patterns": 68,
+    "24_document_understanding_patterns": 50,
+    "25_empathetic_response_patterns": 50,
+    "29_document_ocr_extraction_patterns": 86,
+    "30_financial_statement_interpretations": 48,
+    "31_accounting_comparisons": 60,
+    "32_code_mixed_utterances": 82,
+    "33_word_sense_contexts": 50,
+    "34_edge_case_handlers": 100,
+    "35_complex_reasoning_scenarios": 50,
+    "36_cross_domain_scenarios": 40,
+    "37_classification_explanations": 78,
+    "38_novel_pattern_handlers": 50,
+    "39_document_comprehension_scenarios": 40,
+    "40_prompt_variants": 20
   },
   "next_batch": "complete"
 }

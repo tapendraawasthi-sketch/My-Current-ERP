@@ -1,0 +1,212 @@
+{
+  "vat invoice": {
+    "id": "docu-001",
+    "documentType": "VAT invoice",
+    "documentTypeKey": "vat_invoice",
+    "variantCount": 10
+  },
+  "tax invoice": {
+    "id": "docu-001",
+    "documentType": "VAT invoice",
+    "documentTypeKey": "vat_invoice",
+    "variantCount": 10
+  },
+  "vat bill": {
+    "id": "docu-001",
+    "documentType": "VAT invoice",
+    "documentTypeKey": "vat_invoice",
+    "variantCount": 10
+  },
+  "bill vat": {
+    "id": "docu-001",
+    "documentType": "VAT invoice",
+    "documentTypeKey": "vat_invoice",
+    "variantCount": 10
+  },
+  "vat invoice ma": {
+    "id": "docu-001",
+    "documentType": "VAT invoice",
+    "documentTypeKey": "vat_invoice",
+    "variantCount": 10
+  },
+  "vat bill ma": {
+    "id": "docu-001",
+    "documentType": "VAT invoice",
+    "documentTypeKey": "vat_invoice",
+    "variantCount": 10
+  },
+  "pan certificate": {
+    "id": "docu-011",
+    "documentType": "PAN certificate",
+    "documentTypeKey": "pan_certificate",
+    "variantCount": 6
+  },
+  "pan card": {
+    "id": "docu-011",
+    "documentType": "PAN certificate",
+    "documentTypeKey": "pan_certificate",
+    "variantCount": 6
+  },
+  "pan pramanpatra": {
+    "id": "docu-011",
+    "documentType": "PAN certificate",
+    "documentTypeKey": "pan_certificate",
+    "variantCount": 6
+  },
+  "pan ko certificate": {
+    "id": "docu-011",
+    "documentType": "PAN certificate",
+    "documentTypeKey": "pan_certificate",
+    "variantCount": 6
+  },
+  "company registration certificate": {
+    "id": "docu-017",
+    "documentType": "Company registration certificate",
+    "documentTypeKey": "company_registration_certificate",
+    "variantCount": 6
+  },
+  "company registration": {
+    "id": "docu-017",
+    "documentType": "Company registration certificate",
+    "documentTypeKey": "company_registration_certificate",
+    "variantCount": 6
+  },
+  "incorporation certificate": {
+    "id": "docu-017",
+    "documentType": "Company registration certificate",
+    "documentTypeKey": "company_registration_certificate",
+    "variantCount": 6
+  },
+  "ocr certificate": {
+    "id": "docu-017",
+    "documentType": "Company registration certificate",
+    "documentTypeKey": "company_registration_certificate",
+    "variantCount": 6
+  },
+  "company reg certificate": {
+    "id": "docu-017",
+    "documentType": "Company registration certificate",
+    "documentTypeKey": "company_registration_certificate",
+    "variantCount": 6
+  },
+  "bank statement": {
+    "id": "docu-023",
+    "documentType": "Bank statement",
+    "documentTypeKey": "bank_statement",
+    "variantCount": 6
+  },
+  "bank ko statement": {
+    "id": "docu-023",
+    "documentType": "Bank statement",
+    "documentTypeKey": "bank_statement",
+    "variantCount": 6
+  },
+  "passbook": {
+    "id": "docu-023",
+    "documentType": "Bank statement",
+    "documentTypeKey": "bank_statement",
+    "variantCount": 6
+  },
+  "bank passbook": {
+    "id": "docu-023",
+    "documentType": "Bank statement",
+    "documentTypeKey": "bank_statement",
+    "variantCount": 6
+  },
+  "cheque": {
+    "id": "docu-029",
+    "documentType": "Cheque",
+    "documentTypeKey": "cheque",
+    "variantCount": 6
+  },
+  "check": {
+    "id": "docu-029",
+    "documentType": "Cheque",
+    "documentTypeKey": "cheque",
+    "variantCount": 6
+  },
+  "cheque leaf": {
+    "id": "docu-029",
+    "documentType": "Cheque",
+    "documentTypeKey": "cheque",
+    "variantCount": 6
+  },
+  "bank cheque": {
+    "id": "docu-029",
+    "documentType": "Cheque",
+    "documentTypeKey": "cheque",
+    "variantCount": 6
+  },
+  "receipt": {
+    "id": "docu-035",
+    "documentType": "Receipt/bill",
+    "documentTypeKey": "receipt_bill",
+    "variantCount": 6
+  },
+  "bill": {
+    "id": "docu-035",
+    "documentType": "Receipt/bill",
+    "documentTypeKey": "receipt_bill",
+    "variantCount": 6
+  },
+  "receipt bill": {
+    "id": "docu-035",
+    "documentType": "Receipt/bill",
+    "documentTypeKey": "receipt_bill",
+    "variantCount": 6
+  },
+  "receipt/bill": {
+    "id": "docu-035",
+    "documentType": "Receipt/bill",
+    "documentTypeKey": "receipt_bill",
+    "variantCount": 6
+  },
+  "thermal receipt": {
+    "id": "docu-035",
+    "documentType": "Receipt/bill",
+    "documentTypeKey": "receipt_bill",
+    "variantCount": 6
+  },
+  "purchase order": {
+    "id": "docu-041",
+    "documentType": "Purchase order",
+    "documentTypeKey": "purchase_order",
+    "variantCount": 5
+  },
+  "po": {
+    "id": "docu-041",
+    "documentType": "Purchase order",
+    "documentTypeKey": "purchase_order",
+    "variantCount": 5
+  },
+  "purchase order po": {
+    "id": "docu-041",
+    "documentType": "Purchase order",
+    "documentTypeKey": "purchase_order",
+    "variantCount": 5
+  },
+  "delivery challan": {
+    "id": "docu-046",
+    "documentType": "Delivery challan",
+    "documentTypeKey": "delivery_challan",
+    "variantCount": 5
+  },
+  "challan": {
+    "id": "docu-046",
+    "documentType": "Delivery challan",
+    "documentTypeKey": "delivery_challan",
+    "variantCount": 5
+  },
+  "delivery note": {
+    "id": "docu-046",
+    "documentType": "Delivery challan",
+    "documentTypeKey": "delivery_challan",
+    "variantCount": 5
+  },
+  "dispatch challan": {
+    "id": "docu-046",
+    "documentType": "Delivery challan",
+    "documentTypeKey": "delivery_challan",
+    "variantCount": 5
+  }
+}

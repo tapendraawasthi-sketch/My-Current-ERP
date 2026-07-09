@@ -1,0 +1,671 @@
+{
+  "employee salary 50000, SSF rates apply, compute net and journal entries": {
+    "id": "xdomain_001",
+    "domainsInvolved": [
+      "labor_law",
+      "accounting",
+      "tax"
+    ]
+  },
+  "employee salary 50000, ssf rates apply, compute net and journal entries": {
+    "id": "xdomain_001",
+    "domainsInvolved": [
+      "labor_law",
+      "accounting",
+      "tax"
+    ]
+  },
+  "xdomain_001": {
+    "id": "xdomain_001",
+    "domainsInvolved": [
+      "labor_law",
+      "accounting",
+      "tax"
+    ]
+  },
+  "VAT on domestic sale: invoice 200000, VAT 13%, record journal and VAT payable": {
+    "id": "xdomain_002",
+    "domainsInvolved": [
+      "tax",
+      "accounting"
+    ]
+  },
+  "vat on domestic sale: invoice 200000, vat 13%, record journal and vat payable": {
+    "id": "xdomain_002",
+    "domainsInvolved": [
+      "tax",
+      "accounting"
+    ]
+  },
+  "xdomain_002": {
+    "id": "xdomain_002",
+    "domainsInvolved": [
+      "tax",
+      "accounting"
+    ]
+  },
+  "signing a supply contract with penalty clause; how to account for potential penalties on revenue recognition": {
+    "id": "xdomain_003",
+    "domainsInvolved": [
+      "legal_business"
+    ]
+  },
+  "xdomain_003": {
+    "id": "xdomain_003",
+    "domainsInvolved": [
+      "legal_business"
+    ]
+  },
+  "company takes loan 1,000,000 at 12% annual, 5-year EMI monthly; show first EMI interest and principal split and journal entries": {
+    "id": "xdomain_004",
+    "domainsInvolved": [
+      "banking",
+      "accounting"
+    ]
+  },
+  "company takes loan 1,000,000 at 12% annual, 5-year emi monthly; show first emi interest and principal split and journal entries": {
+    "id": "xdomain_004",
+    "domainsInvolved": [
+      "banking",
+      "accounting"
+    ]
+  },
+  "xdomain_004": {
+    "id": "xdomain_004",
+    "domainsInvolved": [
+      "banking",
+      "accounting"
+    ]
+  },
+  "import goods CIF value 500,000, customs duty 10%, VAT 13% on landed cost; compute duties and taxes": {
+    "id": "xdomain_005",
+    "domainsInvolved": [
+      "import",
+      "tax"
+    ]
+  },
+  "import goods cif value 500,000, customs duty 10%, vat 13% on landed cost; compute duties and taxes": {
+    "id": "xdomain_005",
+    "domainsInvolved": [
+      "import",
+      "tax"
+    ]
+  },
+  "xdomain_005": {
+    "id": "xdomain_005",
+    "domainsInvolved": [
+      "import",
+      "tax"
+    ]
+  },
+  "sell land purchased 10 years ago for 200,000 now sold for 800,000; compute capital gains tax": {
+    "id": "xdomain_006",
+    "domainsInvolved": [
+      "property",
+      "tax"
+    ]
+  },
+  "xdomain_006": {
+    "id": "xdomain_006",
+    "domainsInvolved": [
+      "property",
+      "tax"
+    ]
+  },
+  "company imports machinery CIF 2,000,000, customs duty 5%, VAT 13%, capitalise costs; show accounting treatment": {
+    "id": "xdomain_007",
+    "domainsInvolved": [
+      "tax",
+      "accounting"
+    ]
+  },
+  "company imports machinery cif 2,000,000, customs duty 5%, vat 13%, capitalise costs; show accounting treatment": {
+    "id": "xdomain_007",
+    "domainsInvolved": [
+      "tax",
+      "accounting"
+    ]
+  },
+  "xdomain_007": {
+    "id": "xdomain_007",
+    "domainsInvolved": [
+      "tax",
+      "accounting"
+    ]
+  },
+  "lease agreement with rent escalation and break clause; how to reflect in accounting and business risk": {
+    "id": "xdomain_008",
+    "domainsInvolved": [
+      "legal_business"
+    ]
+  },
+  "xdomain_008": {
+    "id": "xdomain_008",
+    "domainsInvolved": [
+      "legal_business"
+    ]
+  },
+  "company issues short-term overdraft facility 300,000 with interest at 15% p.a.; record interest accrual for one month": {
+    "id": "xdomain_009",
+    "domainsInvolved": [
+      "banking",
+      "accounting"
+    ]
+  },
+  "xdomain_009": {
+    "id": "xdomain_009",
+    "domainsInvolved": [
+      "banking",
+      "accounting"
+    ]
+  },
+  "employee overtime 20 hours at 1.5x, hourly rate 500, compute payroll entries and SSF impact": {
+    "id": "xdomain_010",
+    "domainsInvolved": [
+      "labor_law",
+      "accounting",
+      "tax"
+    ]
+  },
+  "employee overtime 20 hours at 1.5x, hourly rate 500, compute payroll entries and ssf impact": {
+    "id": "xdomain_010",
+    "domainsInvolved": [
+      "labor_law",
+      "accounting",
+      "tax"
+    ]
+  },
+  "xdomain_010": {
+    "id": "xdomain_010",
+    "domainsInvolved": [
+      "labor_law",
+      "accounting",
+      "tax"
+    ]
+  },
+  "input VAT on purchases 120,000; output VAT on sales 90,000; compute VAT payable or refund and journal entries": {
+    "id": "xdomain_011",
+    "domainsInvolved": [
+      "tax",
+      "accounting"
+    ]
+  },
+  "input vat on purchases 120,000; output vat on sales 90,000; compute vat payable or refund and journal entries": {
+    "id": "xdomain_011",
+    "domainsInvolved": [
+      "tax",
+      "accounting"
+    ]
+  },
+  "xdomain_011": {
+    "id": "xdomain_011",
+    "domainsInvolved": [
+      "tax",
+      "accounting"
+    ]
+  },
+  "merger agreement includes earn-out contingent on revenue; how to account and legal considerations": {
+    "id": "xdomain_012",
+    "domainsInvolved": [
+      "legal_business"
+    ]
+  },
+  "xdomain_012": {
+    "id": "xdomain_012",
+    "domainsInvolved": [
+      "legal_business"
+    ]
+  },
+  "company receives bank guarantee fee 2% on 500,000 guarantee for 1 year; record fee recognition monthly": {
+    "id": "xdomain_013",
+    "domainsInvolved": [
+      "banking",
+      "accounting"
+    ]
+  },
+  "xdomain_013": {
+    "id": "xdomain_013",
+    "domainsInvolved": [
+      "banking",
+      "accounting"
+    ]
+  },
+  "import of samples CIF 50,000, customs duty exemption for samples but VAT applies; compute VAT and accounting": {
+    "id": "xdomain_014",
+    "domainsInvolved": [
+      "import",
+      "tax"
+    ]
+  },
+  "import of samples cif 50,000, customs duty exemption for samples but vat applies; compute vat and accounting": {
+    "id": "xdomain_014",
+    "domainsInvolved": [
+      "import",
+      "tax"
+    ]
+  },
+  "xdomain_014": {
+    "id": "xdomain_014",
+    "domainsInvolved": [
+      "import",
+      "tax"
+    ]
+  },
+  "sell residential property held 3 years with cost 3,000,000 sold for 4,200,000; compute capital gains and tax implications": {
+    "id": "xdomain_015",
+    "domainsInvolved": [
+      "property",
+      "tax"
+    ]
+  },
+  "xdomain_015": {
+    "id": "xdomain_015",
+    "domainsInvolved": [
+      "property",
+      "tax"
+    ]
+  },
+  "company issues invoice with VAT inclusive price 113,000; extract net price and VAT and record journal": {
+    "id": "xdomain_016",
+    "domainsInvolved": [
+      "tax",
+      "accounting"
+    ]
+  },
+  "company issues invoice with vat inclusive price 113,000; extract net price and vat and record journal": {
+    "id": "xdomain_016",
+    "domainsInvolved": [
+      "tax",
+      "accounting"
+    ]
+  },
+  "xdomain_016": {
+    "id": "xdomain_016",
+    "domainsInvolved": [
+      "tax",
+      "accounting"
+    ]
+  },
+  "supplier insolvency clause in purchase contract; business and accounting consequences": {
+    "id": "xdomain_017",
+    "domainsInvolved": [
+      "legal_business"
+    ]
+  },
+  "xdomain_017": {
+    "id": "xdomain_017",
+    "domainsInvolved": [
+      "legal_business"
+    ]
+  },
+  "company places 1,500,000 in fixed deposit at 8% annual interest for 6 months; record interest accrual and maturity entries": {
+    "id": "xdomain_018",
+    "domainsInvolved": [
+      "banking",
+      "accounting"
+    ]
+  },
+  "xdomain_018": {
+    "id": "xdomain_018",
+    "domainsInvolved": [
+      "banking",
+      "accounting"
+    ]
+  },
+  "imported goods subject to anti-dumping duty 15% plus customs duty 5% on CIF 1,000,000 and VAT 13%; compute total import charges": {
+    "id": "xdomain_019",
+    "domainsInvolved": [
+      "import",
+      "tax"
+    ]
+  },
+  "imported goods subject to anti-dumping duty 15% plus customs duty 5% on cif 1,000,000 and vat 13%; compute total import charges": {
+    "id": "xdomain_019",
+    "domainsInvolved": [
+      "import",
+      "tax"
+    ]
+  },
+  "xdomain_019": {
+    "id": "xdomain_019",
+    "domainsInvolved": [
+      "import",
+      "tax"
+    ]
+  },
+  "transfer of commercial building with indexation: purchase 5 years ago 10,000,000, sold 12,000,000; apply indexation factor 1.08; compute indexed cost and capital gain": {
+    "id": "xdomain_020",
+    "domainsInvolved": [
+      "property",
+      "tax"
+    ]
+  },
+  "xdomain_020": {
+    "id": "xdomain_020",
+    "domainsInvolved": [
+      "property",
+      "tax"
+    ]
+  },
+  "company receives government grant for R&D 500,000; tax treatment and accounting recognition": {
+    "id": "xdomain_021",
+    "domainsInvolved": [
+      "tax",
+      "accounting"
+    ]
+  },
+  "company receives government grant for r&d 500,000; tax treatment and accounting recognition": {
+    "id": "xdomain_021",
+    "domainsInvolved": [
+      "tax",
+      "accounting"
+    ]
+  },
+  "xdomain_021": {
+    "id": "xdomain_021",
+    "domainsInvolved": [
+      "tax",
+      "accounting"
+    ]
+  },
+  "non-compete clause for seller in asset sale; business valuation and enforceability considerations": {
+    "id": "xdomain_022",
+    "domainsInvolved": [
+      "legal_business"
+    ]
+  },
+  "xdomain_022": {
+    "id": "xdomain_022",
+    "domainsInvolved": [
+      "legal_business"
+    ]
+  },
+  "company issues corporate bond 5,000,000 at 98 (discount) with 6% coupon annual for 3 years; record issuance and first year interest expense using effective interest method": {
+    "id": "xdomain_023",
+    "domainsInvolved": [
+      "banking",
+      "accounting"
+    ]
+  },
+  "xdomain_023": {
+    "id": "xdomain_023",
+    "domainsInvolved": [
+      "banking",
+      "accounting"
+    ]
+  },
+  "import under temporary admission for exhibition; customs bond 200,000, VAT deferred until sale; accounting and tax treatment": {
+    "id": "xdomain_024",
+    "domainsInvolved": [
+      "import",
+      "tax"
+    ]
+  },
+  "import under temporary admission for exhibition; customs bond 200,000, vat deferred until sale; accounting and tax treatment": {
+    "id": "xdomain_024",
+    "domainsInvolved": [
+      "import",
+      "tax"
+    ]
+  },
+  "xdomain_024": {
+    "id": "xdomain_024",
+    "domainsInvolved": [
+      "import",
+      "tax"
+    ]
+  },
+  "gift of land to relative valued 2,500,000; gift tax and donor/recipient reporting implications": {
+    "id": "xdomain_025",
+    "domainsInvolved": [
+      "property",
+      "tax"
+    ]
+  },
+  "xdomain_025": {
+    "id": "xdomain_025",
+    "domainsInvolved": [
+      "property",
+      "tax"
+    ]
+  },
+  "company provides employee fringe benefit car valued 1,200,000; compute taxable benefit and payroll tax entries": {
+    "id": "xdomain_026",
+    "domainsInvolved": [
+      "tax",
+      "accounting"
+    ]
+  },
+  "xdomain_026": {
+    "id": "xdomain_026",
+    "domainsInvolved": [
+      "tax",
+      "accounting"
+    ]
+  },
+  "intellectual property assignment in sale of business; valuation and contractual protections": {
+    "id": "xdomain_027",
+    "domainsInvolved": [
+      "legal_business"
+    ]
+  },
+  "xdomain_027": {
+    "id": "xdomain_027",
+    "domainsInvolved": [
+      "legal_business"
+    ]
+  },
+  "company uses letter of credit (LC) for import 800,000 with 1% bank commission; accounting for LC fees and import payment": {
+    "id": "xdomain_028",
+    "domainsInvolved": [
+      "banking",
+      "accounting"
+    ]
+  },
+  "company uses letter of credit (lc) for import 800,000 with 1% bank commission; accounting for lc fees and import payment": {
+    "id": "xdomain_028",
+    "domainsInvolved": [
+      "banking",
+      "accounting"
+    ]
+  },
+  "xdomain_028": {
+    "id": "xdomain_028",
+    "domainsInvolved": [
+      "banking",
+      "accounting"
+    ]
+  },
+  "import of software license (intangible) CIF 300,000; customs duty exempt but VAT applies on import of intangibles; compute VAT and accounting": {
+    "id": "xdomain_029",
+    "domainsInvolved": [
+      "import",
+      "tax"
+    ]
+  },
+  "import of software license (intangible) cif 300,000; customs duty exempt but vat applies on import of intangibles; compute vat and accounting": {
+    "id": "xdomain_029",
+    "domainsInvolved": [
+      "import",
+      "tax"
+    ]
+  },
+  "xdomain_029": {
+    "id": "xdomain_029",
+    "domainsInvolved": [
+      "import",
+      "tax"
+    ]
+  },
+  "sale of agricultural land with agricultural use exemption; sale price 600,000, cost 200,000; check tax exemption applicability and compute taxable gain if exemption denied": {
+    "id": "xdomain_030",
+    "domainsInvolved": [
+      "property",
+      "tax"
+    ]
+  },
+  "xdomain_030": {
+    "id": "xdomain_030",
+    "domainsInvolved": [
+      "property",
+      "tax"
+    ]
+  },
+  "advance customer payment 250,000 for future taxable service; VAT treatment and revenue recognition": {
+    "id": "xdomain_031",
+    "domainsInvolved": [
+      "tax",
+      "accounting"
+    ]
+  },
+  "advance customer payment 250,000 for future taxable service; vat treatment and revenue recognition": {
+    "id": "xdomain_031",
+    "domainsInvolved": [
+      "tax",
+      "accounting"
+    ]
+  },
+  "xdomain_031": {
+    "id": "xdomain_031",
+    "domainsInvolved": [
+      "tax",
+      "accounting"
+    ]
+  },
+  "data protection clause in supplier contract; business and compliance impacts": {
+    "id": "xdomain_032",
+    "domainsInvolved": [
+      "legal_business"
+    ]
+  },
+  "xdomain_032": {
+    "id": "xdomain_032",
+    "domainsInvolved": [
+      "legal_business"
+    ]
+  },
+  "company refinances existing loan 2,000,000 with new loan at lower rate; accounting for extinguishment and fees 50,000": {
+    "id": "xdomain_033",
+    "domainsInvolved": [
+      "banking",
+      "accounting"
+    ]
+  },
+  "xdomain_033": {
+    "id": "xdomain_033",
+    "domainsInvolved": [
+      "banking",
+      "accounting"
+    ]
+  },
+  "import under preferential tariff with certificate of origin; CIF 700,000, preferential duty 2% vs normal 10%, VAT 13%; compute duties and VAT": {
+    "id": "xdomain_034",
+    "domainsInvolved": [
+      "import",
+      "tax"
+    ]
+  },
+  "import under preferential tariff with certificate of origin; cif 700,000, preferential duty 2% vs normal 10%, vat 13%; compute duties and vat": {
+    "id": "xdomain_034",
+    "domainsInvolved": [
+      "import",
+      "tax"
+    ]
+  },
+  "xdomain_034": {
+    "id": "xdomain_034",
+    "domainsInvolved": [
+      "import",
+      "tax"
+    ]
+  },
+  "partial sale of development land: sold 40% of parcel for 3,200,000; original cost 2,000,000 for whole parcel; allocate cost and compute gain on portion sold": {
+    "id": "xdomain_035",
+    "domainsInvolved": [
+      "property",
+      "tax"
+    ]
+  },
+  "xdomain_035": {
+    "id": "xdomain_035",
+    "domainsInvolved": [
+      "property",
+      "tax"
+    ]
+  },
+  "company receives dividend income 150,000 from domestic subsidiary; withholding tax 10% applies; record net receipt and tax credit": {
+    "id": "xdomain_036",
+    "domainsInvolved": [
+      "tax",
+      "accounting"
+    ]
+  },
+  "xdomain_036": {
+    "id": "xdomain_036",
+    "domainsInvolved": [
+      "tax",
+      "accounting"
+    ]
+  },
+  "warranty provision in sale of goods contract with estimated future claims 120,000; legal enforceability and accounting provision": {
+    "id": "xdomain_037",
+    "domainsInvolved": [
+      "legal_business"
+    ]
+  },
+  "xdomain_037": {
+    "id": "xdomain_037",
+    "domainsInvolved": [
+      "legal_business"
+    ]
+  },
+  "company receives customer deposit 400,000 held in escrow by bank; interest earned 5% credited to escrow annually; accounting treatment for deposit and interest": {
+    "id": "xdomain_038",
+    "domainsInvolved": [
+      "banking",
+      "accounting"
+    ]
+  },
+  "xdomain_038": {
+    "id": "xdomain_038",
+    "domainsInvolved": [
+      "banking",
+      "accounting"
+    ]
+  },
+  "import of goods with excise duty 8% on CIF 400,000 plus customs duty 5% and VAT 13%; compute total taxes and landed cost": {
+    "id": "xdomain_039",
+    "domainsInvolved": [
+      "import",
+      "tax"
+    ]
+  },
+  "import of goods with excise duty 8% on cif 400,000 plus customs duty 5% and vat 13%; compute total taxes and landed cost": {
+    "id": "xdomain_039",
+    "domainsInvolved": [
+      "import",
+      "tax"
+    ]
+  },
+  "xdomain_039": {
+    "id": "xdomain_039",
+    "domainsInvolved": [
+      "import",
+      "tax"
+    ]
+  },
+  "sale of mixed-use property with allocation: total sale 10,000,000; allocate 70% commercial, 30% residential; compute capital gains per portion given cost allocation commercial 4,000,000 residential 1,000,000": {
+    "id": "xdomain_040",
+    "domainsInvolved": [
+      "property",
+      "tax"
+    ]
+  },
+  "xdomain_040": {
+    "id": "xdomain_040",
+    "domainsInvolved": [
+      "property",
+      "tax"
+    ]
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "contradictory_information": [
+    "complex_001",
+    "complex_007",
+    "complex_013",
+    "complex_019",
+    "complex_023",
+    "complex_029",
+    "complex_037",
+    "complex_049"
+  ],
+  "multi_entity_relationship": [
+    "complex_002",
+    "complex_009",
+    "complex_021",
+    "complex_028",
+    "complex_036",
+    "complex_043"
+  ],
+  "temporal_reasoning": [
+    "complex_003",
+    "complex_011",
+    "complex_017",
+    "complex_026",
+    "complex_033",
+    "complex_040",
+    "complex_046"
+  ],
+  "exception_handling": [
+    "complex_004",
+    "complex_014",
+    "complex_020",
+    "complex_027",
+    "complex_034",
+    "complex_041",
+    "complex_047"
+  ],
+  "priority_conflict": [
+    "complex_005",
+    "complex_010",
+    "complex_016",
+    "complex_025",
+    "complex_031",
+    "complex_039",
+    "complex_045"
+  ],
+  "counterfactual_reasoning": [
+    "complex_006",
+    "complex_015",
+    "complex_022",
+    "complex_035",
+    "complex_042"
+  ],
+  "implicit_constraint": [
+    "complex_008",
+    "complex_018",
+    "complex_030",
+    "complex_038",
+    "complex_048"
+  ],
+  "analogy_based": [
+    "complex_012",
+    "complex_024",
+    "complex_032",
+    "complex_044",
+    "complex_050"
+  ]
+}

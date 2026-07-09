@@ -1,0 +1,54 @@
+{
+  "multi_page_financial_report": [
+    "doccmp_001",
+    "doccmp_002",
+    "doccmp_003",
+    "doccmp_004",
+    "doccmp_005",
+    "doccmp_034",
+    "doccmp_040"
+  ],
+  "legal_contract_with_multiple_clauses": [
+    "doccmp_006",
+    "doccmp_007",
+    "doccmp_008",
+    "doccmp_009",
+    "doccmp_010",
+    "doccmp_033",
+    "doccmp_039"
+  ],
+  "bank_statement_with_transaction_history": [
+    "doccmp_011",
+    "doccmp_012",
+    "doccmp_013",
+    "doccmp_014",
+    "doccmp_015",
+    "doccmp_035"
+  ],
+  "tax_return_form_completed": [
+    "doccmp_016",
+    "doccmp_017",
+    "doccmp_018",
+    "doccmp_019",
+    "doccmp_020",
+    "doccmp_021",
+    "doccmp_038"
+  ],
+  "audit_report": [
+    "doccmp_022",
+    "doccmp_023",
+    "doccmp_024",
+    "doccmp_025",
+    "doccmp_026",
+    "doccmp_036"
+  ],
+  "board_resolution": [
+    "doccmp_027",
+    "doccmp_028",
+    "doccmp_029",
+    "doccmp_030",
+    "doccmp_031",
+    "doccmp_032",
+    "doccmp_037"
+  ]
+}

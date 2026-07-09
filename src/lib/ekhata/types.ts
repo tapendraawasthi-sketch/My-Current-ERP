@@ -88,6 +88,10 @@ export interface KhataConfirmationCard {
   /** Primary account classification for this transaction */
   primaryClass?: AccountClass;
   tags?: string[];
+  /** Matched Nepal-AI JE rule id (JE_001…) when condition rules fired */
+  jeRuleId?: string | null;
+  /** Fine-grained JE then_intent before base_intent bridge */
+  jeThenIntent?: string | null;
 }
 
 export interface KhataParseResult {
@@ -95,11 +99,15 @@ export interface KhataParseResult {
   card?: KhataConfirmationCard;
 }
 
+import type { OrbixReportPayload, PendingOrbixReport } from "./orbixReportTypes";
+
 export interface EKhataChatMessage {
   id: string;
   role: "user" | "assistant";
   text: string;
   timestamp: Date;
+  report?: OrbixReportPayload;
+  reportClarify?: PendingOrbixReport;
 }
 
 export const KHATA_INTENT_LABELS: Record<KhataIntent, string> = {

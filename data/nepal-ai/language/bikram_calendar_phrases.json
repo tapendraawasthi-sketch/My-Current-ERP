@@ -1,0 +1,1154 @@
+[
+  {
+    "text": "baisakh",
+    "variants": [
+      "बैशाख",
+      "baishakh"
+    ],
+    "month_number": 1,
+    "day": null,
+    "gregorian_approx": "mid-April to mid-May",
+    "fiscal_significance": "start of Q4, Nepali New Year",
+    "id": "bs-001",
+    "pattern_type": "bs_month",
+    "relative_offset_days": null
+  },
+  {
+    "text": "jestha",
+    "variants": [
+      "जेष्ठ",
+      "जेठ",
+      "jeth"
+    ],
+    "month_number": 2,
+    "day": null,
+    "gregorian_approx": "mid-May to mid-June",
+    "fiscal_significance": "Q4",
+    "id": "bs-002",
+    "pattern_type": "bs_month",
+    "relative_offset_days": null
+  },
+  {
+    "text": "ashadh",
+    "variants": [
+      "आषाढ",
+      "असार",
+      "asar"
+    ],
+    "month_number": 3,
+    "day": null,
+    "gregorian_approx": "mid-June to mid-July",
+    "fiscal_significance": "end of Q4, end of FY",
+    "id": "bs-003",
+    "pattern_type": "bs_month",
+    "relative_offset_days": null
+  },
+  {
+    "text": "shrawan",
+    "variants": [
+      "श्रावण",
+      "साउन",
+      "saun"
+    ],
+    "month_number": 4,
+    "day": null,
+    "gregorian_approx": "mid-July to mid-August",
+    "fiscal_significance": "start of Q1, start of FY",
+    "id": "bs-004",
+    "pattern_type": "bs_month",
+    "relative_offset_days": null
+  },
+  {
+    "text": "bhadra",
+    "variants": [
+      "भदौ",
+      "bhadau"
+    ],
+    "month_number": 5,
+    "day": null,
+    "gregorian_approx": "mid-August to mid-September",
+    "fiscal_significance": "Q1",
+    "id": "bs-005",
+    "pattern_type": "bs_month",
+    "relative_offset_days": null
+  },
+  {
+    "text": "ashwin",
+    "variants": [
+      "आश्विन",
+      "असोज",
+      "asoj"
+    ],
+    "month_number": 6,
+    "day": null,
+    "gregorian_approx": "mid-September to mid-October",
+    "fiscal_significance": "end of Q1",
+    "id": "bs-006",
+    "pattern_type": "bs_month",
+    "relative_offset_days": null
+  },
+  {
+    "text": "kartik",
+    "variants": [
+      "कार्तिक"
+    ],
+    "month_number": 7,
+    "day": null,
+    "gregorian_approx": "mid-October to mid-November",
+    "fiscal_significance": "start of Q2",
+    "id": "bs-007",
+    "pattern_type": "bs_month",
+    "relative_offset_days": null
+  },
+  {
+    "text": "mangsir",
+    "variants": [
+      "मंसिर",
+      "मङ्सिर",
+      "mansir"
+    ],
+    "month_number": 8,
+    "day": null,
+    "gregorian_approx": "mid-November to mid-December",
+    "fiscal_significance": "Q2",
+    "id": "bs-008",
+    "pattern_type": "bs_month",
+    "relative_offset_days": null
+  },
+  {
+    "text": "poush",
+    "variants": [
+      "पौष",
+      "पुष",
+      "push"
+    ],
+    "month_number": 9,
+    "day": null,
+    "gregorian_approx": "mid-December to mid-January",
+    "fiscal_significance": "end of Q2",
+    "id": "bs-009",
+    "pattern_type": "bs_month",
+    "relative_offset_days": null
+  },
+  {
+    "text": "magh",
+    "variants": [
+      "माघ"
+    ],
+    "month_number": 10,
+    "day": null,
+    "gregorian_approx": "mid-January to mid-February",
+    "fiscal_significance": "start of Q3, Maghe Sankranti",
+    "id": "bs-010",
+    "pattern_type": "bs_month",
+    "relative_offset_days": null
+  },
+  {
+    "text": "falgun",
+    "variants": [
+      "फाल्गुन",
+      "फागुन",
+      "phagun"
+    ],
+    "month_number": 11,
+    "day": null,
+    "gregorian_approx": "mid-February to mid-March",
+    "fiscal_significance": "Q3, Holi",
+    "id": "bs-011",
+    "pattern_type": "bs_month",
+    "relative_offset_days": null
+  },
+  {
+    "text": "chaitra",
+    "variants": [
+      "चैत्र"
+    ],
+    "month_number": 12,
+    "day": null,
+    "gregorian_approx": "mid-March to mid-April",
+    "fiscal_significance": "end of Q3",
+    "id": "bs-012",
+    "pattern_type": "bs_month",
+    "relative_offset_days": null
+  },
+  {
+    "text": "aaja",
+    "variants": [
+      "आज"
+    ],
+    "month_number": null,
+    "day": null,
+    "gregorian_approx": "today (relative)",
+    "fiscal_significance": "varies",
+    "id": "bs-013",
+    "pattern_type": "relative_day",
+    "relative_offset_days": 0
+  },
+  {
+    "text": "hijo",
+    "variants": [
+      "हिजो"
+    ],
+    "month_number": null,
+    "day": null,
+    "gregorian_approx": "yesterday (relative)",
+    "fiscal_significance": "varies",
+    "id": "bs-014",
+    "pattern_type": "relative_day",
+    "relative_offset_days": -1
+  },
+  {
+    "text": "bholi",
+    "variants": [
+      "भोलि"
+    ],
+    "month_number": null,
+    "day": null,
+    "gregorian_approx": "tomorrow (relative)",
+    "fiscal_significance": "varies",
+    "id": "bs-015",
+    "pattern_type": "relative_day",
+    "relative_offset_days": 1
+  },
+  {
+    "text": "parsi",
+    "variants": [
+      "पर्सि"
+    ],
+    "month_number": null,
+    "day": null,
+    "gregorian_approx": "day after tomorrow (relative)",
+    "fiscal_significance": "varies",
+    "id": "bs-016",
+    "pattern_type": "relative_day",
+    "relative_offset_days": 2
+  },
+  {
+    "text": "aasti",
+    "variants": [
+      "अस्ति"
+    ],
+    "month_number": null,
+    "day": null,
+    "gregorian_approx": "day before yesterday (relative)",
+    "fiscal_significance": "varies",
+    "id": "bs-017",
+    "pattern_type": "relative_day",
+    "relative_offset_days": -2
+  },
+  {
+    "text": "gata hapta",
+    "variants": [
+      "गत हप्ता",
+      "gata hafta"
+    ],
+    "month_number": null,
+    "day": null,
+    "gregorian_approx": "last week (relative)",
+    "fiscal_significance": "varies",
+    "id": "bs-018",
+    "pattern_type": "relative_period",
+    "relative_offset_days": -7
+  },
+  {
+    "text": "aaune hapta",
+    "variants": [
+      "आउने हप्ता",
+      "aune hapta"
+    ],
+    "month_number": null,
+    "day": null,
+    "gregorian_approx": "next week (relative)",
+    "fiscal_significance": "varies",
+    "id": "bs-019",
+    "pattern_type": "relative_period",
+    "relative_offset_days": 7
+  },
+  {
+    "text": "gata mahina",
+    "variants": [
+      "गत महिना"
+    ],
+    "month_number": null,
+    "day": null,
+    "gregorian_approx": "last month (relative)",
+    "fiscal_significance": "varies",
+    "id": "bs-020",
+    "pattern_type": "relative_period",
+    "relative_offset_days": null
+  },
+  {
+    "text": "aaune mahina",
+    "variants": [
+      "आउने महिना",
+      "aune mahina"
+    ],
+    "month_number": null,
+    "day": null,
+    "gregorian_approx": "next month (relative)",
+    "fiscal_significance": "varies",
+    "id": "bs-021",
+    "pattern_type": "relative_period",
+    "relative_offset_days": null
+  },
+  {
+    "text": "gata barsha",
+    "variants": [
+      "गत बर्ष",
+      "gata barsa"
+    ],
+    "month_number": null,
+    "day": null,
+    "gregorian_approx": "last year (relative)",
+    "fiscal_significance": "varies",
+    "id": "bs-022",
+    "pattern_type": "relative_period",
+    "relative_offset_days": null
+  },
+  {
+    "text": "aaune barsha",
+    "variants": [
+      "आउने बर्ष",
+      "aune barsa"
+    ],
+    "month_number": null,
+    "day": null,
+    "gregorian_approx": "next year (relative)",
+    "fiscal_significance": "varies",
+    "id": "bs-023",
+    "pattern_type": "relative_period",
+    "relative_offset_days": null
+  },
+  {
+    "text": "2080/81",
+    "variants": [
+      "२०८०/८१",
+      "2080-81",
+      "FY 2080/81"
+    ],
+    "month_number": null,
+    "day": null,
+    "gregorian_approx": "mid-July 2080 to mid-July 2081",
+    "fiscal_significance": "Nepali Fiscal Year 2080/81",
+    "id": "bs-024",
+    "pattern_type": "fiscal_year",
+    "relative_offset_days": null
+  },
+  {
+    "text": "2081/82",
+    "variants": [
+      "२०८१/८२",
+      "2081-82",
+      "FY 2081/82"
+    ],
+    "month_number": null,
+    "day": null,
+    "gregorian_approx": "mid-July 2081 to mid-July 2082",
+    "fiscal_significance": "Nepali Fiscal Year 2081/82",
+    "id": "bs-025",
+    "pattern_type": "fiscal_year",
+    "relative_offset_days": null
+  },
+  {
+    "text": "FY 2080-81",
+    "variants": [
+      "FY 2080/81",
+      "एफवाय २०८०-८१"
+    ],
+    "month_number": null,
+    "day": null,
+    "gregorian_approx": "mid-July 2080 to mid-July 2081",
+    "fiscal_significance": "Nepali Fiscal Year 2080/81",
+    "id": "bs-026",
+    "pattern_type": "fiscal_year",
+    "relative_offset_days": null
+  },
+  {
+    "text": "FY 2081-82",
+    "variants": [
+      "FY 2081/82",
+      "एफवाय २०८१-८२"
+    ],
+    "month_number": null,
+    "day": null,
+    "gregorian_approx": "mid-July 2081 to mid-July 2082",
+    "fiscal_significance": "Nepali Fiscal Year 2081/82",
+    "id": "bs-027",
+    "pattern_type": "fiscal_year",
+    "relative_offset_days": null
+  },
+  {
+    "text": "aarthik barsha 2080/81",
+    "variants": [
+      "आर्थिक बर्ष २०८०/८१",
+      "aarthik barsa 2080/81"
+    ],
+    "month_number": null,
+    "day": null,
+    "gregorian_approx": "mid-July 2080 to mid-July 2081",
+    "fiscal_significance": "Nepali Fiscal Year 2080/81",
+    "id": "bs-028",
+    "pattern_type": "fiscal_year",
+    "relative_offset_days": null
+  },
+  {
+    "text": "aarthik barsha 2081/82",
+    "variants": [
+      "आर्थिक बर्ष २०८१/८२",
+      "aarthik barsa 2081/82"
+    ],
+    "month_number": null,
+    "day": null,
+    "gregorian_approx": "mid-July 2081 to mid-July 2082",
+    "fiscal_significance": "Nepali Fiscal Year 2081/82",
+    "id": "bs-029",
+    "pattern_type": "fiscal_year",
+    "relative_offset_days": null
+  },
+  {
+    "text": "FY 081-82",
+    "variants": [
+      "FY 081/082",
+      "एफवाय ०८१-८२"
+    ],
+    "month_number": null,
+    "day": null,
+    "gregorian_approx": "mid-July 2081 to mid-July 2082",
+    "fiscal_significance": "Nepali Fiscal Year 2081/82",
+    "id": "bs-030",
+    "pattern_type": "fiscal_year",
+    "relative_offset_days": null
+  },
+  {
+    "text": "baisakh 1",
+    "variants": [
+      "बैशाख १",
+      "बैशाख १ गते",
+      "baishakh 1",
+      "naya barsha"
+    ],
+    "month_number": 1,
+    "day": 1,
+    "gregorian_approx": "mid-April",
+    "fiscal_significance": "Nepali New Year, start of Q4",
+    "id": "bs-031",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "baisakh 2",
+    "variants": [
+      "बैशाख २",
+      "baishakh 2"
+    ],
+    "month_number": 1,
+    "day": 2,
+    "gregorian_approx": "mid-April",
+    "fiscal_significance": "Q4",
+    "id": "bs-032",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "baisakh 15",
+    "variants": [
+      "बैशाख १५",
+      "baishakh 15"
+    ],
+    "month_number": 1,
+    "day": 15,
+    "gregorian_approx": "late April/early May",
+    "fiscal_significance": "mid Q4",
+    "id": "bs-033",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "baisakh 30",
+    "variants": [
+      "बैशाख ३०",
+      "baishakh 30"
+    ],
+    "month_number": 1,
+    "day": 30,
+    "gregorian_approx": "mid-May",
+    "fiscal_significance": "Q4",
+    "id": "bs-034",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "jestha 1",
+    "variants": [
+      "जेष्ठ १",
+      "जेठ १",
+      "jeth 1"
+    ],
+    "month_number": 2,
+    "day": 1,
+    "gregorian_approx": "mid-May",
+    "fiscal_significance": "Q4",
+    "id": "bs-035",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "jestha 15",
+    "variants": [
+      "जेष्ठ १५",
+      "जेठ १५",
+      "jeth 15"
+    ],
+    "month_number": 2,
+    "day": 15,
+    "gregorian_approx": "late May/early June",
+    "fiscal_significance": "mid Q4",
+    "id": "bs-036",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "jestha 30",
+    "variants": [
+      "जेष्ठ ३०",
+      "जेठ ३०",
+      "jeth 30"
+    ],
+    "month_number": 2,
+    "day": 30,
+    "gregorian_approx": "mid-June",
+    "fiscal_significance": "Q4",
+    "id": "bs-037",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "ashadh 1",
+    "variants": [
+      "आषाढ १",
+      "असार १",
+      "asar 1"
+    ],
+    "month_number": 3,
+    "day": 1,
+    "gregorian_approx": "mid-June",
+    "fiscal_significance": "Q4",
+    "id": "bs-038",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "ashadh 15",
+    "variants": [
+      "आषाढ १५",
+      "असार १५",
+      "asar 15"
+    ],
+    "month_number": 3,
+    "day": 15,
+    "gregorian_approx": "late June/early July",
+    "fiscal_significance": "mid Q4",
+    "id": "bs-039",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "ashadh 30",
+    "variants": [
+      "आषाढ ३०",
+      "असार ३०",
+      "asar 30"
+    ],
+    "month_number": 3,
+    "day": 30,
+    "gregorian_approx": "mid-July",
+    "fiscal_significance": "end of Q4, end of FY",
+    "id": "bs-040",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "ashadh masanta",
+    "variants": [
+      "आषाढ मसान्त",
+      "असार मसान्त",
+      "asar masanta"
+    ],
+    "month_number": 3,
+    "day": null,
+    "gregorian_approx": "mid-July",
+    "fiscal_significance": "end of Q4, end of FY",
+    "id": "bs-041",
+    "pattern_type": "month_end",
+    "relative_offset_days": null
+  },
+  {
+    "text": "shrawan 1",
+    "variants": [
+      "श्रावण १",
+      "साउन १",
+      "saun 1",
+      "श्रावण १ गते"
+    ],
+    "month_number": 4,
+    "day": 1,
+    "gregorian_approx": "mid-July",
+    "fiscal_significance": "start of FY, start of Q1",
+    "id": "bs-042",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "shrawan 2",
+    "variants": [
+      "श्रावण २",
+      "साउन २",
+      "saun 2"
+    ],
+    "month_number": 4,
+    "day": 2,
+    "gregorian_approx": "mid-July",
+    "fiscal_significance": "Q1",
+    "id": "bs-043",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "shrawan 15",
+    "variants": [
+      "श्रावण १५",
+      "साउन १५",
+      "saun 15"
+    ],
+    "month_number": 4,
+    "day": 15,
+    "gregorian_approx": "late July/early August",
+    "fiscal_significance": "mid Q1",
+    "id": "bs-044",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "shrawan 30",
+    "variants": [
+      "श्रावण ३०",
+      "साउन ३०",
+      "saun 30"
+    ],
+    "month_number": 4,
+    "day": 30,
+    "gregorian_approx": "mid-August",
+    "fiscal_significance": "Q1",
+    "id": "bs-045",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "shrawan 31",
+    "variants": [
+      "श्रावण ३१",
+      "साउन ३१",
+      "saun 31"
+    ],
+    "month_number": 4,
+    "day": 31,
+    "gregorian_approx": "mid-August",
+    "fiscal_significance": "Q1",
+    "id": "bs-046",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "bhadra 1",
+    "variants": [
+      "भदौ १",
+      "bhadra 1"
+    ],
+    "month_number": 5,
+    "day": 1,
+    "gregorian_approx": "mid-August",
+    "fiscal_significance": "Q1",
+    "id": "bs-047",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "bhadra 3",
+    "variants": [
+      "भदौ ३",
+      "bhadra 3"
+    ],
+    "month_number": 5,
+    "day": 3,
+    "gregorian_approx": "late August",
+    "fiscal_significance": "Q1 (Teej)",
+    "id": "bs-048",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "bhadra 15",
+    "variants": [
+      "भदौ १५",
+      "bhadra 15"
+    ],
+    "month_number": 5,
+    "day": 15,
+    "gregorian_approx": "early September",
+    "fiscal_significance": "mid Q1",
+    "id": "bs-049",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "bhadra 30",
+    "variants": [
+      "भदौ ३०",
+      "bhadra 30"
+    ],
+    "month_number": 5,
+    "day": 30,
+    "gregorian_approx": "mid-September",
+    "fiscal_significance": "Q1",
+    "id": "bs-050",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "bhadra 31",
+    "variants": [
+      "भदौ ३१",
+      "bhadra 31"
+    ],
+    "month_number": 5,
+    "day": 31,
+    "gregorian_approx": "mid-September",
+    "fiscal_significance": "Q1",
+    "id": "bs-051",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "ashwin 1",
+    "variants": [
+      "आश्विन १",
+      "असोज १",
+      "asoj 1"
+    ],
+    "month_number": 6,
+    "day": 1,
+    "gregorian_approx": "mid-September",
+    "fiscal_significance": "end of Q1",
+    "id": "bs-052",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "ashwin 15",
+    "variants": [
+      "आश्विन १५",
+      "असोज १५",
+      "asoj 15"
+    ],
+    "month_number": 6,
+    "day": 15,
+    "gregorian_approx": "late September/early October",
+    "fiscal_significance": "mid Q1",
+    "id": "bs-053",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "ashwin 30",
+    "variants": [
+      "आश्विन ३०",
+      "असोज ३०",
+      "asoj 30"
+    ],
+    "month_number": 6,
+    "day": 30,
+    "gregorian_approx": "mid-October",
+    "fiscal_significance": "end of Q1",
+    "id": "bs-054",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "ashwin 31",
+    "variants": [
+      "आश्विन ३१",
+      "असोज ३१",
+      "asoj 31"
+    ],
+    "month_number": 6,
+    "day": 31,
+    "gregorian_approx": "mid-October",
+    "fiscal_significance": "end of Q1",
+    "id": "bs-055",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "kartik 1",
+    "variants": [
+      "कार्तिक १",
+      "kartik 1"
+    ],
+    "month_number": 7,
+    "day": 1,
+    "gregorian_approx": "mid-October",
+    "fiscal_significance": "start of Q2",
+    "id": "bs-056",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "kartik 7",
+    "variants": [
+      "कार्तिक ७",
+      "kartik 7"
+    ],
+    "month_number": 7,
+    "day": 7,
+    "gregorian_approx": "late October",
+    "fiscal_significance": "Q2",
+    "id": "bs-057",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "kartik 15",
+    "variants": [
+      "कार्तिक १५",
+      "kartik 15"
+    ],
+    "month_number": 7,
+    "day": 15,
+    "gregorian_approx": "late October/early November",
+    "fiscal_significance": "mid Q2",
+    "id": "bs-058",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "kartik 30",
+    "variants": [
+      "कार्तिक ३०",
+      "kartik 30"
+    ],
+    "month_number": 7,
+    "day": 30,
+    "gregorian_approx": "mid-November",
+    "fiscal_significance": "Q2",
+    "id": "bs-059",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "kartik 31",
+    "variants": [
+      "कार्तिक ३१",
+      "kartik 31"
+    ],
+    "month_number": 7,
+    "day": 31,
+    "gregorian_approx": "mid-November",
+    "fiscal_significance": "Q2",
+    "id": "bs-060",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "mangsir 1",
+    "variants": [
+      "मंसिर १",
+      "मङ्सिर १",
+      "mansir 1"
+    ],
+    "month_number": 8,
+    "day": 1,
+    "gregorian_approx": "mid-November",
+    "fiscal_significance": "Q2",
+    "id": "bs-061",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "mangsir 7",
+    "variants": [
+      "मंसिर ७",
+      "मङ्सिर ७",
+      "mansir 7"
+    ],
+    "month_number": 8,
+    "day": 7,
+    "gregorian_approx": "late November",
+    "fiscal_significance": "Q2",
+    "id": "bs-062",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "mangsir 15",
+    "variants": [
+      "मंसिर १५",
+      "मङ्सिर १५",
+      "mansir 15"
+    ],
+    "month_number": 8,
+    "day": 15,
+    "gregorian_approx": "late November/early December",
+    "fiscal_significance": "mid Q2",
+    "id": "bs-063",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "mangsir 30",
+    "variants": [
+      "मंसिर ३०",
+      "मङ्सिर ३०",
+      "mansir 30"
+    ],
+    "month_number": 8,
+    "day": 30,
+    "gregorian_approx": "mid-December",
+    "fiscal_significance": "Q2",
+    "id": "bs-064",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "poush 1",
+    "variants": [
+      "पौष १",
+      "पुष १",
+      "push 1"
+    ],
+    "month_number": 9,
+    "day": 1,
+    "gregorian_approx": "mid-December",
+    "fiscal_significance": "Q2",
+    "id": "bs-065",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "poush 15",
+    "variants": [
+      "पौष १५",
+      "पुष १५",
+      "push 15"
+    ],
+    "month_number": 9,
+    "day": 15,
+    "gregorian_approx": "late December/early January",
+    "fiscal_significance": "mid Q2",
+    "id": "bs-066",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "poush 25",
+    "variants": [
+      "पौष २५",
+      "पुष २५",
+      "push 25"
+    ],
+    "month_number": 9,
+    "day": 25,
+    "gregorian_approx": "early January",
+    "fiscal_significance": "Q2 (Christmas period)",
+    "id": "bs-067",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "poush 30",
+    "variants": [
+      "पौष ३०",
+      "पुष ३०",
+      "push 30"
+    ],
+    "month_number": 9,
+    "day": 30,
+    "gregorian_approx": "mid-January",
+    "fiscal_significance": "end of Q2",
+    "id": "bs-068",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "magh 1",
+    "variants": [
+      "माघ १",
+      "magh 1"
+    ],
+    "month_number": 10,
+    "day": 1,
+    "gregorian_approx": "mid-January",
+    "fiscal_significance": "start of Q3, Maghe Sankranti",
+    "id": "bs-069",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "magh 2",
+    "variants": [
+      "माघ २",
+      "magh 2"
+    ],
+    "month_number": 10,
+    "day": 2,
+    "gregorian_approx": "mid-January",
+    "fiscal_significance": "Q3",
+    "id": "bs-070",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "magh 15",
+    "variants": [
+      "माघ १५",
+      "magh 15"
+    ],
+    "month_number": 10,
+    "day": 15,
+    "gregorian_approx": "late January/early February",
+    "fiscal_significance": "mid Q3",
+    "id": "bs-071",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "magh 30",
+    "variants": [
+      "माघ ३०",
+      "magh 30"
+    ],
+    "month_number": 10,
+    "day": 30,
+    "gregorian_approx": "mid-February",
+    "fiscal_significance": "Q3",
+    "id": "bs-072",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "falgun 1",
+    "variants": [
+      "फाल्गुन १",
+      "फागुन १",
+      "phagun 1"
+    ],
+    "month_number": 11,
+    "day": 1,
+    "gregorian_approx": "mid-February",
+    "fiscal_significance": "Q3",
+    "id": "bs-073",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "falgun 15",
+    "variants": [
+      "फाल्गुन १५",
+      "फागुन १५",
+      "phagun 15"
+    ],
+    "month_number": 11,
+    "day": 15,
+    "gregorian_approx": "late February/early March",
+    "fiscal_significance": "mid Q3, Holi",
+    "id": "bs-074",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "falgun 30",
+    "variants": [
+      "फाल्गुन ३०",
+      "फागुन ३०",
+      "phagun 30"
+    ],
+    "month_number": 11,
+    "day": 30,
+    "gregorian_approx": "mid-March",
+    "fiscal_significance": "Q3",
+    "id": "bs-075",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "chaitra 1",
+    "variants": [
+      "चैत्र १",
+      "chaitra 1",
+      "चैत्र १ गते"
+    ],
+    "month_number": 12,
+    "day": 1,
+    "gregorian_approx": "mid-March",
+    "fiscal_significance": "Q3",
+    "id": "bs-076",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "chaitra 15",
+    "variants": [
+      "चैत्र १५",
+      "chaitra 15"
+    ],
+    "month_number": 12,
+    "day": 15,
+    "gregorian_approx": "late March/early April",
+    "fiscal_significance": "mid Q3",
+    "id": "bs-077",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "chaitra 30",
+    "variants": [
+      "चैत्र ३०",
+      "chaitra 30"
+    ],
+    "month_number": 12,
+    "day": 30,
+    "gregorian_approx": "mid-April",
+    "fiscal_significance": "end of Q3",
+    "id": "bs-078",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  },
+  {
+    "text": "chaitra masanta",
+    "variants": [
+      "चैत्र मसान्त",
+      "chaitra end"
+    ],
+    "month_number": 12,
+    "day": null,
+    "gregorian_approx": "mid-April",
+    "fiscal_significance": "end of Q3",
+    "id": "bs-079",
+    "pattern_type": "month_end",
+    "relative_offset_days": null
+  },
+  {
+    "text": "naya barsha",
+    "variants": [
+      "नयाँ बर्ष",
+      "baisakh 1",
+      "new year"
+    ],
+    "month_number": 1,
+    "day": 1,
+    "gregorian_approx": "mid-April",
+    "fiscal_significance": "Nepali New Year, start of Q4",
+    "id": "bs-080",
+    "pattern_type": "bs_date",
+    "relative_offset_days": null
+  }
+]

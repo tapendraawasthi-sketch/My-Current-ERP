@@ -1,0 +1,3285 @@
+[
+  {
+    "id": "ri-001",
+    "item": "chamal",
+    "canonical": "chamal",
+    "variants": [
+      "चामल",
+      "rice",
+      "basmati chamal",
+      "sona mansuli"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg",
+    "typical_price_range": "100-180 per kg",
+    "common_phrases": [
+      "chamal ko bhaau",
+      "25 kg chamal",
+      "chamal lina aaune"
+    ]
+  },
+  {
+    "id": "ri-002",
+    "item": "dal",
+    "canonical": "dal",
+    "variants": [
+      "दाल",
+      "masura dal",
+      "moong dal",
+      "chana dal",
+      "lentils"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg",
+    "typical_price_range": "150-250 per kg",
+    "common_phrases": [
+      "dal mahango bhayo",
+      "1 kg masura dal",
+      "dal niskyo"
+    ]
+  },
+  {
+    "id": "ri-003",
+    "item": "tel",
+    "canonical": "tel",
+    "variants": [
+      "तेल",
+      "cooking oil",
+      "sunflower tel",
+      "mustard tel"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "litre",
+    "typical_price_range": "180-300 per litre",
+    "common_phrases": [
+      "tel kinna aako",
+      "5 litre tel",
+      "tel ko mulya"
+    ]
+  },
+  {
+    "id": "ri-004",
+    "item": "chini",
+    "canonical": "chini",
+    "variants": [
+      "चिनी",
+      "sugar",
+      "chini daana",
+      "white sugar"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg",
+    "typical_price_range": "95-120 per kg",
+    "common_phrases": [
+      "chini sangai cha?",
+      "2 kg chini dinus",
+      "chini sakkyo"
+    ]
+  },
+  {
+    "id": "ri-005",
+    "item": "nun",
+    "canonical": "nun",
+    "variants": [
+      "नुन",
+      "salt",
+      "iodine nun",
+      "sendhe nun"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg",
+    "typical_price_range": "25-40 per kg",
+    "common_phrases": [
+      "nun dinu hai",
+      "1 packet nun",
+      "nun thorai cha"
+    ]
+  },
+  {
+    "id": "ri-006",
+    "item": "masala",
+    "canonical": "masala",
+    "variants": [
+      "मसला",
+      "spices",
+      "garam masala",
+      "jira",
+      "khursani",
+      "haldi"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet (gm)",
+    "typical_price_range": "20-150 per pack",
+    "common_phrases": [
+      "masala set cha?",
+      "chicken masala",
+      "masala pasal"
+    ]
+  },
+  {
+    "id": "ri-007",
+    "item": "sabun",
+    "canonical": "sabun",
+    "variants": [
+      "साबुन",
+      "soap",
+      "laundry sabun",
+      "nahaune sabun",
+      "lux sabun"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece",
+    "typical_price_range": "30-80 per piece",
+    "common_phrases": [
+      "sabun kinna",
+      "sabun ko patti",
+      "lux sabun dinus"
+    ]
+  },
+  {
+    "id": "ri-008",
+    "item": "toothpaste",
+    "canonical": "toothpaste",
+    "variants": [
+      "टुथपेस्ट",
+      "dant manjan",
+      "paste",
+      "colgate"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "tube",
+    "typical_price_range": "60-200 per tube",
+    "common_phrases": [
+      "toothpaste lina aako",
+      "colgate dinus",
+      "dant manjan sakkyo"
+    ]
+  },
+  {
+    "id": "ri-009",
+    "item": "biscuit",
+    "canonical": "biscuit",
+    "variants": [
+      "बिस्कुट",
+      "cookies",
+      "glucose biscuit",
+      "kaju biscuit",
+      "biskut"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet",
+    "typical_price_range": "10-100 per packet",
+    "common_phrases": [
+      "biscuit lyadinu",
+      "2 packet biscuit",
+      "biscuit chahyo"
+    ]
+  },
+  {
+    "id": "ri-010",
+    "item": "chah",
+    "canonical": "chah",
+    "variants": [
+      "चिया",
+      "tea",
+      "chiya",
+      "dust tea",
+      "green tea",
+      "chiya patti"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "gm / packet",
+    "typical_price_range": "80-500 per packet",
+    "common_phrases": [
+      "chiya patti dinu",
+      "chai biscuit",
+      "chaha lina"
+    ]
+  },
+  {
+    "id": "ri-011",
+    "item": "doodh",
+    "canonical": "doodh",
+    "variants": [
+      "दुध",
+      "milk",
+      "dudh",
+      "gai ko doodh",
+      "bhainsi doodh"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "litre",
+    "typical_price_range": "80-120 per litre",
+    "common_phrases": [
+      "doodh lina aako",
+      "aadha litre doodh",
+      "doodh fresh cha?"
+    ]
+  },
+  {
+    "id": "ri-012",
+    "item": "dahi",
+    "canonical": "dahi",
+    "variants": [
+      "दही",
+      "yogurt",
+      "curd",
+      "dahi"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "litre / cup",
+    "typical_price_range": "40-150 per kg",
+    "common_phrases": [
+      "dahi kinnu cha",
+      "dahi fresh cha?",
+      "dahi bhaat"
+    ]
+  },
+  {
+    "id": "ri-013",
+    "item": "ghee",
+    "canonical": "ghee",
+    "variants": [
+      "घिउ",
+      "ghee",
+      "clarified butter",
+      "ghew"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "litre / kg",
+    "typical_price_range": "700-1500 per kg",
+    "common_phrases": [
+      "ghee kinna",
+      "ghee chahyo",
+      "pure ghee"
+    ]
+  },
+  {
+    "id": "ri-014",
+    "item": "katahar ko achaar",
+    "canonical": "katahar ko achaar",
+    "variants": [
+      "कटहरको अचार",
+      "pickle",
+      "achaar",
+      "gundruk achaar",
+      "mango achaar"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "bottle / kg",
+    "typical_price_range": "100-500 per bottle",
+    "common_phrases": [
+      "achaar dinu",
+      "gundruk ko achaar",
+      "katahar achaar mitho"
+    ]
+  },
+  {
+    "id": "ri-015",
+    "item": "chino",
+    "canonical": "chino",
+    "variants": [
+      "चिनो",
+      "buckwheat",
+      "phapar ko pitho",
+      "chino ko pitho"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg",
+    "typical_price_range": "120-200 per kg",
+    "common_phrases": [
+      "chino lina aako",
+      "chino ko pitho",
+      "roti chino"
+    ]
+  },
+  {
+    "id": "ri-016",
+    "item": "nauni ghee",
+    "canonical": "nauni ghee",
+    "variants": [
+      "नौनी घिउ",
+      "butter",
+      "makhan",
+      "nauni"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet / gm",
+    "typical_price_range": "100-350 per 500gm",
+    "common_phrases": [
+      "nauni ghee chahyo",
+      "makhan dinu",
+      "bread laune butter"
+    ]
+  },
+  {
+    "id": "ri-017",
+    "item": "suji",
+    "canonical": "suji",
+    "variants": [
+      "सुजी",
+      "semolina",
+      "suji",
+      "suji ko pitho"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg",
+    "typical_price_range": "80-120 per kg",
+    "common_phrases": [
+      "suji ko halwa",
+      "suji dinu",
+      "suji lina aako"
+    ]
+  },
+  {
+    "id": "ri-018",
+    "item": "maida",
+    "canonical": "maida",
+    "variants": [
+      "मैदा",
+      "refined flour",
+      "white flour",
+      "maida pitho"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg",
+    "typical_price_range": "60-90 per kg",
+    "common_phrases": [
+      "maida lina aako",
+      "maida ko roti",
+      "maida aaucha?"
+    ]
+  },
+  {
+    "id": "ri-019",
+    "item": "pitho",
+    "canonical": "pitho",
+    "variants": [
+      "पिठो",
+      "flour",
+      "aata",
+      "ghar ko pitho",
+      "chamal ko pitho"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg",
+    "typical_price_range": "55-100 per kg",
+    "common_phrases": [
+      "pitho kinna aako",
+      "aata pitho",
+      "pitho sakkyo"
+    ]
+  },
+  {
+    "id": "ri-020",
+    "item": "chiso padartha",
+    "canonical": "chiso padartha",
+    "variants": [
+      "चिसो पदार्थ",
+      "cold drinks",
+      "pepsi",
+      "coca cola",
+      "sprite",
+      "fanta"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "bottle",
+    "typical_price_range": "40-120 per bottle",
+    "common_phrases": [
+      "chiso padartha dinu",
+      "coke lina aaye",
+      "2 bottle sprite"
+    ]
+  },
+  {
+    "id": "ri-021",
+    "item": "pani",
+    "canonical": "pani",
+    "variants": [
+      "पानी",
+      "drinking water",
+      "mineral pani",
+      "jar ko pani"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "jar / litre",
+    "typical_price_range": "30-60 per 20 litre jar",
+    "common_phrases": [
+      "pani lina aako",
+      "pani ko jar chahyo",
+      "mineral water"
+    ]
+  },
+  {
+    "id": "ri-022",
+    "item": "rice flour",
+    "canonical": "rice flour",
+    "variants": [
+      "चामलको पिठो",
+      "chamal pitho"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg",
+    "typical_price_range": "90-130 per kg",
+    "common_phrases": [
+      "chamal pitho dinu",
+      "sel roti ko pitho"
+    ]
+  },
+  {
+    "id": "ri-023",
+    "item": "kharbuja",
+    "canonical": "kharbuja",
+    "variants": [
+      "खरबुजा",
+      "melon",
+      "muskmelon",
+      "kharbuja fruit"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece",
+    "typical_price_range": "40-100 per piece",
+    "common_phrases": [
+      "kharbuja mitho cha?",
+      "kharbuja kinnu"
+    ]
+  },
+  {
+    "id": "ri-024",
+    "item": "aalu",
+    "canonical": "aalu",
+    "variants": [
+      "आलु",
+      "potato",
+      "aloo",
+      "rato aalu"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg",
+    "typical_price_range": "30-60 per kg",
+    "common_phrases": [
+      "aalu ko bhaau",
+      "2 kg aalu dinu",
+      "aalu mahango"
+    ]
+  },
+  {
+    "id": "ri-025",
+    "item": "pyaj",
+    "canonical": "pyaj",
+    "variants": [
+      "प्याज",
+      "onion",
+      "pyaj",
+      "sukeko pyaj"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg",
+    "typical_price_range": "40-100 per kg",
+    "common_phrases": [
+      "pyaj kinnu cha",
+      "pyaj dinu",
+      "pyaj ko mulya"
+    ]
+  },
+  {
+    "id": "ri-026",
+    "item": "golbhenda",
+    "canonical": "golbhenda",
+    "variants": [
+      "गोलभेडा",
+      "tomato",
+      "tamatar",
+      "golbheda"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg",
+    "typical_price_range": "40-80 per kg",
+    "common_phrases": [
+      "golbhenda kinnu",
+      "tamatar chahyo",
+      "aalu golbheda"
+    ]
+  },
+  {
+    "id": "ri-027",
+    "item": "hariyo khursani",
+    "canonical": "hariyo khursani",
+    "variants": [
+      "हरियो खुर्सानी",
+      "green chili",
+      "hariyo chili",
+      "khursani"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg / packet",
+    "typical_price_range": "60-150 per kg",
+    "common_phrases": [
+      "hariyo khursani dinu",
+      "khursani tikho cha?",
+      "chili lina"
+    ]
+  },
+  {
+    "id": "ri-028",
+    "item": "lasun",
+    "canonical": "lasun",
+    "variants": [
+      "लसुन",
+      "garlic",
+      "lasun",
+      "suke lasun"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg",
+    "typical_price_range": "200-400 per kg",
+    "common_phrases": [
+      "lasun kinna aako",
+      "lasun ko jhol",
+      "lasun thulo cha"
+    ]
+  },
+  {
+    "id": "ri-029",
+    "item": "adhuwa",
+    "canonical": "adhuwa",
+    "variants": [
+      "अदुवा",
+      "ginger",
+      "adhuwa",
+      "adhuwa khana"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "kg",
+    "typical_price_range": "150-300 per kg",
+    "common_phrases": [
+      "adhuwa chahyo",
+      "adhuwa ko achaar",
+      "adhuwa lina"
+    ]
+  },
+  {
+    "id": "ri-030",
+    "item": "sariya",
+    "canonical": "sariya",
+    "variants": [
+      "सरिया",
+      "rod",
+      "steel rod",
+      "iron rod"
+    ],
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "kg / length",
+    "typical_price_range": "80-120 per kg",
+    "common_phrases": [
+      "sariya kineko",
+      "50 kg sariya",
+      "sariya ko rate"
+    ]
+  },
+  {
+    "id": "ri-031",
+    "item": "siment",
+    "canonical": "siment",
+    "variants": [
+      "सिमेन्ट",
+      "cement",
+      "opi si si",
+      "OPC cement",
+      "PPC cement"
+    ],
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "bag (50kg)",
+    "typical_price_range": "750-1100 per bag",
+    "common_phrases": [
+      "siment ko bora",
+      "10 bag siment",
+      "siment lina aako"
+    ]
+  },
+  {
+    "id": "ri-032",
+    "item": "rod",
+    "canonical": "rod",
+    "variants": [
+      "रड",
+      "steel rod",
+      "sariya rod"
+    ],
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "meter / kg",
+    "typical_price_range": "70-100 per meter",
+    "common_phrases": [
+      "rod kineko",
+      "16mm rod",
+      "rod ko lambai"
+    ]
+  },
+  {
+    "id": "ri-033",
+    "item": "bajri",
+    "canonical": "bajri",
+    "variants": [
+      "बज्री",
+      "gravel",
+      "aggregate",
+      "gitti",
+      "baujri"
+    ],
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "tipper / cubic feet",
+    "typical_price_range": "8000-12000 per tipper",
+    "common_phrases": [
+      "bajri mangaune",
+      "bajri mahango",
+      "bajri tipne"
+    ]
+  },
+  {
+    "id": "ri-034",
+    "item": "gitti",
+    "canonical": "gitti",
+    "variants": [
+      "गिट्टी",
+      "stone chips",
+      "gitti bajri",
+      "crusher gitti"
+    ],
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "cubic feet / truck",
+    "typical_price_range": "3500-6000 per 100 cft",
+    "common_phrases": [
+      "gitti ko bhaau",
+      "gitti lyaunu",
+      "gitti order"
+    ]
+  },
+  {
+    "id": "ri-035",
+    "item": "pipe",
+    "canonical": "pipe",
+    "variants": [
+      "पाइप",
+      "PVC pipe",
+      "polythene pipe",
+      "plumbing pipe",
+      "pipeline"
+    ],
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "meter / piece",
+    "typical_price_range": "50-500 per meter",
+    "common_phrases": [
+      "pipe jodne",
+      "4 inch pipe",
+      "pani ko pipe"
+    ]
+  },
+  {
+    "id": "ri-036",
+    "item": "wire",
+    "canonical": "wire",
+    "variants": [
+      "तार",
+      "electric wire",
+      "wiring",
+      "copper wire",
+      "aluminium wire"
+    ],
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "roll / meter",
+    "typical_price_range": "600-2500 per roll",
+    "common_phrases": [
+      "wire ko roll",
+      "3 core wire",
+      "electrical wire"
+    ]
+  },
+  {
+    "id": "ri-037",
+    "item": "paint",
+    "canonical": "paint",
+    "variants": [
+      "पेन्ट",
+      "colour",
+      "wall paint",
+      "enamel paint",
+      "distemper"
+    ],
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "litre / can",
+    "typical_price_range": "200-800 per litre",
+    "common_phrases": [
+      "paint lina aako",
+      "asian paints",
+      "5 litre paint"
+    ]
+  },
+  {
+    "id": "ri-038",
+    "item": "lakadi",
+    "canonical": "lakadi",
+    "variants": [
+      "लकडी",
+      "wood",
+      "timber",
+      "kath",
+      "sal lakadi"
+    ],
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "cubic feet",
+    "typical_price_range": "1500-4000 per cft",
+    "common_phrases": [
+      "lakadi kinnu",
+      "sal kath",
+      "lakadi ko tasa"
+    ]
+  },
+  {
+    "id": "ri-039",
+    "item": "bhatta",
+    "canonical": "bhatta",
+    "variants": [
+      "भट्टा",
+      "brick",
+      "eeta",
+      "red brick",
+      "cement brick"
+    ],
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "15-25 per piece",
+    "common_phrases": [
+      "bhatta lyaune",
+      "1000 eeta",
+      "bhatta ko quality"
+    ]
+  },
+  {
+    "id": "ri-040",
+    "item": "dhoka",
+    "canonical": "dhoka",
+    "variants": [
+      "ढोका",
+      "door",
+      "wooden dhoka",
+      "steel dhoka",
+      "entrance door"
+    ],
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "5000-25000 per piece",
+    "common_phrases": [
+      "dhoka halne",
+      "dhoka ko design",
+      "naya dhoka"
+    ]
+  },
+  {
+    "id": "ri-041",
+    "item": "jhhyal",
+    "canonical": "jhhyal",
+    "variants": [
+      "झ्याल",
+      "window",
+      "aluminium jhhyal",
+      "khidki",
+      "sliding jhhyal"
+    ],
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "3000-20000 per piece",
+    "common_phrases": [
+      "jhhyal rakhne",
+      "jhhyal ko glass",
+      "aluminium jhhyal"
+    ]
+  },
+  {
+    "id": "ri-042",
+    "item": "slaab",
+    "canonical": "slaab",
+    "variants": [
+      "स्लाब",
+      "slab",
+      "concrete slab",
+      "floor slab"
+    ],
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "square metre",
+    "typical_price_range": "1500-3000 per sqm",
+    "common_phrases": [
+      "slaab casting",
+      "slaab ko kaam",
+      "slaab banne"
+    ]
+  },
+  {
+    "id": "ri-043",
+    "item": "sand",
+    "canonical": "sand",
+    "variants": [
+      "बालुवा",
+      "sand",
+      "baluwa",
+      "river sand",
+      "crusher sand"
+    ],
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "tipper / cubic feet",
+    "typical_price_range": "3000-7000 per tipper",
+    "common_phrases": [
+      "baluwa mangaune",
+      "baluwa lyaunu",
+      "baluwa ko price"
+    ]
+  },
+  {
+    "id": "ri-044",
+    "item": "killa",
+    "canonical": "killa",
+    "variants": [
+      "किल्ला",
+      "nail",
+      "steel nail",
+      "kaathe killa"
+    ],
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "kg / packet",
+    "typical_price_range": "120-180 per kg",
+    "common_phrases": [
+      "killa kinna",
+      "3 inch killa",
+      "killa aaucha?"
+    ]
+  },
+  {
+    "id": "ri-045",
+    "item": "dhoka ko handle",
+    "canonical": "dhoka ko handle",
+    "variants": [
+      "ढोकाको ह्याण्डल",
+      "door handle",
+      "handle",
+      "latch"
+    ],
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "200-1500 per piece",
+    "common_phrases": [
+      "dhoka ko handle",
+      "handle lagaune",
+      "lock set"
+    ]
+  },
+  {
+    "id": "ri-046",
+    "item": "powder",
+    "canonical": "powder",
+    "variants": [
+      "पाउडर",
+      "white cement powder",
+      "plaster powder",
+      "putty"
+    ],
+    "sector": "hardware_construction",
+    "sector_slug": "hardware-construction-materials-shop",
+    "typical_unit": "bag (kg)",
+    "typical_price_range": "500-1200 per bag",
+    "common_phrases": [
+      "powder lagaune",
+      "putty powder",
+      "wall putty"
+    ]
+  },
+  {
+    "id": "ri-047",
+    "item": "mobile",
+    "canonical": "mobile",
+    "variants": [
+      "मोबाइल",
+      "phone",
+      "smartphone",
+      "handset",
+      "mobile phone"
+    ],
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "15000-150000 per piece",
+    "common_phrases": [
+      "naya mobile kinnu",
+      "mobile bigryo",
+      "mobile ko screen"
+    ]
+  },
+  {
+    "id": "ri-048",
+    "item": "laptop",
+    "canonical": "laptop",
+    "variants": [
+      "ल्यापटप",
+      "notebook",
+      "computer",
+      "laptap"
+    ],
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "45000-150000 per piece",
+    "common_phrases": [
+      "laptop chahiyo",
+      "laptop ko price",
+      "laptop service"
+    ]
+  },
+  {
+    "id": "ri-049",
+    "item": "TV",
+    "canonical": "tv",
+    "variants": [
+      "टिभी",
+      "television",
+      "LED TV",
+      "smart TV",
+      "TV set"
+    ],
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "25000-200000 per piece",
+    "common_phrases": [
+      "TV kinnu cha",
+      "TV bigryo",
+      "smart TV"
+    ]
+  },
+  {
+    "id": "ri-050",
+    "item": "fridge",
+    "canonical": "fridge",
+    "variants": [
+      "फ्रिज",
+      "refrigerator",
+      "fridg",
+      "single door fridge",
+      "double door fridge"
+    ],
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "25000-100000 per piece",
+    "common_phrases": [
+      "fridge kinna",
+      "fridge chahiyo",
+      "fridge ko warranty"
+    ]
+  },
+  {
+    "id": "ri-051",
+    "item": "washing machine",
+    "canonical": "washing machine",
+    "variants": [
+      "वासिङ मेसिन",
+      "washing machine",
+      "semi automatic",
+      "fully automatic"
+    ],
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "20000-80000 per piece",
+    "common_phrases": [
+      "washing machine kinnu",
+      "washing machine ko repair",
+      "kapaada dhune machine"
+    ]
+  },
+  {
+    "id": "ri-052",
+    "item": "charger",
+    "canonical": "charger",
+    "variants": [
+      "चार्जर",
+      "phone charger",
+      "mobile charger",
+      "charger cable"
+    ],
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "300-2000 per piece",
+    "common_phrases": [
+      "charger lina aako",
+      "charger bigryo",
+      "fast charger"
+    ]
+  },
+  {
+    "id": "ri-053",
+    "item": "cable",
+    "canonical": "cable",
+    "variants": [
+      "केबल",
+      "USB cable",
+      "data cable",
+      "HDMI cable",
+      "charging cable"
+    ],
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "100-800 per piece",
+    "common_phrases": [
+      "cable kinna",
+      "data cable chahiyo",
+      "USB cable"
+    ]
+  },
+  {
+    "id": "ri-054",
+    "item": "headphone",
+    "canonical": "headphone",
+    "variants": [
+      "हेडफोन",
+      "earphone",
+      "earbuds",
+      "headset",
+      "bluetooth headphone"
+    ],
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "500-5000 per piece",
+    "common_phrases": [
+      "headphone lagaune",
+      "headphone bigryo",
+      "wireless headphone"
+    ]
+  },
+  {
+    "id": "ri-055",
+    "item": "power bank",
+    "canonical": "power bank",
+    "variants": [
+      "पावर बैंक",
+      "powerbank",
+      "battery pack"
+    ],
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "1500-6000 per piece",
+    "common_phrases": [
+      "power bank lina aako",
+      "power bank charge",
+      "10,000 mAH power bank"
+    ]
+  },
+  {
+    "id": "ri-056",
+    "item": "USB drive",
+    "canonical": "usb drive",
+    "variants": [
+      "USB ड्राइभ",
+      "pendrive",
+      "flash drive",
+      "memory stick"
+    ],
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "500-2500 per piece",
+    "common_phrases": [
+      "pendrive kinna",
+      "32GB pendrive",
+      "USB lageko"
+    ]
+  },
+  {
+    "id": "ri-057",
+    "item": "smartwatch",
+    "canonical": "smartwatch",
+    "variants": [
+      "स्मार्टवाच",
+      "smart watch",
+      "fitness band",
+      "galaxy watch"
+    ],
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "3000-30000 per piece",
+    "common_phrases": [
+      "smartwatch kinnu",
+      "smartwatch ko price",
+      "band fit"
+    ]
+  },
+  {
+    "id": "ri-058",
+    "item": "tablet",
+    "canonical": "tablet",
+    "variants": [
+      "ट्याब्लेट",
+      "iPad",
+      "android tablet",
+      "tablet computer"
+    ],
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "15000-120000 per piece",
+    "common_phrases": [
+      "tablet kinnu cha",
+      "tablet chahiyo",
+      "iPad kinne"
+    ]
+  },
+  {
+    "id": "ri-059",
+    "item": "AC",
+    "canonical": "ac",
+    "variants": [
+      "एसी",
+      "air conditioner",
+      "split AC",
+      "inverter AC"
+    ],
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "35000-120000 per piece",
+    "common_phrases": [
+      "AC kinna",
+      "AC install",
+      "AC ko price"
+    ]
+  },
+  {
+    "id": "ri-060",
+    "item": "iron",
+    "canonical": "iron",
+    "variants": [
+      "आइरन",
+      "press",
+      "electric iron",
+      "steam iron"
+    ],
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "800-4000 per piece",
+    "common_phrases": [
+      "iron kinna aako",
+      "iron bigryo",
+      "kapada press garne"
+    ]
+  },
+  {
+    "id": "ri-061",
+    "item": "mixer grinder",
+    "canonical": "mixer grinder",
+    "variants": [
+      "मिक्सर ग्राइन्डर",
+      "blender",
+      "juicer mixer",
+      "grinder"
+    ],
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "2500-10000 per piece",
+    "common_phrases": [
+      "mixer grinder chahiyo",
+      "mixer bigryo",
+      "masala pisine machine"
+    ]
+  },
+  {
+    "id": "ri-062",
+    "item": "induction cooker",
+    "canonical": "induction cooker",
+    "variants": [
+      "इन्डक्सन कूकर",
+      "induction",
+      "electric stove"
+    ],
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "2500-8000 per piece",
+    "common_phrases": [
+      "induction kinna",
+      "induction ma pakaaune",
+      "induction ko pan"
+    ]
+  },
+  {
+    "id": "ri-063",
+    "item": "electric kettle",
+    "canonical": "electric kettle",
+    "variants": [
+      "इलेक्ट्रिक केतली",
+      "kettle",
+      "panni taapne",
+      "hot pot"
+    ],
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "1500-5000 per piece",
+    "common_phrases": [
+      "kettle kinna aako",
+      "chiso pani taapne kettle",
+      "electric kettle"
+    ]
+  },
+  {
+    "id": "ri-064",
+    "item": "camera",
+    "canonical": "camera",
+    "variants": [
+      "क्यामेरा",
+      "DSLR",
+      "digital camera",
+      "security camera",
+      "cctv"
+    ],
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "15000-200000 per piece",
+    "common_phrases": [
+      "camera kinna",
+      "camera ko lens",
+      "CCTV camera"
+    ]
+  },
+  {
+    "id": "ri-065",
+    "item": "shirt",
+    "canonical": "shirt",
+    "variants": [
+      "सर्ट",
+      "shirt",
+      "formal shirt",
+      "cotton shirt"
+    ],
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece",
+    "typical_price_range": "800-5000 per piece",
+    "common_phrases": [
+      "shirt kinna aako",
+      "shirt ko size",
+      "formal shirt"
+    ]
+  },
+  {
+    "id": "ri-066",
+    "item": "pant",
+    "canonical": "pant",
+    "variants": [
+      "पाइन्ट",
+      "trousers",
+      "jeans",
+      "casual pant",
+      "formal pant"
+    ],
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece",
+    "typical_price_range": "1000-6000 per piece",
+    "common_phrases": [
+      "pant lina aako",
+      "pant fit bhayo",
+      "jeans pant"
+    ]
+  },
+  {
+    "id": "ri-067",
+    "item": "saree",
+    "canonical": "saree",
+    "variants": [
+      "सारी",
+      "sari",
+      "silk saree",
+      "cotton saree",
+      "designer saree"
+    ],
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece",
+    "typical_price_range": "1500-50000 per piece",
+    "common_phrases": [
+      "saree kinna",
+      "saree ko pallu",
+      "new saree"
+    ]
+  },
+  {
+    "id": "ri-068",
+    "item": "kurta",
+    "canonical": "kurta",
+    "variants": [
+      "कुर्ता",
+      "kurta pajama",
+      "cotton kurta",
+      "kurta set",
+      "ladies kurta"
+    ],
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece",
+    "typical_price_range": "800-8000 per piece",
+    "common_phrases": [
+      "kurta lina aaye",
+      "kurta suruwal",
+      "kurta design"
+    ]
+  },
+  {
+    "id": "ri-069",
+    "item": "cap",
+    "canonical": "cap",
+    "variants": [
+      "क्याप",
+      "topi",
+      "hat",
+      "cap",
+      "sports cap"
+    ],
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece",
+    "typical_price_range": "200-1500 per piece",
+    "common_phrases": [
+      "cap kinna aako",
+      "cap lagaaune",
+      "Nepal topi"
+    ]
+  },
+  {
+    "id": "ri-070",
+    "item": "shoes",
+    "canonical": "shoes",
+    "variants": [
+      "जुत्ता",
+      "jutta",
+      "shoes",
+      "formal shoes",
+      "sports shoes"
+    ],
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "pair",
+    "typical_price_range": "1200-8000 per pair",
+    "common_phrases": [
+      "shoes lina aako",
+      "jutta tight bhayo",
+      "naya shoes"
+    ]
+  },
+  {
+    "id": "ri-071",
+    "item": "slippers",
+    "canonical": "slippers",
+    "variants": [
+      "चप्पल",
+      "chappal",
+      "slippers",
+      "hawai chappal",
+      "kath ko chappal"
+    ],
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "pair",
+    "typical_price_range": "200-1500 per pair",
+    "common_phrases": [
+      "slippers kinna",
+      "chappal lagaune",
+      "chappal bigryo"
+    ]
+  },
+  {
+    "id": "ri-072",
+    "item": "jacket",
+    "canonical": "jacket",
+    "variants": [
+      "ज्याकेट",
+      "jacket",
+      "coat",
+      "leather jacket",
+      "hoodie jacket"
+    ],
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece",
+    "typical_price_range": "2000-15000 per piece",
+    "common_phrases": [
+      "jacket lina aaye",
+      "jacket chahiyo",
+      "winter jacket"
+    ]
+  },
+  {
+    "id": "ri-073",
+    "item": "shal",
+    "canonical": "shal",
+    "variants": [
+      "शल",
+      "shawl",
+      "wrap",
+      "pashmina shal"
+    ],
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece",
+    "typical_price_range": "500-8000 per piece",
+    "common_phrases": [
+      "shal odhne",
+      "shal kinna",
+      "pashmina shal"
+    ]
+  },
+  {
+    "id": "ri-074",
+    "item": "muffler",
+    "canonical": "muffler",
+    "variants": [
+      "मफ्लर",
+      "muffler",
+      "winter scarf",
+      "muffler topi"
+    ],
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece",
+    "typical_price_range": "300-2000 per piece",
+    "common_phrases": [
+      "muffler lagaune",
+      "muffler kinna",
+      "gham ma muffler"
+    ]
+  },
+  {
+    "id": "ri-075",
+    "item": "daura suruwal",
+    "canonical": "daura suruwal",
+    "variants": [
+      "दौरा सुरुवाल",
+      "daura suruwal",
+      "nepali topi suruwal"
+    ],
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "set",
+    "typical_price_range": "2000-15000 per set",
+    "common_phrases": [
+      "daura suruwal silaune",
+      "daura suruwal set",
+      "nepali dress"
+    ]
+  },
+  {
+    "id": "ri-076",
+    "item": "dhaka topi",
+    "canonical": "dhaka topi",
+    "variants": [
+      "ढाका टोपी",
+      "nepali cap",
+      "dhaka topi",
+      "topi"
+    ],
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece",
+    "typical_price_range": "200-1000 per piece",
+    "common_phrases": [
+      "dhaka topi kinna",
+      "nepali topi",
+      "topi laune"
+    ]
+  },
+  {
+    "id": "ri-077",
+    "item": "fariya",
+    "canonical": "fariya",
+    "variants": [
+      "फरिया",
+      "fariya",
+      "cotton fariya",
+      "semi sariya"
+    ],
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece",
+    "typical_price_range": "800-5000 per piece",
+    "common_phrases": [
+      "fariya kinna aaye",
+      "fariya lagau",
+      "fariya blouse"
+    ]
+  },
+  {
+    "id": "ri-078",
+    "item": "sweater",
+    "canonical": "sweater",
+    "variants": [
+      "स्विटर",
+      "sweater",
+      "woolen sweater",
+      "switer"
+    ],
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece",
+    "typical_price_range": "1000-6000 per piece",
+    "common_phrases": [
+      "sweater kinna",
+      "sweater lagaune",
+      "naya sweater"
+    ]
+  },
+  {
+    "id": "ri-079",
+    "item": "lehnga",
+    "canonical": "lehnga",
+    "variants": [
+      "लेहङ्गा",
+      "lehenga",
+      "party lehnga",
+      "bridal lehnga"
+    ],
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece",
+    "typical_price_range": "3000-50000 per piece",
+    "common_phrases": [
+      "lehnga kinna aako",
+      "lehnga design",
+      "red lehnga"
+    ]
+  },
+  {
+    "id": "ri-080",
+    "item": "shorts",
+    "canonical": "shorts",
+    "variants": [
+      "सर्ट्स",
+      "half pant",
+      "short pant",
+      "casual shorts"
+    ],
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece",
+    "typical_price_range": "600-3000 per piece",
+    "common_phrases": [
+      "shorts kinna",
+      "shorts lagaune",
+      "garmi ko shorts"
+    ]
+  },
+  {
+    "id": "ri-081",
+    "item": "momo",
+    "canonical": "momo",
+    "variants": [
+      "मःम",
+      "momo",
+      "dumplings",
+      "chicken momo",
+      "buff momo",
+      "veg momo"
+    ],
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate",
+    "typical_price_range": "100-250 per plate",
+    "common_phrases": [
+      "momo khaane",
+      "10 momo dinu",
+      "momo ko achar"
+    ]
+  },
+  {
+    "id": "ri-082",
+    "item": "chowmein",
+    "canonical": "chowmein",
+    "variants": [
+      "चाउमिन",
+      "chowmein",
+      "fried noodles",
+      "noodle",
+      "chicken chowmein"
+    ],
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate",
+    "typical_price_range": "100-250 per plate",
+    "common_phrases": [
+      "chowmein banaunu",
+      "chowmein plate",
+      "chowmein order"
+    ]
+  },
+  {
+    "id": "ri-083",
+    "item": "dal bhat",
+    "canonical": "dal bhat",
+    "variants": [
+      "दाल भात",
+      "dal bhat",
+      "dal bhat tarkari",
+      "thali"
+    ],
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "set",
+    "typical_price_range": "200-500 per set",
+    "common_phrases": [
+      "dal bhat khaane",
+      "dal bhat set",
+      "dal bhat power"
+    ]
+  },
+  {
+    "id": "ri-084",
+    "item": "tea",
+    "canonical": "tea",
+    "variants": [
+      "चिया",
+      "tea",
+      "chiya",
+      "doodh chiya",
+      "black tea"
+    ],
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "cup",
+    "typical_price_range": "25-80 per cup",
+    "common_phrases": [
+      "chiya piune",
+      "chiya dinu",
+      "ek cup chiya"
+    ]
+  },
+  {
+    "id": "ri-085",
+    "item": "coffee",
+    "canonical": "coffee",
+    "variants": [
+      "कफी",
+      "coffee",
+      "hot coffee",
+      "cold coffee",
+      "cappuccino"
+    ],
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "cup",
+    "typical_price_range": "60-250 per cup",
+    "common_phrases": [
+      "coffee piune",
+      "coffee dinu",
+      "espresso coffee"
+    ]
+  },
+  {
+    "id": "ri-086",
+    "item": "cold drinks",
+    "canonical": "cold drinks",
+    "variants": [
+      "चिसो पदार्थ",
+      "cold drinks",
+      "coke",
+      "pepsi",
+      "fanta",
+      "sprite"
+    ],
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "bottle",
+    "typical_price_range": "40-100 per bottle",
+    "common_phrases": [
+      "cold drinks dinu",
+      "coke lina",
+      "chiso pepsi"
+    ]
+  },
+  {
+    "id": "ri-087",
+    "item": "sel roti",
+    "canonical": "sel roti",
+    "variants": [
+      "सेल रोटी",
+      "sel roti",
+      "ring bread",
+      "nepali sel"
+    ],
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "piece",
+    "typical_price_range": "20-50 per piece",
+    "common_phrases": [
+      "sel roti khaane",
+      "sel roti dinu",
+      "sel roti mitho"
+    ]
+  },
+  {
+    "id": "ri-088",
+    "item": "gundruk",
+    "canonical": "gundruk",
+    "variants": [
+      "गुन्द्रुक",
+      "gundruk",
+      "fermented greens",
+      "gundruk soup"
+    ],
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate",
+    "typical_price_range": "100-200 per plate",
+    "common_phrases": [
+      "gundruk khaane",
+      "gundruk ko jhol",
+      "gundruk bhat"
+    ]
+  },
+  {
+    "id": "ri-089",
+    "item": "yomari",
+    "canonical": "yomari",
+    "variants": [
+      "योमरी",
+      "yomari",
+      "newari sweet",
+      "chaku yomari"
+    ],
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "piece",
+    "typical_price_range": "30-60 per piece",
+    "common_phrases": [
+      "yomari khaane",
+      "yomari dinu",
+      "yomari purnima"
+    ]
+  },
+  {
+    "id": "ri-090",
+    "item": "chana chat",
+    "canonical": "chana chat",
+    "variants": [
+      "चना चट",
+      "chana chat",
+      "chana masala",
+      "spicy chana"
+    ],
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate",
+    "typical_price_range": "80-150 per plate",
+    "common_phrases": [
+      "chana chat khaane",
+      "chat dinu",
+      "chana chat mitho"
+    ]
+  },
+  {
+    "id": "ri-091",
+    "item": "pani puri",
+    "canonical": "pani puri",
+    "variants": [
+      "पानी पुरी",
+      "pani puri",
+      "golgappa",
+      "puchka"
+    ],
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate",
+    "typical_price_range": "50-100 per plate",
+    "common_phrases": [
+      "pani puri khaane",
+      "pani puri dinu",
+      "chatpate"
+    ]
+  },
+  {
+    "id": "ri-092",
+    "item": "biryani",
+    "canonical": "biryani",
+    "variants": [
+      "बिर्यानी",
+      "biryani",
+      "chicken biryani",
+      "biryani rice"
+    ],
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate",
+    "typical_price_range": "150-350 per plate",
+    "common_phrases": [
+      "biryani khaane",
+      "biryani order",
+      "chicken biryani"
+    ]
+  },
+  {
+    "id": "ri-093",
+    "item": "puri tarkari",
+    "canonical": "puri tarkari",
+    "variants": [
+      "पुरी तरकारी",
+      "puri tarkari",
+      "puri aloo",
+      "puri bhaji"
+    ],
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate",
+    "typical_price_range": "100-200 per plate",
+    "common_phrases": [
+      "puri tarkari dinu",
+      "puri bhaji",
+      "breakfast puri"
+    ]
+  },
+  {
+    "id": "ri-094",
+    "item": "thakali khana",
+    "canonical": "thakali khana",
+    "variants": [
+      "थकाली खाना",
+      "thakali set",
+      "thakali bhat",
+      "dal bhat set thakali"
+    ],
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "set",
+    "typical_price_range": "300-700 per set",
+    "common_phrases": [
+      "thakali khana set",
+      "thakali bhat",
+      "thakali dinu"
+    ]
+  },
+  {
+    "id": "ri-095",
+    "item": "chicken roast",
+    "canonical": "chicken roast",
+    "variants": [
+      "चिकेन रोस्ट",
+      "roast chicken",
+      "tandoori chicken"
+    ],
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "piece / plate",
+    "typical_price_range": "400-800 per half",
+    "common_phrases": [
+      "chicken roast order",
+      "roast dinu",
+      "chicken set"
+    ]
+  },
+  {
+    "id": "ri-096",
+    "item": "jalebi",
+    "canonical": "jalebi",
+    "variants": [
+      "जिलेबी",
+      "jalebi",
+      "sweet jalebi",
+      "jalebi swari"
+    ],
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate",
+    "typical_price_range": "50-150 per plate",
+    "common_phrases": [
+      "jalebi khaane",
+      "jalebi dinu",
+      "tato jalebi"
+    ]
+  },
+  {
+    "id": "ri-097",
+    "item": "samosa",
+    "canonical": "samosa",
+    "variants": [
+      "समोसा",
+      "samosa",
+      "samosa chana",
+      "aloo samosa"
+    ],
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "piece",
+    "typical_price_range": "20-40 per piece",
+    "common_phrases": [
+      "samosa khaane",
+      "samosa dinu",
+      "samosa ko achar"
+    ]
+  },
+  {
+    "id": "ri-098",
+    "item": "bhatmas sadeko",
+    "canonical": "bhatmas sadeko",
+    "variants": [
+      "भटमास साँदेको",
+      "bhatmas",
+      "soybean sadeko",
+      "sadeko bhatmas"
+    ],
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate",
+    "typical_price_range": "80-150 per plate",
+    "common_phrases": [
+      "bhatmas sadeko dinu",
+      "sadeko bhatmas",
+      "bhatmas khane"
+    ]
+  },
+  {
+    "id": "ri-099",
+    "item": "chicken curry",
+    "canonical": "chicken curry",
+    "variants": [
+      "चिकेन करी",
+      "chicken tarkari",
+      "kukhura ko masu",
+      "chicken curry"
+    ],
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "plate",
+    "typical_price_range": "250-500 per plate",
+    "common_phrases": [
+      "chicken curry chahyo",
+      "kukhura ko masu",
+      "chicken tarkari"
+    ]
+  },
+  {
+    "id": "ri-100",
+    "item": "mango lassi",
+    "canonical": "mango lassi",
+    "variants": [
+      "आँप लस्सी",
+      "mango lassi",
+      "lassi",
+      "aam ko lassi"
+    ],
+    "sector": "food_restaurant",
+    "sector_slug": "restaurant-cafe",
+    "typical_unit": "glass",
+    "typical_price_range": "60-150 per glass",
+    "common_phrases": [
+      "lassi piune",
+      "mango lassi dinu",
+      "lassi mitho"
+    ]
+  },
+  {
+    "id": "ri-101",
+    "item": "ausadhi",
+    "canonical": "ausadhi",
+    "variants": [
+      "औषधी",
+      "medicine",
+      "dawai",
+      "ausadhi pasal"
+    ],
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece / strip",
+    "typical_price_range": "varies",
+    "common_phrases": [
+      "ausadhi kinna",
+      "ausadhi dinu",
+      "ausadhi sakkyo"
+    ]
+  },
+  {
+    "id": "ri-102",
+    "item": "tablet medicine",
+    "canonical": "tablet medicine",
+    "variants": [
+      "ट्याब्लेट",
+      "tablet medicine",
+      "goli",
+      "medicine tablet"
+    ],
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "strip / piece",
+    "typical_price_range": "20-500 per strip",
+    "common_phrases": [
+      "tablet linu",
+      "tablet dinu",
+      "painkiller tablet"
+    ]
+  },
+  {
+    "id": "ri-103",
+    "item": "syrup",
+    "canonical": "syrup",
+    "variants": [
+      "सिरप",
+      "syrup",
+      "ausadhi syrup",
+      "cough syrup"
+    ],
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "bottle",
+    "typical_price_range": "80-300 per bottle",
+    "common_phrases": [
+      "syrup chahiyo",
+      "khokiko syrup",
+      "syrup dinu"
+    ]
+  },
+  {
+    "id": "ri-104",
+    "item": "paracetamol",
+    "canonical": "paracetamol",
+    "variants": [
+      "पारासिटामोल",
+      "paracetamol",
+      "cetamol",
+      "flexon"
+    ],
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "tablet / strip",
+    "typical_price_range": "2-5 per tablet",
+    "common_phrases": [
+      "paracetamol dinu",
+      "paracetamol khaaye",
+      "cetamol tablet"
+    ]
+  },
+  {
+    "id": "ri-105",
+    "item": "bandage",
+    "canonical": "bandage",
+    "variants": [
+      "पट्टी",
+      "bandage",
+      "patti",
+      "elastic bandage"
+    ],
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "roll",
+    "typical_price_range": "30-150 per roll",
+    "common_phrases": [
+      "bandage lagaune",
+      "bandage chahiyo",
+      "patti dinu"
+    ]
+  },
+  {
+    "id": "ri-106",
+    "item": "antacid",
+    "canonical": "antacid",
+    "variants": [
+      "एन्ट्यासिड",
+      "antacid",
+      "gastric",
+      "digene",
+      "muci gel"
+    ],
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "bottle / strip",
+    "typical_price_range": "100-300 per bottle",
+    "common_phrases": [
+      "antacid linu",
+      "gastric ko ausadhi",
+      "digene dinu"
+    ]
+  },
+  {
+    "id": "ri-107",
+    "item": "antibiotic",
+    "canonical": "antibiotic",
+    "variants": [
+      "एन्टिबायोटिक",
+      "antibiotic",
+      "azithromycin",
+      "amoxicillin"
+    ],
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "strip",
+    "typical_price_range": "150-600 per strip",
+    "common_phrases": [
+      "antibiotic lekhya chha",
+      "antibiotic dinu",
+      "infection ko ausadhi"
+    ]
+  },
+  {
+    "id": "ri-108",
+    "item": "painkiller",
+    "canonical": "painkiller",
+    "variants": [
+      "पेनकिलर",
+      "painkiller",
+      "brufen",
+      "ibuprofen",
+      "diclofenac"
+    ],
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "tablet / strip",
+    "typical_price_range": "3-15 per tablet",
+    "common_phrases": [
+      "painkiller chahiyo",
+      "diclofenac dinu",
+      "dukhai ko tablet"
+    ]
+  },
+  {
+    "id": "ri-109",
+    "item": "multivitamin",
+    "canonical": "multivitamin",
+    "variants": [
+      "मल्टिभिटामिन",
+      "multivitamin",
+      "vitamin tablet",
+      "becosules"
+    ],
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "strip / bottle",
+    "typical_price_range": "100-500 per pack",
+    "common_phrases": [
+      "multivitamin dinu",
+      "vitamin C dinu",
+      "becosules chahyo"
+    ]
+  },
+  {
+    "id": "ri-110",
+    "item": "cetirizine",
+    "canonical": "cetirizine",
+    "variants": [
+      "सेटिरिजिन",
+      "cetirizine",
+      "allergy tablet",
+      "citrizin"
+    ],
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "tablet / strip",
+    "typical_price_range": "3-8 per tablet",
+    "common_phrases": [
+      "allergy ko tablet dinu",
+      "cetirizine khaaye",
+      "citrizin chahyo"
+    ]
+  },
+  {
+    "id": "ri-111",
+    "item": "band-aid",
+    "canonical": "band-aid",
+    "variants": [
+      "ब्यान्डएड",
+      "band-aid",
+      "sticking plaster",
+      "adhesive bandage"
+    ],
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece",
+    "typical_price_range": "2-10 per piece",
+    "common_phrases": [
+      "band-aid lagaune",
+      "band-aid dinu",
+      "choto lai band-aid"
+    ]
+  },
+  {
+    "id": "ri-112",
+    "item": "thermometer",
+    "canonical": "thermometer",
+    "variants": [
+      "थर्मोमिटर",
+      "thermometer",
+      "digital thermometer",
+      "jwar nappne"
+    ],
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece",
+    "typical_price_range": "200-800 per piece",
+    "common_phrases": [
+      "thermometer chahiyo",
+      "jwar nappne machine",
+      "digital thermometer"
+    ]
+  },
+  {
+    "id": "ri-113",
+    "item": "sanitary pad",
+    "canonical": "sanitary pad",
+    "variants": [
+      "स्यानिटरी प्याड",
+      "sanitary pad",
+      "pad",
+      "stayfree",
+      "whisper"
+    ],
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "packet",
+    "typical_price_range": "100-300 per packet",
+    "common_phrases": [
+      "pad kinna aaye",
+      "sanitary pad chahyo",
+      "stayfree dinu"
+    ]
+  },
+  {
+    "id": "ri-114",
+    "item": "condom",
+    "canonical": "condom",
+    "variants": [
+      "कन्डम",
+      "condom",
+      "nippon",
+      "durex",
+      "protective"
+    ],
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "packet (3s)",
+    "typical_price_range": "50-150 per pack",
+    "common_phrases": [
+      "condom dinu",
+      "nippon chahyo",
+      "family planning"
+    ]
+  },
+  {
+    "id": "ri-115",
+    "item": "inhaler",
+    "canonical": "inhaler",
+    "variants": [
+      "इन्हेलर",
+      "inhaler",
+      "asthma pump",
+      "ventolin"
+    ],
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece",
+    "typical_price_range": "300-800 per piece",
+    "common_phrases": [
+      "inhaler dinu",
+      "asthma ko pump",
+      "inhaler chahiyo"
+    ]
+  },
+  {
+    "id": "ri-116",
+    "item": "eye drops",
+    "canonical": "eye drops",
+    "variants": [
+      "आइ ड्रप्स",
+      "eye drops",
+      "aankha ko ausadhi",
+      "red eye drops"
+    ],
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "bottle",
+    "typical_price_range": "100-400 per bottle",
+    "common_phrases": [
+      "eye drops linu",
+      "aankha ko drops dinu",
+      "drop halne"
+    ]
+  },
+  {
+    "id": "ri-117",
+    "item": "first aid kit",
+    "canonical": "first aid kit",
+    "variants": [
+      "फर्स्ट एड किट",
+      "first aid box",
+      "first aid kit"
+    ],
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "box",
+    "typical_price_range": "500-2000 per box",
+    "common_phrases": [
+      "first aid kit kinna",
+      "first aid box",
+      "kit chahiyo"
+    ]
+  },
+  {
+    "id": "ri-118",
+    "item": "copy",
+    "canonical": "copy",
+    "variants": [
+      "कपी",
+      "copy",
+      "exercise copy",
+      "notebook",
+      "kapi"
+    ],
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "typical_price_range": "30-150 per piece",
+    "common_phrases": [
+      "copy dinu",
+      "copy kina",
+      "200 page copy"
+    ]
+  },
+  {
+    "id": "ri-119",
+    "item": "kitab",
+    "canonical": "kitab",
+    "variants": [
+      "किताब",
+      "book",
+      "textbook",
+      "nepali kitab",
+      "reference kitab"
+    ],
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "typical_price_range": "100-1000 per piece",
+    "common_phrases": [
+      "kitab kinna",
+      "kitab aayo",
+      "naya kitab"
+    ]
+  },
+  {
+    "id": "ri-120",
+    "item": "pen",
+    "canonical": "pen",
+    "variants": [
+      "पेन",
+      "ball pen",
+      "dot pen",
+      "ink pen",
+      "gel pen"
+    ],
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "typical_price_range": "10-100 per piece",
+    "common_phrases": [
+      "pen dinu",
+      "pen bigryo",
+      "kalo pen"
+    ]
+  },
+  {
+    "id": "ri-121",
+    "item": "pencil",
+    "canonical": "pencil",
+    "variants": [
+      "पेन्सिल",
+      "pencil",
+      "lead pencil",
+      "colour pencil"
+    ],
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "typical_price_range": "10-30 per piece",
+    "common_phrases": [
+      "pencil dinu",
+      "pencil tip",
+      "colour pencil"
+    ]
+  },
+  {
+    "id": "ri-122",
+    "item": "eraser",
+    "canonical": "eraser",
+    "variants": [
+      "इरेजर",
+      "eraser",
+      "rubber",
+      "metne",
+      "pencil eraser"
+    ],
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "typical_price_range": "5-20 per piece",
+    "common_phrases": [
+      "eraser chahiyo",
+      "eraser dinu",
+      "rubber metne"
+    ]
+  },
+  {
+    "id": "ri-123",
+    "item": "notebook",
+    "canonical": "notebook",
+    "variants": [
+      "नोटबुक",
+      "notebook",
+      "diary",
+      "register"
+    ],
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "typical_price_range": "100-500 per piece",
+    "common_phrases": [
+      "notebook kinna",
+      "notebook dinu",
+      "diary notebook"
+    ]
+  },
+  {
+    "id": "ri-124",
+    "item": "sharpener",
+    "canonical": "sharpener",
+    "variants": [
+      "स्यार्पनर",
+      "sharpener",
+      "pencil sharpener"
+    ],
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "typical_price_range": "10-50 per piece",
+    "common_phrases": [
+      "sharpener dinu",
+      "pencil tip",
+      "sharpener kinna"
+    ]
+  },
+  {
+    "id": "ri-125",
+    "item": "scale",
+    "canonical": "scale",
+    "variants": [
+      "स्केल",
+      "ruler",
+      "scale",
+      "measuring scale"
+    ],
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "typical_price_range": "20-60 per piece",
+    "common_phrases": [
+      "scale dinu",
+      "scale lina",
+      "ruler"
+    ]
+  },
+  {
+    "id": "ri-126",
+    "item": "geometry box",
+    "canonical": "geometry box",
+    "variants": [
+      "जियोमेट्री बक्स",
+      "geometry set",
+      "math set",
+      "compass box"
+    ],
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "box",
+    "typical_price_range": "100-500 per box",
+    "common_phrases": [
+      "geometry box dinu",
+      "math set kinna",
+      "compass box"
+    ]
+  },
+  {
+    "id": "ri-127",
+    "item": "glue stick",
+    "canonical": "glue stick",
+    "variants": [
+      "ग्लु स्टिक",
+      "glue stick",
+      "paper glue",
+      "fevicol stick"
+    ],
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "typical_price_range": "30-100 per piece",
+    "common_phrases": [
+      "glue stick dinu",
+      "glue lagaune",
+      "paper tackne"
+    ]
+  },
+  {
+    "id": "ri-128",
+    "item": "stapler",
+    "canonical": "stapler",
+    "variants": [
+      "स्ट्यापलर",
+      "stapler",
+      "staple machine",
+      "paper stapler"
+    ],
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "typical_price_range": "150-500 per piece",
+    "common_phrases": [
+      "stapler chahiyo",
+      "stapler pin",
+      "stapler kinna"
+    ]
+  },
+  {
+    "id": "ri-129",
+    "item": "punch machine",
+    "canonical": "punch machine",
+    "variants": [
+      "पन्च मेसिन",
+      "punch",
+      "paper punch"
+    ],
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "typical_price_range": "200-800 per piece",
+    "common_phrases": [
+      "punch machine dinu",
+      "punch chahiyo",
+      "paper punch"
+    ]
+  },
+  {
+    "id": "ri-130",
+    "item": "file",
+    "canonical": "file",
+    "variants": [
+      "फाइल",
+      "file folder",
+      "office file",
+      "paper file"
+    ],
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "typical_price_range": "30-200 per piece",
+    "common_phrases": [
+      "file kinna",
+      "file dinu",
+      "office file"
+    ]
+  },
+  {
+    "id": "ri-131",
+    "item": "highlighter",
+    "canonical": "highlighter",
+    "variants": [
+      "हाइलाइटर",
+      "highlighter",
+      "marker pen"
+    ],
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "typical_price_range": "50-150 per piece",
+    "common_phrases": [
+      "highlighter dinu",
+      "marker pen",
+      "yellow highlighter"
+    ]
+  },
+  {
+    "id": "ri-132",
+    "item": "sticky notes",
+    "canonical": "sticky notes",
+    "variants": [
+      "स्टिकी नोट्स",
+      "sticky notes",
+      "post-it",
+      "notes pad"
+    ],
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "pad",
+    "typical_price_range": "80-200 per pad",
+    "common_phrases": [
+      "sticky notes kinna",
+      "post-it dinu",
+      "notes pad"
+    ]
+  },
+  {
+    "id": "ri-133",
+    "item": "white board",
+    "canonical": "white board",
+    "variants": [
+      "ह्वाइट बोर्ड",
+      "white board",
+      "writing board",
+      "board marker"
+    ],
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "typical_price_range": "500-3000 per piece",
+    "common_phrases": [
+      "white board kinna",
+      "board dinu",
+      "marker board"
+    ]
+  },
+  {
+    "id": "ri-134",
+    "item": "marker",
+    "canonical": "marker",
+    "variants": [
+      "मार्कर",
+      "permanent marker",
+      "board marker",
+      "marker pen"
+    ],
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "typical_price_range": "30-100 per piece",
+    "common_phrases": [
+      "marker dinu",
+      "board marker",
+      "permanent marker"
+    ]
+  },
+  {
+    "id": "ri-135",
+    "item": "envelope",
+    "canonical": "envelope",
+    "variants": [
+      "खाम",
+      "envelope",
+      "kham",
+      "paper envelope"
+    ],
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "piece",
+    "typical_price_range": "5-30 per piece",
+    "common_phrases": [
+      "envelope dinu",
+      "kham chahiyo",
+      "letter kham"
+    ]
+  },
+  {
+    "id": "ri-136",
+    "item": "broom",
+    "canonical": "broom",
+    "variants": [
+      "कुचो",
+      "broom",
+      "kucho",
+      "jhadu",
+      "phool kucho"
+    ],
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece",
+    "typical_price_range": "100-400 per piece",
+    "common_phrases": [
+      "kucho kinna",
+      "kucho dinu",
+      "jhadu lagaune"
+    ]
+  },
+  {
+    "id": "ri-137",
+    "item": "harpi",
+    "canonical": "harpi",
+    "variants": [
+      "हार्पी",
+      "floor cleaner",
+      "phenyl",
+      "floor liquid",
+      "harpic"
+    ],
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "bottle",
+    "typical_price_range": "150-400 per bottle",
+    "common_phrases": [
+      "harpi lina aaye",
+      "floor cleaner",
+      "phenyl dinu"
+    ]
+  },
+  {
+    "id": "ri-138",
+    "item": "bucket",
+    "canonical": "bucket",
+    "variants": [
+      "बाल्टी",
+      "bucket",
+      "balti",
+      "plastic bucket",
+      "steel bucket"
+    ],
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece",
+    "typical_price_range": "150-600 per piece",
+    "common_phrases": [
+      "bucket kinna",
+      "balti chahiyo",
+      "paani ko balti"
+    ]
+  },
+  {
+    "id": "ri-139",
+    "item": "mop",
+    "canonical": "mop",
+    "variants": [
+      "मप",
+      "mop",
+      "pocha",
+      "floor mop"
+    ],
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece",
+    "typical_price_range": "200-800 per piece",
+    "common_phrases": [
+      "mop lagaune",
+      "mop kinna",
+      "pocha"
+    ]
+  },
+  {
+    "id": "ri-140",
+    "item": "dustbin",
+    "canonical": "dustbin",
+    "variants": [
+      "डस्टबिन",
+      "dustbin",
+      "fohor tokari",
+      "waste bin"
+    ],
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece",
+    "typical_price_range": "100-600 per piece",
+    "common_phrases": [
+      "dustbin kinna",
+      "dustbin dinu",
+      "fohor tokari"
+    ]
+  },
+  {
+    "id": "ri-141",
+    "item": "polish",
+    "canonical": "polish",
+    "variants": [
+      "पोलिस",
+      "shoe polish",
+      "polish",
+      "wax polish"
+    ],
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "bottle / can",
+    "typical_price_range": "80-250 per piece",
+    "common_phrases": [
+      "polish lagaune",
+      "shoe polish dinu",
+      "black polish"
+    ]
+  },
+  {
+    "id": "ri-142",
+    "item": "jhola",
+    "canonical": "jhola",
+    "variants": [
+      "झोला",
+      "bag",
+      "school jhola",
+      "backpack",
+      "travel jhola"
+    ],
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece",
+    "typical_price_range": "500-5000 per piece",
+    "common_phrases": [
+      "jhola kinna",
+      "school jhola",
+      "naya jhola"
+    ]
+  },
+  {
+    "id": "ri-143",
+    "item": "ghadi",
+    "canonical": "ghadi",
+    "variants": [
+      "घडी",
+      "watch",
+      "wrist ghadi",
+      "digital ghadi"
+    ],
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "1000-20000 per piece",
+    "common_phrases": [
+      "ghadi kinna",
+      "ghadi bigryo",
+      "new watch"
+    ]
+  },
+  {
+    "id": "ri-144",
+    "item": "mask",
+    "canonical": "mask",
+    "variants": [
+      "मास्क",
+      "mask",
+      "face mask",
+      "surgical mask",
+      "cloth mask"
+    ],
+    "sector": "pharmacy",
+    "sector_slug": "pharmacy-clinic",
+    "typical_unit": "piece / packet",
+    "typical_price_range": "10-50 per piece",
+    "common_phrases": [
+      "mask lagaune",
+      "mask dinu",
+      "face mask"
+    ]
+  },
+  {
+    "id": "ri-145",
+    "item": "sandal",
+    "canonical": "sandal",
+    "variants": [
+      "स्यान्डल",
+      "sandals",
+      "slippers",
+      "open shoes"
+    ],
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "pair",
+    "typical_price_range": "300-2000 per pair",
+    "common_phrases": [
+      "sandal kinna",
+      "sandal chahiyo",
+      "naya sandal"
+    ]
+  },
+  {
+    "id": "ri-146",
+    "item": "hair oil",
+    "canonical": "hair oil",
+    "variants": [
+      "कपालको तेल",
+      "hair oil",
+      "coconut oil",
+      "badam tel"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "bottle",
+    "typical_price_range": "100-350 per bottle",
+    "common_phrases": [
+      "hair oil dinu",
+      "kapal ko tel",
+      "badam tel"
+    ]
+  },
+  {
+    "id": "ri-147",
+    "item": "washing powder",
+    "canonical": "washing powder",
+    "variants": [
+      "वासिङ पाउडर",
+      "detergent",
+      "surf",
+      "nirma",
+      "tide"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "packet",
+    "typical_price_range": "50-300 per packet",
+    "common_phrases": [
+      "washing powder dinu",
+      "surf kinna",
+      "kapada dhune powder"
+    ]
+  },
+  {
+    "id": "ri-148",
+    "item": "mosquito coil",
+    "canonical": "mosquito coil",
+    "variants": [
+      "मस्किटो कोइल",
+      "mosquito coil",
+      "machhad ko coil",
+      "all out"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece / box",
+    "typical_price_range": "50-200 per box",
+    "common_phrases": [
+      "mosquito coil dinu",
+      "machhad bhagau",
+      "coil jalaune"
+    ]
+  },
+  {
+    "id": "ri-149",
+    "item": "matchbox",
+    "canonical": "matchbox",
+    "variants": [
+      "माचिस",
+      "matches",
+      "lighter",
+      "gas lighter"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece / packet",
+    "typical_price_range": "2-50 per piece",
+    "common_phrases": [
+      "matchbox dinu",
+      "machis chahiyo",
+      "lighter"
+    ]
+  },
+  {
+    "id": "ri-150",
+    "item": "candle",
+    "canonical": "candle",
+    "variants": [
+      "क्यान्डल",
+      "candle",
+      "mombatti",
+      "light candle"
+    ],
+    "sector": "kirana_grocery",
+    "sector_slug": "kirana-grocery",
+    "typical_unit": "piece",
+    "typical_price_range": "10-50 per piece",
+    "common_phrases": [
+      "candle dinu",
+      "mombatti",
+      "load shedding candle"
+    ]
+  },
+  {
+    "id": "ri-151",
+    "item": "battery",
+    "canonical": "battery",
+    "variants": [
+      "ब्याट्री",
+      "dry cell",
+      "battery",
+      "triple A",
+      "double A"
+    ],
+    "sector": "electronics",
+    "sector_slug": "electronics-mobile-shop",
+    "typical_unit": "piece",
+    "typical_price_range": "30-100 per piece",
+    "common_phrases": [
+      "battery dinu",
+      "battery sakkyo",
+      "remote ko battery"
+    ]
+  },
+  {
+    "id": "ri-152",
+    "item": "umbrella",
+    "canonical": "umbrella",
+    "variants": [
+      "छाता",
+      "umbrella",
+      "chhata",
+      "foldable umbrella"
+    ],
+    "sector": "clothing_apparel",
+    "sector_slug": "clothing-apparel",
+    "typical_unit": "piece",
+    "typical_price_range": "200-1500 per piece",
+    "common_phrases": [
+      "chhata kinna",
+      "umbrella dinu",
+      "chhata lina"
+    ]
+  },
+  {
+    "id": "ri-153",
+    "item": "photocopy",
+    "canonical": "photocopy",
+    "variants": [
+      "फोटोकपी",
+      "photocopy",
+      "xerox",
+      "photocopy service"
+    ],
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "page",
+    "typical_price_range": "2-5 per page",
+    "common_phrases": [
+      "photocopy garna",
+      "photocopy dinu",
+      "xerox copy"
+    ]
+  },
+  {
+    "id": "ri-154",
+    "item": "printout",
+    "canonical": "printout",
+    "variants": [
+      "प्रिन्टआउट",
+      "print",
+      "printout",
+      "colour print",
+      "black white print"
+    ],
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "page",
+    "typical_price_range": "5-30 per page",
+    "common_phrases": [
+      "printout dinu",
+      "print garna",
+      "colour print"
+    ]
+  },
+  {
+    "id": "ri-155",
+    "item": "resume",
+    "canonical": "resume",
+    "variants": [
+      "रेसुमे",
+      "resume",
+      "CV",
+      "job resume"
+    ],
+    "sector": "stationery",
+    "sector_slug": "stationery-bookstore",
+    "typical_unit": "document",
+    "typical_price_range": "varies",
+    "common_phrases": [
+      "resume banaune",
+      "resume print",
+      "CV dinu"
+    ]
+  },
+  {
+    "id": "ri-156",
+    "item": "bus ticket",
+    "canonical": "bus ticket",
+    "variants": [
+      "बस टिकट",
+      "bus ticket",
+      "yaatayat ticket",
+      "long route ticket"
+    ],
+    "sector": "travel_transport",
+    "sector_slug": "travel-transport",
+    "typical_unit": "piece",
+    "typical_price_range": "20-1500 per ticket",
+    "common_phrases": [
+      "bus ticket kinnu",
+      "ticket book",
+      "ticket dinu"
+    ]
+  },
+  {
+    "id": "ri-157",
+    "item": "petrol",
+    "canonical": "petrol",
+    "variants": [
+      "पेट्रोल",
+      "petrol",
+      "gasoline",
+      "fuel"
+    ],
+    "sector": "fuel_energy",
+    "sector_slug": "fuel-energy",
+    "typical_unit": "litre",
+    "typical_price_range": "170-190 per litre",
+    "common_phrases": [
+      "petrol halna",
+      "petrol ko bhaau",
+      "full tank petrol"
+    ]
+  },
+  {
+    "id": "ri-158",
+    "item": "diesel",
+    "canonical": "diesel",
+    "variants": [
+      "डिजेल",
+      "diesel"
+    ],
+    "sector": "fuel_energy",
+    "sector_slug": "fuel-energy",
+    "typical_unit": "litre",
+    "typical_price_range": "150-170 per litre",
+    "common_phrases": [
+      "diesel kinna",
+      "diesel pump",
+      "diesel ko rate"
+    ]
+  },
+  {
+    "id": "ri-159",
+    "item": "gas cylinder",
+    "canonical": "gas cylinder",
+    "variants": [
+      "ग्यास सिलिन्डर",
+      "LPG gas",
+      "cooking gas",
+      "gas cylinder"
+    ],
+    "sector": "fuel_energy",
+    "sector_slug": "fuel-energy",
+    "typical_unit": "cylinder",
+    "typical_price_range": "1800-2200 per cylinder",
+    "common_phrases": [
+      "gas lina aako",
+      "gas sakkyo",
+      "naya gas cylinder"
+    ]
+  },
+  {
+    "id": "ri-160",
+    "item": "firewood",
+    "canonical": "firewood",
+    "variants": [
+      "दाउरा",
+      "firewood",
+      "daaura",
+      "wood log"
+    ],
+    "sector": "fuel_energy",
+    "sector_slug": "fuel-energy",
+    "typical_unit": "bhari / kg",
+    "typical_price_range": "500-1500 per bhari",
+    "common_phrases": [
+      "daaura kinna",
+      "daaura lina",
+      "daaura ko bhaau"
+    ]
+  },
+  {
+    "id": "ri-161",
+    "item": "kerosene",
+    "canonical": "kerosene",
+    "variants": [
+      "मट्टितेल",
+      "kerosene",
+      "mattitel",
+      "lantern oil"
+    ],
+    "sector": "fuel_energy",
+    "sector_slug": "fuel-energy",
+    "typical_unit": "litre",
+    "typical_price_range": "110-140 per litre",
+    "common_phrases": [
+      "mattitel kinna",
+      "mattitel lina",
+      "batti ko tel"
+    ]
+  },
+  {
+    "id": "ri-162",
+    "item": "lantern",
+    "canonical": "lantern",
+    "variants": [
+      "लाल्टीन",
+      "lantern",
+      "batti",
+      "hurricane lamp"
+    ],
+    "sector": "household_cleaning",
+    "sector_slug": "household-cleaning",
+    "typical_unit": "piece",
+    "typical_price_range": "300-800 per piece",
+    "common_phrases": [
+      "lantern kinna",
+      "batti jalaune",
+      "load shedding batti"
+    ]
+  }
+]

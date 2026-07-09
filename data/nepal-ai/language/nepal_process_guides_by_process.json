@@ -1,0 +1,82 @@
+{
+  "company_registration_steps": [
+    "proc-001",
+    "proc-009",
+    "proc-017",
+    "proc-025",
+    "proc-033",
+    "proc-041",
+    "proc-049",
+    "proc-057"
+  ],
+  "pan_registration": [
+    "proc-002",
+    "proc-010",
+    "proc-018",
+    "proc-026",
+    "proc-034",
+    "proc-042",
+    "proc-050",
+    "proc-058"
+  ],
+  "vat_registration": [
+    "proc-003",
+    "proc-011",
+    "proc-019",
+    "proc-027",
+    "proc-035",
+    "proc-043",
+    "proc-051",
+    "proc-059"
+  ],
+  "bank_account_opening": [
+    "proc-004",
+    "proc-012",
+    "proc-020",
+    "proc-028",
+    "proc-036",
+    "proc-044",
+    "proc-052",
+    "proc-060"
+  ],
+  "trade_license_renewal": [
+    "proc-005",
+    "proc-013",
+    "proc-021",
+    "proc-029",
+    "proc-037",
+    "proc-045",
+    "proc-053",
+    "proc-061"
+  ],
+  "employee_ssf_registration": [
+    "proc-006",
+    "proc-014",
+    "proc-022",
+    "proc-030",
+    "proc-038",
+    "proc-046",
+    "proc-054",
+    "proc-062"
+  ],
+  "import_export_documentation": [
+    "proc-007",
+    "proc-015",
+    "proc-023",
+    "proc-031",
+    "proc-039",
+    "proc-047",
+    "proc-055",
+    "proc-063"
+  ],
+  "loan_application_process": [
+    "proc-008",
+    "proc-016",
+    "proc-024",
+    "proc-032",
+    "proc-040",
+    "proc-048",
+    "proc-056",
+    "proc-064"
+  ]
+}

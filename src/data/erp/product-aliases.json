@@ -1,0 +1,75 @@
+{
+  "vegetables": {
+    "काक्रो": {
+      "romanVariants": ["kakro", "kaakro", "kakaro", "caakro"],
+      "english": "cucumber",
+      "category": "vegetable",
+      "unit": ["kg", "piece", "dozen"],
+      "commonMisspellings": ["kakor", "kakroo", "kakrao"],
+      "frequency": 0.85
+    },
+    "टमाटर": {
+      "romanVariants": ["tomatar", "tomato", "tamaatar"],
+      "english": "tomato",
+      "category": "vegetable",
+      "unit": ["kg", "piece"],
+      "commonMisspellings": ["tomater", "tamatar"],
+      "frequency": 0.9
+    },
+    "आलु": {
+      "romanVariants": ["aalu", "alu", "aalo"],
+      "english": "potato",
+      "category": "vegetable",
+      "unit": ["kg", "piece", "sack"],
+      "commonMisspellings": ["alu", "aallu"],
+      "frequency": 0.95
+    },
+    "प्याज": {
+      "romanVariants": ["pyaj", "piyaj", "pyaaj"],
+      "english": "onion",
+      "category": "vegetable",
+      "unit": ["kg", "piece"],
+      "commonMisspellings": ["pyaaz", "piyaz"],
+      "frequency": 0.88
+    },
+    "गोलभेडा": {
+      "romanVariants": ["golbheda", "golbhenda", "golbeda"],
+      "english": "tomato (round)",
+      "category": "vegetable",
+      "unit": ["kg", "piece"],
+      "commonMisspellings": ["golbenda"],
+      "frequency": 0.75
+    },
+    "तरकारी": {
+      "romanVariants": ["tarkari", "tarkaari", "tarakari"],
+      "english": "vegetables",
+      "category": "vegetable",
+      "unit": ["kg"],
+      "commonMisspellings": ["tarkaree"],
+      "frequency": 0.92
+    }
+  },
+  "errorPatterns": {
+    "kakro_kakor": {
+      "wrong": "kakor",
+      "correct": "kakro",
+      "nepali": "काक्रो",
+      "frequency": 0.73,
+      "autoCorrect": true
+    },
+    "maele_maile": {
+      "wrong": "maele",
+      "correct": "maile",
+      "nepali": "मैले",
+      "frequency": 0.68,
+      "autoCorrect": true
+    },
+    "bechye_becheko": {
+      "wrong": "bechye",
+      "correct": "becheko",
+      "nepali": "बेचेको",
+      "frequency": 0.55,
+      "autoCorrect": false
+    }
+  }
+}

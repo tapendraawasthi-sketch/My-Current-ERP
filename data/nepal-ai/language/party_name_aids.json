@@ -1,0 +1,62 @@
+{
+  "honorifics": [
+    "ji",
+    "dai",
+    "didi",
+    "bahadur",
+    "prasad",
+    "devi",
+    "kumar",
+    "maya",
+    "lal",
+    "singh",
+    "shrestha"
+  ],
+  "relationships": [
+    "bhai",
+    "didi",
+    "dai",
+    "uncle",
+    "aunty",
+    "mama",
+    "maiji",
+    "buwa",
+    "ama",
+    "ama",
+    "babu",
+    "chhora",
+    "chhori",
+    "hajurba",
+    "hajurama"
+  ],
+  "titles": [
+    "sahu",
+    "malik",
+    "sahuji",
+    "seth",
+    "sethji"
+  ],
+  "shop_tokens": [
+    "store",
+    "pasal",
+    "hardware",
+    "electronics",
+    "shop",
+    "traders",
+    "trading",
+    "fancy",
+    "kirana",
+    "medical",
+    "pharmacy",
+    "suppliers"
+  ],
+  "party_labels": {
+    "party": "party",
+    "customer": "recipient",
+    "vendor": "source",
+    "supplier": "source",
+    "client": "recipient",
+    "buyer": "recipient",
+    "seller": "source"
+  }
+}

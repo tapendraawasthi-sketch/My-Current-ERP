@@ -1,0 +1,1457 @@
+{
+  "अन्तर्राष्ट्रिय वित्तीय प्रतिवेदन मानक": {
+    "id": "ag-076",
+    "term_en": "ifrs",
+    "concept_key": "ifrs"
+  },
+  "सामान्य स्वीकृत लेखा सिद्धान्त": {
+    "id": "ag-075",
+    "term_en": "gaap",
+    "concept_key": "gaap"
+  },
+  "अन्तिम भित्र पहिलो बाहिर": {
+    "id": "ag-123",
+    "term_en": "lifo",
+    "concept_key": "lifo"
+  },
+  "दोहोरो प्रविष्टि प्रणाली": {
+    "id": "ag-032",
+    "term_en": "double-entry",
+    "concept_key": "double_entry"
+  },
+  "profit and loss account": {
+    "id": "ag-069",
+    "term_en": "profit and loss account",
+    "concept_key": "profit_and_loss_account"
+  },
+  "निरन्तर मौज्दात प्रणाली": {
+    "id": "ag-125",
+    "term_en": "perpetual inventory",
+    "concept_key": "perpetual_inventory"
+  },
+  "पहिलो भित्र पहिलो बाहिर": {
+    "id": "ag-122",
+    "term_en": "fifo",
+    "concept_key": "fifo"
+  },
+  "राजस्व / बिक्री आम्दानी": {
+    "id": "ag-040",
+    "term_en": "revenue",
+    "concept_key": "revenue"
+  },
+  "रेमिट्यान्स / विप्रेषण": {
+    "id": "ag-089",
+    "term_en": "remittance",
+    "concept_key": "remittance"
+  },
+  "manufacturing account": {
+    "id": "ag-099",
+    "term_en": "manufacturing account",
+    "concept_key": "manufacturing_account"
+  },
+  "profit & loss account": {
+    "id": "ag-069",
+    "term_en": "profit and loss account",
+    "concept_key": "profit_and_loss_account"
+  },
+  "weighted average cost": {
+    "id": "ag-124",
+    "term_en": "weighted average cost",
+    "concept_key": "weighted_average_cost"
+  },
+  "आवधिक मौज्दात प्रणाली": {
+    "id": "ag-126",
+    "term_en": "periodic inventory",
+    "concept_key": "periodic_inventory"
+  },
+  "व्यक्तिगत निकासी खाता": {
+    "id": "ag-077",
+    "term_en": "drawing account",
+    "concept_key": "drawing_account"
+  },
+  "स्थायी अग्रिम प्रणाली": {
+    "id": "ag-071",
+    "term_en": "imprest system",
+    "concept_key": "imprest_system"
+  },
+  "contingent liability": {
+    "id": "ag-117",
+    "term_en": "contingent liability",
+    "concept_key": "contingent_liability"
+  },
+  "financial statements": {
+    "id": "ag-111",
+    "term_en": "financial statements",
+    "concept_key": "financial_statements"
+  },
+  "outstanding expenses": {
+    "id": "ag-052",
+    "term_en": "outstanding expenses",
+    "concept_key": "outstanding_expenses"
+  },
+  "उपार्जित लेखा पद्धति": {
+    "id": "ag-072",
+    "term_en": "accrual basis",
+    "concept_key": "accrual_basis"
+  },
+  "accounting software": {
+    "id": "ag-109",
+    "term_en": "accounting software",
+    "concept_key": "accounting_software"
+  },
+  "advertising expense": {
+    "id": "ag-081",
+    "term_en": "advertising expense",
+    "concept_key": "advertising_expense"
+  },
+  "bank reconciliation": {
+    "id": "ag-070",
+    "term_en": "bank reconciliation",
+    "concept_key": "bank_reconciliation"
+  },
+  "capital expenditure": {
+    "id": "ag-105",
+    "term_en": "capital expenditure",
+    "concept_key": "capital_expenditure"
+  },
+  "error of commission": {
+    "id": "ag-114",
+    "term_en": "error of commission",
+    "concept_key": "error_of_commission"
+  },
+  "inventory valuation": {
+    "id": "ag-121",
+    "term_en": "inventory valuation",
+    "concept_key": "inventory_valuation"
+  },
+  "perpetual inventory": {
+    "id": "ag-125",
+    "term_en": "perpetual inventory",
+    "concept_key": "perpetual_inventory"
+  },
+  "revenue expenditure": {
+    "id": "ag-106",
+    "term_en": "revenue expenditure",
+    "concept_key": "revenue_expenditure"
+  },
+  "आन्तरिक लेखापरीक्षण": {
+    "id": "ag-107",
+    "term_en": "internal audit",
+    "concept_key": "internal_audit"
+  },
+  "तलब कर / सामाजिक कर": {
+    "id": "ag-088",
+    "term_en": "payroll tax",
+    "concept_key": "payroll_tax"
+  },
+  "प्रिमियम / अधिमूल्य": {
+    "id": "ag-134",
+    "term_en": "premium",
+    "concept_key": "premium"
+  },
+  "प्रोभिजन / व्यवस्था": {
+    "id": "ag-050",
+    "term_en": "provision",
+    "concept_key": "provision"
+  },
+  "ब्यालेन्स / मौज्दात": {
+    "id": "ag-022",
+    "term_en": "balance",
+    "concept_key": "balance"
+  },
+  "सामाजिक सुरक्षा कोष": {
+    "id": "ag-028",
+    "term_en": "ssf",
+    "concept_key": "ssf"
+  },
+  "compensating error": {
+    "id": "ag-115",
+    "term_en": "compensating error",
+    "concept_key": "compensating_error"
+  },
+  "cost of goods sold": {
+    "id": "ag-055",
+    "term_en": "cost of goods sold",
+    "concept_key": "cost_of_goods_sold"
+  },
+  "periodic inventory": {
+    "id": "ag-126",
+    "term_en": "periodic inventory",
+    "concept_key": "periodic_inventory"
+  },
+  "मौज्दात मूल्याङ्कन": {
+    "id": "ag-121",
+    "term_en": "inventory valuation",
+    "concept_key": "inventory_valuation"
+  },
+  "chart of accounts": {
+    "id": "ag-095",
+    "term_en": "chart of accounts",
+    "concept_key": "chart_of_accounts"
+  },
+  "commission income": {
+    "id": "ag-084",
+    "term_en": "commission income",
+    "concept_key": "commission_income"
+  },
+  "current liability": {
+    "id": "ag-058",
+    "term_en": "current liability",
+    "concept_key": "current_liability"
+  },
+  "depreciation fund": {
+    "id": "ag-118",
+    "term_en": "depreciation fund",
+    "concept_key": "depreciation_fund"
+  },
+  "error of omission": {
+    "id": "ag-113",
+    "term_en": "error of omission",
+    "concept_key": "error_of_omission"
+  },
+  "retained earnings": {
+    "id": "ag-104",
+    "term_en": "retained earnings",
+    "concept_key": "retained_earnings"
+  },
+  "subsidiary ledger": {
+    "id": "ag-097",
+    "term_en": "subsidiary ledger",
+    "concept_key": "subsidiary_ledger"
+  },
+  "अग्रिम प्राप्त आय": {
+    "id": "ag-054",
+    "term_en": "unearned income",
+    "concept_key": "unearned_income"
+  },
+  "कन्ट्रा प्रविष्टि": {
+    "id": "ag-065",
+    "term_en": "contra entry",
+    "concept_key": "contra_entry"
+  },
+  "नाफा नोक्सान खाता": {
+    "id": "ag-069",
+    "term_en": "profit and loss account",
+    "concept_key": "profit_and_loss_account"
+  },
+  "बाह्य लेखापरीक्षण": {
+    "id": "ag-108",
+    "term_en": "external audit",
+    "concept_key": "external_audit"
+  },
+  "मिश्रित प्रविष्टि": {
+    "id": "ag-064",
+    "term_en": "compound entry",
+    "concept_key": "compound_entry"
+  },
+  "समायोजन प्रविष्टि": {
+    "id": "ag-066",
+    "term_en": "adjusting entry",
+    "concept_key": "adjusting_entry"
+  },
+  "income statement": {
+    "id": "ag-045",
+    "term_en": "income statement",
+    "concept_key": "income_statement"
+  },
+  "intangible asset": {
+    "id": "ag-061",
+    "term_en": "intangible asset",
+    "concept_key": "intangible_asset"
+  },
+  "interest expense": {
+    "id": "ag-083",
+    "term_en": "interest expense",
+    "concept_key": "interest_expense"
+  },
+  "prepaid expenses": {
+    "id": "ag-051",
+    "term_en": "prepaid expenses",
+    "concept_key": "prepaid_expenses"
+  },
+  "suspense account": {
+    "id": "ag-116",
+    "term_en": "suspense account",
+    "concept_key": "suspense_account"
+  },
+  "work in progress": {
+    "id": "ag-100",
+    "term_en": "work-in-progress",
+    "concept_key": "work_in_progress"
+  },
+  "work-in-progress": {
+    "id": "ag-100",
+    "term_en": "work-in-progress",
+    "concept_key": "work_in_progress"
+  },
+  "अन्तिम प्रविष्टि": {
+    "id": "ag-067",
+    "term_en": "closing entry",
+    "concept_key": "closing_entry"
+  },
+  "क्षतिपूरक त्रुटि": {
+    "id": "ag-115",
+    "term_en": "compensating error",
+    "concept_key": "compensating_error"
+  },
+  "गलत लेखाइ त्रुटि": {
+    "id": "ag-114",
+    "term_en": "error of commission",
+    "concept_key": "error_of_commission"
+  },
+  "वित्तीय विवरणहरू": {
+    "id": "ag-111",
+    "term_en": "financial statements",
+    "concept_key": "financial_statements"
+  },
+  "व्यक्तिगत निकासी": {
+    "id": "ag-039",
+    "term_en": "drawings",
+    "concept_key": "drawings"
+  },
+  "सम्भावित दायित्व": {
+    "id": "ag-117",
+    "term_en": "contingent liability",
+    "concept_key": "contingent_liability"
+  },
+  "adjusting entry": {
+    "id": "ag-066",
+    "term_en": "adjusting entry",
+    "concept_key": "adjusting_entry"
+  },
+  "closing balance": {
+    "id": "ag-024",
+    "term_en": "closing balance",
+    "concept_key": "closing_balance"
+  },
+  "control account": {
+    "id": "ag-098",
+    "term_en": "control account",
+    "concept_key": "control_account"
+  },
+  "drawing account": {
+    "id": "ag-077",
+    "term_en": "drawing account",
+    "concept_key": "drawing_account"
+  },
+  "interest income": {
+    "id": "ag-082",
+    "term_en": "interest income",
+    "concept_key": "interest_income"
+  },
+  "opening balance": {
+    "id": "ag-023",
+    "term_en": "opening balance",
+    "concept_key": "opening_balance"
+  },
+  "purchase return": {
+    "id": "ag-127",
+    "term_en": "purchase return",
+    "concept_key": "purchase_return"
+  },
+  "trading account": {
+    "id": "ag-068",
+    "term_en": "trading account",
+    "concept_key": "trading_account"
+  },
+  "unearned income": {
+    "id": "ag-054",
+    "term_en": "unearned income",
+    "concept_key": "unearned_income"
+  },
+  "utility expense": {
+    "id": "ag-080",
+    "term_en": "utility expense",
+    "concept_key": "utility_expense"
+  },
+  "working capital": {
+    "id": "ag-056",
+    "term_en": "working capital",
+    "concept_key": "working_capital"
+  },
+  "अमूर्त सम्पत्ति": {
+    "id": "ag-061",
+    "term_en": "intangible asset",
+    "concept_key": "intangible_asset"
+  },
+  "जर्नल प्रविष्टि": {
+    "id": "ag-063",
+    "term_en": "journal entry",
+    "concept_key": "journal_entry"
+  },
+  "तिर्न बाँकी तलब": {
+    "id": "ag-078",
+    "term_en": "salary payable",
+    "concept_key": "salary_payable"
+  },
+  "नगद लेखा पद्धति": {
+    "id": "ag-073",
+    "term_en": "cash basis",
+    "concept_key": "cash_basis"
+  },
+  "परीक्षण सन्तुलन": {
+    "id": "ag-005",
+    "term_en": "trial balance",
+    "concept_key": "trial_balance"
+  },
+  "पुनर्मूल्याङ्कन": {
+    "id": "ag-119",
+    "term_en": "revaluation",
+    "concept_key": "revaluation"
+  },
+  "सामान्य खाताबही": {
+    "id": "ag-096",
+    "term_en": "general ledger",
+    "concept_key": "general_ledger"
+  },
+  "स्थायी सम्पत्ति": {
+    "id": "ag-059",
+    "term_en": "fixed asset",
+    "concept_key": "fixed_asset"
+  },
+  "accrued income": {
+    "id": "ag-053",
+    "term_en": "accrued income",
+    "concept_key": "accrued_income"
+  },
+  "compound entry": {
+    "id": "ag-064",
+    "term_en": "compound entry",
+    "concept_key": "compound_entry"
+  },
+  "external audit": {
+    "id": "ag-108",
+    "term_en": "external audit",
+    "concept_key": "external_audit"
+  },
+  "finished goods": {
+    "id": "ag-101",
+    "term_en": "finished goods",
+    "concept_key": "finished_goods"
+  },
+  "general ledger": {
+    "id": "ag-096",
+    "term_en": "general ledger",
+    "concept_key": "general_ledger"
+  },
+  "imprest system": {
+    "id": "ag-071",
+    "term_en": "imprest system",
+    "concept_key": "imprest_system"
+  },
+  "internal audit": {
+    "id": "ag-107",
+    "term_en": "internal audit",
+    "concept_key": "internal_audit"
+  },
+  "ledger account": {
+    "id": "ag-112",
+    "term_en": "ledger account",
+    "concept_key": "ledger_account"
+  },
+  "purchase order": {
+    "id": "ag-091",
+    "term_en": "purchase order",
+    "concept_key": "purchase_order"
+  },
+  "salary payable": {
+    "id": "ag-078",
+    "term_en": "salary payable",
+    "concept_key": "salary_payable"
+  },
+  "tangible asset": {
+    "id": "ag-060",
+    "term_en": "tangible asset",
+    "concept_key": "tangible_asset"
+  },
+  "अन्तिम मौज्दात": {
+    "id": "ag-024",
+    "term_en": "closing balance",
+    "concept_key": "closing_balance"
+  },
+  "कार्यशील पूँजी": {
+    "id": "ag-056",
+    "term_en": "working capital",
+    "concept_key": "working_capital"
+  },
+  "नियन्त्रण खाता": {
+    "id": "ag-098",
+    "term_en": "control account",
+    "concept_key": "control_account"
+  },
+  "पूर्वदत्त खर्च": {
+    "id": "ag-051",
+    "term_en": "prepaid expenses",
+    "concept_key": "prepaid_expenses"
+  },
+  "बिक्री आम्दानी": {
+    "id": "ag-040",
+    "term_en": "revenue",
+    "concept_key": "revenue"
+  },
+  "बिल / इनभ्वाइस": {
+    "id": "ag-034",
+    "term_en": "invoice",
+    "concept_key": "invoice"
+  },
+  "भारित औसत लागत": {
+    "id": "ag-124",
+    "term_en": "weighted average cost",
+    "concept_key": "weighted_average_cost"
+  },
+  "मूर्त सम्पत्ति": {
+    "id": "ag-060",
+    "term_en": "tangible asset",
+    "concept_key": "tangible_asset"
+  },
+  "मौज्दात / स्टक": {
+    "id": "ag-015",
+    "term_en": "stock",
+    "concept_key": "stock"
+  },
+  "व्यापारिक खाता": {
+    "id": "ag-068",
+    "term_en": "trading account",
+    "concept_key": "trading_account"
+  },
+  "सञ्चित आम्दानी": {
+    "id": "ag-104",
+    "term_en": "retained earnings",
+    "concept_key": "retained_earnings"
+  },
+  "accrual basis": {
+    "id": "ag-072",
+    "term_en": "accrual basis",
+    "concept_key": "accrual_basis"
+  },
+  "balance sheet": {
+    "id": "ag-044",
+    "term_en": "balance sheet",
+    "concept_key": "balance_sheet"
+  },
+  "closing entry": {
+    "id": "ag-067",
+    "term_en": "closing entry",
+    "concept_key": "closing_entry"
+  },
+  "current asset": {
+    "id": "ag-057",
+    "term_en": "current asset",
+    "concept_key": "current_asset"
+  },
+  "journal entry": {
+    "id": "ag-063",
+    "term_en": "journal entry",
+    "concept_key": "journal_entry"
+  },
+  "raw materials": {
+    "id": "ag-102",
+    "term_en": "raw materials",
+    "concept_key": "raw_materials"
+  },
+  "share capital": {
+    "id": "ag-132",
+    "term_en": "share capital",
+    "concept_key": "share_capital"
+  },
+  "trial balance": {
+    "id": "ag-005",
+    "term_en": "trial balance",
+    "concept_key": "trial_balance"
+  },
+  "अधुरो उत्पादन": {
+    "id": "ag-100",
+    "term_en": "work-in-progress",
+    "concept_key": "work_in_progress"
+  },
+  "असुल नहुने ऋण": {
+    "id": "ag-049",
+    "term_en": "bad debts",
+    "concept_key": "bad_debts"
+  },
+  "उपयोगिता खर्च": {
+    "id": "ag-080",
+    "term_en": "utility expense",
+    "concept_key": "utility_expense"
+  },
+  "चालु सम्पत्ति": {
+    "id": "ag-057",
+    "term_en": "current asset",
+    "concept_key": "current_asset"
+  },
+  "पूँजी / साँवा": {
+    "id": "ag-008",
+    "term_en": "equity",
+    "concept_key": "equity"
+  },
+  "बिक्री फिर्ता": {
+    "id": "ag-128",
+    "term_en": "sales return",
+    "concept_key": "sales_return"
+  },
+  "राजस्वगत खर्च": {
+    "id": "ag-106",
+    "term_en": "revenue expenditure",
+    "concept_key": "revenue_expenditure"
+  },
+  "लेखा सफ्टवेयर": {
+    "id": "ag-109",
+    "term_en": "accounting software",
+    "concept_key": "accounting_software"
+  },
+  "विज्ञापन खर्च": {
+    "id": "ag-081",
+    "term_en": "advertising expense",
+    "concept_key": "advertising_expense"
+  },
+  "सस्पेन्स खाता": {
+    "id": "ag-116",
+    "term_en": "suspense account",
+    "concept_key": "suspense_account"
+  },
+  "सहायक खाताबही": {
+    "id": "ag-097",
+    "term_en": "subsidiary ledger",
+    "concept_key": "subsidiary_ledger"
+  },
+  "सानो नगद खाता": {
+    "id": "ag-048",
+    "term_en": "petty cash",
+    "concept_key": "petty_cash"
+  },
+  "contra entry": {
+    "id": "ag-065",
+    "term_en": "contra entry",
+    "concept_key": "contra_entry"
+  },
+  "depreciation": {
+    "id": "ag-037",
+    "term_en": "depreciation",
+    "concept_key": "depreciation"
+  },
+  "double entry": {
+    "id": "ag-032",
+    "term_en": "double-entry",
+    "concept_key": "double_entry"
+  },
+  "double-entry": {
+    "id": "ag-032",
+    "term_en": "double-entry",
+    "concept_key": "double_entry"
+  },
+  "gross profit": {
+    "id": "ag-042",
+    "term_en": "gross profit",
+    "concept_key": "gross_profit"
+  },
+  "imprest fund": {
+    "id": "ag-090",
+    "term_en": "imprest fund",
+    "concept_key": "imprest_fund"
+  },
+  "market value": {
+    "id": "ag-136",
+    "term_en": "market value",
+    "concept_key": "market_value"
+  },
+  "rent expense": {
+    "id": "ag-079",
+    "term_en": "rent expense",
+    "concept_key": "rent_expense"
+  },
+  "sales return": {
+    "id": "ag-128",
+    "term_en": "sales return",
+    "concept_key": "sales_return"
+  },
+  "उत्पादन खाता": {
+    "id": "ag-099",
+    "term_en": "manufacturing account",
+    "concept_key": "manufacturing_account"
+  },
+  "कच्चा पदार्थ": {
+    "id": "ag-102",
+    "term_en": "raw materials",
+    "concept_key": "raw_materials"
+  },
+  "खाताबही खाता": {
+    "id": "ag-112",
+    "term_en": "ledger account",
+    "concept_key": "ledger_account"
+  },
+  "चालु दायित्व": {
+    "id": "ag-058",
+    "term_en": "current liability",
+    "concept_key": "current_liability"
+  },
+  "पूँजीगत खर्च": {
+    "id": "ag-105",
+    "term_en": "capital expenditure",
+    "concept_key": "capital_expenditure"
+  },
+  "सुरु मौज्दात": {
+    "id": "ag-023",
+    "term_en": "opening balance",
+    "concept_key": "opening_balance"
+  },
+  "bookkeeping": {
+    "id": "ag-031",
+    "term_en": "bookkeeping",
+    "concept_key": "bookkeeping"
+  },
+  "credit note": {
+    "id": "ag-093",
+    "term_en": "credit note",
+    "concept_key": "credit_note"
+  },
+  "expenditure": {
+    "id": "ag-041",
+    "term_en": "expenditure",
+    "concept_key": "expenditure"
+  },
+  "fiscal year": {
+    "id": "ag-074",
+    "term_en": "fiscal year",
+    "concept_key": "fiscal_year"
+  },
+  "fixed asset": {
+    "id": "ag-059",
+    "term_en": "fixed asset",
+    "concept_key": "fixed_asset"
+  },
+  "partnership": {
+    "id": "ag-130",
+    "term_en": "partnership",
+    "concept_key": "partnership"
+  },
+  "payroll tax": {
+    "id": "ag-088",
+    "term_en": "payroll tax",
+    "concept_key": "payroll_tax"
+  },
+  "revaluation": {
+    "id": "ag-119",
+    "term_en": "revaluation",
+    "concept_key": "revaluation"
+  },
+  "sales order": {
+    "id": "ag-092",
+    "term_en": "sales order",
+    "concept_key": "sales_order"
+  },
+  "transaction": {
+    "id": "ag-110",
+    "term_en": "transaction",
+    "concept_key": "transaction"
+  },
+  "अंकित मूल्य": {
+    "id": "ag-133",
+    "term_en": "face value",
+    "concept_key": "face_value"
+  },
+  "आर्थिक वर्ष": {
+    "id": "ag-074",
+    "term_en": "fiscal year",
+    "concept_key": "fiscal_year"
+  },
+  "उपार्जित आय": {
+    "id": "ag-053",
+    "term_en": "accrued income",
+    "concept_key": "accrued_income"
+  },
+  "क्रेडिट नोट": {
+    "id": "ag-093",
+    "term_en": "credit note",
+    "concept_key": "credit_note"
+  },
+  "खरिद फिर्ता": {
+    "id": "ag-127",
+    "term_en": "purchase return",
+    "concept_key": "purchase_return"
+  },
+  "बिक्री आदेश": {
+    "id": "ag-092",
+    "term_en": "sales order",
+    "concept_key": "sales_order"
+  },
+  "बिक्री लागत": {
+    "id": "ag-055",
+    "term_en": "cost of goods sold",
+    "concept_key": "cost_of_goods_sold"
+  },
+  "रेमिट्यान्स": {
+    "id": "ag-089",
+    "term_en": "remittance",
+    "concept_key": "remittance"
+  },
+  "लेखापरीक्षक": {
+    "id": "ag-047",
+    "term_en": "auditor",
+    "concept_key": "auditor"
+  },
+  "book value": {
+    "id": "ag-135",
+    "term_en": "book value",
+    "concept_key": "book_value"
+  },
+  "cash basis": {
+    "id": "ag-073",
+    "term_en": "cash basis",
+    "concept_key": "cash_basis"
+  },
+  "debit note": {
+    "id": "ag-094",
+    "term_en": "debit note",
+    "concept_key": "debit_note"
+  },
+  "face value": {
+    "id": "ag-133",
+    "term_en": "face value",
+    "concept_key": "face_value"
+  },
+  "income tax": {
+    "id": "ag-029",
+    "term_en": "income tax",
+    "concept_key": "income_tax"
+  },
+  "net profit": {
+    "id": "ag-043",
+    "term_en": "net profit",
+    "concept_key": "net_profit"
+  },
+  "petty cash": {
+    "id": "ag-048",
+    "term_en": "petty cash",
+    "concept_key": "petty_cash"
+  },
+  "proprietor": {
+    "id": "ag-129",
+    "term_en": "proprietor",
+    "concept_key": "proprietor"
+  },
+  "remittance": {
+    "id": "ag-089",
+    "term_en": "remittance",
+    "concept_key": "remittance"
+  },
+  "अग्रिम कोष": {
+    "id": "ag-090",
+    "term_en": "imprest fund",
+    "concept_key": "imprest_fund"
+  },
+  "खाता योजना": {
+    "id": "ag-095",
+    "term_en": "chart of accounts",
+    "concept_key": "chart_of_accounts"
+  },
+  "छुट त्रुटि": {
+    "id": "ag-113",
+    "term_en": "error of omission",
+    "concept_key": "error_of_omission"
+  },
+  "नगद प्रवाह": {
+    "id": "ag-046",
+    "term_en": "cash flow",
+    "concept_key": "cash_flow"
+  },
+  "बजार मूल्य": {
+    "id": "ag-136",
+    "term_en": "market value",
+    "concept_key": "market_value"
+  },
+  "बट्टा खर्च": {
+    "id": "ag-120",
+    "term_en": "write off",
+    "concept_key": "write_off"
+  },
+  "बाँकी खर्च": {
+    "id": "ag-052",
+    "term_en": "outstanding expenses",
+    "concept_key": "outstanding_expenses"
+  },
+  "बैंक मिलान": {
+    "id": "ag-070",
+    "term_en": "bank reconciliation",
+    "concept_key": "bank_reconciliation"
+  },
+  "ब्याज खर्च": {
+    "id": "ag-083",
+    "term_en": "interest expense",
+    "concept_key": "interest_expense"
+  },
+  "सामाजिक कर": {
+    "id": "ag-088",
+    "term_en": "payroll tax",
+    "concept_key": "payroll_tax"
+  },
+  "सेयर पूँजी": {
+    "id": "ag-132",
+    "term_en": "share capital",
+    "concept_key": "share_capital"
+  },
+  "bad debts": {
+    "id": "ag-049",
+    "term_en": "bad debts",
+    "concept_key": "bad_debts"
+  },
+  "cash flow": {
+    "id": "ag-046",
+    "term_en": "cash flow",
+    "concept_key": "cash_flow"
+  },
+  "creditors": {
+    "id": "ag-014",
+    "term_en": "creditors",
+    "concept_key": "creditors"
+  },
+  "liability": {
+    "id": "ag-007",
+    "term_en": "liability",
+    "concept_key": "liability"
+  },
+  "overdraft": {
+    "id": "ag-086",
+    "term_en": "overdraft",
+    "concept_key": "overdraft"
+  },
+  "provision": {
+    "id": "ag-050",
+    "term_en": "provision",
+    "concept_key": "provision"
+  },
+  "write off": {
+    "id": "ag-120",
+    "term_en": "write off",
+    "concept_key": "write_off"
+  },
+  "अधिविकर्ष": {
+    "id": "ag-086",
+    "term_en": "overdraft",
+    "concept_key": "overdraft"
+  },
+  "खरिद आदेश": {
+    "id": "ag-091",
+    "term_en": "purchase order",
+    "concept_key": "purchase_order"
+  },
+  "डेबिट नोट": {
+    "id": "ag-094",
+    "term_en": "debit note",
+    "concept_key": "debit_note"
+  },
+  "तयारी माल": {
+    "id": "ag-101",
+    "term_en": "finished goods",
+    "concept_key": "finished_goods"
+  },
+  "पान नम्बर": {
+    "id": "ag-027",
+    "term_en": "pan",
+    "concept_key": "pan"
+  },
+  "बही मूल्य": {
+    "id": "ag-135",
+    "term_en": "book value",
+    "concept_key": "book_value"
+  },
+  "ब्यालेन्स": {
+    "id": "ag-022",
+    "term_en": "balance",
+    "concept_key": "balance"
+  },
+  "भाडा खर्च": {
+    "id": "ag-079",
+    "term_en": "rent expense",
+    "concept_key": "rent_expense"
+  },
+  "ह्रास कोष": {
+    "id": "ag-118",
+    "term_en": "depreciation fund",
+    "concept_key": "depreciation_fund"
+  },
+  "discount": {
+    "id": "ag-019",
+    "term_en": "discount",
+    "concept_key": "discount"
+  },
+  "dividend": {
+    "id": "ag-103",
+    "term_en": "dividend",
+    "concept_key": "dividend"
+  },
+  "drawings": {
+    "id": "ag-039",
+    "term_en": "drawings",
+    "concept_key": "drawings"
+  },
+  "goodwill": {
+    "id": "ag-062",
+    "term_en": "goodwill",
+    "concept_key": "goodwill"
+  },
+  "purchase": {
+    "id": "ag-017",
+    "term_en": "purchase",
+    "concept_key": "purchase"
+  },
+  "अधिमूल्य": {
+    "id": "ag-134",
+    "term_en": "premium",
+    "concept_key": "premium"
+  },
+  "आय विवरण": {
+    "id": "ag-045",
+    "term_en": "income statement",
+    "concept_key": "income_statement"
+  },
+  "इनभ्वाइस": {
+    "id": "ag-034",
+    "term_en": "invoice",
+    "concept_key": "invoice"
+  },
+  "कमिसन आय": {
+    "id": "ag-084",
+    "term_en": "commission income",
+    "concept_key": "commission_income"
+  },
+  "कुल नाफा": {
+    "id": "ag-042",
+    "term_en": "gross profit",
+    "concept_key": "gross_profit"
+  },
+  "खुद नाफा": {
+    "id": "ag-043",
+    "term_en": "net profit",
+    "concept_key": "net_profit"
+  },
+  "तलब सूची": {
+    "id": "ag-087",
+    "term_en": "payroll",
+    "concept_key": "payroll"
+  },
+  "प्रिमियम": {
+    "id": "ag-134",
+    "term_en": "premium",
+    "concept_key": "premium"
+  },
+  "प्रोभिजन": {
+    "id": "ag-050",
+    "term_en": "provision",
+    "concept_key": "provision"
+  },
+  "ब्याज आय": {
+    "id": "ag-082",
+    "term_en": "interest income",
+    "concept_key": "interest_income"
+  },
+  "भुक्तानी": {
+    "id": "ag-036",
+    "term_en": "payment",
+    "concept_key": "payment"
+  },
+  "लेखापालन": {
+    "id": "ag-031",
+    "term_en": "bookkeeping",
+    "concept_key": "bookkeeping"
+  },
+  "विप्रेषण": {
+    "id": "ag-089",
+    "term_en": "remittance",
+    "concept_key": "remittance"
+  },
+  "व्यवस्था": {
+    "id": "ag-050",
+    "term_en": "provision",
+    "concept_key": "provision"
+  },
+  "सद्भावना": {
+    "id": "ag-062",
+    "term_en": "goodwill",
+    "concept_key": "goodwill"
+  },
+  "सम्पत्ति": {
+    "id": "ag-006",
+    "term_en": "asset",
+    "concept_key": "asset"
+  },
+  "साझेदारी": {
+    "id": "ag-130",
+    "term_en": "partnership",
+    "concept_key": "partnership"
+  },
+  "account": {
+    "id": "ag-030",
+    "term_en": "account",
+    "concept_key": "account"
+  },
+  "auditor": {
+    "id": "ag-047",
+    "term_en": "auditor",
+    "concept_key": "auditor"
+  },
+  "balance": {
+    "id": "ag-022",
+    "term_en": "balance",
+    "concept_key": "balance"
+  },
+  "capital": {
+    "id": "ag-038",
+    "term_en": "capital",
+    "concept_key": "capital"
+  },
+  "company": {
+    "id": "ag-131",
+    "term_en": "company",
+    "concept_key": "company"
+  },
+  "debtors": {
+    "id": "ag-013",
+    "term_en": "debtors",
+    "concept_key": "debtors"
+  },
+  "expense": {
+    "id": "ag-010",
+    "term_en": "expense",
+    "concept_key": "expense"
+  },
+  "invoice": {
+    "id": "ag-034",
+    "term_en": "invoice",
+    "concept_key": "invoice"
+  },
+  "journal": {
+    "id": "ag-003",
+    "term_en": "journal",
+    "concept_key": "journal"
+  },
+  "payment": {
+    "id": "ag-036",
+    "term_en": "payment",
+    "concept_key": "payment"
+  },
+  "payroll": {
+    "id": "ag-087",
+    "term_en": "payroll",
+    "concept_key": "payroll"
+  },
+  "premium": {
+    "id": "ag-134",
+    "term_en": "premium",
+    "concept_key": "premium"
+  },
+  "receipt": {
+    "id": "ag-035",
+    "term_en": "receipt",
+    "concept_key": "receipt"
+  },
+  "revenue": {
+    "id": "ag-040",
+    "term_en": "revenue",
+    "concept_key": "revenue"
+  },
+  "voucher": {
+    "id": "ag-033",
+    "term_en": "voucher",
+    "concept_key": "voucher"
+  },
+  "कारोबार": {
+    "id": "ag-110",
+    "term_en": "transaction",
+    "concept_key": "transaction"
+  },
+  "क्रेडिट": {
+    "id": "ag-002",
+    "term_en": "credit",
+    "concept_key": "credit"
+  },
+  "खाताबही": {
+    "id": "ag-004",
+    "term_en": "ledger",
+    "concept_key": "ledger"
+  },
+  "दायित्व": {
+    "id": "ag-007",
+    "term_en": "liability",
+    "concept_key": "liability"
+  },
+  "नोक्सान": {
+    "id": "ag-021",
+    "term_en": "loss",
+    "concept_key": "loss"
+  },
+  "परिव्यय": {
+    "id": "ag-041",
+    "term_en": "expenditure",
+    "concept_key": "expenditure"
+  },
+  "मौज्दात": {
+    "id": "ag-015",
+    "term_en": "stock",
+    "concept_key": "stock"
+  },
+  "credit": {
+    "id": "ag-002",
+    "term_en": "credit",
+    "concept_key": "credit"
+  },
+  "equity": {
+    "id": "ag-008",
+    "term_en": "equity",
+    "concept_key": "equity"
+  },
+  "income": {
+    "id": "ag-009",
+    "term_en": "income",
+    "concept_key": "income"
+  },
+  "ledger": {
+    "id": "ag-004",
+    "term_en": "ledger",
+    "concept_key": "ledger"
+  },
+  "profit": {
+    "id": "ag-020",
+    "term_en": "profit",
+    "concept_key": "profit"
+  },
+  "return": {
+    "id": "ag-018",
+    "term_en": "return",
+    "concept_key": "return"
+  },
+  "कम्पनी": {
+    "id": "ag-131",
+    "term_en": "company",
+    "concept_key": "company"
+  },
+  "टिडिएस": {
+    "id": "ag-026",
+    "term_en": "tds",
+    "concept_key": "tds"
+  },
+  "तलब कर": {
+    "id": "ag-088",
+    "term_en": "payroll tax",
+    "concept_key": "payroll_tax"
+  },
+  "देनदार": {
+    "id": "ag-013",
+    "term_en": "debtors",
+    "concept_key": "debtors"
+  },
+  "फिर्ता": {
+    "id": "ag-018",
+    "term_en": "return",
+    "concept_key": "return"
+  },
+  "बिक्री": {
+    "id": "ag-016",
+    "term_en": "sales",
+    "concept_key": "sales"
+  },
+  "राजस्व": {
+    "id": "ag-040",
+    "term_en": "revenue",
+    "concept_key": "revenue"
+  },
+  "लाभांश": {
+    "id": "ag-103",
+    "term_en": "dividend",
+    "concept_key": "dividend"
+  },
+  "लेनदार": {
+    "id": "ag-014",
+    "term_en": "creditors",
+    "concept_key": "creditors"
+  },
+  "वासलात": {
+    "id": "ag-044",
+    "term_en": "balance sheet",
+    "concept_key": "balance_sheet"
+  },
+  "asset": {
+    "id": "ag-006",
+    "term_en": "asset",
+    "concept_key": "asset"
+  },
+  "debit": {
+    "id": "ag-001",
+    "term_en": "debit",
+    "concept_key": "debit"
+  },
+  "sales": {
+    "id": "ag-016",
+    "term_en": "sales",
+    "concept_key": "sales"
+  },
+  "stock": {
+    "id": "ag-015",
+    "term_en": "stock",
+    "concept_key": "stock"
+  },
+  "जर्नल": {
+    "id": "ag-003",
+    "term_en": "journal",
+    "concept_key": "journal"
+  },
+  "डेबिट": {
+    "id": "ag-001",
+    "term_en": "debit",
+    "concept_key": "debit"
+  },
+  "पूँजी": {
+    "id": "ag-008",
+    "term_en": "equity",
+    "concept_key": "equity"
+  },
+  "भ्याट": {
+    "id": "ag-025",
+    "term_en": "vat",
+    "concept_key": "vat"
+  },
+  "मालिक": {
+    "id": "ag-129",
+    "term_en": "proprietor",
+    "concept_key": "proprietor"
+  },
+  "साँवा": {
+    "id": "ag-008",
+    "term_en": "equity",
+    "concept_key": "equity"
+  },
+  "ह्रास": {
+    "id": "ag-037",
+    "term_en": "depreciation",
+    "concept_key": "depreciation"
+  },
+  "bank": {
+    "id": "ag-012",
+    "term_en": "bank",
+    "concept_key": "bank"
+  },
+  "cash": {
+    "id": "ag-011",
+    "term_en": "cash",
+    "concept_key": "cash"
+  },
+  "fifo": {
+    "id": "ag-122",
+    "term_en": "fifo",
+    "concept_key": "fifo"
+  },
+  "gaap": {
+    "id": "ag-075",
+    "term_en": "gaap",
+    "concept_key": "gaap"
+  },
+  "ifrs": {
+    "id": "ag-076",
+    "term_en": "ifrs",
+    "concept_key": "ifrs"
+  },
+  "lifo": {
+    "id": "ag-123",
+    "term_en": "lifo",
+    "concept_key": "lifo"
+  },
+  "loan": {
+    "id": "ag-085",
+    "term_en": "loan",
+    "concept_key": "loan"
+  },
+  "loss": {
+    "id": "ag-021",
+    "term_en": "loss",
+    "concept_key": "loss"
+  },
+  "आयकर": {
+    "id": "ag-029",
+    "term_en": "income tax",
+    "concept_key": "income_tax"
+  },
+  "खरिद": {
+    "id": "ag-017",
+    "term_en": "purchase",
+    "concept_key": "purchase"
+  },
+  "खर्च": {
+    "id": "ag-010",
+    "term_en": "expense",
+    "concept_key": "expense"
+  },
+  "खाता": {
+    "id": "ag-030",
+    "term_en": "account",
+    "concept_key": "account"
+  },
+  "नाफा": {
+    "id": "ag-020",
+    "term_en": "profit",
+    "concept_key": "profit"
+  },
+  "बैंक": {
+    "id": "ag-012",
+    "term_en": "bank",
+    "concept_key": "bank"
+  },
+  "भौचर": {
+    "id": "ag-033",
+    "term_en": "voucher",
+    "concept_key": "voucher"
+  },
+  "रसिद": {
+    "id": "ag-035",
+    "term_en": "receipt",
+    "concept_key": "receipt"
+  },
+  "स्टक": {
+    "id": "ag-015",
+    "term_en": "stock",
+    "concept_key": "stock"
+  },
+  "pan": {
+    "id": "ag-027",
+    "term_en": "pan",
+    "concept_key": "pan"
+  },
+  "ssf": {
+    "id": "ag-028",
+    "term_en": "ssf",
+    "concept_key": "ssf"
+  },
+  "tds": {
+    "id": "ag-026",
+    "term_en": "tds",
+    "concept_key": "tds"
+  },
+  "vat": {
+    "id": "ag-025",
+    "term_en": "vat",
+    "concept_key": "vat"
+  },
+  "छुट": {
+    "id": "ag-019",
+    "term_en": "discount",
+    "concept_key": "discount"
+  },
+  "नगद": {
+    "id": "ag-011",
+    "term_en": "cash",
+    "concept_key": "cash"
+  },
+  "बिल": {
+    "id": "ag-034",
+    "term_en": "invoice",
+    "concept_key": "invoice"
+  },
+  "आय": {
+    "id": "ag-009",
+    "term_en": "income",
+    "concept_key": "income"
+  },
+  "ऋण": {
+    "id": "ag-085",
+    "term_en": "loan",
+    "concept_key": "loan"
+  }
+}

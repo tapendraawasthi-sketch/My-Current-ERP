@@ -1,0 +1,42 @@
+{
+  "wordSenses": {
+    "बिक्री": {
+      "senses": [
+        { "pos": "noun", "meaning": "sales (transaction type)", "context": "accounting", "weight": 0.95 },
+        { "pos": "noun", "meaning": "selling activity", "context": "general", "weight": 0.7 }
+      ]
+    },
+    "बेचेको": {
+      "senses": [
+        { "pos": "verb", "meaning": "sold (past participle)", "context": "transaction", "weight": 0.95 },
+        { "pos": "adjective", "meaning": "that which was sold", "context": "inventory", "weight": 0.8 }
+      ]
+    },
+    "को": {
+      "senses": [
+        { "pos": "postposition", "meaning": "of / belonging to", "context": "general", "weight": 0.6 },
+        { "pos": "postposition", "meaning": "worth (after number)", "context": "price", "weight": 0.9 }
+      ]
+    }
+  },
+  "disambiguationRules": [
+    {
+      "word": "को",
+      "precededBy": "number",
+      "preferredSense": "worth (amount) rupees",
+      "confidence": 0.9
+    },
+    {
+      "word": "भन्छ",
+      "context": "kitchen",
+      "preferredSense": "cooks",
+      "confidence": 0.85
+    },
+    {
+      "word": "भन्छ",
+      "context": "conversation",
+      "preferredSense": "says",
+      "confidence": 0.85
+    }
+  ]
+}

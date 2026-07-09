@@ -1,0 +1,1822 @@
+[
+  {
+    "id": "docu-001",
+    "document_type": "VAT invoice",
+    "document_type_key": "vat_invoice",
+    "variant_index": 1,
+    "typical_sections": [
+      "header (company name, PAN, address, phone)",
+      "invoice details (invoice number, date)",
+      "buyer details (name, PAN, address)",
+      "item table (SN, description, quantity, rate, amount)",
+      "VAT calculation (taxable amount, VAT rate, VAT amount)",
+      "total (grand total)",
+      "signature and stamp"
+    ],
+    "key_fields_to_extract": [
+      "invoice_number",
+      "invoice_date",
+      "seller_pan",
+      "buyer_pan",
+      "items[]",
+      "subtotal",
+      "vat_amount",
+      "grand_total",
+      "total_in_words"
+    ],
+    "common_layouts": [
+      "portrait A4",
+      "pre-printed stationery"
+    ],
+    "ocr_challenges": [
+      "faded print",
+      "small font sizes",
+      "alignment issues"
+    ],
+    "validation_rules": [
+      "VAT = 13% of taxable amount",
+      "grand_total = subtotal + VAT",
+      "invoice_number should be unique"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-002",
+    "document_type": "VAT invoice",
+    "document_type_key": "vat_invoice",
+    "variant_index": 2,
+    "typical_sections": [
+      "company header",
+      "invoice details",
+      "buyer info",
+      "item list",
+      "tax summary",
+      "total",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "invoice_number",
+      "invoice_date",
+      "seller_pan",
+      "buyer_pan",
+      "items[]",
+      "subtotal",
+      "vat_amount",
+      "grand_total"
+    ],
+    "common_layouts": [
+      "landscape A5",
+      "thermal receipt"
+    ],
+    "ocr_challenges": [
+      "low contrast thermal print",
+      "glare",
+      "curled paper"
+    ],
+    "validation_rules": [
+      "VAT = 13% of taxable",
+      "grand_total = subtotal + VAT"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-003",
+    "document_type": "VAT invoice",
+    "document_type_key": "vat_invoice",
+    "variant_index": 3,
+    "typical_sections": [
+      "header",
+      "invoice details",
+      "buyer details",
+      "item table",
+      "VAT calculation",
+      "total",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "invoice_number",
+      "invoice_date",
+      "seller_pan",
+      "buyer_pan",
+      "items[]",
+      "subtotal",
+      "vat_amount",
+      "grand_total"
+    ],
+    "common_layouts": [
+      "portrait A4",
+      "handwritten form"
+    ],
+    "ocr_challenges": [
+      "handwritten amounts",
+      "cursive text",
+      "ink smudges",
+      "cross-outs"
+    ],
+    "validation_rules": [
+      "VAT = 13% of taxable",
+      "grand_total = subtotal + VAT"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-004",
+    "document_type": "VAT invoice",
+    "document_type_key": "vat_invoice",
+    "variant_index": 4,
+    "typical_sections": [
+      "header",
+      "invoice details",
+      "buyer details",
+      "item table",
+      "tax summary",
+      "total",
+      "signature and stamp"
+    ],
+    "key_fields_to_extract": [
+      "invoice_number",
+      "invoice_date",
+      "seller_pan",
+      "buyer_pan",
+      "items[]",
+      "subtotal",
+      "vat_amount",
+      "grand_total"
+    ],
+    "common_layouts": [
+      "portrait A4",
+      "official stamp"
+    ],
+    "ocr_challenges": [
+      "stamps overlapping text",
+      "stamp ink bleeding",
+      "background patterns"
+    ],
+    "validation_rules": [
+      "VAT = 13% of taxable",
+      "grand_total = subtotal + VAT"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-005",
+    "document_type": "VAT invoice",
+    "document_type_key": "vat_invoice",
+    "variant_index": 5,
+    "typical_sections": [
+      "header",
+      "invoice details",
+      "buyer details",
+      "item table (SN, description, qty, rate, amount)",
+      "discount section",
+      "taxable amount after discount",
+      "VAT calculation",
+      "grand total",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "invoice_number",
+      "invoice_date",
+      "seller_pan",
+      "buyer_pan",
+      "items[]",
+      "discount",
+      "subtotal_after_discount",
+      "vat_amount",
+      "grand_total"
+    ],
+    "common_layouts": [
+      "portrait A4",
+      "computer-generated"
+    ],
+    "ocr_challenges": [
+      "small print",
+      "tables with many columns",
+      "missing delimiters"
+    ],
+    "validation_rules": [
+      "VAT = 13% of taxable amount after discount",
+      "grand_total = subtotal_after_discount + VAT"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-006",
+    "document_type": "VAT invoice",
+    "document_type_key": "vat_invoice",
+    "variant_index": 6,
+    "typical_sections": [
+      "header with QR",
+      "invoice details",
+      "buyer details",
+      "item table",
+      "tax summary",
+      "total",
+      "footer with QR"
+    ],
+    "key_fields_to_extract": [
+      "invoice_number",
+      "invoice_date",
+      "seller_pan",
+      "buyer_pan",
+      "items[]",
+      "subtotal",
+      "vat_amount",
+      "grand_total",
+      "qr_code_content"
+    ],
+    "common_layouts": [
+      "portrait A4",
+      "digital invoice"
+    ],
+    "ocr_challenges": [
+      "QR code may obscure text",
+      "low resolution",
+      "reflections"
+    ],
+    "validation_rules": [
+      "VAT = 13% of taxable",
+      "grand_total = subtotal + VAT",
+      "QR code should match invoice data"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-007",
+    "document_type": "VAT invoice",
+    "document_type_key": "vat_invoice",
+    "variant_index": 7,
+    "typical_sections": [
+      "header",
+      "invoice details",
+      "buyer details",
+      "item table",
+      "VAT calculation",
+      "total",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "invoice_number",
+      "invoice_date",
+      "seller_pan",
+      "buyer_pan",
+      "items[]",
+      "subtotal",
+      "vat_amount",
+      "grand_total"
+    ],
+    "common_layouts": [
+      "thermal roll",
+      "small size"
+    ],
+    "ocr_challenges": [
+      "fading thermal print",
+      "creased paper",
+      "glare"
+    ],
+    "validation_rules": [
+      "VAT = 13% of taxable",
+      "grand_total = subtotal + VAT"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-008",
+    "document_type": "VAT invoice",
+    "document_type_key": "vat_invoice",
+    "variant_index": 8,
+    "typical_sections": [
+      "header (company, PAN, address)",
+      "invoice details",
+      "buyer details",
+      "item table",
+      "VAT breakdown",
+      "total",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "invoice_number",
+      "invoice_date",
+      "seller_pan",
+      "buyer_pan",
+      "items[]",
+      "subtotal",
+      "vat_amount",
+      "grand_total"
+    ],
+    "common_layouts": [
+      "portrait A4",
+      "scanned copy"
+    ],
+    "ocr_challenges": [
+      "skewed pages",
+      "shadows",
+      "moire patterns"
+    ],
+    "validation_rules": [
+      "VAT = 13% of taxable",
+      "grand_total = subtotal + VAT"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-009",
+    "document_type": "VAT invoice",
+    "document_type_key": "vat_invoice",
+    "variant_index": 9,
+    "typical_sections": [
+      "header",
+      "invoice number and date",
+      "buyer and seller details",
+      "itemised goods",
+      "VAT summary",
+      "total in words",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "invoice_number",
+      "invoice_date",
+      "seller_pan",
+      "buyer_pan",
+      "items[]",
+      "subtotal",
+      "vat_amount",
+      "grand_total",
+      "total_in_words"
+    ],
+    "common_layouts": [
+      "portrait A4",
+      "typed"
+    ],
+    "ocr_challenges": [
+      "handwritten total in words",
+      "stamp overlap"
+    ],
+    "validation_rules": [
+      "VAT = 13%",
+      "grand_total = subtotal + VAT",
+      "words match numbers"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-010",
+    "document_type": "VAT invoice",
+    "document_type_key": "vat_invoice",
+    "variant_index": 10,
+    "typical_sections": [
+      "header",
+      "invoice details",
+      "buyer details",
+      "item table",
+      "VAT calculation",
+      "grand total",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "invoice_number",
+      "invoice_date",
+      "seller_pan",
+      "buyer_pan",
+      "items[]",
+      "subtotal",
+      "vat_amount",
+      "grand_total"
+    ],
+    "common_layouts": [
+      "landscape A5",
+      "digital print"
+    ],
+    "ocr_challenges": [
+      "poor resolution",
+      "cut-off edges",
+      "watermark"
+    ],
+    "validation_rules": [
+      "VAT = 13% of taxable",
+      "grand_total = subtotal + VAT"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-011",
+    "document_type": "PAN certificate",
+    "document_type_key": "pan_certificate",
+    "variant_index": 1,
+    "typical_sections": [
+      "Government header",
+      "PAN number",
+      "full name",
+      "father/husband name",
+      "date of registration",
+      "address",
+      "contact details",
+      "signature of issuing authority",
+      "seal"
+    ],
+    "key_fields_to_extract": [
+      "pan_number",
+      "full_name",
+      "father_name",
+      "registration_date",
+      "address",
+      "issued_by"
+    ],
+    "common_layouts": [
+      "landscape A4",
+      "official paper",
+      "with emblem"
+    ],
+    "ocr_challenges": [
+      "embossed seal interfering",
+      "faded print",
+      "watermark"
+    ],
+    "validation_rules": [
+      "PAN number should be 9 digits",
+      "date format: YYYY-MM-DD",
+      "name should match official records"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-012",
+    "document_type": "PAN certificate",
+    "document_type_key": "pan_certificate",
+    "variant_index": 2,
+    "typical_sections": [
+      "header",
+      "PAN number",
+      "name",
+      "parent name",
+      "date",
+      "address",
+      "signature",
+      "stamp"
+    ],
+    "key_fields_to_extract": [
+      "pan_number",
+      "full_name",
+      "father_name",
+      "registration_date",
+      "address"
+    ],
+    "common_layouts": [
+      "portrait A4",
+      "official form"
+    ],
+    "ocr_challenges": [
+      "handwritten corrections",
+      "strikeouts",
+      "overwriting"
+    ],
+    "validation_rules": [
+      "PAN number 9 digits",
+      "date format",
+      "name consistency"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-013",
+    "document_type": "PAN certificate",
+    "document_type_key": "pan_certificate",
+    "variant_index": 3,
+    "typical_sections": [
+      "title",
+      "PAN number",
+      "name",
+      "address",
+      "date",
+      "authority",
+      "stamp"
+    ],
+    "key_fields_to_extract": [
+      "pan_number",
+      "full_name",
+      "address",
+      "registration_date"
+    ],
+    "common_layouts": [
+      "landscape A4",
+      "old style"
+    ],
+    "ocr_challenges": [
+      "yellowed paper",
+      "faded text",
+      "stains"
+    ],
+    "validation_rules": [
+      "PAN number 9 digits",
+      "date parseable"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-014",
+    "document_type": "PAN certificate",
+    "document_type_key": "pan_certificate",
+    "variant_index": 4,
+    "typical_sections": [
+      "header",
+      "PAN number",
+      "name",
+      "father name",
+      "date",
+      "address",
+      "barcode",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "pan_number",
+      "full_name",
+      "father_name",
+      "registration_date",
+      "address",
+      "barcode_value"
+    ],
+    "common_layouts": [
+      "landscape A4",
+      "modern digital print"
+    ],
+    "ocr_challenges": [
+      "barcode may cover text",
+      "low contrast"
+    ],
+    "validation_rules": [
+      "PAN number 9 digits",
+      "barcode should match PAN"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-015",
+    "document_type": "PAN certificate",
+    "document_type_key": "pan_certificate",
+    "variant_index": 5,
+    "typical_sections": [
+      "header",
+      "PAN number",
+      "name",
+      "date",
+      "address",
+      "copy seal",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "pan_number",
+      "full_name",
+      "registration_date",
+      "address"
+    ],
+    "common_layouts": [
+      "portrait A4",
+      "photocopy"
+    ],
+    "ocr_challenges": [
+      "photocopy artifacts",
+      "dust",
+      "blurry text"
+    ],
+    "validation_rules": [
+      "PAN number 9 digits"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-016",
+    "document_type": "PAN certificate",
+    "document_type_key": "pan_certificate",
+    "variant_index": 6,
+    "typical_sections": [
+      "header",
+      "PAN number",
+      "name (Nepali)",
+      "father name (Nepali)",
+      "date",
+      "address",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "pan_number",
+      "full_name_nepali",
+      "father_name_nepali",
+      "registration_date",
+      "address"
+    ],
+    "common_layouts": [
+      "landscape A4",
+      "bilingual"
+    ],
+    "ocr_challenges": [
+      "Nepali script OCR",
+      "font variations",
+      "diacritics"
+    ],
+    "validation_rules": [
+      "PAN number 9 digits"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-017",
+    "document_type": "Company registration certificate",
+    "document_type_key": "company_registration_certificate",
+    "variant_index": 1,
+    "typical_sections": [
+      "Government of Nepal header",
+      "registration number",
+      "company name",
+      "company type (private/public)",
+      "date of incorporation",
+      "registered address",
+      "authorized capital",
+      "signature of registrar",
+      "seal"
+    ],
+    "key_fields_to_extract": [
+      "registration_number",
+      "company_name",
+      "company_type",
+      "incorporation_date",
+      "registered_address",
+      "authorized_capital"
+    ],
+    "common_layouts": [
+      "landscape A4",
+      "official certificate",
+      "with emblem"
+    ],
+    "ocr_challenges": [
+      "embossing",
+      "faded ink",
+      "stamp over text"
+    ],
+    "validation_rules": [
+      "registration number format: #####/###/###",
+      "date parseable",
+      "capital in NPR"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-018",
+    "document_type": "Company registration certificate",
+    "document_type_key": "company_registration_certificate",
+    "variant_index": 2,
+    "typical_sections": [
+      "header",
+      "registration details",
+      "company info",
+      "capital",
+      "registrar signature",
+      "seal"
+    ],
+    "key_fields_to_extract": [
+      "registration_number",
+      "company_name",
+      "incorporation_date",
+      "registered_address",
+      "authorized_capital"
+    ],
+    "common_layouts": [
+      "portrait A4",
+      "official"
+    ],
+    "ocr_challenges": [
+      "seal overlap",
+      "signature obscuring text"
+    ],
+    "validation_rules": [
+      "registration number format"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-019",
+    "document_type": "Company registration certificate",
+    "document_type_key": "company_registration_certificate",
+    "variant_index": 3,
+    "typical_sections": [
+      "title",
+      "registration number",
+      "company name",
+      "date",
+      "address",
+      "registrar"
+    ],
+    "key_fields_to_extract": [
+      "registration_number",
+      "company_name",
+      "incorporation_date",
+      "registered_address"
+    ],
+    "common_layouts": [
+      "landscape A4",
+      "old paper"
+    ],
+    "ocr_challenges": [
+      "yellowed paper",
+      "stains",
+      "fading"
+    ],
+    "validation_rules": [
+      "date format"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-020",
+    "document_type": "Company registration certificate",
+    "document_type_key": "company_registration_certificate",
+    "variant_index": 4,
+    "typical_sections": [
+      "header",
+      "registration number",
+      "company name",
+      "date of renewal",
+      "expiry",
+      "capital",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "registration_number",
+      "company_name",
+      "renewal_date",
+      "expiry_date",
+      "authorized_capital"
+    ],
+    "common_layouts": [
+      "landscape A4",
+      "updated format"
+    ],
+    "ocr_challenges": [
+      "overwritten fields",
+      "new stamp over old"
+    ],
+    "validation_rules": [
+      "renewal_date after incorporation",
+      "expiry date"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-021",
+    "document_type": "Company registration certificate",
+    "document_type_key": "company_registration_certificate",
+    "variant_index": 5,
+    "typical_sections": [
+      "header",
+      "registration number",
+      "company name",
+      "amendments list",
+      "current capital",
+      "registrar signature"
+    ],
+    "key_fields_to_extract": [
+      "registration_number",
+      "company_name",
+      "amendments_details",
+      "authorized_capital"
+    ],
+    "common_layouts": [
+      "portrait A4",
+      "with attachment"
+    ],
+    "ocr_challenges": [
+      "multiple pages",
+      "different fonts"
+    ],
+    "validation_rules": [
+      "capital consistency"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-022",
+    "document_type": "Company registration certificate",
+    "document_type_key": "company_registration_certificate",
+    "variant_index": 6,
+    "typical_sections": [
+      "header",
+      "registration number",
+      "company name",
+      "date",
+      "address",
+      "QR code"
+    ],
+    "key_fields_to_extract": [
+      "registration_number",
+      "company_name",
+      "incorporation_date",
+      "registered_address",
+      "qr_code"
+    ],
+    "common_layouts": [
+      "digital PDF",
+      "A4"
+    ],
+    "ocr_challenges": [
+      "low resolution",
+      "QR code",
+      "text may be rasterized"
+    ],
+    "validation_rules": [
+      "QR code matches data"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-023",
+    "document_type": "Bank statement",
+    "document_type_key": "bank_statement",
+    "variant_index": 1,
+    "typical_sections": [
+      "bank header (name, address, logo)",
+      "account holder details (name, account number)",
+      "statement period (start date, end date)",
+      "transaction table (date, description, debit, credit, balance)",
+      "opening balance, closing balance",
+      "footer (disclaimer, page number)"
+    ],
+    "key_fields_to_extract": [
+      "account_number",
+      "account_holder_name",
+      "statement_period_start",
+      "statement_period_end",
+      "transactions[]",
+      "opening_balance",
+      "closing_balance"
+    ],
+    "common_layouts": [
+      "portrait A4",
+      "computer printout"
+    ],
+    "ocr_challenges": [
+      "micro print",
+      "watermark",
+      "tables with dense text"
+    ],
+    "validation_rules": [
+      "closing_balance = opening_balance + sum(credits) - sum(debits)",
+      "statement_period consistent"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-024",
+    "document_type": "Bank statement",
+    "document_type_key": "bank_statement",
+    "variant_index": 2,
+    "typical_sections": [
+      "header",
+      "account info",
+      "transaction list with cheque references",
+      "cheque image thumbnails",
+      "balances"
+    ],
+    "key_fields_to_extract": [
+      "account_number",
+      "account_holder_name",
+      "transactions[]",
+      "cheque_numbers",
+      "opening_balance",
+      "closing_balance"
+    ],
+    "common_layouts": [
+      "portrait A4",
+      "cheque images included"
+    ],
+    "ocr_challenges": [
+      "images overlap text",
+      "low resolution of images"
+    ],
+    "validation_rules": [
+      "balance calculation"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-025",
+    "document_type": "Bank statement",
+    "document_type_key": "bank_statement",
+    "variant_index": 3,
+    "typical_sections": [
+      "passbook pages",
+      "entries (date, particulars, withdrawal, deposit, balance)",
+      "stamp",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "account_number",
+      "account_holder_name",
+      "transactions[]",
+      "balance"
+    ],
+    "common_layouts": [
+      "small passbook size",
+      "landscape",
+      "handwritten entries"
+    ],
+    "ocr_challenges": [
+      "handwriting",
+      "smudges",
+      "folded pages"
+    ],
+    "validation_rules": [
+      "balance progression"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-026",
+    "document_type": "Bank statement",
+    "document_type_key": "bank_statement",
+    "variant_index": 4,
+    "typical_sections": [
+      "header",
+      "account details",
+      "transaction table",
+      "balance summary"
+    ],
+    "key_fields_to_extract": [
+      "account_number",
+      "account_holder_name",
+      "transactions[]",
+      "opening_balance",
+      "closing_balance"
+    ],
+    "common_layouts": [
+      "portrait A4",
+      "low quality print"
+    ],
+    "ocr_challenges": [
+      "low contrast",
+      "faded text",
+      "missing dots"
+    ],
+    "validation_rules": [
+      "balance calculation"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-027",
+    "document_type": "Bank statement",
+    "document_type_key": "bank_statement",
+    "variant_index": 5,
+    "typical_sections": [
+      "header",
+      "account info",
+      "transactions with codes (e.g., NEFT, RTGS)",
+      "balance"
+    ],
+    "key_fields_to_extract": [
+      "account_number",
+      "account_holder_name",
+      "transactions[]",
+      "transaction_codes",
+      "opening_balance",
+      "closing_balance"
+    ],
+    "common_layouts": [
+      "portrait A4",
+      "detailed"
+    ],
+    "ocr_challenges": [
+      "alphanumeric codes",
+      "small font"
+    ],
+    "validation_rules": [
+      "balance formula"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-028",
+    "document_type": "Bank statement",
+    "document_type_key": "bank_statement",
+    "variant_index": 6,
+    "typical_sections": [
+      "header",
+      "account holder",
+      "period",
+      "summary of transactions by type",
+      "detailed transactions",
+      "closing balance"
+    ],
+    "key_fields_to_extract": [
+      "account_number",
+      "account_holder_name",
+      "statement_period",
+      "transactions[]",
+      "closing_balance"
+    ],
+    "common_layouts": [
+      "landscape A4",
+      "multi-page"
+    ],
+    "ocr_challenges": [
+      "multiple pages",
+      "headers repeated"
+    ],
+    "validation_rules": [
+      "balance calculation"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-029",
+    "document_type": "Cheque",
+    "document_type_key": "cheque",
+    "variant_index": 1,
+    "typical_sections": [
+      "bank name and logo",
+      "cheque number",
+      "MICR code",
+      "date (DD/MM/YYYY)",
+      "payee name",
+      "amount in numbers",
+      "amount in words",
+      "signature",
+      "account number",
+      "IFSC code",
+      "branch"
+    ],
+    "key_fields_to_extract": [
+      "cheque_number",
+      "date",
+      "payee_name",
+      "amount_numbers",
+      "amount_words",
+      "signature",
+      "account_number",
+      "bank_name"
+    ],
+    "common_layouts": [
+      "cheque leaf",
+      "standard size 6x3 inches"
+    ],
+    "ocr_challenges": [
+      "handwritten date/amount/payee",
+      "signature overlapping",
+      "background patterns",
+      "MICR characters"
+    ],
+    "validation_rules": [
+      "amount_numbers == amount_words (numeric)",
+      "date not expired",
+      "signature present"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-030",
+    "document_type": "Cheque",
+    "document_type_key": "cheque",
+    "variant_index": 2,
+    "typical_sections": [
+      "bank info",
+      "cheque number",
+      "date",
+      "payee (Bearer)",
+      "amount in numbers",
+      "amount in words",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "cheque_number",
+      "date",
+      "payee_name",
+      "amount_numbers",
+      "amount_words",
+      "signature",
+      "account_number"
+    ],
+    "common_layouts": [
+      "cheque leaf"
+    ],
+    "ocr_challenges": [
+      "handwriting",
+      "crossed out 'Bearer'",
+      "signature"
+    ],
+    "validation_rules": [
+      "amount match"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-031",
+    "document_type": "Cheque",
+    "document_type_key": "cheque",
+    "variant_index": 3,
+    "typical_sections": [
+      "bank info",
+      "cheque number",
+      "date",
+      "payee",
+      "amount",
+      "crossing lines",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "cheque_number",
+      "date",
+      "payee_name",
+      "amount_numbers",
+      "amount_words",
+      "signature",
+      "crossing_mark"
+    ],
+    "common_layouts": [
+      "cheque leaf",
+      "with two parallel lines"
+    ],
+    "ocr_challenges": [
+      "crossing lines may obscure payee",
+      "stamps"
+    ],
+    "validation_rules": [
+      "amount match"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-032",
+    "document_type": "Cheque",
+    "document_type_key": "cheque",
+    "variant_index": 4,
+    "typical_sections": [
+      "bank info",
+      "cheque number",
+      "date (handwritten)",
+      "payee (handwritten)",
+      "amount (handwritten numbers and words)",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "cheque_number",
+      "date",
+      "payee_name",
+      "amount_numbers",
+      "amount_words",
+      "signature"
+    ],
+    "common_layouts": [
+      "cheque leaf"
+    ],
+    "ocr_challenges": [
+      "handwritten text",
+      "cursive",
+      "ink variation",
+      "numbers may be misread"
+    ],
+    "validation_rules": [
+      "amount_numbers == amount_words"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-033",
+    "document_type": "Cheque",
+    "document_type_key": "cheque",
+    "variant_index": 5,
+    "typical_sections": [
+      "bank info",
+      "cheque number",
+      "date (old)",
+      "payee",
+      "amount",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "cheque_number",
+      "date",
+      "payee_name",
+      "amount_numbers",
+      "amount_words",
+      "signature"
+    ],
+    "common_layouts": [
+      "cheque leaf"
+    ],
+    "ocr_challenges": [
+      "date may be smudged",
+      "stamp"
+    ],
+    "validation_rules": [
+      "date should be within 3 months (stale)",
+      "amount match"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-034",
+    "document_type": "Cheque",
+    "document_type_key": "cheque",
+    "variant_index": 6,
+    "typical_sections": [
+      "bank info",
+      "cheque number",
+      "date",
+      "payee",
+      "amount in numbers",
+      "amount in words (Nepali)",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "cheque_number",
+      "date",
+      "payee_name",
+      "amount_numbers",
+      "amount_words_nepali",
+      "signature"
+    ],
+    "common_layouts": [
+      "cheque leaf"
+    ],
+    "ocr_challenges": [
+      "Nepali script for amount words",
+      "handwriting"
+    ],
+    "validation_rules": [
+      "amount numbers match Nepali words"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-035",
+    "document_type": "Receipt/bill",
+    "document_type_key": "receipt_bill",
+    "variant_index": 1,
+    "typical_sections": [
+      "header (business name, address, phone)",
+      "receipt number",
+      "date",
+      "customer name",
+      "items (description, qty, price, total)",
+      "subtotal",
+      "tax",
+      "total",
+      "payment method (cash)",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "receipt_number",
+      "date",
+      "customer_name",
+      "items[]",
+      "subtotal",
+      "tax_amount",
+      "grand_total",
+      "payment_method"
+    ],
+    "common_layouts": [
+      "thermal roll",
+      "portrait A5"
+    ],
+    "ocr_challenges": [
+      "thermal fading",
+      "handwritten items",
+      "stamps"
+    ],
+    "validation_rules": [
+      "grand_total = subtotal + tax"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-036",
+    "document_type": "Receipt/bill",
+    "document_type_key": "receipt_bill",
+    "variant_index": 2,
+    "typical_sections": [
+      "merchant name",
+      "card type",
+      "transaction number",
+      "date/time",
+      "amount",
+      "card number (masked)",
+      "authorization code",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "transaction_id",
+      "date",
+      "amount",
+      "card_last4",
+      "authorization_code",
+      "merchant_name"
+    ],
+    "common_layouts": [
+      "thermal paper",
+      "small"
+    ],
+    "ocr_challenges": [
+      "thermal fading",
+      "glare",
+      "small font"
+    ],
+    "validation_rules": [
+      "amount positive",
+      "auth code present"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-037",
+    "document_type": "Receipt/bill",
+    "document_type_key": "receipt_bill",
+    "variant_index": 3,
+    "typical_sections": [
+      "header",
+      "receipt number",
+      "date",
+      "items",
+      "total",
+      "barcode",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "receipt_number",
+      "date",
+      "items[]",
+      "grand_total",
+      "barcode_value"
+    ],
+    "common_layouts": [
+      "portrait A4",
+      "thermal"
+    ],
+    "ocr_challenges": [
+      "barcode may cover text",
+      "low contrast"
+    ],
+    "validation_rules": [
+      "barcode matches receipt number"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-038",
+    "document_type": "Receipt/bill",
+    "document_type_key": "receipt_bill",
+    "variant_index": 4,
+    "typical_sections": [
+      "header (handwritten)",
+      "receipt number",
+      "date",
+      "customer name",
+      "items (handwritten)",
+      "total",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "receipt_number",
+      "date",
+      "customer_name",
+      "items[]",
+      "grand_total"
+    ],
+    "common_layouts": [
+      "small paper",
+      "handwritten"
+    ],
+    "ocr_challenges": [
+      "handwriting",
+      "ink bleed",
+      "abbreviations"
+    ],
+    "validation_rules": [
+      "total sum of items"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-039",
+    "document_type": "Receipt/bill",
+    "document_type_key": "receipt_bill",
+    "variant_index": 5,
+    "typical_sections": [
+      "header",
+      "receipt number",
+      "date",
+      "items",
+      "subtotal",
+      "VAT 13%",
+      "grand total",
+      "footer"
+    ],
+    "key_fields_to_extract": [
+      "receipt_number",
+      "date",
+      "items[]",
+      "subtotal",
+      "vat_amount",
+      "grand_total"
+    ],
+    "common_layouts": [
+      "thermal roll"
+    ],
+    "ocr_challenges": [
+      "fading",
+      "curled paper",
+      "small print"
+    ],
+    "validation_rules": [
+      "VAT = 13% of subtotal",
+      "grand_total = subtotal + VAT"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-040",
+    "document_type": "Receipt/bill",
+    "document_type_key": "receipt_bill",
+    "variant_index": 6,
+    "typical_sections": [
+      "header",
+      "receipt number",
+      "date",
+      "items",
+      "discount",
+      "tax",
+      "total",
+      "coupon code"
+    ],
+    "key_fields_to_extract": [
+      "receipt_number",
+      "date",
+      "items[]",
+      "discount_amount",
+      "tax_amount",
+      "grand_total",
+      "coupon_code"
+    ],
+    "common_layouts": [
+      "portrait A4"
+    ],
+    "ocr_challenges": [
+      "coupon code may be small"
+    ],
+    "validation_rules": [
+      "grand_total = subtotal - discount + tax"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-041",
+    "document_type": "Purchase order",
+    "document_type_key": "purchase_order",
+    "variant_index": 1,
+    "typical_sections": [
+      "header (company name, address, phone)",
+      "PO number",
+      "date",
+      "supplier details (name, address, PAN)",
+      "delivery address",
+      "items table (SN, description, quantity, unit price, total)",
+      "terms and conditions",
+      "authorized signature"
+    ],
+    "key_fields_to_extract": [
+      "po_number",
+      "po_date",
+      "supplier_name",
+      "supplier_pan",
+      "delivery_address",
+      "items[]",
+      "subtotal",
+      "total"
+    ],
+    "common_layouts": [
+      "portrait A4",
+      "computer generated"
+    ],
+    "ocr_challenges": [
+      "tables with many columns",
+      "small font",
+      "watermark"
+    ],
+    "validation_rules": [
+      "total = sum of item totals",
+      "unit price * quantity = line total"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-042",
+    "document_type": "Purchase order",
+    "document_type_key": "purchase_order",
+    "variant_index": 2,
+    "typical_sections": [
+      "header",
+      "PO details",
+      "supplier info",
+      "item table",
+      "terms (delivery, payment, warranty)",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "po_number",
+      "po_date",
+      "supplier_name",
+      "supplier_pan",
+      "items[]",
+      "total",
+      "terms_summary"
+    ],
+    "common_layouts": [
+      "portrait A4",
+      "multi-page"
+    ],
+    "ocr_challenges": [
+      "long text blocks",
+      "small print terms"
+    ],
+    "validation_rules": [
+      "total calculation"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-043",
+    "document_type": "Purchase order",
+    "document_type_key": "purchase_order",
+    "variant_index": 3,
+    "typical_sections": [
+      "header",
+      "PO number",
+      "date",
+      "supplier",
+      "items",
+      "total",
+      "authorized signature and stamp"
+    ],
+    "key_fields_to_extract": [
+      "po_number",
+      "po_date",
+      "supplier_name",
+      "supplier_pan",
+      "items[]",
+      "total",
+      "signature_present"
+    ],
+    "common_layouts": [
+      "portrait A4"
+    ],
+    "ocr_challenges": [
+      "signature overlapping",
+      "stamp"
+    ],
+    "validation_rules": [
+      "total calculation"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-044",
+    "document_type": "Purchase order",
+    "document_type_key": "purchase_order",
+    "variant_index": 4,
+    "typical_sections": [
+      "header",
+      "PO details",
+      "supplier",
+      "items with required delivery dates",
+      "total",
+      "terms"
+    ],
+    "key_fields_to_extract": [
+      "po_number",
+      "po_date",
+      "supplier_name",
+      "items[]",
+      "delivery_dates",
+      "total"
+    ],
+    "common_layouts": [
+      "portrait A4"
+    ],
+    "ocr_challenges": [
+      "date formats",
+      "table with extra column"
+    ],
+    "validation_rules": [
+      "total calculation"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-045",
+    "document_type": "Purchase order",
+    "document_type_key": "purchase_order",
+    "variant_index": 5,
+    "typical_sections": [
+      "header",
+      "PO number",
+      "date",
+      "supplier",
+      "items (handwritten)",
+      "total",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "po_number",
+      "po_date",
+      "supplier_name",
+      "items[]",
+      "total"
+    ],
+    "common_layouts": [
+      "handwritten form"
+    ],
+    "ocr_challenges": [
+      "handwriting",
+      "illegible quantities",
+      "cross-outs"
+    ],
+    "validation_rules": [
+      "total sum"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-046",
+    "document_type": "Delivery challan",
+    "document_type_key": "delivery_challan",
+    "variant_index": 1,
+    "typical_sections": [
+      "header (company name, address)",
+      "challan number",
+      "date",
+      "consignee details (name, address)",
+      "items table (SN, description, quantity, weight)",
+      "delivery note",
+      "signature of driver/receiver",
+      "date of delivery"
+    ],
+    "key_fields_to_extract": [
+      "challan_number",
+      "challan_date",
+      "consignee_name",
+      "consignee_address",
+      "items[]",
+      "total_quantity",
+      "delivery_signature"
+    ],
+    "common_layouts": [
+      "portrait A4",
+      "triplicate form"
+    ],
+    "ocr_challenges": [
+      "carbon copy effect",
+      "multi-part form",
+      "stamps"
+    ],
+    "validation_rules": [
+      "total_quantity = sum of item quantities"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-047",
+    "document_type": "Delivery challan",
+    "document_type_key": "delivery_challan",
+    "variant_index": 2,
+    "typical_sections": [
+      "header",
+      "challan number",
+      "date",
+      "consignee",
+      "packing list (packages, weight)",
+      "items",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "challan_number",
+      "challan_date",
+      "consignee_name",
+      "items[]",
+      "packages",
+      "total_weight",
+      "signature"
+    ],
+    "common_layouts": [
+      "portrait A4"
+    ],
+    "ocr_challenges": [
+      "table with weight columns",
+      "small fonts"
+    ],
+    "validation_rules": [
+      "weight sum"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-048",
+    "document_type": "Delivery challan",
+    "document_type_key": "delivery_challan",
+    "variant_index": 3,
+    "typical_sections": [
+      "header",
+      "challan number",
+      "date",
+      "consignee",
+      "items",
+      "driver name and signature",
+      "receiver signature"
+    ],
+    "key_fields_to_extract": [
+      "challan_number",
+      "challan_date",
+      "consignee_name",
+      "items[]",
+      "driver_name",
+      "driver_signature",
+      "receiver_signature"
+    ],
+    "common_layouts": [
+      "portrait A4"
+    ],
+    "ocr_challenges": [
+      "signature overlap",
+      "handwriting"
+    ],
+    "validation_rules": [
+      "signatures present"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-049",
+    "document_type": "Delivery challan",
+    "document_type_key": "delivery_challan",
+    "variant_index": 4,
+    "typical_sections": [
+      "header",
+      "challan number",
+      "date",
+      "consignee",
+      "items",
+      "gate entry number and stamp",
+      "signatures"
+    ],
+    "key_fields_to_extract": [
+      "challan_number",
+      "challan_date",
+      "consignee_name",
+      "items[]",
+      "gate_entry_number",
+      "stamp_text"
+    ],
+    "common_layouts": [
+      "portrait A4"
+    ],
+    "ocr_challenges": [
+      "stamp overlapping",
+      "ink smudges"
+    ],
+    "validation_rules": [
+      "items count"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "docu-050",
+    "document_type": "Delivery challan",
+    "document_type_key": "delivery_challan",
+    "variant_index": 5,
+    "typical_sections": [
+      "header",
+      "challan number",
+      "date",
+      "consignee",
+      "item table (SN, description, quantity, unit, remarks)",
+      "total quantity",
+      "signature"
+    ],
+    "key_fields_to_extract": [
+      "challan_number",
+      "challan_date",
+      "consignee_name",
+      "items[]",
+      "total_quantity"
+    ],
+    "common_layouts": [
+      "portrait A4",
+      "detailed"
+    ],
+    "ocr_challenges": [
+      "dense table",
+      "many lines",
+      "handwritten remarks"
+    ],
+    "validation_rules": [
+      "total_quantity = sum of quantities"
+    ],
+    "source": "user_exact"
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "credit_sale_with_correction": "conv_001",
+  "typo_credit_sale": "conv_002",
+  "incomplete_info_expense": "conv_003",
+  "balance_inquiry_followup": "conv_004",
+  "greeting_help_guide": "conv_005",
+  "party_name_correction": "conv_006",
+  "typo_udaar_correction": "conv_007",
+  "incomplete_info_sale_party": "conv_008",
+  "debit_payment_with_correction": "conv_009",
+  "transaction_history_followup": "conv_010"
+}

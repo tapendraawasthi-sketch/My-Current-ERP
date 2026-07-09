@@ -2,15 +2,15 @@
 {"correct": "kharcha", "variants": ["kharcha", "kharxa", "kharchaa", "kharch", "kharcho", "kharca"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
 {"correct": "noksan", "variants": ["noksan", "nokshan", "noksane", "noxan", "noksana"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
 {"correct": "baki", "variants": ["baki", "bakii", "baaki", "bakia", "bakie"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
-{"correct": "kineko", "variants": ["kineko", "kinekoe", "kineku", "kinneko", "kinyeko"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "kineko", "variants": ["kineko", "kinekoe", "kineku", "kinneko", "kinyeko", "kineyo"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing", "source": "spelling_corrections"}
 {"correct": "kineye", "variants": ["kineye", "kinye", "kinyo", "kine", "kiniyo", "kinne"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
-{"correct": "becheko", "variants": ["becheko", "bexeko", "becheku", "bechyo", "bechheko"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "becheko", "variants": ["becheko", "bexeko", "becheku", "bechyo", "bechheko", "bcheko"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing", "source": "spelling_corrections"}
 {"correct": "tiryo", "variants": ["tiryo", "tirio", "tiryoe", "tireko", "tireku"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
 {"correct": "jamma", "variants": ["jamma", "jama", "jammae", "jamaa", "jamah"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
 {"correct": "diye", "variants": ["diye", "diyo", "die", "diya", "diyeu"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
 {"correct": "aayo", "variants": ["aayo", "ayo", "aayeko", "aayoo", "aaye"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
-{"correct": "paisa", "variants": ["paisa", "pisa", "paise", "paisaa", "pyasa"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
-{"correct": "rupiya", "variants": ["rupiya", "rupya", "rupaye", "rupaiya"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
+{"correct": "paisa", "variants": ["paisa", "pisa", "paise", "paisaa", "pyasa", "paaisa"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing", "source": "spelling_corrections"}
+{"correct": "rupiya", "variants": ["rupiya", "rupya", "rupaye", "rupaiya", "rupiyaa"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing", "source": "spelling_corrections"}
 {"correct": "hajar", "variants": ["hajar", "hazar", "hajaar", "hazaar", "hjar"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
 {"correct": "lakh", "variants": ["lakh", "lak", "lac", "laksh", "lax"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
 {"correct": "sampatti", "variants": ["sampatti", "sampati", "sampatii", "sampat"], "type": "phonetic_and_keyboard_variation", "frequency": "high", "context": "nepal_roman_business_typing"}
@@ -28,7 +28,7 @@
 {"correct": "credit", "variants": ["credit", "credite", "crdit", "kredit", "jamā"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
 {"correct": "salary", "variants": ["salary", "salery", "salry", "celery", "talab"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
 {"correct": "expense", "variants": ["expense", "expence", "expens", "xpense", "kharcha"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
-{"correct": "payment", "variants": ["payment", "paiment", "paymnt", "peymant", "bhugtan"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "payment", "variants": ["payment", "paiment", "paymnt", "peymant", "bhugtan", "payement"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing", "source": "spelling_corrections"}
 {"correct": "discount", "variants": ["discount", "discont", "discunt", "chhut"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
 {"correct": "provision", "variants": ["provision", "provizion", "provisione", "prabision"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
 {"correct": "depreciation", "variants": ["depreciation", "depriciation", "depresiation", "hras"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
@@ -49,5 +49,87 @@
 {"correct": "khalti", "variants": ["khalti", "khaltii"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
 {"correct": "nagad", "variants": ["nagad", "nakad", "nagat", "cash"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
 {"correct": "udharo", "variants": ["udharo", "udhaaro", "udaro"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
-{"correct": "ramro", "variants": ["ramro", "ramroo"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "ramro", "variants": ["ramro", "ramroo", "ramr"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing", "source": "spelling_corrections"}
 {"correct": "thik", "variants": ["thik", "thik cha", "thikxa", "thik chha"], "type": "phonetic_and_keyboard_variation", "frequency": "medium", "context": "nepal_roman_business_typing"}
+{"correct": "gareko", "variants": ["gareko", "gareyo", "greko"], "type": "vowel_ending", "frequency": "very_high", "context": "spoken_typing_correction", "lemma": "garnu", "source": "spelling_corrections"}
+{"correct": "bhayeko", "variants": ["bhayeko", "bhayeyo", "bhakyo", "bhaayeko"], "type": "vowel_ending", "frequency": "high", "context": "spoken_typing_correction", "lemma": "hunu", "source": "spelling_corrections"}
+{"correct": "aayeko", "variants": ["aayeko", "aayeyo", "aaye"], "type": "vowel_ending", "frequency": "high", "context": "spoken_typing_correction", "lemma": "aaunu", "source": "spelling_corrections"}
+{"correct": "gayeko", "variants": ["gayeko", "gayeyo", "gaye"], "type": "vowel_ending", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "jaanu", "source": "spelling_corrections"}
+{"correct": "khayeko", "variants": ["khayeko", "khayeyo"], "type": "vowel_ending", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "khaanu", "source": "spelling_corrections"}
+{"correct": "diyeko", "variants": ["diyeko", "diyeyo"], "type": "vowel_ending", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "dinu", "source": "spelling_corrections"}
+{"correct": "liyeko", "variants": ["liyeko", "liyeyo"], "type": "vowel_ending", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "linu", "source": "spelling_corrections"}
+{"correct": "bheteko", "variants": ["bheteko", "bhetyo"], "type": "vowel_ending", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "bhetnu", "source": "spelling_corrections"}
+{"correct": "dekheko", "variants": ["dekheko", "dekheyo", "dekhko"], "type": "vowel_ending", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "dekhnu", "source": "spelling_corrections"}
+{"correct": "suneko", "variants": ["suneko", "suneyo", "sunko"], "type": "vowel_ending", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "sunnu", "source": "spelling_corrections"}
+{"correct": "padheko", "variants": ["padheko", "padheyo"], "type": "vowel_ending", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "padhnu", "source": "spelling_corrections"}
+{"correct": "bhaneko", "variants": ["bhaneko", "bhanyo", "vaneko"], "type": "vowel_ending", "frequency": "high", "context": "spoken_typing_correction", "lemma": "bhannu", "source": "spelling_corrections"}
+{"correct": "lekheko", "variants": ["lekheko", "lekhuyo", "lekhe"], "type": "vowel_ending", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "lekhnu", "source": "spelling_corrections"}
+{"correct": "baneko", "variants": ["baneko", "banyo"], "type": "vowel_ending", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "banaunu", "source": "spelling_corrections"}
+{"correct": "pathaeko", "variants": ["pathaeko", "pathayo", "pathko"], "type": "vowel_ending", "frequency": "high", "context": "spoken_typing_correction", "lemma": "pathaunu", "source": "spelling_corrections"}
+{"correct": "aaundaa", "variants": ["aaundaa", "audaa"], "type": "vowel_missing", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "aaunu", "source": "spelling_corrections"}
+{"correct": "jaandaa", "variants": ["jaandaa", "jaadaa"], "type": "vowel_missing", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "jaanu", "source": "spelling_corrections"}
+{"correct": "khaandaa", "variants": ["khaandaa", "khaadaa"], "type": "vowel_missing", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "khaanu", "source": "spelling_corrections"}
+{"correct": "hundaa", "variants": ["hundaa", "huda"], "type": "vowel_missing", "frequency": "high", "context": "spoken_typing_correction", "lemma": "hunu", "source": "spelling_corrections"}
+{"correct": "garnuhos", "variants": ["garnuhos", "garnus"], "type": "missing_ho", "frequency": "very_high", "context": "spoken_typing_correction", "lemma": "garnu", "source": "spelling_corrections"}
+{"correct": "aaunuhos", "variants": ["aaunuhos", "aaunus"], "type": "missing_ho", "frequency": "high", "context": "spoken_typing_correction", "lemma": "aaunu", "source": "spelling_corrections"}
+{"correct": "basnuhos", "variants": ["basnuhos", "basnus"], "type": "missing_ho", "frequency": "high", "context": "spoken_typing_correction", "lemma": "basnu", "source": "spelling_corrections"}
+{"correct": "chaina", "variants": ["chaina", "xaina", "chhaina"], "type": "consonant_confusion", "frequency": "very_high", "context": "spoken_typing_correction", "lemma": "hunu", "source": "spelling_corrections"}
+{"correct": "bhayo", "variants": ["bhayo", "vayo"], "type": "consonant_confusion", "frequency": "very_high", "context": "spoken_typing_correction", "lemma": "hunu", "source": "spelling_corrections"}
+{"correct": "bhet", "variants": ["bhet", "vet", "bhett"], "type": "consonant_confusion", "frequency": "high", "context": "spoken_typing_correction", "lemma": "bhetnu", "source": "spelling_corrections"}
+{"correct": "bholi", "variants": ["bholi", "voli"], "type": "consonant_confusion", "frequency": "high", "context": "spoken_typing_correction", "lemma": "bholi", "source": "spelling_corrections"}
+{"correct": "bhul", "variants": ["bhul", "vul"], "type": "consonant_confusion", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "bhul", "source": "spelling_corrections"}
+{"correct": "chito", "variants": ["chito", "xito"], "type": "consonant_confusion", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "chito", "source": "spelling_corrections"}
+{"correct": "chhin", "variants": ["chhin", "chin"], "type": "consonant_confusion", "frequency": "high", "context": "spoken_typing_correction", "lemma": "chhin", "source": "spelling_corrections"}
+{"correct": "chhadnu", "variants": ["chhadnu", "chadnu"], "type": "consonant_confusion", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "chhadnu", "source": "spelling_corrections"}
+{"correct": "bhar", "variants": ["bhar", "bhara"], "type": "consonant_confusion", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "bhar", "source": "spelling_corrections"}
+{"correct": "banaayo", "variants": ["banaayo", "banayo"], "type": "missing_letter", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "banaunu", "source": "spelling_corrections"}
+{"correct": "manchhe", "variants": ["manchhe", "manch"], "type": "missing_letter", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "manchhe", "source": "spelling_corrections"}
+{"correct": "bhanne", "variants": ["bhanne", "bhnne", "bhannai"], "type": "missing_letter", "frequency": "high", "context": "spoken_typing_correction", "lemma": "bhannu", "source": "spelling_corrections"}
+{"correct": "garirahe", "variants": ["garirahe", "garira"], "type": "missing_letter", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "garnu", "source": "spelling_corrections"}
+{"correct": "aaja", "variants": ["aaja", "aajaa"], "type": "extra_letter", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "aaja", "source": "spelling_corrections"}
+{"correct": "kitab", "variants": ["kitab", "kitaaba"], "type": "extra_letter", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "kitab", "source": "spelling_corrections"}
+{"correct": "garho", "variants": ["garho", "gaarho"], "type": "extra_letter", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "garho", "source": "spelling_corrections"}
+{"correct": "chahanu", "variants": ["chahanu", "chaahanu"], "type": "extra_letter", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "chahanu", "source": "spelling_corrections"}
+{"correct": "bihana", "variants": ["bihana", "bihanaa"], "type": "extra_letter", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "bihana", "source": "spelling_corrections"}
+{"correct": "saajha", "variants": ["saajha", "saajhaa"], "type": "extra_letter", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "saajha", "source": "spelling_corrections"}
+{"correct": "received", "variants": ["received", "recieved"], "type": "english_mix", "frequency": "high", "context": "spoken_typing_correction", "lemma": "received", "source": "spelling_corrections"}
+{"correct": "amount", "variants": ["amount", "ammount"], "type": "english_mix", "frequency": "high", "context": "spoken_typing_correction", "lemma": "amount", "source": "spelling_corrections"}
+{"correct": "account", "variants": ["account", "acount"], "type": "english_mix", "frequency": "high", "context": "spoken_typing_correction", "lemma": "account", "source": "spelling_corrections"}
+{"correct": "mobile", "variants": ["mobile", "mobail"], "type": "english_mix", "frequency": "high", "context": "spoken_typing_correction", "lemma": "mobile", "source": "spelling_corrections"}
+{"correct": "recharge", "variants": ["recharge", "rechareg"], "type": "english_mix", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "recharge", "source": "spelling_corrections"}
+{"correct": "transaction", "variants": ["transaction", "transection"], "type": "english_mix", "frequency": "high", "context": "spoken_typing_correction", "lemma": "transaction", "source": "spelling_corrections"}
+{"correct": "confirm", "variants": ["confirm", "conferm"], "type": "english_mix", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "confirm", "source": "spelling_corrections"}
+{"correct": "success", "variants": ["success", "sucess"], "type": "english_mix", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "success", "source": "spelling_corrections"}
+{"correct": "failure", "variants": ["failure", "failur"], "type": "english_mix", "frequency": "low", "context": "spoken_typing_correction", "lemma": "failure", "source": "spelling_corrections"}
+{"correct": "cancel", "variants": ["cancel", "cancle"], "type": "english_mix", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "cancel", "source": "spelling_corrections"}
+{"correct": "refund", "variants": ["refund", "refundd"], "type": "extra_letter_english", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "refund", "source": "spelling_corrections"}
+{"correct": "bank", "variants": ["bank", "banke"], "type": "extra_letter_english", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "bank", "source": "spelling_corrections"}
+{"correct": "cheque", "variants": ["cheque", "chek"], "type": "english_mix", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "cheque", "source": "spelling_corrections"}
+{"correct": "detail", "variants": ["detail", "detial"], "type": "english_mix", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "detail", "source": "spelling_corrections"}
+{"correct": "chittai", "variants": ["chittai", "chhittai"], "type": "consonant_confusion", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "chittai", "source": "spelling_corrections"}
+{"correct": "bhannuhos", "variants": ["bhannuhos", "bhannus"], "type": "missing_ho", "frequency": "high", "context": "spoken_typing_correction", "lemma": "bhannu", "source": "spelling_corrections"}
+{"correct": "sunnuhos", "variants": ["sunnuhos", "sunnus"], "type": "missing_ho", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "sunnu", "source": "spelling_corrections"}
+{"correct": "lekhnuhos", "variants": ["lekhnuhos", "lekhus"], "type": "missing_ho", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "lekhnu", "source": "spelling_corrections"}
+{"correct": "pathaaunuhos", "variants": ["pathaaunuhos", "pathaus"], "type": "missing_ho", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "pathaunu", "source": "spelling_corrections"}
+{"correct": "aunchha", "variants": ["aunchha", "auchha"], "type": "consonant_confusion", "frequency": "high", "context": "spoken_typing_correction", "lemma": "aaunu", "source": "spelling_corrections"}
+{"correct": "janchha", "variants": ["janchha", "jancha"], "type": "consonant_confusion", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "jaanu", "source": "spelling_corrections"}
+{"correct": "khanchha", "variants": ["khanchha", "khancha"], "type": "consonant_confusion", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "khaanu", "source": "spelling_corrections"}
+{"correct": "dinchha", "variants": ["dinchha", "dincha"], "type": "consonant_confusion", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "dinu", "source": "spelling_corrections"}
+{"correct": "tapaailai", "variants": ["tapaailai", "tapailai"], "type": "vowel_missing", "frequency": "very_high", "context": "spoken_typing_correction", "lemma": "tapaai", "source": "spelling_corrections"}
+{"correct": "hajur", "variants": ["hajur", "hjur"], "type": "missing_letter", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "hajur", "source": "spelling_corrections"}
+{"correct": "namaste", "variants": ["namaste", "namste"], "type": "missing_letter", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "namaste", "source": "spelling_corrections"}
+{"correct": "kasto", "variants": ["kasto", "kast"], "type": "missing_letter", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "kasto", "source": "spelling_corrections"}
+{"correct": "pheri", "variants": ["pheri", "feri"], "type": "consonant_confusion", "frequency": "high", "context": "spoken_typing_correction", "lemma": "pheri", "source": "spelling_corrections"}
+{"correct": "pharkera", "variants": ["pharkera", "farkera"], "type": "consonant_confusion", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "pharkinu", "source": "spelling_corrections"}
+{"correct": "fursad", "variants": ["fursad", "phursad"], "type": "consonant_confusion", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "fursad", "source": "spelling_corrections"}
+{"correct": "safai", "variants": ["safai", "saphai"], "type": "consonant_confusion", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "safai", "source": "spelling_corrections"}
+{"correct": "message", "variants": ["message", "mesage"], "type": "english_mix", "frequency": "high", "context": "spoken_typing_correction", "lemma": "message", "source": "spelling_corrections"}
+{"correct": "address", "variants": ["address", "adress"], "type": "english_mix", "frequency": "high", "context": "spoken_typing_correction", "lemma": "address", "source": "spelling_corrections"}
+{"correct": "telephone", "variants": ["telephone", "teephone"], "type": "english_mix", "frequency": "low", "context": "spoken_typing_correction", "lemma": "telephone", "source": "spelling_corrections"}
+{"correct": "number", "variants": ["number", "nambar"], "type": "english_mix", "frequency": "high", "context": "spoken_typing_correction", "lemma": "number", "source": "spelling_corrections"}
+{"correct": "bhanda", "variants": ["bhanda", "bhand"], "type": "missing_letter", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "bhanda", "source": "spelling_corrections"}
+{"correct": "huncha", "variants": ["huncha", "hunch"], "type": "missing_letter", "frequency": "high", "context": "spoken_typing_correction", "lemma": "hunu", "source": "spelling_corrections"}
+{"correct": "sakcha", "variants": ["sakcha", "sakch"], "type": "missing_letter", "frequency": "high", "context": "spoken_typing_correction", "lemma": "saknu", "source": "spelling_corrections"}
+{"correct": "aucha", "variants": ["aucha", "auch"], "type": "missing_letter", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "aaunu", "source": "spelling_corrections"}
+{"correct": "jancha", "variants": ["jancha", "janch"], "type": "missing_letter", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "jaanu", "source": "spelling_corrections"}
+{"correct": "khusi", "variants": ["khusi", "khus"], "type": "missing_letter", "frequency": "medium", "context": "spoken_typing_correction", "lemma": "khusi", "source": "spelling_corrections"}

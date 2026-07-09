@@ -1,0 +1,902 @@
+{
+  "Ram le 1000 tiryo hijo, tara usko balance 500 matra kam bhayo": {
+    "id": "complex_001",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "ram le 1000 tiryo hijo, tara usko balance 500 matra kam bhayo": {
+    "id": "complex_001",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "complex_001": {
+    "id": "complex_001",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "Hari le Shyam lai 50000 bechyo credit ma, Shyam le tyo saman Ram lai 40000 ma bechyo, Ram le paisa Hari lai directly tiryo": {
+    "id": "complex_002",
+    "scenarioType": "multi_entity_relationship",
+    "scenarioTypeKey": "multi_entity_relationship",
+    "clarificationNeeded": true
+  },
+  "hari le shyam lai 50000 bechyo credit ma, shyam le tyo saman ram lai 40000 ma bechyo, ram le paisa hari lai directly tiryo": {
+    "id": "complex_002",
+    "scenarioType": "multi_entity_relationship",
+    "scenarioTypeKey": "multi_entity_relationship",
+    "clarificationNeeded": true
+  },
+  "complex_002": {
+    "id": "complex_002",
+    "scenarioType": "multi_entity_relationship",
+    "scenarioTypeKey": "multi_entity_relationship",
+    "clarificationNeeded": true
+  },
+  "Dashain aghi order gareko saman Dashain paxi aayo, tara price Dashain ma badhi thiyo ani ahile ghateko xa": {
+    "id": "complex_003",
+    "scenarioType": "temporal_reasoning",
+    "scenarioTypeKey": "temporal_reasoning",
+    "clarificationNeeded": true
+  },
+  "dashain aghi order gareko saman dashain paxi aayo, tara price dashain ma badhi thiyo ani ahile ghateko xa": {
+    "id": "complex_003",
+    "scenarioType": "temporal_reasoning",
+    "scenarioTypeKey": "temporal_reasoning",
+    "clarificationNeeded": true
+  },
+  "complex_003": {
+    "id": "complex_003",
+    "scenarioType": "temporal_reasoning",
+    "scenarioTypeKey": "temporal_reasoning",
+    "clarificationNeeded": true
+  },
+  "Karmachari le 2 barsha kaam garyo tara probation period sakeko chhaina bhancha company le": {
+    "id": "complex_004",
+    "scenarioType": "exception_handling",
+    "scenarioTypeKey": "exception_handling",
+    "clarificationNeeded": false
+  },
+  "karmachari le 2 barsha kaam garyo tara probation period sakeko chhaina bhancha company le": {
+    "id": "complex_004",
+    "scenarioType": "exception_handling",
+    "scenarioTypeKey": "exception_handling",
+    "clarificationNeeded": false
+  },
+  "complex_004": {
+    "id": "complex_004",
+    "scenarioType": "exception_handling",
+    "scenarioTypeKey": "exception_handling",
+    "clarificationNeeded": false
+  },
+  "Customer le cash ma kinyo 13% VAT lageko bill chahiyo bhancha, tara business VAT registered chhaina": {
+    "id": "complex_005",
+    "scenarioType": "priority_conflict",
+    "scenarioTypeKey": "priority_conflict",
+    "clarificationNeeded": true
+  },
+  "customer le cash ma kinyo 13% vat lageko bill chahiyo bhancha, tara business vat registered chhaina": {
+    "id": "complex_005",
+    "scenarioType": "priority_conflict",
+    "scenarioTypeKey": "priority_conflict",
+    "clarificationNeeded": true
+  },
+  "complex_005": {
+    "id": "complex_005",
+    "scenarioType": "priority_conflict",
+    "scenarioTypeKey": "priority_conflict",
+    "clarificationNeeded": true
+  },
+  "Yadi hami le machinery 50 lakh ko kineko bhaye depreciation kati hunthyo ani tax kati bachthyo?": {
+    "id": "complex_006",
+    "scenarioType": "counterfactual_reasoning",
+    "scenarioTypeKey": "counterfactual_reasoning",
+    "clarificationNeeded": true
+  },
+  "yadi hami le machinery 50 lakh ko kineko bhaye depreciation kati hunthyo ani tax kati bachthyo": {
+    "id": "complex_006",
+    "scenarioType": "counterfactual_reasoning",
+    "scenarioTypeKey": "counterfactual_reasoning",
+    "clarificationNeeded": true
+  },
+  "complex_006": {
+    "id": "complex_006",
+    "scenarioType": "counterfactual_reasoning",
+    "scenarioTypeKey": "counterfactual_reasoning",
+    "clarificationNeeded": true
+  },
+  "Supplier le invoice ma 100 unit lekhdeko cha tara godown ma 95 unit matra aayo, tara supplier le shortage manna manena": {
+    "id": "complex_007",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "supplier le invoice ma 100 unit lekhdeko cha tara godown ma 95 unit matra aayo, tara supplier le shortage manna manena": {
+    "id": "complex_007",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "complex_007": {
+    "id": "complex_007",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "Mahila ko naam ma ghar kinda registration fee ma chhut paincha bhanyo, tara ghar husband wife duita ko joint naam ma register garna khojeko": {
+    "id": "complex_008",
+    "scenarioType": "implicit_constraint",
+    "scenarioTypeKey": "implicit_constraint",
+    "clarificationNeeded": true
+  },
+  "mahila ko naam ma ghar kinda registration fee ma chhut paincha bhanyo, tara ghar husband wife duita ko joint naam ma register garna khojeko": {
+    "id": "complex_008",
+    "scenarioType": "implicit_constraint",
+    "scenarioTypeKey": "implicit_constraint",
+    "clarificationNeeded": true
+  },
+  "complex_008": {
+    "id": "complex_008",
+    "scenarioType": "implicit_constraint",
+    "scenarioTypeKey": "implicit_constraint",
+    "clarificationNeeded": true
+  },
+  "A le B lai saman bechyo, B le C lai bechyo, C le return garyo B lai, B le return garyo A lai - VAT chain kasari handle garne?": {
+    "id": "complex_009",
+    "scenarioType": "multi_entity_relationship",
+    "scenarioTypeKey": "multi_entity_relationship",
+    "clarificationNeeded": true
+  },
+  "a le b lai saman bechyo, b le c lai bechyo, c le return garyo b lai, b le return garyo a lai - vat chain kasari handle garne": {
+    "id": "complex_009",
+    "scenarioType": "multi_entity_relationship",
+    "scenarioTypeKey": "multi_entity_relationship",
+    "clarificationNeeded": true
+  },
+  "complex_009": {
+    "id": "complex_009",
+    "scenarioType": "multi_entity_relationship",
+    "scenarioTypeKey": "multi_entity_relationship",
+    "clarificationNeeded": true
+  },
+  "Company le employee lai Dashain bonus dinu parcha tara company loss ma cha, bank loan ko EMI pani tirna sakeko chhaina": {
+    "id": "complex_010",
+    "scenarioType": "priority_conflict",
+    "scenarioTypeKey": "priority_conflict",
+    "clarificationNeeded": true
+  },
+  "company le employee lai dashain bonus dinu parcha tara company loss ma cha, bank loan ko emi pani tirna sakeko chhaina": {
+    "id": "complex_010",
+    "scenarioType": "priority_conflict",
+    "scenarioTypeKey": "priority_conflict",
+    "clarificationNeeded": true
+  },
+  "complex_010": {
+    "id": "complex_010",
+    "scenarioType": "priority_conflict",
+    "scenarioTypeKey": "priority_conflict",
+    "clarificationNeeded": true
+  },
+  "Saman Chaitra 31 ma pathayo tara customer le Baisakh 1 ma receive garyo - kun fiscal year ko sale ho?": {
+    "id": "complex_011",
+    "scenarioType": "temporal_reasoning",
+    "scenarioTypeKey": "temporal_reasoning",
+    "clarificationNeeded": true
+  },
+  "saman chaitra 31 ma pathayo tara customer le baisakh 1 ma receive garyo - kun fiscal year ko sale ho": {
+    "id": "complex_011",
+    "scenarioType": "temporal_reasoning",
+    "scenarioTypeKey": "temporal_reasoning",
+    "clarificationNeeded": true
+  },
+  "complex_011": {
+    "id": "complex_011",
+    "scenarioType": "temporal_reasoning",
+    "scenarioTypeKey": "temporal_reasoning",
+    "clarificationNeeded": true
+  },
+  "Yo pasal lai ek jana lai franchise dina khojeko chu, royalty ra fee structure kasari set garne Nepal context ma?": {
+    "id": "complex_012",
+    "scenarioType": "analogy_based",
+    "scenarioTypeKey": "analogy_based",
+    "clarificationNeeded": true
+  },
+  "yo pasal lai ek jana lai franchise dina khojeko chu, royalty ra fee structure kasari set garne nepal context ma": {
+    "id": "complex_012",
+    "scenarioType": "analogy_based",
+    "scenarioTypeKey": "analogy_based",
+    "clarificationNeeded": true
+  },
+  "complex_012": {
+    "id": "complex_012",
+    "scenarioType": "analogy_based",
+    "scenarioTypeKey": "analogy_based",
+    "clarificationNeeded": true
+  },
+  "TDS 1.5% katyo bhancha supplier le tara hamro purchase bill ma 15% TDS dekhaucha": {
+    "id": "complex_013",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "tds 1.5% katyo bhancha supplier le tara hamro purchase bill ma 15% tds dekhaucha": {
+    "id": "complex_013",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "complex_013": {
+    "id": "complex_013",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "Hamro company le agriculture product bechcha jasma VAT chhaina, tara yo product process garera bechda VAT lagcha - mixed supply kasari handle garne?": {
+    "id": "complex_014",
+    "scenarioType": "exception_handling",
+    "scenarioTypeKey": "exception_handling",
+    "clarificationNeeded": true
+  },
+  "hamro company le agriculture product bechcha jasma vat chhaina, tara yo product process garera bechda vat lagcha - mixed supply kasari handle garne": {
+    "id": "complex_014",
+    "scenarioType": "exception_handling",
+    "scenarioTypeKey": "exception_handling",
+    "clarificationNeeded": true
+  },
+  "complex_014": {
+    "id": "complex_014",
+    "scenarioType": "exception_handling",
+    "scenarioTypeKey": "exception_handling",
+    "clarificationNeeded": true
+  },
+  "Yadi hamile import garnu ko satta Nepal mai manufacture garyau bhane kati bachat hunthyo?": {
+    "id": "complex_015",
+    "scenarioType": "counterfactual_reasoning",
+    "scenarioTypeKey": "counterfactual_reasoning",
+    "clarificationNeeded": true
+  },
+  "yadi hamile import garnu ko satta nepal mai manufacture garyau bhane kati bachat hunthyo": {
+    "id": "complex_015",
+    "scenarioType": "counterfactual_reasoning",
+    "scenarioTypeKey": "counterfactual_reasoning",
+    "clarificationNeeded": true
+  },
+  "complex_015": {
+    "id": "complex_015",
+    "scenarioType": "counterfactual_reasoning",
+    "scenarioTypeKey": "counterfactual_reasoning",
+    "clarificationNeeded": true
+  },
+  "Partner A le 70% invest gareko cha tara Partner B le 80% kaam garcha - profit share kasari garne?": {
+    "id": "complex_016",
+    "scenarioType": "priority_conflict",
+    "scenarioTypeKey": "priority_conflict",
+    "clarificationNeeded": true
+  },
+  "partner a le 70% invest gareko cha tara partner b le 80% kaam garcha - profit share kasari garne": {
+    "id": "complex_016",
+    "scenarioType": "priority_conflict",
+    "scenarioTypeKey": "priority_conflict",
+    "clarificationNeeded": true
+  },
+  "complex_016": {
+    "id": "complex_016",
+    "scenarioType": "priority_conflict",
+    "scenarioTypeKey": "priority_conflict",
+    "clarificationNeeded": true
+  },
+  "Employee le Magh ma resign garyo tara Falgun samma kaam garyo, Chaitra ma final settlement magyo - gratuity kun date samma calculate garne?": {
+    "id": "complex_017",
+    "scenarioType": "temporal_reasoning",
+    "scenarioTypeKey": "temporal_reasoning",
+    "clarificationNeeded": true
+  },
+  "employee le magh ma resign garyo tara falgun samma kaam garyo, chaitra ma final settlement magyo - gratuity kun date samma calculate garne": {
+    "id": "complex_017",
+    "scenarioType": "temporal_reasoning",
+    "scenarioTypeKey": "temporal_reasoning",
+    "clarificationNeeded": true
+  },
+  "complex_017": {
+    "id": "complex_017",
+    "scenarioType": "temporal_reasoning",
+    "scenarioTypeKey": "temporal_reasoning",
+    "clarificationNeeded": true
+  },
+  "Foreign buyer le USD ma payment garna khojyo tara hami le Indian supplier lai INR ma pay garnu parcha - exchange rate kasari handle garne?": {
+    "id": "complex_018",
+    "scenarioType": "implicit_constraint",
+    "scenarioTypeKey": "implicit_constraint",
+    "clarificationNeeded": true
+  },
+  "foreign buyer le usd ma payment garna khojyo tara hami le indian supplier lai inr ma pay garnu parcha - exchange rate kasari handle garne": {
+    "id": "complex_018",
+    "scenarioType": "implicit_constraint",
+    "scenarioTypeKey": "implicit_constraint",
+    "clarificationNeeded": true
+  },
+  "complex_018": {
+    "id": "complex_018",
+    "scenarioType": "implicit_constraint",
+    "scenarioTypeKey": "implicit_constraint",
+    "clarificationNeeded": true
+  },
+  "Audit report ma profit 20 lakh dekhaucha tara bank statement ma paisa badeko chhaina, jamma 2 lakh matra badeko cha": {
+    "id": "complex_019",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "audit report ma profit 20 lakh dekhaucha tara bank statement ma paisa badeko chhaina, jamma 2 lakh matra badeko cha": {
+    "id": "complex_019",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "complex_019": {
+    "id": "complex_019",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "Hamro NGO lai donation aayo 50 lakh tara donor le specific kaam ma matra kharcha garnu bhaneko cha, tara hami lai general admin ma paisa chahiyo": {
+    "id": "complex_020",
+    "scenarioType": "exception_handling",
+    "scenarioTypeKey": "exception_handling",
+    "clarificationNeeded": true
+  },
+  "hamro ngo lai donation aayo 50 lakh tara donor le specific kaam ma matra kharcha garnu bhaneko cha, tara hami lai general admin ma paisa chahiyo": {
+    "id": "complex_020",
+    "scenarioType": "exception_handling",
+    "scenarioTypeKey": "exception_handling",
+    "clarificationNeeded": true
+  },
+  "complex_020": {
+    "id": "complex_020",
+    "scenarioType": "exception_handling",
+    "scenarioTypeKey": "exception_handling",
+    "clarificationNeeded": true
+  },
+  "Hami 3 jana le milera eutai building rent ma liyera alag alag business chalaucha - rent, bijuli, pani kasari share garne?": {
+    "id": "complex_021",
+    "scenarioType": "multi_entity_relationship",
+    "scenarioTypeKey": "multi_entity_relationship",
+    "clarificationNeeded": true
+  },
+  "hami 3 jana le milera eutai building rent ma liyera alag alag business chalaucha - rent, bijuli, pani kasari share garne": {
+    "id": "complex_021",
+    "scenarioType": "multi_entity_relationship",
+    "scenarioTypeKey": "multi_entity_relationship",
+    "clarificationNeeded": true
+  },
+  "complex_021": {
+    "id": "complex_021",
+    "scenarioType": "multi_entity_relationship",
+    "scenarioTypeKey": "multi_entity_relationship",
+    "clarificationNeeded": true
+  },
+  "Yadi hamile PAN ko satta VAT registration leko bhaye haamro pricing strategy kasari farak hunthyo?": {
+    "id": "complex_022",
+    "scenarioType": "counterfactual_reasoning",
+    "scenarioTypeKey": "counterfactual_reasoning",
+    "clarificationNeeded": true
+  },
+  "yadi hamile pan ko satta vat registration leko bhaye haamro pricing strategy kasari farak hunthyo": {
+    "id": "complex_022",
+    "scenarioType": "counterfactual_reasoning",
+    "scenarioTypeKey": "counterfactual_reasoning",
+    "clarificationNeeded": true
+  },
+  "complex_022": {
+    "id": "complex_022",
+    "scenarioType": "counterfactual_reasoning",
+    "scenarioTypeKey": "counterfactual_reasoning",
+    "clarificationNeeded": true
+  },
+  "Hamro inventory system ma 500 pieces dekhaucha tara physical count ma 480 aayo, ani 10 pieces customer le defective bhanera return pani garyo": {
+    "id": "complex_023",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "hamro inventory system ma 500 pieces dekhaucha tara physical count ma 480 aayo, ani 10 pieces customer le defective bhanera return pani garyo": {
+    "id": "complex_023",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "complex_023": {
+    "id": "complex_023",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "Daraz seller model jasto hamro local wholesale business lai online platform banauna sakcha ki? Accounting kasari farak huncha?": {
+    "id": "complex_024",
+    "scenarioType": "analogy_based",
+    "scenarioTypeKey": "analogy_based",
+    "clarificationNeeded": true
+  },
+  "daraz seller model jasto hamro local wholesale business lai online platform banauna sakcha ki? accounting kasari farak huncha": {
+    "id": "complex_024",
+    "scenarioType": "analogy_based",
+    "scenarioTypeKey": "analogy_based",
+    "clarificationNeeded": true
+  },
+  "complex_024": {
+    "id": "complex_024",
+    "scenarioType": "analogy_based",
+    "scenarioTypeKey": "analogy_based",
+    "clarificationNeeded": true
+  },
+  "Tax audit bhayo - auditor le 3 barsha purano expense disallow garyo, tara tyo barsha ko file amend garna deadline sakeko cha": {
+    "id": "complex_025",
+    "scenarioType": "priority_conflict",
+    "scenarioTypeKey": "priority_conflict",
+    "clarificationNeeded": true
+  },
+  "tax audit bhayo - auditor le 3 barsha purano expense disallow garyo, tara tyo barsha ko file amend garna deadline sakeko cha": {
+    "id": "complex_025",
+    "scenarioType": "priority_conflict",
+    "scenarioTypeKey": "priority_conflict",
+    "clarificationNeeded": true
+  },
+  "complex_025": {
+    "id": "complex_025",
+    "scenarioType": "priority_conflict",
+    "scenarioTypeKey": "priority_conflict",
+    "clarificationNeeded": true
+  },
+  "Shrawan ma order garyo, Bhadra ma advance tiryo, Kartik ma saman aayo, Mangsir ma baaki tiryo - kun kun mahina ma ke entry garne?": {
+    "id": "complex_026",
+    "scenarioType": "temporal_reasoning",
+    "scenarioTypeKey": "temporal_reasoning",
+    "clarificationNeeded": false
+  },
+  "shrawan ma order garyo, bhadra ma advance tiryo, kartik ma saman aayo, mangsir ma baaki tiryo - kun kun mahina ma ke entry garne": {
+    "id": "complex_026",
+    "scenarioType": "temporal_reasoning",
+    "scenarioTypeKey": "temporal_reasoning",
+    "clarificationNeeded": false
+  },
+  "complex_026": {
+    "id": "complex_026",
+    "scenarioType": "temporal_reasoning",
+    "scenarioTypeKey": "temporal_reasoning",
+    "clarificationNeeded": false
+  },
+  "Contractor lai payment garda 1.5% TDS katnu parcha tara contractor le PAN number diyena - ke garne?": {
+    "id": "complex_027",
+    "scenarioType": "exception_handling",
+    "scenarioTypeKey": "exception_handling",
+    "clarificationNeeded": true
+  },
+  "contractor lai payment garda 1.5% tds katnu parcha tara contractor le pan number diyena - ke garne": {
+    "id": "complex_027",
+    "scenarioType": "exception_handling",
+    "scenarioTypeKey": "exception_handling",
+    "clarificationNeeded": true
+  },
+  "complex_027": {
+    "id": "complex_027",
+    "scenarioType": "exception_handling",
+    "scenarioTypeKey": "exception_handling",
+    "clarificationNeeded": true
+  },
+  "Mama ko company bata saman kineko cha, uncle ko company lai becheko cha - related party transaction ma ke dhyan dinu parcha?": {
+    "id": "complex_028",
+    "scenarioType": "multi_entity_relationship",
+    "scenarioTypeKey": "multi_entity_relationship",
+    "clarificationNeeded": true
+  },
+  "mama ko company bata saman kineko cha, uncle ko company lai becheko cha - related party transaction ma ke dhyan dinu parcha": {
+    "id": "complex_028",
+    "scenarioType": "multi_entity_relationship",
+    "scenarioTypeKey": "multi_entity_relationship",
+    "clarificationNeeded": true
+  },
+  "complex_028": {
+    "id": "complex_028",
+    "scenarioType": "multi_entity_relationship",
+    "scenarioTypeKey": "multi_entity_relationship",
+    "clarificationNeeded": true
+  },
+  "PF statement ma Rs 5,00,000 dekhaucha tara actual deposit Rs 4,20,000 matra bhayeko cha": {
+    "id": "complex_029",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "pf statement ma rs 5,00,000 dekhaucha tara actual deposit rs 4,20,000 matra bhayeko cha": {
+    "id": "complex_029",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "complex_029": {
+    "id": "complex_029",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "Hami le India bata raw material import garcha ani Nepal ma process garera Tibet (China) lai export garcha - customs ani tax kasari handle garne?": {
+    "id": "complex_030",
+    "scenarioType": "implicit_constraint",
+    "scenarioTypeKey": "implicit_constraint",
+    "clarificationNeeded": true
+  },
+  "hami le india bata raw material import garcha ani nepal ma process garera tibet (china) lai export garcha - customs ani tax kasari handle garne": {
+    "id": "complex_030",
+    "scenarioType": "implicit_constraint",
+    "scenarioTypeKey": "implicit_constraint",
+    "clarificationNeeded": true
+  },
+  "complex_030": {
+    "id": "complex_030",
+    "scenarioType": "implicit_constraint",
+    "scenarioTypeKey": "implicit_constraint",
+    "clarificationNeeded": true
+  },
+  "Company dissolve garna khojeko cha tara employee dues, bank loan, supplier ko paisa, government tax sabai baaki cha - kasari priority dine?": {
+    "id": "complex_031",
+    "scenarioType": "priority_conflict",
+    "scenarioTypeKey": "priority_conflict",
+    "clarificationNeeded": true
+  },
+  "company dissolve garna khojeko cha tara employee dues, bank loan, supplier ko paisa, government tax sabai baaki cha - kasari priority dine": {
+    "id": "complex_031",
+    "scenarioType": "priority_conflict",
+    "scenarioTypeKey": "priority_conflict",
+    "clarificationNeeded": true
+  },
+  "complex_031": {
+    "id": "complex_031",
+    "scenarioType": "priority_conflict",
+    "scenarioTypeKey": "priority_conflict",
+    "clarificationNeeded": true
+  },
+  "Cooperative model jasto hamro tole ko sana business haru le milera bulk purchasing garna sakcha ki? Accounting kasari garne?": {
+    "id": "complex_032",
+    "scenarioType": "analogy_based",
+    "scenarioTypeKey": "analogy_based",
+    "clarificationNeeded": true
+  },
+  "cooperative model jasto hamro tole ko sana business haru le milera bulk purchasing garna sakcha ki? accounting kasari garne": {
+    "id": "complex_032",
+    "scenarioType": "analogy_based",
+    "scenarioTypeKey": "analogy_based",
+    "clarificationNeeded": true
+  },
+  "complex_032": {
+    "id": "complex_032",
+    "scenarioType": "analogy_based",
+    "scenarioTypeKey": "analogy_based",
+    "clarificationNeeded": true
+  },
+  "Loan Baisakh ma liyeko, EMI Jestha bata suru, tara Ashad ma business band bhayo, Shrawan ma feri suru garyo - interest calculation kasari huncha?": {
+    "id": "complex_033",
+    "scenarioType": "temporal_reasoning",
+    "scenarioTypeKey": "temporal_reasoning",
+    "clarificationNeeded": true
+  },
+  "loan baisakh ma liyeko, emi jestha bata suru, tara ashad ma business band bhayo, shrawan ma feri suru garyo - interest calculation kasari huncha": {
+    "id": "complex_033",
+    "scenarioType": "temporal_reasoning",
+    "scenarioTypeKey": "temporal_reasoning",
+    "clarificationNeeded": true
+  },
+  "complex_033": {
+    "id": "complex_033",
+    "scenarioType": "temporal_reasoning",
+    "scenarioTypeKey": "temporal_reasoning",
+    "clarificationNeeded": true
+  },
+  "Customer le cheque diyeko 2 choti bounce bhayo - accounting kasari garne ani legal action ke lina sakincha?": {
+    "id": "complex_034",
+    "scenarioType": "exception_handling",
+    "scenarioTypeKey": "exception_handling",
+    "clarificationNeeded": true
+  },
+  "customer le cheque diyeko 2 choti bounce bhayo - accounting kasari garne ani legal action ke lina sakincha": {
+    "id": "complex_034",
+    "scenarioType": "exception_handling",
+    "scenarioTypeKey": "exception_handling",
+    "clarificationNeeded": true
+  },
+  "complex_034": {
+    "id": "complex_034",
+    "scenarioType": "exception_handling",
+    "scenarioTypeKey": "exception_handling",
+    "clarificationNeeded": true
+  },
+  "Yadi hamile hire purchase ma kineko bhaye ani outright cash ma kineko bhaye machinery ko total cost kati farak hunthyo?": {
+    "id": "complex_035",
+    "scenarioType": "counterfactual_reasoning",
+    "scenarioTypeKey": "counterfactual_reasoning",
+    "clarificationNeeded": true
+  },
+  "yadi hamile hire purchase ma kineko bhaye ani outright cash ma kineko bhaye machinery ko total cost kati farak hunthyo": {
+    "id": "complex_035",
+    "scenarioType": "counterfactual_reasoning",
+    "scenarioTypeKey": "counterfactual_reasoning",
+    "clarificationNeeded": true
+  },
+  "complex_035": {
+    "id": "complex_035",
+    "scenarioType": "counterfactual_reasoning",
+    "scenarioTypeKey": "counterfactual_reasoning",
+    "clarificationNeeded": true
+  },
+  "Father ko sole proprietorship, son ko Pvt Ltd company, daughter ko partnership firm - sabai le ek arka sanga transaction garcha. Tax implication ke huncha?": {
+    "id": "complex_036",
+    "scenarioType": "multi_entity_relationship",
+    "scenarioTypeKey": "multi_entity_relationship",
+    "clarificationNeeded": true
+  },
+  "father ko sole proprietorship, son ko pvt ltd company, daughter ko partnership firm - sabai le ek arka sanga transaction garcha. tax implication ke huncha": {
+    "id": "complex_036",
+    "scenarioType": "multi_entity_relationship",
+    "scenarioTypeKey": "multi_entity_relationship",
+    "clarificationNeeded": true
+  },
+  "complex_036": {
+    "id": "complex_036",
+    "scenarioType": "multi_entity_relationship",
+    "scenarioTypeKey": "multi_entity_relationship",
+    "clarificationNeeded": true
+  },
+  "GST India ma tireko cha import garda, Nepal ma pani VAT tirnu parcha re - double tax lagne ho ki?": {
+    "id": "complex_037",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "gst india ma tireko cha import garda, nepal ma pani vat tirnu parcha re - double tax lagne ho ki": {
+    "id": "complex_037",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "complex_037": {
+    "id": "complex_037",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "Hami le fixed deposit ma paisa rakheko cha tara overdraft facility pani liyeko cha - duita ko interest accounting kasari garne?": {
+    "id": "complex_038",
+    "scenarioType": "implicit_constraint",
+    "scenarioTypeKey": "implicit_constraint",
+    "clarificationNeeded": true
+  },
+  "hami le fixed deposit ma paisa rakheko cha tara overdraft facility pani liyeko cha - duita ko interest accounting kasari garne": {
+    "id": "complex_038",
+    "scenarioType": "implicit_constraint",
+    "scenarioTypeKey": "implicit_constraint",
+    "clarificationNeeded": true
+  },
+  "complex_038": {
+    "id": "complex_038",
+    "scenarioType": "implicit_constraint",
+    "scenarioTypeKey": "implicit_constraint",
+    "clarificationNeeded": true
+  },
+  "Auditor le qualified opinion diyeko cha tara bank le unqualified report chahiyo loan ko lagi - ke garne?": {
+    "id": "complex_039",
+    "scenarioType": "priority_conflict",
+    "scenarioTypeKey": "priority_conflict",
+    "clarificationNeeded": true
+  },
+  "auditor le qualified opinion diyeko cha tara bank le unqualified report chahiyo loan ko lagi - ke garne": {
+    "id": "complex_039",
+    "scenarioType": "priority_conflict",
+    "scenarioTypeKey": "priority_conflict",
+    "clarificationNeeded": true
+  },
+  "complex_039": {
+    "id": "complex_039",
+    "scenarioType": "priority_conflict",
+    "scenarioTypeKey": "priority_conflict",
+    "clarificationNeeded": true
+  },
+  "Employee le Poush 1 ma join garyo, Ashad 31 ma fiscal year sakyo - first year ma Dashain bonus, leave, gratuity kati kati huncha pro-rata?": {
+    "id": "complex_040",
+    "scenarioType": "temporal_reasoning",
+    "scenarioTypeKey": "temporal_reasoning",
+    "clarificationNeeded": true
+  },
+  "employee le poush 1 ma join garyo, ashad 31 ma fiscal year sakyo - first year ma dashain bonus, leave, gratuity kati kati huncha pro-rata": {
+    "id": "complex_040",
+    "scenarioType": "temporal_reasoning",
+    "scenarioTypeKey": "temporal_reasoning",
+    "clarificationNeeded": true
+  },
+  "complex_040": {
+    "id": "complex_040",
+    "scenarioType": "temporal_reasoning",
+    "scenarioTypeKey": "temporal_reasoning",
+    "clarificationNeeded": true
+  },
+  "Hamro restaurant le VAT lagaucha tara customer le diplomatic immunity cha bhanera VAT exempt demand garyo": {
+    "id": "complex_041",
+    "scenarioType": "exception_handling",
+    "scenarioTypeKey": "exception_handling",
+    "clarificationNeeded": true
+  },
+  "hamro restaurant le vat lagaucha tara customer le diplomatic immunity cha bhanera vat exempt demand garyo": {
+    "id": "complex_041",
+    "scenarioType": "exception_handling",
+    "scenarioTypeKey": "exception_handling",
+    "clarificationNeeded": true
+  },
+  "complex_041": {
+    "id": "complex_041",
+    "scenarioType": "exception_handling",
+    "scenarioTypeKey": "exception_handling",
+    "clarificationNeeded": true
+  },
+  "Yadi hamile last year nai inventory management system lagako bhaye yo year kati loss bachaunthyau?": {
+    "id": "complex_042",
+    "scenarioType": "counterfactual_reasoning",
+    "scenarioTypeKey": "counterfactual_reasoning",
+    "clarificationNeeded": true
+  },
+  "yadi hamile last year nai inventory management system lagako bhaye yo year kati loss bachaunthyau": {
+    "id": "complex_042",
+    "scenarioType": "counterfactual_reasoning",
+    "scenarioTypeKey": "counterfactual_reasoning",
+    "clarificationNeeded": true
+  },
+  "complex_042": {
+    "id": "complex_042",
+    "scenarioType": "counterfactual_reasoning",
+    "scenarioTypeKey": "counterfactual_reasoning",
+    "clarificationNeeded": true
+  },
+  "Company A le Company B ma 60% share kinyo, B le Company C ma 40% hold garcha - consolidated accounts banauda C lai kasari treat garne?": {
+    "id": "complex_043",
+    "scenarioType": "multi_entity_relationship",
+    "scenarioTypeKey": "multi_entity_relationship",
+    "clarificationNeeded": true
+  },
+  "company a le company b ma 60% share kinyo, b le company c ma 40% hold garcha - consolidated accounts banauda c lai kasari treat garne": {
+    "id": "complex_043",
+    "scenarioType": "multi_entity_relationship",
+    "scenarioTypeKey": "multi_entity_relationship",
+    "clarificationNeeded": true
+  },
+  "complex_043": {
+    "id": "complex_043",
+    "scenarioType": "multi_entity_relationship",
+    "scenarioTypeKey": "multi_entity_relationship",
+    "clarificationNeeded": true
+  },
+  "India ko GST input credit chain jasto Nepal ko VAT system le pani purai chain track garcha ki? Kaile break huncha?": {
+    "id": "complex_044",
+    "scenarioType": "analogy_based",
+    "scenarioTypeKey": "analogy_based",
+    "clarificationNeeded": false
+  },
+  "india ko gst input credit chain jasto nepal ko vat system le pani purai chain track garcha ki? kaile break huncha": {
+    "id": "complex_044",
+    "scenarioType": "analogy_based",
+    "scenarioTypeKey": "analogy_based",
+    "clarificationNeeded": false
+  },
+  "complex_044": {
+    "id": "complex_044",
+    "scenarioType": "analogy_based",
+    "scenarioTypeKey": "analogy_based",
+    "clarificationNeeded": false
+  },
+  "Harek mahina VAT return file garna parcha tara hamro accountant 2 mahina bhayo gayab bhayo - penalty bachna ke garne?": {
+    "id": "complex_045",
+    "scenarioType": "priority_conflict",
+    "scenarioTypeKey": "priority_conflict",
+    "clarificationNeeded": true
+  },
+  "harek mahina vat return file garna parcha tara hamro accountant 2 mahina bhayo gayab bhayo - penalty bachna ke garne": {
+    "id": "complex_045",
+    "scenarioType": "priority_conflict",
+    "scenarioTypeKey": "priority_conflict",
+    "clarificationNeeded": true
+  },
+  "complex_045": {
+    "id": "complex_045",
+    "scenarioType": "priority_conflict",
+    "scenarioTypeKey": "priority_conflict",
+    "clarificationNeeded": true
+  },
+  "Land 2070 sal ma kineko 10 lakh ma, 2080 ma 50 lakh pugisakyo tara revaluation gareko chhaina books ma - ahile bechda capital gains kasari calculate huncha?": {
+    "id": "complex_046",
+    "scenarioType": "temporal_reasoning",
+    "scenarioTypeKey": "temporal_reasoning",
+    "clarificationNeeded": true
+  },
+  "land 2070 sal ma kineko 10 lakh ma, 2080 ma 50 lakh pugisakyo tara revaluation gareko chhaina books ma - ahile bechda capital gains kasari calculate huncha": {
+    "id": "complex_046",
+    "scenarioType": "temporal_reasoning",
+    "scenarioTypeKey": "temporal_reasoning",
+    "clarificationNeeded": true
+  },
+  "complex_046": {
+    "id": "complex_046",
+    "scenarioType": "temporal_reasoning",
+    "scenarioTypeKey": "temporal_reasoning",
+    "clarificationNeeded": true
+  },
+  "Hamro cooperative le member lai loan diyeko cha tara member bankruptcy file garyo - cooperative ko paisa kasari recover garne?": {
+    "id": "complex_047",
+    "scenarioType": "exception_handling",
+    "scenarioTypeKey": "exception_handling",
+    "clarificationNeeded": true
+  },
+  "hamro cooperative le member lai loan diyeko cha tara member bankruptcy file garyo - cooperative ko paisa kasari recover garne": {
+    "id": "complex_047",
+    "scenarioType": "exception_handling",
+    "scenarioTypeKey": "exception_handling",
+    "clarificationNeeded": true
+  },
+  "complex_047": {
+    "id": "complex_047",
+    "scenarioType": "exception_handling",
+    "scenarioTypeKey": "exception_handling",
+    "clarificationNeeded": true
+  },
+  "Foreign investor le Nepal ma company kholna khojeko cha 49% share ma Nepali partner 51% - tara foreign investor le management control chahiyo": {
+    "id": "complex_048",
+    "scenarioType": "implicit_constraint",
+    "scenarioTypeKey": "implicit_constraint",
+    "clarificationNeeded": true
+  },
+  "foreign investor le nepal ma company kholna khojeko cha 49% share ma nepali partner 51% - tara foreign investor le management control chahiyo": {
+    "id": "complex_048",
+    "scenarioType": "implicit_constraint",
+    "scenarioTypeKey": "implicit_constraint",
+    "clarificationNeeded": true
+  },
+  "complex_048": {
+    "id": "complex_048",
+    "scenarioType": "implicit_constraint",
+    "scenarioTypeKey": "implicit_constraint",
+    "clarificationNeeded": true
+  },
+  "Supplier le bhancha aaja samma Rs 8 lakh baaki cha hamro, tara hamro record ma Rs 6 lakh matra dekhaucha - Rs 2 lakh ko difference kaha bata aayo?": {
+    "id": "complex_049",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "supplier le bhancha aaja samma rs 8 lakh baaki cha hamro, tara hamro record ma rs 6 lakh matra dekhaucha - rs 2 lakh ko difference kaha bata aayo": {
+    "id": "complex_049",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "complex_049": {
+    "id": "complex_049",
+    "scenarioType": "contradictory_information",
+    "scenarioTypeKey": "contradictory_information",
+    "clarificationNeeded": true
+  },
+  "Nepal ko remittance economy lai leverage garera microfinance model kasari scale garna sakincha? Financial accounting implications ke huncha?": {
+    "id": "complex_050",
+    "scenarioType": "analogy_based",
+    "scenarioTypeKey": "analogy_based",
+    "clarificationNeeded": true
+  },
+  "nepal ko remittance economy lai leverage garera microfinance model kasari scale garna sakincha? financial accounting implications ke huncha": {
+    "id": "complex_050",
+    "scenarioType": "analogy_based",
+    "scenarioTypeKey": "analogy_based",
+    "clarificationNeeded": true
+  },
+  "complex_050": {
+    "id": "complex_050",
+    "scenarioType": "analogy_based",
+    "scenarioTypeKey": "analogy_based",
+    "clarificationNeeded": true
+  }
+}

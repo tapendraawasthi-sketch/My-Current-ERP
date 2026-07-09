@@ -1,0 +1,260 @@
+{
+  "vat_invoice": [
+    "docex-001"
+  ],
+  "citizenship_card": [
+    "docex-002"
+  ],
+  "land_registration_deed": [
+    "docex-003"
+  ],
+  "company_registration_certificate": [
+    "docex-004"
+  ],
+  "pan_vat_registration": [
+    "docex-005"
+  ],
+  "financial_statement_profit_loss": [
+    "docex-006"
+  ],
+  "balance_sheet": [
+    "docex-007"
+  ],
+  "cash_receipt": [
+    "docex-008"
+  ],
+  "payment_voucher": [
+    "docex-009"
+  ],
+  "electricity_bill": [
+    "docex-010"
+  ],
+  "water_bill": [
+    "docex-011"
+  ],
+  "telephone_bill": [
+    "docex-012"
+  ],
+  "tax_clearance_certificate": [
+    "docex-013"
+  ],
+  "vehicle_registration_certificate": [
+    "docex-014"
+  ],
+  "passport_nepali": [
+    "docex-015"
+  ],
+  "vat_invoice_handwritten": [
+    "docex-016"
+  ],
+  "bank_deposit_slip": [
+    "docex-017"
+  ],
+  "check_leaf": [
+    "docex-018"
+  ],
+  "salary_slip": [
+    "docex-019"
+  ],
+  "purchase_order": [
+    "docex-020"
+  ],
+  "invoice_billing": [
+    "docex-021"
+  ],
+  "land_ownership_certificate": [
+    "docex-022"
+  ],
+  "rental_agreement": [
+    "docex-023"
+  ],
+  "birth_certificate": [
+    "docex-024"
+  ],
+  "marriage_registration_certificate": [
+    "docex-025"
+  ],
+  "death_certificate": [
+    "docex-026"
+  ],
+  "academic_transcript": [
+    "docex-027"
+  ],
+  "character_certificate": [
+    "docex-028"
+  ],
+  "police_clearance_report": [
+    "docex-029"
+  ],
+  "medical_prescription": [
+    "docex-030"
+  ],
+  "lab_report": [
+    "docex-031"
+  ],
+  "insurance_policy": [
+    "docex-032"
+  ],
+  "loan_application": [
+    "docex-033"
+  ],
+  "trade_license": [
+    "docex-034"
+  ],
+  "vehicle_fitness_certificate": [
+    "docex-035"
+  ],
+  "caste_certificate": [
+    "docex-036"
+  ],
+  "income_tax_return_form": [
+    "docex-037"
+  ],
+  "property_valuation_report": [
+    "docex-038"
+  ],
+  "audit_report": [
+    "docex-039"
+  ],
+  "contract_agreement": [
+    "docex-040"
+  ],
+  "minutes_of_meeting": [
+    "docex-041"
+  ],
+  "export_invoice": [
+    "docex-042"
+  ],
+  "import_license": [
+    "docex-043"
+  ],
+  "customs_declaration": [
+    "docex-044"
+  ],
+  "bank_statement": [
+    "docex-045"
+  ],
+  "credit_card_statement": [
+    "docex-046"
+  ],
+  "deposit_certificate_fixed_deposit": [
+    "docex-047"
+  ],
+  "share_certificate": [
+    "docex-048"
+  ],
+  "tax_invoice_with_stamp": [
+    "docex-049"
+  ],
+  "rent_receipt": [
+    "docex-050"
+  ],
+  "electricity_bill_with_table": [
+    "docex-051"
+  ],
+  "water_bill_with_table": [
+    "docex-052"
+  ],
+  "vehicle_tax_token": [
+    "docex-053"
+  ],
+  "municipal_tax_receipt": [
+    "docex-054"
+  ],
+  "driving_license": [
+    "docex-055"
+  ],
+  "voter_id_card": [
+    "docex-056"
+  ],
+  "national_id_card_nepal": [
+    "docex-057"
+  ],
+  "social_security_card": [
+    "docex-058"
+  ],
+  "hospital_admission_form": [
+    "docex-059"
+  ],
+  "discharge_summary": [
+    "docex-060"
+  ],
+  "invoice_with_multiple_items": [
+    "docex-061"
+  ],
+  "quotation": [
+    "docex-062"
+  ],
+  "delivery_challan": [
+    "docex-063"
+  ],
+  "bill_of_lading": [
+    "docex-064"
+  ],
+  "cheque_book_request": [
+    "docex-065"
+  ],
+  "deposit_slip_nepali": [
+    "docex-066"
+  ],
+  "withdrawal_slip": [
+    "docex-067"
+  ],
+  "statement_of_account": [
+    "docex-068"
+  ],
+  "payroll_register": [
+    "docex-069"
+  ],
+  "stock_ledger": [
+    "docex-070"
+  ],
+  "sales_invoice_with_discount": [
+    "docex-071"
+  ],
+  "purchase_invoice": [
+    "docex-072"
+  ],
+  "gst_invoice": [
+    "docex-073"
+  ],
+  "proforma_invoice": [
+    "docex-074"
+  ],
+  "credit_note": [
+    "docex-075"
+  ],
+  "debit_note": [
+    "docex-076"
+  ],
+  "service_tax_invoice": [
+    "docex-077"
+  ],
+  "insurance_claim_form": [
+    "docex-078"
+  ],
+  "settlement_statement": [
+    "docex-079"
+  ],
+  "receipt_with_stamp_overlay": [
+    "docex-080"
+  ],
+  "handwritten_nepali_invoice": [
+    "docex-081"
+  ],
+  "mixed_devanagari_roman_invoice": [
+    "docex-082"
+  ],
+  "table_column_alignment_in_financial_statement": [
+    "docex-083"
+  ],
+  "table_balance_sheet_with_columns": [
+    "docex-084"
+  ],
+  "stamp_overlay_on_numeric_values": [
+    "docex-085"
+  ],
+  "handwritten_nepali_with_numbers": [
+    "docex-086"
+  ]
+}

@@ -1,0 +1,3334 @@
+{
+  "लेखा": {
+    "id": "ortho-001",
+    "roman_standard": "lekha",
+    "devanagari": "लेखा",
+    "word_type": "noun",
+    "meaning_en": "account"
+  },
+  "lekha": {
+    "id": "ortho-001",
+    "roman_standard": "lekha",
+    "devanagari": "लेखा",
+    "word_type": "noun",
+    "meaning_en": "account"
+  },
+  "lekhaa": {
+    "id": "ortho-001",
+    "roman_standard": "lekha",
+    "devanagari": "लेखा",
+    "word_type": "noun",
+    "meaning_en": "account"
+  },
+  "lekhah": {
+    "id": "ortho-001",
+    "roman_standard": "lekha",
+    "devanagari": "लेखा",
+    "word_type": "noun",
+    "meaning_en": "account"
+  },
+  "जिन्सी": {
+    "id": "ortho-002",
+    "roman_standard": "jinsi",
+    "devanagari": "जिन्सी",
+    "word_type": "noun",
+    "meaning_en": "goods/merchandise"
+  },
+  "jinsi": {
+    "id": "ortho-002",
+    "roman_standard": "jinsi",
+    "devanagari": "जिन्सी",
+    "word_type": "noun",
+    "meaning_en": "goods/merchandise"
+  },
+  "jinsii": {
+    "id": "ortho-002",
+    "roman_standard": "jinsi",
+    "devanagari": "जिन्सी",
+    "word_type": "noun",
+    "meaning_en": "goods/merchandise"
+  },
+  "jinsy": {
+    "id": "ortho-002",
+    "roman_standard": "jinsi",
+    "devanagari": "जिन्सी",
+    "word_type": "noun",
+    "meaning_en": "goods/merchandise"
+  },
+  "किन्नु": {
+    "id": "ortho-003",
+    "roman_standard": "kinnu",
+    "devanagari": "किन्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to buy"
+  },
+  "kinnu": {
+    "id": "ortho-003",
+    "roman_standard": "kinnu",
+    "devanagari": "किन्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to buy"
+  },
+  "kinnoo": {
+    "id": "ortho-003",
+    "roman_standard": "kinnu",
+    "devanagari": "किन्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to buy"
+  },
+  "kinu": {
+    "id": "ortho-003",
+    "roman_standard": "kinnu",
+    "devanagari": "किन्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to buy"
+  },
+  "बेच्नु": {
+    "id": "ortho-004",
+    "roman_standard": "becnu",
+    "devanagari": "बेच्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to sell"
+  },
+  "becnu": {
+    "id": "ortho-004",
+    "roman_standard": "becnu",
+    "devanagari": "बेच्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to sell"
+  },
+  "bechnu": {
+    "id": "ortho-004",
+    "roman_standard": "becnu",
+    "devanagari": "बेच्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to sell"
+  },
+  "bechhnu": {
+    "id": "ortho-004",
+    "roman_standard": "becnu",
+    "devanagari": "बेच्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to sell"
+  },
+  "मूल्य": {
+    "id": "ortho-005",
+    "roman_standard": "mulya",
+    "devanagari": "मूल्य",
+    "word_type": "noun",
+    "meaning_en": "price/value"
+  },
+  "mulya": {
+    "id": "ortho-005",
+    "roman_standard": "mulya",
+    "devanagari": "मूल्य",
+    "word_type": "noun",
+    "meaning_en": "price/value"
+  },
+  "moolya": {
+    "id": "ortho-005",
+    "roman_standard": "mulya",
+    "devanagari": "मूल्य",
+    "word_type": "noun",
+    "meaning_en": "price/value"
+  },
+  "mullya": {
+    "id": "ortho-005",
+    "roman_standard": "mulya",
+    "devanagari": "मूल्य",
+    "word_type": "noun",
+    "meaning_en": "price/value"
+  },
+  "रकम": {
+    "id": "ortho-006",
+    "roman_standard": "rakam",
+    "devanagari": "रकम",
+    "word_type": "noun",
+    "meaning_en": "amount"
+  },
+  "rakam": {
+    "id": "ortho-006",
+    "roman_standard": "rakam",
+    "devanagari": "रकम",
+    "word_type": "noun",
+    "meaning_en": "amount"
+  },
+  "rakum": {
+    "id": "ortho-006",
+    "roman_standard": "rakam",
+    "devanagari": "रकम",
+    "word_type": "noun",
+    "meaning_en": "amount"
+  },
+  "rukum": {
+    "id": "ortho-006",
+    "roman_standard": "rakam",
+    "devanagari": "रकम",
+    "word_type": "noun",
+    "meaning_en": "amount"
+  },
+  "खरिद": {
+    "id": "ortho-007",
+    "roman_standard": "kharid",
+    "devanagari": "खरिद",
+    "word_type": "noun",
+    "meaning_en": "purchase"
+  },
+  "kharid": {
+    "id": "ortho-007",
+    "roman_standard": "kharid",
+    "devanagari": "खरिद",
+    "word_type": "noun",
+    "meaning_en": "purchase"
+  },
+  "khareed": {
+    "id": "ortho-007",
+    "roman_standard": "kharid",
+    "devanagari": "खरिद",
+    "word_type": "noun",
+    "meaning_en": "purchase"
+  },
+  "बिक्री": {
+    "id": "ortho-008",
+    "roman_standard": "bikri",
+    "devanagari": "बिक्री",
+    "word_type": "noun",
+    "meaning_en": "sale"
+  },
+  "bikri": {
+    "id": "ortho-008",
+    "roman_standard": "bikri",
+    "devanagari": "बिक्री",
+    "word_type": "noun",
+    "meaning_en": "sale"
+  },
+  "bikrii": {
+    "id": "ortho-008",
+    "roman_standard": "bikri",
+    "devanagari": "बिक्री",
+    "word_type": "noun",
+    "meaning_en": "sale"
+  },
+  "bikry": {
+    "id": "ortho-008",
+    "roman_standard": "bikri",
+    "devanagari": "बिक्री",
+    "word_type": "noun",
+    "meaning_en": "sale"
+  },
+  "नाफा": {
+    "id": "ortho-009",
+    "roman_standard": "nafa",
+    "devanagari": "नाफा",
+    "word_type": "noun",
+    "meaning_en": "profit"
+  },
+  "nafa": {
+    "id": "ortho-009",
+    "roman_standard": "nafa",
+    "devanagari": "नाफा",
+    "word_type": "noun",
+    "meaning_en": "profit"
+  },
+  "naaphaa": {
+    "id": "ortho-009",
+    "roman_standard": "nafa",
+    "devanagari": "नाफा",
+    "word_type": "noun",
+    "meaning_en": "profit"
+  },
+  "naphah": {
+    "id": "ortho-009",
+    "roman_standard": "nafa",
+    "devanagari": "नाफा",
+    "word_type": "noun",
+    "meaning_en": "profit"
+  },
+  "घाटा": {
+    "id": "ortho-010",
+    "roman_standard": "ghata",
+    "devanagari": "घाटा",
+    "word_type": "noun",
+    "meaning_en": "loss"
+  },
+  "ghata": {
+    "id": "ortho-010",
+    "roman_standard": "ghata",
+    "devanagari": "घाटा",
+    "word_type": "noun",
+    "meaning_en": "loss"
+  },
+  "ghaataa": {
+    "id": "ortho-010",
+    "roman_standard": "ghata",
+    "devanagari": "घाटा",
+    "word_type": "noun",
+    "meaning_en": "loss"
+  },
+  "ghataa": {
+    "id": "ortho-010",
+    "roman_standard": "ghata",
+    "devanagari": "घाटा",
+    "word_type": "noun",
+    "meaning_en": "loss"
+  },
+  "लागत": {
+    "id": "ortho-011",
+    "roman_standard": "lagat",
+    "devanagari": "लागत",
+    "word_type": "noun",
+    "meaning_en": "cost"
+  },
+  "lagat": {
+    "id": "ortho-011",
+    "roman_standard": "lagat",
+    "devanagari": "लागत",
+    "word_type": "noun",
+    "meaning_en": "cost"
+  },
+  "laagat": {
+    "id": "ortho-011",
+    "roman_standard": "lagat",
+    "devanagari": "लागत",
+    "word_type": "noun",
+    "meaning_en": "cost"
+  },
+  "बजेट": {
+    "id": "ortho-012",
+    "roman_standard": "bajet",
+    "devanagari": "बजेट",
+    "word_type": "noun",
+    "meaning_en": "budget"
+  },
+  "bajet": {
+    "id": "ortho-012",
+    "roman_standard": "bajet",
+    "devanagari": "बजेट",
+    "word_type": "noun",
+    "meaning_en": "budget"
+  },
+  "budge": {
+    "id": "ortho-012",
+    "roman_standard": "bajet",
+    "devanagari": "बजेट",
+    "word_type": "noun",
+    "meaning_en": "budget"
+  },
+  "आय": {
+    "id": "ortho-013",
+    "roman_standard": "aaya",
+    "devanagari": "आय",
+    "word_type": "noun",
+    "meaning_en": "income/revenue"
+  },
+  "aaya": {
+    "id": "ortho-013",
+    "roman_standard": "aaya",
+    "devanagari": "आय",
+    "word_type": "noun",
+    "meaning_en": "income/revenue"
+  },
+  "aay": {
+    "id": "ortho-013",
+    "roman_standard": "aaya",
+    "devanagari": "आय",
+    "word_type": "noun",
+    "meaning_en": "income/revenue"
+  },
+  "ay": {
+    "id": "ortho-013",
+    "roman_standard": "aaya",
+    "devanagari": "आय",
+    "word_type": "noun",
+    "meaning_en": "income/revenue"
+  },
+  "खर्च": {
+    "id": "ortho-014",
+    "roman_standard": "kharcha",
+    "devanagari": "खर्च",
+    "word_type": "noun",
+    "meaning_en": "expenditure"
+  },
+  "kharcha": {
+    "id": "ortho-014",
+    "roman_standard": "kharcha",
+    "devanagari": "खर्च",
+    "word_type": "noun",
+    "meaning_en": "expenditure"
+  },
+  "kharch": {
+    "id": "ortho-014",
+    "roman_standard": "kharcha",
+    "devanagari": "खर्च",
+    "word_type": "noun",
+    "meaning_en": "expenditure"
+  },
+  "ब्याज": {
+    "id": "ortho-015",
+    "roman_standard": "byaj",
+    "devanagari": "ब्याज",
+    "word_type": "noun",
+    "meaning_en": "interest"
+  },
+  "byaj": {
+    "id": "ortho-015",
+    "roman_standard": "byaj",
+    "devanagari": "ब्याज",
+    "word_type": "noun",
+    "meaning_en": "interest"
+  },
+  "byaaj": {
+    "id": "ortho-015",
+    "roman_standard": "byaj",
+    "devanagari": "ब्याज",
+    "word_type": "noun",
+    "meaning_en": "interest"
+  },
+  "bijaaj": {
+    "id": "ortho-015",
+    "roman_standard": "byaj",
+    "devanagari": "ब्याज",
+    "word_type": "noun",
+    "meaning_en": "interest"
+  },
+  "पुँजी": {
+    "id": "ortho-016",
+    "roman_standard": "punji",
+    "devanagari": "पुँजी",
+    "word_type": "noun",
+    "meaning_en": "capital"
+  },
+  "punji": {
+    "id": "ortho-016",
+    "roman_standard": "punji",
+    "devanagari": "पुँजी",
+    "word_type": "noun",
+    "meaning_en": "capital"
+  },
+  "puji": {
+    "id": "ortho-016",
+    "roman_standard": "punji",
+    "devanagari": "पुँजी",
+    "word_type": "noun",
+    "meaning_en": "capital"
+  },
+  "punjee": {
+    "id": "ortho-016",
+    "roman_standard": "punji",
+    "devanagari": "पुँजी",
+    "word_type": "noun",
+    "meaning_en": "capital"
+  },
+  "ऋण": {
+    "id": "ortho-017",
+    "roman_standard": "rina",
+    "devanagari": "ऋण",
+    "word_type": "noun",
+    "meaning_en": "debt/loan"
+  },
+  "rina": {
+    "id": "ortho-017",
+    "roman_standard": "rina",
+    "devanagari": "ऋण",
+    "word_type": "noun",
+    "meaning_en": "debt/loan"
+  },
+  "rin": {
+    "id": "ortho-017",
+    "roman_standard": "rina",
+    "devanagari": "ऋण",
+    "word_type": "noun",
+    "meaning_en": "debt/loan"
+  },
+  "rinn": {
+    "id": "ortho-017",
+    "roman_standard": "rina",
+    "devanagari": "ऋण",
+    "word_type": "noun",
+    "meaning_en": "debt/loan"
+  },
+  "बैंक": {
+    "id": "ortho-018",
+    "roman_standard": "baink",
+    "devanagari": "बैंक",
+    "word_type": "noun",
+    "meaning_en": "bank"
+  },
+  "baink": {
+    "id": "ortho-018",
+    "roman_standard": "baink",
+    "devanagari": "बैंक",
+    "word_type": "noun",
+    "meaning_en": "bank"
+  },
+  "bank": {
+    "id": "ortho-018",
+    "roman_standard": "baink",
+    "devanagari": "बैंक",
+    "word_type": "noun",
+    "meaning_en": "bank"
+  },
+  "चेक": {
+    "id": "ortho-019",
+    "roman_standard": "chek",
+    "devanagari": "चेक",
+    "word_type": "noun",
+    "meaning_en": "cheque"
+  },
+  "chek": {
+    "id": "ortho-019",
+    "roman_standard": "chek",
+    "devanagari": "चेक",
+    "word_type": "noun",
+    "meaning_en": "cheque"
+  },
+  "check": {
+    "id": "ortho-019",
+    "roman_standard": "chek",
+    "devanagari": "चेक",
+    "word_type": "noun",
+    "meaning_en": "cheque"
+  },
+  "cheque": {
+    "id": "ortho-019",
+    "roman_standard": "chek",
+    "devanagari": "चेक",
+    "word_type": "noun",
+    "meaning_en": "cheque"
+  },
+  "खाता": {
+    "id": "ortho-020",
+    "roman_standard": "khata",
+    "devanagari": "खाता",
+    "word_type": "noun",
+    "meaning_en": "account (bank)"
+  },
+  "khata": {
+    "id": "ortho-020",
+    "roman_standard": "khata",
+    "devanagari": "खाता",
+    "word_type": "noun",
+    "meaning_en": "account (bank)"
+  },
+  "khaataa": {
+    "id": "ortho-020",
+    "roman_standard": "khata",
+    "devanagari": "खाता",
+    "word_type": "noun",
+    "meaning_en": "account (bank)"
+  },
+  "बचत": {
+    "id": "ortho-021",
+    "roman_standard": "bachat",
+    "devanagari": "बचत",
+    "word_type": "noun",
+    "meaning_en": "savings"
+  },
+  "bachat": {
+    "id": "ortho-021",
+    "roman_standard": "bachat",
+    "devanagari": "बचत",
+    "word_type": "noun",
+    "meaning_en": "savings"
+  },
+  "bachhat": {
+    "id": "ortho-021",
+    "roman_standard": "bachat",
+    "devanagari": "बचत",
+    "word_type": "noun",
+    "meaning_en": "savings"
+  },
+  "लगानी": {
+    "id": "ortho-022",
+    "roman_standard": "lagani",
+    "devanagari": "लगानी",
+    "word_type": "noun",
+    "meaning_en": "investment"
+  },
+  "lagani": {
+    "id": "ortho-022",
+    "roman_standard": "lagani",
+    "devanagari": "लगानी",
+    "word_type": "noun",
+    "meaning_en": "investment"
+  },
+  "lagaani": {
+    "id": "ortho-022",
+    "roman_standard": "lagani",
+    "devanagari": "लगानी",
+    "word_type": "noun",
+    "meaning_en": "investment"
+  },
+  "laganee": {
+    "id": "ortho-022",
+    "roman_standard": "lagani",
+    "devanagari": "लगानी",
+    "word_type": "noun",
+    "meaning_en": "investment"
+  },
+  "व्यापार": {
+    "id": "ortho-023",
+    "roman_standard": "byapar",
+    "devanagari": "व्यापार",
+    "word_type": "noun",
+    "meaning_en": "business/trade"
+  },
+  "byapar": {
+    "id": "ortho-023",
+    "roman_standard": "byapar",
+    "devanagari": "व्यापार",
+    "word_type": "noun",
+    "meaning_en": "business/trade"
+  },
+  "byapaar": {
+    "id": "ortho-023",
+    "roman_standard": "byapar",
+    "devanagari": "व्यापार",
+    "word_type": "noun",
+    "meaning_en": "business/trade"
+  },
+  "byapara": {
+    "id": "ortho-023",
+    "roman_standard": "byapar",
+    "devanagari": "व्यापार",
+    "word_type": "noun",
+    "meaning_en": "business/trade"
+  },
+  "वस्तु": {
+    "id": "ortho-024",
+    "roman_standard": "bastu",
+    "devanagari": "वस्तु",
+    "word_type": "noun",
+    "meaning_en": "commodity/item"
+  },
+  "bastu": {
+    "id": "ortho-024",
+    "roman_standard": "bastu",
+    "devanagari": "वस्तु",
+    "word_type": "noun",
+    "meaning_en": "commodity/item"
+  },
+  "wastu": {
+    "id": "ortho-024",
+    "roman_standard": "bastu",
+    "devanagari": "वस्तु",
+    "word_type": "noun",
+    "meaning_en": "commodity/item"
+  },
+  "vastu": {
+    "id": "ortho-024",
+    "roman_standard": "bastu",
+    "devanagari": "वस्तु",
+    "word_type": "noun",
+    "meaning_en": "commodity/item"
+  },
+  "सेयर": {
+    "id": "ortho-025",
+    "roman_standard": "seyar",
+    "devanagari": "सेयर",
+    "word_type": "noun",
+    "meaning_en": "share"
+  },
+  "seyar": {
+    "id": "ortho-025",
+    "roman_standard": "seyar",
+    "devanagari": "सेयर",
+    "word_type": "noun",
+    "meaning_en": "share"
+  },
+  "share": {
+    "id": "ortho-025",
+    "roman_standard": "seyar",
+    "devanagari": "सेयर",
+    "word_type": "noun",
+    "meaning_en": "share"
+  },
+  "sheyar": {
+    "id": "ortho-025",
+    "roman_standard": "seyar",
+    "devanagari": "सेयर",
+    "word_type": "noun",
+    "meaning_en": "share"
+  },
+  "लाभांश": {
+    "id": "ortho-026",
+    "roman_standard": "labhansha",
+    "devanagari": "लाभांश",
+    "word_type": "noun",
+    "meaning_en": "dividend"
+  },
+  "labhansha": {
+    "id": "ortho-026",
+    "roman_standard": "labhansha",
+    "devanagari": "लाभांश",
+    "word_type": "noun",
+    "meaning_en": "dividend"
+  },
+  "labaansh": {
+    "id": "ortho-026",
+    "roman_standard": "labhansha",
+    "devanagari": "लाभांश",
+    "word_type": "noun",
+    "meaning_en": "dividend"
+  },
+  "labhans": {
+    "id": "ortho-026",
+    "roman_standard": "labhansha",
+    "devanagari": "लाभांश",
+    "word_type": "noun",
+    "meaning_en": "dividend"
+  },
+  "कर": {
+    "id": "ortho-027",
+    "roman_standard": "kar",
+    "devanagari": "कर",
+    "word_type": "noun",
+    "meaning_en": "tax"
+  },
+  "kar": {
+    "id": "ortho-027",
+    "roman_standard": "kar",
+    "devanagari": "कर",
+    "word_type": "noun",
+    "meaning_en": "tax"
+  },
+  "karr": {
+    "id": "ortho-027",
+    "roman_standard": "kar",
+    "devanagari": "कर",
+    "word_type": "noun",
+    "meaning_en": "tax"
+  },
+  "बीमा": {
+    "id": "ortho-028",
+    "roman_standard": "bima",
+    "devanagari": "बीमा",
+    "word_type": "noun",
+    "meaning_en": "insurance"
+  },
+  "bima": {
+    "id": "ortho-028",
+    "roman_standard": "bima",
+    "devanagari": "बीमा",
+    "word_type": "noun",
+    "meaning_en": "insurance"
+  },
+  "beema": {
+    "id": "ortho-028",
+    "roman_standard": "bima",
+    "devanagari": "बीमा",
+    "word_type": "noun",
+    "meaning_en": "insurance"
+  },
+  "bimaa": {
+    "id": "ortho-028",
+    "roman_standard": "bima",
+    "devanagari": "बीमा",
+    "word_type": "noun",
+    "meaning_en": "insurance"
+  },
+  "जाँच": {
+    "id": "ortho-029",
+    "roman_standard": "jyanch",
+    "devanagari": "जाँच",
+    "word_type": "noun",
+    "meaning_en": "audit/check"
+  },
+  "jyanch": {
+    "id": "ortho-029",
+    "roman_standard": "jyanch",
+    "devanagari": "जाँच",
+    "word_type": "noun",
+    "meaning_en": "audit/check"
+  },
+  "jaanch": {
+    "id": "ortho-029",
+    "roman_standard": "jyanch",
+    "devanagari": "जाँच",
+    "word_type": "noun",
+    "meaning_en": "audit/check"
+  },
+  "हिसाब": {
+    "id": "ortho-030",
+    "roman_standard": "hisab",
+    "devanagari": "हिसाब",
+    "word_type": "noun",
+    "meaning_en": "accounting/calculation"
+  },
+  "hisab": {
+    "id": "ortho-030",
+    "roman_standard": "hisab",
+    "devanagari": "हिसाब",
+    "word_type": "noun",
+    "meaning_en": "accounting/calculation"
+  },
+  "hisaab": {
+    "id": "ortho-030",
+    "roman_standard": "hisab",
+    "devanagari": "हिसाब",
+    "word_type": "noun",
+    "meaning_en": "accounting/calculation"
+  },
+  "गर्नु": {
+    "id": "ortho-031",
+    "roman_standard": "garnu",
+    "devanagari": "गर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to do"
+  },
+  "garnu": {
+    "id": "ortho-031",
+    "roman_standard": "garnu",
+    "devanagari": "गर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to do"
+  },
+  "garnoo": {
+    "id": "ortho-031",
+    "roman_standard": "garnu",
+    "devanagari": "गर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to do"
+  },
+  "gar nu": {
+    "id": "ortho-031",
+    "roman_standard": "garnu",
+    "devanagari": "गर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to do"
+  },
+  "हुनु": {
+    "id": "ortho-032",
+    "roman_standard": "hunu",
+    "devanagari": "हुनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to be"
+  },
+  "hunu": {
+    "id": "ortho-032",
+    "roman_standard": "hunu",
+    "devanagari": "हुनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to be"
+  },
+  "hunoo": {
+    "id": "ortho-032",
+    "roman_standard": "hunu",
+    "devanagari": "हुनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to be"
+  },
+  "जानु": {
+    "id": "ortho-033",
+    "roman_standard": "janu",
+    "devanagari": "जानु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to go"
+  },
+  "janu": {
+    "id": "ortho-033",
+    "roman_standard": "janu",
+    "devanagari": "जानु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to go"
+  },
+  "jaanu": {
+    "id": "ortho-033",
+    "roman_standard": "janu",
+    "devanagari": "जानु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to go"
+  },
+  "आउनु": {
+    "id": "ortho-034",
+    "roman_standard": "aaunu",
+    "devanagari": "आउनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to come"
+  },
+  "aaunu": {
+    "id": "ortho-034",
+    "roman_standard": "aaunu",
+    "devanagari": "आउनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to come"
+  },
+  "aunu": {
+    "id": "ortho-034",
+    "roman_standard": "aaunu",
+    "devanagari": "आउनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to come"
+  },
+  "खानु": {
+    "id": "ortho-035",
+    "roman_standard": "khanu",
+    "devanagari": "खानु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to eat"
+  },
+  "khanu": {
+    "id": "ortho-035",
+    "roman_standard": "khanu",
+    "devanagari": "खानु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to eat"
+  },
+  "khaanu": {
+    "id": "ortho-035",
+    "roman_standard": "khanu",
+    "devanagari": "खानु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to eat"
+  },
+  "पिउनु": {
+    "id": "ortho-036",
+    "roman_standard": "piunu",
+    "devanagari": "पिउनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to drink"
+  },
+  "piunu": {
+    "id": "ortho-036",
+    "roman_standard": "piunu",
+    "devanagari": "पिउनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to drink"
+  },
+  "peunu": {
+    "id": "ortho-036",
+    "roman_standard": "piunu",
+    "devanagari": "पिउनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to drink"
+  },
+  "बोल्नु": {
+    "id": "ortho-037",
+    "roman_standard": "bolnu",
+    "devanagari": "बोल्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to speak"
+  },
+  "bolnu": {
+    "id": "ortho-037",
+    "roman_standard": "bolnu",
+    "devanagari": "बोल्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to speak"
+  },
+  "सुन्नु": {
+    "id": "ortho-038",
+    "roman_standard": "sunnu",
+    "devanagari": "सुन्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to hear/listen"
+  },
+  "sunnu": {
+    "id": "ortho-038",
+    "roman_standard": "sunnu",
+    "devanagari": "सुन्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to hear/listen"
+  },
+  "sunu": {
+    "id": "ortho-038",
+    "roman_standard": "sunnu",
+    "devanagari": "सुन्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to hear/listen"
+  },
+  "हेर्नु": {
+    "id": "ortho-039",
+    "roman_standard": "hernu",
+    "devanagari": "हेर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to see/watch"
+  },
+  "hernu": {
+    "id": "ortho-039",
+    "roman_standard": "hernu",
+    "devanagari": "हेर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to see/watch"
+  },
+  "her nu": {
+    "id": "ortho-039",
+    "roman_standard": "hernu",
+    "devanagari": "हेर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to see/watch"
+  },
+  "दिनु": {
+    "id": "ortho-040",
+    "roman_standard": "dinu",
+    "devanagari": "दिनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to give"
+  },
+  "dinu": {
+    "id": "ortho-040",
+    "roman_standard": "dinu",
+    "devanagari": "दिनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to give"
+  },
+  "din nu": {
+    "id": "ortho-040",
+    "roman_standard": "dinu",
+    "devanagari": "दिनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to give"
+  },
+  "लिनु": {
+    "id": "ortho-041",
+    "roman_standard": "linu",
+    "devanagari": "लिनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to take"
+  },
+  "linu": {
+    "id": "ortho-041",
+    "roman_standard": "linu",
+    "devanagari": "लिनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to take"
+  },
+  "leenoo": {
+    "id": "ortho-041",
+    "roman_standard": "linu",
+    "devanagari": "लिनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to take"
+  },
+  "राख्नु": {
+    "id": "ortho-042",
+    "roman_standard": "rakhnu",
+    "devanagari": "राख्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to keep/place"
+  },
+  "rakhnu": {
+    "id": "ortho-042",
+    "roman_standard": "rakhnu",
+    "devanagari": "राख्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to keep/place"
+  },
+  "raakhnu": {
+    "id": "ortho-042",
+    "roman_standard": "rakhnu",
+    "devanagari": "राख्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to keep/place"
+  },
+  "चलाउनु": {
+    "id": "ortho-043",
+    "roman_standard": "chalaunu",
+    "devanagari": "चलाउनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to operate/run"
+  },
+  "chalaunu": {
+    "id": "ortho-043",
+    "roman_standard": "chalaunu",
+    "devanagari": "चलाउनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to operate/run"
+  },
+  "chalaaunu": {
+    "id": "ortho-043",
+    "roman_standard": "chalaunu",
+    "devanagari": "चलाउनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to operate/run"
+  },
+  "बनाउनु": {
+    "id": "ortho-044",
+    "roman_standard": "banaunu",
+    "devanagari": "बनाउनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to make"
+  },
+  "banaunu": {
+    "id": "ortho-044",
+    "roman_standard": "banaunu",
+    "devanagari": "बनाउनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to make"
+  },
+  "banaaunu": {
+    "id": "ortho-044",
+    "roman_standard": "banaunu",
+    "devanagari": "बनाउनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to make"
+  },
+  "पढ्नु": {
+    "id": "ortho-045",
+    "roman_standard": "padhnu",
+    "devanagari": "पढ्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to read/study"
+  },
+  "padhnu": {
+    "id": "ortho-045",
+    "roman_standard": "padhnu",
+    "devanagari": "पढ्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to read/study"
+  },
+  "padnu": {
+    "id": "ortho-045",
+    "roman_standard": "padhnu",
+    "devanagari": "पढ्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to read/study"
+  },
+  "padh nu": {
+    "id": "ortho-045",
+    "roman_standard": "padhnu",
+    "devanagari": "पढ्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to read/study"
+  },
+  "लेख्नु": {
+    "id": "ortho-046",
+    "roman_standard": "lekhnu",
+    "devanagari": "लेख्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to write"
+  },
+  "lekhnu": {
+    "id": "ortho-046",
+    "roman_standard": "lekhnu",
+    "devanagari": "लेख्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to write"
+  },
+  "lekh nu": {
+    "id": "ortho-046",
+    "roman_standard": "lekhnu",
+    "devanagari": "लेख्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to write"
+  },
+  "गएको": {
+    "id": "ortho-047",
+    "roman_standard": "gaeko",
+    "devanagari": "गएको",
+    "word_type": "verb_past",
+    "meaning_en": "gone"
+  },
+  "gaeko": {
+    "id": "ortho-047",
+    "roman_standard": "gaeko",
+    "devanagari": "गएको",
+    "word_type": "verb_past",
+    "meaning_en": "gone"
+  },
+  "gaiko": {
+    "id": "ortho-047",
+    "roman_standard": "gaeko",
+    "devanagari": "गएको",
+    "word_type": "verb_past",
+    "meaning_en": "gone"
+  },
+  "gayeko": {
+    "id": "ortho-047",
+    "roman_standard": "gaeko",
+    "devanagari": "गएको",
+    "word_type": "verb_past",
+    "meaning_en": "gone"
+  },
+  "आएको": {
+    "id": "ortho-048",
+    "roman_standard": "aaeko",
+    "devanagari": "आएको",
+    "word_type": "verb_past",
+    "meaning_en": "came"
+  },
+  "aaeko": {
+    "id": "ortho-048",
+    "roman_standard": "aaeko",
+    "devanagari": "आएको",
+    "word_type": "verb_past",
+    "meaning_en": "came"
+  },
+  "aeko": {
+    "id": "ortho-048",
+    "roman_standard": "aaeko",
+    "devanagari": "आएको",
+    "word_type": "verb_past",
+    "meaning_en": "came"
+  },
+  "aayeko": {
+    "id": "ortho-048",
+    "roman_standard": "aaeko",
+    "devanagari": "आएको",
+    "word_type": "verb_past",
+    "meaning_en": "came"
+  },
+  "गरेको": {
+    "id": "ortho-049",
+    "roman_standard": "gareko",
+    "devanagari": "गरेको",
+    "word_type": "verb_past",
+    "meaning_en": "done"
+  },
+  "gareko": {
+    "id": "ortho-049",
+    "roman_standard": "gareko",
+    "devanagari": "गरेको",
+    "word_type": "verb_past",
+    "meaning_en": "done"
+  },
+  "gariko": {
+    "id": "ortho-049",
+    "roman_standard": "gareko",
+    "devanagari": "गरेको",
+    "word_type": "verb_past",
+    "meaning_en": "done"
+  },
+  "भएको": {
+    "id": "ortho-050",
+    "roman_standard": "bhaeko",
+    "devanagari": "भएको",
+    "word_type": "verb_past",
+    "meaning_en": "happened/became"
+  },
+  "bhaeko": {
+    "id": "ortho-050",
+    "roman_standard": "bhaeko",
+    "devanagari": "भएको",
+    "word_type": "verb_past",
+    "meaning_en": "happened/became"
+  },
+  "bhayeko": {
+    "id": "ortho-050",
+    "roman_standard": "bhaeko",
+    "devanagari": "भएको",
+    "word_type": "verb_past",
+    "meaning_en": "happened/became"
+  },
+  "लिएको": {
+    "id": "ortho-051",
+    "roman_standard": "lieko",
+    "devanagari": "लिएको",
+    "word_type": "verb_past",
+    "meaning_en": "taken"
+  },
+  "lieko": {
+    "id": "ortho-051",
+    "roman_standard": "lieko",
+    "devanagari": "लिएको",
+    "word_type": "verb_past",
+    "meaning_en": "taken"
+  },
+  "liyeko": {
+    "id": "ortho-051",
+    "roman_standard": "lieko",
+    "devanagari": "लिएको",
+    "word_type": "verb_past",
+    "meaning_en": "taken"
+  },
+  "leko": {
+    "id": "ortho-051",
+    "roman_standard": "lieko",
+    "devanagari": "लिएको",
+    "word_type": "verb_past",
+    "meaning_en": "taken"
+  },
+  "दिएको": {
+    "id": "ortho-052",
+    "roman_standard": "dieko",
+    "devanagari": "दिएको",
+    "word_type": "verb_past",
+    "meaning_en": "given"
+  },
+  "dieko": {
+    "id": "ortho-052",
+    "roman_standard": "dieko",
+    "devanagari": "दिएको",
+    "word_type": "verb_past",
+    "meaning_en": "given"
+  },
+  "diyeko": {
+    "id": "ortho-052",
+    "roman_standard": "dieko",
+    "devanagari": "दिएको",
+    "word_type": "verb_past",
+    "meaning_en": "given"
+  },
+  "deko": {
+    "id": "ortho-052",
+    "roman_standard": "dieko",
+    "devanagari": "दिएको",
+    "word_type": "verb_past",
+    "meaning_en": "given"
+  },
+  "बोलेको": {
+    "id": "ortho-053",
+    "roman_standard": "boleko",
+    "devanagari": "बोलेको",
+    "word_type": "verb_past",
+    "meaning_en": "spoken"
+  },
+  "boleko": {
+    "id": "ortho-053",
+    "roman_standard": "boleko",
+    "devanagari": "बोलेको",
+    "word_type": "verb_past",
+    "meaning_en": "spoken"
+  },
+  "bolyeko": {
+    "id": "ortho-053",
+    "roman_standard": "boleko",
+    "devanagari": "बोलेको",
+    "word_type": "verb_past",
+    "meaning_en": "spoken"
+  },
+  "हेरेको": {
+    "id": "ortho-054",
+    "roman_standard": "hereko",
+    "devanagari": "हेरेको",
+    "word_type": "verb_past",
+    "meaning_en": "seen"
+  },
+  "hereko": {
+    "id": "ortho-054",
+    "roman_standard": "hereko",
+    "devanagari": "हेरेको",
+    "word_type": "verb_past",
+    "meaning_en": "seen"
+  },
+  "heryeko": {
+    "id": "ortho-054",
+    "roman_standard": "hereko",
+    "devanagari": "हेरेको",
+    "word_type": "verb_past",
+    "meaning_en": "seen"
+  },
+  "खाएको": {
+    "id": "ortho-055",
+    "roman_standard": "khaeko",
+    "devanagari": "खाएको",
+    "word_type": "verb_past",
+    "meaning_en": "eaten"
+  },
+  "khaeko": {
+    "id": "ortho-055",
+    "roman_standard": "khaeko",
+    "devanagari": "खाएको",
+    "word_type": "verb_past",
+    "meaning_en": "eaten"
+  },
+  "khayeko": {
+    "id": "ortho-055",
+    "roman_standard": "khaeko",
+    "devanagari": "खाएको",
+    "word_type": "verb_past",
+    "meaning_en": "eaten"
+  },
+  "पिएको": {
+    "id": "ortho-056",
+    "roman_standard": "pieko",
+    "devanagari": "पिएको",
+    "word_type": "verb_past",
+    "meaning_en": "drunk"
+  },
+  "pieko": {
+    "id": "ortho-056",
+    "roman_standard": "pieko",
+    "devanagari": "पिएको",
+    "word_type": "verb_past",
+    "meaning_en": "drunk"
+  },
+  "piyeko": {
+    "id": "ortho-056",
+    "roman_standard": "pieko",
+    "devanagari": "पिएको",
+    "word_type": "verb_past",
+    "meaning_en": "drunk"
+  },
+  "peko": {
+    "id": "ortho-056",
+    "roman_standard": "pieko",
+    "devanagari": "पिएको",
+    "word_type": "verb_past",
+    "meaning_en": "drunk"
+  },
+  "सुनेको": {
+    "id": "ortho-057",
+    "roman_standard": "suneko",
+    "devanagari": "सुनेको",
+    "word_type": "verb_past",
+    "meaning_en": "heard"
+  },
+  "suneko": {
+    "id": "ortho-057",
+    "roman_standard": "suneko",
+    "devanagari": "सुनेको",
+    "word_type": "verb_past",
+    "meaning_en": "heard"
+  },
+  "sunyeko": {
+    "id": "ortho-057",
+    "roman_standard": "suneko",
+    "devanagari": "सुनेको",
+    "word_type": "verb_past",
+    "meaning_en": "heard"
+  },
+  "राखेको": {
+    "id": "ortho-058",
+    "roman_standard": "rakheko",
+    "devanagari": "राखेको",
+    "word_type": "verb_past",
+    "meaning_en": "kept"
+  },
+  "rakheko": {
+    "id": "ortho-058",
+    "roman_standard": "rakheko",
+    "devanagari": "राखेको",
+    "word_type": "verb_past",
+    "meaning_en": "kept"
+  },
+  "rakhyeko": {
+    "id": "ortho-058",
+    "roman_standard": "rakheko",
+    "devanagari": "राखेको",
+    "word_type": "verb_past",
+    "meaning_en": "kept"
+  },
+  "बनाएको": {
+    "id": "ortho-059",
+    "roman_standard": "banaeko",
+    "devanagari": "बनाएको",
+    "word_type": "verb_past",
+    "meaning_en": "made"
+  },
+  "banaeko": {
+    "id": "ortho-059",
+    "roman_standard": "banaeko",
+    "devanagari": "बनाएको",
+    "word_type": "verb_past",
+    "meaning_en": "made"
+  },
+  "banayeko": {
+    "id": "ortho-059",
+    "roman_standard": "banaeko",
+    "devanagari": "बनाएको",
+    "word_type": "verb_past",
+    "meaning_en": "made"
+  },
+  "पढेको": {
+    "id": "ortho-060",
+    "roman_standard": "padheko",
+    "devanagari": "पढेको",
+    "word_type": "verb_past",
+    "meaning_en": "read/studied"
+  },
+  "padheko": {
+    "id": "ortho-060",
+    "roman_standard": "padheko",
+    "devanagari": "पढेको",
+    "word_type": "verb_past",
+    "meaning_en": "read/studied"
+  },
+  "padyeko": {
+    "id": "ortho-060",
+    "roman_standard": "padheko",
+    "devanagari": "पढेको",
+    "word_type": "verb_past",
+    "meaning_en": "read/studied"
+  },
+  "लेखेको": {
+    "id": "ortho-061",
+    "roman_standard": "lekheko",
+    "devanagari": "लेखेको",
+    "word_type": "verb_past",
+    "meaning_en": "written"
+  },
+  "lekheko": {
+    "id": "ortho-061",
+    "roman_standard": "lekheko",
+    "devanagari": "लेखेको",
+    "word_type": "verb_past",
+    "meaning_en": "written"
+  },
+  "lekhyeko": {
+    "id": "ortho-061",
+    "roman_standard": "lekheko",
+    "devanagari": "लेखेको",
+    "word_type": "verb_past",
+    "meaning_en": "written"
+  },
+  "एक": {
+    "id": "ortho-062",
+    "roman_standard": "ek",
+    "devanagari": "एक",
+    "word_type": "number",
+    "meaning_en": "one"
+  },
+  "ek": {
+    "id": "ortho-062",
+    "roman_standard": "ek",
+    "devanagari": "एक",
+    "word_type": "number",
+    "meaning_en": "one"
+  },
+  "eka": {
+    "id": "ortho-062",
+    "roman_standard": "ek",
+    "devanagari": "एक",
+    "word_type": "number",
+    "meaning_en": "one"
+  },
+  "दुई": {
+    "id": "ortho-063",
+    "roman_standard": "dui",
+    "devanagari": "दुई",
+    "word_type": "number",
+    "meaning_en": "two"
+  },
+  "dui": {
+    "id": "ortho-063",
+    "roman_standard": "dui",
+    "devanagari": "दुई",
+    "word_type": "number",
+    "meaning_en": "two"
+  },
+  "तीन": {
+    "id": "ortho-064",
+    "roman_standard": "tin",
+    "devanagari": "तीन",
+    "word_type": "number",
+    "meaning_en": "three"
+  },
+  "tin": {
+    "id": "ortho-064",
+    "roman_standard": "tin",
+    "devanagari": "तीन",
+    "word_type": "number",
+    "meaning_en": "three"
+  },
+  "teen": {
+    "id": "ortho-064",
+    "roman_standard": "tin",
+    "devanagari": "तीन",
+    "word_type": "number",
+    "meaning_en": "three"
+  },
+  "चार": {
+    "id": "ortho-065",
+    "roman_standard": "char",
+    "devanagari": "चार",
+    "word_type": "number",
+    "meaning_en": "four"
+  },
+  "char": {
+    "id": "ortho-065",
+    "roman_standard": "char",
+    "devanagari": "चार",
+    "word_type": "number",
+    "meaning_en": "four"
+  },
+  "chaar": {
+    "id": "ortho-065",
+    "roman_standard": "char",
+    "devanagari": "चार",
+    "word_type": "number",
+    "meaning_en": "four"
+  },
+  "पाँच": {
+    "id": "ortho-066",
+    "roman_standard": "pamch",
+    "devanagari": "पाँच",
+    "word_type": "number",
+    "meaning_en": "five"
+  },
+  "pamch": {
+    "id": "ortho-066",
+    "roman_standard": "pamch",
+    "devanagari": "पाँच",
+    "word_type": "number",
+    "meaning_en": "five"
+  },
+  "panch": {
+    "id": "ortho-066",
+    "roman_standard": "pamch",
+    "devanagari": "पाँच",
+    "word_type": "number",
+    "meaning_en": "five"
+  },
+  "paanch": {
+    "id": "ortho-066",
+    "roman_standard": "pamch",
+    "devanagari": "पाँच",
+    "word_type": "number",
+    "meaning_en": "five"
+  },
+  "छ": {
+    "id": "ortho-067",
+    "roman_standard": "chha",
+    "devanagari": "छ",
+    "word_type": "number",
+    "meaning_en": "six"
+  },
+  "chha": {
+    "id": "ortho-067",
+    "roman_standard": "chha",
+    "devanagari": "छ",
+    "word_type": "number",
+    "meaning_en": "six"
+  },
+  "cha": {
+    "id": "ortho-067",
+    "roman_standard": "chha",
+    "devanagari": "छ",
+    "word_type": "number",
+    "meaning_en": "six"
+  },
+  "सात": {
+    "id": "ortho-068",
+    "roman_standard": "saat",
+    "devanagari": "सात",
+    "word_type": "number",
+    "meaning_en": "seven"
+  },
+  "saat": {
+    "id": "ortho-068",
+    "roman_standard": "saat",
+    "devanagari": "सात",
+    "word_type": "number",
+    "meaning_en": "seven"
+  },
+  "sat": {
+    "id": "ortho-068",
+    "roman_standard": "saat",
+    "devanagari": "सात",
+    "word_type": "number",
+    "meaning_en": "seven"
+  },
+  "आठ": {
+    "id": "ortho-069",
+    "roman_standard": "aath",
+    "devanagari": "आठ",
+    "word_type": "number",
+    "meaning_en": "eight"
+  },
+  "aath": {
+    "id": "ortho-069",
+    "roman_standard": "aath",
+    "devanagari": "आठ",
+    "word_type": "number",
+    "meaning_en": "eight"
+  },
+  "ath": {
+    "id": "ortho-069",
+    "roman_standard": "aath",
+    "devanagari": "आठ",
+    "word_type": "number",
+    "meaning_en": "eight"
+  },
+  "नौ": {
+    "id": "ortho-070",
+    "roman_standard": "nau",
+    "devanagari": "नौ",
+    "word_type": "number",
+    "meaning_en": "nine"
+  },
+  "nau": {
+    "id": "ortho-070",
+    "roman_standard": "nau",
+    "devanagari": "नौ",
+    "word_type": "number",
+    "meaning_en": "nine"
+  },
+  "दश": {
+    "id": "ortho-071",
+    "roman_standard": "dash",
+    "devanagari": "दश",
+    "word_type": "number",
+    "meaning_en": "ten"
+  },
+  "dash": {
+    "id": "ortho-071",
+    "roman_standard": "dash",
+    "devanagari": "दश",
+    "word_type": "number",
+    "meaning_en": "ten"
+  },
+  "das": {
+    "id": "ortho-071",
+    "roman_standard": "dash",
+    "devanagari": "दश",
+    "word_type": "number",
+    "meaning_en": "ten"
+  },
+  "सय": {
+    "id": "ortho-072",
+    "roman_standard": "saya",
+    "devanagari": "सय",
+    "word_type": "number",
+    "meaning_en": "hundred"
+  },
+  "saya": {
+    "id": "ortho-072",
+    "roman_standard": "saya",
+    "devanagari": "सय",
+    "word_type": "number",
+    "meaning_en": "hundred"
+  },
+  "say": {
+    "id": "ortho-072",
+    "roman_standard": "saya",
+    "devanagari": "सय",
+    "word_type": "number",
+    "meaning_en": "hundred"
+  },
+  "sai": {
+    "id": "ortho-072",
+    "roman_standard": "saya",
+    "devanagari": "सय",
+    "word_type": "number",
+    "meaning_en": "hundred"
+  },
+  "हजार": {
+    "id": "ortho-073",
+    "roman_standard": "hajar",
+    "devanagari": "हजार",
+    "word_type": "number",
+    "meaning_en": "thousand"
+  },
+  "hajar": {
+    "id": "ortho-073",
+    "roman_standard": "hajar",
+    "devanagari": "हजार",
+    "word_type": "number",
+    "meaning_en": "thousand"
+  },
+  "hazaar": {
+    "id": "ortho-073",
+    "roman_standard": "hajar",
+    "devanagari": "हजार",
+    "word_type": "number",
+    "meaning_en": "thousand"
+  },
+  "hajaar": {
+    "id": "ortho-073",
+    "roman_standard": "hajar",
+    "devanagari": "हजार",
+    "word_type": "number",
+    "meaning_en": "thousand"
+  },
+  "लाख": {
+    "id": "ortho-074",
+    "roman_standard": "lakh",
+    "devanagari": "लाख",
+    "word_type": "number",
+    "meaning_en": "lakh (100,000)"
+  },
+  "lakh": {
+    "id": "ortho-074",
+    "roman_standard": "lakh",
+    "devanagari": "लाख",
+    "word_type": "number",
+    "meaning_en": "lakh (100,000)"
+  },
+  "laakh": {
+    "id": "ortho-074",
+    "roman_standard": "lakh",
+    "devanagari": "लाख",
+    "word_type": "number",
+    "meaning_en": "lakh (100,000)"
+  },
+  "lak": {
+    "id": "ortho-074",
+    "roman_standard": "lakh",
+    "devanagari": "लाख",
+    "word_type": "number",
+    "meaning_en": "lakh (100,000)"
+  },
+  "करोड": {
+    "id": "ortho-075",
+    "roman_standard": "karod",
+    "devanagari": "करोड",
+    "word_type": "number",
+    "meaning_en": "crore (10 million)"
+  },
+  "karod": {
+    "id": "ortho-075",
+    "roman_standard": "karod",
+    "devanagari": "करोड",
+    "word_type": "number",
+    "meaning_en": "crore (10 million)"
+  },
+  "karoḍ": {
+    "id": "ortho-075",
+    "roman_standard": "karod",
+    "devanagari": "करोड",
+    "word_type": "number",
+    "meaning_en": "crore (10 million)"
+  },
+  "को": {
+    "id": "ortho-076",
+    "roman_standard": "ko",
+    "devanagari": "को",
+    "word_type": "question_word",
+    "meaning_en": "whose/of"
+  },
+  "ko": {
+    "id": "ortho-076",
+    "roman_standard": "ko",
+    "devanagari": "को",
+    "word_type": "question_word",
+    "meaning_en": "whose/of"
+  },
+  "के": {
+    "id": "ortho-077",
+    "roman_standard": "ke",
+    "devanagari": "के",
+    "word_type": "question_word",
+    "meaning_en": "what"
+  },
+  "ke": {
+    "id": "ortho-077",
+    "roman_standard": "ke",
+    "devanagari": "के",
+    "word_type": "question_word",
+    "meaning_en": "what"
+  },
+  "kay": {
+    "id": "ortho-077",
+    "roman_standard": "ke",
+    "devanagari": "के",
+    "word_type": "question_word",
+    "meaning_en": "what"
+  },
+  "कहाँ": {
+    "id": "ortho-078",
+    "roman_standard": "kahan",
+    "devanagari": "कहाँ",
+    "word_type": "question_word",
+    "meaning_en": "where"
+  },
+  "kahan": {
+    "id": "ortho-078",
+    "roman_standard": "kahan",
+    "devanagari": "कहाँ",
+    "word_type": "question_word",
+    "meaning_en": "where"
+  },
+  "kahaa": {
+    "id": "ortho-078",
+    "roman_standard": "kahan",
+    "devanagari": "कहाँ",
+    "word_type": "question_word",
+    "meaning_en": "where"
+  },
+  "kaha": {
+    "id": "ortho-078",
+    "roman_standard": "kahan",
+    "devanagari": "कहाँ",
+    "word_type": "question_word",
+    "meaning_en": "where"
+  },
+  "किन": {
+    "id": "ortho-079",
+    "roman_standard": "kin",
+    "devanagari": "किन",
+    "word_type": "question_word",
+    "meaning_en": "why"
+  },
+  "kin": {
+    "id": "ortho-079",
+    "roman_standard": "kin",
+    "devanagari": "किन",
+    "word_type": "question_word",
+    "meaning_en": "why"
+  },
+  "keen": {
+    "id": "ortho-079",
+    "roman_standard": "kin",
+    "devanagari": "किन",
+    "word_type": "question_word",
+    "meaning_en": "why"
+  },
+  "कसरी": {
+    "id": "ortho-080",
+    "roman_standard": "kasari",
+    "devanagari": "कसरी",
+    "word_type": "question_word",
+    "meaning_en": "how"
+  },
+  "kasari": {
+    "id": "ortho-080",
+    "roman_standard": "kasari",
+    "devanagari": "कसरी",
+    "word_type": "question_word",
+    "meaning_en": "how"
+  },
+  "kasri": {
+    "id": "ortho-080",
+    "roman_standard": "kasari",
+    "devanagari": "कसरी",
+    "word_type": "question_word",
+    "meaning_en": "how"
+  },
+  "कति": {
+    "id": "ortho-081",
+    "roman_standard": "kati",
+    "devanagari": "कति",
+    "word_type": "question_word",
+    "meaning_en": "how much/many"
+  },
+  "kati": {
+    "id": "ortho-081",
+    "roman_standard": "kati",
+    "devanagari": "कति",
+    "word_type": "question_word",
+    "meaning_en": "how much/many"
+  },
+  "katee": {
+    "id": "ortho-081",
+    "roman_standard": "kati",
+    "devanagari": "कति",
+    "word_type": "question_word",
+    "meaning_en": "how much/many"
+  },
+  "कुन": {
+    "id": "ortho-082",
+    "roman_standard": "kuna",
+    "devanagari": "कुन",
+    "word_type": "question_word",
+    "meaning_en": "which"
+  },
+  "kuna": {
+    "id": "ortho-082",
+    "roman_standard": "kuna",
+    "devanagari": "कुन",
+    "word_type": "question_word",
+    "meaning_en": "which"
+  },
+  "kun": {
+    "id": "ortho-082",
+    "roman_standard": "kuna",
+    "devanagari": "कुन",
+    "word_type": "question_word",
+    "meaning_en": "which"
+  },
+  "कहिले": {
+    "id": "ortho-083",
+    "roman_standard": "kahile",
+    "devanagari": "कहिले",
+    "word_type": "question_word",
+    "meaning_en": "when"
+  },
+  "kahile": {
+    "id": "ortho-083",
+    "roman_standard": "kahile",
+    "devanagari": "कहिले",
+    "word_type": "question_word",
+    "meaning_en": "when"
+  },
+  "kahilye": {
+    "id": "ortho-083",
+    "roman_standard": "kahile",
+    "devanagari": "कहिले",
+    "word_type": "question_word",
+    "meaning_en": "when"
+  },
+  "बिक्री कर": {
+    "id": "ortho-084",
+    "roman_standard": "bikri kar",
+    "devanagari": "बिक्री कर",
+    "word_type": "business_term",
+    "meaning_en": "sales tax"
+  },
+  "bikri kar": {
+    "id": "ortho-084",
+    "roman_standard": "bikri kar",
+    "devanagari": "बिक्री कर",
+    "word_type": "business_term",
+    "meaning_en": "sales tax"
+  },
+  "मूल्य अभिवृद्धि कर": {
+    "id": "ortho-085",
+    "roman_standard": "mulya abhivriddhi kar",
+    "devanagari": "मूल्य अभिवृद्धि कर",
+    "word_type": "business_term",
+    "meaning_en": "value added tax (VAT)"
+  },
+  "mulya abhivriddhi kar": {
+    "id": "ortho-085",
+    "roman_standard": "mulya abhivriddhi kar",
+    "devanagari": "मूल्य अभिवृद्धि कर",
+    "word_type": "business_term",
+    "meaning_en": "value added tax (VAT)"
+  },
+  "आयकर": {
+    "id": "ortho-086",
+    "roman_standard": "aayakar",
+    "devanagari": "आयकर",
+    "word_type": "business_term",
+    "meaning_en": "income tax"
+  },
+  "aayakar": {
+    "id": "ortho-086",
+    "roman_standard": "aayakar",
+    "devanagari": "आयकर",
+    "word_type": "business_term",
+    "meaning_en": "income tax"
+  },
+  "aaya kar": {
+    "id": "ortho-086",
+    "roman_standard": "aayakar",
+    "devanagari": "आयकर",
+    "word_type": "business_term",
+    "meaning_en": "income tax"
+  },
+  "लाभ": {
+    "id": "ortho-087",
+    "roman_standard": "labha",
+    "devanagari": "लाभ",
+    "word_type": "business_term",
+    "meaning_en": "gain/benefit"
+  },
+  "labha": {
+    "id": "ortho-087",
+    "roman_standard": "labha",
+    "devanagari": "लाभ",
+    "word_type": "business_term",
+    "meaning_en": "gain/benefit"
+  },
+  "labh": {
+    "id": "ortho-087",
+    "roman_standard": "labha",
+    "devanagari": "लाभ",
+    "word_type": "business_term",
+    "meaning_en": "gain/benefit"
+  },
+  "laabh": {
+    "id": "ortho-087",
+    "roman_standard": "labha",
+    "devanagari": "लाभ",
+    "word_type": "business_term",
+    "meaning_en": "gain/benefit"
+  },
+  "घाटा व्यापार": {
+    "id": "ortho-088",
+    "roman_standard": "ghata byapar",
+    "devanagari": "घाटा व्यापार",
+    "word_type": "business_term",
+    "meaning_en": "loss-making business"
+  },
+  "ghata byapar": {
+    "id": "ortho-088",
+    "roman_standard": "ghata byapar",
+    "devanagari": "घाटा व्यापार",
+    "word_type": "business_term",
+    "meaning_en": "loss-making business"
+  },
+  "ghata byapaar": {
+    "id": "ortho-088",
+    "roman_standard": "ghata byapar",
+    "devanagari": "घाटा व्यापार",
+    "word_type": "business_term",
+    "meaning_en": "loss-making business"
+  },
+  "बजार": {
+    "id": "ortho-089",
+    "roman_standard": "bajar",
+    "devanagari": "बजार",
+    "word_type": "business_term",
+    "meaning_en": "market"
+  },
+  "bajar": {
+    "id": "ortho-089",
+    "roman_standard": "bajar",
+    "devanagari": "बजार",
+    "word_type": "business_term",
+    "meaning_en": "market"
+  },
+  "bazaar": {
+    "id": "ortho-089",
+    "roman_standard": "bajar",
+    "devanagari": "बजार",
+    "word_type": "business_term",
+    "meaning_en": "market"
+  },
+  "आपूर्ति": {
+    "id": "ortho-090",
+    "roman_standard": "apurti",
+    "devanagari": "आपूर्ति",
+    "word_type": "business_term",
+    "meaning_en": "supply"
+  },
+  "apurti": {
+    "id": "ortho-090",
+    "roman_standard": "apurti",
+    "devanagari": "आपूर्ति",
+    "word_type": "business_term",
+    "meaning_en": "supply"
+  },
+  "aapurti": {
+    "id": "ortho-090",
+    "roman_standard": "apurti",
+    "devanagari": "आपूर्ति",
+    "word_type": "business_term",
+    "meaning_en": "supply"
+  },
+  "aapoorti": {
+    "id": "ortho-090",
+    "roman_standard": "apurti",
+    "devanagari": "आपूर्ति",
+    "word_type": "business_term",
+    "meaning_en": "supply"
+  },
+  "माग": {
+    "id": "ortho-091",
+    "roman_standard": "mag",
+    "devanagari": "माग",
+    "word_type": "business_term",
+    "meaning_en": "demand"
+  },
+  "mag": {
+    "id": "ortho-091",
+    "roman_standard": "mag",
+    "devanagari": "माग",
+    "word_type": "business_term",
+    "meaning_en": "demand"
+  },
+  "maag": {
+    "id": "ortho-091",
+    "roman_standard": "mag",
+    "devanagari": "माग",
+    "word_type": "business_term",
+    "meaning_en": "demand"
+  },
+  "उत्पादन": {
+    "id": "ortho-092",
+    "roman_standard": "utpadan",
+    "devanagari": "उत्पादन",
+    "word_type": "business_term",
+    "meaning_en": "production"
+  },
+  "utpadan": {
+    "id": "ortho-092",
+    "roman_standard": "utpadan",
+    "devanagari": "उत्पादन",
+    "word_type": "business_term",
+    "meaning_en": "production"
+  },
+  "utpaadan": {
+    "id": "ortho-092",
+    "roman_standard": "utpadan",
+    "devanagari": "उत्पादन",
+    "word_type": "business_term",
+    "meaning_en": "production"
+  },
+  "विक्रय": {
+    "id": "ortho-093",
+    "roman_standard": "vikraya",
+    "devanagari": "विक्रय",
+    "word_type": "business_term",
+    "meaning_en": "sales"
+  },
+  "vikraya": {
+    "id": "ortho-093",
+    "roman_standard": "vikraya",
+    "devanagari": "विक्रय",
+    "word_type": "business_term",
+    "meaning_en": "sales"
+  },
+  "vikray": {
+    "id": "ortho-093",
+    "roman_standard": "vikraya",
+    "devanagari": "विक्रय",
+    "word_type": "business_term",
+    "meaning_en": "sales"
+  },
+  "vikriya": {
+    "id": "ortho-093",
+    "roman_standard": "vikraya",
+    "devanagari": "विक्रय",
+    "word_type": "business_term",
+    "meaning_en": "sales"
+  },
+  "क्रय": {
+    "id": "ortho-094",
+    "roman_standard": "kraya",
+    "devanagari": "क्रय",
+    "word_type": "business_term",
+    "meaning_en": "purchase (formal)"
+  },
+  "kraya": {
+    "id": "ortho-094",
+    "roman_standard": "kraya",
+    "devanagari": "क्रय",
+    "word_type": "business_term",
+    "meaning_en": "purchase (formal)"
+  },
+  "kray": {
+    "id": "ortho-094",
+    "roman_standard": "kraya",
+    "devanagari": "क्रय",
+    "word_type": "business_term",
+    "meaning_en": "purchase (formal)"
+  },
+  "kriya": {
+    "id": "ortho-094",
+    "roman_standard": "kraya",
+    "devanagari": "क्रय",
+    "word_type": "business_term",
+    "meaning_en": "purchase (formal)"
+  },
+  "ठेक्का": {
+    "id": "ortho-095",
+    "roman_standard": "thekka",
+    "devanagari": "ठेक्का",
+    "word_type": "business_term",
+    "meaning_en": "contract"
+  },
+  "thekka": {
+    "id": "ortho-095",
+    "roman_standard": "thekka",
+    "devanagari": "ठेक्का",
+    "word_type": "business_term",
+    "meaning_en": "contract"
+  },
+  "theka": {
+    "id": "ortho-095",
+    "roman_standard": "thekka",
+    "devanagari": "ठेक्का",
+    "word_type": "business_term",
+    "meaning_en": "contract"
+  },
+  "बोलपत्र": {
+    "id": "ortho-096",
+    "roman_standard": "bolpatra",
+    "devanagari": "बोलपत्र",
+    "word_type": "business_term",
+    "meaning_en": "tender/bid"
+  },
+  "bolpatra": {
+    "id": "ortho-096",
+    "roman_standard": "bolpatra",
+    "devanagari": "बोलपत्र",
+    "word_type": "business_term",
+    "meaning_en": "tender/bid"
+  },
+  "bol patra": {
+    "id": "ortho-096",
+    "roman_standard": "bolpatra",
+    "devanagari": "बोलपत्र",
+    "word_type": "business_term",
+    "meaning_en": "tender/bid"
+  },
+  "चुक्ता": {
+    "id": "ortho-097",
+    "roman_standard": "chukta",
+    "devanagari": "चुक्ता",
+    "word_type": "business_term",
+    "meaning_en": "paid (settled)"
+  },
+  "chukta": {
+    "id": "ortho-097",
+    "roman_standard": "chukta",
+    "devanagari": "चुक्ता",
+    "word_type": "business_term",
+    "meaning_en": "paid (settled)"
+  },
+  "बाँकी": {
+    "id": "ortho-098",
+    "roman_standard": "bamki",
+    "devanagari": "बाँकी",
+    "word_type": "business_term",
+    "meaning_en": "balance (remaining)"
+  },
+  "bamki": {
+    "id": "ortho-098",
+    "roman_standard": "bamki",
+    "devanagari": "बाँकी",
+    "word_type": "business_term",
+    "meaning_en": "balance (remaining)"
+  },
+  "banki": {
+    "id": "ortho-098",
+    "roman_standard": "bamki",
+    "devanagari": "बाँकी",
+    "word_type": "business_term",
+    "meaning_en": "balance (remaining)"
+  },
+  "baanki": {
+    "id": "ortho-098",
+    "roman_standard": "bamki",
+    "devanagari": "बाँकी",
+    "word_type": "business_term",
+    "meaning_en": "balance (remaining)"
+  },
+  "जम्मा": {
+    "id": "ortho-099",
+    "roman_standard": "jamma",
+    "devanagari": "जम्मा",
+    "word_type": "business_term",
+    "meaning_en": "total/deposit"
+  },
+  "jamma": {
+    "id": "ortho-099",
+    "roman_standard": "jamma",
+    "devanagari": "जम्मा",
+    "word_type": "business_term",
+    "meaning_en": "total/deposit"
+  },
+  "jama": {
+    "id": "ortho-099",
+    "roman_standard": "jamma",
+    "devanagari": "जम्मा",
+    "word_type": "business_term",
+    "meaning_en": "total/deposit"
+  },
+  "खर्च गर्नु": {
+    "id": "ortho-100",
+    "roman_standard": "kharcha garnu",
+    "devanagari": "खर्च गर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to spend"
+  },
+  "kharcha garnu": {
+    "id": "ortho-100",
+    "roman_standard": "kharcha garnu",
+    "devanagari": "खर्च गर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to spend"
+  },
+  "kharch garnu": {
+    "id": "ortho-100",
+    "roman_standard": "kharcha garnu",
+    "devanagari": "खर्च गर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to spend"
+  },
+  "बचत गर्नु": {
+    "id": "ortho-101",
+    "roman_standard": "bachat garnu",
+    "devanagari": "बचत गर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to save (money)"
+  },
+  "bachat garnu": {
+    "id": "ortho-101",
+    "roman_standard": "bachat garnu",
+    "devanagari": "बचत गर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to save (money)"
+  },
+  "bachhat garnu": {
+    "id": "ortho-101",
+    "roman_standard": "bachat garnu",
+    "devanagari": "बचत गर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to save (money)"
+  },
+  "लगानी गर्नु": {
+    "id": "ortho-102",
+    "roman_standard": "lagani garnu",
+    "devanagari": "लगानी गर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to invest"
+  },
+  "lagani garnu": {
+    "id": "ortho-102",
+    "roman_standard": "lagani garnu",
+    "devanagari": "लगानी गर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to invest"
+  },
+  "laganee garnu": {
+    "id": "ortho-102",
+    "roman_standard": "lagani garnu",
+    "devanagari": "लगानी गर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to invest"
+  },
+  "गणना गर्नु": {
+    "id": "ortho-103",
+    "roman_standard": "ganana garnu",
+    "devanagari": "गणना गर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to calculate"
+  },
+  "ganana garnu": {
+    "id": "ortho-103",
+    "roman_standard": "ganana garnu",
+    "devanagari": "गणना गर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to calculate"
+  },
+  "ganna garnu": {
+    "id": "ortho-103",
+    "roman_standard": "ganana garnu",
+    "devanagari": "गणना गर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to calculate"
+  },
+  "तिर्नु": {
+    "id": "ortho-104",
+    "roman_standard": "tirnu",
+    "devanagari": "तिर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to pay"
+  },
+  "tirnu": {
+    "id": "ortho-104",
+    "roman_standard": "tirnu",
+    "devanagari": "तिर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to pay"
+  },
+  "teernu": {
+    "id": "ortho-104",
+    "roman_standard": "tirnu",
+    "devanagari": "तिर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to pay"
+  },
+  "प्राप्त गर्नु": {
+    "id": "ortho-105",
+    "roman_standard": "prapt garnu",
+    "devanagari": "प्राप्त गर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to receive/obtain"
+  },
+  "prapt garnu": {
+    "id": "ortho-105",
+    "roman_standard": "prapt garnu",
+    "devanagari": "प्राप्त गर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to receive/obtain"
+  },
+  "गरियो": {
+    "id": "ortho-106",
+    "roman_standard": "gariyo",
+    "devanagari": "गरियो",
+    "word_type": "verb_past_passive",
+    "meaning_en": "was done"
+  },
+  "gariyo": {
+    "id": "ortho-106",
+    "roman_standard": "gariyo",
+    "devanagari": "गरियो",
+    "word_type": "verb_past_passive",
+    "meaning_en": "was done"
+  },
+  "आयो": {
+    "id": "ortho-107",
+    "roman_standard": "aayo",
+    "devanagari": "आयो",
+    "word_type": "verb_past",
+    "meaning_en": "came (past)"
+  },
+  "aayo": {
+    "id": "ortho-107",
+    "roman_standard": "aayo",
+    "devanagari": "आयो",
+    "word_type": "verb_past",
+    "meaning_en": "came (past)"
+  },
+  "ayo": {
+    "id": "ortho-107",
+    "roman_standard": "aayo",
+    "devanagari": "आयो",
+    "word_type": "verb_past",
+    "meaning_en": "came (past)"
+  },
+  "गयो": {
+    "id": "ortho-108",
+    "roman_standard": "gayo",
+    "devanagari": "गयो",
+    "word_type": "verb_past",
+    "meaning_en": "went (past)"
+  },
+  "gayo": {
+    "id": "ortho-108",
+    "roman_standard": "gayo",
+    "devanagari": "गयो",
+    "word_type": "verb_past",
+    "meaning_en": "went (past)"
+  },
+  "भयो": {
+    "id": "ortho-109",
+    "roman_standard": "bhayo",
+    "devanagari": "भयो",
+    "word_type": "verb_past",
+    "meaning_en": "happened/became (past)"
+  },
+  "bhayo": {
+    "id": "ortho-109",
+    "roman_standard": "bhayo",
+    "devanagari": "भयो",
+    "word_type": "verb_past",
+    "meaning_en": "happened/became (past)"
+  },
+  "रह्यो": {
+    "id": "ortho-110",
+    "roman_standard": "rahyo",
+    "devanagari": "रह्यो",
+    "word_type": "verb_past",
+    "meaning_en": "remained (past)"
+  },
+  "rahyo": {
+    "id": "ortho-110",
+    "roman_standard": "rahyo",
+    "devanagari": "रह्यो",
+    "word_type": "verb_past",
+    "meaning_en": "remained (past)"
+  },
+  "दियो": {
+    "id": "ortho-111",
+    "roman_standard": "diyo",
+    "devanagari": "दियो",
+    "word_type": "verb_past",
+    "meaning_en": "gave (past)"
+  },
+  "diyo": {
+    "id": "ortho-111",
+    "roman_standard": "diyo",
+    "devanagari": "दियो",
+    "word_type": "verb_past",
+    "meaning_en": "gave (past)"
+  },
+  "लियो": {
+    "id": "ortho-112",
+    "roman_standard": "liyo",
+    "devanagari": "लियो",
+    "word_type": "verb_past",
+    "meaning_en": "took (past)"
+  },
+  "liyo": {
+    "id": "ortho-112",
+    "roman_standard": "liyo",
+    "devanagari": "लियो",
+    "word_type": "verb_past",
+    "meaning_en": "took (past)"
+  },
+  "बोल्यो": {
+    "id": "ortho-113",
+    "roman_standard": "bolyo",
+    "devanagari": "बोल्यो",
+    "word_type": "verb_past",
+    "meaning_en": "spoke (past)"
+  },
+  "bolyo": {
+    "id": "ortho-113",
+    "roman_standard": "bolyo",
+    "devanagari": "बोल्यो",
+    "word_type": "verb_past",
+    "meaning_en": "spoke (past)"
+  },
+  "सुन्यो": {
+    "id": "ortho-114",
+    "roman_standard": "sunyo",
+    "devanagari": "सुन्यो",
+    "word_type": "verb_past",
+    "meaning_en": "heard (past)"
+  },
+  "sunyo": {
+    "id": "ortho-114",
+    "roman_standard": "sunyo",
+    "devanagari": "सुन्यो",
+    "word_type": "verb_past",
+    "meaning_en": "heard (past)"
+  },
+  "हेर्यो": {
+    "id": "ortho-115",
+    "roman_standard": "heryo",
+    "devanagari": "हेर्यो",
+    "word_type": "verb_past",
+    "meaning_en": "saw (past)"
+  },
+  "heryo": {
+    "id": "ortho-115",
+    "roman_standard": "heryo",
+    "devanagari": "हेर्यो",
+    "word_type": "verb_past",
+    "meaning_en": "saw (past)"
+  },
+  "राख्यो": {
+    "id": "ortho-116",
+    "roman_standard": "rakhyo",
+    "devanagari": "राख्यो",
+    "word_type": "verb_past",
+    "meaning_en": "kept (past)"
+  },
+  "rakhyo": {
+    "id": "ortho-116",
+    "roman_standard": "rakhyo",
+    "devanagari": "राख्यो",
+    "word_type": "verb_past",
+    "meaning_en": "kept (past)"
+  },
+  "घटाउनु": {
+    "id": "ortho-117",
+    "roman_standard": "ghataunu",
+    "devanagari": "घटाउनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to subtract/reduce"
+  },
+  "ghataunu": {
+    "id": "ortho-117",
+    "roman_standard": "ghataunu",
+    "devanagari": "घटाउनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to subtract/reduce"
+  },
+  "ghataaunu": {
+    "id": "ortho-117",
+    "roman_standard": "ghataunu",
+    "devanagari": "घटाउनु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to subtract/reduce"
+  },
+  "जोड्नु": {
+    "id": "ortho-118",
+    "roman_standard": "jodnu",
+    "devanagari": "जोड्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to add"
+  },
+  "jodnu": {
+    "id": "ortho-118",
+    "roman_standard": "jodnu",
+    "devanagari": "जोड्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to add"
+  },
+  "गुणन गर्नु": {
+    "id": "ortho-119",
+    "roman_standard": "gunan garnu",
+    "devanagari": "गुणन गर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to multiply"
+  },
+  "gunan garnu": {
+    "id": "ortho-119",
+    "roman_standard": "gunan garnu",
+    "devanagari": "गुणन गर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to multiply"
+  },
+  "भाग गर्नु": {
+    "id": "ortho-120",
+    "roman_standard": "bhag garnu",
+    "devanagari": "भाग गर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to divide"
+  },
+  "bhag garnu": {
+    "id": "ortho-120",
+    "roman_standard": "bhag garnu",
+    "devanagari": "भाग गर्नु",
+    "word_type": "verb_infinitive",
+    "meaning_en": "to divide"
+  },
+  "नोट": {
+    "id": "ortho-121",
+    "roman_standard": "not",
+    "devanagari": "नोट",
+    "word_type": "noun",
+    "meaning_en": "note/note (currency)"
+  },
+  "not": {
+    "id": "ortho-121",
+    "roman_standard": "not",
+    "devanagari": "नोट",
+    "word_type": "noun",
+    "meaning_en": "note/note (currency)"
+  },
+  "note": {
+    "id": "ortho-121",
+    "roman_standard": "not",
+    "devanagari": "नोट",
+    "word_type": "noun",
+    "meaning_en": "note/note (currency)"
+  },
+  "सिक्का": {
+    "id": "ortho-122",
+    "roman_standard": "sikka",
+    "devanagari": "सिक्का",
+    "word_type": "noun",
+    "meaning_en": "coin"
+  },
+  "sikka": {
+    "id": "ortho-122",
+    "roman_standard": "sikka",
+    "devanagari": "सिक्का",
+    "word_type": "noun",
+    "meaning_en": "coin"
+  },
+  "sikha": {
+    "id": "ortho-122",
+    "roman_standard": "sikka",
+    "devanagari": "सिक्का",
+    "word_type": "noun",
+    "meaning_en": "coin"
+  },
+  "मुद्रा": {
+    "id": "ortho-123",
+    "roman_standard": "mudra",
+    "devanagari": "मुद्रा",
+    "word_type": "noun",
+    "meaning_en": "currency"
+  },
+  "mudra": {
+    "id": "ortho-123",
+    "roman_standard": "mudra",
+    "devanagari": "मुद्रा",
+    "word_type": "noun",
+    "meaning_en": "currency"
+  },
+  "mudraa": {
+    "id": "ortho-123",
+    "roman_standard": "mudra",
+    "devanagari": "मुद्रा",
+    "word_type": "noun",
+    "meaning_en": "currency"
+  },
+  "विनिमय": {
+    "id": "ortho-124",
+    "roman_standard": "vinimaya",
+    "devanagari": "विनिमय",
+    "word_type": "noun",
+    "meaning_en": "exchange"
+  },
+  "vinimaya": {
+    "id": "ortho-124",
+    "roman_standard": "vinimaya",
+    "devanagari": "विनिमय",
+    "word_type": "noun",
+    "meaning_en": "exchange"
+  },
+  "vinimay": {
+    "id": "ortho-124",
+    "roman_standard": "vinimaya",
+    "devanagari": "विनिमय",
+    "word_type": "noun",
+    "meaning_en": "exchange"
+  },
+  "binimay": {
+    "id": "ortho-124",
+    "roman_standard": "vinimaya",
+    "devanagari": "विनिमय",
+    "word_type": "noun",
+    "meaning_en": "exchange"
+  },
+  "दर": {
+    "id": "ortho-125",
+    "roman_standard": "dara",
+    "devanagari": "दर",
+    "word_type": "noun",
+    "meaning_en": "rate"
+  },
+  "dara": {
+    "id": "ortho-125",
+    "roman_standard": "dara",
+    "devanagari": "दर",
+    "word_type": "noun",
+    "meaning_en": "rate"
+  },
+  "dar": {
+    "id": "ortho-125",
+    "roman_standard": "dara",
+    "devanagari": "दर",
+    "word_type": "noun",
+    "meaning_en": "rate"
+  },
+  "daar": {
+    "id": "ortho-125",
+    "roman_standard": "dara",
+    "devanagari": "दर",
+    "word_type": "noun",
+    "meaning_en": "rate"
+  },
+  "अंक": {
+    "id": "ortho-126",
+    "roman_standard": "anka",
+    "devanagari": "अंक",
+    "word_type": "noun",
+    "meaning_en": "digit/number"
+  },
+  "anka": {
+    "id": "ortho-126",
+    "roman_standard": "anka",
+    "devanagari": "अंक",
+    "word_type": "noun",
+    "meaning_en": "digit/number"
+  },
+  "ank": {
+    "id": "ortho-126",
+    "roman_standard": "anka",
+    "devanagari": "अंक",
+    "word_type": "noun",
+    "meaning_en": "digit/number"
+  },
+  "अंकगणित": {
+    "id": "ortho-127",
+    "roman_standard": "ankaganit",
+    "devanagari": "अंकगणित",
+    "word_type": "noun",
+    "meaning_en": "arithmetic"
+  },
+  "ankaganit": {
+    "id": "ortho-127",
+    "roman_standard": "ankaganit",
+    "devanagari": "अंकगणित",
+    "word_type": "noun",
+    "meaning_en": "arithmetic"
+  },
+  "त्रुटि": {
+    "id": "ortho-128",
+    "roman_standard": "truti",
+    "devanagari": "त्रुटि",
+    "word_type": "noun",
+    "meaning_en": "error"
+  },
+  "truti": {
+    "id": "ortho-128",
+    "roman_standard": "truti",
+    "devanagari": "त्रुटि",
+    "word_type": "noun",
+    "meaning_en": "error"
+  },
+  "सुधार": {
+    "id": "ortho-129",
+    "roman_standard": "sudhar",
+    "devanagari": "सुधार",
+    "word_type": "noun",
+    "meaning_en": "correction"
+  },
+  "sudhar": {
+    "id": "ortho-129",
+    "roman_standard": "sudhar",
+    "devanagari": "सुधार",
+    "word_type": "noun",
+    "meaning_en": "correction"
+  },
+  "sudhaar": {
+    "id": "ortho-129",
+    "roman_standard": "sudhar",
+    "devanagari": "सुधार",
+    "word_type": "noun",
+    "meaning_en": "correction"
+  },
+  "विवरण": {
+    "id": "ortho-130",
+    "roman_standard": "vivarana",
+    "devanagari": "विवरण",
+    "word_type": "noun",
+    "meaning_en": "details/description"
+  },
+  "vivarana": {
+    "id": "ortho-130",
+    "roman_standard": "vivarana",
+    "devanagari": "विवरण",
+    "word_type": "noun",
+    "meaning_en": "details/description"
+  },
+  "vivaran": {
+    "id": "ortho-130",
+    "roman_standard": "vivarana",
+    "devanagari": "विवरण",
+    "word_type": "noun",
+    "meaning_en": "details/description"
+  },
+  "bibaran": {
+    "id": "ortho-130",
+    "roman_standard": "vivarana",
+    "devanagari": "विवरण",
+    "word_type": "noun",
+    "meaning_en": "details/description"
+  },
+  "रसिद": {
+    "id": "ortho-131",
+    "roman_standard": "rasid",
+    "devanagari": "रसिद",
+    "word_type": "noun",
+    "meaning_en": "receipt"
+  },
+  "rasid": {
+    "id": "ortho-131",
+    "roman_standard": "rasid",
+    "devanagari": "रसिद",
+    "word_type": "noun",
+    "meaning_en": "receipt"
+  },
+  "raseed": {
+    "id": "ortho-131",
+    "roman_standard": "rasid",
+    "devanagari": "रसिद",
+    "word_type": "noun",
+    "meaning_en": "receipt"
+  },
+  "भुक्तानी": {
+    "id": "ortho-132",
+    "roman_standard": "bhuktani",
+    "devanagari": "भुक्तानी",
+    "word_type": "noun",
+    "meaning_en": "payment"
+  },
+  "bhuktani": {
+    "id": "ortho-132",
+    "roman_standard": "bhuktani",
+    "devanagari": "भुक्तानी",
+    "word_type": "noun",
+    "meaning_en": "payment"
+  },
+  "bhuktanee": {
+    "id": "ortho-132",
+    "roman_standard": "bhuktani",
+    "devanagari": "भुक्तानी",
+    "word_type": "noun",
+    "meaning_en": "payment"
+  },
+  "प्राप्ति": {
+    "id": "ortho-133",
+    "roman_standard": "prapti",
+    "devanagari": "प्राप्ति",
+    "word_type": "noun",
+    "meaning_en": "receipt (act of receiving)"
+  },
+  "prapti": {
+    "id": "ortho-133",
+    "roman_standard": "prapti",
+    "devanagari": "प्राप्ति",
+    "word_type": "noun",
+    "meaning_en": "receipt (act of receiving)"
+  },
+  "praptee": {
+    "id": "ortho-133",
+    "roman_standard": "prapti",
+    "devanagari": "प्राप्ति",
+    "word_type": "noun",
+    "meaning_en": "receipt (act of receiving)"
+  },
+  "सन्तुलन": {
+    "id": "ortho-134",
+    "roman_standard": "santulan",
+    "devanagari": "सन्तुलन",
+    "word_type": "noun",
+    "meaning_en": "balance (equilibrium)"
+  },
+  "santulan": {
+    "id": "ortho-134",
+    "roman_standard": "santulan",
+    "devanagari": "सन्तुलन",
+    "word_type": "noun",
+    "meaning_en": "balance (equilibrium)"
+  },
+  "santoolan": {
+    "id": "ortho-134",
+    "roman_standard": "santulan",
+    "devanagari": "सन्तुलन",
+    "word_type": "noun",
+    "meaning_en": "balance (equilibrium)"
+  },
+  "लेखापरीक्षण": {
+    "id": "ortho-135",
+    "roman_standard": "lekhaparikshana",
+    "devanagari": "लेखापरीक्षण",
+    "word_type": "noun",
+    "meaning_en": "audit"
+  },
+  "lekhaparikshana": {
+    "id": "ortho-135",
+    "roman_standard": "lekhaparikshana",
+    "devanagari": "लेखापरीक्षण",
+    "word_type": "noun",
+    "meaning_en": "audit"
+  },
+  "lekhaparikshan": {
+    "id": "ortho-135",
+    "roman_standard": "lekhaparikshana",
+    "devanagari": "लेखापरीक्षण",
+    "word_type": "noun",
+    "meaning_en": "audit"
+  },
+  "lekhaparikshya": {
+    "id": "ortho-135",
+    "roman_standard": "lekhaparikshana",
+    "devanagari": "लेखापरीक्षण",
+    "word_type": "noun",
+    "meaning_en": "audit"
+  },
+  "वित्त": {
+    "id": "ortho-136",
+    "roman_standard": "vitta",
+    "devanagari": "वित्त",
+    "word_type": "noun",
+    "meaning_en": "finance"
+  },
+  "vitta": {
+    "id": "ortho-136",
+    "roman_standard": "vitta",
+    "devanagari": "वित्त",
+    "word_type": "noun",
+    "meaning_en": "finance"
+  },
+  "witta": {
+    "id": "ortho-136",
+    "roman_standard": "vitta",
+    "devanagari": "वित्त",
+    "word_type": "noun",
+    "meaning_en": "finance"
+  },
+  "वित्तीय": {
+    "id": "ortho-137",
+    "roman_standard": "vittiya",
+    "devanagari": "वित्तीय",
+    "word_type": "adjective",
+    "meaning_en": "financial"
+  },
+  "vittiya": {
+    "id": "ortho-137",
+    "roman_standard": "vittiya",
+    "devanagari": "वित्तीय",
+    "word_type": "adjective",
+    "meaning_en": "financial"
+  },
+  "vittiy": {
+    "id": "ortho-137",
+    "roman_standard": "vittiya",
+    "devanagari": "वित्तीय",
+    "word_type": "adjective",
+    "meaning_en": "financial"
+  },
+  "आर्थिक": {
+    "id": "ortho-138",
+    "roman_standard": "arthik",
+    "devanagari": "आर्थिक",
+    "word_type": "adjective",
+    "meaning_en": "economic/financial"
+  },
+  "arthik": {
+    "id": "ortho-138",
+    "roman_standard": "arthik",
+    "devanagari": "आर्थिक",
+    "word_type": "adjective",
+    "meaning_en": "economic/financial"
+  },
+  "aarthik": {
+    "id": "ortho-138",
+    "roman_standard": "arthik",
+    "devanagari": "आर्थिक",
+    "word_type": "adjective",
+    "meaning_en": "economic/financial"
+  },
+  "सावाँ": {
+    "id": "ortho-139",
+    "roman_standard": "savam",
+    "devanagari": "सावाँ",
+    "word_type": "noun",
+    "meaning_en": "principal (loan)"
+  },
+  "savam": {
+    "id": "ortho-139",
+    "roman_standard": "savam",
+    "devanagari": "सावाँ",
+    "word_type": "noun",
+    "meaning_en": "principal (loan)"
+  },
+  "sawan": {
+    "id": "ortho-139",
+    "roman_standard": "savam",
+    "devanagari": "सावाँ",
+    "word_type": "noun",
+    "meaning_en": "principal (loan)"
+  },
+  "saavan": {
+    "id": "ortho-139",
+    "roman_standard": "savam",
+    "devanagari": "सावाँ",
+    "word_type": "noun",
+    "meaning_en": "principal (loan)"
+  },
+  "म्याद": {
+    "id": "ortho-140",
+    "roman_standard": "myad",
+    "devanagari": "म्याद",
+    "word_type": "noun",
+    "meaning_en": "term/period"
+  },
+  "myad": {
+    "id": "ortho-140",
+    "roman_standard": "myad",
+    "devanagari": "म्याद",
+    "word_type": "noun",
+    "meaning_en": "term/period"
+  },
+  "myaad": {
+    "id": "ortho-140",
+    "roman_standard": "myad",
+    "devanagari": "म्याद",
+    "word_type": "noun",
+    "meaning_en": "term/period"
+  },
+  "किस्ता": {
+    "id": "ortho-141",
+    "roman_standard": "kista",
+    "devanagari": "किस्ता",
+    "word_type": "noun",
+    "meaning_en": "installment"
+  },
+  "kista": {
+    "id": "ortho-141",
+    "roman_standard": "kista",
+    "devanagari": "किस्ता",
+    "word_type": "noun",
+    "meaning_en": "installment"
+  },
+  "kistha": {
+    "id": "ortho-141",
+    "roman_standard": "kista",
+    "devanagari": "किस्ता",
+    "word_type": "noun",
+    "meaning_en": "installment"
+  },
+  "ब्याज दर": {
+    "id": "ortho-142",
+    "roman_standard": "byaj dara",
+    "devanagari": "ब्याज दर",
+    "word_type": "business_term",
+    "meaning_en": "interest rate"
+  },
+  "byaj dara": {
+    "id": "ortho-142",
+    "roman_standard": "byaj dara",
+    "devanagari": "ब्याज दर",
+    "word_type": "business_term",
+    "meaning_en": "interest rate"
+  },
+  "byaj dar": {
+    "id": "ortho-142",
+    "roman_standard": "byaj dara",
+    "devanagari": "ब्याज दर",
+    "word_type": "business_term",
+    "meaning_en": "interest rate"
+  },
+  "byaaj dara": {
+    "id": "ortho-142",
+    "roman_standard": "byaj dara",
+    "devanagari": "ब्याज दर",
+    "word_type": "business_term",
+    "meaning_en": "interest rate"
+  },
+  "धितो": {
+    "id": "ortho-143",
+    "roman_standard": "dhito",
+    "devanagari": "धितो",
+    "word_type": "noun",
+    "meaning_en": "collateral/security"
+  },
+  "dhito": {
+    "id": "ortho-143",
+    "roman_standard": "dhito",
+    "devanagari": "धितो",
+    "word_type": "noun",
+    "meaning_en": "collateral/security"
+  },
+  "ग्यारह": {
+    "id": "ortho-144",
+    "roman_standard": "gyarah",
+    "devanagari": "ग्यारह",
+    "word_type": "number",
+    "meaning_en": "eleven"
+  },
+  "gyarah": {
+    "id": "ortho-144",
+    "roman_standard": "gyarah",
+    "devanagari": "ग्यारह",
+    "word_type": "number",
+    "meaning_en": "eleven"
+  },
+  "gyara": {
+    "id": "ortho-144",
+    "roman_standard": "gyarah",
+    "devanagari": "ग्यारह",
+    "word_type": "number",
+    "meaning_en": "eleven"
+  },
+  "बाह्र": {
+    "id": "ortho-145",
+    "roman_standard": "bahra",
+    "devanagari": "बाह्र",
+    "word_type": "number",
+    "meaning_en": "twelve"
+  },
+  "bahra": {
+    "id": "ortho-145",
+    "roman_standard": "bahra",
+    "devanagari": "बाह्र",
+    "word_type": "number",
+    "meaning_en": "twelve"
+  },
+  "baahra": {
+    "id": "ortho-145",
+    "roman_standard": "bahra",
+    "devanagari": "बाह्र",
+    "word_type": "number",
+    "meaning_en": "twelve"
+  },
+  "तेह्र": {
+    "id": "ortho-146",
+    "roman_standard": "tehra",
+    "devanagari": "तेह्र",
+    "word_type": "number",
+    "meaning_en": "thirteen"
+  },
+  "tehra": {
+    "id": "ortho-146",
+    "roman_standard": "tehra",
+    "devanagari": "तेह्र",
+    "word_type": "number",
+    "meaning_en": "thirteen"
+  },
+  "चौध": {
+    "id": "ortho-147",
+    "roman_standard": "caudha",
+    "devanagari": "चौध",
+    "word_type": "number",
+    "meaning_en": "fourteen"
+  },
+  "caudha": {
+    "id": "ortho-147",
+    "roman_standard": "caudha",
+    "devanagari": "चौध",
+    "word_type": "number",
+    "meaning_en": "fourteen"
+  },
+  "chaudha": {
+    "id": "ortho-147",
+    "roman_standard": "caudha",
+    "devanagari": "चौध",
+    "word_type": "number",
+    "meaning_en": "fourteen"
+  },
+  "chaudh": {
+    "id": "ortho-147",
+    "roman_standard": "caudha",
+    "devanagari": "चौध",
+    "word_type": "number",
+    "meaning_en": "fourteen"
+  },
+  "पन्ध्र": {
+    "id": "ortho-148",
+    "roman_standard": "pandhra",
+    "devanagari": "पन्ध्र",
+    "word_type": "number",
+    "meaning_en": "fifteen"
+  },
+  "pandhra": {
+    "id": "ortho-148",
+    "roman_standard": "pandhra",
+    "devanagari": "पन्ध्र",
+    "word_type": "number",
+    "meaning_en": "fifteen"
+  },
+  "pandra": {
+    "id": "ortho-148",
+    "roman_standard": "pandhra",
+    "devanagari": "पन्ध्र",
+    "word_type": "number",
+    "meaning_en": "fifteen"
+  },
+  "सोह्र": {
+    "id": "ortho-149",
+    "roman_standard": "sohra",
+    "devanagari": "सोह्र",
+    "word_type": "number",
+    "meaning_en": "sixteen"
+  },
+  "sohra": {
+    "id": "ortho-149",
+    "roman_standard": "sohra",
+    "devanagari": "सोह्र",
+    "word_type": "number",
+    "meaning_en": "sixteen"
+  },
+  "सत्र": {
+    "id": "ortho-150",
+    "roman_standard": "satra",
+    "devanagari": "सत्र",
+    "word_type": "number",
+    "meaning_en": "seventeen"
+  },
+  "satra": {
+    "id": "ortho-150",
+    "roman_standard": "satra",
+    "devanagari": "सत्र",
+    "word_type": "number",
+    "meaning_en": "seventeen"
+  },
+  "अठार": {
+    "id": "ortho-151",
+    "roman_standard": "athara",
+    "devanagari": "अठार",
+    "word_type": "number",
+    "meaning_en": "eighteen"
+  },
+  "athara": {
+    "id": "ortho-151",
+    "roman_standard": "athara",
+    "devanagari": "अठार",
+    "word_type": "number",
+    "meaning_en": "eighteen"
+  },
+  "उन्नाइस": {
+    "id": "ortho-152",
+    "roman_standard": "unnāis",
+    "devanagari": "उन्नाइस",
+    "word_type": "number",
+    "meaning_en": "nineteen"
+  },
+  "unnāis": {
+    "id": "ortho-152",
+    "roman_standard": "unnāis",
+    "devanagari": "उन्नाइस",
+    "word_type": "number",
+    "meaning_en": "nineteen"
+  },
+  "unnais": {
+    "id": "ortho-152",
+    "roman_standard": "unnāis",
+    "devanagari": "उन्नाइस",
+    "word_type": "number",
+    "meaning_en": "nineteen"
+  },
+  "बीस": {
+    "id": "ortho-153",
+    "roman_standard": "bīs",
+    "devanagari": "बीस",
+    "word_type": "number",
+    "meaning_en": "twenty"
+  },
+  "bīs": {
+    "id": "ortho-153",
+    "roman_standard": "bīs",
+    "devanagari": "बीस",
+    "word_type": "number",
+    "meaning_en": "twenty"
+  },
+  "bis": {
+    "id": "ortho-153",
+    "roman_standard": "bīs",
+    "devanagari": "बीस",
+    "word_type": "number",
+    "meaning_en": "twenty"
+  },
+  "bees": {
+    "id": "ortho-153",
+    "roman_standard": "bīs",
+    "devanagari": "बीस",
+    "word_type": "number",
+    "meaning_en": "twenty"
+  }
+}

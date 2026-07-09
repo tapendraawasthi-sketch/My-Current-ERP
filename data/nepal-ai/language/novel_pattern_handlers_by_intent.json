@@ -1,0 +1,148 @@
+{
+  "khata_income": [
+    "novel_001",
+    "novel_011"
+  ],
+  "installment_payment": [
+    "novel_002"
+  ],
+  "loan_record": [
+    "novel_003"
+  ],
+  "tip_received": [
+    "novel_004",
+    "novel_048"
+  ],
+  "asset_sale_with_royalty": [
+    "novel_005"
+  ],
+  "barter_record": [
+    "novel_006"
+  ],
+  "incoming_transfer": [
+    "novel_007"
+  ],
+  "donation_out": [
+    "novel_008"
+  ],
+  "deposit_received": [
+    "novel_009"
+  ],
+  "commission_expense": [
+    "novel_010"
+  ],
+  "recurring_expense": [
+    "novel_012"
+  ],
+  "allowance_expense": [
+    "novel_013"
+  ],
+  "service_expense": [
+    "novel_014"
+  ],
+  "shared_cost_allocation": [
+    "novel_015"
+  ],
+  "refund_received": [
+    "novel_016"
+  ],
+  "salary_advance": [
+    "novel_017"
+  ],
+  "reward_accrual": [
+    "novel_018"
+  ],
+  "service_income": [
+    "novel_019"
+  ],
+  "tax_expense": [
+    "novel_020"
+  ],
+  "bad_debt_writeoff": [
+    "novel_021"
+  ],
+  "fundraising_income": [
+    "novel_022"
+  ],
+  "trade_in_transaction": [
+    "novel_023"
+  ],
+  "revenue_share_agreement": [
+    "novel_024"
+  ],
+  "fractional_ownership_record": [
+    "novel_025"
+  ],
+  "penalty_charge": [
+    "novel_026"
+  ],
+  "voucher_redemption": [
+    "novel_027"
+  ],
+  "purchase_expense": [
+    "novel_028"
+  ],
+  "insurance_premium": [
+    "novel_029"
+  ],
+  "consignment_inventory": [
+    "novel_030"
+  ],
+  "recognition_award": [
+    "novel_031"
+  ],
+  "product_sale": [
+    "novel_032"
+  ],
+  "volunteer_time_entry": [
+    "novel_033"
+  ],
+  "prorated_charge": [
+    "novel_034"
+  ],
+  "supplier_credit": [
+    "novel_035"
+  ],
+  "timebank_transaction": [
+    "novel_036"
+  ],
+  "shared_expense_split": [
+    "novel_037"
+  ],
+  "advance_payment_liability": [
+    "novel_038"
+  ],
+  "savings_contribution": [
+    "novel_039"
+  ],
+  "platform_fee": [
+    "novel_040"
+  ],
+  "in_kind_donation": [
+    "novel_041"
+  ],
+  "conditional_release": [
+    "novel_042"
+  ],
+  "micro_donation_aggregate": [
+    "novel_043"
+  ],
+  "lease_agreement": [
+    "novel_044"
+  ],
+  "non_cash_payment": [
+    "novel_045"
+  ],
+  "return_initiated": [
+    "novel_046"
+  ],
+  "community_loan_received": [
+    "novel_047"
+  ],
+  "pooled_contribution": [
+    "novel_049"
+  ],
+  "subscription_pause": [
+    "novel_050"
+  ]
+}

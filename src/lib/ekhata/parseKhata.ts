@@ -1,10 +1,64 @@
 import { detectNegation } from "./negationDetector";
 import { CLARIFY_TEMPLATES } from "../nepal-ai/generated/runtimeMaps";
+import { matchClarifyErrorPattern } from "../nepal-ai/clarifyErrorPatterns";
+import {
+  ambiguityAsClarifyErrorType,
+  matchAmbiguityResolutionPattern,
+} from "../nepal-ai/ambiguityResolution";
+import {
+  accountingMistakeClarifyQuestion,
+  matchEarlyAccountingMistake,
+} from "../nepal-ai/accountingMistakes";
+import {
+  complexTransactionClarifyQuestion,
+  matchComplexTransactionNarrative,
+} from "../nepal-ai/complexTransactionNarratives";
+import {
+  matchEarlyReasoningChainClarify,
+  reasoningChainClarifyQuestion,
+} from "../nepal-ai/reasoningChains";
+import { matchCodeMixedUtterance } from "../nepal-ai/codeMixedUtterances";
+import {
+  formatWordSenseClarify,
+  wordSenseNeedsClarification,
+} from "../nepal-ai/wordSenseContexts";
+import {
+  formatEdgeCaseReply,
+  isAdversarialEdgeCase,
+  matchEdgeCaseHandler,
+} from "../nepal-ai/edgeCaseHandlers";
+import {
+  formatComplexReasoningClarify,
+  matchComplexReasoningScenario,
+} from "../nepal-ai/complexReasoningScenarios";
+import {
+  formatCrossDomainAnswer,
+  matchCrossDomainScenario,
+} from "../nepal-ai/crossDomainScenarios";
+import {
+  formatClassificationExplanation,
+  matchClassificationExplanation,
+} from "../nepal-ai/classificationExplanations";
+import {
+  formatNovelPatternClarify,
+  matchNovelPatternHandler,
+} from "../nepal-ai/novelPatternHandlers";
+import {
+  formatDocumentComprehensionAnswer,
+  matchDocumentComprehensionScenario,
+} from "../nepal-ai/documentComprehensionScenarios";
+import { matchJournalEntryRule } from "../nepal-ai/journalEntryRules";
 import { inferTransactionDirection } from "../nepal-ai/particleDirection";
 import { parseCommaAmount } from "./calculationEngine";
 import { generateCAEntry } from "./caEntryEngine";
 import { findTemplateByKeywords } from "./caEntryTemplates";
 import { WORD_TO_NUMBER } from "./nepaliLanguage";
+import { parseNepaliAmount } from "../nepal-ai/numberWords";
+import { extractNepaliAmountValue } from "../nepal-ai/amountExtraction";
+import { renderResponseTemplate } from "../nepal-ai/responseTemplates";
+import { resolveJournalDate } from "../nepal-ai/bikramCalendar";
+import { extractRetailItemName } from "../nepal-ai/retailItems";
+import { extractPartyName } from "../nepal-ai/partyNames";
 import { normalizeNepaliText } from "./normalizeNepali";
 import {
   classifyWorkIntent,
@@ -311,6 +365,12 @@ function normalize(text: string): string {
 }
 
 function parseAmountWords(text: string): number | null {
+  const fromRules = extractNepaliAmountValue(text);
+  if (fromRules != null) return fromRules;
+
+  const fromLexicon = parseNepaliAmount(text);
+  if (fromLexicon != null) return fromLexicon;
+
   const normalized = normalize(text);
   if (!normalized) return null;
 
@@ -320,8 +380,14 @@ function parseAmountWords(text: string): number | null {
   const kMatch = normalized.match(/(\d+(?:\.\d+)?)\s*k\b/i);
   if (kMatch) return Math.round(parseFloat(kMatch[1]) * 1000);
 
+  const lMatch = normalized.match(/(\d+(?:\.\d+)?)\s*l\b/i);
+  if (lMatch) return Math.round(parseFloat(lMatch[1]) * 100000);
+
+  const crMatch = normalized.match(/(\d+(?:\.\d+)?)\s*(?:cr|crore)\b/i);
+  if (crMatch) return Math.round(parseFloat(crMatch[1]) * 10000000);
+
   const digitMatch = normalized.match(/\b(\d+(?:\.\d+)?)\b/);
-  if (digitMatch && !/\b(hajar|saya|lakh)\b/.test(normalized)) {
+  if (digitMatch && !/\b(hajar|saya|lakh|crore|arab)\b/.test(normalized)) {
     return Math.round(parseFloat(digitMatch[1]));
   }
 
@@ -355,6 +421,9 @@ function parseAmountWords(text: string): number | null {
 
 function extractParty(displayText: string, normalizedText?: string): string | null {
   for (const source of [displayText, normalizedText].filter(Boolean) as string[]) {
+    const fromLexicon = extractPartyName(source);
+    if (fromLexicon) return fromLexicon;
+
     const soft = normalizeUnicodeDigits(source)
       .toLowerCase()
       .trim()
@@ -402,6 +471,9 @@ function extractParty(displayText: string, normalizedText?: string): string | nu
 }
 
 function extractItem(text: string, intent: KhataIntent | null): string | null {
+  const fromLexicon = extractRetailItemName(text);
+  if (fromLexicon) return fromLexicon;
+
   const soft = normalize(text);
   if (!soft) return null;
 
@@ -440,11 +512,7 @@ function extractItem(text: string, intent: KhataIntent | null): string | null {
 }
 
 function extractDate(text: string): string {
-  const raw = normalizeUnicodeDigits(text).toLowerCase();
-  const today = new Date();
-  if (/\b(hijo|yesterday)\b/.test(raw)) today.setDate(today.getDate() - 1);
-  else if (/\b(parsi|tomorrow|day\s+after)\b/.test(raw)) today.setDate(today.getDate() + 1);
-  return today.toISOString().slice(0, 10);
+  return resolveJournalDate(normalizeUnicodeDigits(text));
 }
 
 function hasCashSaleCue(text: string): boolean {
@@ -555,6 +623,14 @@ function partyClarifyingQuestion(intent: KhataIntent): string {
 function classifyIntent(rawText: string, normalizedText: string): KhataIntent | null {
   const sources = [rawText.trim(), normalizedText.trim()].filter(Boolean);
 
+  // 0. Journal-entry condition rules (JE_001–JE_100) — feature match / example map
+  for (const q of sources) {
+    const je = matchJournalEntryRule(q);
+    if (je && je.rule.confidence >= 0.84) {
+      return je.rule.baseIntent as KhataIntent;
+    }
+  }
+
   // 1. Specialized CA regex patterns (VAT, SSF, TDS, etc.) — highest priority
   for (const q of sources) {
     if (!q) continue;
@@ -627,9 +703,159 @@ export function parseKhataMessage(rawText: string, preNormalized?: string): Khat
     return { clarifying_question: CLARIFYING_QUESTION };
   }
 
+  // Code-mixed NLU goldens — block mis-parse as journal entry
+  const codeMixed =
+    matchCodeMixedUtterance(displayText) ?? matchCodeMixedUtterance(text);
+  if (codeMixed) {
+    return {
+      clarifying_question: `(${codeMixed.intent}) Yo journal entry hoina — clarify garnuhos.`,
+    };
+  }
+
+  const ambiguousWord =
+    wordSenseNeedsClarification(displayText) ??
+    wordSenseNeedsClarification(text);
+  if (ambiguousWord) {
+    return {
+      clarifying_question: formatWordSenseClarify(ambiguousWord, "mixed"),
+    };
+  }
+
+  const novelPattern =
+    matchNovelPatternHandler(displayText) ?? matchNovelPatternHandler(text);
+  if (novelPattern) {
+    return {
+      clarifying_question: formatNovelPatternClarify(novelPattern, "mixed"),
+    };
+  }
+
+  const docComprehension =
+    matchDocumentComprehensionScenario(displayText) ??
+    matchDocumentComprehensionScenario(text);
+  if (docComprehension?.entry.notTransaction) {
+    return {
+      clarifying_question: formatDocumentComprehensionAnswer(docComprehension, "mixed"),
+    };
+  }
+
+  const edgeCase =
+    matchEdgeCaseHandler(displayText) ?? matchEdgeCaseHandler(text);
+  if (edgeCase) {
+    if (isAdversarialEdgeCase(edgeCase)) {
+      return {
+        clarifying_question: formatEdgeCaseReply(edgeCase, false, "mixed"),
+      };
+    }
+    if (
+      edgeCase.category === "minimal_input" ||
+      edgeCase.category === "maximum_ambiguity" ||
+      edgeCase.category === "boundary_values"
+    ) {
+      return {
+        clarifying_question: formatEdgeCaseReply(edgeCase, false, "mixed"),
+      };
+    }
+  }
+
+  const complexScenario =
+    matchComplexReasoningScenario(displayText) ??
+    matchComplexReasoningScenario(text);
+  if (complexScenario?.clarificationNeeded) {
+    return {
+      clarifying_question: formatComplexReasoningClarify(complexScenario, "mixed"),
+    };
+  }
+
+  const crossDomain =
+    matchCrossDomainScenario(displayText) ?? matchCrossDomainScenario(text);
+  if (crossDomain?.notTransaction) {
+    return {
+      clarifying_question: formatCrossDomainAnswer(crossDomain, "mixed"),
+    };
+  }
+
+  const classExplain =
+    matchClassificationExplanation(displayText) ??
+    matchClassificationExplanation(text);
+  if (classExplain?.notTransaction) {
+    return {
+      clarifying_question: formatClassificationExplanation(classExplain, "mixed"),
+    };
+  }
+
+  // Accounting mistake lexicon: terminology + reversed particle/direction (exact goldens)
+  const earlyMistake =
+    matchEarlyAccountingMistake(displayText) ?? matchEarlyAccountingMistake(text);
+  if (earlyMistake) {
+    return { clarifying_question: accountingMistakeClarifyQuestion(earlyMistake) };
+  }
+
+  // Complex multi-clause transaction narratives (partial pay, split, netting, etc.)
+  const complexNarr =
+    matchComplexTransactionNarrative(displayText) ??
+    matchComplexTransactionNarrative(text);
+  if (complexNarr) {
+    const clarifyQ = complexTransactionClarifyQuestion(complexNarr);
+    if (clarifyQ) {
+      return { clarifying_question: clarifyQ };
+    }
+  }
+
+  // Reasoning-chain goldens: ambiguous / error_detection / needs_clarification
+  const earlyReasoning =
+    matchEarlyReasoningChainClarify(displayText) ??
+    matchEarlyReasoningChainClarify(text);
+  if (earlyReasoning) {
+    const rq = reasoningChainClarifyQuestion(earlyReasoning);
+    if (rq) {
+      return { clarifying_question: rq };
+    }
+  }
+
+  // Exact clarify-error lexicon: ambiguous / multi-interpret / bare product before forcing a card
+  const earlyAmbiguity =
+    matchAmbiguityResolutionPattern(displayText) ?? matchAmbiguityResolutionPattern(text);
+  if (earlyAmbiguity) {
+    const errType = ambiguityAsClarifyErrorType(earlyAmbiguity);
+    if (
+      errType === "ambiguous_direction" ||
+      errType === "multiple_interpretations" ||
+      errType === "unclear_intent" ||
+      errType === "missing_party"
+    ) {
+      return { clarifying_question: earlyAmbiguity.clarifyQuestion };
+    }
+  }
+
+  const earlyClarify =
+    matchClarifyErrorPattern(displayText) ?? matchClarifyErrorPattern(text);
+  if (
+    earlyClarify &&
+    (earlyClarify.errorType === "ambiguous_direction" ||
+      earlyClarify.errorType === "multiple_interpretations" ||
+      earlyClarify.errorType === "unclear_intent")
+  ) {
+    return { clarifying_question: earlyClarify.clarifyQuestionNe };
+  }
+
   const intent = classifyIntent(displayText, text);
 
   if (!intent) {
+    const mistClarify =
+      matchEarlyAccountingMistake(displayText) ?? matchEarlyAccountingMistake(text);
+    if (mistClarify) {
+      return { clarifying_question: accountingMistakeClarifyQuestion(mistClarify) };
+    }
+    const ambClarify =
+      matchAmbiguityResolutionPattern(displayText) ?? matchAmbiguityResolutionPattern(text);
+    if (ambClarify) {
+      return { clarifying_question: ambClarify.clarifyQuestion };
+    }
+    const lexiconClarify =
+      matchClarifyErrorPattern(displayText) ?? matchClarifyErrorPattern(text);
+    if (lexiconClarify) {
+      return { clarifying_question: lexiconClarify.clarifyQuestionNe };
+    }
     if (shouldTryWorkParse(displayText)) {
       return {
         clarifying_question:
@@ -645,6 +871,14 @@ export function parseKhataMessage(rawText: string, preNormalized?: string): Khat
   const semantic = parseSemanticTransaction(displayText);
   const amount = resolveAmount(displayText, text);
   if (!amount || amount <= 0) {
+    const lexiconMissingAmt =
+      matchClarifyErrorPattern(displayText, "missing_amount") ??
+      matchClarifyErrorPattern(displayText) ??
+      matchClarifyErrorPattern(text, "missing_amount") ??
+      matchClarifyErrorPattern(text);
+    if (lexiconMissingAmt && lexiconMissingAmt.missingEntity === "amount") {
+      return { clarifying_question: lexiconMissingAmt.clarifyQuestionNe };
+    }
     const tpl =
       intent === "khata_purchase"
         ? CLARIFY_TEMPLATES.missing_amount_purchase?.template_ne
@@ -653,17 +887,35 @@ export function parseKhataMessage(rawText: string, preNormalized?: string): Khat
           : intent === "khata_cash_sale"
             ? CLARIFY_TEMPLATES.missing_amount_sale?.template_ne
             : null;
-    return { clarifying_question: tpl ?? "Rakam kati ho? Number lekhnus." };
+    const responseTpl = renderResponseTemplate("clarify_amount", "nepali", {
+      detected_amount: "…",
+    });
+    return { clarifying_question: responseTpl ?? tpl ?? "Rakam kati ho? Number lekhnus." };
   }
 
   const party = cleanPartyName(semantic.party ?? extractParty(displayText, text));
   if (needsPartyName(intent, party)) {
-    return { clarifying_question: partyClarifyingQuestion(intent) };
+    const lexiconMissingParty =
+      matchClarifyErrorPattern(displayText, "missing_party") ??
+      matchClarifyErrorPattern(displayText) ??
+      matchClarifyErrorPattern(text, "missing_party") ??
+      matchClarifyErrorPattern(text);
+    if (lexiconMissingParty && lexiconMissingParty.missingEntity === "party") {
+      return { clarifying_question: lexiconMissingParty.clarifyQuestionNe };
+    }
+    const responseTpl = renderResponseTemplate("clarify_party", "nepali", {
+      detected_party: party || "…",
+    });
+    return {
+      clarifying_question: responseTpl ?? partyClarifyingQuestion(intent),
+    };
   }
 
   const item =
     semantic.item ?? extractItem(text, intent) ?? extractWorkItem(displayText, intent);
   const date = extractDate(text);
+  const jeMatch =
+    matchJournalEntryRule(displayText) ?? matchJournalEntryRule(text);
 
   const { card } = generateCAEntry(intent, {
     amount,
@@ -671,6 +923,7 @@ export function parseKhataMessage(rawText: string, preNormalized?: string): Khat
     item,
     date,
     rawText: displayText,
+    jeMatch: jeMatch && jeMatch.rule.baseIntent === intent ? jeMatch : null,
   });
 
   return { card };

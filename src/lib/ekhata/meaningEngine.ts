@@ -15,6 +15,7 @@ import {
   type SemanticFrame,
 } from "./semanticNepaliBrain";
 import { parseSmartAmount } from "./smartWorkBrain";
+import { extractNepaliAmount } from "@/lib/nepal-ai/amountExtraction";
 import { detectUserLanguage, type UserLanguage } from "./accountingLanguageBrain";
 import type { KhataIntent } from "./types";
 
@@ -62,12 +63,23 @@ const CURRENCY_PARTY = new Set([
   "an",
 ]);
 
-/** Resolve best transaction amount — prefers qty × rate over bare number. */
+/** Resolve best transaction amount — prefers trained Nepali rules, then qty × rate. */
 export function resolveBestAmount(
   displayText: string,
   normalizedText?: string,
 ): { amount: number | null; quantity: number | null; unitPrice: number | null } {
   const sources = [displayText, normalizedText].filter(Boolean) as string[];
+
+  for (const src of sources) {
+    const extracted = extractNepaliAmount(src);
+    if (extracted.amount != null && extracted.amount > 0) {
+      return {
+        amount: extracted.amount,
+        quantity: extracted.quantity,
+        unitPrice: extracted.unitPrice,
+      };
+    }
+  }
 
   for (const src of sources) {
     const smart = parseSmartAmount(src);

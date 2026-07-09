@@ -1,0 +1,84 @@
+{
+  "asset_vs_liability": [
+    "acmp-001",
+    "acmp-002",
+    "acmp-003",
+    "acmp-004",
+    "acmp-005",
+    "acmp-006"
+  ],
+  "debit_vs_credit": [
+    "acmp-007",
+    "acmp-008",
+    "acmp-009",
+    "acmp-010",
+    "acmp-011",
+    "acmp-012"
+  ],
+  "cash_accounting_vs_accrual_accounting": [
+    "acmp-013",
+    "acmp-014",
+    "acmp-015",
+    "acmp-016",
+    "acmp-017",
+    "acmp-018"
+  ],
+  "vat_vs_income_tax": [
+    "acmp-019",
+    "acmp-020",
+    "acmp-021",
+    "acmp-022",
+    "acmp-023",
+    "acmp-024"
+  ],
+  "private_vs_public_company": [
+    "acmp-025",
+    "acmp-026",
+    "acmp-027",
+    "acmp-028",
+    "acmp-029",
+    "acmp-030"
+  ],
+  "sole_proprietorship_vs_partnership": [
+    "acmp-031",
+    "acmp-032",
+    "acmp-033",
+    "acmp-034"
+  ],
+  "partnership_vs_company": [
+    "acmp-035",
+    "acmp-036",
+    "acmp-037",
+    "acmp-038"
+  ],
+  "sole_proprietorship_vs_company": [
+    "acmp-039",
+    "acmp-040",
+    "acmp-041",
+    "acmp-042"
+  ],
+  "tds_vs_advance_tax": [
+    "acmp-043",
+    "acmp-044",
+    "acmp-045",
+    "acmp-046",
+    "acmp-047",
+    "acmp-048"
+  ],
+  "pan_vs_vat_number": [
+    "acmp-049",
+    "acmp-050",
+    "acmp-051",
+    "acmp-052",
+    "acmp-053",
+    "acmp-054"
+  ],
+  "fixed_assets_vs_current_assets": [
+    "acmp-055",
+    "acmp-056",
+    "acmp-057",
+    "acmp-058",
+    "acmp-059",
+    "acmp-060"
+  ]
+}

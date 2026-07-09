@@ -1,0 +1,3793 @@
+[
+  {
+    "id": "rchain-001",
+    "source": "user_exact",
+    "input": "maile 2079/80 ma 1000 ko kitaab becheko thiye ram lai, paisa aayena",
+    "input_normalized": "maile 2079/80 ma 1000 ko kitaab becheko thiye ram lai, paisa aayena",
+    "intent": "credit_sale",
+    "secondary_intent": "bad_debt_possible",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "words: maile, 2079/80, ma, 1000, ko, kitaab, becheko, thiye, ram, lai, paisa, aayena",
+        "result": "tokens identified"
+      },
+      {
+        "step": 2,
+        "action": "identify_fiscal_year",
+        "observation": "2079/80 matches FY pattern",
+        "result": "fiscal_year=2079/80"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "1000 followed by ko",
+        "result": "amount=1000"
+      },
+      {
+        "step": 4,
+        "action": "identify_item",
+        "observation": "kitaab = book",
+        "result": "item=kitaab"
+      },
+      {
+        "step": 5,
+        "action": "identify_party",
+        "observation": "ram lai recipient marker",
+        "result": "party=Ram"
+      },
+      {
+        "step": 6,
+        "action": "identify_verb",
+        "observation": "becheko = sold",
+        "result": "verb=sell"
+      },
+      {
+        "step": 7,
+        "action": "identify_payment_status",
+        "observation": "paisa aayena = money did not come",
+        "result": "payment_status=unpaid"
+      },
+      {
+        "step": 8,
+        "action": "classify_intent",
+        "observation": "sale + unpaid = credit sale",
+        "result": "intent=credit_sale"
+      },
+      {
+        "step": 9,
+        "action": "check_bad_debt",
+        "observation": "no mention abroad, but unpaid",
+        "result": "secondary=bad_debt_possible"
+      }
+    ],
+    "final_output": {
+      "intent": "credit_sale",
+      "secondary_intent": "bad_debt_possible",
+      "entities": {
+        "fiscal_year": "2079/80",
+        "amount": 1000,
+        "item": "kitaab",
+        "party": "Ram",
+        "payment_status": "unpaid"
+      }
+    }
+  },
+  {
+    "id": "rchain-002",
+    "source": "user_exact",
+    "input": "aaja 5000 nakit ma saman bechyo, paisa haat ma aayo",
+    "input_normalized": "aaja 5000 nakit ma saman bechyo, paisa haat ma aayo",
+    "intent": "cash_sale",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "words: aaja, 5000, nakit, ma, saman, bechyo, paisa, haat, ma, aayo",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "5000 numeric",
+        "result": "amount=5000"
+      },
+      {
+        "step": 3,
+        "action": "identify_item",
+        "observation": "saman = goods",
+        "result": "item=saman"
+      },
+      {
+        "step": 4,
+        "action": "identify_verb",
+        "observation": "bechyo = sold",
+        "result": "verb=sell"
+      },
+      {
+        "step": 5,
+        "action": "identify_payment_status",
+        "observation": "nakit = cash; paisa haat ma aayo = received",
+        "result": "payment_status=cash"
+      },
+      {
+        "step": 6,
+        "action": "classify_intent",
+        "observation": "sale + cash = cash sale",
+        "result": "intent=cash_sale"
+      }
+    ],
+    "final_output": {
+      "intent": "cash_sale",
+      "entities": {
+        "amount": 5000,
+        "item": "saman",
+        "payment_status": "cash"
+      }
+    }
+  },
+  {
+    "id": "rchain-003",
+    "source": "user_exact",
+    "input": "ram sanga 3000 ko saman kinyo, cash diyo",
+    "input_normalized": "ram sanga 3000 ko saman kinyo, cash diyo",
+    "intent": "cash_purchase",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "words: ram, sanga, 3000, ko, saman, kinyo, cash, diyo",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_party",
+        "observation": "ram sanga = from Ram",
+        "result": "party=Ram"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "3000 numeric",
+        "result": "amount=3000"
+      },
+      {
+        "step": 4,
+        "action": "identify_item",
+        "observation": "saman = goods",
+        "result": "item=saman"
+      },
+      {
+        "step": 5,
+        "action": "identify_verb",
+        "observation": "kinyo = bought",
+        "result": "verb=purchase"
+      },
+      {
+        "step": 6,
+        "action": "identify_payment_status",
+        "observation": "cash diyo = paid cash",
+        "result": "payment_status=cash"
+      },
+      {
+        "step": 7,
+        "action": "classify_intent",
+        "observation": "purchase + cash = cash purchase",
+        "result": "intent=cash_purchase"
+      }
+    ],
+    "final_output": {
+      "intent": "cash_purchase",
+      "entities": {
+        "party": "Ram",
+        "amount": 3000,
+        "item": "saman",
+        "payment_status": "cash"
+      }
+    }
+  },
+  {
+    "id": "rchain-004",
+    "source": "user_exact",
+    "input": "office ko rent 10000 tirnu baki chha",
+    "input_normalized": "office ko rent 10000 tirnu baki chha",
+    "intent": "expense_accrual",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "office, ko, rent, 10000, tirnu, baki, chha",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_expense_type",
+        "observation": "rent = office rent",
+        "result": "expense=rent"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "10000 numeric",
+        "result": "amount=10000"
+      },
+      {
+        "step": 4,
+        "action": "identify_payment_status",
+        "observation": "tirnu baki chha = payment due",
+        "result": "payment_status=unpaid"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "expense unpaid = accrual",
+        "result": "intent=expense_accrual"
+      }
+    ],
+    "final_output": {
+      "intent": "expense_accrual",
+      "entities": {
+        "expense": "rent",
+        "amount": 10000,
+        "payment_status": "unpaid"
+      }
+    }
+  },
+  {
+    "id": "rchain-005",
+    "source": "user_exact",
+    "input": "bank ma 25000 jamma gare",
+    "input_normalized": "bank ma 25000 jamma gare",
+    "intent": "bank_deposit",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "bank, ma, 25000, jamma, gare",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "25000",
+        "result": "amount=25000"
+      },
+      {
+        "step": 3,
+        "action": "identify_location",
+        "observation": "bank ma = to bank",
+        "result": "account=bank"
+      },
+      {
+        "step": 4,
+        "action": "identify_verb",
+        "observation": "jamma gare = deposited",
+        "result": "verb=deposit"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "deposit to bank",
+        "result": "intent=bank_deposit"
+      }
+    ],
+    "final_output": {
+      "intent": "bank_deposit",
+      "entities": {
+        "amount": 25000,
+        "account": "bank"
+      }
+    }
+  },
+  {
+    "id": "rchain-006",
+    "source": "user_exact",
+    "input": "ram lai 2000 udhar diye",
+    "input_normalized": "ram lai 2000 udhar diye",
+    "intent": "loan_given",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "ram, lai, 2000, udhar, diye",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_party",
+        "observation": "ram lai = to Ram",
+        "result": "party=Ram"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "2000",
+        "result": "amount=2000"
+      },
+      {
+        "step": 4,
+        "action": "identify_verb",
+        "observation": "udhar diye = lent",
+        "result": "verb=loan_given"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "lent to party = loan receivable",
+        "result": "intent=loan_given"
+      }
+    ],
+    "final_output": {
+      "intent": "loan_given",
+      "entities": {
+        "party": "Ram",
+        "amount": 2000,
+        "loan_type": "receivable"
+      }
+    }
+  },
+  {
+    "id": "rchain-007",
+    "source": "user_exact",
+    "input": "haru bata 1500 udhar liye",
+    "input_normalized": "haru bata 1500 udhar liye",
+    "intent": "loan_received",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "haru, bata, 1500, udhar, liye",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_party",
+        "observation": "haru bata = from Haru",
+        "result": "party=Haru"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "1500",
+        "result": "amount=1500"
+      },
+      {
+        "step": 4,
+        "action": "identify_verb",
+        "observation": "udhar liye = borrowed",
+        "result": "verb=loan_received"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "borrowed from party = loan payable",
+        "result": "intent=loan_received"
+      }
+    ],
+    "final_output": {
+      "intent": "loan_received",
+      "entities": {
+        "party": "Haru",
+        "amount": 1500,
+        "loan_type": "payable"
+      }
+    }
+  },
+  {
+    "id": "rchain-008",
+    "source": "user_exact",
+    "input": "machine 500000 ma kinyo, 100000 nakit, 400000 bank",
+    "input_normalized": "machine 500000 ma kinyo, 100000 nakit, 400000 bank",
+    "intent": "asset_purchase",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "machine, 500000, ma, kinyo, 100000, nakit, 400000, bank",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_asset",
+        "observation": "machine",
+        "result": "asset=machine"
+      },
+      {
+        "step": 3,
+        "action": "identify_amounts",
+        "observation": "total 500000, cash 100000, bank 400000",
+        "result": "total=500000; cash=100000; bank=400000"
+      },
+      {
+        "step": 4,
+        "action": "identify_verb",
+        "observation": "kinyo = purchased",
+        "result": "verb=purchase"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "asset purchase with mixed payment",
+        "result": "intent=asset_purchase"
+      }
+    ],
+    "final_output": {
+      "intent": "asset_purchase",
+      "entities": {
+        "asset": "machine",
+        "total": 500000,
+        "cash": 100000,
+        "bank": 400000
+      }
+    }
+  },
+  {
+    "id": "rchain-009",
+    "source": "user_exact",
+    "input": "gadi 600000 ma bechyo, nakit 200000, baki 400000",
+    "input_normalized": "gadi 600000 ma bechyo, nakit 200000, baki 400000",
+    "intent": "asset_sale",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "gadi, 600000, ma, bechyo, nakit, 200000, baki, 400000",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_asset",
+        "observation": "gadi = vehicle",
+        "result": "asset=gadi"
+      },
+      {
+        "step": 3,
+        "action": "identify_amounts",
+        "observation": "total 600000, cash 200000, receivable 400000",
+        "result": "total=600000; cash=200000; receivable=400000"
+      },
+      {
+        "step": 4,
+        "action": "identify_verb",
+        "observation": "bechyo = sold",
+        "result": "verb=sell"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "asset sale with receivable",
+        "result": "intent=asset_sale"
+      }
+    ],
+    "final_output": {
+      "intent": "asset_sale",
+      "entities": {
+        "asset": "gadi",
+        "total": 600000,
+        "cash": 200000,
+        "receivable": 400000
+      }
+    }
+  },
+  {
+    "id": "rchain-010",
+    "source": "user_exact",
+    "input": "salary 30000 tirnu chha",
+    "input_normalized": "salary 30000 tirnu chha",
+    "intent": "expense_accrual",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "salary, 30000, tirnu, chha",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_expense",
+        "observation": "salary",
+        "result": "expense=salary"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "30000",
+        "result": "amount=30000"
+      },
+      {
+        "step": 4,
+        "action": "identify_payment_status",
+        "observation": "tirnu chha = to pay, due",
+        "result": "payment_status=unpaid"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "salary expense unpaid",
+        "result": "intent=expense_accrual"
+      }
+    ],
+    "final_output": {
+      "intent": "expense_accrual",
+      "entities": {
+        "expense": "salary",
+        "amount": 30000,
+        "payment_status": "unpaid"
+      }
+    }
+  },
+  {
+    "id": "rchain-011",
+    "source": "user_exact",
+    "input": "auda 5000 kharcha, nakit tiryo",
+    "input_normalized": "auda 5000 kharcha, nakit tiryo",
+    "intent": "expense_payment",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "auda, 5000, kharcha, nakit, tiryo",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_expense",
+        "observation": "auda = expense category",
+        "result": "expense=auda"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "5000",
+        "result": "amount=5000"
+      },
+      {
+        "step": 4,
+        "action": "identify_payment_status",
+        "observation": "nakit tiryo = paid cash",
+        "result": "payment_status=cash"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "expense paid cash",
+        "result": "intent=expense_payment"
+      }
+    ],
+    "final_output": {
+      "intent": "expense_payment",
+      "entities": {
+        "expense": "auda",
+        "amount": 5000,
+        "payment_status": "cash"
+      }
+    }
+  },
+  {
+    "id": "rchain-012",
+    "source": "user_exact",
+    "input": "bidesh pathauna 10000 kharcha bho",
+    "input_normalized": "bidesh pathauna 10000 kharcha bho",
+    "intent": "expense_payment",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "bidesh, pathauna, 10000, kharcha, bho",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_expense",
+        "observation": "bidesh pathauna = travel/remittance expense",
+        "result": "expense=travel"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "10000",
+        "result": "amount=10000"
+      },
+      {
+        "step": 4,
+        "action": "identify_payment_status",
+        "observation": "bho = occurred, likely paid",
+        "result": "payment_status=paid"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "expense incurred",
+        "result": "intent=expense_payment"
+      }
+    ],
+    "final_output": {
+      "intent": "expense_payment",
+      "entities": {
+        "expense": "travel",
+        "amount": 10000,
+        "payment_status": "paid"
+      }
+    }
+  },
+  {
+    "id": "rchain-013",
+    "source": "user_exact",
+    "input": "byaj 500 tirnu baki chha",
+    "input_normalized": "byaj 500 tirnu baki chha",
+    "intent": "expense_accrual",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "byaj, 500, tirnu, baki, chha",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_expense",
+        "observation": "byaj = interest",
+        "result": "expense=interest"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "500",
+        "result": "amount=500"
+      },
+      {
+        "step": 4,
+        "action": "identify_payment_status",
+        "observation": "tirnu baki = due unpaid",
+        "result": "payment_status=unpaid"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "interest expense accrued",
+        "result": "intent=expense_accrual"
+      }
+    ],
+    "final_output": {
+      "intent": "expense_accrual",
+      "entities": {
+        "expense": "interest",
+        "amount": 500,
+        "payment_status": "unpaid"
+      }
+    }
+  },
+  {
+    "id": "rchain-014",
+    "source": "user_exact",
+    "input": "dividend 1000 ghoshana",
+    "input_normalized": "dividend 1000 ghoshana",
+    "intent": "dividend_declared",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "dividend, 1000, ghoshana",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_transaction",
+        "observation": "dividend declared",
+        "result": "transaction=dividend_declared"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "1000",
+        "result": "amount=1000"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "dividend declaration",
+        "result": "intent=dividend_declared"
+      }
+    ],
+    "final_output": {
+      "intent": "dividend_declared",
+      "entities": {
+        "amount": 1000
+      }
+    }
+  },
+  {
+    "id": "rchain-015",
+    "source": "user_exact",
+    "input": "capital 200000 jamma gare",
+    "input_normalized": "capital 200000 jamma gare",
+    "intent": "owner_capital",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "capital, 200000, jamma, gare",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_account",
+        "observation": "capital",
+        "result": "account=capital"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "200000",
+        "result": "amount=200000"
+      },
+      {
+        "step": 4,
+        "action": "identify_verb",
+        "observation": "jamma gare = deposited/invested",
+        "result": "verb=owner_investment"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "owner capital contribution",
+        "result": "intent=owner_capital"
+      }
+    ],
+    "final_output": {
+      "intent": "owner_capital",
+      "entities": {
+        "amount": 200000,
+        "account": "capital"
+      }
+    }
+  },
+  {
+    "id": "rchain-016",
+    "source": "user_exact",
+    "input": "drawing 5000 jhikyo",
+    "input_normalized": "drawing 5000 jhikyo",
+    "intent": "owner_drawing",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "drawing, 5000, jhikyo",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_account",
+        "observation": "drawing",
+        "result": "account=drawing"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "5000",
+        "result": "amount=5000"
+      },
+      {
+        "step": 4,
+        "action": "identify_verb",
+        "observation": "jhikyo = withdrew",
+        "result": "verb=drawing"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "owner withdrawal",
+        "result": "intent=owner_drawing"
+      }
+    ],
+    "final_output": {
+      "intent": "owner_drawing",
+      "entities": {
+        "amount": 5000,
+        "account": "drawing"
+      }
+    }
+  },
+  {
+    "id": "rchain-017",
+    "source": "user_exact",
+    "input": "machinery ma depreciation 1000",
+    "input_normalized": "machinery ma depreciation 1000",
+    "intent": "depreciation",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "machinery, ma, depreciation, 1000",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_asset",
+        "observation": "machinery",
+        "result": "asset=machinery"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "1000",
+        "result": "amount=1000"
+      },
+      {
+        "step": 4,
+        "action": "identify_transaction",
+        "observation": "depreciation",
+        "result": "transaction=depreciation"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "depreciation expense",
+        "result": "intent=depreciation"
+      }
+    ],
+    "final_output": {
+      "intent": "depreciation",
+      "entities": {
+        "asset": "machinery",
+        "amount": 1000
+      }
+    }
+  },
+  {
+    "id": "rchain-018",
+    "source": "user_exact",
+    "input": "ram ko bad debt 5000 write off",
+    "input_normalized": "ram ko bad debt 5000 write off",
+    "intent": "bad_debt",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "ram, ko, bad, debt, 5000, write, off",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_party",
+        "observation": "ram ko = Ram's",
+        "result": "party=Ram"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "5000",
+        "result": "amount=5000"
+      },
+      {
+        "step": 4,
+        "action": "identify_transaction",
+        "observation": "bad debt write off",
+        "result": "transaction=bad_debt"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "write off uncollectible",
+        "result": "intent=bad_debt"
+      }
+    ],
+    "final_output": {
+      "intent": "bad_debt",
+      "entities": {
+        "party": "Ram",
+        "amount": 5000
+      }
+    }
+  },
+  {
+    "id": "rchain-019",
+    "source": "user_exact",
+    "input": "inventory 20000 ko kharid, cash diyo",
+    "input_normalized": "inventory 20000 ko kharid, cash diyo",
+    "intent": "cash_purchase",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "inventory, 20000, ko, kharid, cash, diyo",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_item",
+        "observation": "inventory",
+        "result": "item=inventory"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "20000",
+        "result": "amount=20000"
+      },
+      {
+        "step": 4,
+        "action": "identify_verb",
+        "observation": "kharid = purchase",
+        "result": "verb=purchase"
+      },
+      {
+        "step": 5,
+        "action": "identify_payment_status",
+        "observation": "cash diyo = paid cash",
+        "result": "payment_status=cash"
+      },
+      {
+        "step": 6,
+        "action": "classify_intent",
+        "observation": "inventory purchase cash",
+        "result": "intent=cash_purchase"
+      }
+    ],
+    "final_output": {
+      "intent": "cash_purchase",
+      "entities": {
+        "item": "inventory",
+        "amount": 20000,
+        "payment_status": "cash"
+      }
+    }
+  },
+  {
+    "id": "rchain-020",
+    "source": "user_exact",
+    "input": "sales 15000 nakit",
+    "input_normalized": "sales 15000 nakit",
+    "intent": "cash_sale",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "sales, 15000, nakit",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_revenue",
+        "observation": "sales",
+        "result": "revenue=sales"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "15000",
+        "result": "amount=15000"
+      },
+      {
+        "step": 4,
+        "action": "identify_payment_status",
+        "observation": "nakit = cash",
+        "result": "payment_status=cash"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "cash sale",
+        "result": "intent=cash_sale"
+      }
+    ],
+    "final_output": {
+      "intent": "cash_sale",
+      "entities": {
+        "revenue": "sales",
+        "amount": 15000,
+        "payment_status": "cash"
+      }
+    }
+  },
+  {
+    "id": "rchain-021",
+    "source": "user_exact",
+    "input": "vat 13% of 5000 calculate",
+    "input_normalized": "vat 13% of 5000 calculate",
+    "intent": "calculation",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "vat, 13%, of, 5000, calculate",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_percentage",
+        "observation": "13%",
+        "result": "rate=0.13"
+      },
+      {
+        "step": 3,
+        "action": "identify_base_amount",
+        "observation": "5000",
+        "result": "base=5000"
+      },
+      {
+        "step": 4,
+        "action": "compute",
+        "observation": "5000 * 0.13 = 650",
+        "result": "vat=650"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "calculation",
+        "result": "intent=calculation"
+      }
+    ],
+    "final_output": {
+      "intent": "calculation",
+      "result": {
+        "vat": 650
+      }
+    }
+  },
+  {
+    "id": "rchain-022",
+    "source": "user_exact",
+    "input": "discount 10% on 1000",
+    "input_normalized": "discount 10% on 1000",
+    "intent": "calculation",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "discount, 10%, on, 1000",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_percentage",
+        "observation": "10%",
+        "result": "rate=0.10"
+      },
+      {
+        "step": 3,
+        "action": "identify_base_amount",
+        "observation": "1000",
+        "result": "base=1000"
+      },
+      {
+        "step": 4,
+        "action": "compute",
+        "observation": "1000 * 0.10 = 100",
+        "result": "discount=100"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "calculation",
+        "result": "intent=calculation"
+      }
+    ],
+    "final_output": {
+      "intent": "calculation",
+      "result": {
+        "discount": 100
+      }
+    }
+  },
+  {
+    "id": "rchain-023",
+    "source": "user_exact",
+    "input": "5 items price 200 each, 3 items price 150 each, total?",
+    "input_normalized": "5 items price 200 each, 3 items price 150 each, total",
+    "intent": "calculation",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "5 items, price 200 each, 3 items, price 150 each",
+        "result": "groups"
+      },
+      {
+        "step": 2,
+        "action": "compute_group1",
+        "observation": "5 * 200 = 1000",
+        "result": "group1=1000"
+      },
+      {
+        "step": 3,
+        "action": "compute_group2",
+        "observation": "3 * 150 = 450",
+        "result": "group2=450"
+      },
+      {
+        "step": 4,
+        "action": "sum",
+        "observation": "1000 + 450 = 1450",
+        "result": "total=1450"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "calculation",
+        "result": "intent=calculation"
+      }
+    ],
+    "final_output": {
+      "intent": "calculation",
+      "result": {
+        "total": 1450
+      }
+    }
+  },
+  {
+    "id": "rchain-024",
+    "source": "user_exact",
+    "input": "gross profit 3000, operating expenses 800, interest 200, net profit?",
+    "input_normalized": "gross profit 3000, operating expenses 800, interest 200, net profit",
+    "intent": "calculation",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "gross profit 3000, expenses 800, interest 200",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_values",
+        "observation": "gross=3000, expenses=800, interest=200",
+        "result": "values extracted"
+      },
+      {
+        "step": 3,
+        "action": "compute_net",
+        "observation": "3000 - 800 - 200 = 2000",
+        "result": "net_profit=2000"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "calculation",
+        "result": "intent=calculation"
+      }
+    ],
+    "final_output": {
+      "intent": "calculation",
+      "result": {
+        "net_profit": 2000
+      }
+    }
+  },
+  {
+    "id": "rchain-025",
+    "source": "user_exact",
+    "input": "fiscal year 2080/81 but date is 2023/04/01",
+    "input_normalized": "fiscal year 2080/81 but date is 2023/04/01",
+    "intent": "error_detection",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "fiscal year 2080/81, date 2023/04/01",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_fiscal_year",
+        "observation": "2080/81 FY",
+        "result": "fiscal_year=2080/81"
+      },
+      {
+        "step": 3,
+        "action": "identify_date",
+        "observation": "2023/04/01",
+        "result": "date=2023-04-01"
+      },
+      {
+        "step": 4,
+        "action": "validate_match",
+        "observation": "FY 2080/81 corresponds to 2023/24? Actually 2080/81 starts 2023/07/16? But used as error detection mismatch",
+        "result": "potential_fiscal_year_mismatch"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "error_detected",
+        "result": "intent=error_detection"
+      }
+    ],
+    "final_output": {
+      "intent": "error_detection",
+      "error": "fiscal_year_date_mismatch",
+      "fiscal_year": "2080/81",
+      "date": "2023/04/01"
+    }
+  },
+  {
+    "id": "rchain-026",
+    "source": "user_exact",
+    "input": "ram ko account ma 5000 jamma cha",
+    "input_normalized": "ram ko account ma 5000 jamma cha",
+    "intent": "balance_check",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "ram, ko, account, ma, 5000, jamma, cha",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_party",
+        "observation": "ram ko = Ram's",
+        "result": "party=Ram"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "5000",
+        "result": "amount=5000"
+      },
+      {
+        "step": 4,
+        "action": "identify_balance_type",
+        "observation": "jamma cha = balance exists",
+        "result": "balance=5000"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "balance inquiry",
+        "result": "intent=balance_check"
+      }
+    ],
+    "final_output": {
+      "intent": "balance_check",
+      "entities": {
+        "party": "Ram",
+        "amount": 5000,
+        "account": "receivable"
+      }
+    }
+  },
+  {
+    "id": "rchain-027",
+    "source": "user_exact",
+    "input": "paisa natiri bidesh gayo",
+    "input_normalized": "paisa natiri bidesh gayo",
+    "intent": "bad_debt",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "paisa, natiri, bidesh, gayo",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_payment_status",
+        "observation": "paisa natiri = without paying",
+        "result": "payment_status=unpaid"
+      },
+      {
+        "step": 3,
+        "action": "identify_location",
+        "observation": "bidesh gayo = went abroad",
+        "result": "debtor_uncollectible"
+      },
+      {
+        "step": 4,
+        "action": "check_bad_debt_signal",
+        "observation": "debtor abroad unpaid",
+        "result": "bad_debt_risk_high"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "likely bad debt",
+        "result": "intent=bad_debt"
+      }
+    ],
+    "final_output": {
+      "intent": "bad_debt",
+      "entities": {
+        "payment_status": "unpaid",
+        "location": "abroad"
+      }
+    }
+  },
+  {
+    "id": "rchain-028",
+    "source": "user_exact",
+    "input": "maile 2081/82 ma 500 ko chocolate bacheko thiye ram lai, paisa natiri bidesh gayo",
+    "input_normalized": "maile 2081/82 ma 500 ko chocolate bacheko thiye ram lai, paisa natiri bidesh gayo",
+    "intent": "credit_sale",
+    "secondary_intent": "bad_debt",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "maile, 2081/82, ma, 500, ko, chocolate, bacheko, thiye, ram, lai, paisa, natiri, bidesh, gayo",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_fiscal_year",
+        "observation": "2081/82",
+        "result": "fiscal_year=2081/82"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "500",
+        "result": "amount=500"
+      },
+      {
+        "step": 4,
+        "action": "identify_item",
+        "observation": "chocolate",
+        "result": "item=chocolate"
+      },
+      {
+        "step": 5,
+        "action": "identify_party",
+        "observation": "ram lai",
+        "result": "party=Ram"
+      },
+      {
+        "step": 6,
+        "action": "identify_verb",
+        "observation": "bacheko is typo for becheko (sold)",
+        "result": "verb=sell, typo=bacheko->becheko"
+      },
+      {
+        "step": 7,
+        "action": "identify_payment_status",
+        "observation": "paisa natiri = unpaid",
+        "result": "payment_status=unpaid"
+      },
+      {
+        "step": 8,
+        "action": "check_bad_debt",
+        "observation": "bidesh gayo = abroad",
+        "result": "bad_debt_indicator"
+      },
+      {
+        "step": 9,
+        "action": "classify_intent",
+        "observation": "credit sale with bad debt signal",
+        "result": "intent=credit_sale, secondary=bad_debt"
+      }
+    ],
+    "final_output": {
+      "intent": "credit_sale",
+      "secondary_intent": "bad_debt",
+      "entities": {
+        "fiscal_year": "2081/82",
+        "amount": 500,
+        "item": "chocolate",
+        "party": "Ram",
+        "payment_status": "unpaid"
+      },
+      "typo_corrections": [
+        "bacheko -> becheko"
+      ]
+    }
+  },
+  {
+    "id": "rchain-029",
+    "source": "user_exact",
+    "input": "saman 3000 ma kinyo, tara pasal le 2500 matra bhancha",
+    "input_normalized": "saman 3000 ma kinyo, tara pasal le 2500 matra bhancha",
+    "intent": "cash_purchase",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "saman, 3000, ma, kinyo, tara, pasal, le, 2500, matra, bhancha",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount_conflict",
+        "observation": "3000 vs 2500 from vendor",
+        "result": "conflict"
+      },
+      {
+        "step": 3,
+        "action": "resolve_ambiguity",
+        "observation": "vendor says 2500, likely actual price",
+        "result": "amount=2500"
+      },
+      {
+        "step": 4,
+        "action": "identify_item",
+        "observation": "saman",
+        "result": "item=saman"
+      },
+      {
+        "step": 5,
+        "action": "identify_verb",
+        "observation": "kinyo = bought",
+        "result": "verb=purchase"
+      },
+      {
+        "step": 6,
+        "action": "classify_intent",
+        "observation": "purchase with resolved amount",
+        "result": "intent=cash_purchase"
+      }
+    ],
+    "final_output": {
+      "intent": "cash_purchase",
+      "entities": {
+        "item": "saman",
+        "amount_resolved": 2500,
+        "conflicting_amounts": [
+          3000,
+          2500
+        ]
+      }
+    }
+  },
+  {
+    "id": "rchain-030",
+    "source": "user_exact",
+    "input": "500 ko hisab ma 10% discount, actual amount?",
+    "input_normalized": "500 ko hisab ma 10% discount, actual amount",
+    "intent": "calculation",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "500 ko hisab ma 10% discount",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_base",
+        "observation": "500",
+        "result": "base=500"
+      },
+      {
+        "step": 3,
+        "action": "identify_rate",
+        "observation": "10%",
+        "result": "rate=0.10"
+      },
+      {
+        "step": 4,
+        "action": "compute_discount",
+        "observation": "500 * 0.10 = 50",
+        "result": "discount=50"
+      },
+      {
+        "step": 5,
+        "action": "compute_actual",
+        "observation": "500 - 50 = 450",
+        "result": "actual_amount=450"
+      },
+      {
+        "step": 6,
+        "action": "classify_intent",
+        "observation": "calculation",
+        "result": "intent=calculation"
+      }
+    ],
+    "final_output": {
+      "intent": "calculation",
+      "result": {
+        "discount": 50,
+        "actual_amount": 450
+      }
+    }
+  },
+  {
+    "id": "rchain-031",
+    "source": "user_exact",
+    "input": "2000, 3000, 5000 ko jod",
+    "input_normalized": "2000, 3000, 5000 ko jod",
+    "intent": "calculation",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "2000, 3000, 5000",
+        "result": "numbers=2000,3000,5000"
+      },
+      {
+        "step": 2,
+        "action": "sum",
+        "observation": "2000+3000+5000=10000",
+        "result": "sum=10000"
+      },
+      {
+        "step": 3,
+        "action": "classify_intent",
+        "observation": "calculation",
+        "result": "intent=calculation"
+      }
+    ],
+    "final_output": {
+      "intent": "calculation",
+      "result": {
+        "sum": 10000
+      }
+    }
+  },
+  {
+    "id": "rchain-032",
+    "source": "user_exact",
+    "input": "10000 ma 2 ota item, per unit price?",
+    "input_normalized": "10000 ma 2 ota item, per unit price",
+    "intent": "calculation",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "10000 ma 2 ota item",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_total",
+        "observation": "10000",
+        "result": "total=10000"
+      },
+      {
+        "step": 3,
+        "action": "identify_quantity",
+        "observation": "2",
+        "result": "quantity=2"
+      },
+      {
+        "step": 4,
+        "action": "divide",
+        "observation": "10000 / 2 = 5000",
+        "result": "unit_price=5000"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "calculation",
+        "result": "intent=calculation"
+      }
+    ],
+    "final_output": {
+      "intent": "calculation",
+      "result": {
+        "unit_price": 5000
+      }
+    }
+  },
+  {
+    "id": "rchain-033",
+    "source": "user_exact",
+    "input": "profit 5000, cost 20000, revenue?",
+    "input_normalized": "profit 5000, cost 20000, revenue",
+    "intent": "calculation",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "profit 5000, cost 20000",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_values",
+        "observation": "profit=5000, cost=20000",
+        "result": "values"
+      },
+      {
+        "step": 3,
+        "action": "apply_formula",
+        "observation": "revenue = profit + cost",
+        "result": "revenue=5000+20000=25000"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "calculation",
+        "result": "intent=calculation"
+      }
+    ],
+    "final_output": {
+      "intent": "calculation",
+      "result": {
+        "revenue": 25000
+      }
+    }
+  },
+  {
+    "id": "rchain-034",
+    "source": "user_exact",
+    "input": "expenses 1200, revenue 1500, profit?",
+    "input_normalized": "expenses 1200, revenue 1500, profit",
+    "intent": "calculation",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "expenses 1200, revenue 1500",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_values",
+        "observation": "expenses=1200, revenue=1500",
+        "result": "values"
+      },
+      {
+        "step": 3,
+        "action": "compute_profit",
+        "observation": "1500 - 1200 = 300",
+        "result": "profit=300"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "calculation",
+        "result": "intent=calculation"
+      }
+    ],
+    "final_output": {
+      "intent": "calculation",
+      "result": {
+        "profit": 300
+      }
+    }
+  },
+  {
+    "id": "rchain-035",
+    "source": "user_exact",
+    "input": "cash 5000, bank 10000, total assets?",
+    "input_normalized": "cash 5000, bank 10000, total assets",
+    "intent": "calculation",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "cash 5000, bank 10000",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_values",
+        "observation": "cash=5000, bank=10000",
+        "result": "values"
+      },
+      {
+        "step": 3,
+        "action": "sum",
+        "observation": "5000+10000=15000",
+        "result": "total_assets=15000"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "calculation",
+        "result": "intent=calculation"
+      }
+    ],
+    "final_output": {
+      "intent": "calculation",
+      "result": {
+        "total_assets": 15000
+      }
+    }
+  },
+  {
+    "id": "rchain-036",
+    "source": "user_exact",
+    "input": "liabilities 8000, equity 12000, assets?",
+    "input_normalized": "liabilities 8000, equity 12000, assets",
+    "intent": "calculation",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "liabilities 8000, equity 12000",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_values",
+        "observation": "liabilities=8000, equity=12000",
+        "result": "values"
+      },
+      {
+        "step": 3,
+        "action": "apply_accounting_equation",
+        "observation": "assets = liabilities + equity",
+        "result": "assets=20000"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "calculation",
+        "result": "intent=calculation"
+      }
+    ],
+    "final_output": {
+      "intent": "calculation",
+      "result": {
+        "assets": 20000
+      }
+    }
+  },
+  {
+    "id": "rchain-037",
+    "source": "user_exact",
+    "input": "maile 1000 ko kapada kinya",
+    "input_normalized": "maile 1000 ko kapada kinya",
+    "intent": "cash_purchase",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "maile, 1000, ko, kapada, kinya",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "1000",
+        "result": "amount=1000"
+      },
+      {
+        "step": 3,
+        "action": "identify_item",
+        "observation": "kapada = cloth",
+        "result": "item=kapada"
+      },
+      {
+        "step": 4,
+        "action": "identify_verb",
+        "observation": "kinya is typo of kinyo (bought)",
+        "result": "verb=buy, typo=kinya->kinyo"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "cash purchase",
+        "result": "intent=cash_purchase"
+      }
+    ],
+    "final_output": {
+      "intent": "cash_purchase",
+      "entities": {
+        "amount": 1000,
+        "item": "kapada"
+      },
+      "typo_corrections": [
+        "kinya -> kinyo"
+      ]
+    }
+  },
+  {
+    "id": "rchain-038",
+    "source": "user_exact",
+    "input": "paisa 5000 jamma",
+    "input_normalized": "paisa 5000 jamma",
+    "intent": "bank_deposit",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "paisa, 5000, jamma",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "5000",
+        "result": "amount=5000"
+      },
+      {
+        "step": 3,
+        "action": "identify_verb",
+        "observation": "jamma could mean deposit or balance",
+        "result": "verb=deposit/balance"
+      },
+      {
+        "step": 4,
+        "action": "resolve_ambiguity",
+        "observation": "likely cash deposit",
+        "result": "intent=bank_deposit"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "cash deposited",
+        "result": "intent=bank_deposit"
+      }
+    ],
+    "final_output": {
+      "intent": "bank_deposit",
+      "entities": {
+        "amount": 5000,
+        "account": "cash/bank"
+      }
+    }
+  },
+  {
+    "id": "rchain-039",
+    "source": "user_exact",
+    "input": "debit 5000, credit 3000, unbalanced",
+    "input_normalized": "debit 5000, credit 3000, unbalanced",
+    "intent": "error_detection",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "debit 5000, credit 3000",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_debit",
+        "observation": "5000",
+        "result": "debit=5000"
+      },
+      {
+        "step": 3,
+        "action": "identify_credit",
+        "observation": "3000",
+        "result": "credit=3000"
+      },
+      {
+        "step": 4,
+        "action": "check_balance",
+        "observation": "5000 != 3000, difference 2000",
+        "result": "unbalanced"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "error_detection",
+        "result": "intent=error_detection"
+      }
+    ],
+    "final_output": {
+      "intent": "error_detection",
+      "error": "unbalanced_journal_entry",
+      "debit": 5000,
+      "credit": 3000,
+      "difference": 2000
+    }
+  },
+  {
+    "id": "rchain-040",
+    "source": "user_exact",
+    "input": "journal entry: debit cash 5000, credit sales 6000",
+    "input_normalized": "journal entry: debit cash 5000, credit sales 6000",
+    "intent": "error_detection",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "debit cash 5000, credit sales 6000",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_debit",
+        "observation": "cash 5000",
+        "result": "debit_account=cash, amount=5000"
+      },
+      {
+        "step": 3,
+        "action": "identify_credit",
+        "observation": "sales 6000",
+        "result": "credit_account=sales, amount=6000"
+      },
+      {
+        "step": 4,
+        "action": "check_balance",
+        "observation": "5000 != 6000",
+        "result": "unbalanced"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "error_detection",
+        "result": "intent=error_detection"
+      }
+    ],
+    "final_output": {
+      "intent": "error_detection",
+      "error": "unbalanced_journal_entry",
+      "debit": {
+        "account": "cash",
+        "amount": 5000
+      },
+      "credit": {
+        "account": "sales",
+        "amount": 6000
+      },
+      "difference": 1000
+    }
+  },
+  {
+    "id": "rchain-041",
+    "source": "user_exact",
+    "input": "ram lai 5000 diye",
+    "input_normalized": "ram lai 5000 diye",
+    "intent": "loan_given",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "ram, lai, 5000, diye",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_party",
+        "observation": "ram lai = to Ram",
+        "result": "party=Ram"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "5000",
+        "result": "amount=5000"
+      },
+      {
+        "step": 4,
+        "action": "identify_verb",
+        "observation": "diye = gave",
+        "result": "verb=gave"
+      },
+      {
+        "step": 5,
+        "action": "resolve_ambiguity",
+        "observation": "could be payment or loan; no context",
+        "result": "likely payment or loan_given"
+      },
+      {
+        "step": 6,
+        "action": "classify_intent",
+        "observation": "default to loan_given if no expense context",
+        "result": "intent=loan_given"
+      }
+    ],
+    "final_output": {
+      "intent": "loan_given",
+      "entities": {
+        "party": "Ram",
+        "amount": 5000
+      },
+      "ambiguity_resolved": true
+    }
+  },
+  {
+    "id": "rchain-042",
+    "source": "user_exact",
+    "input": "haru bata 2000 aayo",
+    "input_normalized": "haru bata 2000 aayo",
+    "intent": "receipt",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "haru, bata, 2000, aayo",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_party",
+        "observation": "haru bata = from Haru",
+        "result": "party=Haru"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "2000",
+        "result": "amount=2000"
+      },
+      {
+        "step": 4,
+        "action": "identify_verb",
+        "observation": "aayo = came/received",
+        "result": "verb=received"
+      },
+      {
+        "step": 5,
+        "action": "resolve_ambiguity",
+        "observation": "could be repayment or loan receipt",
+        "result": "likely receipt"
+      },
+      {
+        "step": 6,
+        "action": "classify_intent",
+        "observation": "receipt from party",
+        "result": "intent=receipt"
+      }
+    ],
+    "final_output": {
+      "intent": "receipt",
+      "entities": {
+        "party": "Haru",
+        "amount": 2000
+      }
+    }
+  },
+  {
+    "id": "rchain-043",
+    "source": "user_exact",
+    "input": "bank ma 3000 gako",
+    "input_normalized": "bank ma 3000 gako",
+    "intent": "bank_deposit",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "bank, ma, 3000, gako",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "3000",
+        "result": "amount=3000"
+      },
+      {
+        "step": 3,
+        "action": "identify_location",
+        "observation": "bank ma = to bank",
+        "result": "account=bank"
+      },
+      {
+        "step": 4,
+        "action": "identify_verb",
+        "observation": "gako = went",
+        "result": "verb=moved"
+      },
+      {
+        "step": 5,
+        "action": "resolve_ambiguity",
+        "observation": "could be deposit or payment",
+        "result": "likely bank deposit"
+      },
+      {
+        "step": 6,
+        "action": "classify_intent",
+        "observation": "deposit to bank",
+        "result": "intent=bank_deposit"
+      }
+    ],
+    "final_output": {
+      "intent": "bank_deposit",
+      "entities": {
+        "amount": 3000,
+        "account": "bank"
+      }
+    }
+  },
+  {
+    "id": "rchain-044",
+    "source": "user_exact",
+    "input": "cash sale 5000",
+    "input_normalized": "cash sale 5000",
+    "intent": "journal_entry",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "cash, sale, 5000",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_transaction_type",
+        "observation": "cash sale",
+        "result": "type=cash_sale"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "5000",
+        "result": "amount=5000"
+      },
+      {
+        "step": 4,
+        "action": "determine_journal_entry",
+        "observation": "Dr Cash 5000, Cr Sales 5000",
+        "result": "journal_entry={'debit':{'account':'Cash','amount':5000},'credit':{'account':'Sales','amount':5000}}"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "journal entry",
+        "result": "intent=journal_entry"
+      }
+    ],
+    "final_output": {
+      "intent": "journal_entry",
+      "journal_entry": {
+        "debit": {
+          "account": "Cash",
+          "amount": 5000
+        },
+        "credit": {
+          "account": "Sales",
+          "amount": 5000
+        }
+      }
+    }
+  },
+  {
+    "id": "rchain-045",
+    "source": "user_exact",
+    "input": "credit sale to Ram 3000",
+    "input_normalized": "credit sale to ram 3000",
+    "intent": "journal_entry",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "credit, sale, to, Ram, 3000",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_party",
+        "observation": "Ram",
+        "result": "party=Ram"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "3000",
+        "result": "amount=3000"
+      },
+      {
+        "step": 4,
+        "action": "determine_journal_entry",
+        "observation": "Dr Ram (Receivable) 3000, Cr Sales 3000",
+        "result": "journal_entry={'debit':{'account':'Accounts Receivable - Ram','amount':3000},'credit':{'account':'Sales','amount':3000}}"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "journal entry",
+        "result": "intent=journal_entry"
+      }
+    ],
+    "final_output": {
+      "intent": "journal_entry",
+      "journal_entry": {
+        "debit": {
+          "account": "Accounts Receivable - Ram",
+          "amount": 3000
+        },
+        "credit": {
+          "account": "Sales",
+          "amount": 3000
+        }
+      }
+    }
+  },
+  {
+    "id": "rchain-046",
+    "source": "user_exact",
+    "input": "purchase inventory on credit 4000",
+    "input_normalized": "purchase inventory on credit 4000",
+    "intent": "journal_entry",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "purchase, inventory, on, credit, 4000",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_item",
+        "observation": "inventory",
+        "result": "item=inventory"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "4000",
+        "result": "amount=4000"
+      },
+      {
+        "step": 4,
+        "action": "identify_payment_terms",
+        "observation": "on credit",
+        "result": "payment_status=credit"
+      },
+      {
+        "step": 5,
+        "action": "determine_journal_entry",
+        "observation": "Dr Inventory 4000, Cr Accounts Payable 4000",
+        "result": "journal_entry={'debit':{'account':'Inventory','amount':4000},'credit':{'account':'Accounts Payable','amount':4000}}"
+      },
+      {
+        "step": 6,
+        "action": "classify_intent",
+        "observation": "journal entry",
+        "result": "intent=journal_entry"
+      }
+    ],
+    "final_output": {
+      "intent": "journal_entry",
+      "journal_entry": {
+        "debit": {
+          "account": "Inventory",
+          "amount": 4000
+        },
+        "credit": {
+          "account": "Accounts Payable",
+          "amount": 4000
+        }
+      }
+    }
+  },
+  {
+    "id": "rchain-047",
+    "source": "user_exact",
+    "input": "paid rent 1000 cash",
+    "input_normalized": "paid rent 1000 cash",
+    "intent": "journal_entry",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "paid, rent, 1000, cash",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_expense",
+        "observation": "rent",
+        "result": "expense=rent"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "1000",
+        "result": "amount=1000"
+      },
+      {
+        "step": 4,
+        "action": "identify_payment_method",
+        "observation": "cash",
+        "result": "payment=cash"
+      },
+      {
+        "step": 5,
+        "action": "determine_journal_entry",
+        "observation": "Dr Rent Expense 1000, Cr Cash 1000",
+        "result": "journal_entry={'debit':{'account':'Rent Expense','amount':1000},'credit':{'account':'Cash','amount':1000}}"
+      },
+      {
+        "step": 6,
+        "action": "classify_intent",
+        "observation": "journal entry",
+        "result": "intent=journal_entry"
+      }
+    ],
+    "final_output": {
+      "intent": "journal_entry",
+      "journal_entry": {
+        "debit": {
+          "account": "Rent Expense",
+          "amount": 1000
+        },
+        "credit": {
+          "account": "Cash",
+          "amount": 1000
+        }
+      }
+    }
+  },
+  {
+    "id": "rchain-048",
+    "source": "user_exact",
+    "input": "received cash from Ram 2000",
+    "input_normalized": "received cash from ram 2000",
+    "intent": "journal_entry",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "received, cash, from, Ram, 2000",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_party",
+        "observation": "Ram",
+        "result": "party=Ram"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "2000",
+        "result": "amount=2000"
+      },
+      {
+        "step": 4,
+        "action": "determine_journal_entry",
+        "observation": "Dr Cash 2000, Cr Ram (Accounts Receivable) 2000",
+        "result": "journal_entry={'debit':{'account':'Cash','amount':2000},'credit':{'account':'Accounts Receivable - Ram','amount':2000}}"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "journal entry",
+        "result": "intent=journal_entry"
+      }
+    ],
+    "final_output": {
+      "intent": "journal_entry",
+      "journal_entry": {
+        "debit": {
+          "account": "Cash",
+          "amount": 2000
+        },
+        "credit": {
+          "account": "Accounts Receivable - Ram",
+          "amount": 2000
+        }
+      }
+    }
+  },
+  {
+    "id": "rchain-049",
+    "source": "user_exact",
+    "input": "depreciation expense 500",
+    "input_normalized": "depreciation expense 500",
+    "intent": "journal_entry",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "depreciation, expense, 500",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "500",
+        "result": "amount=500"
+      },
+      {
+        "step": 3,
+        "action": "determine_journal_entry",
+        "observation": "Dr Depreciation Expense 500, Cr Accumulated Depreciation 500",
+        "result": "journal_entry={'debit':{'account':'Depreciation Expense','amount':500},'credit':{'account':'Accumulated Depreciation','amount':500}}"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "journal entry",
+        "result": "intent=journal_entry"
+      }
+    ],
+    "final_output": {
+      "intent": "journal_entry",
+      "journal_entry": {
+        "debit": {
+          "account": "Depreciation Expense",
+          "amount": 500
+        },
+        "credit": {
+          "account": "Accumulated Depreciation",
+          "amount": 500
+        }
+      }
+    }
+  },
+  {
+    "id": "rchain-050",
+    "source": "user_exact",
+    "input": "bad debt expense 1000",
+    "input_normalized": "bad debt expense 1000",
+    "intent": "journal_entry",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "bad, debt, expense, 1000",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "1000",
+        "result": "amount=1000"
+      },
+      {
+        "step": 3,
+        "action": "determine_journal_entry",
+        "observation": "Dr Bad Debt Expense 1000, Cr Accounts Receivable 1000",
+        "result": "journal_entry={'debit':{'account':'Bad Debt Expense','amount':1000},'credit':{'account':'Accounts Receivable','amount':1000}}"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "journal entry",
+        "result": "intent=journal_entry"
+      }
+    ],
+    "final_output": {
+      "intent": "journal_entry",
+      "journal_entry": {
+        "debit": {
+          "account": "Bad Debt Expense",
+          "amount": 1000
+        },
+        "credit": {
+          "account": "Accounts Receivable",
+          "amount": 1000
+        }
+      }
+    }
+  },
+  {
+    "id": "rchain-051",
+    "source": "user_exact",
+    "input": "owner invests 50000 cash",
+    "input_normalized": "owner invests 50000 cash",
+    "intent": "journal_entry",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "owner, invests, 50000, cash",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "50000",
+        "result": "amount=50000"
+      },
+      {
+        "step": 3,
+        "action": "determine_journal_entry",
+        "observation": "Dr Cash 50000, Cr Capital 50000",
+        "result": "journal_entry={'debit':{'account':'Cash','amount':50000},'credit':{'account':'Capital','amount':50000}}"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "journal entry",
+        "result": "intent=journal_entry"
+      }
+    ],
+    "final_output": {
+      "intent": "journal_entry",
+      "journal_entry": {
+        "debit": {
+          "account": "Cash",
+          "amount": 50000
+        },
+        "credit": {
+          "account": "Capital",
+          "amount": 50000
+        }
+      }
+    }
+  },
+  {
+    "id": "rchain-052",
+    "source": "user_exact",
+    "input": "owner withdrawal 2000 cash",
+    "input_normalized": "owner withdrawal 2000 cash",
+    "intent": "journal_entry",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "owner, withdrawal, 2000, cash",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "2000",
+        "result": "amount=2000"
+      },
+      {
+        "step": 3,
+        "action": "determine_journal_entry",
+        "observation": "Dr Drawings 2000, Cr Cash 2000",
+        "result": "journal_entry={'debit':{'account':'Drawings','amount':2000},'credit':{'account':'Cash','amount':2000}}"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "journal entry",
+        "result": "intent=journal_entry"
+      }
+    ],
+    "final_output": {
+      "intent": "journal_entry",
+      "journal_entry": {
+        "debit": {
+          "account": "Drawings",
+          "amount": 2000
+        },
+        "credit": {
+          "account": "Cash",
+          "amount": 2000
+        }
+      }
+    }
+  },
+  {
+    "id": "rchain-053",
+    "source": "user_exact",
+    "input": "loan received 10000 bank",
+    "input_normalized": "loan received 10000 bank",
+    "intent": "journal_entry",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "loan, received, 10000, bank",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "10000",
+        "result": "amount=10000"
+      },
+      {
+        "step": 3,
+        "action": "determine_journal_entry",
+        "observation": "Dr Bank 10000, Cr Loan Payable 10000",
+        "result": "journal_entry={'debit':{'account':'Bank','amount':10000},'credit':{'account':'Loan Payable','amount':10000}}"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "journal entry",
+        "result": "intent=journal_entry"
+      }
+    ],
+    "final_output": {
+      "intent": "journal_entry",
+      "journal_entry": {
+        "debit": {
+          "account": "Bank",
+          "amount": 10000
+        },
+        "credit": {
+          "account": "Loan Payable",
+          "amount": 10000
+        }
+      }
+    }
+  },
+  {
+    "id": "rchain-054",
+    "source": "user_exact",
+    "input": "loan repaid 2000 bank",
+    "input_normalized": "loan repaid 2000 bank",
+    "intent": "journal_entry",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "loan, repaid, 2000, bank",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "2000",
+        "result": "amount=2000"
+      },
+      {
+        "step": 3,
+        "action": "determine_journal_entry",
+        "observation": "Dr Loan Payable 2000, Cr Bank 2000",
+        "result": "journal_entry={'debit':{'account':'Loan Payable','amount':2000},'credit':{'account':'Bank','amount':2000}}"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "journal entry",
+        "result": "intent=journal_entry"
+      }
+    ],
+    "final_output": {
+      "intent": "journal_entry",
+      "journal_entry": {
+        "debit": {
+          "account": "Loan Payable",
+          "amount": 2000
+        },
+        "credit": {
+          "account": "Bank",
+          "amount": 2000
+        }
+      }
+    }
+  },
+  {
+    "id": "rchain-055",
+    "source": "user_exact",
+    "input": "interest accrued 300",
+    "input_normalized": "interest accrued 300",
+    "intent": "journal_entry",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "interest, accrued, 300",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "300",
+        "result": "amount=300"
+      },
+      {
+        "step": 3,
+        "action": "determine_journal_entry",
+        "observation": "Dr Interest Expense 300, Cr Interest Payable 300",
+        "result": "journal_entry={'debit':{'account':'Interest Expense','amount':300},'credit':{'account':'Interest Payable','amount':300}}"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "journal entry",
+        "result": "intent=journal_entry"
+      }
+    ],
+    "final_output": {
+      "intent": "journal_entry",
+      "journal_entry": {
+        "debit": {
+          "account": "Interest Expense",
+          "amount": 300
+        },
+        "credit": {
+          "account": "Interest Payable",
+          "amount": 300
+        }
+      }
+    }
+  },
+  {
+    "id": "rchain-056",
+    "source": "user_exact",
+    "input": "salary payable 25000",
+    "input_normalized": "salary payable 25000",
+    "intent": "journal_entry",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "salary, payable, 25000",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "25000",
+        "result": "amount=25000"
+      },
+      {
+        "step": 3,
+        "action": "determine_journal_entry",
+        "observation": "Dr Salary Expense 25000, Cr Salary Payable 25000",
+        "result": "journal_entry={'debit':{'account':'Salary Expense','amount':25000},'credit':{'account':'Salary Payable','amount':25000}}"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "journal entry",
+        "result": "intent=journal_entry"
+      }
+    ],
+    "final_output": {
+      "intent": "journal_entry",
+      "journal_entry": {
+        "debit": {
+          "account": "Salary Expense",
+          "amount": 25000
+        },
+        "credit": {
+          "account": "Salary Payable",
+          "amount": 25000
+        }
+      }
+    }
+  },
+  {
+    "id": "rchain-057",
+    "source": "user_exact",
+    "input": "paid salary 25000",
+    "input_normalized": "paid salary 25000",
+    "intent": "journal_entry",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "paid, salary, 25000",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "25000",
+        "result": "amount=25000"
+      },
+      {
+        "step": 3,
+        "action": "determine_journal_entry",
+        "observation": "Dr Salary Payable 25000, Cr Cash 25000",
+        "result": "journal_entry={'debit':{'account':'Salary Payable','amount':25000},'credit':{'account':'Cash','amount':25000}}"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "journal entry",
+        "result": "intent=journal_entry"
+      }
+    ],
+    "final_output": {
+      "intent": "journal_entry",
+      "journal_entry": {
+        "debit": {
+          "account": "Salary Payable",
+          "amount": 25000
+        },
+        "credit": {
+          "account": "Cash",
+          "amount": 25000
+        }
+      }
+    }
+  },
+  {
+    "id": "rchain-058",
+    "source": "user_exact",
+    "input": "goods sold for cash 7000",
+    "input_normalized": "goods sold for cash 7000",
+    "intent": "journal_entry",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "goods, sold, for, cash, 7000",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "7000",
+        "result": "amount=7000"
+      },
+      {
+        "step": 3,
+        "action": "determine_journal_entry",
+        "observation": "Dr Cash 7000, Cr Sales 7000",
+        "result": "journal_entry={'debit':{'account':'Cash','amount':7000},'credit':{'account':'Sales','amount':7000}}"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "journal entry",
+        "result": "intent=journal_entry"
+      }
+    ],
+    "final_output": {
+      "intent": "journal_entry",
+      "journal_entry": {
+        "debit": {
+          "account": "Cash",
+          "amount": 7000
+        },
+        "credit": {
+          "account": "Sales",
+          "amount": 7000
+        }
+      }
+    }
+  },
+  {
+    "id": "rchain-059",
+    "source": "user_exact",
+    "input": "goods purchased for cash 6000",
+    "input_normalized": "goods purchased for cash 6000",
+    "intent": "journal_entry",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "goods, purchased, for, cash, 6000",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "6000",
+        "result": "amount=6000"
+      },
+      {
+        "step": 3,
+        "action": "determine_journal_entry",
+        "observation": "Dr Purchases 6000, Cr Cash 6000",
+        "result": "journal_entry={'debit':{'account':'Purchases','amount':6000},'credit':{'account':'Cash','amount':6000}}"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "journal entry",
+        "result": "intent=journal_entry"
+      }
+    ],
+    "final_output": {
+      "intent": "journal_entry",
+      "journal_entry": {
+        "debit": {
+          "account": "Purchases",
+          "amount": 6000
+        },
+        "credit": {
+          "account": "Cash",
+          "amount": 6000
+        }
+      }
+    }
+  },
+  {
+    "id": "rchain-060",
+    "source": "user_exact",
+    "input": "returned goods to supplier 1000",
+    "input_normalized": "returned goods to supplier 1000",
+    "intent": "journal_entry",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "returned, goods, to, supplier, 1000",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "1000",
+        "result": "amount=1000"
+      },
+      {
+        "step": 3,
+        "action": "determine_journal_entry",
+        "observation": "Dr Supplier (Accounts Payable) 1000, Cr Purchase Returns 1000",
+        "result": "journal_entry={'debit':{'account':'Accounts Payable - Supplier','amount':1000},'credit':{'account':'Purchase Returns','amount':1000}}"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "journal entry",
+        "result": "intent=journal_entry"
+      }
+    ],
+    "final_output": {
+      "intent": "journal_entry",
+      "journal_entry": {
+        "debit": {
+          "account": "Accounts Payable - Supplier",
+          "amount": 1000
+        },
+        "credit": {
+          "account": "Purchase Returns",
+          "amount": 1000
+        }
+      }
+    }
+  },
+  {
+    "id": "rchain-061",
+    "source": "user_exact",
+    "input": "sales return from customer 500",
+    "input_normalized": "sales return from customer 500",
+    "intent": "journal_entry",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "sales, return, from, customer, 500",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "500",
+        "result": "amount=500"
+      },
+      {
+        "step": 3,
+        "action": "determine_journal_entry",
+        "observation": "Dr Sales Returns 500, Cr Customer (Accounts Receivable) 500",
+        "result": "journal_entry={'debit':{'account':'Sales Returns','amount':500},'credit':{'account':'Accounts Receivable - Customer','amount':500}}"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "journal entry",
+        "result": "intent=journal_entry"
+      }
+    ],
+    "final_output": {
+      "intent": "journal_entry",
+      "journal_entry": {
+        "debit": {
+          "account": "Sales Returns",
+          "amount": 500
+        },
+        "credit": {
+          "account": "Accounts Receivable - Customer",
+          "amount": 500
+        }
+      }
+    }
+  },
+  {
+    "id": "rchain-062",
+    "source": "user_exact",
+    "input": "discount received 200",
+    "input_normalized": "discount received 200",
+    "intent": "journal_entry",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "discount, received, 200",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "200",
+        "result": "amount=200"
+      },
+      {
+        "step": 3,
+        "action": "determine_journal_entry",
+        "observation": "Dr Accounts Payable 200, Cr Discount Received 200",
+        "result": "journal_entry={'debit':{'account':'Accounts Payable','amount':200},'credit':{'account':'Discount Received','amount':200}}"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "journal entry",
+        "result": "intent=journal_entry"
+      }
+    ],
+    "final_output": {
+      "intent": "journal_entry",
+      "journal_entry": {
+        "debit": {
+          "account": "Accounts Payable",
+          "amount": 200
+        },
+        "credit": {
+          "account": "Discount Received",
+          "amount": 200
+        }
+      }
+    }
+  },
+  {
+    "id": "rchain-063",
+    "source": "user_exact",
+    "input": "discount allowed 150",
+    "input_normalized": "discount allowed 150",
+    "intent": "journal_entry",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "discount, allowed, 150",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "150",
+        "result": "amount=150"
+      },
+      {
+        "step": 3,
+        "action": "determine_journal_entry",
+        "observation": "Dr Discount Allowed 150, Cr Accounts Receivable 150",
+        "result": "journal_entry={'debit':{'account':'Discount Allowed','amount':150},'credit':{'account':'Accounts Receivable','amount':150}}"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "journal entry",
+        "result": "intent=journal_entry"
+      }
+    ],
+    "final_output": {
+      "intent": "journal_entry",
+      "journal_entry": {
+        "debit": {
+          "account": "Discount Allowed",
+          "amount": 150
+        },
+        "credit": {
+          "account": "Accounts Receivable",
+          "amount": 150
+        }
+      }
+    }
+  },
+  {
+    "id": "rchain-064",
+    "source": "user_exact",
+    "input": "depreciation on vehicle 800",
+    "input_normalized": "depreciation on vehicle 800",
+    "intent": "journal_entry",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "depreciation, on, vehicle, 800",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "800",
+        "result": "amount=800"
+      },
+      {
+        "step": 3,
+        "action": "determine_journal_entry",
+        "observation": "Dr Depreciation Expense 800, Cr Accumulated Depreciation - Vehicle 800",
+        "result": "journal_entry={'debit':{'account':'Depreciation Expense','amount':800},'credit':{'account':'Accumulated Depreciation - Vehicle','amount':800}}"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "journal entry",
+        "result": "intent=journal_entry"
+      }
+    ],
+    "final_output": {
+      "intent": "journal_entry",
+      "journal_entry": {
+        "debit": {
+          "account": "Depreciation Expense",
+          "amount": 800
+        },
+        "credit": {
+          "account": "Accumulated Depreciation - Vehicle",
+          "amount": 800
+        }
+      }
+    }
+  },
+  {
+    "id": "rchain-065",
+    "source": "user_exact",
+    "input": "2080/81 ma 2000 ko ghoda kinyo",
+    "input_normalized": "2080/81 ma 2000 ko ghoda kinyo",
+    "intent": "asset_purchase",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "2080/81, ma, 2000, ko, ghoda, kinyo",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_fiscal_year",
+        "observation": "2080/81",
+        "result": "fiscal_year=2080/81"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "2000",
+        "result": "amount=2000"
+      },
+      {
+        "step": 4,
+        "action": "identify_item",
+        "observation": "ghoda = horse",
+        "result": "item=ghoda"
+      },
+      {
+        "step": 5,
+        "action": "identify_verb",
+        "observation": "kinyo = bought",
+        "result": "verb=purchase"
+      },
+      {
+        "step": 6,
+        "action": "classify_intent",
+        "observation": "asset purchase",
+        "result": "intent=asset_purchase"
+      }
+    ],
+    "final_output": {
+      "intent": "asset_purchase",
+      "entities": {
+        "fiscal_year": "2080/81",
+        "amount": 2000,
+        "item": "ghoda"
+      }
+    }
+  },
+  {
+    "id": "rchain-066",
+    "source": "user_exact",
+    "input": "ram ko 5000 baki",
+    "input_normalized": "ram ko 5000 baki",
+    "intent": "balance_check",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "ram, ko, 5000, baki",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_party",
+        "observation": "ram ko = Ram's",
+        "result": "party=Ram"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "5000",
+        "result": "amount=5000"
+      },
+      {
+        "step": 4,
+        "action": "identify_balance",
+        "observation": "baki = balance due",
+        "result": "balance=5000"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "balance inquiry",
+        "result": "intent=balance_check"
+      }
+    ],
+    "final_output": {
+      "intent": "balance_check",
+      "entities": {
+        "party": "Ram",
+        "amount": 5000,
+        "balance_type": "due"
+      }
+    }
+  },
+  {
+    "id": "rchain-067",
+    "source": "user_exact",
+    "input": "hari sanga 10000 ko computer kinyo, 5000 nakit, 5000 baki",
+    "input_normalized": "hari sanga 10000 ko computer kinyo, 5000 nakit, 5000 baki",
+    "intent": "credit_purchase",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "hari, sanga, 10000, ko, computer, kinyo, 5000, nakit, 5000, baki",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_party",
+        "observation": "hari sanga = from Hari",
+        "result": "party=Hari"
+      },
+      {
+        "step": 3,
+        "action": "identify_item",
+        "observation": "computer",
+        "result": "item=computer"
+      },
+      {
+        "step": 4,
+        "action": "identify_amounts",
+        "observation": "total 10000, cash 5000, credit 5000",
+        "result": "total=10000, cash=5000, credit=5000"
+      },
+      {
+        "step": 5,
+        "action": "identify_verb",
+        "observation": "kinyo = bought",
+        "result": "verb=purchase"
+      },
+      {
+        "step": 6,
+        "action": "classify_intent",
+        "observation": "credit purchase with partial cash",
+        "result": "intent=credit_purchase"
+      }
+    ],
+    "final_output": {
+      "intent": "credit_purchase",
+      "entities": {
+        "party": "Hari",
+        "item": "computer",
+        "total": 10000,
+        "cash": 5000,
+        "credit": 5000
+      }
+    }
+  },
+  {
+    "id": "rchain-068",
+    "source": "user_exact",
+    "input": "gita lai 7000 bechyo, paisa aayena",
+    "input_normalized": "gita lai 7000 bechyo, paisa aayena",
+    "intent": "credit_sale",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "gita, lai, 7000, bechyo, paisa, aayena",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_party",
+        "observation": "gita lai = to Gita",
+        "result": "party=Gita"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "7000",
+        "result": "amount=7000"
+      },
+      {
+        "step": 4,
+        "action": "identify_verb",
+        "observation": "bechyo = sold",
+        "result": "verb=sell"
+      },
+      {
+        "step": 5,
+        "action": "identify_payment_status",
+        "observation": "paisa aayena = money not received",
+        "result": "payment_status=unpaid"
+      },
+      {
+        "step": 6,
+        "action": "classify_intent",
+        "observation": "credit sale",
+        "result": "intent=credit_sale"
+      }
+    ],
+    "final_output": {
+      "intent": "credit_sale",
+      "entities": {
+        "party": "Gita",
+        "amount": 7000,
+        "payment_status": "unpaid"
+      }
+    }
+  },
+  {
+    "id": "rchain-069",
+    "source": "user_exact",
+    "input": "office ma 1500 ko pen, 2000 ko paper kharcha",
+    "input_normalized": "office ma 1500 ko pen, 2000 ko paper kharcha",
+    "intent": "expense_payment",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "office, ma, 1500, ko, pen, 2000, ko, paper, kharcha",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_expense_items",
+        "observation": "pen and paper",
+        "result": "items=pen, paper"
+      },
+      {
+        "step": 3,
+        "action": "identify_amounts",
+        "observation": "pen=1500, paper=2000",
+        "result": "amounts=1500,2000"
+      },
+      {
+        "step": 4,
+        "action": "sum",
+        "observation": "1500+2000=3500",
+        "result": "total_expense=3500"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "office supplies expense",
+        "result": "intent=expense_payment"
+      }
+    ],
+    "final_output": {
+      "intent": "expense_payment",
+      "entities": {
+        "items": [
+          {
+            "name": "pen",
+            "amount": 1500
+          },
+          {
+            "name": "paper",
+            "amount": 2000
+          }
+        ],
+        "total": 3500
+      }
+    }
+  },
+  {
+    "id": "rchain-070",
+    "source": "user_exact",
+    "input": "500 ma 2 ota",
+    "input_normalized": "500 ma 2 ota",
+    "intent": "calculation",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "500, ma, 2, ota",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "500",
+        "result": "amount=500"
+      },
+      {
+        "step": 3,
+        "action": "identify_quantity",
+        "observation": "2 ota = 2 items",
+        "result": "quantity=2"
+      },
+      {
+        "step": 4,
+        "action": "resolve_ambiguity",
+        "observation": "Could be total 500 for 2 items or price per item? Ambiguous",
+        "result": "likely total amount 500 for 2 items"
+      },
+      {
+        "step": 5,
+        "action": "compute_unit_price",
+        "observation": "500/2 = 250 per item",
+        "result": "unit_price=250"
+      },
+      {
+        "step": 6,
+        "action": "classify_intent",
+        "observation": "calculation / entity extraction",
+        "result": "intent=calculation"
+      }
+    ],
+    "final_output": {
+      "intent": "calculation",
+      "result": {
+        "total": 500,
+        "quantity": 2,
+        "unit_price": 250
+      },
+      "ambiguity": "resolved as total"
+    }
+  },
+  {
+    "id": "rchain-071",
+    "source": "user_exact",
+    "input": "ram lai paisa pathayo, ki saman?",
+    "input_normalized": "ram lai paisa pathayo, ki saman",
+    "intent": "ambiguous",
+    "needs_clarification": true,
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "ram, lai, paisa, pathayo, ki, saman",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_party",
+        "observation": "ram lai = to Ram",
+        "result": "party=Ram"
+      },
+      {
+        "step": 3,
+        "action": "identify_verb",
+        "observation": "pathayo = sent",
+        "result": "verb=send"
+      },
+      {
+        "step": 4,
+        "action": "identify_ambiguity",
+        "observation": "question: money or goods? uncertain",
+        "result": "ambiguous"
+      },
+      {
+        "step": 5,
+        "action": "resolve_ambiguity",
+        "observation": "requires clarification",
+        "result": "intent=ambiguous"
+      },
+      {
+        "step": 6,
+        "action": "classify_intent",
+        "observation": "ambiguity resolution needed",
+        "result": "intent=ambiguous"
+      }
+    ],
+    "final_output": {
+      "intent": "ambiguous",
+      "entities": {
+        "party": "Ram"
+      },
+      "needs_clarification": true
+    }
+  },
+  {
+    "id": "rchain-072",
+    "source": "user_exact",
+    "input": "fiscal year 2081/82 and amount 500",
+    "input_normalized": "fiscal year 2081/82 and amount 500",
+    "intent": "entity_extraction",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "fiscal year 2081/82 and amount 500",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_fiscal_year",
+        "observation": "2081/82",
+        "result": "fiscal_year=2081/82"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "500",
+        "result": "amount=500"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "entity extraction without transaction",
+        "result": "intent=entity_extraction"
+      }
+    ],
+    "final_output": {
+      "intent": "entity_extraction",
+      "entities": {
+        "fiscal_year": "2081/82",
+        "amount": 500
+      }
+    }
+  },
+  {
+    "id": "rchain-073",
+    "source": "user_exact",
+    "input": "paisa 5000 ko cheque",
+    "input_normalized": "paisa 5000 ko cheque",
+    "intent": "payment_cheque",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "paisa, 5000, ko, cheque",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "5000",
+        "result": "amount=5000"
+      },
+      {
+        "step": 3,
+        "action": "identify_instrument",
+        "observation": "cheque",
+        "result": "instrument=cheque, not cash"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "payment by cheque",
+        "result": "intent=payment_cheque"
+      }
+    ],
+    "final_output": {
+      "intent": "payment_cheque",
+      "entities": {
+        "amount": 5000,
+        "instrument": "cheque"
+      }
+    }
+  },
+  {
+    "id": "rchain-074",
+    "source": "user_exact",
+    "input": "credit card payment 1000",
+    "input_normalized": "credit card payment 1000",
+    "intent": "expense_payment",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "credit, card, payment, 1000",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "1000",
+        "result": "amount=1000"
+      },
+      {
+        "step": 3,
+        "action": "identify_payment_type",
+        "observation": "credit card payment",
+        "result": "type=credit_card_payment"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "expense/payment",
+        "result": "intent=expense_payment"
+      }
+    ],
+    "final_output": {
+      "intent": "expense_payment",
+      "entities": {
+        "amount": 1000,
+        "payment_method": "credit_card"
+      }
+    }
+  },
+  {
+    "id": "rchain-075",
+    "source": "user_exact",
+    "input": "bank statement mismatch 500",
+    "input_normalized": "bank statement mismatch 500",
+    "intent": "error_detection",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "bank, statement, mismatch, 500",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_error",
+        "observation": "mismatch of 500",
+        "result": "error=bank_reconciliation_mismatch"
+      },
+      {
+        "step": 3,
+        "action": "identify_amount",
+        "observation": "500",
+        "result": "amount=500"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "error detection",
+        "result": "intent=error_detection"
+      }
+    ],
+    "final_output": {
+      "intent": "error_detection",
+      "error": "bank_reconciliation_mismatch",
+      "amount": 500
+    }
+  },
+  {
+    "id": "rchain-076",
+    "source": "user_exact",
+    "input": "duplicate entry: same invoice 2000 twice",
+    "input_normalized": "duplicate entry: same invoice 2000 twice",
+    "intent": "error_detection",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "duplicate, entry, same, invoice, 2000, twice",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_amount",
+        "observation": "2000",
+        "result": "amount=2000"
+      },
+      {
+        "step": 3,
+        "action": "identify_error",
+        "observation": "duplicate entry twice",
+        "result": "error=duplicate_entry"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "error detection",
+        "result": "intent=error_detection"
+      }
+    ],
+    "final_output": {
+      "intent": "error_detection",
+      "error": "duplicate_entry",
+      "amount": 2000,
+      "count": 2
+    }
+  },
+  {
+    "id": "rchain-077",
+    "source": "user_exact",
+    "input": "3, 4, 5 ko average",
+    "input_normalized": "3, 4, 5 ko average",
+    "intent": "calculation",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "3, 4, 5",
+        "result": "numbers=3,4,5"
+      },
+      {
+        "step": 2,
+        "action": "sum",
+        "observation": "3+4+5=12",
+        "result": "sum=12"
+      },
+      {
+        "step": 3,
+        "action": "divide_by_count",
+        "observation": "12/3=4",
+        "result": "average=4"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "calculation",
+        "result": "intent=calculation"
+      }
+    ],
+    "final_output": {
+      "intent": "calculation",
+      "result": {
+        "average": 4
+      }
+    }
+  },
+  {
+    "id": "rchain-078",
+    "source": "user_exact",
+    "input": "5000 + 2000 - 1000",
+    "input_normalized": "5000 + 2000 - 1000",
+    "intent": "calculation",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "5000 + 2000 - 1000",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "compute",
+        "observation": "5000+2000=7000, 7000-1000=6000",
+        "result": "result=6000"
+      },
+      {
+        "step": 3,
+        "action": "classify_intent",
+        "observation": "calculation",
+        "result": "intent=calculation"
+      }
+    ],
+    "final_output": {
+      "intent": "calculation",
+      "result": 6000
+    }
+  },
+  {
+    "id": "rchain-079",
+    "source": "user_exact",
+    "input": "10% of 5000 + 20% of 3000",
+    "input_normalized": "10% of 5000 + 20% of 3000",
+    "intent": "calculation",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "10% of 5000, 20% of 3000",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "compute_10",
+        "observation": "5000 * 0.10 = 500",
+        "result": "part1=500"
+      },
+      {
+        "step": 3,
+        "action": "compute_20",
+        "observation": "3000 * 0.20 = 600",
+        "result": "part2=600"
+      },
+      {
+        "step": 4,
+        "action": "sum",
+        "observation": "500+600=1100",
+        "result": "total=1100"
+      },
+      {
+        "step": 5,
+        "action": "classify_intent",
+        "observation": "calculation",
+        "result": "intent=calculation"
+      }
+    ],
+    "final_output": {
+      "intent": "calculation",
+      "result": 1100
+    }
+  },
+  {
+    "id": "rchain-080",
+    "source": "user_exact",
+    "input": "net profit margin: profit 5000, revenue 25000",
+    "input_normalized": "net profit margin: profit 5000, revenue 25000",
+    "intent": "calculation",
+    "reasoning_chain": [
+      {
+        "step": 1,
+        "action": "tokenize",
+        "observation": "profit 5000, revenue 25000",
+        "result": "tokens"
+      },
+      {
+        "step": 2,
+        "action": "identify_values",
+        "observation": "profit=5000, revenue=25000",
+        "result": "values"
+      },
+      {
+        "step": 3,
+        "action": "compute_margin",
+        "observation": "(5000/25000)*100 = 20%",
+        "result": "margin=20%"
+      },
+      {
+        "step": 4,
+        "action": "classify_intent",
+        "observation": "calculation",
+        "result": "intent=calculation"
+      }
+    ],
+    "final_output": {
+      "intent": "calculation",
+      "result": {
+        "net_profit_margin": "20%"
+      }
+    }
+  }
+]

@@ -1,0 +1,1612 @@
+{
+  "Yo udhaar kina record bhayo?": {
+    "id": "cexplain_001",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "khata_credit_purchase"
+  },
+  "yo udhaar kina record bhayo": {
+    "id": "cexplain_001",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "khata_credit_purchase"
+  },
+  "cexplain_001": {
+    "id": "cexplain_001",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "khata_credit_purchase"
+  },
+  "Yo credit sale kina bhayo?": {
+    "id": "cexplain_002",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "khata_credit_sale"
+  },
+  "yo credit sale kina bhayo": {
+    "id": "cexplain_002",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "khata_credit_sale"
+  },
+  "cexplain_002": {
+    "id": "cexplain_002",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "khata_credit_sale"
+  },
+  "Yo transaction bank deposit ho kina?": {
+    "id": "cexplain_003",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "bank_deposit"
+  },
+  "yo transaction bank deposit ho kina": {
+    "id": "cexplain_003",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "bank_deposit"
+  },
+  "cexplain_003": {
+    "id": "cexplain_003",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "bank_deposit"
+  },
+  "Yo classification telecom expense kina?": {
+    "id": "cexplain_004",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "expense_telecom"
+  },
+  "yo classification telecom expense kina": {
+    "id": "cexplain_004",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "expense_telecom"
+  },
+  "cexplain_004": {
+    "id": "cexplain_004",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "expense_telecom"
+  },
+  "Yo income kina salary ho?": {
+    "id": "cexplain_005",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "income_salary"
+  },
+  "yo income kina salary ho": {
+    "id": "cexplain_005",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "income_salary"
+  },
+  "cexplain_005": {
+    "id": "cexplain_005",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "income_salary"
+  },
+  "Yo asset sale ho kina?": {
+    "id": "cexplain_006",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "asset_sale"
+  },
+  "yo asset sale ho kina": {
+    "id": "cexplain_006",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "asset_sale"
+  },
+  "cexplain_006": {
+    "id": "cexplain_006",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "asset_sale"
+  },
+  "Yo refund kasari classify gareko?": {
+    "id": "cexplain_007",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "supplier_refund"
+  },
+  "yo refund kasari classify gareko": {
+    "id": "cexplain_007",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "supplier_refund"
+  },
+  "cexplain_007": {
+    "id": "cexplain_007",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "supplier_refund"
+  },
+  "Yo withdrawal kasari record gareko?": {
+    "id": "cexplain_008",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "cash_withdrawal"
+  },
+  "yo withdrawal kasari record gareko": {
+    "id": "cexplain_008",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "cash_withdrawal"
+  },
+  "cexplain_008": {
+    "id": "cexplain_008",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "cash_withdrawal"
+  },
+  "Yo interest income kina ho?": {
+    "id": "cexplain_009",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "income_interest"
+  },
+  "yo interest income kina ho": {
+    "id": "cexplain_009",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "income_interest"
+  },
+  "cexplain_009": {
+    "id": "cexplain_009",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "income_interest"
+  },
+  "Yo stationery kharcha kasari classify gareko?": {
+    "id": "cexplain_010",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "expense_office_supplies"
+  },
+  "yo stationery kharcha kasari classify gareko": {
+    "id": "cexplain_010",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "expense_office_supplies"
+  },
+  "cexplain_010": {
+    "id": "cexplain_010",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "expense_office_supplies"
+  },
+  "Yo investment kina purchase ho?": {
+    "id": "cexplain_011",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "investment_purchase"
+  },
+  "yo investment kina purchase ho": {
+    "id": "cexplain_011",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "investment_purchase"
+  },
+  "cexplain_011": {
+    "id": "cexplain_011",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "investment_purchase"
+  },
+  "Yo advance kasari treat garne?": {
+    "id": "cexplain_012",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "liability_customer_advance"
+  },
+  "yo advance kasari treat garne": {
+    "id": "cexplain_012",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "liability_customer_advance"
+  },
+  "cexplain_012": {
+    "id": "cexplain_012",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "liability_customer_advance"
+  },
+  "Yo message spam kina classify bhayo?": {
+    "id": "cexplain_013",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "intent_spam"
+  },
+  "yo message spam kina classify bhayo": {
+    "id": "cexplain_013",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "intent_spam"
+  },
+  "cexplain_013": {
+    "id": "cexplain_013",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "intent_spam"
+  },
+  "Yo intent schedule meeting kina bhayo?": {
+    "id": "cexplain_014",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "intent_schedule_meeting"
+  },
+  "yo intent schedule meeting kina bhayo": {
+    "id": "cexplain_014",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "intent_schedule_meeting"
+  },
+  "cexplain_014": {
+    "id": "cexplain_014",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "intent_schedule_meeting"
+  },
+  "Yo support request kina classify gareko?": {
+    "id": "cexplain_015",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "intent_support_request"
+  },
+  "yo support request kina classify gareko": {
+    "id": "cexplain_015",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "intent_support_request"
+  },
+  "cexplain_015": {
+    "id": "cexplain_015",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "intent_support_request"
+  },
+  "Yo promotional kina classify bhayo?": {
+    "id": "cexplain_016",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "intent_promotional"
+  },
+  "yo promotional kina classify bhayo": {
+    "id": "cexplain_016",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "intent_promotional"
+  },
+  "cexplain_016": {
+    "id": "cexplain_016",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "intent_promotional"
+  },
+  "Yo 'OK' acknowledgement kina ho?": {
+    "id": "cexplain_017",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "low",
+    "aiClassifiedIntent": "intent_acknowledgement"
+  },
+  "yo 'ok' acknowledgement kina ho": {
+    "id": "cexplain_017",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "low",
+    "aiClassifiedIntent": "intent_acknowledgement"
+  },
+  "cexplain_017": {
+    "id": "cexplain_017",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "low",
+    "aiClassifiedIntent": "intent_acknowledgement"
+  },
+  "Yo refund request kina ho?": {
+    "id": "cexplain_018",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "intent_refund_request"
+  },
+  "yo refund request kina ho": {
+    "id": "cexplain_018",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "intent_refund_request"
+  },
+  "cexplain_018": {
+    "id": "cexplain_018",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "intent_refund_request"
+  },
+  "Yo product inquiry kina ho?": {
+    "id": "cexplain_019",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "intent_product_inquiry"
+  },
+  "yo product inquiry kina ho": {
+    "id": "cexplain_019",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "intent_product_inquiry"
+  },
+  "cexplain_019": {
+    "id": "cexplain_019",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "intent_product_inquiry"
+  },
+  "Yo clarification request kina classify gareko?": {
+    "id": "cexplain_020",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "intent_clarification_request"
+  },
+  "yo clarification request kina classify gareko": {
+    "id": "cexplain_020",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "intent_clarification_request"
+  },
+  "cexplain_020": {
+    "id": "cexplain_020",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "intent_clarification_request"
+  },
+  "Yo update notification kina ho?": {
+    "id": "cexplain_021",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "intent_update_notification"
+  },
+  "yo update notification kina ho": {
+    "id": "cexplain_021",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "intent_update_notification"
+  },
+  "cexplain_021": {
+    "id": "cexplain_021",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": "intent_update_notification"
+  },
+  "Ma clarification kina sodhnu bhayo?": {
+    "id": "cexplain_022",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "clarification_needed"
+  },
+  "ma clarification kina sodhnu bhayo": {
+    "id": "cexplain_022",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "clarification_needed"
+  },
+  "cexplain_022": {
+    "id": "cexplain_022",
+    "explanationType": "classification",
+    "explanationTypeKey": "classification",
+    "teachingValue": "high",
+    "aiClassifiedIntent": "clarification_needed"
+  },
+  "Yo question sodhne reason ke ho?": {
+    "id": "cexplain_023",
+    "explanationType": "clarification_prompt",
+    "explanationTypeKey": "clarification_prompt",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo question sodhne reason ke ho": {
+    "id": "cexplain_023",
+    "explanationType": "clarification_prompt",
+    "explanationTypeKey": "clarification_prompt",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_023": {
+    "id": "cexplain_023",
+    "explanationType": "clarification_prompt",
+    "explanationTypeKey": "clarification_prompt",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo question kina sodheko?": {
+    "id": "cexplain_024",
+    "explanationType": "clarification_prompt",
+    "explanationTypeKey": "clarification_prompt",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo question kina sodheko": {
+    "id": "cexplain_024",
+    "explanationType": "clarification_prompt",
+    "explanationTypeKey": "clarification_prompt",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_024": {
+    "id": "cexplain_024",
+    "explanationType": "clarification_prompt",
+    "explanationTypeKey": "clarification_prompt",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo date sodhne reason ke ho?": {
+    "id": "cexplain_025",
+    "explanationType": "clarification_prompt",
+    "explanationTypeKey": "clarification_prompt",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo date sodhne reason ke ho": {
+    "id": "cexplain_025",
+    "explanationType": "clarification_prompt",
+    "explanationTypeKey": "clarification_prompt",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_025": {
+    "id": "cexplain_025",
+    "explanationType": "clarification_prompt",
+    "explanationTypeKey": "clarification_prompt",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo amount sodhne reason ke ho?": {
+    "id": "cexplain_026",
+    "explanationType": "clarification_prompt",
+    "explanationTypeKey": "clarification_prompt",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo amount sodhne reason ke ho": {
+    "id": "cexplain_026",
+    "explanationType": "clarification_prompt",
+    "explanationTypeKey": "clarification_prompt",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_026": {
+    "id": "cexplain_026",
+    "explanationType": "clarification_prompt",
+    "explanationTypeKey": "clarification_prompt",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo proof sodhne reason ke ho?": {
+    "id": "cexplain_027",
+    "explanationType": "clarification_prompt",
+    "explanationTypeKey": "clarification_prompt",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo proof sodhne reason ke ho": {
+    "id": "cexplain_027",
+    "explanationType": "clarification_prompt",
+    "explanationTypeKey": "clarification_prompt",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_027": {
+    "id": "cexplain_027",
+    "explanationType": "clarification_prompt",
+    "explanationTypeKey": "clarification_prompt",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo beneficiary sodhne reason ke ho?": {
+    "id": "cexplain_028",
+    "explanationType": "clarification_prompt",
+    "explanationTypeKey": "clarification_prompt",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "yo beneficiary sodhne reason ke ho": {
+    "id": "cexplain_028",
+    "explanationType": "clarification_prompt",
+    "explanationTypeKey": "clarification_prompt",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_028": {
+    "id": "cexplain_028",
+    "explanationType": "clarification_prompt",
+    "explanationTypeKey": "clarification_prompt",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "Yo specific type sodhne reason ke ho?": {
+    "id": "cexplain_029",
+    "explanationType": "clarification_prompt",
+    "explanationTypeKey": "clarification_prompt",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "yo specific type sodhne reason ke ho": {
+    "id": "cexplain_029",
+    "explanationType": "clarification_prompt",
+    "explanationTypeKey": "clarification_prompt",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_029": {
+    "id": "cexplain_029",
+    "explanationType": "clarification_prompt",
+    "explanationTypeKey": "clarification_prompt",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "Yo correction kina gareko?": {
+    "id": "cexplain_030",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo correction kina gareko": {
+    "id": "cexplain_030",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_030": {
+    "id": "cexplain_030",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo correction kasari decide gareko?": {
+    "id": "cexplain_031",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo correction kasari decide gareko": {
+    "id": "cexplain_031",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_031": {
+    "id": "cexplain_031",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo correction kina?": {
+    "id": "cexplain_032",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "yo correction kina": {
+    "id": "cexplain_032",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_032": {
+    "id": "cexplain_032",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "Yo correction kasari thik cha?": {
+    "id": "cexplain_033",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo correction kasari thik cha": {
+    "id": "cexplain_033",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_033": {
+    "id": "cexplain_033",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo correction kina split gareko?": {
+    "id": "cexplain_034",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo correction kina split gareko": {
+    "id": "cexplain_034",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_034": {
+    "id": "cexplain_034",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_035": {
+    "id": "cexplain_035",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "Yo correction kina sales_return bhayo?": {
+    "id": "cexplain_036",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo correction kina sales_return bhayo": {
+    "id": "cexplain_036",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_036": {
+    "id": "cexplain_036",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo adjustment kina inventory ho?": {
+    "id": "cexplain_037",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo adjustment kina inventory ho": {
+    "id": "cexplain_037",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_037": {
+    "id": "cexplain_037",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_038": {
+    "id": "cexplain_038",
+    "explanationType": "why_field_asked",
+    "explanationTypeKey": "why_field_asked",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Invoice date sodhne reason ke ho?": {
+    "id": "cexplain_039",
+    "explanationType": "why_field_asked",
+    "explanationTypeKey": "why_field_asked",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "invoice date sodhne reason ke ho": {
+    "id": "cexplain_039",
+    "explanationType": "why_field_asked",
+    "explanationTypeKey": "why_field_asked",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_039": {
+    "id": "cexplain_039",
+    "explanationType": "why_field_asked",
+    "explanationTypeKey": "why_field_asked",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Payment terms sodhne reason ke ho?": {
+    "id": "cexplain_040",
+    "explanationType": "why_field_asked",
+    "explanationTypeKey": "why_field_asked",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "payment terms sodhne reason ke ho": {
+    "id": "cexplain_040",
+    "explanationType": "why_field_asked",
+    "explanationTypeKey": "why_field_asked",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_040": {
+    "id": "cexplain_040",
+    "explanationType": "why_field_asked",
+    "explanationTypeKey": "why_field_asked",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Project code sodhne reason ke ho?": {
+    "id": "cexplain_041",
+    "explanationType": "why_field_asked",
+    "explanationTypeKey": "why_field_asked",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "project code sodhne reason ke ho": {
+    "id": "cexplain_041",
+    "explanationType": "why_field_asked",
+    "explanationTypeKey": "why_field_asked",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_041": {
+    "id": "cexplain_041",
+    "explanationType": "why_field_asked",
+    "explanationTypeKey": "why_field_asked",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Receipt image sodhne reason ke ho?": {
+    "id": "cexplain_042",
+    "explanationType": "why_field_asked",
+    "explanationTypeKey": "why_field_asked",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "receipt image sodhne reason ke ho": {
+    "id": "cexplain_042",
+    "explanationType": "why_field_asked",
+    "explanationTypeKey": "why_field_asked",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_042": {
+    "id": "cexplain_042",
+    "explanationType": "why_field_asked",
+    "explanationTypeKey": "why_field_asked",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Currency sodhne reason ke ho?": {
+    "id": "cexplain_043",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "currency sodhne reason ke ho": {
+    "id": "cexplain_043",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_043": {
+    "id": "cexplain_043",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Purpose sodhne reason ke ho?": {
+    "id": "cexplain_044",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "purpose sodhne reason ke ho": {
+    "id": "cexplain_044",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_044": {
+    "id": "cexplain_044",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo answer ko source ke ho?": {
+    "id": "cexplain_045",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo answer ko source ke ho": {
+    "id": "cexplain_045",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_045": {
+    "id": "cexplain_045",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo answer ko evidence ke ho?": {
+    "id": "cexplain_046",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo answer ko evidence ke ho": {
+    "id": "cexplain_046",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_046": {
+    "id": "cexplain_046",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo answer kasari confirm gareko?": {
+    "id": "cexplain_047",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo answer kasari confirm gareko": {
+    "id": "cexplain_047",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_047": {
+    "id": "cexplain_047",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo interest source kasari thapyo?": {
+    "id": "cexplain_048",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "yo interest source kasari thapyo": {
+    "id": "cexplain_048",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_048": {
+    "id": "cexplain_048",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "Yo payment source kasari thapyo?": {
+    "id": "cexplain_049",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo payment source kasari thapyo": {
+    "id": "cexplain_049",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_049": {
+    "id": "cexplain_049",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo source kasto thiyo?": {
+    "id": "cexplain_050",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "yo source kasto thiyo": {
+    "id": "cexplain_050",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_050": {
+    "id": "cexplain_050",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "Yo reconciliation kasari thiyo?": {
+    "id": "cexplain_051",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo reconciliation kasari thiyo": {
+    "id": "cexplain_051",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_051": {
+    "id": "cexplain_051",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo adjustment ko source ke ho?": {
+    "id": "cexplain_052",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo adjustment ko source ke ho": {
+    "id": "cexplain_052",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_052": {
+    "id": "cexplain_052",
+    "explanationType": "source_evidence",
+    "explanationTypeKey": "source_evidence",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo correction kina utilities ma gareko?": {
+    "id": "cexplain_053",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo correction kina utilities ma gareko": {
+    "id": "cexplain_053",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_053": {
+    "id": "cexplain_053",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo split kina gareko?": {
+    "id": "cexplain_054",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo split kina gareko": {
+    "id": "cexplain_054",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_054": {
+    "id": "cexplain_054",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo non-deductible classification kina?": {
+    "id": "cexplain_055",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo non-deductible classification kina": {
+    "id": "cexplain_055",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_055": {
+    "id": "cexplain_055",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo reclassification kina capex ho?": {
+    "id": "cexplain_056",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo reclassification kina capex ho": {
+    "id": "cexplain_056",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_056": {
+    "id": "cexplain_056",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Duplicate removal kina gareko?": {
+    "id": "cexplain_057",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "duplicate removal kina gareko": {
+    "id": "cexplain_057",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_057": {
+    "id": "cexplain_057",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo conversion kina gareko?": {
+    "id": "cexplain_058",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo conversion kina gareko": {
+    "id": "cexplain_058",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_058": {
+    "id": "cexplain_058",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo suspicious flag kina?": {
+    "id": "cexplain_059",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo suspicious flag kina": {
+    "id": "cexplain_059",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_059": {
+    "id": "cexplain_059",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo auto-categorize kasari thiyo?": {
+    "id": "cexplain_060",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "yo auto-categorize kasari thiyo": {
+    "id": "cexplain_060",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_060": {
+    "id": "cexplain_060",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "Yo split suggestion kina?": {
+    "id": "cexplain_061",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "yo split suggestion kina": {
+    "id": "cexplain_061",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_061": {
+    "id": "cexplain_061",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "Yo recurring payroll kina mark gareko?": {
+    "id": "cexplain_062",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo recurring payroll kina mark gareko": {
+    "id": "cexplain_062",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_062": {
+    "id": "cexplain_062",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo tax code recommendation kasari aayo?": {
+    "id": "cexplain_063",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo tax code recommendation kasari aayo": {
+    "id": "cexplain_063",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_063": {
+    "id": "cexplain_063",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo reminder suggestion kina?": {
+    "id": "cexplain_064",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo reminder suggestion kina": {
+    "id": "cexplain_064",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_064": {
+    "id": "cexplain_064",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo auto-match kasari thiyo?": {
+    "id": "cexplain_065",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo auto-match kasari thiyo": {
+    "id": "cexplain_065",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_065": {
+    "id": "cexplain_065",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo accrual suggestion kina?": {
+    "id": "cexplain_066",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo accrual suggestion kina": {
+    "id": "cexplain_066",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_066": {
+    "id": "cexplain_066",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo petty cash classification kina?": {
+    "id": "cexplain_067",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "yo petty cash classification kina": {
+    "id": "cexplain_067",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_067": {
+    "id": "cexplain_067",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "Yo schedule kina suggest gareko?": {
+    "id": "cexplain_068",
+    "explanationType": "why_field_asked",
+    "explanationTypeKey": "why_field_asked",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo schedule kina suggest gareko": {
+    "id": "cexplain_068",
+    "explanationType": "why_field_asked",
+    "explanationTypeKey": "why_field_asked",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_068": {
+    "id": "cexplain_068",
+    "explanationType": "why_field_asked",
+    "explanationTypeKey": "why_field_asked",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo mismatch flag kina?": {
+    "id": "cexplain_069",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo mismatch flag kina": {
+    "id": "cexplain_069",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_069": {
+    "id": "cexplain_069",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo reversal kina recommend gareko?": {
+    "id": "cexplain_070",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo reversal kina recommend gareko": {
+    "id": "cexplain_070",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_070": {
+    "id": "cexplain_070",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo non-operating classification kina?": {
+    "id": "cexplain_071",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo non-operating classification kina": {
+    "id": "cexplain_071",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_071": {
+    "id": "cexplain_071",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo vendor code suggestion kasari aayo?": {
+    "id": "cexplain_072",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "yo vendor code suggestion kasari aayo": {
+    "id": "cexplain_072",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_072": {
+    "id": "cexplain_072",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "Yo write-off recommendation kina?": {
+    "id": "cexplain_073",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo write-off recommendation kina": {
+    "id": "cexplain_073",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_073": {
+    "id": "cexplain_073",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo tax rate change kina gareko?": {
+    "id": "cexplain_074",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo tax rate change kina gareko": {
+    "id": "cexplain_074",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_074": {
+    "id": "cexplain_074",
+    "explanationType": "correction",
+    "explanationTypeKey": "correction",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo intercompany classification kina?": {
+    "id": "cexplain_075",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo intercompany classification kina": {
+    "id": "cexplain_075",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_075": {
+    "id": "cexplain_075",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo reversal suggestion kina?": {
+    "id": "cexplain_076",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "yo reversal suggestion kina": {
+    "id": "cexplain_076",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_076": {
+    "id": "cexplain_076",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "high",
+    "aiClassifiedIntent": ""
+  },
+  "Yo charity classification kina?": {
+    "id": "cexplain_077",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "yo charity classification kina": {
+    "id": "cexplain_077",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_077": {
+    "id": "cexplain_077",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "Yo auto-tag kasari thiyo?": {
+    "id": "cexplain_078",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "yo auto-tag kasari thiyo": {
+    "id": "cexplain_078",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  },
+  "cexplain_078": {
+    "id": "cexplain_078",
+    "explanationType": "system_reasoning",
+    "explanationTypeKey": "system_reasoning",
+    "teachingValue": "medium",
+    "aiClassifiedIntent": ""
+  }
+}

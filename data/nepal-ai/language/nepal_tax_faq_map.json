@@ -1,0 +1,4475 @@
+{
+  "VAT register garna kati turnover chahiyo?": {
+    "id": "taxfaq-001",
+    "topic": "VAT registration threshold",
+    "topic_key": "vat_registration_threshold",
+    "question_type": "definition",
+    "question_normalized": "vat register garna kati turnover chahiyo"
+  },
+  "What is the VAT registration threshold?": {
+    "id": "taxfaq-001",
+    "topic": "VAT registration threshold",
+    "topic_key": "vat_registration_threshold",
+    "question_type": "definition",
+    "question_normalized": "vat register garna kati turnover chahiyo"
+  },
+  "vat register garna kati turnover chahiyo": {
+    "id": "taxfaq-001",
+    "topic": "VAT registration threshold",
+    "topic_key": "vat_registration_threshold",
+    "question_type": "definition",
+    "question_normalized": "vat register garna kati turnover chahiyo"
+  },
+  "VAT registration threshold": {
+    "id": "taxfaq-001",
+    "topic": "VAT registration threshold",
+    "topic_key": "vat_registration_threshold",
+    "question_type": "definition",
+    "question_normalized": "vat register garna kati turnover chahiyo"
+  },
+  "vat_registration_threshold": {
+    "id": "taxfaq-001",
+    "topic": "VAT registration threshold",
+    "topic_key": "vat_registration_threshold",
+    "question_type": "definition",
+    "question_normalized": "vat register garna kati turnover chahiyo"
+  },
+  "vat kati % ho": {
+    "id": "taxfaq-001",
+    "topic": "VAT registration threshold",
+    "topic_key": "vat_registration_threshold",
+    "question_type": "definition",
+    "question_normalized": "vat register garna kati turnover chahiyo"
+  },
+  "vat return kahile file garne": {
+    "id": "taxfaq-001",
+    "topic": "VAT registration threshold",
+    "topic_key": "vat_registration_threshold",
+    "question_type": "definition",
+    "question_normalized": "vat register garna kati turnover chahiyo"
+  },
+  "Nepal ma VAT ko dar kati cha?": {
+    "id": "taxfaq-002",
+    "topic": "VAT rate",
+    "topic_key": "vat_rate",
+    "question_type": "definition",
+    "question_normalized": "nepal ma vat ko dar kati cha"
+  },
+  "What is the VAT rate in Nepal?": {
+    "id": "taxfaq-002",
+    "topic": "VAT rate",
+    "topic_key": "vat_rate",
+    "question_type": "definition",
+    "question_normalized": "nepal ma vat ko dar kati cha"
+  },
+  "nepal ma vat ko dar kati cha": {
+    "id": "taxfaq-002",
+    "topic": "VAT rate",
+    "topic_key": "vat_rate",
+    "question_type": "definition",
+    "question_normalized": "nepal ma vat ko dar kati cha"
+  },
+  "VAT rate": {
+    "id": "taxfaq-002",
+    "topic": "VAT rate",
+    "topic_key": "vat_rate",
+    "question_type": "definition",
+    "question_normalized": "nepal ma vat ko dar kati cha"
+  },
+  "vat_rate": {
+    "id": "taxfaq-002",
+    "topic": "VAT rate",
+    "topic_key": "vat_rate",
+    "question_type": "definition",
+    "question_normalized": "nepal ma vat ko dar kati cha"
+  },
+  "kun saman ma vat chhut cha": {
+    "id": "taxfaq-002",
+    "topic": "VAT rate",
+    "topic_key": "vat_rate",
+    "question_type": "definition",
+    "question_normalized": "nepal ma vat ko dar kati cha"
+  },
+  "VAT return kahile file garne?": {
+    "id": "taxfaq-003",
+    "topic": "VAT return filing",
+    "topic_key": "vat_return_filing",
+    "question_type": "definition",
+    "question_normalized": "vat return kahile file garne"
+  },
+  "When to file VAT return?": {
+    "id": "taxfaq-003",
+    "topic": "VAT return filing",
+    "topic_key": "vat_return_filing",
+    "question_type": "definition",
+    "question_normalized": "vat return kahile file garne"
+  },
+  "VAT return filing": {
+    "id": "taxfaq-003",
+    "topic": "VAT return filing",
+    "topic_key": "vat_return_filing",
+    "question_type": "definition",
+    "question_normalized": "vat return kahile file garne"
+  },
+  "vat_return_filing": {
+    "id": "taxfaq-003",
+    "topic": "VAT return filing",
+    "topic_key": "vat_return_filing",
+    "question_type": "definition",
+    "question_normalized": "vat return kahile file garne"
+  },
+  "monthly return file nagare ke huncha": {
+    "id": "taxfaq-003",
+    "topic": "VAT return filing",
+    "topic_key": "vat_return_filing",
+    "question_type": "definition",
+    "question_normalized": "vat return kahile file garne"
+  },
+  "VAT refund kasari paune?": {
+    "id": "taxfaq-004",
+    "topic": "VAT refund",
+    "topic_key": "vat_refund",
+    "question_type": "definition",
+    "question_normalized": "vat refund kasari paune"
+  },
+  "How to get VAT refund?": {
+    "id": "taxfaq-004",
+    "topic": "VAT refund",
+    "topic_key": "vat_refund",
+    "question_type": "definition",
+    "question_normalized": "vat refund kasari paune"
+  },
+  "vat refund kasari paune": {
+    "id": "taxfaq-004",
+    "topic": "VAT refund",
+    "topic_key": "vat_refund",
+    "question_type": "definition",
+    "question_normalized": "vat refund kasari paune"
+  },
+  "VAT refund": {
+    "id": "taxfaq-004",
+    "topic": "VAT refund",
+    "topic_key": "vat_refund",
+    "question_type": "definition",
+    "question_normalized": "vat refund kasari paune"
+  },
+  "vat_refund": {
+    "id": "taxfaq-004",
+    "topic": "VAT refund",
+    "topic_key": "vat_refund",
+    "question_type": "definition",
+    "question_normalized": "vat refund kasari paune"
+  },
+  "zero rate ke ho": {
+    "id": "taxfaq-004",
+    "topic": "VAT refund",
+    "topic_key": "vat_refund",
+    "question_type": "definition",
+    "question_normalized": "vat refund kasari paune"
+  },
+  "refund aauna kati time lagcha": {
+    "id": "taxfaq-004",
+    "topic": "VAT refund",
+    "topic_key": "vat_refund",
+    "question_type": "definition",
+    "question_normalized": "vat refund kasari paune"
+  },
+  "Input tax credit ke ho?": {
+    "id": "taxfaq-005",
+    "topic": "Input tax credit",
+    "topic_key": "input_tax_credit",
+    "question_type": "definition",
+    "question_normalized": "input tax credit ke ho"
+  },
+  "What is input tax credit?": {
+    "id": "taxfaq-005",
+    "topic": "Input tax credit",
+    "topic_key": "input_tax_credit",
+    "question_type": "definition",
+    "question_normalized": "input tax credit ke ho"
+  },
+  "input tax credit ke ho": {
+    "id": "taxfaq-005",
+    "topic": "Input tax credit",
+    "topic_key": "input_tax_credit",
+    "question_type": "definition",
+    "question_normalized": "input tax credit ke ho"
+  },
+  "Input tax credit": {
+    "id": "taxfaq-005",
+    "topic": "Input tax credit",
+    "topic_key": "input_tax_credit",
+    "question_type": "definition",
+    "question_normalized": "input tax credit ke ho"
+  },
+  "input_tax_credit": {
+    "id": "taxfaq-005",
+    "topic": "Input tax credit",
+    "topic_key": "input_tax_credit",
+    "question_type": "definition",
+    "question_normalized": "input tax credit ke ho"
+  },
+  "kohi pani saman kinna le credit pauncha": {
+    "id": "taxfaq-005",
+    "topic": "Input tax credit",
+    "topic_key": "input_tax_credit",
+    "question_type": "definition",
+    "question_normalized": "input tax credit ke ho"
+  },
+  "tax invoice bina credit pauncha": {
+    "id": "taxfaq-005",
+    "topic": "Input tax credit",
+    "topic_key": "input_tax_credit",
+    "question_type": "definition",
+    "question_normalized": "input tax credit ke ho"
+  },
+  "Nepal ma kun saman ma VAT chhut cha?": {
+    "id": "taxfaq-006",
+    "topic": "VAT exemption",
+    "topic_key": "vat_exemption",
+    "question_type": "definition",
+    "question_normalized": "nepal ma kun saman ma vat chhut cha"
+  },
+  "Which goods are VAT exempt in Nepal?": {
+    "id": "taxfaq-006",
+    "topic": "VAT exemption",
+    "topic_key": "vat_exemption",
+    "question_type": "definition",
+    "question_normalized": "nepal ma kun saman ma vat chhut cha"
+  },
+  "nepal ma kun saman ma vat chhut cha": {
+    "id": "taxfaq-006",
+    "topic": "VAT exemption",
+    "topic_key": "vat_exemption",
+    "question_type": "definition",
+    "question_normalized": "nepal ma kun saman ma vat chhut cha"
+  },
+  "VAT exemption": {
+    "id": "taxfaq-006",
+    "topic": "VAT exemption",
+    "topic_key": "vat_exemption",
+    "question_type": "definition",
+    "question_normalized": "nepal ma kun saman ma vat chhut cha"
+  },
+  "vat_exemption": {
+    "id": "taxfaq-006",
+    "topic": "VAT exemption",
+    "topic_key": "vat_exemption",
+    "question_type": "definition",
+    "question_normalized": "nepal ma kun saman ma vat chhut cha"
+  },
+  "vat rate kati ho": {
+    "id": "taxfaq-006",
+    "topic": "VAT exemption",
+    "topic_key": "vat_exemption",
+    "question_type": "definition",
+    "question_normalized": "nepal ma kun saman ma vat chhut cha"
+  },
+  "zero rate ra exempt ma ke farak cha": {
+    "id": "taxfaq-006",
+    "topic": "VAT exemption",
+    "topic_key": "vat_exemption",
+    "question_type": "definition",
+    "question_normalized": "nepal ma kun saman ma vat chhut cha"
+  },
+  "Nepal ma natural person ko income tax rate kati ho?": {
+    "id": "taxfaq-007",
+    "topic": "Individual Income Tax Slab",
+    "topic_key": "individual_income_tax_slab",
+    "question_type": "definition",
+    "question_normalized": "nepal ma natural person ko income tax rate kati ho"
+  },
+  "What are the individual income tax slabs in Nepal?": {
+    "id": "taxfaq-007",
+    "topic": "Individual Income Tax Slab",
+    "topic_key": "individual_income_tax_slab",
+    "question_type": "definition",
+    "question_normalized": "nepal ma natural person ko income tax rate kati ho"
+  },
+  "nepal ma natural person ko income tax rate kati ho": {
+    "id": "taxfaq-007",
+    "topic": "Individual Income Tax Slab",
+    "topic_key": "individual_income_tax_slab",
+    "question_type": "definition",
+    "question_normalized": "nepal ma natural person ko income tax rate kati ho"
+  },
+  "Individual Income Tax Slab": {
+    "id": "taxfaq-007",
+    "topic": "Individual Income Tax Slab",
+    "topic_key": "individual_income_tax_slab",
+    "question_type": "definition",
+    "question_normalized": "nepal ma natural person ko income tax rate kati ho"
+  },
+  "individual_income_tax_slab": {
+    "id": "taxfaq-007",
+    "topic": "Individual Income Tax Slab",
+    "topic_key": "individual_income_tax_slab",
+    "question_type": "definition",
+    "question_normalized": "nepal ma natural person ko income tax rate kati ho"
+  },
+  "couple ko lagi slab ke ho": {
+    "id": "taxfaq-007",
+    "topic": "Individual Income Tax Slab",
+    "topic_key": "individual_income_tax_slab",
+    "question_type": "definition",
+    "question_normalized": "nepal ma natural person ko income tax rate kati ho"
+  },
+  "1% social security fund ho": {
+    "id": "taxfaq-007",
+    "topic": "Individual Income Tax Slab",
+    "topic_key": "individual_income_tax_slab",
+    "question_type": "definition",
+    "question_normalized": "nepal ma natural person ko income tax rate kati ho"
+  },
+  "Nepal ma company lai corporate tax kati lagcha?": {
+    "id": "taxfaq-008",
+    "topic": "Corporate Tax Rate",
+    "topic_key": "corporate_tax_rate",
+    "question_type": "definition",
+    "question_normalized": "nepal ma company lai corporate tax kati lagcha"
+  },
+  "What is the corporate tax rate in Nepal?": {
+    "id": "taxfaq-008",
+    "topic": "Corporate Tax Rate",
+    "topic_key": "corporate_tax_rate",
+    "question_type": "definition",
+    "question_normalized": "nepal ma company lai corporate tax kati lagcha"
+  },
+  "nepal ma company lai corporate tax kati lagcha": {
+    "id": "taxfaq-008",
+    "topic": "Corporate Tax Rate",
+    "topic_key": "corporate_tax_rate",
+    "question_type": "definition",
+    "question_normalized": "nepal ma company lai corporate tax kati lagcha"
+  },
+  "Corporate Tax Rate": {
+    "id": "taxfaq-008",
+    "topic": "Corporate Tax Rate",
+    "topic_key": "corporate_tax_rate",
+    "question_type": "definition",
+    "question_normalized": "nepal ma company lai corporate tax kati lagcha"
+  },
+  "corporate_tax_rate": {
+    "id": "taxfaq-008",
+    "topic": "Corporate Tax Rate",
+    "topic_key": "corporate_tax_rate",
+    "question_type": "definition",
+    "question_normalized": "nepal ma company lai corporate tax kati lagcha"
+  },
+  "micro/small enterprise ko rate ke cha": {
+    "id": "taxfaq-008",
+    "topic": "Corporate Tax Rate",
+    "topic_key": "corporate_tax_rate",
+    "question_type": "definition",
+    "question_normalized": "nepal ma company lai corporate tax kati lagcha"
+  },
+  "dividend ma tax lagcha": {
+    "id": "taxfaq-008",
+    "topic": "Corporate Tax Rate",
+    "topic_key": "corporate_tax_rate",
+    "question_type": "definition",
+    "question_normalized": "nepal ma company lai corporate tax kati lagcha"
+  },
+  "TDS rate kati kati cha?": {
+    "id": "taxfaq-009",
+    "topic": "Tax Deduction at Source (TDS) Rates",
+    "topic_key": "tax_deduction_at_source_tds_rates",
+    "question_type": "definition",
+    "question_normalized": "tds rate kati kati cha"
+  },
+  "What are the TDS rates in Nepal?": {
+    "id": "taxfaq-009",
+    "topic": "Tax Deduction at Source (TDS) Rates",
+    "topic_key": "tax_deduction_at_source_tds_rates",
+    "question_type": "definition",
+    "question_normalized": "tds rate kati kati cha"
+  },
+  "tds rate kati kati cha": {
+    "id": "taxfaq-009",
+    "topic": "Tax Deduction at Source (TDS) Rates",
+    "topic_key": "tax_deduction_at_source_tds_rates",
+    "question_type": "definition",
+    "question_normalized": "tds rate kati kati cha"
+  },
+  "Tax Deduction at Source (TDS) Rates": {
+    "id": "taxfaq-009",
+    "topic": "Tax Deduction at Source (TDS) Rates",
+    "topic_key": "tax_deduction_at_source_tds_rates",
+    "question_type": "definition",
+    "question_normalized": "tds rate kati kati cha"
+  },
+  "tax_deduction_at_source_tds_rates": {
+    "id": "taxfaq-009",
+    "topic": "Tax Deduction at Source (TDS) Rates",
+    "topic_key": "tax_deduction_at_source_tds_rates",
+    "question_type": "definition",
+    "question_normalized": "tds rate kati kati cha"
+  },
+  "tds kateko paisa ka bharne": {
+    "id": "taxfaq-009",
+    "topic": "Tax Deduction at Source (TDS) Rates",
+    "topic_key": "tax_deduction_at_source_tds_rates",
+    "question_type": "definition",
+    "question_normalized": "tds rate kati kati cha"
+  },
+  "tds kahile katni": {
+    "id": "taxfaq-009",
+    "topic": "Tax Deduction at Source (TDS) Rates",
+    "topic_key": "tax_deduction_at_source_tds_rates",
+    "question_type": "definition",
+    "question_normalized": "tds rate kati kati cha"
+  },
+  "TDS ko raka deposit kahile garne?": {
+    "id": "taxfaq-010",
+    "topic": "TDS Deposit Timeline",
+    "topic_key": "tds_deposit_timeline",
+    "question_type": "definition",
+    "question_normalized": "tds ko raka deposit kahile garne"
+  },
+  "When should TDS be deposited?": {
+    "id": "taxfaq-010",
+    "topic": "TDS Deposit Timeline",
+    "topic_key": "tds_deposit_timeline",
+    "question_type": "definition",
+    "question_normalized": "tds ko raka deposit kahile garne"
+  },
+  "tds ko raka deposit kahile garne": {
+    "id": "taxfaq-010",
+    "topic": "TDS Deposit Timeline",
+    "topic_key": "tds_deposit_timeline",
+    "question_type": "definition",
+    "question_normalized": "tds ko raka deposit kahile garne"
+  },
+  "TDS Deposit Timeline": {
+    "id": "taxfaq-010",
+    "topic": "TDS Deposit Timeline",
+    "topic_key": "tds_deposit_timeline",
+    "question_type": "definition",
+    "question_normalized": "tds ko raka deposit kahile garne"
+  },
+  "tds_deposit_timeline": {
+    "id": "taxfaq-010",
+    "topic": "TDS Deposit Timeline",
+    "topic_key": "tds_deposit_timeline",
+    "question_type": "definition",
+    "question_normalized": "tds ko raka deposit kahile garne"
+  },
+  "der bhayo bhane ke huncha": {
+    "id": "taxfaq-010",
+    "topic": "TDS Deposit Timeline",
+    "topic_key": "tds_deposit_timeline",
+    "question_type": "definition",
+    "question_normalized": "tds ko raka deposit kahile garne"
+  },
+  "etds garnu parcha": {
+    "id": "taxfaq-010",
+    "topic": "TDS Deposit Timeline",
+    "topic_key": "tds_deposit_timeline",
+    "question_type": "definition",
+    "question_normalized": "tds ko raka deposit kahile garne"
+  },
+  "TDS return kahile file garne?": {
+    "id": "taxfaq-011",
+    "topic": "TDS Return Filing",
+    "topic_key": "tds_return_filing",
+    "question_type": "definition",
+    "question_normalized": "tds return kahile file garne"
+  },
+  "When to file TDS return?": {
+    "id": "taxfaq-011",
+    "topic": "TDS Return Filing",
+    "topic_key": "tds_return_filing",
+    "question_type": "definition",
+    "question_normalized": "tds return kahile file garne"
+  },
+  "tds return kahile file garne": {
+    "id": "taxfaq-011",
+    "topic": "TDS Return Filing",
+    "topic_key": "tds_return_filing",
+    "question_type": "definition",
+    "question_normalized": "tds return kahile file garne"
+  },
+  "TDS Return Filing": {
+    "id": "taxfaq-011",
+    "topic": "TDS Return Filing",
+    "topic_key": "tds_return_filing",
+    "question_type": "definition",
+    "question_normalized": "tds return kahile file garne"
+  },
+  "tds_return_filing": {
+    "id": "taxfaq-011",
+    "topic": "TDS Return Filing",
+    "topic_key": "tds_return_filing",
+    "question_type": "definition",
+    "question_normalized": "tds return kahile file garne"
+  },
+  "tds kateko rakam kata dekhaune": {
+    "id": "taxfaq-011",
+    "topic": "TDS Return Filing",
+    "topic_key": "tds_return_filing",
+    "question_type": "definition",
+    "question_normalized": "tds return kahile file garne"
+  },
+  "file nagare ke fine lagcha": {
+    "id": "taxfaq-011",
+    "topic": "TDS Return Filing",
+    "topic_key": "tds_return_filing",
+    "question_type": "definition",
+    "question_normalized": "tds return kahile file garne"
+  },
+  "Advance tax kati kishthama tirne?": {
+    "id": "taxfaq-012",
+    "topic": "Advance Tax Installment",
+    "topic_key": "advance_tax_installment",
+    "question_type": "definition",
+    "question_normalized": "advance tax kati kishthama tirne"
+  },
+  "How many installments for advance tax?": {
+    "id": "taxfaq-012",
+    "topic": "Advance Tax Installment",
+    "topic_key": "advance_tax_installment",
+    "question_type": "definition",
+    "question_normalized": "advance tax kati kishthama tirne"
+  },
+  "advance tax kati kishthama tirne": {
+    "id": "taxfaq-012",
+    "topic": "Advance Tax Installment",
+    "topic_key": "advance_tax_installment",
+    "question_type": "definition",
+    "question_normalized": "advance tax kati kishthama tirne"
+  },
+  "Advance Tax Installment": {
+    "id": "taxfaq-012",
+    "topic": "Advance Tax Installment",
+    "topic_key": "advance_tax_installment",
+    "question_type": "definition",
+    "question_normalized": "advance tax kati kishthama tirne"
+  },
+  "advance_tax_installment": {
+    "id": "taxfaq-012",
+    "topic": "Advance Tax Installment",
+    "topic_key": "advance_tax_installment",
+    "question_type": "definition",
+    "question_normalized": "advance tax kati kishthama tirne"
+  },
+  "naya business le kati advance tax tirne": {
+    "id": "taxfaq-012",
+    "topic": "Advance Tax Installment",
+    "topic_key": "advance_tax_installment",
+    "question_type": "definition",
+    "question_normalized": "advance tax kati kishthama tirne"
+  },
+  "time ma tiriyena bhane ke huncha": {
+    "id": "taxfaq-012",
+    "topic": "Advance Tax Installment",
+    "topic_key": "advance_tax_installment",
+    "question_type": "definition",
+    "question_normalized": "advance tax kati kishthama tirne"
+  },
+  "PAN card kasaile banauna parcha?": {
+    "id": "taxfaq-013",
+    "topic": "Permanent Account Number (PAN)",
+    "topic_key": "permanent_account_number_pan",
+    "question_type": "definition",
+    "question_normalized": "pan card kasaile banauna parcha"
+  },
+  "Who needs a PAN card?": {
+    "id": "taxfaq-013",
+    "topic": "Permanent Account Number (PAN)",
+    "topic_key": "permanent_account_number_pan",
+    "question_type": "definition",
+    "question_normalized": "pan card kasaile banauna parcha"
+  },
+  "pan card kasaile banauna parcha": {
+    "id": "taxfaq-013",
+    "topic": "Permanent Account Number (PAN)",
+    "topic_key": "permanent_account_number_pan",
+    "question_type": "definition",
+    "question_normalized": "pan card kasaile banauna parcha"
+  },
+  "Permanent Account Number (PAN)": {
+    "id": "taxfaq-013",
+    "topic": "Permanent Account Number (PAN)",
+    "topic_key": "permanent_account_number_pan",
+    "question_type": "definition",
+    "question_normalized": "pan card kasaile banauna parcha"
+  },
+  "permanent_account_number_pan": {
+    "id": "taxfaq-013",
+    "topic": "Permanent Account Number (PAN)",
+    "topic_key": "permanent_account_number_pan",
+    "question_type": "definition",
+    "question_normalized": "pan card kasaile banauna parcha"
+  },
+  "pan banauna ke chahincha": {
+    "id": "taxfaq-013",
+    "topic": "Permanent Account Number (PAN)",
+    "topic_key": "permanent_account_number_pan",
+    "question_type": "definition",
+    "question_normalized": "pan card kasaile banauna parcha"
+  },
+  "online banauna milcha": {
+    "id": "taxfaq-013",
+    "topic": "Permanent Account Number (PAN)",
+    "topic_key": "permanent_account_number_pan",
+    "question_type": "definition",
+    "question_normalized": "pan card kasaile banauna parcha"
+  },
+  "Income tax return kahile file garne?": {
+    "id": "taxfaq-014",
+    "topic": "Income Tax Return Due Date",
+    "topic_key": "income_tax_return_due_date",
+    "question_type": "definition",
+    "question_normalized": "income tax return kahile file garne"
+  },
+  "When to file income tax return?": {
+    "id": "taxfaq-014",
+    "topic": "Income Tax Return Due Date",
+    "topic_key": "income_tax_return_due_date",
+    "question_type": "definition",
+    "question_normalized": "income tax return kahile file garne"
+  },
+  "income tax return kahile file garne": {
+    "id": "taxfaq-014",
+    "topic": "Income Tax Return Due Date",
+    "topic_key": "income_tax_return_due_date",
+    "question_type": "definition",
+    "question_normalized": "income tax return kahile file garne"
+  },
+  "Income Tax Return Due Date": {
+    "id": "taxfaq-014",
+    "topic": "Income Tax Return Due Date",
+    "topic_key": "income_tax_return_due_date",
+    "question_type": "definition",
+    "question_normalized": "income tax return kahile file garne"
+  },
+  "income_tax_return_due_date": {
+    "id": "taxfaq-014",
+    "topic": "Income Tax Return Due Date",
+    "topic_key": "income_tax_return_due_date",
+    "question_type": "definition",
+    "question_normalized": "income tax return kahile file garne"
+  },
+  "date extend garna milcha": {
+    "id": "taxfaq-014",
+    "topic": "Income Tax Return Due Date",
+    "topic_key": "income_tax_return_due_date",
+    "question_type": "definition",
+    "question_normalized": "income tax return kahile file garne"
+  },
+  "return late bhaye kati penalty": {
+    "id": "taxfaq-014",
+    "topic": "Income Tax Return Due Date",
+    "topic_key": "income_tax_return_due_date",
+    "question_type": "definition",
+    "question_normalized": "income tax return kahile file garne"
+  },
+  "Nepal ma customs duty kati lagcha?": {
+    "id": "taxfaq-015",
+    "topic": "Customs Import Duty",
+    "topic_key": "customs_import_duty",
+    "question_type": "definition",
+    "question_normalized": "nepal ma customs duty kati lagcha"
+  },
+  "What is the customs duty in Nepal?": {
+    "id": "taxfaq-015",
+    "topic": "Customs Import Duty",
+    "topic_key": "customs_import_duty",
+    "question_type": "definition",
+    "question_normalized": "nepal ma customs duty kati lagcha"
+  },
+  "nepal ma customs duty kati lagcha": {
+    "id": "taxfaq-015",
+    "topic": "Customs Import Duty",
+    "topic_key": "customs_import_duty",
+    "question_type": "definition",
+    "question_normalized": "nepal ma customs duty kati lagcha"
+  },
+  "Customs Import Duty": {
+    "id": "taxfaq-015",
+    "topic": "Customs Import Duty",
+    "topic_key": "customs_import_duty",
+    "question_type": "definition",
+    "question_normalized": "nepal ma customs duty kati lagcha"
+  },
+  "customs_import_duty": {
+    "id": "taxfaq-015",
+    "topic": "Customs Import Duty",
+    "topic_key": "customs_import_duty",
+    "question_type": "definition",
+    "question_normalized": "nepal ma customs duty kati lagcha"
+  },
+  "hs code kaha bata thaha paune": {
+    "id": "taxfaq-015",
+    "topic": "Customs Import Duty",
+    "topic_key": "customs_import_duty",
+    "question_type": "definition",
+    "question_normalized": "nepal ma customs duty kati lagcha"
+  },
+  "customs calculator cha": {
+    "id": "taxfaq-015",
+    "topic": "Customs Import Duty",
+    "topic_key": "customs_import_duty",
+    "question_type": "definition",
+    "question_normalized": "nepal ma customs duty kati lagcha"
+  },
+  "Excise duty kati lagcha?": {
+    "id": "taxfaq-016",
+    "topic": "Excise Duty",
+    "topic_key": "excise_duty",
+    "question_type": "definition",
+    "question_normalized": "excise duty kati lagcha"
+  },
+  "What is the excise duty rate?": {
+    "id": "taxfaq-016",
+    "topic": "Excise Duty",
+    "topic_key": "excise_duty",
+    "question_type": "definition",
+    "question_normalized": "excise duty kati lagcha"
+  },
+  "excise duty kati lagcha": {
+    "id": "taxfaq-016",
+    "topic": "Excise Duty",
+    "topic_key": "excise_duty",
+    "question_type": "definition",
+    "question_normalized": "excise duty kati lagcha"
+  },
+  "Excise Duty": {
+    "id": "taxfaq-016",
+    "topic": "Excise Duty",
+    "topic_key": "excise_duty",
+    "question_type": "definition",
+    "question_normalized": "excise duty kati lagcha"
+  },
+  "excise_duty": {
+    "id": "taxfaq-016",
+    "topic": "Excise Duty",
+    "topic_key": "excise_duty",
+    "question_type": "definition",
+    "question_normalized": "excise duty kati lagcha"
+  },
+  "excise duty ko sworup ke ho": {
+    "id": "taxfaq-016",
+    "topic": "Excise Duty",
+    "topic_key": "excise_duty",
+    "question_type": "definition",
+    "question_normalized": "excise duty kati lagcha"
+  },
+  "excise return kasari file garne": {
+    "id": "taxfaq-016",
+    "topic": "Excise Duty",
+    "topic_key": "excise_duty",
+    "question_type": "definition",
+    "question_normalized": "excise duty kati lagcha"
+  },
+  "HS code ke ho?": {
+    "id": "taxfaq-017",
+    "topic": "HS Code",
+    "topic_key": "hs_code",
+    "question_type": "definition",
+    "question_normalized": "hs code ke ho"
+  },
+  "What is HS code?": {
+    "id": "taxfaq-017",
+    "topic": "HS Code",
+    "topic_key": "hs_code",
+    "question_type": "definition",
+    "question_normalized": "hs code ke ho"
+  },
+  "hs code ke ho": {
+    "id": "taxfaq-017",
+    "topic": "HS Code",
+    "topic_key": "hs_code",
+    "question_type": "definition",
+    "question_normalized": "hs code ke ho"
+  },
+  "HS Code": {
+    "id": "taxfaq-017",
+    "topic": "HS Code",
+    "topic_key": "hs_code",
+    "question_type": "definition",
+    "question_normalized": "hs code ke ho"
+  },
+  "hs_code": {
+    "id": "taxfaq-017",
+    "topic": "HS Code",
+    "topic_key": "hs_code",
+    "question_type": "definition",
+    "question_normalized": "hs code ke ho"
+  },
+  "hs code kaha pauncha": {
+    "id": "taxfaq-017",
+    "topic": "HS Code",
+    "topic_key": "hs_code",
+    "question_type": "definition",
+    "question_normalized": "hs code ke ho"
+  },
+  "customs rate table kaha cha": {
+    "id": "taxfaq-017",
+    "topic": "HS Code",
+    "topic_key": "hs_code",
+    "question_type": "definition",
+    "question_normalized": "hs code ke ho"
+  },
+  "Sampati kar kati tirne?": {
+    "id": "taxfaq-018",
+    "topic": "Property Tax",
+    "topic_key": "property_tax",
+    "question_type": "definition",
+    "question_normalized": "sampati kar kati tirne"
+  },
+  "What is the property tax rate?": {
+    "id": "taxfaq-018",
+    "topic": "Property Tax",
+    "topic_key": "property_tax",
+    "question_type": "definition",
+    "question_normalized": "sampati kar kati tirne"
+  },
+  "sampati kar kati tirne": {
+    "id": "taxfaq-018",
+    "topic": "Property Tax",
+    "topic_key": "property_tax",
+    "question_type": "definition",
+    "question_normalized": "sampati kar kati tirne"
+  },
+  "Property Tax": {
+    "id": "taxfaq-018",
+    "topic": "Property Tax",
+    "topic_key": "property_tax",
+    "question_type": "definition",
+    "question_normalized": "sampati kar kati tirne"
+  },
+  "property_tax": {
+    "id": "taxfaq-018",
+    "topic": "Property Tax",
+    "topic_key": "property_tax",
+    "question_type": "definition",
+    "question_normalized": "sampati kar kati tirne"
+  },
+  "calculation kasari garne": {
+    "id": "taxfaq-018",
+    "topic": "Property Tax",
+    "topic_key": "property_tax",
+    "question_type": "definition",
+    "question_normalized": "sampati kar kati tirne"
+  },
+  "fine lagcha bhane kati": {
+    "id": "taxfaq-018",
+    "topic": "Property Tax",
+    "topic_key": "property_tax",
+    "question_type": "definition",
+    "question_normalized": "sampati kar kati tirne"
+  },
+  "Gadi ko tax kati tirne?": {
+    "id": "taxfaq-019",
+    "topic": "Vehicle Tax",
+    "topic_key": "vehicle_tax",
+    "question_type": "definition",
+    "question_normalized": "gadi ko tax kati tirne"
+  },
+  "What is the vehicle tax rate?": {
+    "id": "taxfaq-019",
+    "topic": "Vehicle Tax",
+    "topic_key": "vehicle_tax",
+    "question_type": "definition",
+    "question_normalized": "gadi ko tax kati tirne"
+  },
+  "gadi ko tax kati tirne": {
+    "id": "taxfaq-019",
+    "topic": "Vehicle Tax",
+    "topic_key": "vehicle_tax",
+    "question_type": "definition",
+    "question_normalized": "gadi ko tax kati tirne"
+  },
+  "Vehicle Tax": {
+    "id": "taxfaq-019",
+    "topic": "Vehicle Tax",
+    "topic_key": "vehicle_tax",
+    "question_type": "definition",
+    "question_normalized": "gadi ko tax kati tirne"
+  },
+  "vehicle_tax": {
+    "id": "taxfaq-019",
+    "topic": "Vehicle Tax",
+    "topic_key": "vehicle_tax",
+    "question_type": "definition",
+    "question_normalized": "gadi ko tax kati tirne"
+  },
+  "tax kaha tirne": {
+    "id": "taxfaq-019",
+    "topic": "Vehicle Tax",
+    "topic_key": "vehicle_tax",
+    "question_type": "definition",
+    "question_normalized": "gadi ko tax kati tirne"
+  },
+  "purano gadi ko tax ke huncha": {
+    "id": "taxfaq-019",
+    "topic": "Vehicle Tax",
+    "topic_key": "vehicle_tax",
+    "question_type": "definition",
+    "question_normalized": "gadi ko tax kati tirne"
+  },
+  "Tax return dhila file garda kati penalty?": {
+    "id": "taxfaq-020",
+    "topic": "Penalty for Late Filing",
+    "topic_key": "penalty_for_late_filing",
+    "question_type": "definition",
+    "question_normalized": "tax return dhila file garda kati penalty"
+  },
+  "What is the penalty for late tax filing?": {
+    "id": "taxfaq-020",
+    "topic": "Penalty for Late Filing",
+    "topic_key": "penalty_for_late_filing",
+    "question_type": "definition",
+    "question_normalized": "tax return dhila file garda kati penalty"
+  },
+  "tax return dhila file garda kati penalty": {
+    "id": "taxfaq-020",
+    "topic": "Penalty for Late Filing",
+    "topic_key": "penalty_for_late_filing",
+    "question_type": "definition",
+    "question_normalized": "tax return dhila file garda kati penalty"
+  },
+  "Penalty for Late Filing": {
+    "id": "taxfaq-020",
+    "topic": "Penalty for Late Filing",
+    "topic_key": "penalty_for_late_filing",
+    "question_type": "definition",
+    "question_normalized": "tax return dhila file garda kati penalty"
+  },
+  "penalty_for_late_filing": {
+    "id": "taxfaq-020",
+    "topic": "Penalty for Late Filing",
+    "topic_key": "penalty_for_late_filing",
+    "question_type": "definition",
+    "question_normalized": "tax return dhila file garda kati penalty"
+  },
+  "penalty chhut garne milecha": {
+    "id": "taxfaq-020",
+    "topic": "Penalty for Late Filing",
+    "topic_key": "penalty_for_late_filing",
+    "question_type": "definition",
+    "question_normalized": "tax return dhila file garda kati penalty"
+  },
+  "punishment pani huncha": {
+    "id": "taxfaq-020",
+    "topic": "Penalty for Late Filing",
+    "topic_key": "penalty_for_late_filing",
+    "question_type": "definition",
+    "question_normalized": "tax return dhila file garda kati penalty"
+  },
+  "Micro business ko tax rate kati cha?": {
+    "id": "taxfaq-021",
+    "topic": "Corporate Tax for Micro/SSE",
+    "topic_key": "corporate_tax_for_micro_sse",
+    "question_type": "definition",
+    "question_normalized": "micro business ko tax rate kati cha"
+  },
+  "What is the tax rate for micro businesses?": {
+    "id": "taxfaq-021",
+    "topic": "Corporate Tax for Micro/SSE",
+    "topic_key": "corporate_tax_for_micro_sse",
+    "question_type": "definition",
+    "question_normalized": "micro business ko tax rate kati cha"
+  },
+  "micro business ko tax rate kati cha": {
+    "id": "taxfaq-021",
+    "topic": "Corporate Tax for Micro/SSE",
+    "topic_key": "corporate_tax_for_micro_sse",
+    "question_type": "definition",
+    "question_normalized": "micro business ko tax rate kati cha"
+  },
+  "Corporate Tax for Micro/SSE": {
+    "id": "taxfaq-021",
+    "topic": "Corporate Tax for Micro/SSE",
+    "topic_key": "corporate_tax_for_micro_sse",
+    "question_type": "definition",
+    "question_normalized": "micro business ko tax rate kati cha"
+  },
+  "corporate_tax_for_micro_sse": {
+    "id": "taxfaq-021",
+    "topic": "Corporate Tax for Micro/SSE",
+    "topic_key": "corporate_tax_for_micro_sse",
+    "question_type": "definition",
+    "question_normalized": "micro business ko tax rate kati cha"
+  },
+  "registration process ke cha": {
+    "id": "taxfaq-021",
+    "topic": "Corporate Tax for Micro/SSE",
+    "topic_key": "corporate_tax_for_micro_sse",
+    "question_type": "definition",
+    "question_normalized": "micro business ko tax rate kati cha"
+  },
+  "audit garna parcha": {
+    "id": "taxfaq-021",
+    "topic": "Corporate Tax for Micro/SSE",
+    "topic_key": "corporate_tax_for_micro_sse",
+    "question_type": "definition",
+    "question_normalized": "micro business ko tax rate kati cha"
+  },
+  "Tax clearance certificate kasari paune?": {
+    "id": "taxfaq-022",
+    "topic": "Tax Clearance Certificate",
+    "topic_key": "tax_clearance_certificate",
+    "question_type": "definition",
+    "question_normalized": "tax clearance certificate kasari paune"
+  },
+  "How to get a tax clearance certificate?": {
+    "id": "taxfaq-022",
+    "topic": "Tax Clearance Certificate",
+    "topic_key": "tax_clearance_certificate",
+    "question_type": "definition",
+    "question_normalized": "tax clearance certificate kasari paune"
+  },
+  "tax clearance certificate kasari paune": {
+    "id": "taxfaq-022",
+    "topic": "Tax Clearance Certificate",
+    "topic_key": "tax_clearance_certificate",
+    "question_type": "definition",
+    "question_normalized": "tax clearance certificate kasari paune"
+  },
+  "Tax Clearance Certificate": {
+    "id": "taxfaq-022",
+    "topic": "Tax Clearance Certificate",
+    "topic_key": "tax_clearance_certificate",
+    "question_type": "definition",
+    "question_normalized": "tax clearance certificate kasari paune"
+  },
+  "tax_clearance_certificate": {
+    "id": "taxfaq-022",
+    "topic": "Tax Clearance Certificate",
+    "topic_key": "tax_clearance_certificate",
+    "question_type": "definition",
+    "question_normalized": "tax clearance certificate kasari paune"
+  },
+  "lina kati din lagcha": {
+    "id": "taxfaq-022",
+    "topic": "Tax Clearance Certificate",
+    "topic_key": "tax_clearance_certificate",
+    "question_type": "definition",
+    "question_normalized": "tax clearance certificate kasari paune"
+  },
+  "purpose ke ke ma chahincha": {
+    "id": "taxfaq-022",
+    "topic": "Tax Clearance Certificate",
+    "topic_key": "tax_clearance_certificate",
+    "question_type": "definition",
+    "question_normalized": "tax clearance certificate kasari paune"
+  },
+  "Rent ma TDS kati katne?": {
+    "id": "taxfaq-023",
+    "topic": "Withholding on Rent",
+    "topic_key": "withholding_on_rent",
+    "question_type": "definition",
+    "question_normalized": "rent ma tds kati katne"
+  },
+  "What is TDS on rent?": {
+    "id": "taxfaq-023",
+    "topic": "Withholding on Rent",
+    "topic_key": "withholding_on_rent",
+    "question_type": "definition",
+    "question_normalized": "rent ma tds kati katne"
+  },
+  "rent ma tds kati katne": {
+    "id": "taxfaq-023",
+    "topic": "Withholding on Rent",
+    "topic_key": "withholding_on_rent",
+    "question_type": "definition",
+    "question_normalized": "rent ma tds kati katne"
+  },
+  "Withholding on Rent": {
+    "id": "taxfaq-023",
+    "topic": "Withholding on Rent",
+    "topic_key": "withholding_on_rent",
+    "question_type": "definition",
+    "question_normalized": "rent ma tds kati katne"
+  },
+  "withholding_on_rent": {
+    "id": "taxfaq-023",
+    "topic": "Withholding on Rent",
+    "topic_key": "withholding_on_rent",
+    "question_type": "definition",
+    "question_normalized": "rent ma tds kati katne"
+  },
+  "ghar dhani lai tds dina parcha": {
+    "id": "taxfaq-023",
+    "topic": "Withholding on Rent",
+    "topic_key": "withholding_on_rent",
+    "question_type": "definition",
+    "question_normalized": "rent ma tds kati katne"
+  },
+  "contract rent ma kati lagcha": {
+    "id": "taxfaq-023",
+    "topic": "Withholding on Rent",
+    "topic_key": "withholding_on_rent",
+    "question_type": "definition",
+    "question_normalized": "rent ma tds kati katne"
+  },
+  "Interest income ma TDS kati katne?": {
+    "id": "taxfaq-024",
+    "topic": "Withholding on Interest",
+    "topic_key": "withholding_on_interest",
+    "question_type": "definition",
+    "question_normalized": "interest income ma tds kati katne"
+  },
+  "What is TDS on interest income?": {
+    "id": "taxfaq-024",
+    "topic": "Withholding on Interest",
+    "topic_key": "withholding_on_interest",
+    "question_type": "definition",
+    "question_normalized": "interest income ma tds kati katne"
+  },
+  "interest income ma tds kati katne": {
+    "id": "taxfaq-024",
+    "topic": "Withholding on Interest",
+    "topic_key": "withholding_on_interest",
+    "question_type": "definition",
+    "question_normalized": "interest income ma tds kati katne"
+  },
+  "Withholding on Interest": {
+    "id": "taxfaq-024",
+    "topic": "Withholding on Interest",
+    "topic_key": "withholding_on_interest",
+    "question_type": "definition",
+    "question_normalized": "interest income ma tds kati katne"
+  },
+  "withholding_on_interest": {
+    "id": "taxfaq-024",
+    "topic": "Withholding on Interest",
+    "topic_key": "withholding_on_interest",
+    "question_type": "definition",
+    "question_normalized": "interest income ma tds kati katne"
+  },
+  "banks le automatic katne ho": {
+    "id": "taxfaq-024",
+    "topic": "Withholding on Interest",
+    "topic_key": "withholding_on_interest",
+    "question_type": "definition",
+    "question_normalized": "interest income ma tds kati katne"
+  },
+  "tax return ma adjust huncha": {
+    "id": "taxfaq-024",
+    "topic": "Withholding on Interest",
+    "topic_key": "withholding_on_interest",
+    "question_type": "definition",
+    "question_normalized": "interest income ma tds kati katne"
+  },
+  "Income tax ma medical kharcha credit kati pauncha?": {
+    "id": "taxfaq-025",
+    "topic": "Medical Tax Credit",
+    "topic_key": "medical_tax_credit",
+    "question_type": "definition",
+    "question_normalized": "income tax ma medical kharcha credit kati pauncha"
+  },
+  "What is the medical tax credit limit?": {
+    "id": "taxfaq-025",
+    "topic": "Medical Tax Credit",
+    "topic_key": "medical_tax_credit",
+    "question_type": "definition",
+    "question_normalized": "income tax ma medical kharcha credit kati pauncha"
+  },
+  "income tax ma medical kharcha credit kati pauncha": {
+    "id": "taxfaq-025",
+    "topic": "Medical Tax Credit",
+    "topic_key": "medical_tax_credit",
+    "question_type": "definition",
+    "question_normalized": "income tax ma medical kharcha credit kati pauncha"
+  },
+  "Medical Tax Credit": {
+    "id": "taxfaq-025",
+    "topic": "Medical Tax Credit",
+    "topic_key": "medical_tax_credit",
+    "question_type": "definition",
+    "question_normalized": "income tax ma medical kharcha credit kati pauncha"
+  },
+  "medical_tax_credit": {
+    "id": "taxfaq-025",
+    "topic": "Medical Tax Credit",
+    "topic_key": "medical_tax_credit",
+    "question_type": "definition",
+    "question_normalized": "income tax ma medical kharcha credit kati pauncha"
+  },
+  "insurance premium ma pani pauncha": {
+    "id": "taxfaq-025",
+    "topic": "Medical Tax Credit",
+    "topic_key": "medical_tax_credit",
+    "question_type": "definition",
+    "question_normalized": "income tax ma medical kharcha credit kati pauncha"
+  },
+  "bill rakhnai parcha": {
+    "id": "taxfaq-025",
+    "topic": "Medical Tax Credit",
+    "topic_key": "medical_tax_credit",
+    "question_type": "definition",
+    "question_normalized": "income tax ma medical kharcha credit kati pauncha"
+  },
+  "Durgam kshetra ma tax chhut ke cha?": {
+    "id": "taxfaq-026",
+    "topic": "Remote Area Tax Benefit",
+    "topic_key": "remote_area_tax_benefit",
+    "question_type": "definition",
+    "question_normalized": "durgam kshetra ma tax chhut ke cha"
+  },
+  "What is the tax benefit for remote areas?": {
+    "id": "taxfaq-026",
+    "topic": "Remote Area Tax Benefit",
+    "topic_key": "remote_area_tax_benefit",
+    "question_type": "definition",
+    "question_normalized": "durgam kshetra ma tax chhut ke cha"
+  },
+  "durgam kshetra ma tax chhut ke cha": {
+    "id": "taxfaq-026",
+    "topic": "Remote Area Tax Benefit",
+    "topic_key": "remote_area_tax_benefit",
+    "question_type": "definition",
+    "question_normalized": "durgam kshetra ma tax chhut ke cha"
+  },
+  "Remote Area Tax Benefit": {
+    "id": "taxfaq-026",
+    "topic": "Remote Area Tax Benefit",
+    "topic_key": "remote_area_tax_benefit",
+    "question_type": "definition",
+    "question_normalized": "durgam kshetra ma tax chhut ke cha"
+  },
+  "remote_area_tax_benefit": {
+    "id": "taxfaq-026",
+    "topic": "Remote Area Tax Benefit",
+    "topic_key": "remote_area_tax_benefit",
+    "question_type": "definition",
+    "question_normalized": "durgam kshetra ma tax chhut ke cha"
+  },
+  "kun kshetra durgam ma parcha": {
+    "id": "taxfaq-026",
+    "topic": "Remote Area Tax Benefit",
+    "topic_key": "remote_area_tax_benefit",
+    "question_type": "definition",
+    "question_normalized": "durgam kshetra ma tax chhut ke cha"
+  },
+  "log book rakhnu parcha": {
+    "id": "taxfaq-026",
+    "topic": "Remote Area Tax Benefit",
+    "topic_key": "remote_area_tax_benefit",
+    "question_type": "definition",
+    "question_normalized": "durgam kshetra ma tax chhut ke cha"
+  },
+  "Export ma tax lagcha ki nai?": {
+    "id": "taxfaq-027",
+    "topic": "Export Tax",
+    "topic_key": "export_tax",
+    "question_type": "definition",
+    "question_normalized": "export ma tax lagcha ki nai"
+  },
+  "Is there tax on exports?": {
+    "id": "taxfaq-027",
+    "topic": "Export Tax",
+    "topic_key": "export_tax",
+    "question_type": "definition",
+    "question_normalized": "export ma tax lagcha ki nai"
+  },
+  "export ma tax lagcha ki nai": {
+    "id": "taxfaq-027",
+    "topic": "Export Tax",
+    "topic_key": "export_tax",
+    "question_type": "definition",
+    "question_normalized": "export ma tax lagcha ki nai"
+  },
+  "Export Tax": {
+    "id": "taxfaq-027",
+    "topic": "Export Tax",
+    "topic_key": "export_tax",
+    "question_type": "definition",
+    "question_normalized": "export ma tax lagcha ki nai"
+  },
+  "export_tax": {
+    "id": "taxfaq-027",
+    "topic": "Export Tax",
+    "topic_key": "export_tax",
+    "question_type": "definition",
+    "question_normalized": "export ma tax lagcha ki nai"
+  },
+  "rebate paincha": {
+    "id": "taxfaq-027",
+    "topic": "Export Tax",
+    "topic_key": "export_tax",
+    "question_type": "definition",
+    "question_normalized": "export ma tax lagcha ki nai"
+  },
+  "export vat kasari claim garne": {
+    "id": "taxfaq-027",
+    "topic": "Export Tax",
+    "topic_key": "export_tax",
+    "question_type": "definition",
+    "question_normalized": "export ma tax lagcha ki nai"
+  },
+  "Professional tax ke ho?": {
+    "id": "taxfaq-028",
+    "topic": "Local Professional Tax",
+    "topic_key": "local_professional_tax",
+    "question_type": "definition",
+    "question_normalized": "professional tax ke ho"
+  },
+  "What is professional tax?": {
+    "id": "taxfaq-028",
+    "topic": "Local Professional Tax",
+    "topic_key": "local_professional_tax",
+    "question_type": "definition",
+    "question_normalized": "professional tax ke ho"
+  },
+  "professional tax ke ho": {
+    "id": "taxfaq-028",
+    "topic": "Local Professional Tax",
+    "topic_key": "local_professional_tax",
+    "question_type": "definition",
+    "question_normalized": "professional tax ke ho"
+  },
+  "Local Professional Tax": {
+    "id": "taxfaq-028",
+    "topic": "Local Professional Tax",
+    "topic_key": "local_professional_tax",
+    "question_type": "definition",
+    "question_normalized": "professional tax ke ho"
+  },
+  "local_professional_tax": {
+    "id": "taxfaq-028",
+    "topic": "Local Professional Tax",
+    "topic_key": "local_professional_tax",
+    "question_type": "definition",
+    "question_normalized": "professional tax ke ho"
+  },
+  "kati amount tirne": {
+    "id": "taxfaq-028",
+    "topic": "Local Professional Tax",
+    "topic_key": "local_professional_tax",
+    "question_type": "definition",
+    "question_normalized": "professional tax ke ho"
+  },
+  "multiple profession bhaye k garne": {
+    "id": "taxfaq-028",
+    "topic": "Local Professional Tax",
+    "topic_key": "local_professional_tax",
+    "question_type": "definition",
+    "question_normalized": "professional tax ke ho"
+  },
+  "Capital gains tax kati lagcha?": {
+    "id": "taxfaq-029",
+    "topic": "Capital Gains Tax",
+    "topic_key": "capital_gains_tax",
+    "question_type": "definition",
+    "question_normalized": "capital gains tax kati lagcha"
+  },
+  "What is the capital gains tax rate?": {
+    "id": "taxfaq-029",
+    "topic": "Capital Gains Tax",
+    "topic_key": "capital_gains_tax",
+    "question_type": "definition",
+    "question_normalized": "capital gains tax kati lagcha"
+  },
+  "capital gains tax kati lagcha": {
+    "id": "taxfaq-029",
+    "topic": "Capital Gains Tax",
+    "topic_key": "capital_gains_tax",
+    "question_type": "definition",
+    "question_normalized": "capital gains tax kati lagcha"
+  },
+  "Capital Gains Tax": {
+    "id": "taxfaq-029",
+    "topic": "Capital Gains Tax",
+    "topic_key": "capital_gains_tax",
+    "question_type": "definition",
+    "question_normalized": "capital gains tax kati lagcha"
+  },
+  "capital_gains_tax": {
+    "id": "taxfaq-029",
+    "topic": "Capital Gains Tax",
+    "topic_key": "capital_gains_tax",
+    "question_type": "definition",
+    "question_normalized": "capital gains tax kati lagcha"
+  },
+  "short term ra long term rate ke ho": {
+    "id": "taxfaq-029",
+    "topic": "Capital Gains Tax",
+    "topic_key": "capital_gains_tax",
+    "question_type": "definition",
+    "question_normalized": "capital gains tax kati lagcha"
+  },
+  "dharauti mulya dekhi farak": {
+    "id": "taxfaq-029",
+    "topic": "Capital Gains Tax",
+    "topic_key": "capital_gains_tax",
+    "question_type": "definition",
+    "question_normalized": "capital gains tax kati lagcha"
+  },
+  "Online business lai tax ke cha?": {
+    "id": "taxfaq-030",
+    "topic": "E-Commerce Tax",
+    "topic_key": "e_commerce_tax",
+    "question_type": "definition",
+    "question_normalized": "online business lai tax ke cha"
+  },
+  "What is the tax for e-commerce?": {
+    "id": "taxfaq-030",
+    "topic": "E-Commerce Tax",
+    "topic_key": "e_commerce_tax",
+    "question_type": "definition",
+    "question_normalized": "online business lai tax ke cha"
+  },
+  "online business lai tax ke cha": {
+    "id": "taxfaq-030",
+    "topic": "E-Commerce Tax",
+    "topic_key": "e_commerce_tax",
+    "question_type": "definition",
+    "question_normalized": "online business lai tax ke cha"
+  },
+  "E-Commerce Tax": {
+    "id": "taxfaq-030",
+    "topic": "E-Commerce Tax",
+    "topic_key": "e_commerce_tax",
+    "question_type": "definition",
+    "question_normalized": "online business lai tax ke cha"
+  },
+  "e_commerce_tax": {
+    "id": "taxfaq-030",
+    "topic": "E-Commerce Tax",
+    "topic_key": "e_commerce_tax",
+    "question_type": "definition",
+    "question_normalized": "online business lai tax ke cha"
+  },
+  "foreign company lai pan chaincha": {
+    "id": "taxfaq-030",
+    "topic": "E-Commerce Tax",
+    "topic_key": "e_commerce_tax",
+    "question_type": "definition",
+    "question_normalized": "online business lai tax ke cha"
+  },
+  "payment gateway ma tax katne ki": {
+    "id": "taxfaq-030",
+    "topic": "E-Commerce Tax",
+    "topic_key": "e_commerce_tax",
+    "question_type": "definition",
+    "question_normalized": "online business lai tax ke cha"
+  },
+  "Gift tax Nepal ma lagcha?": {
+    "id": "taxfaq-031",
+    "topic": "Gift Tax",
+    "topic_key": "gift_tax",
+    "question_type": "definition",
+    "question_normalized": "gift tax nepal ma lagcha"
+  },
+  "Is there gift tax in Nepal?": {
+    "id": "taxfaq-031",
+    "topic": "Gift Tax",
+    "topic_key": "gift_tax",
+    "question_type": "definition",
+    "question_normalized": "gift tax nepal ma lagcha"
+  },
+  "gift tax nepal ma lagcha": {
+    "id": "taxfaq-031",
+    "topic": "Gift Tax",
+    "topic_key": "gift_tax",
+    "question_type": "definition",
+    "question_normalized": "gift tax nepal ma lagcha"
+  },
+  "Gift Tax": {
+    "id": "taxfaq-031",
+    "topic": "Gift Tax",
+    "topic_key": "gift_tax",
+    "question_type": "definition",
+    "question_normalized": "gift tax nepal ma lagcha"
+  },
+  "gift_tax": {
+    "id": "taxfaq-031",
+    "topic": "Gift Tax",
+    "topic_key": "gift_tax",
+    "question_type": "definition",
+    "question_normalized": "gift tax nepal ma lagcha"
+  },
+  "close family ko list ke cha": {
+    "id": "taxfaq-031",
+    "topic": "Gift Tax",
+    "topic_key": "gift_tax",
+    "question_type": "definition",
+    "question_normalized": "gift tax nepal ma lagcha"
+  },
+  "gift tax rate kati ho": {
+    "id": "taxfaq-031",
+    "topic": "Gift Tax",
+    "topic_key": "gift_tax",
+    "question_type": "definition",
+    "question_normalized": "gift tax nepal ma lagcha"
+  },
+  "NGO lai tax lagcha ki nai?": {
+    "id": "taxfaq-032",
+    "topic": "Tax on NGOs",
+    "topic_key": "tax_on_ngos",
+    "question_type": "definition",
+    "question_normalized": "ngo lai tax lagcha ki nai"
+  },
+  "Are NGOs taxed in Nepal?": {
+    "id": "taxfaq-032",
+    "topic": "Tax on NGOs",
+    "topic_key": "tax_on_ngos",
+    "question_type": "definition",
+    "question_normalized": "ngo lai tax lagcha ki nai"
+  },
+  "ngo lai tax lagcha ki nai": {
+    "id": "taxfaq-032",
+    "topic": "Tax on NGOs",
+    "topic_key": "tax_on_ngos",
+    "question_type": "definition",
+    "question_normalized": "ngo lai tax lagcha ki nai"
+  },
+  "Tax on NGOs": {
+    "id": "taxfaq-032",
+    "topic": "Tax on NGOs",
+    "topic_key": "tax_on_ngos",
+    "question_type": "definition",
+    "question_normalized": "ngo lai tax lagcha ki nai"
+  },
+  "tax_on_ngos": {
+    "id": "taxfaq-032",
+    "topic": "Tax on NGOs",
+    "topic_key": "tax_on_ngos",
+    "question_type": "definition",
+    "question_normalized": "ngo lai tax lagcha ki nai"
+  },
+  "ngo le tds katnu parcha": {
+    "id": "taxfaq-032",
+    "topic": "Tax on NGOs",
+    "topic_key": "tax_on_ngos",
+    "question_type": "definition",
+    "question_normalized": "ngo lai tax lagcha ki nai"
+  },
+  "swc ma darta chaincha": {
+    "id": "taxfaq-032",
+    "topic": "Tax on NGOs",
+    "topic_key": "tax_on_ngos",
+    "question_type": "definition",
+    "question_normalized": "ngo lai tax lagcha ki nai"
+  },
+  "Byawasayik gadi ko tax ke ho?": {
+    "id": "taxfaq-033",
+    "topic": "Business Vehicle Tax",
+    "topic_key": "business_vehicle_tax",
+    "question_type": "definition",
+    "question_normalized": "byawasayik gadi ko tax ke ho"
+  },
+  "What is the tax for business vehicles?": {
+    "id": "taxfaq-033",
+    "topic": "Business Vehicle Tax",
+    "topic_key": "business_vehicle_tax",
+    "question_type": "definition",
+    "question_normalized": "byawasayik gadi ko tax ke ho"
+  },
+  "byawasayik gadi ko tax ke ho": {
+    "id": "taxfaq-033",
+    "topic": "Business Vehicle Tax",
+    "topic_key": "business_vehicle_tax",
+    "question_type": "definition",
+    "question_normalized": "byawasayik gadi ko tax ke ho"
+  },
+  "Business Vehicle Tax": {
+    "id": "taxfaq-033",
+    "topic": "Business Vehicle Tax",
+    "topic_key": "business_vehicle_tax",
+    "question_type": "definition",
+    "question_normalized": "byawasayik gadi ko tax ke ho"
+  },
+  "business_vehicle_tax": {
+    "id": "taxfaq-033",
+    "topic": "Business Vehicle Tax",
+    "topic_key": "business_vehicle_tax",
+    "question_type": "definition",
+    "question_normalized": "byawasayik gadi ko tax ke ho"
+  },
+  "depreciation rate kati ho": {
+    "id": "taxfaq-033",
+    "topic": "Business Vehicle Tax",
+    "topic_key": "business_vehicle_tax",
+    "question_type": "definition",
+    "question_normalized": "byawasayik gadi ko tax ke ho"
+  },
+  "personal use gadi ko tax": {
+    "id": "taxfaq-033",
+    "topic": "Business Vehicle Tax",
+    "topic_key": "business_vehicle_tax",
+    "question_type": "definition",
+    "question_normalized": "byawasayik gadi ko tax ke ho"
+  },
+  "Pension ma income tax lagcha?": {
+    "id": "taxfaq-034",
+    "topic": "Pension Tax",
+    "topic_key": "pension_tax",
+    "question_type": "definition",
+    "question_normalized": "pension ma income tax lagcha"
+  },
+  "Is pension taxable in Nepal?": {
+    "id": "taxfaq-034",
+    "topic": "Pension Tax",
+    "topic_key": "pension_tax",
+    "question_type": "definition",
+    "question_normalized": "pension ma income tax lagcha"
+  },
+  "pension ma income tax lagcha": {
+    "id": "taxfaq-034",
+    "topic": "Pension Tax",
+    "topic_key": "pension_tax",
+    "question_type": "definition",
+    "question_normalized": "pension ma income tax lagcha"
+  },
+  "Pension Tax": {
+    "id": "taxfaq-034",
+    "topic": "Pension Tax",
+    "topic_key": "pension_tax",
+    "question_type": "definition",
+    "question_normalized": "pension ma income tax lagcha"
+  },
+  "pension_tax": {
+    "id": "taxfaq-034",
+    "topic": "Pension Tax",
+    "topic_key": "pension_tax",
+    "question_type": "definition",
+    "question_normalized": "pension ma income tax lagcha"
+  },
+  "gratuity ma tax lagcha": {
+    "id": "taxfaq-034",
+    "topic": "Pension Tax",
+    "topic_key": "pension_tax",
+    "question_type": "definition",
+    "question_normalized": "pension ma income tax lagcha"
+  },
+  "commuted pension k ho": {
+    "id": "taxfaq-034",
+    "topic": "Pension Tax",
+    "topic_key": "pension_tax",
+    "question_type": "definition",
+    "question_normalized": "pension ma income tax lagcha"
+  },
+  "TDS na kate ke huncha?": {
+    "id": "taxfaq-035",
+    "topic": "Penalty for Not Deducting TDS",
+    "topic_key": "penalty_for_not_deducting_tds",
+    "question_type": "definition",
+    "question_normalized": "tds na kate ke huncha"
+  },
+  "What happens if TDS is not deducted?": {
+    "id": "taxfaq-035",
+    "topic": "Penalty for Not Deducting TDS",
+    "topic_key": "penalty_for_not_deducting_tds",
+    "question_type": "definition",
+    "question_normalized": "tds na kate ke huncha"
+  },
+  "tds na kate ke huncha": {
+    "id": "taxfaq-035",
+    "topic": "Penalty for Not Deducting TDS",
+    "topic_key": "penalty_for_not_deducting_tds",
+    "question_type": "definition",
+    "question_normalized": "tds na kate ke huncha"
+  },
+  "Penalty for Not Deducting TDS": {
+    "id": "taxfaq-035",
+    "topic": "Penalty for Not Deducting TDS",
+    "topic_key": "penalty_for_not_deducting_tds",
+    "question_type": "definition",
+    "question_normalized": "tds na kate ke huncha"
+  },
+  "penalty_for_not_deducting_tds": {
+    "id": "taxfaq-035",
+    "topic": "Penalty for Not Deducting TDS",
+    "topic_key": "penalty_for_not_deducting_tds",
+    "question_type": "definition",
+    "question_normalized": "tds na kate ke huncha"
+  },
+  "principal amount ma credit paincha": {
+    "id": "taxfaq-035",
+    "topic": "Penalty for Not Deducting TDS",
+    "topic_key": "penalty_for_not_deducting_tds",
+    "question_type": "definition",
+    "question_normalized": "tds na kate ke huncha"
+  },
+  "court case lagcha": {
+    "id": "taxfaq-035",
+    "topic": "Penalty for Not Deducting TDS",
+    "topic_key": "penalty_for_not_deducting_tds",
+    "question_type": "definition",
+    "question_normalized": "tds na kate ke huncha"
+  },
+  "Tax resident kasaile manincha?": {
+    "id": "taxfaq-036",
+    "topic": "Tax Residency",
+    "topic_key": "tax_residency",
+    "question_type": "definition",
+    "question_normalized": "tax resident kasaile manincha"
+  },
+  "Who is considered a tax resident?": {
+    "id": "taxfaq-036",
+    "topic": "Tax Residency",
+    "topic_key": "tax_residency",
+    "question_type": "definition",
+    "question_normalized": "tax resident kasaile manincha"
+  },
+  "tax resident kasaile manincha": {
+    "id": "taxfaq-036",
+    "topic": "Tax Residency",
+    "topic_key": "tax_residency",
+    "question_type": "definition",
+    "question_normalized": "tax resident kasaile manincha"
+  },
+  "Tax Residency": {
+    "id": "taxfaq-036",
+    "topic": "Tax Residency",
+    "topic_key": "tax_residency",
+    "question_type": "definition",
+    "question_normalized": "tax resident kasaile manincha"
+  },
+  "tax_residency": {
+    "id": "taxfaq-036",
+    "topic": "Tax Residency",
+    "topic_key": "tax_residency",
+    "question_type": "definition",
+    "question_normalized": "tax resident kasaile manincha"
+  },
+  "nrn lai ke suwidha cha": {
+    "id": "taxfaq-036",
+    "topic": "Tax Residency",
+    "topic_key": "tax_residency",
+    "question_type": "definition",
+    "question_normalized": "tax resident kasaile manincha"
+  },
+  "double tax avoidance ke ho": {
+    "id": "taxfaq-036",
+    "topic": "Tax Residency",
+    "topic_key": "tax_residency",
+    "question_type": "definition",
+    "question_normalized": "tax resident kasaile manincha"
+  },
+  "Digital service provider lai tax ke cha?": {
+    "id": "taxfaq-037",
+    "topic": "Digital Service Tax",
+    "topic_key": "digital_service_tax",
+    "question_type": "definition",
+    "question_normalized": "digital service provider lai tax ke cha"
+  },
+  "What is the tax for digital service providers?": {
+    "id": "taxfaq-037",
+    "topic": "Digital Service Tax",
+    "topic_key": "digital_service_tax",
+    "question_type": "definition",
+    "question_normalized": "digital service provider lai tax ke cha"
+  },
+  "digital service provider lai tax ke cha": {
+    "id": "taxfaq-037",
+    "topic": "Digital Service Tax",
+    "topic_key": "digital_service_tax",
+    "question_type": "definition",
+    "question_normalized": "digital service provider lai tax ke cha"
+  },
+  "Digital Service Tax": {
+    "id": "taxfaq-037",
+    "topic": "Digital Service Tax",
+    "topic_key": "digital_service_tax",
+    "question_type": "definition",
+    "question_normalized": "digital service provider lai tax ke cha"
+  },
+  "digital_service_tax": {
+    "id": "taxfaq-037",
+    "topic": "Digital Service Tax",
+    "topic_key": "digital_service_tax",
+    "question_type": "definition",
+    "question_normalized": "digital service provider lai tax ke cha"
+  },
+  "nepal ma office chaine ho": {
+    "id": "taxfaq-037",
+    "topic": "Digital Service Tax",
+    "topic_key": "digital_service_tax",
+    "question_type": "definition",
+    "question_normalized": "digital service provider lai tax ke cha"
+  },
+  "netflix/google lai kati tax lagcha": {
+    "id": "taxfaq-037",
+    "topic": "Digital Service Tax",
+    "topic_key": "digital_service_tax",
+    "question_type": "definition",
+    "question_normalized": "digital service provider lai tax ke cha"
+  },
+  "Sahakari sanstha ko tax rate ke ho?": {
+    "id": "taxfaq-038",
+    "topic": "Cooperative Tax",
+    "topic_key": "cooperative_tax",
+    "question_type": "definition",
+    "question_normalized": "sahakari sanstha ko tax rate ke ho"
+  },
+  "What is the tax rate for cooperatives?": {
+    "id": "taxfaq-038",
+    "topic": "Cooperative Tax",
+    "topic_key": "cooperative_tax",
+    "question_type": "definition",
+    "question_normalized": "sahakari sanstha ko tax rate ke ho"
+  },
+  "sahakari sanstha ko tax rate ke ho": {
+    "id": "taxfaq-038",
+    "topic": "Cooperative Tax",
+    "topic_key": "cooperative_tax",
+    "question_type": "definition",
+    "question_normalized": "sahakari sanstha ko tax rate ke ho"
+  },
+  "Cooperative Tax": {
+    "id": "taxfaq-038",
+    "topic": "Cooperative Tax",
+    "topic_key": "cooperative_tax",
+    "question_type": "definition",
+    "question_normalized": "sahakari sanstha ko tax rate ke ho"
+  },
+  "cooperative_tax": {
+    "id": "taxfaq-038",
+    "topic": "Cooperative Tax",
+    "topic_key": "cooperative_tax",
+    "question_type": "definition",
+    "question_normalized": "sahakari sanstha ko tax rate ke ho"
+  },
+  "sadasya transaction ma tds lagcha": {
+    "id": "taxfaq-038",
+    "topic": "Cooperative Tax",
+    "topic_key": "cooperative_tax",
+    "question_type": "definition",
+    "question_normalized": "sahakari sanstha ko tax rate ke ho"
+  },
+  "Nepal ma Inheritance tax lagcha?": {
+    "id": "taxfaq-039",
+    "topic": "Inheritance Tax",
+    "topic_key": "inheritance_tax",
+    "question_type": "definition",
+    "question_normalized": "nepal ma inheritance tax lagcha"
+  },
+  "Is there inheritance tax in Nepal?": {
+    "id": "taxfaq-039",
+    "topic": "Inheritance Tax",
+    "topic_key": "inheritance_tax",
+    "question_type": "definition",
+    "question_normalized": "nepal ma inheritance tax lagcha"
+  },
+  "nepal ma inheritance tax lagcha": {
+    "id": "taxfaq-039",
+    "topic": "Inheritance Tax",
+    "topic_key": "inheritance_tax",
+    "question_type": "definition",
+    "question_normalized": "nepal ma inheritance tax lagcha"
+  },
+  "Inheritance Tax": {
+    "id": "taxfaq-039",
+    "topic": "Inheritance Tax",
+    "topic_key": "inheritance_tax",
+    "question_type": "definition",
+    "question_normalized": "nepal ma inheritance tax lagcha"
+  },
+  "inheritance_tax": {
+    "id": "taxfaq-039",
+    "topic": "Inheritance Tax",
+    "topic_key": "inheritance_tax",
+    "question_type": "definition",
+    "question_normalized": "nepal ma inheritance tax lagcha"
+  },
+  "kunai tax change hudai cha": {
+    "id": "taxfaq-039",
+    "topic": "Inheritance Tax",
+    "topic_key": "inheritance_tax",
+    "question_type": "definition",
+    "question_normalized": "nepal ma inheritance tax lagcha"
+  },
+  "property registration fee kati ho": {
+    "id": "taxfaq-039",
+    "topic": "Inheritance Tax",
+    "topic_key": "inheritance_tax",
+    "question_type": "definition",
+    "question_normalized": "nepal ma inheritance tax lagcha"
+  },
+  "Share market ma tax kati ho?": {
+    "id": "taxfaq-040",
+    "topic": "Tax on Share Transactions",
+    "topic_key": "tax_on_share_transactions",
+    "question_type": "definition",
+    "question_normalized": "share market ma tax kati ho"
+  },
+  "What is the tax on share transactions?": {
+    "id": "taxfaq-040",
+    "topic": "Tax on Share Transactions",
+    "topic_key": "tax_on_share_transactions",
+    "question_type": "definition",
+    "question_normalized": "share market ma tax kati ho"
+  },
+  "share market ma tax kati ho": {
+    "id": "taxfaq-040",
+    "topic": "Tax on Share Transactions",
+    "topic_key": "tax_on_share_transactions",
+    "question_type": "definition",
+    "question_normalized": "share market ma tax kati ho"
+  },
+  "Tax on Share Transactions": {
+    "id": "taxfaq-040",
+    "topic": "Tax on Share Transactions",
+    "topic_key": "tax_on_share_transactions",
+    "question_type": "definition",
+    "question_normalized": "share market ma tax kati ho"
+  },
+  "tax_on_share_transactions": {
+    "id": "taxfaq-040",
+    "topic": "Tax on Share Transactions",
+    "topic_key": "tax_on_share_transactions",
+    "question_type": "definition",
+    "question_normalized": "share market ma tax kati ho"
+  },
+  "broker commission ma tax cha": {
+    "id": "taxfaq-040",
+    "topic": "Tax on Share Transactions",
+    "topic_key": "tax_on_share_transactions",
+    "question_type": "definition",
+    "question_normalized": "share market ma tax kati ho"
+  },
+  "nrn le share bechda tax ke cha": {
+    "id": "taxfaq-040",
+    "topic": "Tax on Share Transactions",
+    "topic_key": "tax_on_share_transactions",
+    "question_type": "definition",
+    "question_normalized": "share market ma tax kati ho"
+  },
+  "Electric gadi ko tax ke cha?": {
+    "id": "taxfaq-041",
+    "topic": "Electric Vehicle Tax",
+    "topic_key": "electric_vehicle_tax",
+    "question_type": "definition",
+    "question_normalized": "electric gadi ko tax ke cha"
+  },
+  "What is the tax on electric vehicles?": {
+    "id": "taxfaq-041",
+    "topic": "Electric Vehicle Tax",
+    "topic_key": "electric_vehicle_tax",
+    "question_type": "definition",
+    "question_normalized": "electric gadi ko tax ke cha"
+  },
+  "electric gadi ko tax ke cha": {
+    "id": "taxfaq-041",
+    "topic": "Electric Vehicle Tax",
+    "topic_key": "electric_vehicle_tax",
+    "question_type": "definition",
+    "question_normalized": "electric gadi ko tax ke cha"
+  },
+  "Electric Vehicle Tax": {
+    "id": "taxfaq-041",
+    "topic": "Electric Vehicle Tax",
+    "topic_key": "electric_vehicle_tax",
+    "question_type": "definition",
+    "question_normalized": "electric gadi ko tax ke cha"
+  },
+  "electric_vehicle_tax": {
+    "id": "taxfaq-041",
+    "topic": "Electric Vehicle Tax",
+    "topic_key": "electric_vehicle_tax",
+    "question_type": "definition",
+    "question_normalized": "electric gadi ko tax ke cha"
+  },
+  "charger ma tax ke cha": {
+    "id": "taxfaq-041",
+    "topic": "Electric Vehicle Tax",
+    "topic_key": "electric_vehicle_tax",
+    "question_type": "definition",
+    "question_normalized": "electric gadi ko tax ke cha"
+  },
+  "luxury ev lai pani same ho": {
+    "id": "taxfaq-041",
+    "topic": "Electric Vehicle Tax",
+    "topic_key": "electric_vehicle_tax",
+    "question_type": "definition",
+    "question_normalized": "electric gadi ko tax ke cha"
+  },
+  "Contract payment ma TDS kati katne?": {
+    "id": "taxfaq-042",
+    "topic": "Contract Payment Tax",
+    "topic_key": "contract_payment_tax",
+    "question_type": "definition",
+    "question_normalized": "contract payment ma tds kati katne"
+  },
+  "What is TDS on contract payments?": {
+    "id": "taxfaq-042",
+    "topic": "Contract Payment Tax",
+    "topic_key": "contract_payment_tax",
+    "question_type": "definition",
+    "question_normalized": "contract payment ma tds kati katne"
+  },
+  "contract payment ma tds kati katne": {
+    "id": "taxfaq-042",
+    "topic": "Contract Payment Tax",
+    "topic_key": "contract_payment_tax",
+    "question_type": "definition",
+    "question_normalized": "contract payment ma tds kati katne"
+  },
+  "Contract Payment Tax": {
+    "id": "taxfaq-042",
+    "topic": "Contract Payment Tax",
+    "topic_key": "contract_payment_tax",
+    "question_type": "definition",
+    "question_normalized": "contract payment ma tds kati katne"
+  },
+  "contract_payment_tax": {
+    "id": "taxfaq-042",
+    "topic": "Contract Payment Tax",
+    "topic_key": "contract_payment_tax",
+    "question_type": "definition",
+    "question_normalized": "contract payment ma tds kati katne"
+  },
+  "construction contract ho bhane ke rate": {
+    "id": "taxfaq-042",
+    "topic": "Contract Payment Tax",
+    "topic_key": "contract_payment_tax",
+    "question_type": "definition",
+    "question_normalized": "contract payment ma tds kati katne"
+  },
+  "bills ma vat pani jodne ho": {
+    "id": "taxfaq-042",
+    "topic": "Contract Payment Tax",
+    "topic_key": "contract_payment_tax",
+    "question_type": "definition",
+    "question_normalized": "contract payment ma tds kati katne"
+  },
+  "Nepal ma foreign investment lai ke tax cha?": {
+    "id": "taxfaq-043",
+    "topic": "Foreign Investment Tax",
+    "topic_key": "foreign_investment_tax",
+    "question_type": "definition",
+    "question_normalized": "nepal ma foreign investment lai ke tax cha"
+  },
+  "What is the tax on foreign investment?": {
+    "id": "taxfaq-043",
+    "topic": "Foreign Investment Tax",
+    "topic_key": "foreign_investment_tax",
+    "question_type": "definition",
+    "question_normalized": "nepal ma foreign investment lai ke tax cha"
+  },
+  "nepal ma foreign investment lai ke tax cha": {
+    "id": "taxfaq-043",
+    "topic": "Foreign Investment Tax",
+    "topic_key": "foreign_investment_tax",
+    "question_type": "definition",
+    "question_normalized": "nepal ma foreign investment lai ke tax cha"
+  },
+  "Foreign Investment Tax": {
+    "id": "taxfaq-043",
+    "topic": "Foreign Investment Tax",
+    "topic_key": "foreign_investment_tax",
+    "question_type": "definition",
+    "question_normalized": "nepal ma foreign investment lai ke tax cha"
+  },
+  "foreign_investment_tax": {
+    "id": "taxfaq-043",
+    "topic": "Foreign Investment Tax",
+    "topic_key": "foreign_investment_tax",
+    "question_type": "definition",
+    "question_normalized": "nepal ma foreign investment lai ke tax cha"
+  },
+  "profit repatriate garda tax ke cha": {
+    "id": "taxfaq-043",
+    "topic": "Foreign Investment Tax",
+    "topic_key": "foreign_investment_tax",
+    "question_type": "definition",
+    "question_normalized": "nepal ma foreign investment lai ke tax cha"
+  },
+  "dtaa ke ke cha": {
+    "id": "taxfaq-043",
+    "topic": "Foreign Investment Tax",
+    "topic_key": "foreign_investment_tax",
+    "question_type": "definition",
+    "question_normalized": "nepal ma foreign investment lai ke tax cha"
+  },
+  "Krishi income ma tax lagcha?": {
+    "id": "taxfaq-044",
+    "topic": "Agriculture Tax",
+    "topic_key": "agriculture_tax",
+    "question_type": "definition",
+    "question_normalized": "krishi income ma tax lagcha"
+  },
+  "Is agricultural income taxable?": {
+    "id": "taxfaq-044",
+    "topic": "Agriculture Tax",
+    "topic_key": "agriculture_tax",
+    "question_type": "definition",
+    "question_normalized": "krishi income ma tax lagcha"
+  },
+  "krishi income ma tax lagcha": {
+    "id": "taxfaq-044",
+    "topic": "Agriculture Tax",
+    "topic_key": "agriculture_tax",
+    "question_type": "definition",
+    "question_normalized": "krishi income ma tax lagcha"
+  },
+  "Agriculture Tax": {
+    "id": "taxfaq-044",
+    "topic": "Agriculture Tax",
+    "topic_key": "agriculture_tax",
+    "question_type": "definition",
+    "question_normalized": "krishi income ma tax lagcha"
+  },
+  "agriculture_tax": {
+    "id": "taxfaq-044",
+    "topic": "Agriculture Tax",
+    "topic_key": "agriculture_tax",
+    "question_type": "definition",
+    "question_normalized": "krishi income ma tax lagcha"
+  },
+  "pashupalan ma tax lagcha": {
+    "id": "taxfaq-044",
+    "topic": "Agriculture Tax",
+    "topic_key": "agriculture_tax",
+    "question_type": "definition",
+    "question_normalized": "krishi income ma tax lagcha"
+  },
+  "greenhouse farming ko tax": {
+    "id": "taxfaq-044",
+    "topic": "Agriculture Tax",
+    "topic_key": "agriculture_tax",
+    "question_type": "definition",
+    "question_normalized": "krishi income ma tax lagcha"
+  },
+  "Insurance premium ma tax credit pauncha?": {
+    "id": "taxfaq-045",
+    "topic": "Insurance Premium Tax Credit",
+    "topic_key": "insurance_premium_tax_credit",
+    "question_type": "definition",
+    "question_normalized": "insurance premium ma tax credit pauncha"
+  },
+  "Is there a tax credit on insurance premiums?": {
+    "id": "taxfaq-045",
+    "topic": "Insurance Premium Tax Credit",
+    "topic_key": "insurance_premium_tax_credit",
+    "question_type": "definition",
+    "question_normalized": "insurance premium ma tax credit pauncha"
+  },
+  "insurance premium ma tax credit pauncha": {
+    "id": "taxfaq-045",
+    "topic": "Insurance Premium Tax Credit",
+    "topic_key": "insurance_premium_tax_credit",
+    "question_type": "definition",
+    "question_normalized": "insurance premium ma tax credit pauncha"
+  },
+  "Insurance Premium Tax Credit": {
+    "id": "taxfaq-045",
+    "topic": "Insurance Premium Tax Credit",
+    "topic_key": "insurance_premium_tax_credit",
+    "question_type": "definition",
+    "question_normalized": "insurance premium ma tax credit pauncha"
+  },
+  "insurance_premium_tax_credit": {
+    "id": "taxfaq-045",
+    "topic": "Insurance Premium Tax Credit",
+    "topic_key": "insurance_premium_tax_credit",
+    "question_type": "definition",
+    "question_normalized": "insurance premium ma tax credit pauncha"
+  },
+  "couple lai double pauncha": {
+    "id": "taxfaq-045",
+    "topic": "Insurance Premium Tax Credit",
+    "topic_key": "insurance_premium_tax_credit",
+    "question_type": "definition",
+    "question_normalized": "insurance premium ma tax credit pauncha"
+  },
+  "bima maturity ma tax lagcha": {
+    "id": "taxfaq-045",
+    "topic": "Insurance Premium Tax Credit",
+    "topic_key": "insurance_premium_tax_credit",
+    "question_type": "definition",
+    "question_normalized": "insurance premium ma tax credit pauncha"
+  },
+  "Tax officer le dhamki diyo bhane?": {
+    "id": "taxfaq-046",
+    "topic": "Bootstrap Penalty",
+    "topic_key": "bootstrap_penalty",
+    "question_type": "definition",
+    "question_normalized": "tax officer le dhamki diyo bhane"
+  },
+  "What if a tax officer threatens?": {
+    "id": "taxfaq-046",
+    "topic": "Bootstrap Penalty",
+    "topic_key": "bootstrap_penalty",
+    "question_type": "definition",
+    "question_normalized": "tax officer le dhamki diyo bhane"
+  },
+  "tax officer le dhamki diyo bhane": {
+    "id": "taxfaq-046",
+    "topic": "Bootstrap Penalty",
+    "topic_key": "bootstrap_penalty",
+    "question_type": "definition",
+    "question_normalized": "tax officer le dhamki diyo bhane"
+  },
+  "Bootstrap Penalty": {
+    "id": "taxfaq-046",
+    "topic": "Bootstrap Penalty",
+    "topic_key": "bootstrap_penalty",
+    "question_type": "definition",
+    "question_normalized": "tax officer le dhamki diyo bhane"
+  },
+  "bootstrap_penalty": {
+    "id": "taxfaq-046",
+    "topic": "Bootstrap Penalty",
+    "topic_key": "bootstrap_penalty",
+    "question_type": "definition",
+    "question_normalized": "tax officer le dhamki diyo bhane"
+  },
+  "notice ayo, k garne": {
+    "id": "taxfaq-046",
+    "topic": "Bootstrap Penalty",
+    "topic_key": "bootstrap_penalty",
+    "question_type": "definition",
+    "question_normalized": "tax officer le dhamki diyo bhane"
+  },
+  "revenue tribunal kahile jane": {
+    "id": "taxfaq-046",
+    "topic": "Bootstrap Penalty",
+    "topic_key": "bootstrap_penalty",
+    "question_type": "definition",
+    "question_normalized": "tax officer le dhamki diyo bhane"
+  },
+  "DTAA Nepal ko sanga sanga cha?": {
+    "id": "taxfaq-047",
+    "topic": "Double Taxation Avoidance",
+    "topic_key": "double_taxation_avoidance",
+    "question_type": "definition",
+    "question_normalized": "dtaa nepal ko sanga sanga cha"
+  },
+  "DTAA is with which countries?": {
+    "id": "taxfaq-047",
+    "topic": "Double Taxation Avoidance",
+    "topic_key": "double_taxation_avoidance",
+    "question_type": "definition",
+    "question_normalized": "dtaa nepal ko sanga sanga cha"
+  },
+  "dtaa nepal ko sanga sanga cha": {
+    "id": "taxfaq-047",
+    "topic": "Double Taxation Avoidance",
+    "topic_key": "double_taxation_avoidance",
+    "question_type": "definition",
+    "question_normalized": "dtaa nepal ko sanga sanga cha"
+  },
+  "Double Taxation Avoidance": {
+    "id": "taxfaq-047",
+    "topic": "Double Taxation Avoidance",
+    "topic_key": "double_taxation_avoidance",
+    "question_type": "definition",
+    "question_normalized": "dtaa nepal ko sanga sanga cha"
+  },
+  "double_taxation_avoidance": {
+    "id": "taxfaq-047",
+    "topic": "Double Taxation Avoidance",
+    "topic_key": "double_taxation_avoidance",
+    "question_type": "definition",
+    "question_normalized": "dtaa nepal ko sanga sanga cha"
+  },
+  "usa sanga dtaa cha": {
+    "id": "taxfaq-047",
+    "topic": "Double Taxation Avoidance",
+    "topic_key": "double_taxation_avoidance",
+    "question_type": "definition",
+    "question_normalized": "dtaa nepal ko sanga sanga cha"
+  },
+  "foreign income declare garne ki nai": {
+    "id": "taxfaq-047",
+    "topic": "Double Taxation Avoidance",
+    "topic_key": "double_taxation_avoidance",
+    "question_type": "definition",
+    "question_normalized": "dtaa nepal ko sanga sanga cha"
+  },
+  "VAT reconciliation ke ho?": {
+    "id": "taxfaq-048",
+    "topic": "VAT Reconciliation",
+    "topic_key": "vat_reconciliation",
+    "question_type": "definition",
+    "question_normalized": "vat reconciliation ke ho"
+  },
+  "What is VAT reconciliation?": {
+    "id": "taxfaq-048",
+    "topic": "VAT Reconciliation",
+    "topic_key": "vat_reconciliation",
+    "question_type": "definition",
+    "question_normalized": "vat reconciliation ke ho"
+  },
+  "vat reconciliation ke ho": {
+    "id": "taxfaq-048",
+    "topic": "VAT Reconciliation",
+    "topic_key": "vat_reconciliation",
+    "question_type": "definition",
+    "question_normalized": "vat reconciliation ke ho"
+  },
+  "VAT Reconciliation": {
+    "id": "taxfaq-048",
+    "topic": "VAT Reconciliation",
+    "topic_key": "vat_reconciliation",
+    "question_type": "definition",
+    "question_normalized": "vat reconciliation ke ho"
+  },
+  "vat_reconciliation": {
+    "id": "taxfaq-048",
+    "topic": "VAT Reconciliation",
+    "topic_key": "vat_reconciliation",
+    "question_type": "definition",
+    "question_normalized": "vat reconciliation ke ho"
+  },
+  "etds sanga milena bhane": {
+    "id": "taxfaq-048",
+    "topic": "VAT Reconciliation",
+    "topic_key": "vat_reconciliation",
+    "question_type": "definition",
+    "question_normalized": "vat reconciliation ke ho"
+  },
+  "milan audit garne ko ho": {
+    "id": "taxfaq-048",
+    "topic": "VAT Reconciliation",
+    "topic_key": "vat_reconciliation",
+    "question_type": "definition",
+    "question_normalized": "vat reconciliation ke ho"
+  },
+  "Tax audit report kasko chaine?": {
+    "id": "taxfaq-049",
+    "topic": "Audit Report Submission",
+    "topic_key": "audit_report_submission",
+    "question_type": "definition",
+    "question_normalized": "tax audit report kasko chaine"
+  },
+  "Who needs a tax audit report?": {
+    "id": "taxfaq-049",
+    "topic": "Audit Report Submission",
+    "topic_key": "audit_report_submission",
+    "question_type": "definition",
+    "question_normalized": "tax audit report kasko chaine"
+  },
+  "tax audit report kasko chaine": {
+    "id": "taxfaq-049",
+    "topic": "Audit Report Submission",
+    "topic_key": "audit_report_submission",
+    "question_type": "definition",
+    "question_normalized": "tax audit report kasko chaine"
+  },
+  "Audit Report Submission": {
+    "id": "taxfaq-049",
+    "topic": "Audit Report Submission",
+    "topic_key": "audit_report_submission",
+    "question_type": "definition",
+    "question_normalized": "tax audit report kasko chaine"
+  },
+  "audit_report_submission": {
+    "id": "taxfaq-049",
+    "topic": "Audit Report Submission",
+    "topic_key": "audit_report_submission",
+    "question_type": "definition",
+    "question_normalized": "tax audit report kasko chaine"
+  },
+  "auditor ko yogyata ke ho": {
+    "id": "taxfaq-049",
+    "topic": "Audit Report Submission",
+    "topic_key": "audit_report_submission",
+    "question_type": "definition",
+    "question_normalized": "tax audit report kasko chaine"
+  },
+  "report date kati ho": {
+    "id": "taxfaq-049",
+    "topic": "Audit Report Submission",
+    "topic_key": "audit_report_submission",
+    "question_type": "definition",
+    "question_normalized": "tax audit report kasko chaine"
+  },
+  "Naksha pass bina ghar ko tax kati?": {
+    "id": "taxfaq-050",
+    "topic": "Map based tax",
+    "topic_key": "map_based_tax",
+    "question_type": "definition",
+    "question_normalized": "naksha pass bina ghar ko tax kati"
+  },
+  "What is the tax for houses without map approval?": {
+    "id": "taxfaq-050",
+    "topic": "Map based tax",
+    "topic_key": "map_based_tax",
+    "question_type": "definition",
+    "question_normalized": "naksha pass bina ghar ko tax kati"
+  },
+  "naksha pass bina ghar ko tax kati": {
+    "id": "taxfaq-050",
+    "topic": "Map based tax",
+    "topic_key": "map_based_tax",
+    "question_type": "definition",
+    "question_normalized": "naksha pass bina ghar ko tax kati"
+  },
+  "Map based tax": {
+    "id": "taxfaq-050",
+    "topic": "Map based tax",
+    "topic_key": "map_based_tax",
+    "question_type": "definition",
+    "question_normalized": "naksha pass bina ghar ko tax kati"
+  },
+  "map_based_tax": {
+    "id": "taxfaq-050",
+    "topic": "Map based tax",
+    "topic_key": "map_based_tax",
+    "question_type": "definition",
+    "question_normalized": "naksha pass bina ghar ko tax kati"
+  },
+  "regularize garna milcha": {
+    "id": "taxfaq-050",
+    "topic": "Map based tax",
+    "topic_key": "map_based_tax",
+    "question_type": "definition",
+    "question_normalized": "naksha pass bina ghar ko tax kati"
+  },
+  "fine tirera pass huncha": {
+    "id": "taxfaq-050",
+    "topic": "Map based tax",
+    "topic_key": "map_based_tax",
+    "question_type": "definition",
+    "question_normalized": "naksha pass bina ghar ko tax kati"
+  },
+  "Royalty ma tax kati lagcha?": {
+    "id": "taxfaq-051",
+    "topic": "Tax on Royalty",
+    "topic_key": "tax_on_royalty",
+    "question_type": "definition",
+    "question_normalized": "royalty ma tax kati lagcha"
+  },
+  "What is the tax on royalty?": {
+    "id": "taxfaq-051",
+    "topic": "Tax on Royalty",
+    "topic_key": "tax_on_royalty",
+    "question_type": "definition",
+    "question_normalized": "royalty ma tax kati lagcha"
+  },
+  "royalty ma tax kati lagcha": {
+    "id": "taxfaq-051",
+    "topic": "Tax on Royalty",
+    "topic_key": "tax_on_royalty",
+    "question_type": "definition",
+    "question_normalized": "royalty ma tax kati lagcha"
+  },
+  "Tax on Royalty": {
+    "id": "taxfaq-051",
+    "topic": "Tax on Royalty",
+    "topic_key": "tax_on_royalty",
+    "question_type": "definition",
+    "question_normalized": "royalty ma tax kati lagcha"
+  },
+  "tax_on_royalty": {
+    "id": "taxfaq-051",
+    "topic": "Tax on Royalty",
+    "topic_key": "tax_on_royalty",
+    "question_type": "definition",
+    "question_normalized": "royalty ma tax kati lagcha"
+  },
+  "copyright fee pani same ho": {
+    "id": "taxfaq-051",
+    "topic": "Tax on Royalty",
+    "topic_key": "tax_on_royalty",
+    "question_type": "definition",
+    "question_normalized": "royalty ma tax kati lagcha"
+  },
+  "technical service fee ma kati": {
+    "id": "taxfaq-051",
+    "topic": "Tax on Royalty",
+    "topic_key": "tax_on_royalty",
+    "question_type": "definition",
+    "question_normalized": "royalty ma tax kati lagcha"
+  },
+  "Tax payment kasari garne?": {
+    "id": "taxfaq-052",
+    "topic": "Payment of Tax",
+    "topic_key": "payment_of_tax",
+    "question_type": "definition",
+    "question_normalized": "tax payment kasari garne"
+  },
+  "How to pay taxes?": {
+    "id": "taxfaq-052",
+    "topic": "Payment of Tax",
+    "topic_key": "payment_of_tax",
+    "question_type": "definition",
+    "question_normalized": "tax payment kasari garne"
+  },
+  "tax payment kasari garne": {
+    "id": "taxfaq-052",
+    "topic": "Payment of Tax",
+    "topic_key": "payment_of_tax",
+    "question_type": "definition",
+    "question_normalized": "tax payment kasari garne"
+  },
+  "Payment of Tax": {
+    "id": "taxfaq-052",
+    "topic": "Payment of Tax",
+    "topic_key": "payment_of_tax",
+    "question_type": "definition",
+    "question_normalized": "tax payment kasari garne"
+  },
+  "payment_of_tax": {
+    "id": "taxfaq-052",
+    "topic": "Payment of Tax",
+    "topic_key": "payment_of_tax",
+    "question_type": "definition",
+    "question_normalized": "tax payment kasari garne"
+  },
+  "cash tire ke huncha": {
+    "id": "taxfaq-052",
+    "topic": "Payment of Tax",
+    "topic_key": "payment_of_tax",
+    "question_type": "definition",
+    "question_normalized": "tax payment kasari garne"
+  },
+  "international payment milcha": {
+    "id": "taxfaq-052",
+    "topic": "Payment of Tax",
+    "topic_key": "payment_of_tax",
+    "question_type": "definition",
+    "question_normalized": "tax payment kasari garne"
+  },
+  "Investment ma ke tax chhut cha?": {
+    "id": "taxfaq-053",
+    "topic": "Inward Investment Tax",
+    "topic_key": "inward_investment_tax",
+    "question_type": "definition",
+    "question_normalized": "investment ma ke tax chhut cha"
+  },
+  "What tax incentives exist for investment?": {
+    "id": "taxfaq-053",
+    "topic": "Inward Investment Tax",
+    "topic_key": "inward_investment_tax",
+    "question_type": "definition",
+    "question_normalized": "investment ma ke tax chhut cha"
+  },
+  "investment ma ke tax chhut cha": {
+    "id": "taxfaq-053",
+    "topic": "Inward Investment Tax",
+    "topic_key": "inward_investment_tax",
+    "question_type": "definition",
+    "question_normalized": "investment ma ke tax chhut cha"
+  },
+  "Inward Investment Tax": {
+    "id": "taxfaq-053",
+    "topic": "Inward Investment Tax",
+    "topic_key": "inward_investment_tax",
+    "question_type": "definition",
+    "question_normalized": "investment ma ke tax chhut cha"
+  },
+  "inward_investment_tax": {
+    "id": "taxfaq-053",
+    "topic": "Inward Investment Tax",
+    "topic_key": "inward_investment_tax",
+    "question_type": "definition",
+    "question_normalized": "investment ma ke tax chhut cha"
+  },
+  "hotel industry ma ke cha": {
+    "id": "taxfaq-053",
+    "topic": "Inward Investment Tax",
+    "topic_key": "inward_investment_tax",
+    "question_type": "definition",
+    "question_normalized": "investment ma ke tax chhut cha"
+  },
+  "special economic zone ma k huncha": {
+    "id": "taxfaq-053",
+    "topic": "Inward Investment Tax",
+    "topic_key": "inward_investment_tax",
+    "question_type": "definition",
+    "question_normalized": "investment ma ke tax chhut cha"
+  },
+  "Non-resident lai Nepal ma tax kati lagcha?": {
+    "id": "taxfaq-054",
+    "topic": "Non-Resident Tax",
+    "topic_key": "non_resident_tax",
+    "question_type": "definition",
+    "question_normalized": "non-resident lai nepal ma tax kati lagcha"
+  },
+  "What is the tax rate for non-residents?": {
+    "id": "taxfaq-054",
+    "topic": "Non-Resident Tax",
+    "topic_key": "non_resident_tax",
+    "question_type": "definition",
+    "question_normalized": "non-resident lai nepal ma tax kati lagcha"
+  },
+  "non-resident lai nepal ma tax kati lagcha": {
+    "id": "taxfaq-054",
+    "topic": "Non-Resident Tax",
+    "topic_key": "non_resident_tax",
+    "question_type": "definition",
+    "question_normalized": "non-resident lai nepal ma tax kati lagcha"
+  },
+  "Non-Resident Tax": {
+    "id": "taxfaq-054",
+    "topic": "Non-Resident Tax",
+    "topic_key": "non_resident_tax",
+    "question_type": "definition",
+    "question_normalized": "non-resident lai nepal ma tax kati lagcha"
+  },
+  "non_resident_tax": {
+    "id": "taxfaq-054",
+    "topic": "Non-Resident Tax",
+    "topic_key": "non_resident_tax",
+    "question_type": "definition",
+    "question_normalized": "non-resident lai nepal ma tax kati lagcha"
+  },
+  "nepal ma ghar bhada ma tax lagcha": {
+    "id": "taxfaq-054",
+    "topic": "Non-Resident Tax",
+    "topic_key": "non_resident_tax",
+    "question_type": "definition",
+    "question_normalized": "non-resident lai nepal ma tax kati lagcha"
+  },
+  "retired abroad ho bhane pension tax": {
+    "id": "taxfaq-054",
+    "topic": "Non-Resident Tax",
+    "topic_key": "non_resident_tax",
+    "question_type": "definition",
+    "question_normalized": "non-resident lai nepal ma tax kati lagcha"
+  },
+  "Jagga bechda tax kati lagcha?": {
+    "id": "taxfaq-055",
+    "topic": "Property Gain Tax",
+    "topic_key": "property_gain_tax",
+    "question_type": "definition",
+    "question_normalized": "jagga bechda tax kati lagcha"
+  },
+  "What is the tax on land sales?": {
+    "id": "taxfaq-055",
+    "topic": "Property Gain Tax",
+    "topic_key": "property_gain_tax",
+    "question_type": "definition",
+    "question_normalized": "jagga bechda tax kati lagcha"
+  },
+  "jagga bechda tax kati lagcha": {
+    "id": "taxfaq-055",
+    "topic": "Property Gain Tax",
+    "topic_key": "property_gain_tax",
+    "question_type": "definition",
+    "question_normalized": "jagga bechda tax kati lagcha"
+  },
+  "Property Gain Tax": {
+    "id": "taxfaq-055",
+    "topic": "Property Gain Tax",
+    "topic_key": "property_gain_tax",
+    "question_type": "definition",
+    "question_normalized": "jagga bechda tax kati lagcha"
+  },
+  "property_gain_tax": {
+    "id": "taxfaq-055",
+    "topic": "Property Gain Tax",
+    "topic_key": "property_gain_tax",
+    "question_type": "definition",
+    "question_normalized": "jagga bechda tax kati lagcha"
+  },
+  "primary residence bechda kati": {
+    "id": "taxfaq-055",
+    "topic": "Property Gain Tax",
+    "topic_key": "property_gain_tax",
+    "question_type": "definition",
+    "question_normalized": "jagga bechda tax kati lagcha"
+  },
+  "long term lai chhut cha": {
+    "id": "taxfaq-055",
+    "topic": "Property Gain Tax",
+    "topic_key": "property_gain_tax",
+    "question_type": "definition",
+    "question_normalized": "jagga bechda tax kati lagcha"
+  },
+  "Dividend ma tax kati katne?": {
+    "id": "taxfaq-056",
+    "topic": "Tax on Dividends",
+    "topic_key": "tax_on_dividends",
+    "question_type": "definition",
+    "question_normalized": "dividend ma tax kati katne"
+  },
+  "What is the tax on dividends?": {
+    "id": "taxfaq-056",
+    "topic": "Tax on Dividends",
+    "topic_key": "tax_on_dividends",
+    "question_type": "definition",
+    "question_normalized": "dividend ma tax kati katne"
+  },
+  "dividend ma tax kati katne": {
+    "id": "taxfaq-056",
+    "topic": "Tax on Dividends",
+    "topic_key": "tax_on_dividends",
+    "question_type": "definition",
+    "question_normalized": "dividend ma tax kati katne"
+  },
+  "Tax on Dividends": {
+    "id": "taxfaq-056",
+    "topic": "Tax on Dividends",
+    "topic_key": "tax_on_dividends",
+    "question_type": "definition",
+    "question_normalized": "dividend ma tax kati katne"
+  },
+  "tax_on_dividends": {
+    "id": "taxfaq-056",
+    "topic": "Tax on Dividends",
+    "topic_key": "tax_on_dividends",
+    "question_type": "definition",
+    "question_normalized": "dividend ma tax kati katne"
+  },
+  "bonus share ma tax cha": {
+    "id": "taxfaq-056",
+    "topic": "Tax on Dividends",
+    "topic_key": "tax_on_dividends",
+    "question_type": "definition",
+    "question_normalized": "dividend ma tax kati katne"
+  },
+  "reinvest bhaye ke huncha": {
+    "id": "taxfaq-056",
+    "topic": "Tax on Dividends",
+    "topic_key": "tax_on_dividends",
+    "question_type": "definition",
+    "question_normalized": "dividend ma tax kati katne"
+  },
+  "Pasalko tax kati tirne?": {
+    "id": "taxfaq-057",
+    "topic": "Local Business Tax",
+    "topic_key": "local_business_tax",
+    "question_type": "definition",
+    "question_normalized": "pasalko tax kati tirne"
+  },
+  "What is the local business tax?": {
+    "id": "taxfaq-057",
+    "topic": "Local Business Tax",
+    "topic_key": "local_business_tax",
+    "question_type": "definition",
+    "question_normalized": "pasalko tax kati tirne"
+  },
+  "pasalko tax kati tirne": {
+    "id": "taxfaq-057",
+    "topic": "Local Business Tax",
+    "topic_key": "local_business_tax",
+    "question_type": "definition",
+    "question_normalized": "pasalko tax kati tirne"
+  },
+  "Local Business Tax": {
+    "id": "taxfaq-057",
+    "topic": "Local Business Tax",
+    "topic_key": "local_business_tax",
+    "question_type": "definition",
+    "question_normalized": "pasalko tax kati tirne"
+  },
+  "local_business_tax": {
+    "id": "taxfaq-057",
+    "topic": "Local Business Tax",
+    "topic_key": "local_business_tax",
+    "question_type": "definition",
+    "question_normalized": "pasalko tax kati tirne"
+  },
+  "renewal process ke ho": {
+    "id": "taxfaq-057",
+    "topic": "Local Business Tax",
+    "topic_key": "local_business_tax",
+    "question_type": "definition",
+    "question_normalized": "pasalko tax kati tirne"
+  },
+  "Bidesh ko interest income ma tax?": {
+    "id": "taxfaq-058",
+    "topic": "Tax on Interest from Abroad",
+    "topic_key": "tax_on_interest_from_abroad",
+    "question_type": "definition",
+    "question_normalized": "bidesh ko interest income ma tax"
+  },
+  "Is foreign interest income taxable?": {
+    "id": "taxfaq-058",
+    "topic": "Tax on Interest from Abroad",
+    "topic_key": "tax_on_interest_from_abroad",
+    "question_type": "definition",
+    "question_normalized": "bidesh ko interest income ma tax"
+  },
+  "bidesh ko interest income ma tax": {
+    "id": "taxfaq-058",
+    "topic": "Tax on Interest from Abroad",
+    "topic_key": "tax_on_interest_from_abroad",
+    "question_type": "definition",
+    "question_normalized": "bidesh ko interest income ma tax"
+  },
+  "Tax on Interest from Abroad": {
+    "id": "taxfaq-058",
+    "topic": "Tax on Interest from Abroad",
+    "topic_key": "tax_on_interest_from_abroad",
+    "question_type": "definition",
+    "question_normalized": "bidesh ko interest income ma tax"
+  },
+  "tax_on_interest_from_abroad": {
+    "id": "taxfaq-058",
+    "topic": "Tax on Interest from Abroad",
+    "topic_key": "tax_on_interest_from_abroad",
+    "question_type": "definition",
+    "question_normalized": "bidesh ko interest income ma tax"
+  },
+  "nrn account ko interest tax free ho": {
+    "id": "taxfaq-058",
+    "topic": "Tax on Interest from Abroad",
+    "topic_key": "tax_on_interest_from_abroad",
+    "question_type": "definition",
+    "question_normalized": "bidesh ko interest income ma tax"
+  },
+  "report kasari garne": {
+    "id": "taxfaq-058",
+    "topic": "Tax on Interest from Abroad",
+    "topic_key": "tax_on_interest_from_abroad",
+    "question_type": "definition",
+    "question_normalized": "bidesh ko interest income ma tax"
+  },
+  "Turnover tax ke ho?": {
+    "id": "taxfaq-059",
+    "topic": "Turnover Tax",
+    "topic_key": "turnover_tax",
+    "question_type": "definition",
+    "question_normalized": "turnover tax ke ho"
+  },
+  "What is turnover tax?": {
+    "id": "taxfaq-059",
+    "topic": "Turnover Tax",
+    "topic_key": "turnover_tax",
+    "question_type": "definition",
+    "question_normalized": "turnover tax ke ho"
+  },
+  "turnover tax ke ho": {
+    "id": "taxfaq-059",
+    "topic": "Turnover Tax",
+    "topic_key": "turnover_tax",
+    "question_type": "definition",
+    "question_normalized": "turnover tax ke ho"
+  },
+  "Turnover Tax": {
+    "id": "taxfaq-059",
+    "topic": "Turnover Tax",
+    "topic_key": "turnover_tax",
+    "question_type": "definition",
+    "question_normalized": "turnover tax ke ho"
+  },
+  "turnover_tax": {
+    "id": "taxfaq-059",
+    "topic": "Turnover Tax",
+    "topic_key": "turnover_tax",
+    "question_type": "definition",
+    "question_normalized": "turnover tax ke ho"
+  },
+  "vat register garna parcha": {
+    "id": "taxfaq-059",
+    "topic": "Turnover Tax",
+    "topic_key": "turnover_tax",
+    "question_type": "definition",
+    "question_normalized": "turnover tax ke ho"
+  },
+  "income tax separate tirne ho": {
+    "id": "taxfaq-059",
+    "topic": "Turnover Tax",
+    "topic_key": "turnover_tax",
+    "question_type": "definition",
+    "question_normalized": "turnover tax ke ho"
+  },
+  "Hotel lai tax ke cha?": {
+    "id": "taxfaq-060",
+    "topic": "Hotel Tax",
+    "topic_key": "hotel_tax",
+    "question_type": "definition",
+    "question_normalized": "hotel lai tax ke cha"
+  },
+  "What is the tax for hotels?": {
+    "id": "taxfaq-060",
+    "topic": "Hotel Tax",
+    "topic_key": "hotel_tax",
+    "question_type": "definition",
+    "question_normalized": "hotel lai tax ke cha"
+  },
+  "hotel lai tax ke cha": {
+    "id": "taxfaq-060",
+    "topic": "Hotel Tax",
+    "topic_key": "hotel_tax",
+    "question_type": "definition",
+    "question_normalized": "hotel lai tax ke cha"
+  },
+  "Hotel Tax": {
+    "id": "taxfaq-060",
+    "topic": "Hotel Tax",
+    "topic_key": "hotel_tax",
+    "question_type": "definition",
+    "question_normalized": "hotel lai tax ke cha"
+  },
+  "hotel_tax": {
+    "id": "taxfaq-060",
+    "topic": "Hotel Tax",
+    "topic_key": "hotel_tax",
+    "question_type": "definition",
+    "question_normalized": "hotel lai tax ke cha"
+  },
+  "restaurant ko rate kati": {
+    "id": "taxfaq-060",
+    "topic": "Hotel Tax",
+    "topic_key": "hotel_tax",
+    "question_type": "definition",
+    "question_normalized": "hotel lai tax ke cha"
+  },
+  "foreign currency ma bill": {
+    "id": "taxfaq-060",
+    "topic": "Hotel Tax",
+    "topic_key": "hotel_tax",
+    "question_type": "definition",
+    "question_normalized": "hotel lai tax ke cha"
+  },
+  "School ko income ma tax lagcha?": {
+    "id": "taxfaq-061",
+    "topic": "Education Tax",
+    "topic_key": "education_tax",
+    "question_type": "definition",
+    "question_normalized": "school ko income ma tax lagcha"
+  },
+  "Is school income taxable?": {
+    "id": "taxfaq-061",
+    "topic": "Education Tax",
+    "topic_key": "education_tax",
+    "question_type": "definition",
+    "question_normalized": "school ko income ma tax lagcha"
+  },
+  "school ko income ma tax lagcha": {
+    "id": "taxfaq-061",
+    "topic": "Education Tax",
+    "topic_key": "education_tax",
+    "question_type": "definition",
+    "question_normalized": "school ko income ma tax lagcha"
+  },
+  "Education Tax": {
+    "id": "taxfaq-061",
+    "topic": "Education Tax",
+    "topic_key": "education_tax",
+    "question_type": "definition",
+    "question_normalized": "school ko income ma tax lagcha"
+  },
+  "education_tax": {
+    "id": "taxfaq-061",
+    "topic": "Education Tax",
+    "topic_key": "education_tax",
+    "question_type": "definition",
+    "question_normalized": "school ko income ma tax lagcha"
+  },
+  "books ma vat lagcha": {
+    "id": "taxfaq-061",
+    "topic": "Education Tax",
+    "topic_key": "education_tax",
+    "question_type": "definition",
+    "question_normalized": "school ko income ma tax lagcha"
+  },
+  "consultancy lai tax chhut cha": {
+    "id": "taxfaq-061",
+    "topic": "Education Tax",
+    "topic_key": "education_tax",
+    "question_type": "definition",
+    "question_normalized": "school ko income ma tax lagcha"
+  },
+  "PE concept Nepal ma ke ho?": {
+    "id": "taxfaq-062",
+    "topic": "Permanent Establishment",
+    "topic_key": "permanent_establishment",
+    "question_type": "definition",
+    "question_normalized": "pe concept nepal ma ke ho"
+  },
+  "What is the PE concept in Nepal?": {
+    "id": "taxfaq-062",
+    "topic": "Permanent Establishment",
+    "topic_key": "permanent_establishment",
+    "question_type": "definition",
+    "question_normalized": "pe concept nepal ma ke ho"
+  },
+  "pe concept nepal ma ke ho": {
+    "id": "taxfaq-062",
+    "topic": "Permanent Establishment",
+    "topic_key": "permanent_establishment",
+    "question_type": "definition",
+    "question_normalized": "pe concept nepal ma ke ho"
+  },
+  "Permanent Establishment": {
+    "id": "taxfaq-062",
+    "topic": "Permanent Establishment",
+    "topic_key": "permanent_establishment",
+    "question_type": "definition",
+    "question_normalized": "pe concept nepal ma ke ho"
+  },
+  "permanent_establishment": {
+    "id": "taxfaq-062",
+    "topic": "Permanent Establishment",
+    "topic_key": "permanent_establishment",
+    "question_type": "definition",
+    "question_normalized": "pe concept nepal ma ke ho"
+  },
+  "liaison office pe huncha": {
+    "id": "taxfaq-062",
+    "topic": "Permanent Establishment",
+    "topic_key": "permanent_establishment",
+    "question_type": "definition",
+    "question_normalized": "pe concept nepal ma ke ho"
+  },
+  "site office 6 months bhanda mathi": {
+    "id": "taxfaq-062",
+    "topic": "Permanent Establishment",
+    "topic_key": "permanent_establishment",
+    "question_type": "definition",
+    "question_normalized": "pe concept nepal ma ke ho"
+  },
+  "Assessable income ke ho?": {
+    "id": "taxfaq-063",
+    "topic": "Assessable Income",
+    "topic_key": "assessable_income",
+    "question_type": "definition",
+    "question_normalized": "assessable income ke ho"
+  },
+  "What is assessable income?": {
+    "id": "taxfaq-063",
+    "topic": "Assessable Income",
+    "topic_key": "assessable_income",
+    "question_type": "definition",
+    "question_normalized": "assessable income ke ho"
+  },
+  "assessable income ke ho": {
+    "id": "taxfaq-063",
+    "topic": "Assessable Income",
+    "topic_key": "assessable_income",
+    "question_type": "definition",
+    "question_normalized": "assessable income ke ho"
+  },
+  "Assessable Income": {
+    "id": "taxfaq-063",
+    "topic": "Assessable Income",
+    "topic_key": "assessable_income",
+    "question_type": "definition",
+    "question_normalized": "assessable income ke ho"
+  },
+  "assessable_income": {
+    "id": "taxfaq-063",
+    "topic": "Assessable Income",
+    "topic_key": "assessable_income",
+    "question_type": "definition",
+    "question_normalized": "assessable income ke ho"
+  },
+  "loss set off kasari garne": {
+    "id": "taxfaq-063",
+    "topic": "Assessable Income",
+    "topic_key": "assessable_income",
+    "question_type": "definition",
+    "question_normalized": "assessable income ke ho"
+  },
+  "donation deduct huncha": {
+    "id": "taxfaq-063",
+    "topic": "Assessable Income",
+    "topic_key": "assessable_income",
+    "question_type": "definition",
+    "question_normalized": "assessable income ke ho"
+  },
+  "E-TDS file nagare ke huncha?": {
+    "id": "taxfaq-064",
+    "topic": "Penalty for Not Filing ETDS",
+    "topic_key": "penalty_for_not_filing_etds",
+    "question_type": "definition",
+    "question_normalized": "e-tds file nagare ke huncha"
+  },
+  "What is the penalty for not filing E-TDS?": {
+    "id": "taxfaq-064",
+    "topic": "Penalty for Not Filing ETDS",
+    "topic_key": "penalty_for_not_filing_etds",
+    "question_type": "definition",
+    "question_normalized": "e-tds file nagare ke huncha"
+  },
+  "e-tds file nagare ke huncha": {
+    "id": "taxfaq-064",
+    "topic": "Penalty for Not Filing ETDS",
+    "topic_key": "penalty_for_not_filing_etds",
+    "question_type": "definition",
+    "question_normalized": "e-tds file nagare ke huncha"
+  },
+  "Penalty for Not Filing ETDS": {
+    "id": "taxfaq-064",
+    "topic": "Penalty for Not Filing ETDS",
+    "topic_key": "penalty_for_not_filing_etds",
+    "question_type": "definition",
+    "question_normalized": "e-tds file nagare ke huncha"
+  },
+  "penalty_for_not_filing_etds": {
+    "id": "taxfaq-064",
+    "topic": "Penalty for Not Filing ETDS",
+    "topic_key": "penalty_for_not_filing_etds",
+    "question_type": "definition",
+    "question_normalized": "e-tds file nagare ke huncha"
+  },
+  "correction file garna milcha": {
+    "id": "taxfaq-064",
+    "topic": "Penalty for Not Filing ETDS",
+    "topic_key": "penalty_for_not_filing_etds",
+    "question_type": "definition",
+    "question_normalized": "e-tds file nagare ke huncha"
+  },
+  "interest kati din": {
+    "id": "taxfaq-064",
+    "topic": "Penalty for Not Filing ETDS",
+    "topic_key": "penalty_for_not_filing_etds",
+    "question_type": "definition",
+    "question_normalized": "e-tds file nagare ke huncha"
+  },
+  "Cryptocurrency ma tax lagcha?": {
+    "id": "taxfaq-065",
+    "topic": "Crypto Tax",
+    "topic_key": "crypto_tax",
+    "question_type": "definition",
+    "question_normalized": "cryptocurrency ma tax lagcha"
+  },
+  "Is cryptocurrency taxed?": {
+    "id": "taxfaq-065",
+    "topic": "Crypto Tax",
+    "topic_key": "crypto_tax",
+    "question_type": "definition",
+    "question_normalized": "cryptocurrency ma tax lagcha"
+  },
+  "cryptocurrency ma tax lagcha": {
+    "id": "taxfaq-065",
+    "topic": "Crypto Tax",
+    "topic_key": "crypto_tax",
+    "question_type": "definition",
+    "question_normalized": "cryptocurrency ma tax lagcha"
+  },
+  "Crypto Tax": {
+    "id": "taxfaq-065",
+    "topic": "Crypto Tax",
+    "topic_key": "crypto_tax",
+    "question_type": "definition",
+    "question_normalized": "cryptocurrency ma tax lagcha"
+  },
+  "crypto_tax": {
+    "id": "taxfaq-065",
+    "topic": "Crypto Tax",
+    "topic_key": "crypto_tax",
+    "question_type": "definition",
+    "question_normalized": "cryptocurrency ma tax lagcha"
+  },
+  "mining ma tax lagcha": {
+    "id": "taxfaq-065",
+    "topic": "Crypto Tax",
+    "topic_key": "crypto_tax",
+    "question_type": "definition",
+    "question_normalized": "cryptocurrency ma tax lagcha"
+  },
+  "foreign wallet use garchu": {
+    "id": "taxfaq-065",
+    "topic": "Crypto Tax",
+    "topic_key": "crypto_tax",
+    "question_type": "definition",
+    "question_normalized": "cryptocurrency ma tax lagcha"
+  },
+  "Bank guarantee ma tax cha?": {
+    "id": "taxfaq-066",
+    "topic": "Bank Guarantee Tax",
+    "topic_key": "bank_guarantee_tax",
+    "question_type": "definition",
+    "question_normalized": "bank guarantee ma tax cha"
+  },
+  "Is there tax on bank guarantees?": {
+    "id": "taxfaq-066",
+    "topic": "Bank Guarantee Tax",
+    "topic_key": "bank_guarantee_tax",
+    "question_type": "definition",
+    "question_normalized": "bank guarantee ma tax cha"
+  },
+  "bank guarantee ma tax cha": {
+    "id": "taxfaq-066",
+    "topic": "Bank Guarantee Tax",
+    "topic_key": "bank_guarantee_tax",
+    "question_type": "definition",
+    "question_normalized": "bank guarantee ma tax cha"
+  },
+  "Bank Guarantee Tax": {
+    "id": "taxfaq-066",
+    "topic": "Bank Guarantee Tax",
+    "topic_key": "bank_guarantee_tax",
+    "question_type": "definition",
+    "question_normalized": "bank guarantee ma tax cha"
+  },
+  "bank_guarantee_tax": {
+    "id": "taxfaq-066",
+    "topic": "Bank Guarantee Tax",
+    "topic_key": "bank_guarantee_tax",
+    "question_type": "definition",
+    "question_normalized": "bank guarantee ma tax cha"
+  },
+  "bid bond ma kati tds": {
+    "id": "taxfaq-066",
+    "topic": "Bank Guarantee Tax",
+    "topic_key": "bank_guarantee_tax",
+    "question_type": "definition",
+    "question_normalized": "bank guarantee ma tax cha"
+  },
+  "performance guarantee ke rate": {
+    "id": "taxfaq-066",
+    "topic": "Bank Guarantee Tax",
+    "topic_key": "bank_guarantee_tax",
+    "question_type": "definition",
+    "question_normalized": "bank guarantee ma tax cha"
+  },
+  "VAT registration kasari garne?": {
+    "id": "taxfaq-067",
+    "topic": "VAT Registration Process",
+    "topic_key": "vat_registration_process",
+    "question_type": "definition",
+    "question_normalized": "vat registration kasari garne"
+  },
+  "How to register for VAT?": {
+    "id": "taxfaq-067",
+    "topic": "VAT Registration Process",
+    "topic_key": "vat_registration_process",
+    "question_type": "definition",
+    "question_normalized": "vat registration kasari garne"
+  },
+  "vat registration kasari garne": {
+    "id": "taxfaq-067",
+    "topic": "VAT Registration Process",
+    "topic_key": "vat_registration_process",
+    "question_type": "definition",
+    "question_normalized": "vat registration kasari garne"
+  },
+  "VAT Registration Process": {
+    "id": "taxfaq-067",
+    "topic": "VAT Registration Process",
+    "topic_key": "vat_registration_process",
+    "question_type": "definition",
+    "question_normalized": "vat registration kasari garne"
+  },
+  "vat_registration_process": {
+    "id": "taxfaq-067",
+    "topic": "VAT Registration Process",
+    "topic_key": "vat_registration_process",
+    "question_type": "definition",
+    "question_normalized": "vat registration kasari garne"
+  },
+  "online apply garna milcha": {
+    "id": "taxfaq-067",
+    "topic": "VAT Registration Process",
+    "topic_key": "vat_registration_process",
+    "question_type": "definition",
+    "question_normalized": "vat registration kasari garne"
+  },
+  "documents ke ke chaincha": {
+    "id": "taxfaq-067",
+    "topic": "VAT Registration Process",
+    "topic_key": "vat_registration_process",
+    "question_type": "definition",
+    "question_normalized": "vat registration kasari garne"
+  },
+  "Retirement fund (EPF/SSF) ma tax?": {
+    "id": "taxfaq-068",
+    "topic": "Tax on Retirement Fund",
+    "topic_key": "tax_on_retirement_fund",
+    "question_type": "definition",
+    "question_normalized": "retirement fund (epf/ssf) ma tax"
+  },
+  "Is retirement fund (EPF/SSF) taxed?": {
+    "id": "taxfaq-068",
+    "topic": "Tax on Retirement Fund",
+    "topic_key": "tax_on_retirement_fund",
+    "question_type": "definition",
+    "question_normalized": "retirement fund (epf/ssf) ma tax"
+  },
+  "retirement fund (epf/ssf) ma tax": {
+    "id": "taxfaq-068",
+    "topic": "Tax on Retirement Fund",
+    "topic_key": "tax_on_retirement_fund",
+    "question_type": "definition",
+    "question_normalized": "retirement fund (epf/ssf) ma tax"
+  },
+  "Tax on Retirement Fund": {
+    "id": "taxfaq-068",
+    "topic": "Tax on Retirement Fund",
+    "topic_key": "tax_on_retirement_fund",
+    "question_type": "definition",
+    "question_normalized": "retirement fund (epf/ssf) ma tax"
+  },
+  "tax_on_retirement_fund": {
+    "id": "taxfaq-068",
+    "topic": "Tax on Retirement Fund",
+    "topic_key": "tax_on_retirement_fund",
+    "question_type": "definition",
+    "question_normalized": "retirement fund (epf/ssf) ma tax"
+  },
+  "anivarya ho ki swechhik": {
+    "id": "taxfaq-068",
+    "topic": "Tax on Retirement Fund",
+    "topic_key": "tax_on_retirement_fund",
+    "question_type": "definition",
+    "question_normalized": "retirement fund (epf/ssf) ma tax"
+  },
+  "interest ma tax kati": {
+    "id": "taxfaq-068",
+    "topic": "Tax on Retirement Fund",
+    "topic_key": "tax_on_retirement_fund",
+    "question_type": "definition",
+    "question_normalized": "retirement fund (epf/ssf) ma tax"
+  },
+  "Transfer pricing ke ho?": {
+    "id": "taxfaq-069",
+    "topic": "Transfer Pricing",
+    "topic_key": "transfer_pricing",
+    "question_type": "definition",
+    "question_normalized": "transfer pricing ke ho"
+  },
+  "What is transfer pricing?": {
+    "id": "taxfaq-069",
+    "topic": "Transfer Pricing",
+    "topic_key": "transfer_pricing",
+    "question_type": "definition",
+    "question_normalized": "transfer pricing ke ho"
+  },
+  "transfer pricing ke ho": {
+    "id": "taxfaq-069",
+    "topic": "Transfer Pricing",
+    "topic_key": "transfer_pricing",
+    "question_type": "definition",
+    "question_normalized": "transfer pricing ke ho"
+  },
+  "Transfer Pricing": {
+    "id": "taxfaq-069",
+    "topic": "Transfer Pricing",
+    "topic_key": "transfer_pricing",
+    "question_type": "definition",
+    "question_normalized": "transfer pricing ke ho"
+  },
+  "transfer_pricing": {
+    "id": "taxfaq-069",
+    "topic": "Transfer Pricing",
+    "topic_key": "transfer_pricing",
+    "question_type": "definition",
+    "question_normalized": "transfer pricing ke ho"
+  },
+  "documentation ke chaincha": {
+    "id": "taxfaq-069",
+    "topic": "Transfer Pricing",
+    "topic_key": "transfer_pricing",
+    "question_type": "definition",
+    "question_normalized": "transfer pricing ke ho"
+  },
+  "penalty kati huncha": {
+    "id": "taxfaq-069",
+    "topic": "Transfer Pricing",
+    "topic_key": "transfer_pricing",
+    "question_type": "definition",
+    "question_normalized": "transfer pricing ke ho"
+  },
+  "Tax order ma chitta nabujhe ke garne?": {
+    "id": "taxfaq-070",
+    "topic": "Tax Appeal Process",
+    "topic_key": "tax_appeal_process",
+    "question_type": "definition",
+    "question_normalized": "tax order ma chitta nabujhe ke garne"
+  },
+  "What to do if unsatisfied with a tax order?": {
+    "id": "taxfaq-070",
+    "topic": "Tax Appeal Process",
+    "topic_key": "tax_appeal_process",
+    "question_type": "definition",
+    "question_normalized": "tax order ma chitta nabujhe ke garne"
+  },
+  "tax order ma chitta nabujhe ke garne": {
+    "id": "taxfaq-070",
+    "topic": "Tax Appeal Process",
+    "topic_key": "tax_appeal_process",
+    "question_type": "definition",
+    "question_normalized": "tax order ma chitta nabujhe ke garne"
+  },
+  "Tax Appeal Process": {
+    "id": "taxfaq-070",
+    "topic": "Tax Appeal Process",
+    "topic_key": "tax_appeal_process",
+    "question_type": "definition",
+    "question_normalized": "tax order ma chitta nabujhe ke garne"
+  },
+  "tax_appeal_process": {
+    "id": "taxfaq-070",
+    "topic": "Tax Appeal Process",
+    "topic_key": "tax_appeal_process",
+    "question_type": "definition",
+    "question_normalized": "tax order ma chitta nabujhe ke garne"
+  },
+  "court jana kati kharcha": {
+    "id": "taxfaq-070",
+    "topic": "Tax Appeal Process",
+    "topic_key": "tax_appeal_process",
+    "question_type": "definition",
+    "question_normalized": "tax order ma chitta nabujhe ke garne"
+  },
+  "stay order pauncha": {
+    "id": "taxfaq-070",
+    "topic": "Tax Appeal Process",
+    "topic_key": "tax_appeal_process",
+    "question_type": "definition",
+    "question_normalized": "tax order ma chitta nabujhe ke garne"
+  },
+  "Business bechda tax ke huncha?": {
+    "id": "taxfaq-071",
+    "topic": "Tax on Sale of Business",
+    "topic_key": "tax_on_sale_of_business",
+    "question_type": "definition",
+    "question_normalized": "business bechda tax ke huncha"
+  },
+  "What is the tax on selling a business?": {
+    "id": "taxfaq-071",
+    "topic": "Tax on Sale of Business",
+    "topic_key": "tax_on_sale_of_business",
+    "question_type": "definition",
+    "question_normalized": "business bechda tax ke huncha"
+  },
+  "business bechda tax ke huncha": {
+    "id": "taxfaq-071",
+    "topic": "Tax on Sale of Business",
+    "topic_key": "tax_on_sale_of_business",
+    "question_type": "definition",
+    "question_normalized": "business bechda tax ke huncha"
+  },
+  "Tax on Sale of Business": {
+    "id": "taxfaq-071",
+    "topic": "Tax on Sale of Business",
+    "topic_key": "tax_on_sale_of_business",
+    "question_type": "definition",
+    "question_normalized": "business bechda tax ke huncha"
+  },
+  "tax_on_sale_of_business": {
+    "id": "taxfaq-071",
+    "topic": "Tax on Sale of Business",
+    "topic_key": "tax_on_sale_of_business",
+    "question_type": "definition",
+    "question_normalized": "business bechda tax ke huncha"
+  },
+  "stock transfer ma kati tax": {
+    "id": "taxfaq-071",
+    "topic": "Tax on Sale of Business",
+    "topic_key": "tax_on_sale_of_business",
+    "question_type": "definition",
+    "question_normalized": "business bechda tax ke huncha"
+  },
+  "liabilities transfer bhaye tax": {
+    "id": "taxfaq-071",
+    "topic": "Tax on Sale of Business",
+    "topic_key": "tax_on_sale_of_business",
+    "question_type": "definition",
+    "question_normalized": "business bechda tax ke huncha"
+  },
+  "Nijji gadi import ma kati tax?": {
+    "id": "taxfaq-072",
+    "topic": "Private Vehicle Import Tax",
+    "topic_key": "private_vehicle_import_tax",
+    "question_type": "definition",
+    "question_normalized": "nijji gadi import ma kati tax"
+  },
+  "What is the tax on private vehicle imports?": {
+    "id": "taxfaq-072",
+    "topic": "Private Vehicle Import Tax",
+    "topic_key": "private_vehicle_import_tax",
+    "question_type": "definition",
+    "question_normalized": "nijji gadi import ma kati tax"
+  },
+  "nijji gadi import ma kati tax": {
+    "id": "taxfaq-072",
+    "topic": "Private Vehicle Import Tax",
+    "topic_key": "private_vehicle_import_tax",
+    "question_type": "definition",
+    "question_normalized": "nijji gadi import ma kati tax"
+  },
+  "Private Vehicle Import Tax": {
+    "id": "taxfaq-072",
+    "topic": "Private Vehicle Import Tax",
+    "topic_key": "private_vehicle_import_tax",
+    "question_type": "definition",
+    "question_normalized": "nijji gadi import ma kati tax"
+  },
+  "private_vehicle_import_tax": {
+    "id": "taxfaq-072",
+    "topic": "Private Vehicle Import Tax",
+    "topic_key": "private_vehicle_import_tax",
+    "question_type": "definition",
+    "question_normalized": "nijji gadi import ma kati tax"
+  },
+  "motorcycle ma kati ho": {
+    "id": "taxfaq-072",
+    "topic": "Private Vehicle Import Tax",
+    "topic_key": "private_vehicle_import_tax",
+    "question_type": "definition",
+    "question_normalized": "nijji gadi import ma kati tax"
+  },
+  "old vehicle import garna milcha": {
+    "id": "taxfaq-072",
+    "topic": "Private Vehicle Import Tax",
+    "topic_key": "private_vehicle_import_tax",
+    "question_type": "definition",
+    "question_normalized": "nijji gadi import ma kati tax"
+  },
+  "Kitab ra stationary ma tax cha?": {
+    "id": "taxfaq-073",
+    "topic": "Tax on Books and Stationery",
+    "topic_key": "tax_on_books_and_stationery",
+    "question_type": "definition",
+    "question_normalized": "kitab ra stationary ma tax cha"
+  },
+  "Is there tax on books and stationery?": {
+    "id": "taxfaq-073",
+    "topic": "Tax on Books and Stationery",
+    "topic_key": "tax_on_books_and_stationery",
+    "question_type": "definition",
+    "question_normalized": "kitab ra stationary ma tax cha"
+  },
+  "kitab ra stationary ma tax cha": {
+    "id": "taxfaq-073",
+    "topic": "Tax on Books and Stationery",
+    "topic_key": "tax_on_books_and_stationery",
+    "question_type": "definition",
+    "question_normalized": "kitab ra stationary ma tax cha"
+  },
+  "Tax on Books and Stationery": {
+    "id": "taxfaq-073",
+    "topic": "Tax on Books and Stationery",
+    "topic_key": "tax_on_books_and_stationery",
+    "question_type": "definition",
+    "question_normalized": "kitab ra stationary ma tax cha"
+  },
+  "tax_on_books_and_stationery": {
+    "id": "taxfaq-073",
+    "topic": "Tax on Books and Stationery",
+    "topic_key": "tax_on_books_and_stationery",
+    "question_type": "definition",
+    "question_normalized": "kitab ra stationary ma tax cha"
+  },
+  "school bag ma ke cha": {
+    "id": "taxfaq-073",
+    "topic": "Tax on Books and Stationery",
+    "topic_key": "tax_on_books_and_stationery",
+    "question_type": "definition",
+    "question_normalized": "kitab ra stationary ma tax cha"
+  },
+  "online book ma tax": {
+    "id": "taxfaq-073",
+    "topic": "Tax on Books and Stationery",
+    "topic_key": "tax_on_books_and_stationery",
+    "question_type": "definition",
+    "question_normalized": "kitab ra stationary ma tax cha"
+  },
+  "Rent income ma tax kati lagcha?": {
+    "id": "taxfaq-074",
+    "topic": "Tax on Rent Income",
+    "topic_key": "tax_on_rent_income",
+    "question_type": "definition",
+    "question_normalized": "rent income ma tax kati lagcha"
+  },
+  "What is the tax on rental income?": {
+    "id": "taxfaq-074",
+    "topic": "Tax on Rent Income",
+    "topic_key": "tax_on_rent_income",
+    "question_type": "definition",
+    "question_normalized": "rent income ma tax kati lagcha"
+  },
+  "rent income ma tax kati lagcha": {
+    "id": "taxfaq-074",
+    "topic": "Tax on Rent Income",
+    "topic_key": "tax_on_rent_income",
+    "question_type": "definition",
+    "question_normalized": "rent income ma tax kati lagcha"
+  },
+  "Tax on Rent Income": {
+    "id": "taxfaq-074",
+    "topic": "Tax on Rent Income",
+    "topic_key": "tax_on_rent_income",
+    "question_type": "definition",
+    "question_normalized": "rent income ma tax kati lagcha"
+  },
+  "tax_on_rent_income": {
+    "id": "taxfaq-074",
+    "topic": "Tax on Rent Income",
+    "topic_key": "tax_on_rent_income",
+    "question_type": "definition",
+    "question_normalized": "rent income ma tax kati lagcha"
+  },
+  "ghar repair kharcha ghatna milcha": {
+    "id": "taxfaq-074",
+    "topic": "Tax on Rent Income",
+    "topic_key": "tax_on_rent_income",
+    "question_type": "definition",
+    "question_normalized": "rent income ma tax kati lagcha"
+  },
+  "multiple ghar bhaye k garne": {
+    "id": "taxfaq-074",
+    "topic": "Tax on Rent Income",
+    "topic_key": "tax_on_rent_income",
+    "question_type": "definition",
+    "question_normalized": "rent income ma tax kati lagcha"
+  },
+  "Lottery ra gift ma tax cha?": {
+    "id": "taxfaq-075",
+    "topic": "Tax on Lottery/Gift",
+    "topic_key": "tax_on_lottery_gift",
+    "question_type": "definition",
+    "question_normalized": "lottery ra gift ma tax cha"
+  },
+  "Is there tax on lottery and gifts?": {
+    "id": "taxfaq-075",
+    "topic": "Tax on Lottery/Gift",
+    "topic_key": "tax_on_lottery_gift",
+    "question_type": "definition",
+    "question_normalized": "lottery ra gift ma tax cha"
+  },
+  "lottery ra gift ma tax cha": {
+    "id": "taxfaq-075",
+    "topic": "Tax on Lottery/Gift",
+    "topic_key": "tax_on_lottery_gift",
+    "question_type": "definition",
+    "question_normalized": "lottery ra gift ma tax cha"
+  },
+  "Tax on Lottery/Gift": {
+    "id": "taxfaq-075",
+    "topic": "Tax on Lottery/Gift",
+    "topic_key": "tax_on_lottery_gift",
+    "question_type": "definition",
+    "question_normalized": "lottery ra gift ma tax cha"
+  },
+  "tax_on_lottery_gift": {
+    "id": "taxfaq-075",
+    "topic": "Tax on Lottery/Gift",
+    "topic_key": "tax_on_lottery_gift",
+    "question_type": "definition",
+    "question_normalized": "lottery ra gift ma tax cha"
+  },
+  "prize bond ko tax kati ho": {
+    "id": "taxfaq-075",
+    "topic": "Tax on Lottery/Gift",
+    "topic_key": "tax_on_lottery_gift",
+    "question_type": "definition",
+    "question_normalized": "lottery ra gift ma tax cha"
+  },
+  "cash gift ma tax lagcha": {
+    "id": "taxfaq-075",
+    "topic": "Tax on Lottery/Gift",
+    "topic_key": "tax_on_lottery_gift",
+    "question_type": "definition",
+    "question_normalized": "lottery ra gift ma tax cha"
+  },
+  "Business loss carry forward kati barsa?": {
+    "id": "taxfaq-076",
+    "topic": "Loss Carry Forward",
+    "topic_key": "loss_carry_forward",
+    "question_type": "definition",
+    "question_normalized": "business loss carry forward kati barsa"
+  },
+  "How many years for business loss carry forward?": {
+    "id": "taxfaq-076",
+    "topic": "Loss Carry Forward",
+    "topic_key": "loss_carry_forward",
+    "question_type": "definition",
+    "question_normalized": "business loss carry forward kati barsa"
+  },
+  "business loss carry forward kati barsa": {
+    "id": "taxfaq-076",
+    "topic": "Loss Carry Forward",
+    "topic_key": "loss_carry_forward",
+    "question_type": "definition",
+    "question_normalized": "business loss carry forward kati barsa"
+  },
+  "Loss Carry Forward": {
+    "id": "taxfaq-076",
+    "topic": "Loss Carry Forward",
+    "topic_key": "loss_carry_forward",
+    "question_type": "definition",
+    "question_normalized": "business loss carry forward kati barsa"
+  },
+  "loss_carry_forward": {
+    "id": "taxfaq-076",
+    "topic": "Loss Carry Forward",
+    "topic_key": "loss_carry_forward",
+    "question_type": "definition",
+    "question_normalized": "business loss carry forward kati barsa"
+  },
+  "capital loss ko rule ke ho": {
+    "id": "taxfaq-076",
+    "topic": "Loss Carry Forward",
+    "topic_key": "loss_carry_forward",
+    "question_type": "definition",
+    "question_normalized": "business loss carry forward kati barsa"
+  },
+  "merger ma loss jancha": {
+    "id": "taxfaq-076",
+    "topic": "Loss Carry Forward",
+    "topic_key": "loss_carry_forward",
+    "question_type": "definition",
+    "question_normalized": "business loss carry forward kati barsa"
+  },
+  "Commission income ma tax ke ho?": {
+    "id": "taxfaq-077",
+    "topic": "Tax on Commission",
+    "topic_key": "tax_on_commission",
+    "question_type": "definition",
+    "question_normalized": "commission income ma tax ke ho"
+  },
+  "What is the tax on commission income?": {
+    "id": "taxfaq-077",
+    "topic": "Tax on Commission",
+    "topic_key": "tax_on_commission",
+    "question_type": "definition",
+    "question_normalized": "commission income ma tax ke ho"
+  },
+  "commission income ma tax ke ho": {
+    "id": "taxfaq-077",
+    "topic": "Tax on Commission",
+    "topic_key": "tax_on_commission",
+    "question_type": "definition",
+    "question_normalized": "commission income ma tax ke ho"
+  },
+  "Tax on Commission": {
+    "id": "taxfaq-077",
+    "topic": "Tax on Commission",
+    "topic_key": "tax_on_commission",
+    "question_type": "definition",
+    "question_normalized": "commission income ma tax ke ho"
+  },
+  "tax_on_commission": {
+    "id": "taxfaq-077",
+    "topic": "Tax on Commission",
+    "topic_key": "tax_on_commission",
+    "question_type": "definition",
+    "question_normalized": "commission income ma tax ke ho"
+  },
+  "agent lai vat pani lagcha": {
+    "id": "taxfaq-077",
+    "topic": "Tax on Commission",
+    "topic_key": "tax_on_commission",
+    "question_type": "definition",
+    "question_normalized": "commission income ma tax ke ho"
+  },
+  "tds credit kasari line": {
+    "id": "taxfaq-077",
+    "topic": "Tax on Commission",
+    "topic_key": "tax_on_commission",
+    "question_type": "definition",
+    "question_normalized": "commission income ma tax ke ho"
+  },
+  "Bidesh jada airport tax kati?": {
+    "id": "taxfaq-078",
+    "topic": "Tax on Foreign Travel",
+    "topic_key": "tax_on_foreign_travel",
+    "question_type": "definition",
+    "question_normalized": "bidesh jada airport tax kati"
+  },
+  "What is the airport tax for foreign travel?": {
+    "id": "taxfaq-078",
+    "topic": "Tax on Foreign Travel",
+    "topic_key": "tax_on_foreign_travel",
+    "question_type": "definition",
+    "question_normalized": "bidesh jada airport tax kati"
+  },
+  "bidesh jada airport tax kati": {
+    "id": "taxfaq-078",
+    "topic": "Tax on Foreign Travel",
+    "topic_key": "tax_on_foreign_travel",
+    "question_type": "definition",
+    "question_normalized": "bidesh jada airport tax kati"
+  },
+  "Tax on Foreign Travel": {
+    "id": "taxfaq-078",
+    "topic": "Tax on Foreign Travel",
+    "topic_key": "tax_on_foreign_travel",
+    "question_type": "definition",
+    "question_normalized": "bidesh jada airport tax kati"
+  },
+  "tax_on_foreign_travel": {
+    "id": "taxfaq-078",
+    "topic": "Tax on Foreign Travel",
+    "topic_key": "tax_on_foreign_travel",
+    "question_type": "definition",
+    "question_normalized": "bidesh jada airport tax kati"
+  },
+  "ticket ma included huncha": {
+    "id": "taxfaq-078",
+    "topic": "Tax on Foreign Travel",
+    "topic_key": "tax_on_foreign_travel",
+    "question_type": "definition",
+    "question_normalized": "bidesh jada airport tax kati"
+  },
+  "labour lai ke cha": {
+    "id": "taxfaq-078",
+    "topic": "Tax on Foreign Travel",
+    "topic_key": "tax_on_foreign_travel",
+    "question_type": "definition",
+    "question_normalized": "bidesh jada airport tax kati"
+  },
+  "Share bechda kati tax lagcha?": {
+    "id": "taxfaq-079",
+    "topic": "Tax on Sale of Shares",
+    "topic_key": "tax_on_sale_of_shares",
+    "question_type": "definition",
+    "question_normalized": "share bechda kati tax lagcha"
+  },
+  "What is the tax on selling shares?": {
+    "id": "taxfaq-079",
+    "topic": "Tax on Sale of Shares",
+    "topic_key": "tax_on_sale_of_shares",
+    "question_type": "definition",
+    "question_normalized": "share bechda kati tax lagcha"
+  },
+  "share bechda kati tax lagcha": {
+    "id": "taxfaq-079",
+    "topic": "Tax on Sale of Shares",
+    "topic_key": "tax_on_sale_of_shares",
+    "question_type": "definition",
+    "question_normalized": "share bechda kati tax lagcha"
+  },
+  "Tax on Sale of Shares": {
+    "id": "taxfaq-079",
+    "topic": "Tax on Sale of Shares",
+    "topic_key": "tax_on_sale_of_shares",
+    "question_type": "definition",
+    "question_normalized": "share bechda kati tax lagcha"
+  },
+  "tax_on_sale_of_shares": {
+    "id": "taxfaq-079",
+    "topic": "Tax on Sale of Shares",
+    "topic_key": "tax_on_sale_of_shares",
+    "question_type": "definition",
+    "question_normalized": "share bechda kati tax lagcha"
+  },
+  "bonus share ma tax": {
+    "id": "taxfaq-079",
+    "topic": "Tax on Sale of Shares",
+    "topic_key": "tax_on_sale_of_shares",
+    "question_type": "definition",
+    "question_normalized": "share bechda kati tax lagcha"
+  },
+  "right share bechda": {
+    "id": "taxfaq-079",
+    "topic": "Tax on Sale of Shares",
+    "topic_key": "tax_on_sale_of_shares",
+    "question_type": "definition",
+    "question_normalized": "share bechda kati tax lagcha"
+  },
+  "Hydropower project lai ke tax chhut cha?": {
+    "id": "taxfaq-080",
+    "topic": "Tax on Hydropower",
+    "topic_key": "tax_on_hydropower",
+    "question_type": "definition",
+    "question_normalized": "hydropower project lai ke tax chhut cha"
+  },
+  "What tax exemptions do hydropower projects get?": {
+    "id": "taxfaq-080",
+    "topic": "Tax on Hydropower",
+    "topic_key": "tax_on_hydropower",
+    "question_type": "definition",
+    "question_normalized": "hydropower project lai ke tax chhut cha"
+  },
+  "hydropower project lai ke tax chhut cha": {
+    "id": "taxfaq-080",
+    "topic": "Tax on Hydropower",
+    "topic_key": "tax_on_hydropower",
+    "question_type": "definition",
+    "question_normalized": "hydropower project lai ke tax chhut cha"
+  },
+  "Tax on Hydropower": {
+    "id": "taxfaq-080",
+    "topic": "Tax on Hydropower",
+    "topic_key": "tax_on_hydropower",
+    "question_type": "definition",
+    "question_normalized": "hydropower project lai ke tax chhut cha"
+  },
+  "tax_on_hydropower": {
+    "id": "taxfaq-080",
+    "topic": "Tax on Hydropower",
+    "topic_key": "tax_on_hydropower",
+    "question_type": "definition",
+    "question_normalized": "hydropower project lai ke tax chhut cha"
+  },
+  "royalty kati ho": {
+    "id": "taxfaq-080",
+    "topic": "Tax on Hydropower",
+    "topic_key": "tax_on_hydropower",
+    "question_type": "definition",
+    "question_normalized": "hydropower project lai ke tax chhut cha"
+  },
+  "project bechda ke huncha": {
+    "id": "taxfaq-080",
+    "topic": "Tax on Hydropower",
+    "topic_key": "tax_on_hydropower",
+    "question_type": "definition",
+    "question_normalized": "hydropower project lai ke tax chhut cha"
+  },
+  "Medical equipment ma tax cha?": {
+    "id": "taxfaq-081",
+    "topic": "Tax on Medical Equipment",
+    "topic_key": "tax_on_medical_equipment",
+    "question_type": "definition",
+    "question_normalized": "medical equipment ma tax cha"
+  },
+  "Is there tax on medical equipment?": {
+    "id": "taxfaq-081",
+    "topic": "Tax on Medical Equipment",
+    "topic_key": "tax_on_medical_equipment",
+    "question_type": "definition",
+    "question_normalized": "medical equipment ma tax cha"
+  },
+  "medical equipment ma tax cha": {
+    "id": "taxfaq-081",
+    "topic": "Tax on Medical Equipment",
+    "topic_key": "tax_on_medical_equipment",
+    "question_type": "definition",
+    "question_normalized": "medical equipment ma tax cha"
+  },
+  "Tax on Medical Equipment": {
+    "id": "taxfaq-081",
+    "topic": "Tax on Medical Equipment",
+    "topic_key": "tax_on_medical_equipment",
+    "question_type": "definition",
+    "question_normalized": "medical equipment ma tax cha"
+  },
+  "tax_on_medical_equipment": {
+    "id": "taxfaq-081",
+    "topic": "Tax on Medical Equipment",
+    "topic_key": "tax_on_medical_equipment",
+    "question_type": "definition",
+    "question_normalized": "medical equipment ma tax cha"
+  },
+  "hospital le import garda ke chhut cha": {
+    "id": "taxfaq-081",
+    "topic": "Tax on Medical Equipment",
+    "topic_key": "tax_on_medical_equipment",
+    "question_type": "definition",
+    "question_normalized": "medical equipment ma tax cha"
+  },
+  "diagnostic kit ma tax": {
+    "id": "taxfaq-081",
+    "topic": "Tax on Medical Equipment",
+    "topic_key": "tax_on_medical_equipment",
+    "question_type": "definition",
+    "question_normalized": "medical equipment ma tax cha"
+  },
+  "Bihe kharcha ma tax chhut cha?": {
+    "id": "taxfaq-082",
+    "topic": "Tax on Marriage Expenses",
+    "topic_key": "tax_on_marriage_expenses",
+    "question_type": "definition",
+    "question_normalized": "bihe kharcha ma tax chhut cha"
+  },
+  "Is there a tax exemption on marriage expenses?": {
+    "id": "taxfaq-082",
+    "topic": "Tax on Marriage Expenses",
+    "topic_key": "tax_on_marriage_expenses",
+    "question_type": "definition",
+    "question_normalized": "bihe kharcha ma tax chhut cha"
+  },
+  "bihe kharcha ma tax chhut cha": {
+    "id": "taxfaq-082",
+    "topic": "Tax on Marriage Expenses",
+    "topic_key": "tax_on_marriage_expenses",
+    "question_type": "definition",
+    "question_normalized": "bihe kharcha ma tax chhut cha"
+  },
+  "Tax on Marriage Expenses": {
+    "id": "taxfaq-082",
+    "topic": "Tax on Marriage Expenses",
+    "topic_key": "tax_on_marriage_expenses",
+    "question_type": "definition",
+    "question_normalized": "bihe kharcha ma tax chhut cha"
+  },
+  "tax_on_marriage_expenses": {
+    "id": "taxfaq-082",
+    "topic": "Tax on Marriage Expenses",
+    "topic_key": "tax_on_marriage_expenses",
+    "question_type": "definition",
+    "question_normalized": "bihe kharcha ma tax chhut cha"
+  },
+  "bihe ko gift tax free ho": {
+    "id": "taxfaq-082",
+    "topic": "Tax on Marriage Expenses",
+    "topic_key": "tax_on_marriage_expenses",
+    "question_type": "definition",
+    "question_normalized": "bihe kharcha ma tax chhut cha"
+  },
+  "gold/jewellery ma tax": {
+    "id": "taxfaq-082",
+    "topic": "Tax on Marriage Expenses",
+    "topic_key": "tax_on_marriage_expenses",
+    "question_type": "definition",
+    "question_normalized": "bihe kharcha ma tax chhut cha"
+  },
+  "Gold import ma tax kati lagcha?": {
+    "id": "taxfaq-083",
+    "topic": "Tax on Import of Gold",
+    "topic_key": "tax_on_import_of_gold",
+    "question_type": "definition",
+    "question_normalized": "gold import ma tax kati lagcha"
+  },
+  "What is the tax on gold imports?": {
+    "id": "taxfaq-083",
+    "topic": "Tax on Import of Gold",
+    "topic_key": "tax_on_import_of_gold",
+    "question_type": "definition",
+    "question_normalized": "gold import ma tax kati lagcha"
+  },
+  "gold import ma tax kati lagcha": {
+    "id": "taxfaq-083",
+    "topic": "Tax on Import of Gold",
+    "topic_key": "tax_on_import_of_gold",
+    "question_type": "definition",
+    "question_normalized": "gold import ma tax kati lagcha"
+  },
+  "Tax on Import of Gold": {
+    "id": "taxfaq-083",
+    "topic": "Tax on Import of Gold",
+    "topic_key": "tax_on_import_of_gold",
+    "question_type": "definition",
+    "question_normalized": "gold import ma tax kati lagcha"
+  },
+  "tax_on_import_of_gold": {
+    "id": "taxfaq-083",
+    "topic": "Tax on Import of Gold",
+    "topic_key": "tax_on_import_of_gold",
+    "question_type": "definition",
+    "question_normalized": "gold import ma tax kati lagcha"
+  },
+  "airport ma gold kurne tax ke cha": {
+    "id": "taxfaq-083",
+    "topic": "Tax on Import of Gold",
+    "topic_key": "tax_on_import_of_gold",
+    "question_type": "definition",
+    "question_normalized": "gold import ma tax kati lagcha"
+  },
+  "silver ma tax kati": {
+    "id": "taxfaq-083",
+    "topic": "Tax on Import of Gold",
+    "topic_key": "tax_on_import_of_gold",
+    "question_type": "definition",
+    "question_normalized": "gold import ma tax kati lagcha"
+  },
+  "Excavator, crane ma tax kati ho?": {
+    "id": "taxfaq-084",
+    "topic": "Tax on Heavy Equipment",
+    "topic_key": "tax_on_heavy_equipment",
+    "question_type": "definition",
+    "question_normalized": "excavator, crane ma tax kati ho"
+  },
+  "What is the tax on heavy equipment?": {
+    "id": "taxfaq-084",
+    "topic": "Tax on Heavy Equipment",
+    "topic_key": "tax_on_heavy_equipment",
+    "question_type": "definition",
+    "question_normalized": "excavator, crane ma tax kati ho"
+  },
+  "excavator, crane ma tax kati ho": {
+    "id": "taxfaq-084",
+    "topic": "Tax on Heavy Equipment",
+    "topic_key": "tax_on_heavy_equipment",
+    "question_type": "definition",
+    "question_normalized": "excavator, crane ma tax kati ho"
+  },
+  "Tax on Heavy Equipment": {
+    "id": "taxfaq-084",
+    "topic": "Tax on Heavy Equipment",
+    "topic_key": "tax_on_heavy_equipment",
+    "question_type": "definition",
+    "question_normalized": "excavator, crane ma tax kati ho"
+  },
+  "tax_on_heavy_equipment": {
+    "id": "taxfaq-084",
+    "topic": "Tax on Heavy Equipment",
+    "topic_key": "tax_on_heavy_equipment",
+    "question_type": "definition",
+    "question_normalized": "excavator, crane ma tax kati ho"
+  },
+  "second hand import garna milcha": {
+    "id": "taxfaq-084",
+    "topic": "Tax on Heavy Equipment",
+    "topic_key": "tax_on_heavy_equipment",
+    "question_type": "definition",
+    "question_normalized": "excavator, crane ma tax kati ho"
+  },
+  "excise duty lagcha": {
+    "id": "taxfaq-084",
+    "topic": "Tax on Heavy Equipment",
+    "topic_key": "tax_on_heavy_equipment",
+    "question_type": "definition",
+    "question_normalized": "excavator, crane ma tax kati ho"
+  },
+  "Surti janaya padartha ma tax kati ho?": {
+    "id": "taxfaq-085",
+    "topic": "Tax on Tobacco",
+    "topic_key": "tax_on_tobacco",
+    "question_type": "definition",
+    "question_normalized": "surti janaya padartha ma tax kati ho"
+  },
+  "What is the tax on tobacco products?": {
+    "id": "taxfaq-085",
+    "topic": "Tax on Tobacco",
+    "topic_key": "tax_on_tobacco",
+    "question_type": "definition",
+    "question_normalized": "surti janaya padartha ma tax kati ho"
+  },
+  "surti janaya padartha ma tax kati ho": {
+    "id": "taxfaq-085",
+    "topic": "Tax on Tobacco",
+    "topic_key": "tax_on_tobacco",
+    "question_type": "definition",
+    "question_normalized": "surti janaya padartha ma tax kati ho"
+  },
+  "Tax on Tobacco": {
+    "id": "taxfaq-085",
+    "topic": "Tax on Tobacco",
+    "topic_key": "tax_on_tobacco",
+    "question_type": "definition",
+    "question_normalized": "surti janaya padartha ma tax kati ho"
+  },
+  "tax_on_tobacco": {
+    "id": "taxfaq-085",
+    "topic": "Tax on Tobacco",
+    "topic_key": "tax_on_tobacco",
+    "question_type": "definition",
+    "question_normalized": "surti janaya padartha ma tax kati ho"
+  },
+  "e-cigarette ma kati tax": {
+    "id": "taxfaq-085",
+    "topic": "Tax on Tobacco",
+    "topic_key": "tax_on_tobacco",
+    "question_type": "definition",
+    "question_normalized": "surti janaya padartha ma tax kati ho"
+  },
+  "gutka ma kati": {
+    "id": "taxfaq-085",
+    "topic": "Tax on Tobacco",
+    "topic_key": "tax_on_tobacco",
+    "question_type": "definition",
+    "question_normalized": "surti janaya padartha ma tax kati ho"
+  },
+  "Ghar bechda tax kati lagcha?": {
+    "id": "taxfaq-086",
+    "topic": "Tax on Sale of Property",
+    "topic_key": "tax_on_sale_of_property",
+    "question_type": "definition",
+    "question_normalized": "ghar bechda tax kati lagcha"
+  },
+  "What is the tax on selling a house?": {
+    "id": "taxfaq-086",
+    "topic": "Tax on Sale of Property",
+    "topic_key": "tax_on_sale_of_property",
+    "question_type": "definition",
+    "question_normalized": "ghar bechda tax kati lagcha"
+  },
+  "ghar bechda tax kati lagcha": {
+    "id": "taxfaq-086",
+    "topic": "Tax on Sale of Property",
+    "topic_key": "tax_on_sale_of_property",
+    "question_type": "definition",
+    "question_normalized": "ghar bechda tax kati lagcha"
+  },
+  "Tax on Sale of Property": {
+    "id": "taxfaq-086",
+    "topic": "Tax on Sale of Property",
+    "topic_key": "tax_on_sale_of_property",
+    "question_type": "definition",
+    "question_normalized": "ghar bechda tax kati lagcha"
+  },
+  "tax_on_sale_of_property": {
+    "id": "taxfaq-086",
+    "topic": "Tax on Sale of Property",
+    "topic_key": "tax_on_sale_of_property",
+    "question_type": "definition",
+    "question_normalized": "ghar bechda tax kati lagcha"
+  },
+  "multiple ghar bhaye": {
+    "id": "taxfaq-086",
+    "topic": "Tax on Sale of Property",
+    "topic_key": "tax_on_sale_of_property",
+    "question_type": "definition",
+    "question_normalized": "ghar bechda tax kati lagcha"
+  },
+  "apartment ko tax ke cha": {
+    "id": "taxfaq-086",
+    "topic": "Tax on Sale of Property",
+    "topic_key": "tax_on_sale_of_property",
+    "question_type": "definition",
+    "question_normalized": "ghar bechda tax kati lagcha"
+  },
+  "Advertisement ma tax kati lagcha?": {
+    "id": "taxfaq-087",
+    "topic": "Tax on Advertisement",
+    "topic_key": "tax_on_advertisement",
+    "question_type": "definition",
+    "question_normalized": "advertisement ma tax kati lagcha"
+  },
+  "What is the tax on advertisements?": {
+    "id": "taxfaq-087",
+    "topic": "Tax on Advertisement",
+    "topic_key": "tax_on_advertisement",
+    "question_type": "definition",
+    "question_normalized": "advertisement ma tax kati lagcha"
+  },
+  "advertisement ma tax kati lagcha": {
+    "id": "taxfaq-087",
+    "topic": "Tax on Advertisement",
+    "topic_key": "tax_on_advertisement",
+    "question_type": "definition",
+    "question_normalized": "advertisement ma tax kati lagcha"
+  },
+  "Tax on Advertisement": {
+    "id": "taxfaq-087",
+    "topic": "Tax on Advertisement",
+    "topic_key": "tax_on_advertisement",
+    "question_type": "definition",
+    "question_normalized": "advertisement ma tax kati lagcha"
+  },
+  "tax_on_advertisement": {
+    "id": "taxfaq-087",
+    "topic": "Tax on Advertisement",
+    "topic_key": "tax_on_advertisement",
+    "question_type": "definition",
+    "question_normalized": "advertisement ma tax kati lagcha"
+  },
+  "facebook/google ads ma tax": {
+    "id": "taxfaq-087",
+    "topic": "Tax on Advertisement",
+    "topic_key": "tax_on_advertisement",
+    "question_type": "definition",
+    "question_normalized": "advertisement ma tax kati lagcha"
+  },
+  "local advertising agency lai kati": {
+    "id": "taxfaq-087",
+    "topic": "Tax on Advertisement",
+    "topic_key": "tax_on_advertisement",
+    "question_type": "definition",
+    "question_normalized": "advertisement ma tax kati lagcha"
+  },
+  "Motorcycle import ma kati tax?": {
+    "id": "taxfaq-088",
+    "topic": "Tax on Motorcycle Import",
+    "topic_key": "tax_on_motorcycle_import",
+    "question_type": "definition",
+    "question_normalized": "motorcycle import ma kati tax"
+  },
+  "What is the tax on motorcycle imports?": {
+    "id": "taxfaq-088",
+    "topic": "Tax on Motorcycle Import",
+    "topic_key": "tax_on_motorcycle_import",
+    "question_type": "definition",
+    "question_normalized": "motorcycle import ma kati tax"
+  },
+  "motorcycle import ma kati tax": {
+    "id": "taxfaq-088",
+    "topic": "Tax on Motorcycle Import",
+    "topic_key": "tax_on_motorcycle_import",
+    "question_type": "definition",
+    "question_normalized": "motorcycle import ma kati tax"
+  },
+  "Tax on Motorcycle Import": {
+    "id": "taxfaq-088",
+    "topic": "Tax on Motorcycle Import",
+    "topic_key": "tax_on_motorcycle_import",
+    "question_type": "definition",
+    "question_normalized": "motorcycle import ma kati tax"
+  },
+  "tax_on_motorcycle_import": {
+    "id": "taxfaq-088",
+    "topic": "Tax on Motorcycle Import",
+    "topic_key": "tax_on_motorcycle_import",
+    "question_type": "definition",
+    "question_normalized": "motorcycle import ma kati tax"
+  },
+  "electric scooter ko tax ke cha": {
+    "id": "taxfaq-088",
+    "topic": "Tax on Motorcycle Import",
+    "topic_key": "tax_on_motorcycle_import",
+    "question_type": "definition",
+    "question_normalized": "motorcycle import ma kati tax"
+  },
+  "parts import ma kati": {
+    "id": "taxfaq-088",
+    "topic": "Tax on Motorcycle Import",
+    "topic_key": "tax_on_motorcycle_import",
+    "question_type": "definition",
+    "question_normalized": "motorcycle import ma kati tax"
+  },
+  "Freelance income ma tax kati ho?": {
+    "id": "taxfaq-089",
+    "topic": "Tax on Freelance Services",
+    "topic_key": "tax_on_freelance_services",
+    "question_type": "definition",
+    "question_normalized": "freelance income ma tax kati ho"
+  },
+  "What is the tax on freelance income?": {
+    "id": "taxfaq-089",
+    "topic": "Tax on Freelance Services",
+    "topic_key": "tax_on_freelance_services",
+    "question_type": "definition",
+    "question_normalized": "freelance income ma tax kati ho"
+  },
+  "freelance income ma tax kati ho": {
+    "id": "taxfaq-089",
+    "topic": "Tax on Freelance Services",
+    "topic_key": "tax_on_freelance_services",
+    "question_type": "definition",
+    "question_normalized": "freelance income ma tax kati ho"
+  },
+  "Tax on Freelance Services": {
+    "id": "taxfaq-089",
+    "topic": "Tax on Freelance Services",
+    "topic_key": "tax_on_freelance_services",
+    "question_type": "definition",
+    "question_normalized": "freelance income ma tax kati ho"
+  },
+  "tax_on_freelance_services": {
+    "id": "taxfaq-089",
+    "topic": "Tax on Freelance Services",
+    "topic_key": "tax_on_freelance_services",
+    "question_type": "definition",
+    "question_normalized": "freelance income ma tax kati ho"
+  },
+  "dollar income ko tax": {
+    "id": "taxfaq-089",
+    "topic": "Tax on Freelance Services",
+    "topic_key": "tax_on_freelance_services",
+    "question_type": "definition",
+    "question_normalized": "freelance income ma tax kati ho"
+  },
+  "paypal bata nepal lyauda tax": {
+    "id": "taxfaq-089",
+    "topic": "Tax on Freelance Services",
+    "topic_key": "tax_on_freelance_services",
+    "question_type": "definition",
+    "question_normalized": "freelance income ma tax kati ho"
+  },
+  "Capital reduction ma tax cha?": {
+    "id": "taxfaq-090",
+    "topic": "Tax on Capital Reduction",
+    "topic_key": "tax_on_capital_reduction",
+    "question_type": "definition",
+    "question_normalized": "capital reduction ma tax cha"
+  },
+  "Is there tax on capital reduction?": {
+    "id": "taxfaq-090",
+    "topic": "Tax on Capital Reduction",
+    "topic_key": "tax_on_capital_reduction",
+    "question_type": "definition",
+    "question_normalized": "capital reduction ma tax cha"
+  },
+  "capital reduction ma tax cha": {
+    "id": "taxfaq-090",
+    "topic": "Tax on Capital Reduction",
+    "topic_key": "tax_on_capital_reduction",
+    "question_type": "definition",
+    "question_normalized": "capital reduction ma tax cha"
+  },
+  "Tax on Capital Reduction": {
+    "id": "taxfaq-090",
+    "topic": "Tax on Capital Reduction",
+    "topic_key": "tax_on_capital_reduction",
+    "question_type": "definition",
+    "question_normalized": "capital reduction ma tax cha"
+  },
+  "tax_on_capital_reduction": {
+    "id": "taxfaq-090",
+    "topic": "Tax on Capital Reduction",
+    "topic_key": "tax_on_capital_reduction",
+    "question_type": "definition",
+    "question_normalized": "capital reduction ma tax cha"
+  },
+  "share buy back ma tax": {
+    "id": "taxfaq-090",
+    "topic": "Tax on Capital Reduction",
+    "topic_key": "tax_on_capital_reduction",
+    "question_type": "definition",
+    "question_normalized": "capital reduction ma tax cha"
+  },
+  "loss ma capital reduce garda": {
+    "id": "taxfaq-090",
+    "topic": "Tax on Capital Reduction",
+    "topic_key": "tax_on_capital_reduction",
+    "question_type": "definition",
+    "question_normalized": "capital reduction ma tax cha"
+  },
+  "Ghar bhada bhatta ma tax kati?": {
+    "id": "taxfaq-091",
+    "topic": "Tax on House Rent Allowance",
+    "topic_key": "tax_on_house_rent_allowance",
+    "question_type": "definition",
+    "question_normalized": "ghar bhada bhatta ma tax kati"
+  },
+  "Is house rent allowance taxable?": {
+    "id": "taxfaq-091",
+    "topic": "Tax on House Rent Allowance",
+    "topic_key": "tax_on_house_rent_allowance",
+    "question_type": "definition",
+    "question_normalized": "ghar bhada bhatta ma tax kati"
+  },
+  "ghar bhada bhatta ma tax kati": {
+    "id": "taxfaq-091",
+    "topic": "Tax on House Rent Allowance",
+    "topic_key": "tax_on_house_rent_allowance",
+    "question_type": "definition",
+    "question_normalized": "ghar bhada bhatta ma tax kati"
+  },
+  "Tax on House Rent Allowance": {
+    "id": "taxfaq-091",
+    "topic": "Tax on House Rent Allowance",
+    "topic_key": "tax_on_house_rent_allowance",
+    "question_type": "definition",
+    "question_normalized": "ghar bhada bhatta ma tax kati"
+  },
+  "tax_on_house_rent_allowance": {
+    "id": "taxfaq-091",
+    "topic": "Tax on House Rent Allowance",
+    "topic_key": "tax_on_house_rent_allowance",
+    "question_type": "definition",
+    "question_normalized": "ghar bhada bhatta ma tax kati"
+  },
+  "dashain allowance ma tax cha": {
+    "id": "taxfaq-091",
+    "topic": "Tax on House Rent Allowance",
+    "topic_key": "tax_on_house_rent_allowance",
+    "question_type": "definition",
+    "question_normalized": "ghar bhada bhatta ma tax kati"
+  },
+  "remote area allowance": {
+    "id": "taxfaq-091",
+    "topic": "Tax on House Rent Allowance",
+    "topic_key": "tax_on_house_rent_allowance",
+    "question_type": "definition",
+    "question_normalized": "ghar bhada bhatta ma tax kati"
+  },
+  "License renewal garda tax kati?": {
+    "id": "taxfaq-092",
+    "topic": "Tax on Royalty and License Fees",
+    "topic_key": "tax_on_royalty_and_license_fees",
+    "question_type": "definition",
+    "question_normalized": "license renewal garda tax kati"
+  },
+  "What is the tax on license renewal?": {
+    "id": "taxfaq-092",
+    "topic": "Tax on Royalty and License Fees",
+    "topic_key": "tax_on_royalty_and_license_fees",
+    "question_type": "definition",
+    "question_normalized": "license renewal garda tax kati"
+  },
+  "license renewal garda tax kati": {
+    "id": "taxfaq-092",
+    "topic": "Tax on Royalty and License Fees",
+    "topic_key": "tax_on_royalty_and_license_fees",
+    "question_type": "definition",
+    "question_normalized": "license renewal garda tax kati"
+  },
+  "Tax on Royalty and License Fees": {
+    "id": "taxfaq-092",
+    "topic": "Tax on Royalty and License Fees",
+    "topic_key": "tax_on_royalty_and_license_fees",
+    "question_type": "definition",
+    "question_normalized": "license renewal garda tax kati"
+  },
+  "tax_on_royalty_and_license_fees": {
+    "id": "taxfaq-092",
+    "topic": "Tax on Royalty and License Fees",
+    "topic_key": "tax_on_royalty_and_license_fees",
+    "question_type": "definition",
+    "question_normalized": "license renewal garda tax kati"
+  },
+  "software license ma kati": {
+    "id": "taxfaq-092",
+    "topic": "Tax on Royalty and License Fees",
+    "topic_key": "tax_on_royalty_and_license_fees",
+    "question_type": "definition",
+    "question_normalized": "license renewal garda tax kati"
+  },
+  "franchise fee ma tax": {
+    "id": "taxfaq-092",
+    "topic": "Tax on Royalty and License Fees",
+    "topic_key": "tax_on_royalty_and_license_fees",
+    "question_type": "definition",
+    "question_normalized": "license renewal garda tax kati"
+  }
+}

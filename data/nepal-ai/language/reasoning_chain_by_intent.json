@@ -1,0 +1,130 @@
+{
+  "credit_sale": [
+    "rchain-001",
+    "rchain-028",
+    "rchain-068"
+  ],
+  "cash_sale": [
+    "rchain-002",
+    "rchain-020"
+  ],
+  "cash_purchase": [
+    "rchain-003",
+    "rchain-019",
+    "rchain-029",
+    "rchain-037"
+  ],
+  "expense_accrual": [
+    "rchain-004",
+    "rchain-010",
+    "rchain-013"
+  ],
+  "bank_deposit": [
+    "rchain-005",
+    "rchain-038",
+    "rchain-043"
+  ],
+  "loan_given": [
+    "rchain-006",
+    "rchain-041"
+  ],
+  "loan_received": [
+    "rchain-007"
+  ],
+  "asset_purchase": [
+    "rchain-008",
+    "rchain-065"
+  ],
+  "asset_sale": [
+    "rchain-009"
+  ],
+  "expense_payment": [
+    "rchain-011",
+    "rchain-012",
+    "rchain-069",
+    "rchain-074"
+  ],
+  "dividend_declared": [
+    "rchain-014"
+  ],
+  "owner_capital": [
+    "rchain-015"
+  ],
+  "owner_drawing": [
+    "rchain-016"
+  ],
+  "depreciation": [
+    "rchain-017"
+  ],
+  "bad_debt": [
+    "rchain-018",
+    "rchain-027"
+  ],
+  "calculation": [
+    "rchain-021",
+    "rchain-022",
+    "rchain-023",
+    "rchain-024",
+    "rchain-030",
+    "rchain-031",
+    "rchain-032",
+    "rchain-033",
+    "rchain-034",
+    "rchain-035",
+    "rchain-036",
+    "rchain-070",
+    "rchain-077",
+    "rchain-078",
+    "rchain-079",
+    "rchain-080"
+  ],
+  "error_detection": [
+    "rchain-025",
+    "rchain-039",
+    "rchain-040",
+    "rchain-075",
+    "rchain-076"
+  ],
+  "balance_check": [
+    "rchain-026",
+    "rchain-066"
+  ],
+  "receipt": [
+    "rchain-042"
+  ],
+  "journal_entry": [
+    "rchain-044",
+    "rchain-045",
+    "rchain-046",
+    "rchain-047",
+    "rchain-048",
+    "rchain-049",
+    "rchain-050",
+    "rchain-051",
+    "rchain-052",
+    "rchain-053",
+    "rchain-054",
+    "rchain-055",
+    "rchain-056",
+    "rchain-057",
+    "rchain-058",
+    "rchain-059",
+    "rchain-060",
+    "rchain-061",
+    "rchain-062",
+    "rchain-063",
+    "rchain-064"
+  ],
+  "credit_purchase": [
+    "rchain-067"
+  ],
+  "ambiguous": [
+    "rchain-071"
+  ],
+  "entity_extraction": [
+    "rchain-072"
+  ],
+  "payment_cheque": [
+    "rchain-073"
+  ]
+}

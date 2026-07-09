@@ -1,0 +1,62 @@
+{
+  "professional_accurate": [
+    "prompt_v1"
+  ],
+  "friendly_helpful": [
+    "prompt_v2"
+  ],
+  "concise_actionable": [
+    "prompt_v3"
+  ],
+  "explanatory_educational": [
+    "prompt_v4"
+  ],
+  "audit_focused": [
+    "prompt_v5"
+  ],
+  "creative_concise": [
+    "prompt_v6"
+  ],
+  "multi_lingual_support": [
+    "prompt_v7"
+  ],
+  "verbose_documentation": [
+    "prompt_v8"
+  ],
+  "qa_driven": [
+    "prompt_v9"
+  ],
+  "empathetic_supportive": [
+    "prompt_v10"
+  ],
+  "strict_compliance": [
+    "prompt_v11"
+  ],
+  "prototype_explorer": [
+    "prompt_v12"
+  ],
+  "example_rich": [
+    "prompt_v13"
+  ],
+  "minimalist_safe": [
+    "prompt_v14"
+  ],
+  "step_by_step_wizard": [
+    "prompt_v15"
+  ],
+  "data_validation_specialist": [
+    "prompt_v16"
+  ],
+  "policy_conscious": [
+    "prompt_v17"
+  ],
+  "persona_accountant_friend": [
+    "prompt_v18"
+  ],
+  "few_shot_heavy": [
+    "prompt_v19"
+  ],
+  "adaptive_length": [
+    "prompt_v20"
+  ]
+}

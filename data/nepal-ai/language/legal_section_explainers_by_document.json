@@ -1,0 +1,79 @@
+{
+  "Income Tax Act 2058": [
+    "legsec-001",
+    "legsec-002",
+    "legsec-003",
+    "legsec-004",
+    "legsec-005",
+    "legsec-006",
+    "legsec-007",
+    "legsec-008",
+    "legsec-009",
+    "legsec-010",
+    "legsec-011",
+    "legsec-012"
+  ],
+  "VAT Act 2052": [
+    "legsec-013",
+    "legsec-014",
+    "legsec-015",
+    "legsec-016",
+    "legsec-017",
+    "legsec-018",
+    "legsec-019",
+    "legsec-020",
+    "legsec-021",
+    "legsec-022"
+  ],
+  "Company Act 2063": [
+    "legsec-023",
+    "legsec-024",
+    "legsec-025",
+    "legsec-026",
+    "legsec-027",
+    "legsec-028",
+    "legsec-029",
+    "legsec-030",
+    "legsec-031"
+  ],
+  "Labor Act 2074": [
+    "legsec-032",
+    "legsec-033",
+    "legsec-034",
+    "legsec-035",
+    "legsec-036",
+    "legsec-037",
+    "legsec-038",
+    "legsec-039",
+    "legsec-040",
+    "legsec-041"
+  ],
+  "Contract Clause - Employment": [
+    "legsec-042",
+    "legsec-043"
+  ],
+  "Contract Clause - Lease": [
+    "legsec-044",
+    "legsec-045",
+    "legsec-046",
+    "legsec-047"
+  ],
+  "Contract Clause - Sale": [
+    "legsec-048",
+    "legsec-049",
+    "legsec-050",
+    "legsec-051"
+  ],
+  "Government Circular": [
+    "legsec-052",
+    "legsec-053",
+    "legsec-054",
+    "legsec-055",
+    "legsec-056",
+    "legsec-057",
+    "legsec-058",
+    "legsec-059",
+    "legsec-060",
+    "legsec-061"
+  ]
+}

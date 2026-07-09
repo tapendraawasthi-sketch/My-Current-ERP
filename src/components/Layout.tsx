@@ -12,6 +12,7 @@ import { LayoutDashboard, FileText, BookOpen, TrendingUp, Settings, Menu, X } fr
 import toast from "react-hot-toast";
 import FalconProvider from "./falcon/FalconProvider";
 import EKhataProvider from "./ekhata/EKhataProvider";
+import SutraAiProvider from "./sutra-ai/SutraAiProvider";
 import SyncStatusIndicator from "./SyncStatusIndicator";
 import { startSyncLoop, stopSyncLoop } from "../lib/syncEngine";
 import { startAutoBackupScheduler, stopAutoBackupScheduler } from "../lib/autoBackupScheduler";
@@ -722,6 +723,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         )}
         <FalconProvider />
         <EKhataProvider />
+        <SutraAiProvider />
       </div>
     );
   }

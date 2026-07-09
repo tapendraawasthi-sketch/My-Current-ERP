@@ -1,24 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useStore } from "../store";
 import { Party, PartyType } from "../lib/types";
 import PartyForm from "../components/party/PartyForm";
 import { Plus, Edit2, Users, Search } from "lucide-react";
+import { useSutraAiStore } from "@/store/sutraAiStore";
+import { consumeAiPartyDraft, peekAiPartyDraft } from "@/ai/actions/partyDraft";
+import type { AiPartyDraft } from "@/ai/types";
 
 export default function Parties() {
   const { parties, addParty, updateParty } = useStore();
+  const pendingPartyEdit = useSutraAiStore((s) => s.pendingPartyEdit);
+  const clearPendingPartyEdit = useSutraAiStore((s) => s.clearPendingPartyEdit);
   const [showForm, setShowForm] = useState(false);
   const [editingParty, setEditingParty] = useState<Party | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [aiPrefill, setAiPrefill] = useState<AiPartyDraft | null>(null);
 
   const handleOpenCreate = () => {
     setEditingParty(null);
+    setAiPrefill(null);
     setShowForm(true);
   };
 
   const handleOpenEdit = (party: Party) => {
     setEditingParty(party);
+    setAiPrefill(null);
     setShowForm(true);
   };
+
+  useEffect(() => {
+    const draft = peekAiPartyDraft();
+    if (!draft && !pendingPartyEdit) return;
+    if (!draft) return;
+
+    const party = parties.find((p) => p.id === draft.partyId);
+    if (party) {
+      setEditingParty(party);
+      setAiPrefill(consumeAiPartyDraft());
+      setShowForm(true);
+    } else if (draft.partyName) {
+      setSearchTerm(draft.partyName);
+    }
+    clearPendingPartyEdit();
+  }, [pendingPartyEdit, parties, clearPendingPartyEdit]);
 
   const handleSave = async (partyData: any) => {
     try {
@@ -176,7 +200,15 @@ export default function Parties() {
               </button>
             </div>
             <div className="p-4">
-              <PartyForm partyId={editingParty?.id} onClose={() => setShowForm(false)} />
+              <PartyForm
+                partyId={editingParty?.id}
+                prefillPhone={aiPrefill?.phone}
+                focusPhone={aiPrefill?.focusPhone}
+                onClose={() => {
+                  setShowForm(false);
+                  setAiPrefill(null);
+                }}
+              />
             </div>
           </div>
         </div>

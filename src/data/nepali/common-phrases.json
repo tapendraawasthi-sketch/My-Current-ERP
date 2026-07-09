@@ -1,0 +1,33 @@
+{
+  "phrases": [
+    { "roman": "maile bechye", "nepali": "मैले बेचें", "english": "I sold", "context": "sales" },
+    { "roman": "maile kinyo", "nepali": "मैले किनें", "english": "I bought", "context": "purchase" },
+    { "roman": "ko bikri", "nepali": "को बिक्री", "english": "worth (amount) sales", "context": "price" },
+    { "roman": "ko kharid", "nepali": "को खरिद", "english": "worth (amount) purchase", "context": "price" },
+    { "roman": "udhaar ma", "nepali": "उधारमा", "english": "on credit", "context": "payment" },
+    { "roman": "nagad ma", "nepali": "नगदमा", "english": "in cash", "context": "payment" },
+    { "roman": "hajur khayo", "nepali": "हजुर खानुभयो", "english": "you ate (honorific)", "context": "honorific" },
+    { "roman": "tapai janubhayo", "nepali": "तपाईं जानुभयो", "english": "you went (honorific)", "context": "honorific" },
+    { "roman": "hisaab kitab", "nepali": "हिसाब किताब", "english": "accounts/books", "context": "accounting" },
+    { "roman": "debit credit", "nepali": "डेबिट क्रेडिट", "english": "debit credit", "context": "accounting" },
+    { "roman": "hisaab milaunu", "nepali": "हिसाब मिलाउनु", "english": "reconcile accounts", "context": "accounting" },
+    { "roman": "hisaab hernu", "nepali": "हिसाब हेर्नु", "english": "check accounts", "context": "accounting" },
+    { "roman": "kitab hernu", "nepali": "किताब हेर्नु", "english": "check ledger", "context": "accounting" },
+    { "roman": "hisaab cha", "nepali": "हिसाब छ", "english": "there is account/balance", "context": "accounting" },
+    { "roman": "hisaab chaina", "nepali": "हिसाब छैन", "english": "no account/balance", "context": "accounting" }
+  ],
+  "contextRules": [
+    {
+      "pattern": "\\d+\\s*ko",
+      "interpretation": "worth [amount] rupees",
+      "confidence": 0.9,
+      "example": "500 ko = रु. 500 को"
+    },
+    {
+      "pattern": "(maile|usle|unle|timile)\\s+\\w+\\s+(bechye|kinyo|tiryo)",
+      "interpretation": "transaction with agent",
+      "confidence": 0.85,
+      "example": "maile kakro bechye = I sold cucumber"
+    }
+  ]
+}

@@ -100,7 +100,7 @@ export default function AchievementSystem({ compact = false }: AchievementSystem
           </span>
         ))}
         {unlocked.length > 4 && (
-          <span className="text-[10px] text-gray-500">+{unlocked.length - 4}</span>
+          <span className="text-[10px] text-slate-500">+{unlocked.length - 4}</span>
         )}
       </div>
     );

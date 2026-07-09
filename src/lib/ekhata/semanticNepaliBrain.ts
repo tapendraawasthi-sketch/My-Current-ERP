@@ -13,6 +13,11 @@
 import type { KhataIntent } from "./types";
 import { WORD_TO_NUMBER } from "./nepaliLanguage";
 import { isNepaliAccountingQuestion } from "../nepal-ai/questionDetect";
+import { parseNepaliAmount } from "../nepal-ai/numberWords";
+import { extractNepaliAmountValue } from "../nepal-ai/amountExtraction";
+import { extractRetailItemName } from "../nepal-ai/retailItems";
+import { extractPartyRoles } from "../nepal-ai/partyNames";
+import { detectVerbInText } from "../nepal-ai/verbNormalize";
 
 /** Semantic action — what happened in the transaction */
 export type SemanticAction =
@@ -344,7 +349,7 @@ export function detectSemanticAction(text: string): {
 } {
   const t = text.toLowerCase();
 
-  // Credit sale: diye/diyo + lai (without payment-in context)
+  // Credit sale: diye/diyo + lai (without payment-in context) — keeps precedence
   if (/\b(diye|diyo|diya|die|diae)\b/i.test(t) && /\blai\b/i.test(t)) {
     if (!/\b(tiryo|tireko|tira|clear|jama|received)\b/i.test(t)) {
       if (CREDIT_MARKERS.test(t) || /\b(becheko|beche|bikri|bik|sale|sold)\b/i.test(t)) {
@@ -355,6 +360,30 @@ export function detectSemanticAction(text: string): {
         return { action: "CREDIT_SALE", verbLemma: "diye", confidence: 0.85 };
       }
     }
+  }
+
+  // Lexicon conjugations / VERB_ALIASES (longest surface; DR/CR-aware)
+  const lexVerb = detectVerbInText(t);
+  if (lexVerb?.frameAction) {
+    const mapped = lexVerb.frameAction as SemanticAction;
+    // Credit/udhaar purchase override
+    if (
+      mapped === "PURCHASE" &&
+      /\b(udhaar|udhar|udharo|credit)\b/i.test(t)
+    ) {
+      return { action: "CREDIT_PURCHASE", verbLemma: lexVerb.lemma, confidence: 0.93 };
+    }
+    if (
+      mapped === "SALE" &&
+      /\b(udhaar|udhar|udharo|credit)\b/i.test(t)
+    ) {
+      return { action: "CREDIT_SALE", verbLemma: lexVerb.lemma, confidence: 0.93 };
+    }
+    return {
+      action: mapped,
+      verbLemma: lexVerb.lemma,
+      confidence: lexVerb.signals_completion ? 0.94 : 0.9,
+    };
   }
 
   // Phrase-level patterns (longest match first)
@@ -426,6 +455,15 @@ export function extractSemanticRoles(text: string): {
   recipient: string | null;
   source: string | null;
 } {
+  const fromLexicon = extractPartyRoles(text);
+  if (fromLexicon.agent || fromLexicon.recipient || fromLexicon.source || fromLexicon.counterparty || fromLexicon.owner) {
+    return {
+      agent: fromLexicon.agent,
+      recipient: fromLexicon.recipient ?? fromLexicon.counterparty,
+      source: fromLexicon.source ?? fromLexicon.owner,
+    };
+  }
+
   const soft = text
     .replace(/[^\w\s\u0900-\u097F.]/g, " ")
     .replace(/\s+/g, " ")
@@ -490,6 +528,19 @@ export function extractSemanticRoles(text: string): {
 /** Extract amount using semantic patterns (not just digit regex) */
 export function extractSemanticAmount(text: string): number | null {
   const t = text.toLowerCase().replace(/,/g, "");
+
+  // Trained Nepal amount-extraction rules (sawa/paune, eutako×wota, ranges, FY strip…)
+  const ruleAmt = extractNepaliAmountValue(text);
+  if (ruleAmt != null && ruleAmt > 0) return ruleAmt;
+
+  // Nepal AI spoken/typed amount lexicon (paanch hajar, 5k, dedh hajar…)
+  const lexiconAmt = parseNepaliAmount(text);
+  if (lexiconAmt != null && lexiconAmt > 0) {
+    // Prefer lexicon for word-number phrases; for pure digits let patterns below refine qty×unit
+    if (!/^\d+(?:\.\d+)?$/.test(t.trim()) && !/\d+\s+[a-z].*\d+/.test(t)) {
+      return lexiconAmt;
+    }
+  }
 
   // Qty × unit price — "200 cups for Rs 50 each" / "200 @ 50"
   const qtyEach =
@@ -570,6 +621,9 @@ export function extractSemanticAmount(text: string): number | null {
 /** Extract item/object from semantic patterns */
 export function extractSemanticItem(text: string, action: SemanticAction): string | null {
   const t = text.toLowerCase();
+
+  const lex = extractRetailItemName(text);
+  if (lex) return lex;
 
   // "50 rupaya ko bag" / "500 ko saman" — genitive price + item
   const priceItemMatch = t.match(

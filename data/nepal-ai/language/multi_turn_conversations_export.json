@@ -1,0 +1,698 @@
+[
+  {
+    "id": "conv_001",
+    "scenario": "credit_sale_with_correction",
+    "turns": [
+      {
+        "role": "user",
+        "text": "ram lai 500 udhaar"
+      },
+      {
+        "role": "ai",
+        "text": "Ram lai Rs 500 udhaar bikri, thik ho?",
+        "intent_detected": "khata_credit_sale",
+        "entities": {
+          "party": "Ram",
+          "amount": 500
+        }
+      },
+      {
+        "role": "user",
+        "text": "hoina 600"
+      },
+      {
+        "role": "ai",
+        "text": "Maaf garnus, Rs 600 huncha. Ram lai Rs 600 udhaar bikri. Confirm garnu hola.",
+        "correction_applied": {
+          "amount": {
+            "old": 500,
+            "new": 600
+          }
+        }
+      }
+    ],
+    "final_intent": "khata_credit_sale",
+    "final_entities": {
+      "party": "Ram",
+      "amount": 600
+    },
+    "dialogue_patterns": [
+      {
+        "user_text": "ram lai 500 udhaar",
+        "ai_text": "Ram lai Rs 500 udhaar bikri, thik ho?",
+        "turn_index": 0,
+        "intent": "khata_credit_sale",
+        "has_correction": false,
+        "correction": null,
+        "entities": {
+          "party": "Ram",
+          "amount": 500
+        }
+      },
+      {
+        "user_text": "hoina 600",
+        "ai_text": "Maaf garnus, Rs 600 huncha. Ram lai Rs 600 udhaar bikri. Confirm garnu hola.",
+        "turn_index": 1,
+        "intent": null,
+        "has_correction": true,
+        "correction": {
+          "amount": {
+            "old": 500,
+            "new": 600
+          }
+        },
+        "entities": null
+      }
+    ],
+    "scenario_tags": [
+      "credit",
+      "sale",
+      "with",
+      "correction"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "conv_002",
+    "scenario": "typo_credit_sale",
+    "turns": [
+      {
+        "role": "user",
+        "text": "shyam lai 2000 udar"
+      },
+      {
+        "role": "ai",
+        "text": "Shyam lai Rs 2000 udhaar bikri, confirm garnus?",
+        "intent_detected": "khata_credit_sale",
+        "entities": {
+          "party": "Shyam",
+          "amount": 2000
+        }
+      },
+      {
+        "role": "user",
+        "text": "ho"
+      },
+      {
+        "role": "ai",
+        "text": "Record gariyo. Shyam ko khata ma Rs 2000 udhaar thapyo."
+      }
+    ],
+    "final_intent": "khata_credit_sale",
+    "final_entities": {
+      "party": "Shyam",
+      "amount": 2000
+    },
+    "dialogue_patterns": [
+      {
+        "user_text": "shyam lai 2000 udar",
+        "ai_text": "Shyam lai Rs 2000 udhaar bikri, confirm garnus?",
+        "turn_index": 0,
+        "intent": "khata_credit_sale",
+        "has_correction": false,
+        "correction": null,
+        "entities": {
+          "party": "Shyam",
+          "amount": 2000
+        }
+      },
+      {
+        "user_text": "ho",
+        "ai_text": "Record gariyo. Shyam ko khata ma Rs 2000 udhaar thapyo.",
+        "turn_index": 1,
+        "intent": null,
+        "has_correction": false,
+        "correction": null,
+        "entities": null
+      }
+    ],
+    "scenario_tags": [
+      "typo",
+      "credit",
+      "sale"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "conv_003",
+    "scenario": "incomplete_info_expense",
+    "turns": [
+      {
+        "role": "user",
+        "text": "kharcha bhayo 300"
+      },
+      {
+        "role": "ai",
+        "text": "K kasma kharcha bhayo ra kasle garyo?",
+        "intent_detected": "khata_expense",
+        "entities": {
+          "amount": 300
+        }
+      },
+      {
+        "role": "user",
+        "text": "office ko lagi stationery"
+      },
+      {
+        "role": "ai",
+        "text": "Stationery ma Rs 300 kharcha (office party), confirm garnus?",
+        "entities": {
+          "category": "Stationery",
+          "amount": 300,
+          "party": "office"
+        }
+      },
+      {
+        "role": "user",
+        "text": "thik cha"
+      }
+    ],
+    "final_intent": "khata_expense",
+    "final_entities": {
+      "category": "Stationery",
+      "amount": 300,
+      "party": "office"
+    },
+    "dialogue_patterns": [
+      {
+        "user_text": "kharcha bhayo 300",
+        "ai_text": "K kasma kharcha bhayo ra kasle garyo?",
+        "turn_index": 0,
+        "intent": "khata_expense",
+        "has_correction": false,
+        "correction": null,
+        "entities": {
+          "amount": 300
+        }
+      },
+      {
+        "user_text": "office ko lagi stationery",
+        "ai_text": "Stationery ma Rs 300 kharcha (office party), confirm garnus?",
+        "turn_index": 1,
+        "intent": null,
+        "has_correction": false,
+        "correction": null,
+        "entities": {
+          "category": "Stationery",
+          "amount": 300,
+          "party": "office"
+        }
+      },
+      {
+        "user_text": "thik cha",
+        "ai_text": "",
+        "turn_index": 2,
+        "intent": null,
+        "has_correction": false,
+        "correction": null,
+        "entities": null
+      }
+    ],
+    "scenario_tags": [
+      "incomplete",
+      "info",
+      "expense"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "conv_004",
+    "scenario": "balance_inquiry_followup",
+    "turns": [
+      {
+        "role": "user",
+        "text": "mero balance kati cha?"
+      },
+      {
+        "role": "ai",
+        "text": "Tapai ko balance Rs 15,000 cha.",
+        "intent_detected": "khata_balance_inquiry"
+      },
+      {
+        "role": "user",
+        "text": "Shyam ko?"
+      },
+      {
+        "role": "ai",
+        "text": "Shyam ko balance Rs 8,500 cha.",
+        "intent_detected": "khata_party_balance",
+        "entities": {
+          "party": "Shyam"
+        }
+      }
+    ],
+    "final_intent": "khata_party_balance",
+    "final_entities": {
+      "party": "Shyam"
+    },
+    "dialogue_patterns": [
+      {
+        "user_text": "mero balance kati cha?",
+        "ai_text": "Tapai ko balance Rs 15,000 cha.",
+        "turn_index": 0,
+        "intent": "khata_balance_inquiry",
+        "has_correction": false,
+        "correction": null,
+        "entities": null
+      },
+      {
+        "user_text": "Shyam ko?",
+        "ai_text": "Shyam ko balance Rs 8,500 cha.",
+        "turn_index": 1,
+        "intent": "khata_party_balance",
+        "has_correction": false,
+        "correction": null,
+        "entities": {
+          "party": "Shyam"
+        }
+      }
+    ],
+    "scenario_tags": [
+      "balance",
+      "inquiry",
+      "followup"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "conv_005",
+    "scenario": "greeting_help_guide",
+    "turns": [
+      {
+        "role": "user",
+        "text": "Namaste"
+      },
+      {
+        "role": "ai",
+        "text": "Namaste! e-KHATA AI ma swagat cha. Ma tapailai khata rakhn sahayog garna sakchu."
+      },
+      {
+        "role": "user",
+        "text": "malai naya party kasari thapne?"
+      },
+      {
+        "role": "ai",
+        "text": "Naya party thapna 'naya party' vanera naam ra thari die pugcha. jastai: 'naya party Hari'.",
+        "intent_detected": "khata_help_add_party"
+      }
+    ],
+    "final_intent": "khata_help_add_party",
+    "final_entities": null,
+    "dialogue_patterns": [
+      {
+        "user_text": "Namaste",
+        "ai_text": "Namaste! e-KHATA AI ma swagat cha. Ma tapailai khata rakhn sahayog garna sakchu.",
+        "turn_index": 0,
+        "intent": null,
+        "has_correction": false,
+        "correction": null,
+        "entities": null
+      },
+      {
+        "user_text": "malai naya party kasari thapne?",
+        "ai_text": "Naya party thapna 'naya party' vanera naam ra thari die pugcha. jastai: 'naya party Hari'.",
+        "turn_index": 1,
+        "intent": "khata_help_add_party",
+        "has_correction": false,
+        "correction": null,
+        "entities": null
+      }
+    ],
+    "scenario_tags": [
+      "greeting",
+      "help",
+      "guide"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "conv_006",
+    "scenario": "party_name_correction",
+    "turns": [
+      {
+        "role": "user",
+        "text": "hari lai 700 udhaar"
+      },
+      {
+        "role": "ai",
+        "text": "Hari lai Rs 700 udhaar bikri, thik ho?",
+        "intent_detected": "khata_credit_sale",
+        "entities": {
+          "party": "Hari",
+          "amount": 700
+        }
+      },
+      {
+        "role": "user",
+        "text": "hoina, Hari ko naam Hari Prasad ho"
+      },
+      {
+        "role": "ai",
+        "text": "Maaf garnus, Hari Prasad lai Rs 700 udhaar bikri. Confirm garnuhola.",
+        "correction_applied": {
+          "party": {
+            "old": "Hari",
+            "new": "Hari Prasad"
+          }
+        }
+      }
+    ],
+    "final_intent": "khata_credit_sale",
+    "final_entities": {
+      "party": "Hari Prasad",
+      "amount": 700
+    },
+    "dialogue_patterns": [
+      {
+        "user_text": "hari lai 700 udhaar",
+        "ai_text": "Hari lai Rs 700 udhaar bikri, thik ho?",
+        "turn_index": 0,
+        "intent": "khata_credit_sale",
+        "has_correction": false,
+        "correction": null,
+        "entities": {
+          "party": "Hari",
+          "amount": 700
+        }
+      },
+      {
+        "user_text": "hoina, Hari ko naam Hari Prasad ho",
+        "ai_text": "Maaf garnus, Hari Prasad lai Rs 700 udhaar bikri. Confirm garnuhola.",
+        "turn_index": 1,
+        "intent": null,
+        "has_correction": true,
+        "correction": {
+          "party": {
+            "old": "Hari",
+            "new": "Hari Prasad"
+          }
+        },
+        "entities": null
+      }
+    ],
+    "scenario_tags": [
+      "party",
+      "name",
+      "correction"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "conv_007",
+    "scenario": "typo_udaar_correction",
+    "turns": [
+      {
+        "role": "user",
+        "text": "gita lai 2500 udaar"
+      },
+      {
+        "role": "ai",
+        "text": "Gita lai Rs 2500 udhaar bikri, thik ho?",
+        "intent_detected": "khata_credit_sale",
+        "entities": {
+          "party": "Gita",
+          "amount": 2500
+        }
+      },
+      {
+        "role": "user",
+        "text": "ho"
+      },
+      {
+        "role": "ai",
+        "text": "Record gariyo. Gita lai Rs 2500 udhaar bikri."
+      }
+    ],
+    "final_intent": "khata_credit_sale",
+    "final_entities": {
+      "party": "Gita",
+      "amount": 2500
+    },
+    "dialogue_patterns": [
+      {
+        "user_text": "gita lai 2500 udaar",
+        "ai_text": "Gita lai Rs 2500 udhaar bikri, thik ho?",
+        "turn_index": 0,
+        "intent": "khata_credit_sale",
+        "has_correction": false,
+        "correction": null,
+        "entities": {
+          "party": "Gita",
+          "amount": 2500
+        }
+      },
+      {
+        "user_text": "ho",
+        "ai_text": "Record gariyo. Gita lai Rs 2500 udhaar bikri.",
+        "turn_index": 1,
+        "intent": null,
+        "has_correction": false,
+        "correction": null,
+        "entities": null
+      }
+    ],
+    "scenario_tags": [
+      "typo",
+      "udaar",
+      "correction"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "conv_008",
+    "scenario": "incomplete_info_sale_party",
+    "turns": [
+      {
+        "role": "user",
+        "text": "aaja 800 ko saman bikri bhayo"
+      },
+      {
+        "role": "ai",
+        "text": "Kaslai bikri bhayo? (party ko naam)",
+        "intent_detected": "khata_sale",
+        "entities": {
+          "amount": 800
+        }
+      },
+      {
+        "role": "user",
+        "text": "Mohan lai"
+      },
+      {
+        "role": "ai",
+        "text": "Mohan lai Rs 800 ko bikri (cash ki udhaar)?"
+      },
+      {
+        "role": "user",
+        "text": "cash"
+      },
+      {
+        "role": "ai",
+        "text": "Mohan lai Rs 800 cash bikri, confirm garnus.",
+        "entities": {
+          "party": "Mohan",
+          "amount": 800,
+          "payment_method": "cash"
+        }
+      },
+      {
+        "role": "user",
+        "text": "confirm"
+      }
+    ],
+    "final_intent": "khata_cash_sale",
+    "final_entities": {
+      "party": "Mohan",
+      "amount": 800,
+      "payment_method": "cash"
+    },
+    "dialogue_patterns": [
+      {
+        "user_text": "aaja 800 ko saman bikri bhayo",
+        "ai_text": "Kaslai bikri bhayo? (party ko naam)",
+        "turn_index": 0,
+        "intent": "khata_sale",
+        "has_correction": false,
+        "correction": null,
+        "entities": {
+          "amount": 800
+        }
+      },
+      {
+        "user_text": "Mohan lai",
+        "ai_text": "Mohan lai Rs 800 ko bikri (cash ki udhaar)?",
+        "turn_index": 1,
+        "intent": null,
+        "has_correction": false,
+        "correction": null,
+        "entities": null
+      },
+      {
+        "user_text": "cash",
+        "ai_text": "Mohan lai Rs 800 cash bikri, confirm garnus.",
+        "turn_index": 2,
+        "intent": null,
+        "has_correction": false,
+        "correction": null,
+        "entities": {
+          "party": "Mohan",
+          "amount": 800,
+          "payment_method": "cash"
+        }
+      },
+      {
+        "user_text": "confirm",
+        "ai_text": "",
+        "turn_index": 3,
+        "intent": null,
+        "has_correction": false,
+        "correction": null,
+        "entities": null
+      }
+    ],
+    "scenario_tags": [
+      "incomplete",
+      "info",
+      "sale",
+      "party"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "conv_009",
+    "scenario": "debit_payment_with_correction",
+    "turns": [
+      {
+        "role": "user",
+        "text": "shyam le 5000 tiryo"
+      },
+      {
+        "role": "ai",
+        "text": "Shyam le Rs 5000 payment gare, confirm garnus?",
+        "intent_detected": "khata_debit_payment",
+        "entities": {
+          "party": "Shyam",
+          "amount": 5000
+        }
+      },
+      {
+        "role": "user",
+        "text": "hoina 5500"
+      },
+      {
+        "role": "ai",
+        "text": "Maaf garnus, Rs 5500 huncha. Shyam le Rs 5500 tiryo. Confirm.",
+        "correction_applied": {
+          "amount": {
+            "old": 5000,
+            "new": 5500
+          }
+        }
+      }
+    ],
+    "final_intent": "khata_debit_payment",
+    "final_entities": {
+      "party": "Shyam",
+      "amount": 5500
+    },
+    "dialogue_patterns": [
+      {
+        "user_text": "shyam le 5000 tiryo",
+        "ai_text": "Shyam le Rs 5000 payment gare, confirm garnus?",
+        "turn_index": 0,
+        "intent": "khata_debit_payment",
+        "has_correction": false,
+        "correction": null,
+        "entities": {
+          "party": "Shyam",
+          "amount": 5000
+        }
+      },
+      {
+        "user_text": "hoina 5500",
+        "ai_text": "Maaf garnus, Rs 5500 huncha. Shyam le Rs 5500 tiryo. Confirm.",
+        "turn_index": 1,
+        "intent": null,
+        "has_correction": true,
+        "correction": {
+          "amount": {
+            "old": 5000,
+            "new": 5500
+          }
+        },
+        "entities": null
+      }
+    ],
+    "scenario_tags": [
+      "debit",
+      "payment",
+      "with",
+      "correction"
+    ],
+    "source": "user_exact"
+  },
+  {
+    "id": "conv_010",
+    "scenario": "transaction_history_followup",
+    "turns": [
+      {
+        "role": "user",
+        "text": "Shyam ko pachhillo transaction k thiyo?"
+      },
+      {
+        "role": "ai",
+        "text": "Shyam le 2026-07-05 ma Rs 2000 udhaar bikri gareko thiyo.",
+        "intent_detected": "khata_party_transactions",
+        "entities": {
+          "party": "Shyam"
+        }
+      },
+      {
+        "role": "user",
+        "text": "ani usle kati tiryo?"
+      },
+      {
+        "role": "ai",
+        "text": "Shyam le aile samma Rs 0 tirnu bhayeko chaina.",
+        "intent_detected": "khata_party_balance",
+        "entities": {
+          "party": "Shyam"
+        }
+      }
+    ],
+    "final_intent": "khata_party_balance",
+    "final_entities": {
+      "party": "Shyam"
+    },
+    "dialogue_patterns": [
+      {
+        "user_text": "Shyam ko pachhillo transaction k thiyo?",
+        "ai_text": "Shyam le 2026-07-05 ma Rs 2000 udhaar bikri gareko thiyo.",
+        "turn_index": 0,
+        "intent": "khata_party_transactions",
+        "has_correction": false,
+        "correction": null,
+        "entities": {
+          "party": "Shyam"
+        }
+      },
+      {
+        "user_text": "ani usle kati tiryo?",
+        "ai_text": "Shyam le aile samma Rs 0 tirnu bhayeko chaina.",
+        "turn_index": 1,
+        "intent": "khata_party_balance",
+        "has_correction": false,
+        "correction": null,
+        "entities": {
+          "party": "Shyam"
+        }
+      }
+    ],
+    "scenario_tags": [
+      "transaction",
+      "history",
+      "followup"
+    ],
+    "source": "user_exact"
+  }
+]

@@ -1,0 +1,2732 @@
+[
+  {
+    "rule_id": "JE_001",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "bechnu"
+      },
+      {
+        "field": "particle",
+        "operator": "contains",
+        "value": "lai"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_credit_sale",
+    "then_debit": "Sundry Debtors / {party}",
+    "then_credit": "Sales",
+    "confidence": 0.95,
+    "example_input": "Ram lai 500 becheko",
+    "counterexample": "500 becheko (no party = cash sale)",
+    "id": "je-001",
+    "base_intent": "khata_credit_sale",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_002",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "bechnu"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": false
+      }
+    ],
+    "then_intent": "khata_cash_sale",
+    "then_debit": "Cash",
+    "then_credit": "Sales",
+    "confidence": 0.94,
+    "example_input": "nagad 500 becheko",
+    "counterexample": "Ram lai becheko (credit sale)",
+    "id": "je-002",
+    "base_intent": "khata_cash_sale",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_003",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "bechnu"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": false
+      }
+    ],
+    "then_intent": "khata_bank_sale",
+    "then_debit": "Bank",
+    "then_credit": "Sales",
+    "confidence": 0.94,
+    "example_input": "bank ma 500 becheko",
+    "counterexample": "Ram lai becheko (credit sale)",
+    "id": "je-003",
+    "base_intent": "khata_cash_sale",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_004",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "kinnu"
+      },
+      {
+        "field": "particle",
+        "operator": "contains",
+        "value": "bata"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_credit_purchase",
+    "then_debit": "Purchases",
+    "then_credit": "Sundry Creditors / {party}",
+    "confidence": 0.95,
+    "example_input": "Ram bata 500 kineko",
+    "counterexample": "nagad 500 kineko (cash purchase)",
+    "id": "je-004",
+    "base_intent": "khata_credit_purchase",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_005",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "kinnu"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_cash_purchase",
+    "then_debit": "Purchases",
+    "then_credit": "Cash",
+    "confidence": 0.95,
+    "example_input": "nagad 500 kineko",
+    "counterexample": "Ram bata kineko (credit purchase)",
+    "id": "je-005",
+    "base_intent": "khata_purchase",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_006",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "kinnu"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_bank_purchase",
+    "then_debit": "Purchases",
+    "then_credit": "Bank",
+    "confidence": 0.94,
+    "example_input": "bank bata 500 kineko",
+    "counterexample": "nagad 500 kineko (cash purchase)",
+    "id": "je-006",
+    "base_intent": "khata_purchase",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_007",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "kharcha"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_cash_expense",
+    "then_debit": "Expense",
+    "then_credit": "Cash",
+    "confidence": 0.95,
+    "example_input": "500 kharcha nagad",
+    "counterexample": "500 kharcha baaki (credit expense)",
+    "id": "je-007",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_008",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "kharcha"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_bank_expense",
+    "then_debit": "Expense",
+    "then_credit": "Bank",
+    "confidence": 0.94,
+    "example_input": "bank bata 500 kharcha",
+    "counterexample": "nagad kharcha (cash expense)",
+    "id": "je-008",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_009",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "kharcha"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": false
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": false
+      }
+    ],
+    "then_intent": "khata_credit_expense",
+    "then_debit": "Expense",
+    "then_credit": "Sundry Creditors / {party}",
+    "confidence": 0.9,
+    "example_input": "Ram lai 500 kharcha baaki",
+    "counterexample": "nagad kharcha (cash expense)",
+    "id": "je-009",
+    "base_intent": "khata_outstanding_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_010",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "aamdani"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_cash_income",
+    "then_debit": "Cash",
+    "then_credit": "Income",
+    "confidence": 0.95,
+    "example_input": "nagad 500 aamdani",
+    "counterexample": "bank bata aamdani (bank income)",
+    "id": "je-010",
+    "base_intent": "khata_other_income",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_011",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "aamdani"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_bank_income",
+    "then_debit": "Bank",
+    "then_credit": "Income",
+    "confidence": 0.94,
+    "example_input": "bank ma 500 aamdani",
+    "counterexample": "nagad aamdani (cash income)",
+    "id": "je-011",
+    "base_intent": "khata_other_income",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_012",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "tirnu"
+      },
+      {
+        "field": "particle",
+        "operator": "contains",
+        "value": "lai"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_cash_payment_creditor",
+    "then_debit": "Sundry Creditors / {party}",
+    "then_credit": "Cash",
+    "confidence": 0.95,
+    "example_input": "Ram lai 500 tiryo nagad",
+    "counterexample": "Ram le 500 tiryo (receipt from debtor)",
+    "id": "je-012",
+    "base_intent": "khata_payment_out",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_013",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "tirnu"
+      },
+      {
+        "field": "particle",
+        "operator": "contains",
+        "value": "lai"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_bank_payment_creditor",
+    "then_debit": "Sundry Creditors / {party}",
+    "then_credit": "Bank",
+    "confidence": 0.94,
+    "example_input": "Ram lai 500 tiryo bank bata",
+    "counterexample": "nagad tiryo (cash payment)",
+    "id": "je-013",
+    "base_intent": "khata_payment_out",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_014",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "paunu"
+      },
+      {
+        "field": "particle",
+        "operator": "contains",
+        "value": "bata"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_cash_receipt_debtor",
+    "then_debit": "Cash",
+    "then_credit": "Sundry Debtors / {party}",
+    "confidence": 0.95,
+    "example_input": "Ram bata 500 paayo nagad",
+    "counterexample": "Ram lai 500 paayo? (payment?)",
+    "id": "je-014",
+    "base_intent": "khata_payment_in",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_015",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "paunu"
+      },
+      {
+        "field": "particle",
+        "operator": "contains",
+        "value": "bata"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_bank_receipt_debtor",
+    "then_debit": "Bank",
+    "then_credit": "Sundry Debtors / {party}",
+    "confidence": 0.94,
+    "example_input": "Ram bata 500 paayo bank ma",
+    "counterexample": "nagad paayo (cash receipt)",
+    "id": "je-015",
+    "base_intent": "khata_payment_in",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_016",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "jama"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_deposit_cash_to_bank",
+    "then_debit": "Bank",
+    "then_credit": "Cash",
+    "confidence": 0.96,
+    "example_input": "nagad 500 bank ma jama",
+    "counterexample": "bank bata 500 nikalyo (withdrawal)",
+    "id": "je-016",
+    "base_intent": "khata_contra_cash_bank",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_017",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "nikalnu"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_withdraw_bank_to_cash",
+    "then_debit": "Cash",
+    "then_credit": "Bank",
+    "confidence": 0.96,
+    "example_input": "bank bata 500 nikalyo nagad",
+    "counterexample": "nagad 500 bank ma jama (deposit)",
+    "id": "je-017",
+    "base_intent": "khata_contra_cash_bank",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_018",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "rin"
+      },
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "paunu"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_loan_received_cash",
+    "then_debit": "Cash",
+    "then_credit": "Loan Payable",
+    "confidence": 0.95,
+    "example_input": "nagad 500 rin paayo",
+    "counterexample": "bank ma rin paayo (loan received bank)",
+    "id": "je-018",
+    "base_intent": "khata_loan_received",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_019",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "rin"
+      },
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "paunu"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_loan_received_bank",
+    "then_debit": "Bank",
+    "then_credit": "Loan Payable",
+    "confidence": 0.94,
+    "example_input": "bank ma 500 rin paayo",
+    "counterexample": "nagad rin paayo (loan received cash)",
+    "id": "je-019",
+    "base_intent": "khata_loan_received",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_020",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "rin"
+      },
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "tirnu"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_loan_repayment_cash",
+    "then_debit": "Loan Payable",
+    "then_credit": "Cash",
+    "confidence": 0.95,
+    "example_input": "nagad 500 rin tiryo",
+    "counterexample": "bank bata rin tiryo (loan repayment bank)",
+    "id": "je-020",
+    "base_intent": "khata_loan_repayment",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_021",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "rin"
+      },
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "tirnu"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_loan_repayment_bank",
+    "then_debit": "Loan Payable",
+    "then_credit": "Bank",
+    "confidence": 0.94,
+    "example_input": "bank bata 500 rin tiryo",
+    "counterexample": "nagad rin tiryo (loan repayment cash)",
+    "id": "je-021",
+    "base_intent": "khata_loan_repayment",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_022",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "lagani"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_capital_introduced_cash",
+    "then_debit": "Cash",
+    "then_credit": "Capital",
+    "confidence": 0.95,
+    "example_input": "nagad 500 lagani",
+    "counterexample": "bank ma lagani (capital introduced bank)",
+    "id": "je-022",
+    "base_intent": "khata_capital_introduced",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_023",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "lagani"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_capital_introduced_bank",
+    "then_debit": "Bank",
+    "then_credit": "Capital",
+    "confidence": 0.94,
+    "example_input": "bank ma 500 lagani",
+    "counterexample": "nagad lagani (capital introduced cash)",
+    "id": "je-023",
+    "base_intent": "khata_capital_introduced",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_024",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "jhiknu"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_drawings_cash",
+    "then_debit": "Drawings",
+    "then_credit": "Cash",
+    "confidence": 0.95,
+    "example_input": "nagad 500 jhikyo",
+    "counterexample": "bank bata jhikyo (drawings bank)",
+    "id": "je-024",
+    "base_intent": "khata_drawings",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_025",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "jhiknu"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_drawings_bank",
+    "then_debit": "Drawings",
+    "then_credit": "Bank",
+    "confidence": 0.94,
+    "example_input": "bank bata 500 jhikyo",
+    "counterexample": "nagad jhikyo (drawings cash)",
+    "id": "je-025",
+    "base_intent": "khata_drawings",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_026",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "farkinu"
+      },
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "becheko"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_sales_return_cash",
+    "then_debit": "Sales Returns",
+    "then_credit": "Cash",
+    "confidence": 0.9,
+    "example_input": "becheko saman farkiyo nagad 500",
+    "counterexample": "becheko saman farkiyo party lai (credit sales return)",
+    "id": "je-026",
+    "base_intent": "khata_sales_return",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_027",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "farkinu"
+      },
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "becheko"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_sales_return_credit",
+    "then_debit": "Sales Returns",
+    "then_credit": "Sundry Debtors / {party}",
+    "confidence": 0.9,
+    "example_input": "Ram lai becheko saman farkiyo",
+    "counterexample": "nagad farkiyo (cash sales return)",
+    "id": "je-027",
+    "base_intent": "khata_sales_return",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_028",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "farkinu"
+      },
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "kineko"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_purchase_return_cash",
+    "then_debit": "Cash",
+    "then_credit": "Purchase Returns",
+    "confidence": 0.9,
+    "example_input": "kineko saman farkiyo nagad 500",
+    "counterexample": "kineko saman farkiyo party bata (credit purchase return)",
+    "id": "je-028",
+    "base_intent": "khata_purchase_return",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_029",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "farkinu"
+      },
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "kineko"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_purchase_return_credit",
+    "then_debit": "Sundry Creditors / {party}",
+    "then_credit": "Purchase Returns",
+    "confidence": 0.9,
+    "example_input": "Ram bata kineko saman farkiyo",
+    "counterexample": "nagad farkiyo (cash purchase return)",
+    "id": "je-029",
+    "base_intent": "khata_purchase_return",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_030",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "chhut"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": false
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": false
+      }
+    ],
+    "then_intent": "khata_discount_allowed_credit",
+    "then_debit": "Discount Allowed",
+    "then_credit": "Sundry Debtors / {party}",
+    "confidence": 0.88,
+    "example_input": "Ram lai 500 chhut diyo",
+    "counterexample": "nagad chhut (discount allowed cash)",
+    "id": "je-030",
+    "base_intent": "khata_discount_allowed",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_031",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "chhut"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_discount_allowed_cash",
+    "then_debit": "Discount Allowed",
+    "then_credit": "Cash",
+    "confidence": 0.88,
+    "example_input": "nagad 500 chhut diyo",
+    "counterexample": "Ram lai chhut (credit discount)",
+    "id": "je-031",
+    "base_intent": "khata_discount_allowed",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_032",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "chhut paayo"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_discount_received_cash",
+    "then_debit": "Cash",
+    "then_credit": "Discount Received",
+    "confidence": 0.88,
+    "example_input": "Ram bata nagad 500 chhut paayo",
+    "counterexample": "Ram bata credit chhut (discount received credit)",
+    "id": "je-032",
+    "base_intent": "khata_discount_received",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_033",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "chhut paayo"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": false
+      }
+    ],
+    "then_intent": "khata_discount_received_credit",
+    "then_debit": "Sundry Creditors / {party}",
+    "then_credit": "Discount Received",
+    "confidence": 0.88,
+    "example_input": "Ram bata 500 chhut paayo baaki",
+    "counterexample": "nagad chhut paayo (cash discount)",
+    "id": "je-033",
+    "base_intent": "khata_discount_received",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_034",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "bad debt"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_bad_debt",
+    "then_debit": "Bad Debts",
+    "then_credit": "Sundry Debtors / {party}",
+    "confidence": 0.85,
+    "example_input": "Ram ko bad debt 500",
+    "counterexample": "Ram bata paayo (receipt)",
+    "id": "je-034",
+    "base_intent": "khata_bad_debt_writeoff",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_035",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "depreciation"
+      },
+      {
+        "field": "asset",
+        "operator": "exists",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_depreciation",
+    "then_debit": "Depreciation",
+    "then_credit": "Accumulated Depreciation",
+    "confidence": 0.85,
+    "example_input": "asset ma 500 depreciation",
+    "counterexample": "asset kineko (purchase)",
+    "id": "je-035",
+    "base_intent": "khata_depreciation",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_036",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "talab"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_salary_cash",
+    "then_debit": "Salary Expense",
+    "then_credit": "Cash",
+    "confidence": 0.95,
+    "example_input": "nagad 500 talab",
+    "counterexample": "bank bata talab (salary bank)",
+    "id": "je-036",
+    "base_intent": "khata_salary_payment",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_037",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "talab"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_salary_bank",
+    "then_debit": "Salary Expense",
+    "then_credit": "Bank",
+    "confidence": 0.94,
+    "example_input": "bank bata 500 talab",
+    "counterexample": "nagad talab (salary cash)",
+    "id": "je-037",
+    "base_intent": "khata_salary_payment",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_038",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "bhada"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_rent_cash",
+    "then_debit": "Rent Expense",
+    "then_credit": "Cash",
+    "confidence": 0.95,
+    "example_input": "nagad 500 bhada",
+    "counterexample": "bank bata bhada (rent bank)",
+    "id": "je-038",
+    "base_intent": "khata_rent_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_039",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "bhada"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_rent_bank",
+    "then_debit": "Rent Expense",
+    "then_credit": "Bank",
+    "confidence": 0.94,
+    "example_input": "bank bata 500 bhada",
+    "counterexample": "nagad bhada (rent cash)",
+    "id": "je-039",
+    "base_intent": "khata_rent_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_040",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "bima"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_insurance_cash",
+    "then_debit": "Insurance Expense",
+    "then_credit": "Cash",
+    "confidence": 0.94,
+    "example_input": "nagad 500 bima",
+    "counterexample": "bank bata bima (insurance bank)",
+    "id": "je-040",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_041",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "bima"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_insurance_bank",
+    "then_debit": "Insurance Expense",
+    "then_credit": "Bank",
+    "confidence": 0.93,
+    "example_input": "bank bata 500 bima",
+    "counterexample": "nagad bima (insurance cash)",
+    "id": "je-041",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_042",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "kar"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_tax_cash",
+    "then_debit": "Tax Expense",
+    "then_credit": "Cash",
+    "confidence": 0.94,
+    "example_input": "nagad 500 kar",
+    "counterexample": "bank bata kar (tax bank)",
+    "id": "je-042",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_043",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "kar"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_tax_bank",
+    "then_debit": "Tax Expense",
+    "then_credit": "Bank",
+    "confidence": 0.93,
+    "example_input": "bank bata 500 kar",
+    "counterexample": "nagad kar (tax cash)",
+    "id": "je-043",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_044",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "byaj"
+      },
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "tirnu"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_interest_expense_cash",
+    "then_debit": "Interest Expense",
+    "then_credit": "Cash",
+    "confidence": 0.94,
+    "example_input": "nagad 500 byaj tiryo",
+    "counterexample": "bank bata byaj tiryo (interest bank)",
+    "id": "je-044",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_045",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "byaj"
+      },
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "tirnu"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_interest_expense_bank",
+    "then_debit": "Interest Expense",
+    "then_credit": "Bank",
+    "confidence": 0.93,
+    "example_input": "bank bata 500 byaj tiryo",
+    "counterexample": "nagad byaj tiryo (interest cash)",
+    "id": "je-045",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_046",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "byaj aamdani"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_interest_income_cash",
+    "then_debit": "Cash",
+    "then_credit": "Interest Income",
+    "confidence": 0.94,
+    "example_input": "nagad 500 byaj aamdani",
+    "counterexample": "bank ma byaj aamdani (interest income bank)",
+    "id": "je-046",
+    "base_intent": "khata_other_income",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_047",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "byaj aamdani"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_interest_income_bank",
+    "then_debit": "Bank",
+    "then_credit": "Interest Income",
+    "confidence": 0.93,
+    "example_input": "bank ma 500 byaj aamdani",
+    "counterexample": "nagad byaj aamdani (interest income cash)",
+    "id": "je-047",
+    "base_intent": "khata_other_income",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_048",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "prepaid"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_prepaid_expense",
+    "then_debit": "Prepaid Expense",
+    "then_credit": "Cash",
+    "confidence": 0.85,
+    "example_input": "nagad 500 prepaid kharcha",
+    "counterexample": "kharcha bhayo (expense)",
+    "id": "je-048",
+    "base_intent": "khata_prepaid_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_049",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "accrued expense"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_accrued_expense",
+    "then_debit": "Expense",
+    "then_credit": "Accrued Expense Payable",
+    "confidence": 0.85,
+    "example_input": "500 accrued expense Ram lai",
+    "counterexample": "nagad kharcha (cash expense)",
+    "id": "je-049",
+    "base_intent": "khata_outstanding_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_050",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "accrued income"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_accrued_income",
+    "then_debit": "Accrued Income Receivable",
+    "then_credit": "Income",
+    "confidence": 0.85,
+    "example_input": "500 accrued income Ram bata",
+    "counterexample": "nagad aamdani (cash income)",
+    "id": "je-050",
+    "base_intent": "khata_other_income",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_051",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "unearned income"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_unearned_income",
+    "then_debit": "Cash",
+    "then_credit": "Unearned Income",
+    "confidence": 0.85,
+    "example_input": "nagad 500 unearned income",
+    "counterexample": "aamdani bhayo (income earned)",
+    "id": "je-051",
+    "base_intent": "khata_customer_advance",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_052",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "saman"
+      },
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "kinnu"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_fixed_asset_cash",
+    "then_debit": "Fixed Asset",
+    "then_credit": "Cash",
+    "confidence": 0.93,
+    "example_input": "nagad 500 saman kineko",
+    "counterexample": "bank bata saman kineko (fixed asset bank)",
+    "id": "je-052",
+    "base_intent": "khata_stock_purchase",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_053",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "saman"
+      },
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "kinnu"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_fixed_asset_bank",
+    "then_debit": "Fixed Asset",
+    "then_credit": "Bank",
+    "confidence": 0.92,
+    "example_input": "bank bata 500 saman kineko",
+    "counterexample": "nagad saman kineko (fixed asset cash)",
+    "id": "je-053",
+    "base_intent": "khata_stock_purchase",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_054",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "saman"
+      },
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "kinnu"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": false
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": false
+      }
+    ],
+    "then_intent": "khata_fixed_asset_credit",
+    "then_debit": "Fixed Asset",
+    "then_credit": "Sundry Creditors / {party}",
+    "confidence": 0.9,
+    "example_input": "Ram bata 500 saman kineko baaki",
+    "counterexample": "nagad saman kineko (cash)",
+    "id": "je-054",
+    "base_intent": "khata_credit_purchase",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_055",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "bechnu"
+      },
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "saman"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_fixed_asset_sale_cash",
+    "then_debit": "Cash",
+    "then_credit": "Fixed Asset",
+    "confidence": 0.88,
+    "example_input": "nagad 500 saman becheko",
+    "counterexample": "credit saman becheko (credit sale of asset)",
+    "id": "je-055",
+    "base_intent": "khata_asset_disposal",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_056",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "bechnu"
+      },
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "saman"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_fixed_asset_sale_credit",
+    "then_debit": "Sundry Debtors / {party}",
+    "then_credit": "Fixed Asset",
+    "confidence": 0.88,
+    "example_input": "Ram lai saman becheko",
+    "counterexample": "nagad becheko (cash)",
+    "id": "je-056",
+    "base_intent": "khata_asset_disposal",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_057",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "tirnu"
+      },
+      {
+        "field": "particle",
+        "operator": "contains",
+        "value": "le"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_payment_in_cash",
+    "then_debit": "Cash",
+    "then_credit": "Sundry Debtors / {party}",
+    "confidence": 0.9,
+    "example_input": "Ram le 500 tiryo nagad",
+    "counterexample": "Ram lai 500 tiryo (payment to creditor)",
+    "id": "je-057",
+    "base_intent": "khata_payment_in",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_058",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "tirnu"
+      },
+      {
+        "field": "particle",
+        "operator": "contains",
+        "value": "le"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_payment_in_bank",
+    "then_debit": "Bank",
+    "then_credit": "Sundry Debtors / {party}",
+    "confidence": 0.89,
+    "example_input": "Ram le 500 tiryo bank ma",
+    "counterexample": "Ram lai 500 tiryo (payment to creditor)",
+    "id": "je-058",
+    "base_intent": "khata_payment_in",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_059",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "kar"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": false
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": false
+      }
+    ],
+    "then_intent": "khata_tax_payable",
+    "then_debit": "Tax Expense",
+    "then_credit": "Tax Payable / {party}",
+    "confidence": 0.85,
+    "example_input": "Ram lai 500 kar baaki",
+    "counterexample": "nagad 500 kar",
+    "id": "je-059",
+    "base_intent": "khata_outstanding_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_060",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "bechnu"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_cash_sale_with_party",
+    "then_debit": "Cash",
+    "then_credit": "Sales",
+    "confidence": 0.93,
+    "example_input": "Ram lai nagad 500 becheko",
+    "counterexample": "Ram lai 500 becheko (credit sale)",
+    "id": "je-060",
+    "base_intent": "khata_cash_sale",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_061",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "bechnu"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_bank_sale_with_party",
+    "then_debit": "Bank",
+    "then_credit": "Sales",
+    "confidence": 0.92,
+    "example_input": "Ram lai bank bata 500 becheko",
+    "counterexample": "Ram lai 500 becheko (credit sale)",
+    "id": "je-061",
+    "base_intent": "khata_cash_sale",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_062",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "kinnu"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_cash_purchase_with_party",
+    "then_debit": "Purchases",
+    "then_credit": "Cash",
+    "confidence": 0.93,
+    "example_input": "Ram bata nagad 500 kineko",
+    "counterexample": "Ram bata 500 kineko (credit purchase)",
+    "id": "je-062",
+    "base_intent": "khata_purchase",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_063",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "kinnu"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_bank_purchase_with_party",
+    "then_debit": "Purchases",
+    "then_credit": "Bank",
+    "confidence": 0.92,
+    "example_input": "Ram bata bank bata 500 kineko",
+    "counterexample": "Ram bata 500 kineko (credit purchase)",
+    "id": "je-063",
+    "base_intent": "khata_purchase",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_064",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "kharcha"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_cash_expense_with_party",
+    "then_debit": "Expense",
+    "then_credit": "Cash",
+    "confidence": 0.93,
+    "example_input": "Ram lai nagad 500 kharcha",
+    "counterexample": "Ram lai 500 kharcha baaki (credit expense)",
+    "id": "je-064",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_065",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "kharcha"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_bank_expense_with_party",
+    "then_debit": "Expense",
+    "then_credit": "Bank",
+    "confidence": 0.92,
+    "example_input": "Ram lai bank bata 500 kharcha",
+    "counterexample": "Ram lai 500 kharcha baaki (credit expense)",
+    "id": "je-065",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_066",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "aamdani"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_cash_income_with_party",
+    "then_debit": "Cash",
+    "then_credit": "Income",
+    "confidence": 0.93,
+    "example_input": "Ram bata nagad 500 aamdani",
+    "counterexample": "Ram bata 500 aamdani baaki (accrued income)",
+    "id": "je-066",
+    "base_intent": "khata_other_income",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_067",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "aamdani"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_bank_income_with_party",
+    "then_debit": "Bank",
+    "then_credit": "Income",
+    "confidence": 0.92,
+    "example_input": "Ram bata bank ma 500 aamdani",
+    "counterexample": "Ram bata 500 aamdani baaki (accrued income)",
+    "id": "je-067",
+    "base_intent": "khata_other_income",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_068",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "commission"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": false
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": false
+      }
+    ],
+    "then_intent": "khata_commission_payable",
+    "then_debit": "Commission Expense",
+    "then_credit": "Commission Payable / {party}",
+    "confidence": 0.85,
+    "example_input": "Ram lai 500 commission baaki",
+    "counterexample": "nagad 500 commission",
+    "id": "je-068",
+    "base_intent": "khata_outstanding_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_069",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "dividend"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": false
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": false
+      }
+    ],
+    "then_intent": "khata_dividend_payable",
+    "then_debit": "Retained Earnings",
+    "then_credit": "Dividend Payable / {party}",
+    "confidence": 0.85,
+    "example_input": "Ram lai 500 dividend baaki",
+    "counterexample": "nagad 500 dividend",
+    "id": "je-069",
+    "base_intent": "khata_payment_out",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_070",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "commission"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_commission_expense_cash",
+    "then_debit": "Commission Expense",
+    "then_credit": "Cash",
+    "confidence": 0.9,
+    "example_input": "nagad 500 commission",
+    "counterexample": "bank bata commission (commission bank)",
+    "id": "je-070",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_071",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "commission"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_commission_expense_bank",
+    "then_debit": "Commission Expense",
+    "then_credit": "Bank",
+    "confidence": 0.89,
+    "example_input": "bank bata 500 commission",
+    "counterexample": "nagad commission (commission cash)",
+    "id": "je-071",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_072",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "dividend"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_dividend_income_cash",
+    "then_debit": "Cash",
+    "then_credit": "Dividend Income",
+    "confidence": 0.9,
+    "example_input": "nagad 500 dividend",
+    "counterexample": "bank ma dividend (dividend bank)",
+    "id": "je-072",
+    "base_intent": "khata_other_income",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_073",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "dividend"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_dividend_income_bank",
+    "then_debit": "Bank",
+    "then_credit": "Dividend Income",
+    "confidence": 0.89,
+    "example_input": "bank ma 500 dividend",
+    "counterexample": "nagad dividend (dividend cash)",
+    "id": "je-073",
+    "base_intent": "khata_other_income",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_074",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "advertising"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_advertising_cash",
+    "then_debit": "Advertising Expense",
+    "then_credit": "Cash",
+    "confidence": 0.9,
+    "example_input": "nagad 500 advertising",
+    "counterexample": "bank bata advertising (advertising bank)",
+    "id": "je-074",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_075",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "advertising"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_advertising_bank",
+    "then_debit": "Advertising Expense",
+    "then_credit": "Bank",
+    "confidence": 0.89,
+    "example_input": "bank bata 500 advertising",
+    "counterexample": "nagad advertising (advertising cash)",
+    "id": "je-075",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_076",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "travel"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_travel_cash",
+    "then_debit": "Travel Expense",
+    "then_credit": "Cash",
+    "confidence": 0.9,
+    "example_input": "nagad 500 travel",
+    "counterexample": "bank bata travel (travel bank)",
+    "id": "je-076",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_077",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "travel"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_travel_bank",
+    "then_debit": "Travel Expense",
+    "then_credit": "Bank",
+    "confidence": 0.89,
+    "example_input": "bank bata 500 travel",
+    "counterexample": "nagad travel (travel cash)",
+    "id": "je-077",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_078",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "office supplies"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_office_supplies_cash",
+    "then_debit": "Office Supplies Expense",
+    "then_credit": "Cash",
+    "confidence": 0.9,
+    "example_input": "nagad 500 office supplies",
+    "counterexample": "bank bata office supplies (office supplies bank)",
+    "id": "je-078",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_079",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "office supplies"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_office_supplies_bank",
+    "then_debit": "Office Supplies Expense",
+    "then_credit": "Bank",
+    "confidence": 0.89,
+    "example_input": "bank bata 500 office supplies",
+    "counterexample": "nagad office supplies (office supplies cash)",
+    "id": "je-079",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_080",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "repair"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_repair_cash",
+    "then_debit": "Repair Expense",
+    "then_credit": "Cash",
+    "confidence": 0.9,
+    "example_input": "nagad 500 repair",
+    "counterexample": "bank bata repair (repair bank)",
+    "id": "je-080",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_081",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "repair"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_repair_bank",
+    "then_debit": "Repair Expense",
+    "then_credit": "Bank",
+    "confidence": 0.89,
+    "example_input": "bank bata 500 repair",
+    "counterexample": "nagad repair (repair cash)",
+    "id": "je-081",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_082",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "telephone"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_telephone_cash",
+    "then_debit": "Telephone Expense",
+    "then_credit": "Cash",
+    "confidence": 0.9,
+    "example_input": "nagad 500 telephone",
+    "counterexample": "bank bata telephone (telephone bank)",
+    "id": "je-082",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_083",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "telephone"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_telephone_bank",
+    "then_debit": "Telephone Expense",
+    "then_credit": "Bank",
+    "confidence": 0.89,
+    "example_input": "bank bata 500 telephone",
+    "counterexample": "nagad telephone (telephone cash)",
+    "id": "je-083",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_084",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "utility"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_utility_cash",
+    "then_debit": "Utility Expense",
+    "then_credit": "Cash",
+    "confidence": 0.9,
+    "example_input": "nagad 500 utility",
+    "counterexample": "bank bata utility (utility bank)",
+    "id": "je-084",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_085",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "utility"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_utility_bank",
+    "then_debit": "Utility Expense",
+    "then_credit": "Bank",
+    "confidence": 0.89,
+    "example_input": "bank bata 500 utility",
+    "counterexample": "nagad utility (utility cash)",
+    "id": "je-085",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_086",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "advance"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      },
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "tirnu"
+      }
+    ],
+    "then_intent": "khata_advance_payment_cash",
+    "then_debit": "Advance Payment",
+    "then_credit": "Cash",
+    "confidence": 0.88,
+    "example_input": "nagad 500 advance tiryo",
+    "counterexample": "bank bata advance (advance bank)",
+    "id": "je-086",
+    "base_intent": "khata_employee_advance",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_087",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "advance"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      },
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "tirnu"
+      }
+    ],
+    "then_intent": "khata_advance_payment_bank",
+    "then_debit": "Advance Payment",
+    "then_credit": "Bank",
+    "confidence": 0.87,
+    "example_input": "bank bata 500 advance tiryo",
+    "counterexample": "nagad advance (advance cash)",
+    "id": "je-087",
+    "base_intent": "khata_employee_advance",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_088",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "advance"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      },
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "paunu"
+      }
+    ],
+    "then_intent": "khata_advance_received_cash",
+    "then_debit": "Cash",
+    "then_credit": "Advance Received",
+    "confidence": 0.88,
+    "example_input": "nagad 500 advance paayo",
+    "counterexample": "bank ma advance (advance bank)",
+    "id": "je-088",
+    "base_intent": "khata_customer_advance",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_089",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "advance"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      },
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "paunu"
+      }
+    ],
+    "then_intent": "khata_advance_received_bank",
+    "then_debit": "Bank",
+    "then_credit": "Advance Received",
+    "confidence": 0.87,
+    "example_input": "bank ma 500 advance paayo",
+    "counterexample": "nagad advance (advance cash)",
+    "id": "je-089",
+    "base_intent": "khata_customer_advance",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_090",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "donation"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_donation_cash",
+    "then_debit": "Donation Expense",
+    "then_credit": "Cash",
+    "confidence": 0.88,
+    "example_input": "nagad 500 donation",
+    "counterexample": "bank bata donation (donation bank)",
+    "id": "je-090",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_091",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "donation"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_donation_bank",
+    "then_debit": "Donation Expense",
+    "then_credit": "Bank",
+    "confidence": 0.87,
+    "example_input": "bank bata 500 donation",
+    "counterexample": "nagad donation (donation cash)",
+    "id": "je-091",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_092",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "fine"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_fine_cash",
+    "then_debit": "Fine Expense",
+    "then_credit": "Cash",
+    "confidence": 0.88,
+    "example_input": "nagad 500 fine",
+    "counterexample": "bank bata fine (fine bank)",
+    "id": "je-092",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_093",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "fine"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_fine_bank",
+    "then_debit": "Fine Expense",
+    "then_credit": "Bank",
+    "confidence": 0.87,
+    "example_input": "bank bata 500 fine",
+    "counterexample": "nagad fine (fine cash)",
+    "id": "je-093",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_094",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "refund"
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_refund_cash",
+    "then_debit": "Sales Returns",
+    "then_credit": "Cash",
+    "confidence": 0.85,
+    "example_input": "nagad 500 refund",
+    "counterexample": "bank bata refund (refund bank)",
+    "id": "je-094",
+    "base_intent": "khata_sales_return",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_095",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "refund"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_refund_bank",
+    "then_debit": "Sales Returns",
+    "then_credit": "Bank",
+    "confidence": 0.84,
+    "example_input": "bank bata 500 refund",
+    "counterexample": "nagad refund (refund cash)",
+    "id": "je-095",
+    "base_intent": "khata_sales_return",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_096",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "bechnu"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      },
+      {
+        "field": "amount",
+        "operator": "greater_than",
+        "value": 10000
+      }
+    ],
+    "then_intent": "khata_credit_sale_high",
+    "then_debit": "Sundry Debtors / {party}",
+    "then_credit": "Sales",
+    "confidence": 0.9,
+    "example_input": "Ram lai 15000 becheko",
+    "counterexample": "Ram lai 500 becheko (low amount)",
+    "id": "je-096",
+    "base_intent": "khata_credit_sale",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_097",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "kinnu"
+      },
+      {
+        "field": "party",
+        "operator": "exists",
+        "value": true
+      },
+      {
+        "field": "amount",
+        "operator": "greater_than",
+        "value": 10000
+      }
+    ],
+    "then_intent": "khata_credit_purchase_high",
+    "then_debit": "Purchases",
+    "then_credit": "Sundry Creditors / {party}",
+    "confidence": 0.9,
+    "example_input": "Ram bata 15000 kineko",
+    "counterexample": "Ram bata 500 kineko (low amount)",
+    "id": "je-097",
+    "base_intent": "khata_credit_purchase",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_098",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "kharcha"
+      },
+      {
+        "field": "amount",
+        "operator": "greater_than",
+        "value": 10000
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_cash_expense_high",
+    "then_debit": "Expense",
+    "then_credit": "Cash",
+    "confidence": 0.88,
+    "example_input": "nagad 15000 kharcha",
+    "counterexample": "nagad 500 kharcha (low amount)",
+    "id": "je-098",
+    "base_intent": "khata_expense",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_099",
+    "conditions": [
+      {
+        "field": "word",
+        "operator": "contains",
+        "value": "aamdani"
+      },
+      {
+        "field": "amount",
+        "operator": "greater_than",
+        "value": 10000
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      }
+    ],
+    "then_intent": "khata_cash_income_high",
+    "then_debit": "Cash",
+    "then_credit": "Income",
+    "confidence": 0.88,
+    "example_input": "nagad 15000 aamdani",
+    "counterexample": "nagad 500 aamdani (low amount)",
+    "id": "je-099",
+    "base_intent": "khata_other_income",
+    "source": "user_exact"
+  },
+  {
+    "rule_id": "JE_100",
+    "conditions": [
+      {
+        "field": "verb_lemma",
+        "operator": "equals",
+        "value": "jama"
+      },
+      {
+        "field": "bank_word_present",
+        "operator": "equals",
+        "value": true
+      },
+      {
+        "field": "cash_word_present",
+        "operator": "equals",
+        "value": true
+      },
+      {
+        "field": "amount",
+        "operator": "greater_than",
+        "value": 10000
+      }
+    ],
+    "then_intent": "khata_deposit_cash_to_bank_high",
+    "then_debit": "Bank",
+    "then_credit": "Cash",
+    "confidence": 0.9,
+    "example_input": "nagad 15000 bank ma jama",
+    "counterexample": "nagad 500 bank ma jama (low amount)",
+    "id": "je-100",
+    "base_intent": "khata_contra_cash_bank",
+    "source": "user_exact"
+  }
+]

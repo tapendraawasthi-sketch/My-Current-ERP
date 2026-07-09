@@ -1,0 +1,752 @@
+{
+  "maile 2079/80 ma 1000 ko kitaab becheko thiye ram lai, paisa aayena": {
+    "id": "rchain-001",
+    "intent": "credit_sale",
+    "step_count": 9,
+    "needs_clarification": false
+  },
+  "maile 2079/80 ma 1000 ko kitaab becheko thiye ram lai paisa aayena": {
+    "id": "rchain-001",
+    "intent": "credit_sale",
+    "step_count": 9,
+    "needs_clarification": false
+  },
+  "aaja 5000 nakit ma saman bechyo, paisa haat ma aayo": {
+    "id": "rchain-002",
+    "intent": "cash_sale",
+    "step_count": 6,
+    "needs_clarification": false
+  },
+  "aaja 5000 nakit ma saman bechyo paisa haat ma aayo": {
+    "id": "rchain-002",
+    "intent": "cash_sale",
+    "step_count": 6,
+    "needs_clarification": false
+  },
+  "ram sanga 3000 ko saman kinyo, cash diyo": {
+    "id": "rchain-003",
+    "intent": "cash_purchase",
+    "step_count": 7,
+    "needs_clarification": false
+  },
+  "ram sanga 3000 ko saman kinyo cash diyo": {
+    "id": "rchain-003",
+    "intent": "cash_purchase",
+    "step_count": 7,
+    "needs_clarification": false
+  },
+  "office ko rent 10000 tirnu baki chha": {
+    "id": "rchain-004",
+    "intent": "expense_accrual",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "bank ma 25000 jamma gare": {
+    "id": "rchain-005",
+    "intent": "bank_deposit",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "ram lai 2000 udhar diye": {
+    "id": "rchain-006",
+    "intent": "loan_given",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "haru bata 1500 udhar liye": {
+    "id": "rchain-007",
+    "intent": "loan_received",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "machine 500000 ma kinyo 100000 nakit 400000 bank": {
+    "id": "rchain-008",
+    "intent": "asset_purchase",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "machine 500000 ma kinyo, 100000 nakit, 400000 bank": {
+    "id": "rchain-008",
+    "intent": "asset_purchase",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "gadi 600000 ma bechyo nakit 200000 baki 400000": {
+    "id": "rchain-009",
+    "intent": "asset_sale",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "gadi 600000 ma bechyo, nakit 200000, baki 400000": {
+    "id": "rchain-009",
+    "intent": "asset_sale",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "salary 30000 tirnu chha": {
+    "id": "rchain-010",
+    "intent": "expense_accrual",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "auda 5000 kharcha, nakit tiryo": {
+    "id": "rchain-011",
+    "intent": "expense_payment",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "auda 5000 kharcha nakit tiryo": {
+    "id": "rchain-011",
+    "intent": "expense_payment",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "bidesh pathauna 10000 kharcha bho": {
+    "id": "rchain-012",
+    "intent": "expense_payment",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "byaj 500 tirnu baki chha": {
+    "id": "rchain-013",
+    "intent": "expense_accrual",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "dividend 1000 ghoshana": {
+    "id": "rchain-014",
+    "intent": "dividend_declared",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "capital 200000 jamma gare": {
+    "id": "rchain-015",
+    "intent": "owner_capital",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "drawing 5000 jhikyo": {
+    "id": "rchain-016",
+    "intent": "owner_drawing",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "machinery ma depreciation 1000": {
+    "id": "rchain-017",
+    "intent": "depreciation",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "ram ko bad debt 5000 write off": {
+    "id": "rchain-018",
+    "intent": "bad_debt",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "inventory 20000 ko kharid, cash diyo": {
+    "id": "rchain-019",
+    "intent": "cash_purchase",
+    "step_count": 6,
+    "needs_clarification": false
+  },
+  "inventory 20000 ko kharid cash diyo": {
+    "id": "rchain-019",
+    "intent": "cash_purchase",
+    "step_count": 6,
+    "needs_clarification": false
+  },
+  "sales 15000 nakit": {
+    "id": "rchain-020",
+    "intent": "cash_sale",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "vat 13% of 5000 calculate": {
+    "id": "rchain-021",
+    "intent": "calculation",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "discount 10% on 1000": {
+    "id": "rchain-022",
+    "intent": "calculation",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "5 items price 200 each 3 items price 150 each total?": {
+    "id": "rchain-023",
+    "intent": "calculation",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "5 items price 200 each, 3 items price 150 each, total?": {
+    "id": "rchain-023",
+    "intent": "calculation",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "5 items price 200 each, 3 items price 150 each, total": {
+    "id": "rchain-023",
+    "intent": "calculation",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "5 items price 200 each 3 items price 150 each total": {
+    "id": "rchain-023",
+    "intent": "calculation",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "gross profit 3000, operating expenses 800, interest 200, net profit": {
+    "id": "rchain-024",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "gross profit 3000, operating expenses 800, interest 200, net profit?": {
+    "id": "rchain-024",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "gross profit 3000 operating expenses 800 interest 200 net profit": {
+    "id": "rchain-024",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "gross profit 3000 operating expenses 800 interest 200 net profit?": {
+    "id": "rchain-024",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "fiscal year 2080/81 but date is 2023/04/01": {
+    "id": "rchain-025",
+    "intent": "error_detection",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "ram ko account ma 5000 jamma cha": {
+    "id": "rchain-026",
+    "intent": "balance_check",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "paisa natiri bidesh gayo": {
+    "id": "rchain-027",
+    "intent": "bad_debt",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "maile 2081/82 ma 500 ko chocolate bacheko thiye ram lai, paisa natiri bidesh gayo": {
+    "id": "rchain-028",
+    "intent": "credit_sale",
+    "step_count": 9,
+    "needs_clarification": false
+  },
+  "maile 2081/82 ma 500 ko chocolate bacheko thiye ram lai paisa natiri bidesh gayo": {
+    "id": "rchain-028",
+    "intent": "credit_sale",
+    "step_count": 9,
+    "needs_clarification": false
+  },
+  "saman 3000 ma kinyo tara pasal le 2500 matra bhancha": {
+    "id": "rchain-029",
+    "intent": "cash_purchase",
+    "step_count": 6,
+    "needs_clarification": false
+  },
+  "saman 3000 ma kinyo, tara pasal le 2500 matra bhancha": {
+    "id": "rchain-029",
+    "intent": "cash_purchase",
+    "step_count": 6,
+    "needs_clarification": false
+  },
+  "500 ko hisab ma 10% discount, actual amount": {
+    "id": "rchain-030",
+    "intent": "calculation",
+    "step_count": 6,
+    "needs_clarification": false
+  },
+  "500 ko hisab ma 10% discount actual amount": {
+    "id": "rchain-030",
+    "intent": "calculation",
+    "step_count": 6,
+    "needs_clarification": false
+  },
+  "500 ko hisab ma 10% discount, actual amount?": {
+    "id": "rchain-030",
+    "intent": "calculation",
+    "step_count": 6,
+    "needs_clarification": false
+  },
+  "500 ko hisab ma 10% discount actual amount?": {
+    "id": "rchain-030",
+    "intent": "calculation",
+    "step_count": 6,
+    "needs_clarification": false
+  },
+  "2000 3000 5000 ko jod": {
+    "id": "rchain-031",
+    "intent": "calculation",
+    "step_count": 3,
+    "needs_clarification": false
+  },
+  "2000, 3000, 5000 ko jod": {
+    "id": "rchain-031",
+    "intent": "calculation",
+    "step_count": 3,
+    "needs_clarification": false
+  },
+  "10000 ma 2 ota item, per unit price": {
+    "id": "rchain-032",
+    "intent": "calculation",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "10000 ma 2 ota item per unit price?": {
+    "id": "rchain-032",
+    "intent": "calculation",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "10000 ma 2 ota item, per unit price?": {
+    "id": "rchain-032",
+    "intent": "calculation",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "10000 ma 2 ota item per unit price": {
+    "id": "rchain-032",
+    "intent": "calculation",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "profit 5000, cost 20000, revenue?": {
+    "id": "rchain-033",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "profit 5000 cost 20000 revenue?": {
+    "id": "rchain-033",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "profit 5000 cost 20000 revenue": {
+    "id": "rchain-033",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "profit 5000, cost 20000, revenue": {
+    "id": "rchain-033",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "expenses 1200 revenue 1500 profit": {
+    "id": "rchain-034",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "expenses 1200 revenue 1500 profit?": {
+    "id": "rchain-034",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "expenses 1200, revenue 1500, profit?": {
+    "id": "rchain-034",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "expenses 1200, revenue 1500, profit": {
+    "id": "rchain-034",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "cash 5000, bank 10000, total assets?": {
+    "id": "rchain-035",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "cash 5000 bank 10000 total assets": {
+    "id": "rchain-035",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "cash 5000 bank 10000 total assets?": {
+    "id": "rchain-035",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "cash 5000, bank 10000, total assets": {
+    "id": "rchain-035",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "liabilities 8000, equity 12000, assets?": {
+    "id": "rchain-036",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "liabilities 8000 equity 12000 assets?": {
+    "id": "rchain-036",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "liabilities 8000 equity 12000 assets": {
+    "id": "rchain-036",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "liabilities 8000, equity 12000, assets": {
+    "id": "rchain-036",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "maile 1000 ko kapada kinya": {
+    "id": "rchain-037",
+    "intent": "cash_purchase",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "paisa 5000 jamma": {
+    "id": "rchain-038",
+    "intent": "bank_deposit",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "debit 5000 credit 3000 unbalanced": {
+    "id": "rchain-039",
+    "intent": "error_detection",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "debit 5000, credit 3000, unbalanced": {
+    "id": "rchain-039",
+    "intent": "error_detection",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "journal entry debit cash 5000 credit sales 6000": {
+    "id": "rchain-040",
+    "intent": "error_detection",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "journal entry: debit cash 5000, credit sales 6000": {
+    "id": "rchain-040",
+    "intent": "error_detection",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "ram lai 5000 diye": {
+    "id": "rchain-041",
+    "intent": "loan_given",
+    "step_count": 6,
+    "needs_clarification": false
+  },
+  "haru bata 2000 aayo": {
+    "id": "rchain-042",
+    "intent": "receipt",
+    "step_count": 6,
+    "needs_clarification": false
+  },
+  "bank ma 3000 gako": {
+    "id": "rchain-043",
+    "intent": "bank_deposit",
+    "step_count": 6,
+    "needs_clarification": false
+  },
+  "cash sale 5000": {
+    "id": "rchain-044",
+    "intent": "journal_entry",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "credit sale to ram 3000": {
+    "id": "rchain-045",
+    "intent": "journal_entry",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "purchase inventory on credit 4000": {
+    "id": "rchain-046",
+    "intent": "journal_entry",
+    "step_count": 6,
+    "needs_clarification": false
+  },
+  "paid rent 1000 cash": {
+    "id": "rchain-047",
+    "intent": "journal_entry",
+    "step_count": 6,
+    "needs_clarification": false
+  },
+  "received cash from ram 2000": {
+    "id": "rchain-048",
+    "intent": "journal_entry",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "depreciation expense 500": {
+    "id": "rchain-049",
+    "intent": "journal_entry",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "bad debt expense 1000": {
+    "id": "rchain-050",
+    "intent": "journal_entry",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "owner invests 50000 cash": {
+    "id": "rchain-051",
+    "intent": "journal_entry",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "owner withdrawal 2000 cash": {
+    "id": "rchain-052",
+    "intent": "journal_entry",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "loan received 10000 bank": {
+    "id": "rchain-053",
+    "intent": "journal_entry",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "loan repaid 2000 bank": {
+    "id": "rchain-054",
+    "intent": "journal_entry",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "interest accrued 300": {
+    "id": "rchain-055",
+    "intent": "journal_entry",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "salary payable 25000": {
+    "id": "rchain-056",
+    "intent": "journal_entry",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "paid salary 25000": {
+    "id": "rchain-057",
+    "intent": "journal_entry",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "goods sold for cash 7000": {
+    "id": "rchain-058",
+    "intent": "journal_entry",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "goods purchased for cash 6000": {
+    "id": "rchain-059",
+    "intent": "journal_entry",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "returned goods to supplier 1000": {
+    "id": "rchain-060",
+    "intent": "journal_entry",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "sales return from customer 500": {
+    "id": "rchain-061",
+    "intent": "journal_entry",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "discount received 200": {
+    "id": "rchain-062",
+    "intent": "journal_entry",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "discount allowed 150": {
+    "id": "rchain-063",
+    "intent": "journal_entry",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "depreciation on vehicle 800": {
+    "id": "rchain-064",
+    "intent": "journal_entry",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "2080/81 ma 2000 ko ghoda kinyo": {
+    "id": "rchain-065",
+    "intent": "asset_purchase",
+    "step_count": 6,
+    "needs_clarification": false
+  },
+  "ram ko 5000 baki": {
+    "id": "rchain-066",
+    "intent": "balance_check",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "hari sanga 10000 ko computer kinyo 5000 nakit 5000 baki": {
+    "id": "rchain-067",
+    "intent": "credit_purchase",
+    "step_count": 6,
+    "needs_clarification": false
+  },
+  "hari sanga 10000 ko computer kinyo, 5000 nakit, 5000 baki": {
+    "id": "rchain-067",
+    "intent": "credit_purchase",
+    "step_count": 6,
+    "needs_clarification": false
+  },
+  "gita lai 7000 bechyo, paisa aayena": {
+    "id": "rchain-068",
+    "intent": "credit_sale",
+    "step_count": 6,
+    "needs_clarification": false
+  },
+  "gita lai 7000 bechyo paisa aayena": {
+    "id": "rchain-068",
+    "intent": "credit_sale",
+    "step_count": 6,
+    "needs_clarification": false
+  },
+  "office ma 1500 ko pen 2000 ko paper kharcha": {
+    "id": "rchain-069",
+    "intent": "expense_payment",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "office ma 1500 ko pen, 2000 ko paper kharcha": {
+    "id": "rchain-069",
+    "intent": "expense_payment",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "500 ma 2 ota": {
+    "id": "rchain-070",
+    "intent": "calculation",
+    "step_count": 6,
+    "needs_clarification": false
+  },
+  "ram lai paisa pathayo, ki saman?": {
+    "id": "rchain-071",
+    "intent": "ambiguous",
+    "step_count": 6,
+    "needs_clarification": true
+  },
+  "ram lai paisa pathayo ki saman": {
+    "id": "rchain-071",
+    "intent": "ambiguous",
+    "step_count": 6,
+    "needs_clarification": true
+  },
+  "ram lai paisa pathayo ki saman?": {
+    "id": "rchain-071",
+    "intent": "ambiguous",
+    "step_count": 6,
+    "needs_clarification": true
+  },
+  "ram lai paisa pathayo, ki saman": {
+    "id": "rchain-071",
+    "intent": "ambiguous",
+    "step_count": 6,
+    "needs_clarification": true
+  },
+  "fiscal year 2081/82 and amount 500": {
+    "id": "rchain-072",
+    "intent": "entity_extraction",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "paisa 5000 ko cheque": {
+    "id": "rchain-073",
+    "intent": "payment_cheque",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "credit card payment 1000": {
+    "id": "rchain-074",
+    "intent": "expense_payment",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "bank statement mismatch 500": {
+    "id": "rchain-075",
+    "intent": "error_detection",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "duplicate entry: same invoice 2000 twice": {
+    "id": "rchain-076",
+    "intent": "error_detection",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "duplicate entry same invoice 2000 twice": {
+    "id": "rchain-076",
+    "intent": "error_detection",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "3 4 5 ko average": {
+    "id": "rchain-077",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "3, 4, 5 ko average": {
+    "id": "rchain-077",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "5000 + 2000 - 1000": {
+    "id": "rchain-078",
+    "intent": "calculation",
+    "step_count": 3,
+    "needs_clarification": false
+  },
+  "10% of 5000 + 20% of 3000": {
+    "id": "rchain-079",
+    "intent": "calculation",
+    "step_count": 5,
+    "needs_clarification": false
+  },
+  "net profit margin profit 5000 revenue 25000": {
+    "id": "rchain-080",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  },
+  "net profit margin: profit 5000, revenue 25000": {
+    "id": "rchain-080",
+    "intent": "calculation",
+    "step_count": 4,
+    "needs_clarification": false
+  }
+}

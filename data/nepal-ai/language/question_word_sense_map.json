@@ -1,0 +1,1623 @@
+{
+  "ke": [
+    {
+      "question_word": "k",
+      "meaning_en": "what (definition/explanation)",
+      "variants": [
+        "k",
+        "ke",
+        "kya",
+        "kay"
+      ],
+      "example_questions": [
+        "k ho",
+        "k bhayo",
+        "yo k ho",
+        "tyo k thiyo"
+      ],
+      "expected_response_type": "definition_or_explanation",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (action/instruction)",
+      "variants": [
+        "k",
+        "ke",
+        "kya"
+      ],
+      "example_questions": [
+        "k garnu",
+        "k garne",
+        "aaj k garne"
+      ],
+      "expected_response_type": "action_or_instruction",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (object identification)",
+      "variants": [
+        "k",
+        "ke"
+      ],
+      "example_questions": [
+        "tyo k ho",
+        "yo k ho",
+        "timro haatmaa k cha"
+      ],
+      "expected_response_type": "object_identification",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (event/situation)",
+      "variants": [
+        "k",
+        "ke",
+        "kya"
+      ],
+      "example_questions": [
+        "k bhayo",
+        "k bhako",
+        "bholi k huncha"
+      ],
+      "expected_response_type": "event_description",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (purpose/intention)",
+      "variants": [
+        "k",
+        "ke"
+      ],
+      "example_questions": [
+        "k ko laagi",
+        "k kaaran",
+        "yo kina k gareko"
+      ],
+      "expected_response_type": "purpose_or_reason",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (name/title)",
+      "variants": [
+        "k",
+        "ke"
+      ],
+      "example_questions": [
+        "timro naam k ho",
+        "yo thau ko naam k ho"
+      ],
+      "expected_response_type": "name_or_title",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (opinion/thought)",
+      "variants": [
+        "k",
+        "ke"
+      ],
+      "example_questions": [
+        "timlai k laagcha",
+        "usle k sochcha"
+      ],
+      "expected_response_type": "opinion",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (possession belonging to what)",
+      "variants": [
+        "k",
+        "ke"
+      ],
+      "example_questions": [
+        "yo k ko ho",
+        "tyo k ko kitab ho"
+      ],
+      "expected_response_type": "possession_of_what",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (quantity inquiry)",
+      "variants": [
+        "k",
+        "ke"
+      ],
+      "example_questions": [
+        "kati k cha",
+        "k kati linu"
+      ],
+      "expected_response_type": "quantity",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (with postposition ma)",
+      "variants": [
+        "k",
+        "ke"
+      ],
+      "example_questions": [
+        "k ma",
+        "k kura ma"
+      ],
+      "expected_response_type": "topic_identification",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (with postposition lai)",
+      "variants": [
+        "k",
+        "ke"
+      ],
+      "example_questions": [
+        "k lai",
+        "yo k lai ho"
+      ],
+      "expected_response_type": "purpose_or_beneficiary",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (greeting/inquiry)",
+      "variants": [
+        "k",
+        "ke",
+        "kya"
+      ],
+      "example_questions": [
+        "k cha",
+        "ke cha"
+      ],
+      "expected_response_type": "wellbeing_inquiry",
+      "NOT_transaction": true
+    }
+  ],
+  "kay": [
+    {
+      "question_word": "k",
+      "meaning_en": "what (definition/explanation)",
+      "variants": [
+        "k",
+        "ke",
+        "kya",
+        "kay"
+      ],
+      "example_questions": [
+        "k ho",
+        "k bhayo",
+        "yo k ho",
+        "tyo k thiyo"
+      ],
+      "expected_response_type": "definition_or_explanation",
+      "NOT_transaction": true
+    }
+  ],
+  "k": [
+    {
+      "question_word": "k",
+      "meaning_en": "what (definition/explanation)",
+      "variants": [
+        "k",
+        "ke",
+        "kya",
+        "kay"
+      ],
+      "example_questions": [
+        "k ho",
+        "k bhayo",
+        "yo k ho",
+        "tyo k thiyo"
+      ],
+      "expected_response_type": "definition_or_explanation",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (action/instruction)",
+      "variants": [
+        "k",
+        "ke",
+        "kya"
+      ],
+      "example_questions": [
+        "k garnu",
+        "k garne",
+        "aaj k garne"
+      ],
+      "expected_response_type": "action_or_instruction",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (object identification)",
+      "variants": [
+        "k",
+        "ke"
+      ],
+      "example_questions": [
+        "tyo k ho",
+        "yo k ho",
+        "timro haatmaa k cha"
+      ],
+      "expected_response_type": "object_identification",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (event/situation)",
+      "variants": [
+        "k",
+        "ke",
+        "kya"
+      ],
+      "example_questions": [
+        "k bhayo",
+        "k bhako",
+        "bholi k huncha"
+      ],
+      "expected_response_type": "event_description",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (purpose/intention)",
+      "variants": [
+        "k",
+        "ke"
+      ],
+      "example_questions": [
+        "k ko laagi",
+        "k kaaran",
+        "yo kina k gareko"
+      ],
+      "expected_response_type": "purpose_or_reason",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (name/title)",
+      "variants": [
+        "k",
+        "ke"
+      ],
+      "example_questions": [
+        "timro naam k ho",
+        "yo thau ko naam k ho"
+      ],
+      "expected_response_type": "name_or_title",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (opinion/thought)",
+      "variants": [
+        "k",
+        "ke"
+      ],
+      "example_questions": [
+        "timlai k laagcha",
+        "usle k sochcha"
+      ],
+      "expected_response_type": "opinion",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (possession belonging to what)",
+      "variants": [
+        "k",
+        "ke"
+      ],
+      "example_questions": [
+        "yo k ko ho",
+        "tyo k ko kitab ho"
+      ],
+      "expected_response_type": "possession_of_what",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (quantity inquiry)",
+      "variants": [
+        "k",
+        "ke"
+      ],
+      "example_questions": [
+        "kati k cha",
+        "k kati linu"
+      ],
+      "expected_response_type": "quantity",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (with postposition ma)",
+      "variants": [
+        "k",
+        "ke"
+      ],
+      "example_questions": [
+        "k ma",
+        "k kura ma"
+      ],
+      "expected_response_type": "topic_identification",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (with postposition lai)",
+      "variants": [
+        "k",
+        "ke"
+      ],
+      "example_questions": [
+        "k lai",
+        "yo k lai ho"
+      ],
+      "expected_response_type": "purpose_or_beneficiary",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (emphatic)",
+      "variants": [
+        "k"
+      ],
+      "example_questions": [
+        "k kura",
+        "k bhaneko",
+        "k cha ra"
+      ],
+      "expected_response_type": "emphasis_clarification",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (reaction/surprise)",
+      "variants": [
+        "k"
+      ],
+      "example_questions": [
+        "k!",
+        "k bhanya"
+      ],
+      "expected_response_type": "reaction",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (greeting/inquiry)",
+      "variants": [
+        "k",
+        "ke",
+        "kya"
+      ],
+      "example_questions": [
+        "k cha",
+        "ke cha"
+      ],
+      "expected_response_type": "wellbeing_inquiry",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (decision)",
+      "variants": [
+        "k"
+      ],
+      "example_questions": [
+        "aba k",
+        "k garne ni"
+      ],
+      "expected_response_type": "decision_inquiry",
+      "NOT_transaction": true
+    }
+  ],
+  "kya": [
+    {
+      "question_word": "k",
+      "meaning_en": "what (definition/explanation)",
+      "variants": [
+        "k",
+        "ke",
+        "kya",
+        "kay"
+      ],
+      "example_questions": [
+        "k ho",
+        "k bhayo",
+        "yo k ho",
+        "tyo k thiyo"
+      ],
+      "expected_response_type": "definition_or_explanation",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (action/instruction)",
+      "variants": [
+        "k",
+        "ke",
+        "kya"
+      ],
+      "example_questions": [
+        "k garnu",
+        "k garne",
+        "aaj k garne"
+      ],
+      "expected_response_type": "action_or_instruction",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (event/situation)",
+      "variants": [
+        "k",
+        "ke",
+        "kya"
+      ],
+      "example_questions": [
+        "k bhayo",
+        "k bhako",
+        "bholi k huncha"
+      ],
+      "expected_response_type": "event_description",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "k",
+      "meaning_en": "what (greeting/inquiry)",
+      "variants": [
+        "k",
+        "ke",
+        "kya"
+      ],
+      "example_questions": [
+        "k cha",
+        "ke cha"
+      ],
+      "expected_response_type": "wellbeing_inquiry",
+      "NOT_transaction": true
+    }
+  ],
+  "ko": [
+    {
+      "question_word": "ko",
+      "meaning_en": "who (person identification)",
+      "variants": [
+        "ko"
+      ],
+      "example_questions": [
+        "ko ho",
+        "ko aayo",
+        "u ko ho"
+      ],
+      "expected_response_type": "person_identification",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "ko",
+      "meaning_en": "whose (possession)",
+      "variants": [
+        "ko"
+      ],
+      "example_questions": [
+        "yo ko ghar ho",
+        "yo ko kitab ho",
+        "tyo ko gaadi ho"
+      ],
+      "expected_response_type": "possession",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "ko",
+      "meaning_en": "of what (association/ownership)",
+      "variants": [
+        "ko"
+      ],
+      "example_questions": [
+        "yo kura ko ho",
+        "yo samasya ko ho"
+      ],
+      "expected_response_type": "ownership_or_association",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "ko",
+      "meaning_en": "who (subject/agent inquiry)",
+      "variants": [
+        "ko"
+      ],
+      "example_questions": [
+        "kasle garyo",
+        "ko garcha",
+        "ko sanga cha"
+      ],
+      "expected_response_type": "agent_identification",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "ko",
+      "meaning_en": "whom (object inquiry)",
+      "variants": [
+        "ko"
+      ],
+      "example_questions": [
+        "timile kolaai bhetyau",
+        "usle kolaai bolayo"
+      ],
+      "expected_response_type": "object_person",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "ko",
+      "meaning_en": "who (plural/respectful indirect)",
+      "variants": [
+        "ko"
+      ],
+      "example_questions": [
+        "ko ko aaune",
+        "ko sanga"
+      ],
+      "expected_response_type": "person_list",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "ko",
+      "meaning_en": "of whom (relationship)",
+      "variants": [
+        "ko"
+      ],
+      "example_questions": [
+        "u timro ko ho",
+        "yo bachha ko ho"
+      ],
+      "expected_response_type": "relationship",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "ko",
+      "meaning_en": "who (in charge)",
+      "variants": [
+        "ko"
+      ],
+      "example_questions": [
+        "yaha ko ho",
+        "pramukh ko ho"
+      ],
+      "expected_response_type": "authority_figure",
+      "NOT_transaction": true
+    }
+  ],
+  "kun": [
+    {
+      "question_word": "kun",
+      "meaning_en": "which (selection from known set)",
+      "variants": [
+        "kun"
+      ],
+      "example_questions": [
+        "kun kitab",
+        "kun ghar",
+        "kun bato"
+      ],
+      "expected_response_type": "choice_selection",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kun",
+      "meaning_en": "which one (specific item)",
+      "variants": [
+        "kun"
+      ],
+      "example_questions": [
+        "kun chahinchha",
+        "kun rojnu",
+        "kun thik cha"
+      ],
+      "expected_response_type": "selection_of_one",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kun",
+      "meaning_en": "which (time/day)",
+      "variants": [
+        "kun"
+      ],
+      "example_questions": [
+        "kun din",
+        "kun samaya",
+        "kun mahinaa"
+      ],
+      "expected_response_type": "time_selection",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kun",
+      "meaning_en": "which (person)",
+      "variants": [
+        "kun"
+      ],
+      "example_questions": [
+        "kun maanchhe",
+        "kun sadasya",
+        "kun bhai"
+      ],
+      "expected_response_type": "person_selection",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kun",
+      "meaning_en": "which (place)",
+      "variants": [
+        "kun"
+      ],
+      "example_questions": [
+        "kun thau",
+        "kun sahar",
+        "kun desh"
+      ],
+      "expected_response_type": "place_selection",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kun",
+      "meaning_en": "which (alternative options)",
+      "variants": [
+        "kun"
+      ],
+      "example_questions": [
+        "kun wa kun",
+        "kun rojne"
+      ],
+      "expected_response_type": "alternative_selection",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kun",
+      "meaning_en": "which (rank/order)",
+      "variants": [
+        "kun"
+      ],
+      "example_questions": [
+        "kun paila",
+        "kun number",
+        "kun kaksha"
+      ],
+      "expected_response_type": "order_or_rank",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kun",
+      "meaning_en": "which (colour/size)",
+      "variants": [
+        "kun"
+      ],
+      "example_questions": [
+        "kun rang",
+        "kun size"
+      ],
+      "expected_response_type": "attribute_selection",
+      "NOT_transaction": true
+    }
+  ],
+  "kaha": [
+    {
+      "question_word": "kata",
+      "meaning_en": "where (location)",
+      "variants": [
+        "kata",
+        "kaha"
+      ],
+      "example_questions": [
+        "timi kata chhau",
+        "ghar kata cha",
+        "uslai kata bhetne"
+      ],
+      "expected_response_type": "location",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kata",
+      "meaning_en": "where to (direction)",
+      "variants": [
+        "kata",
+        "kaha"
+      ],
+      "example_questions": [
+        "kata jane",
+        "kata lagne",
+        "yo bato kata jancha"
+      ],
+      "expected_response_type": "direction",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kaha",
+      "meaning_en": "where (informal location)",
+      "variants": [
+        "kaha",
+        "kata"
+      ],
+      "example_questions": [
+        "kaha chhau",
+        "kaha jaane",
+        "kaha bhetne"
+      ],
+      "expected_response_type": "location",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kaha",
+      "meaning_en": "where (destination)",
+      "variants": [
+        "kaha"
+      ],
+      "example_questions": [
+        "kaha pugnu",
+        "kaha samma",
+        "kaha lagnu"
+      ],
+      "expected_response_type": "destination",
+      "NOT_transaction": true
+    }
+  ],
+  "kata": [
+    {
+      "question_word": "kata",
+      "meaning_en": "where (location)",
+      "variants": [
+        "kata",
+        "kaha"
+      ],
+      "example_questions": [
+        "timi kata chhau",
+        "ghar kata cha",
+        "uslai kata bhetne"
+      ],
+      "expected_response_type": "location",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kata",
+      "meaning_en": "where to (direction)",
+      "variants": [
+        "kata",
+        "kaha"
+      ],
+      "example_questions": [
+        "kata jane",
+        "kata lagne",
+        "yo bato kata jancha"
+      ],
+      "expected_response_type": "direction",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kata",
+      "meaning_en": "where from (origin)",
+      "variants": [
+        "kata"
+      ],
+      "example_questions": [
+        "timi kata bata aayau",
+        "yo saaman kata bata lyayau"
+      ],
+      "expected_response_type": "origin",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kaha",
+      "meaning_en": "where (informal location)",
+      "variants": [
+        "kaha",
+        "kata"
+      ],
+      "example_questions": [
+        "kaha chhau",
+        "kaha jaane",
+        "kaha bhetne"
+      ],
+      "expected_response_type": "location",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kata",
+      "meaning_en": "where (abstract location)",
+      "variants": [
+        "kata"
+      ],
+      "example_questions": [
+        "samaadhaan kata cha",
+        "samay kata gayo"
+      ],
+      "expected_response_type": "abstract_location",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kata",
+      "meaning_en": "where (hide and seek)",
+      "variants": [
+        "kata"
+      ],
+      "example_questions": [
+        "kata lukeko",
+        "kata gayab"
+      ],
+      "expected_response_type": "hidden_location",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kata",
+      "meaning_en": "where (next destination)",
+      "variants": [
+        "kata"
+      ],
+      "example_questions": [
+        "aba kata",
+        "kata jane"
+      ],
+      "expected_response_type": "next_destination",
+      "NOT_transaction": true
+    }
+  ],
+  "kahile": [
+    {
+      "question_word": "kahile",
+      "meaning_en": "when (time point)",
+      "variants": [
+        "kahile"
+      ],
+      "example_questions": [
+        "kahile aaune",
+        "kahile bhayo",
+        "kahile suru huncha"
+      ],
+      "expected_response_type": "time_point",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kahile",
+      "meaning_en": "when (frequency)",
+      "variants": [
+        "kahile"
+      ],
+      "example_questions": [
+        "kahilekahi",
+        "timi kahile aauchhau",
+        "kahile bhet huncha"
+      ],
+      "expected_response_type": "time_frequency",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kahile",
+      "meaning_en": "when (deadline)",
+      "variants": [
+        "kahile"
+      ],
+      "example_questions": [
+        "kahile samma",
+        "kahile pura huncha",
+        "kaam kahile sakne"
+      ],
+      "expected_response_type": "deadline",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kahile",
+      "meaning_en": "when (historical event)",
+      "variants": [
+        "kahile"
+      ],
+      "example_questions": [
+        "yo kahile bhako thiyo",
+        "nepal kahile banyo"
+      ],
+      "expected_response_type": "historical_time",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kahile",
+      "meaning_en": "when (habitual)",
+      "variants": [
+        "kahile"
+      ],
+      "example_questions": [
+        "timi kahile uthchhau",
+        "kahile sutne"
+      ],
+      "expected_response_type": "habitual_time",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kahile",
+      "meaning_en": "when (event schedule)",
+      "variants": [
+        "kahile"
+      ],
+      "example_questions": [
+        "bhela kahile",
+        "kahile bida"
+      ],
+      "expected_response_type": "schedule_time",
+      "NOT_transaction": true
+    }
+  ],
+  "kasari": [
+    {
+      "question_word": "kasari",
+      "meaning_en": "how (manner/method)",
+      "variants": [
+        "kasari"
+      ],
+      "example_questions": [
+        "kasari garchau",
+        "yo kasari bhayo",
+        "kasari janchau"
+      ],
+      "expected_response_type": "manner",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kasari",
+      "meaning_en": "how (process/way)",
+      "variants": [
+        "kasari"
+      ],
+      "example_questions": [
+        "kasari banaune",
+        "kasari suru garne",
+        "kasari sikne"
+      ],
+      "expected_response_type": "process",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kasari",
+      "meaning_en": "how (with what means)",
+      "variants": [
+        "kasari"
+      ],
+      "example_questions": [
+        "kasari pugne",
+        "kasari banaune"
+      ],
+      "expected_response_type": "means_or_instrument",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kasari",
+      "meaning_en": "how (condition/manner query)",
+      "variants": [
+        "kasari"
+      ],
+      "example_questions": [
+        "kasari bachne",
+        "kasari milne"
+      ],
+      "expected_response_type": "survival_or_adaptation",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kasari",
+      "meaning_en": "how (in what condition)",
+      "variants": [
+        "kasari"
+      ],
+      "example_questions": [
+        "kasari baschau",
+        "kasari aayau"
+      ],
+      "expected_response_type": "condition_or_state",
+      "NOT_transaction": true
+    }
+  ],
+  "kasta": [
+    {
+      "question_word": "kasto",
+      "meaning_en": "what kind/quality (description)",
+      "variants": [
+        "kasto",
+        "kasta"
+      ],
+      "example_questions": [
+        "kasto cha",
+        "kasto manchhe",
+        "kasto mausam"
+      ],
+      "expected_response_type": "description_quality",
+      "NOT_transaction": true
+    }
+  ],
+  "kasto": [
+    {
+      "question_word": "kasto",
+      "meaning_en": "what kind/quality (description)",
+      "variants": [
+        "kasto",
+        "kasta"
+      ],
+      "example_questions": [
+        "kasto cha",
+        "kasto manchhe",
+        "kasto mausam"
+      ],
+      "expected_response_type": "description_quality",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kasto",
+      "meaning_en": "how (state/condition)",
+      "variants": [
+        "kasto"
+      ],
+      "example_questions": [
+        "timi kasto chhau",
+        "usko swasthya kasto cha",
+        "kasto lagyo"
+      ],
+      "expected_response_type": "state_or_condition",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kasto",
+      "meaning_en": "what like (comparison)",
+      "variants": [
+        "kasto"
+      ],
+      "example_questions": [
+        "yo kasto lagcha",
+        "usko kasto cha",
+        "kasto khalko"
+      ],
+      "expected_response_type": "comparison_or_type",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kasto",
+      "meaning_en": "how (intensifier)",
+      "variants": [
+        "kasto"
+      ],
+      "example_questions": [
+        "kasto ramro",
+        "kasto naramro"
+      ],
+      "expected_response_type": "intensity_expression",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kasto",
+      "meaning_en": "what kind (category)",
+      "variants": [
+        "kasto"
+      ],
+      "example_questions": [
+        "kasto maanchhe ho",
+        "kasto kaam"
+      ],
+      "expected_response_type": "category_or_type",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kasto",
+      "meaning_en": "how (feeling)",
+      "variants": [
+        "kasto"
+      ],
+      "example_questions": [
+        "kasto lagyo",
+        "kasto bhayo"
+      ],
+      "expected_response_type": "feeling",
+      "NOT_transaction": true
+    }
+  ],
+  "kasle": [
+    {
+      "question_word": "kasle",
+      "meaning_en": "who (agent doer)",
+      "variants": [
+        "kasle"
+      ],
+      "example_questions": [
+        "kasle garyo",
+        "kasle bhaneko",
+        "kasle lyayo"
+      ],
+      "expected_response_type": "agent_identification",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kasle",
+      "meaning_en": "by whom (instrumental)",
+      "variants": [
+        "kasle"
+      ],
+      "example_questions": [
+        "yo patra kasle lekheko",
+        "yo kaam kasle garna sakincha"
+      ],
+      "expected_response_type": "agent_instrument",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kasle",
+      "meaning_en": "who (responsible)",
+      "variants": [
+        "kasle"
+      ],
+      "example_questions": [
+        "yo galti kasle garyo",
+        "kasle jimma line"
+      ],
+      "expected_response_type": "responsibility",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kasle",
+      "meaning_en": "who (witness)",
+      "variants": [
+        "kasle"
+      ],
+      "example_questions": [
+        "kasle dekhyo",
+        "kasle sunyo"
+      ],
+      "expected_response_type": "witness_identification",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kasle",
+      "meaning_en": "who (helper)",
+      "variants": [
+        "kasle"
+      ],
+      "example_questions": [
+        "kasle maddat garcha",
+        "kasle sikauchha"
+      ],
+      "expected_response_type": "helper_identification",
+      "NOT_transaction": true
+    }
+  ],
+  "kati": [
+    {
+      "question_word": "kati",
+      "meaning_en": "how many (count)",
+      "variants": [
+        "kati"
+      ],
+      "example_questions": [
+        "kati ota",
+        "kati jana",
+        "kati kitaab"
+      ],
+      "expected_response_type": "count",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kati",
+      "meaning_en": "how much (amount/price)",
+      "variants": [
+        "kati"
+      ],
+      "example_questions": [
+        "kati paisa",
+        "kati kilo",
+        "yo kati maa"
+      ],
+      "expected_response_type": "amount_or_price",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kati",
+      "meaning_en": "what time (clock)",
+      "variants": [
+        "kati"
+      ],
+      "example_questions": [
+        "kati bajyo",
+        "kati baje",
+        "ahile kati bhayo"
+      ],
+      "expected_response_type": "clock_time",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kati",
+      "meaning_en": "how much (degree/extent)",
+      "variants": [
+        "kati"
+      ],
+      "example_questions": [
+        "kati tadha",
+        "kati ramro",
+        "kati chito"
+      ],
+      "expected_response_type": "degree_or_extent",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kati",
+      "meaning_en": "how many (frequency)",
+      "variants": [
+        "kati"
+      ],
+      "example_questions": [
+        "kati palta",
+        "kati choti",
+        "din kati"
+      ],
+      "expected_response_type": "frequency_count",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kati",
+      "meaning_en": "how much (duration)",
+      "variants": [
+        "kati"
+      ],
+      "example_questions": [
+        "kati samaya",
+        "kati ber"
+      ],
+      "expected_response_type": "duration",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kati",
+      "meaning_en": "how many (items in list)",
+      "variants": [
+        "kati"
+      ],
+      "example_questions": [
+        "kati wota cha",
+        "kati thari"
+      ],
+      "expected_response_type": "list_count",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kati",
+      "meaning_en": "how much (percentage)",
+      "variants": [
+        "kati"
+      ],
+      "example_questions": [
+        "kati pratishat",
+        "kati bhag"
+      ],
+      "expected_response_type": "percentage_or_fraction",
+      "NOT_transaction": true
+    }
+  ],
+  "kina": [
+    {
+      "question_word": "kina",
+      "meaning_en": "why (reason)",
+      "variants": [
+        "kina",
+        "kinabhane"
+      ],
+      "example_questions": [
+        "kina aayau",
+        "kina roye",
+        "kina dhilo"
+      ],
+      "expected_response_type": "reason",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kina",
+      "meaning_en": "why (cause/purpose)",
+      "variants": [
+        "kina"
+      ],
+      "example_questions": [
+        "kina gareko",
+        "kina bhaneko",
+        "kina yasto"
+      ],
+      "expected_response_type": "cause_or_purpose",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kina",
+      "meaning_en": "why (justification)",
+      "variants": [
+        "kina"
+      ],
+      "example_questions": [
+        "kina maanche",
+        "kina maanna",
+        "kina ho ra"
+      ],
+      "expected_response_type": "justification",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kina",
+      "meaning_en": "why (rhetorical)",
+      "variants": [
+        "kina"
+      ],
+      "example_questions": [
+        "kina nahune",
+        "kina nasakne"
+      ],
+      "expected_response_type": "rhetorical_reason",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kina",
+      "meaning_en": "why (accusation)",
+      "variants": [
+        "kina"
+      ],
+      "example_questions": [
+        "kina mero galti",
+        "kina uslai dosh"
+      ],
+      "expected_response_type": "accusation_reason",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kina",
+      "meaning_en": "why (doubt)",
+      "variants": [
+        "kina"
+      ],
+      "example_questions": [
+        "kina tyasto",
+        "kina maanche"
+      ],
+      "expected_response_type": "doubt_reason",
+      "NOT_transaction": true
+    }
+  ],
+  "kinabhane": [
+    {
+      "question_word": "kina",
+      "meaning_en": "why (reason)",
+      "variants": [
+        "kina",
+        "kinabhane"
+      ],
+      "example_questions": [
+        "kina aayau",
+        "kina roye",
+        "kina dhilo"
+      ],
+      "expected_response_type": "reason",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "kinabhane",
+      "meaning_en": "why (because what, formal)",
+      "variants": [
+        "kinabhane"
+      ],
+      "example_questions": [
+        "kinabhane yasto bhayo",
+        "kinabhane usle chhodyo"
+      ],
+      "expected_response_type": "reason_explanation",
+      "NOT_transaction": true
+    }
+  ],
+  "ho": [
+    {
+      "question_word": "ho",
+      "meaning_en": "is (confirmation)",
+      "variants": [
+        "ho"
+      ],
+      "example_questions": [
+        "yo ho",
+        "tyo nai ho",
+        "sahi ho"
+      ],
+      "expected_response_type": "yes_no_confirmation",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "ho",
+      "meaning_en": "is that so (questioning statement)",
+      "variants": [
+        "ho"
+      ],
+      "example_questions": [
+        "ho ra",
+        "tyasto ho",
+        "timi nai ho"
+      ],
+      "expected_response_type": "confirmation_truth",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "ho",
+      "meaning_en": "is it (identity confirmation)",
+      "variants": [
+        "ho"
+      ],
+      "example_questions": [
+        "u doctor ho",
+        "yo timro ho"
+      ],
+      "expected_response_type": "identity_confirmation",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "ho",
+      "meaning_en": "is it (existence)",
+      "variants": [
+        "ho"
+      ],
+      "example_questions": [
+        "bhagwan ho",
+        "sapana ho"
+      ],
+      "expected_response_type": "existence_confirmation",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "ho",
+      "meaning_en": "is that so (surprise)",
+      "variants": [
+        "ho"
+      ],
+      "example_questions": [
+        "ho?",
+        "ho ho"
+      ],
+      "expected_response_type": "surprise_reaction",
+      "NOT_transaction": true
+    }
+  ],
+  "hola": [
+    {
+      "question_word": "hola",
+      "meaning_en": "will be / might be (possibility)",
+      "variants": [
+        "hola"
+      ],
+      "example_questions": [
+        "bholi pani hola",
+        "u aaula",
+        "thik hola"
+      ],
+      "expected_response_type": "possibility",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "hola",
+      "meaning_en": "is it (uncertain confirmation)",
+      "variants": [
+        "hola"
+      ],
+      "example_questions": [
+        "yo timro hola",
+        "uslai thaha hola"
+      ],
+      "expected_response_type": "uncertain_confirmation",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "hola",
+      "meaning_en": "would be (polite suggestion)",
+      "variants": [
+        "hola"
+      ],
+      "example_questions": [
+        "ekchin basau hola",
+        "chiya pinu hola"
+      ],
+      "expected_response_type": "suggestion",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "hola",
+      "meaning_en": "might be (guess)",
+      "variants": [
+        "hola"
+      ],
+      "example_questions": [
+        "u ghar ma hola",
+        "aba hola"
+      ],
+      "expected_response_type": "guess",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "hola",
+      "meaning_en": "probably (speculation)",
+      "variants": [
+        "hola"
+      ],
+      "example_questions": [
+        "u aaipugyo hola",
+        "thikai hola"
+      ],
+      "expected_response_type": "speculation",
+      "NOT_transaction": true
+    }
+  ],
+  "huncha": [
+    {
+      "question_word": "huncha",
+      "meaning_en": "happens / will be (acceptance/ok)",
+      "variants": [
+        "huncha"
+      ],
+      "example_questions": [
+        "yo huncha",
+        "bholi huncha",
+        "ke huncha"
+      ],
+      "expected_response_type": "agreement_or_outcome",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "huncha",
+      "meaning_en": "is it okay (permission)",
+      "variants": [
+        "huncha"
+      ],
+      "example_questions": [
+        "ma aaun huncha",
+        "yo garnu huncha"
+      ],
+      "expected_response_type": "permission",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "huncha",
+      "meaning_en": "will happen (future event)",
+      "variants": [
+        "huncha"
+      ],
+      "example_questions": [
+        "parsi k huncha",
+        "bholi bhae huncha"
+      ],
+      "expected_response_type": "future_event",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "huncha",
+      "meaning_en": "is possible (feasibility)",
+      "variants": [
+        "huncha"
+      ],
+      "example_questions": [
+        "yo sakincha huncha",
+        "tyo huncha ki"
+      ],
+      "expected_response_type": "feasibility",
+      "NOT_transaction": true
+    },
+    {
+      "question_word": "huncha",
+      "meaning_en": "it works (functional check)",
+      "variants": [
+        "huncha"
+      ],
+      "example_questions": [
+        "yo machine huncha",
+        "batti huncha"
+      ],
+      "expected_response_type": "functionality",
+      "NOT_transaction": true
+    }
+  ]
+}

@@ -354,5 +354,2414 @@
       "how much VAT",
       "how much balance"
     ]
+  },
+  "k ho": {
+    "pattern": "k ho",
+    "type": "question_word_definition_or_explanation",
+    "intent": "question_k",
+    "response_type": "definition_or_explanation",
+    "examples": [
+      "k ho"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "k bhayo": {
+    "pattern": "k bhayo",
+    "type": "question_word_definition_or_explanation",
+    "intent": "question_k",
+    "response_type": "definition_or_explanation",
+    "examples": [
+      "k bhayo"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "yo k ho": {
+    "pattern": "yo k ho",
+    "type": "question_word_definition_or_explanation",
+    "intent": "question_k",
+    "response_type": "definition_or_explanation",
+    "examples": [
+      "yo k ho"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "tyo k thiyo": {
+    "pattern": "tyo k thiyo",
+    "type": "question_word_definition_or_explanation",
+    "intent": "question_k",
+    "response_type": "definition_or_explanation",
+    "examples": [
+      "tyo k thiyo"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "k garnu": {
+    "pattern": "k garnu",
+    "type": "question_word_action_or_instruction",
+    "intent": "question_k",
+    "response_type": "action_or_instruction",
+    "examples": [
+      "k garnu"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "k garne": {
+    "pattern": "k garne",
+    "type": "question_word_action_or_instruction",
+    "intent": "question_k",
+    "response_type": "action_or_instruction",
+    "examples": [
+      "k garne"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "aaj k garne": {
+    "pattern": "aaj k garne",
+    "type": "question_word_action_or_instruction",
+    "intent": "question_k",
+    "response_type": "action_or_instruction",
+    "examples": [
+      "aaj k garne"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "tyo k ho": {
+    "pattern": "tyo k ho",
+    "type": "question_word_object_identification",
+    "intent": "question_k",
+    "response_type": "object_identification",
+    "examples": [
+      "tyo k ho"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "timro haatmaa k cha": {
+    "pattern": "timro haatmaa k cha",
+    "type": "question_word_object_identification",
+    "intent": "question_k",
+    "response_type": "object_identification",
+    "examples": [
+      "timro haatmaa k cha"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "k bhako": {
+    "pattern": "k bhako",
+    "type": "question_word_event_description",
+    "intent": "question_k",
+    "response_type": "event_description",
+    "examples": [
+      "k bhako"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "bholi k huncha": {
+    "pattern": "bholi k huncha",
+    "type": "question_word_event_description",
+    "intent": "question_k",
+    "response_type": "event_description",
+    "examples": [
+      "bholi k huncha"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "k ko laagi": {
+    "pattern": "k ko laagi",
+    "type": "question_word_purpose_or_reason",
+    "intent": "question_k",
+    "response_type": "purpose_or_reason",
+    "examples": [
+      "k ko laagi"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "k kaaran": {
+    "pattern": "k kaaran",
+    "type": "question_word_purpose_or_reason",
+    "intent": "question_k",
+    "response_type": "purpose_or_reason",
+    "examples": [
+      "k kaaran"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "yo kina k gareko": {
+    "pattern": "yo kina k gareko",
+    "type": "question_word_purpose_or_reason",
+    "intent": "question_k",
+    "response_type": "purpose_or_reason",
+    "examples": [
+      "yo kina k gareko"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "timro naam k ho": {
+    "pattern": "timro naam k ho",
+    "type": "question_word_name_or_title",
+    "intent": "question_k",
+    "response_type": "name_or_title",
+    "examples": [
+      "timro naam k ho"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "yo thau ko naam k ho": {
+    "pattern": "yo thau ko naam k ho",
+    "type": "question_word_name_or_title",
+    "intent": "question_k",
+    "response_type": "name_or_title",
+    "examples": [
+      "yo thau ko naam k ho"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "timlai k laagcha": {
+    "pattern": "timlai k laagcha",
+    "type": "question_word_opinion",
+    "intent": "question_k",
+    "response_type": "opinion",
+    "examples": [
+      "timlai k laagcha"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "usle k sochcha": {
+    "pattern": "usle k sochcha",
+    "type": "question_word_opinion",
+    "intent": "question_k",
+    "response_type": "opinion",
+    "examples": [
+      "usle k sochcha"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "yo k ko ho": {
+    "pattern": "yo k ko ho",
+    "type": "question_word_possession_of_what",
+    "intent": "question_k",
+    "response_type": "possession_of_what",
+    "examples": [
+      "yo k ko ho"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "tyo k ko kitab ho": {
+    "pattern": "tyo k ko kitab ho",
+    "type": "question_word_possession_of_what",
+    "intent": "question_k",
+    "response_type": "possession_of_what",
+    "examples": [
+      "tyo k ko kitab ho"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "kati k cha": {
+    "pattern": "kati k cha",
+    "type": "question_word_quantity",
+    "intent": "question_k",
+    "response_type": "quantity",
+    "examples": [
+      "kati k cha"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "k kati linu": {
+    "pattern": "k kati linu",
+    "type": "question_word_quantity",
+    "intent": "question_k",
+    "response_type": "quantity",
+    "examples": [
+      "k kati linu"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "ko aayo": {
+    "pattern": "ko aayo",
+    "type": "question_word_person_identification",
+    "intent": "question_ko",
+    "response_type": "person_identification",
+    "examples": [
+      "ko aayo"
+    ],
+    "question_word": "ko",
+    "NOT_transaction": true
+  },
+  "u ko ho": {
+    "pattern": "u ko ho",
+    "type": "question_word_person_identification",
+    "intent": "question_ko",
+    "response_type": "person_identification",
+    "examples": [
+      "u ko ho"
+    ],
+    "question_word": "ko",
+    "NOT_transaction": true
+  },
+  "yo ko ghar ho": {
+    "pattern": "yo ko ghar ho",
+    "type": "question_word_possession",
+    "intent": "question_ko",
+    "response_type": "possession",
+    "examples": [
+      "yo ko ghar ho"
+    ],
+    "question_word": "ko",
+    "NOT_transaction": true
+  },
+  "yo ko kitab ho": {
+    "pattern": "yo ko kitab ho",
+    "type": "question_word_possession",
+    "intent": "question_ko",
+    "response_type": "possession",
+    "examples": [
+      "yo ko kitab ho"
+    ],
+    "question_word": "ko",
+    "NOT_transaction": true
+  },
+  "tyo ko gaadi ho": {
+    "pattern": "tyo ko gaadi ho",
+    "type": "question_word_possession",
+    "intent": "question_ko",
+    "response_type": "possession",
+    "examples": [
+      "tyo ko gaadi ho"
+    ],
+    "question_word": "ko",
+    "NOT_transaction": true
+  },
+  "yo kura ko ho": {
+    "pattern": "yo kura ko ho",
+    "type": "question_word_ownership_or_association",
+    "intent": "question_ko",
+    "response_type": "ownership_or_association",
+    "examples": [
+      "yo kura ko ho"
+    ],
+    "question_word": "ko",
+    "NOT_transaction": true
+  },
+  "yo samasya ko ho": {
+    "pattern": "yo samasya ko ho",
+    "type": "question_word_ownership_or_association",
+    "intent": "question_ko",
+    "response_type": "ownership_or_association",
+    "examples": [
+      "yo samasya ko ho"
+    ],
+    "question_word": "ko",
+    "NOT_transaction": true
+  },
+  "kasle garyo": {
+    "pattern": "kasle garyo",
+    "type": "question_word_agent_identification",
+    "intent": "question_ko",
+    "response_type": "agent_identification",
+    "examples": [
+      "kasle garyo"
+    ],
+    "question_word": "ko",
+    "NOT_transaction": true
+  },
+  "ko garcha": {
+    "pattern": "ko garcha",
+    "type": "question_word_agent_identification",
+    "intent": "question_ko",
+    "response_type": "agent_identification",
+    "examples": [
+      "ko garcha"
+    ],
+    "question_word": "ko",
+    "NOT_transaction": true
+  },
+  "ko sanga cha": {
+    "pattern": "ko sanga cha",
+    "type": "question_word_agent_identification",
+    "intent": "question_ko",
+    "response_type": "agent_identification",
+    "examples": [
+      "ko sanga cha"
+    ],
+    "question_word": "ko",
+    "NOT_transaction": true
+  },
+  "timile kolaai bhetyau": {
+    "pattern": "timile kolaai bhetyau",
+    "type": "question_word_object_person",
+    "intent": "question_ko",
+    "response_type": "object_person",
+    "examples": [
+      "timile kolaai bhetyau"
+    ],
+    "question_word": "ko",
+    "NOT_transaction": true
+  },
+  "usle kolaai bolayo": {
+    "pattern": "usle kolaai bolayo",
+    "type": "question_word_object_person",
+    "intent": "question_ko",
+    "response_type": "object_person",
+    "examples": [
+      "usle kolaai bolayo"
+    ],
+    "question_word": "ko",
+    "NOT_transaction": true
+  },
+  "kun kitab": {
+    "pattern": "kun kitab",
+    "type": "question_word_choice_selection",
+    "intent": "question_kun",
+    "response_type": "choice_selection",
+    "examples": [
+      "kun kitab"
+    ],
+    "question_word": "kun",
+    "NOT_transaction": true
+  },
+  "kun ghar": {
+    "pattern": "kun ghar",
+    "type": "question_word_choice_selection",
+    "intent": "question_kun",
+    "response_type": "choice_selection",
+    "examples": [
+      "kun ghar"
+    ],
+    "question_word": "kun",
+    "NOT_transaction": true
+  },
+  "kun bato": {
+    "pattern": "kun bato",
+    "type": "question_word_choice_selection",
+    "intent": "question_kun",
+    "response_type": "choice_selection",
+    "examples": [
+      "kun bato"
+    ],
+    "question_word": "kun",
+    "NOT_transaction": true
+  },
+  "kun chahinchha": {
+    "pattern": "kun chahinchha",
+    "type": "question_word_selection_of_one",
+    "intent": "question_kun",
+    "response_type": "selection_of_one",
+    "examples": [
+      "kun chahinchha"
+    ],
+    "question_word": "kun",
+    "NOT_transaction": true
+  },
+  "kun rojnu": {
+    "pattern": "kun rojnu",
+    "type": "question_word_selection_of_one",
+    "intent": "question_kun",
+    "response_type": "selection_of_one",
+    "examples": [
+      "kun rojnu"
+    ],
+    "question_word": "kun",
+    "NOT_transaction": true
+  },
+  "kun thik cha": {
+    "pattern": "kun thik cha",
+    "type": "question_word_selection_of_one",
+    "intent": "question_kun",
+    "response_type": "selection_of_one",
+    "examples": [
+      "kun thik cha"
+    ],
+    "question_word": "kun",
+    "NOT_transaction": true
+  },
+  "kun samaya": {
+    "pattern": "kun samaya",
+    "type": "question_word_time_selection",
+    "intent": "question_kun",
+    "response_type": "time_selection",
+    "examples": [
+      "kun samaya"
+    ],
+    "question_word": "kun",
+    "NOT_transaction": true
+  },
+  "kun mahinaa": {
+    "pattern": "kun mahinaa",
+    "type": "question_word_time_selection",
+    "intent": "question_kun",
+    "response_type": "time_selection",
+    "examples": [
+      "kun mahinaa"
+    ],
+    "question_word": "kun",
+    "NOT_transaction": true
+  },
+  "kun maanchhe": {
+    "pattern": "kun maanchhe",
+    "type": "question_word_person_selection",
+    "intent": "question_kun",
+    "response_type": "person_selection",
+    "examples": [
+      "kun maanchhe"
+    ],
+    "question_word": "kun",
+    "NOT_transaction": true
+  },
+  "kun sadasya": {
+    "pattern": "kun sadasya",
+    "type": "question_word_person_selection",
+    "intent": "question_kun",
+    "response_type": "person_selection",
+    "examples": [
+      "kun sadasya"
+    ],
+    "question_word": "kun",
+    "NOT_transaction": true
+  },
+  "kun bhai": {
+    "pattern": "kun bhai",
+    "type": "question_word_person_selection",
+    "intent": "question_kun",
+    "response_type": "person_selection",
+    "examples": [
+      "kun bhai"
+    ],
+    "question_word": "kun",
+    "NOT_transaction": true
+  },
+  "kun thau": {
+    "pattern": "kun thau",
+    "type": "question_word_place_selection",
+    "intent": "question_kun",
+    "response_type": "place_selection",
+    "examples": [
+      "kun thau"
+    ],
+    "question_word": "kun",
+    "NOT_transaction": true
+  },
+  "kun sahar": {
+    "pattern": "kun sahar",
+    "type": "question_word_place_selection",
+    "intent": "question_kun",
+    "response_type": "place_selection",
+    "examples": [
+      "kun sahar"
+    ],
+    "question_word": "kun",
+    "NOT_transaction": true
+  },
+  "kun desh": {
+    "pattern": "kun desh",
+    "type": "question_word_place_selection",
+    "intent": "question_kun",
+    "response_type": "place_selection",
+    "examples": [
+      "kun desh"
+    ],
+    "question_word": "kun",
+    "NOT_transaction": true
+  },
+  "timi kata chhau": {
+    "pattern": "timi kata chhau",
+    "type": "question_word_location",
+    "intent": "question_kata",
+    "response_type": "location",
+    "examples": [
+      "timi kata chhau"
+    ],
+    "question_word": "kata",
+    "NOT_transaction": true
+  },
+  "ghar kata cha": {
+    "pattern": "ghar kata cha",
+    "type": "question_word_location",
+    "intent": "question_kata",
+    "response_type": "location",
+    "examples": [
+      "ghar kata cha"
+    ],
+    "question_word": "kata",
+    "NOT_transaction": true
+  },
+  "uslai kata bhetne": {
+    "pattern": "uslai kata bhetne",
+    "type": "question_word_location",
+    "intent": "question_kata",
+    "response_type": "location",
+    "examples": [
+      "uslai kata bhetne"
+    ],
+    "question_word": "kata",
+    "NOT_transaction": true
+  },
+  "kata jane": {
+    "pattern": "kata jane",
+    "type": "question_word_direction",
+    "intent": "question_kata",
+    "response_type": "direction",
+    "examples": [
+      "kata jane"
+    ],
+    "question_word": "kata",
+    "NOT_transaction": true
+  },
+  "kata lagne": {
+    "pattern": "kata lagne",
+    "type": "question_word_direction",
+    "intent": "question_kata",
+    "response_type": "direction",
+    "examples": [
+      "kata lagne"
+    ],
+    "question_word": "kata",
+    "NOT_transaction": true
+  },
+  "yo bato kata jancha": {
+    "pattern": "yo bato kata jancha",
+    "type": "question_word_direction",
+    "intent": "question_kata",
+    "response_type": "direction",
+    "examples": [
+      "yo bato kata jancha"
+    ],
+    "question_word": "kata",
+    "NOT_transaction": true
+  },
+  "timi kata bata aayau": {
+    "pattern": "timi kata bata aayau",
+    "type": "question_word_origin",
+    "intent": "question_kata",
+    "response_type": "origin",
+    "examples": [
+      "timi kata bata aayau"
+    ],
+    "question_word": "kata",
+    "NOT_transaction": true
+  },
+  "yo saaman kata bata lyayau": {
+    "pattern": "yo saaman kata bata lyayau",
+    "type": "question_word_origin",
+    "intent": "question_kata",
+    "response_type": "origin",
+    "examples": [
+      "yo saaman kata bata lyayau"
+    ],
+    "question_word": "kata",
+    "NOT_transaction": true
+  },
+  "kaha chhau": {
+    "pattern": "kaha chhau",
+    "type": "question_word_location",
+    "intent": "question_kaha",
+    "response_type": "location",
+    "examples": [
+      "kaha chhau"
+    ],
+    "question_word": "kaha",
+    "NOT_transaction": true
+  },
+  "kaha jaane": {
+    "pattern": "kaha jaane",
+    "type": "question_word_location",
+    "intent": "question_kaha",
+    "response_type": "location",
+    "examples": [
+      "kaha jaane"
+    ],
+    "question_word": "kaha",
+    "NOT_transaction": true
+  },
+  "kaha bhetne": {
+    "pattern": "kaha bhetne",
+    "type": "question_word_location",
+    "intent": "question_kaha",
+    "response_type": "location",
+    "examples": [
+      "kaha bhetne"
+    ],
+    "question_word": "kaha",
+    "NOT_transaction": true
+  },
+  "kaha pugnu": {
+    "pattern": "kaha pugnu",
+    "type": "question_word_destination",
+    "intent": "question_kaha",
+    "response_type": "destination",
+    "examples": [
+      "kaha pugnu"
+    ],
+    "question_word": "kaha",
+    "NOT_transaction": true
+  },
+  "kaha samma": {
+    "pattern": "kaha samma",
+    "type": "question_word_destination",
+    "intent": "question_kaha",
+    "response_type": "destination",
+    "examples": [
+      "kaha samma"
+    ],
+    "question_word": "kaha",
+    "NOT_transaction": true
+  },
+  "kaha lagnu": {
+    "pattern": "kaha lagnu",
+    "type": "question_word_destination",
+    "intent": "question_kaha",
+    "response_type": "destination",
+    "examples": [
+      "kaha lagnu"
+    ],
+    "question_word": "kaha",
+    "NOT_transaction": true
+  },
+  "kahile aaune": {
+    "pattern": "kahile aaune",
+    "type": "question_word_time_point",
+    "intent": "question_kahile",
+    "response_type": "time_point",
+    "examples": [
+      "kahile aaune"
+    ],
+    "question_word": "kahile",
+    "NOT_transaction": true
+  },
+  "kahile bhayo": {
+    "pattern": "kahile bhayo",
+    "type": "question_word_time_point",
+    "intent": "question_kahile",
+    "response_type": "time_point",
+    "examples": [
+      "kahile bhayo"
+    ],
+    "question_word": "kahile",
+    "NOT_transaction": true
+  },
+  "kahile suru huncha": {
+    "pattern": "kahile suru huncha",
+    "type": "question_word_time_point",
+    "intent": "question_kahile",
+    "response_type": "time_point",
+    "examples": [
+      "kahile suru huncha"
+    ],
+    "question_word": "kahile",
+    "NOT_transaction": true
+  },
+  "kahilekahi": {
+    "pattern": "kahilekahi",
+    "type": "question_word_time_frequency",
+    "intent": "question_kahile",
+    "response_type": "time_frequency",
+    "examples": [
+      "kahilekahi"
+    ],
+    "question_word": "kahile",
+    "NOT_transaction": true
+  },
+  "timi kahile aauchhau": {
+    "pattern": "timi kahile aauchhau",
+    "type": "question_word_time_frequency",
+    "intent": "question_kahile",
+    "response_type": "time_frequency",
+    "examples": [
+      "timi kahile aauchhau"
+    ],
+    "question_word": "kahile",
+    "NOT_transaction": true
+  },
+  "kahile bhet huncha": {
+    "pattern": "kahile bhet huncha",
+    "type": "question_word_time_frequency",
+    "intent": "question_kahile",
+    "response_type": "time_frequency",
+    "examples": [
+      "kahile bhet huncha"
+    ],
+    "question_word": "kahile",
+    "NOT_transaction": true
+  },
+  "kahile samma": {
+    "pattern": "kahile samma",
+    "type": "question_word_deadline",
+    "intent": "question_kahile",
+    "response_type": "deadline",
+    "examples": [
+      "kahile samma"
+    ],
+    "question_word": "kahile",
+    "NOT_transaction": true
+  },
+  "kahile pura huncha": {
+    "pattern": "kahile pura huncha",
+    "type": "question_word_deadline",
+    "intent": "question_kahile",
+    "response_type": "deadline",
+    "examples": [
+      "kahile pura huncha"
+    ],
+    "question_word": "kahile",
+    "NOT_transaction": true
+  },
+  "kaam kahile sakne": {
+    "pattern": "kaam kahile sakne",
+    "type": "question_word_deadline",
+    "intent": "question_kahile",
+    "response_type": "deadline",
+    "examples": [
+      "kaam kahile sakne"
+    ],
+    "question_word": "kahile",
+    "NOT_transaction": true
+  },
+  "kasari garchau": {
+    "pattern": "kasari garchau",
+    "type": "question_word_manner",
+    "intent": "question_kasari",
+    "response_type": "manner",
+    "examples": [
+      "kasari garchau"
+    ],
+    "question_word": "kasari",
+    "NOT_transaction": true
+  },
+  "yo kasari bhayo": {
+    "pattern": "yo kasari bhayo",
+    "type": "question_word_manner",
+    "intent": "question_kasari",
+    "response_type": "manner",
+    "examples": [
+      "yo kasari bhayo"
+    ],
+    "question_word": "kasari",
+    "NOT_transaction": true
+  },
+  "kasari janchau": {
+    "pattern": "kasari janchau",
+    "type": "question_word_manner",
+    "intent": "question_kasari",
+    "response_type": "manner",
+    "examples": [
+      "kasari janchau"
+    ],
+    "question_word": "kasari",
+    "NOT_transaction": true
+  },
+  "kasari banaune": {
+    "pattern": "kasari banaune",
+    "type": "question_word_process",
+    "intent": "question_kasari",
+    "response_type": "process",
+    "examples": [
+      "kasari banaune"
+    ],
+    "question_word": "kasari",
+    "NOT_transaction": true
+  },
+  "kasari suru garne": {
+    "pattern": "kasari suru garne",
+    "type": "question_word_process",
+    "intent": "question_kasari",
+    "response_type": "process",
+    "examples": [
+      "kasari suru garne"
+    ],
+    "question_word": "kasari",
+    "NOT_transaction": true
+  },
+  "kasari sikne": {
+    "pattern": "kasari sikne",
+    "type": "question_word_process",
+    "intent": "question_kasari",
+    "response_type": "process",
+    "examples": [
+      "kasari sikne"
+    ],
+    "question_word": "kasari",
+    "NOT_transaction": true
+  },
+  "kasto manchhe": {
+    "pattern": "kasto manchhe",
+    "type": "question_word_description_quality",
+    "intent": "question_kasto",
+    "response_type": "description_quality",
+    "examples": [
+      "kasto manchhe"
+    ],
+    "question_word": "kasto",
+    "NOT_transaction": true
+  },
+  "kasto mausam": {
+    "pattern": "kasto mausam",
+    "type": "question_word_description_quality",
+    "intent": "question_kasto",
+    "response_type": "description_quality",
+    "examples": [
+      "kasto mausam"
+    ],
+    "question_word": "kasto",
+    "NOT_transaction": true
+  },
+  "timi kasto chhau": {
+    "pattern": "timi kasto chhau",
+    "type": "question_word_state_or_condition",
+    "intent": "question_kasto",
+    "response_type": "state_or_condition",
+    "examples": [
+      "timi kasto chhau"
+    ],
+    "question_word": "kasto",
+    "NOT_transaction": true
+  },
+  "usko swasthya kasto cha": {
+    "pattern": "usko swasthya kasto cha",
+    "type": "question_word_state_or_condition",
+    "intent": "question_kasto",
+    "response_type": "state_or_condition",
+    "examples": [
+      "usko swasthya kasto cha"
+    ],
+    "question_word": "kasto",
+    "NOT_transaction": true
+  },
+  "kasto lagyo": {
+    "pattern": "kasto lagyo",
+    "type": "question_word_state_or_condition",
+    "intent": "question_kasto",
+    "response_type": "state_or_condition",
+    "examples": [
+      "kasto lagyo"
+    ],
+    "question_word": "kasto",
+    "NOT_transaction": true
+  },
+  "yo kasto lagcha": {
+    "pattern": "yo kasto lagcha",
+    "type": "question_word_comparison_or_type",
+    "intent": "question_kasto",
+    "response_type": "comparison_or_type",
+    "examples": [
+      "yo kasto lagcha"
+    ],
+    "question_word": "kasto",
+    "NOT_transaction": true
+  },
+  "usko kasto cha": {
+    "pattern": "usko kasto cha",
+    "type": "question_word_comparison_or_type",
+    "intent": "question_kasto",
+    "response_type": "comparison_or_type",
+    "examples": [
+      "usko kasto cha"
+    ],
+    "question_word": "kasto",
+    "NOT_transaction": true
+  },
+  "kasto khalko": {
+    "pattern": "kasto khalko",
+    "type": "question_word_comparison_or_type",
+    "intent": "question_kasto",
+    "response_type": "comparison_or_type",
+    "examples": [
+      "kasto khalko"
+    ],
+    "question_word": "kasto",
+    "NOT_transaction": true
+  },
+  "kasle bhaneko": {
+    "pattern": "kasle bhaneko",
+    "type": "question_word_agent_identification",
+    "intent": "question_kasle",
+    "response_type": "agent_identification",
+    "examples": [
+      "kasle bhaneko"
+    ],
+    "question_word": "kasle",
+    "NOT_transaction": true
+  },
+  "kasle lyayo": {
+    "pattern": "kasle lyayo",
+    "type": "question_word_agent_identification",
+    "intent": "question_kasle",
+    "response_type": "agent_identification",
+    "examples": [
+      "kasle lyayo"
+    ],
+    "question_word": "kasle",
+    "NOT_transaction": true
+  },
+  "yo patra kasle lekheko": {
+    "pattern": "yo patra kasle lekheko",
+    "type": "question_word_agent_instrument",
+    "intent": "question_kasle",
+    "response_type": "agent_instrument",
+    "examples": [
+      "yo patra kasle lekheko"
+    ],
+    "question_word": "kasle",
+    "NOT_transaction": true
+  },
+  "yo kaam kasle garna sakincha": {
+    "pattern": "yo kaam kasle garna sakincha",
+    "type": "question_word_agent_instrument",
+    "intent": "question_kasle",
+    "response_type": "agent_instrument",
+    "examples": [
+      "yo kaam kasle garna sakincha"
+    ],
+    "question_word": "kasle",
+    "NOT_transaction": true
+  },
+  "yo galti kasle garyo": {
+    "pattern": "yo galti kasle garyo",
+    "type": "question_word_responsibility",
+    "intent": "question_kasle",
+    "response_type": "responsibility",
+    "examples": [
+      "yo galti kasle garyo"
+    ],
+    "question_word": "kasle",
+    "NOT_transaction": true
+  },
+  "kasle jimma line": {
+    "pattern": "kasle jimma line",
+    "type": "question_word_responsibility",
+    "intent": "question_kasle",
+    "response_type": "responsibility",
+    "examples": [
+      "kasle jimma line"
+    ],
+    "question_word": "kasle",
+    "NOT_transaction": true
+  },
+  "kati ota": {
+    "pattern": "kati ota",
+    "type": "question_word_count",
+    "intent": "question_kati",
+    "response_type": "count",
+    "examples": [
+      "kati ota"
+    ],
+    "question_word": "kati",
+    "NOT_transaction": true
+  },
+  "kati jana": {
+    "pattern": "kati jana",
+    "type": "question_word_count",
+    "intent": "question_kati",
+    "response_type": "count",
+    "examples": [
+      "kati jana"
+    ],
+    "question_word": "kati",
+    "NOT_transaction": true
+  },
+  "kati kitaab": {
+    "pattern": "kati kitaab",
+    "type": "question_word_count",
+    "intent": "question_kati",
+    "response_type": "count",
+    "examples": [
+      "kati kitaab"
+    ],
+    "question_word": "kati",
+    "NOT_transaction": true
+  },
+  "kati paisa": {
+    "pattern": "kati paisa",
+    "type": "question_word_amount_or_price",
+    "intent": "question_kati",
+    "response_type": "amount_or_price",
+    "examples": [
+      "kati paisa"
+    ],
+    "question_word": "kati",
+    "NOT_transaction": true
+  },
+  "kati kilo": {
+    "pattern": "kati kilo",
+    "type": "question_word_amount_or_price",
+    "intent": "question_kati",
+    "response_type": "amount_or_price",
+    "examples": [
+      "kati kilo"
+    ],
+    "question_word": "kati",
+    "NOT_transaction": true
+  },
+  "yo kati maa": {
+    "pattern": "yo kati maa",
+    "type": "question_word_amount_or_price",
+    "intent": "question_kati",
+    "response_type": "amount_or_price",
+    "examples": [
+      "yo kati maa"
+    ],
+    "question_word": "kati",
+    "NOT_transaction": true
+  },
+  "kati bajyo": {
+    "pattern": "kati bajyo",
+    "type": "question_word_clock_time",
+    "intent": "question_kati",
+    "response_type": "clock_time",
+    "examples": [
+      "kati bajyo"
+    ],
+    "question_word": "kati",
+    "NOT_transaction": true
+  },
+  "kati baje": {
+    "pattern": "kati baje",
+    "type": "question_word_clock_time",
+    "intent": "question_kati",
+    "response_type": "clock_time",
+    "examples": [
+      "kati baje"
+    ],
+    "question_word": "kati",
+    "NOT_transaction": true
+  },
+  "ahile kati bhayo": {
+    "pattern": "ahile kati bhayo",
+    "type": "question_word_clock_time",
+    "intent": "question_kati",
+    "response_type": "clock_time",
+    "examples": [
+      "ahile kati bhayo"
+    ],
+    "question_word": "kati",
+    "NOT_transaction": true
+  },
+  "kati tadha": {
+    "pattern": "kati tadha",
+    "type": "question_word_degree_or_extent",
+    "intent": "question_kati",
+    "response_type": "degree_or_extent",
+    "examples": [
+      "kati tadha"
+    ],
+    "question_word": "kati",
+    "NOT_transaction": true
+  },
+  "kati ramro": {
+    "pattern": "kati ramro",
+    "type": "question_word_degree_or_extent",
+    "intent": "question_kati",
+    "response_type": "degree_or_extent",
+    "examples": [
+      "kati ramro"
+    ],
+    "question_word": "kati",
+    "NOT_transaction": true
+  },
+  "kati chito": {
+    "pattern": "kati chito",
+    "type": "question_word_degree_or_extent",
+    "intent": "question_kati",
+    "response_type": "degree_or_extent",
+    "examples": [
+      "kati chito"
+    ],
+    "question_word": "kati",
+    "NOT_transaction": true
+  },
+  "kati palta": {
+    "pattern": "kati palta",
+    "type": "question_word_frequency_count",
+    "intent": "question_kati",
+    "response_type": "frequency_count",
+    "examples": [
+      "kati palta"
+    ],
+    "question_word": "kati",
+    "NOT_transaction": true
+  },
+  "kati choti": {
+    "pattern": "kati choti",
+    "type": "question_word_frequency_count",
+    "intent": "question_kati",
+    "response_type": "frequency_count",
+    "examples": [
+      "kati choti"
+    ],
+    "question_word": "kati",
+    "NOT_transaction": true
+  },
+  "din kati": {
+    "pattern": "din kati",
+    "type": "question_word_frequency_count",
+    "intent": "question_kati",
+    "response_type": "frequency_count",
+    "examples": [
+      "din kati"
+    ],
+    "question_word": "kati",
+    "NOT_transaction": true
+  },
+  "kina aayau": {
+    "pattern": "kina aayau",
+    "type": "question_word_reason",
+    "intent": "question_kina",
+    "response_type": "reason",
+    "examples": [
+      "kina aayau"
+    ],
+    "question_word": "kina",
+    "NOT_transaction": true
+  },
+  "kina roye": {
+    "pattern": "kina roye",
+    "type": "question_word_reason",
+    "intent": "question_kina",
+    "response_type": "reason",
+    "examples": [
+      "kina roye"
+    ],
+    "question_word": "kina",
+    "NOT_transaction": true
+  },
+  "kina dhilo": {
+    "pattern": "kina dhilo",
+    "type": "question_word_reason",
+    "intent": "question_kina",
+    "response_type": "reason",
+    "examples": [
+      "kina dhilo"
+    ],
+    "question_word": "kina",
+    "NOT_transaction": true
+  },
+  "kina gareko": {
+    "pattern": "kina gareko",
+    "type": "question_word_cause_or_purpose",
+    "intent": "question_kina",
+    "response_type": "cause_or_purpose",
+    "examples": [
+      "kina gareko"
+    ],
+    "question_word": "kina",
+    "NOT_transaction": true
+  },
+  "kina bhaneko": {
+    "pattern": "kina bhaneko",
+    "type": "question_word_cause_or_purpose",
+    "intent": "question_kina",
+    "response_type": "cause_or_purpose",
+    "examples": [
+      "kina bhaneko"
+    ],
+    "question_word": "kina",
+    "NOT_transaction": true
+  },
+  "kina yasto": {
+    "pattern": "kina yasto",
+    "type": "question_word_cause_or_purpose",
+    "intent": "question_kina",
+    "response_type": "cause_or_purpose",
+    "examples": [
+      "kina yasto"
+    ],
+    "question_word": "kina",
+    "NOT_transaction": true
+  },
+  "kina maanche": {
+    "pattern": "kina maanche",
+    "type": "question_word_justification",
+    "intent": "question_kina",
+    "response_type": "justification",
+    "examples": [
+      "kina maanche"
+    ],
+    "question_word": "kina",
+    "NOT_transaction": true
+  },
+  "kina maanna": {
+    "pattern": "kina maanna",
+    "type": "question_word_justification",
+    "intent": "question_kina",
+    "response_type": "justification",
+    "examples": [
+      "kina maanna"
+    ],
+    "question_word": "kina",
+    "NOT_transaction": true
+  },
+  "kina ho ra": {
+    "pattern": "kina ho ra",
+    "type": "question_word_justification",
+    "intent": "question_kina",
+    "response_type": "justification",
+    "examples": [
+      "kina ho ra"
+    ],
+    "question_word": "kina",
+    "NOT_transaction": true
+  },
+  "kinabhane yasto bhayo": {
+    "pattern": "kinabhane yasto bhayo",
+    "type": "question_word_reason_explanation",
+    "intent": "question_kinabhane",
+    "response_type": "reason_explanation",
+    "examples": [
+      "kinabhane yasto bhayo"
+    ],
+    "question_word": "kinabhane",
+    "NOT_transaction": true
+  },
+  "kinabhane usle chhodyo": {
+    "pattern": "kinabhane usle chhodyo",
+    "type": "question_word_reason_explanation",
+    "intent": "question_kinabhane",
+    "response_type": "reason_explanation",
+    "examples": [
+      "kinabhane usle chhodyo"
+    ],
+    "question_word": "kinabhane",
+    "NOT_transaction": true
+  },
+  "yo ho": {
+    "pattern": "yo ho",
+    "type": "question_word_yes_no_confirmation",
+    "intent": "question_ho",
+    "response_type": "yes_no_confirmation",
+    "examples": [
+      "yo ho"
+    ],
+    "question_word": "ho",
+    "NOT_transaction": true
+  },
+  "tyo nai ho": {
+    "pattern": "tyo nai ho",
+    "type": "question_word_yes_no_confirmation",
+    "intent": "question_ho",
+    "response_type": "yes_no_confirmation",
+    "examples": [
+      "tyo nai ho"
+    ],
+    "question_word": "ho",
+    "NOT_transaction": true
+  },
+  "sahi ho": {
+    "pattern": "sahi ho",
+    "type": "question_word_yes_no_confirmation",
+    "intent": "question_ho",
+    "response_type": "yes_no_confirmation",
+    "examples": [
+      "sahi ho"
+    ],
+    "question_word": "ho",
+    "NOT_transaction": true
+  },
+  "ho ra": {
+    "pattern": "ho ra",
+    "type": "question_word_confirmation_truth",
+    "intent": "question_ho",
+    "response_type": "confirmation_truth",
+    "examples": [
+      "ho ra"
+    ],
+    "question_word": "ho",
+    "NOT_transaction": true
+  },
+  "tyasto ho": {
+    "pattern": "tyasto ho",
+    "type": "question_word_confirmation_truth",
+    "intent": "question_ho",
+    "response_type": "confirmation_truth",
+    "examples": [
+      "tyasto ho"
+    ],
+    "question_word": "ho",
+    "NOT_transaction": true
+  },
+  "timi nai ho": {
+    "pattern": "timi nai ho",
+    "type": "question_word_confirmation_truth",
+    "intent": "question_ho",
+    "response_type": "confirmation_truth",
+    "examples": [
+      "timi nai ho"
+    ],
+    "question_word": "ho",
+    "NOT_transaction": true
+  },
+  "bholi pani hola": {
+    "pattern": "bholi pani hola",
+    "type": "question_word_possibility",
+    "intent": "question_hola",
+    "response_type": "possibility",
+    "examples": [
+      "bholi pani hola"
+    ],
+    "question_word": "hola",
+    "NOT_transaction": true
+  },
+  "u aaula": {
+    "pattern": "u aaula",
+    "type": "question_word_possibility",
+    "intent": "question_hola",
+    "response_type": "possibility",
+    "examples": [
+      "u aaula"
+    ],
+    "question_word": "hola",
+    "NOT_transaction": true
+  },
+  "thik hola": {
+    "pattern": "thik hola",
+    "type": "question_word_possibility",
+    "intent": "question_hola",
+    "response_type": "possibility",
+    "examples": [
+      "thik hola"
+    ],
+    "question_word": "hola",
+    "NOT_transaction": true
+  },
+  "yo timro hola": {
+    "pattern": "yo timro hola",
+    "type": "question_word_uncertain_confirmation",
+    "intent": "question_hola",
+    "response_type": "uncertain_confirmation",
+    "examples": [
+      "yo timro hola"
+    ],
+    "question_word": "hola",
+    "NOT_transaction": true
+  },
+  "uslai thaha hola": {
+    "pattern": "uslai thaha hola",
+    "type": "question_word_uncertain_confirmation",
+    "intent": "question_hola",
+    "response_type": "uncertain_confirmation",
+    "examples": [
+      "uslai thaha hola"
+    ],
+    "question_word": "hola",
+    "NOT_transaction": true
+  },
+  "yo huncha": {
+    "pattern": "yo huncha",
+    "type": "question_word_agreement_or_outcome",
+    "intent": "question_huncha",
+    "response_type": "agreement_or_outcome",
+    "examples": [
+      "yo huncha"
+    ],
+    "question_word": "huncha",
+    "NOT_transaction": true
+  },
+  "bholi huncha": {
+    "pattern": "bholi huncha",
+    "type": "question_word_agreement_or_outcome",
+    "intent": "question_huncha",
+    "response_type": "agreement_or_outcome",
+    "examples": [
+      "bholi huncha"
+    ],
+    "question_word": "huncha",
+    "NOT_transaction": true
+  },
+  "ke huncha": {
+    "pattern": "ke huncha",
+    "type": "question_word_agreement_or_outcome",
+    "intent": "question_huncha",
+    "response_type": "agreement_or_outcome",
+    "examples": [
+      "ke huncha"
+    ],
+    "question_word": "huncha",
+    "NOT_transaction": true
+  },
+  "ma aaun huncha": {
+    "pattern": "ma aaun huncha",
+    "type": "question_word_permission",
+    "intent": "question_huncha",
+    "response_type": "permission",
+    "examples": [
+      "ma aaun huncha"
+    ],
+    "question_word": "huncha",
+    "NOT_transaction": true
+  },
+  "yo garnu huncha": {
+    "pattern": "yo garnu huncha",
+    "type": "question_word_permission",
+    "intent": "question_huncha",
+    "response_type": "permission",
+    "examples": [
+      "yo garnu huncha"
+    ],
+    "question_word": "huncha",
+    "NOT_transaction": true
+  },
+  "k ma": {
+    "pattern": "k ma",
+    "type": "question_word_topic_identification",
+    "intent": "question_k",
+    "response_type": "topic_identification",
+    "examples": [
+      "k ma"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "k kura ma": {
+    "pattern": "k kura ma",
+    "type": "question_word_topic_identification",
+    "intent": "question_k",
+    "response_type": "topic_identification",
+    "examples": [
+      "k kura ma"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "k lai": {
+    "pattern": "k lai",
+    "type": "question_word_purpose_or_beneficiary",
+    "intent": "question_k",
+    "response_type": "purpose_or_beneficiary",
+    "examples": [
+      "k lai"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "yo k lai ho": {
+    "pattern": "yo k lai ho",
+    "type": "question_word_purpose_or_beneficiary",
+    "intent": "question_k",
+    "response_type": "purpose_or_beneficiary",
+    "examples": [
+      "yo k lai ho"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "k kura": {
+    "pattern": "k kura",
+    "type": "question_word_emphasis_clarification",
+    "intent": "question_k",
+    "response_type": "emphasis_clarification",
+    "examples": [
+      "k kura"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "k bhaneko": {
+    "pattern": "k bhaneko",
+    "type": "question_word_emphasis_clarification",
+    "intent": "question_k",
+    "response_type": "emphasis_clarification",
+    "examples": [
+      "k bhaneko"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "k cha ra": {
+    "pattern": "k cha ra",
+    "type": "question_word_emphasis_clarification",
+    "intent": "question_k",
+    "response_type": "emphasis_clarification",
+    "examples": [
+      "k cha ra"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "ko ko aaune": {
+    "pattern": "ko ko aaune",
+    "type": "question_word_person_list",
+    "intent": "question_ko",
+    "response_type": "person_list",
+    "examples": [
+      "ko ko aaune"
+    ],
+    "question_word": "ko",
+    "NOT_transaction": true
+  },
+  "ko sanga": {
+    "pattern": "ko sanga",
+    "type": "question_word_person_list",
+    "intent": "question_ko",
+    "response_type": "person_list",
+    "examples": [
+      "ko sanga"
+    ],
+    "question_word": "ko",
+    "NOT_transaction": true
+  },
+  "kun wa kun": {
+    "pattern": "kun wa kun",
+    "type": "question_word_alternative_selection",
+    "intent": "question_kun",
+    "response_type": "alternative_selection",
+    "examples": [
+      "kun wa kun"
+    ],
+    "question_word": "kun",
+    "NOT_transaction": true
+  },
+  "kun rojne": {
+    "pattern": "kun rojne",
+    "type": "question_word_alternative_selection",
+    "intent": "question_kun",
+    "response_type": "alternative_selection",
+    "examples": [
+      "kun rojne"
+    ],
+    "question_word": "kun",
+    "NOT_transaction": true
+  },
+  "samaadhaan kata cha": {
+    "pattern": "samaadhaan kata cha",
+    "type": "question_word_abstract_location",
+    "intent": "question_kata",
+    "response_type": "abstract_location",
+    "examples": [
+      "samaadhaan kata cha"
+    ],
+    "question_word": "kata",
+    "NOT_transaction": true
+  },
+  "samay kata gayo": {
+    "pattern": "samay kata gayo",
+    "type": "question_word_abstract_location",
+    "intent": "question_kata",
+    "response_type": "abstract_location",
+    "examples": [
+      "samay kata gayo"
+    ],
+    "question_word": "kata",
+    "NOT_transaction": true
+  },
+  "yo kahile bhako thiyo": {
+    "pattern": "yo kahile bhako thiyo",
+    "type": "question_word_historical_time",
+    "intent": "question_kahile",
+    "response_type": "historical_time",
+    "examples": [
+      "yo kahile bhako thiyo"
+    ],
+    "question_word": "kahile",
+    "NOT_transaction": true
+  },
+  "nepal kahile banyo": {
+    "pattern": "nepal kahile banyo",
+    "type": "question_word_historical_time",
+    "intent": "question_kahile",
+    "response_type": "historical_time",
+    "examples": [
+      "nepal kahile banyo"
+    ],
+    "question_word": "kahile",
+    "NOT_transaction": true
+  },
+  "kasari pugne": {
+    "pattern": "kasari pugne",
+    "type": "question_word_means_or_instrument",
+    "intent": "question_kasari",
+    "response_type": "means_or_instrument",
+    "examples": [
+      "kasari pugne"
+    ],
+    "question_word": "kasari",
+    "NOT_transaction": true
+  },
+  "kasto ramro": {
+    "pattern": "kasto ramro",
+    "type": "question_word_intensity_expression",
+    "intent": "question_kasto",
+    "response_type": "intensity_expression",
+    "examples": [
+      "kasto ramro"
+    ],
+    "question_word": "kasto",
+    "NOT_transaction": true
+  },
+  "kasto naramro": {
+    "pattern": "kasto naramro",
+    "type": "question_word_intensity_expression",
+    "intent": "question_kasto",
+    "response_type": "intensity_expression",
+    "examples": [
+      "kasto naramro"
+    ],
+    "question_word": "kasto",
+    "NOT_transaction": true
+  },
+  "kati samaya": {
+    "pattern": "kati samaya",
+    "type": "question_word_duration",
+    "intent": "question_kati",
+    "response_type": "duration",
+    "examples": [
+      "kati samaya"
+    ],
+    "question_word": "kati",
+    "NOT_transaction": true
+  },
+  "kati ber": {
+    "pattern": "kati ber",
+    "type": "question_word_duration",
+    "intent": "question_kati",
+    "response_type": "duration",
+    "examples": [
+      "kati ber"
+    ],
+    "question_word": "kati",
+    "NOT_transaction": true
+  },
+  "kina nahune": {
+    "pattern": "kina nahune",
+    "type": "question_word_rhetorical_reason",
+    "intent": "question_kina",
+    "response_type": "rhetorical_reason",
+    "examples": [
+      "kina nahune"
+    ],
+    "question_word": "kina",
+    "NOT_transaction": true
+  },
+  "kina nasakne": {
+    "pattern": "kina nasakne",
+    "type": "question_word_rhetorical_reason",
+    "intent": "question_kina",
+    "response_type": "rhetorical_reason",
+    "examples": [
+      "kina nasakne"
+    ],
+    "question_word": "kina",
+    "NOT_transaction": true
+  },
+  "u doctor ho": {
+    "pattern": "u doctor ho",
+    "type": "question_word_identity_confirmation",
+    "intent": "question_ho",
+    "response_type": "identity_confirmation",
+    "examples": [
+      "u doctor ho"
+    ],
+    "question_word": "ho",
+    "NOT_transaction": true
+  },
+  "yo timro ho": {
+    "pattern": "yo timro ho",
+    "type": "question_word_identity_confirmation",
+    "intent": "question_ho",
+    "response_type": "identity_confirmation",
+    "examples": [
+      "yo timro ho"
+    ],
+    "question_word": "ho",
+    "NOT_transaction": true
+  },
+  "ekchin basau hola": {
+    "pattern": "ekchin basau hola",
+    "type": "question_word_suggestion",
+    "intent": "question_hola",
+    "response_type": "suggestion",
+    "examples": [
+      "ekchin basau hola"
+    ],
+    "question_word": "hola",
+    "NOT_transaction": true
+  },
+  "chiya pinu hola": {
+    "pattern": "chiya pinu hola",
+    "type": "question_word_suggestion",
+    "intent": "question_hola",
+    "response_type": "suggestion",
+    "examples": [
+      "chiya pinu hola"
+    ],
+    "question_word": "hola",
+    "NOT_transaction": true
+  },
+  "parsi k huncha": {
+    "pattern": "parsi k huncha",
+    "type": "question_word_future_event",
+    "intent": "question_huncha",
+    "response_type": "future_event",
+    "examples": [
+      "parsi k huncha"
+    ],
+    "question_word": "huncha",
+    "NOT_transaction": true
+  },
+  "bholi bhae huncha": {
+    "pattern": "bholi bhae huncha",
+    "type": "question_word_future_event",
+    "intent": "question_huncha",
+    "response_type": "future_event",
+    "examples": [
+      "bholi bhae huncha"
+    ],
+    "question_word": "huncha",
+    "NOT_transaction": true
+  },
+  "k bhanya": {
+    "pattern": "k bhanya",
+    "type": "question_word_reaction",
+    "intent": "question_k",
+    "response_type": "reaction",
+    "examples": [
+      "k bhanya"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "u timro ko ho": {
+    "pattern": "u timro ko ho",
+    "type": "question_word_relationship",
+    "intent": "question_ko",
+    "response_type": "relationship",
+    "examples": [
+      "u timro ko ho"
+    ],
+    "question_word": "ko",
+    "NOT_transaction": true
+  },
+  "yo bachha ko ho": {
+    "pattern": "yo bachha ko ho",
+    "type": "question_word_relationship",
+    "intent": "question_ko",
+    "response_type": "relationship",
+    "examples": [
+      "yo bachha ko ho"
+    ],
+    "question_word": "ko",
+    "NOT_transaction": true
+  },
+  "kun paila": {
+    "pattern": "kun paila",
+    "type": "question_word_order_or_rank",
+    "intent": "question_kun",
+    "response_type": "order_or_rank",
+    "examples": [
+      "kun paila"
+    ],
+    "question_word": "kun",
+    "NOT_transaction": true
+  },
+  "kun number": {
+    "pattern": "kun number",
+    "type": "question_word_order_or_rank",
+    "intent": "question_kun",
+    "response_type": "order_or_rank",
+    "examples": [
+      "kun number"
+    ],
+    "question_word": "kun",
+    "NOT_transaction": true
+  },
+  "kun kaksha": {
+    "pattern": "kun kaksha",
+    "type": "question_word_order_or_rank",
+    "intent": "question_kun",
+    "response_type": "order_or_rank",
+    "examples": [
+      "kun kaksha"
+    ],
+    "question_word": "kun",
+    "NOT_transaction": true
+  },
+  "kata lukeko": {
+    "pattern": "kata lukeko",
+    "type": "question_word_hidden_location",
+    "intent": "question_kata",
+    "response_type": "hidden_location",
+    "examples": [
+      "kata lukeko"
+    ],
+    "question_word": "kata",
+    "NOT_transaction": true
+  },
+  "kata gayab": {
+    "pattern": "kata gayab",
+    "type": "question_word_hidden_location",
+    "intent": "question_kata",
+    "response_type": "hidden_location",
+    "examples": [
+      "kata gayab"
+    ],
+    "question_word": "kata",
+    "NOT_transaction": true
+  },
+  "timi kahile uthchhau": {
+    "pattern": "timi kahile uthchhau",
+    "type": "question_word_habitual_time",
+    "intent": "question_kahile",
+    "response_type": "habitual_time",
+    "examples": [
+      "timi kahile uthchhau"
+    ],
+    "question_word": "kahile",
+    "NOT_transaction": true
+  },
+  "kahile sutne": {
+    "pattern": "kahile sutne",
+    "type": "question_word_habitual_time",
+    "intent": "question_kahile",
+    "response_type": "habitual_time",
+    "examples": [
+      "kahile sutne"
+    ],
+    "question_word": "kahile",
+    "NOT_transaction": true
+  },
+  "kasari bachne": {
+    "pattern": "kasari bachne",
+    "type": "question_word_survival_or_adaptation",
+    "intent": "question_kasari",
+    "response_type": "survival_or_adaptation",
+    "examples": [
+      "kasari bachne"
+    ],
+    "question_word": "kasari",
+    "NOT_transaction": true
+  },
+  "kasari milne": {
+    "pattern": "kasari milne",
+    "type": "question_word_survival_or_adaptation",
+    "intent": "question_kasari",
+    "response_type": "survival_or_adaptation",
+    "examples": [
+      "kasari milne"
+    ],
+    "question_word": "kasari",
+    "NOT_transaction": true
+  },
+  "kasto maanchhe ho": {
+    "pattern": "kasto maanchhe ho",
+    "type": "question_word_category_or_type",
+    "intent": "question_kasto",
+    "response_type": "category_or_type",
+    "examples": [
+      "kasto maanchhe ho"
+    ],
+    "question_word": "kasto",
+    "NOT_transaction": true
+  },
+  "kasto kaam": {
+    "pattern": "kasto kaam",
+    "type": "question_word_category_or_type",
+    "intent": "question_kasto",
+    "response_type": "category_or_type",
+    "examples": [
+      "kasto kaam"
+    ],
+    "question_word": "kasto",
+    "NOT_transaction": true
+  },
+  "kasle dekhyo": {
+    "pattern": "kasle dekhyo",
+    "type": "question_word_witness_identification",
+    "intent": "question_kasle",
+    "response_type": "witness_identification",
+    "examples": [
+      "kasle dekhyo"
+    ],
+    "question_word": "kasle",
+    "NOT_transaction": true
+  },
+  "kasle sunyo": {
+    "pattern": "kasle sunyo",
+    "type": "question_word_witness_identification",
+    "intent": "question_kasle",
+    "response_type": "witness_identification",
+    "examples": [
+      "kasle sunyo"
+    ],
+    "question_word": "kasle",
+    "NOT_transaction": true
+  },
+  "kati wota cha": {
+    "pattern": "kati wota cha",
+    "type": "question_word_list_count",
+    "intent": "question_kati",
+    "response_type": "list_count",
+    "examples": [
+      "kati wota cha"
+    ],
+    "question_word": "kati",
+    "NOT_transaction": true
+  },
+  "kati thari": {
+    "pattern": "kati thari",
+    "type": "question_word_list_count",
+    "intent": "question_kati",
+    "response_type": "list_count",
+    "examples": [
+      "kati thari"
+    ],
+    "question_word": "kati",
+    "NOT_transaction": true
+  },
+  "kina mero galti": {
+    "pattern": "kina mero galti",
+    "type": "question_word_accusation_reason",
+    "intent": "question_kina",
+    "response_type": "accusation_reason",
+    "examples": [
+      "kina mero galti"
+    ],
+    "question_word": "kina",
+    "NOT_transaction": true
+  },
+  "kina uslai dosh": {
+    "pattern": "kina uslai dosh",
+    "type": "question_word_accusation_reason",
+    "intent": "question_kina",
+    "response_type": "accusation_reason",
+    "examples": [
+      "kina uslai dosh"
+    ],
+    "question_word": "kina",
+    "NOT_transaction": true
+  },
+  "bhagwan ho": {
+    "pattern": "bhagwan ho",
+    "type": "question_word_existence_confirmation",
+    "intent": "question_ho",
+    "response_type": "existence_confirmation",
+    "examples": [
+      "bhagwan ho"
+    ],
+    "question_word": "ho",
+    "NOT_transaction": true
+  },
+  "sapana ho": {
+    "pattern": "sapana ho",
+    "type": "question_word_existence_confirmation",
+    "intent": "question_ho",
+    "response_type": "existence_confirmation",
+    "examples": [
+      "sapana ho"
+    ],
+    "question_word": "ho",
+    "NOT_transaction": true
+  },
+  "u ghar ma hola": {
+    "pattern": "u ghar ma hola",
+    "type": "question_word_guess",
+    "intent": "question_hola",
+    "response_type": "guess",
+    "examples": [
+      "u ghar ma hola"
+    ],
+    "question_word": "hola",
+    "NOT_transaction": true
+  },
+  "aba hola": {
+    "pattern": "aba hola",
+    "type": "question_word_guess",
+    "intent": "question_hola",
+    "response_type": "guess",
+    "examples": [
+      "aba hola"
+    ],
+    "question_word": "hola",
+    "NOT_transaction": true
+  },
+  "yo sakincha huncha": {
+    "pattern": "yo sakincha huncha",
+    "type": "question_word_feasibility",
+    "intent": "question_huncha",
+    "response_type": "feasibility",
+    "examples": [
+      "yo sakincha huncha"
+    ],
+    "question_word": "huncha",
+    "NOT_transaction": true
+  },
+  "tyo huncha ki": {
+    "pattern": "tyo huncha ki",
+    "type": "question_word_feasibility",
+    "intent": "question_huncha",
+    "response_type": "feasibility",
+    "examples": [
+      "tyo huncha ki"
+    ],
+    "question_word": "huncha",
+    "NOT_transaction": true
+  },
+  "k cha": {
+    "pattern": "k cha",
+    "type": "question_word_wellbeing_inquiry",
+    "intent": "question_k",
+    "response_type": "wellbeing_inquiry",
+    "examples": [
+      "k cha"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "ke cha": {
+    "pattern": "ke cha",
+    "type": "question_word_wellbeing_inquiry",
+    "intent": "question_k",
+    "response_type": "wellbeing_inquiry",
+    "examples": [
+      "ke cha"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "aba k": {
+    "pattern": "aba k",
+    "type": "question_word_decision_inquiry",
+    "intent": "question_k",
+    "response_type": "decision_inquiry",
+    "examples": [
+      "aba k"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "k garne ni": {
+    "pattern": "k garne ni",
+    "type": "question_word_decision_inquiry",
+    "intent": "question_k",
+    "response_type": "decision_inquiry",
+    "examples": [
+      "k garne ni"
+    ],
+    "question_word": "k",
+    "NOT_transaction": true
+  },
+  "yaha ko ho": {
+    "pattern": "yaha ko ho",
+    "type": "question_word_authority_figure",
+    "intent": "question_ko",
+    "response_type": "authority_figure",
+    "examples": [
+      "yaha ko ho"
+    ],
+    "question_word": "ko",
+    "NOT_transaction": true
+  },
+  "pramukh ko ho": {
+    "pattern": "pramukh ko ho",
+    "type": "question_word_authority_figure",
+    "intent": "question_ko",
+    "response_type": "authority_figure",
+    "examples": [
+      "pramukh ko ho"
+    ],
+    "question_word": "ko",
+    "NOT_transaction": true
+  },
+  "kun rang": {
+    "pattern": "kun rang",
+    "type": "question_word_attribute_selection",
+    "intent": "question_kun",
+    "response_type": "attribute_selection",
+    "examples": [
+      "kun rang"
+    ],
+    "question_word": "kun",
+    "NOT_transaction": true
+  },
+  "kun size": {
+    "pattern": "kun size",
+    "type": "question_word_attribute_selection",
+    "intent": "question_kun",
+    "response_type": "attribute_selection",
+    "examples": [
+      "kun size"
+    ],
+    "question_word": "kun",
+    "NOT_transaction": true
+  },
+  "aba kata": {
+    "pattern": "aba kata",
+    "type": "question_word_next_destination",
+    "intent": "question_kata",
+    "response_type": "next_destination",
+    "examples": [
+      "aba kata"
+    ],
+    "question_word": "kata",
+    "NOT_transaction": true
+  },
+  "bhela kahile": {
+    "pattern": "bhela kahile",
+    "type": "question_word_schedule_time",
+    "intent": "question_kahile",
+    "response_type": "schedule_time",
+    "examples": [
+      "bhela kahile"
+    ],
+    "question_word": "kahile",
+    "NOT_transaction": true
+  },
+  "kahile bida": {
+    "pattern": "kahile bida",
+    "type": "question_word_schedule_time",
+    "intent": "question_kahile",
+    "response_type": "schedule_time",
+    "examples": [
+      "kahile bida"
+    ],
+    "question_word": "kahile",
+    "NOT_transaction": true
+  },
+  "kasari baschau": {
+    "pattern": "kasari baschau",
+    "type": "question_word_condition_or_state",
+    "intent": "question_kasari",
+    "response_type": "condition_or_state",
+    "examples": [
+      "kasari baschau"
+    ],
+    "question_word": "kasari",
+    "NOT_transaction": true
+  },
+  "kasari aayau": {
+    "pattern": "kasari aayau",
+    "type": "question_word_condition_or_state",
+    "intent": "question_kasari",
+    "response_type": "condition_or_state",
+    "examples": [
+      "kasari aayau"
+    ],
+    "question_word": "kasari",
+    "NOT_transaction": true
+  },
+  "kasto bhayo": {
+    "pattern": "kasto bhayo",
+    "type": "question_word_feeling",
+    "intent": "question_kasto",
+    "response_type": "feeling",
+    "examples": [
+      "kasto bhayo"
+    ],
+    "question_word": "kasto",
+    "NOT_transaction": true
+  },
+  "kasle maddat garcha": {
+    "pattern": "kasle maddat garcha",
+    "type": "question_word_helper_identification",
+    "intent": "question_kasle",
+    "response_type": "helper_identification",
+    "examples": [
+      "kasle maddat garcha"
+    ],
+    "question_word": "kasle",
+    "NOT_transaction": true
+  },
+  "kasle sikauchha": {
+    "pattern": "kasle sikauchha",
+    "type": "question_word_helper_identification",
+    "intent": "question_kasle",
+    "response_type": "helper_identification",
+    "examples": [
+      "kasle sikauchha"
+    ],
+    "question_word": "kasle",
+    "NOT_transaction": true
+  },
+  "kati pratishat": {
+    "pattern": "kati pratishat",
+    "type": "question_word_percentage_or_fraction",
+    "intent": "question_kati",
+    "response_type": "percentage_or_fraction",
+    "examples": [
+      "kati pratishat"
+    ],
+    "question_word": "kati",
+    "NOT_transaction": true
+  },
+  "kati bhag": {
+    "pattern": "kati bhag",
+    "type": "question_word_percentage_or_fraction",
+    "intent": "question_kati",
+    "response_type": "percentage_or_fraction",
+    "examples": [
+      "kati bhag"
+    ],
+    "question_word": "kati",
+    "NOT_transaction": true
+  },
+  "kina tyasto": {
+    "pattern": "kina tyasto",
+    "type": "question_word_doubt_reason",
+    "intent": "question_kina",
+    "response_type": "doubt_reason",
+    "examples": [
+      "kina tyasto"
+    ],
+    "question_word": "kina",
+    "NOT_transaction": true
+  },
+  "ho ho": {
+    "pattern": "ho ho",
+    "type": "question_word_surprise_reaction",
+    "intent": "question_ho",
+    "response_type": "surprise_reaction",
+    "examples": [
+      "ho ho"
+    ],
+    "question_word": "ho",
+    "NOT_transaction": true
+  },
+  "u aaipugyo hola": {
+    "pattern": "u aaipugyo hola",
+    "type": "question_word_speculation",
+    "intent": "question_hola",
+    "response_type": "speculation",
+    "examples": [
+      "u aaipugyo hola"
+    ],
+    "question_word": "hola",
+    "NOT_transaction": true
+  },
+  "thikai hola": {
+    "pattern": "thikai hola",
+    "type": "question_word_speculation",
+    "intent": "question_hola",
+    "response_type": "speculation",
+    "examples": [
+      "thikai hola"
+    ],
+    "question_word": "hola",
+    "NOT_transaction": true
+  },
+  "yo machine huncha": {
+    "pattern": "yo machine huncha",
+    "type": "question_word_functionality",
+    "intent": "question_huncha",
+    "response_type": "functionality",
+    "examples": [
+      "yo machine huncha"
+    ],
+    "question_word": "huncha",
+    "NOT_transaction": true
+  },
+  "batti huncha": {
+    "pattern": "batti huncha",
+    "type": "question_word_functionality",
+    "intent": "question_huncha",
+    "response_type": "functionality",
+    "examples": [
+      "batti huncha"
+    ],
+    "question_word": "huncha",
+    "NOT_transaction": true
+  },
+  "kasto": {
+    "pattern": "kasto",
+    "type": "question_word_marker",
+    "intent": "question_general",
+    "response_type": "explanation",
+    "examples": [
+      "kasto"
+    ],
+    "question_word": "kasto",
+    "NOT_transaction": true
+  },
+  "kasle": {
+    "pattern": "kasle",
+    "type": "question_word_marker",
+    "intent": "question_general",
+    "response_type": "explanation",
+    "examples": [
+      "kasle"
+    ],
+    "question_word": "kasle",
+    "NOT_transaction": true
+  },
+  "kinabhane": {
+    "pattern": "kinabhane",
+    "type": "question_word_marker",
+    "intent": "question_general",
+    "response_type": "explanation",
+    "examples": [
+      "kinabhane"
+    ],
+    "question_word": "kinabhane",
+    "NOT_transaction": true
+  },
+  "kati": {
+    "pattern": "kati",
+    "type": "question_word_marker",
+    "intent": "question_general",
+    "response_type": "explanation",
+    "examples": [
+      "kati"
+    ],
+    "question_word": "kati",
+    "NOT_transaction": true
+  },
+  "kun": {
+    "pattern": "kun",
+    "type": "question_word_marker",
+    "intent": "question_general",
+    "response_type": "explanation",
+    "examples": [
+      "kun"
+    ],
+    "question_word": "kun",
+    "NOT_transaction": true
+  },
+  "kata": {
+    "pattern": "kata",
+    "type": "question_word_marker",
+    "intent": "question_general",
+    "response_type": "explanation",
+    "examples": [
+      "kata"
+    ],
+    "question_word": "kata",
+    "NOT_transaction": true
+  },
+  "hola": {
+    "pattern": "hola",
+    "type": "question_word_marker",
+    "intent": "question_general",
+    "response_type": "explanation",
+    "examples": [
+      "hola"
+    ],
+    "question_word": "hola",
+    "NOT_transaction": true
+  },
+  "kolaai": {
+    "pattern": "kolaai",
+    "type": "question_word_marker",
+    "intent": "question_general",
+    "response_type": "explanation",
+    "examples": [
+      "kolaai"
+    ],
+    "question_word": "kolaai",
+    "NOT_transaction": true
   }
 }

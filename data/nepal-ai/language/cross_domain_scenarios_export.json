@@ -1,0 +1,1536 @@
+[
+  {
+    "id": "xdomain_001",
+    "source": "user_exact",
+    "scenario_id": "xdomain_001",
+    "domains_involved": [
+      "labor_law",
+      "accounting",
+      "tax"
+    ],
+    "domain_keys": [
+      "labor_law",
+      "accounting",
+      "tax"
+    ],
+    "input": "employee salary 50000, SSF rates apply, compute net and journal entries",
+    "input_normalized": "employee salary 50000, ssf rates apply, compute net and journal entries",
+    "domain_knowledge_required": [
+      {
+        "domain": "labor_law",
+        "knowledge": "SSF rates: employee 10%, employer 11%"
+      },
+      {
+        "domain": "accounting",
+        "knowledge": "Employee contribution deducted from gross; employer contribution recorded as payroll tax expense"
+      },
+      {
+        "domain": "tax",
+        "knowledge": "SSF deposit timeline and reporting: monthly deposit by 15th of next month"
+      }
+    ],
+    "reasoning_chain": [
+      "Gross salary = 50000",
+      "Employee SSF = 50000 × 10% = 5000 (deducted from salary)",
+      "Employer SSF = 50000 × 11% = 5500 (additional expense)",
+      "Net salary payable = 50000 - 5000 = 45000",
+      "Total SSF liability = 5000 + 5500 = 10500"
+    ],
+    "answer_ne": "Salary 50000 ma:\n- Employee SSF: Rs 5000 (10%)\n- Employer SSF: Rs 5500 (11%)\n- Net salary: Rs 45000\n- Total SSF deposit: Rs 10500",
+    "journal_entries": [
+      "Dr Salary Expense 50000, Cr SSF Payable (Employee) 5000, Cr Salary Payable 45000",
+      "Dr SSF Expense (Employer) 5500, Cr SSF Payable (Employer) 5500"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_002",
+    "source": "user_exact",
+    "scenario_id": "xdomain_002",
+    "domains_involved": [
+      "tax",
+      "accounting"
+    ],
+    "domain_keys": [
+      "tax",
+      "accounting"
+    ],
+    "input": "VAT on domestic sale: invoice 200000, VAT 13%, record journal and VAT payable",
+    "input_normalized": "vat on domestic sale: invoice 200000, vat 13%, record journal and vat payable",
+    "domain_knowledge_required": [
+      {
+        "domain": "tax",
+        "knowledge": "Standard VAT rate 13% on taxable supplies"
+      },
+      {
+        "domain": "accounting",
+        "knowledge": "Output VAT collected is liability; sales recorded net of VAT; VAT payable = output VAT - input VAT"
+      }
+    ],
+    "reasoning_chain": [
+      "Net sale amount = 200000",
+      "Output VAT = 200000 × 13% = 26000",
+      "Total invoice = 226000",
+      "Record sales revenue 200000 and VAT payable 26000"
+    ],
+    "answer_ne": "For a taxable sale of 200000:\n- Output VAT: 26000 (13%)\n- Total invoice: 226000\n- VAT payable: 26000",
+    "journal_entries": [
+      "Dr Accounts Receivable 226000, Cr Sales Revenue 200000, Cr Output VAT Payable 26000"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_003",
+    "source": "user_exact",
+    "scenario_id": "xdomain_003",
+    "domains_involved": [
+      "legal_business"
+    ],
+    "domain_keys": [
+      "legal_business"
+    ],
+    "input": "signing a supply contract with penalty clause; how to account for potential penalties on revenue recognition",
+    "input_normalized": "signing a supply contract with penalty clause; how to account for potential penalties on revenue recognition",
+    "domain_knowledge_required": [
+      {
+        "domain": "legal",
+        "knowledge": "Penalty clause enforceability depends on contract terms and local law; may be considered a contingent liability"
+      },
+      {
+        "domain": "business",
+        "knowledge": "Revenue recognition must consider variable consideration and potential penalties under IFRS 15/ASC 606; estimate expected value if probable"
+      }
+    ],
+    "reasoning_chain": [
+      "Identify contract terms including penalty triggers",
+      "Assess probability of penalty being incurred",
+      "If probable and estimable, reduce transaction price by expected penalty amount",
+      "Recognize revenue net of estimated penalty; record contingent liability for penalty estimate"
+    ],
+    "answer_ne": "When a contract includes a penalty clause:\n- Assess legal enforceability and probability of penalty\n- If probable and estimable, reduce transaction price by expected penalty\n- Recognize revenue net of estimated penalty and record liability for expected penalty",
+    "journal_entries": [
+      "Dr Accounts Receivable (or Cash) for agreed consideration less estimated penalty, Cr Revenue for net amount, Cr Penalty Liability for estimated penalty"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_004",
+    "source": "user_exact",
+    "scenario_id": "xdomain_004",
+    "domains_involved": [
+      "banking",
+      "accounting"
+    ],
+    "domain_keys": [
+      "banking",
+      "accounting"
+    ],
+    "input": "company takes loan 1,000,000 at 12% annual, 5-year EMI monthly; show first EMI interest and principal split and journal entries",
+    "input_normalized": "company takes loan 1,000,000 at 12% annual, 5-year emi monthly; show first emi interest and principal split and journal entries",
+    "domain_knowledge_required": [
+      {
+        "domain": "banking",
+        "knowledge": "Loan amortization: monthly EMI formula; interest charged on outstanding principal at periodic rate"
+      },
+      {
+        "domain": "accounting",
+        "knowledge": "Record cash received, loan payable; monthly interest expense and principal reduction entries"
+      }
+    ],
+    "reasoning_chain": [
+      "Loan principal = 1,000,000",
+      "Monthly rate = 12%/12 = 1%",
+      "EMI = P×r×(1+r)^n/((1+r)^n−1) with n=60, r=0.01 → EMI ≈ 22,244. (rounded)",
+      "First month interest = 1,000,000 × 1% = 10,000",
+      "Principal repayment = EMI − interest ≈ 22,244 − 10,000 = 12,244",
+      "Outstanding principal after payment ≈ 987,756"
+    ],
+    "answer_ne": "Loan 1,000,000 at 12% annual, 5-year monthly EMI:\n- Monthly EMI ≈ 22,244\n- First month interest ≈ 10,000\n- First month principal ≈ 12,244\n- Outstanding principal after payment ≈ 987,756",
+    "journal_entries": [
+      "On loan receipt: Dr Cash 1,000,000, Cr Loan Payable 1,000,000",
+      "On first EMI payment: Dr Interest Expense 10,000, Dr Loan Payable 12,244, Cr Cash 22,244"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_005",
+    "source": "user_exact",
+    "scenario_id": "xdomain_005",
+    "domains_involved": [
+      "import",
+      "tax"
+    ],
+    "domain_keys": [
+      "import",
+      "tax"
+    ],
+    "input": "import goods CIF value 500,000, customs duty 10%, VAT 13% on landed cost; compute duties and taxes",
+    "input_normalized": "import goods cif value 500,000, customs duty 10%, vat 13% on landed cost; compute duties and taxes",
+    "domain_knowledge_required": [
+      {
+        "domain": "import",
+        "knowledge": "Customs duty applied on customs value (CIF) at specified rate; landed cost = CIF + customs duty + other import charges"
+      },
+      {
+        "domain": "tax",
+        "knowledge": "VAT on imports applied on landed cost including customs duty; VAT rate 13%"
+      }
+    ],
+    "reasoning_chain": [
+      "CIF = 500,000",
+      "Customs duty = 500,000 × 10% = 50,000",
+      "Landed cost = 500,000 + 50,000 = 550,000",
+      "Import VAT = 550,000 × 13% = 71,500",
+      "Total cash outflow for duties and VAT = 50,000 + 71,500 = 121,500"
+    ],
+    "answer_ne": "Import CIF 500,000:\n- Customs duty (10%): 50,000\n- Landed cost: 550,000\n- Import VAT (13% on landed cost): 71,500\n- Total duties and VAT: 121,500",
+    "journal_entries": [
+      "Dr Inventory 621,500, Cr Cash/Bank 621,500 (if paid at import)",
+      "Dr Import VAT Recoverable 71,500, Cr Cash 71,500; Dr Customs Duty Expense/Inventory 50,000, Cr Cash 50,000"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_006",
+    "source": "user_exact",
+    "scenario_id": "xdomain_006",
+    "domains_involved": [
+      "property",
+      "tax"
+    ],
+    "domain_keys": [
+      "property",
+      "tax"
+    ],
+    "input": "sell land purchased 10 years ago for 200,000 now sold for 800,000; compute capital gains tax",
+    "input_normalized": "sell land purchased 10 years ago for 200,000 now sold for 800,000; compute capital gains tax",
+    "domain_knowledge_required": [
+      {
+        "domain": "property",
+        "knowledge": "Original cost basis is purchase price; consider allowable costs and indexation if applicable"
+      },
+      {
+        "domain": "tax",
+        "knowledge": "Capital gains tax rate and exemptions; taxable gain = sale proceeds − cost basis − allowable expenses; long-term treatment may apply"
+      }
+    ],
+    "reasoning_chain": [
+      "Sale proceeds = 800,000",
+      "Cost basis = 200,000",
+      "Capital gain = 800,000 − 200,000 = 600,000",
+      "Apply long-term capital gains tax rules and rate (assume rate per jurisdiction)"
+    ],
+    "answer_ne": "Land sale:\n- Sale proceeds: 800,000\n- Cost basis: 200,000\n- Capital gain: 600,000\n- Capital gains tax computed per applicable long-term rate and exemptions",
+    "journal_entries": [
+      "Dr Cash 800,000, Cr Land 200,000, Cr Gain on Sale of Land 600,000"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_007",
+    "source": "user_exact",
+    "scenario_id": "xdomain_007",
+    "domains_involved": [
+      "tax",
+      "accounting"
+    ],
+    "domain_keys": [
+      "tax",
+      "accounting"
+    ],
+    "input": "company imports machinery CIF 2,000,000, customs duty 5%, VAT 13%, capitalise costs; show accounting treatment",
+    "input_normalized": "company imports machinery cif 2,000,000, customs duty 5%, vat 13%, capitalise costs; show accounting treatment",
+    "domain_knowledge_required": [
+      {
+        "domain": "import",
+        "knowledge": "Customs duty applied on CIF; import VAT may be recoverable input VAT"
+      },
+      {
+        "domain": "tax",
+        "knowledge": "VAT on imports is charged on landed cost; input VAT recoverable subject to rules"
+      },
+      {
+        "domain": "accounting",
+        "knowledge": "Capitalize import costs (CIF + customs duty + non-recoverable taxes) to PPE; recoverable VAT recorded as VAT receivable"
+      }
+    ],
+    "reasoning_chain": [
+      "CIF = 2,000,000",
+      "Customs duty = 2,000,000 × 5% = 100,000",
+      "Landed cost = 2,100,000",
+      "Import VAT = 2,100,000 × 13% = 273,000",
+      "If VAT recoverable, record VAT receivable 273,000; capitalize machinery at 2,100,000 (excluding recoverable VAT)"
+    ],
+    "answer_ne": "Import machinery CIF 2,000,000:\n- Customs duty (5%): 100,000\n- Landed cost (capitalized): 2,100,000\n- Import VAT (13%): 273,000 (recoverable input VAT if eligible)",
+    "journal_entries": [
+      "Dr Machinery 2,100,000, Dr Input VAT Recoverable 273,000, Cr Cash/Bank 2,373,000"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_008",
+    "source": "user_exact",
+    "scenario_id": "xdomain_008",
+    "domains_involved": [
+      "legal_business"
+    ],
+    "domain_keys": [
+      "legal_business"
+    ],
+    "input": "lease agreement with rent escalation and break clause; how to reflect in accounting and business risk",
+    "input_normalized": "lease agreement with rent escalation and break clause; how to reflect in accounting and business risk",
+    "domain_knowledge_required": [
+      {
+        "domain": "legal",
+        "knowledge": "Lease terms: escalation clauses, break options, notice periods; enforceability depends on contract law"
+      },
+      {
+        "domain": "business",
+        "knowledge": "Lease accounting under IFRS 16/ASC 842: recognize right-of-use asset and lease liability; consider variable lease payments and termination options when assessing lease term and measurement"
+      }
+    ],
+    "reasoning_chain": [
+      "Review lease term and escalation schedule",
+      "Determine whether break clause is reasonably certain to be exercised; if not, include full term in lease liability",
+      "Measure lease liability using present value of lease payments including fixed escalations; recognize ROU asset accordingly",
+      "Assess business risk of early termination and contingent liabilities"
+    ],
+    "answer_ne": "For a lease with escalation and break clause:\n- Legally assess enforceability and likelihood of break being exercised\n- For accounting, include fixed escalations in lease payments; include or exclude periods after break based on likelihood\n- Recognize ROU asset and lease liability measured at PV of included payments",
+    "journal_entries": [
+      "On lease commencement: Dr Right-of-Use Asset, Cr Lease Liability (PV of included lease payments)"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_009",
+    "source": "user_exact",
+    "scenario_id": "xdomain_009",
+    "domains_involved": [
+      "banking",
+      "accounting"
+    ],
+    "domain_keys": [
+      "banking",
+      "accounting"
+    ],
+    "input": "company issues short-term overdraft facility 300,000 with interest at 15% p.a.; record interest accrual for one month",
+    "input_normalized": "company issues short-term overdraft facility 300,000 with interest at 15% p.a.; record interest accrual for one month",
+    "domain_knowledge_required": [
+      {
+        "domain": "banking",
+        "knowledge": "Overdraft interest charged on daily outstanding balance at agreed annual rate"
+      },
+      {
+        "domain": "accounting",
+        "knowledge": "Accrue interest expense monthly; record interest payable liability"
+      }
+    ],
+    "reasoning_chain": [
+      "Overdraft principal = 300,000",
+      "Monthly interest = 300,000 × 15%/12 = 3,750",
+      "Accrue interest expense and interest payable for the month"
+    ],
+    "answer_ne": "Overdraft 300,000 at 15% p.a.:\n- Monthly interest accrual: 3,750\n- Record interest expense and interest payable",
+    "journal_entries": [
+      "Dr Interest Expense 3,750, Cr Interest Payable 3,750"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_010",
+    "source": "user_exact",
+    "scenario_id": "xdomain_010",
+    "domains_involved": [
+      "labor_law",
+      "accounting",
+      "tax"
+    ],
+    "domain_keys": [
+      "labor_law",
+      "accounting",
+      "tax"
+    ],
+    "input": "employee overtime 20 hours at 1.5x, hourly rate 500, compute payroll entries and SSF impact",
+    "input_normalized": "employee overtime 20 hours at 1.5x, hourly rate 500, compute payroll entries and ssf impact",
+    "domain_knowledge_required": [
+      {
+        "domain": "labor_law",
+        "knowledge": "Overtime rate 1.5× regular hourly rate; overtime subject to SSF contributions"
+      },
+      {
+        "domain": "accounting",
+        "knowledge": "Overtime paid increases salary expense; employee SSF deducted from gross pay; employer SSF calculated on total salary including overtime"
+      },
+      {
+        "domain": "tax",
+        "knowledge": "Overtime included in taxable salary for payroll tax and SSF reporting"
+      }
+    ],
+    "reasoning_chain": [
+      "Hourly rate = 500; overtime rate = 500 × 1.5 = 750",
+      "Overtime pay = 20 × 750 = 15,000",
+      "Employee SSF (10%) = 15,000 × 10% = 1,500 (deducted)",
+      "Employer SSF (11%) = 15,000 × 11% = 1,650 (employer expense)",
+      "Net overtime payable = 15,000 − 1,500 = 13,500"
+    ],
+    "answer_ne": "Overtime 20 hrs at 1.5× (rate 500):\n- Overtime gross: 15,000\n- Employee SSF (10%): 1,500\n- Employer SSF (11%): 1,650\n- Net overtime payable: 13,500",
+    "journal_entries": [
+      "Dr Salary Expense 15,000, Cr SSF Payable (Employee) 1,500, Cr Salary Payable 13,500",
+      "Dr SSF Expense (Employer) 1,650, Cr SSF Payable (Employer) 1,650"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_011",
+    "source": "user_exact",
+    "scenario_id": "xdomain_011",
+    "domains_involved": [
+      "tax",
+      "accounting"
+    ],
+    "domain_keys": [
+      "tax",
+      "accounting"
+    ],
+    "input": "input VAT on purchases 120,000; output VAT on sales 90,000; compute VAT payable or refund and journal entries",
+    "input_normalized": "input vat on purchases 120,000; output vat on sales 90,000; compute vat payable or refund and journal entries",
+    "domain_knowledge_required": [
+      {
+        "domain": "tax",
+        "knowledge": "VAT payable = output VAT − input VAT; if negative, VAT refund or carryforward may apply"
+      },
+      {
+        "domain": "accounting",
+        "knowledge": "Record input VAT as recoverable asset; output VAT as liability; settle net VAT payable or record receivable"
+      }
+    ],
+    "reasoning_chain": [
+      "Input VAT = 120,000",
+      "Output VAT = 90,000",
+      "Net VAT = 90,000 − 120,000 = −30,000 (input exceeds output)",
+      "Company has VAT credit of 30,000 to carry forward or claim refund"
+    ],
+    "answer_ne": "VAT summary:\n- Input VAT: 120,000\n- Output VAT: 90,000\n- Net VAT position: 30,000 credit (refund or carryforward)",
+    "journal_entries": [
+      "Dr Input VAT Recoverable 120,000, Cr Output VAT Payable 90,000, Cr VAT Refund Receivable 30,000"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_012",
+    "source": "user_exact",
+    "scenario_id": "xdomain_012",
+    "domains_involved": [
+      "legal_business"
+    ],
+    "domain_keys": [
+      "legal_business"
+    ],
+    "input": "merger agreement includes earn-out contingent on revenue; how to account and legal considerations",
+    "input_normalized": "merger agreement includes earn-out contingent on revenue; how to account and legal considerations",
+    "domain_knowledge_required": [
+      {
+        "domain": "legal",
+        "knowledge": "Earn-out clauses are contingent consideration; contract must specify measurement, timing, dispute resolution"
+      },
+      {
+        "domain": "business",
+        "knowledge": "Accounting for business combinations: recognize contingent consideration at fair value at acquisition and remeasure if classified as liability; consider earn-out probability and measurement"
+      }
+    ],
+    "reasoning_chain": [
+      "Identify earn-out terms and measurement period",
+      "At acquisition, estimate fair value of contingent consideration and record as part of purchase price",
+      "If liability-classified, remeasure through profit or loss; if equity-classified, do not remeasure",
+      "Ensure contract includes clear metrics and dispute resolution to reduce measurement uncertainty"
+    ],
+    "answer_ne": "Earn-out in merger:\n- Legally ensure clear, measurable terms and dispute mechanisms\n- Account by estimating fair value at acquisition and recognizing contingent consideration accordingly\n- Remeasure post-acquisition if liability-classified",
+    "journal_entries": [
+      "Dr Goodwill (or other assets) for fair value of contingent consideration, Cr Contingent Consideration Liability (or Equity)"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_013",
+    "source": "user_exact",
+    "scenario_id": "xdomain_013",
+    "domains_involved": [
+      "banking",
+      "accounting"
+    ],
+    "domain_keys": [
+      "banking",
+      "accounting"
+    ],
+    "input": "company receives bank guarantee fee 2% on 500,000 guarantee for 1 year; record fee recognition monthly",
+    "input_normalized": "company receives bank guarantee fee 2% on 500,000 guarantee for 1 year; record fee recognition monthly",
+    "domain_knowledge_required": [
+      {
+        "domain": "banking",
+        "knowledge": "Bank guarantee fee charged as percentage of guaranteed amount; typically recognized over guarantee period"
+      },
+      {
+        "domain": "accounting",
+        "knowledge": "Fee received in advance recognized as deferred income and amortized over guarantee period as income"
+      }
+    ],
+    "reasoning_chain": [
+      "Guarantee amount = 500,000",
+      "Annual fee = 500,000 × 2% = 10,000",
+      "Monthly recognition = 10,000/12 ≈ 833.33",
+      "On receipt: record deferred income 10,000; monthly: recognize 833.33 as income"
+    ],
+    "answer_ne": "Bank guarantee 500,000 with 2% fee:\n- Annual fee: 10,000\n- Monthly income recognition: ≈ 833.33",
+    "journal_entries": [
+      "On receipt: Dr Cash 10,000, Cr Deferred Income 10,000",
+      "Monthly: Dr Deferred Income 833.33, Cr Other Income 833.33"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_014",
+    "source": "user_exact",
+    "scenario_id": "xdomain_014",
+    "domains_involved": [
+      "import",
+      "tax"
+    ],
+    "domain_keys": [
+      "import",
+      "tax"
+    ],
+    "input": "import of samples CIF 50,000, customs duty exemption for samples but VAT applies; compute VAT and accounting",
+    "input_normalized": "import of samples cif 50,000, customs duty exemption for samples but vat applies; compute vat and accounting",
+    "domain_knowledge_required": [
+      {
+        "domain": "import",
+        "knowledge": "Some jurisdictions exempt customs duty on samples if value below threshold or marked as samples; VAT still applies on imports unless exempted"
+      },
+      {
+        "domain": "tax",
+        "knowledge": "Import VAT applied on customs value even if customs duty exempt; VAT may be recoverable if used for taxable activities"
+      }
+    ],
+    "reasoning_chain": [
+      "CIF = 50,000",
+      "Customs duty exempt → customs duty = 0",
+      "Landed cost for VAT = 50,000",
+      "Import VAT = 50,000 × 13% = 6,500",
+      "If VAT recoverable, record input VAT recoverable; inventory or expense recorded net of VAT"
+    ],
+    "answer_ne": "Import samples CIF 50,000 with duty exemption:\n- Customs duty: 0 (exempt)\n- Import VAT (13%): 6,500\n- VAT recoverable if used for taxable operations",
+    "journal_entries": [
+      "Dr Inventory/Expense 50,000, Dr Input VAT Recoverable 6,500, Cr Cash/Bank 56,500"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_015",
+    "source": "user_exact",
+    "scenario_id": "xdomain_015",
+    "domains_involved": [
+      "property",
+      "tax"
+    ],
+    "domain_keys": [
+      "property",
+      "tax"
+    ],
+    "input": "sell residential property held 3 years with cost 3,000,000 sold for 4,200,000; compute capital gains and tax implications",
+    "input_normalized": "sell residential property held 3 years with cost 3,000,000 sold for 4,200,000; compute capital gains and tax implications",
+    "domain_knowledge_required": [
+      {
+        "domain": "property",
+        "knowledge": "Cost basis includes purchase price and allowable acquisition costs; holding period affects long-term treatment"
+      },
+      {
+        "domain": "tax",
+        "knowledge": "Capital gains tax on property: taxable gain = sale proceeds − cost basis − allowable expenses; possible exemptions for primary residence depending on jurisdiction"
+      }
+    ],
+    "reasoning_chain": [
+      "Sale proceeds = 4,200,000",
+      "Cost basis = 3,000,000",
+      "Capital gain = 1,200,000",
+      "Apply applicable capital gains tax rate and check for any primary residence exemption"
+    ],
+    "answer_ne": "Residential property sale:\n- Sale proceeds: 4,200,000\n- Cost basis: 3,000,000\n- Capital gain: 1,200,000\n- Tax payable depends on applicable capital gains rate and exemptions",
+    "journal_entries": [
+      "Dr Cash 4,200,000, Cr Property 3,000,000, Cr Gain on Sale 1,200,000"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_016",
+    "source": "user_exact",
+    "scenario_id": "xdomain_016",
+    "domains_involved": [
+      "tax",
+      "accounting"
+    ],
+    "domain_keys": [
+      "tax",
+      "accounting"
+    ],
+    "input": "company issues invoice with VAT inclusive price 113,000; extract net price and VAT and record journal",
+    "input_normalized": "company issues invoice with vat inclusive price 113,000; extract net price and vat and record journal",
+    "domain_knowledge_required": [
+      {
+        "domain": "tax",
+        "knowledge": "VAT inclusive price: net = gross/(1+VAT rate); VAT rate 13%"
+      },
+      {
+        "domain": "accounting",
+        "knowledge": "Record sales net of VAT and VAT payable for the VAT portion"
+      }
+    ],
+    "reasoning_chain": [
+      "Gross (VAT inclusive) = 113,000",
+      "Net price = 113,000 / 1.13 = 100,000",
+      "VAT = 113,000 − 100,000 = 13,000",
+      "Record sales revenue 100,000 and VAT payable 13,000"
+    ],
+    "answer_ne": "Invoice 113,000 VAT inclusive:\n- Net price: 100,000\n- VAT (13%): 13,000\n- Record sales net of VAT",
+    "journal_entries": [
+      "Dr Accounts Receivable 113,000, Cr Sales Revenue 100,000, Cr Output VAT Payable 13,000"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_017",
+    "source": "user_exact",
+    "scenario_id": "xdomain_017",
+    "domains_involved": [
+      "legal_business"
+    ],
+    "domain_keys": [
+      "legal_business"
+    ],
+    "input": "supplier insolvency clause in purchase contract; business and accounting consequences",
+    "input_normalized": "supplier insolvency clause in purchase contract; business and accounting consequences",
+    "domain_knowledge_required": [
+      {
+        "domain": "legal",
+        "knowledge": "Insolvency clauses define rights on supplier insolvency, termination rights, and remedies; governed by insolvency and contract law"
+      },
+      {
+        "domain": "business",
+        "knowledge": "Operational risk: supply disruption, need for alternative sourcing; accounting: impairment of prepayments and inventory if supplier fails to deliver"
+      }
+    ],
+    "reasoning_chain": [
+      "Review contract insolvency clause and termination rights",
+      "Assess exposure: prepayments, undelivered goods, warranties",
+      "If supplier insolvent and goods not delivered, write off prepayments and assess inventory impairment; seek legal remedies for recovery"
+    ],
+    "answer_ne": "Supplier insolvency clause implications:\n- Legally, determine termination and recovery rights\n- Business risk: supply disruption and need for alternatives\n- Accounting: impair prepayments, adjust inventory and recognize losses if goods not received",
+    "journal_entries": [
+      "Dr Loss on Supplier Insolvency (Expense) for prepayment amount, Cr Prepaid Expense/Cash"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_018",
+    "source": "user_exact",
+    "scenario_id": "xdomain_018",
+    "domains_involved": [
+      "banking",
+      "accounting"
+    ],
+    "domain_keys": [
+      "banking",
+      "accounting"
+    ],
+    "input": "company places 1,500,000 in fixed deposit at 8% annual interest for 6 months; record interest accrual and maturity entries",
+    "input_normalized": "company places 1,500,000 in fixed deposit at 8% annual interest for 6 months; record interest accrual and maturity entries",
+    "domain_knowledge_required": [
+      {
+        "domain": "banking",
+        "knowledge": "Fixed deposit interest accrues over term; interest may be paid at maturity or periodically per agreement"
+      },
+      {
+        "domain": "accounting",
+        "knowledge": "Accrue interest income over period; on maturity record interest received and principal returned"
+      }
+    ],
+    "reasoning_chain": [
+      "Principal = 1,500,000",
+      "Interest for 6 months = 1,500,000 × 8% × 6/12 = 60,000",
+      "Monthly accrual if needed = 10,000 per month",
+      "At maturity: receive principal 1,500,000 + interest 60,000"
+    ],
+    "answer_ne": "Fixed deposit 1,500,000 at 8% for 6 months:\n- Interest earned: 60,000\n- Monthly accrual (if monthly): 10,000",
+    "journal_entries": [
+      "Monthly accrual: Dr Interest Receivable 10,000, Cr Interest Income 10,000",
+      "On maturity: Dr Cash 1,560,000, Cr Interest Receivable 60,000, Cr Fixed Deposit 1,500,000"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_019",
+    "source": "user_exact",
+    "scenario_id": "xdomain_019",
+    "domains_involved": [
+      "import",
+      "tax"
+    ],
+    "domain_keys": [
+      "import",
+      "tax"
+    ],
+    "input": "imported goods subject to anti-dumping duty 15% plus customs duty 5% on CIF 1,000,000 and VAT 13%; compute total import charges",
+    "input_normalized": "imported goods subject to anti-dumping duty 15% plus customs duty 5% on cif 1,000,000 and vat 13%; compute total import charges",
+    "domain_knowledge_required": [
+      {
+        "domain": "import",
+        "knowledge": "Anti-dumping duty applied in addition to regular customs duty; duties applied on CIF or as specified"
+      },
+      {
+        "domain": "tax",
+        "knowledge": "VAT applied on landed cost including customs and anti-dumping duties"
+      }
+    ],
+    "reasoning_chain": [
+      "CIF = 1,000,000",
+      "Customs duty = 1,000,000 × 5% = 50,000",
+      "Anti-dumping duty = 1,000,000 × 15% = 150,000",
+      "Landed cost = 1,000,000 + 50,000 + 150,000 = 1,200,000",
+      "Import VAT = 1,200,000 × 13% = 156,000",
+      "Total import charges = 50,000 + 150,000 + 156,000 = 356,000"
+    ],
+    "answer_ne": "Import CIF 1,000,000 with anti-dumping:\n- Customs duty (5%): 50,000\n- Anti-dumping duty (15%): 150,000\n- Import VAT (13% on landed cost): 156,000\n- Total import charges: 356,000",
+    "journal_entries": [
+      "Dr Inventory 1,356,000, Cr Cash/Bank 1,356,000",
+      "Dr Input VAT Recoverable 156,000, Cr Cash 156,000"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_020",
+    "source": "user_exact",
+    "scenario_id": "xdomain_020",
+    "domains_involved": [
+      "property",
+      "tax"
+    ],
+    "domain_keys": [
+      "property",
+      "tax"
+    ],
+    "input": "transfer of commercial building with indexation: purchase 5 years ago 10,000,000, sold 12,000,000; apply indexation factor 1.08; compute indexed cost and capital gain",
+    "input_normalized": "transfer of commercial building with indexation: purchase 5 years ago 10,000,000, sold 12,000,000; apply indexation factor 1.08; compute indexed cost and capital gain",
+    "domain_knowledge_required": [
+      {
+        "domain": "property",
+        "knowledge": "Cost basis may be adjusted for inflation/indexation where tax law permits; include acquisition costs in basis"
+      },
+      {
+        "domain": "tax",
+        "knowledge": "Indexed cost = original cost × indexation factor; taxable gain = sale proceeds − indexed cost − allowable expenses"
+      }
+    ],
+    "reasoning_chain": [
+      "Original cost = 10,000,000",
+      "Indexed cost = 10,000,000 × 1.08 = 10,800,000",
+      "Sale proceeds = 12,000,000",
+      "Capital gain = 12,000,000 − 10,800,000 = 1,200,000"
+    ],
+    "answer_ne": "Commercial building sale with indexation:\n- Original cost: 10,000,000\n- Indexed cost (factor 1.08): 10,800,000\n- Capital gain: 1,200,000",
+    "journal_entries": [
+      "Dr Cash 12,000,000, Cr Building 10,000,000, Cr Gain on Sale 2,000,000; then adjust for tax indexation in tax computation entries as required"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_021",
+    "source": "user_exact",
+    "scenario_id": "xdomain_021",
+    "domains_involved": [
+      "tax",
+      "accounting"
+    ],
+    "domain_keys": [
+      "tax",
+      "accounting"
+    ],
+    "input": "company receives government grant for R&D 500,000; tax treatment and accounting recognition",
+    "input_normalized": "company receives government grant for r&d 500,000; tax treatment and accounting recognition",
+    "domain_knowledge_required": [
+      {
+        "domain": "tax",
+        "knowledge": "Tax incentives/grants may be taxable or non-taxable depending on jurisdiction; may reduce taxable income or be taxable as income"
+      },
+      {
+        "domain": "accounting",
+        "knowledge": "Government grants related to income recognized in profit or loss over periods matching related costs; grants related to assets reduce carrying amount or recognized as deferred income"
+      }
+    ],
+    "reasoning_chain": [
+      "Determine whether grant is capital or revenue in nature",
+      "If revenue grant related to R&D expenses, recognize as other income over periods matching expenses; consider tax treatment—may be taxable or reduce deductible expenses",
+      "Record grant income and offset R&D expense accordingly"
+    ],
+    "answer_ne": "Government R&D grant 500,000:\n- Assess taxability per jurisdiction\n- For accounting, recognize grant in profit or loss over periods matching R&D expense or reduce asset cost if capital in nature",
+    "journal_entries": [
+      "If revenue grant: Dr Cash 500,000, Cr Other Income (Deferred/Recognized) 500,000; then recognize against R&D expense over periods"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_022",
+    "source": "user_exact",
+    "scenario_id": "xdomain_022",
+    "domains_involved": [
+      "legal_business"
+    ],
+    "domain_keys": [
+      "legal_business"
+    ],
+    "input": "non-compete clause for seller in asset sale; business valuation and enforceability considerations",
+    "input_normalized": "non-compete clause for seller in asset sale; business valuation and enforceability considerations",
+    "domain_knowledge_required": [
+      {
+        "domain": "legal",
+        "knowledge": "Non-compete enforceability depends on reasonableness in scope, duration, and geography under local law"
+      },
+      {
+        "domain": "business",
+        "knowledge": "Non-compete can be valued as separate intangible asset and affects purchase price allocation; enforceability risk affects valuation discount"
+      }
+    ],
+    "reasoning_chain": [
+      "Review non-compete terms for reasonableness",
+      "If enforceable, allocate portion of purchase price to non-compete intangible and amortize over useful life",
+      "If high risk of unenforceability, apply valuation discount or contingency"
+    ],
+    "answer_ne": "Non-compete in asset sale:\n- Legally assess enforceability (scope, duration, geography)\n- If enforceable, allocate value to non-compete intangible and amortize\n- Adjust valuation for enforceability risk",
+    "journal_entries": [
+      "Dr Intangible Asset (Non-compete) for allocated amount, Cr Cash/Consideration Payable"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_023",
+    "source": "user_exact",
+    "scenario_id": "xdomain_023",
+    "domains_involved": [
+      "banking",
+      "accounting"
+    ],
+    "domain_keys": [
+      "banking",
+      "accounting"
+    ],
+    "input": "company issues corporate bond 5,000,000 at 98 (discount) with 6% coupon annual for 3 years; record issuance and first year interest expense using effective interest method",
+    "input_normalized": "company issues corporate bond 5,000,000 at 98 (discount) with 6% coupon annual for 3 years; record issuance and first year interest expense using effective interest method",
+    "domain_knowledge_required": [
+      {
+        "domain": "banking",
+        "knowledge": "Bond issued at discount; coupon paid on face value; effective interest rate based on proceeds and coupon determines interest expense"
+      },
+      {
+        "domain": "accounting",
+        "knowledge": "Use effective interest method to amortize discount; interest expense = carrying amount × effective rate; record coupon cash payments separately"
+      }
+    ],
+    "reasoning_chain": [
+      "Face value = 5,000,000; issue price = 98% → proceeds = 4,900,000; discount = 100,000",
+      "Assume effective rate r such that PV of coupons and principal = 4,900,000; compute interest expense = carrying amount × effective rate (example assume effective rate ≈ 7%)",
+      "First year interest expense ≈ 4,900,000 × 7% = 343,000",
+      "Coupon paid = 5,000,000 × 6% = 300,000",
+      "Amortization of discount = interest expense − coupon = 43,000; carrying amount end = 4,943,000"
+    ],
+    "answer_ne": "Bond issuance 5,000,000 at 98 with 6% coupon:\n- Proceeds: 4,900,000\n- Discount: 100,000\n- First year interest expense (example effective rate 7%): 343,000\n- Coupon cash paid: 300,000\n- Discount amortized: 43,000",
+    "journal_entries": [
+      "On issuance: Dr Cash 4,900,000, Dr Discount on Bonds 100,000, Cr Bonds Payable 5,000,000",
+      "First year: Dr Interest Expense 343,000, Cr Cash 300,000, Cr Discount on Bonds 43,000"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_024",
+    "source": "user_exact",
+    "scenario_id": "xdomain_024",
+    "domains_involved": [
+      "import",
+      "tax"
+    ],
+    "domain_keys": [
+      "import",
+      "tax"
+    ],
+    "input": "import under temporary admission for exhibition; customs bond 200,000, VAT deferred until sale; accounting and tax treatment",
+    "input_normalized": "import under temporary admission for exhibition; customs bond 200,000, vat deferred until sale; accounting and tax treatment",
+    "domain_knowledge_required": [
+      {
+        "domain": "import",
+        "knowledge": "Temporary admission allows import without customs duty if goods re-exported; customs bond may be required; VAT treatment varies—often deferred until domestic sale"
+      },
+      {
+        "domain": "tax",
+        "knowledge": "If VAT deferred, record contingent VAT liability until goods sold domestically; ensure compliance with re-export timelines"
+      }
+    ],
+    "reasoning_chain": [
+      "Goods imported under temporary admission; customs bond 200,000 held as security",
+      "If re-exported within allowed period, no customs duty or VAT due and bond released",
+      "If sold domestically, VAT becomes payable on sale and bond may be used to secure duties/taxes"
+    ],
+    "answer_ne": "Temporary admission import:\n- Customs bond: 200,000 held as security\n- If re-exported, no customs duty/VAT and bond released\n- If sold domestically, VAT payable on sale and contingent liability realized",
+    "journal_entries": [
+      "On import under bond: Dr Inventory 0 (or record memorandum), Cr Customs Bond Payable 200,000",
+      "On domestic sale: Dr Cash/AR, Cr Sales, Cr Output VAT Payable; reverse bond when duties settled or released"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_025",
+    "source": "user_exact",
+    "scenario_id": "xdomain_025",
+    "domains_involved": [
+      "property",
+      "tax"
+    ],
+    "domain_keys": [
+      "property",
+      "tax"
+    ],
+    "input": "gift of land to relative valued 2,500,000; gift tax and donor/recipient reporting implications",
+    "input_normalized": "gift of land to relative valued 2,500,000; gift tax and donor/recipient reporting implications",
+    "domain_knowledge_required": [
+      {
+        "domain": "property",
+        "knowledge": "Transfer of land by gift requires transfer documentation and may trigger registration duties"
+      },
+      {
+        "domain": "tax",
+        "knowledge": "Gift tax rules vary; donor or recipient may be liable for gift tax; exemptions and thresholds apply; reporting obligations exist"
+      }
+    ],
+    "reasoning_chain": [
+      "Fair market value = 2,500,000",
+      "Determine whether gift tax applies and who is liable under local law",
+      "If taxable, compute gift tax on 2,500,000 less any exemptions; record transfer and any tax payable"
+    ],
+    "answer_ne": "Gift of land valued 2,500,000:\n- Check local gift tax rules and exemptions\n- Donor or recipient may owe gift tax; report transfer as required",
+    "journal_entries": [
+      "Dr Gift Expense/Distribution 2,500,000, Cr Land 2,500,000; Dr Gift Tax Expense, Cr Gift Tax Payable (if tax applies)"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_026",
+    "source": "user_exact",
+    "scenario_id": "xdomain_026",
+    "domains_involved": [
+      "tax",
+      "accounting"
+    ],
+    "domain_keys": [
+      "tax",
+      "accounting"
+    ],
+    "input": "company provides employee fringe benefit car valued 1,200,000; compute taxable benefit and payroll tax entries",
+    "input_normalized": "company provides employee fringe benefit car valued 1,200,000; compute taxable benefit and payroll tax entries",
+    "domain_knowledge_required": [
+      {
+        "domain": "tax",
+        "knowledge": "Fringe benefit valuation rules: taxable benefit may be based on cost, lease value, or statutory formula; employer must report and withhold payroll taxes on taxable benefits"
+      },
+      {
+        "domain": "accounting",
+        "knowledge": "Record fringe benefit expense and related payroll tax liabilities; include benefit value in employee taxable income for reporting"
+      }
+    ],
+    "reasoning_chain": [
+      "Determine taxable value of car benefit per statutory method (assume annual taxable benefit 240,000)",
+      "Employer records fringe benefit expense 240,000 and withholds payroll taxes accordingly",
+      "Employer payroll tax on benefit computed per rates and recorded as liability"
+    ],
+    "answer_ne": "Car fringe benefit (example taxable value 240,000):\n- Taxable benefit: 240,000\n- Employer records fringe benefit expense and payroll tax liabilities",
+    "journal_entries": [
+      "Dr Employee Benefits Expense 240,000, Cr Fringe Benefit Payable 240,000; Dr Payroll Tax Expense, Cr Payroll Tax Payable for employer taxes on benefit"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_027",
+    "source": "user_exact",
+    "scenario_id": "xdomain_027",
+    "domains_involved": [
+      "legal_business"
+    ],
+    "domain_keys": [
+      "legal_business"
+    ],
+    "input": "intellectual property assignment in sale of business; valuation and contractual protections",
+    "input_normalized": "intellectual property assignment in sale of business; valuation and contractual protections",
+    "domain_knowledge_required": [
+      {
+        "domain": "legal",
+        "knowledge": "IP assignment requires clear transfer of rights, warranties, representations, and indemnities; registration updates may be necessary"
+      },
+      {
+        "domain": "business",
+        "knowledge": "Value IP based on income approach, market comparables, or cost; include IP valuation in purchase price allocation and consider earn-outs or holdbacks for indemnities"
+      }
+    ],
+    "reasoning_chain": [
+      "Identify IP assets and confirm ownership and registrability",
+      "Negotiate warranties and indemnities for IP infringement",
+      "Value IP using appropriate method and allocate purchase price accordingly; include contractual protections for post-sale claims"
+    ],
+    "answer_ne": "IP assignment in business sale:\n- Legally ensure clear transfer, warranties, and indemnities\n- Value IP using income/market/cost approaches and allocate purchase price\n- Use holdbacks or escrow for indemnity protection",
+    "journal_entries": [
+      "Dr Intangible Assets (if acquired) for allocated amount, Cr Cash/Consideration Payable"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_028",
+    "source": "user_exact",
+    "scenario_id": "xdomain_028",
+    "domains_involved": [
+      "banking",
+      "accounting"
+    ],
+    "domain_keys": [
+      "banking",
+      "accounting"
+    ],
+    "input": "company uses letter of credit (LC) for import 800,000 with 1% bank commission; accounting for LC fees and import payment",
+    "input_normalized": "company uses letter of credit (lc) for import 800,000 with 1% bank commission; accounting for lc fees and import payment",
+    "domain_knowledge_required": [
+      {
+        "domain": "banking",
+        "knowledge": "LC involves bank commission/fees charged to applicant; fees may be paid upfront or on issuance; bank settles seller upon presentation of compliant documents"
+      },
+      {
+        "domain": "accounting",
+        "knowledge": "LC fees are transaction costs; capitalize to inventory if directly attributable to bringing inventory to location and condition; otherwise expense"
+      }
+    ],
+    "reasoning_chain": [
+      "LC amount = 800,000",
+      "Bank commission = 800,000 × 1% = 8,000",
+      "If LC relates to inventory purchase, capitalize commission to inventory cost 8,000",
+      "On settlement, record inventory and VAT/duties as applicable"
+    ],
+    "answer_ne": "LC for import 800,000 with 1% commission:\n- Bank commission: 8,000\n- Capitalize commission to inventory if directly attributable; otherwise expense",
+    "journal_entries": [
+      "On LC issuance and fee payment: Dr Inventory 8,000 (or Dr Bank Charges Expense 8,000), Cr Cash 8,000",
+      "On import settlement: Dr Inventory (CIF + duties), Cr Cash/Bank"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_029",
+    "source": "user_exact",
+    "scenario_id": "xdomain_029",
+    "domains_involved": [
+      "import",
+      "tax"
+    ],
+    "domain_keys": [
+      "import",
+      "tax"
+    ],
+    "input": "import of software license (intangible) CIF 300,000; customs duty exempt but VAT applies on import of intangibles; compute VAT and accounting",
+    "input_normalized": "import of software license (intangible) cif 300,000; customs duty exempt but vat applies on import of intangibles; compute vat and accounting",
+    "domain_knowledge_required": [
+      {
+        "domain": "import",
+        "knowledge": "Customs duties typically apply to goods; intangibles may be exempt from customs duty but VAT rules vary for imported services/intangibles"
+      },
+      {
+        "domain": "tax",
+        "knowledge": "VAT on imported services/intangibles may be applied under reverse charge or import VAT rules; VAT may be recoverable subject to use"
+      }
+    ],
+    "reasoning_chain": [
+      "CIF/consideration = 300,000",
+      "Customs duty = 0 for intangible license",
+      "Import VAT (if applicable) = 300,000 × 13% = 39,000",
+      "If VAT recoverable, record input VAT recoverable; capitalize license cost net of recoverable VAT"
+    ],
+    "answer_ne": "Imported software license 300,000:\n- Customs duty: 0 (intangible)\n- Import VAT (13% if applicable): 39,000\n- Capitalize license cost net of recoverable VAT",
+    "journal_entries": [
+      "Dr Intangible Asset (License) 300,000, Dr Input VAT Recoverable 39,000, Cr Cash/Bank 339,000"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_030",
+    "source": "user_exact",
+    "scenario_id": "xdomain_030",
+    "domains_involved": [
+      "property",
+      "tax"
+    ],
+    "domain_keys": [
+      "property",
+      "tax"
+    ],
+    "input": "sale of agricultural land with agricultural use exemption; sale price 600,000, cost 200,000; check tax exemption applicability and compute taxable gain if exemption denied",
+    "input_normalized": "sale of agricultural land with agricultural use exemption; sale price 600,000, cost 200,000; check tax exemption applicability and compute taxable gain if exemption denied",
+    "domain_knowledge_required": [
+      {
+        "domain": "property",
+        "knowledge": "Agricultural land may qualify for special tax treatment or exemptions if used for farming; documentation required to prove use"
+      },
+      {
+        "domain": "tax",
+        "knowledge": "If exemption applies, capital gains may be exempt; if denied, taxable gain = sale proceeds − cost basis − allowable expenses"
+      }
+    ],
+    "reasoning_chain": [
+      "Sale proceeds = 600,000; cost = 200,000",
+      "If agricultural exemption applies, gain may be exempt and no tax payable",
+      "If exemption denied, capital gain = 400,000 and subject to capital gains tax"
+    ],
+    "answer_ne": "Agricultural land sale 600,000:\n- If agricultural-use exemption applies, capital gain may be exempt\n- If exemption denied, taxable gain = 400,000",
+    "journal_entries": [
+      "Dr Cash 600,000, Cr Land 200,000, Cr Gain on Sale 400,000; record tax liability if exemption denied: Dr Income Tax Expense, Cr Income Tax Payable"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_031",
+    "source": "user_exact",
+    "scenario_id": "xdomain_031",
+    "domains_involved": [
+      "tax",
+      "accounting"
+    ],
+    "domain_keys": [
+      "tax",
+      "accounting"
+    ],
+    "input": "advance customer payment 250,000 for future taxable service; VAT treatment and revenue recognition",
+    "input_normalized": "advance customer payment 250,000 for future taxable service; vat treatment and revenue recognition",
+    "domain_knowledge_required": [
+      {
+        "domain": "tax",
+        "knowledge": "VAT on advance payments: VAT may be due at receipt of payment if supply is taxable; rate 13%"
+      },
+      {
+        "domain": "accounting",
+        "knowledge": "Advance payments recorded as contract liability (deferred revenue) and recognized as revenue when performance obligation satisfied; VAT recorded as output VAT payable when due"
+      }
+    ],
+    "reasoning_chain": [
+      "Advance = 250,000",
+      "Output VAT on advance = 250,000 × 13% = 32,500 (if VAT due on receipt)",
+      "Record cash received and VAT payable; recognize revenue when service performed and reverse deferred revenue"
+    ],
+    "answer_ne": "Advance payment 250,000 for future service:\n- Output VAT (if due on receipt): 32,500\n- Net advance recorded as deferred revenue: 250,000 (VAT recorded separately)\n- Recognize revenue when service performed",
+    "journal_entries": [
+      "On receipt: Dr Cash 282,500, Cr Deferred Revenue 250,000, Cr Output VAT Payable 32,500",
+      "On performance: Dr Deferred Revenue 250,000, Cr Service Revenue 250,000"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_032",
+    "source": "user_exact",
+    "scenario_id": "xdomain_032",
+    "domains_involved": [
+      "legal_business"
+    ],
+    "domain_keys": [
+      "legal_business"
+    ],
+    "input": "data protection clause in supplier contract; business and compliance impacts",
+    "input_normalized": "data protection clause in supplier contract; business and compliance impacts",
+    "domain_knowledge_required": [
+      {
+        "domain": "legal",
+        "knowledge": "Data protection clauses must comply with applicable privacy laws; include data processing terms, security obligations, breach notification, and liability limits"
+      },
+      {
+        "domain": "business",
+        "knowledge": "Operational impact: vendor due diligence, security controls, potential costs for compliance; contractual non-compliance may lead to penalties and reputational risk"
+      }
+    ],
+    "reasoning_chain": [
+      "Review applicable data protection laws and required contract clauses",
+      "Include clear data processing terms, security standards, and breach notification timelines",
+      "Assess vendor controls and include audit rights; quantify compliance costs and potential liabilities"
+    ],
+    "answer_ne": "Data protection clause implications:\n- Legally ensure contract meets privacy law requirements and includes security and breach terms\n- Business impact: perform vendor due diligence, implement controls, and budget for compliance costs",
+    "journal_entries": [
+      "If costs incurred for compliance: Dr Compliance Expense, Cr Cash/Payables; if penalties incurred: Dr Penalty Expense, Cr Payable"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_033",
+    "source": "user_exact",
+    "scenario_id": "xdomain_033",
+    "domains_involved": [
+      "banking",
+      "accounting"
+    ],
+    "domain_keys": [
+      "banking",
+      "accounting"
+    ],
+    "input": "company refinances existing loan 2,000,000 with new loan at lower rate; accounting for extinguishment and fees 50,000",
+    "input_normalized": "company refinances existing loan 2,000,000 with new loan at lower rate; accounting for extinguishment and fees 50,000",
+    "domain_knowledge_required": [
+      {
+        "domain": "banking",
+        "knowledge": "Refinancing may extinguish old debt and create new debt; fees may be transaction costs"
+      },
+      {
+        "domain": "accounting",
+        "knowledge": "If substantially different, derecognize old liability and recognize new; fees may be capitalized to loan cost and amortized or expensed depending on accounting policy; recognize gain or loss on extinguishment"
+      }
+    ],
+    "reasoning_chain": [
+      "Old loan carrying amount = 2,000,000",
+      "New loan proceeds = 2,000,000 less fees 50,000 → net proceeds 1,950,000",
+      "If extinguishment, remove old loan and recognize any difference as gain/loss; capitalize fees to new loan and amortize over loan term"
+    ],
+    "answer_ne": "Refinance 2,000,000 with fees 50,000:\n- Derecognize old loan and recognize new loan\n- Fees 50,000 capitalized to loan cost and amortized (or expensed per policy)\n- Recognize any gain/loss on extinguishment if carrying amount differs from consideration paid",
+    "journal_entries": [
+      "On extinguishment: Dr Loan Payable 2,000,000, Cr Cash/Bank (consideration) and Cr/Dr Gain or Loss on Extinguishment",
+      "On new loan: Dr Cash 1,950,000, Dr Deferred Loan Fees 50,000, Cr Loan Payable 2,000,000"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_034",
+    "source": "user_exact",
+    "scenario_id": "xdomain_034",
+    "domains_involved": [
+      "import",
+      "tax"
+    ],
+    "domain_keys": [
+      "import",
+      "tax"
+    ],
+    "input": "import under preferential tariff with certificate of origin; CIF 700,000, preferential duty 2% vs normal 10%, VAT 13%; compute duties and VAT",
+    "input_normalized": "import under preferential tariff with certificate of origin; cif 700,000, preferential duty 2% vs normal 10%, vat 13%; compute duties and vat",
+    "domain_knowledge_required": [
+      {
+        "domain": "import",
+        "knowledge": "Preferential tariff applies when valid certificate of origin presented; customs duty rate reduced accordingly"
+      },
+      {
+        "domain": "tax",
+        "knowledge": "VAT applied on landed cost including preferential customs duty; VAT rate 13%"
+      }
+    ],
+    "reasoning_chain": [
+      "CIF = 700,000",
+      "Preferential customs duty = 700,000 × 2% = 14,000",
+      "Landed cost = 714,000",
+      "Import VAT = 714,000 × 13% = 92,820",
+      "Total import charges = 14,000 + 92,820 = 106,820"
+    ],
+    "answer_ne": "Import CIF 700,000 with preferential tariff:\n- Customs duty (2%): 14,000\n- Import VAT (13% on landed cost): 92,820\n- Total import charges: 106,820",
+    "journal_entries": [
+      "Dr Inventory 806,820, Cr Cash/Bank 806,820; Dr Input VAT Recoverable 92,820, Cr Cash 92,820"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_035",
+    "source": "user_exact",
+    "scenario_id": "xdomain_035",
+    "domains_involved": [
+      "property",
+      "tax"
+    ],
+    "domain_keys": [
+      "property",
+      "tax"
+    ],
+    "input": "partial sale of development land: sold 40% of parcel for 3,200,000; original cost 2,000,000 for whole parcel; allocate cost and compute gain on portion sold",
+    "input_normalized": "partial sale of development land: sold 40% of parcel for 3,200,000; original cost 2,000,000 for whole parcel; allocate cost and compute gain on portion sold",
+    "domain_knowledge_required": [
+      {
+        "domain": "property",
+        "knowledge": "Allocate original cost to portion sold based on area or fair value; compute gain on portion sold accordingly"
+      },
+      {
+        "domain": "tax",
+        "knowledge": "Capital gain on portion = proceeds for portion − allocated cost − selling expenses; tax treatment follows capital gains rules"
+      }
+    ],
+    "reasoning_chain": [
+      "Total original cost = 2,000,000; portion sold = 40% → allocated cost = 800,000",
+      "Proceeds for portion = 3,200,000",
+      "Gain on portion = 3,200,000 − 800,000 = 2,400,000"
+    ],
+    "answer_ne": "Partial land sale 40%:\n- Allocated cost: 800,000\n- Proceeds: 3,200,000\n- Gain on portion: 2,400,000",
+    "journal_entries": [
+      "Dr Cash 3,200,000, Cr Land 800,000, Cr Gain on Sale 2,400,000"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_036",
+    "source": "user_exact",
+    "scenario_id": "xdomain_036",
+    "domains_involved": [
+      "tax",
+      "accounting"
+    ],
+    "domain_keys": [
+      "tax",
+      "accounting"
+    ],
+    "input": "company receives dividend income 150,000 from domestic subsidiary; withholding tax 10% applies; record net receipt and tax credit",
+    "input_normalized": "company receives dividend income 150,000 from domestic subsidiary; withholding tax 10% applies; record net receipt and tax credit",
+    "domain_knowledge_required": [
+      {
+        "domain": "tax",
+        "knowledge": "Dividend withholding tax may apply on intercompany dividends; parent may be eligible for tax credit or exemption depending on jurisdiction"
+      },
+      {
+        "domain": "accounting",
+        "knowledge": "Record dividend income gross and withholding tax as tax receivable or reduce cash received; recognize tax credit if recoverable"
+      }
+    ],
+    "reasoning_chain": [
+      "Gross dividend = 150,000",
+      "Withholding tax = 150,000 × 10% = 15,000",
+      "Net cash received = 135,000",
+      "Record dividend income 150,000 and withholding tax receivable 15,000 (or tax expense if not recoverable)"
+    ],
+    "answer_ne": "Dividend from subsidiary 150,000:\n- Withholding tax (10%): 15,000\n- Net cash received: 135,000\n- Recognize dividend income 150,000 and withholding tax receivable 15,000",
+    "journal_entries": [
+      "Dr Cash 135,000, Dr Withholding Tax Receivable 15,000, Cr Dividend Income 150,000"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_037",
+    "source": "user_exact",
+    "scenario_id": "xdomain_037",
+    "domains_involved": [
+      "legal_business"
+    ],
+    "domain_keys": [
+      "legal_business"
+    ],
+    "input": "warranty provision in sale of goods contract with estimated future claims 120,000; legal enforceability and accounting provision",
+    "input_normalized": "warranty provision in sale of goods contract with estimated future claims 120,000; legal enforceability and accounting provision",
+    "domain_knowledge_required": [
+      {
+        "domain": "legal",
+        "knowledge": "Warranty obligations create legal liabilities; enforceability depends on contract terms and consumer protection laws"
+      },
+      {
+        "domain": "business",
+        "knowledge": "Accounting for warranty: recognize provision when present obligation is probable and amount can be estimated; update estimates as information emerges"
+      }
+    ],
+    "reasoning_chain": [
+      "Contract includes warranty; estimate expected future claims 120,000",
+      "If probable and estimable, recognize provision 120,000 as liability and corresponding expense",
+      "Disclose contingent liabilities and update provision as claims occur or estimates change"
+    ],
+    "answer_ne": "Warranty provision 120,000:\n- Legally, warranty creates enforceable obligation under contract and consumer law\n- Accounting: recognize provision 120,000 if probable and estimable; expense recognized now and liability recorded",
+    "journal_entries": [
+      "Dr Warranty Expense 120,000, Cr Warranty Provision 120,000"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_038",
+    "source": "user_exact",
+    "scenario_id": "xdomain_038",
+    "domains_involved": [
+      "banking",
+      "accounting"
+    ],
+    "domain_keys": [
+      "banking",
+      "accounting"
+    ],
+    "input": "company receives customer deposit 400,000 held in escrow by bank; interest earned 5% credited to escrow annually; accounting treatment for deposit and interest",
+    "input_normalized": "company receives customer deposit 400,000 held in escrow by bank; interest earned 5% credited to escrow annually; accounting treatment for deposit and interest",
+    "domain_knowledge_required": [
+      {
+        "domain": "banking",
+        "knowledge": "Escrow accounts held by banks may earn interest credited to escrow; bank acts as custodian per escrow agreement"
+      },
+      {
+        "domain": "accounting",
+        "knowledge": "Customer deposit is a liability for the company; interest earned on escrow may be recognized as income or passed to customer per agreement"
+      }
+    ],
+    "reasoning_chain": [
+      "Customer deposit liability = 400,000",
+      "If escrow interest credited to company, interest for year = 400,000 × 5% = 20,000 and recognized as interest income; if credited to customer, record as increase in liability or pass-through income",
+      "Record deposit as liability and interest per agreement"
+    ],
+    "answer_ne": "Customer deposit 400,000 in escrow at 5%:\n- Annual interest = 20,000\n- If interest retained by company: recognize interest income 20,000\n- If interest payable to customer: increase deposit liability by 20,000",
+    "journal_entries": [
+      "On receipt: Dr Cash 400,000, Cr Customer Deposits 400,000",
+      "If company retains interest: Dr Cash 20,000, Cr Interest Income 20,000",
+      "If interest payable to customer: Dr Cash 20,000, Cr Customer Deposits 20,000"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_039",
+    "source": "user_exact",
+    "scenario_id": "xdomain_039",
+    "domains_involved": [
+      "import",
+      "tax"
+    ],
+    "domain_keys": [
+      "import",
+      "tax"
+    ],
+    "input": "import of goods with excise duty 8% on CIF 400,000 plus customs duty 5% and VAT 13%; compute total taxes and landed cost",
+    "input_normalized": "import of goods with excise duty 8% on cif 400,000 plus customs duty 5% and vat 13%; compute total taxes and landed cost",
+    "domain_knowledge_required": [
+      {
+        "domain": "import",
+        "knowledge": "Excise duty may apply to certain goods and can be applied on CIF or customs value; duties stack and affect VAT base"
+      },
+      {
+        "domain": "tax",
+        "knowledge": "VAT applied on landed cost including customs, excise, and other duties; compute sequentially"
+      }
+    ],
+    "reasoning_chain": [
+      "CIF = 400,000",
+      "Customs duty = 400,000 × 5% = 20,000",
+      "Excise duty = 400,000 × 8% = 32,000",
+      "Landed cost = 400,000 + 20,000 + 32,000 = 452,000",
+      "Import VAT = 452,000 × 13% = 58,760",
+      "Total taxes = 20,000 + 32,000 + 58,760 = 110,760"
+    ],
+    "answer_ne": "Import CIF 400,000 with excise and customs:\n- Customs duty (5%): 20,000\n- Excise duty (8%): 32,000\n- Import VAT (13% on landed cost): 58,760\n- Total taxes: 110,760",
+    "journal_entries": [
+      "Dr Inventory 510,760, Cr Cash/Bank 510,760; Dr Input VAT Recoverable 58,760, Cr Cash 58,760"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  },
+  {
+    "id": "xdomain_040",
+    "source": "user_exact",
+    "scenario_id": "xdomain_040",
+    "domains_involved": [
+      "property",
+      "tax"
+    ],
+    "domain_keys": [
+      "property",
+      "tax"
+    ],
+    "input": "sale of mixed-use property with allocation: total sale 10,000,000; allocate 70% commercial, 30% residential; compute capital gains per portion given cost allocation commercial 4,000,000 residential 1,000,000",
+    "input_normalized": "sale of mixed-use property with allocation: total sale 10,000,000; allocate 70% commercial, 30% residential; compute capital gains per portion given cost allocation commercial 4,000,000 residential 1,000,000",
+    "domain_knowledge_required": [
+      {
+        "domain": "property",
+        "knowledge": "When selling mixed-use property, allocate sale proceeds and cost basis between components based on fair value or agreed allocation"
+      },
+      {
+        "domain": "tax",
+        "knowledge": "Compute capital gains separately for each component and apply relevant tax rates or exemptions (e.g., residential exemptions)"
+      }
+    ],
+    "reasoning_chain": [
+      "Total sale proceeds = 10,000,000",
+      "Allocate proceeds: commercial 70% = 7,000,000; residential 30% = 3,000,000",
+      "Allocated costs: commercial cost 4,000,000; residential cost 1,000,000",
+      "Commercial gain = 7,000,000 − 4,000,000 = 3,000,000",
+      "Residential gain = 3,000,000 − 1,000,000 = 2,000,000",
+      "Apply tax rules per component (possible residential exemptions)"
+    ],
+    "answer_ne": "Mixed-use property sale 10,000,000:\n- Commercial proceeds 7,000,000; cost 4,000,000; gain 3,000,000\n- Residential proceeds 3,000,000; cost 1,000,000; gain 2,000,000\n- Tax computed per applicable rates and exemptions",
+    "journal_entries": [
+      "Dr Cash 10,000,000, Cr Property Commercial 4,000,000, Cr Property Residential 1,000,000, Cr Gain on Sale 5,000,000"
+    ],
+    "intent": "cross_domain_reasoning",
+    "NOT_transaction": true,
+    "domain": "cross_domain_nepal_business"
+  }
+]

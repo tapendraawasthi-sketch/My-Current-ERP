@@ -1,0 +1,2743 @@
+[
+  {
+    "id": "ag-001",
+    "term_en": "debit",
+    "term_ne": "डेबिट (Debit)",
+    "simple_definition_ne": "खाताको बायाँपट्टि लेखिने प्रविष्टि, सम्पत्ति वा खर्च बढेको जनाउँछ",
+    "simple_definition_en": "Entry on the left side of an account, indicates increase in asset or expense",
+    "example_ne": "नगद रु. ५०० ले बढ्यो – नगद खातामा डेबिट",
+    "related_terms": [
+      "credit",
+      "journal entry"
+    ],
+    "concept_key": "debit",
+    "aliases": [
+      "debit",
+      "Debit",
+      "डेबिट"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-002",
+    "term_en": "credit",
+    "term_ne": "क्रेडिट (Credit)",
+    "simple_definition_ne": "खाताको दायाँपट्टि लेखिने प्रविष्टि, दायित्व वा आय बढेको जनाउँछ",
+    "simple_definition_en": "Entry on the right side of an account, indicates increase in liability or income",
+    "example_ne": "सापटी रु. १००० लियो – ऋण खातामा क्रेडिट",
+    "related_terms": [
+      "debit",
+      "journal entry"
+    ],
+    "concept_key": "credit",
+    "aliases": [
+      "credit",
+      "Credit",
+      "क्रेडिट"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-003",
+    "term_en": "journal",
+    "term_ne": "जर्नल (Journal)",
+    "simple_definition_ne": "कारोबारहरू मिति अनुसार पहिलो पटक लेखिने किताब",
+    "simple_definition_en": "Book where transactions are first recorded in chronological order",
+    "example_ne": "मिति २०८०/०१/०१ मा खरिद जर्नल प्रविष्टि भयो",
+    "related_terms": [
+      "ledger",
+      "journal entry"
+    ],
+    "concept_key": "journal",
+    "aliases": [
+      "journal",
+      "Journal",
+      "जर्नल"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-004",
+    "term_en": "ledger",
+    "term_ne": "खाताबही (Ledger)",
+    "simple_definition_ne": "जर्नलबाट खाता अनुसार वर्गीकरण गरिने मुख्य किताब",
+    "simple_definition_en": "Main book where transactions are classified into separate accounts",
+    "example_ne": "नगद खाताको खाताबहीमा सबै नगद कारोबार देखिन्छ",
+    "related_terms": [
+      "journal",
+      "trial balance"
+    ],
+    "concept_key": "ledger",
+    "aliases": [
+      "ledger",
+      "Ledger",
+      "खाताबही"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-005",
+    "term_en": "trial balance",
+    "term_ne": "परीक्षण सन्तुलन (Trial Balance)",
+    "simple_definition_ne": "सबै खाताको डेबिट र क्रेडिट बराबर छन् भनी जाँच्ने सूची",
+    "simple_definition_en": "A list of all accounts with their debit and credit balances to check equality",
+    "example_ne": "वर्ष अन्त्यमा डेबिट क्रेडिट रु. ५,००,००० बराबर आयो",
+    "related_terms": [
+      "ledger",
+      "balance sheet"
+    ],
+    "concept_key": "trial_balance",
+    "aliases": [
+      "trial balance",
+      "Trial Balance",
+      "परीक्षण सन्तुलन"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-006",
+    "term_en": "asset",
+    "term_ne": "सम्पत्ति (Asset)",
+    "simple_definition_ne": "व्यवसायको स्वामित्वमा भएको मूल्यवान् वस्तु वा अधिकार",
+    "simple_definition_en": "Valuable items or rights owned by the business",
+    "example_ne": "मेसिन, नगद र बैंक ब्यालेन्स सम्पत्ति हुन्",
+    "related_terms": [
+      "liability",
+      "equity"
+    ],
+    "concept_key": "asset",
+    "aliases": [
+      "asset",
+      "Asset",
+      "सम्पत्ति"
+    ],
+    "account_class": "asset",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-007",
+    "term_en": "liability",
+    "term_ne": "दायित्व (Liability)",
+    "simple_definition_ne": "व्यवसायले भविष्यमा तिर्नुपर्ने ऋण वा जिम्मेवारी",
+    "simple_definition_en": "Debts or obligations that the business must pay in the future",
+    "example_ne": "बैंक ऋण र लेनदारहरू दायित्व हुन्",
+    "related_terms": [
+      "asset",
+      "equity"
+    ],
+    "concept_key": "liability",
+    "aliases": [
+      "liability",
+      "Liability",
+      "दायित्व"
+    ],
+    "account_class": "liability",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-008",
+    "term_en": "equity",
+    "term_ne": "पूँजी / साँवा (Equity)",
+    "simple_definition_ne": "मालिकको लगानी तथा सञ्चित नाफा, व्यवसायमा मालिकको स्वामित्व",
+    "simple_definition_en": "Owner's investment and accumulated profit; owner's claim on business assets",
+    "example_ne": "सुरु पूँजी रु. २,००,००० र नाफा जोड्दा इक्विटी बन्छ",
+    "related_terms": [
+      "asset",
+      "liability"
+    ],
+    "concept_key": "equity",
+    "aliases": [
+      "equity",
+      "Equity",
+      "पूँजी / साँवा",
+      "पूँजी",
+      "साँवा"
+    ],
+    "account_class": "equity",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-009",
+    "term_en": "income",
+    "term_ne": "आय (Income)",
+    "simple_definition_ne": "व्यवसायले सेवा वा सामान बिक्रीबाट कमाएको रकम",
+    "simple_definition_en": "Money earned from selling goods or services",
+    "example_ne": "मासिक बिक्री रु. ८०,००० आय अन्तर्गत लेखियो",
+    "related_terms": [
+      "expense",
+      "profit"
+    ],
+    "concept_key": "income",
+    "aliases": [
+      "income",
+      "Income",
+      "आय"
+    ],
+    "account_class": "income",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-010",
+    "term_en": "expense",
+    "term_ne": "खर्च (Expense)",
+    "simple_definition_ne": "व्यवसाय सञ्चालनमा लागेको लागत, जसले आय घटाउँछ",
+    "simple_definition_en": "Cost incurred in running the business, reducing income",
+    "example_ne": "तलब, भाडा र बिजुली खर्च हुन्",
+    "related_terms": [
+      "income",
+      "loss"
+    ],
+    "concept_key": "expense",
+    "aliases": [
+      "expense",
+      "Expense",
+      "खर्च"
+    ],
+    "account_class": "expense",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-011",
+    "term_en": "cash",
+    "term_ne": "नगद (Cash)",
+    "simple_definition_ne": "भौतिक पैसा वा बैंकबाट तुरुन्तै निकाल्न मिल्ने रकम",
+    "simple_definition_en": "Physical money or bank balance readily available for use",
+    "example_ne": "नगद मौज्दात रु. २०,००० छ",
+    "related_terms": [
+      "bank",
+      "asset"
+    ],
+    "concept_key": "cash",
+    "aliases": [
+      "cash",
+      "Cash",
+      "नगद"
+    ],
+    "account_class": "asset",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-012",
+    "term_en": "bank",
+    "term_ne": "बैंक (Bank)",
+    "simple_definition_ne": "व्यवसायले पैसा जम्मा गर्ने तथा भुक्तानी गर्ने वित्तीय संस्थाको खाता",
+    "simple_definition_en": "Account with a financial institution for deposits and payments",
+    "example_ne": "बैंक खातामा रु. १,५०,००० मौज्दात छ",
+    "related_terms": [
+      "cash",
+      "deposit"
+    ],
+    "concept_key": "bank",
+    "aliases": [
+      "bank",
+      "Bank",
+      "बैंक"
+    ],
+    "account_class": "asset",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-013",
+    "term_en": "debtors",
+    "term_ne": "देनदार (Debtors)",
+    "simple_definition_ne": "व्यवसायबाट उधारोमा सामान लिने र पछि पैसा तिर्ने व्यक्ति/फर्म",
+    "simple_definition_en": "Persons/firms who owe money to the business for goods bought on credit",
+    "example_ne": "राम एन्ड सन्सले उधारोमा माल लगे – देनदार बने",
+    "related_terms": [
+      "creditors",
+      "receivable"
+    ],
+    "concept_key": "debtors",
+    "aliases": [
+      "debtors",
+      "Debtors",
+      "देनदार"
+    ],
+    "account_class": "asset",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-014",
+    "term_en": "creditors",
+    "term_ne": "लेनदार (Creditors)",
+    "simple_definition_ne": "व्यवसायले उधारोमा सामान दिने र पैसा पाउनुपर्ने पक्ष",
+    "simple_definition_en": "Parties to whom the business owes money for goods bought on credit",
+    "example_ne": "सप्लायर्स लिमिटेडलाई तिर्न बाँकी लेनदार रकम",
+    "related_terms": [
+      "debtors",
+      "payable"
+    ],
+    "concept_key": "creditors",
+    "aliases": [
+      "creditors",
+      "Creditors",
+      "लेनदार"
+    ],
+    "account_class": "liability",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-015",
+    "term_en": "stock",
+    "term_ne": "मौज्दात / स्टक (Stock)",
+    "simple_definition_ne": "बिक्रीको लागि राखिएका सामानहरूको भण्डार",
+    "simple_definition_en": "Goods held for sale in the normal course of business",
+    "example_ne": "वर्ष अन्तमा स्टक रु. ७५,००० बाँकी छ",
+    "related_terms": [
+      "purchase",
+      "sales"
+    ],
+    "concept_key": "stock",
+    "aliases": [
+      "stock",
+      "Stock",
+      "मौज्दात / स्टक",
+      "मौज्दात",
+      "स्टक"
+    ],
+    "account_class": "stock",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-016",
+    "term_en": "sales",
+    "term_ne": "बिक्री (Sales)",
+    "simple_definition_ne": "ग्राहकलाई सामान वा सेवा बेचेर प्राप्त हुने कारोबार",
+    "simple_definition_en": "Transaction of selling goods or services to customers",
+    "example_ne": "आजको नगद बिक्री रु. १२,००० भयो",
+    "related_terms": [
+      "purchase",
+      "income"
+    ],
+    "concept_key": "sales",
+    "aliases": [
+      "sales",
+      "Sales",
+      "बिक्री"
+    ],
+    "account_class": "income",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-017",
+    "term_en": "purchase",
+    "term_ne": "खरिद (Purchase)",
+    "simple_definition_ne": "पुनर्विक्रय वा उत्पादनका लागि सामान किन्ने कारोबार",
+    "simple_definition_en": "Transaction of buying goods for resale or production",
+    "example_ne": "थोक बिक्रेताबाट रु. ५०,००० को खरिद गरियो",
+    "related_terms": [
+      "sales",
+      "expense"
+    ],
+    "concept_key": "purchase",
+    "aliases": [
+      "purchase",
+      "Purchase",
+      "खरिद"
+    ],
+    "account_class": "expense",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-018",
+    "term_en": "return",
+    "term_ne": "फिर्ता (Return)",
+    "simple_definition_ne": "बिक्री वा खरिद गरिएको सामानमा खराबी वा अन्य कारणले फिर्ता हुने प्रक्रिया",
+    "simple_definition_en": "Goods sent back due to defects or other reasons, from sales or purchase",
+    "example_ne": "बिक्री फिर्ता रु. २००० लेखियो",
+    "related_terms": [
+      "sales return",
+      "purchase return"
+    ],
+    "concept_key": "return",
+    "aliases": [
+      "return",
+      "Return",
+      "फिर्ता"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-019",
+    "term_en": "discount",
+    "term_ne": "छुट (Discount)",
+    "simple_definition_ne": "निश्चित मूल्यमा दिइने कटौती; नगद वा व्यापारिक छुट हुन सक्छ",
+    "simple_definition_en": "Reduction from the stated price; can be cash or trade discount",
+    "example_ne": "समयमै भुक्तानी गरे ५% नगद छुट पाइन्छ",
+    "related_terms": [
+      "sales",
+      "purchase"
+    ],
+    "concept_key": "discount",
+    "aliases": [
+      "discount",
+      "Discount",
+      "छुट"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-020",
+    "term_en": "profit",
+    "term_ne": "नाफा (Profit)",
+    "simple_definition_ne": "आय खर्चभन्दा बढी हुँदा हुने सकारात्मक अन्तर",
+    "simple_definition_en": "Positive difference when income exceeds expenses",
+    "example_ne": "यस महिना रु. २५,००० खुद नाफा भयो",
+    "related_terms": [
+      "loss",
+      "income"
+    ],
+    "concept_key": "profit",
+    "aliases": [
+      "profit",
+      "Profit",
+      "नाफा"
+    ],
+    "account_class": "income",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-021",
+    "term_en": "loss",
+    "term_ne": "नोक्सान (Loss)",
+    "simple_definition_ne": "खर्च आयभन्दा बढी हुँदा हुने नकारात्मक अन्तर",
+    "simple_definition_en": "Negative difference when expenses exceed income",
+    "example_ne": "अत्यधिक खर्चले रु. १०,००० नोक्सान भयो",
+    "related_terms": [
+      "profit",
+      "expense"
+    ],
+    "concept_key": "loss",
+    "aliases": [
+      "loss",
+      "Loss",
+      "नोक्सान"
+    ],
+    "account_class": "expense",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-022",
+    "term_en": "balance",
+    "term_ne": "ब्यालेन्स / मौज्दात (Balance)",
+    "simple_definition_ne": "कुनै खाताको डेबिट र क्रेडिटको अन्तर, बाँकी रकम",
+    "simple_definition_en": "Difference between debit and credit in an account; remaining amount",
+    "example_ne": "नगद खाताको ब्यालेन्स रु. ८,००० छ",
+    "related_terms": [
+      "debit",
+      "credit"
+    ],
+    "concept_key": "balance",
+    "aliases": [
+      "balance",
+      "Balance",
+      "ब्यालेन्स / मौज्दात",
+      "ब्यालेन्स",
+      "मौज्दात"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-023",
+    "term_en": "opening balance",
+    "term_ne": "सुरु मौज्दात (Opening Balance)",
+    "simple_definition_ne": "नयाँ लेखा अवधिको सुरुमा खातामा रहेको रकम",
+    "simple_definition_en": "Amount present in an account at the beginning of a new accounting period",
+    "example_ne": "वैशाख १ गते नगदको सुरु मौज्दात रु. २०,००० थियो",
+    "related_terms": [
+      "closing balance",
+      "balance"
+    ],
+    "concept_key": "opening_balance",
+    "aliases": [
+      "opening balance",
+      "Opening Balance",
+      "सुरु मौज्दात"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-024",
+    "term_en": "closing balance",
+    "term_ne": "अन्तिम मौज्दात (Closing Balance)",
+    "simple_definition_ne": "लेखा अवधिको अन्त्यमा खातामा बाँकी रहेको रकम",
+    "simple_definition_en": "Amount remaining in an account at the end of an accounting period",
+    "example_ne": "असार मसान्तमा बैंकको अन्तिम मौज्दात रु. ९५,००० छ",
+    "related_terms": [
+      "opening balance",
+      "balance"
+    ],
+    "concept_key": "closing_balance",
+    "aliases": [
+      "closing balance",
+      "Closing Balance",
+      "अन्तिम मौज्दात"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-025",
+    "term_en": "vat",
+    "term_ne": "भ्याट (VAT)",
+    "simple_definition_ne": "मूल्य अभिवृद्धि कर, बिक्रीमा लाग्ने अप्रत्यक्ष कर",
+    "simple_definition_en": "Value Added Tax, an indirect tax levied on sales",
+    "example_ne": "रु. १३,००० को बिक्रीमा १३% भ्याट रु. १६९० जोडियो",
+    "related_terms": [
+      "sales",
+      "TDS"
+    ],
+    "concept_key": "vat",
+    "aliases": [
+      "vat",
+      "VAT",
+      "भ्याट"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-026",
+    "term_en": "tds",
+    "term_ne": "टिडिएस (TDS)",
+    "simple_definition_ne": "स्रोतमा कट्टा हुने कर, भुक्तानी गर्दा कर कट्टा",
+    "simple_definition_en": "Tax Deducted at Source, tax withheld when making payments",
+    "example_ne": "भाडा तिर्दा १०% टिडिएस काटियो",
+    "related_terms": [
+      "income tax",
+      "VAT"
+    ],
+    "concept_key": "tds",
+    "aliases": [
+      "tds",
+      "TDS",
+      "टिडिएस"
+    ],
+    "account_class": "liability",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-027",
+    "term_en": "pan",
+    "term_ne": "पान नम्बर (PAN)",
+    "simple_definition_ne": "स्थायी लेखा नम्बर, कर प्रयोजनका लागि चिनिने नम्बर",
+    "simple_definition_en": "Permanent Account Number, an identification number for tax purposes",
+    "example_ne": "कर दाखिला गर्दा पान नम्बर अनिवार्य छ",
+    "related_terms": [
+      "income tax",
+      "VAT"
+    ],
+    "concept_key": "pan",
+    "aliases": [
+      "pan",
+      "PAN",
+      "पान नम्बर"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-028",
+    "term_en": "ssf",
+    "term_ne": "सामाजिक सुरक्षा कोष (SSF)",
+    "simple_definition_ne": "कर्मचारीको सामाजिक सुरक्षा लागि सरकारी कोष",
+    "simple_definition_en": "Social Security Fund, government fund for employee social security",
+    "example_ne": "तलबको ११% एसएसएफमा जम्मा गर्नुपर्छ",
+    "related_terms": [
+      "income tax",
+      "salary"
+    ],
+    "concept_key": "ssf",
+    "aliases": [
+      "ssf",
+      "SSF",
+      "सामाजिक सुरक्षा कोष"
+    ],
+    "account_class": "liability",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-029",
+    "term_en": "income tax",
+    "term_ne": "आयकर (Income Tax)",
+    "simple_definition_ne": "व्यक्ति वा फर्मको आयमा लाग्ने प्रत्यक्ष कर",
+    "simple_definition_en": "Direct tax levied on the income of individuals or firms",
+    "example_ne": "वार्षिक आय रु. ५ लाख भन्दा बढी भए आयकर तिर्नुपर्छ",
+    "related_terms": [
+      "TDS",
+      "PAN"
+    ],
+    "concept_key": "income_tax",
+    "aliases": [
+      "income tax",
+      "Income Tax",
+      "आयकर"
+    ],
+    "account_class": "expense",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-030",
+    "term_en": "account",
+    "term_ne": "खाता (Account)",
+    "simple_definition_ne": "समान प्रकृतिका कारोबार समूह गरिने रेकर्ड",
+    "simple_definition_en": "A record grouping similar nature transactions",
+    "example_ne": "नगद खातामा सबै नगद भित्र र बाहिरको लेखा रहन्छ",
+    "related_terms": [
+      "ledger",
+      "journal"
+    ],
+    "concept_key": "account",
+    "aliases": [
+      "account",
+      "Account",
+      "खाता"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-031",
+    "term_en": "bookkeeping",
+    "term_ne": "लेखापालन (Bookkeeping)",
+    "simple_definition_ne": "नियमित रूपमा कारोबारको अभिलेख राख्ने कार्य",
+    "simple_definition_en": "The activity of keeping regular records of transactions",
+    "example_ne": "प्रतिदिन खातामा बिक्री प्रविष्टि लेखापालन हो",
+    "related_terms": [
+      "accounting",
+      "journal"
+    ],
+    "concept_key": "bookkeeping",
+    "aliases": [
+      "bookkeeping",
+      "Bookkeeping",
+      "लेखापालन"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-032",
+    "term_en": "double-entry",
+    "term_ne": "दोहोरो प्रविष्टि प्रणाली (Double-entry)",
+    "simple_definition_ne": "प्रत्येक कारोबारमा कम्तीमा एउटा डेबिट र एउटा क्रेडिट गर्ने पद्धति",
+    "simple_definition_en": "System where every transaction has at least one debit and one credit",
+    "example_ne": "रु. १००० को सामान किन्दा स्टक डेबिट, नगद क्रेडिट",
+    "related_terms": [
+      "debit",
+      "credit"
+    ],
+    "concept_key": "double_entry",
+    "aliases": [
+      "double-entry",
+      "double entry",
+      "Double-entry",
+      "दोहोरो प्रविष्टि प्रणाली"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-033",
+    "term_en": "voucher",
+    "term_ne": "भौचर (Voucher)",
+    "simple_definition_ne": "कारोबारको प्रमाणपत्र, बिल वा रसिदमा आधारित",
+    "simple_definition_en": "Documentary evidence of a transaction, based on bill or receipt",
+    "example_ne": "खरिद बिल भौचरसँग संलग्न छ",
+    "related_terms": [
+      "journal",
+      "entry"
+    ],
+    "concept_key": "voucher",
+    "aliases": [
+      "voucher",
+      "Voucher",
+      "भौचर"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-034",
+    "term_en": "invoice",
+    "term_ne": "बिल / इनभ्वाइस (Invoice)",
+    "simple_definition_ne": "बिक्रेताले ग्राहकलाई दिने सामानको विवरण र मूल्य भएको कागज",
+    "simple_definition_en": "A document from seller to buyer listing goods and their prices",
+    "example_ne": "बिक्री इनभ्वाइसमा मिति, परिमाण र रकम उल्लेख छ",
+    "related_terms": [
+      "sales",
+      "voucher"
+    ],
+    "concept_key": "invoice",
+    "aliases": [
+      "invoice",
+      "Invoice",
+      "बिल / इनभ्वाइस",
+      "बिल",
+      "इनभ्वाइस"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-035",
+    "term_en": "receipt",
+    "term_ne": "रसिद (Receipt)",
+    "simple_definition_ne": "पैसा प्राप्ति भएको लिखित प्रमाण",
+    "simple_definition_en": "Written proof of money received",
+    "example_ne": "ग्राहकलाई रु. ५०० को रसिद दिइयो",
+    "related_terms": [
+      "payment",
+      "voucher"
+    ],
+    "concept_key": "receipt",
+    "aliases": [
+      "receipt",
+      "Receipt",
+      "रसिद"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-036",
+    "term_en": "payment",
+    "term_ne": "भुक्तानी (Payment)",
+    "simple_definition_ne": "पैसा दिने वा तिर्ने कार्य",
+    "simple_definition_en": "Act of giving or disbursing money",
+    "example_ne": "भाडा भुक्तानी रु. १०,००० बैंकबाट गरियो",
+    "related_terms": [
+      "receipt",
+      "expense"
+    ],
+    "concept_key": "payment",
+    "aliases": [
+      "payment",
+      "Payment",
+      "भुक्तानी"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-037",
+    "term_en": "depreciation",
+    "term_ne": "ह्रास (Depreciation)",
+    "simple_definition_ne": "सम्पत्तिको प्रयोगले मूल्यमा कमी आउने प्रक्रिया",
+    "simple_definition_en": "Decrease in value of an asset due to usage and time",
+    "example_ne": "मेसिनको वार्षिक १०% ह्रास काटियो",
+    "related_terms": [
+      "asset",
+      "expense"
+    ],
+    "concept_key": "depreciation",
+    "aliases": [
+      "depreciation",
+      "Depreciation",
+      "ह्रास"
+    ],
+    "account_class": "expense",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-038",
+    "term_en": "capital",
+    "term_ne": "पूँजी (Capital)",
+    "simple_definition_ne": "मालिकले व्यवसायमा लगानी गरेको प्रारम्भिक तथा थप रकम",
+    "simple_definition_en": "Initial and additional money invested by the owner in the business",
+    "example_ne": "मालिकले थप पूँजी रु. १,००,००० लगानी गरे",
+    "related_terms": [
+      "equity",
+      "asset"
+    ],
+    "concept_key": "capital",
+    "aliases": [
+      "capital",
+      "Capital",
+      "पूँजी"
+    ],
+    "account_class": "equity",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-039",
+    "term_en": "drawings",
+    "term_ne": "व्यक्तिगत निकासी (Drawings)",
+    "simple_definition_ne": "मालिकले व्यवसायबाट व्यक्तिगत प्रयोगको लागि निकालेको रकम",
+    "simple_definition_en": "Money taken out by the owner for personal use",
+    "example_ne": "मालिकले रु. १५,००० व्यक्तिगत खर्चका लागि निकाले",
+    "related_terms": [
+      "capital",
+      "equity"
+    ],
+    "concept_key": "drawings",
+    "aliases": [
+      "drawings",
+      "Drawings",
+      "व्यक्तिगत निकासी"
+    ],
+    "account_class": "equity",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-040",
+    "term_en": "revenue",
+    "term_ne": "राजस्व / बिक्री आम्दानी (Revenue)",
+    "simple_definition_ne": "मुख्य व्यावसायिक गतिविधिबाट हुने आम्दानी",
+    "simple_definition_en": "Income from main business activities",
+    "example_ne": "सेवा शुल्कबाट राजस्व रु. ३,००,००० प्राप्त भयो",
+    "related_terms": [
+      "income",
+      "sales"
+    ],
+    "concept_key": "revenue",
+    "aliases": [
+      "revenue",
+      "Revenue",
+      "राजस्व / बिक्री आम्दानी",
+      "राजस्व",
+      "बिक्री आम्दानी"
+    ],
+    "account_class": "income",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-041",
+    "term_en": "expenditure",
+    "term_ne": "परिव्यय (Expenditure)",
+    "simple_definition_ne": "दीर्घकालीन लाभका लागि गरिएको खर्च",
+    "simple_definition_en": "Spending for long-term benefit, often capital in nature",
+    "example_ne": "नयाँ भवन निर्माण पूँजीगत परिव्यय हो",
+    "related_terms": [
+      "expense",
+      "asset"
+    ],
+    "concept_key": "expenditure",
+    "aliases": [
+      "expenditure",
+      "Expenditure",
+      "परिव्यय"
+    ],
+    "account_class": "expense",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-042",
+    "term_en": "gross profit",
+    "term_ne": "कुल नाफा (Gross Profit)",
+    "simple_definition_ne": "बिक्री मूल्य र बिक्री गरिएका सामानको लागतबीचको फरक",
+    "simple_definition_en": "Difference between sales and cost of goods sold",
+    "example_ne": "बिक्री रु. १,००,०००, सामान लागत रु. ६५,००० भए कुल नाफा ३५,०००",
+    "related_terms": [
+      "net profit",
+      "sales"
+    ],
+    "concept_key": "gross_profit",
+    "aliases": [
+      "gross profit",
+      "Gross Profit",
+      "कुल नाफा"
+    ],
+    "account_class": "income",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-043",
+    "term_en": "net profit",
+    "term_ne": "खुद नाफा (Net Profit)",
+    "simple_definition_ne": "कुल नाफाबाट सबै सञ्चालन तथा अन्य खर्च कटाइसकेपछिको नाफा",
+    "simple_definition_en": "Profit remaining after deducting all operating and other expenses from gross profit",
+    "example_ne": "कुल नाफा ३५,००० बाट खर्च १०,००० घटाउँदा खुद नाफा २५,०००",
+    "related_terms": [
+      "gross profit",
+      "loss"
+    ],
+    "concept_key": "net_profit",
+    "aliases": [
+      "net profit",
+      "Net Profit",
+      "खुद नाफा"
+    ],
+    "account_class": "income",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-044",
+    "term_en": "balance sheet",
+    "term_ne": "वासलात (Balance Sheet)",
+    "simple_definition_ne": "निश्चित मितिमा सम्पत्ति, दायित्व र पूँजी देखाउने विवरण",
+    "simple_definition_en": "Statement showing assets, liabilities, and capital at a specific date",
+    "example_ne": "वासलातमा कुल सम्पत्ति रु. १० लाख र दायित्व रु. ४ लाख देखियो",
+    "related_terms": [
+      "asset",
+      "liability",
+      "equity"
+    ],
+    "concept_key": "balance_sheet",
+    "aliases": [
+      "balance sheet",
+      "Balance Sheet",
+      "वासलात"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-045",
+    "term_en": "income statement",
+    "term_ne": "आय विवरण (Income Statement)",
+    "simple_definition_ne": "निश्चित अवधिको आय र खर्च देखाउने नाफा/नोक्सान विवरण",
+    "simple_definition_en": "Statement showing income and expenses for a period, resulting in profit or loss",
+    "example_ne": "आय विवरण अनुसार खुद नाफा रु. ५०,००० भयो",
+    "related_terms": [
+      "profit",
+      "loss"
+    ],
+    "concept_key": "income_statement",
+    "aliases": [
+      "income statement",
+      "Income Statement",
+      "आय विवरण"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-046",
+    "term_en": "cash flow",
+    "term_ne": "नगद प्रवाह (Cash Flow)",
+    "simple_definition_ne": "निश्चित अवधिमा नगद भित्रिने र बाहिरिने प्रक्रिया",
+    "simple_definition_en": "Movement of cash in and out during a period",
+    "example_ne": "नगद प्रवाह विवरणमा सञ्चालन, लगानी र वित्तीय गतिविधि छुट्याइन्छ",
+    "related_terms": [
+      "cash",
+      "income statement"
+    ],
+    "concept_key": "cash_flow",
+    "aliases": [
+      "cash flow",
+      "Cash Flow",
+      "नगद प्रवाह"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-047",
+    "term_en": "auditor",
+    "term_ne": "लेखापरीक्षक (Auditor)",
+    "simple_definition_ne": "वित्तीय विवरण जाँच गर्ने स्वतन्त्र व्यक्ति",
+    "simple_definition_en": "Independent person who examines financial statements",
+    "example_ne": "लेखापरीक्षकले वासलात र आय विवरण प्रमाणित गरे",
+    "related_terms": [
+      "balance sheet",
+      "voucher"
+    ],
+    "concept_key": "auditor",
+    "aliases": [
+      "auditor",
+      "Auditor",
+      "लेखापरीक्षक"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-048",
+    "term_en": "petty cash",
+    "term_ne": "सानो नगद खाता (Petty Cash)",
+    "simple_definition_ne": "दैनिक साना खर्चका लागि छुट्टै राखिएको सानो नगद कोष",
+    "simple_definition_en": "Small cash fund kept for minor daily expenses",
+    "example_ne": "पेटी क्यासबाट चिया पानी खर्च रु. २०० भयो",
+    "related_terms": [
+      "cash",
+      "expense"
+    ],
+    "concept_key": "petty_cash",
+    "aliases": [
+      "petty cash",
+      "Petty Cash",
+      "सानो नगद खाता"
+    ],
+    "account_class": "asset",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-049",
+    "term_en": "bad debts",
+    "term_ne": "असुल नहुने ऋण (Bad Debts)",
+    "simple_definition_ne": "देनदारबाट उठ्न नसक्ने रकम, नोक्सानमा लेखिने",
+    "simple_definition_en": "Amount from debtors that cannot be collected, treated as loss",
+    "example_ne": "रामको रु. ५००० डुब्यो, असुल नहुने ऋण मानियो",
+    "related_terms": [
+      "debtors",
+      "expense"
+    ],
+    "concept_key": "bad_debts",
+    "aliases": [
+      "bad debts",
+      "Bad Debts",
+      "असुल नहुने ऋण"
+    ],
+    "account_class": "expense",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-050",
+    "term_en": "provision",
+    "term_ne": "प्रोभिजन / व्यवस्था (Provision)",
+    "simple_definition_ne": "भविष्यमा हुनसक्ने हानि वा खर्चका लागि पहिले नै छुट्याइएको रकम",
+    "simple_definition_en": "Amount set aside in advance for future possible loss or expense",
+    "example_ne": "डुब्दा ऋणका लागि ५% प्रोभिजन राखियो",
+    "related_terms": [
+      "bad debts",
+      "expense"
+    ],
+    "concept_key": "provision",
+    "aliases": [
+      "provision",
+      "Provision",
+      "प्रोभिजन / व्यवस्था",
+      "प्रोभिजन",
+      "व्यवस्था"
+    ],
+    "account_class": "liability",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-051",
+    "term_en": "prepaid expenses",
+    "term_ne": "पूर्वदत्त खर्च (Prepaid Expenses)",
+    "simple_definition_ne": "पहिल्यै भुक्तानी गरिएको तर पूर्ण लाभ नलिइएको खर्च",
+    "simple_definition_en": "Expenses paid in advance, benefit yet to be fully received",
+    "example_ne": "भाडा रु. १२,००० एक वर्षको अग्रिम तिरियो, सम्पत्ति सरह",
+    "related_terms": [
+      "expense",
+      "asset"
+    ],
+    "concept_key": "prepaid_expenses",
+    "aliases": [
+      "prepaid expenses",
+      "Prepaid Expenses",
+      "पूर्वदत्त खर्च"
+    ],
+    "account_class": "asset",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-052",
+    "term_en": "outstanding expenses",
+    "term_ne": "बाँकी खर्च (Outstanding Expenses)",
+    "simple_definition_ne": "लाभ लिइसकेको तर भुक्तानी बाँकी रहेको खर्च",
+    "simple_definition_en": "Expenses due but not yet paid",
+    "example_ne": "तलब रु. २०,००० तिर्न बाँकी छ, त्यो दायित्व हो",
+    "related_terms": [
+      "liability",
+      "expense"
+    ],
+    "concept_key": "outstanding_expenses",
+    "aliases": [
+      "outstanding expenses",
+      "Outstanding Expenses",
+      "बाँकी खर्च"
+    ],
+    "account_class": "liability",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-053",
+    "term_en": "accrued income",
+    "term_ne": "उपार्जित आय (Accrued Income)",
+    "simple_definition_ne": "काम भइसकेको तर रकम प्राप्त नभएको आय",
+    "simple_definition_en": "Income earned but not yet received",
+    "example_ne": "ब्याज रु. २००० कमायो तर पाएको छैन, त्यो सम्पत्ति हो",
+    "related_terms": [
+      "asset",
+      "income"
+    ],
+    "concept_key": "accrued_income",
+    "aliases": [
+      "accrued income",
+      "Accrued Income",
+      "उपार्जित आय"
+    ],
+    "account_class": "asset",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-054",
+    "term_en": "unearned income",
+    "term_ne": "अग्रिम प्राप्त आय (Unearned Income)",
+    "simple_definition_ne": "रकम पहिल्यै प्राप्त भएको तर सेवा बाँकी भएको आय",
+    "simple_definition_en": "Income received in advance, service yet to be provided",
+    "example_ne": "ग्राहकले अग्रिम रु. ५००० दियो, दायित्व मानिन्छ",
+    "related_terms": [
+      "liability",
+      "income"
+    ],
+    "concept_key": "unearned_income",
+    "aliases": [
+      "unearned income",
+      "Unearned Income",
+      "अग्रिम प्राप्त आय"
+    ],
+    "account_class": "liability",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-055",
+    "term_en": "cost of goods sold",
+    "term_ne": "बिक्री लागत (Cost of Goods Sold)",
+    "simple_definition_ne": "सुरु स्टक + खरिद - अन्तिम स्टक, बिक्रीका लागि सामानको लागत",
+    "simple_definition_en": "Opening stock + Purchases - Closing stock, the cost of goods sold",
+    "example_ne": "सुरु स्टक २०,०००, खरिद ८०,०००, अन्तिम स्टक १५,००० भए COGS ८५,०००",
+    "related_terms": [
+      "sales",
+      "gross profit"
+    ],
+    "concept_key": "cost_of_goods_sold",
+    "aliases": [
+      "cost of goods sold",
+      "Cost of Goods Sold",
+      "बिक्री लागत"
+    ],
+    "account_class": "expense",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-056",
+    "term_en": "working capital",
+    "term_ne": "कार्यशील पूँजी (Working Capital)",
+    "simple_definition_ne": "चालु सम्पत्ति र चालु दायित्वबीचको अन्तर",
+    "simple_definition_en": "Difference between current assets and current liabilities",
+    "example_ne": "चालु सम्पत्ति ५ लाख, दायित्व ३ लाख भए कार्यशील पूँजी २ लाख",
+    "related_terms": [
+      "current asset",
+      "current liability"
+    ],
+    "concept_key": "working_capital",
+    "aliases": [
+      "working capital",
+      "Working Capital",
+      "कार्यशील पूँजी"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-057",
+    "term_en": "current asset",
+    "term_ne": "चालु सम्पत्ति (Current Asset)",
+    "simple_definition_ne": "एक वर्षभित्र नगदमा बदलिने सम्पत्ति",
+    "simple_definition_en": "Asset expected to be converted to cash within one year",
+    "example_ne": "नगद, बैंक, देनदार र स्टक चालु सम्पत्ति हुन्",
+    "related_terms": [
+      "asset",
+      "working capital"
+    ],
+    "concept_key": "current_asset",
+    "aliases": [
+      "current asset",
+      "Current Asset",
+      "चालु सम्पत्ति"
+    ],
+    "account_class": "asset",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-058",
+    "term_en": "current liability",
+    "term_ne": "चालु दायित्व (Current Liability)",
+    "simple_definition_ne": "एक वर्षभित्र तिर्नुपर्ने दायित्व",
+    "simple_definition_en": "Obligation due within one year",
+    "example_ne": "लेनदार र बाँकी तलब चालु दायित्वमा पर्छन्",
+    "related_terms": [
+      "liability",
+      "working capital"
+    ],
+    "concept_key": "current_liability",
+    "aliases": [
+      "current liability",
+      "Current Liability",
+      "चालु दायित्व"
+    ],
+    "account_class": "liability",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-059",
+    "term_en": "fixed asset",
+    "term_ne": "स्थायी सम्पत्ति (Fixed Asset)",
+    "simple_definition_ne": "दीर्घकालीन प्रयोगको लागि राखिने भौतिक सम्पत्ति",
+    "simple_definition_en": "Tangible asset held for long-term use, not for resale",
+    "example_ne": "भवन, मेसिन र गाडी स्थायी सम्पत्ति हुन्",
+    "related_terms": [
+      "asset",
+      "depreciation"
+    ],
+    "concept_key": "fixed_asset",
+    "aliases": [
+      "fixed asset",
+      "Fixed Asset",
+      "स्थायी सम्पत्ति"
+    ],
+    "account_class": "asset",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-060",
+    "term_en": "tangible asset",
+    "term_ne": "मूर्त सम्पत्ति (Tangible Asset)",
+    "simple_definition_ne": "देख्न र छुन सकिने भौतिक रूप भएको सम्पत्ति",
+    "simple_definition_en": "Asset with physical form that can be seen and touched",
+    "example_ne": "फर्निचर र कम्प्युटर मूर्त सम्पत्ति हुन्",
+    "related_terms": [
+      "fixed asset",
+      "depreciation"
+    ],
+    "concept_key": "tangible_asset",
+    "aliases": [
+      "tangible asset",
+      "Tangible Asset",
+      "मूर्त सम्पत्ति"
+    ],
+    "account_class": "asset",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-061",
+    "term_en": "intangible asset",
+    "term_ne": "अमूर्त सम्पत्ति (Intangible Asset)",
+    "simple_definition_ne": "भौतिक रूप नभएको तर मूल्य भएको सम्पत्ति",
+    "simple_definition_en": "Asset without physical form but having value",
+    "example_ne": "सद्भावना (गुडविल) र ट्रेडमार्क अमूर्त सम्पत्ति हुन्",
+    "related_terms": [
+      "asset",
+      "goodwill"
+    ],
+    "concept_key": "intangible_asset",
+    "aliases": [
+      "intangible asset",
+      "Intangible Asset",
+      "अमूर्त सम्पत्ति"
+    ],
+    "account_class": "asset",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-062",
+    "term_en": "goodwill",
+    "term_ne": "सद्भावना (Goodwill)",
+    "simple_definition_ne": "व्यवसायको प्रतिष्ठाबाट प्राप्त हुने अमूर्त मूल्य",
+    "simple_definition_en": "Intangible value arising from business reputation",
+    "example_ne": "कम्पनी किन्दा रु. ५०,००० सद्भावना मूल्य तिरियो",
+    "related_terms": [
+      "intangible asset",
+      "valuation"
+    ],
+    "concept_key": "goodwill",
+    "aliases": [
+      "goodwill",
+      "Goodwill",
+      "सद्भावना"
+    ],
+    "account_class": "asset",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-063",
+    "term_en": "journal entry",
+    "term_ne": "जर्नल प्रविष्टि (Journal Entry)",
+    "simple_definition_ne": "जर्नलमा लेखिने एउटा कारोबारको डेबिट क्रेडिट रेकर्ड",
+    "simple_definition_en": "Record of a single transaction in the journal with debit and credit",
+    "example_ne": "खरिद जर्नल प्रविष्टिमा खरिद खाता डेबिट, नगद क्रेडिट",
+    "related_terms": [
+      "journal",
+      "ledger"
+    ],
+    "concept_key": "journal_entry",
+    "aliases": [
+      "journal entry",
+      "Journal Entry",
+      "जर्नल प्रविष्टि"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-064",
+    "term_en": "compound entry",
+    "term_ne": "मिश्रित प्रविष्टि (Compound Entry)",
+    "simple_definition_ne": "एकभन्दा बढी डेबिट वा क्रेडिट भएको जर्नल प्रविष्टि",
+    "simple_definition_en": "Journal entry having more than one debit or credit",
+    "example_ne": "तलब र भाडा एकैपटक भुक्तानी गर्दा मिश्रित प्रविष्टि हुन्छ",
+    "related_terms": [
+      "journal entry",
+      "debit"
+    ],
+    "concept_key": "compound_entry",
+    "aliases": [
+      "compound entry",
+      "Compound Entry",
+      "मिश्रित प्रविष्टि"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-065",
+    "term_en": "contra entry",
+    "term_ne": "कन्ट्रा प्रविष्टि (Contra Entry)",
+    "simple_definition_ne": "नगद र बैंकबीचको रकम स्थानान्तरण जनाउने प्रविष्टि",
+    "simple_definition_en": "Entry recording transfer between cash and bank",
+    "example_ne": "बैंकमा नगद जम्मा गर्दा कन्ट्रा प्रविष्टि हुन्छ",
+    "related_terms": [
+      "cash",
+      "bank"
+    ],
+    "concept_key": "contra_entry",
+    "aliases": [
+      "contra entry",
+      "Contra Entry",
+      "कन्ट्रा प्रविष्टि"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-066",
+    "term_en": "adjusting entry",
+    "term_ne": "समायोजन प्रविष्टि (Adjusting Entry)",
+    "simple_definition_ne": "लेखा अवधि अन्त्यमा सही आय र खर्च देखाउन बनाइने प्रविष्टि",
+    "simple_definition_en": "Entry made at end of period to show correct income and expense",
+    "example_ne": "तिर्न बाँकी तलबको समायोजन प्रविष्टि पारित गरियो",
+    "related_terms": [
+      "prepaid expenses",
+      "accrued income"
+    ],
+    "concept_key": "adjusting_entry",
+    "aliases": [
+      "adjusting entry",
+      "Adjusting Entry",
+      "समायोजन प्रविष्टि"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-067",
+    "term_en": "closing entry",
+    "term_ne": "अन्तिम प्रविष्टि (Closing Entry)",
+    "simple_definition_ne": "सबै नाफा नोक्सान खाता बन्द गर्ने प्रविष्टि",
+    "simple_definition_en": "Entry to close all revenue and expense accounts at year-end",
+    "example_ne": "बिक्री र खर्च खाता बन्द गरी पूँजीमा सारियो",
+    "related_terms": [
+      "income statement",
+      "capital"
+    ],
+    "concept_key": "closing_entry",
+    "aliases": [
+      "closing entry",
+      "Closing Entry",
+      "अन्तिम प्रविष्टि"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-068",
+    "term_en": "trading account",
+    "term_ne": "व्यापारिक खाता (Trading Account)",
+    "simple_definition_ne": "कुल नाफा वा नोक्सान निकाल्न बनाइने प्रारम्भिक विवरण",
+    "simple_definition_en": "Account prepared to find gross profit or loss",
+    "example_ne": "व्यापारिक खातामा बिक्री र बिक्री लागतको तुलना गरिन्छ",
+    "related_terms": [
+      "gross profit",
+      "income statement"
+    ],
+    "concept_key": "trading_account",
+    "aliases": [
+      "trading account",
+      "Trading Account",
+      "व्यापारिक खाता"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-069",
+    "term_en": "profit and loss account",
+    "term_ne": "नाफा नोक्सान खाता (Profit & Loss Account)",
+    "simple_definition_ne": "सबै सञ्चालन खर्च कटाएर खुद नाफा/नोक्सान देखाउने विवरण",
+    "simple_definition_en": "Account showing net profit or loss after all operating expenses",
+    "example_ne": "नाफा नोक्सान खातामा तलब, भाडा, ह्रास समावेश गरिन्छ",
+    "related_terms": [
+      "net profit",
+      "trading account"
+    ],
+    "concept_key": "profit_and_loss_account",
+    "aliases": [
+      "profit and loss account",
+      "Profit & Loss Account",
+      "नाफा नोक्सान खाता"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-070",
+    "term_en": "bank reconciliation",
+    "term_ne": "बैंक मिलान (Bank Reconciliation)",
+    "simple_definition_ne": "बैंक पासबुक र नगद बहीको मौज्दात मिलाउने प्रक्रिया",
+    "simple_definition_en": "Process of matching cash book balance with bank statement",
+    "example_ne": "चेक क्लियर नभएकाले मौज्दात फरक परेको थियो, मिलान गरियो",
+    "related_terms": [
+      "bank",
+      "cash"
+    ],
+    "concept_key": "bank_reconciliation",
+    "aliases": [
+      "bank reconciliation",
+      "Bank Reconciliation",
+      "बैंक मिलान"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-071",
+    "term_en": "imprest system",
+    "term_ne": "स्थायी अग्रिम प्रणाली (Imprest System)",
+    "simple_definition_ne": "पेटी क्यासमा खर्च भएपछि सोही रकम पूर्ति गरिने पद्धति",
+    "simple_definition_en": "System where petty cash is replenished to the original fixed amount",
+    "example_ne": "पेटी क्यास रु. २००० बाट १५०० खर्च भएपछि १५०० पुनः राखियो",
+    "related_terms": [
+      "petty cash",
+      "cash"
+    ],
+    "concept_key": "imprest_system",
+    "aliases": [
+      "imprest system",
+      "Imprest System",
+      "स्थायी अग्रिम प्रणाली"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-072",
+    "term_en": "accrual basis",
+    "term_ne": "उपार्जित लेखा पद्धति (Accrual Basis)",
+    "simple_definition_ne": "पैसा आए पनि नआए पनि कारोबार हुँदा नै लेख्ने पद्धति",
+    "simple_definition_en": "Method of recording transactions when they occur, regardless of cash flow",
+    "example_ne": "उधारो बिक्री भएको दिन नै आय लेखिन्छ",
+    "related_terms": [
+      "cash basis",
+      "income"
+    ],
+    "concept_key": "accrual_basis",
+    "aliases": [
+      "accrual basis",
+      "Accrual Basis",
+      "उपार्जित लेखा पद्धति"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-073",
+    "term_en": "cash basis",
+    "term_ne": "नगद लेखा पद्धति (Cash Basis)",
+    "simple_definition_ne": "पैसा प्राप्त हुँदा वा भुक्तानी हुँदा मात्र कारोबार लेख्ने तरिका",
+    "simple_definition_en": "Recording transactions only when cash is received or paid",
+    "example_ne": "साना व्यवसायले भाडा तिरेपछि मात्र खर्च देखाउँछन्",
+    "related_terms": [
+      "accrual basis",
+      "cash"
+    ],
+    "concept_key": "cash_basis",
+    "aliases": [
+      "cash basis",
+      "Cash Basis",
+      "नगद लेखा पद्धति"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-074",
+    "term_en": "fiscal year",
+    "term_ne": "आर्थिक वर्ष (Fiscal Year)",
+    "simple_definition_ne": "लेखा राखिने १२ महिनाको सरकारी वा कम्पनी अवधि",
+    "simple_definition_en": "12-month period used for accounting and financial reporting",
+    "example_ne": "नेपालको आर्थिक वर्ष साउन १ देखि असार ३१ सम्म हो",
+    "related_terms": [
+      "closing balance",
+      "opening balance"
+    ],
+    "concept_key": "fiscal_year",
+    "aliases": [
+      "fiscal year",
+      "Fiscal Year",
+      "आर्थिक वर्ष"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-075",
+    "term_en": "gaap",
+    "term_ne": "सामान्य स्वीकृत लेखा सिद्धान्त (GAAP)",
+    "simple_definition_ne": "वित्तीय विवरण बनाउने मान्य आधारभूत नियमहरू",
+    "simple_definition_en": "Generally Accepted Accounting Principles; standard framework of guidelines",
+    "example_ne": "GAAP अनुसार व्यापार र मालिकको सम्पत्ति अलग लेखिन्छ",
+    "related_terms": [
+      "balance sheet",
+      "income statement"
+    ],
+    "concept_key": "gaap",
+    "aliases": [
+      "gaap",
+      "GAAP",
+      "सामान्य स्वीकृत लेखा सिद्धान्त"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-076",
+    "term_en": "ifrs",
+    "term_ne": "अन्तर्राष्ट्रिय वित्तीय प्रतिवेदन मानक (IFRS)",
+    "simple_definition_ne": "विश्वव्यापी रूपमा मान्यता प्राप्त लेखा मानक",
+    "simple_definition_en": "International Financial Reporting Standards, global accounting standards",
+    "example_ne": "ठूला कम्पनीले IFRS अनुसार विवरण बनाउँछन्",
+    "related_terms": [
+      "GAAP",
+      "balance sheet"
+    ],
+    "concept_key": "ifrs",
+    "aliases": [
+      "ifrs",
+      "IFRS",
+      "अन्तर्राष्ट्रिय वित्तीय प्रतिवेदन मानक"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-077",
+    "term_en": "drawing account",
+    "term_ne": "व्यक्तिगत निकासी खाता (Drawing Account)",
+    "simple_definition_ne": "मालिकको व्यक्तिगत खर्च लेखिने छुट्टै खाता",
+    "simple_definition_en": "Account where owner's personal withdrawals are recorded",
+    "example_ne": "निकासी खातामा रु. १०,००० डेबिट गरियो",
+    "related_terms": [
+      "capital",
+      "equity"
+    ],
+    "concept_key": "drawing_account",
+    "aliases": [
+      "drawing account",
+      "Drawing Account",
+      "व्यक्तिगत निकासी खाता"
+    ],
+    "account_class": "equity",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-078",
+    "term_en": "salary payable",
+    "term_ne": "तिर्न बाँकी तलब (Salary Payable)",
+    "simple_definition_ne": "कर्मचारीलाई तलब भुक्तानी गर्न बाँकी रकम",
+    "simple_definition_en": "Amount owed to employees for work done, not yet paid",
+    "example_ne": "महिनाको अन्तिम दिन तलब तिर्न बाँकी रु. ४५,००० दायित्व",
+    "related_terms": [
+      "outstanding expenses",
+      "liability"
+    ],
+    "concept_key": "salary_payable",
+    "aliases": [
+      "salary payable",
+      "Salary Payable",
+      "तिर्न बाँकी तलब"
+    ],
+    "account_class": "liability",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-079",
+    "term_en": "rent expense",
+    "term_ne": "भाडा खर्च (Rent Expense)",
+    "simple_definition_ne": "स्थान वा सम्पत्ति प्रयोग गरेबापत नियमित तिरिने रकम",
+    "simple_definition_en": "Regular payment for using property or space",
+    "example_ne": "मासिक पसल भाडा रु. ८,००० खर्चमा लेखियो",
+    "related_terms": [
+      "expense",
+      "prepaid expenses"
+    ],
+    "concept_key": "rent_expense",
+    "aliases": [
+      "rent expense",
+      "Rent Expense",
+      "भाडा खर्च"
+    ],
+    "account_class": "expense",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-080",
+    "term_en": "utility expense",
+    "term_ne": "उपयोगिता खर्च (Utility Expense)",
+    "simple_definition_ne": "बिजुली, पानी, इन्टरनेट जस्ता सेवाको खर्च",
+    "simple_definition_en": "Costs for services like electricity, water, internet",
+    "example_ne": "यो महिनाको बिजुली बिल रु. २,५०० उपयोगिता खर्च हो",
+    "related_terms": [
+      "expense",
+      "outstanding expenses"
+    ],
+    "concept_key": "utility_expense",
+    "aliases": [
+      "utility expense",
+      "Utility Expense",
+      "उपयोगिता खर्च"
+    ],
+    "account_class": "expense",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-081",
+    "term_en": "advertising expense",
+    "term_ne": "विज्ञापन खर्च (Advertising Expense)",
+    "simple_definition_ne": "सामान वा सेवाको प्रचारमा लागेको खर्च",
+    "simple_definition_en": "Cost incurred for promotion of goods or services",
+    "example_ne": "फेसबुक विज्ञापनमा रु. ३,००० खर्च गरियो",
+    "related_terms": [
+      "expense",
+      "sales"
+    ],
+    "concept_key": "advertising_expense",
+    "aliases": [
+      "advertising expense",
+      "Advertising Expense",
+      "विज्ञापन खर्च"
+    ],
+    "account_class": "expense",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-082",
+    "term_en": "interest income",
+    "term_ne": "ब्याज आय (Interest Income)",
+    "simple_definition_ne": "बैंक निक्षेप वा ऋणबाट प्राप्त हुने ब्याज",
+    "simple_definition_en": "Income earned from bank deposits or lending money",
+    "example_ne": "बैंकले त्रैमासिक ब्याज रु. १,२०० जम्मा गर्यो",
+    "related_terms": [
+      "income",
+      "bank"
+    ],
+    "concept_key": "interest_income",
+    "aliases": [
+      "interest income",
+      "Interest Income",
+      "ब्याज आय"
+    ],
+    "account_class": "income",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-083",
+    "term_en": "interest expense",
+    "term_ne": "ब्याज खर्च (Interest Expense)",
+    "simple_definition_ne": "लिएको ऋणमा तिरिने ब्याज रकम",
+    "simple_definition_en": "Cost of borrowing money, paid as interest on loans",
+    "example_ne": "बैंक ऋणको मासिक ब्याज रु. ४,५०० खर्च लेखियो",
+    "related_terms": [
+      "expense",
+      "liability"
+    ],
+    "concept_key": "interest_expense",
+    "aliases": [
+      "interest expense",
+      "Interest Expense",
+      "ब्याज खर्च"
+    ],
+    "account_class": "expense",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-084",
+    "term_en": "commission income",
+    "term_ne": "कमिसन आय (Commission Income)",
+    "simple_definition_ne": "बिक्री वा सेवा सिफारिसबाट प्राप्त हुने शुल्क",
+    "simple_definition_en": "Fee earned for facilitating sales or services",
+    "example_ne": "एजेन्टले बिक्रीमा ५% कमिसन रु. ५००० पायो",
+    "related_terms": [
+      "income",
+      "sales"
+    ],
+    "concept_key": "commission_income",
+    "aliases": [
+      "commission income",
+      "Commission Income",
+      "कमिसन आय"
+    ],
+    "account_class": "income",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-085",
+    "term_en": "loan",
+    "term_ne": "ऋण (Loan)",
+    "simple_definition_ne": "भविष्यमा ब्याज सहित तिर्ने गरी लिइएको रकम",
+    "simple_definition_en": "Amount borrowed that must be repaid with interest",
+    "example_ne": "व्यवसाय विस्तारका लागि रु. ५,००,००० ऋण लियो",
+    "related_terms": [
+      "liability",
+      "interest expense"
+    ],
+    "concept_key": "loan",
+    "aliases": [
+      "loan",
+      "Loan",
+      "ऋण"
+    ],
+    "account_class": "liability",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-086",
+    "term_en": "overdraft",
+    "term_ne": "अधिविकर्ष (Overdraft)",
+    "simple_definition_ne": "बैंक खातामा भएको रकमभन्दा बढी झिक्ने सुविधा",
+    "simple_definition_en": "Facility to withdraw more than the bank balance, a short-term liability",
+    "example_ne": "बैंक ओभरड्राफ्ट रु. २०,००० ले दायित्व बढ्यो",
+    "related_terms": [
+      "bank",
+      "current liability"
+    ],
+    "concept_key": "overdraft",
+    "aliases": [
+      "overdraft",
+      "Overdraft",
+      "अधिविकर्ष"
+    ],
+    "account_class": "liability",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-087",
+    "term_en": "payroll",
+    "term_ne": "तलब सूची (Payroll)",
+    "simple_definition_ne": "कर्मचारीहरूको तलब, भत्ता र कट्टीको विस्तृत विवरण",
+    "simple_definition_en": "Detailed record of employee salaries, allowances, and deductions",
+    "example_ne": "पेरोलमा आधारभूत तलब र एसएसएफ कट्टी उल्लेख छ",
+    "related_terms": [
+      "salary payable",
+      "SSF"
+    ],
+    "concept_key": "payroll",
+    "aliases": [
+      "payroll",
+      "Payroll",
+      "तलब सूची"
+    ],
+    "account_class": "expense",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-088",
+    "term_en": "payroll tax",
+    "term_ne": "तलब कर / सामाजिक कर (Payroll Tax)",
+    "simple_definition_ne": "तलबमा लाग्ने कर तथा सामाजिक सुरक्षा योगदान",
+    "simple_definition_en": "Tax and social security contributions on wages",
+    "example_ne": "कर्मचारीको तलबबाट आयकर र एसएसएफ काटियो",
+    "related_terms": [
+      "income tax",
+      "SSF"
+    ],
+    "concept_key": "payroll_tax",
+    "aliases": [
+      "payroll tax",
+      "Payroll Tax",
+      "तलब कर / सामाजिक कर",
+      "तलब कर",
+      "सामाजिक कर"
+    ],
+    "account_class": "liability",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-089",
+    "term_en": "remittance",
+    "term_ne": "रेमिट्यान्स / विप्रेषण (Remittance)",
+    "simple_definition_ne": "एक ठाउँबाट अर्को ठाउँमा पैसा पठाउने कार्य",
+    "simple_definition_en": "Money sent from one place to another",
+    "example_ne": "विदेशबाट रेमिट्यान्स आय रु. २,००,००० प्राप्त भयो",
+    "related_terms": [
+      "income",
+      "bank"
+    ],
+    "concept_key": "remittance",
+    "aliases": [
+      "remittance",
+      "Remittance",
+      "रेमिट्यान्स / विप्रेषण",
+      "रेमिट्यान्स",
+      "विप्रेषण"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-090",
+    "term_en": "imprest fund",
+    "term_ne": "अग्रिम कोष (Imprest Fund)",
+    "simple_definition_ne": "निश्चित रकम तोकी साना खर्चका लागि राखिने नगद",
+    "simple_definition_en": "Fixed amount of cash kept for minor expenses, replenished regularly",
+    "example_ne": "अग्रिम कोष रु. ३,००० बाट यातायात खर्च दिइयो",
+    "related_terms": [
+      "petty cash",
+      "cash"
+    ],
+    "concept_key": "imprest_fund",
+    "aliases": [
+      "imprest fund",
+      "Imprest Fund",
+      "अग्रिम कोष"
+    ],
+    "account_class": "asset",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-091",
+    "term_en": "purchase order",
+    "term_ne": "खरिद आदेश (Purchase Order)",
+    "simple_definition_ne": "आपूर्तिकर्तालाई सामान आपूर्ति गर्न लिखित निर्देशन",
+    "simple_definition_en": "Written document authorizing supplier to deliver goods",
+    "example_ne": "खरिद आदेश नं १०१ अनुसार सामान मगाइयो",
+    "related_terms": [
+      "purchase",
+      "invoice"
+    ],
+    "concept_key": "purchase_order",
+    "aliases": [
+      "purchase order",
+      "Purchase Order",
+      "खरिद आदेश"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-092",
+    "term_en": "sales order",
+    "term_ne": "बिक्री आदेश (Sales Order)",
+    "simple_definition_ne": "ग्राहकले दिएको सामान खरिद गर्ने लिखित अनुरोध",
+    "simple_definition_en": "Customer's written request to purchase goods",
+    "example_ne": "बिक्री आदेशको आधारमा इनभ्वाइस बनाइयो",
+    "related_terms": [
+      "sales",
+      "invoice"
+    ],
+    "concept_key": "sales_order",
+    "aliases": [
+      "sales order",
+      "Sales Order",
+      "बिक्री आदेश"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-093",
+    "term_en": "credit note",
+    "term_ne": "क्रेडिट नोट (Credit Note)",
+    "simple_definition_ne": "ग्राहकलाई फिर्ता वा छुट दिँदा बिक्रेताले पठाउने कागज",
+    "simple_definition_en": "Document sent by seller to buyer for returns or discount, reducing amount owed",
+    "example_ne": "रु. २००० को सामान फिर्ता भएपछि क्रेडिट नोट जारी भयो",
+    "related_terms": [
+      "debit note",
+      "sales return"
+    ],
+    "concept_key": "credit_note",
+    "aliases": [
+      "credit note",
+      "Credit Note",
+      "क्रेडिट नोट"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-094",
+    "term_en": "debit note",
+    "term_ne": "डेबिट नोट (Debit Note)",
+    "simple_definition_ne": "खरिद फिर्ता वा अतिरिक्त रकम माग गर्दा पठाइने कागज",
+    "simple_definition_en": "Document sent by buyer to seller for purchase return or extra claim",
+    "example_ne": "रु. १५०० को खरिद फिर्ता गर्दा डेबिट नोट पठाइयो",
+    "related_terms": [
+      "credit note",
+      "purchase return"
+    ],
+    "concept_key": "debit_note",
+    "aliases": [
+      "debit note",
+      "Debit Note",
+      "डेबिट नोट"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-095",
+    "term_en": "chart of accounts",
+    "term_ne": "खाता योजना (Chart of Accounts)",
+    "simple_definition_ne": "सबै खाताहरूको कोड सहितको सूची",
+    "simple_definition_en": "List of all accounts with codes used by a business",
+    "example_ne": "खाता योजनामा ११० नगद, ४१० बिक्री जस्ता कोड छन्",
+    "related_terms": [
+      "ledger",
+      "account"
+    ],
+    "concept_key": "chart_of_accounts",
+    "aliases": [
+      "chart of accounts",
+      "Chart of Accounts",
+      "खाता योजना"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-096",
+    "term_en": "general ledger",
+    "term_ne": "सामान्य खाताबही (General Ledger)",
+    "simple_definition_ne": "सबै मुख्य खाताहरू राखिने पूर्ण खाताबही",
+    "simple_definition_en": "Master ledger containing all accounts",
+    "example_ne": "सामान्य खाताबहीमा सम्पत्ति, दायित्व, आय र खर्चका खाता छन्",
+    "related_terms": [
+      "ledger",
+      "trial balance"
+    ],
+    "concept_key": "general_ledger",
+    "aliases": [
+      "general ledger",
+      "General Ledger",
+      "सामान्य खाताबही"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-097",
+    "term_en": "subsidiary ledger",
+    "term_ne": "सहायक खाताबही (Subsidiary Ledger)",
+    "simple_definition_ne": "व्यक्तिगत देनदार वा लेनदारको विस्तार राख्ने सहायक बही",
+    "simple_definition_en": "Detailed ledger for individual debtors or creditors, supporting control account",
+    "example_ne": "लेनदार सहायक बहीमा हरेक आपूर्तिकर्ताको हिसाब छ",
+    "related_terms": [
+      "general ledger",
+      "debtors"
+    ],
+    "concept_key": "subsidiary_ledger",
+    "aliases": [
+      "subsidiary ledger",
+      "Subsidiary Ledger",
+      "सहायक खाताबही"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-098",
+    "term_en": "control account",
+    "term_ne": "नियन्त्रण खाता (Control Account)",
+    "simple_definition_ne": "सहायक बहीहरूको कुल योग राख्ने मुख्य खाता",
+    "simple_definition_en": "Summary account in general ledger representing total of subsidiary ledger",
+    "example_ne": "देनदार नियन्त्रण खातामा कुल देनदार रकम देखिन्छ",
+    "related_terms": [
+      "general ledger",
+      "subsidiary ledger"
+    ],
+    "concept_key": "control_account",
+    "aliases": [
+      "control account",
+      "Control Account",
+      "नियन्त्रण खाता"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-099",
+    "term_en": "manufacturing account",
+    "term_ne": "उत्पादन खाता (Manufacturing Account)",
+    "simple_definition_ne": "उत्पादित सामानको लागत निकाल्ने विवरण",
+    "simple_definition_en": "Account showing cost of goods manufactured",
+    "example_ne": "कच्चा पदार्थ, श्रम र अन्य खर्च जोडी उत्पादन लागत निकालियो",
+    "related_terms": [
+      "trading account",
+      "cost of goods sold"
+    ],
+    "concept_key": "manufacturing_account",
+    "aliases": [
+      "manufacturing account",
+      "Manufacturing Account",
+      "उत्पादन खाता"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-100",
+    "term_en": "work-in-progress",
+    "term_ne": "अधुरो उत्पादन (Work-in-Progress)",
+    "simple_definition_ne": "उत्पादन प्रक्रियामा रहेको अधुरो सामान",
+    "simple_definition_en": "Partly finished goods still in production process",
+    "example_ne": "वर्ष अन्तमा अधुरो उत्पादन रु. २५,००० मूल्याङ्कन गरियो",
+    "related_terms": [
+      "stock",
+      "manufacturing account"
+    ],
+    "concept_key": "work_in_progress",
+    "aliases": [
+      "work-in-progress",
+      "work in progress",
+      "Work-in-Progress",
+      "अधुरो उत्पादन"
+    ],
+    "account_class": "stock",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-101",
+    "term_en": "finished goods",
+    "term_ne": "तयारी माल (Finished Goods)",
+    "simple_definition_ne": "उत्पादन पूरा भई बिक्रीका लागि तयार सामान",
+    "simple_definition_en": "Completed goods ready for sale",
+    "example_ne": "गोदाममा तयारी मालको मौज्दात रु. १,००,००० छ",
+    "related_terms": [
+      "stock",
+      "sales"
+    ],
+    "concept_key": "finished_goods",
+    "aliases": [
+      "finished goods",
+      "Finished Goods",
+      "तयारी माल"
+    ],
+    "account_class": "stock",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-102",
+    "term_en": "raw materials",
+    "term_ne": "कच्चा पदार्थ (Raw Materials)",
+    "simple_definition_ne": "उत्पादनका लागि प्रयोग हुने आधारभूत सामग्री",
+    "simple_definition_en": "Basic materials used in manufacturing process",
+    "example_ne": "फर्निचर उद्योगमा काठ कच्चा पदार्थ हो",
+    "related_terms": [
+      "manufacturing account",
+      "stock"
+    ],
+    "concept_key": "raw_materials",
+    "aliases": [
+      "raw materials",
+      "Raw Materials",
+      "कच्चा पदार्थ"
+    ],
+    "account_class": "stock",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-103",
+    "term_en": "dividend",
+    "term_ne": "लाभांश (Dividend)",
+    "simple_definition_ne": "कम्पनीको नाफाबाट सेयरधनीलाई बाँडिने रकम",
+    "simple_definition_en": "Distribution of company profit to shareholders",
+    "example_ne": "प्रति सेयर रु. १५ लाभांश घोषणा भयो",
+    "related_terms": [
+      "profit",
+      "equity"
+    ],
+    "concept_key": "dividend",
+    "aliases": [
+      "dividend",
+      "Dividend",
+      "लाभांश"
+    ],
+    "account_class": "equity",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-104",
+    "term_en": "retained earnings",
+    "term_ne": "सञ्चित आम्दानी (Retained Earnings)",
+    "simple_definition_ne": "लाभांश नबाँडी व्यवसायमा सञ्चय गरिएको नाफा",
+    "simple_definition_en": "Profit kept in the business rather than distributed as dividend",
+    "example_ne": "गत वर्षको नाफाबाट रु. ७०,००० सञ्चित आम्दानीमा राखियो",
+    "related_terms": [
+      "equity",
+      "profit"
+    ],
+    "concept_key": "retained_earnings",
+    "aliases": [
+      "retained earnings",
+      "Retained Earnings",
+      "सञ्चित आम्दानी"
+    ],
+    "account_class": "equity",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-105",
+    "term_en": "capital expenditure",
+    "term_ne": "पूँजीगत खर्च (Capital Expenditure)",
+    "simple_definition_ne": "दीर्घकालीन सम्पत्ति खरिद वा सुधारमा गरिने खर्च",
+    "simple_definition_en": "Spending on purchase or improvement of long-term assets",
+    "example_ne": "नयाँ गाडी खरिद पूँजीगत खर्च हो",
+    "related_terms": [
+      "fixed asset",
+      "depreciation"
+    ],
+    "concept_key": "capital_expenditure",
+    "aliases": [
+      "capital expenditure",
+      "Capital Expenditure",
+      "पूँजीगत खर्च"
+    ],
+    "account_class": "asset",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-106",
+    "term_en": "revenue expenditure",
+    "term_ne": "राजस्वगत खर्च (Revenue Expenditure)",
+    "simple_definition_ne": "दैनिक सञ्चालनमा हुने नियमित खर्च",
+    "simple_definition_en": "Day-to-day running expenses, benefit within one year",
+    "example_ne": "मर्मत खर्च राजस्वगत खर्च हो",
+    "related_terms": [
+      "expense",
+      "capital expenditure"
+    ],
+    "concept_key": "revenue_expenditure",
+    "aliases": [
+      "revenue expenditure",
+      "Revenue Expenditure",
+      "राजस्वगत खर्च"
+    ],
+    "account_class": "expense",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-107",
+    "term_en": "internal audit",
+    "term_ne": "आन्तरिक लेखापरीक्षण (Internal Audit)",
+    "simple_definition_ne": "कम्पनी भित्रैबाट गरिने नियमित जाँच",
+    "simple_definition_en": "Audit conducted by company's own staff for control",
+    "example_ne": "त्रैमासिक आन्तरिक लेखापरीक्षणले त्रुटि सुधार गर्यो",
+    "related_terms": [
+      "auditor",
+      "voucher"
+    ],
+    "concept_key": "internal_audit",
+    "aliases": [
+      "internal audit",
+      "Internal Audit",
+      "आन्तरिक लेखापरीक्षण"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-108",
+    "term_en": "external audit",
+    "term_ne": "बाह्य लेखापरीक्षण (External Audit)",
+    "simple_definition_ne": "स्वतन्त्र बाह्य लेखापरीक्षकबाट वार्षिक जाँच",
+    "simple_definition_en": "Independent annual examination by external auditor",
+    "example_ne": "बाह्य लेखापरीक्षकले वार्षिक प्रतिवेदन प्रमाणित गरे",
+    "related_terms": [
+      "auditor",
+      "balance sheet"
+    ],
+    "concept_key": "external_audit",
+    "aliases": [
+      "external audit",
+      "External Audit",
+      "बाह्य लेखापरीक्षण"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-109",
+    "term_en": "accounting software",
+    "term_ne": "लेखा सफ्टवेयर (Accounting Software)",
+    "simple_definition_ne": "कम्प्युटरमा लेखा राख्न प्रयोग हुने प्रोग्राम",
+    "simple_definition_en": "Program used to record and process accounting transactions on computer",
+    "example_ne": "स्वस्तिक, ट्याली वा मुनप्रो जस्ता लेखा सफ्टवेयर प्रचलित छन्",
+    "related_terms": [
+      "bookkeeping",
+      "ledger"
+    ],
+    "concept_key": "accounting_software",
+    "aliases": [
+      "accounting software",
+      "Accounting Software",
+      "लेखा सफ्टवेयर"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-110",
+    "term_en": "transaction",
+    "term_ne": "कारोबार (Transaction)",
+    "simple_definition_ne": "वित्तीय मूल्यको आदान प्रदान, जसले वित्तीय विवरण परिवर्तन गर्छ",
+    "simple_definition_en": "Exchange of financial value that changes financial statements",
+    "example_ne": "नगद रु. २००० मा माल बिक्री एक कारोबार हो",
+    "related_terms": [
+      "journal entry",
+      "debit"
+    ],
+    "concept_key": "transaction",
+    "aliases": [
+      "transaction",
+      "Transaction",
+      "कारोबार"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-111",
+    "term_en": "financial statements",
+    "term_ne": "वित्तीय विवरणहरू (Financial Statements)",
+    "simple_definition_ne": "वासलात, आय विवरण र नगद प्रवाह जस्ता औपचारिक रेकर्ड",
+    "simple_definition_en": "Formal records like balance sheet, income statement, and cash flow",
+    "example_ne": "वार्षिक वित्तीय विवरण साधारण सभामा पेश गरियो",
+    "related_terms": [
+      "balance sheet",
+      "income statement"
+    ],
+    "concept_key": "financial_statements",
+    "aliases": [
+      "financial statements",
+      "Financial Statements",
+      "वित्तीय विवरणहरू"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-112",
+    "term_en": "ledger account",
+    "term_ne": "खाताबही खाता (Ledger Account)",
+    "simple_definition_ne": "कुनै एक वस्तु वा व्यक्तिको छुट्टै खाताबही पृष्ठ",
+    "simple_definition_en": "A separate page in ledger for a particular item or person",
+    "example_ne": "भाडा खर्चको खाताबही खातामा सबै भाडा भुक्तानी देखिन्छ",
+    "related_terms": [
+      "ledger",
+      "account"
+    ],
+    "concept_key": "ledger_account",
+    "aliases": [
+      "ledger account",
+      "Ledger Account",
+      "खाताबही खाता"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-113",
+    "term_en": "error of omission",
+    "term_ne": "छुट त्रुटि (Error of Omission)",
+    "simple_definition_ne": "कारोबार पूरै लेख्न बिर्संदा हुने त्रुटि",
+    "simple_definition_en": "Error when a transaction is completely left out",
+    "example_ne": "रु. ५०० को खरिद प्रविष्टि गर्न छुट्यो, त्रुटि सुधार गरियो",
+    "related_terms": [
+      "journal entry",
+      "trial balance"
+    ],
+    "concept_key": "error_of_omission",
+    "aliases": [
+      "error of omission",
+      "Error of Omission",
+      "छुट त्रुटि"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-114",
+    "term_en": "error of commission",
+    "term_ne": "गलत लेखाइ त्रुटि (Error of Commission)",
+    "simple_definition_ne": "सही खाता प्रकार तर गलत सहायक खातामा प्रविष्टि हुने गल्ती",
+    "simple_definition_en": "Entry in wrong subsidiary account but correct type of account",
+    "example_ne": "रामको खातामा हुनुपर्ने प्रविष्टि श्यामकोमा गरियो",
+    "related_terms": [
+      "trial balance",
+      "subsidiary ledger"
+    ],
+    "concept_key": "error_of_commission",
+    "aliases": [
+      "error of commission",
+      "Error of Commission",
+      "गलत लेखाइ त्रुटि"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-115",
+    "term_en": "compensating error",
+    "term_ne": "क्षतिपूरक त्रुटि (Compensating Error)",
+    "simple_definition_ne": "एक त्रुटि अर्को त्रुटिले रद्द गर्ने अवस्था",
+    "simple_definition_en": "One error cancels out another error",
+    "example_ne": "खर्च रु. १०० ले बढी र आय पनि रु. १०० ले बढी लेखिँदा परीक्षण मिल्यो",
+    "related_terms": [
+      "error of omission",
+      "trial balance"
+    ],
+    "concept_key": "compensating_error",
+    "aliases": [
+      "compensating error",
+      "Compensating Error",
+      "क्षतिपूरक त्रुटि"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-116",
+    "term_en": "suspense account",
+    "term_ne": "सस्पेन्स खाता (Suspense Account)",
+    "simple_definition_ne": "त्रुटि पहिचान नभएसम्म परीक्षण सन्तुलनको फरक राखिने अस्थायी खाता",
+    "simple_definition_en": "Temporary account to hold difference in trial balance until error found",
+    "example_ne": "रु. २५० को फरक सस्पेन्स खातामा सारियो, पछि सुधार गरियो",
+    "related_terms": [
+      "trial balance",
+      "error"
+    ],
+    "concept_key": "suspense_account",
+    "aliases": [
+      "suspense account",
+      "Suspense Account",
+      "सस्पेन्स खाता"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-117",
+    "term_en": "contingent liability",
+    "term_ne": "सम्भावित दायित्व (Contingent Liability)",
+    "simple_definition_ne": "भविष्यको अनिश्चित घटनाको कारण मात्र सिर्जना हुने सम्भावित दायित्व",
+    "simple_definition_en": "Possible liability that may arise based on a future event",
+    "example_ne": "अदालतमा मुद्दा विचाराधीन, हारेमा रु. १ लाख दायित्व बन्न सक्छ",
+    "related_terms": [
+      "liability",
+      "provision"
+    ],
+    "concept_key": "contingent_liability",
+    "aliases": [
+      "contingent liability",
+      "Contingent Liability",
+      "सम्भावित दायित्व"
+    ],
+    "account_class": "liability",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-118",
+    "term_en": "depreciation fund",
+    "term_ne": "ह्रास कोष (Depreciation Fund)",
+    "simple_definition_ne": "सम्पत्ति प्रतिस्थापनका लागि छुट्टै रकम जम्मा गर्ने कोष",
+    "simple_definition_en": "Fund created to accumulate money for asset replacement",
+    "example_ne": "मेसिन बदल्न वार्षिक रु. २०,००० ह्रास कोषमा राखियो",
+    "related_terms": [
+      "depreciation",
+      "asset"
+    ],
+    "concept_key": "depreciation_fund",
+    "aliases": [
+      "depreciation fund",
+      "Depreciation Fund",
+      "ह्रास कोष"
+    ],
+    "account_class": "asset",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-119",
+    "term_en": "revaluation",
+    "term_ne": "पुनर्मूल्याङ्कन (Revaluation)",
+    "simple_definition_ne": "सम्पत्तिको मूल्य परिवर्तन भएमा नयाँ बजार मूल्य अनुसार समायोजन",
+    "simple_definition_en": "Adjusting asset value to current market price",
+    "example_ne": "जग्गाको मूल्य बढ्यो, पुनर्मूल्याङ्कन गरी वासलातमा चढायो",
+    "related_terms": [
+      "fixed asset",
+      "equity"
+    ],
+    "concept_key": "revaluation",
+    "aliases": [
+      "revaluation",
+      "Revaluation",
+      "पुनर्मूल्याङ्कन"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-120",
+    "term_en": "write off",
+    "term_ne": "बट्टा खर्च (Write Off)",
+    "simple_definition_ne": "असुल नहुने ऋण वा मूल्यहीन सम्पत्तिलाई बहीबाट हटाउने",
+    "simple_definition_en": "Removing worthless asset or bad debt from books",
+    "example_ne": "पुरानो कम्प्युटरको बाँकी मूल्य बट्टा खर्च गरियो",
+    "related_terms": [
+      "bad debts",
+      "depreciation"
+    ],
+    "concept_key": "write_off",
+    "aliases": [
+      "write off",
+      "Write Off",
+      "बट्टा खर्च"
+    ],
+    "account_class": "expense",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-121",
+    "term_en": "inventory valuation",
+    "term_ne": "मौज्दात मूल्याङ्कन (Inventory Valuation)",
+    "simple_definition_ne": "स्टकको मूल्य निकाल्ने विधि, जस्तै FIFO वा औसत",
+    "simple_definition_en": "Method to determine value of stock, e.g., FIFO or average",
+    "example_ne": "वर्षान्त मौज्दात औसत लागत विधिबाट रु. ९०,००० मूल्याङ्कन भयो",
+    "related_terms": [
+      "stock",
+      "cost of goods sold"
+    ],
+    "concept_key": "inventory_valuation",
+    "aliases": [
+      "inventory valuation",
+      "Inventory Valuation",
+      "मौज्दात मूल्याङ्कन"
+    ],
+    "account_class": "stock",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-122",
+    "term_en": "fifo",
+    "term_ne": "पहिलो भित्र पहिलो बाहिर (FIFO)",
+    "simple_definition_ne": "पहिले किनेको सामान पहिले बिक्री भएको मान्ने मूल्याङ्कन विधि",
+    "simple_definition_en": "First-In-First-Out method; oldest stock sold first",
+    "example_ne": "मूल्य बढ्दा FIFO ले कम लागत देखाई उच्च नाफा दिन्छ",
+    "related_terms": [
+      "inventory valuation",
+      "cost of goods sold"
+    ],
+    "concept_key": "fifo",
+    "aliases": [
+      "fifo",
+      "FIFO",
+      "पहिलो भित्र पहिलो बाहिर"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-123",
+    "term_en": "lifo",
+    "term_ne": "अन्तिम भित्र पहिलो बाहिर (LIFO)",
+    "simple_definition_ne": "पछिल्लो किनेको सामान पहिले बिक्री हुने मान्यता",
+    "simple_definition_en": "Last-In-First-Out method; newest stock sold first",
+    "example_ne": "मूल्य बढ्दा LIFO ले बढी लागत देखाई कम नाफा दिन्छ",
+    "related_terms": [
+      "inventory valuation",
+      "cost of goods sold"
+    ],
+    "concept_key": "lifo",
+    "aliases": [
+      "lifo",
+      "LIFO",
+      "अन्तिम भित्र पहिलो बाहिर"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-124",
+    "term_en": "weighted average cost",
+    "term_ne": "भारित औसत लागत (Weighted Average Cost)",
+    "simple_definition_ne": "कुल लागतलाई परिमाणले भाग गरी औसत मूल्य निकाल्ने विधि",
+    "simple_definition_en": "Method using average cost of all units available for sale",
+    "example_ne": "औसत लागत प्रति एकाइ रु. ११५ पुग्यो",
+    "related_terms": [
+      "inventory valuation",
+      "FIFO"
+    ],
+    "concept_key": "weighted_average_cost",
+    "aliases": [
+      "weighted average cost",
+      "Weighted Average Cost",
+      "भारित औसत लागत"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-125",
+    "term_en": "perpetual inventory",
+    "term_ne": "निरन्तर मौज्दात प्रणाली (Perpetual Inventory)",
+    "simple_definition_ne": "हरेक खरिद बिक्रीपछि तुरुन्तै स्टक अद्यावधिक गर्ने प्रणाली",
+    "simple_definition_en": "System updating stock continuously with each purchase and sale",
+    "example_ne": "बारकोड स्क्यानले निरन्तर मौज्दात कायम रहन्छ",
+    "related_terms": [
+      "stock",
+      "inventory valuation"
+    ],
+    "concept_key": "perpetual_inventory",
+    "aliases": [
+      "perpetual inventory",
+      "Perpetual Inventory",
+      "निरन्तर मौज्दात प्रणाली"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-126",
+    "term_en": "periodic inventory",
+    "term_ne": "आवधिक मौज्दात प्रणाली (Periodic Inventory)",
+    "simple_definition_ne": "निश्चित अवधिमा मात्र स्टक गणना गर्ने पद्धति",
+    "simple_definition_en": "System where stock is counted only at end of a period",
+    "example_ne": "असार मसान्तमा गोदाम स्टक गणना गरियो",
+    "related_terms": [
+      "stock",
+      "perpetual inventory"
+    ],
+    "concept_key": "periodic_inventory",
+    "aliases": [
+      "periodic inventory",
+      "Periodic Inventory",
+      "आवधिक मौज्दात प्रणाली"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-127",
+    "term_en": "purchase return",
+    "term_ne": "खरिद फिर्ता (Purchase Return)",
+    "simple_definition_ne": "खरिद गरेको सामानमा खराबीले फिर्ता पठाउने कारोबार",
+    "simple_definition_en": "Goods returned to supplier due to defects, etc.",
+    "example_ne": "रु. ७००० को क्षतिग्रस्त माल खरिद फिर्ता गरियो",
+    "related_terms": [
+      "purchase",
+      "return"
+    ],
+    "concept_key": "purchase_return",
+    "aliases": [
+      "purchase return",
+      "Purchase Return",
+      "खरिद फिर्ता"
+    ],
+    "account_class": "expense",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-128",
+    "term_en": "sales return",
+    "term_ne": "बिक्री फिर्ता (Sales Return)",
+    "simple_definition_ne": "ग्राहकले फिर्ता पठाएको सामान",
+    "simple_definition_en": "Goods returned by customers",
+    "example_ne": "ग्राहकले रु. २५०० को बिक्री फिर्ता गरे",
+    "related_terms": [
+      "sales",
+      "return"
+    ],
+    "concept_key": "sales_return",
+    "aliases": [
+      "sales return",
+      "Sales Return",
+      "बिक्री फिर्ता"
+    ],
+    "account_class": "income",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-129",
+    "term_en": "proprietor",
+    "term_ne": "मालिक (Proprietor)",
+    "simple_definition_ne": "एकल व्यवसायको सञ्चालक तथा स्वामी",
+    "simple_definition_en": "Owner and operator of a sole proprietorship",
+    "example_ne": "मालिकले पूँजी लगानी गरेर व्यवसाय सुरु गरे",
+    "related_terms": [
+      "capital",
+      "equity"
+    ],
+    "concept_key": "proprietor",
+    "aliases": [
+      "proprietor",
+      "Proprietor",
+      "मालिक"
+    ],
+    "account_class": "equity",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-130",
+    "term_en": "partnership",
+    "term_ne": "साझेदारी (Partnership)",
+    "simple_definition_ne": "दुई वा बढी व्यक्तिले संयुक्त रूपमा व्यवसाय चलाउने संरचना",
+    "simple_definition_en": "Business structure with two or more owners sharing profits",
+    "example_ne": "साझेदारी सम्झौता अनुसार नाफा बराबर बाँडियो",
+    "related_terms": [
+      "equity",
+      "capital"
+    ],
+    "concept_key": "partnership",
+    "aliases": [
+      "partnership",
+      "Partnership",
+      "साझेदारी"
+    ],
+    "account_class": "equity",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-131",
+    "term_en": "company",
+    "term_ne": "कम्पनी (Company)",
+    "simple_definition_ne": "सेयरधनी सदस्य भएको, कानूनी रूपमा छुट्टै अस्तित्व भएको संगठन",
+    "simple_definition_en": "Legal entity separate from its owners with shareholders",
+    "example_ne": "प्रा. लि. कम्पनीले सेयर जारी गरेर पूँजी जुटाइ",
+    "related_terms": [
+      "share capital",
+      "dividend"
+    ],
+    "concept_key": "company",
+    "aliases": [
+      "company",
+      "Company",
+      "कम्पनी"
+    ],
+    "account_class": "equity",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-132",
+    "term_en": "share capital",
+    "term_ne": "सेयर पूँजी (Share Capital)",
+    "simple_definition_ne": "कम्पनीले सेयर जारी गरी जुटाएको पूँजी",
+    "simple_definition_en": "Capital raised by issuing shares",
+    "example_ne": "अधिकृत पूँजी रु. ५० लाख, जारी पूँजी रु. ३० लाख",
+    "related_terms": [
+      "company",
+      "equity"
+    ],
+    "concept_key": "share_capital",
+    "aliases": [
+      "share capital",
+      "Share Capital",
+      "सेयर पूँजी"
+    ],
+    "account_class": "equity",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-133",
+    "term_en": "face value",
+    "term_ne": "अंकित मूल्य (Face Value)",
+    "simple_definition_ne": "सेयर प्रमाणपत्रमा लेखिएको प्रति सेयर मूल्य",
+    "simple_definition_en": "Nominal value printed on share certificate",
+    "example_ne": "प्रति सेयर अंकित मूल्य रु. १०० छ",
+    "related_terms": [
+      "share capital",
+      "dividend"
+    ],
+    "concept_key": "face_value",
+    "aliases": [
+      "face value",
+      "Face Value",
+      "अंकित मूल्य"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-134",
+    "term_en": "premium",
+    "term_ne": "प्रिमियम / अधिमूल्य (Premium)",
+    "simple_definition_ne": "सेयर अंकित मूल्यभन्दा बढीमा जारी गर्दाको अतिरिक्त रकम",
+    "simple_definition_en": "Amount received above the face value of shares",
+    "example_ne": "रु. १०० अंकितको सेयर रु. १५० मा बिक्री भयो, प्रिमियम रु. ५०",
+    "related_terms": [
+      "share capital",
+      "equity"
+    ],
+    "concept_key": "premium",
+    "aliases": [
+      "premium",
+      "Premium",
+      "प्रिमियम / अधिमूल्य",
+      "प्रिमियम",
+      "अधिमूल्य"
+    ],
+    "account_class": "equity",
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-135",
+    "term_en": "book value",
+    "term_ne": "बही मूल्य (Book Value)",
+    "simple_definition_ne": "सम्पत्तिको लागतबाट सञ्चित ह्रास घटाएपछिको मूल्य",
+    "simple_definition_en": "Cost of asset minus accumulated depreciation",
+    "example_ne": "गाडीको बही मूल्य रु. ४,००,००० छ",
+    "related_terms": [
+      "depreciation",
+      "fixed asset"
+    ],
+    "concept_key": "book_value",
+    "aliases": [
+      "book value",
+      "Book Value",
+      "बही मूल्य"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  },
+  {
+    "id": "ag-136",
+    "term_en": "market value",
+    "term_ne": "बजार मूल्य (Market Value)",
+    "simple_definition_ne": "हाल बजारमा सम्पत्ति वा सेयर किनबेच हुने मूल्य",
+    "simple_definition_en": "Current price at which asset can be sold in market",
+    "example_ne": "जग्गाको बजार मूल्य बही मूल्यभन्दा धेरै छ",
+    "related_terms": [
+      "book value",
+      "revaluation"
+    ],
+    "concept_key": "market_value",
+    "aliases": [
+      "market value",
+      "Market Value",
+      "बजार मूल्य"
+    ],
+    "account_class": null,
+    "source": "user_exact"
+  }
+]

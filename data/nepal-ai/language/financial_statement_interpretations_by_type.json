@@ -1,0 +1,60 @@
+{
+  "balance_sheet": [
+    "finstmt-001",
+    "finstmt-002",
+    "finstmt-003",
+    "finstmt-004",
+    "finstmt-005",
+    "finstmt-006",
+    "finstmt-007",
+    "finstmt-008",
+    "finstmt-009",
+    "finstmt-010"
+  ],
+  "profit_loss": [
+    "finstmt-011",
+    "finstmt-012",
+    "finstmt-013",
+    "finstmt-014",
+    "finstmt-015",
+    "finstmt-016",
+    "finstmt-017",
+    "finstmt-018",
+    "finstmt-019",
+    "finstmt-020"
+  ],
+  "cash_flow_statement": [
+    "finstmt-021",
+    "finstmt-022",
+    "finstmt-023",
+    "finstmt-024",
+    "finstmt-025",
+    "finstmt-026",
+    "finstmt-027",
+    "finstmt-028",
+    "finstmt-029",
+    "finstmt-030"
+  ],
+  "trial_balance": [
+    "finstmt-031",
+    "finstmt-032",
+    "finstmt-033",
+    "finstmt-034",
+    "finstmt-035",
+    "finstmt-036",
+    "finstmt-037",
+    "finstmt-038"
+  ],
+  "bank_reconciliation": [
+    "finstmt-039",
+    "finstmt-040",
+    "finstmt-041",
+    "finstmt-042",
+    "finstmt-043",
+    "finstmt-044",
+    "finstmt-045",
+    "finstmt-046",
+    "finstmt-047",
+    "finstmt-048"
+  ]
+}

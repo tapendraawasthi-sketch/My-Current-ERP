@@ -1,0 +1,852 @@
+{
+  "scene_001": {
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "kirana shop owner, basic education, mobile user",
+    "key_behaviors": [
+      "warm greeting",
+      "capability explanation with examples",
+      "confirmation with running summary",
+      "encouragement"
+    ],
+    "turn_count": 8
+  },
+  "scene_002": {
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "tea shop owner, uses mix of Roman and Nepali, busy",
+    "key_behaviors": [
+      "time-appropriate greeting",
+      "categorization",
+      "running subtotal",
+      "net calculation"
+    ],
+    "turn_count": 8
+  },
+  "scene_003": {
+    "scenario_type": "question_session",
+    "user_profile": "small farmer, older, prefers pure Nepali",
+    "key_behaviors": [
+      "clear definition with example",
+      "progressive disclosure",
+      "context preservation",
+      "affirmation"
+    ],
+    "turn_count": 8
+  },
+  "scene_004": {
+    "scenario_type": "error_correction_session",
+    "user_profile": "retail shop owner, semi-literate, uses Roman",
+    "key_behaviors": [
+      "non-judgmental correction",
+      "explicit confirmation",
+      "audit trail (cancel id)",
+      "reassurance"
+    ],
+    "turn_count": 8
+  },
+  "scene_005": {
+    "scenario_type": "report_request",
+    "user_profile": "small electronics shop, data-savvy, mix language",
+    "key_behaviors": [
+      "clarifying questions",
+      "structured summary",
+      "drill-down",
+      "export offer"
+    ],
+    "turn_count": 8
+  },
+  "scene_006": {
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "young entrepreneur, tech-savvy, English/Roman mix",
+    "key_behaviors": [
+      "personalized setup",
+      "domain-aware suggestion",
+      "contextual praise",
+      "path to next step"
+    ],
+    "turn_count": 8
+  },
+  "scene_007": {
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "street food vendor, very busy, shorthand Roman",
+    "key_behaviors": [
+      "accepts shorthand math",
+      "informal tone",
+      "quick confirmation",
+      "running motivation"
+    ],
+    "turn_count": 10
+  },
+  "scene_008": {
+    "scenario_type": "question_session",
+    "user_profile": "tailor shop owner, asks detailed procedural questions",
+    "key_behaviors": [
+      "hierarchical explanation",
+      "connects concepts",
+      "spontaneous offer",
+      "practical summary"
+    ],
+    "turn_count": 8
+  },
+  "scene_009": {
+    "scenario_type": "error_correction_session",
+    "user_profile": "construction material supplier, uses Nepali, makes date mistakes",
+    "key_behaviors": [
+      "date precision",
+      "duplicate check",
+      "explicit confirmation",
+      "transparency"
+    ],
+    "turn_count": 8
+  },
+  "scene_010": {
+    "scenario_type": "report_request",
+    "user_profile": "cosmetics shop, preparing for tax, needs formal report",
+    "key_behaviors": [
+      "tax awareness",
+      "formal format (IRDA)",
+      "multiple channels",
+      "precise delivery"
+    ],
+    "turn_count": 8
+  },
+  "scene_011": {
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "old pharmacy owner, hesitant, pure Nepali",
+    "key_behaviors": [
+      "empathetic start",
+      "domain-aware demo",
+      "simple walkthrough",
+      "reassurance"
+    ],
+    "turn_count": 8
+  },
+  "scene_012": {
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "butcher shop, loud environment, voice-to-text typos",
+    "key_behaviors": [
+      "intelligent typo correction (kasi->khasi)",
+      "unit tracking",
+      "proactive expense question",
+      "encouraging tone"
+    ],
+    "turn_count": 8
+  },
+  "scene_013": {
+    "scenario_type": "question_session",
+    "user_profile": "student running small tuition, curious about features",
+    "key_behaviors": [
+      "identifies niche use-case",
+      "bulk operation explanation",
+      "proactive upselling (reminders)",
+      "youth-friendly tone"
+    ],
+    "turn_count": 8
+  },
+  "scene_014": {
+    "scenario_type": "error_correction_session",
+    "user_profile": "pani puri stall, tiny transactions, huge volume",
+    "key_behaviors": [
+      "rate awareness",
+      "recalculation",
+      "future-proofing (default change)",
+      "clear audit trail"
+    ],
+    "turn_count": 8
+  },
+  "scene_015": {
+    "scenario_type": "report_request",
+    "user_profile": "grocery store, wants visual chart, semi-literate",
+    "key_behaviors": [
+      "visual representation (text-based chart)",
+      "highest point identification",
+      "product-level drill down",
+      "multimedia export"
+    ],
+    "turn_count": 8
+  },
+  "scene_016": {
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "mobile recharge shop, multi-service, young",
+    "key_behaviors": [
+      "service categorization",
+      "commission handling",
+      "profit split",
+      "automation suggestion"
+    ],
+    "turn_count": 8
+  },
+  "scene_017": {
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "vegetable vendor, early morning, rapid entries",
+    "key_behaviors": [
+      "fast entry",
+      "margin tracking",
+      "proactive missing info",
+      "categorization"
+    ],
+    "turn_count": 10
+  },
+  "scene_018": {
+    "scenario_type": "question_session",
+    "user_profile": "hardware shop owner, needs strong inventory, technical",
+    "key_behaviors": [
+      "complex inventory handling",
+      "link between modules",
+      "proactive feature discovery",
+      "data import"
+    ],
+    "turn_count": 8
+  },
+  "scene_019": {
+    "scenario_type": "error_correction_session",
+    "user_profile": "bakery, late night, tired, deletes wrong entry",
+    "key_behaviors": [
+      "confirmation on destructive action",
+      "undelete/restore capability",
+      "modification after restore",
+      "calm reassurance"
+    ],
+    "turn_count": 10
+  },
+  "scene_020": {
+    "scenario_type": "report_request",
+    "user_profile": "medical store, needs expiry report, formal",
+    "key_behaviors": [
+      "specific regulatory awareness (pharma)",
+      "batch tracking",
+      "actionable suggestion (return/clear)",
+      "secure link"
+    ],
+    "turn_count": 6
+  },
+  "scene_021": {
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "housewife selling homemade pickles, informal, pure Nepali",
+    "key_behaviors": [
+      "warm familial tone",
+      "unit/quantity tracking",
+      "simple demo",
+      "gradual complexity intro"
+    ],
+    "turn_count": 8
+  },
+  "scene_022": {
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "transport ticket counter, cash-heavy, fast",
+    "key_behaviors": [
+      "route tracking",
+      "unit/price consistency",
+      "cargo separate",
+      "cash management hint"
+    ],
+    "turn_count": 8
+  },
+  "scene_023": {
+    "scenario_type": "question_session",
+    "user_profile": "kindergarten owner, billing cycle question",
+    "key_behaviors": [
+      "structured billing (invoice)",
+      "profile linking",
+      "sample generation",
+      "multi-channel sending"
+    ],
+    "turn_count": 8
+  },
+  "scene_024": {
+    "scenario_type": "error_correction_session",
+    "user_profile": "jewelry shop, high value, very cautious",
+    "key_behaviors": [
+      "high value flag",
+      "security pin",
+      "audit trail",
+      "reassurance on security"
+    ],
+    "turn_count": 8
+  },
+  "scene_025": {
+    "scenario_type": "report_request",
+    "user_profile": "consultant, needs time tracking report",
+    "key_behaviors": [
+      "hourly tracking",
+      "client segmentation",
+      "billable hours",
+      "professional invoicing"
+    ],
+    "turn_count": 6
+  },
+  "scene_026": {
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "freelance plumber, wants customer history",
+    "key_behaviors": [
+      "customer-centric",
+      "service history",
+      "simple demo",
+      "future value reminder"
+    ],
+    "turn_count": 8
+  },
+  "scene_027": {
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "cloth merchant, festival season, high volume",
+    "key_behaviors": [
+      "festival awareness",
+      "bulk mode",
+      "unit price breakdown",
+      "financial advice"
+    ],
+    "turn_count": 6
+  },
+  "scene_028": {
+    "scenario_type": "question_session",
+    "user_profile": "farmer cooperative, member shares, complex",
+    "key_behaviors": [
+      "cooperative terms",
+      "complex calculation",
+      "annual cycle awareness",
+      "automation"
+    ],
+    "turn_count": 6
+  },
+  "scene_029": {
+    "scenario_type": "error_correction_session",
+    "user_profile": "tea stall, morning, reverses two entries",
+    "key_behaviors": [
+      "bulk reversal",
+      "explicit confirmation",
+      "paired reversal entries",
+      "net effect clarity"
+    ],
+    "turn_count": 8
+  },
+  "scene_030": {
+    "scenario_type": "report_request",
+    "user_profile": "cable TV operator, monthly collection report",
+    "key_behaviors": [
+      "collection rate",
+      "due list with location",
+      "agent/warden sharing",
+      "percentage metrics"
+    ],
+    "turn_count": 6
+  },
+  "scene_031": {
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "street pan shop, uses voice notes, shy",
+    "key_behaviors": [
+      "voice-first interaction",
+      "transcription demonstration",
+      "shy user encouragement",
+      "next step prompt"
+    ],
+    "turn_count": 8
+  },
+  "scene_032": {
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "carpenter, mix of labor and material billing",
+    "key_behaviors": [
+      "split billing",
+      "professional invoicing",
+      "customer linkage"
+    ],
+    "turn_count": 6
+  },
+  "scene_033": {
+    "scenario_type": "question_session",
+    "user_profile": "small restaurant, wants recipe costing",
+    "key_behaviors": [
+      "costing module",
+      "breakdown",
+      "margin highlight",
+      "upselling analytics"
+    ],
+    "turn_count": 6
+  },
+  "scene_034": {
+    "scenario_type": "error_correction_session",
+    "user_profile": "gym owner, monthly fee correction",
+    "key_behaviors": [
+      "plan linking",
+      "future-proofing",
+      "complete profile update"
+    ],
+    "turn_count": 6
+  },
+  "scene_035": {
+    "scenario_type": "report_request",
+    "user_profile": "kirana store, year-end stock valuation",
+    "key_behaviors": [
+      "compliance (Tax)",
+      "valuation basis",
+      "professional PDF",
+      "CA-friendly"
+    ],
+    "turn_count": 6
+  },
+  "scene_036": {
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "dairy farmer, milk collection, morning routine",
+    "key_behaviors": [
+      "industry-specific (dairy)",
+      "unit/rate tracking",
+      "routine building",
+      "simple demo"
+    ],
+    "turn_count": 8
+  },
+  "scene_037": {
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "salon, service-based, per employee tracking",
+    "key_behaviors": [
+      "employee tracking",
+      "commission auto-calc",
+      "net profit after salary"
+    ],
+    "turn_count": 6
+  },
+  "scene_038": {
+    "scenario_type": "question_session",
+    "user_profile": "online seller, e-commerce settlement",
+    "key_behaviors": [
+      "e-commerce terms",
+      "reconciliation",
+      "tax integration",
+      "clear illustration"
+    ],
+    "turn_count": 6
+  },
+  "scene_039": {
+    "scenario_type": "error_correction_session",
+    "user_profile": "books store, wrong book title entry",
+    "key_behaviors": [
+      "typo understanding",
+      "quantity inference",
+      "inventory adjustment",
+      "confirmation"
+    ],
+    "turn_count": 6
+  },
+  "scene_040": {
+    "scenario_type": "report_request",
+    "user_profile": "petrol pump, daily cash tally",
+    "key_behaviors": [
+      "meter/cash reconciliation",
+      "variance explanation",
+      "source identification",
+      "final assurance"
+    ],
+    "turn_count": 6
+  },
+  "scene_041": {
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "small hotel, manual register user, migrating",
+    "key_behaviors": [
+      "respect for manual history",
+      "opening balance migration",
+      "gradual digital transition",
+      "room-level tracking"
+    ],
+    "turn_count": 8
+  },
+  "scene_042": {
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "whole-seller, bulk orders, multiple godowns",
+    "key_behaviors": [
+      "godown management",
+      "bulk dispatch",
+      "credit period tracking",
+      "auto invoice"
+    ],
+    "turn_count": 6
+  },
+  "scene_043": {
+    "scenario_type": "question_session",
+    "user_profile": "pharmacist, schedule H drug tracking",
+    "key_behaviors": [
+      "regulatory compliance",
+      "mandatory fields",
+      "inspection readiness"
+    ],
+    "turn_count": 6
+  },
+  "scene_044": {
+    "scenario_type": "error_correction_session",
+    "user_profile": "electrician, wrong customer linked",
+    "key_behaviors": [
+      "inter-account transfer",
+      "non-judgmental",
+      "quick fix"
+    ],
+    "turn_count": 6
+  },
+  "scene_045": {
+    "scenario_type": "report_request",
+    "user_profile": "sari shop, wants bestseller report for restock",
+    "key_behaviors": [
+      "bestseller analytics",
+      "restock suggestion",
+      "purchase order generation"
+    ],
+    "turn_count": 4
+  },
+  "scene_046": {
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "tutorial teacher, wants batch-wise tracking",
+    "key_behaviors": [
+      "batch management",
+      "student/fee linking",
+      "simple add process"
+    ],
+    "turn_count": 6
+  },
+  "scene_047": {
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "bar, bottle sales, per peg breakdown",
+    "key_behaviors": [
+      "peg/full bottle mode",
+      "inventory deduction",
+      "upsell snack tracking"
+    ],
+    "turn_count": 6
+  },
+  "scene_048": {
+    "scenario_type": "question_session",
+    "user_profile": "businessman, wants multi-currency support",
+    "key_behaviors": [
+      "forex integration",
+      "dual balance display",
+      "auto rate fetching",
+      "sample conversion"
+    ],
+    "turn_count": 6
+  },
+  "scene_049": {
+    "scenario_type": "error_correction_session",
+    "user_profile": "event decorator, change order after final",
+    "key_behaviors": [
+      "change order management",
+      "invoice versioning",
+      "transparent add-on"
+    ],
+    "turn_count": 6
+  },
+  "scene_050": {
+    "scenario_type": "report_request",
+    "user_profile": "chit fund manager, member passbook",
+    "key_behaviors": [
+      "chit specific module",
+      "passbook generation",
+      "dividend calculation",
+      "whatsapp integration"
+    ],
+    "turn_count": 6
+  },
+  "scene_051": {
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "retired army, pension investment tracking",
+    "key_behaviors": [
+      "respectful military tone",
+      "portfolio creation",
+      "trade recording",
+      "encouraging banter"
+    ],
+    "turn_count": 8
+  },
+  "scene_052": {
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "fruit vendor, seasonal price fluctuation",
+    "key_behaviors": [
+      "dynamic pricing",
+      "buy/sell spread",
+      "margin highlight"
+    ],
+    "turn_count": 6
+  },
+  "scene_053": {
+    "scenario_type": "question_session",
+    "user_profile": "dance teacher, term fee and costume",
+    "key_behaviors": [
+      "fee splitting",
+      "partial payment handling",
+      "due tracking",
+      "reminder"
+    ],
+    "turn_count": 6
+  },
+  "scene_054": {
+    "scenario_type": "error_correction_session",
+    "user_profile": "kirana store, udhaar settlement partial",
+    "key_behaviors": [
+      "partial payment correction",
+      "balance query",
+      "reversal",
+      "transparency"
+    ],
+    "turn_count": 6
+  },
+  "scene_055": {
+    "scenario_type": "report_request",
+    "user_profile": "car rental agency, vehicle-wise revenue",
+    "key_behaviors": [
+      "fleet management",
+      "vehicle-wise P&L",
+      "contribution margin"
+    ],
+    "turn_count": 4
+  },
+  "scene_056": {
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "canteen boy, school canteen, simple language",
+    "key_behaviors": [
+      "informal sibling tone",
+      "simple item listing",
+      "auto calculation",
+      "motivational"
+    ],
+    "turn_count": 8
+  },
+  "scene_057": {
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "boutique shop, custom tailoring",
+    "key_behaviors": [
+      "custom order tracking",
+      "cost/revenue split",
+      "delivery schedule",
+      "automated alert"
+    ],
+    "turn_count": 8
+  },
+  "scene_058": {
+    "scenario_type": "question_session",
+    "user_profile": "cattle trader, wants weight-based pricing",
+    "key_behaviors": [
+      "weight unit tracking",
+      "shrinkage handling",
+      "per kg profitability"
+    ],
+    "turn_count": 6
+  },
+  "scene_059": {
+    "scenario_type": "error_correction_session",
+    "user_profile": "mobile shop, IMEI number error",
+    "key_behaviors": [
+      "serial number tracking",
+      "warranty check",
+      "precision on IMEI"
+    ],
+    "turn_count": 6
+  },
+  "scene_060": {
+    "scenario_type": "report_request",
+    "user_profile": "cable car operator, tourist vs local rate",
+    "key_behaviors": [
+      "segment reporting",
+      "rate per segment",
+      "trend comparison"
+    ],
+    "turn_count": 4
+  },
+  "scene_061": {
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "small NGO, fund tracking",
+    "key_behaviors": [
+      "NGO specific",
+      "grant tracking",
+      "donor reporting hint"
+    ],
+    "turn_count": 8
+  },
+  "scene_062": {
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "pet shop, live animals and feed",
+    "key_behaviors": [
+      "livestock tracking",
+      "detail capture (breed/age)",
+      "document linking"
+    ],
+    "turn_count": 6
+  },
+  "scene_063": {
+    "scenario_type": "question_session",
+    "user_profile": "printing press, paper stock and wastage",
+    "key_behaviors": [
+      "wastage formula",
+      "reconciliation",
+      "threshold alert"
+    ],
+    "turn_count": 6
+  },
+  "scene_064": {
+    "scenario_type": "error_correction_session",
+    "user_profile": "electric shop, wrong voltage bulb returned",
+    "key_behaviors": [
+      "sales return handling",
+      "exchange logic",
+      "dual stock adjustment"
+    ],
+    "turn_count": 6
+  },
+  "scene_065": {
+    "scenario_type": "report_request",
+    "user_profile": "travel agency, commission per airline",
+    "key_behaviors": [
+      "vendor wise reporting",
+      "commission tracking",
+      "recovery invoice"
+    ],
+    "turn_count": 6
+  },
+  "scene_066": {
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "popcorn seller outside cinema, kid, very young",
+    "key_behaviors": [
+      "youth encouragement",
+      "simple math",
+      "early financial education",
+      "fun tone"
+    ],
+    "turn_count": 8
+  },
+  "scene_067": {
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "marriage garden, advance booking",
+    "key_behaviors": [
+      "event booking",
+      "advance/due split",
+      "service add-on"
+    ],
+    "turn_count": 6
+  },
+  "scene_068": {
+    "scenario_type": "question_session",
+    "user_profile": "bike workshop, spare parts inventory",
+    "key_behaviors": [
+      "job card concept",
+      "auto inventory deduction",
+      "mechanic ledger"
+    ],
+    "turn_count": 6
+  },
+  "scene_069": {
+    "scenario_type": "error_correction_session",
+    "user_profile": "restaurant, split bill correction",
+    "key_behaviors": [
+      "split payment handling",
+      "bill modification",
+      "total integrity"
+    ],
+    "turn_count": 6
+  },
+  "scene_070": {
+    "scenario_type": "report_request",
+    "user_profile": "pharmacy, near-expiry stock clearance report",
+    "key_behaviors": [
+      "expiry urgency",
+      "clearance strategy",
+      "doctor coordination",
+      "smart messaging"
+    ],
+    "turn_count": 6
+  },
+  "scene_071": {
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "housewife, expense tracking for home",
+    "key_behaviors": [
+      "home budgeting",
+      "category preset",
+      "remaining budget"
+    ],
+    "turn_count": 6
+  },
+  "scene_072": {
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "liquor store, government regulation, tax",
+    "key_behaviors": [
+      "tax compliance",
+      "MRP/discount",
+      "VAT auto-calc"
+    ],
+    "turn_count": 6
+  },
+  "scene_073": {
+    "scenario_type": "question_session",
+    "user_profile": "small publisher, royalty calculation",
+    "key_behaviors": [
+      "royalty calculation",
+      "co-author split",
+      "annual statement"
+    ],
+    "turn_count": 6
+  },
+  "scene_074": {
+    "scenario_type": "error_correction_session",
+    "user_profile": "gold shop, rate fluctuation adjustment",
+    "key_behaviors": [
+      "rate adjustment",
+      "hallmark compliance",
+      "high value precision"
+    ],
+    "turn_count": 6
+  },
+  "scene_075": {
+    "scenario_type": "report_request",
+    "user_profile": "cargo service, per kg revenue",
+    "key_behaviors": [
+      "per unit economics",
+      "route analysis",
+      "cost/profit per kg"
+    ],
+    "turn_count": 4
+  },
+  "scene_076": {
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "street barber, roadside, mobile data",
+    "key_behaviors": [
+      "informal respectful tone",
+      "minimal data use",
+      "rate preset",
+      "simple start"
+    ],
+    "turn_count": 6
+  },
+  "scene_077": {
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "departmental store, multiple counters",
+    "key_behaviors": [
+      "multi counter",
+      "department wise",
+      "cash vs udhaar reconciliation"
+    ],
+    "turn_count": 4
+  },
+  "scene_078": {
+    "scenario_type": "question_session",
+    "user_profile": "small manufacturer, production cost",
+    "key_behaviors": [
+      "manufacturing BOM",
+      "cost build-up",
+      "margin analysis"
+    ],
+    "turn_count": 6
+  },
+  "scene_079": {
+    "scenario_type": "error_correction_session",
+    "user_profile": "internet service provider, plan change",
+    "key_behaviors": [
+      "plan change handling",
+      "prorated billing",
+      "future billing setup"
+    ],
+    "turn_count": 6
+  },
+  "scene_080": {
+    "scenario_type": "report_request",
+    "user_profile": "flower shop, occasion based report",
+    "key_behaviors": [
+      "occasion-based report",
+      "bestseller highlight",
+      "future planning",
+      "smart reminder"
+    ],
+    "turn_count": 6
+  }
+}

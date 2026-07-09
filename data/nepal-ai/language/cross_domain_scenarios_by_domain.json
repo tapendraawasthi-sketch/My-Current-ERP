@@ -1,0 +1,90 @@
+{
+  "labor_law": [
+    "xdomain_001",
+    "xdomain_010"
+  ],
+  "accounting": [
+    "xdomain_001",
+    "xdomain_002",
+    "xdomain_004",
+    "xdomain_007",
+    "xdomain_009",
+    "xdomain_010",
+    "xdomain_011",
+    "xdomain_013",
+    "xdomain_016",
+    "xdomain_018",
+    "xdomain_021",
+    "xdomain_023",
+    "xdomain_026",
+    "xdomain_028",
+    "xdomain_031",
+    "xdomain_033",
+    "xdomain_036",
+    "xdomain_038"
+  ],
+  "tax": [
+    "xdomain_001",
+    "xdomain_002",
+    "xdomain_005",
+    "xdomain_006",
+    "xdomain_007",
+    "xdomain_010",
+    "xdomain_011",
+    "xdomain_014",
+    "xdomain_015",
+    "xdomain_016",
+    "xdomain_019",
+    "xdomain_020",
+    "xdomain_021",
+    "xdomain_024",
+    "xdomain_025",
+    "xdomain_026",
+    "xdomain_029",
+    "xdomain_030",
+    "xdomain_031",
+    "xdomain_034",
+    "xdomain_035",
+    "xdomain_036",
+    "xdomain_039",
+    "xdomain_040"
+  ],
+  "legal_business": [
+    "xdomain_003",
+    "xdomain_008",
+    "xdomain_012",
+    "xdomain_017",
+    "xdomain_022",
+    "xdomain_027",
+    "xdomain_032",
+    "xdomain_037"
+  ],
+  "banking": [
+    "xdomain_004",
+    "xdomain_009",
+    "xdomain_013",
+    "xdomain_018",
+    "xdomain_023",
+    "xdomain_028",
+    "xdomain_033",
+    "xdomain_038"
+  ],
+  "import": [
+    "xdomain_005",
+    "xdomain_014",
+    "xdomain_019",
+    "xdomain_024",
+    "xdomain_029",
+    "xdomain_034",
+    "xdomain_039"
+  ],
+  "property": [
+    "xdomain_006",
+    "xdomain_015",
+    "xdomain_020",
+    "xdomain_025",
+    "xdomain_030",
+    "xdomain_035",
+    "xdomain_040"
+  ]
+}

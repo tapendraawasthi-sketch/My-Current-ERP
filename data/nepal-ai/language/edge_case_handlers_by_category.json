@@ -1,0 +1,122 @@
+{
+  "minimal_input": [
+    "edge_001",
+    "edge_002",
+    "edge_003",
+    "edge_004",
+    "edge_005",
+    "edge_006",
+    "edge_007",
+    "edge_008",
+    "edge_009",
+    "edge_010"
+  ],
+  "maximum_ambiguity": [
+    "edge_011",
+    "edge_012",
+    "edge_013",
+    "edge_014",
+    "edge_015",
+    "edge_016",
+    "edge_017",
+    "edge_018",
+    "edge_019",
+    "edge_020"
+  ],
+  "novel_combinations": [
+    "edge_021",
+    "edge_022",
+    "edge_023",
+    "edge_024",
+    "edge_025",
+    "edge_026",
+    "edge_027",
+    "edge_028",
+    "edge_029",
+    "edge_030"
+  ],
+  "boundary_values": [
+    "edge_031",
+    "edge_032",
+    "edge_033",
+    "edge_034",
+    "edge_035",
+    "edge_036",
+    "edge_037",
+    "edge_038",
+    "edge_039",
+    "edge_040"
+  ],
+  "format_edge_cases": [
+    "edge_041",
+    "edge_042",
+    "edge_043",
+    "edge_044",
+    "edge_045",
+    "edge_046",
+    "edge_047",
+    "edge_048",
+    "edge_049",
+    "edge_050"
+  ],
+  "language_edge_cases": [
+    "edge_051",
+    "edge_052",
+    "edge_053",
+    "edge_054",
+    "edge_055",
+    "edge_056",
+    "edge_057",
+    "edge_058",
+    "edge_059",
+    "edge_060"
+  ],
+  "context_dependency": [
+    "edge_061",
+    "edge_062",
+    "edge_063",
+    "edge_064",
+    "edge_065",
+    "edge_066",
+    "edge_067",
+    "edge_068",
+    "edge_069",
+    "edge_070"
+  ],
+  "error_combinations": [
+    "edge_071",
+    "edge_072",
+    "edge_073",
+    "edge_074",
+    "edge_075",
+    "edge_076",
+    "edge_077",
+    "edge_078",
+    "edge_079",
+    "edge_080"
+  ],
+  "near_miss_patterns": [
+    "edge_081",
+    "edge_082",
+    "edge_083",
+    "edge_084",
+    "edge_085",
+    "edge_086",
+    "edge_087",
+    "edge_088"
+  ],
+  "adversarial": [
+    "edge_089",
+    "edge_090",
+    "edge_091",
+    "edge_092",
+    "edge_093",
+    "edge_094",
+    "edge_095",
+    "edge_096",
+    "edge_097",
+    "edge_098",
+    "edge_099",
+    "edge_100"
+  ]
+}

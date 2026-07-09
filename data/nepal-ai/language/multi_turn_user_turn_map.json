@@ -1,0 +1,127 @@
+{
+  "ram lai 500 udhaar": {
+    "id": "conv_001",
+    "scenario": "credit_sale_with_correction",
+    "final_intent": "khata_credit_sale"
+  },
+  "khata_credit_sale||hoina 600": {
+    "id": "conv_001",
+    "scenario": "credit_sale_with_correction",
+    "final_intent": "khata_credit_sale"
+  },
+  "hoina 600": {
+    "id": "conv_001",
+    "scenario": "credit_sale_with_correction",
+    "final_intent": "khata_credit_sale"
+  },
+  "shyam lai 2000 udar": {
+    "id": "conv_002",
+    "scenario": "typo_credit_sale",
+    "final_intent": "khata_credit_sale"
+  },
+  "khata_credit_sale||ho": {
+    "id": "conv_007",
+    "scenario": "typo_udaar_correction",
+    "final_intent": "khata_credit_sale"
+  },
+  "kharcha bhayo 300": {
+    "id": "conv_003",
+    "scenario": "incomplete_info_expense",
+    "final_intent": "khata_expense"
+  },
+  "khata_expense||office ko lagi stationery": {
+    "id": "conv_003",
+    "scenario": "incomplete_info_expense",
+    "final_intent": "khata_expense"
+  },
+  "khata_expense||thik cha": {
+    "id": "conv_003",
+    "scenario": "incomplete_info_expense",
+    "final_intent": "khata_expense"
+  },
+  "mero balance kati cha?": {
+    "id": "conv_004",
+    "scenario": "balance_inquiry_followup",
+    "final_intent": "khata_party_balance"
+  },
+  "khata_balance_inquiry||shyam ko?": {
+    "id": "conv_004",
+    "scenario": "balance_inquiry_followup",
+    "final_intent": "khata_party_balance"
+  },
+  "namaste": {
+    "id": "conv_005",
+    "scenario": "greeting_help_guide",
+    "final_intent": "khata_help_add_party"
+  },
+  "malai naya party kasari thapne?": {
+    "id": "conv_005",
+    "scenario": "greeting_help_guide",
+    "final_intent": "khata_help_add_party"
+  },
+  "hari lai 700 udhaar": {
+    "id": "conv_006",
+    "scenario": "party_name_correction",
+    "final_intent": "khata_credit_sale"
+  },
+  "khata_credit_sale||hoina, hari ko naam hari prasad ho": {
+    "id": "conv_006",
+    "scenario": "party_name_correction",
+    "final_intent": "khata_credit_sale"
+  },
+  "hoina, hari ko naam hari prasad ho": {
+    "id": "conv_006",
+    "scenario": "party_name_correction",
+    "final_intent": "khata_credit_sale"
+  },
+  "gita lai 2500 udaar": {
+    "id": "conv_007",
+    "scenario": "typo_udaar_correction",
+    "final_intent": "khata_credit_sale"
+  },
+  "aaja 800 ko saman bikri bhayo": {
+    "id": "conv_008",
+    "scenario": "incomplete_info_sale_party",
+    "final_intent": "khata_cash_sale"
+  },
+  "khata_sale||mohan lai": {
+    "id": "conv_008",
+    "scenario": "incomplete_info_sale_party",
+    "final_intent": "khata_cash_sale"
+  },
+  "khata_sale||cash": {
+    "id": "conv_008",
+    "scenario": "incomplete_info_sale_party",
+    "final_intent": "khata_cash_sale"
+  },
+  "khata_sale||confirm": {
+    "id": "conv_008",
+    "scenario": "incomplete_info_sale_party",
+    "final_intent": "khata_cash_sale"
+  },
+  "shyam le 5000 tiryo": {
+    "id": "conv_009",
+    "scenario": "debit_payment_with_correction",
+    "final_intent": "khata_debit_payment"
+  },
+  "khata_debit_payment||hoina 5500": {
+    "id": "conv_009",
+    "scenario": "debit_payment_with_correction",
+    "final_intent": "khata_debit_payment"
+  },
+  "hoina 5500": {
+    "id": "conv_009",
+    "scenario": "debit_payment_with_correction",
+    "final_intent": "khata_debit_payment"
+  },
+  "shyam ko pachhillo transaction k thiyo?": {
+    "id": "conv_010",
+    "scenario": "transaction_history_followup",
+    "final_intent": "khata_party_balance"
+  },
+  "khata_party_transactions||ani usle kati tiryo?": {
+    "id": "conv_010",
+    "scenario": "transaction_history_followup",
+    "final_intent": "khata_party_balance"
+  }
+}

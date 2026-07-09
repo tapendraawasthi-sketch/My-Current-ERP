@@ -1,0 +1,857 @@
+{
+  "multi-page financial report": {
+    "id": "doccmp_001",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "multi_page_financial_report": {
+    "id": "doccmp_001",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "doccmp_001": {
+    "id": "doccmp_001",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "what was total revenue for the year": {
+    "id": "doccmp_001",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "which segment grew faster": {
+    "id": "doccmp_001",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "what is the reported ebitda margin": {
+    "id": "doccmp_001",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "doccmp_002": {
+    "id": "doccmp_002",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "what is shareholders equity": {
+    "id": "doccmp_002",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "any contingent liabilities disclosed": {
+    "id": "doccmp_002",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "what accounting policy for revenue recognition": {
+    "id": "doccmp_002",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "doccmp_003": {
+    "id": "doccmp_003",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "what is the effective interest rate on debt": {
+    "id": "doccmp_003",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "how has revenue changed since 2019": {
+    "id": "doccmp_003",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "who chairs the audit committee": {
+    "id": "doccmp_003",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "doccmp_004": {
+    "id": "doccmp_004",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "what are net cash flows from operations": {
+    "id": "doccmp_004",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "what esg target is stated": {
+    "id": "doccmp_004",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "did management certify the statements": {
+    "id": "doccmp_004",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "doccmp_005": {
+    "id": "doccmp_005",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "what is the company's total headcount": {
+    "id": "doccmp_005",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "what is voluntary turnover rate": {
+    "id": "doccmp_005",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "how does the company mitigate currency risk": {
+    "id": "doccmp_005",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "legal contract with multiple clauses": {
+    "id": "doccmp_006",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "legal_contract_with_multiple_clauses": {
+    "id": "doccmp_006",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "doccmp_006": {
+    "id": "doccmp_006",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "what are the payment milestones": {
+    "id": "doccmp_006",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "how long must confidentiality be maintained": {
+    "id": "doccmp_006",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "is there an ip assignment": {
+    "id": "doccmp_006",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "doccmp_007": {
+    "id": "doccmp_007",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "which jurisdiction governs the contract": {
+    "id": "doccmp_007",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "what is the notice period for force majeure": {
+    "id": "doccmp_007",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "are taxes the responsibility of the client": {
+    "id": "doccmp_007",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "doccmp_008": {
+    "id": "doccmp_008",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "what uptime is guaranteed": {
+    "id": "doccmp_008",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "what is the termination for convenience notice period": {
+    "id": "doccmp_008",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "how are service credits calculated": {
+    "id": "doccmp_008",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "doccmp_009": {
+    "id": "doccmp_009",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "what is the liability cap": {
+    "id": "doccmp_009",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "how long is acceptance testing": {
+    "id": "doccmp_009",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "does deemed acceptance apply": {
+    "id": "doccmp_009",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "doccmp_010": {
+    "id": "doccmp_010",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "what is the breach notification timeframe": {
+    "id": "doccmp_010",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "who owns background ip": {
+    "id": "doccmp_010",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "is there a license to use background ip": {
+    "id": "doccmp_010",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "bank statement with transaction history": {
+    "id": "doccmp_011",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "bank_statement_with_transaction_history": {
+    "id": "doccmp_011",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "doccmp_011": {
+    "id": "doccmp_011",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "what is the closing balance": {
+    "id": "doccmp_011",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "any overdraft fees this period": {
+    "id": "doccmp_011",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "largest debit transaction": {
+    "id": "doccmp_011",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "doccmp_012": {
+    "id": "doccmp_012",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "how much interest was earned": {
+    "id": "doccmp_012",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "was any check returned": {
+    "id": "doccmp_012",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "total credits this period": {
+    "id": "doccmp_012",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "doccmp_013": {
+    "id": "doccmp_013",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "what was the debit card purchase on july 1": {
+    "id": "doccmp_013",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "any international fees": {
+    "id": "doccmp_013",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "what is the account currency": {
+    "id": "doccmp_013",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "doccmp_014": {
+    "id": "doccmp_014",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "what is the dispute window": {
+    "id": "doccmp_014",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "how much interest was credited": {
+    "id": "doccmp_014",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "any large wire transfers": {
+    "id": "doccmp_014",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "doccmp_015": {
+    "id": "doccmp_015",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "what is the fx markup": {
+    "id": "doccmp_015",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "net change for the month": {
+    "id": "doccmp_015",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "available balance": {
+    "id": "doccmp_015",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "tax return form (completed)": {
+    "id": "doccmp_016",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "tax_return_form_completed": {
+    "id": "doccmp_016",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "doccmp_016": {
+    "id": "doccmp_016",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "what is the refund amount": {
+    "id": "doccmp_016",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "what is the taxpayer's filing status": {
+    "id": "doccmp_016",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "how much business income reported": {
+    "id": "doccmp_016",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "doccmp_017": {
+    "id": "doccmp_017",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "how much mortgage interest was deducted": {
+    "id": "doccmp_017",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "total capital gains reported": {
+    "id": "doccmp_017",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "any tax owed or refund": {
+    "id": "doccmp_017",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "doccmp_018": {
+    "id": "doccmp_018",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "what is the self-employment tax amount": {
+    "id": "doccmp_018",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "how much was paid in estimated taxes": {
+    "id": "doccmp_018",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "is there an education credit claimed": {
+    "id": "doccmp_018",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "doccmp_019": {
+    "id": "doccmp_019",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "what is net rental income": {
+    "id": "doccmp_019",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "was amt applied": {
+    "id": "doccmp_019",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "who signed the return": {
+    "id": "doccmp_019",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "doccmp_020": {
+    "id": "doccmp_020",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "how much ira deduction claimed": {
+    "id": "doccmp_020",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "total federal withholding": {
+    "id": "doccmp_020",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "any refundable credits": {
+    "id": "doccmp_020",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "doccmp_021": {
+    "id": "doccmp_021",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "what is the cogs amount": {
+    "id": "doccmp_021",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "how was home office deduction calculated": {
+    "id": "doccmp_021",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "is mileage documented": {
+    "id": "doccmp_021",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "audit report": {
+    "id": "doccmp_022",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "audit_report": {
+    "id": "doccmp_022",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "doccmp_022": {
+    "id": "doccmp_022",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "what opinion did the auditor issue": {
+    "id": "doccmp_022",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "what was a key audit matter": {
+    "id": "doccmp_022",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "were any material weaknesses reported": {
+    "id": "doccmp_022",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "doccmp_023": {
+    "id": "doccmp_023",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "what materiality was used": {
+    "id": "doccmp_023",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "how much was inventory overstated": {
+    "id": "doccmp_023",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "did auditors use specialists": {
+    "id": "doccmp_023",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "doccmp_024": {
+    "id": "doccmp_024",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "what control weakness was identified": {
+    "id": "doccmp_024",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "what is the remediation timeline for high priority items": {
+    "id": "doccmp_024",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "does the report include audited financials": {
+    "id": "doccmp_024",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "doccmp_025": {
+    "id": "doccmp_025",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "were any frauds detected": {
+    "id": "doccmp_025",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "what unrecorded liabilities were found": {
+    "id": "doccmp_025",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "who signed the audit report": {
+    "id": "doccmp_025",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "doccmp_026": {
+    "id": "doccmp_026",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "did management provide a representation letter": {
+    "id": "doccmp_026",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "what cut-off issue was found": {
+    "id": "doccmp_026",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "was opinion modified": {
+    "id": "doccmp_026",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "board resolution": {
+    "id": "doccmp_027",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "board_resolution": {
+    "id": "doccmp_027",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "doccmp_027": {
+    "id": "doccmp_027",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "what amount was approved for the loan": {
+    "id": "doccmp_027",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "who is authorized to sign loan documents": {
+    "id": "doccmp_027",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "was quorum present": {
+    "id": "doccmp_027",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "doccmp_028": {
+    "id": "doccmp_028",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "what dividend was declared": {
+    "id": "doccmp_028",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "what is the record date": {
+    "id": "doccmp_028",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "how did the board vote": {
+    "id": "doccmp_028",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "doccmp_029": {
+    "id": "doccmp_029",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "how many shares authorized for issuance": {
+    "id": "doccmp_029",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "at what price per share": {
+    "id": "doccmp_029",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "who will file regulatory notices": {
+    "id": "doccmp_029",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "doccmp_030": {
+    "id": "doccmp_030",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "who was appointed ceo": {
+    "id": "doccmp_030",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "what conditions apply to the appointment": {
+    "id": "doccmp_030",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "is an employment agreement attached": {
+    "id": "doccmp_030",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "doccmp_031": {
+    "id": "doccmp_031",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "was any director conflicted": {
+    "id": "doccmp_031",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "what transaction was approved": {
+    "id": "doccmp_031",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "was the abstention recorded": {
+    "id": "doccmp_031",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "doccmp_032": {
+    "id": "doccmp_032",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "who are authorized signatories": {
+    "id": "doccmp_032",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "what is single-signature limit": {
+    "id": "doccmp_032",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "when must the bank be notified": {
+    "id": "doccmp_032",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "doccmp_033": {
+    "id": "doccmp_033",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "how are scope changes handled": {
+    "id": "doccmp_033",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "what is the cure period for material breach": {
+    "id": "doccmp_033",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "are expenses reimbursable": {
+    "id": "doccmp_033",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "doccmp_034": {
+    "id": "doccmp_034",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "what are revenues by region": {
+    "id": "doccmp_034",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "how much undrawn credit is available": {
+    "id": "doccmp_034",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "what is covenant headroom": {
+    "id": "doccmp_034",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "doccmp_035": {
+    "id": "doccmp_035",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "was there a large wire transfer": {
+    "id": "doccmp_035",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "any fraud alerts": {
+    "id": "doccmp_035",
+    "documentType": "Bank Statement with Transaction History",
+    "documentTypeKey": "bank_statement_with_transaction_history"
+  },
+  "doccmp_036": {
+    "id": "doccmp_036",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "did auditors express doubt about going concern": {
+    "id": "doccmp_036",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "was refinancing obtained after year end": {
+    "id": "doccmp_036",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "is the opinion modified": {
+    "id": "doccmp_036",
+    "documentType": "Audit Report",
+    "documentTypeKey": "audit_report"
+  },
+  "doccmp_037": {
+    "id": "doccmp_037",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "what is the approved opex for fy2025": {
+    "id": "doccmp_037",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "who will monitor budget variances": {
+    "id": "doccmp_037",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "was the budget approved unanimously": {
+    "id": "doccmp_037",
+    "documentType": "Board Resolution",
+    "documentTypeKey": "board_resolution"
+  },
+  "doccmp_038": {
+    "id": "doccmp_038",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "how much foreign tax credit claimed": {
+    "id": "doccmp_038",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "what refund is due": {
+    "id": "doccmp_038",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "is foreign income reported": {
+    "id": "doccmp_038",
+    "documentType": "Tax Return Form (Completed)",
+    "documentTypeKey": "tax_return_form_completed"
+  },
+  "doccmp_039": {
+    "id": "doccmp_039",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "is the distribution exclusive": {
+    "id": "doccmp_039",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "what is the maximum volume discount": {
+    "id": "doccmp_039",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "what happens on termination regarding inventory": {
+    "id": "doccmp_039",
+    "documentType": "Legal Contract with Multiple Clauses",
+    "documentTypeKey": "legal_contract_with_multiple_clauses"
+  },
+  "doccmp_040": {
+    "id": "doccmp_040",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "what is basic eps": {
+    "id": "doccmp_040",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "what is the potential litigation exposure": {
+    "id": "doccmp_040",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  },
+  "what is roe": {
+    "id": "doccmp_040",
+    "documentType": "Multi-page Financial Report",
+    "documentTypeKey": "multi_page_financial_report"
+  }
+}

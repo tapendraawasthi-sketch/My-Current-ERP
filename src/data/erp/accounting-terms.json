@@ -1,0 +1,77 @@
+{
+  "terms": {
+    "debit": {
+      "nepali": ["डेबिट", "जम्मा"],
+      "roman": ["debit", "jama", "jamma"],
+      "english": "debit"
+    },
+    "credit": {
+      "nepali": ["क्रेडिट", "खर्च"],
+      "roman": ["credit", "kharcha", "kharch"],
+      "english": "credit"
+    },
+    "ledger": {
+      "nepali": ["खाता", "लेजर"],
+      "roman": ["khata", "ledger", "kitab"],
+      "english": "ledger"
+    },
+    "sales": {
+      "nepali": ["बिक्री", "बेच्नु"],
+      "roman": ["bikri", "bechnu", "bechye", "becheko"],
+      "english": "sales"
+    },
+    "purchase": {
+      "nepali": ["खरिद", "किन्नु"],
+      "roman": ["kharid", "kinna", "kinyo", "kineko"],
+      "english": "purchase"
+    },
+    "receivable": {
+      "nepali": ["प्राप्य", "लिन बाँकी"],
+      "roman": ["prapy", "lin baki", "udhaar dine"],
+      "english": "receivable"
+    },
+    "payable": {
+      "nepali": ["देय", "तिर्न बाँकी"],
+      "roman": ["dey", "tirna baki", "udhaar liyeko"],
+      "english": "payable"
+    },
+    "vat": {
+      "nepali": ["मूल्य अभिवृद्धि कर", "भ्याट"],
+      "roman": ["vat", "mulya abhivriddhi kar", "bhyaat"],
+      "english": "VAT"
+    },
+    "profit": {
+      "nepali": ["नाफा", "लाभ"],
+      "roman": ["nafa", "labh", "profit"],
+      "english": "profit"
+    },
+    "loss": {
+      "nepali": ["नोक्सान", "घाटा"],
+      "roman": ["noksan", "ghata", "loss"],
+      "english": "loss"
+    }
+  },
+  "transactions": {
+    "sales": {
+      "nepaliTerms": ["बिक्री", "बेच्नु", "बेचें"],
+      "romanTerms": ["bikri", "bechnu", "bechye", "becheko"],
+      "requiredFields": ["product", "quantity/amount"],
+      "optionalFields": ["date", "payment_method", "party", "notes"],
+      "patterns": [
+        "X ले Y को Z बेच्यो",
+        "X लाई Y बेचियो",
+        "Y को बिक्री भयो"
+      ]
+    },
+    "purchase": {
+      "nepaliTerms": ["खरिद", "किन्नु", "किनें"],
+      "romanTerms": ["kharid", "kinna", "kinyo", "kineko"],
+      "requiredFields": ["product", "quantity/amount"],
+      "optionalFields": ["date", "payment_method", "party", "notes"],
+      "patterns": [
+        "X ले Y किन्यो",
+        "Y को खरिद भयो"
+      ]
+    }
+  }
+}

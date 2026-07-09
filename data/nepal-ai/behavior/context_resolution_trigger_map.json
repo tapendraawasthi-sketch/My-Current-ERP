@@ -1,0 +1,422 @@
+{
+  "tyo le tiryo": {
+    "id": "ctx-001",
+    "pattern_name": "pronoun_resolution_tyo_subject_payment_in",
+    "family": "pronoun",
+    "intent_after_resolution": "khata_payment_in",
+    "base_action": "khata_payment_in"
+  },
+  "tyo lai 1000 diye": {
+    "id": "ctx-002",
+    "pattern_name": "pronoun_resolution_tyo_object_payment_out",
+    "family": "pronoun",
+    "intent_after_resolution": "khata_payment_out",
+    "base_action": "khata_payment_out"
+  },
+  "tyo ko balance kati?": {
+    "id": "ctx-003",
+    "pattern_name": "pronoun_resolution_tyo_possessive_balance",
+    "family": "pronoun",
+    "intent_after_resolution": "khata_balance_check",
+    "base_action": "query_balance"
+  },
+  "yo transaction cancel gar": {
+    "id": "ctx-004",
+    "pattern_name": "pronoun_resolution_yo_transaction_cancel",
+    "family": "pronoun",
+    "intent_after_resolution": "khata_cancel_transaction",
+    "base_action": "cancel_pending"
+  },
+  "uni le khata kholna khojeko": {
+    "id": "ctx-005",
+    "pattern_name": "pronoun_resolution_uni_account_open",
+    "family": "pronoun",
+    "intent_after_resolution": "khata_account_opening",
+    "base_action": "query_detail"
+  },
+  "uhaa le kati loan magyo?": {
+    "id": "ctx-006",
+    "pattern_name": "pronoun_resolution_uhaa_loan_request",
+    "family": "pronoun",
+    "intent_after_resolution": "khata_loan_inquiry",
+    "base_action": "query_detail"
+  },
+  "tiniharu ko khata ma pathaideu": {
+    "id": "ctx-007",
+    "pattern_name": "pronoun_resolution_tiniharu_group_transfer",
+    "family": "pronoun",
+    "intent_after_resolution": "khata_bulk_transfer",
+    "base_action": "khata_payment_out"
+  },
+  "yo paisa kata gayo?": {
+    "id": "ctx-008",
+    "pattern_name": "pronoun_resolution_yo_amount_inquiry",
+    "family": "pronoun",
+    "intent_after_resolution": "khata_transaction_detail",
+    "base_action": "query_detail"
+  },
+  "500": {
+    "id": "ctx-009",
+    "pattern_name": "amount_continuation_number_only",
+    "family": "amount_continuation",
+    "intent_after_resolution": "khata_send_money_confirm",
+    "base_action": "khata_payment_out"
+  },
+  "500 rupiya": {
+    "id": "ctx-010",
+    "pattern_name": "amount_continuation_rupees_word",
+    "family": "amount_continuation",
+    "intent_after_resolution": "khata_payment_out_confirm",
+    "base_action": "khata_payment_out"
+  },
+  "rs.500": {
+    "id": "ctx-011",
+    "pattern_name": "amount_continuation_rs_symbol",
+    "family": "amount_continuation",
+    "intent_after_resolution": "khata_bill_payment_confirm",
+    "base_action": "khata_expense"
+  },
+  "1500": {
+    "id": "ctx-012",
+    "pattern_name": "amount_continuation_bill_number_only",
+    "family": "amount_continuation",
+    "intent_after_resolution": "khata_bill_payment_confirm",
+    "base_action": "khata_expense"
+  },
+  "200000": {
+    "id": "ctx-013",
+    "pattern_name": "amount_continuation_loan_amount",
+    "family": "amount_continuation",
+    "intent_after_resolution": "khata_loan_disburse_confirm",
+    "base_action": "khata_loan_received"
+  },
+  "hoina 1000": {
+    "id": "ctx-014",
+    "pattern_name": "correction_replace_amount_hoina",
+    "family": "correction",
+    "intent_after_resolution": "khata_correction",
+    "base_action": "correct_pending"
+  },
+  "hoina sita lai": {
+    "id": "ctx-015",
+    "pattern_name": "correction_replace_party_hoina",
+    "family": "correction",
+    "intent_after_resolution": "khata_correction",
+    "base_action": "correct_pending"
+  },
+  "nai, 2000 ho": {
+    "id": "ctx-016",
+    "pattern_name": "correction_replace_amount_nai",
+    "family": "correction",
+    "intent_after_resolution": "khata_correction",
+    "base_action": "correct_pending"
+  },
+  "hoina, payment in ho": {
+    "id": "ctx-017",
+    "pattern_name": "correction_replace_type_hoina",
+    "family": "correction",
+    "intent_after_resolution": "khata_correction",
+    "base_action": "correct_pending"
+  },
+  "sachhi 1500 thiyo": {
+    "id": "ctx-018",
+    "pattern_name": "correction_replace_with_sachhi",
+    "family": "correction",
+    "intent_after_resolution": "khata_correction",
+    "base_action": "correct_pending"
+  },
+  "ani 200 pani": {
+    "id": "ctx-019",
+    "pattern_name": "addition_ani_amount",
+    "family": "addition",
+    "intent_after_resolution": "khata_addition",
+    "base_action": "khata_payment_out"
+  },
+  "ra ram lai 300": {
+    "id": "ctx-020",
+    "pattern_name": "addition_ra_party",
+    "family": "addition",
+    "intent_after_resolution": "khata_addition_new_party",
+    "base_action": "khata_payment_out"
+  },
+  "arko 1000 pathaye": {
+    "id": "ctx-021",
+    "pattern_name": "addition_arko_transaction",
+    "family": "addition",
+    "intent_after_resolution": "khata_new_similar_transaction",
+    "base_action": "khata_payment_out"
+  },
+  "feri 100 diye": {
+    "id": "ctx-022",
+    "pattern_name": "addition_feri_amount",
+    "family": "addition",
+    "intent_after_resolution": "khata_addition_same_party",
+    "base_action": "khata_payment_out"
+  },
+  "tespachi 200 jamma gare": {
+    "id": "ctx-023",
+    "pattern_name": "addition_tespachi_amount",
+    "family": "addition",
+    "intent_after_resolution": "khata_new_transaction_sequence",
+    "base_action": "khata_payment_out"
+  },
+  "hijo ko tyo transaction details deu": {
+    "id": "ctx-024",
+    "pattern_name": "time_reference_hijo_transaction_detail",
+    "family": "time_reference",
+    "intent_after_resolution": "khata_transaction_detail",
+    "base_action": "query_detail"
+  },
+  "asti ko tyo dekhau": {
+    "id": "ctx-025",
+    "pattern_name": "time_reference_asti_transaction_detail",
+    "family": "time_reference",
+    "intent_after_resolution": "khata_transaction_detail",
+    "base_action": "query_detail"
+  },
+  "pohor ko tyo karja kati baki cha?": {
+    "id": "ctx-026",
+    "pattern_name": "time_reference_pohor_sal",
+    "family": "time_reference",
+    "intent_after_resolution": "khata_loan_balance",
+    "base_action": "query_detail"
+  },
+  "agillo mahina ko tyo kharcha breakdown deu": {
+    "id": "ctx-027",
+    "pattern_name": "time_reference_last_month",
+    "family": "time_reference",
+    "intent_after_resolution": "khata_monthly_expense_detail",
+    "base_action": "query_detail"
+  },
+  "yo hapta ko tyo bachat kati pugyo?": {
+    "id": "ctx-028",
+    "pattern_name": "time_reference_this_week",
+    "family": "time_reference",
+    "intent_after_resolution": "khata_weekly_summary",
+    "base_action": "query_detail"
+  },
+  "feri tyahi gar": {
+    "id": "ctx-029",
+    "pattern_name": "implicit_continue_feri_same",
+    "family": "implicit_continue",
+    "intent_after_resolution": "khata_repeat_transaction",
+    "base_action": "khata_payment_out"
+  },
+  "aaja pani 50": {
+    "id": "ctx-030",
+    "pattern_name": "implicit_continue_aaja_pani",
+    "family": "implicit_continue",
+    "intent_after_resolution": "khata_recurring_expense",
+    "base_action": "khata_expense"
+  },
+  "arko 1000": {
+    "id": "ctx-031",
+    "pattern_name": "implicit_continue_arko_amount_same_party",
+    "family": "implicit_continue",
+    "intent_after_resolution": "khata_addition_same_party",
+    "base_action": "khata_payment_out"
+  },
+  "pachhi 2000": {
+    "id": "ctx-032",
+    "pattern_name": "implicit_continue_pachhi_amount",
+    "family": "implicit_continue",
+    "intent_after_resolution": "khata_future_scheduled",
+    "base_action": "khata_payment_out"
+  },
+  "bholi pani 300 pathaideu": {
+    "id": "ctx-033",
+    "pattern_name": "implicit_continue_bholi_pani",
+    "family": "implicit_continue",
+    "intent_after_resolution": "khata_future_scheduled",
+    "base_action": "khata_payment_out"
+  },
+  "ho": {
+    "id": "ctx-034",
+    "pattern_name": "confirm_yes_ho",
+    "family": "confirm",
+    "intent_after_resolution": "khata_confirm",
+    "base_action": "confirm_pending"
+  },
+  "thik cha": {
+    "id": "ctx-035",
+    "pattern_name": "confirm_ok_thik_cha",
+    "family": "confirm",
+    "intent_after_resolution": "khata_confirm",
+    "base_action": "confirm_pending"
+  },
+  "hoina, cancel gar": {
+    "id": "ctx-036",
+    "pattern_name": "negate_cancel_hoina",
+    "family": "negate",
+    "intent_after_resolution": "khata_cancel",
+    "base_action": "cancel_pending"
+  },
+  "nai, aghi ko": {
+    "id": "ctx-037",
+    "pattern_name": "negate_previous_nai",
+    "family": "negate",
+    "intent_after_resolution": "khata_cancel_previous_transaction",
+    "base_action": "cancel_pending"
+  },
+  "huss": {
+    "id": "ctx-038",
+    "pattern_name": "affirm_continue_huss",
+    "family": "affirm",
+    "intent_after_resolution": "khata_continue",
+    "base_action": "continue_flow"
+  },
+  "pachillo transaction ko details deu": {
+    "id": "ctx-039",
+    "pattern_name": "ask_last_transaction_details",
+    "family": "ask",
+    "intent_after_resolution": "khata_transaction_detail",
+    "base_action": "query_detail"
+  },
+  "last transaction ko amount kati thiyo?": {
+    "id": "ctx-040",
+    "pattern_name": "ask_last_transaction_amount",
+    "family": "ask",
+    "intent_after_resolution": "khata_last_transaction_amount",
+    "base_action": "query_detail"
+  },
+  "pachillo transaction kaslai gareko?": {
+    "id": "ctx-041",
+    "pattern_name": "ask_last_transaction_party",
+    "family": "ask",
+    "intent_after_resolution": "khata_last_transaction_party",
+    "base_action": "query_detail"
+  },
+  "antim ma k gariyo?": {
+    "id": "ctx-042",
+    "pattern_name": "ask_last_action",
+    "family": "ask",
+    "intent_after_resolution": "khata_last_action_summary",
+    "base_action": "query_detail"
+  },
+  "tyo payment kati ko thiyo?": {
+    "id": "ctx-043",
+    "pattern_name": "ask_last_payment_amount",
+    "family": "ask",
+    "intent_after_resolution": "khata_last_payment_amount",
+    "base_action": "query_detail"
+  },
+  "pahilo transaction details deu": {
+    "id": "ctx-044",
+    "pattern_name": "ordinal_reference_first",
+    "family": "ordinal",
+    "intent_after_resolution": "khata_list_item_detail",
+    "base_action": "query_detail"
+  },
+  "dosro transaction cancel gar": {
+    "id": "ctx-045",
+    "pattern_name": "ordinal_reference_second",
+    "family": "ordinal",
+    "intent_after_resolution": "khata_cancel_list_item",
+    "base_action": "cancel_pending"
+  },
+  "tesro ma kati diye?": {
+    "id": "ctx-046",
+    "pattern_name": "ordinal_reference_third",
+    "family": "ordinal",
+    "intent_after_resolution": "khata_list_item_amount",
+    "base_action": "query_detail"
+  },
+  "esari nai arko 500 pathau": {
+    "id": "ctx-047",
+    "pattern_name": "demonstrative_esari_repeat",
+    "family": "demonstrative",
+    "intent_after_resolution": "khata_repeat_with_method",
+    "base_action": "khata_payment_out"
+  },
+  "yesari 1000 pathaideu": {
+    "id": "ctx-048",
+    "pattern_name": "demonstrative_yesari_new_amount",
+    "family": "demonstrative",
+    "intent_after_resolution": "khata_send_with_last_method",
+    "base_action": "khata_payment_out"
+  },
+  "tyo bank ma 5000 jamma gar": {
+    "id": "ctx-049",
+    "pattern_name": "location_bank_reference",
+    "family": "location",
+    "intent_after_resolution": "khata_deposit_specific_bank",
+    "base_action": "khata_contra_cash_bank"
+  },
+  "tyo atm bata 1000 nikal": {
+    "id": "ctx-050",
+    "pattern_name": "location_atm_reference",
+    "family": "location",
+    "intent_after_resolution": "khata_withdraw_atm",
+    "base_action": "khata_drawings"
+  },
+  "maile tyo paisa tire": {
+    "id": "ctx-051",
+    "pattern_name": "self_subject_tyo_object_payment",
+    "family": "self_subject",
+    "intent_after_resolution": "khata_bill_payment_confirm",
+    "base_action": "khata_expense"
+  },
+  "tyo error fix gar": {
+    "id": "ctx-052",
+    "pattern_name": "error_reference_fix",
+    "family": "error_reference",
+    "intent_after_resolution": "khata_resolve_error",
+    "base_action": "clarify_needed"
+  },
+  "tyo le diyo": {
+    "id": "ctx-053",
+    "pattern_name": "pronoun_tyo_le_diyo",
+    "family": "pronoun",
+    "intent_after_resolution": "khata_payment_in",
+    "base_action": "khata_payment_in"
+  },
+  "tyo sanga hisab settle gar": {
+    "id": "ctx-054",
+    "pattern_name": "pronoun_tyo_sanga_hisab",
+    "family": "pronoun",
+    "intent_after_resolution": "khata_settle_up",
+    "base_action": "khata_payment_in"
+  },
+  "yo kura feri garnus": {
+    "id": "ctx-055",
+    "pattern_name": "pronoun_yo_kura_repeat",
+    "family": "pronoun",
+    "intent_after_resolution": "khata_repeat_action",
+    "base_action": "khata_payment_out"
+  },
+  "750": {
+    "id": "ctx-056",
+    "pattern_name": "amount_continuation_transfer_number",
+    "family": "amount_continuation",
+    "intent_after_resolution": "khata_transfer_confirm",
+    "base_action": "khata_payment_out"
+  },
+  "hoina asti": {
+    "id": "ctx-057",
+    "pattern_name": "correction_replace_date_hoina",
+    "family": "correction",
+    "intent_after_resolution": "khata_correction",
+    "base_action": "correct_pending"
+  },
+  "ani arko sita lai pani": {
+    "id": "ctx-058",
+    "pattern_name": "addition_ani_arko_party",
+    "family": "addition",
+    "intent_after_resolution": "khata_add_party",
+    "base_action": "khata_payment_out"
+  },
+  "agillo hapta ko tyo transaction dekhau": {
+    "id": "ctx-059",
+    "pattern_name": "time_reference_agillo_hafta",
+    "family": "time_reference",
+    "intent_after_resolution": "khata_transaction_detail",
+    "base_action": "query_detail"
+  },
+  "tyo le pathayo": {
+    "id": "ctx-060",
+    "pattern_name": "pronoun_tyo_le_pathayo",
+    "family": "pronoun",
+    "intent_after_resolution": "khata_payment_in",
+    "base_action": "khata_payment_in"
+  }
+}

@@ -1,0 +1,1349 @@
+[
+  {
+    "id": "num-105",
+    "text": "paanch hajar char saya",
+    "variants": [
+      "5400",
+      "five thousand four hundred"
+    ],
+    "numeric_value": 5400,
+    "regex_pattern": "paa[n]?ch\\s*haj[a]+r\\s*char\\s*say[a]+"
+  },
+  {
+    "id": "num-075",
+    "text": "das hajar paanch saya",
+    "variants": [
+      "10 hajar 5 saya",
+      "10500"
+    ],
+    "numeric_value": 10500,
+    "regex_pattern": "das\\s*haj[a]+r\\s*paa[n]?ch\\s*say[a]+"
+  },
+  {
+    "id": "num-076",
+    "text": "ek lakh pachas hajar",
+    "variants": [
+      "1 lakh 50 hajar",
+      "150000"
+    ],
+    "numeric_value": 150000,
+    "regex_pattern": "ek\\s*la[kh]+\\s*pachas\\s*haj[a]+r"
+  },
+  {
+    "id": "num-073",
+    "text": "ek hajar paanch saya",
+    "variants": [
+      "1 hajar 5 saya",
+      "1500"
+    ],
+    "numeric_value": 1500,
+    "regex_pattern": "ek\\s*haj[a]+r\\s*paa[n]?ch\\s*say[a]+"
+  },
+  {
+    "id": "num-106",
+    "text": "das hajar aath saya",
+    "variants": [
+      "10800",
+      "ten thousand eight hundred"
+    ],
+    "numeric_value": 10800,
+    "regex_pattern": "das\\s*haj[a]+r\\s*aath\\s*say[a]+"
+  },
+  {
+    "id": "num-095",
+    "text": "tin hajar char saya",
+    "variants": [
+      "3 hajar 4 saya",
+      "3400"
+    ],
+    "numeric_value": 3400,
+    "regex_pattern": "tin\\s*haj[a]+r\\s*char\\s*say[a]+"
+  },
+  {
+    "id": "num-074",
+    "text": "dui hajar tin saya",
+    "variants": [
+      "2 hajar 3 saya",
+      "2300"
+    ],
+    "numeric_value": 2300,
+    "regex_pattern": "dui\\s*haj[a]+r\\s*tin\\s*say[a]+"
+  },
+  {
+    "id": "num-087",
+    "text": "paanch saya rupees",
+    "variants": [
+      "500 rupees",
+      "Rs 500"
+    ],
+    "numeric_value": 500,
+    "regex_pattern": "paa[n]?ch\\s*say[a]+\\s*rupees"
+  },
+  {
+    "id": "num-093",
+    "text": "das hajar rupees",
+    "variants": [
+      "10k rupees",
+      "NPR 10000"
+    ],
+    "numeric_value": 10000,
+    "regex_pattern": "das\\s*haj[a]+r\\s*rupees|10k\\s*rupees"
+  },
+  {
+    "id": "num-104",
+    "text": "ek hajar ek saya",
+    "variants": [
+      "1100",
+      "eleven hundred"
+    ],
+    "numeric_value": 1100,
+    "regex_pattern": "ek\\s*haj[a]+r\\s*ek\\s*say[a]+"
+  },
+  {
+    "id": "num-089",
+    "text": "rupiya ek hajar",
+    "variants": [
+      "Rs. 1000",
+      "1k rs"
+    ],
+    "numeric_value": 1000,
+    "regex_pattern": "rupiya\\s*ek\\s*haj[a]+r|1k\\s*rs"
+  },
+  {
+    "id": "num-101",
+    "text": "dui saya pachas",
+    "variants": [
+      "250",
+      "two fifty"
+    ],
+    "numeric_value": 250,
+    "regex_pattern": "dui\\s*say[a]+\\s*pachas"
+  },
+  {
+    "id": "num-092",
+    "text": "ek lakh rupiya",
+    "variants": [
+      "Rs. 100000",
+      "one lakh rupees"
+    ],
+    "numeric_value": 100000,
+    "regex_pattern": "ek\\s*la[kh]+\\s*rupiya|one\\s*lakh\\s*rupees"
+  },
+  {
+    "id": "num-096",
+    "text": "chaalis hajar",
+    "variants": [
+      "40 hajar",
+      "40000"
+    ],
+    "numeric_value": 40000,
+    "regex_pattern": "chaalis\\s*haj[a]+r"
+  },
+  {
+    "id": "num-107",
+    "text": "pandhra hajar",
+    "variants": [
+      "15 hajar",
+      "15000"
+    ],
+    "numeric_value": 15000,
+    "regex_pattern": "pandhra\\s*haj[a]+r"
+  },
+  {
+    "id": "num-061",
+    "text": "paanch crore",
+    "variants": [
+      "5 crore",
+      "five crore",
+      "50 million"
+    ],
+    "numeric_value": 50000000,
+    "regex_pattern": "paa[n]?ch\\s*cr?ore"
+  },
+  {
+    "id": "num-110",
+    "text": "saathi hajar",
+    "variants": [
+      "60 hajar",
+      "60000"
+    ],
+    "numeric_value": 60000,
+    "regex_pattern": "saathi\\s*haj[a]+r"
+  },
+  {
+    "id": "num-111",
+    "text": "pachas hajar",
+    "variants": [
+      "50 hajar",
+      "50000"
+    ],
+    "numeric_value": 50000,
+    "regex_pattern": "pachas\\s*haj[a]+r"
+  },
+  {
+    "id": "num-109",
+    "text": "pachis hajar",
+    "variants": [
+      "25 hajar",
+      "25000"
+    ],
+    "numeric_value": 25000,
+    "regex_pattern": "pachis\\s*haj[a]+r"
+  },
+  {
+    "id": "num-053",
+    "text": "paanch hajar",
+    "variants": [
+      "5 hajar",
+      "5000"
+    ],
+    "numeric_value": 5000,
+    "regex_pattern": "paa[n]?ch\\s*haj[a]+r"
+  },
+  {
+    "id": "num-077",
+    "text": "pachas lakh",
+    "variants": [
+      "50 lakh",
+      "5000000"
+    ],
+    "numeric_value": 5000000,
+    "regex_pattern": "pachas\\s*la[kh]+"
+  },
+  {
+    "id": "num-057",
+    "text": "paanch lakh",
+    "variants": [
+      "5 lakh",
+      "five lakhs"
+    ],
+    "numeric_value": 500000,
+    "regex_pattern": "paa[n]?ch\\s*la[kh]+"
+  },
+  {
+    "id": "num-097",
+    "text": "nabbe hajar",
+    "variants": [
+      "90 hajar",
+      "90000"
+    ],
+    "numeric_value": 90000,
+    "regex_pattern": "nabbe\\s*haj[a]+r"
+  },
+  {
+    "id": "num-049",
+    "text": "paanch saya",
+    "variants": [
+      "paanch sayaa",
+      "500"
+    ],
+    "numeric_value": 500,
+    "regex_pattern": "paa[n]?ch\\s*say[a]+"
+  },
+  {
+    "id": "num-100",
+    "text": "ek saya bis",
+    "variants": [
+      "120",
+      "one hundred twenty"
+    ],
+    "numeric_value": 120,
+    "regex_pattern": "ek\\s*say[a]+\\s*bis"
+  },
+  {
+    "id": "num-098",
+    "text": "santaanabbe",
+    "variants": [
+      "santanabbe",
+      "97"
+    ],
+    "numeric_value": 97,
+    "regex_pattern": "santaanabbe|97"
+  },
+  {
+    "id": "num-039",
+    "text": "unanchaalis",
+    "variants": [
+      "३९",
+      "thirty nine",
+      "39"
+    ],
+    "numeric_value": 39,
+    "regex_pattern": "unanchaalis|३९|39"
+  },
+  {
+    "id": "num-068",
+    "text": "sade paanch",
+    "variants": [
+      "sade 5",
+      "5.5"
+    ],
+    "numeric_value": 5.5,
+    "regex_pattern": "sade\\s*paa[n]?ch|5\\.5"
+  },
+  {
+    "id": "num-124",
+    "text": "aath crore",
+    "variants": [
+      "8 crore",
+      "80000000"
+    ],
+    "numeric_value": 80000000,
+    "regex_pattern": "aath\\s*cr?ore"
+  },
+  {
+    "id": "num-123",
+    "text": "saat crore",
+    "variants": [
+      "7 crore",
+      "70000000"
+    ],
+    "numeric_value": 70000000,
+    "regex_pattern": "saat\\s*cr?ore"
+  },
+  {
+    "id": "num-121",
+    "text": "char crore",
+    "variants": [
+      "4 crore",
+      "40000000"
+    ],
+    "numeric_value": 40000000,
+    "regex_pattern": "char\\s*cr?ore"
+  },
+  {
+    "id": "num-069",
+    "text": "dedh hajar",
+    "variants": [
+      "1.5 hajar",
+      "1500"
+    ],
+    "numeric_value": 1500,
+    "regex_pattern": "dedh\\s*haj[a]+r"
+  },
+  {
+    "id": "num-086",
+    "text": "500 rupiya",
+    "variants": [
+      "500 rs",
+      "paanch saya rupiya"
+    ],
+    "numeric_value": 500,
+    "regex_pattern": "500\\s*rupiya|paa[n]?ch\\s*say[a]+\\s*rupiya"
+  },
+  {
+    "id": "num-047",
+    "text": "ek saya ek",
+    "variants": [
+      "ek saya 1",
+      "one hundred one"
+    ],
+    "numeric_value": 101,
+    "regex_pattern": "ek\\s*say[a]+\\s*ek"
+  },
+  {
+    "id": "num-078",
+    "text": "das crore",
+    "variants": [
+      "10 crore",
+      "100000000"
+    ],
+    "numeric_value": 100000000,
+    "regex_pattern": "das\\s*cr?ore"
+  },
+  {
+    "id": "num-125",
+    "text": "nau crore",
+    "variants": [
+      "9 crore",
+      "90000000"
+    ],
+    "numeric_value": 90000000,
+    "regex_pattern": "nau\\s*cr?ore"
+  },
+  {
+    "id": "num-122",
+    "text": "cha crore",
+    "variants": [
+      "6 crore",
+      "60000000"
+    ],
+    "numeric_value": 60000000,
+    "regex_pattern": "chha\\s*cr?ore"
+  },
+  {
+    "id": "num-120",
+    "text": "tin crore",
+    "variants": [
+      "3 crore",
+      "30000000"
+    ],
+    "numeric_value": 30000000,
+    "regex_pattern": "tin\\s*cr?ore"
+  },
+  {
+    "id": "num-119",
+    "text": "dui crore",
+    "variants": [
+      "2 crore",
+      "20000000"
+    ],
+    "numeric_value": 20000000,
+    "regex_pattern": "dui\\s*cr?ore"
+  },
+  {
+    "id": "num-117",
+    "text": "aath lakh",
+    "variants": [
+      "8 lakh",
+      "800000"
+    ],
+    "numeric_value": 800000,
+    "regex_pattern": "aath\\s*la[kh]+"
+  },
+  {
+    "id": "num-116",
+    "text": "saat lakh",
+    "variants": [
+      "7 lakh",
+      "700000"
+    ],
+    "numeric_value": 700000,
+    "regex_pattern": "saat\\s*la[kh]+"
+  },
+  {
+    "id": "num-114",
+    "text": "char lakh",
+    "variants": [
+      "4 lakh",
+      "400000"
+    ],
+    "numeric_value": 400000,
+    "regex_pattern": "char\\s*la[kh]+"
+  },
+  {
+    "id": "num-070",
+    "text": "dhai lakh",
+    "variants": [
+      "2.5 lakh",
+      "250000"
+    ],
+    "numeric_value": 250000,
+    "regex_pattern": "dhai\\s*la[kh]+"
+  },
+  {
+    "id": "num-108",
+    "text": "bis hajar",
+    "variants": [
+      "20 hajar",
+      "20000"
+    ],
+    "numeric_value": 20000,
+    "regex_pattern": "bis\\s*haj[a]+r"
+  },
+  {
+    "id": "num-054",
+    "text": "das hajar",
+    "variants": [
+      "10 hajar",
+      "ten thousand",
+      "10000"
+    ],
+    "numeric_value": 10000,
+    "regex_pattern": "das\\s*haj[a]+r"
+  },
+  {
+    "id": "num-052",
+    "text": "dui hajar",
+    "variants": [
+      "2 hajar",
+      "two thousand"
+    ],
+    "numeric_value": 2000,
+    "regex_pattern": "dui\\s*haj[a]+r"
+  },
+  {
+    "id": "num-102",
+    "text": "aath saya",
+    "variants": [
+      "800",
+      "eight hundred"
+    ],
+    "numeric_value": 800,
+    "regex_pattern": "aath\\s*say[a]+"
+  },
+  {
+    "id": "num-099",
+    "text": "unaansaya",
+    "variants": [
+      "99",
+      "ninety nine"
+    ],
+    "numeric_value": 99,
+    "regex_pattern": "unaansaya|99"
+  },
+  {
+    "id": "num-071",
+    "text": "sawa char",
+    "variants": [
+      "sawa 4",
+      "4.25"
+    ],
+    "numeric_value": 4.25,
+    "regex_pattern": "sawa\\s*char|4\\.25"
+  },
+  {
+    "id": "num-072",
+    "text": "paune dui",
+    "variants": [
+      "paune 2",
+      "1.75"
+    ],
+    "numeric_value": 1.75,
+    "regex_pattern": "paune\\s*dui|1\\.75"
+  },
+  {
+    "id": "num-060",
+    "text": "ek crore",
+    "variants": [
+      "1 crore",
+      "one crore"
+    ],
+    "numeric_value": 10000000,
+    "regex_pattern": "ek\\s*cr?ore|ek\\s*karod"
+  },
+  {
+    "id": "num-058",
+    "text": "das lakh",
+    "variants": [
+      "10 lakh",
+      "ten lakh",
+      "1000000"
+    ],
+    "numeric_value": 1000000,
+    "regex_pattern": "das\\s*la[kh]+"
+  },
+  {
+    "id": "num-118",
+    "text": "nau lakh",
+    "variants": [
+      "9 lakh",
+      "900000"
+    ],
+    "numeric_value": 900000,
+    "regex_pattern": "nau\\s*la[kh]+"
+  },
+  {
+    "id": "num-115",
+    "text": "cha lakh",
+    "variants": [
+      "6 lakh",
+      "600000"
+    ],
+    "numeric_value": 600000,
+    "regex_pattern": "chha\\s*la[kh]+"
+  },
+  {
+    "id": "num-113",
+    "text": "tin lakh",
+    "variants": [
+      "3 lakh",
+      "300000"
+    ],
+    "numeric_value": 300000,
+    "regex_pattern": "tin\\s*la[kh]+"
+  },
+  {
+    "id": "num-112",
+    "text": "dui lakh",
+    "variants": [
+      "2 lakh",
+      "200000"
+    ],
+    "numeric_value": 200000,
+    "regex_pattern": "dui\\s*la[kh]+"
+  },
+  {
+    "id": "num-091",
+    "text": "NPR 5000",
+    "variants": [
+      "rupees five thousand",
+      "Rs 5000"
+    ],
+    "numeric_value": 5000,
+    "regex_pattern": "NPR\\s*5000|five\\s*thousand\\s*rupees"
+  },
+  {
+    "id": "num-051",
+    "text": "ek hajar",
+    "variants": [
+      "1 hajar",
+      "one thousand"
+    ],
+    "numeric_value": 1000,
+    "regex_pattern": "ek\\s*haj[a]+r"
+  },
+  {
+    "id": "num-088",
+    "text": "NPR 1000",
+    "variants": [
+      "Nepali rupees 1000",
+      "rupees one thousand"
+    ],
+    "numeric_value": 1000,
+    "regex_pattern": "NPR\\s*1000|rupees\\s*one\\s*thousand"
+  },
+  {
+    "id": "num-103",
+    "text": "nau saya",
+    "variants": [
+      "900",
+      "nine hundred"
+    ],
+    "numeric_value": 900,
+    "regex_pattern": "nau\\s*say[a]+"
+  },
+  {
+    "id": "num-048",
+    "text": "dui saya",
+    "variants": [
+      "dui sayaa",
+      "two hundred",
+      "200"
+    ],
+    "numeric_value": 200,
+    "regex_pattern": "dui\\s*say[a]+"
+  },
+  {
+    "id": "num-034",
+    "text": "chauntis",
+    "variants": [
+      "३४",
+      "thirty four",
+      "34"
+    ],
+    "numeric_value": 34,
+    "regex_pattern": "chauntis|३४|34"
+  },
+  {
+    "id": "num-066",
+    "text": "paune ek",
+    "variants": [
+      "paune 1",
+      "0.75"
+    ],
+    "numeric_value": 0.75,
+    "regex_pattern": "paune\\s*ek|0\\.75"
+  },
+  {
+    "id": "num-094",
+    "text": "ek arab",
+    "variants": [
+      "1 arab",
+      "one billion"
+    ],
+    "numeric_value": 1000000000,
+    "regex_pattern": "ek\\s*arab|one\\s*billion"
+  },
+  {
+    "id": "num-056",
+    "text": "ek lakh",
+    "variants": [
+      "1 lakh",
+      "one lakh"
+    ],
+    "numeric_value": 100000,
+    "regex_pattern": "ek\\s*la[kh]+"
+  },
+  {
+    "id": "num-090",
+    "text": "Rs. 100",
+    "variants": [
+      "100 rupiya",
+      "ek saya rupees"
+    ],
+    "numeric_value": 100,
+    "regex_pattern": "[rR]s\\.?\\s*100|ek\\s*say[a]+\\s*rupees"
+  },
+  {
+    "id": "num-043",
+    "text": "sattari",
+    "variants": [
+      "७०",
+      "seventy",
+      "70"
+    ],
+    "numeric_value": 70,
+    "regex_pattern": "sattari|७०|70"
+  },
+  {
+    "id": "num-040",
+    "text": "chaalis",
+    "variants": [
+      "४०",
+      "forty",
+      "40"
+    ],
+    "numeric_value": 40,
+    "regex_pattern": "chaalis|४०|40"
+  },
+  {
+    "id": "num-038",
+    "text": "athitis",
+    "variants": [
+      "३८",
+      "thirty eight",
+      "38"
+    ],
+    "numeric_value": 38,
+    "regex_pattern": "athitis|३८|38"
+  },
+  {
+    "id": "num-037",
+    "text": "saintis",
+    "variants": [
+      "३७",
+      "thirty seven",
+      "37"
+    ],
+    "numeric_value": 37,
+    "regex_pattern": "saintis|३७|37"
+  },
+  {
+    "id": "num-036",
+    "text": "chhatis",
+    "variants": [
+      "३६",
+      "thirty six",
+      "36"
+    ],
+    "numeric_value": 36,
+    "regex_pattern": "chhatis|३६|36"
+  },
+  {
+    "id": "num-031",
+    "text": "ekantis",
+    "variants": [
+      "३१",
+      "thirty one",
+      "31"
+    ],
+    "numeric_value": 31,
+    "regex_pattern": "ekantis|३१|31"
+  },
+  {
+    "id": "num-029",
+    "text": "unnatis",
+    "variants": [
+      "२९",
+      "twenty nine",
+      "29"
+    ],
+    "numeric_value": 29,
+    "regex_pattern": "unnatis|२९|29"
+  },
+  {
+    "id": "num-026",
+    "text": "chhabis",
+    "variants": [
+      "२६",
+      "twenty six",
+      "26"
+    ],
+    "numeric_value": 26,
+    "regex_pattern": "chhabis|२६|26"
+  },
+  {
+    "id": "num-024",
+    "text": "chaubis",
+    "variants": [
+      "२४",
+      "twenty four",
+      "24"
+    ],
+    "numeric_value": 24,
+    "regex_pattern": "chaubis|२४|24"
+  },
+  {
+    "id": "num-015",
+    "text": "pandhra",
+    "variants": [
+      "१५",
+      "fifteen",
+      "15"
+    ],
+    "numeric_value": 15,
+    "regex_pattern": "pandhra|१५|15"
+  },
+  {
+    "id": "num-065",
+    "text": "sawa ek",
+    "variants": [
+      "sawa 1",
+      "1.25"
+    ],
+    "numeric_value": 1.25,
+    "regex_pattern": "sawa\\s*ek|1\\.25"
+  },
+  {
+    "id": "num-085",
+    "text": "rs 500",
+    "variants": [
+      "Rs. 500",
+      "500 rupees"
+    ],
+    "numeric_value": 500,
+    "regex_pattern": "[rR]s\\.?\\s*500"
+  },
+  {
+    "id": "num-042",
+    "text": "saathi",
+    "variants": [
+      "६०",
+      "sixty",
+      "60"
+    ],
+    "numeric_value": 60,
+    "regex_pattern": "saathi|६०|60"
+  },
+  {
+    "id": "num-041",
+    "text": "pachas",
+    "variants": [
+      "५०",
+      "fifty",
+      "50"
+    ],
+    "numeric_value": 50,
+    "regex_pattern": "pachas|५०|50"
+  },
+  {
+    "id": "num-035",
+    "text": "paitis",
+    "variants": [
+      "३५",
+      "thirty five",
+      "35"
+    ],
+    "numeric_value": 35,
+    "regex_pattern": "paitis|३५|35"
+  },
+  {
+    "id": "num-032",
+    "text": "battis",
+    "variants": [
+      "३२",
+      "thirty two",
+      "32"
+    ],
+    "numeric_value": 32,
+    "regex_pattern": "battis|३२|32"
+  },
+  {
+    "id": "num-025",
+    "text": "pachis",
+    "variants": [
+      "२५",
+      "twenty five",
+      "25"
+    ],
+    "numeric_value": 25,
+    "regex_pattern": "pachis|२५|25"
+  },
+  {
+    "id": "num-019",
+    "text": "unnais",
+    "variants": [
+      "१९",
+      "nineteen",
+      "19"
+    ],
+    "numeric_value": 19,
+    "regex_pattern": "unnais|१९|19"
+  },
+  {
+    "id": "num-018",
+    "text": "athara",
+    "variants": [
+      "१८",
+      "eighteen",
+      "18"
+    ],
+    "numeric_value": 18,
+    "regex_pattern": "athara|१८|18"
+  },
+  {
+    "id": "num-014",
+    "text": "chauda",
+    "variants": [
+      "१४",
+      "fourteen",
+      "14"
+    ],
+    "numeric_value": 14,
+    "regex_pattern": "chauda|१४|14"
+  },
+  {
+    "id": "num-011",
+    "text": "eghara",
+    "variants": [
+      "११",
+      "eleven",
+      "11"
+    ],
+    "numeric_value": 11,
+    "regex_pattern": "eghara|११|11"
+  },
+  {
+    "id": "num-005",
+    "text": "paanch",
+    "variants": [
+      "५",
+      "five",
+      "5",
+      "paach"
+    ],
+    "numeric_value": 5,
+    "regex_pattern": "paa[n]?ch|५|5"
+  },
+  {
+    "id": "num-059",
+    "text": "crore",
+    "variants": [
+      "krore",
+      "karod"
+    ],
+    "numeric_value": 10000000,
+    "regex_pattern": "k?rore|karod"
+  },
+  {
+    "id": "num-128",
+    "text": "0.5Cr",
+    "variants": [
+      "0.5 Cr",
+      "5000000"
+    ],
+    "numeric_value": 5000000,
+    "regex_pattern": "0\\.5\\s*[cC]r"
+  },
+  {
+    "id": "num-050",
+    "text": "hajar",
+    "variants": [
+      "hazaar",
+      "thousand",
+      "1000"
+    ],
+    "numeric_value": 1000,
+    "regex_pattern": "haj[a]+r|thousand|1000"
+  },
+  {
+    "id": "num-045",
+    "text": "nabbe",
+    "variants": [
+      "९०",
+      "ninety",
+      "90"
+    ],
+    "numeric_value": 90,
+    "regex_pattern": "nabbe|९०|90"
+  },
+  {
+    "id": "num-033",
+    "text": "tetis",
+    "variants": [
+      "३३",
+      "thirty three",
+      "33"
+    ],
+    "numeric_value": 33,
+    "regex_pattern": "tetis|३३|33"
+  },
+  {
+    "id": "num-028",
+    "text": "athis",
+    "variants": [
+      "२८",
+      "twenty eight",
+      "28"
+    ],
+    "numeric_value": 28,
+    "regex_pattern": "athis|२८|28"
+  },
+  {
+    "id": "num-027",
+    "text": "satis",
+    "variants": [
+      "२७",
+      "twenty seven",
+      "27"
+    ],
+    "numeric_value": 27,
+    "regex_pattern": "satis|२७|27"
+  },
+  {
+    "id": "num-021",
+    "text": "ekkis",
+    "variants": [
+      "२१",
+      "twenty one",
+      "21"
+    ],
+    "numeric_value": 21,
+    "regex_pattern": "ekkis|२१|21"
+  },
+  {
+    "id": "num-017",
+    "text": "satra",
+    "variants": [
+      "१७",
+      "seventeen",
+      "17"
+    ],
+    "numeric_value": 17,
+    "regex_pattern": "satra|१७|17"
+  },
+  {
+    "id": "num-016",
+    "text": "sorha",
+    "variants": [
+      "१६",
+      "sixteen",
+      "16",
+      "sohra"
+    ],
+    "numeric_value": 16,
+    "regex_pattern": "sorha|sohra|१६|16"
+  },
+  {
+    "id": "num-012",
+    "text": "baara",
+    "variants": [
+      "१२",
+      "twelve",
+      "12"
+    ],
+    "numeric_value": 12,
+    "regex_pattern": "baara|१२|12"
+  },
+  {
+    "id": "num-067",
+    "text": "aadha",
+    "variants": [
+      "adha",
+      "0.5"
+    ],
+    "numeric_value": 0.5,
+    "regex_pattern": "aa?dha|0\\.5"
+  },
+  {
+    "id": "num-062",
+    "text": "arab",
+    "variants": [
+      "arab",
+      "billion",
+      "1000000000"
+    ],
+    "numeric_value": 1000000000,
+    "regex_pattern": "arab|billion"
+  },
+  {
+    "id": "num-129",
+    "text": "10Cr",
+    "variants": [
+      "10 Cr",
+      "10 crore"
+    ],
+    "numeric_value": 100000000,
+    "regex_pattern": "10\\s*[cC]r"
+  },
+  {
+    "id": "num-127",
+    "text": "2.5L",
+    "variants": [
+      "2.5 L",
+      "250000"
+    ],
+    "numeric_value": 250000,
+    "regex_pattern": "2\\.5\\s*[lL]"
+  },
+  {
+    "id": "num-055",
+    "text": "lakh",
+    "variants": [
+      "laakh",
+      "lac"
+    ],
+    "numeric_value": 100000,
+    "regex_pattern": "la[kh]+"
+  },
+  {
+    "id": "num-126",
+    "text": "1.5k",
+    "variants": [
+      "1.5 k",
+      "1500"
+    ],
+    "numeric_value": 1500,
+    "regex_pattern": "1\\.5\\s*k"
+  },
+  {
+    "id": "num-046",
+    "text": "saya",
+    "variants": [
+      "sayaa",
+      "hundred",
+      "100"
+    ],
+    "numeric_value": 100,
+    "regex_pattern": "say[a]+|hundred|100"
+  },
+  {
+    "id": "num-044",
+    "text": "assi",
+    "variants": [
+      "८०",
+      "eighty",
+      "80"
+    ],
+    "numeric_value": 80,
+    "regex_pattern": "assi|८०|80"
+  },
+  {
+    "id": "num-023",
+    "text": "teis",
+    "variants": [
+      "२३",
+      "twenty three",
+      "23"
+    ],
+    "numeric_value": 23,
+    "regex_pattern": "teis|२३|23"
+  },
+  {
+    "id": "num-022",
+    "text": "bais",
+    "variants": [
+      "२२",
+      "twenty two",
+      "22"
+    ],
+    "numeric_value": 22,
+    "regex_pattern": "bais|२२|22"
+  },
+  {
+    "id": "num-013",
+    "text": "tera",
+    "variants": [
+      "१३",
+      "thirteen",
+      "13"
+    ],
+    "numeric_value": 13,
+    "regex_pattern": "tera|१३|13"
+  },
+  {
+    "id": "num-008",
+    "text": "aath",
+    "variants": [
+      "८",
+      "eight",
+      "8"
+    ],
+    "numeric_value": 8,
+    "regex_pattern": "aath|८|8"
+  },
+  {
+    "id": "num-007",
+    "text": "saat",
+    "variants": [
+      "७",
+      "seven",
+      "7",
+      "sat"
+    ],
+    "numeric_value": 7,
+    "regex_pattern": "saat|७|7"
+  },
+  {
+    "id": "num-006",
+    "text": "chha",
+    "variants": [
+      "६",
+      "six",
+      "6",
+      "cha"
+    ],
+    "numeric_value": 6,
+    "regex_pattern": "chha|६|6"
+  },
+  {
+    "id": "num-004",
+    "text": "char",
+    "variants": [
+      "४",
+      "four",
+      "4"
+    ],
+    "numeric_value": 4,
+    "regex_pattern": "char|४|4"
+  },
+  {
+    "id": "num-064",
+    "text": "dhai",
+    "variants": [
+      "dhai",
+      "2.5"
+    ],
+    "numeric_value": 2.5,
+    "regex_pattern": "dhai|2\\.5"
+  },
+  {
+    "id": "num-063",
+    "text": "dedh",
+    "variants": [
+      "derh",
+      "1.5"
+    ],
+    "numeric_value": 1.5,
+    "regex_pattern": "dedh|derh|1\\.5"
+  },
+  {
+    "id": "num-084",
+    "text": "1Cr",
+    "variants": [
+      "1 Cr",
+      "10000000"
+    ],
+    "numeric_value": 10000000,
+    "regex_pattern": "1\\s*[cC]r"
+  },
+  {
+    "id": "num-081",
+    "text": "50k",
+    "variants": [
+      "50 k",
+      "50000"
+    ],
+    "numeric_value": 50000,
+    "regex_pattern": "50\\s*k"
+  },
+  {
+    "id": "num-080",
+    "text": "10k",
+    "variants": [
+      "10 k",
+      "10000"
+    ],
+    "numeric_value": 10000,
+    "regex_pattern": "10\\s*k"
+  },
+  {
+    "id": "num-030",
+    "text": "tis",
+    "variants": [
+      "३०",
+      "thirty",
+      "30"
+    ],
+    "numeric_value": 30,
+    "regex_pattern": "tis|३०|30"
+  },
+  {
+    "id": "num-020",
+    "text": "bis",
+    "variants": [
+      "२०",
+      "twenty",
+      "20",
+      "bees"
+    ],
+    "numeric_value": 20,
+    "regex_pattern": "bis|bees|bīs|२०|20"
+  },
+  {
+    "id": "num-010",
+    "text": "das",
+    "variants": [
+      "१०",
+      "ten",
+      "10"
+    ],
+    "numeric_value": 10,
+    "regex_pattern": "das|१०|10"
+  },
+  {
+    "id": "num-009",
+    "text": "nau",
+    "variants": [
+      "९",
+      "nine",
+      "9"
+    ],
+    "numeric_value": 9,
+    "regex_pattern": "nau|९|9"
+  },
+  {
+    "id": "num-003",
+    "text": "tin",
+    "variants": [
+      "३",
+      "three",
+      "3"
+    ],
+    "numeric_value": 3,
+    "regex_pattern": "tin|३|3"
+  },
+  {
+    "id": "num-002",
+    "text": "dui",
+    "variants": [
+      "२",
+      "two",
+      "2"
+    ],
+    "numeric_value": 2,
+    "regex_pattern": "dui|२|2"
+  },
+  {
+    "id": "num-083",
+    "text": "5L",
+    "variants": [
+      "5 L",
+      "500000"
+    ],
+    "numeric_value": 500000,
+    "regex_pattern": "5\\s*[lL]"
+  },
+  {
+    "id": "num-082",
+    "text": "1L",
+    "variants": [
+      "1 L",
+      "100000"
+    ],
+    "numeric_value": 100000,
+    "regex_pattern": "1\\s*[lL]"
+  },
+  {
+    "id": "num-079",
+    "text": "5k",
+    "variants": [
+      "5 k",
+      "5000"
+    ],
+    "numeric_value": 5000,
+    "regex_pattern": "5\\s*k"
+  },
+  {
+    "id": "num-001",
+    "text": "ek",
+    "variants": [
+      "१",
+      "one",
+      "1"
+    ],
+    "numeric_value": 1,
+    "regex_pattern": "ek|१|1"
+  }
+]

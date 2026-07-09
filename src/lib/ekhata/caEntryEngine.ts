@@ -12,12 +12,58 @@ import {
   type EntryBuildParams,
 } from "./caEntryTemplates";
 import type { AccountClass } from "./types";
+import { getAccountByCode } from "./caAccountClassification";
+import {
+  matchJournalEntryRule,
+  resolveJeAccountCode,
+  type JournalRuleMatch,
+} from "../nepal-ai/journalEntryRules";
 
 export interface CAEntryResult {
   card: KhataConfirmationCard;
   lines: JournalLineDraft[];
   balanced: boolean;
   explanation: string;
+}
+
+function buildLinesFromJeRule(
+  match: JournalRuleMatch,
+  params: EntryBuildParams,
+): JournalLineDraft[] {
+  const amount = params.amount;
+  const party = params.party;
+  const debitLabel = match.rule.thenDebit.replace(/\{party\}/gi, party ?? "").trim();
+  const creditLabel = match.rule.thenCredit.replace(/\{party\}/gi, party ?? "").trim();
+  const debitCode = resolveJeAccountCode(debitLabel);
+  const creditCode = resolveJeAccountCode(creditLabel);
+  const d = getAccountByCode(debitCode);
+  const c = getAccountByCode(creditCode);
+  if (!d || !c) {
+    return buildJournalLines(match.rule.baseIntent as KhataIntent, params);
+  }
+  const narration = params.narration;
+  return [
+    {
+      accountCode: d.code,
+      accountName: party && /debtors|creditors|payable|receivable/i.test(debitLabel)
+        ? `${d.name}${party ? ` / ${party}` : ""}`
+        : d.name,
+      accountClass: d.class as JournalLineDraft["accountClass"],
+      debit: Math.round(amount * 100) / 100,
+      credit: 0,
+      narration: narration ?? debitLabel,
+    },
+    {
+      accountCode: c.code,
+      accountName: party && /debtors|creditors|payable|receivable/i.test(creditLabel)
+        ? `${c.name}${party ? ` / ${party}` : ""}`
+        : c.name,
+      accountClass: c.class as JournalLineDraft["accountClass"],
+      debit: 0,
+      credit: Math.round(amount * 100) / 100,
+      narration: narration ?? creditLabel,
+    },
+  ];
 }
 
 export function generateCAEntry(
@@ -29,6 +75,7 @@ export function generateCAEntry(
     item?: string | null;
     date: string;
     rawText: string;
+    jeMatch?: JournalRuleMatch | null;
   },
 ): CAEntryResult {
   const template = getEntryTemplate(intent);
@@ -44,7 +91,11 @@ export function generateCAEntry(
     narration: params.rawText,
   };
 
-  const lines = buildJournalLines(intent, buildParams);
+  const jeMatch = params.jeMatch ?? matchJournalEntryRule(params.rawText);
+  const lines =
+    jeMatch && jeMatch.rule.baseIntent === intent
+      ? buildLinesFromJeRule(jeMatch, buildParams)
+      : buildJournalLines(intent, buildParams);
   const { balanced, totalDebit, totalCredit } = validateJournalBalance(lines);
 
   if (!balanced) {
@@ -52,6 +103,10 @@ export function generateCAEntry(
       `Journal not balanced: Dr ${totalDebit} ≠ Cr ${totalCredit} for intent ${intent}`,
     );
   }
+
+  const explanation = jeMatch
+    ? `${template.explanation} [${jeMatch.rule.ruleId}: Dr ${jeMatch.rule.thenDebit} / Cr ${jeMatch.rule.thenCredit}]`
+    : template.explanation;
 
   const card: KhataConfirmationCard = {
     intent,
@@ -62,16 +117,21 @@ export function generateCAEntry(
     date: params.date,
     raw_text: params.rawText,
     journalLines: lines,
-    caExplanation: template.explanation,
+    caExplanation: explanation,
     primaryClass: template.primaryClass as AccountClass,
-    tags: template.tags,
+    tags: [
+      ...template.tags,
+      ...(jeMatch ? [`je:${jeMatch.rule.ruleId}`, jeMatch.rule.thenIntent] : []),
+    ],
+    jeRuleId: jeMatch?.rule.ruleId ?? null,
+    jeThenIntent: jeMatch?.rule.thenIntent ?? null,
   };
 
   return {
     card,
     lines,
     balanced,
-    explanation: template.explanation,
+    explanation,
   };
 }
 

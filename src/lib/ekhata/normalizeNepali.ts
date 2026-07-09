@@ -10,26 +10,23 @@ import {
 import { getMergedSpellingAliases } from "./vocabulary";
 import { expandVerbAliases } from "../nepal-ai/verbNormalize";
 import { TYPO_ALIASES } from "../nepal-ai/generated/runtimeMaps";
+import { replaceDevanagariLexicon } from "../nepal-ai/orthography";
 
 const SORTED_PHRASES = [...PHRASE_ALIASES].sort((a, b) => b[0].length - a[0].length);
 const SORTED_WORDS = Object.entries({ ...SPELLING_ALIASES, ...getMergedSpellingAliases() }).sort(
   (a, b) => b[0].length - a[0].length,
 );
 
-/** Common khata words in Devanagari → roman (whole-word replace before char translit) */
+/** Extra khata Devanagari → roman not always in the orthography lexicon */
 const DEVANAGARI_WORDS: Record<string, string> = {
   उधार: "udhaar",
   उधारो: "udhaar",
   दिए: "diye",
-  दियो: "diye",
   नगद: "nagad",
-  बिक्री: "bikri",
   बेचेको: "becheko",
-  खर्च: "kharcha",
   खर्चा: "kharcha",
   किनेको: "kineko",
   तिर्यो: "tiryo",
-  जम्मा: "jama",
   आज: "aja",
   हिजो: "hijo",
   पर्सि: "parsi",
@@ -39,13 +36,10 @@ const DEVANAGARI_WORDS: Record<string, string> = {
   ले: "le",
   राम: "ram",
   श्याम: "shyam",
-  भयो: "vayo",
   ह्रास: "depreciation",
-  ब्याज: "byaj",
   आम्दानी: "aamdani",
   सम्पत्ति: "sampatti",
   सम्पति: "sampati",
-  ऋण: "rin",
   भुक्तान: "bhugtan",
   फिर्ता: "firta",
   कमिसन: "commission",
@@ -53,9 +47,11 @@ const DEVANAGARI_WORDS: Record<string, string> = {
 };
 
 function replaceDevanagariWords(text: string): string {
-  let out = text;
+  // Orthography lexicon first (phrases like "मूल्य अभिवृद्धि कर")
+  let out = replaceDevanagariLexicon(text);
   const sorted = Object.keys(DEVANAGARI_WORDS).sort((a, b) => b.length - a.length);
   for (const word of sorted) {
+    if (!out.includes(word)) continue;
     out = out.split(word).join(` ${DEVANAGARI_WORDS[word]} `);
   }
   return out.replace(/\s+/g, " ").trim();
@@ -154,6 +150,9 @@ const ENGLISH_VERB_ALIASES = new Set([
 
 const SORTED_TYPO = Object.entries(TYPO_ALIASES).sort((a, b) => b[0].length - a[0].length);
 
+/** Multi-word typo keys (e.g. "ki ho" → "ke ho") — applied before token fold. */
+const SORTED_TYPO_PHRASES = SORTED_TYPO.filter(([from]) => from.includes(" "));
+
 function foldSpelling(text: string): string {
   let value = text.toLowerCase();
   const preserveEnglish = ENGLISH_PRESERVE.test(text);
@@ -162,10 +161,23 @@ function foldSpelling(text: string): string {
     value = value.split(from).join(to);
   }
 
+  // Phrase-level spelling corrections from Nepal AI typo lexicon
+  for (const [from, to] of SORTED_TYPO_PHRASES) {
+    if (!from) continue;
+    if (value === from) {
+      value = to;
+      continue;
+    }
+    value = value.split(` ${from} `).join(` ${to} `);
+    if (value.startsWith(`${from} `)) value = `${to} ${value.slice(from.length + 1)}`;
+    if (value.endsWith(` ${from}`)) value = `${value.slice(0, -(from.length + 1))} ${to}`;
+  }
+
   const tokens = value.split(/\s+/);
   const folded = tokens.map((token) => {
     if (preserveEnglish && ENGLISH_VERB_ALIASES.has(token)) return token;
     for (const [from, to] of SORTED_TYPO) {
+      if (from.includes(" ")) continue; // already handled as phrases
       if (token === from) return to;
     }
     for (const [from, to] of SORTED_WORDS) {
@@ -192,8 +204,9 @@ export function normalizeNepaliText(raw: string): string {
   text = foldDigits(text);
   text = text.replace(/[^\w\s.\u0900-\u097F₨]/g, " ");
   text = text.replace(/\s+/g, " ").trim();
-  text = expandVerbAliases(text);
+  // Spelling corrections BEFORE verb lemma expand (typos like kineyo→kineko, xaina→chaina)
   text = foldSpelling(text);
+  text = expandVerbAliases(text);
 
   return text.replace(/\s+/g, " ").trim();
 }

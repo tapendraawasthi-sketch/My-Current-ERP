@@ -1,0 +1,3504 @@
+[
+  {
+    "id": "complex_001",
+    "source": "user_exact",
+    "scenario_id": "complex_001",
+    "scenario_type": "contradictory_information",
+    "scenario_type_key": "contradictory_information",
+    "input": "Ram le 1000 tiryo hijo, tara usko balance 500 matra kam bhayo",
+    "input_normalized": "ram le 1000 tiryo hijo, tara usko balance 500 matra kam bhayo",
+    "surface_contradiction": "Paid 1000 but balance reduced only 500",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Payment of 1000 should reduce balance by 1000"
+      },
+      {
+        "step": 2,
+        "thought": "Only 500 reduced means something else happened simultaneously"
+      },
+      {
+        "step": 3,
+        "thought": "Possible explanations: (a) discount given, (b) partial applied to advance, (c) recording error, (d) new purchase same time"
+      },
+      {
+        "step": 4,
+        "thought": "Most likely in Nepal context: new purchase made simultaneously or partial credit note"
+      },
+      {
+        "step": 5,
+        "thought": "Clarification needed to determine correct accounting"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Ram le 1000 tiryo ani 500 ko naya saman pani lyo ki? Ki aru kei bhayo?",
+    "possible_resolutions": [
+      {
+        "scenario": "paid 1000, bought 500 new",
+        "entries": [
+          "Dr Cash 1000, Cr Debtors 1000",
+          "Dr Debtors 500, Cr Sales 500"
+        ]
+      },
+      {
+        "scenario": "discount of 500 on 1000 due",
+        "entries": [
+          "Dr Cash 500, Dr Discount Allowed 500, Cr Debtors 1000"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_002",
+    "source": "user_exact",
+    "scenario_id": "complex_002",
+    "scenario_type": "multi_entity_relationship",
+    "scenario_type_key": "multi_entity_relationship",
+    "input": "Hari le Shyam lai 50000 bechyo credit ma, Shyam le tyo saman Ram lai 40000 ma bechyo, Ram le paisa Hari lai directly tiryo",
+    "input_normalized": "hari le shyam lai 50000 bechyo credit ma, shyam le tyo saman ram lai 40000 ma bechyo, ram le paisa hari lai directly tiryo",
+    "surface_contradiction": "Ram paid Hari directly but Ram bought from Shyam, not Hari",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Hari sold to Shyam on credit - Shyam owes Hari 50000"
+      },
+      {
+        "step": 2,
+        "thought": "Shyam sold to Ram at 40000 - Ram owes Shyam 40000"
+      },
+      {
+        "step": 3,
+        "thought": "Ram paid Hari directly - this is unusual, needs understanding"
+      },
+      {
+        "step": 4,
+        "thought": "This implies Shyam instructed Ram to pay Hari on his behalf - common in Nepal business circles"
+      },
+      {
+        "step": 5,
+        "thought": "This is essentially a bill of exchange or assignment of debt scenario"
+      },
+      {
+        "step": 6,
+        "thought": "Shyam still owes Hari remaining 10000 if Ram paid 40000 to Hari"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Ram le Hari lai kati tiryo? 40000 ki 50000? Shyam le bhanera pathako ho ki aafai tiryo?",
+    "possible_resolutions": [
+      {
+        "scenario": "Ram paid 40000 to Hari on Shyam's instruction",
+        "entries": [
+          "Hari books: Dr Cash 40000, Cr Shyam(Debtor) 40000",
+          "Shyam books: Dr Hari(Creditor) 40000, Cr Ram(Debtor) 40000",
+          "Ram books: Dr Shyam(Creditor) 40000, Cr Cash 40000"
+        ]
+      },
+      {
+        "scenario": "Ram paid 50000 to Hari covering Shyam full debt",
+        "entries": [
+          "Hari books: Dr Cash 50000, Cr Shyam(Debtor) 50000",
+          "Shyam books: Dr Hari(Creditor) 50000, Cr Ram(Debtor) 40000, Cr Adjustment 10000",
+          "Ram books: Dr Shyam(Creditor) 40000, Dr Advance 10000, Cr Cash 50000"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_003",
+    "source": "user_exact",
+    "scenario_id": "complex_003",
+    "scenario_type": "temporal_reasoning",
+    "scenario_type_key": "temporal_reasoning",
+    "input": "Dashain aghi order gareko saman Dashain paxi aayo, tara price Dashain ma badhi thiyo ani ahile ghateko xa",
+    "input_normalized": "dashain aghi order gareko saman dashain paxi aayo, tara price dashain ma badhi thiyo ani ahile ghateko xa",
+    "surface_contradiction": "Price was higher during Dashain but goods arrived after when price dropped",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Order was placed before Dashain at a certain price"
+      },
+      {
+        "step": 2,
+        "thought": "During Dashain, market price increased"
+      },
+      {
+        "step": 3,
+        "thought": "Goods delivered after Dashain when price has dropped"
+      },
+      {
+        "step": 4,
+        "thought": "Question: At what price should goods be recorded? Order price, Dashain peak price, or current market price?"
+      },
+      {
+        "step": 5,
+        "thought": "As per accounting standards, goods should be recorded at agreed purchase price at time of order"
+      },
+      {
+        "step": 6,
+        "thought": "If no written agreement exists (common in Nepal small business), dispute may arise"
+      },
+      {
+        "step": 7,
+        "thought": "NRV (Net Realizable Value) consideration if current market price is below cost"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Order garda kati ma fix gareko thiyo? Likhat thiyo ki maukhi deal thiyo?",
+    "possible_resolutions": [
+      {
+        "scenario": "Written order at fixed price 1000/unit",
+        "entries": [
+          "Dr Purchases 1000/unit, Cr Creditor 1000/unit - honor original agreement"
+        ]
+      },
+      {
+        "scenario": "No written agreement, supplier demands Dashain rate",
+        "entries": [
+          "Negotiate between original discussed price and current market",
+          "Record at agreed settlement price"
+        ]
+      },
+      {
+        "scenario": "Record at cost but market fallen below cost",
+        "entries": [
+          "Dr Purchases at cost, Cr Creditor at cost",
+          "Consider inventory write-down to NRV at period end"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_004",
+    "source": "user_exact",
+    "scenario_id": "complex_004",
+    "scenario_type": "exception_handling",
+    "scenario_type_key": "exception_handling",
+    "input": "Karmachari le 2 barsha kaam garyo tara probation period sakeko chhaina bhancha company le",
+    "input_normalized": "karmachari le 2 barsha kaam garyo tara probation period sakeko chhaina bhancha company le",
+    "surface_contradiction": "Employee worked 2 years but company claims probation not completed",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Nepal Labor Act 2017 allows maximum probation period of 6 months"
+      },
+      {
+        "step": 2,
+        "thought": "2 years of work far exceeds any legal probation period"
+      },
+      {
+        "step": 3,
+        "thought": "Company cannot legally claim probation after 6 months regardless of contract terms"
+      },
+      {
+        "step": 4,
+        "thought": "Employee is entitled to all permanent employee benefits from month 7 onwards"
+      },
+      {
+        "step": 5,
+        "thought": "Company may owe back-calculated gratuity, PF contributions, and other benefits"
+      },
+      {
+        "step": 6,
+        "thought": "Any contract clause extending probation beyond 6 months is void under Nepal law"
+      }
+    ],
+    "clarification_needed": false,
+    "clarify_question": null,
+    "possible_resolutions": [
+      {
+        "scenario": "Employee treated as permanent from month 7",
+        "entries": [
+          "Calculate back PF: 10% employer + 10% employee contribution from month 7",
+          "Calculate gratuity entitlement for service period",
+          "Calculate any unpaid Dashain bonus, sick leave encashment"
+        ]
+      },
+      {
+        "scenario": "Company disputes but labor office rules in employee favor",
+        "entries": [
+          "All permanent benefits calculated retrospectively",
+          "Possible penalty on company for labor law violation"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_005",
+    "source": "user_exact",
+    "scenario_id": "complex_005",
+    "scenario_type": "priority_conflict",
+    "scenario_type_key": "priority_conflict",
+    "input": "Customer le cash ma kinyo 13% VAT lageko bill chahiyo bhancha, tara business VAT registered chhaina",
+    "input_normalized": "customer le cash ma kinyo 13% vat lageko bill chahiyo bhancha, tara business vat registered chhaina",
+    "surface_contradiction": "Customer wants VAT bill but seller is not VAT registered",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "In Nepal, businesses with turnover below NPR 50 lakhs in goods or 20 lakhs in services are not required to register for VAT"
+      },
+      {
+        "step": 2,
+        "thought": "Non-VAT registered business cannot legally issue VAT invoice"
+      },
+      {
+        "step": 3,
+        "thought": "If business issues fake VAT bill, it is tax fraud - serious offense"
+      },
+      {
+        "step": 4,
+        "thought": "Customer may need VAT bill for their own input tax credit claim"
+      },
+      {
+        "step": 5,
+        "thought": "Options: (a) register for VAT if eligible, (b) decline and issue regular bill, (c) explain limitation to customer"
+      },
+      {
+        "step": 6,
+        "thought": "If turnover has actually crossed threshold, business should have already registered"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Tapai ko annual turnover kati cha? 50 lakh cross bhaisakyo ki chhaina?",
+    "possible_resolutions": [
+      {
+        "scenario": "Turnover below threshold - cannot issue VAT bill",
+        "entries": [
+          "Issue regular sales bill without VAT",
+          "Inform customer that VAT bill not possible",
+          "Customer may choose another VAT-registered supplier"
+        ]
+      },
+      {
+        "scenario": "Turnover crossed threshold - must register immediately",
+        "entries": [
+          "Apply for VAT registration at IRD office",
+          "Once PAN updated to VAT, issue VAT bills",
+          "May face penalty for late registration"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_006",
+    "source": "user_exact",
+    "scenario_id": "complex_006",
+    "scenario_type": "counterfactual_reasoning",
+    "scenario_type_key": "counterfactual_reasoning",
+    "input": "Yadi hami le machinery 50 lakh ko kineko bhaye depreciation kati hunthyo ani tax kati bachthyo?",
+    "input_normalized": "yadi hami le machinery 50 lakh ko kineko bhaye depreciation kati hunthyo ani tax kati bachthyo",
+    "surface_contradiction": "No contradiction - hypothetical scenario requiring projected calculations",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Need to determine applicable depreciation rate for machinery in Nepal"
+      },
+      {
+        "step": 2,
+        "thought": "Under Nepal Income Tax Act, plant and machinery typically depreciates at 20% diminishing balance method"
+      },
+      {
+        "step": 3,
+        "thought": "Year 1 depreciation: 50,00,000 * 20% = 10,00,000"
+      },
+      {
+        "step": 4,
+        "thought": "Tax saving depends on applicable tax rate - for company typically 25%"
+      },
+      {
+        "step": 5,
+        "thought": "Year 1 tax saving: 10,00,000 * 25% = 2,50,000"
+      },
+      {
+        "step": 6,
+        "thought": "Need to also consider 1/3 rule - only 1/3 depreciation if asset used less than half the year"
+      },
+      {
+        "step": 7,
+        "thought": "Also consider VAT input credit on machinery purchase if VAT registered"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Machinery kati ma kinne plan cha? Company ho ki firm? Kasari use hune - production ki office?",
+    "possible_resolutions": [
+      {
+        "scenario": "Pvt Ltd company buying production machinery at 50L",
+        "entries": [
+          "Depreciation Year 1: Rs 10,00,000 (20% DB)",
+          "Tax saving Year 1: Rs 2,50,000 (at 25% rate)",
+          "VAT credit: Rs 5,65,217 (if VAT registered)",
+          "Total Year 1 benefit: Rs 8,15,217"
+        ]
+      },
+      {
+        "scenario": "Sole proprietorship buying machinery at 50L",
+        "entries": [
+          "Depreciation Year 1: Rs 10,00,000 (20% DB)",
+          "Tax saving depends on income slab - max 30%",
+          "No separate entity benefit but can claim business expense"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_007",
+    "source": "user_exact",
+    "scenario_id": "complex_007",
+    "scenario_type": "contradictory_information",
+    "scenario_type_key": "contradictory_information",
+    "input": "Supplier le invoice ma 100 unit lekhdeko cha tara godown ma 95 unit matra aayo, tara supplier le shortage manna manena",
+    "input_normalized": "supplier le invoice ma 100 unit lekhdeko cha tara godown ma 95 unit matra aayo, tara supplier le shortage manna manena",
+    "surface_contradiction": "Invoice says 100 units but only 95 received, supplier denies shortage",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Physical receipt is 95 units but invoice claims 100"
+      },
+      {
+        "step": 2,
+        "thought": "Possible reasons: transit damage, pilferage, miscounting at supplier, delivery person theft"
+      },
+      {
+        "step": 3,
+        "thought": "In Nepal, especially for goods transported by truck, shortages are common"
+      },
+      {
+        "step": 4,
+        "thought": "Check delivery challan vs invoice - were they matching?"
+      },
+      {
+        "step": 5,
+        "thought": "Check if transporter gave any receipt acknowledging quantity"
+      },
+      {
+        "step": 6,
+        "thought": "Business must decide: pay for 100 or dispute for 95"
+      },
+      {
+        "step": 7,
+        "thought": "Need to record actual received quantity and handle difference separately"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Delivery challan ma kati unit lekheko thiyo? Receive garda counting kasle garyo? Transport ko receipt cha?",
+    "possible_resolutions": [
+      {
+        "scenario": "Challan says 100 but received 95, no transport receipt",
+        "entries": [
+          "Dr Purchases 95 units at invoice rate, Cr Creditor (95 units value)",
+          "Dr Shortage/Claim Account 5 units value, Cr Creditor (5 units value)",
+          "Negotiate with supplier for credit note of 5 units"
+        ]
+      },
+      {
+        "scenario": "Challan says 95, invoice says 100 - supplier billing error",
+        "entries": [
+          "Dr Purchases 95 units, Cr Creditor 95 units value",
+          "Request corrected invoice for 95 units",
+          "Do not pay for extra 5 units billed"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_008",
+    "source": "user_exact",
+    "scenario_id": "complex_008",
+    "scenario_type": "implicit_constraint",
+    "scenario_type_key": "implicit_constraint",
+    "input": "Mahila ko naam ma ghar kinda registration fee ma chhut paincha bhanyo, tara ghar husband wife duita ko joint naam ma register garna khojeko",
+    "input_normalized": "mahila ko naam ma ghar kinda registration fee ma chhut paincha bhanyo, tara ghar husband wife duita ko joint naam ma register garna khojeko",
+    "surface_contradiction": "Discount is for female name but registration is joint with husband",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Nepal offers 25% discount on property registration fee when registered in a woman's name"
+      },
+      {
+        "step": 2,
+        "thought": "Joint registration means both names on the deed"
+      },
+      {
+        "step": 3,
+        "thought": "Question: Does joint ownership still qualify for the female discount?"
+      },
+      {
+        "step": 4,
+        "thought": "As per Nepal land revenue rules, the discount applies only when property is solely in woman's name"
+      },
+      {
+        "step": 5,
+        "thought": "Joint registration typically does not get the full 25% discount"
+      },
+      {
+        "step": 6,
+        "thought": "Need to verify current fiscal year's specific rules as they can change"
+      },
+      {
+        "step": 7,
+        "thought": "Financial calculation: Is it better to register solely in wife's name for discount vs joint for legal security?"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Property kati ko ho? Joint ma register garne specific reason cha ki? Loan liyeko ho ki cash kineko?",
+    "possible_resolutions": [
+      {
+        "scenario": "Register solely in wife's name for discount",
+        "entries": [
+          "Registration fee: 5% of value with 25% discount = 3.75% effective rate",
+          "Saving on 1 crore property: Rs 1,25,000",
+          "But husband has no legal ownership claim"
+        ]
+      },
+      {
+        "scenario": "Joint registration without discount",
+        "entries": [
+          "Registration fee: 5% of full value for metro area",
+          "Both parties have legal ownership",
+          "No discount applicable on joint deed"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_009",
+    "source": "user_exact",
+    "scenario_id": "complex_009",
+    "scenario_type": "multi_entity_relationship",
+    "scenario_type_key": "multi_entity_relationship",
+    "input": "A le B lai saman bechyo, B le C lai bechyo, C le return garyo B lai, B le return garyo A lai - VAT chain kasari handle garne?",
+    "input_normalized": "a le b lai saman bechyo, b le c lai bechyo, c le return garyo b lai, b le return garyo a lai - vat chain kasari handle garne",
+    "surface_contradiction": "No direct contradiction but complex VAT chain with returns flowing backwards",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "A sold to B: A charges 13% VAT, B claims input credit"
+      },
+      {
+        "step": 2,
+        "thought": "B sold to C: B charges 13% VAT, C claims input credit"
+      },
+      {
+        "step": 3,
+        "thought": "C returns to B: B must issue credit note to C, C reverses input credit"
+      },
+      {
+        "step": 4,
+        "thought": "B returns to A: A must issue credit note to B, B reverses input credit"
+      },
+      {
+        "step": 5,
+        "thought": "All credit notes must be VAT compliant and filed in respective returns"
+      },
+      {
+        "step": 6,
+        "thought": "Timing matters - if returns cross fiscal months, adjustments needed in different periods"
+      },
+      {
+        "step": 7,
+        "thought": "Each entity must update their VAT books to reflect the reverse chain"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Sabai transaction same mahina ma bhayo ki different months ma? Return ko reason ke ho - defective goods ki other?",
+    "possible_resolutions": [
+      {
+        "scenario": "All in same month, defective goods return",
+        "entries": [
+          "A: Credit Note to B - Dr Sales Return, Cr B(Debtor). VAT output reduced",
+          "B: Debit Note to A - Dr A(Creditor), Cr Purchase Return. VAT input reduced",
+          "B: Credit Note to C - Dr Sales Return, Cr C(Debtor). VAT output reduced",
+          "C: Debit Note to B - Dr B(Creditor), Cr Purchase Return. VAT input reduced"
+        ]
+      },
+      {
+        "scenario": "Returns in different months",
+        "entries": [
+          "Month 1: Original sales recorded with VAT",
+          "Month 2: Credit/Debit notes issued, VAT adjustments in Month 2 return",
+          "IRD filing must show adjustments in respective periods"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_010",
+    "source": "user_exact",
+    "scenario_id": "complex_010",
+    "scenario_type": "priority_conflict",
+    "scenario_type_key": "priority_conflict",
+    "input": "Company le employee lai Dashain bonus dinu parcha tara company loss ma cha, bank loan ko EMI pani tirna sakeko chhaina",
+    "input_normalized": "company le employee lai dashain bonus dinu parcha tara company loss ma cha, bank loan ko emi pani tirna sakeko chhaina",
+    "surface_contradiction": "Legal obligation to pay Dashain bonus conflicts with financial inability and loan default",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Nepal Labor Act mandates Dashain bonus equal to one month salary for all employees"
+      },
+      {
+        "step": 2,
+        "thought": "This is a legal obligation - not optional even during losses"
+      },
+      {
+        "step": 3,
+        "thought": "Bank EMI default has its own legal and financial consequences"
+      },
+      {
+        "step": 4,
+        "thought": "Priority assessment: Employee wages and benefits are typically priority claims"
+      },
+      {
+        "step": 5,
+        "thought": "Under Nepal law, employee dues take priority over most other creditors in insolvency"
+      },
+      {
+        "step": 6,
+        "thought": "Options: negotiate with bank for EMI restructuring, arrange short-term loan for bonus, partial payment with written commitment"
+      },
+      {
+        "step": 7,
+        "thought": "Failure to pay Dashain bonus can result in labor office complaint and penalties"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Company ma kati jana employees chan? Total Dashain bonus kati lagcha? Bank sanga restructuring ko kura bhayeko cha?",
+    "possible_resolutions": [
+      {
+        "scenario": "Prioritize Dashain bonus, negotiate bank EMI",
+        "entries": [
+          "Pay full Dashain bonus as legally required",
+          "Dr Dashain Bonus Expense, Cr Cash/Bank",
+          "Apply to bank for EMI restructuring or moratorium",
+          "Interest on delayed EMI will accrue but avoids labor law violation"
+        ]
+      },
+      {
+        "scenario": "Arrange bridge loan for both obligations",
+        "entries": [
+          "Take short-term loan or overdraft facility",
+          "Pay Dashain bonus and bank EMI both",
+          "Dr Dashain Bonus, Cr Cash",
+          "Dr Loan EMI, Cr Cash",
+          "Dr Cash, Cr Short-term Loan (new borrowing)"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_011",
+    "source": "user_exact",
+    "scenario_id": "complex_011",
+    "scenario_type": "temporal_reasoning",
+    "scenario_type_key": "temporal_reasoning",
+    "input": "Saman Chaitra 31 ma pathayo tara customer le Baisakh 1 ma receive garyo - kun fiscal year ko sale ho?",
+    "input_normalized": "saman chaitra 31 ma pathayo tara customer le baisakh 1 ma receive garyo - kun fiscal year ko sale ho",
+    "surface_contradiction": "Goods dispatched last day of fiscal year but received first day of new fiscal year",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Nepal fiscal year ends on Chaitra 31 (Ashad end for government, but business year often Shrawan-Ashad)"
+      },
+      {
+        "step": 2,
+        "thought": "Wait - Nepal fiscal year is Shrawan 1 to Ashad 31, not Chaitra-Baisakh"
+      },
+      {
+        "step": 3,
+        "thought": "But if this is Chaitra 31 to Baisakh 1, this is mid-year, not year-end. Re-evaluate."
+      },
+      {
+        "step": 4,
+        "thought": "Perhaps the user means Ashad 31 to Shrawan 1 (actual fiscal year boundary)"
+      },
+      {
+        "step": 5,
+        "thought": "Revenue recognition: When did ownership/risk transfer? On dispatch or delivery?"
+      },
+      {
+        "step": 6,
+        "thought": "If FOB shipping point (dispatch), sale belongs to old fiscal year"
+      },
+      {
+        "step": 7,
+        "thought": "If FOB destination (delivery), sale belongs to new fiscal year"
+      },
+      {
+        "step": 8,
+        "thought": "In Nepal small business, usually no explicit terms - need to check agreement"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Fiscal year end (Ashad 31) ko kura ho ki literally Chaitra 31? Delivery terms ke thiyo - dispatch ma ownership transfer ki delivery ma?",
+    "possible_resolutions": [
+      {
+        "scenario": "FOB shipping - sale recorded on dispatch date",
+        "entries": [
+          "Record sale in old fiscal year (Ashad 31)",
+          "Dr Debtors, Cr Sales in current year books",
+          "Goods in transit shown as sold"
+        ]
+      },
+      {
+        "scenario": "FOB destination - sale on delivery",
+        "entries": [
+          "Record sale in new fiscal year (Shrawan 1)",
+          "Goods in transit remain in seller inventory until delivered",
+          "Dr Goods in Transit, Cr Inventory on dispatch",
+          "Dr Debtors, Cr Sales on delivery in new year"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_012",
+    "source": "user_exact",
+    "scenario_id": "complex_012",
+    "scenario_type": "analogy_based",
+    "scenario_type_key": "analogy_based",
+    "input": "Yo pasal lai ek jana lai franchise dina khojeko chu, royalty ra fee structure kasari set garne Nepal context ma?",
+    "input_normalized": "yo pasal lai ek jana lai franchise dina khojeko chu, royalty ra fee structure kasari set garne nepal context ma",
+    "surface_contradiction": "No contradiction - complex structuring question requiring analogy to Nepal market conditions",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Franchise model is relatively new in Nepal but growing - need to adapt to local context"
+      },
+      {
+        "step": 2,
+        "thought": "Analogize from successful Nepal franchises: CG restaurants, Bhat-Bhateni model, Daraz seller model"
+      },
+      {
+        "step": 3,
+        "thought": "Key components: upfront franchise fee, ongoing royalty, marketing contribution, territory rights"
+      },
+      {
+        "step": 4,
+        "thought": "Nepal-specific considerations: small market size, limited purchasing power, cash-heavy economy"
+      },
+      {
+        "step": 5,
+        "thought": "Royalty on gross sales vs net sales - in Nepal, tracking net sales harder due to cash transactions"
+      },
+      {
+        "step": 6,
+        "thought": "Legal framework: Nepal Company Act and contract law apply, no specific franchise law"
+      },
+      {
+        "step": 7,
+        "thought": "Tax implications: royalty payments subject to TDS at 15% for domestic payments"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Kun type ko business ho? Monthly turnover kati expect gareko? Franchisee lai kati support dine plan cha?",
+    "possible_resolutions": [
+      {
+        "scenario": "Restaurant franchise in Kathmandu",
+        "entries": [
+          "Franchise Fee: Rs 5-10 lakh one-time (Dr Cash, Cr Franchise Fee Income)",
+          "Royalty: 5-8% of gross monthly sales (Dr Cash, Cr Royalty Income)",
+          "Marketing Fund: 2% of gross sales (Dr Cash, Cr Marketing Fund)",
+          "TDS: Franchisee deducts 15% TDS on royalty payments",
+          "Franchisor books monthly: Dr TDS Receivable + Dr Cash, Cr Royalty Income"
+        ]
+      },
+      {
+        "scenario": "Retail franchise in Pokhara",
+        "entries": [
+          "Franchise Fee: Rs 2-5 lakh (smaller market adjustment)",
+          "Royalty: 3-5% of gross sales (lower due to smaller market)",
+          "Minimum guarantee clause: Rs 20,000/month minimum royalty",
+          "Territory exclusivity for Pokhara metro area"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_013",
+    "source": "user_exact",
+    "scenario_id": "complex_013",
+    "scenario_type": "contradictory_information",
+    "scenario_type_key": "contradictory_information",
+    "input": "TDS 1.5% katyo bhancha supplier le tara hamro purchase bill ma 15% TDS dekhaucha",
+    "input_normalized": "tds 1.5% katyo bhancha supplier le tara hamro purchase bill ma 15% tds dekhaucha",
+    "surface_contradiction": "Supplier claims 1.5% TDS but buyer's records show 15% TDS",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Nepal TDS rates vary by payment type: 1.5% on goods purchase, 15% on service/rent payments"
+      },
+      {
+        "step": 2,
+        "thought": "If transaction is goods purchase, correct TDS is 1.5%"
+      },
+      {
+        "step": 3,
+        "thought": "If transaction is service, correct TDS is 15%"
+      },
+      {
+        "step": 4,
+        "thought": "The discrepancy suggests confusion about transaction nature"
+      },
+      {
+        "step": 5,
+        "thought": "Possible: mixed transaction with goods and services bundled together"
+      },
+      {
+        "step": 6,
+        "thought": "Need to verify: what exactly was purchased? Goods or services?"
+      },
+      {
+        "step": 7,
+        "thought": "If wrong rate applied, TDS return needs amendment and difference refunded or collected"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Ke kineko ho exactly - saman ki service? Ki duitai mixed cha? Bill ma ke lekheko cha?",
+    "possible_resolutions": [
+      {
+        "scenario": "Pure goods purchase - correct rate is 1.5%",
+        "entries": [
+          "Reverse the 15% TDS entry",
+          "Apply correct 1.5% TDS",
+          "Dr Purchases 100, Cr TDS Payable 1.5, Cr Creditor 98.5",
+          "File corrected TDS return if already submitted"
+        ]
+      },
+      {
+        "scenario": "Service payment - correct rate is 15%",
+        "entries": [
+          "Supplier's claim of 1.5% is incorrect",
+          "Maintain 15% TDS deduction",
+          "Dr Service Expense 100, Cr TDS Payable 15, Cr Creditor 85",
+          "Issue TDS certificate to supplier at 15%"
+        ]
+      },
+      {
+        "scenario": "Mixed goods and services",
+        "entries": [
+          "Separate goods and service components in invoice",
+          "Apply 1.5% TDS on goods portion, 15% on service portion",
+          "If not separable, apply higher rate of 15% as per IRD practice"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_014",
+    "source": "user_exact",
+    "scenario_id": "complex_014",
+    "scenario_type": "exception_handling",
+    "scenario_type_key": "exception_handling",
+    "input": "Hamro company le agriculture product bechcha jasma VAT chhaina, tara yo product process garera bechda VAT lagcha - mixed supply kasari handle garne?",
+    "input_normalized": "hamro company le agriculture product bechcha jasma vat chhaina, tara yo product process garera bechda vat lagcha - mixed supply kasari handle garne",
+    "surface_contradiction": "Raw agriculture is VAT exempt but processed version is VAT applicable - same business handles both",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Nepal VAT Act Schedule 1 exempts basic agricultural products"
+      },
+      {
+        "step": 2,
+        "thought": "Processed agricultural products (packaged, branded) attract 13% VAT"
+      },
+      {
+        "step": 3,
+        "thought": "Business does both - exempt and taxable supplies"
+      },
+      {
+        "step": 4,
+        "thought": "Input tax credit on shared expenses must be proportionally allocated"
+      },
+      {
+        "step": 5,
+        "thought": "Cannot claim full input VAT credit on expenses related to exempt supplies"
+      },
+      {
+        "step": 6,
+        "thought": "Proportional credit formula: (Taxable supply / Total supply) × Total input VAT"
+      },
+      {
+        "step": 7,
+        "thought": "Need to maintain separate records for exempt and taxable transactions"
+      },
+      {
+        "step": 8,
+        "thought": "Annual adjustment needed if proportions change during the year"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Raw agriculture sale kati percentage cha total ko? Process gareko kati? Common expenses kati cha?",
+    "possible_resolutions": [
+      {
+        "scenario": "60% raw exempt, 40% processed taxable",
+        "entries": [
+          "Input VAT on common expenses: Claim only 40%",
+          "Input VAT on processing-only expenses: Claim 100%",
+          "Input VAT on raw agriculture-only expenses: Claim 0%",
+          "Monthly VAT return: Show exempt and taxable supplies separately",
+          "Dr VAT Input Credit (claimable 40%), Dr Cost (non-claimable 60%), Cr Cash/Creditor"
+        ]
+      },
+      {
+        "scenario": "Consider restructuring as two separate entities",
+        "entries": [
+          "Entity A: Raw agriculture sales (VAT exempt, no registration needed)",
+          "Entity B: Processing and packaged sales (VAT registered)",
+          "Entity B buys from Entity A, claims no input credit on exempt purchase",
+          "Entity B claims full input credit on processing and packaging expenses"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_015",
+    "source": "user_exact",
+    "scenario_id": "complex_015",
+    "scenario_type": "counterfactual_reasoning",
+    "scenario_type_key": "counterfactual_reasoning",
+    "input": "Yadi hamile import garnu ko satta Nepal mai manufacture garyau bhane kati bachat hunthyo?",
+    "input_normalized": "yadi hamile import garnu ko satta nepal mai manufacture garyau bhane kati bachat hunthyo",
+    "surface_contradiction": "No contradiction - comparative cost analysis between import and local manufacturing",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Import costs: Product cost + Customs duty + VAT + Transport + Insurance + LC charges"
+      },
+      {
+        "step": 2,
+        "thought": "Manufacturing costs: Raw material + Labor + Overhead + Depreciation + Compliance"
+      },
+      {
+        "step": 3,
+        "thought": "Nepal-specific factors: Import duty can be 10-80% depending on product"
+      },
+      {
+        "step": 4,
+        "thought": "Local manufacturing advantages: No customs duty on finished goods, possible industrial incentives"
+      },
+      {
+        "step": 5,
+        "thought": "Local manufacturing disadvantages: Higher per-unit cost at low volume, infrastructure challenges, power costs"
+      },
+      {
+        "step": 6,
+        "thought": "Need to consider Industrial Enterprises Act incentives: tax holidays, duty exemption on machinery"
+      },
+      {
+        "step": 7,
+        "thought": "Break-even analysis needed: At what volume does local manufacturing become cheaper?"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Kun product ho? Monthly volume kati chahine? Raw material Nepal ma available cha ki import garnu parcha?",
+    "possible_resolutions": [
+      {
+        "scenario": "Plastic packaging product, 10000 units/month",
+        "entries": [
+          "Import cost per unit: Product Rs 50 + Duty 30% Rs 15 + VAT 13% Rs 8.45 + Transport Rs 5 = Rs 78.45",
+          "Local manufacturing: Raw material Rs 30 + Labor Rs 10 + Overhead Rs 15 + Depreciation Rs 8 = Rs 63",
+          "Saving per unit: Rs 15.45",
+          "Monthly saving: Rs 1,54,500",
+          "Machinery investment: Rs 30,00,000",
+          "Payback period: ~20 months"
+        ]
+      },
+      {
+        "scenario": "Electronic component, 500 units/month",
+        "entries": [
+          "Import cost per unit: Product Rs 500 + Duty 15% Rs 75 + VAT Rs 74.75 + Transport Rs 20 = Rs 669.75",
+          "Local assembly: Imported parts Rs 450 + Duty 5% Rs 22.5 + Labor Rs 100 + Overhead Rs 80 = Rs 652.50",
+          "Marginal saving: Rs 17.25/unit - may not justify investment",
+          "Recommendation: Continue importing unless volume increases significantly"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_016",
+    "source": "user_exact",
+    "scenario_id": "complex_016",
+    "scenario_type": "priority_conflict",
+    "scenario_type_key": "priority_conflict",
+    "input": "Partner A le 70% invest gareko cha tara Partner B le 80% kaam garcha - profit share kasari garne?",
+    "input_normalized": "partner a le 70% invest gareko cha tara partner b le 80% kaam garcha - profit share kasari garne",
+    "surface_contradiction": "Capital contribution ratio (70:30) conflicts with effort contribution ratio (20:80)",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Partnership profit sharing can be based on capital, effort, or agreed ratio"
+      },
+      {
+        "step": 2,
+        "thought": "Nepal Partnership Act allows partners to decide their own ratio"
+      },
+      {
+        "step": 3,
+        "thought": "If no agreement exists, profits shared equally regardless of capital or effort"
+      },
+      {
+        "step": 4,
+        "thought": "Conflict: A wants profit based on capital, B wants profit based on effort"
+      },
+      {
+        "step": 5,
+        "thought": "Fair resolution should recognize both capital and labor contributions"
+      },
+      {
+        "step": 6,
+        "thought": "Common approach: Pay interest on capital first, then salary for working partners, then split remaining profit"
+      },
+      {
+        "step": 7,
+        "thought": "This separates return on capital from return on labor"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Partnership deed ma profit share ko provision cha? Duitai full-time kaam garcha ki A passive investor ho?",
+    "possible_resolutions": [
+      {
+        "scenario": "No written deed exists",
+        "entries": [
+          "As per Nepal law, equal sharing (50:50) applies",
+          "Both partners get 50% regardless of capital or effort",
+          "Strongly recommend creating formal partnership deed"
+        ]
+      },
+      {
+        "scenario": "Create structured profit sharing",
+        "entries": [
+          "Step 1: Pay 10% interest on capital - A gets Rs 70K, B gets Rs 30K on 10L total",
+          "Step 2: Pay working partner salary - B gets Rs 30K/month as management fee",
+          "Step 3: Remaining profit split 60:40 (A:B) reflecting capital weight",
+          "This rewards both capital (A) and labor (B) fairly",
+          "Dr Interest on Capital, Dr Partner Salary, Dr Profit Distribution, Cr P&L Appropriation"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_017",
+    "source": "user_exact",
+    "scenario_id": "complex_017",
+    "scenario_type": "temporal_reasoning",
+    "scenario_type_key": "temporal_reasoning",
+    "input": "Employee le Magh ma resign garyo tara Falgun samma kaam garyo, Chaitra ma final settlement magyo - gratuity kun date samma calculate garne?",
+    "input_normalized": "employee le magh ma resign garyo tara falgun samma kaam garyo, chaitra ma final settlement magyo - gratuity kun date samma calculate garne",
+    "surface_contradiction": "Resign date vs last working date vs settlement date - which determines gratuity calculation period?",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Resignation submitted in Magh - this is notice date"
+      },
+      {
+        "step": 2,
+        "thought": "Last working day is in Falgun - this is actual separation date"
+      },
+      {
+        "step": 3,
+        "thought": "Settlement requested in Chaitra - this is administrative date"
+      },
+      {
+        "step": 4,
+        "thought": "Under Nepal Labor Act, gratuity calculates based on actual service period"
+      },
+      {
+        "step": 5,
+        "thought": "Service period = joining date to last working day (Falgun)"
+      },
+      {
+        "step": 6,
+        "thought": "Notice period served (Magh to Falgun) counts as service period"
+      },
+      {
+        "step": 7,
+        "thought": "Settlement delay to Chaitra does not extend service period but may attract interest"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Employee kati barsha dekhi kaam gardai thiyo? Notice period as per contract kati thiyo? Last working day exactly kahi ho?",
+    "possible_resolutions": [
+      {
+        "scenario": "3 years service, last working day Falgun 15",
+        "entries": [
+          "Gratuity: 3 years × 1 month salary = 3 months salary",
+          "Calculate up to Falgun 15 (last working day)",
+          "PF settlement: Total accumulated PF up to Falgun 15",
+          "Unused leave encashment: Calculate as of Falgun 15",
+          "Payment deadline: Within 7 days of Falgun 15 as per law"
+        ]
+      },
+      {
+        "scenario": "Less than 1 year service",
+        "entries": [
+          "Gratuity calculated proportionately for months served",
+          "Pro-rata calculation: (months served / 12) × monthly salary",
+          "Other settlements same as above"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_018",
+    "source": "user_exact",
+    "scenario_id": "complex_018",
+    "scenario_type": "implicit_constraint",
+    "scenario_type_key": "implicit_constraint",
+    "input": "Foreign buyer le USD ma payment garna khojyo tara hami le Indian supplier lai INR ma pay garnu parcha - exchange rate kasari handle garne?",
+    "input_normalized": "foreign buyer le usd ma payment garna khojyo tara hami le indian supplier lai inr ma pay garnu parcha - exchange rate kasari handle garne",
+    "surface_contradiction": "No contradiction but complex dual-currency transaction with implicit NRB regulations",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Nepal has fixed exchange rate with INR (1 INR = 1.6 NPR fixed by NRB)"
+      },
+      {
+        "step": 2,
+        "thought": "USD to NPR is floating rate set by NRB daily"
+      },
+      {
+        "step": 3,
+        "thought": "Transaction involves: USD received → converted to NPR → some converted to INR for payment"
+      },
+      {
+        "step": 4,
+        "thought": "NRB regulations restrict direct USD to INR conversion - must go through NPR"
+      },
+      {
+        "step": 5,
+        "thought": "Exchange gain/loss will arise on USD to NPR conversion"
+      },
+      {
+        "step": 6,
+        "thought": "INR payment is at fixed rate, so no exchange risk on INR side"
+      },
+      {
+        "step": 7,
+        "thought": "Need LC or banking channel for import payment to India"
+      },
+      {
+        "step": 8,
+        "thought": "Export earnings in USD must be repatriated through banking channel within 60 days"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Export invoice amount kati USD ho? Indian supplier lai kati INR tirnu parcha? Payment terms ke cha?",
+    "possible_resolutions": [
+      {
+        "scenario": "Export $10,000, Import payment INR 500,000",
+        "entries": [
+          "Receive USD 10,000 → Convert at NRB rate (say 133.50) = NPR 13,35,000",
+          "Dr Bank (NPR) 13,35,000, Cr Export Sales (USD) 13,35,000",
+          "Pay INR 5,00,000 at fixed rate 1.6 = NPR 8,00,000",
+          "Dr Import Purchases 8,00,000, Cr Bank (NPR) 8,00,000",
+          "Net NPR retained: 5,35,000",
+          "Exchange gain/loss recorded if USD rate changes between invoice and receipt"
+        ]
+      },
+      {
+        "scenario": "Timing difference creates exchange exposure",
+        "entries": [
+          "Invoice date USD rate: 133.50 → Record sale at NPR 13,35,000",
+          "Payment receipt date USD rate: 134.00 → Receive NPR 13,40,000",
+          "Exchange gain: NPR 5,000",
+          "Dr Bank 13,40,000, Cr Sales 13,35,000, Cr Exchange Gain 5,000"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_019",
+    "source": "user_exact",
+    "scenario_id": "complex_019",
+    "scenario_type": "contradictory_information",
+    "scenario_type_key": "contradictory_information",
+    "input": "Audit report ma profit 20 lakh dekhaucha tara bank statement ma paisa badeko chhaina, jamma 2 lakh matra badeko cha",
+    "input_normalized": "audit report ma profit 20 lakh dekhaucha tara bank statement ma paisa badeko chhaina, jamma 2 lakh matra badeko cha",
+    "surface_contradiction": "Accounting profit is 20 lakh but cash increased only 2 lakh",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Profit does not equal cash - this is the accrual vs cash basis difference"
+      },
+      {
+        "step": 2,
+        "thought": "Common reasons profit exceeds cash increase: credit sales uncollected, inventory purchased, loan EMIs paid, fixed assets bought"
+      },
+      {
+        "step": 3,
+        "thought": "In Nepal SMEs, this is extremely common and often misunderstood"
+      },
+      {
+        "step": 4,
+        "thought": "Need to reconcile: Profit 20L → Cash increase 2L means 18L went somewhere"
+      },
+      {
+        "step": 5,
+        "thought": "Possible allocations: Debtors increased, Stock increased, Loan principal repaid, Drawings by owner, Fixed assets purchased"
+      },
+      {
+        "step": 6,
+        "thought": "This is essentially a simplified cash flow statement exercise"
+      },
+      {
+        "step": 7,
+        "thought": "Owner may think business is failing because no cash despite profit"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Credit ma kati becheko cha? Naya stock kineko cha? Loan EMI kati tireko? Owner le kati nikaaleko cha?",
+    "possible_resolutions": [
+      {
+        "scenario": "Typical Nepal SME breakdown",
+        "entries": [
+          "Profit: +20,00,000",
+          "Less: Debtors increase (credit sales uncollected): -8,00,000",
+          "Less: Inventory buildup: -4,00,000",
+          "Less: Loan principal repayment: -3,00,000",
+          "Less: Owner drawings: -2,50,000",
+          "Less: Equipment purchase: -1,50,000",
+          "Add: Depreciation (non-cash expense): +1,00,000",
+          "Net cash increase: 2,00,000 ✓ Reconciled"
+        ]
+      },
+      {
+        "scenario": "Explain to owner in simple terms",
+        "entries": [
+          "Paisa aayo tara uthyo: Credit ma 8 lakh ajhai auna baaki",
+          "Stock ma jamyo: 4 lakh ko saman godown ma cha",
+          "Loan tiryo: 3 lakh bank lai tiryo",
+          "Tapai le nikaalnu bhayo: 2.5 lakh personal use",
+          "Saman kinnu bhayo: 1.5 lakh equipment",
+          "Tyesaile 20 lakh kamaunu bhayo tara cash 2 lakh matra badeko"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_020",
+    "source": "user_exact",
+    "scenario_id": "complex_020",
+    "scenario_type": "exception_handling",
+    "scenario_type_key": "exception_handling",
+    "input": "Hamro NGO lai donation aayo 50 lakh tara donor le specific kaam ma matra kharcha garnu bhaneko cha, tara hami lai general admin ma paisa chahiyo",
+    "input_normalized": "hamro ngo lai donation aayo 50 lakh tara donor le specific kaam ma matra kharcha garnu bhaneko cha, tara hami lai general admin ma paisa chahiyo",
+    "surface_contradiction": "Restricted donation cannot be used for general expenses but organization needs admin funds",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "This is restricted vs unrestricted fund accounting issue"
+      },
+      {
+        "step": 2,
+        "thought": "Donor-restricted funds must be used only for specified purpose"
+      },
+      {
+        "step": 3,
+        "thought": "Using restricted funds for admin is a serious compliance violation"
+      },
+      {
+        "step": 4,
+        "thought": "Nepal's Social Welfare Council and donor agreements enforce restrictions"
+      },
+      {
+        "step": 5,
+        "thought": "Options: (a) negotiate with donor for admin overhead allocation, (b) charge proportional admin costs to project, (c) find separate unrestricted funding"
+      },
+      {
+        "step": 6,
+        "thought": "Many donors allow 10-15% overhead/admin cost within project budget"
+      },
+      {
+        "step": 7,
+        "thought": "Need to check donor agreement for overhead provisions"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Donor agreement ma admin overhead ko provision cha? Kati percentage admin charge allow gareko cha? Agreement ko terms ke ke cha?",
+    "possible_resolutions": [
+      {
+        "scenario": "Donor allows 12% administrative overhead",
+        "entries": [
+          "Total donation: Rs 50,00,000",
+          "Admin overhead (12%): Rs 6,00,000 - can use for admin",
+          "Program expenses: Rs 44,00,000 - restricted to specified project",
+          "Dr Bank 50,00,000, Cr Restricted Fund 44,00,000, Cr Admin Overhead Recovery 6,00,000"
+        ]
+      },
+      {
+        "scenario": "No overhead provision in agreement",
+        "entries": [
+          "All Rs 50,00,000 must go to specified purpose",
+          "Cannot divert any amount to admin",
+          "Request donor for agreement amendment to include overhead",
+          "Seek separate unrestricted funding for admin costs",
+          "Maintain separate bank account for restricted funds"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_021",
+    "source": "user_exact",
+    "scenario_id": "complex_021",
+    "scenario_type": "multi_entity_relationship",
+    "scenario_type_key": "multi_entity_relationship",
+    "input": "Hami 3 jana le milera eutai building rent ma liyera alag alag business chalaucha - rent, bijuli, pani kasari share garne?",
+    "input_normalized": "hami 3 jana le milera eutai building rent ma liyera alag alag business chalaucha - rent, bijuli, pani kasari share garne",
+    "surface_contradiction": "No contradiction but complex shared expense allocation among three independent businesses",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Three businesses sharing one rented building need fair expense allocation"
+      },
+      {
+        "step": 2,
+        "thought": "Rent allocation options: by area used, by revenue, equally, or by agreement"
+      },
+      {
+        "step": 3,
+        "thought": "Electricity: separate meters ideal, otherwise by usage estimate or area"
+      },
+      {
+        "step": 4,
+        "thought": "Water: usually shared equally unless one business uses significantly more"
+      },
+      {
+        "step": 5,
+        "thought": "Common area maintenance: shared equally or by area proportion"
+      },
+      {
+        "step": 6,
+        "thought": "Legal consideration: subletting may need landlord permission in Nepal"
+      },
+      {
+        "step": 7,
+        "thought": "Tax implication: each business deducts their share as expense, but need proper documentation"
+      },
+      {
+        "step": 8,
+        "thought": "TDS consideration: who pays landlord? One person pays and others reimburse?"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Tin jana le kati kati area use garcha? Rent ko bill kasle ko naam ma cha? Bijuli meter eutai ho ki alag?",
+    "possible_resolutions": [
+      {
+        "scenario": "Proportional by area: A-50%, B-30%, C-20%",
+        "entries": [
+          "Monthly rent Rs 1,00,000: A pays 50K, B pays 30K, C pays 20K",
+          "Electricity Rs 15,000 (single meter): A pays 7,500, B pays 4,500, C pays 3,000",
+          "Water Rs 3,000: Split equally Rs 1,000 each",
+          "One business pays landlord, deducts TDS 10%, others reimburse their share",
+          "Each gets proportional rent receipt for tax deduction"
+        ]
+      },
+      {
+        "scenario": "Formal sub-lease arrangement",
+        "entries": [
+          "Business A signs main lease, sub-leases portions to B and C",
+          "A charges B and C monthly rent (becomes A's income and B,C's expense)",
+          "A deducts TDS on main lease payment to landlord",
+          "B and C deduct TDS on sub-lease payment to A",
+          "More complex but legally cleaner documentation"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_022",
+    "source": "user_exact",
+    "scenario_id": "complex_022",
+    "scenario_type": "counterfactual_reasoning",
+    "scenario_type_key": "counterfactual_reasoning",
+    "input": "Yadi hamile PAN ko satta VAT registration leko bhaye haamro pricing strategy kasari farak hunthyo?",
+    "input_normalized": "yadi hamile pan ko satta vat registration leko bhaye haamro pricing strategy kasari farak hunthyo",
+    "surface_contradiction": "No contradiction - hypothetical comparison of VAT vs PAN-only business impact on pricing",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "PAN only business: No VAT charged, no input credit claimed, simpler compliance"
+      },
+      {
+        "step": 2,
+        "thought": "VAT registered: Must charge 13% on sales, can claim input credit on purchases"
+      },
+      {
+        "step": 3,
+        "thought": "If selling to end consumers: VAT increases selling price by 13% potentially"
+      },
+      {
+        "step": 4,
+        "thought": "If selling to businesses: They prefer VAT bill for their own credit"
+      },
+      {
+        "step": 5,
+        "thought": "Key question: Are your customers mostly businesses or end consumers?"
+      },
+      {
+        "step": 6,
+        "thought": "If suppliers are VAT registered, you're paying VAT on purchases but can't claim credit without VAT registration"
+      },
+      {
+        "step": 7,
+        "thought": "Hidden cost of not being VAT registered: Embedded VAT in purchases becomes cost"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Customer mostly business ho ki consumer? Supplier haru VAT registered chan? Average monthly purchase kati cha?",
+    "possible_resolutions": [
+      {
+        "scenario": "B2B business - VAT registration beneficial",
+        "entries": [
+          "Without VAT: Buy at 113 (100+13 VAT embedded), sell at 140, profit 27",
+          "With VAT: Buy at 100 (claim 13 input credit), sell at 140+18.2 VAT, profit 40",
+          "Additional profit: Rs 13 per 100 of purchases through input credit",
+          "Annual benefit on 50L purchases: Rs 6,50,000 additional profit",
+          "Trade-off: Monthly VAT filing compliance cost"
+        ]
+      },
+      {
+        "scenario": "B2C retail business - VAT may hurt competitiveness",
+        "entries": [
+          "Without VAT: Sell at 140, customer pays 140",
+          "With VAT: Must sell at 140+18.2=158.2, customer pays more",
+          "But claim input credit saving Rs 13 per unit",
+          "Net: Customer pays 18.2 more, you save 13 = net price increase 5.2",
+          "Risk: Price-sensitive customers may go to non-VAT competitor"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_023",
+    "source": "user_exact",
+    "scenario_id": "complex_023",
+    "scenario_type": "contradictory_information",
+    "scenario_type_key": "contradictory_information",
+    "input": "Hamro inventory system ma 500 pieces dekhaucha tara physical count ma 480 aayo, ani 10 pieces customer le defective bhanera return pani garyo",
+    "input_normalized": "hamro inventory system ma 500 pieces dekhaucha tara physical count ma 480 aayo, ani 10 pieces customer le defective bhanera return pani garyo",
+    "surface_contradiction": "System shows 500, physical count is 480, plus 10 returns incoming - actual vs book mismatch with additional complication",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Book inventory: 500 pieces"
+      },
+      {
+        "step": 2,
+        "thought": "Physical count: 480 pieces - shortage of 20 pieces"
+      },
+      {
+        "step": 3,
+        "thought": "Additionally, 10 defective returns coming in from customer"
+      },
+      {
+        "step": 4,
+        "thought": "After returns, physical will be 490, but book needs adjustment"
+      },
+      {
+        "step": 5,
+        "thought": "The 20-piece shortage needs investigation: theft, damage, unrecorded sales, counting error"
+      },
+      {
+        "step": 6,
+        "thought": "The 10 returns need separate handling: credit note, replacement, or repair"
+      },
+      {
+        "step": 7,
+        "thought": "Defective returns may need write-off if unsaleable"
+      },
+      {
+        "step": 8,
+        "thought": "Multiple adjustments needed: inventory write-down, sales return, possible defective inventory reserve"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "20 pieces kam hunu ko karan tha cha? Return aako 10 pieces bechna milcha ki scrap ho? Last stock audit kahi gareko thiyo?",
+    "possible_resolutions": [
+      {
+        "scenario": "Shortage due to unrecorded damage, returns are scrap",
+        "entries": [
+          "Adjust inventory shortage: Dr Inventory Loss 20 pieces, Cr Inventory 20 pieces",
+          "Record customer return: Dr Sales Return (10 pcs value), Cr Debtors (10 pcs)",
+          "Record defective inventory: Dr Inventory 10 pcs (at NRV), Cr Customer Return account",
+          "Write down defective: Dr Loss on Defective Goods, Cr Inventory (difference from cost to NRV)",
+          "Adjusted book inventory: 500 - 20 + 10 = 490 pieces, Physical: 480 + 10 = 490 ✓"
+        ]
+      },
+      {
+        "scenario": "Shortage includes unrecorded sales",
+        "entries": [
+          "Verify if 15 pieces were sold but not recorded",
+          "Record missing sales: Dr Debtors/Cash 15 pcs, Cr Sales 15 pcs",
+          "Write off 5 pieces as genuine loss: Dr Inventory Loss, Cr Inventory",
+          "Process 10 returns separately",
+          "Final reconciled inventory: 500 - 15 - 5 + 10 = 490"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_024",
+    "source": "user_exact",
+    "scenario_id": "complex_024",
+    "scenario_type": "analogy_based",
+    "scenario_type_key": "analogy_based",
+    "input": "Daraz seller model jasto hamro local wholesale business lai online platform banauna sakcha ki? Accounting kasari farak huncha?",
+    "input_normalized": "daraz seller model jasto hamro local wholesale business lai online platform banauna sakcha ki? accounting kasari farak huncha",
+    "surface_contradiction": "No contradiction - analogical reasoning from marketplace model to local wholesale context",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Daraz model: Marketplace takes commission (15-25%), handles payment, seller ships product"
+      },
+      {
+        "step": 2,
+        "thought": "Local wholesale model: Direct B2B, bulk orders, credit terms, personal relationships"
+      },
+      {
+        "step": 3,
+        "thought": "Analogy mapping: Can wholesale adopt platform model while retaining B2B relationships?"
+      },
+      {
+        "step": 4,
+        "thought": "Accounting changes: Revenue recognition shifts from gross to net if acting as platform"
+      },
+      {
+        "step": 5,
+        "thought": "If platform model: Commission income only, not full sales revenue"
+      },
+      {
+        "step": 6,
+        "thought": "If hybrid: Own sales + platform commission - need to separate accounting"
+      },
+      {
+        "step": 7,
+        "thought": "VAT implications: Commission-based income treated differently than goods sales"
+      },
+      {
+        "step": 8,
+        "thought": "Nepal e-commerce rules and digital payment regulations apply"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Aafno saman bechne ki aru seller ko pani list garne? Payment gateway use garne ki cash on delivery? Target market kun city?",
+    "possible_resolutions": [
+      {
+        "scenario": "Pure marketplace model - earn commission",
+        "entries": [
+          "Revenue = Commission only (say 10% of GMV)",
+          "GMV Rs 10,00,000, Revenue Rs 1,00,000",
+          "Dr Payment Gateway/Cash 10,00,000, Cr Seller Payable 9,00,000, Cr Commission Income 1,00,000",
+          "VAT on commission income only: Rs 13,000",
+          "Lower revenue but higher margin business"
+        ]
+      },
+      {
+        "scenario": "Hybrid - own products + marketplace",
+        "entries": [
+          "Own product sales: Full revenue recognition - Dr Debtors, Cr Sales",
+          "Marketplace commission: Net revenue only - Cr Commission Income",
+          "Separate tracking needed for inventory (own) vs facilitated (others)",
+          "VAT: 13% on own sales (full value) + 13% on commission income",
+          "Two P&L segments: Trading and Marketplace Services"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_025",
+    "source": "user_exact",
+    "scenario_id": "complex_025",
+    "scenario_type": "priority_conflict",
+    "scenario_type_key": "priority_conflict",
+    "input": "Tax audit bhayo - auditor le 3 barsha purano expense disallow garyo, tara tyo barsha ko file amend garna deadline sakeko cha",
+    "input_normalized": "tax audit bhayo - auditor le 3 barsha purano expense disallow garyo, tara tyo barsha ko file amend garna deadline sakeko cha",
+    "surface_contradiction": "Expense disallowed in old year but amendment deadline has passed",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Nepal Income Tax Act allows assessment/reassessment within certain time limits"
+      },
+      {
+        "step": 2,
+        "thought": "If IRD auditor disallows expense, additional tax demand will be raised"
+      },
+      {
+        "step": 3,
+        "thought": "The question is whether the original return can be amended - generally IRD can reassess within 4 years"
+      },
+      {
+        "step": 4,
+        "thought": "Taxpayer's right to self-amend may have expired, but IRD's right to reassess may still be valid"
+      },
+      {
+        "step": 5,
+        "thought": "If expense disallowed, taxable income increases, additional tax + interest + penalty applies"
+      },
+      {
+        "step": 6,
+        "thought": "Need to determine: Is the disallowance justified? Can we appeal?"
+      },
+      {
+        "step": 7,
+        "thought": "Appeal process: First to IRD, then Revenue Tribunal, then Supreme Court"
+      },
+      {
+        "step": 8,
+        "thought": "Current year treatment: Can the disallowed expense be claimed in current year? Generally no."
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Kun type ko expense disallow bhayo? Kati amount? IRD le notice pathayo ki verbal matra bhanyo? 3 barsha exactly kati purano?",
+    "possible_resolutions": [
+      {
+        "scenario": "Legitimate expense wrongly disallowed - appeal",
+        "entries": [
+          "File objection with IRD within 30 days of assessment order",
+          "Provide supporting documentation for the expense",
+          "If IRD rejects, appeal to Revenue Tribunal within 35 days",
+          "Deposit 50% of disputed tax or provide bank guarantee for appeal",
+          "Dr Tax Dispute Receivable, Cr Provision for Tax Liability"
+        ]
+      },
+      {
+        "scenario": "Expense genuinely non-deductible - pay additional tax",
+        "entries": [
+          "Calculate additional tax on disallowed amount",
+          "Add interest at 15% per annum from original due date",
+          "Possible penalty of 25% of additional tax for understatement",
+          "Dr Prior Period Tax Expense, Cr Tax Payable",
+          "Dr Interest on Tax, Cr Tax Payable",
+          "Dr Tax Penalty, Cr Tax Payable"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_026",
+    "source": "user_exact",
+    "scenario_id": "complex_026",
+    "scenario_type": "temporal_reasoning",
+    "scenario_type_key": "temporal_reasoning",
+    "input": "Shrawan ma order garyo, Bhadra ma advance tiryo, Kartik ma saman aayo, Mangsir ma baaki tiryo - kun kun mahina ma ke entry garne?",
+    "input_normalized": "shrawan ma order garyo, bhadra ma advance tiryo, kartik ma saman aayo, mangsir ma baaki tiryo - kun kun mahina ma ke entry garne",
+    "surface_contradiction": "No contradiction but complex multi-month transaction requiring temporal entry mapping",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Shrawan: Order placed - generally no accounting entry for purchase order (off-books commitment)"
+      },
+      {
+        "step": 2,
+        "thought": "Bhadra: Advance paid - this is a journal entry, not purchase yet"
+      },
+      {
+        "step": 3,
+        "thought": "Kartik: Goods received - this is when purchase is recorded"
+      },
+      {
+        "step": 4,
+        "thought": "Mangsir: Balance paid - settlement of remaining liability"
+      },
+      {
+        "step": 5,
+        "thought": "Each month has different accounting treatment"
+      },
+      {
+        "step": 6,
+        "thought": "VAT timing: When is input credit claimable? On invoice date (goods receipt)"
+      },
+      {
+        "step": 7,
+        "thought": "TDS timing: Deducted at time of payment or credit, whichever is earlier"
+      }
+    ],
+    "clarification_needed": false,
+    "clarify_question": null,
+    "possible_resolutions": [
+      {
+        "scenario": "Standard treatment with Rs 100,000 purchase, Rs 30,000 advance",
+        "entries": [
+          "Shrawan: No entry (Purchase Order is off-books). Note in order register only",
+          "Bhadra: Dr Advance to Supplier 30,000, Cr Bank 30,000. TDS 1.5% = Rs 450 deducted: Dr Advance 30,000, Cr Bank 29,550, Cr TDS Payable 450",
+          "Kartik: Dr Purchases 100,000, Dr VAT Input Credit 13,000, Cr Advance to Supplier 30,000, Cr Creditor 83,000. Claim VAT input credit in Kartik return",
+          "Mangsir: Dr Creditor 83,000, Cr Bank 81,755, Cr TDS Payable 1,245 (1.5% of remaining 83,000). File TDS for Mangsir"
+        ]
+      },
+      {
+        "scenario": "If advance includes VAT component",
+        "entries": [
+          "Bhadra: Advance Rs 30,000 may include proportional VAT",
+          "Some businesses claim VAT on advance if invoice issued",
+          "Depends on whether supplier issued tax invoice with advance receipt",
+          "If no invoice, VAT claimed only in Kartik when full invoice received"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_027",
+    "source": "user_exact",
+    "scenario_id": "complex_027",
+    "scenario_type": "exception_handling",
+    "scenario_type_key": "exception_handling",
+    "input": "Contractor lai payment garda 1.5% TDS katnu parcha tara contractor le PAN number diyena - ke garne?",
+    "input_normalized": "contractor lai payment garda 1.5% tds katnu parcha tara contractor le pan number diyena - ke garne",
+    "surface_contradiction": "TDS obligation exists but contractor won't provide PAN - how to comply",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Nepal tax law requires TDS deduction on contractor payments"
+      },
+      {
+        "step": 2,
+        "thought": "Without PAN, TDS rate increases - typically double the normal rate"
+      },
+      {
+        "step": 3,
+        "thought": "If contractor doesn't provide PAN, deduct TDS at higher rate as per law"
+      },
+      {
+        "step": 4,
+        "thought": "The higher rate serves as incentive for contractors to share PAN"
+      },
+      {
+        "step": 5,
+        "thought": "Business must still deposit TDS to IRD even without contractor PAN"
+      },
+      {
+        "step": 6,
+        "thought": "In TDS return, report as 'PAN not available' with contractor details"
+      },
+      {
+        "step": 7,
+        "thought": "Risk: If no TDS deducted, the paying business becomes liable for the tax amount"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Contractor individual ho ki company? Payment amount kati ho? Regular contractor ho ki one-time?",
+    "possible_resolutions": [
+      {
+        "scenario": "One-time contractor, PAN not available",
+        "entries": [
+          "Deduct TDS at double rate: 1.5% × 2 = 3% instead of 1.5%",
+          "On Rs 1,00,000 payment: TDS = Rs 3,000",
+          "Dr Contractor Expense 1,00,000, Cr Bank 97,000, Cr TDS Payable 3,000",
+          "File TDS return with contractor name/address but no PAN",
+          "Inform contractor they can claim refund when they file their own return with PAN"
+        ]
+      },
+      {
+        "scenario": "Regular contractor - insist on PAN",
+        "entries": [
+          "Withhold payment until PAN provided",
+          "Include PAN requirement in contractor agreement",
+          "If urgent, pay with higher TDS rate",
+          "Future contracts: Mandatory PAN clause in all contractor agreements",
+          "Alternative: Help contractor obtain PAN if they don't have one"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_028",
+    "source": "user_exact",
+    "scenario_id": "complex_028",
+    "scenario_type": "multi_entity_relationship",
+    "scenario_type_key": "multi_entity_relationship",
+    "input": "Mama ko company bata saman kineko cha, uncle ko company lai becheko cha - related party transaction ma ke dhyan dinu parcha?",
+    "input_normalized": "mama ko company bata saman kineko cha, uncle ko company lai becheko cha - related party transaction ma ke dhyan dinu parcha",
+    "surface_contradiction": "Purchases from maternal uncle's company and sales to paternal uncle's company - related party concerns",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Both are related party transactions under Nepal Company Act and Income Tax Act"
+      },
+      {
+        "step": 2,
+        "thought": "Related party transactions must be at arm's length price (market price)"
+      },
+      {
+        "step": 3,
+        "thought": "IRD can adjust taxable income if prices are not at arm's length"
+      },
+      {
+        "step": 4,
+        "thought": "Transfer pricing provisions apply even to domestic related party transactions"
+      },
+      {
+        "step": 5,
+        "thought": "Documentation needed: Why this price? What is market benchmark?"
+      },
+      {
+        "step": 6,
+        "thought": "If buying above market or selling below market, profit is artificially reduced"
+      },
+      {
+        "step": 7,
+        "thought": "Disclosure required in financial statements if company is audited"
+      },
+      {
+        "step": 8,
+        "thought": "Tax risk: IRD can impute income based on fair market value"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Transaction amount kati ho? Market price bhanda farak cha ki? Company private limited ho? Annual turnover kati cha?",
+    "possible_resolutions": [
+      {
+        "scenario": "Prices at arm's length, proper documentation",
+        "entries": [
+          "Record transactions at actual transaction price",
+          "Maintain documentation of market price comparison",
+          "Disclose related party transactions in notes to accounts",
+          "Keep purchase quotations from unrelated suppliers as benchmark",
+          "Keep evidence that sale price matches other customer prices",
+          "Dr Purchases/Cr Creditor(Mama's Co) at market rate",
+          "Dr Debtors(Uncle's Co)/Cr Sales at market rate"
+        ]
+      },
+      {
+        "scenario": "Prices not at arm's length - correction needed",
+        "entries": [
+          "If buying at Rs 120 when market is Rs 100: Excess Rs 20 may be disallowed as expense",
+          "If selling at Rs 80 when market is Rs 100: IRD can tax as if sold at Rs 100",
+          "Correct approach: Adjust prices to market rate",
+          "If already transacted: Disclose and be prepared for IRD adjustment",
+          "Potential additional tax on deemed income + 15% interest + possible penalty"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_029",
+    "source": "user_exact",
+    "scenario_id": "complex_029",
+    "scenario_type": "contradictory_information",
+    "scenario_type_key": "contradictory_information",
+    "input": "PF statement ma Rs 5,00,000 dekhaucha tara actual deposit Rs 4,20,000 matra bhayeko cha",
+    "input_normalized": "pf statement ma rs 5,00,000 dekhaucha tara actual deposit rs 4,20,000 matra bhayeko cha",
+    "surface_contradiction": "PF statement shows 5 lakh but actual deposits total only 4.2 lakh",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Difference of Rs 80,000 between stated and deposited amounts"
+      },
+      {
+        "step": 2,
+        "thought": "PF balance includes deposits + interest earned on accumulated balance"
+      },
+      {
+        "step": 3,
+        "thought": "Rs 80,000 could be accumulated interest over the years"
+      },
+      {
+        "step": 4,
+        "thought": "Alternative: Some deposits may not have been made but shown in statement (fraud)"
+      },
+      {
+        "step": 5,
+        "thought": "Alternative: Employer match may account for part of the difference"
+      },
+      {
+        "step": 6,
+        "thought": "Need to verify: Are the Rs 4,20,000 employee contributions only or including employer match?"
+      },
+      {
+        "step": 7,
+        "thought": "Nepal PF: Employee contributes 10%, employer matches 10% - total 20% of basic salary"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Rs 4,20,000 ma employee ko matra ho ki employer match pani cha? Kati barsha ko contribution ho? Interest earned kati dekhaucha?",
+    "possible_resolutions": [
+      {
+        "scenario": "4,20,000 is employee portion only, statement includes employer match + interest",
+        "entries": [
+          "Employee contribution: Rs 4,20,000",
+          "Employer match (equal): Rs 4,20,000",
+          "Total deposits: Rs 8,40,000",
+          "Wait - this exceeds Rs 5,00,000, so this explanation doesn't work",
+          "Re-evaluate: Rs 4,20,000 might be total (employee + employer)",
+          "Interest earned: Rs 80,000 over the period",
+          "Statement balance: 4,20,000 + 80,000 = 5,00,000 ✓"
+        ]
+      },
+      {
+        "scenario": "Deposits genuinely short - employer didn't deposit full amount",
+        "entries": [
+          "Employee salary deduction made: Rs 2,50,000",
+          "Employer match due: Rs 2,50,000",
+          "Total due: Rs 5,00,000",
+          "Actual deposited: Rs 4,20,000",
+          "Employer failed to deposit Rs 80,000",
+          "This is a serious labor law violation",
+          "Employee can file complaint at Labor Office",
+          "Employer must deposit shortfall with interest"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_030",
+    "source": "user_exact",
+    "scenario_id": "complex_030",
+    "scenario_type": "implicit_constraint",
+    "scenario_type_key": "implicit_constraint",
+    "input": "Hami le India bata raw material import garcha ani Nepal ma process garera Tibet (China) lai export garcha - customs ani tax kasari handle garne?",
+    "input_normalized": "hami le india bata raw material import garcha ani nepal ma process garera tibet (china) lai export garcha - customs ani tax kasari handle garne",
+    "surface_contradiction": "No contradiction but complex tri-country trade with implicit regulatory constraints",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Import from India: Customs duty + 13% VAT on import (can claim input credit if VAT registered)"
+      },
+      {
+        "step": 2,
+        "thought": "Processing in Nepal: Manufacturing expenses, labor, overhead"
+      },
+      {
+        "step": 3,
+        "thought": "Export to China/Tibet: Exports are zero-rated for VAT (0% output VAT)"
+      },
+      {
+        "step": 4,
+        "thought": "Since exports are zero-rated, all input VAT (on import + local expenses) can be claimed as refund"
+      },
+      {
+        "step": 5,
+        "thought": "Implicit constraint: Nepal-China trade has specific regulations through Tatopani/Rasuwagadhi border"
+      },
+      {
+        "step": 6,
+        "thought": "Letter of Credit or advance payment typically required for China trade"
+      },
+      {
+        "step": 7,
+        "thought": "Industrial Enterprises Act may provide additional customs duty benefits for export-oriented industry"
+      },
+      {
+        "step": 8,
+        "thought": "Duty drawback available on imported raw materials used in exported goods"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Kun product process garcha? Monthly volume kati? Industry registration bhayeko cha? Bonded warehouse cha?",
+    "possible_resolutions": [
+      {
+        "scenario": "Registered export industry with bonded warehouse",
+        "entries": [
+          "Import raw material with duty exemption (bonded warehouse facility)",
+          "No customs duty paid upfront on raw materials",
+          "VAT on import: Pay and claim refund as export is zero-rated",
+          "Processing cost: All input VAT claimable",
+          "Export: 0% VAT, issue zero-rated invoice",
+          "Dr Raw Material (duty-free), Cr Foreign Creditor(INR)",
+          "Dr VAT Input Credit, Cr Cash (on import VAT)",
+          "Dr Foreign Debtor(USD/CNY), Cr Export Sales",
+          "File VAT refund claim quarterly for accumulated input credit"
+        ]
+      },
+      {
+        "scenario": "Without bonded warehouse",
+        "entries": [
+          "Pay full customs duty on import - claim duty drawback after export",
+          "Pay 13% VAT on import - claim refund as exporter",
+          "Keep detailed records linking imported materials to exported goods",
+          "Duty drawback application within 1 year of export",
+          "Dr Duty Drawback Receivable, Cr Customs Duty Expense (after export)",
+          "Cash flow challenge: Duty paid upfront, refund received months later"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_031",
+    "source": "user_exact",
+    "scenario_id": "complex_031",
+    "scenario_type": "priority_conflict",
+    "scenario_type_key": "priority_conflict",
+    "input": "Company dissolve garna khojeko cha tara employee dues, bank loan, supplier ko paisa, government tax sabai baaki cha - kasari priority dine?",
+    "input_normalized": "company dissolve garna khojeko cha tara employee dues, bank loan, supplier ko paisa, government tax sabai baaki cha - kasari priority dine",
+    "surface_contradiction": "Multiple creditor claims during dissolution - conflicting priorities",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Nepal Company Act and Insolvency Act define priority of payments during liquidation"
+      },
+      {
+        "step": 2,
+        "thought": "Priority order in Nepal: (1) Liquidation costs, (2) Employee wages/dues, (3) Government taxes, (4) Secured creditors, (5) Unsecured creditors"
+      },
+      {
+        "step": 3,
+        "thought": "Employee dues include unpaid salary, gratuity, PF, Dashain bonus, leave encashment"
+      },
+      {
+        "step": 4,
+        "thought": "Government taxes include VAT, income tax, TDS payable"
+      },
+      {
+        "step": 5,
+        "thought": "Bank loan: Secured against assets - bank can claim specific assets"
+      },
+      {
+        "step": 6,
+        "thought": "Suppliers: Usually unsecured creditors - lowest priority"
+      },
+      {
+        "step": 7,
+        "thought": "If assets insufficient, lower priority creditors get proportional payment"
+      },
+      {
+        "step": 8,
+        "thought": "Directors may have personal liability if company was trading while insolvent"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Total assets kati cha? Employee dues kati? Tax liability kati? Bank loan kati ani ke collateral cha? Supplier dues kati?",
+    "possible_resolutions": [
+      {
+        "scenario": "Assets Rs 50L, Employee 10L, Tax 8L, Bank 30L(secured), Suppliers 20L",
+        "entries": [
+          "Step 1: Liquidation costs (say Rs 2L) paid first. Remaining: Rs 48L",
+          "Step 2: Employee dues Rs 10L paid in full. Remaining: Rs 38L",
+          "Step 3: Government tax Rs 8L paid in full. Remaining: Rs 30L",
+          "Step 4: Bank secured loan Rs 30L paid from remaining. Remaining: Rs 0",
+          "Step 5: Suppliers get nothing (Rs 0 of Rs 20L) - write off as bad debt",
+          "Total shortfall: Rs 20L borne by unsecured suppliers"
+        ]
+      },
+      {
+        "scenario": "Assets exceed all liabilities",
+        "entries": [
+          "Pay all creditors in priority order",
+          "Remaining surplus distributed to shareholders",
+          "Final accounts prepared and filed with OCR",
+          "Company deregistered after all settlements"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_032",
+    "source": "user_exact",
+    "scenario_id": "complex_032",
+    "scenario_type": "analogy_based",
+    "scenario_type_key": "analogy_based",
+    "input": "Cooperative model jasto hamro tole ko sana business haru le milera bulk purchasing garna sakcha ki? Accounting kasari garne?",
+    "input_normalized": "cooperative model jasto hamro tole ko sana business haru le milera bulk purchasing garna sakcha ki? accounting kasari garne",
+    "surface_contradiction": "No contradiction - analogical reasoning from cooperative model to informal business consortium",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Nepal has strong cooperative tradition - savings & credit cooperatives especially common"
+      },
+      {
+        "step": 2,
+        "thought": "Bulk purchasing consortium analogy: Similar to cooperative's group buying power"
+      },
+      {
+        "step": 3,
+        "thought": "Key question: Formal cooperative or informal arrangement?"
+      },
+      {
+        "step": 4,
+        "thought": "Formal cooperative: Must register under Cooperative Act, maintain books, audit required"
+      },
+      {
+        "step": 5,
+        "thought": "Informal consortium: Simpler but lacks legal protection and tax benefits"
+      },
+      {
+        "step": 6,
+        "thought": "Accounting for consortium: One member acts as coordinator, maintains shared account"
+      },
+      {
+        "step": 7,
+        "thought": "Each member's share tracked separately, proportional to their order"
+      },
+      {
+        "step": 8,
+        "thought": "Tax treatment: Consortium is not separate entity, each member claims own expenses"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Kati jana business haru chan? Monthly total purchase kati huncha? Formal cooperative register garne ki informal rakhne?",
+    "possible_resolutions": [
+      {
+        "scenario": "Informal consortium of 10 shops",
+        "entries": [
+          "Each member contributes proportional advance to common fund",
+          "Coordinator places bulk order - gets quantity discount (say 10%)",
+          "Coordinator books: Dr Bulk Purchase A/c, Cr Bank (payment to supplier)",
+          "Distribution: Dr Member A receivable, Dr Member B receivable... Cr Bulk Purchase",
+          "Each member: Dr Purchases (at discounted rate), Cr Cash/Coordinator payable",
+          "Coordinator charges small service fee (1-2%) for management",
+          "No separate entity registration needed"
+        ]
+      },
+      {
+        "scenario": "Formal purchasing cooperative registered",
+        "entries": [
+          "Register under Cooperative Act with minimum members",
+          "Cooperative buys bulk, distributes to members at cost + small margin",
+          "Cooperative maintains separate books: Purchases, Sales to members, Operating expenses",
+          "Members buy from cooperative - treated as regular purchase",
+          "Cooperative profit distributed as dividend/patronage refund",
+          "Annual audit required, tax exemption available for cooperatives",
+          "Dr Purchases (Cooperative books), Cr Bank",
+          "Dr Members A/c, Cr Sales (distribution to members)"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_033",
+    "source": "user_exact",
+    "scenario_id": "complex_033",
+    "scenario_type": "temporal_reasoning",
+    "scenario_type_key": "temporal_reasoning",
+    "input": "Loan Baisakh ma liyeko, EMI Jestha bata suru, tara Ashad ma business band bhayo, Shrawan ma feri suru garyo - interest calculation kasari huncha?",
+    "input_normalized": "loan baisakh ma liyeko, emi jestha bata suru, tara ashad ma business band bhayo, shrawan ma feri suru garyo - interest calculation kasari huncha",
+    "surface_contradiction": "Loan timeline crosses fiscal year boundary with business closure period - complex interest calculation",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Loan taken Baisakh - interest accrues from disbursement date"
+      },
+      {
+        "step": 2,
+        "thought": "EMI starts Jestha - first payment covers Baisakh + Jestha interest portion"
+      },
+      {
+        "step": 3,
+        "thought": "Ashad: Business closed but loan still active - interest continues to accrue"
+      },
+      {
+        "step": 4,
+        "thought": "Business closure doesn't stop loan obligations"
+      },
+      {
+        "step": 5,
+        "thought": "Ashad end = Fiscal year end - interest accrued must be accounted for"
+      },
+      {
+        "step": 6,
+        "thought": "Shrawan: Business restarts in new fiscal year - EMI payments resume"
+      },
+      {
+        "step": 7,
+        "thought": "If EMI missed in Ashad: Penalty interest may apply + EMI remains due"
+      },
+      {
+        "step": 8,
+        "thought": "Year-end treatment: Accrued but unpaid interest must be recorded as liability"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Ashad ma EMI tireko ki chhaina? Bank le penalty lagayo ki? Kati amount ko loan ho ani interest rate kati?",
+    "possible_resolutions": [
+      {
+        "scenario": "Rs 10L loan at 12%, EMI missed in Ashad",
+        "entries": [
+          "Baisakh: Dr Bank 10,00,000, Cr Loan A/c 10,00,000",
+          "Jestha: Dr Loan EMI (Principal+Interest), Cr Bank - regular EMI paid",
+          "Ashad: Business closed, EMI not paid. Dr Interest Expense, Cr Interest Accrued (accrue interest)",
+          "Ashad: Dr Penal Interest Expense, Cr Penal Interest Payable (2% extra on overdue)",
+          "Ashad 31 (Year end): Ensure all interest accrued in old year books",
+          "Shrawan (New year): Pay overdue Ashad EMI + current Shrawan EMI + penalty",
+          "Dr Loan A/c + Dr Interest Accrued + Dr Penal Interest, Cr Bank"
+        ]
+      },
+      {
+        "scenario": "EMI paid even during closure",
+        "entries": [
+          "All 3 months EMI paid on time",
+          "No penalty interest",
+          "Ashad year-end: Only pro-rata interest for remaining days needs accrual",
+          "Clean loan account at year end",
+          "Shrawan onwards: Normal EMI continues in new year books"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_034",
+    "source": "user_exact",
+    "scenario_id": "complex_034",
+    "scenario_type": "exception_handling",
+    "scenario_type_key": "exception_handling",
+    "input": "Customer le cheque diyeko 2 choti bounce bhayo - accounting kasari garne ani legal action ke lina sakincha?",
+    "input_normalized": "customer le cheque diyeko 2 choti bounce bhayo - accounting kasari garne ani legal action ke lina sakincha",
+    "surface_contradiction": "No contradiction but exception scenario - dishonored cheque with legal implications",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "First cheque bounce: Record reversal of receipt, may be technical issue"
+      },
+      {
+        "step": 2,
+        "thought": "Second bounce: Pattern suggests insufficient funds or intentional - serious matter"
+      },
+      {
+        "step": 3,
+        "thought": "Accounting: Reverse the cheque receipt, reinstate debtor balance, add bounce charges"
+      },
+      {
+        "step": 4,
+        "thought": "In Nepal, cheque bounce is a criminal offense under Negotiable Instruments Act"
+      },
+      {
+        "step": 5,
+        "thought": "After second bounce, can file case at district court within 35 days of dishonour notice"
+      },
+      {
+        "step": 6,
+        "thought": "Bank charges for bounced cheque: Rs 500-1000 per instance - recoverable from issuer"
+      },
+      {
+        "step": 7,
+        "thought": "Legal notice must be sent within 35 days giving 15 days to pay"
+      },
+      {
+        "step": 8,
+        "thought": "If payment not made within notice period, file criminal complaint"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Cheque kati amount ko ho? Pahilo choti kaile bounce bhayo? Notice pathayeko cha ki chhaina? Customer sanga contact bhayeko cha?",
+    "possible_resolutions": [
+      {
+        "scenario": "Rs 2,00,000 cheque bounced twice, no notice sent yet",
+        "entries": [
+          "Reverse cheque receipt: Dr Debtors 2,00,000, Cr Bank 2,00,000",
+          "Record bank charges: Dr Cheque Bounce Charges 1,000, Cr Bank 1,000 (or add to debtor)",
+          "Dr Debtors 1,000, Cr Cheque Bounce Recovery 1,000 (charge to customer)",
+          "Send legal notice within 35 days of last dishonour",
+          "Total claim: Rs 2,00,000 + Rs 1,000 charges + interest",
+          "If unpaid after 15 days notice: File criminal case under NI Act",
+          "Provision for doubtful debt: Dr Bad Debt Provision, Cr Provision A/c (prudent)"
+        ]
+      },
+      {
+        "scenario": "Customer promises to pay by alternative means",
+        "entries": [
+          "Accept cash or bank transfer instead of cheque",
+          "If received: Dr Cash/Bank, Cr Debtors (clear the outstanding)",
+          "If partial: Record partial and maintain balance as debtor",
+          "Keep dishonour evidence for future reference",
+          "Consider requiring advance payment for future transactions"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_035",
+    "source": "user_exact",
+    "scenario_id": "complex_035",
+    "scenario_type": "counterfactual_reasoning",
+    "scenario_type_key": "counterfactual_reasoning",
+    "input": "Yadi hamile hire purchase ma kineko bhaye ani outright cash ma kineko bhaye machinery ko total cost kati farak hunthyo?",
+    "input_normalized": "yadi hamile hire purchase ma kineko bhaye ani outright cash ma kineko bhaye machinery ko total cost kati farak hunthyo",
+    "surface_contradiction": "No contradiction - comparative analysis of hire purchase vs outright purchase financial impact",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Outright purchase: Full payment now, asset recorded at purchase price, full depreciation from day one"
+      },
+      {
+        "step": 2,
+        "thought": "Hire purchase: Installments over time, interest component increases total cost"
+      },
+      {
+        "step": 3,
+        "thought": "Nepal accounting: Under hire purchase, asset recorded at cash price, interest separated"
+      },
+      {
+        "step": 4,
+        "thought": "Tax treatment: Depreciation on cash price under both methods, but HP interest is deductible expense"
+      },
+      {
+        "step": 5,
+        "thought": "Cash flow impact: Outright requires large upfront cash, HP spreads payments"
+      },
+      {
+        "step": 6,
+        "thought": "Time value of money: Cash saved by HP can earn returns elsewhere"
+      },
+      {
+        "step": 7,
+        "thought": "Total cost comparison must consider: purchase price, interest, opportunity cost, tax savings"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Machinery ko cash price kati ho? Hire purchase ma kati installment ra interest rate? Company ko tax rate kati?",
+    "possible_resolutions": [
+      {
+        "scenario": "Machinery Rs 20L cash, HP at 14% over 3 years",
+        "entries": [
+          "Outright: Total cost = Rs 20,00,000. Tax saving on depreciation Year 1: Rs 1,00,000 (20% of 20L × 25% tax)",
+          "HP: Cash price Rs 20,00,000, Total interest over 3 years approx Rs 4,65,000",
+          "HP Total outflow: Rs 24,65,000",
+          "HP Tax saving: Depreciation same as outright + Interest Rs 4,65,000 × 25% = Rs 1,16,250 extra tax saving",
+          "Net extra cost of HP: Rs 4,65,000 - Rs 1,16,250 = Rs 3,48,750",
+          "But: Rs 20L cash retained can earn returns - if invested at 8%, earns ~Rs 4,80,000 over 3 years",
+          "Net benefit of HP considering opportunity cost: Rs 4,80,000 - Rs 3,48,750 = Rs 1,31,250 favorable"
+        ]
+      },
+      {
+        "scenario": "Cash available but comparing for decision",
+        "entries": [
+          "If cash available and no alternative investment: Outright purchase saves Rs 3,48,750",
+          "If cash needed for working capital: HP better despite higher total cost",
+          "Decision depends on opportunity cost of capital",
+          "HP entries: Dr Machinery 20L, Cr HP Creditor 20L, Dr HP Interest, Cr HP Creditor (over time)",
+          "Cash entries: Dr Machinery 20L, Cr Bank 20L"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_036",
+    "source": "user_exact",
+    "scenario_id": "complex_036",
+    "scenario_type": "multi_entity_relationship",
+    "scenario_type_key": "multi_entity_relationship",
+    "input": "Father ko sole proprietorship, son ko Pvt Ltd company, daughter ko partnership firm - sabai le ek arka sanga transaction garcha. Tax implication ke huncha?",
+    "input_normalized": "father ko sole proprietorship, son ko pvt ltd company, daughter ko partnership firm - sabai le ek arka sanga transaction garcha. tax implication ke huncha",
+    "surface_contradiction": "Three related entities with different structures transacting with each other - complex related party web",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "All three are related parties under Nepal Income Tax Act Section 2(kha)(cha)"
+      },
+      {
+        "step": 2,
+        "thought": "Transfer pricing rules apply to all inter-entity transactions"
+      },
+      {
+        "step": 3,
+        "thought": "Each entity has different tax rates: Sole prop at individual slab rate, Pvt Ltd at 25%, Partnership at 25%"
+      },
+      {
+        "step": 4,
+        "thought": "Transactions must be at arm's length price - market value"
+      },
+      {
+        "step": 5,
+        "thought": "Risk: Shifting profits to lower-tax entity through pricing manipulation"
+      },
+      {
+        "step": 6,
+        "thought": "IRD can adjust all transactions to arm's length price and impose additional tax"
+      },
+      {
+        "step": 7,
+        "thought": "Each entity must disclose related party transactions in their returns"
+      },
+      {
+        "step": 8,
+        "thought": "If sole prop buys cheap from son's company and sells to daughter's firm at high price - circular profit shifting"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Tin entity bich kun kun transaction huncha? Kati amount ko? Market price bhanda farak cha? Sabai ko annual income range kati?",
+    "possible_resolutions": [
+      {
+        "scenario": "All transactions at arm's length, proper documentation",
+        "entries": [
+          "Father's Proprietorship: Dr Purchases (from Son's Co) at market rate, Cr Creditor",
+          "Son's Pvt Ltd: Dr Debtors, Cr Sales at market rate to Father",
+          "Daughter's Partnership: Dr Purchases at market rate from Father, Cr Creditor",
+          "Each entity maintains transfer pricing documentation",
+          "Keep comparable market prices as evidence",
+          "Disclose related party transactions in annual accounts"
+        ]
+      },
+      {
+        "scenario": "Transactions not at arm's length - risk scenario",
+        "entries": [
+          "Son's Co sells to Father at Rs 80 (market Rs 100): IRD deems sale at Rs 100",
+          "Father sells to Daughter at Rs 130 (market Rs 100): Daughter's cost adjusted to Rs 100",
+          "Additional tax on deemed income for each entity",
+          "Interest at 15% on additional tax from original due date",
+          "Father also subject to anti-avoidance provisions",
+          "Recommendation: Hire tax advisor to structure compliant pricing"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_037",
+    "source": "user_exact",
+    "scenario_id": "complex_037",
+    "scenario_type": "contradictory_information",
+    "scenario_type_key": "contradictory_information",
+    "input": "GST India ma tireko cha import garda, Nepal ma pani VAT tirnu parcha re - double tax lagne ho ki?",
+    "input_normalized": "gst india ma tireko cha import garda, nepal ma pani vat tirnu parcha re - double tax lagne ho ki",
+    "surface_contradiction": "GST paid in India on goods, then VAT in Nepal on same goods - appears like double taxation",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "India charges GST on goods exported from India - but wait, exports from India are zero-rated (0% GST)"
+      },
+      {
+        "step": 2,
+        "thought": "If the person paid GST, it might be domestic purchase in India, not proper export"
+      },
+      {
+        "step": 3,
+        "thought": "For proper export from India to Nepal, Indian supplier should charge 0% GST"
+      },
+      {
+        "step": 4,
+        "thought": "Nepal customs charges 13% VAT on import value (CIF + customs duty)"
+      },
+      {
+        "step": 5,
+        "thought": "If GST was wrongly charged: Indian supplier should issue corrected zero-rated invoice"
+      },
+      {
+        "step": 6,
+        "thought": "If purchased domestically in India and carried to Nepal: No GST refund, and Nepal VAT still applies"
+      },
+      {
+        "step": 7,
+        "thought": "This is common confusion among Nepal-India border traders"
+      },
+      {
+        "step": 8,
+        "thought": "Proper channel: Export-import through banking channel gets correct tax treatment"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "India bata kasari lyaunu bhayo - proper export channel ki personally kinera lyaunu bhayo? Indian supplier le export invoice diyeko cha ki GST bill?",
+    "possible_resolutions": [
+      {
+        "scenario": "Proper export-import through banking channel",
+        "entries": [
+          "Indian supplier should charge 0% GST (zero-rated export)",
+          "Nepal customs charges: Customs duty (rate varies by product) + 13% VAT on (CIF + duty)",
+          "No double taxation - India doesn't tax exports, Nepal taxes imports",
+          "If Indian supplier wrongly charged GST, claim refund from them",
+          "Nepal entry: Dr Purchases + Dr Customs Duty + Dr VAT Input Credit, Cr Bank + Cr Customs + Cr VAT"
+        ]
+      },
+      {
+        "scenario": "Informal purchase carried across border",
+        "entries": [
+          "GST paid in India is a cost - cannot be recovered in Nepal",
+          "Nepal customs will still charge duty + VAT on assessed value",
+          "Effective double taxation on informal imports",
+          "Total cost: Product price + Indian GST + Nepal duty + Nepal VAT",
+          "Solution: Use formal export-import channel for tax efficiency",
+          "Informal import above NPR 100 may attract 80% duty under new Nepal customs rule"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_038",
+    "source": "user_exact",
+    "scenario_id": "complex_038",
+    "scenario_type": "implicit_constraint",
+    "scenario_type_key": "implicit_constraint",
+    "input": "Hami le fixed deposit ma paisa rakheko cha tara overdraft facility pani liyeko cha - duita ko interest accounting kasari garne?",
+    "input_normalized": "hami le fixed deposit ma paisa rakheko cha tara overdraft facility pani liyeko cha - duita ko interest accounting kasari garne",
+    "surface_contradiction": "No contradiction but implicit constraint: FD interest is income while OD interest is expense, and FD may be collateral for OD",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Fixed Deposit earns interest - this is Other Income, taxable"
+      },
+      {
+        "step": 2,
+        "thought": "Overdraft charges interest - this is Finance Cost, deductible"
+      },
+      {
+        "step": 3,
+        "thought": "Common Nepal practice: OD facility taken against FD as collateral"
+      },
+      {
+        "step": 4,
+        "thought": "OD interest rate is typically FD rate + 2-3% margin"
+      },
+      {
+        "step": 5,
+        "thought": "Net interest cost = OD interest paid - FD interest earned"
+      },
+      {
+        "step": 6,
+        "thought": "Tax treatment: FD interest has 5% TDS deducted at source by bank (15% for companies)"
+      },
+      {
+        "step": 7,
+        "thought": "OD interest is fully deductible business expense"
+      },
+      {
+        "step": 8,
+        "thought": "Question: Is it financially wise to maintain FD and OD simultaneously?"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "FD kati amount ma cha? OD limit kati? FD interest rate ani OD interest rate kati? FD collateral ho ki independent?",
+    "possible_resolutions": [
+      {
+        "scenario": "FD Rs 10L at 8%, OD Rs 8L at 11% (FD as collateral)",
+        "entries": [
+          "FD Interest income: Rs 80,000/year. Bank deducts 5% TDS = Rs 4,000",
+          "Dr Bank/TDS Receivable 80,000, Cr Interest Income 80,000. Dr TDS Receivable 4,000 separately",
+          "OD Interest expense: Rs 88,000/year (on Rs 8L at 11%)",
+          "Dr Interest Expense 88,000, Cr Bank/OD A/c 88,000",
+          "Net interest cost: Rs 88,000 - Rs 80,000 = Rs 8,000 actual cost",
+          "Tax effect: Income Rs 80,000 taxable, Expense Rs 88,000 deductible",
+          "Net tax saving: (88,000-80,000) × 25% = Rs 2,000"
+        ]
+      },
+      {
+        "scenario": "Consider breaking FD and closing OD",
+        "entries": [
+          "If FD not needed as collateral for other purposes: Break FD",
+          "Use FD proceeds to pay off OD",
+          "Save Rs 88,000 interest expense, lose Rs 80,000 interest income",
+          "Net annual saving: Rs 8,000 plus TDS filing complexity reduced",
+          "But: Lose emergency liquidity buffer",
+          "Decision depends on working capital needs vs interest cost arbitrage"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_039",
+    "source": "user_exact",
+    "scenario_id": "complex_039",
+    "scenario_type": "priority_conflict",
+    "scenario_type_key": "priority_conflict",
+    "input": "Auditor le qualified opinion diyeko cha tara bank le unqualified report chahiyo loan ko lagi - ke garne?",
+    "input_normalized": "auditor le qualified opinion diyeko cha tara bank le unqualified report chahiyo loan ko lagi - ke garne",
+    "surface_contradiction": "Auditor's professional opinion conflicts with bank's requirement for clean report",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Qualified audit opinion means auditor found material issues but not pervasive"
+      },
+      {
+        "step": 2,
+        "thought": "Bank wants unqualified (clean) opinion as loan precondition"
+      },
+      {
+        "step": 3,
+        "thought": "Pressuring auditor to change opinion is illegal and unethical"
+      },
+      {
+        "step": 4,
+        "thought": "Options: Fix the issues causing qualification, or explain to bank"
+      },
+      {
+        "step": 5,
+        "thought": "Common qualification reasons in Nepal: incomplete records, non-compliance with standards, inventory not verified"
+      },
+      {
+        "step": 6,
+        "thought": "If issues are fixable, rectify and get revised audit report"
+      },
+      {
+        "step": 7,
+        "thought": "If not fixable this year, explain to bank with management response"
+      },
+      {
+        "step": 8,
+        "thought": "Changing auditor to get better opinion is auditor shopping - frowned upon"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Auditor le kun issue ma qualified gareko cha? Tyo issue fix garna sakincha? Bank ko loan kati urgent cha?",
+    "possible_resolutions": [
+      {
+        "scenario": "Qualification due to fixable issue - incomplete documentation",
+        "entries": [
+          "Identify all items causing qualification",
+          "Provide missing documentation, receipts, reconciliations",
+          "Request auditor to perform additional procedures",
+          "If issues resolved, auditor may revise to unqualified opinion",
+          "Timeline: May take 2-4 weeks for additional audit work",
+          "Cost: Additional audit fees for extended procedures"
+        ]
+      },
+      {
+        "scenario": "Qualification due to unfixable issue - submit with explanation",
+        "entries": [
+          "Prepare management representation letter explaining qualification",
+          "Show bank the corrective measures being taken",
+          "Offer additional collateral or guarantees to compensate bank's concern",
+          "Some banks accept qualified reports with satisfactory explanation",
+          "Do NOT pressure auditor to change opinion - this is illegal",
+          "Do NOT change auditor seeking favorable opinion - banks notice this",
+          "Alternative: Approach bank that accepts management audited accounts for smaller loans"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_040",
+    "source": "user_exact",
+    "scenario_id": "complex_040",
+    "scenario_type": "temporal_reasoning",
+    "scenario_type_key": "temporal_reasoning",
+    "input": "Employee le Poush 1 ma join garyo, Ashad 31 ma fiscal year sakyo - first year ma Dashain bonus, leave, gratuity kati kati huncha pro-rata?",
+    "input_normalized": "employee le poush 1 ma join garyo, ashad 31 ma fiscal year sakyo - first year ma dashain bonus, leave, gratuity kati kati huncha pro-rata",
+    "surface_contradiction": "No contradiction but complex pro-rata calculations across partial fiscal year with different calculation bases",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Employee joined Poush 1 - that's about 6 months before fiscal year end (Ashad 31)"
+      },
+      {
+        "step": 2,
+        "thought": "Dashain bonus: Dashain was in Ashwin/Kartik - before joining date. No Dashain bonus this year"
+      },
+      {
+        "step": 3,
+        "thought": "Wait - Dashain comes in Ashwin-Kartik which is BEFORE Poush. So employee missed Dashain"
+      },
+      {
+        "step": 4,
+        "thought": "Next Dashain will be in the new fiscal year - employee will get pro-rata based on joining date"
+      },
+      {
+        "step": 5,
+        "thought": "Leave: 1 day per 20 working days. For ~180 days work: ~9 days home leave"
+      },
+      {
+        "step": 6,
+        "thought": "Sick leave: 24 days per year pro-rata = ~12 days for 6 months"
+      },
+      {
+        "step": 7,
+        "thought": "Gratuity: Calculated at separation, but accrued monthly. 6 months = 0.5 months salary"
+      },
+      {
+        "step": 8,
+        "thought": "Probation: 6 months is exactly the maximum probation period - confirmation due at Ashad 31"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Monthly salary kati ho? Probation period contract ma kati rakheko cha? First Dashain (next Ashwin) ma full bonus ki pro-rata?",
+    "possible_resolutions": [
+      {
+        "scenario": "Salary Rs 30,000, standard probation 6 months",
+        "entries": [
+          "Dashain Bonus (next Ashwin, ~10 months after joining): Pro-rata for months worked",
+          "If 10 months worked by Dashain: (10/12) × Rs 30,000 = Rs 25,000",
+          "Home Leave: (180 working days / 20) = 9 days earned by Ashad 31",
+          "Sick Leave: (6/12) × 24 = 12 days pro-rata",
+          "Gratuity accrual by Ashad 31: (6/12) × Rs 30,000 = Rs 15,000 (not payable yet, just accrued)",
+          "PF: 10% each from Poush to Ashad = Rs 3,000 × 6 = Rs 18,000 each side",
+          "Probation ends Ashad 31: Confirmation letter due"
+        ]
+      },
+      {
+        "scenario": "If employee leaves at Ashad 31 without confirmation",
+        "entries": [
+          "If company does not confirm: Employee terminated at probation end",
+          "Gratuity: Proportional for 6 months service",
+          "Leave encashment: For earned but unused leaves",
+          "PF: Full accumulated amount payable",
+          "Dashain bonus: Not applicable as Dashain hasn't come during service",
+          "Severance: (6/12) × 1 month = Rs 15,000"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_041",
+    "source": "user_exact",
+    "scenario_id": "complex_041",
+    "scenario_type": "exception_handling",
+    "scenario_type_key": "exception_handling",
+    "input": "Hamro restaurant le VAT lagaucha tara customer le diplomatic immunity cha bhanera VAT exempt demand garyo",
+    "input_normalized": "hamro restaurant le vat lagaucha tara customer le diplomatic immunity cha bhanera vat exempt demand garyo",
+    "surface_contradiction": "Restaurant must charge VAT by law but diplomatic customers may be exempt",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Diplomatic immunity in Nepal: Foreign diplomats enjoy certain tax exemptions"
+      },
+      {
+        "step": 2,
+        "thought": "VAT exemption for diplomats is handled through a specific process, not direct exemption at point of sale"
+      },
+      {
+        "step": 3,
+        "thought": "Restaurant cannot simply waive VAT based on customer claim"
+      },
+      {
+        "step": 4,
+        "thought": "Process: Diplomat pays full amount with VAT, then claims refund from Ministry of Foreign Affairs/IRD"
+      },
+      {
+        "step": 5,
+        "thought": "Alternative: Some diplomatic missions have tax-exempt cards that allow direct exemption"
+      },
+      {
+        "step": 6,
+        "thought": "Restaurant needs to verify: Does the person have official diplomatic tax exemption card?"
+      },
+      {
+        "step": 7,
+        "thought": "If no card, charge full VAT and let diplomat claim refund through proper channel"
+      },
+      {
+        "step": 8,
+        "thought": "Restaurant cannot be penalized for charging VAT to anyone - it's safer to always charge"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Diplomatic ID card dekhaunu bhayo? Tax exempt card cha? Kun country ko diplomat ho? Personal visit ki official function?",
+    "possible_resolutions": [
+      {
+        "scenario": "Diplomat has valid tax exempt card",
+        "entries": [
+          "Verify card authenticity and validity",
+          "Issue bill without VAT to diplomat",
+          "Record as zero-rated/exempt sale with diplomat details",
+          "Keep photocopy of diplomatic card with bill",
+          "VAT return: Show as exempt supply with explanation",
+          "Dr Cash (bill amount without VAT), Cr Sales (exempt)"
+        ]
+      },
+      {
+        "scenario": "Diplomat has no tax exempt card",
+        "entries": [
+          "Charge full 13% VAT as normal",
+          "Issue standard VAT bill",
+          "Dr Cash (amount + VAT), Cr Sales, Cr VAT Output",
+          "Inform diplomat they can claim refund through their embassy/MoFA",
+          "Restaurant's VAT obligation is fulfilled",
+          "Cannot risk non-compliance based on verbal claim of immunity"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_042",
+    "source": "user_exact",
+    "scenario_id": "complex_042",
+    "scenario_type": "counterfactual_reasoning",
+    "scenario_type_key": "counterfactual_reasoning",
+    "input": "Yadi hamile last year nai inventory management system lagako bhaye yo year kati loss bachaunthyau?",
+    "input_normalized": "yadi hamile last year nai inventory management system lagako bhaye yo year kati loss bachaunthyau",
+    "surface_contradiction": "No contradiction - retrospective counterfactual analysis of inventory management impact",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Need to identify current year losses attributable to poor inventory management"
+      },
+      {
+        "step": 2,
+        "thought": "Common Nepal SME inventory losses: pilferage, expiry, damage, overstock, stockout lost sales"
+      },
+      {
+        "step": 3,
+        "thought": "Pilferage: Without system, tracking theft is nearly impossible - estimate 2-5% of inventory value"
+      },
+      {
+        "step": 4,
+        "thought": "Expiry/Damage: Without FIFO tracking, old stock expires - common in food/pharma - 3-8% loss"
+      },
+      {
+        "step": 5,
+        "thought": "Overstock: Without demand forecasting, excess purchase ties up capital - opportunity cost 10-12%"
+      },
+      {
+        "step": 6,
+        "thought": "Stockout: Without reorder alerts, lost sales when popular items run out - 5-10% revenue loss"
+      },
+      {
+        "step": 7,
+        "thought": "System cost vs savings: Even simple system can prevent majority of these losses"
+      },
+      {
+        "step": 8,
+        "thought": "Need actual loss data to calculate counterfactual savings"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Yo barsha inventory shrinkage kati bhayo? Expire bhayeko saman kati thiyo? Stockout le garda bechna napayeko estimate cha?",
+    "possible_resolutions": [
+      {
+        "scenario": "Grocery wholesaler with Rs 2 crore annual inventory",
+        "entries": [
+          "Identified pilferage this year: Rs 3,00,000 (1.5% of inventory)",
+          "Expired goods written off: Rs 4,00,000 (2%)",
+          "Estimated lost sales from stockouts: Rs 8,00,000 (4% of revenue)",
+          "Overstock carrying cost (interest on blocked capital): Rs 2,50,000",
+          "Total preventable losses: Rs 17,50,000",
+          "Inventory system cost: Rs 2,00,000 (software + training)",
+          "Net saving if implemented last year: Rs 15,50,000",
+          "System would have prevented ~70% of pilferage, ~80% of expiry, ~60% of stockouts",
+          "Realistic saving estimate: Rs 10,00,000 - Rs 12,00,000"
+        ]
+      },
+      {
+        "scenario": "Small retail shop with Rs 20L inventory",
+        "entries": [
+          "Pilferage: Rs 30,000",
+          "Expiry: Rs 50,000",
+          "Lost sales: Rs 80,000",
+          "Total preventable: Rs 1,60,000",
+          "Simple system cost: Rs 30,000",
+          "Net saving: Rs 1,30,000",
+          "Recommendation: Even basic Excel tracking would have helped"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_043",
+    "source": "user_exact",
+    "scenario_id": "complex_043",
+    "scenario_type": "multi_entity_relationship",
+    "scenario_type_key": "multi_entity_relationship",
+    "input": "Company A le Company B ma 60% share kinyo, B le Company C ma 40% hold garcha - consolidated accounts banauda C lai kasari treat garne?",
+    "input_normalized": "company a le company b ma 60% share kinyo, b le company c ma 40% hold garcha - consolidated accounts banauda c lai kasari treat garne",
+    "surface_contradiction": "No contradiction but complex group structure requiring different consolidation treatments",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "A owns 60% of B = B is a subsidiary of A (control exists with >50%)"
+      },
+      {
+        "step": 2,
+        "thought": "B owns 40% of C = C is an associate of B (significant influence with 20-50%)"
+      },
+      {
+        "step": 3,
+        "thought": "A's effective interest in C = 60% × 40% = 24% (indirect)"
+      },
+      {
+        "step": 4,
+        "thought": "Consolidation of B: Full consolidation (line by line) with 40% minority interest"
+      },
+      {
+        "step": 5,
+        "thought": "Treatment of C: Equity method for B's investment in C"
+      },
+      {
+        "step": 6,
+        "thought": "In A's consolidated accounts: C is treated as associate through subsidiary B"
+      },
+      {
+        "step": 7,
+        "thought": "Nepal Financial Reporting Standards (NFRS) based on IFRS apply for listed companies"
+      },
+      {
+        "step": 8,
+        "thought": "For non-listed: Nepal Accounting Standards (NAS) may have simpler requirements"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Companies listed chan ki private? NFRS follow garnu parcha ki NAS? C ma aru shareholder ko role cha?",
+    "possible_resolutions": [
+      {
+        "scenario": "All private companies, NAS applicable",
+        "entries": [
+          "Consolidate B: Add all B's assets, liabilities, income, expenses to A's",
+          "Recognize 40% minority interest in B's net assets",
+          "B's investment in C: Show using equity method",
+          "In consolidated balance sheet: Investment in Associate C at cost + share of post-acquisition profit",
+          "C's profit Rs 10L: B's share 40% = Rs 4L, recognized in consolidated P&L",
+          "A's effective share of C profit: 60% of Rs 4L = Rs 2.4L (flows through B's consolidation)",
+          "Minority interest gets: 40% of Rs 4L = Rs 1.6L"
+        ]
+      },
+      {
+        "scenario": "Listed company, full NFRS compliance",
+        "entries": [
+          "Full consolidation of B with NFRS 10 (Consolidated Financial Statements)",
+          "C as associate under NAS 28 / NFRS equivalent",
+          "Additional disclosures: Nature of relationship, transactions, balances",
+          "Segment reporting if applicable",
+          "Eliminate all inter-company transactions between A and B",
+          "C transactions with A or B disclosed as related party"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_044",
+    "source": "user_exact",
+    "scenario_id": "complex_044",
+    "scenario_type": "analogy_based",
+    "scenario_type_key": "analogy_based",
+    "input": "India ko GST input credit chain jasto Nepal ko VAT system le pani purai chain track garcha ki? Kaile break huncha?",
+    "input_normalized": "india ko gst input credit chain jasto nepal ko vat system le pani purai chain track garcha ki? kaile break huncha",
+    "surface_contradiction": "No contradiction - analogical comparison between India's GST and Nepal's VAT chain integrity",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "India's GST: Complete input credit chain from manufacturer to retailer, tracked electronically"
+      },
+      {
+        "step": 2,
+        "thought": "Nepal's VAT: Similar concept but implementation differences exist"
+      },
+      {
+        "step": 3,
+        "thought": "Nepal VAT chain works when all parties are VAT registered and issue proper invoices"
+      },
+      {
+        "step": 4,
+        "thought": "Chain breaks when: (a) a party is not VAT registered, (b) sales without bill, (c) exempt supplies in middle"
+      },
+      {
+        "step": 5,
+        "thought": "India has GSTN for electronic matching - Nepal uses CBMS but less automated"
+      },
+      {
+        "step": 6,
+        "thought": "Nepal's threshold: Below Rs 50L goods/Rs 20L services turnover = no VAT registration required"
+      },
+      {
+        "step": 7,
+        "thought": "When small unregistered business is in the chain, input credit chain breaks"
+      },
+      {
+        "step": 8,
+        "thought": "This is a major issue in Nepal's VAT collection efficiency"
+      }
+    ],
+    "clarification_needed": false,
+    "clarify_question": null,
+    "possible_resolutions": [
+      {
+        "scenario": "Complete VAT chain scenario",
+        "entries": [
+          "Manufacturer (VAT reg) sells to Wholesaler (VAT reg): 13% VAT charged, input credit passed",
+          "Wholesaler sells to Retailer (VAT reg): 13% VAT charged, input credit passed",
+          "Retailer sells to Consumer: 13% VAT charged, consumer bears final burden",
+          "Each level: Output VAT - Input VAT = Net VAT payable to government",
+          "Chain is complete - government collects tax at each stage incrementally"
+        ]
+      },
+      {
+        "scenario": "Broken chain scenarios common in Nepal",
+        "entries": [
+          "Break point 1: Small retailer not VAT registered - cannot issue VAT bill, chain ends",
+          "Break point 2: Bill nakat (no-bill) sales at any level - VAT evaded, chain broken",
+          "Break point 3: Exempt goods (agriculture) enter supply chain - no VAT to pass forward",
+          "Break point 4: Cross-border informal imports - no import VAT paid, no credit chain starts",
+          "Nepal's challenge: Large informal economy means chain breaks frequently",
+          "Unlike India's GSTN, Nepal lacks automated invoice matching system",
+          "IRD relies on audits and cross-checking to catch breaks"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_045",
+    "source": "user_exact",
+    "scenario_id": "complex_045",
+    "scenario_type": "priority_conflict",
+    "scenario_type_key": "priority_conflict",
+    "input": "Harek mahina VAT return file garna parcha tara hamro accountant 2 mahina bhayo gayab bhayo - penalty bachna ke garne?",
+    "input_normalized": "harek mahina vat return file garna parcha tara hamro accountant 2 mahina bhayo gayab bhayo - penalty bachna ke garne",
+    "surface_contradiction": "Legal compliance deadline vs practical inability due to missing accountant",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Nepal VAT return must be filed by 25th of following month"
+      },
+      {
+        "step": 2,
+        "thought": "2 months missed = 2 returns not filed - penalties accumulating"
+      },
+      {
+        "step": 3,
+        "thought": "Late filing penalty: 0.05% per day of tax liability or Rs 1,000 minimum per month"
+      },
+      {
+        "step": 4,
+        "thought": "Additional risk: IRD can cancel VAT registration for non-filing"
+      },
+      {
+        "step": 5,
+        "thought": "Practical solution: Hire temporary accountant or outsource to CA firm immediately"
+      },
+      {
+        "step": 6,
+        "thought": "Past returns can be filed late with penalty - better late than never"
+      },
+      {
+        "step": 7,
+        "thought": "Check if accountant had access to financial records - potential data risk"
+      },
+      {
+        "step": 8,
+        "thought": "Consider: Filing approximate returns and amending later is better than not filing at all"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Accountant kaha gayo tha cha? Financial records ani login credentials access cha? Previous mahina ko data cha?",
+    "possible_resolutions": [
+      {
+        "scenario": "Records available, need temporary accountant",
+        "entries": [
+          "Immediately hire freelance accountant or CA firm",
+          "Prepare and file 2 months overdue VAT returns",
+          "Pay late filing penalty: 0.05% per day × outstanding tax × days late",
+          "File current month return on time going forward",
+          "Penalty on Rs 1,00,000 tax liability for 60 days: Rs 3,000",
+          "Plus Rs 1,000 per month minimum: Rs 2,000",
+          "Total approximate penalty: Rs 5,000",
+          "Better than VAT cancellation risk"
+        ]
+      },
+      {
+        "scenario": "Records missing - accountant took/lost data",
+        "entries": [
+          "File police report if accountant absconded with records",
+          "Reconstruct accounts from bank statements, purchase/sales bills",
+          "File estimated returns for missed months - amend when data recovered",
+          "Write to IRD explaining situation - may get penalty waiver consideration",
+          "Reconstruct: Bank statement + VAT purchase register + sales book copies",
+          "Engage CA firm for emergency reconstruction",
+          "Change all system passwords immediately",
+          "Consider filing application for deadline extension with IRD (rarely granted but worth trying)"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_046",
+    "source": "user_exact",
+    "scenario_id": "complex_046",
+    "scenario_type": "temporal_reasoning",
+    "scenario_type_key": "temporal_reasoning",
+    "input": "Land 2070 sal ma kineko 10 lakh ma, 2080 ma 50 lakh pugisakyo tara revaluation gareko chhaina books ma - ahile bechda capital gains kasari calculate huncha?",
+    "input_normalized": "land 2070 sal ma kineko 10 lakh ma, 2080 ma 50 lakh pugisakyo tara revaluation gareko chhaina books ma - ahile bechda capital gains kasari calculate huncha",
+    "surface_contradiction": "Book value doesn't reflect current market value - 10-year appreciation not recorded",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Land purchased in 2070 BS at Rs 10 lakh - historical cost in books"
+      },
+      {
+        "step": 2,
+        "thought": "Current market value 2080: Rs 50 lakh - unrealized appreciation of Rs 40 lakh"
+      },
+      {
+        "step": 3,
+        "thought": "No revaluation done - books still show Rs 10 lakh"
+      },
+      {
+        "step": 4,
+        "thought": "For accounting: Sale will show profit of actual sale price minus book value"
+      },
+      {
+        "step": 5,
+        "thought": "For tax: Capital gains tax calculated on actual profit"
+      },
+      {
+        "step": 6,
+        "thought": "Nepal capital gains tax on property: Depends on holding period"
+      },
+      {
+        "step": 7,
+        "thought": "Held more than 5 years: 7.5% capital gains tax (recently increased)"
+      },
+      {
+        "step": 8,
+        "thought": "Tax base: Sale price as per Land Revenue Office valuation or actual, whichever is higher"
+      },
+      {
+        "step": 9,
+        "thought": "The minimum value for tax is set by government-determined land price (nyuntam mulya)"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Ahile bechne price kati? Government minimum valuation kati cha? Business asset ho ki personal? Company books ma cha ki personal?",
+    "possible_resolutions": [
+      {
+        "scenario": "Sell at Rs 50L, business asset in company books",
+        "entries": [
+          "Book value: Rs 10,00,000",
+          "Sale price: Rs 50,00,000",
+          "Accounting profit: Rs 40,00,000",
+          "Dr Bank 50,00,000, Cr Land 10,00,000, Cr Profit on Sale of Land 40,00,000",
+          "Capital gains tax (held >5 years): 7.5% of Rs 40,00,000 = Rs 3,00,000",
+          "Registration at Land Revenue Office based on government minimum or actual sale price",
+          "If company: This profit also subject to corporate income tax at 25%",
+          "Effective tax on gain: Capital gains 7.5% + Corporate tax on remaining profit"
+        ]
+      },
+      {
+        "scenario": "Revaluation model could have been adopted earlier",
+        "entries": [
+          "If revalued in 2077 at Rs 30L: Revaluation reserve Rs 20L created",
+          "Subsequent sale at 50L: Additional gain Rs 20L (above revalued amount)",
+          "Revaluation reserve transferred to retained earnings on disposal",
+          "Tax calculation still based on original cost vs sale price",
+          "Revaluation doesn't affect tax calculation - only accounting presentation",
+          "Lesson: Revaluation is cosmetic for tax purposes in Nepal"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_047",
+    "source": "user_exact",
+    "scenario_id": "complex_047",
+    "scenario_type": "exception_handling",
+    "scenario_type_key": "exception_handling",
+    "input": "Hamro cooperative le member lai loan diyeko cha tara member bankruptcy file garyo - cooperative ko paisa kasari recover garne?",
+    "input_normalized": "hamro cooperative le member lai loan diyeko cha tara member bankruptcy file garyo - cooperative ko paisa kasari recover garne",
+    "surface_contradiction": "Cooperative loan outstanding but borrower is now bankrupt - recovery challenge",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Nepal Insolvency Act 2063 governs bankruptcy proceedings"
+      },
+      {
+        "step": 2,
+        "thought": "Cooperative is a creditor - must file claim in bankruptcy proceedings"
+      },
+      {
+        "step": 3,
+        "thought": "Priority of claims: Secured creditors > Employee dues > Government dues > Unsecured creditors"
+      },
+      {
+        "step": 4,
+        "thought": "Cooperative loan may be secured against member's savings/shares or may be unsecured"
+      },
+      {
+        "step": 5,
+        "thought": "If secured against cooperative shares: Can offset shares against loan"
+      },
+      {
+        "step": 6,
+        "thought": "If collateral exists (land, property): Cooperative can claim as secured creditor"
+      },
+      {
+        "step": 7,
+        "thought": "Cooperative Act allows deduction from member's savings and share capital"
+      },
+      {
+        "step": 8,
+        "thought": "If member has guarantors, cooperative can pursue guarantors for recovery"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Loan kati ho? Collateral ke rakheko thiyo? Member ko cooperative ma savings kati cha? Guarantor cha?",
+    "possible_resolutions": [
+      {
+        "scenario": "Loan Rs 5L, savings Rs 1L, share Rs 50K, guarantor exists",
+        "entries": [
+          "Step 1: Offset member's savings: Recover Rs 1,00,000. Remaining: Rs 4,00,000",
+          "Step 2: Offset share capital: Recover Rs 50,000. Remaining: Rs 3,50,000",
+          "Step 3: Demand from guarantor: Full Rs 3,50,000",
+          "Step 4: If guarantor pays: Dr Cash 3,50,000, Cr Member Loan 3,50,000",
+          "If guarantor also cannot pay: File claim in bankruptcy proceedings",
+          "Dr Bad Debt Provision Rs 3,50,000, Cr Provision for Doubtful Loans",
+          "Entries: Dr Member Savings 1,00,000, Dr Share Capital 50,000, Dr Cash(Guarantor) 3,50,000, Cr Loan Outstanding 5,00,000"
+        ]
+      },
+      {
+        "scenario": "Unsecured loan, no guarantor, member bankrupt",
+        "entries": [
+          "File claim with bankruptcy administrator/court",
+          "Claim amount: Rs 5,00,000 + accrued interest",
+          "Offset available: Savings Rs 1,00,000 + Shares Rs 50,000 = Rs 1,50,000",
+          "Net claim in bankruptcy: Rs 3,50,000",
+          "Likely recovery from bankrupt estate: Pro-rata with other unsecured creditors",
+          "May recover 10-30% of claim realistically",
+          "Write off unrecoverable portion as bad debt",
+          "Strengthen future loan policies: Mandatory collateral and guarantors"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_048",
+    "source": "user_exact",
+    "scenario_id": "complex_048",
+    "scenario_type": "implicit_constraint",
+    "scenario_type_key": "implicit_constraint",
+    "input": "Foreign investor le Nepal ma company kholna khojeko cha 49% share ma Nepali partner 51% - tara foreign investor le management control chahiyo",
+    "input_normalized": "foreign investor le nepal ma company kholna khojeko cha 49% share ma nepali partner 51% - tara foreign investor le management control chahiyo",
+    "surface_contradiction": "Minority foreign investor wants management control over majority Nepali shareholding",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Nepal Foreign Investment and Technology Transfer Act (FITTA) 2075 governs foreign investment"
+      },
+      {
+        "step": 2,
+        "thought": "Many sectors require minimum 51% Nepali ownership - foreign limited to 49%"
+      },
+      {
+        "step": 3,
+        "thought": "Shareholding gives voting rights proportional to shares - 51% controls board decisions"
+      },
+      {
+        "step": 4,
+        "thought": "But Articles of Association can be structured to give management rights disproportionate to shares"
+      },
+      {
+        "step": 5,
+        "thought": "Options: Special class shares, management agreements, veto rights on key decisions"
+      },
+      {
+        "step": 6,
+        "thought": "Nepal Company Act allows different classes of shares with different rights"
+      },
+      {
+        "step": 7,
+        "thought": "Board composition can be structured: Eg. 3 directors from foreign investor, 2 from Nepali partner"
+      },
+      {
+        "step": 8,
+        "thought": "However, ultimate company control (AGM decisions) still rests with 51% shareholder"
+      },
+      {
+        "step": 9,
+        "thought": "Implicit constraint: Nepal law won't allow foreign entity to fully control restricted-sector company"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Kun sector ko business ho? Foreign investor kun country bata? Management control matlab - daily operations ki strategic decisions? FITTA approval liyeko cha?",
+    "possible_resolutions": [
+      {
+        "scenario": "Structure management control within legal limits",
+        "entries": [
+          "Share structure: Nepali 51% ordinary shares, Foreign 49% with special rights",
+          "Articles of Association: Management committee controlled by foreign investor",
+          "Board: 3 foreign-nominated + 2 Nepali-nominated directors",
+          "Specific veto rights for foreign investor on: Budget, hiring key staff, contracts above threshold",
+          "Day-to-day management: Foreign investor appoints CEO/MD",
+          "Strategic/AGM matters: 51% Nepali shareholder retains ultimate control",
+          "Accounting: Standard company accounts, foreign investor profit repatriation at 49% of dividend"
+        ]
+      },
+      {
+        "scenario": "Shareholder agreement with protective provisions",
+        "entries": [
+          "Detailed shareholder agreement alongside Memorandum and Articles",
+          "Key person decisions require both parties' consent (deadlock provisions)",
+          "Non-compete clause for Nepali partner",
+          "Technology license fee or management fee to foreign investor (additional income stream)",
+          "Tax on management fee: TDS 15% for foreign payments",
+          "NRB approval needed for foreign currency remittance of fees and dividends",
+          "Compliance: Annual FITTA reporting, NRB reporting"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_049",
+    "source": "user_exact",
+    "scenario_id": "complex_049",
+    "scenario_type": "contradictory_information",
+    "scenario_type_key": "contradictory_information",
+    "input": "Supplier le bhancha aaja samma Rs 8 lakh baaki cha hamro, tara hamro record ma Rs 6 lakh matra dekhaucha - Rs 2 lakh ko difference kaha bata aayo?",
+    "input_normalized": "supplier le bhancha aaja samma rs 8 lakh baaki cha hamro, tara hamro record ma rs 6 lakh matra dekhaucha - rs 2 lakh ko difference kaha bata aayo",
+    "surface_contradiction": "Supplier claims Rs 8 lakh balance but own records show only Rs 6 lakh - Rs 2 lakh discrepancy",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Rs 2 lakh difference needs systematic reconciliation"
+      },
+      {
+        "step": 2,
+        "thought": "Common reasons: (a) Payments not recorded by supplier, (b) Purchases not recorded by us, (c) Returns not recorded by supplier, (d) Timing differences"
+      },
+      {
+        "step": 3,
+        "thought": "If we paid Rs 2L that supplier didn't record: Our balance is correct"
+      },
+      {
+        "step": 4,
+        "thought": "If supplier sent goods worth Rs 2L we didn't record: Supplier's balance is correct"
+      },
+      {
+        "step": 5,
+        "thought": "Need: Statement reconciliation similar to bank reconciliation"
+      },
+      {
+        "step": 6,
+        "thought": "Request supplier's detailed statement and compare line by line"
+      },
+      {
+        "step": 7,
+        "thought": "In Nepal, this is very common due to informal record-keeping practices"
+      },
+      {
+        "step": 8,
+        "thought": "Could also be: Debit notes/credit notes not matching, different treatment of discounts"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Supplier ko detailed statement mangaunu bhayeko cha? Last kahi reconciliation gareko thiyo? Cheque payment gareko cha ki cash?",
+    "possible_resolutions": [
+      {
+        "scenario": "Payment not recorded by supplier",
+        "entries": [
+          "Our records show payment of Rs 2L that supplier hasn't credited",
+          "Check: Bank statement shows debit? Payment receipt exists?",
+          "If payment proven: Share proof with supplier, request correction",
+          "Reconciliation: Our balance Rs 6L is correct",
+          "Supplier must update their books: Dr Bank/Cash 2L, Cr Our Account 2L",
+          "Keep payment proof copies: Cheque image, bank transfer receipt, signed voucher"
+        ]
+      },
+      {
+        "scenario": "Unrecorded purchase in our books",
+        "entries": [
+          "Supplier delivered Rs 2L goods we didn't record",
+          "Check: GRN (Goods Received Note) exists? Physical stock matches?",
+          "If goods received but not recorded: Our books need correction",
+          "Dr Purchases 2,00,000, Dr VAT Input 26,000, Cr Creditor 2,26,000",
+          "Our corrected balance: Rs 6L + Rs 2.26L = Rs 8.26L (close to supplier's Rs 8L)",
+          "Small remaining difference may be VAT treatment or discount"
+        ]
+      },
+      {
+        "scenario": "Multiple small differences netting to Rs 2L",
+        "entries": [
+          "Line-by-line matching reveals: 3 invoices not in our books, 1 payment not in supplier books",
+          "Net effect: +Rs 3L missing purchases, -Rs 1L unrecorded payment = Rs 2L difference",
+          "Adjust each item separately with proper documentation",
+          "Perform quarterly reconciliation going forward to prevent accumulation"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  },
+  {
+    "id": "complex_050",
+    "source": "user_exact",
+    "scenario_id": "complex_050",
+    "scenario_type": "analogy_based",
+    "scenario_type_key": "analogy_based",
+    "input": "Nepal ko remittance economy lai leverage garera microfinance model kasari scale garna sakincha? Financial accounting implications ke huncha?",
+    "input_normalized": "nepal ko remittance economy lai leverage garera microfinance model kasari scale garna sakincha? financial accounting implications ke huncha",
+    "surface_contradiction": "No contradiction - complex strategic-financial reasoning connecting remittance flows to microfinance scaling",
+    "reasoning_required": [
+      {
+        "step": 1,
+        "thought": "Nepal receives ~$10 billion annually in remittances - ~25% of GDP"
+      },
+      {
+        "step": 2,
+        "thought": "Most remittance recipients are in rural areas with limited banking access"
+      },
+      {
+        "step": 3,
+        "thought": "Microfinance institutions (MFIs) can position themselves as remittance disbursement points"
+      },
+      {
+        "step": 4,
+        "thought": "Analogy: Mobile money models in Kenya (M-Pesa) transformed microfinance access"
+      },
+      {
+        "step": 5,
+        "thought": "Nepal equivalent: Connect remittance receipt to savings accounts to lending pipeline"
+      },
+      {
+        "step": 6,
+        "thought": "Accounting implications: Remittance handling is agency business (commission income) vs lending is core business"
+      },
+      {
+        "step": 7,
+        "thought": "NRB regulations: MFIs have specific capital adequacy and lending limits"
+      },
+      {
+        "step": 8,
+        "thought": "If remittance becomes deposits becomes loans: Multiplier effect on MFI balance sheet"
+      },
+      {
+        "step": 9,
+        "thought": "Risk: Remittance income is volatile (depends on foreign employment market)"
+      }
+    ],
+    "clarification_needed": true,
+    "clarify_question": "Existing MFI ho ki naya suru garne? Current client base kati? Remittance partner (IME, Prabhu etc) sanga tie-up cha?",
+    "possible_resolutions": [
+      {
+        "scenario": "Existing MFI adding remittance disbursement service",
+        "entries": [
+          "Sign agency agreement with remittance company (IME, Prabhu, Western Union)",
+          "Commission income: 0.5-1% of disbursed amount",
+          "Accounting: Dr Cash (remittance amount), Cr Customer Payable. Dr Remittance Company Receivable, Cr Cash + Cr Commission Income",
+          "If Rs 1 crore monthly disbursement: Commission Rs 50,000-1,00,000/month",
+          "Convert recipients to savings account holders: Even 10% conversion = significant deposit growth",
+          "Deposits become lending capital at 15-20% lending rate",
+          "Multiplier: Rs 1 crore remittance → Rs 10L deposits → Rs 8L lending (80% CD ratio)",
+          "Annual additional interest income: Rs 8L × 18% = Rs 1,44,000"
+        ]
+      },
+      {
+        "scenario": "Scale model with technology integration",
+        "entries": [
+          "Invest in mobile banking platform: Rs 20-30 lakh",
+          "Enable remittance receipt via mobile → auto-credit to MFI savings account",
+          "Offer micro-loans against regular remittance income (income-based lending)",
+          "Loan assessment: If family receives Rs 50K/month remittance, can support Rs 3-5L loan",
+          "NRB compliance: Maintain 8% capital adequacy ratio on expanded loan book",
+          "P&L impact: Commission income + Interest spread + Fee income",
+          "Balance sheet growth: Deposits grow → Lending grows → Profitability scales",
+          "Risk management: Provision for loan losses at NRB mandated rates (1-100% based on classification)"
+        ]
+      }
+    ],
+    "intent": "complex_reasoning",
+    "NOT_transaction": true,
+    "domain": "nepal_business_reasoning"
+  }
+]

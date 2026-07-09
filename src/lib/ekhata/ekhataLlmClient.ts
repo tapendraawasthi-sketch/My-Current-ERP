@@ -17,6 +17,10 @@ export function getEKhataSessionId(): string {
   return id;
 }
 
+export function setEKhataSessionId(id: string): void {
+  localStorage.setItem(SESSION_KEY, id);
+}
+
 export function resetEKhataSession(): void {
   const id = localStorage.getItem(SESSION_KEY);
   localStorage.removeItem(SESSION_KEY);

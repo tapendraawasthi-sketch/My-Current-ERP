@@ -6,18 +6,24 @@
     "terms": [
       "aja",
       "aaja",
-      "today"
-    ]
+      "today",
+      "आज"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "aaja": {
     "pattern_type": "relative_day",
-    "gregorian_approx": "today",
-    "fiscal_significance": "current_period",
+    "gregorian_approx": "today (relative)",
+    "fiscal_significance": "varies",
     "terms": [
-      "aja",
       "aaja",
-      "today"
-    ]
+      "आज"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": 0
   },
   "today": {
     "pattern_type": "relative_day",
@@ -26,17 +32,36 @@
     "terms": [
       "aja",
       "aaja",
-      "today"
-    ]
+      "today",
+      "आज"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "आज": {
+    "pattern_type": "relative_day",
+    "gregorian_approx": "today (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "aaja",
+      "आज"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": 0
   },
   "hijo": {
     "pattern_type": "relative_day",
-    "gregorian_approx": "yesterday",
-    "fiscal_significance": "prior_day",
+    "gregorian_approx": "yesterday (relative)",
+    "fiscal_significance": "varies",
     "terms": [
       "hijo",
-      "yesterday"
-    ]
+      "हिजो"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": -1
   },
   "yesterday": {
     "pattern_type": "relative_day",
@@ -45,25 +70,47 @@
     "terms": [
       "hijo",
       "yesterday"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "parsi": {
     "pattern_type": "relative_day",
-    "gregorian_approx": "tomorrow",
-    "fiscal_significance": "future",
+    "gregorian_approx": "day after tomorrow (relative)",
+    "fiscal_significance": "varies",
     "terms": [
       "parsi",
-      "tomorrow"
-    ]
+      "पर्सि"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": 2
   },
   "tomorrow": {
     "pattern_type": "relative_day",
-    "gregorian_approx": "tomorrow",
-    "fiscal_significance": "future",
+    "gregorian_approx": "day_after_tomorrow",
+    "fiscal_significance": "future_d2",
     "terms": [
       "parsi",
-      "tomorrow"
-    ]
+      "tomorrow",
+      "bholi"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "bholi": {
+    "pattern_type": "relative_day",
+    "gregorian_approx": "tomorrow (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "bholi",
+      "भोलि"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": 1
   },
   "abhui": {
     "pattern_type": "relative_day",
@@ -72,7 +119,10 @@
     "terms": [
       "abhui",
       "day before yesterday"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "day before yesterday": {
     "pattern_type": "relative_day",
@@ -81,7 +131,10 @@
     "terms": [
       "abhui",
       "day before yesterday"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "naparsi": {
     "pattern_type": "relative_day",
@@ -90,7 +143,10 @@
     "terms": [
       "naparsi",
       "day after tomorrow"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "day after tomorrow": {
     "pattern_type": "relative_day",
@@ -99,7 +155,10 @@
     "terms": [
       "naparsi",
       "day after tomorrow"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "hapta": {
     "pattern_type": "week",
@@ -108,7 +167,10 @@
     "terms": [
       "hapta",
       "week"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "week": {
     "pattern_type": "week",
@@ -117,16 +179,22 @@
     "terms": [
       "hapta",
       "week"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "mahina": {
-    "pattern_type": "duration",
-    "gregorian_approx": "months",
-    "fiscal_significance": "aging",
+    "pattern_type": "week",
+    "gregorian_approx": "month",
+    "fiscal_significance": "period",
     "terms": [
       "mahina",
-      "months"
-    ]
+      "month"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "month": {
     "pattern_type": "week",
@@ -135,7 +203,10 @@
     "terms": [
       "mahina",
       "month"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "barsa": {
     "pattern_type": "week",
@@ -145,7 +216,10 @@
       "barsa",
       "year",
       "sal"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "year": {
     "pattern_type": "week",
@@ -155,7 +229,10 @@
       "barsa",
       "year",
       "sal"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "sal": {
     "pattern_type": "week",
@@ -165,7 +242,10 @@
       "barsa",
       "year",
       "sal"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "shrawan": {
     "pattern_type": "fiscal_month",
@@ -173,8 +253,14 @@
     "fiscal_significance": "FY_start",
     "terms": [
       "shrawan",
-      "sawan"
-    ]
+      "sawan",
+      "श्रावण",
+      "साउन",
+      "saun"
+    ],
+    "month_number": 4,
+    "day": null,
+    "relative_offset_days": null
   },
   "sawan": {
     "pattern_type": "fiscal_month",
@@ -182,16 +268,98 @@
     "fiscal_significance": "FY_start",
     "terms": [
       "shrawan",
-      "sawan"
-    ]
+      "sawan",
+      "श्रावण",
+      "साउन",
+      "saun"
+    ],
+    "month_number": 4,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "श्रावण": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-jul",
+    "fiscal_significance": "FY_start",
+    "terms": [
+      "shrawan",
+      "sawan",
+      "श्रावण",
+      "साउन",
+      "saun"
+    ],
+    "month_number": 4,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "साउन": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-jul",
+    "fiscal_significance": "FY_start",
+    "terms": [
+      "shrawan",
+      "sawan",
+      "श्रावण",
+      "साउन",
+      "saun"
+    ],
+    "month_number": 4,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "saun": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-jul",
+    "fiscal_significance": "FY_start",
+    "terms": [
+      "shrawan",
+      "sawan",
+      "श्रावण",
+      "साउन",
+      "saun"
+    ],
+    "month_number": 4,
+    "day": null,
+    "relative_offset_days": null
   },
   "bhadra": {
     "pattern_type": "fiscal_month",
     "gregorian_approx": "mid-aug",
     "fiscal_significance": "FY_month_2",
     "terms": [
-      "bhadra"
-    ]
+      "bhadra",
+      "भदौ",
+      "bhadau"
+    ],
+    "month_number": 5,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "भदौ": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-aug",
+    "fiscal_significance": "FY_month_2",
+    "terms": [
+      "bhadra",
+      "भदौ",
+      "bhadau"
+    ],
+    "month_number": 5,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "bhadau": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-aug",
+    "fiscal_significance": "FY_month_2",
+    "terms": [
+      "bhadra",
+      "भदौ",
+      "bhadau"
+    ],
+    "month_number": 5,
+    "day": null,
+    "relative_offset_days": null
   },
   "ashwin": {
     "pattern_type": "fiscal_month",
@@ -199,8 +367,14 @@
     "fiscal_significance": "FY_month_3",
     "terms": [
       "ashwin",
-      "aswin"
-    ]
+      "aswin",
+      "आश्विन",
+      "असोज",
+      "asoj"
+    ],
+    "month_number": 6,
+    "day": null,
+    "relative_offset_days": null
   },
   "aswin": {
     "pattern_type": "fiscal_month",
@@ -208,40 +382,219 @@
     "fiscal_significance": "FY_month_3",
     "terms": [
       "ashwin",
-      "aswin"
-    ]
+      "aswin",
+      "आश्विन",
+      "असोज",
+      "asoj"
+    ],
+    "month_number": 6,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "आश्विन": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-sep",
+    "fiscal_significance": "FY_month_3",
+    "terms": [
+      "ashwin",
+      "aswin",
+      "आश्विन",
+      "असोज",
+      "asoj"
+    ],
+    "month_number": 6,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "असोज": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-sep",
+    "fiscal_significance": "FY_month_3",
+    "terms": [
+      "ashwin",
+      "aswin",
+      "आश्विन",
+      "असोज",
+      "asoj"
+    ],
+    "month_number": 6,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "asoj": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-sep",
+    "fiscal_significance": "FY_month_3",
+    "terms": [
+      "ashwin",
+      "aswin",
+      "आश्विन",
+      "असोज",
+      "asoj"
+    ],
+    "month_number": 6,
+    "day": null,
+    "relative_offset_days": null
   },
   "kartik": {
     "pattern_type": "fiscal_month",
     "gregorian_approx": "mid-oct",
     "fiscal_significance": "FY_month_4",
     "terms": [
-      "kartik"
-    ]
+      "kartik",
+      "कार्तिक"
+    ],
+    "month_number": 7,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "कार्तिक": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-oct",
+    "fiscal_significance": "FY_month_4",
+    "terms": [
+      "kartik",
+      "कार्तिक"
+    ],
+    "month_number": 7,
+    "day": null,
+    "relative_offset_days": null
   },
   "mangsir": {
     "pattern_type": "fiscal_month",
     "gregorian_approx": "mid-nov",
     "fiscal_significance": "FY_month_5",
     "terms": [
-      "mangsir"
-    ]
+      "mangsir",
+      "मंसिर",
+      "मङ्सिर",
+      "mansir"
+    ],
+    "month_number": 8,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "मंसिर": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-nov",
+    "fiscal_significance": "FY_month_5",
+    "terms": [
+      "mangsir",
+      "मंसिर",
+      "मङ्सिर",
+      "mansir"
+    ],
+    "month_number": 8,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "मङ्सिर": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-nov",
+    "fiscal_significance": "FY_month_5",
+    "terms": [
+      "mangsir",
+      "मंसिर",
+      "मङ्सिर",
+      "mansir"
+    ],
+    "month_number": 8,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "mansir": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-nov",
+    "fiscal_significance": "FY_month_5",
+    "terms": [
+      "mangsir",
+      "मंसिर",
+      "मङ्सिर",
+      "mansir"
+    ],
+    "month_number": 8,
+    "day": null,
+    "relative_offset_days": null
   },
   "poush": {
     "pattern_type": "fiscal_month",
     "gregorian_approx": "mid-dec",
     "fiscal_significance": "FY_month_6",
     "terms": [
-      "poush"
-    ]
+      "poush",
+      "पौष",
+      "पुष",
+      "push"
+    ],
+    "month_number": 9,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "पौष": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-dec",
+    "fiscal_significance": "FY_month_6",
+    "terms": [
+      "poush",
+      "पौष",
+      "पुष",
+      "push"
+    ],
+    "month_number": 9,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "पुष": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-dec",
+    "fiscal_significance": "FY_month_6",
+    "terms": [
+      "poush",
+      "पौष",
+      "पुष",
+      "push"
+    ],
+    "month_number": 9,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "push": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-dec",
+    "fiscal_significance": "FY_month_6",
+    "terms": [
+      "poush",
+      "पौष",
+      "पुष",
+      "push"
+    ],
+    "month_number": 9,
+    "day": null,
+    "relative_offset_days": null
   },
   "magh": {
     "pattern_type": "fiscal_month",
     "gregorian_approx": "mid-jan",
     "fiscal_significance": "FY_month_7",
     "terms": [
-      "magh"
-    ]
+      "magh",
+      "माघ"
+    ],
+    "month_number": 10,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "माघ": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-jan",
+    "fiscal_significance": "FY_month_7",
+    "terms": [
+      "magh",
+      "माघ"
+    ],
+    "month_number": 10,
+    "day": null,
+    "relative_offset_days": null
   },
   "falgun": {
     "pattern_type": "fiscal_month",
@@ -249,8 +602,14 @@
     "fiscal_significance": "FY_month_8",
     "terms": [
       "falgun",
-      "fagun"
-    ]
+      "fagun",
+      "फाल्गुन",
+      "फागुन",
+      "phagun"
+    ],
+    "month_number": 11,
+    "day": null,
+    "relative_offset_days": null
   },
   "fagun": {
     "pattern_type": "fiscal_month",
@@ -258,8 +617,59 @@
     "fiscal_significance": "FY_month_8",
     "terms": [
       "falgun",
-      "fagun"
-    ]
+      "fagun",
+      "फाल्गुन",
+      "फागुन",
+      "phagun"
+    ],
+    "month_number": 11,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "फाल्गुन": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-feb",
+    "fiscal_significance": "FY_month_8",
+    "terms": [
+      "falgun",
+      "fagun",
+      "फाल्गुन",
+      "फागुन",
+      "phagun"
+    ],
+    "month_number": 11,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "फागुन": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-feb",
+    "fiscal_significance": "FY_month_8",
+    "terms": [
+      "falgun",
+      "fagun",
+      "फाल्गुन",
+      "फागुन",
+      "phagun"
+    ],
+    "month_number": 11,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "phagun": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-feb",
+    "fiscal_significance": "FY_month_8",
+    "terms": [
+      "falgun",
+      "fagun",
+      "फाल्गुन",
+      "फागुन",
+      "phagun"
+    ],
+    "month_number": 11,
+    "day": null,
+    "relative_offset_days": null
   },
   "chaitra": {
     "pattern_type": "fiscal_month",
@@ -267,8 +677,12 @@
     "fiscal_significance": "FY_month_9",
     "terms": [
       "chaitra",
-      "chait"
-    ]
+      "chait",
+      "चैत्र"
+    ],
+    "month_number": 12,
+    "day": null,
+    "relative_offset_days": null
   },
   "chait": {
     "pattern_type": "fiscal_month",
@@ -276,8 +690,25 @@
     "fiscal_significance": "FY_month_9",
     "terms": [
       "chaitra",
-      "chait"
-    ]
+      "chait",
+      "चैत्र"
+    ],
+    "month_number": 12,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "चैत्र": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-mar",
+    "fiscal_significance": "FY_month_9",
+    "terms": [
+      "chaitra",
+      "chait",
+      "चैत्र"
+    ],
+    "month_number": 12,
+    "day": null,
+    "relative_offset_days": null
   },
   "baishakh": {
     "pattern_type": "fiscal_month",
@@ -285,8 +716,12 @@
     "fiscal_significance": "FY_month_10",
     "terms": [
       "baishakh",
-      "baisakh"
-    ]
+      "baisakh",
+      "बैशाख"
+    ],
+    "month_number": 1,
+    "day": null,
+    "relative_offset_days": null
   },
   "baisakh": {
     "pattern_type": "fiscal_month",
@@ -294,8 +729,25 @@
     "fiscal_significance": "FY_month_10",
     "terms": [
       "baishakh",
-      "baisakh"
-    ]
+      "baisakh",
+      "बैशाख"
+    ],
+    "month_number": 1,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "बैशाख": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-apr",
+    "fiscal_significance": "FY_month_10",
+    "terms": [
+      "baishakh",
+      "baisakh",
+      "बैशाख"
+    ],
+    "month_number": 1,
+    "day": null,
+    "relative_offset_days": null
   },
   "jestha": {
     "pattern_type": "fiscal_month",
@@ -303,8 +755,14 @@
     "fiscal_significance": "FY_month_11",
     "terms": [
       "jestha",
-      "jesta"
-    ]
+      "jesta",
+      "जेष्ठ",
+      "जेठ",
+      "jeth"
+    ],
+    "month_number": 2,
+    "day": null,
+    "relative_offset_days": null
   },
   "jesta": {
     "pattern_type": "fiscal_month",
@@ -312,8 +770,59 @@
     "fiscal_significance": "FY_month_11",
     "terms": [
       "jestha",
-      "jesta"
-    ]
+      "jesta",
+      "जेष्ठ",
+      "जेठ",
+      "jeth"
+    ],
+    "month_number": 2,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "जेष्ठ": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-may",
+    "fiscal_significance": "FY_month_11",
+    "terms": [
+      "jestha",
+      "jesta",
+      "जेष्ठ",
+      "जेठ",
+      "jeth"
+    ],
+    "month_number": 2,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "जेठ": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-may",
+    "fiscal_significance": "FY_month_11",
+    "terms": [
+      "jestha",
+      "jesta",
+      "जेष्ठ",
+      "जेठ",
+      "jeth"
+    ],
+    "month_number": 2,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "jeth": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-may",
+    "fiscal_significance": "FY_month_11",
+    "terms": [
+      "jestha",
+      "jesta",
+      "जेष्ठ",
+      "जेठ",
+      "jeth"
+    ],
+    "month_number": 2,
+    "day": null,
+    "relative_offset_days": null
   },
   "ashadh": {
     "pattern_type": "fiscal_month",
@@ -321,8 +830,14 @@
     "fiscal_significance": "FY_end",
     "terms": [
       "ashadh",
-      "asad"
-    ]
+      "asad",
+      "आषाढ",
+      "असार",
+      "asar"
+    ],
+    "month_number": 3,
+    "day": null,
+    "relative_offset_days": null
   },
   "asad": {
     "pattern_type": "fiscal_month",
@@ -330,8 +845,59 @@
     "fiscal_significance": "FY_end",
     "terms": [
       "ashadh",
-      "asad"
-    ]
+      "asad",
+      "आषाढ",
+      "असार",
+      "asar"
+    ],
+    "month_number": 3,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "आषाढ": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-jun",
+    "fiscal_significance": "FY_end",
+    "terms": [
+      "ashadh",
+      "asad",
+      "आषाढ",
+      "असार",
+      "asar"
+    ],
+    "month_number": 3,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "असार": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-jun",
+    "fiscal_significance": "FY_end",
+    "terms": [
+      "ashadh",
+      "asad",
+      "आषाढ",
+      "असार",
+      "asar"
+    ],
+    "month_number": 3,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "asar": {
+    "pattern_type": "fiscal_month",
+    "gregorian_approx": "mid-jun",
+    "fiscal_significance": "FY_end",
+    "terms": [
+      "ashadh",
+      "asad",
+      "आषाढ",
+      "असार",
+      "asar"
+    ],
+    "month_number": 3,
+    "day": null,
+    "relative_offset_days": null
   },
   "bs": {
     "pattern_type": "bs_date",
@@ -341,7 +907,10 @@
       "bs",
       "vikram",
       "bikram sambat"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "vikram": {
     "pattern_type": "bs_date",
@@ -351,7 +920,10 @@
       "bs",
       "vikram",
       "bikram sambat"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "bikram sambat": {
     "pattern_type": "bs_date",
@@ -361,7 +933,10 @@
       "bs",
       "vikram",
       "bikram sambat"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "ad": {
     "pattern_type": "bs_date",
@@ -370,7 +945,10 @@
     "terms": [
       "ad",
       "english date"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "english date": {
     "pattern_type": "bs_date",
@@ -379,7 +957,10 @@
     "terms": [
       "ad",
       "english date"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "quarter": {
     "pattern_type": "quarter",
@@ -388,7 +969,10 @@
     "terms": [
       "quarter",
       "trimasik"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "trimasik": {
     "pattern_type": "quarter",
@@ -397,7 +981,10 @@
     "terms": [
       "quarter",
       "trimasik"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "last date": {
     "pattern_type": "deadline",
@@ -406,7 +993,10 @@
     "terms": [
       "last date",
       "antim miti"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "antim miti": {
     "pattern_type": "deadline",
@@ -415,7 +1005,10 @@
     "terms": [
       "last date",
       "antim miti"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "period": {
     "pattern_type": "period",
@@ -424,7 +1017,10 @@
     "terms": [
       "period",
       "awadhi"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "awadhi": {
     "pattern_type": "period",
@@ -433,7 +1029,10 @@
     "terms": [
       "period",
       "awadhi"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "opening": {
     "pattern_type": "opening",
@@ -442,7 +1041,10 @@
     "terms": [
       "opening",
       "suruwati"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "suruwati": {
     "pattern_type": "opening",
@@ -451,7 +1053,10 @@
     "terms": [
       "opening",
       "suruwati"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "closing": {
     "pattern_type": "closing",
@@ -460,7 +1065,10 @@
     "terms": [
       "closing",
       "antim"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "antim": {
     "pattern_type": "closing",
@@ -469,7 +1077,10 @@
     "terms": [
       "closing",
       "antim"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "dashain": {
     "pattern_type": "festival",
@@ -478,7 +1089,10 @@
     "terms": [
       "dashain",
       "tihar"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "tihar": {
     "pattern_type": "festival",
@@ -487,7 +1101,10 @@
     "terms": [
       "dashain",
       "tihar"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "holi": {
     "pattern_type": "festival",
@@ -496,7 +1113,10 @@
     "terms": [
       "holi",
       "teej"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "teej": {
     "pattern_type": "festival",
@@ -505,7 +1125,10 @@
     "terms": [
       "holi",
       "teej"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "bihan": {
     "pattern_type": "time_of_day",
@@ -514,7 +1137,10 @@
     "terms": [
       "bihan",
       "morning"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "morning": {
     "pattern_type": "time_of_day",
@@ -523,7 +1149,10 @@
     "terms": [
       "bihan",
       "morning"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "dopahar": {
     "pattern_type": "time_of_day",
@@ -532,7 +1161,10 @@
     "terms": [
       "dopahar",
       "afternoon"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "afternoon": {
     "pattern_type": "time_of_day",
@@ -541,7 +1173,10 @@
     "terms": [
       "dopahar",
       "afternoon"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "beluka": {
     "pattern_type": "time_of_day",
@@ -550,7 +1185,10 @@
     "terms": [
       "beluka",
       "evening"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "evening": {
     "pattern_type": "time_of_day",
@@ -559,7 +1197,10 @@
     "terms": [
       "beluka",
       "evening"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "rati": {
     "pattern_type": "time_of_day",
@@ -568,7 +1209,10 @@
     "terms": [
       "rati",
       "night"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "night": {
     "pattern_type": "time_of_day",
@@ -577,7 +1221,10 @@
     "terms": [
       "rati",
       "night"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "din": {
     "pattern_type": "duration",
@@ -586,7 +1233,10 @@
     "terms": [
       "din",
       "days"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "days": {
     "pattern_type": "duration",
@@ -595,7 +1245,10 @@
     "terms": [
       "din",
       "days"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "months": {
     "pattern_type": "duration",
@@ -604,7 +1257,10 @@
     "terms": [
       "mahina",
       "months"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "miyad": {
     "pattern_type": "due",
@@ -613,7 +1269,10 @@
     "terms": [
       "miyad",
       "due date"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "due date": {
     "pattern_type": "due",
@@ -622,7 +1281,10 @@
     "terms": [
       "miyad",
       "due date"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "pahile ko date": {
     "pattern_type": "backdate",
@@ -631,7 +1293,10 @@
     "terms": [
       "pahile ko date",
       "backdate"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "backdate": {
     "pattern_type": "backdate",
@@ -640,7 +1305,10 @@
     "terms": [
       "pahile ko date",
       "backdate"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "pachi ko": {
     "pattern_type": "postdate",
@@ -649,7 +1317,10 @@
     "terms": [
       "pachi ko",
       "postdate"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "postdate": {
     "pattern_type": "postdate",
@@ -658,7 +1329,10 @@
     "terms": [
       "pachi ko",
       "postdate"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "aile": {
     "pattern_type": "instant",
@@ -668,7 +1342,10 @@
       "aile",
       "abhi",
       "now"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "abhi": {
     "pattern_type": "instant",
@@ -678,7 +1355,10 @@
       "aile",
       "abhi",
       "now"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "now": {
     "pattern_type": "instant",
@@ -688,7 +1368,10 @@
       "aile",
       "abhi",
       "now"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "dekhi": {
     "pattern_type": "range",
@@ -698,7 +1381,10 @@
       "dekhi",
       "bata",
       "from"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "bata": {
     "pattern_type": "range",
@@ -708,7 +1394,10 @@
       "dekhi",
       "bata",
       "from"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "from": {
     "pattern_type": "range",
@@ -718,7 +1407,10 @@
       "dekhi",
       "bata",
       "from"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "samma": {
     "pattern_type": "range",
@@ -728,7 +1420,10 @@
       "samma",
       "until",
       "to"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "until": {
     "pattern_type": "range",
@@ -738,7 +1433,10 @@
       "samma",
       "until",
       "to"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
   },
   "to": {
     "pattern_type": "range",
@@ -748,6 +1446,2782 @@
       "samma",
       "until",
       "to"
-    ]
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "aasti": {
+    "pattern_type": "relative_day",
+    "gregorian_approx": "day before yesterday (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "aasti",
+      "अस्ति"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": -2
+  },
+  "हिजो": {
+    "pattern_type": "relative_day",
+    "gregorian_approx": "yesterday (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "hijo",
+      "हिजो"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": -1
+  },
+  "भोलि": {
+    "pattern_type": "relative_day",
+    "gregorian_approx": "tomorrow (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "bholi",
+      "भोलि"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": 1
+  },
+  "पर्सि": {
+    "pattern_type": "relative_day",
+    "gregorian_approx": "day after tomorrow (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "parsi",
+      "पर्सि"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": 2
+  },
+  "अस्ति": {
+    "pattern_type": "relative_day",
+    "gregorian_approx": "day before yesterday (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "aasti",
+      "अस्ति"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": -2
+  },
+  "gata hapta": {
+    "pattern_type": "relative_period",
+    "gregorian_approx": "last week (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "gata hapta",
+      "गत हप्ता",
+      "gata hafta"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": -7
+  },
+  "गत हप्ता": {
+    "pattern_type": "relative_period",
+    "gregorian_approx": "last week (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "gata hapta",
+      "गत हप्ता",
+      "gata hafta"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": -7
+  },
+  "gata hafta": {
+    "pattern_type": "relative_period",
+    "gregorian_approx": "last week (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "gata hapta",
+      "गत हप्ता",
+      "gata hafta"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": -7
+  },
+  "aaune hapta": {
+    "pattern_type": "relative_period",
+    "gregorian_approx": "next week (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "aaune hapta",
+      "आउने हप्ता",
+      "aune hapta"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": 7
+  },
+  "आउने हप्ता": {
+    "pattern_type": "relative_period",
+    "gregorian_approx": "next week (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "aaune hapta",
+      "आउने हप्ता",
+      "aune hapta"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": 7
+  },
+  "aune hapta": {
+    "pattern_type": "relative_period",
+    "gregorian_approx": "next week (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "aaune hapta",
+      "आउने हप्ता",
+      "aune hapta"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": 7
+  },
+  "gata mahina": {
+    "pattern_type": "relative_period",
+    "gregorian_approx": "last month (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "gata mahina",
+      "गत महिना"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "गत महिना": {
+    "pattern_type": "relative_period",
+    "gregorian_approx": "last month (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "gata mahina",
+      "गत महिना"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "aaune mahina": {
+    "pattern_type": "relative_period",
+    "gregorian_approx": "next month (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "aaune mahina",
+      "आउने महिना",
+      "aune mahina"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "आउने महिना": {
+    "pattern_type": "relative_period",
+    "gregorian_approx": "next month (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "aaune mahina",
+      "आउने महिना",
+      "aune mahina"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "aune mahina": {
+    "pattern_type": "relative_period",
+    "gregorian_approx": "next month (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "aaune mahina",
+      "आउने महिना",
+      "aune mahina"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "gata barsha": {
+    "pattern_type": "relative_period",
+    "gregorian_approx": "last year (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "gata barsha",
+      "गत बर्ष",
+      "gata barsa"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "गत बर्ष": {
+    "pattern_type": "relative_period",
+    "gregorian_approx": "last year (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "gata barsha",
+      "गत बर्ष",
+      "gata barsa"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "gata barsa": {
+    "pattern_type": "relative_period",
+    "gregorian_approx": "last year (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "gata barsha",
+      "गत बर्ष",
+      "gata barsa"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "aaune barsha": {
+    "pattern_type": "relative_period",
+    "gregorian_approx": "next year (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "aaune barsha",
+      "आउने बर्ष",
+      "aune barsa"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "आउने बर्ष": {
+    "pattern_type": "relative_period",
+    "gregorian_approx": "next year (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "aaune barsha",
+      "आउने बर्ष",
+      "aune barsa"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "aune barsa": {
+    "pattern_type": "relative_period",
+    "gregorian_approx": "next year (relative)",
+    "fiscal_significance": "varies",
+    "terms": [
+      "aaune barsha",
+      "आउने बर्ष",
+      "aune barsa"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "2080/81": {
+    "pattern_type": "fiscal_year",
+    "gregorian_approx": "mid-July 2080 to mid-July 2081",
+    "fiscal_significance": "Nepali Fiscal Year 2080/81",
+    "terms": [
+      "2080/81",
+      "२०८०/८१",
+      "2080-81",
+      "FY 2080/81"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "२०८०/८१": {
+    "pattern_type": "fiscal_year",
+    "gregorian_approx": "mid-July 2080 to mid-July 2081",
+    "fiscal_significance": "Nepali Fiscal Year 2080/81",
+    "terms": [
+      "2080/81",
+      "२०८०/८१",
+      "2080-81",
+      "FY 2080/81"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "2080-81": {
+    "pattern_type": "fiscal_year",
+    "gregorian_approx": "mid-July 2080 to mid-July 2081",
+    "fiscal_significance": "Nepali Fiscal Year 2080/81",
+    "terms": [
+      "2080/81",
+      "२०८०/८१",
+      "2080-81",
+      "FY 2080/81"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "fy 2080/81": {
+    "pattern_type": "fiscal_year",
+    "gregorian_approx": "mid-July 2080 to mid-July 2081",
+    "fiscal_significance": "Nepali Fiscal Year 2080/81",
+    "terms": [
+      "2080/81",
+      "२०८०/८१",
+      "2080-81",
+      "FY 2080/81"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "2081/82": {
+    "pattern_type": "fiscal_year",
+    "gregorian_approx": "mid-July 2081 to mid-July 2082",
+    "fiscal_significance": "Nepali Fiscal Year 2081/82",
+    "terms": [
+      "2081/82",
+      "२०८१/८२",
+      "2081-82",
+      "FY 2081/82"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "२०८१/८२": {
+    "pattern_type": "fiscal_year",
+    "gregorian_approx": "mid-July 2081 to mid-July 2082",
+    "fiscal_significance": "Nepali Fiscal Year 2081/82",
+    "terms": [
+      "2081/82",
+      "२०८१/८२",
+      "2081-82",
+      "FY 2081/82"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "2081-82": {
+    "pattern_type": "fiscal_year",
+    "gregorian_approx": "mid-July 2081 to mid-July 2082",
+    "fiscal_significance": "Nepali Fiscal Year 2081/82",
+    "terms": [
+      "2081/82",
+      "२०८१/८२",
+      "2081-82",
+      "FY 2081/82"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "fy 2081/82": {
+    "pattern_type": "fiscal_year",
+    "gregorian_approx": "mid-July 2081 to mid-July 2082",
+    "fiscal_significance": "Nepali Fiscal Year 2081/82",
+    "terms": [
+      "2081/82",
+      "२०८१/८२",
+      "2081-82",
+      "FY 2081/82"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "fy 2080-81": {
+    "pattern_type": "fiscal_year",
+    "gregorian_approx": "mid-July 2080 to mid-July 2081",
+    "fiscal_significance": "Nepali Fiscal Year 2080/81",
+    "terms": [
+      "FY 2080-81",
+      "FY 2080/81",
+      "एफवाय २०८०-८१"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "एफवाय २०८०-८१": {
+    "pattern_type": "fiscal_year",
+    "gregorian_approx": "mid-July 2080 to mid-July 2081",
+    "fiscal_significance": "Nepali Fiscal Year 2080/81",
+    "terms": [
+      "FY 2080-81",
+      "FY 2080/81",
+      "एफवाय २०८०-८१"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "fy 2081-82": {
+    "pattern_type": "fiscal_year",
+    "gregorian_approx": "mid-July 2081 to mid-July 2082",
+    "fiscal_significance": "Nepali Fiscal Year 2081/82",
+    "terms": [
+      "FY 2081-82",
+      "FY 2081/82",
+      "एफवाय २०८१-८२"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "एफवाय २०८१-८२": {
+    "pattern_type": "fiscal_year",
+    "gregorian_approx": "mid-July 2081 to mid-July 2082",
+    "fiscal_significance": "Nepali Fiscal Year 2081/82",
+    "terms": [
+      "FY 2081-82",
+      "FY 2081/82",
+      "एफवाय २०८१-८२"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "aarthik barsha 2080/81": {
+    "pattern_type": "fiscal_year",
+    "gregorian_approx": "mid-July 2080 to mid-July 2081",
+    "fiscal_significance": "Nepali Fiscal Year 2080/81",
+    "terms": [
+      "aarthik barsha 2080/81",
+      "आर्थिक बर्ष २०८०/८१",
+      "aarthik barsa 2080/81"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "आर्थिक बर्ष २०८०/८१": {
+    "pattern_type": "fiscal_year",
+    "gregorian_approx": "mid-July 2080 to mid-July 2081",
+    "fiscal_significance": "Nepali Fiscal Year 2080/81",
+    "terms": [
+      "aarthik barsha 2080/81",
+      "आर्थिक बर्ष २०८०/८१",
+      "aarthik barsa 2080/81"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "aarthik barsa 2080/81": {
+    "pattern_type": "fiscal_year",
+    "gregorian_approx": "mid-July 2080 to mid-July 2081",
+    "fiscal_significance": "Nepali Fiscal Year 2080/81",
+    "terms": [
+      "aarthik barsha 2080/81",
+      "आर्थिक बर्ष २०८०/८१",
+      "aarthik barsa 2080/81"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "aarthik barsha 2081/82": {
+    "pattern_type": "fiscal_year",
+    "gregorian_approx": "mid-July 2081 to mid-July 2082",
+    "fiscal_significance": "Nepali Fiscal Year 2081/82",
+    "terms": [
+      "aarthik barsha 2081/82",
+      "आर्थिक बर्ष २०८१/८२",
+      "aarthik barsa 2081/82"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "आर्थिक बर्ष २०८१/८२": {
+    "pattern_type": "fiscal_year",
+    "gregorian_approx": "mid-July 2081 to mid-July 2082",
+    "fiscal_significance": "Nepali Fiscal Year 2081/82",
+    "terms": [
+      "aarthik barsha 2081/82",
+      "आर्थिक बर्ष २०८१/८२",
+      "aarthik barsa 2081/82"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "aarthik barsa 2081/82": {
+    "pattern_type": "fiscal_year",
+    "gregorian_approx": "mid-July 2081 to mid-July 2082",
+    "fiscal_significance": "Nepali Fiscal Year 2081/82",
+    "terms": [
+      "aarthik barsha 2081/82",
+      "आर्थिक बर्ष २०८१/८२",
+      "aarthik barsa 2081/82"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "fy 081-82": {
+    "pattern_type": "fiscal_year",
+    "gregorian_approx": "mid-July 2081 to mid-July 2082",
+    "fiscal_significance": "Nepali Fiscal Year 2081/82",
+    "terms": [
+      "FY 081-82",
+      "FY 081/082",
+      "एफवाय ०८१-८२"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "fy 081/082": {
+    "pattern_type": "fiscal_year",
+    "gregorian_approx": "mid-July 2081 to mid-July 2082",
+    "fiscal_significance": "Nepali Fiscal Year 2081/82",
+    "terms": [
+      "FY 081-82",
+      "FY 081/082",
+      "एफवाय ०८१-८२"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "एफवाय ०८१-८२": {
+    "pattern_type": "fiscal_year",
+    "gregorian_approx": "mid-July 2081 to mid-July 2082",
+    "fiscal_significance": "Nepali Fiscal Year 2081/82",
+    "terms": [
+      "FY 081-82",
+      "FY 081/082",
+      "एफवाय ०८१-८२"
+    ],
+    "month_number": null,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "baisakh 1": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-April",
+    "fiscal_significance": "Nepali New Year, start of Q4",
+    "terms": [
+      "baisakh 1",
+      "बैशाख १",
+      "बैशाख १ गते",
+      "baishakh 1",
+      "naya barsha"
+    ],
+    "month_number": 1,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "बैशाख १": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-April",
+    "fiscal_significance": "Nepali New Year, start of Q4",
+    "terms": [
+      "baisakh 1",
+      "बैशाख १",
+      "बैशाख १ गते",
+      "baishakh 1",
+      "naya barsha"
+    ],
+    "month_number": 1,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "बैशाख १ गते": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-April",
+    "fiscal_significance": "Nepali New Year, start of Q4",
+    "terms": [
+      "baisakh 1",
+      "बैशाख १",
+      "बैशाख १ गते",
+      "baishakh 1",
+      "naya barsha"
+    ],
+    "month_number": 1,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "baishakh 1": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-April",
+    "fiscal_significance": "Nepali New Year, start of Q4",
+    "terms": [
+      "baisakh 1",
+      "बैशाख १",
+      "बैशाख १ गते",
+      "baishakh 1",
+      "naya barsha"
+    ],
+    "month_number": 1,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "naya barsha": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-April",
+    "fiscal_significance": "Nepali New Year, start of Q4",
+    "terms": [
+      "baisakh 1",
+      "बैशाख १",
+      "बैशाख १ गते",
+      "baishakh 1",
+      "naya barsha"
+    ],
+    "month_number": 1,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "baisakh 2": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-April",
+    "fiscal_significance": "Q4",
+    "terms": [
+      "baisakh 2",
+      "बैशाख २",
+      "baishakh 2"
+    ],
+    "month_number": 1,
+    "day": 2,
+    "relative_offset_days": null
+  },
+  "बैशाख २": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-April",
+    "fiscal_significance": "Q4",
+    "terms": [
+      "baisakh 2",
+      "बैशाख २",
+      "baishakh 2"
+    ],
+    "month_number": 1,
+    "day": 2,
+    "relative_offset_days": null
+  },
+  "baishakh 2": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-April",
+    "fiscal_significance": "Q4",
+    "terms": [
+      "baisakh 2",
+      "बैशाख २",
+      "baishakh 2"
+    ],
+    "month_number": 1,
+    "day": 2,
+    "relative_offset_days": null
+  },
+  "baisakh 15": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late April/early May",
+    "fiscal_significance": "mid Q4",
+    "terms": [
+      "baisakh 15",
+      "बैशाख १५",
+      "baishakh 15"
+    ],
+    "month_number": 1,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "बैशाख १५": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late April/early May",
+    "fiscal_significance": "mid Q4",
+    "terms": [
+      "baisakh 15",
+      "बैशाख १५",
+      "baishakh 15"
+    ],
+    "month_number": 1,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "baishakh 15": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late April/early May",
+    "fiscal_significance": "mid Q4",
+    "terms": [
+      "baisakh 15",
+      "बैशाख १५",
+      "baishakh 15"
+    ],
+    "month_number": 1,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "baisakh 30": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-May",
+    "fiscal_significance": "Q4",
+    "terms": [
+      "baisakh 30",
+      "बैशाख ३०",
+      "baishakh 30"
+    ],
+    "month_number": 1,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "बैशाख ३०": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-May",
+    "fiscal_significance": "Q4",
+    "terms": [
+      "baisakh 30",
+      "बैशाख ३०",
+      "baishakh 30"
+    ],
+    "month_number": 1,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "baishakh 30": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-May",
+    "fiscal_significance": "Q4",
+    "terms": [
+      "baisakh 30",
+      "बैशाख ३०",
+      "baishakh 30"
+    ],
+    "month_number": 1,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "jestha 1": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-May",
+    "fiscal_significance": "Q4",
+    "terms": [
+      "jestha 1",
+      "जेष्ठ १",
+      "जेठ १",
+      "jeth 1"
+    ],
+    "month_number": 2,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "जेष्ठ १": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-May",
+    "fiscal_significance": "Q4",
+    "terms": [
+      "jestha 1",
+      "जेष्ठ १",
+      "जेठ १",
+      "jeth 1"
+    ],
+    "month_number": 2,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "जेठ १": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-May",
+    "fiscal_significance": "Q4",
+    "terms": [
+      "jestha 1",
+      "जेष्ठ १",
+      "जेठ १",
+      "jeth 1"
+    ],
+    "month_number": 2,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "jeth 1": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-May",
+    "fiscal_significance": "Q4",
+    "terms": [
+      "jestha 1",
+      "जेष्ठ १",
+      "जेठ १",
+      "jeth 1"
+    ],
+    "month_number": 2,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "jestha 15": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late May/early June",
+    "fiscal_significance": "mid Q4",
+    "terms": [
+      "jestha 15",
+      "जेष्ठ १५",
+      "जेठ १५",
+      "jeth 15"
+    ],
+    "month_number": 2,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "जेष्ठ १५": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late May/early June",
+    "fiscal_significance": "mid Q4",
+    "terms": [
+      "jestha 15",
+      "जेष्ठ १५",
+      "जेठ १५",
+      "jeth 15"
+    ],
+    "month_number": 2,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "जेठ १५": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late May/early June",
+    "fiscal_significance": "mid Q4",
+    "terms": [
+      "jestha 15",
+      "जेष्ठ १५",
+      "जेठ १५",
+      "jeth 15"
+    ],
+    "month_number": 2,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "jeth 15": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late May/early June",
+    "fiscal_significance": "mid Q4",
+    "terms": [
+      "jestha 15",
+      "जेष्ठ १५",
+      "जेठ १५",
+      "jeth 15"
+    ],
+    "month_number": 2,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "jestha 30": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-June",
+    "fiscal_significance": "Q4",
+    "terms": [
+      "jestha 30",
+      "जेष्ठ ३०",
+      "जेठ ३०",
+      "jeth 30"
+    ],
+    "month_number": 2,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "जेष्ठ ३०": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-June",
+    "fiscal_significance": "Q4",
+    "terms": [
+      "jestha 30",
+      "जेष्ठ ३०",
+      "जेठ ३०",
+      "jeth 30"
+    ],
+    "month_number": 2,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "जेठ ३०": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-June",
+    "fiscal_significance": "Q4",
+    "terms": [
+      "jestha 30",
+      "जेष्ठ ३०",
+      "जेठ ३०",
+      "jeth 30"
+    ],
+    "month_number": 2,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "jeth 30": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-June",
+    "fiscal_significance": "Q4",
+    "terms": [
+      "jestha 30",
+      "जेष्ठ ३०",
+      "जेठ ३०",
+      "jeth 30"
+    ],
+    "month_number": 2,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "ashadh 1": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-June",
+    "fiscal_significance": "Q4",
+    "terms": [
+      "ashadh 1",
+      "आषाढ १",
+      "असार १",
+      "asar 1"
+    ],
+    "month_number": 3,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "आषाढ १": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-June",
+    "fiscal_significance": "Q4",
+    "terms": [
+      "ashadh 1",
+      "आषाढ १",
+      "असार १",
+      "asar 1"
+    ],
+    "month_number": 3,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "असार १": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-June",
+    "fiscal_significance": "Q4",
+    "terms": [
+      "ashadh 1",
+      "आषाढ १",
+      "असार १",
+      "asar 1"
+    ],
+    "month_number": 3,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "asar 1": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-June",
+    "fiscal_significance": "Q4",
+    "terms": [
+      "ashadh 1",
+      "आषाढ १",
+      "असार १",
+      "asar 1"
+    ],
+    "month_number": 3,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "ashadh 15": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late June/early July",
+    "fiscal_significance": "mid Q4",
+    "terms": [
+      "ashadh 15",
+      "आषाढ १५",
+      "असार १५",
+      "asar 15"
+    ],
+    "month_number": 3,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "आषाढ १५": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late June/early July",
+    "fiscal_significance": "mid Q4",
+    "terms": [
+      "ashadh 15",
+      "आषाढ १५",
+      "असार १५",
+      "asar 15"
+    ],
+    "month_number": 3,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "असार १५": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late June/early July",
+    "fiscal_significance": "mid Q4",
+    "terms": [
+      "ashadh 15",
+      "आषाढ १५",
+      "असार १५",
+      "asar 15"
+    ],
+    "month_number": 3,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "asar 15": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late June/early July",
+    "fiscal_significance": "mid Q4",
+    "terms": [
+      "ashadh 15",
+      "आषाढ १५",
+      "असार १५",
+      "asar 15"
+    ],
+    "month_number": 3,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "ashadh 30": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-July",
+    "fiscal_significance": "end of Q4, end of FY",
+    "terms": [
+      "ashadh 30",
+      "आषाढ ३०",
+      "असार ३०",
+      "asar 30"
+    ],
+    "month_number": 3,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "आषाढ ३०": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-July",
+    "fiscal_significance": "end of Q4, end of FY",
+    "terms": [
+      "ashadh 30",
+      "आषाढ ३०",
+      "असार ३०",
+      "asar 30"
+    ],
+    "month_number": 3,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "असार ३०": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-July",
+    "fiscal_significance": "end of Q4, end of FY",
+    "terms": [
+      "ashadh 30",
+      "आषाढ ३०",
+      "असार ३०",
+      "asar 30"
+    ],
+    "month_number": 3,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "asar 30": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-July",
+    "fiscal_significance": "end of Q4, end of FY",
+    "terms": [
+      "ashadh 30",
+      "आषाढ ३०",
+      "असार ३०",
+      "asar 30"
+    ],
+    "month_number": 3,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "ashadh masanta": {
+    "pattern_type": "month_end",
+    "gregorian_approx": "mid-July",
+    "fiscal_significance": "end of Q4, end of FY",
+    "terms": [
+      "ashadh masanta",
+      "आषाढ मसान्त",
+      "असार मसान्त",
+      "asar masanta"
+    ],
+    "month_number": 3,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "आषाढ मसान्त": {
+    "pattern_type": "month_end",
+    "gregorian_approx": "mid-July",
+    "fiscal_significance": "end of Q4, end of FY",
+    "terms": [
+      "ashadh masanta",
+      "आषाढ मसान्त",
+      "असार मसान्त",
+      "asar masanta"
+    ],
+    "month_number": 3,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "असार मसान्त": {
+    "pattern_type": "month_end",
+    "gregorian_approx": "mid-July",
+    "fiscal_significance": "end of Q4, end of FY",
+    "terms": [
+      "ashadh masanta",
+      "आषाढ मसान्त",
+      "असार मसान्त",
+      "asar masanta"
+    ],
+    "month_number": 3,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "asar masanta": {
+    "pattern_type": "month_end",
+    "gregorian_approx": "mid-July",
+    "fiscal_significance": "end of Q4, end of FY",
+    "terms": [
+      "ashadh masanta",
+      "आषाढ मसान्त",
+      "असार मसान्त",
+      "asar masanta"
+    ],
+    "month_number": 3,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "shrawan 1": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-July",
+    "fiscal_significance": "start of FY, start of Q1",
+    "terms": [
+      "shrawan 1",
+      "श्रावण १",
+      "साउन १",
+      "saun 1",
+      "श्रावण १ गते"
+    ],
+    "month_number": 4,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "श्रावण १": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-July",
+    "fiscal_significance": "start of FY, start of Q1",
+    "terms": [
+      "shrawan 1",
+      "श्रावण १",
+      "साउन १",
+      "saun 1",
+      "श्रावण १ गते"
+    ],
+    "month_number": 4,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "साउन १": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-July",
+    "fiscal_significance": "start of FY, start of Q1",
+    "terms": [
+      "shrawan 1",
+      "श्रावण १",
+      "साउन १",
+      "saun 1",
+      "श्रावण १ गते"
+    ],
+    "month_number": 4,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "saun 1": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-July",
+    "fiscal_significance": "start of FY, start of Q1",
+    "terms": [
+      "shrawan 1",
+      "श्रावण १",
+      "साउन १",
+      "saun 1",
+      "श्रावण १ गते"
+    ],
+    "month_number": 4,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "श्रावण १ गते": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-July",
+    "fiscal_significance": "start of FY, start of Q1",
+    "terms": [
+      "shrawan 1",
+      "श्रावण १",
+      "साउन १",
+      "saun 1",
+      "श्रावण १ गते"
+    ],
+    "month_number": 4,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "shrawan 2": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-July",
+    "fiscal_significance": "Q1",
+    "terms": [
+      "shrawan 2",
+      "श्रावण २",
+      "साउन २",
+      "saun 2"
+    ],
+    "month_number": 4,
+    "day": 2,
+    "relative_offset_days": null
+  },
+  "श्रावण २": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-July",
+    "fiscal_significance": "Q1",
+    "terms": [
+      "shrawan 2",
+      "श्रावण २",
+      "साउन २",
+      "saun 2"
+    ],
+    "month_number": 4,
+    "day": 2,
+    "relative_offset_days": null
+  },
+  "साउन २": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-July",
+    "fiscal_significance": "Q1",
+    "terms": [
+      "shrawan 2",
+      "श्रावण २",
+      "साउन २",
+      "saun 2"
+    ],
+    "month_number": 4,
+    "day": 2,
+    "relative_offset_days": null
+  },
+  "saun 2": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-July",
+    "fiscal_significance": "Q1",
+    "terms": [
+      "shrawan 2",
+      "श्रावण २",
+      "साउन २",
+      "saun 2"
+    ],
+    "month_number": 4,
+    "day": 2,
+    "relative_offset_days": null
+  },
+  "shrawan 15": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late July/early August",
+    "fiscal_significance": "mid Q1",
+    "terms": [
+      "shrawan 15",
+      "श्रावण १५",
+      "साउन १५",
+      "saun 15"
+    ],
+    "month_number": 4,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "श्रावण १५": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late July/early August",
+    "fiscal_significance": "mid Q1",
+    "terms": [
+      "shrawan 15",
+      "श्रावण १५",
+      "साउन १५",
+      "saun 15"
+    ],
+    "month_number": 4,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "साउन १५": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late July/early August",
+    "fiscal_significance": "mid Q1",
+    "terms": [
+      "shrawan 15",
+      "श्रावण १५",
+      "साउन १५",
+      "saun 15"
+    ],
+    "month_number": 4,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "saun 15": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late July/early August",
+    "fiscal_significance": "mid Q1",
+    "terms": [
+      "shrawan 15",
+      "श्रावण १५",
+      "साउन १५",
+      "saun 15"
+    ],
+    "month_number": 4,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "shrawan 30": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-August",
+    "fiscal_significance": "Q1",
+    "terms": [
+      "shrawan 30",
+      "श्रावण ३०",
+      "साउन ३०",
+      "saun 30"
+    ],
+    "month_number": 4,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "श्रावण ३०": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-August",
+    "fiscal_significance": "Q1",
+    "terms": [
+      "shrawan 30",
+      "श्रावण ३०",
+      "साउन ३०",
+      "saun 30"
+    ],
+    "month_number": 4,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "साउन ३०": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-August",
+    "fiscal_significance": "Q1",
+    "terms": [
+      "shrawan 30",
+      "श्रावण ३०",
+      "साउन ३०",
+      "saun 30"
+    ],
+    "month_number": 4,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "saun 30": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-August",
+    "fiscal_significance": "Q1",
+    "terms": [
+      "shrawan 30",
+      "श्रावण ३०",
+      "साउन ३०",
+      "saun 30"
+    ],
+    "month_number": 4,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "shrawan 31": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-August",
+    "fiscal_significance": "Q1",
+    "terms": [
+      "shrawan 31",
+      "श्रावण ३१",
+      "साउन ३१",
+      "saun 31"
+    ],
+    "month_number": 4,
+    "day": 31,
+    "relative_offset_days": null
+  },
+  "श्रावण ३१": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-August",
+    "fiscal_significance": "Q1",
+    "terms": [
+      "shrawan 31",
+      "श्रावण ३१",
+      "साउन ३१",
+      "saun 31"
+    ],
+    "month_number": 4,
+    "day": 31,
+    "relative_offset_days": null
+  },
+  "साउन ३१": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-August",
+    "fiscal_significance": "Q1",
+    "terms": [
+      "shrawan 31",
+      "श्रावण ३१",
+      "साउन ३१",
+      "saun 31"
+    ],
+    "month_number": 4,
+    "day": 31,
+    "relative_offset_days": null
+  },
+  "saun 31": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-August",
+    "fiscal_significance": "Q1",
+    "terms": [
+      "shrawan 31",
+      "श्रावण ३१",
+      "साउन ३१",
+      "saun 31"
+    ],
+    "month_number": 4,
+    "day": 31,
+    "relative_offset_days": null
+  },
+  "bhadra 1": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-August",
+    "fiscal_significance": "Q1",
+    "terms": [
+      "bhadra 1",
+      "भदौ १"
+    ],
+    "month_number": 5,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "भदौ १": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-August",
+    "fiscal_significance": "Q1",
+    "terms": [
+      "bhadra 1",
+      "भदौ १"
+    ],
+    "month_number": 5,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "bhadra 3": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late August",
+    "fiscal_significance": "Q1 (Teej)",
+    "terms": [
+      "bhadra 3",
+      "भदौ ३"
+    ],
+    "month_number": 5,
+    "day": 3,
+    "relative_offset_days": null
+  },
+  "भदौ ३": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late August",
+    "fiscal_significance": "Q1 (Teej)",
+    "terms": [
+      "bhadra 3",
+      "भदौ ३"
+    ],
+    "month_number": 5,
+    "day": 3,
+    "relative_offset_days": null
+  },
+  "bhadra 15": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "early September",
+    "fiscal_significance": "mid Q1",
+    "terms": [
+      "bhadra 15",
+      "भदौ १५"
+    ],
+    "month_number": 5,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "भदौ १५": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "early September",
+    "fiscal_significance": "mid Q1",
+    "terms": [
+      "bhadra 15",
+      "भदौ १५"
+    ],
+    "month_number": 5,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "bhadra 30": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-September",
+    "fiscal_significance": "Q1",
+    "terms": [
+      "bhadra 30",
+      "भदौ ३०"
+    ],
+    "month_number": 5,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "भदौ ३०": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-September",
+    "fiscal_significance": "Q1",
+    "terms": [
+      "bhadra 30",
+      "भदौ ३०"
+    ],
+    "month_number": 5,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "bhadra 31": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-September",
+    "fiscal_significance": "Q1",
+    "terms": [
+      "bhadra 31",
+      "भदौ ३१"
+    ],
+    "month_number": 5,
+    "day": 31,
+    "relative_offset_days": null
+  },
+  "भदौ ३१": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-September",
+    "fiscal_significance": "Q1",
+    "terms": [
+      "bhadra 31",
+      "भदौ ३१"
+    ],
+    "month_number": 5,
+    "day": 31,
+    "relative_offset_days": null
+  },
+  "ashwin 1": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-September",
+    "fiscal_significance": "end of Q1",
+    "terms": [
+      "ashwin 1",
+      "आश्विन १",
+      "असोज १",
+      "asoj 1"
+    ],
+    "month_number": 6,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "आश्विन १": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-September",
+    "fiscal_significance": "end of Q1",
+    "terms": [
+      "ashwin 1",
+      "आश्विन १",
+      "असोज १",
+      "asoj 1"
+    ],
+    "month_number": 6,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "असोज १": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-September",
+    "fiscal_significance": "end of Q1",
+    "terms": [
+      "ashwin 1",
+      "आश्विन १",
+      "असोज १",
+      "asoj 1"
+    ],
+    "month_number": 6,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "asoj 1": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-September",
+    "fiscal_significance": "end of Q1",
+    "terms": [
+      "ashwin 1",
+      "आश्विन १",
+      "असोज १",
+      "asoj 1"
+    ],
+    "month_number": 6,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "ashwin 15": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late September/early October",
+    "fiscal_significance": "mid Q1",
+    "terms": [
+      "ashwin 15",
+      "आश्विन १५",
+      "असोज १५",
+      "asoj 15"
+    ],
+    "month_number": 6,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "आश्विन १५": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late September/early October",
+    "fiscal_significance": "mid Q1",
+    "terms": [
+      "ashwin 15",
+      "आश्विन १५",
+      "असोज १५",
+      "asoj 15"
+    ],
+    "month_number": 6,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "असोज १५": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late September/early October",
+    "fiscal_significance": "mid Q1",
+    "terms": [
+      "ashwin 15",
+      "आश्विन १५",
+      "असोज १५",
+      "asoj 15"
+    ],
+    "month_number": 6,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "asoj 15": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late September/early October",
+    "fiscal_significance": "mid Q1",
+    "terms": [
+      "ashwin 15",
+      "आश्विन १५",
+      "असोज १५",
+      "asoj 15"
+    ],
+    "month_number": 6,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "ashwin 30": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-October",
+    "fiscal_significance": "end of Q1",
+    "terms": [
+      "ashwin 30",
+      "आश्विन ३०",
+      "असोज ३०",
+      "asoj 30"
+    ],
+    "month_number": 6,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "आश्विन ३०": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-October",
+    "fiscal_significance": "end of Q1",
+    "terms": [
+      "ashwin 30",
+      "आश्विन ३०",
+      "असोज ३०",
+      "asoj 30"
+    ],
+    "month_number": 6,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "असोज ३०": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-October",
+    "fiscal_significance": "end of Q1",
+    "terms": [
+      "ashwin 30",
+      "आश्विन ३०",
+      "असोज ३०",
+      "asoj 30"
+    ],
+    "month_number": 6,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "asoj 30": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-October",
+    "fiscal_significance": "end of Q1",
+    "terms": [
+      "ashwin 30",
+      "आश्विन ३०",
+      "असोज ३०",
+      "asoj 30"
+    ],
+    "month_number": 6,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "ashwin 31": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-October",
+    "fiscal_significance": "end of Q1",
+    "terms": [
+      "ashwin 31",
+      "आश्विन ३१",
+      "असोज ३१",
+      "asoj 31"
+    ],
+    "month_number": 6,
+    "day": 31,
+    "relative_offset_days": null
+  },
+  "आश्विन ३१": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-October",
+    "fiscal_significance": "end of Q1",
+    "terms": [
+      "ashwin 31",
+      "आश्विन ३१",
+      "असोज ३१",
+      "asoj 31"
+    ],
+    "month_number": 6,
+    "day": 31,
+    "relative_offset_days": null
+  },
+  "असोज ३१": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-October",
+    "fiscal_significance": "end of Q1",
+    "terms": [
+      "ashwin 31",
+      "आश्विन ३१",
+      "असोज ३१",
+      "asoj 31"
+    ],
+    "month_number": 6,
+    "day": 31,
+    "relative_offset_days": null
+  },
+  "asoj 31": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-October",
+    "fiscal_significance": "end of Q1",
+    "terms": [
+      "ashwin 31",
+      "आश्विन ३१",
+      "असोज ३१",
+      "asoj 31"
+    ],
+    "month_number": 6,
+    "day": 31,
+    "relative_offset_days": null
+  },
+  "kartik 1": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-October",
+    "fiscal_significance": "start of Q2",
+    "terms": [
+      "kartik 1",
+      "कार्तिक १"
+    ],
+    "month_number": 7,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "कार्तिक १": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-October",
+    "fiscal_significance": "start of Q2",
+    "terms": [
+      "kartik 1",
+      "कार्तिक १"
+    ],
+    "month_number": 7,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "kartik 7": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late October",
+    "fiscal_significance": "Q2",
+    "terms": [
+      "kartik 7",
+      "कार्तिक ७"
+    ],
+    "month_number": 7,
+    "day": 7,
+    "relative_offset_days": null
+  },
+  "कार्तिक ७": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late October",
+    "fiscal_significance": "Q2",
+    "terms": [
+      "kartik 7",
+      "कार्तिक ७"
+    ],
+    "month_number": 7,
+    "day": 7,
+    "relative_offset_days": null
+  },
+  "kartik 15": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late October/early November",
+    "fiscal_significance": "mid Q2",
+    "terms": [
+      "kartik 15",
+      "कार्तिक १५"
+    ],
+    "month_number": 7,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "कार्तिक १५": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late October/early November",
+    "fiscal_significance": "mid Q2",
+    "terms": [
+      "kartik 15",
+      "कार्तिक १५"
+    ],
+    "month_number": 7,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "kartik 30": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-November",
+    "fiscal_significance": "Q2",
+    "terms": [
+      "kartik 30",
+      "कार्तिक ३०"
+    ],
+    "month_number": 7,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "कार्तिक ३०": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-November",
+    "fiscal_significance": "Q2",
+    "terms": [
+      "kartik 30",
+      "कार्तिक ३०"
+    ],
+    "month_number": 7,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "kartik 31": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-November",
+    "fiscal_significance": "Q2",
+    "terms": [
+      "kartik 31",
+      "कार्तिक ३१"
+    ],
+    "month_number": 7,
+    "day": 31,
+    "relative_offset_days": null
+  },
+  "कार्तिक ३१": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-November",
+    "fiscal_significance": "Q2",
+    "terms": [
+      "kartik 31",
+      "कार्तिक ३१"
+    ],
+    "month_number": 7,
+    "day": 31,
+    "relative_offset_days": null
+  },
+  "mangsir 1": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-November",
+    "fiscal_significance": "Q2",
+    "terms": [
+      "mangsir 1",
+      "मंसिर १",
+      "मङ्सिर १",
+      "mansir 1"
+    ],
+    "month_number": 8,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "मंसिर १": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-November",
+    "fiscal_significance": "Q2",
+    "terms": [
+      "mangsir 1",
+      "मंसिर १",
+      "मङ्सिर १",
+      "mansir 1"
+    ],
+    "month_number": 8,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "मङ्सिर १": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-November",
+    "fiscal_significance": "Q2",
+    "terms": [
+      "mangsir 1",
+      "मंसिर १",
+      "मङ्सिर १",
+      "mansir 1"
+    ],
+    "month_number": 8,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "mansir 1": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-November",
+    "fiscal_significance": "Q2",
+    "terms": [
+      "mangsir 1",
+      "मंसिर १",
+      "मङ्सिर १",
+      "mansir 1"
+    ],
+    "month_number": 8,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "mangsir 7": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late November",
+    "fiscal_significance": "Q2",
+    "terms": [
+      "mangsir 7",
+      "मंसिर ७",
+      "मङ्सिर ७",
+      "mansir 7"
+    ],
+    "month_number": 8,
+    "day": 7,
+    "relative_offset_days": null
+  },
+  "मंसिर ७": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late November",
+    "fiscal_significance": "Q2",
+    "terms": [
+      "mangsir 7",
+      "मंसिर ७",
+      "मङ्सिर ७",
+      "mansir 7"
+    ],
+    "month_number": 8,
+    "day": 7,
+    "relative_offset_days": null
+  },
+  "मङ्सिर ७": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late November",
+    "fiscal_significance": "Q2",
+    "terms": [
+      "mangsir 7",
+      "मंसिर ७",
+      "मङ्सिर ७",
+      "mansir 7"
+    ],
+    "month_number": 8,
+    "day": 7,
+    "relative_offset_days": null
+  },
+  "mansir 7": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late November",
+    "fiscal_significance": "Q2",
+    "terms": [
+      "mangsir 7",
+      "मंसिर ७",
+      "मङ्सिर ७",
+      "mansir 7"
+    ],
+    "month_number": 8,
+    "day": 7,
+    "relative_offset_days": null
+  },
+  "mangsir 15": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late November/early December",
+    "fiscal_significance": "mid Q2",
+    "terms": [
+      "mangsir 15",
+      "मंसिर १५",
+      "मङ्सिर १५",
+      "mansir 15"
+    ],
+    "month_number": 8,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "मंसिर १५": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late November/early December",
+    "fiscal_significance": "mid Q2",
+    "terms": [
+      "mangsir 15",
+      "मंसिर १५",
+      "मङ्सिर १५",
+      "mansir 15"
+    ],
+    "month_number": 8,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "मङ्सिर १५": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late November/early December",
+    "fiscal_significance": "mid Q2",
+    "terms": [
+      "mangsir 15",
+      "मंसिर १५",
+      "मङ्सिर १५",
+      "mansir 15"
+    ],
+    "month_number": 8,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "mansir 15": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late November/early December",
+    "fiscal_significance": "mid Q2",
+    "terms": [
+      "mangsir 15",
+      "मंसिर १५",
+      "मङ्सिर १५",
+      "mansir 15"
+    ],
+    "month_number": 8,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "mangsir 30": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-December",
+    "fiscal_significance": "Q2",
+    "terms": [
+      "mangsir 30",
+      "मंसिर ३०",
+      "मङ्सिर ३०",
+      "mansir 30"
+    ],
+    "month_number": 8,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "मंसिर ३०": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-December",
+    "fiscal_significance": "Q2",
+    "terms": [
+      "mangsir 30",
+      "मंसिर ३०",
+      "मङ्सिर ३०",
+      "mansir 30"
+    ],
+    "month_number": 8,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "मङ्सिर ३०": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-December",
+    "fiscal_significance": "Q2",
+    "terms": [
+      "mangsir 30",
+      "मंसिर ३०",
+      "मङ्सिर ३०",
+      "mansir 30"
+    ],
+    "month_number": 8,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "mansir 30": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-December",
+    "fiscal_significance": "Q2",
+    "terms": [
+      "mangsir 30",
+      "मंसिर ३०",
+      "मङ्सिर ३०",
+      "mansir 30"
+    ],
+    "month_number": 8,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "poush 1": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-December",
+    "fiscal_significance": "Q2",
+    "terms": [
+      "poush 1",
+      "पौष १",
+      "पुष १",
+      "push 1"
+    ],
+    "month_number": 9,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "पौष १": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-December",
+    "fiscal_significance": "Q2",
+    "terms": [
+      "poush 1",
+      "पौष १",
+      "पुष १",
+      "push 1"
+    ],
+    "month_number": 9,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "पुष १": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-December",
+    "fiscal_significance": "Q2",
+    "terms": [
+      "poush 1",
+      "पौष १",
+      "पुष १",
+      "push 1"
+    ],
+    "month_number": 9,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "push 1": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-December",
+    "fiscal_significance": "Q2",
+    "terms": [
+      "poush 1",
+      "पौष १",
+      "पुष १",
+      "push 1"
+    ],
+    "month_number": 9,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "poush 15": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late December/early January",
+    "fiscal_significance": "mid Q2",
+    "terms": [
+      "poush 15",
+      "पौष १५",
+      "पुष १५",
+      "push 15"
+    ],
+    "month_number": 9,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "पौष १५": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late December/early January",
+    "fiscal_significance": "mid Q2",
+    "terms": [
+      "poush 15",
+      "पौष १५",
+      "पुष १५",
+      "push 15"
+    ],
+    "month_number": 9,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "पुष १५": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late December/early January",
+    "fiscal_significance": "mid Q2",
+    "terms": [
+      "poush 15",
+      "पौष १५",
+      "पुष १५",
+      "push 15"
+    ],
+    "month_number": 9,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "push 15": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late December/early January",
+    "fiscal_significance": "mid Q2",
+    "terms": [
+      "poush 15",
+      "पौष १५",
+      "पुष १५",
+      "push 15"
+    ],
+    "month_number": 9,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "poush 25": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "early January",
+    "fiscal_significance": "Q2 (Christmas period)",
+    "terms": [
+      "poush 25",
+      "पौष २५",
+      "पुष २५",
+      "push 25"
+    ],
+    "month_number": 9,
+    "day": 25,
+    "relative_offset_days": null
+  },
+  "पौष २५": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "early January",
+    "fiscal_significance": "Q2 (Christmas period)",
+    "terms": [
+      "poush 25",
+      "पौष २५",
+      "पुष २५",
+      "push 25"
+    ],
+    "month_number": 9,
+    "day": 25,
+    "relative_offset_days": null
+  },
+  "पुष २५": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "early January",
+    "fiscal_significance": "Q2 (Christmas period)",
+    "terms": [
+      "poush 25",
+      "पौष २५",
+      "पुष २५",
+      "push 25"
+    ],
+    "month_number": 9,
+    "day": 25,
+    "relative_offset_days": null
+  },
+  "push 25": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "early January",
+    "fiscal_significance": "Q2 (Christmas period)",
+    "terms": [
+      "poush 25",
+      "पौष २५",
+      "पुष २५",
+      "push 25"
+    ],
+    "month_number": 9,
+    "day": 25,
+    "relative_offset_days": null
+  },
+  "poush 30": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-January",
+    "fiscal_significance": "end of Q2",
+    "terms": [
+      "poush 30",
+      "पौष ३०",
+      "पुष ३०",
+      "push 30"
+    ],
+    "month_number": 9,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "पौष ३०": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-January",
+    "fiscal_significance": "end of Q2",
+    "terms": [
+      "poush 30",
+      "पौष ३०",
+      "पुष ३०",
+      "push 30"
+    ],
+    "month_number": 9,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "पुष ३०": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-January",
+    "fiscal_significance": "end of Q2",
+    "terms": [
+      "poush 30",
+      "पौष ३०",
+      "पुष ३०",
+      "push 30"
+    ],
+    "month_number": 9,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "push 30": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-January",
+    "fiscal_significance": "end of Q2",
+    "terms": [
+      "poush 30",
+      "पौष ३०",
+      "पुष ३०",
+      "push 30"
+    ],
+    "month_number": 9,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "magh 1": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-January",
+    "fiscal_significance": "start of Q3, Maghe Sankranti",
+    "terms": [
+      "magh 1",
+      "माघ १"
+    ],
+    "month_number": 10,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "माघ १": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-January",
+    "fiscal_significance": "start of Q3, Maghe Sankranti",
+    "terms": [
+      "magh 1",
+      "माघ १"
+    ],
+    "month_number": 10,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "magh 2": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-January",
+    "fiscal_significance": "Q3",
+    "terms": [
+      "magh 2",
+      "माघ २"
+    ],
+    "month_number": 10,
+    "day": 2,
+    "relative_offset_days": null
+  },
+  "माघ २": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-January",
+    "fiscal_significance": "Q3",
+    "terms": [
+      "magh 2",
+      "माघ २"
+    ],
+    "month_number": 10,
+    "day": 2,
+    "relative_offset_days": null
+  },
+  "magh 15": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late January/early February",
+    "fiscal_significance": "mid Q3",
+    "terms": [
+      "magh 15",
+      "माघ १५"
+    ],
+    "month_number": 10,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "माघ १५": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late January/early February",
+    "fiscal_significance": "mid Q3",
+    "terms": [
+      "magh 15",
+      "माघ १५"
+    ],
+    "month_number": 10,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "magh 30": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-February",
+    "fiscal_significance": "Q3",
+    "terms": [
+      "magh 30",
+      "माघ ३०"
+    ],
+    "month_number": 10,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "माघ ३०": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-February",
+    "fiscal_significance": "Q3",
+    "terms": [
+      "magh 30",
+      "माघ ३०"
+    ],
+    "month_number": 10,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "falgun 1": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-February",
+    "fiscal_significance": "Q3",
+    "terms": [
+      "falgun 1",
+      "फाल्गुन १",
+      "फागुन १",
+      "phagun 1"
+    ],
+    "month_number": 11,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "फाल्गुन १": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-February",
+    "fiscal_significance": "Q3",
+    "terms": [
+      "falgun 1",
+      "फाल्गुन १",
+      "फागुन १",
+      "phagun 1"
+    ],
+    "month_number": 11,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "फागुन १": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-February",
+    "fiscal_significance": "Q3",
+    "terms": [
+      "falgun 1",
+      "फाल्गुन १",
+      "फागुन १",
+      "phagun 1"
+    ],
+    "month_number": 11,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "phagun 1": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-February",
+    "fiscal_significance": "Q3",
+    "terms": [
+      "falgun 1",
+      "फाल्गुन १",
+      "फागुन १",
+      "phagun 1"
+    ],
+    "month_number": 11,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "falgun 15": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late February/early March",
+    "fiscal_significance": "mid Q3, Holi",
+    "terms": [
+      "falgun 15",
+      "फाल्गुन १५",
+      "फागुन १५",
+      "phagun 15"
+    ],
+    "month_number": 11,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "फाल्गुन १५": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late February/early March",
+    "fiscal_significance": "mid Q3, Holi",
+    "terms": [
+      "falgun 15",
+      "फाल्गुन १५",
+      "फागुन १५",
+      "phagun 15"
+    ],
+    "month_number": 11,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "फागुन १५": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late February/early March",
+    "fiscal_significance": "mid Q3, Holi",
+    "terms": [
+      "falgun 15",
+      "फाल्गुन १५",
+      "फागुन १५",
+      "phagun 15"
+    ],
+    "month_number": 11,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "phagun 15": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late February/early March",
+    "fiscal_significance": "mid Q3, Holi",
+    "terms": [
+      "falgun 15",
+      "फाल्गुन १५",
+      "फागुन १५",
+      "phagun 15"
+    ],
+    "month_number": 11,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "falgun 30": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-March",
+    "fiscal_significance": "Q3",
+    "terms": [
+      "falgun 30",
+      "फाल्गुन ३०",
+      "फागुन ३०",
+      "phagun 30"
+    ],
+    "month_number": 11,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "फाल्गुन ३०": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-March",
+    "fiscal_significance": "Q3",
+    "terms": [
+      "falgun 30",
+      "फाल्गुन ३०",
+      "फागुन ३०",
+      "phagun 30"
+    ],
+    "month_number": 11,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "फागुन ३०": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-March",
+    "fiscal_significance": "Q3",
+    "terms": [
+      "falgun 30",
+      "फाल्गुन ३०",
+      "फागुन ३०",
+      "phagun 30"
+    ],
+    "month_number": 11,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "phagun 30": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-March",
+    "fiscal_significance": "Q3",
+    "terms": [
+      "falgun 30",
+      "फाल्गुन ३०",
+      "फागुन ३०",
+      "phagun 30"
+    ],
+    "month_number": 11,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "chaitra 1": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-March",
+    "fiscal_significance": "Q3",
+    "terms": [
+      "chaitra 1",
+      "चैत्र १",
+      "चैत्र १ गते"
+    ],
+    "month_number": 12,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "चैत्र १": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-March",
+    "fiscal_significance": "Q3",
+    "terms": [
+      "chaitra 1",
+      "चैत्र १",
+      "चैत्र १ गते"
+    ],
+    "month_number": 12,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "चैत्र १ गते": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-March",
+    "fiscal_significance": "Q3",
+    "terms": [
+      "chaitra 1",
+      "चैत्र १",
+      "चैत्र १ गते"
+    ],
+    "month_number": 12,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "chaitra 15": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late March/early April",
+    "fiscal_significance": "mid Q3",
+    "terms": [
+      "chaitra 15",
+      "चैत्र १५"
+    ],
+    "month_number": 12,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "चैत्र १५": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "late March/early April",
+    "fiscal_significance": "mid Q3",
+    "terms": [
+      "chaitra 15",
+      "चैत्र १५"
+    ],
+    "month_number": 12,
+    "day": 15,
+    "relative_offset_days": null
+  },
+  "chaitra 30": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-April",
+    "fiscal_significance": "end of Q3",
+    "terms": [
+      "chaitra 30",
+      "चैत्र ३०"
+    ],
+    "month_number": 12,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "चैत्र ३०": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-April",
+    "fiscal_significance": "end of Q3",
+    "terms": [
+      "chaitra 30",
+      "चैत्र ३०"
+    ],
+    "month_number": 12,
+    "day": 30,
+    "relative_offset_days": null
+  },
+  "chaitra masanta": {
+    "pattern_type": "month_end",
+    "gregorian_approx": "mid-April",
+    "fiscal_significance": "end of Q3",
+    "terms": [
+      "chaitra masanta",
+      "चैत्र मसान्त",
+      "chaitra end"
+    ],
+    "month_number": 12,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "चैत्र मसान्त": {
+    "pattern_type": "month_end",
+    "gregorian_approx": "mid-April",
+    "fiscal_significance": "end of Q3",
+    "terms": [
+      "chaitra masanta",
+      "चैत्र मसान्त",
+      "chaitra end"
+    ],
+    "month_number": 12,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "chaitra end": {
+    "pattern_type": "month_end",
+    "gregorian_approx": "mid-April",
+    "fiscal_significance": "end of Q3",
+    "terms": [
+      "chaitra masanta",
+      "चैत्र मसान्त",
+      "chaitra end"
+    ],
+    "month_number": 12,
+    "day": null,
+    "relative_offset_days": null
+  },
+  "नयाँ बर्ष": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-April",
+    "fiscal_significance": "Nepali New Year, start of Q4",
+    "terms": [
+      "naya barsha",
+      "नयाँ बर्ष",
+      "baisakh 1",
+      "new year"
+    ],
+    "month_number": 1,
+    "day": 1,
+    "relative_offset_days": null
+  },
+  "new year": {
+    "pattern_type": "bs_date",
+    "gregorian_approx": "mid-April",
+    "fiscal_significance": "Nepali New Year, start of Q4",
+    "terms": [
+      "naya barsha",
+      "नयाँ बर्ष",
+      "baisakh 1",
+      "new year"
+    ],
+    "month_number": 1,
+    "day": 1,
+    "relative_offset_days": null
   }
 }

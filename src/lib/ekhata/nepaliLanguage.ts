@@ -4,6 +4,8 @@
  * and khata-domain vocabulary so the parser accepts how people actually type.
  */
 
+import { NUMBER_WORD_VALUES } from "../nepal-ai/generated/runtimeMaps";
+
 /** Devanagari vowels (swar) → roman */
 export const DEVANAGARI_VOWELS: Record<string, string> = {
   "अ": "a",
@@ -303,7 +305,7 @@ export const SPELLING_ALIASES: Record<string, string> = {
   paanch: "panch",
   five: "panch",
   chha: "chha",
-  cha: "chha",
+  // Do NOT map bare "cha" → "chha" (existence copula ≠ number six)
   chh: "chha",
   six: "chha",
   saat: "saat",
@@ -413,29 +415,63 @@ export const NEPALI_DIGIT_MAP: Record<string, string> = {
   "९": "9",
 };
 
-export const WORD_TO_NUMBER: Record<string, number> = {
+/** Legacy base digits + scale units — merged with exported Nepal AI lexicon. */
+const WORD_TO_NUMBER_BASE: Record<string, number> = {
   ek: 1,
   dui: 2,
   tin: 3,
   char: 4,
   panch: 5,
+  paanch: 5,
+  paach: 5,
   chha: 6,
   saat: 7,
+  sat: 7,
   aath: 8,
   nau: 9,
   das: 10,
+  eghara: 11,
+  baara: 12,
+  tera: 13,
+  chauda: 14,
+  pandhra: 15,
+  sorha: 16,
+  satra: 17,
+  athara: 18,
+  unnais: 19,
   bis: 20,
   tis: 30,
   chaalis: 40,
   pachaas: 50,
+  pachas: 50,
   saath: 60,
+  saathi: 60,
   sattar: 70,
+  sattari: 70,
   assi: 80,
   nabbe: 90,
   saya: 100,
   sau: 100,
+  sayaa: 100,
   hajar: 1000,
   hazar: 1000,
+  hazaar: 1000,
+  thousand: 1000,
   lakh: 100000,
   lac: 100000,
+  laakh: 100000,
+  crore: 10000000,
+  karod: 10000000,
+  krore: 10000000,
+  arab: 1000000000,
+  dedh: 1.5,
+  derh: 1.5,
+  dhai: 2.5,
+  aadha: 0.5,
+  adha: 0.5,
+};
+
+export const WORD_TO_NUMBER: Record<string, number> = {
+  ...WORD_TO_NUMBER_BASE,
+  ...NUMBER_WORD_VALUES,
 };

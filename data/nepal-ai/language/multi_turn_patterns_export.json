@@ -1,0 +1,61 @@
+[
+  {
+    "id": "mtp-001",
+    "pattern_type": "amount_correction",
+    "example_user": "hoina 600",
+    "example_ai": "Maaf garnus, Rs 600 huncha. Ram lai Rs 600 udhaar bikri. Confirm garnu hola.",
+    "scenario_ids": [
+      "conv_001",
+      "conv_009"
+    ]
+  },
+  {
+    "id": "mtp-002",
+    "pattern_type": "party_correction",
+    "example_user": "hoina, Hari ko naam Hari Prasad ho",
+    "example_ai": "Maaf garnus, Hari Prasad lai Rs 700 udhaar bikri. Confirm garnuhola.",
+    "scenario_ids": [
+      "conv_006"
+    ]
+  },
+  {
+    "id": "mtp-003",
+    "pattern_type": "confirm",
+    "example_user": "ho",
+    "example_ai": "Record gariyo. Shyam ko khata ma Rs 2000 udhaar thapyo.",
+    "scenario_ids": [
+      "conv_002",
+      "conv_003",
+      "conv_007",
+      "conv_008"
+    ]
+  },
+  {
+    "id": "mtp-004",
+    "pattern_type": "clarify_fill",
+    "example_user": "office ko lagi stationery",
+    "example_ai": "Stationery ma Rs 300 kharcha (office party), confirm garnus?",
+    "scenario_ids": [
+      "conv_003",
+      "conv_008"
+    ]
+  },
+  {
+    "id": "mtp-005",
+    "pattern_type": "payment_mode_switch",
+    "example_user": "cash",
+    "example_ai": "Mohan lai Rs 800 cash bikri, confirm garnus.",
+    "scenario_ids": [
+      "conv_008"
+    ]
+  },
+  {
+    "id": "mtp-006",
+    "pattern_type": "help_dialog",
+    "example_user": "Namaste",
+    "example_ai": "Namaste! e-KHATA AI ma swagat cha. Ma tapailai khata rakhn sahayog garna sakchu.",
+    "scenario_ids": [
+      "conv_005"
+    ]
+  }
+]

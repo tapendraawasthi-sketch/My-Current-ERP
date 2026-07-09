@@ -1,0 +1,84 @@
+{
+  "wrong_terminology": [
+    "mist-001",
+    "mist-002",
+    "mist-003",
+    "mist-004",
+    "mist-005",
+    "mist-006",
+    "mist-007",
+    "mist-008",
+    "mist-009",
+    "mist-010"
+  ],
+  "reversed_entry": [
+    "mist-011",
+    "mist-012",
+    "mist-013",
+    "mist-014",
+    "mist-015",
+    "mist-016",
+    "mist-017",
+    "mist-018",
+    "mist-019",
+    "mist-020"
+  ],
+  "wrong_party": [
+    "mist-021",
+    "mist-022",
+    "mist-023",
+    "mist-024",
+    "mist-025",
+    "mist-026",
+    "mist-027",
+    "mist-028",
+    "mist-029"
+  ],
+  "date_error": [
+    "mist-030",
+    "mist-031",
+    "mist-032",
+    "mist-033",
+    "mist-034",
+    "mist-035",
+    "mist-036",
+    "mist-037",
+    "mist-038"
+  ],
+  "amount_error": [
+    "mist-039",
+    "mist-040",
+    "mist-041",
+    "mist-042",
+    "mist-043",
+    "mist-044",
+    "mist-045",
+    "mist-046",
+    "mist-047",
+    "mist-048"
+  ],
+  "double_entry": [
+    "mist-049",
+    "mist-050",
+    "mist-051",
+    "mist-052",
+    "mist-053",
+    "mist-054",
+    "mist-055",
+    "mist-056",
+    "mist-057",
+    "mist-058"
+  ],
+  "category_error": [
+    "mist-059",
+    "mist-060",
+    "mist-061",
+    "mist-062",
+    "mist-063",
+    "mist-064",
+    "mist-065",
+    "mist-066",
+    "mist-067",
+    "mist-068"
+  ]
+}

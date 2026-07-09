@@ -1,0 +1,95 @@
+{
+  "patterns": [
+    {
+      "id": "sales_amount_product",
+      "pattern": "(maile|usle|unle)\\s+(\\d+)\\s+ko\\s+(\\w+)\\s+(bechye|becheko|bechya)",
+      "type": "sales",
+      "fields": {
+        "agent": 1,
+        "amount": 2,
+        "product": 3,
+        "verb": 4
+      },
+      "example": "maile 500 ko kakro bechye"
+    },
+    {
+      "id": "purchase_amount_product",
+      "pattern": "(maile|usle)\\s+(\\d+)\\s+ko\\s+(\\w+)\\s+(kinyo|kineko)",
+      "type": "purchase",
+      "fields": {
+        "agent": 1,
+        "amount": 2,
+        "product": 3,
+        "verb": 4
+      },
+      "example": "maile 300 ko aalu kinyo"
+    },
+    {
+      "id": "sales_quantity_unit",
+      "pattern": "(\\d+)\\s*(kg|kilo|piece|wata)\\s+(\\w+)\\s+(bechye|becheko)",
+      "type": "sales",
+      "fields": {
+        "quantity": 1,
+        "unit": 2,
+        "product": 3,
+        "verb": 4
+      },
+      "example": "5 kg kakro bechye"
+    },
+    {
+      "id": "credit_sale",
+      "pattern": "(\\w+)\\s+lai\\s+(\\d+)\\s+ko\\s+(\\w+)\\s+udhaar",
+      "type": "sales",
+      "fields": {
+        "party": 1,
+        "amount": 2,
+        "product": 3
+      },
+      "example": "ram lai 500 ko tarkari udhaar"
+    },
+    {
+      "id": "payment_received",
+      "pattern": "(\\w+)\\s+le\\s+(\\d+)\\s+(tiryo|diye|jama|tireko)",
+      "type": "receipt",
+      "fields": {
+        "party": 1,
+        "amount": 2,
+        "verb": 3
+      },
+      "example": "ram le 500 tiryo"
+    },
+    {
+      "id": "payment_made",
+      "pattern": "(\\w+)\\s+lai\\s+(\\d+)\\s+(tiryo|diye|jama)",
+      "type": "payment",
+      "fields": {
+        "party": 1,
+        "amount": 2,
+        "verb": 3
+      },
+      "example": "shyam lai 1000 diye"
+    },
+    {
+      "id": "expense_entry",
+      "pattern": "(\\d+)\\s+ko\\s+(kharcha|kharcho|expense|rent|bhaada)",
+      "type": "expense",
+      "fields": {
+        "amount": 1,
+        "product": 2
+      },
+      "example": "500 ko kharcha"
+    },
+    {
+      "id": "sales_return",
+      "pattern": "(maile|usle)\\s+(\\d+)\\s+ko\\s+(\\w+)\\s+(firta|return|wapsi)",
+      "type": "return",
+      "fields": {
+        "agent": 1,
+        "amount": 2,
+        "product": 3,
+        "verb": 4
+      },
+      "example": "maile 200 ko kakro firta"
+    }
+  ]
+}

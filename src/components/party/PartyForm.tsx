@@ -1,5 +1,11 @@
 // @ts-nocheck
 import React, { useState, useEffect, useMemo } from "react";
+import { queuePartyPhoneSavedNotice } from "@/ai/actions/partyPhoneSavedBridge";
+import {
+  peekAgingSetphoneReturnDraft,
+  consumeAgingSetphoneReturnDraft,
+} from "@/ai/actions/chatQueryDraft";
+import { saveAiAgingReportDraft } from "@/ai/actions/agingReportDraft";
 import { useStore } from "../../store";
 import toast from "react-hot-toast";
 import { PartyType } from "../../lib/types";
@@ -61,9 +67,11 @@ const emptyBank = (): BankRow => ({
 interface PartyFormProps {
   partyId?: string;
   onClose: () => void;
+  prefillPhone?: string;
+  focusPhone?: boolean;
 }
 
-const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
+const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, focusPhone }) => {
   const {
     parties,
     accounts,
@@ -149,8 +157,18 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
 
   // ── Tab state ─────────────────────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState<"basic" | "contact" | "bank" | "financial" | "tax">(
-    "basic",
+    focusPhone ? "contact" : "basic",
   );
+
+  useEffect(() => {
+    if (!prefillPhone) return;
+    setContacts((prev) => {
+      const next = [...prev];
+      next[0] = { ...next[0], phone: prefillPhone };
+      return next;
+    });
+    if (focusPhone) setActiveTab("contact");
+  }, [prefillPhone, focusPhone]);
 
   // ── Derived account lists ─────────────────────────────────────────────────
   const debtorAccounts = useMemo(
@@ -241,6 +259,26 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose }) => {
       } else {
         await addParty(payload);
         toast.success("Party created successfully.");
+      }
+      if (prefillPhone || focusPhone) {
+        const savedPhone = cleanContacts[0]?.phone?.trim() || prefillPhone?.trim();
+        if (savedPhone) {
+          const balance =
+            typeof existing?.balance === "number" ? existing.balance : undefined;
+          queuePartyPhoneSavedNotice(name.trim(), savedPhone, balance);
+          const agingReturn = peekAgingSetphoneReturnDraft();
+          if (
+            agingReturn &&
+            agingReturn.searchTerm.trim().toLowerCase() === name.trim().toLowerCase()
+          ) {
+            saveAiAgingReportDraft({
+              direction: agingReturn.direction,
+              searchTerm: agingReturn.searchTerm,
+            });
+            consumeAgingSetphoneReturnDraft();
+            useStore.getState().setCurrentPage("aging-report");
+          }
+        }
       }
       onClose();
     } catch (err: any) {

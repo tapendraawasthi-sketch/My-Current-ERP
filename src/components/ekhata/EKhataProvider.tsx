@@ -15,7 +15,14 @@ const EKhataProvider: React.FC = () => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        useEKhataStore.getState().openPanel();
+        const state = useEKhataStore.getState();
+        if (state.isOpen && state.windowMode === "minimized") {
+          state.restorePanel();
+        } else if (!state.isOpen) {
+          state.openPanel();
+        } else {
+          state.minimizePanel();
+        }
         closeFalcon();
       }
     };

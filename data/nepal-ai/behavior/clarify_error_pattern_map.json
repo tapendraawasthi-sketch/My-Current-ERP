@@ -1,0 +1,950 @@
+{
+  "ram lai udhaar diye||missing_amount": {
+    "id": "clr-001",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "ram lai udhaar diye": {
+    "id": "clr-001",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "shyam lai paisa diye||missing_amount": {
+    "id": "clr-002",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "shyam lai paisa diye": {
+    "id": "clr-002",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "hari lai rin diye||missing_amount": {
+    "id": "clr-003",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "hari lai rin diye": {
+    "id": "clr-003",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "gita lai udhaar||missing_amount": {
+    "id": "clr-004",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "gita lai udhaar": {
+    "id": "clr-004",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "sita lai diyeko||missing_amount": {
+    "id": "clr-005",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "sita lai diyeko": {
+    "id": "clr-005",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "krishna lai paisa pathaye||missing_amount": {
+    "id": "clr-006",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "krishna lai paisa pathaye": {
+    "id": "clr-006",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "mina lai udhaar diye||missing_amount": {
+    "id": "clr-007",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "mina lai udhaar diye": {
+    "id": "clr-007",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "raju lai rin||missing_amount": {
+    "id": "clr-008",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "raju lai rin": {
+    "id": "clr-008",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "bikram lai diye||missing_amount": {
+    "id": "clr-009",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "bikram lai diye": {
+    "id": "clr-009",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "sunita lai udhaar diyeko||missing_amount": {
+    "id": "clr-010",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "sunita lai udhaar diyeko": {
+    "id": "clr-010",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "ramesh lai paisa||missing_amount": {
+    "id": "clr-011",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "ramesh lai paisa": {
+    "id": "clr-011",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "sanjay lai rin diyeko||missing_amount": {
+    "id": "clr-012",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "sanjay lai rin diyeko": {
+    "id": "clr-012",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "anita lai udhaar diye||missing_amount": {
+    "id": "clr-013",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "anita lai udhaar diye": {
+    "id": "clr-013",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "prabhu lai paisa diye||missing_amount": {
+    "id": "clr-014",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "prabhu lai paisa diye": {
+    "id": "clr-014",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "govinda lai rin||missing_amount": {
+    "id": "clr-015",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "govinda lai rin": {
+    "id": "clr-015",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "laxmi lai udhaar diyeko||missing_amount": {
+    "id": "clr-016",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "laxmi lai udhaar diyeko": {
+    "id": "clr-016",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "500 udhaar||missing_party": {
+    "id": "clr-017",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "500 udhaar": {
+    "id": "clr-017",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "1000 tiryo||missing_party": {
+    "id": "clr-018",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_payment_made"
+  },
+  "1000 tiryo": {
+    "id": "clr-018",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_payment_made"
+  },
+  "2000 paisa aayo||missing_party": {
+    "id": "clr-019",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_payment_received"
+  },
+  "2000 paisa aayo": {
+    "id": "clr-019",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_payment_received"
+  },
+  "5000 diye||missing_party": {
+    "id": "clr-020",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "5000 diye": {
+    "id": "clr-020",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "300 rupiya udhaar diye||missing_party": {
+    "id": "clr-021",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "300 rupiya udhaar diye": {
+    "id": "clr-021",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "1500 bata aayo||missing_party": {
+    "id": "clr-022",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_payment_received"
+  },
+  "1500 bata aayo": {
+    "id": "clr-022",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_payment_received"
+  },
+  "700 tiryo||missing_party": {
+    "id": "clr-023",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_payment_made"
+  },
+  "700 tiryo": {
+    "id": "clr-023",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_payment_made"
+  },
+  "2500 paisa diye||missing_party": {
+    "id": "clr-024",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "2500 paisa diye": {
+    "id": "clr-024",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "800 rupiya aayo||missing_party": {
+    "id": "clr-025",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_payment_received"
+  },
+  "800 rupiya aayo": {
+    "id": "clr-025",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_payment_received"
+  },
+  "1200 udhaar||missing_party": {
+    "id": "clr-026",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "1200 udhaar": {
+    "id": "clr-026",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "3500 tiryo||missing_party": {
+    "id": "clr-027",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_payment_made"
+  },
+  "3500 tiryo": {
+    "id": "clr-027",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_payment_made"
+  },
+  "600 rupiya udhaar diye||missing_party": {
+    "id": "clr-028",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "600 rupiya udhaar diye": {
+    "id": "clr-028",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "900 aayo||missing_party": {
+    "id": "clr-029",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_payment_received"
+  },
+  "900 aayo": {
+    "id": "clr-029",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_payment_received"
+  },
+  "4500 diye||missing_party": {
+    "id": "clr-030",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "4500 diye": {
+    "id": "clr-030",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "ram 500||ambiguous_direction": {
+    "id": "clr-031",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "ram 500": {
+    "id": "clr-060",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_balance"
+  },
+  "shyam 1000||ambiguous_direction": {
+    "id": "clr-032",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "shyam 1000": {
+    "id": "clr-061",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_credit"
+  },
+  "hari 2000 tiryo||ambiguous_direction": {
+    "id": "clr-033",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_made"
+  },
+  "hari 2000 tiryo": {
+    "id": "clr-033",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_made"
+  },
+  "gita 500 udhaar||ambiguous_direction": {
+    "id": "clr-034",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_credit_purchase"
+  },
+  "gita 500 udhaar": {
+    "id": "clr-034",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_credit_purchase"
+  },
+  "sita 1500||ambiguous_direction": {
+    "id": "clr-035",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "sita 1500": {
+    "id": "clr-035",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "krishna 3000||ambiguous_direction": {
+    "id": "clr-036",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "krishna 3000": {
+    "id": "clr-036",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "mina 700||ambiguous_direction": {
+    "id": "clr-037",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "mina 700": {
+    "id": "clr-037",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "raju 2500 tiryo||ambiguous_direction": {
+    "id": "clr-038",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_payment_received_or_payment_made"
+  },
+  "raju 2500 tiryo": {
+    "id": "clr-038",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_payment_received_or_payment_made"
+  },
+  "bikram 400||ambiguous_direction": {
+    "id": "clr-039",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "bikram 400": {
+    "id": "clr-039",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "sunita 1100||ambiguous_direction": {
+    "id": "clr-040",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "sunita 1100": {
+    "id": "clr-040",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "ramesh 800||ambiguous_direction": {
+    "id": "clr-041",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "ramesh 800": {
+    "id": "clr-041",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "sanjay 1600 tiryo||ambiguous_direction": {
+    "id": "clr-042",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_payment_received_or_payment_made"
+  },
+  "sanjay 1600 tiryo": {
+    "id": "clr-042",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_payment_received_or_payment_made"
+  },
+  "anita 900||ambiguous_direction": {
+    "id": "clr-043",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "anita 900": {
+    "id": "clr-043",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "prabhu 1300||ambiguous_direction": {
+    "id": "clr-044",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "prabhu 1300": {
+    "id": "clr-044",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "govinda 2200||ambiguous_direction": {
+    "id": "clr-045",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "govinda 2200": {
+    "id": "clr-045",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "laxmi 750||ambiguous_direction": {
+    "id": "clr-046",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "laxmi 750": {
+    "id": "clr-046",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "cement||unclear_intent": {
+    "id": "clr-047",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "cement": {
+    "id": "clr-047",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "paisa||unclear_intent": {
+    "id": "clr-048",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_payment"
+  },
+  "paisa": {
+    "id": "clr-048",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_payment"
+  },
+  "bhandar||unclear_intent": {
+    "id": "clr-049",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_inventory"
+  },
+  "bhandar": {
+    "id": "clr-049",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_inventory"
+  },
+  "chawal||unclear_intent": {
+    "id": "clr-050",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "chawal": {
+    "id": "clr-050",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "tel||unclear_intent": {
+    "id": "clr-051",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "tel": {
+    "id": "clr-051",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "chin||unclear_intent": {
+    "id": "clr-052",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "chin": {
+    "id": "clr-052",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "pitho||unclear_intent": {
+    "id": "clr-053",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "pitho": {
+    "id": "clr-053",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "dudh||unclear_intent": {
+    "id": "clr-054",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "dudh": {
+    "id": "clr-054",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "machha||unclear_intent": {
+    "id": "clr-055",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "machha": {
+    "id": "clr-055",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "sabji||unclear_intent": {
+    "id": "clr-056",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "sabji": {
+    "id": "clr-056",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "kapada||unclear_intent": {
+    "id": "clr-057",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "kapada": {
+    "id": "clr-057",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "gahana||unclear_intent": {
+    "id": "clr-058",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "gahana": {
+    "id": "clr-058",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "jagga||unclear_intent": {
+    "id": "clr-059",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "jagga": {
+    "id": "clr-059",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "ram 500||multiple_interpretations": {
+    "id": "clr-060",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_balance"
+  },
+  "shyam 1000||multiple_interpretations": {
+    "id": "clr-061",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_credit"
+  },
+  "hari 2000 udhaar||multiple_interpretations": {
+    "id": "clr-062",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_credit_purchase_or_balance"
+  },
+  "hari 2000 udhaar": {
+    "id": "clr-062",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_credit_purchase_or_balance"
+  },
+  "gita 1500||multiple_interpretations": {
+    "id": "clr-063",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_balance"
+  },
+  "gita 1500": {
+    "id": "clr-063",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_balance"
+  },
+  "sita 3000||multiple_interpretations": {
+    "id": "clr-064",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_deposit"
+  },
+  "sita 3000": {
+    "id": "clr-064",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_deposit"
+  },
+  "krishna 500||multiple_interpretations": {
+    "id": "clr-065",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_balance"
+  },
+  "krishna 500": {
+    "id": "clr-065",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_balance"
+  },
+  "mina 1200||multiple_interpretations": {
+    "id": "clr-066",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_purchase"
+  },
+  "mina 1200": {
+    "id": "clr-066",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_purchase"
+  },
+  "raju 800||multiple_interpretations": {
+    "id": "clr-067",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_sale"
+  },
+  "raju 800": {
+    "id": "clr-067",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_sale"
+  },
+  "bikram 2500||multiple_interpretations": {
+    "id": "clr-068",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_balance"
+  },
+  "bikram 2500": {
+    "id": "clr-068",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_balance"
+  },
+  "sunita 400||multiple_interpretations": {
+    "id": "clr-069",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_cash"
+  },
+  "sunita 400": {
+    "id": "clr-069",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_cash"
+  },
+  "ramesh 700||multiple_interpretations": {
+    "id": "clr-070",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_deposit"
+  },
+  "ramesh 700": {
+    "id": "clr-070",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_deposit"
+  },
+  "sanjay 1100||multiple_interpretations": {
+    "id": "clr-071",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_credit"
+  },
+  "sanjay 1100": {
+    "id": "clr-071",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_credit"
+  },
+  "anita 1600||multiple_interpretations": {
+    "id": "clr-072",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_balance"
+  },
+  "anita 1600": {
+    "id": "clr-072",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_balance"
+  },
+  "prabhu 900||multiple_interpretations": {
+    "id": "clr-073",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_balance"
+  },
+  "prabhu 900": {
+    "id": "clr-073",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_balance"
+  },
+  "govinda 1300||multiple_interpretations": {
+    "id": "clr-074",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_sale"
+  },
+  "govinda 1300": {
+    "id": "clr-074",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_sale"
+  },
+  "laxmi 2200||multiple_interpretations": {
+    "id": "clr-075",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_purchase"
+  },
+  "laxmi 2200": {
+    "id": "clr-075",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_purchase"
+  },
+  "suresh lai udhaar diye||missing_amount": {
+    "id": "clr-076",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "suresh lai udhaar diye": {
+    "id": "clr-076",
+    "error_type": "missing_amount",
+    "missing_entity": "amount",
+    "after_clarification_intent": "khata_credit_sale"
+  },
+  "10000 tiryo||missing_party": {
+    "id": "clr-077",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_payment_made"
+  },
+  "10000 tiryo": {
+    "id": "clr-077",
+    "error_type": "missing_party",
+    "missing_entity": "party",
+    "after_clarification_intent": "khata_payment_made"
+  },
+  "suresh 600||ambiguous_direction": {
+    "id": "clr-078",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "suresh 600": {
+    "id": "clr-078",
+    "error_type": "ambiguous_direction",
+    "missing_entity": "direction",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received"
+  },
+  "ghiu||unclear_intent": {
+    "id": "clr-079",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "ghiu": {
+    "id": "clr-079",
+    "error_type": "unclear_intent",
+    "missing_entity": "intent",
+    "after_clarification_intent": "khata_purchase_or_sale"
+  },
+  "suresh 1800||multiple_interpretations": {
+    "id": "clr-080",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_balance"
+  },
+  "suresh 1800": {
+    "id": "clr-080",
+    "error_type": "multiple_interpretations",
+    "missing_entity": "interpretation",
+    "after_clarification_intent": "khata_credit_sale_or_payment_received_or_balance"
+  }
+}

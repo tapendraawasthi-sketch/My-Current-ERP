@@ -1,0 +1,232 @@
+{
+  "correction_request": [
+    "cmix-001",
+    "cmix-040",
+    "cmix-046",
+    "cmix-054",
+    "cmix-063"
+  ],
+  "balance_inquiry": [
+    "cmix-002",
+    "cmix-056"
+  ],
+  "request_payment": [
+    "cmix-003"
+  ],
+  "account_request": [
+    "cmix-004"
+  ],
+  "outstanding_inquiry": [
+    "cmix-005"
+  ],
+  "deadline_inquiry": [
+    "cmix-006"
+  ],
+  "payment_verification": [
+    "cmix-007"
+  ],
+  "transfer_request": [
+    "cmix-008"
+  ],
+  "deposit_confirmation": [
+    "cmix-009"
+  ],
+  "debit_request": [
+    "cmix-010"
+  ],
+  "tax_inquiry": [
+    "cmix-011"
+  ],
+  "cancellation_request": [
+    "cmix-012"
+  ],
+  "technical_support": [
+    "cmix-013"
+  ],
+  "battery_inquiry": [
+    "cmix-014"
+  ],
+  "order_inquiry": [
+    "cmix-015"
+  ],
+  "delivery_inquiry": [
+    "cmix-016"
+  ],
+  "discount_inquiry": [
+    "cmix-017"
+  ],
+  "update_request": [
+    "cmix-018"
+  ],
+  "confirmation_check": [
+    "cmix-019"
+  ],
+  "complaint": [
+    "cmix-020"
+  ],
+  "approval_inquiry": [
+    "cmix-021"
+  ],
+  "salary_inquiry": [
+    "cmix-022"
+  ],
+  "reminder_request": [
+    "cmix-023"
+  ],
+  "invoice_request": [
+    "cmix-024",
+    "cmix-041"
+  ],
+  "payment_method_inquiry": [
+    "cmix-025"
+  ],
+  "deposit_inquiry": [
+    "cmix-026"
+  ],
+  "status_inquiry": [
+    "cmix-027",
+    "cmix-081"
+  ],
+  "forgotten_payment": [
+    "cmix-028"
+  ],
+  "verification_request": [
+    "cmix-029"
+  ],
+  "document_submission": [
+    "cmix-030"
+  ],
+  "finalization_request": [
+    "cmix-031"
+  ],
+  "price_inquiry": [
+    "cmix-032"
+  ],
+  "reset_request": [
+    "cmix-033"
+  ],
+  "system_status_inquiry": [
+    "cmix-034"
+  ],
+  "balance_due_inquiry": [
+    "cmix-035"
+  ],
+  "process_inquiry": [
+    "cmix-036"
+  ],
+  "cheque_status": [
+    "cmix-037"
+  ],
+  "access_request": [
+    "cmix-038"
+  ],
+  "investment_inquiry": [
+    "cmix-039"
+  ],
+  "payment_update": [
+    "cmix-042"
+  ],
+  "loan_balance_inquiry": [
+    "cmix-043"
+  ],
+  "approval_request": [
+    "cmix-044"
+  ],
+  "extension_request": [
+    "cmix-045"
+  ],
+  "rate_inquiry": [
+    "cmix-047"
+  ],
+  "statement_request": [
+    "cmix-048"
+  ],
+  "receipt_request": [
+    "cmix-049"
+  ],
+  "report_inquiry": [
+    "cmix-050"
+  ],
+  "otp_verification": [
+    "cmix-051"
+  ],
+  "due_date_inquiry": [
+    "cmix-052"
+  ],
+  "account_creation": [
+    "cmix-053"
+  ],
+  "upload_request": [
+    "cmix-055"
+  ],
+  "bill_inquiry": [
+    "cmix-057"
+  ],
+  "reconciliation_request": [
+    "cmix-058"
+  ],
+  "technical_request": [
+    "cmix-059"
+  ],
+  "security_inquiry": [
+    "cmix-060"
+  ],
+  "login_support": [
+    "cmix-061"
+  ],
+  "transaction_confirmation": [
+    "cmix-062"
+  ],
+  "document_request": [
+    "cmix-064",
+    "cmix-078"
+  ],
+  "renewal_request": [
+    "cmix-065"
+  ],
+  "password_change": [
+    "cmix-066"
+  ],
+  "fee_inquiry": [
+    "cmix-067"
+  ],
+  "request_process": [
+    "cmix-068"
+  ],
+  "progress_inquiry": [
+    "cmix-069"
+  ],
+  "modification_request": [
+    "cmix-070"
+  ],
+  "contact_request": [
+    "cmix-071"
+  ],
+  "deposit_request": [
+    "cmix-072"
+  ],
+  "update_inquiry": [
+    "cmix-073"
+  ],
+  "deployment_request": [
+    "cmix-074"
+  ],
+  "insurance_inquiry": [
+    "cmix-075"
+  ],
+  "credit_inquiry": [
+    "cmix-076"
+  ],
+  "presentation_request": [
+    "cmix-077"
+  ],
+  "refund_inquiry": [
+    "cmix-079"
+  ],
+  "booking_confirmation": [
+    "cmix-080"
+  ],
+  "data_request": [
+    "cmix-082"
+  ]
+}

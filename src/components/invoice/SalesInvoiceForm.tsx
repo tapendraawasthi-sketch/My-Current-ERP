@@ -47,6 +47,7 @@ import {
   TdsType,
 } from "@/lib/types";
 import toast from "react-hot-toast";
+import { consumeAiInvoiceDraft } from "@/ai/actions/invoiceDraft";
 import { PillTitle, FormPanel } from "@/components/BusyShell";
 import InvoiceLineItem, { InvoiceLineState } from "./InvoiceLineItem";
 import AttachmentUploader from "../ui/AttachmentUploader";
@@ -232,6 +233,53 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [saving, setSaving] = useState(false);
   const [savedInvoice, setSavedInvoice] = useState<any>(null);
+
+  // SUTRA AI invoice prefill
+  useEffect(() => {
+    if (invoiceId) return;
+    const draft = consumeAiInvoiceDraft();
+    if (!draft || draft.type !== type) return;
+
+    if (draft.partyId) {
+      setPartyId(draft.partyId);
+    } else if (draft.partyName) {
+      const match = parties.find(
+        (p) =>
+          p.name?.toLowerCase().includes(draft.partyName!.toLowerCase()) ||
+          p.nameNe?.toLowerCase().includes(draft.partyName!.toLowerCase()),
+      );
+      if (match) setPartyId(match.id);
+    }
+
+    if (draft.paymentMode === "cash") setPayMode(PaymentMode.CASH);
+    else if (draft.paymentMode === "credit") setPayMode(PaymentMode.CREDIT);
+    else if (draft.paymentMode === "bank") setPayMode(PaymentMode.BANK);
+
+    if (draft.lines?.length) {
+      const newLines = draft.lines.map((d) => {
+        const item = items.find(
+          (i) =>
+            i.name?.toLowerCase().includes((d.itemName ?? "").toLowerCase()) ||
+            (i as { nameNe?: string }).nameNe?.toLowerCase().includes((d.itemName ?? "").toLowerCase()) ||
+            i.id === d.itemId,
+        );
+        return {
+          ...emptyLine(),
+          itemId: item?.id || d.itemId || "",
+          itemName: item?.name || d.itemName || "",
+          itemCode: item?.code || "",
+          rate: d.rate ?? 0,
+          qty: d.qty ?? 1,
+          unit: d.unit || item?.unit || "",
+        };
+      });
+      setLines(newLines);
+    }
+
+    if (draft.narration) setNarration(draft.narration);
+    setDirty(true);
+    toast.success("SUTRA AI pre-filled this invoice");
+  }, [invoiceId, type, parties, items]);
 
   const [billSundries, setBillSundries] = useState<
     Array<{ id: string; name: string; type: "additive" | "subtractive"; amount: number }>

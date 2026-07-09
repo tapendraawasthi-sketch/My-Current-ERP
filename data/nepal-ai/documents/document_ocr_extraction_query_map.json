@@ -1,0 +1,752 @@
+{
+  "vat invoice": {
+    "id": "docex-001",
+    "document_type": "VAT Invoice",
+    "document_type_key": "vat_invoice"
+  },
+  "inv0ice n0: 2345": {
+    "id": "docex-001",
+    "document_type": "VAT Invoice",
+    "document_type_key": "vat_invoice"
+  },
+  "invoice 2345": {
+    "id": "docex-001",
+    "document_type": "VAT Invoice",
+    "document_type_key": "vat_invoice"
+  },
+  "invoice no 2345": {
+    "id": "docex-001",
+    "document_type": "VAT Invoice",
+    "document_type_key": "vat_invoice"
+  },
+  "citizenship card": {
+    "id": "docex-002",
+    "document_type": "Citizenship Card",
+    "document_type_key": "citizenship_card"
+  },
+  "नेपाi सरकार": {
+    "id": "docex-002",
+    "document_type": "Citizenship Card",
+    "document_type_key": "citizenship_card"
+  },
+  "land registration deed": {
+    "id": "docex-003",
+    "document_type": "Land Registration Deed",
+    "document_type_key": "land_registration_deed"
+  },
+  "लालपुर्जा नं: १२३४५": {
+    "id": "docex-003",
+    "document_type": "Land Registration Deed",
+    "document_type_key": "land_registration_deed"
+  },
+  "company registration certificate": {
+    "id": "docex-004",
+    "document_type": "Company Registration Certificate",
+    "document_type_key": "company_registration_certificate"
+  },
+  "company registrati0n certificate": {
+    "id": "docex-004",
+    "document_type": "Company Registration Certificate",
+    "document_type_key": "company_registration_certificate"
+  },
+  "pan 312345678": {
+    "id": "docex-004",
+    "document_type": "Company Registration Certificate",
+    "document_type_key": "company_registration_certificate"
+  },
+  "pan/vat registration": {
+    "id": "docex-005",
+    "document_type": "PAN/VAT Registration",
+    "document_type_key": "pan_vat_registration"
+  },
+  "pan vat registration": {
+    "id": "docex-005",
+    "document_type": "PAN/VAT Registration",
+    "document_type_key": "pan_vat_registration"
+  },
+  "permanent account number (pan)": {
+    "id": "docex-005",
+    "document_type": "PAN/VAT Registration",
+    "document_type_key": "pan_vat_registration"
+  },
+  "financial statement (profit & loss)": {
+    "id": "docex-006",
+    "document_type": "Financial Statement (Profit & Loss)",
+    "document_type_key": "financial_statement_profit_loss"
+  },
+  "financial statement profit loss": {
+    "id": "docex-006",
+    "document_type": "Financial Statement (Profit & Loss)",
+    "document_type_key": "financial_statement_profit_loss"
+  },
+  "financial statement": {
+    "id": "docex-006",
+    "document_type": "Financial Statement (Profit & Loss)",
+    "document_type_key": "financial_statement_profit_loss"
+  },
+  "profit & loss statememt": {
+    "id": "docex-006",
+    "document_type": "Financial Statement (Profit & Loss)",
+    "document_type_key": "financial_statement_profit_loss"
+  },
+  "balance sheet": {
+    "id": "docex-007",
+    "document_type": "Balance Sheet",
+    "document_type_key": "balance_sheet"
+  },
+  "balance sheet as 0f 2079/80": {
+    "id": "docex-007",
+    "document_type": "Balance Sheet",
+    "document_type_key": "balance_sheet"
+  },
+  "cash receipt": {
+    "id": "docex-008",
+    "document_type": "Cash Receipt",
+    "document_type_key": "cash_receipt"
+  },
+  "payment voucher": {
+    "id": "docex-009",
+    "document_type": "Payment Voucher",
+    "document_type_key": "payment_voucher"
+  },
+  "electricity bill": {
+    "id": "docex-010",
+    "document_type": "Electricity Bill",
+    "document_type_key": "electricity_bill"
+  },
+  "nepal electricity authority": {
+    "id": "docex-010",
+    "document_type": "Electricity Bill",
+    "document_type_key": "electricity_bill"
+  },
+  "water bill": {
+    "id": "docex-011",
+    "document_type": "Water Bill",
+    "document_type_key": "water_bill"
+  },
+  "kathmandu upatyaka khanepani limited": {
+    "id": "docex-011",
+    "document_type": "Water Bill",
+    "document_type_key": "water_bill"
+  },
+  "telephone bill": {
+    "id": "docex-012",
+    "document_type": "Telephone Bill",
+    "document_type_key": "telephone_bill"
+  },
+  "nepal telecom (nt) bill": {
+    "id": "docex-012",
+    "document_type": "Telephone Bill",
+    "document_type_key": "telephone_bill"
+  },
+  "tax clearance certificate": {
+    "id": "docex-013",
+    "document_type": "Tax Clearance Certificate",
+    "document_type_key": "tax_clearance_certificate"
+  },
+  "government of nepal": {
+    "id": "docex-013",
+    "document_type": "Tax Clearance Certificate",
+    "document_type_key": "tax_clearance_certificate"
+  },
+  "vehicle registration certificate": {
+    "id": "docex-014",
+    "document_type": "Vehicle Registration Certificate",
+    "document_type_key": "vehicle_registration_certificate"
+  },
+  "passport (nepali)": {
+    "id": "docex-015",
+    "document_type": "Passport (Nepali)",
+    "document_type_key": "passport_nepali"
+  },
+  "passport nepali": {
+    "id": "docex-015",
+    "document_type": "Passport (Nepali)",
+    "document_type_key": "passport_nepali"
+  },
+  "passport": {
+    "id": "docex-015",
+    "document_type": "Passport (Nepali)",
+    "document_type_key": "passport_nepali"
+  },
+  "passport nepal": {
+    "id": "docex-015",
+    "document_type": "Passport (Nepali)",
+    "document_type_key": "passport_nepali"
+  },
+  "vat invoice (handwritten)": {
+    "id": "docex-016",
+    "document_type": "VAT Invoice (Handwritten)",
+    "document_type_key": "vat_invoice_handwritten"
+  },
+  "vat invoice handwritten": {
+    "id": "docex-016",
+    "document_type": "VAT Invoice (Handwritten)",
+    "document_type_key": "vat_invoice_handwritten"
+  },
+  "inv0ice - 0023": {
+    "id": "docex-016",
+    "document_type": "VAT Invoice (Handwritten)",
+    "document_type_key": "vat_invoice_handwritten"
+  },
+  "invoice 0023": {
+    "id": "docex-016",
+    "document_type": "VAT Invoice (Handwritten)",
+    "document_type_key": "vat_invoice_handwritten"
+  },
+  "invoice no 0023": {
+    "id": "docex-016",
+    "document_type": "VAT Invoice (Handwritten)",
+    "document_type_key": "vat_invoice_handwritten"
+  },
+  "bank deposit slip": {
+    "id": "docex-017",
+    "document_type": "Bank Deposit Slip",
+    "document_type_key": "bank_deposit_slip"
+  },
+  "deposit slip": {
+    "id": "docex-017",
+    "document_type": "Bank Deposit Slip",
+    "document_type_key": "bank_deposit_slip"
+  },
+  "check leaf": {
+    "id": "docex-018",
+    "document_type": "Check Leaf",
+    "document_type_key": "check_leaf"
+  },
+  "salary slip": {
+    "id": "docex-019",
+    "document_type": "Salary Slip",
+    "document_type_key": "salary_slip"
+  },
+  "purchase order": {
+    "id": "docex-020",
+    "document_type": "Purchase Order",
+    "document_type_key": "purchase_order"
+  },
+  "invoice (billing)": {
+    "id": "docex-021",
+    "document_type": "Invoice (Billing)",
+    "document_type_key": "invoice_billing"
+  },
+  "invoice billing": {
+    "id": "docex-021",
+    "document_type": "Invoice (Billing)",
+    "document_type_key": "invoice_billing"
+  },
+  "invoice": {
+    "id": "docex-021",
+    "document_type": "Invoice (Billing)",
+    "document_type_key": "invoice_billing"
+  },
+  "invoice inv-2023-001": {
+    "id": "docex-021",
+    "document_type": "Invoice (Billing)",
+    "document_type_key": "invoice_billing"
+  },
+  "invoice no inv-2023-001": {
+    "id": "docex-021",
+    "document_type": "Invoice (Billing)",
+    "document_type_key": "invoice_billing"
+  },
+  "land ownership certificate": {
+    "id": "docex-022",
+    "document_type": "Land Ownership Certificate",
+    "document_type_key": "land_ownership_certificate"
+  },
+  "भूमि स्वामित्व प्रमाणपत्र": {
+    "id": "docex-022",
+    "document_type": "Land Ownership Certificate",
+    "document_type_key": "land_ownership_certificate"
+  },
+  "rental agreement": {
+    "id": "docex-023",
+    "document_type": "Rental Agreement",
+    "document_type_key": "rental_agreement"
+  },
+  "birth certificate": {
+    "id": "docex-024",
+    "document_type": "Birth Certificate",
+    "document_type_key": "birth_certificate"
+  },
+  "जन्म दर्ता प्रमाणपत्र": {
+    "id": "docex-024",
+    "document_type": "Birth Certificate",
+    "document_type_key": "birth_certificate"
+  },
+  "marriage registration certificate": {
+    "id": "docex-025",
+    "document_type": "Marriage Registration Certificate",
+    "document_type_key": "marriage_registration_certificate"
+  },
+  "विवाह दर्ता प्रमाणपत्र": {
+    "id": "docex-025",
+    "document_type": "Marriage Registration Certificate",
+    "document_type_key": "marriage_registration_certificate"
+  },
+  "death certificate": {
+    "id": "docex-026",
+    "document_type": "Death Certificate",
+    "document_type_key": "death_certificate"
+  },
+  "मृत्यु दर्ता प्रमाणपत्र": {
+    "id": "docex-026",
+    "document_type": "Death Certificate",
+    "document_type_key": "death_certificate"
+  },
+  "academic transcript": {
+    "id": "docex-027",
+    "document_type": "Academic Transcript",
+    "document_type_key": "academic_transcript"
+  },
+  "character certificate": {
+    "id": "docex-028",
+    "document_type": "Character Certificate",
+    "document_type_key": "character_certificate"
+  },
+  "police clearance report": {
+    "id": "docex-029",
+    "document_type": "Police Clearance Report",
+    "document_type_key": "police_clearance_report"
+  },
+  "medical prescription": {
+    "id": "docex-030",
+    "document_type": "Medical Prescription",
+    "document_type_key": "medical_prescription"
+  },
+  "prescription": {
+    "id": "docex-030",
+    "document_type": "Medical Prescription",
+    "document_type_key": "medical_prescription"
+  },
+  "lab report": {
+    "id": "docex-031",
+    "document_type": "Lab Report",
+    "document_type_key": "lab_report"
+  },
+  "insurance policy": {
+    "id": "docex-032",
+    "document_type": "Insurance Policy",
+    "document_type_key": "insurance_policy"
+  },
+  "loan application": {
+    "id": "docex-033",
+    "document_type": "Loan Application",
+    "document_type_key": "loan_application"
+  },
+  "trade license": {
+    "id": "docex-034",
+    "document_type": "Trade License",
+    "document_type_key": "trade_license"
+  },
+  "vehicle fitness certificate": {
+    "id": "docex-035",
+    "document_type": "Vehicle Fitness Certificate",
+    "document_type_key": "vehicle_fitness_certificate"
+  },
+  "caste certificate": {
+    "id": "docex-036",
+    "document_type": "Caste Certificate",
+    "document_type_key": "caste_certificate"
+  },
+  "जात प्रमाणपत्र": {
+    "id": "docex-036",
+    "document_type": "Caste Certificate",
+    "document_type_key": "caste_certificate"
+  },
+  "income tax return form": {
+    "id": "docex-037",
+    "document_type": "Income Tax Return Form",
+    "document_type_key": "income_tax_return_form"
+  },
+  "property valuation report": {
+    "id": "docex-038",
+    "document_type": "Property Valuation Report",
+    "document_type_key": "property_valuation_report"
+  },
+  "audit report": {
+    "id": "docex-039",
+    "document_type": "Audit Report",
+    "document_type_key": "audit_report"
+  },
+  "contract agreement": {
+    "id": "docex-040",
+    "document_type": "Contract Agreement",
+    "document_type_key": "contract_agreement"
+  },
+  "minutes of meeting": {
+    "id": "docex-041",
+    "document_type": "Minutes of Meeting",
+    "document_type_key": "minutes_of_meeting"
+  },
+  "export invoice": {
+    "id": "docex-042",
+    "document_type": "Export Invoice",
+    "document_type_key": "export_invoice"
+  },
+  "invoice ex-2023-045": {
+    "id": "docex-042",
+    "document_type": "Export Invoice",
+    "document_type_key": "export_invoice"
+  },
+  "invoice no ex-2023-045": {
+    "id": "docex-042",
+    "document_type": "Export Invoice",
+    "document_type_key": "export_invoice"
+  },
+  "import license": {
+    "id": "docex-043",
+    "document_type": "Import License",
+    "document_type_key": "import_license"
+  },
+  "customs declaration": {
+    "id": "docex-044",
+    "document_type": "Customs Declaration",
+    "document_type_key": "customs_declaration"
+  },
+  "bank statement": {
+    "id": "docex-045",
+    "document_type": "Bank Statement",
+    "document_type_key": "bank_statement"
+  },
+  "credit card statement": {
+    "id": "docex-046",
+    "document_type": "Credit Card Statement",
+    "document_type_key": "credit_card_statement"
+  },
+  "deposit certificate (fixed deposit)": {
+    "id": "docex-047",
+    "document_type": "Deposit Certificate (Fixed Deposit)",
+    "document_type_key": "deposit_certificate_fixed_deposit"
+  },
+  "deposit certificate fixed deposit": {
+    "id": "docex-047",
+    "document_type": "Deposit Certificate (Fixed Deposit)",
+    "document_type_key": "deposit_certificate_fixed_deposit"
+  },
+  "deposit certificate": {
+    "id": "docex-047",
+    "document_type": "Deposit Certificate (Fixed Deposit)",
+    "document_type_key": "deposit_certificate_fixed_deposit"
+  },
+  "fixed deposit certificate": {
+    "id": "docex-047",
+    "document_type": "Deposit Certificate (Fixed Deposit)",
+    "document_type_key": "deposit_certificate_fixed_deposit"
+  },
+  "share certificate": {
+    "id": "docex-048",
+    "document_type": "Share Certificate",
+    "document_type_key": "share_certificate"
+  },
+  "tax invoice with stamp": {
+    "id": "docex-049",
+    "document_type": "Tax Invoice with Stamp",
+    "document_type_key": "tax_invoice_with_stamp"
+  },
+  "tax invoice": {
+    "id": "docex-049",
+    "document_type": "Tax Invoice with Stamp",
+    "document_type_key": "tax_invoice_with_stamp"
+  },
+  "invoice ti-1234": {
+    "id": "docex-049",
+    "document_type": "Tax Invoice with Stamp",
+    "document_type_key": "tax_invoice_with_stamp"
+  },
+  "invoice no ti-1234": {
+    "id": "docex-049",
+    "document_type": "Tax Invoice with Stamp",
+    "document_type_key": "tax_invoice_with_stamp"
+  },
+  "rent receipt": {
+    "id": "docex-050",
+    "document_type": "Rent Receipt",
+    "document_type_key": "rent_receipt"
+  },
+  "electricity bill (with table)": {
+    "id": "docex-051",
+    "document_type": "Electricity Bill (with table)",
+    "document_type_key": "electricity_bill_with_table"
+  },
+  "electricity bill with table": {
+    "id": "docex-051",
+    "document_type": "Electricity Bill (with table)",
+    "document_type_key": "electricity_bill_with_table"
+  },
+  "water bill (with table)": {
+    "id": "docex-052",
+    "document_type": "Water Bill (with table)",
+    "document_type_key": "water_bill_with_table"
+  },
+  "water bill with table": {
+    "id": "docex-052",
+    "document_type": "Water Bill (with table)",
+    "document_type_key": "water_bill_with_table"
+  },
+  "vehicle tax token": {
+    "id": "docex-053",
+    "document_type": "Vehicle Tax Token",
+    "document_type_key": "vehicle_tax_token"
+  },
+  "municipal tax receipt": {
+    "id": "docex-054",
+    "document_type": "Municipal Tax Receipt",
+    "document_type_key": "municipal_tax_receipt"
+  },
+  "driving license": {
+    "id": "docex-055",
+    "document_type": "Driving License",
+    "document_type_key": "driving_license"
+  },
+  "voter id card": {
+    "id": "docex-056",
+    "document_type": "Voter ID Card",
+    "document_type_key": "voter_id_card"
+  },
+  "national id card (nepal)": {
+    "id": "docex-057",
+    "document_type": "National ID Card (Nepal)",
+    "document_type_key": "national_id_card_nepal"
+  },
+  "national id card nepal": {
+    "id": "docex-057",
+    "document_type": "National ID Card (Nepal)",
+    "document_type_key": "national_id_card_nepal"
+  },
+  "national id card": {
+    "id": "docex-057",
+    "document_type": "National ID Card (Nepal)",
+    "document_type_key": "national_id_card_nepal"
+  },
+  "social security card": {
+    "id": "docex-058",
+    "document_type": "Social Security Card",
+    "document_type_key": "social_security_card"
+  },
+  "hospital admission form": {
+    "id": "docex-059",
+    "document_type": "Hospital Admission Form",
+    "document_type_key": "hospital_admission_form"
+  },
+  "discharge summary": {
+    "id": "docex-060",
+    "document_type": "Discharge Summary",
+    "document_type_key": "discharge_summary"
+  },
+  "invoice with multiple items": {
+    "id": "docex-061",
+    "document_type": "Invoice with Multiple Items",
+    "document_type_key": "invoice_with_multiple_items"
+  },
+  "invoice 001234": {
+    "id": "docex-061",
+    "document_type": "Invoice with Multiple Items",
+    "document_type_key": "invoice_with_multiple_items"
+  },
+  "invoice no 001234": {
+    "id": "docex-061",
+    "document_type": "Invoice with Multiple Items",
+    "document_type_key": "invoice_with_multiple_items"
+  },
+  "quotation": {
+    "id": "docex-062",
+    "document_type": "Quotation",
+    "document_type_key": "quotation"
+  },
+  "delivery challan": {
+    "id": "docex-063",
+    "document_type": "Delivery Challan",
+    "document_type_key": "delivery_challan"
+  },
+  "bill of lading": {
+    "id": "docex-064",
+    "document_type": "Bill of Lading",
+    "document_type_key": "bill_of_lading"
+  },
+  "cheque book request": {
+    "id": "docex-065",
+    "document_type": "Cheque Book Request",
+    "document_type_key": "cheque_book_request"
+  },
+  "deposit slip (nepali)": {
+    "id": "docex-066",
+    "document_type": "Deposit Slip (Nepali)",
+    "document_type_key": "deposit_slip_nepali"
+  },
+  "deposit slip nepali": {
+    "id": "docex-066",
+    "document_type": "Deposit Slip (Nepali)",
+    "document_type_key": "deposit_slip_nepali"
+  },
+  "निक्षेप पर्ची": {
+    "id": "docex-066",
+    "document_type": "Deposit Slip (Nepali)",
+    "document_type_key": "deposit_slip_nepali"
+  },
+  "withdrawal slip": {
+    "id": "docex-067",
+    "document_type": "Withdrawal Slip",
+    "document_type_key": "withdrawal_slip"
+  },
+  "statement of account": {
+    "id": "docex-068",
+    "document_type": "Statement of Account",
+    "document_type_key": "statement_of_account"
+  },
+  "payroll register": {
+    "id": "docex-069",
+    "document_type": "Payroll Register",
+    "document_type_key": "payroll_register"
+  },
+  "stock ledger": {
+    "id": "docex-070",
+    "document_type": "Stock Ledger",
+    "document_type_key": "stock_ledger"
+  },
+  "sales invoice with discount": {
+    "id": "docex-071",
+    "document_type": "Sales Invoice with Discount",
+    "document_type_key": "sales_invoice_with_discount"
+  },
+  "sales invoice": {
+    "id": "docex-071",
+    "document_type": "Sales Invoice with Discount",
+    "document_type_key": "sales_invoice_with_discount"
+  },
+  "purchase invoice": {
+    "id": "docex-072",
+    "document_type": "Purchase Invoice",
+    "document_type_key": "purchase_invoice"
+  },
+  "gst invoice": {
+    "id": "docex-073",
+    "document_type": "GST Invoice",
+    "document_type_key": "gst_invoice"
+  },
+  "invoice gst-001": {
+    "id": "docex-073",
+    "document_type": "GST Invoice",
+    "document_type_key": "gst_invoice"
+  },
+  "invoice no gst-001": {
+    "id": "docex-073",
+    "document_type": "GST Invoice",
+    "document_type_key": "gst_invoice"
+  },
+  "proforma invoice": {
+    "id": "docex-074",
+    "document_type": "Proforma Invoice",
+    "document_type_key": "proforma_invoice"
+  },
+  "credit note": {
+    "id": "docex-075",
+    "document_type": "Credit Note",
+    "document_type_key": "credit_note"
+  },
+  "debit note": {
+    "id": "docex-076",
+    "document_type": "Debit Note",
+    "document_type_key": "debit_note"
+  },
+  "service tax invoice": {
+    "id": "docex-077",
+    "document_type": "Service Tax Invoice",
+    "document_type_key": "service_tax_invoice"
+  },
+  "invoice st-2023-001": {
+    "id": "docex-077",
+    "document_type": "Service Tax Invoice",
+    "document_type_key": "service_tax_invoice"
+  },
+  "invoice no st-2023-001": {
+    "id": "docex-077",
+    "document_type": "Service Tax Invoice",
+    "document_type_key": "service_tax_invoice"
+  },
+  "insurance claim form": {
+    "id": "docex-078",
+    "document_type": "Insurance Claim Form",
+    "document_type_key": "insurance_claim_form"
+  },
+  "settlement statement": {
+    "id": "docex-079",
+    "document_type": "Settlement Statement",
+    "document_type_key": "settlement_statement"
+  },
+  "receipt with stamp overlay": {
+    "id": "docex-080",
+    "document_type": "Receipt with Stamp Overlay",
+    "document_type_key": "receipt_with_stamp_overlay"
+  },
+  "handwritten nepali invoice": {
+    "id": "docex-081",
+    "document_type": "Handwritten Nepali Invoice",
+    "document_type_key": "handwritten_nepali_invoice"
+  },
+  "हस्तलिखित बीजक": {
+    "id": "docex-081",
+    "document_type": "Handwritten Nepali Invoice",
+    "document_type_key": "handwritten_nepali_invoice"
+  },
+  "invoice १२३": {
+    "id": "docex-081",
+    "document_type": "Handwritten Nepali Invoice",
+    "document_type_key": "handwritten_nepali_invoice"
+  },
+  "invoice no १२३": {
+    "id": "docex-081",
+    "document_type": "Handwritten Nepali Invoice",
+    "document_type_key": "handwritten_nepali_invoice"
+  },
+  "mixed devanagari-roman invoice": {
+    "id": "docex-082",
+    "document_type": "Mixed Devanagari-Roman Invoice",
+    "document_type_key": "mixed_devanagari_roman_invoice"
+  },
+  "mixed devanagari roman invoice": {
+    "id": "docex-082",
+    "document_type": "Mixed Devanagari-Roman Invoice",
+    "document_type_key": "mixed_devanagari_roman_invoice"
+  },
+  "table: column alignment in financial statement": {
+    "id": "docex-083",
+    "document_type": "Table: Column Alignment in Financial Statement",
+    "document_type_key": "table_column_alignment_in_financial_statement"
+  },
+  "table column alignment in financial statement": {
+    "id": "docex-083",
+    "document_type": "Table: Column Alignment in Financial Statement",
+    "document_type_key": "table_column_alignment_in_financial_statement"
+  },
+  "profit & loss": {
+    "id": "docex-083",
+    "document_type": "Table: Column Alignment in Financial Statement",
+    "document_type_key": "table_column_alignment_in_financial_statement"
+  },
+  "table: balance sheet with columns": {
+    "id": "docex-084",
+    "document_type": "Table: Balance Sheet with Columns",
+    "document_type_key": "table_balance_sheet_with_columns"
+  },
+  "table balance sheet with columns": {
+    "id": "docex-084",
+    "document_type": "Table: Balance Sheet with Columns",
+    "document_type_key": "table_balance_sheet_with_columns"
+  },
+  "stamp overlay on numeric values": {
+    "id": "docex-085",
+    "document_type": "Stamp Overlay on Numeric Values",
+    "document_type_key": "stamp_overlay_on_numeric_values"
+  },
+  "handwritten nepali with numbers": {
+    "id": "docex-086",
+    "document_type": "Handwritten Nepali with Numbers",
+    "document_type_key": "handwritten_nepali_with_numbers"
+  },
+  "हस्तलिखित रसिद": {
+    "id": "docex-086",
+    "document_type": "Handwritten Nepali with Numbers",
+    "document_type_key": "handwritten_nepali_with_numbers"
+  }
+}

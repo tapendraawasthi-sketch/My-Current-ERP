@@ -1,0 +1,586 @@
+{
+  "ko naam ma cheque": {
+    "role_bucket": "owner",
+    "transaction_role": "payee (cheque)",
+    "name_kind": "name",
+    "pattern_id": "pp-048",
+    "priority": 40,
+    "pattern": "name + ko naam ma cheque"
+  },
+  "bata maal kineko": {
+    "role_bucket": "source",
+    "transaction_role": "vendor",
+    "name_kind": "shop_name",
+    "pattern_id": "pp-061",
+    "priority": 35,
+    "pattern": "shop_name + bata maal kineko"
+  },
+  "lai order diyo": {
+    "role_bucket": "recipient",
+    "transaction_role": "order recipient (shop)",
+    "name_kind": "shop_name",
+    "pattern_id": "pp-062",
+    "priority": 35,
+    "pattern": "shop_name + lai order diyo"
+  },
+  "ko account ma": {
+    "role_bucket": "owner",
+    "transaction_role": "account owner",
+    "name_kind": "full_name",
+    "pattern_id": "pp-070",
+    "priority": 35,
+    "pattern": "full_name + ko account ma"
+  },
+  "le bill diyo": {
+    "role_bucket": "agent",
+    "transaction_role": "bill issuer (shop)",
+    "name_kind": "shop_name",
+    "pattern_id": "pp-076",
+    "priority": 35,
+    "pattern": "shop_name + le bill diyo"
+  },
+  "le kin yo": {
+    "role_bucket": "agent",
+    "transaction_role": "buyer",
+    "name_kind": "first_name",
+    "pattern_id": "pp-012",
+    "priority": 30,
+    "pattern": "first_name + le kin yo"
+  },
+  "le kinyo": {
+    "role_bucket": "agent",
+    "transaction_role": "buyer",
+    "name_kind": "first_name",
+    "pattern_id": "pp-012",
+    "priority": 30,
+    "pattern": "first_name + le kin yo"
+  },
+  "le kineko": {
+    "role_bucket": "agent",
+    "transaction_role": "buyer",
+    "name_kind": "first_name",
+    "pattern_id": "pp-012",
+    "priority": 30,
+    "pattern": "first_name + le kin yo"
+  },
+  "bata kin yo": {
+    "role_bucket": "source",
+    "transaction_role": "seller/source",
+    "name_kind": "first_name",
+    "pattern_id": "pp-013",
+    "priority": 30,
+    "pattern": "first_name + bata kin yo"
+  },
+  "bata kinyo": {
+    "role_bucket": "source",
+    "transaction_role": "seller/source",
+    "name_kind": "first_name",
+    "pattern_id": "pp-013",
+    "priority": 30,
+    "pattern": "first_name + bata kin yo"
+  },
+  "bata kineko": {
+    "role_bucket": "source",
+    "transaction_role": "seller/source",
+    "name_kind": "first_name",
+    "pattern_id": "pp-013",
+    "priority": 30,
+    "pattern": "first_name + bata kin yo"
+  },
+  "lai rupaiya diyo": {
+    "role_bucket": "recipient",
+    "transaction_role": "recipient",
+    "name_kind": "first_name",
+    "pattern_id": "pp-015",
+    "priority": 30,
+    "pattern": "first_name + lai rupaiya diyo"
+  },
+  "bata rupaiya liyo": {
+    "role_bucket": "source",
+    "transaction_role": "source/sender",
+    "name_kind": "first_name",
+    "pattern_id": "pp-016",
+    "priority": 30,
+    "pattern": "first_name + bata rupaiya liyo"
+  },
+  "lai bill pathaunu": {
+    "role_bucket": "recipient",
+    "transaction_role": "recipient (bill)",
+    "name_kind": "first_name",
+    "pattern_id": "pp-038",
+    "priority": 30,
+    "pattern": "first_name + lai bill pathaunu"
+  },
+  "lai paisa bhayo": {
+    "role_bucket": "recipient",
+    "transaction_role": "payee",
+    "name_kind": "first_name",
+    "pattern_id": "pp-039",
+    "priority": 30,
+    "pattern": "first_name + lai paisa bhayo"
+  },
+  "le paisa diyo": {
+    "role_bucket": "agent",
+    "transaction_role": "payer",
+    "name_kind": "first_name",
+    "pattern_id": "pp-040",
+    "priority": 30,
+    "pattern": "first_name + le paisa diyo"
+  },
+  "bata rupaiya aayo": {
+    "role_bucket": "source",
+    "transaction_role": "source of funds",
+    "name_kind": "first_name",
+    "pattern_id": "pp-041",
+    "priority": 30,
+    "pattern": "first_name + bata rupaiya aayo"
+  },
+  "lai credit diyo": {
+    "role_bucket": "recipient",
+    "transaction_role": "credit recipient",
+    "name_kind": "name",
+    "pattern_id": "pp-043",
+    "priority": 30,
+    "pattern": "name + lai credit diyo"
+  },
+  "bata credit liyo": {
+    "role_bucket": "source",
+    "transaction_role": "credit provider",
+    "name_kind": "name",
+    "pattern_id": "pp-044",
+    "priority": 30,
+    "pattern": "name + bata credit liyo"
+  },
+  "lai udhar diyo": {
+    "role_bucket": "recipient",
+    "transaction_role": "debtor/recipient",
+    "name_kind": "name",
+    "pattern_id": "pp-045",
+    "priority": 30,
+    "pattern": "name + lai udhar diyo"
+  },
+  "lai udhaar diyo": {
+    "role_bucket": "recipient",
+    "transaction_role": "debtor/recipient",
+    "name_kind": "name",
+    "pattern_id": "pp-045",
+    "priority": 30,
+    "pattern": "name + lai udhar diyo"
+  },
+  "lai udharo diyo": {
+    "role_bucket": "recipient",
+    "transaction_role": "debtor/recipient",
+    "name_kind": "name",
+    "pattern_id": "pp-045",
+    "priority": 30,
+    "pattern": "name + lai udhar diyo"
+  },
+  "le udhar liyo": {
+    "role_bucket": "recipient",
+    "transaction_role": "debtor",
+    "name_kind": "name",
+    "pattern_id": "pp-046",
+    "priority": 30,
+    "pattern": "name + le udhar liyo"
+  },
+  "le udhaar liyo": {
+    "role_bucket": "recipient",
+    "transaction_role": "debtor",
+    "name_kind": "name",
+    "pattern_id": "pp-046",
+    "priority": 30,
+    "pattern": "name + le udhar liyo"
+  },
+  "le udharo liyo": {
+    "role_bucket": "recipient",
+    "transaction_role": "debtor",
+    "name_kind": "name",
+    "pattern_id": "pp-046",
+    "priority": 30,
+    "pattern": "name + le udhar liyo"
+  },
+  "sanga paisa mageko": {
+    "role_bucket": "recipient",
+    "transaction_role": "debtor/asked party",
+    "name_kind": "name",
+    "pattern_id": "pp-047",
+    "priority": 30,
+    "pattern": "name + sanga paisa mageko"
+  },
+  "lai draft kateko": {
+    "role_bucket": "recipient",
+    "transaction_role": "draft beneficiary",
+    "name_kind": "name",
+    "pattern_id": "pp-049",
+    "priority": 30,
+    "pattern": "name + lai draft kateko"
+  },
+  "le voucher diyo": {
+    "role_bucket": "agent",
+    "transaction_role": "issuer",
+    "name_kind": "name",
+    "pattern_id": "pp-050",
+    "priority": 30,
+    "pattern": "name + le voucher diyo"
+  },
+  "lai voucher diyo": {
+    "role_bucket": "recipient",
+    "transaction_role": "voucher recipient",
+    "name_kind": "name",
+    "pattern_id": "pp-051",
+    "priority": 30,
+    "pattern": "name + lai voucher diyo"
+  },
+  "lai settle gareko": {
+    "role_bucket": "recipient",
+    "transaction_role": "payment recipient",
+    "name_kind": "first_name",
+    "pattern_id": "pp-054",
+    "priority": 30,
+    "pattern": "first_name + lai settle gareko"
+  },
+  "bata settle liyo": {
+    "role_bucket": "agent",
+    "transaction_role": "payer",
+    "name_kind": "first_name",
+    "pattern_id": "pp-055",
+    "priority": 30,
+    "pattern": "first_name + bata settle liyo"
+  },
+  "sanga hisab milayo": {
+    "role_bucket": "counterparty",
+    "transaction_role": "counterparty",
+    "name_kind": "first_name",
+    "pattern_id": "pp-056",
+    "priority": 30,
+    "pattern": "first_name + sanga hisab milayo"
+  },
+  "lai maal pathayo": {
+    "role_bucket": "recipient",
+    "transaction_role": "goods receiver",
+    "name_kind": "first_name",
+    "pattern_id": "pp-059",
+    "priority": 30,
+    "pattern": "first_name + lai maal pathayo"
+  },
+  "bata maal aayo": {
+    "role_bucket": "source",
+    "transaction_role": "goods sender/source",
+    "name_kind": "first_name",
+    "pattern_id": "pp-060",
+    "priority": 30,
+    "pattern": "first_name + bata maal aayo"
+  },
+  "lai phone gare": {
+    "role_bucket": "recipient",
+    "transaction_role": "callee",
+    "name_kind": "first_name",
+    "pattern_id": "pp-063",
+    "priority": 30,
+    "pattern": "first_name + lai phone gare"
+  },
+  "le phone gare": {
+    "role_bucket": "agent",
+    "transaction_role": "caller",
+    "name_kind": "first_name",
+    "pattern_id": "pp-064",
+    "priority": 30,
+    "pattern": "first_name + le phone gare"
+  },
+  "sanga deal gare": {
+    "role_bucket": "counterparty",
+    "transaction_role": "deal counterparty",
+    "name_kind": "first_name",
+    "pattern_id": "pp-065",
+    "priority": 30,
+    "pattern": "first_name + sanga deal gare"
+  },
+  "bata cash liyo": {
+    "role_bucket": "source",
+    "transaction_role": "cash source",
+    "name_kind": "first_name",
+    "pattern_id": "pp-068",
+    "priority": 30,
+    "pattern": "first_name + bata cash liyo"
+  },
+  "lai cash diyo": {
+    "role_bucket": "recipient",
+    "transaction_role": "cash recipient",
+    "name_kind": "first_name",
+    "pattern_id": "pp-069",
+    "priority": 30,
+    "pattern": "first_name + lai cash diyo"
+  },
+  "lai esewa pathayo": {
+    "role_bucket": "recipient",
+    "transaction_role": "eSewa recipient",
+    "name_kind": "first_name",
+    "pattern_id": "pp-072",
+    "priority": 30,
+    "pattern": "first_name + lai esewa pathayo"
+  },
+  "bata esewa aayo": {
+    "role_bucket": "source",
+    "transaction_role": "eSewa sender",
+    "name_kind": "first_name",
+    "pattern_id": "pp-073",
+    "priority": 30,
+    "pattern": "first_name + bata esewa aayo"
+  },
+  "lai khalti ma": {
+    "role_bucket": "recipient",
+    "transaction_role": "Khalti wallet recipient",
+    "name_kind": "first_name",
+    "pattern_id": "pp-074",
+    "priority": 30,
+    "pattern": "first_name + lai khalti ma"
+  },
+  "bata khalti bata": {
+    "role_bucket": "source",
+    "transaction_role": "Khalti sender",
+    "name_kind": "first_name",
+    "pattern_id": "pp-075",
+    "priority": 30,
+    "pattern": "first_name + bata khalti bata"
+  },
+  "bata baki uthaunu": {
+    "role_bucket": "source",
+    "transaction_role": "creditor (to collect)",
+    "name_kind": "first_name",
+    "pattern_id": "pp-078",
+    "priority": 30,
+    "pattern": "first_name + bata baki uthaunu"
+  },
+  "lai baki tirna": {
+    "role_bucket": "recipient",
+    "transaction_role": "creditor (to pay)",
+    "name_kind": "first_name",
+    "pattern_id": "pp-079",
+    "priority": 30,
+    "pattern": "first_name + lai baki tirna"
+  },
+  "ko lagi": {
+    "role_bucket": "recipient",
+    "transaction_role": "beneficiary",
+    "name_kind": "first_name",
+    "pattern_id": "pp-007",
+    "priority": 20,
+    "pattern": "first_name + ko lagi"
+  },
+  "lai diyo": {
+    "role_bucket": "recipient",
+    "transaction_role": "recipient",
+    "name_kind": "first_name",
+    "pattern_id": "pp-009",
+    "priority": 20,
+    "pattern": "first_name + lai diyo"
+  },
+  "le diyo": {
+    "role_bucket": "agent",
+    "transaction_role": "payer/giver",
+    "name_kind": "first_name",
+    "pattern_id": "pp-010",
+    "priority": 20,
+    "pattern": "first_name + le diyo"
+  },
+  "lai bechyo": {
+    "role_bucket": "recipient",
+    "transaction_role": "buyer/recipient",
+    "name_kind": "first_name",
+    "pattern_id": "pp-011",
+    "priority": 20,
+    "pattern": "first_name + lai bechyo"
+  },
+  "sanga bechyo": {
+    "role_bucket": "counterparty",
+    "transaction_role": "buyer/counterparty",
+    "name_kind": "first_name",
+    "pattern_id": "pp-014",
+    "priority": 20,
+    "pattern": "first_name + sanga bechyo"
+  },
+  "ko pasal": {
+    "role_bucket": "owner",
+    "transaction_role": "owner (of shop)",
+    "name_kind": "first_name",
+    "pattern_id": "pp-034",
+    "priority": 20,
+    "pattern": "first_name + ko pasal"
+  },
+  "ko account": {
+    "role_bucket": "owner",
+    "transaction_role": "account owner",
+    "name_kind": "first_name",
+    "pattern_id": "pp-035",
+    "priority": 20,
+    "pattern": "first_name + ko account"
+  },
+  "ko bill": {
+    "role_bucket": "owner",
+    "transaction_role": "bill owner",
+    "name_kind": "first_name",
+    "pattern_id": "pp-036",
+    "priority": 20,
+    "pattern": "first_name + ko bill"
+  },
+  "ko maal": {
+    "role_bucket": "owner",
+    "transaction_role": "goods owner",
+    "name_kind": "first_name",
+    "pattern_id": "pp-037",
+    "priority": 20,
+    "pattern": "first_name + ko maal"
+  },
+  "ko bhansar": {
+    "role_bucket": "owner",
+    "transaction_role": "warehouse owner",
+    "name_kind": "first_name",
+    "pattern_id": "pp-052",
+    "priority": 20,
+    "pattern": "first_name + ko bhansar"
+  },
+  "ko hisab": {
+    "role_bucket": "owner",
+    "transaction_role": "account owner",
+    "name_kind": "first_name",
+    "pattern_id": "pp-053",
+    "priority": 20,
+    "pattern": "first_name + ko hisab"
+  },
+  "lai invoice": {
+    "role_bucket": "recipient",
+    "transaction_role": "invoice recipient",
+    "name_kind": "first_name",
+    "pattern_id": "pp-066",
+    "priority": 20,
+    "pattern": "first_name + lai invoice"
+  },
+  "ko receipt": {
+    "role_bucket": "owner",
+    "transaction_role": "receipt owner",
+    "name_kind": "first_name",
+    "pattern_id": "pp-067",
+    "priority": 20,
+    "pattern": "first_name + ko receipt"
+  },
+  "lai baki": {
+    "role_bucket": "recipient",
+    "transaction_role": "debtor",
+    "name_kind": "first_name",
+    "pattern_id": "pp-077",
+    "priority": 20,
+    "pattern": "first_name + lai baki"
+  },
+  "lai": {
+    "role_bucket": "recipient",
+    "transaction_role": "recipient/customer",
+    "name_kind": "full_name",
+    "pattern_id": "pp-017",
+    "priority": 15,
+    "pattern": "full_name + lai"
+  },
+  "लाई": {
+    "role_bucket": "recipient",
+    "transaction_role": "recipient/customer",
+    "name_kind": "full_name",
+    "pattern_id": "pp-017",
+    "priority": 15,
+    "pattern": "full_name + lai"
+  },
+  "le": {
+    "role_bucket": "agent",
+    "transaction_role": "payer/actor",
+    "name_kind": "full_name",
+    "pattern_id": "pp-018",
+    "priority": 15,
+    "pattern": "full_name + le"
+  },
+  "ले": {
+    "role_bucket": "agent",
+    "transaction_role": "payer/actor",
+    "name_kind": "full_name",
+    "pattern_id": "pp-018",
+    "priority": 15,
+    "pattern": "full_name + le"
+  },
+  "bata": {
+    "role_bucket": "source",
+    "transaction_role": "source",
+    "name_kind": "full_name",
+    "pattern_id": "pp-019",
+    "priority": 15,
+    "pattern": "full_name + bata"
+  },
+  "बाट": {
+    "role_bucket": "source",
+    "transaction_role": "source",
+    "name_kind": "full_name",
+    "pattern_id": "pp-019",
+    "priority": 15,
+    "pattern": "full_name + bata"
+  },
+  "sanga": {
+    "role_bucket": "counterparty",
+    "transaction_role": "counterparty",
+    "name_kind": "full_name",
+    "pattern_id": "pp-020",
+    "priority": 15,
+    "pattern": "full_name + sanga"
+  },
+  "सँग": {
+    "role_bucket": "counterparty",
+    "transaction_role": "counterparty",
+    "name_kind": "full_name",
+    "pattern_id": "pp-020",
+    "priority": 15,
+    "pattern": "full_name + sanga"
+  },
+  "संग": {
+    "role_bucket": "counterparty",
+    "transaction_role": "counterparty",
+    "name_kind": "full_name",
+    "pattern_id": "pp-020",
+    "priority": 15,
+    "pattern": "full_name + sanga"
+  },
+  "ma": {
+    "role_bucket": "location",
+    "transaction_role": "location/venue",
+    "name_kind": "shop_name",
+    "pattern_id": "pp-028",
+    "priority": 15,
+    "pattern": "shop_name + ma"
+  },
+  "ko": {
+    "role_bucket": "owner",
+    "transaction_role": "owner/possessor (business)",
+    "name_kind": "shop_name",
+    "pattern_id": "pp-030",
+    "priority": 15,
+    "pattern": "shop_name + ko"
+  },
+  "को": {
+    "role_bucket": "owner",
+    "transaction_role": "owner/possessor (business)",
+    "name_kind": "shop_name",
+    "pattern_id": "pp-030",
+    "priority": 15,
+    "pattern": "shop_name + ko"
+  },
+  "tira": {
+    "role_bucket": "recipient",
+    "transaction_role": "direction/recipient",
+    "name_kind": "first_name",
+    "pattern_id": "pp-006",
+    "priority": 10,
+    "pattern": "first_name + tira"
+  },
+  "dwara": {
+    "role_bucket": "agent",
+    "transaction_role": "agent/payer (formal)",
+    "name_kind": "first_name",
+    "pattern_id": "pp-008",
+    "priority": 10,
+    "pattern": "first_name + dwara"
+  }
+}

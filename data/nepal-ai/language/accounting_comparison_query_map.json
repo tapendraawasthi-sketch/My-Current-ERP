@@ -1,0 +1,412 @@
+{
+  "asset vs liability": {
+    "id": "acmp-001",
+    "topic": "Asset vs Liability",
+    "topic_key": "asset_vs_liability"
+  },
+  "asset ra liability ma k farak cha": {
+    "id": "acmp-001",
+    "topic": "Asset vs Liability",
+    "topic_key": "asset_vs_liability"
+  },
+  "asset ra liability": {
+    "id": "acmp-001",
+    "topic": "Asset vs Liability",
+    "topic_key": "asset_vs_liability"
+  },
+  "asset ra liability ko tax treatment kasto cha": {
+    "id": "acmp-002",
+    "topic": "Asset vs Liability",
+    "topic_key": "asset_vs_liability"
+  },
+  "asset ra liability ko liquidity ma k farak cha": {
+    "id": "acmp-003",
+    "topic": "Asset vs Liability",
+    "topic_key": "asset_vs_liability"
+  },
+  "asset ra liability ko valuation method ma k farak": {
+    "id": "acmp-004",
+    "topic": "Asset vs Liability",
+    "topic_key": "asset_vs_liability"
+  },
+  "asset ra liability le company ko financial position lai kasari asar garcha": {
+    "id": "acmp-005",
+    "topic": "Asset vs Liability",
+    "topic_key": "asset_vs_liability"
+  },
+  "asset ra liability ko accounting entries ma k farak": {
+    "id": "acmp-006",
+    "topic": "Asset vs Liability",
+    "topic_key": "asset_vs_liability"
+  },
+  "debit vs credit": {
+    "id": "acmp-007",
+    "topic": "Debit vs Credit",
+    "topic_key": "debit_vs_credit"
+  },
+  "debit ra credit ma k farak cha": {
+    "id": "acmp-007",
+    "topic": "Debit vs Credit",
+    "topic_key": "debit_vs_credit"
+  },
+  "debit ra credit": {
+    "id": "acmp-007",
+    "topic": "Debit vs Credit",
+    "topic_key": "debit_vs_credit"
+  },
+  "debit ra credit ko journal entry ma k role cha": {
+    "id": "acmp-008",
+    "topic": "Debit vs Credit",
+    "topic_key": "debit_vs_credit"
+  },
+  "debit ra credit ko effect on profit ra loss ma k farak": {
+    "id": "acmp-009",
+    "topic": "Debit vs Credit",
+    "topic_key": "debit_vs_credit"
+  },
+  "debit ra credit ko balance sheet ma k significance": {
+    "id": "acmp-010",
+    "topic": "Debit vs Credit",
+    "topic_key": "debit_vs_credit"
+  },
+  "debit ra credit ko car driver example ma k farak": {
+    "id": "acmp-011",
+    "topic": "Debit vs Credit",
+    "topic_key": "debit_vs_credit"
+  },
+  "debit ra credit ko computerized accounting ma k farak": {
+    "id": "acmp-012",
+    "topic": "Debit vs Credit",
+    "topic_key": "debit_vs_credit"
+  },
+  "cash accounting vs accrual accounting": {
+    "id": "acmp-013",
+    "topic": "Cash Accounting vs Accrual Accounting",
+    "topic_key": "cash_accounting_vs_accrual_accounting"
+  },
+  "cash accounting ra accrual accounting ma k farak cha": {
+    "id": "acmp-013",
+    "topic": "Cash Accounting vs Accrual Accounting",
+    "topic_key": "cash_accounting_vs_accrual_accounting"
+  },
+  "cash accounting ra accrual accounting": {
+    "id": "acmp-013",
+    "topic": "Cash Accounting vs Accrual Accounting",
+    "topic_key": "cash_accounting_vs_accrual_accounting"
+  },
+  "cash ra accrual accounting ko timing ma k farak": {
+    "id": "acmp-014",
+    "topic": "Cash Accounting vs Accrual Accounting",
+    "topic_key": "cash_accounting_vs_accrual_accounting"
+  },
+  "cash ra accrual accounting ko financial statement ma k asar": {
+    "id": "acmp-015",
+    "topic": "Cash Accounting vs Accrual Accounting",
+    "topic_key": "cash_accounting_vs_accrual_accounting"
+  },
+  "cash ra accrual accounting ko nepal ma legal requirement k cha": {
+    "id": "acmp-016",
+    "topic": "Cash Accounting vs Accrual Accounting",
+    "topic_key": "cash_accounting_vs_accrual_accounting"
+  },
+  "cash ra accrual accounting ko example diu": {
+    "id": "acmp-017",
+    "topic": "Cash Accounting vs Accrual Accounting",
+    "topic_key": "cash_accounting_vs_accrual_accounting"
+  },
+  "cash ra accrual accounting ko advantage disadvantage": {
+    "id": "acmp-018",
+    "topic": "Cash Accounting vs Accrual Accounting",
+    "topic_key": "cash_accounting_vs_accrual_accounting"
+  },
+  "vat vs income tax": {
+    "id": "acmp-019",
+    "topic": "VAT vs Income Tax",
+    "topic_key": "vat_vs_income_tax"
+  },
+  "vat ra income tax ma k farak cha": {
+    "id": "acmp-019",
+    "topic": "VAT vs Income Tax",
+    "topic_key": "vat_vs_income_tax"
+  },
+  "vat ra income tax": {
+    "id": "acmp-019",
+    "topic": "VAT vs Income Tax",
+    "topic_key": "vat_vs_income_tax"
+  },
+  "vat ra income tax ko calculation method ma k farak": {
+    "id": "acmp-020",
+    "topic": "VAT vs Income Tax",
+    "topic_key": "vat_vs_income_tax"
+  },
+  "vat ra income tax ko compliance burden kasto": {
+    "id": "acmp-021",
+    "topic": "VAT vs Income Tax",
+    "topic_key": "vat_vs_income_tax"
+  },
+  "vat ra income tax ko impact on pricing ma k farak": {
+    "id": "acmp-022",
+    "topic": "VAT vs Income Tax",
+    "topic_key": "vat_vs_income_tax"
+  },
+  "vat ra income tax ko nepal ma kasko limit k cha": {
+    "id": "acmp-023",
+    "topic": "VAT vs Income Tax",
+    "topic_key": "vat_vs_income_tax"
+  },
+  "vat ra income tax ko nepal ma common mistakes": {
+    "id": "acmp-024",
+    "topic": "VAT vs Income Tax",
+    "topic_key": "vat_vs_income_tax"
+  },
+  "private vs public company": {
+    "id": "acmp-025",
+    "topic": "Private vs Public Company",
+    "topic_key": "private_vs_public_company"
+  },
+  "private company ra public company ma k farak cha": {
+    "id": "acmp-025",
+    "topic": "Private vs Public Company",
+    "topic_key": "private_vs_public_company"
+  },
+  "private ra public company": {
+    "id": "acmp-025",
+    "topic": "Private vs Public Company",
+    "topic_key": "private_vs_public_company"
+  },
+  "private ra public company ko governance ma k farak": {
+    "id": "acmp-026",
+    "topic": "Private vs Public Company",
+    "topic_key": "private_vs_public_company"
+  },
+  "private ra public company ko financial reporting ma k farak": {
+    "id": "acmp-027",
+    "topic": "Private vs Public Company",
+    "topic_key": "private_vs_public_company"
+  },
+  "private ra public company ko tax treatment ma k farak": {
+    "id": "acmp-028",
+    "topic": "Private vs Public Company",
+    "topic_key": "private_vs_public_company"
+  },
+  "private ra public company ko share transfer ma k farak": {
+    "id": "acmp-029",
+    "topic": "Private vs Public Company",
+    "topic_key": "private_vs_public_company"
+  },
+  "private ra public company ko cost of compliance ma k farak": {
+    "id": "acmp-030",
+    "topic": "Private vs Public Company",
+    "topic_key": "private_vs_public_company"
+  },
+  "sole proprietorship vs partnership": {
+    "id": "acmp-031",
+    "topic": "Sole Proprietorship vs Partnership",
+    "topic_key": "sole_proprietorship_vs_partnership"
+  },
+  "sole proprietorship ra partnership ma k farak cha": {
+    "id": "acmp-031",
+    "topic": "Sole Proprietorship vs Partnership",
+    "topic_key": "sole_proprietorship_vs_partnership"
+  },
+  "sole proprietorship ra partnership": {
+    "id": "acmp-031",
+    "topic": "Sole Proprietorship vs Partnership",
+    "topic_key": "sole_proprietorship_vs_partnership"
+  },
+  "sole ra partnership ko tax treatment ma k farak": {
+    "id": "acmp-032",
+    "topic": "Sole Proprietorship vs Partnership",
+    "topic_key": "sole_proprietorship_vs_partnership"
+  },
+  "sole ra partnership ko liability ma k farak": {
+    "id": "acmp-033",
+    "topic": "Sole Proprietorship vs Partnership",
+    "topic_key": "sole_proprietorship_vs_partnership"
+  },
+  "sole ra partnership ko capital requirement ma k farak": {
+    "id": "acmp-034",
+    "topic": "Sole Proprietorship vs Partnership",
+    "topic_key": "sole_proprietorship_vs_partnership"
+  },
+  "partnership vs company": {
+    "id": "acmp-035",
+    "topic": "Partnership vs Company",
+    "topic_key": "partnership_vs_company"
+  },
+  "partnership ra company ma k farak cha": {
+    "id": "acmp-035",
+    "topic": "Partnership vs Company",
+    "topic_key": "partnership_vs_company"
+  },
+  "partnership ra company": {
+    "id": "acmp-035",
+    "topic": "Partnership vs Company",
+    "topic_key": "partnership_vs_company"
+  },
+  "partnership ra company ko tax treatment ma k farak": {
+    "id": "acmp-036",
+    "topic": "Partnership vs Company",
+    "topic_key": "partnership_vs_company"
+  },
+  "partnership ra company ko governance ma k farak": {
+    "id": "acmp-037",
+    "topic": "Partnership vs Company",
+    "topic_key": "partnership_vs_company"
+  },
+  "partnership ra company ko liability limit ma k farak": {
+    "id": "acmp-038",
+    "topic": "Partnership vs Company",
+    "topic_key": "partnership_vs_company"
+  },
+  "sole proprietorship vs company": {
+    "id": "acmp-039",
+    "topic": "Sole Proprietorship vs Company",
+    "topic_key": "sole_proprietorship_vs_company"
+  },
+  "sole proprietorship ra company ma k farak cha": {
+    "id": "acmp-039",
+    "topic": "Sole Proprietorship vs Company",
+    "topic_key": "sole_proprietorship_vs_company"
+  },
+  "sole proprietorship ra company": {
+    "id": "acmp-039",
+    "topic": "Sole Proprietorship vs Company",
+    "topic_key": "sole_proprietorship_vs_company"
+  },
+  "sole ra company ko tax ma k farak": {
+    "id": "acmp-040",
+    "topic": "Sole Proprietorship vs Company",
+    "topic_key": "sole_proprietorship_vs_company"
+  },
+  "sole ra company ko compliance burden": {
+    "id": "acmp-041",
+    "topic": "Sole Proprietorship vs Company",
+    "topic_key": "sole_proprietorship_vs_company"
+  },
+  "sole ra company ko liability protection ma k farak": {
+    "id": "acmp-042",
+    "topic": "Sole Proprietorship vs Company",
+    "topic_key": "sole_proprietorship_vs_company"
+  },
+  "tds vs advance tax": {
+    "id": "acmp-043",
+    "topic": "TDS vs Advance Tax",
+    "topic_key": "tds_vs_advance_tax"
+  },
+  "tds ra advance tax ma k farak cha": {
+    "id": "acmp-043",
+    "topic": "TDS vs Advance Tax",
+    "topic_key": "tds_vs_advance_tax"
+  },
+  "tds ra advance tax": {
+    "id": "acmp-043",
+    "topic": "TDS vs Advance Tax",
+    "topic_key": "tds_vs_advance_tax"
+  },
+  "tds ra advance tax ko calculation method ma k farak": {
+    "id": "acmp-044",
+    "topic": "TDS vs Advance Tax",
+    "topic_key": "tds_vs_advance_tax"
+  },
+  "tds ra advance tax ko due date ma k farak": {
+    "id": "acmp-045",
+    "topic": "TDS vs Advance Tax",
+    "topic_key": "tds_vs_advance_tax"
+  },
+  "tds ra advance tax ko benefit kasailai": {
+    "id": "acmp-046",
+    "topic": "TDS vs Advance Tax",
+    "topic_key": "tds_vs_advance_tax"
+  },
+  "tds ra advance tax ko penalty ma k farak": {
+    "id": "acmp-047",
+    "topic": "TDS vs Advance Tax",
+    "topic_key": "tds_vs_advance_tax"
+  },
+  "tds ra advance tax ko credit system ma k farak": {
+    "id": "acmp-048",
+    "topic": "TDS vs Advance Tax",
+    "topic_key": "tds_vs_advance_tax"
+  },
+  "pan vs vat number": {
+    "id": "acmp-049",
+    "topic": "PAN vs VAT Number",
+    "topic_key": "pan_vs_vat_number"
+  },
+  "pan ra vat number ma k farak cha": {
+    "id": "acmp-049",
+    "topic": "PAN vs VAT Number",
+    "topic_key": "pan_vs_vat_number"
+  },
+  "pan ra vat number": {
+    "id": "acmp-049",
+    "topic": "PAN vs VAT Number",
+    "topic_key": "pan_vs_vat_number"
+  },
+  "pan ra vat number ko registration process ma k farak": {
+    "id": "acmp-050",
+    "topic": "PAN vs VAT Number",
+    "topic_key": "pan_vs_vat_number"
+  },
+  "pan ra vat number ko cancellation ma k farak": {
+    "id": "acmp-051",
+    "topic": "PAN vs VAT Number",
+    "topic_key": "pan_vs_vat_number"
+  },
+  "pan ra vat number ko verification ma k farak": {
+    "id": "acmp-052",
+    "topic": "PAN vs VAT Number",
+    "topic_key": "pan_vs_vat_number"
+  },
+  "pan ra vat number ko nepal ma compulsory": {
+    "id": "acmp-053",
+    "topic": "PAN vs VAT Number",
+    "topic_key": "pan_vs_vat_number"
+  },
+  "pan ra vat number ko use in bank transactions": {
+    "id": "acmp-054",
+    "topic": "PAN vs VAT Number",
+    "topic_key": "pan_vs_vat_number"
+  },
+  "fixed assets vs current assets": {
+    "id": "acmp-055",
+    "topic": "Fixed Assets vs Current Assets",
+    "topic_key": "fixed_assets_vs_current_assets"
+  },
+  "fixed assets ra current assets ma k farak cha": {
+    "id": "acmp-055",
+    "topic": "Fixed Assets vs Current Assets",
+    "topic_key": "fixed_assets_vs_current_assets"
+  },
+  "fixed assets ra current assets": {
+    "id": "acmp-055",
+    "topic": "Fixed Assets vs Current Assets",
+    "topic_key": "fixed_assets_vs_current_assets"
+  },
+  "fixed assets ra current assets ko balance sheet ma k position": {
+    "id": "acmp-056",
+    "topic": "Fixed Assets vs Current Assets",
+    "topic_key": "fixed_assets_vs_current_assets"
+  },
+  "fixed assets ra current assets ko impact on profitability": {
+    "id": "acmp-057",
+    "topic": "Fixed Assets vs Current Assets",
+    "topic_key": "fixed_assets_vs_current_assets"
+  },
+  "fixed assets ra current assets ko tax treatment ma k farak": {
+    "id": "acmp-058",
+    "topic": "Fixed Assets vs Current Assets",
+    "topic_key": "fixed_assets_vs_current_assets"
+  },
+  "fixed assets ra current assets ko management approach k farak": {
+    "id": "acmp-059",
+    "topic": "Fixed Assets vs Current Assets",
+    "topic_key": "fixed_assets_vs_current_assets"
+  },
+  "fixed assets ra current assets ko example nepal ma": {
+    "id": "acmp-060",
+    "topic": "Fixed Assets vs Current Assets",
+    "topic_key": "fixed_assets_vs_current_assets"
+  }
+}

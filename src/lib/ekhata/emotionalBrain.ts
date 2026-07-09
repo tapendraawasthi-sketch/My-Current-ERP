@@ -8,6 +8,7 @@
  */
 
 import type { ConversationTurn } from "./conversationalBrain";
+import { matchEmpatheticResponse } from "../nepal-ai/empatheticResponses";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -75,14 +76,14 @@ const EMOTION_SIGNALS: Record<UserEmotion, EmotionSignal[]> = {
   ],
   frustrated: [
     { pattern: /\b(frustrated|chir|annoyed|irritating|pareshan)\b/i, weight: 10 },
-    { pattern: /\b(kam\s*gardaina|doesn't\s*work|not\s*working|fail)\b/i, weight: 8 },
-    { pattern: /\b(why\s*won't|kina\s*hudaina|hudaina|impossible)\b/i, weight: 7 },
-    { pattern: /\b(tired\s*of|sick\s*of|dherai\s*bhayo)\b/i, weight: 8 },
+    { pattern: /\b(kam\s*gardaina|doesn't\s*work|not\s*working|fail|error\s*aunchha|error\s*aayo)\b/i, weight: 8 },
+    { pattern: /\b(why\s*won't|kina\s*hudaina|hudaina|impossible|slow\s*chha)\b/i, weight: 7 },
+    { pattern: /\b(tired\s*of|sick\s*of|dherai\s*bhayo|barbar)\b/i, weight: 8 },
   ],
   worried: [
-    { pattern: /\b(chinta|worried|anxious|tension|dar|fear|scared)\b/i, weight: 10 },
-    { pattern: /\b(what\s*if|ke\s*hol|huncha\s*ki|risk|problem)\b/i, weight: 7 },
-    { pattern: /\b(stress|pressure|load|bojh)\b/i, weight: 6 },
+    { pattern: /\b(chinta|worried|anxious|tension|dar|fear|scared|stress|stressed|panic)\b/i, weight: 10 },
+    { pattern: /\b(what\s*if|ke\s*hol|huncha\s*ki|risk|problem|deadline|audit)\b/i, weight: 7 },
+    { pattern: /\b(stress|pressure|load|bojh|adkiyo)\b/i, weight: 6 },
     { pattern: /\b(😰|😟)\b/, weight: 6 },
   ],
   tired: [
@@ -398,10 +399,24 @@ export function composeEmotionalReply(
     return baseReply.trim();
   }
 
+  const lexiconHit = matchEmpatheticResponse(userText, primaryEmotion);
+  if (
+    lexiconHit &&
+    (isVenting ||
+      needsComfort ||
+      !baseReply.trim() ||
+      shouldUseStandaloneEmotionalReply(primaryEmotion, emotional.intensity, isQuestion, userText))
+  ) {
+    return lexiconHit.empatheticResponse;
+  }
+
   // Standalone emotional response when user is venting/sharing feelings
   if (
     shouldUseStandaloneEmotionalReply(primaryEmotion, emotional.intensity, isQuestion, userText)
   ) {
+    const lexicon = matchEmpatheticResponse(userText, primaryEmotion);
+    if (lexicon) return lexicon.empatheticResponse;
+
     const standalone = EMOTIONAL_REPLIES[primaryEmotion];
     if (standalone?.length) {
       let reply = pick(standalone);

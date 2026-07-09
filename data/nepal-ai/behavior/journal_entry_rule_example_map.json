@@ -1,0 +1,502 @@
+{
+  "ram lai 500 becheko": {
+    "rule_id": "JE_001",
+    "then_intent": "khata_credit_sale",
+    "base_intent": "khata_credit_sale"
+  },
+  "nagad 500 becheko": {
+    "rule_id": "JE_002",
+    "then_intent": "khata_cash_sale",
+    "base_intent": "khata_cash_sale"
+  },
+  "bank ma 500 becheko": {
+    "rule_id": "JE_003",
+    "then_intent": "khata_bank_sale",
+    "base_intent": "khata_cash_sale"
+  },
+  "ram bata 500 kineko": {
+    "rule_id": "JE_004",
+    "then_intent": "khata_credit_purchase",
+    "base_intent": "khata_credit_purchase"
+  },
+  "nagad 500 kineko": {
+    "rule_id": "JE_005",
+    "then_intent": "khata_cash_purchase",
+    "base_intent": "khata_purchase"
+  },
+  "bank bata 500 kineko": {
+    "rule_id": "JE_006",
+    "then_intent": "khata_bank_purchase",
+    "base_intent": "khata_purchase"
+  },
+  "500 kharcha nagad": {
+    "rule_id": "JE_007",
+    "then_intent": "khata_cash_expense",
+    "base_intent": "khata_expense"
+  },
+  "bank bata 500 kharcha": {
+    "rule_id": "JE_008",
+    "then_intent": "khata_bank_expense",
+    "base_intent": "khata_expense"
+  },
+  "ram lai 500 kharcha baaki": {
+    "rule_id": "JE_009",
+    "then_intent": "khata_credit_expense",
+    "base_intent": "khata_outstanding_expense"
+  },
+  "nagad 500 aamdani": {
+    "rule_id": "JE_010",
+    "then_intent": "khata_cash_income",
+    "base_intent": "khata_other_income"
+  },
+  "bank ma 500 aamdani": {
+    "rule_id": "JE_011",
+    "then_intent": "khata_bank_income",
+    "base_intent": "khata_other_income"
+  },
+  "ram lai 500 tiryo nagad": {
+    "rule_id": "JE_012",
+    "then_intent": "khata_cash_payment_creditor",
+    "base_intent": "khata_payment_out"
+  },
+  "ram lai 500 tiryo bank bata": {
+    "rule_id": "JE_013",
+    "then_intent": "khata_bank_payment_creditor",
+    "base_intent": "khata_payment_out"
+  },
+  "ram bata 500 paayo nagad": {
+    "rule_id": "JE_014",
+    "then_intent": "khata_cash_receipt_debtor",
+    "base_intent": "khata_payment_in"
+  },
+  "ram bata 500 paayo bank ma": {
+    "rule_id": "JE_015",
+    "then_intent": "khata_bank_receipt_debtor",
+    "base_intent": "khata_payment_in"
+  },
+  "nagad 500 bank ma jama": {
+    "rule_id": "JE_016",
+    "then_intent": "khata_deposit_cash_to_bank",
+    "base_intent": "khata_contra_cash_bank"
+  },
+  "bank bata 500 nikalyo nagad": {
+    "rule_id": "JE_017",
+    "then_intent": "khata_withdraw_bank_to_cash",
+    "base_intent": "khata_contra_cash_bank"
+  },
+  "nagad 500 rin paayo": {
+    "rule_id": "JE_018",
+    "then_intent": "khata_loan_received_cash",
+    "base_intent": "khata_loan_received"
+  },
+  "bank ma 500 rin paayo": {
+    "rule_id": "JE_019",
+    "then_intent": "khata_loan_received_bank",
+    "base_intent": "khata_loan_received"
+  },
+  "nagad 500 rin tiryo": {
+    "rule_id": "JE_020",
+    "then_intent": "khata_loan_repayment_cash",
+    "base_intent": "khata_loan_repayment"
+  },
+  "bank bata 500 rin tiryo": {
+    "rule_id": "JE_021",
+    "then_intent": "khata_loan_repayment_bank",
+    "base_intent": "khata_loan_repayment"
+  },
+  "nagad 500 lagani": {
+    "rule_id": "JE_022",
+    "then_intent": "khata_capital_introduced_cash",
+    "base_intent": "khata_capital_introduced"
+  },
+  "bank ma 500 lagani": {
+    "rule_id": "JE_023",
+    "then_intent": "khata_capital_introduced_bank",
+    "base_intent": "khata_capital_introduced"
+  },
+  "nagad 500 jhikyo": {
+    "rule_id": "JE_024",
+    "then_intent": "khata_drawings_cash",
+    "base_intent": "khata_drawings"
+  },
+  "bank bata 500 jhikyo": {
+    "rule_id": "JE_025",
+    "then_intent": "khata_drawings_bank",
+    "base_intent": "khata_drawings"
+  },
+  "becheko saman farkiyo nagad 500": {
+    "rule_id": "JE_026",
+    "then_intent": "khata_sales_return_cash",
+    "base_intent": "khata_sales_return"
+  },
+  "ram lai becheko saman farkiyo": {
+    "rule_id": "JE_027",
+    "then_intent": "khata_sales_return_credit",
+    "base_intent": "khata_sales_return"
+  },
+  "kineko saman farkiyo nagad 500": {
+    "rule_id": "JE_028",
+    "then_intent": "khata_purchase_return_cash",
+    "base_intent": "khata_purchase_return"
+  },
+  "ram bata kineko saman farkiyo": {
+    "rule_id": "JE_029",
+    "then_intent": "khata_purchase_return_credit",
+    "base_intent": "khata_purchase_return"
+  },
+  "ram lai 500 chhut diyo": {
+    "rule_id": "JE_030",
+    "then_intent": "khata_discount_allowed_credit",
+    "base_intent": "khata_discount_allowed"
+  },
+  "nagad 500 chhut diyo": {
+    "rule_id": "JE_031",
+    "then_intent": "khata_discount_allowed_cash",
+    "base_intent": "khata_discount_allowed"
+  },
+  "ram bata nagad 500 chhut paayo": {
+    "rule_id": "JE_032",
+    "then_intent": "khata_discount_received_cash",
+    "base_intent": "khata_discount_received"
+  },
+  "ram bata 500 chhut paayo baaki": {
+    "rule_id": "JE_033",
+    "then_intent": "khata_discount_received_credit",
+    "base_intent": "khata_discount_received"
+  },
+  "ram ko bad debt 500": {
+    "rule_id": "JE_034",
+    "then_intent": "khata_bad_debt",
+    "base_intent": "khata_bad_debt_writeoff"
+  },
+  "asset ma 500 depreciation": {
+    "rule_id": "JE_035",
+    "then_intent": "khata_depreciation",
+    "base_intent": "khata_depreciation"
+  },
+  "nagad 500 talab": {
+    "rule_id": "JE_036",
+    "then_intent": "khata_salary_cash",
+    "base_intent": "khata_salary_payment"
+  },
+  "bank bata 500 talab": {
+    "rule_id": "JE_037",
+    "then_intent": "khata_salary_bank",
+    "base_intent": "khata_salary_payment"
+  },
+  "nagad 500 bhada": {
+    "rule_id": "JE_038",
+    "then_intent": "khata_rent_cash",
+    "base_intent": "khata_rent_expense"
+  },
+  "bank bata 500 bhada": {
+    "rule_id": "JE_039",
+    "then_intent": "khata_rent_bank",
+    "base_intent": "khata_rent_expense"
+  },
+  "nagad 500 bima": {
+    "rule_id": "JE_040",
+    "then_intent": "khata_insurance_cash",
+    "base_intent": "khata_expense"
+  },
+  "bank bata 500 bima": {
+    "rule_id": "JE_041",
+    "then_intent": "khata_insurance_bank",
+    "base_intent": "khata_expense"
+  },
+  "nagad 500 kar": {
+    "rule_id": "JE_042",
+    "then_intent": "khata_tax_cash",
+    "base_intent": "khata_expense"
+  },
+  "bank bata 500 kar": {
+    "rule_id": "JE_043",
+    "then_intent": "khata_tax_bank",
+    "base_intent": "khata_expense"
+  },
+  "nagad 500 byaj tiryo": {
+    "rule_id": "JE_044",
+    "then_intent": "khata_interest_expense_cash",
+    "base_intent": "khata_expense"
+  },
+  "bank bata 500 byaj tiryo": {
+    "rule_id": "JE_045",
+    "then_intent": "khata_interest_expense_bank",
+    "base_intent": "khata_expense"
+  },
+  "nagad 500 byaj aamdani": {
+    "rule_id": "JE_046",
+    "then_intent": "khata_interest_income_cash",
+    "base_intent": "khata_other_income"
+  },
+  "bank ma 500 byaj aamdani": {
+    "rule_id": "JE_047",
+    "then_intent": "khata_interest_income_bank",
+    "base_intent": "khata_other_income"
+  },
+  "nagad 500 prepaid kharcha": {
+    "rule_id": "JE_048",
+    "then_intent": "khata_prepaid_expense",
+    "base_intent": "khata_prepaid_expense"
+  },
+  "500 accrued expense ram lai": {
+    "rule_id": "JE_049",
+    "then_intent": "khata_accrued_expense",
+    "base_intent": "khata_outstanding_expense"
+  },
+  "500 accrued income ram bata": {
+    "rule_id": "JE_050",
+    "then_intent": "khata_accrued_income",
+    "base_intent": "khata_other_income"
+  },
+  "nagad 500 unearned income": {
+    "rule_id": "JE_051",
+    "then_intent": "khata_unearned_income",
+    "base_intent": "khata_customer_advance"
+  },
+  "nagad 500 saman kineko": {
+    "rule_id": "JE_052",
+    "then_intent": "khata_fixed_asset_cash",
+    "base_intent": "khata_stock_purchase"
+  },
+  "bank bata 500 saman kineko": {
+    "rule_id": "JE_053",
+    "then_intent": "khata_fixed_asset_bank",
+    "base_intent": "khata_stock_purchase"
+  },
+  "ram bata 500 saman kineko baaki": {
+    "rule_id": "JE_054",
+    "then_intent": "khata_fixed_asset_credit",
+    "base_intent": "khata_credit_purchase"
+  },
+  "nagad 500 saman becheko": {
+    "rule_id": "JE_055",
+    "then_intent": "khata_fixed_asset_sale_cash",
+    "base_intent": "khata_asset_disposal"
+  },
+  "ram lai saman becheko": {
+    "rule_id": "JE_056",
+    "then_intent": "khata_fixed_asset_sale_credit",
+    "base_intent": "khata_asset_disposal"
+  },
+  "ram le 500 tiryo nagad": {
+    "rule_id": "JE_057",
+    "then_intent": "khata_payment_in_cash",
+    "base_intent": "khata_payment_in"
+  },
+  "ram le 500 tiryo bank ma": {
+    "rule_id": "JE_058",
+    "then_intent": "khata_payment_in_bank",
+    "base_intent": "khata_payment_in"
+  },
+  "ram lai 500 kar baaki": {
+    "rule_id": "JE_059",
+    "then_intent": "khata_tax_payable",
+    "base_intent": "khata_outstanding_expense"
+  },
+  "ram lai nagad 500 becheko": {
+    "rule_id": "JE_060",
+    "then_intent": "khata_cash_sale_with_party",
+    "base_intent": "khata_cash_sale"
+  },
+  "ram lai bank bata 500 becheko": {
+    "rule_id": "JE_061",
+    "then_intent": "khata_bank_sale_with_party",
+    "base_intent": "khata_cash_sale"
+  },
+  "ram bata nagad 500 kineko": {
+    "rule_id": "JE_062",
+    "then_intent": "khata_cash_purchase_with_party",
+    "base_intent": "khata_purchase"
+  },
+  "ram bata bank bata 500 kineko": {
+    "rule_id": "JE_063",
+    "then_intent": "khata_bank_purchase_with_party",
+    "base_intent": "khata_purchase"
+  },
+  "ram lai nagad 500 kharcha": {
+    "rule_id": "JE_064",
+    "then_intent": "khata_cash_expense_with_party",
+    "base_intent": "khata_expense"
+  },
+  "ram lai bank bata 500 kharcha": {
+    "rule_id": "JE_065",
+    "then_intent": "khata_bank_expense_with_party",
+    "base_intent": "khata_expense"
+  },
+  "ram bata nagad 500 aamdani": {
+    "rule_id": "JE_066",
+    "then_intent": "khata_cash_income_with_party",
+    "base_intent": "khata_other_income"
+  },
+  "ram bata bank ma 500 aamdani": {
+    "rule_id": "JE_067",
+    "then_intent": "khata_bank_income_with_party",
+    "base_intent": "khata_other_income"
+  },
+  "ram lai 500 commission baaki": {
+    "rule_id": "JE_068",
+    "then_intent": "khata_commission_payable",
+    "base_intent": "khata_outstanding_expense"
+  },
+  "ram lai 500 dividend baaki": {
+    "rule_id": "JE_069",
+    "then_intent": "khata_dividend_payable",
+    "base_intent": "khata_payment_out"
+  },
+  "nagad 500 commission": {
+    "rule_id": "JE_070",
+    "then_intent": "khata_commission_expense_cash",
+    "base_intent": "khata_expense"
+  },
+  "bank bata 500 commission": {
+    "rule_id": "JE_071",
+    "then_intent": "khata_commission_expense_bank",
+    "base_intent": "khata_expense"
+  },
+  "nagad 500 dividend": {
+    "rule_id": "JE_072",
+    "then_intent": "khata_dividend_income_cash",
+    "base_intent": "khata_other_income"
+  },
+  "bank ma 500 dividend": {
+    "rule_id": "JE_073",
+    "then_intent": "khata_dividend_income_bank",
+    "base_intent": "khata_other_income"
+  },
+  "nagad 500 advertising": {
+    "rule_id": "JE_074",
+    "then_intent": "khata_advertising_cash",
+    "base_intent": "khata_expense"
+  },
+  "bank bata 500 advertising": {
+    "rule_id": "JE_075",
+    "then_intent": "khata_advertising_bank",
+    "base_intent": "khata_expense"
+  },
+  "nagad 500 travel": {
+    "rule_id": "JE_076",
+    "then_intent": "khata_travel_cash",
+    "base_intent": "khata_expense"
+  },
+  "bank bata 500 travel": {
+    "rule_id": "JE_077",
+    "then_intent": "khata_travel_bank",
+    "base_intent": "khata_expense"
+  },
+  "nagad 500 office supplies": {
+    "rule_id": "JE_078",
+    "then_intent": "khata_office_supplies_cash",
+    "base_intent": "khata_expense"
+  },
+  "bank bata 500 office supplies": {
+    "rule_id": "JE_079",
+    "then_intent": "khata_office_supplies_bank",
+    "base_intent": "khata_expense"
+  },
+  "nagad 500 repair": {
+    "rule_id": "JE_080",
+    "then_intent": "khata_repair_cash",
+    "base_intent": "khata_expense"
+  },
+  "bank bata 500 repair": {
+    "rule_id": "JE_081",
+    "then_intent": "khata_repair_bank",
+    "base_intent": "khata_expense"
+  },
+  "nagad 500 telephone": {
+    "rule_id": "JE_082",
+    "then_intent": "khata_telephone_cash",
+    "base_intent": "khata_expense"
+  },
+  "bank bata 500 telephone": {
+    "rule_id": "JE_083",
+    "then_intent": "khata_telephone_bank",
+    "base_intent": "khata_expense"
+  },
+  "nagad 500 utility": {
+    "rule_id": "JE_084",
+    "then_intent": "khata_utility_cash",
+    "base_intent": "khata_expense"
+  },
+  "bank bata 500 utility": {
+    "rule_id": "JE_085",
+    "then_intent": "khata_utility_bank",
+    "base_intent": "khata_expense"
+  },
+  "nagad 500 advance tiryo": {
+    "rule_id": "JE_086",
+    "then_intent": "khata_advance_payment_cash",
+    "base_intent": "khata_employee_advance"
+  },
+  "bank bata 500 advance tiryo": {
+    "rule_id": "JE_087",
+    "then_intent": "khata_advance_payment_bank",
+    "base_intent": "khata_employee_advance"
+  },
+  "nagad 500 advance paayo": {
+    "rule_id": "JE_088",
+    "then_intent": "khata_advance_received_cash",
+    "base_intent": "khata_customer_advance"
+  },
+  "bank ma 500 advance paayo": {
+    "rule_id": "JE_089",
+    "then_intent": "khata_advance_received_bank",
+    "base_intent": "khata_customer_advance"
+  },
+  "nagad 500 donation": {
+    "rule_id": "JE_090",
+    "then_intent": "khata_donation_cash",
+    "base_intent": "khata_expense"
+  },
+  "bank bata 500 donation": {
+    "rule_id": "JE_091",
+    "then_intent": "khata_donation_bank",
+    "base_intent": "khata_expense"
+  },
+  "nagad 500 fine": {
+    "rule_id": "JE_092",
+    "then_intent": "khata_fine_cash",
+    "base_intent": "khata_expense"
+  },
+  "bank bata 500 fine": {
+    "rule_id": "JE_093",
+    "then_intent": "khata_fine_bank",
+    "base_intent": "khata_expense"
+  },
+  "nagad 500 refund": {
+    "rule_id": "JE_094",
+    "then_intent": "khata_refund_cash",
+    "base_intent": "khata_sales_return"
+  },
+  "bank bata 500 refund": {
+    "rule_id": "JE_095",
+    "then_intent": "khata_refund_bank",
+    "base_intent": "khata_sales_return"
+  },
+  "ram lai 15000 becheko": {
+    "rule_id": "JE_096",
+    "then_intent": "khata_credit_sale_high",
+    "base_intent": "khata_credit_sale"
+  },
+  "ram bata 15000 kineko": {
+    "rule_id": "JE_097",
+    "then_intent": "khata_credit_purchase_high",
+    "base_intent": "khata_credit_purchase"
+  },
+  "nagad 15000 kharcha": {
+    "rule_id": "JE_098",
+    "then_intent": "khata_cash_expense_high",
+    "base_intent": "khata_expense"
+  },
+  "nagad 15000 aamdani": {
+    "rule_id": "JE_099",
+    "then_intent": "khata_cash_income_high",
+    "base_intent": "khata_other_income"
+  },
+  "nagad 15000 bank ma jama": {
+    "rule_id": "JE_100",
+    "then_intent": "khata_deposit_cash_to_bank_high",
+    "base_intent": "khata_contra_cash_bank"
+  }
+}

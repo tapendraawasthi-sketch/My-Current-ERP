@@ -22,6 +22,15 @@ export interface EKhataConversationContext {
   pendingItem?: string | null;
   pendingPrefix?: string | null;
   lastClarifyQuestion?: string | null;
+  /** Discourse memory for pronoun / continuation resolution */
+  lastParty?: string | null;
+  lastParties?: string[] | null;
+  lastAmount?: number | null;
+  lastBank?: string | null;
+  lastAtm?: string | null;
+  lastMethod?: string | null;
+  pendingParty?: string | null;
+  awaiting?: string | null;
 }
 
 export function createConversationContext(): EKhataConversationContext {
@@ -34,6 +43,14 @@ export function createConversationContext(): EKhataConversationContext {
     pendingItem: null,
     pendingPrefix: null,
     lastClarifyQuestion: null,
+    lastParty: null,
+    lastParties: null,
+    lastAmount: null,
+    lastBank: null,
+    lastAtm: null,
+    lastMethod: null,
+    pendingParty: null,
+    awaiting: null,
   };
 }
 
@@ -93,6 +110,10 @@ export function updateContextAfterClarify(
   pendingIntent?: string | null,
   pendingItem?: string | null,
 ): EKhataConversationContext {
+  const partyGuess =
+    userText.match(/\b([A-Z][a-z]{1,20}|[A-Za-z][a-z]{2,20})\s+(lai|le|bata|ko)\b/)?.[1] ??
+    ctx.lastParty ??
+    null;
   return {
     ...ctx,
     state: "awaiting_clarification",
@@ -101,6 +122,9 @@ export function updateContextAfterClarify(
     pendingPrefix: userText,
     pendingIntent: pendingIntent ?? ctx.pendingIntent ?? "khata_cash_sale",
     pendingItem: pendingItem ?? ctx.pendingItem ?? null,
+    pendingParty: partyGuess,
+    lastParty: partyGuess ?? ctx.lastParty,
+    awaiting: /amount|rakam|kati|rupiya/i.test(question) ? "amount" : ctx.awaiting ?? "amount",
   };
 }
 
@@ -118,6 +142,11 @@ export function updateContextAfterEntry(
     pendingItem: null,
     pendingPrefix: null,
     lastClarifyQuestion: null,
+    lastParty: card.party ?? ctx.lastParty,
+    lastParties: card.party ? [card.party] : ctx.lastParties,
+    lastAmount: card.amount,
+    pendingParty: null,
+    awaiting: null,
   };
 }
 

@@ -1,0 +1,4758 @@
+[
+  {
+    "id": "scene_001",
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "kirana shop owner, basic education, mobile user",
+    "key_behaviors": [
+      "warm greeting",
+      "capability explanation with examples",
+      "confirmation with running summary",
+      "encouragement"
+    ],
+    "user_satisfaction_markers": [
+      "understood features",
+      "completed first transaction"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "hello",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "hello"
+      },
+      {
+        "role": "ai",
+        "text": "Namaste! Ma e-KHATA ho. Tapai ko dainik hisab kitab ma help garchu. K kaam thiyo?",
+        "state": {
+          "greeted": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "paile chai k garna sakincha"
+      },
+      {
+        "role": "ai",
+        "text": "e-KHATA le yo garna sakchha:\n1. Bikri/kharid record (\"Ram lai 500 udhaar\")\n2. Khata sodhnu (\"Ram ko balance kati?\")\n3. Report (\"aajako sales kati?\")\n\nSimple Nepali ma lekhnus, ma bujhchhu!",
+        "state": {
+          "explained": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "okey ta, shyam lai 1000 ko saman diye"
+      },
+      {
+        "role": "ai",
+        "text": "Record bhayo! ✓\nShyam lai Rs. 1000 udhaar diyeko. Tyo \"udhaar\" ya \"baki\" ma rakhdya chhu.\nAru kehi chha?",
+        "state": {
+          "transaction_recorded": "udhaar",
+          "counterparty": "Shyam",
+          "amount": 1000
+        }
+      },
+      {
+        "role": "user",
+        "text": "ani aja bihan oil kinya thiye 300 ko"
+      },
+      {
+        "role": "ai",
+        "text": "Bhaihalyo! Rs. 300 ko oil kharid record gare.\n\nAaja samma:\n- Bikri (Udhaar): Shyam lai Rs. 1000\n- Kharid: Oil Rs. 300\n\nAru kehi?",
+        "state": {
+          "transaction_recorded": "kharid",
+          "running_total": {
+            "bikri": 1000,
+            "kharid": 300
+          }
+        },
+        "conversation_summary": "First session: user recorded two transactions"
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_002",
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "tea shop owner, uses mix of Roman and Nepali, busy",
+    "key_behaviors": [
+      "time-appropriate greeting",
+      "categorization",
+      "running subtotal",
+      "net calculation"
+    ],
+    "user_satisfaction_markers": [
+      "quick entry accepted",
+      "summary shown automatically"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "subha prabhat",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "subha prabhat"
+      },
+      {
+        "role": "ai",
+        "text": "Subha Prabhat! Hajur ko aaja ko hisab suru garum?",
+        "state": {
+          "greeted": true,
+          "time": "morning"
+        }
+      },
+      {
+        "role": "user",
+        "text": "hajur. 10 cup chiya 200"
+      },
+      {
+        "role": "ai",
+        "text": "10 cup chiya bikri = Rs. 200 (Nagarikta ma). Chiya ko khata ma rakhyo.",
+        "state": {
+          "transaction_recorded": "bikri",
+          "item": "chiya",
+          "amount": 200
+        }
+      },
+      {
+        "role": "user",
+        "text": "ani toast 5 plate 250"
+      },
+      {
+        "role": "ai",
+        "text": "Toast 5 plate = Rs. 250 record bhayo.\n\nAaja samma ko jamma bikri: Rs. 450 (Chiya + Toast)",
+        "state": {
+          "transaction_recorded": "bikri",
+          "item": "toast",
+          "amount": 250,
+          "running_total": 450
+        }
+      },
+      {
+        "role": "user",
+        "text": "dudh kinya 150 ko"
+      },
+      {
+        "role": "ai",
+        "text": "Dudh kharid Rs. 150 record gare.\n\nBikri: 450\nKharid: 150\nNet: +300\n\nAru?",
+        "state": {
+          "transaction_recorded": "kharid",
+          "item": "dudh",
+          "amount": 150,
+          "net": 300
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_003",
+    "scenario_type": "question_session",
+    "user_profile": "small farmer, older, prefers pure Nepali",
+    "key_behaviors": [
+      "clear definition with example",
+      "progressive disclosure",
+      "context preservation",
+      "affirmation"
+    ],
+    "user_satisfaction_markers": [
+      "explicit understanding",
+      "no transaction yet but ready"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "udharo bhanya k ho",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "udharo bhanya k ho"
+      },
+      {
+        "role": "ai",
+        "text": "Udharo bhanya tapai le kasaile saman diye tara paisa turunta na liyeko. Baki ma rakhne hisab ho. Jaise: \"Hari lai 500 ko makai diye, paisa pachi aucha\".",
+        "state": {
+          "defined": "udharo"
+        }
+      },
+      {
+        "role": "user",
+        "text": "e...ani tyo paisa aayepachi k garne"
+      },
+      {
+        "role": "ai",
+        "text": "Jaba Hari le paisa tircha, tapai \"Hari le 500 tiryo\" bhanera lekhne. Ma tyo udharo settle garera cash ma add garchhu. Pheri Hari ko balance 0 dekhauchha.",
+        "state": {
+          "explained": "settlement"
+        }
+      },
+      {
+        "role": "user",
+        "text": "ani udharo list herna milcha ta"
+      },
+      {
+        "role": "ai",
+        "text": "Avaashya! \"Sabai udharo dekha\" ya \"ko ko baki cha\" bhanera sodhnu, ma purai list dekhayera, kasko kati baki sabai bhandinchhu.",
+        "state": {
+          "explained": "query"
+        }
+      },
+      {
+        "role": "user",
+        "text": "la thik chha bujhe maile"
+      },
+      {
+        "role": "ai",
+        "text": "Ramro! Koi udharo record garna man chha bhane bhannus. Ma sahayog garchhu.",
+        "state": {
+          "ready": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_004",
+    "scenario_type": "error_correction_session",
+    "user_profile": "retail shop owner, semi-literate, uses Roman",
+    "key_behaviors": [
+      "non-judgmental correction",
+      "explicit confirmation",
+      "audit trail (cancel id)",
+      "reassurance"
+    ],
+    "user_satisfaction_markers": [
+      "relief at ease of correction",
+      "thanked"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "ram lai 2000 diye udhaar",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "ram lai 2000 diye udhaar"
+      },
+      {
+        "role": "ai",
+        "text": "Record bhayo! Ram lai Rs. 2000 udhaar. Confirmation number 045.",
+        "state": {
+          "transaction_recorded": "udhaar",
+          "amount": 2000,
+          "counterparty": "Ram"
+        }
+      },
+      {
+        "role": "user",
+        "text": "ohooo sorry typo 200 matra ho"
+      },
+      {
+        "role": "ai",
+        "text": "Bhaisakyo, tension nalinus. Pahilo entry cancel garera Ram lai Rs. 200 udhaar update garchhu. Thik chha?",
+        "state": {
+          "requesting_confirmation": true,
+          "original": 2000,
+          "new": 200
+        }
+      },
+      {
+        "role": "user",
+        "text": "yes"
+      },
+      {
+        "role": "ai",
+        "text": "Update complete: Ram lai Rs. 200 udhaar.\n\nCancel bhako: #045 (2000)\nNaya: #046 (200)\n\nAru kehi chha?",
+        "state": {
+          "correction_done": true,
+          "final_amount": 200
+        }
+      },
+      {
+        "role": "user",
+        "text": "thanks a lot"
+      },
+      {
+        "role": "ai",
+        "text": "Hajur, dhanyabaad! Khasma galati huna sakcha, ma chadai correct garna sakchhu. Phir bhetaula!",
+        "state": {
+          "interaction_closed": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_005",
+    "scenario_type": "report_request",
+    "user_profile": "small electronics shop, data-savvy, mix language",
+    "key_behaviors": [
+      "clarifying questions",
+      "structured summary",
+      "drill-down",
+      "export offer"
+    ],
+    "user_satisfaction_markers": [
+      "requested details",
+      "asked for export"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "mero balance sheet dekhau ta",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "mero balance sheet dekhau ta"
+      },
+      {
+        "role": "ai",
+        "text": "Kun period ko chahiyo? Aaja, hapta, mahina ki aaj dekhi suru?",
+        "state": {
+          "clarifying": "period"
+        }
+      },
+      {
+        "role": "user",
+        "text": "yo mahina ko"
+      },
+      {
+        "role": "ai",
+        "text": "Yo mahina (Asar) ko summary:\n- Total Bikri: Rs. 45,500\n- Total Kharid: Rs. 28,000\n- Total Udharo (In): Rs. 12,000\n- Net Profit: Rs. 5,500\n\nDetail herna 'detail' bhannus.",
+        "state": {
+          "report_generated": "monthly_summary"
+        }
+      },
+      {
+        "role": "user",
+        "text": "detail herum udharo ko"
+      },
+      {
+        "role": "ai",
+        "text": "Udharo detail (Asar):\n1. Ramesh: 5,000 (July 15 ma tirne)\n2. Sita: 3,500\n3. Kamal: 2,500\n4. Dilip: 1,000\n\nJamma: 12,000",
+        "state": {
+          "detail_shown": "udhaaro"
+        }
+      },
+      {
+        "role": "user",
+        "text": "yo export garna milchha email ma?"
+      },
+      {
+        "role": "ai",
+        "text": "Hajur, milchha. Tapai ko email ID dinus. Ma yo mahina ko report PDF ma pathaidinchhu.",
+        "state": {
+          "ready_to_export": true,
+          "format": "PDF"
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_006",
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "young entrepreneur, tech-savvy, English/Roman mix",
+    "key_behaviors": [
+      "personalized setup",
+      "domain-aware suggestion",
+      "contextual praise",
+      "path to next step"
+    ],
+    "user_satisfaction_markers": [
+      "explicit 'cool'",
+      "perceived ease"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "hi, kasari chalaune yo app?",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "hi, kasari chalaune yo app?"
+      },
+      {
+        "role": "ai",
+        "text": "Hey! Ma e-KHATA, tapai ko personal bookkeeper. Chat jastai kura garne. Jhane \"Ram lai 500 udhaar\" type gare, ma record garchhu. Tapai ko name ra shop type bata suru garum?",
+        "state": {
+          "greeted": true,
+          "asking_profile": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "Anil Thapa, Grocery Store in Ktm"
+      },
+      {
+        "role": "ai",
+        "text": "Setup bhayo, Anil ji! Grocery store ko lagi ready chhu. Tapaiko business ma typically saman bikri, udhaar, ra wholesaler bata kharid huncha. Euta test entry garne? \"Saman kharid\" ya \"bikri\"?",
+        "state": {
+          "profile_set": true,
+          "name": "Anil Thapa",
+          "business": "Grocery"
+        }
+      },
+      {
+        "role": "user",
+        "text": "ok, bought 2 cartons of noodles worth 1200"
+      },
+      {
+        "role": "ai",
+        "text": "Bingo! Noodles 2 cartons kharid Rs. 1200. Tapai ko inventory ra expense track bhayo. Yo \"Noodles\" item category ma auto-add bhayo. Aru kehi?",
+        "state": {
+          "transaction_recorded": "kharid",
+          "item_categorized": "Noodles"
+        }
+      },
+      {
+        "role": "user",
+        "text": "cool, seems easy"
+      },
+      {
+        "role": "ai",
+        "text": "Exactly! Aru advanced features pani chhan - udhaar reminder, profit/loss report. Bistarai herdaijada huncha. Happy accounting!",
+        "state": {
+          "onboarding_complete": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_007",
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "street food vendor, very busy, shorthand Roman",
+    "key_behaviors": [
+      "accepts shorthand math",
+      "informal tone",
+      "quick confirmation",
+      "running motivation"
+    ],
+    "user_satisfaction_markers": [
+      "fast input",
+      "instant net profit"
+    ],
+    "turn_count": 10,
+    "user_turn_count": 5,
+    "first_user_text": "hya",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "hya"
+      },
+      {
+        "role": "ai",
+        "text": "Namaste! K cha haalchaal? Aaja kati bhai sakyo?",
+        "state": {
+          "greeted": "informal"
+        }
+      },
+      {
+        "role": "user",
+        "text": "suru garnu aja ko. momo 15 plate * 150"
+      },
+      {
+        "role": "ai",
+        "text": "15 plate momo x 150 = Rs. 2250. Sahi ho?",
+        "state": {
+          "confirmation": true,
+          "amount": 2250
+        }
+      },
+      {
+        "role": "user",
+        "text": "huncha"
+      },
+      {
+        "role": "ai",
+        "text": "Done! 2250 added. Next?",
+        "state": {
+          "recorded": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "chowmin 10 plate 1200 ani khichdi 5 plate 600"
+      },
+      {
+        "role": "ai",
+        "text": "Chowmin 1200 ra Khichdi 600, total 1800. Jamma aaja 4050. Khatra chalirahecha aaja!",
+        "state": {
+          "recorded": true,
+          "running_total": 4050
+        }
+      },
+      {
+        "role": "user",
+        "text": "kharcha garna baki. gas ko 800 deko thiye"
+      },
+      {
+        "role": "ai",
+        "text": "Gas kharcha Rs. 800 record bhayo. Net Profit: 4050 - 800 = Rs. 3250. Aajai siddhyau?",
+        "state": {
+          "expense_recorded": true,
+          "net": 3250
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_008",
+    "scenario_type": "question_session",
+    "user_profile": "tailor shop owner, asks detailed procedural questions",
+    "key_behaviors": [
+      "hierarchical explanation",
+      "connects concepts",
+      "spontaneous offer",
+      "practical summary"
+    ],
+    "user_satisfaction_markers": [
+      "followed thread deeply",
+      "immediate report view"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "capital bhaneko k?",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "capital bhaneko k?"
+      },
+      {
+        "role": "ai",
+        "text": "Capital bhaneko tapai le business suru garna ya chaluna rakheko aafno paisa. Jaise, bhada ma 50,000 rakhne. \"Capital add gare 50,000\" bhane record huncha.",
+        "state": {
+          "defined": "capital"
+        }
+      },
+      {
+        "role": "user",
+        "text": "e, ani mahinama thorai paisa nikale aafno lagi k garne?"
+      },
+      {
+        "role": "ai",
+        "text": "Tyo \"drawings\" huncha. \"Drawings 5,000\" lekhnus. Capital bata ghatauchha tara expenses haina. Owner le aafno lagi liyeko.",
+        "state": {
+          "defined": "drawings"
+        }
+      },
+      {
+        "role": "user",
+        "text": "ani euta report cha jasma capital ra drawings dekhincha?"
+      },
+      {
+        "role": "ai",
+        "text": "Huncha ni. \"Balance Sheet\" bhanne report huncha. Tyesma ek tira tapai ko capital, nafa/noksan, ra drawings sabai summary ma dekhinchha. Hernu cha?",
+        "state": {
+          "offering": "balance_sheet"
+        }
+      },
+      {
+        "role": "user",
+        "text": "ahile nai heram ta"
+      },
+      {
+        "role": "ai",
+        "text": "Balance Sheet (Aaja samma):\nCapital: 50,000\n(+) Net Profit: 12,000\n(-) Drawings: 5,000\nNet Capital: 57,000\n\nJati nikale ni track garna sakincha!",
+        "state": {
+          "report_shown": "balance_sheet"
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_009",
+    "scenario_type": "error_correction_session",
+    "user_profile": "construction material supplier, uses Nepali, makes date mistakes",
+    "key_behaviors": [
+      "date precision",
+      "duplicate check",
+      "explicit confirmation",
+      "transparency"
+    ],
+    "user_satisfaction_markers": [
+      "appreciated extra check"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "gatey lai 15000 ko cement diye hjo",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "gatey lai 15000 ko cement diye hjo"
+      },
+      {
+        "role": "ai",
+        "text": "Gatey lai Rs. 15000 cement udhaar, date 2081/03/15. Sahi chha?",
+        "state": {
+          "recorded": true,
+          "counterparty": "Gatey",
+          "amount": 15000,
+          "date": "2081/03/15"
+        }
+      },
+      {
+        "role": "user",
+        "text": "aina date galat bho. hjo haina asti 12 gatey ko"
+      },
+      {
+        "role": "ai",
+        "text": "Maaf garnus! Asti Gatey ko date 2081/03/12 ma Rs. 15000 update garum? Ani Gatey ko aru entry cha ki nai check garum?",
+        "state": {
+          "correcting": "date",
+          "checking_duplicate": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "huncha check gara"
+      },
+      {
+        "role": "ai",
+        "text": "Check gare. 03/12 ma Gatey ko aru entry chaina. Ma 03/15 ko cancel garera 03/12 ma Rs. 15000 rakhdai chhu. Confirm gardinus.",
+        "state": {
+          "checked": true,
+          "new_date": "2081/03/12"
+        }
+      },
+      {
+        "role": "user",
+        "text": "confirm"
+      },
+      {
+        "role": "ai",
+        "text": "Update bhayo!\n- Cancel: #089 (03/15, 15000)\n- New: #090 (03/12, 15000)\n\nGatey ko total baki 15000 nai chha. Kehi problem bhaye bhanidinus!",
+        "state": {
+          "corrected": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_010",
+    "scenario_type": "report_request",
+    "user_profile": "cosmetics shop, preparing for tax, needs formal report",
+    "key_behaviors": [
+      "tax awareness",
+      "formal format (IRDA)",
+      "multiple channels",
+      "precise delivery"
+    ],
+    "user_satisfaction_markers": [
+      "required format satisfied",
+      "email sent"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "malai pachillo 3 mahina ko sales tax report chaiyo",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "malai pachillo 3 mahina ko sales tax report chaiyo"
+      },
+      {
+        "role": "ai",
+        "text": "Kun mahina dekhi? Baisakh, Jestha, Asar hola?",
+        "state": {
+          "clarifying": "period"
+        }
+      },
+      {
+        "role": "user",
+        "text": "baisakh dekhi asar samma"
+      },
+      {
+        "role": "ai",
+        "text": "Baisakh-Asar 2081 ko Sales Tax Summary:\n- Taxable Sales: Rs. 225,000\n- VAT Collected (13%): Rs. 29,250\n- Tax-free Sales: Rs. 15,000\n- Total Sales: Rs. 240,000\n\nIRDA format ma PDF banaune?",
+        "state": {
+          "report_generated": "tax_summary"
+        }
+      },
+      {
+        "role": "user",
+        "text": "hajur please. IRDA format cha bhane best"
+      },
+      {
+        "role": "ai",
+        "text": "IRDA compliant PDF ready bhai sakyo. Email address dinus, pathauchhu. Ki WhatsApp ma download link?",
+        "state": {
+          "export_ready": true,
+          "format": "PDF_IRDA"
+        }
+      },
+      {
+        "role": "user",
+        "text": "email pathau: meena.beauty@gmail.com"
+      },
+      {
+        "role": "ai",
+        "text": "meena.beauty@gmail.com ma IRDA Tax Report (Baisakh-Asar 2081) pathai sakyo. Subject: \"VAT Report Q1 - Meena Beauty\". Inbox check garnus!",
+        "state": {
+          "sent": true,
+          "email": "meena.beauty@gmail.com"
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_011",
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "old pharmacy owner, hesitant, pure Nepali",
+    "key_behaviors": [
+      "empathetic start",
+      "domain-aware demo",
+      "simple walkthrough",
+      "reassurance"
+    ],
+    "user_satisfaction_markers": [
+      "hesitancy overcame",
+      "participated in demo"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "namaste, mero hisab kitab ali garo bhairako thiyo, help chaiyo",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "namaste, mero hisab kitab ali garo bhairako thiyo, help chaiyo"
+      },
+      {
+        "role": "ai",
+        "text": "Namaste! Ma e-KHATA, tapaiko digital hisabkitab saathi. Tapai kahile pani hisab birsinu hudaina aba. Tapaiko pasal ko naam ra ke ke bechnu huncha bhanidinus.",
+        "state": {
+          "greeted": true,
+          "empathetic": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "shrestha ausadhi pasal. ausadi matra bechchu"
+      },
+      {
+        "role": "ai",
+        "text": "Shrestha Ausadhi Pasal ko lagi ready. Tapaiko hisab ma khasgari udharo dherai huncha hola. Ma tapailai euta udharo record garera dekhau hai?",
+        "state": {
+          "profile_set": true,
+          "suggesting": "udhaaro_demo"
+        }
+      },
+      {
+        "role": "user",
+        "text": "huss, k garnu parcha"
+      },
+      {
+        "role": "ai",
+        "text": "Tapai bhannus jaise \"Hari Prasad lai 500 ko ausadi udhaar diye\". Mahanthos, ma record garera baki dekhauchu.",
+        "state": {
+          "prompting": "demo"
+        }
+      },
+      {
+        "role": "user",
+        "text": "hari prasad lai 500 ko jworo ko ausadi udhaar diye"
+      },
+      {
+        "role": "ai",
+        "text": "Wah! Perfect. Heridinus, Hari Prasad ko khata kholiye ra Rs. 500 udhaar record bhayo. Tapai anytime \"Hari Prasad ko baki\" bhane yo dekhincha. Saral chha ni?",
+        "state": {
+          "demo_done": true,
+          "counterparty": "Hari Prasad",
+          "amount": 500
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_012",
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "butcher shop, loud environment, voice-to-text typos",
+    "key_behaviors": [
+      "intelligent typo correction (kasi->khasi)",
+      "unit tracking",
+      "proactive expense question",
+      "encouraging tone"
+    ],
+    "user_satisfaction_markers": [
+      "correction accepted",
+      "net given"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "aaj 20 kg kasi beche 12000",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "aaj 20 kg kasi beche 12000"
+      },
+      {
+        "role": "ai",
+        "text": "20 kg kasi (khasi?) bikri Rs. 12000. Confirm gardinus.",
+        "state": {
+          "corrected_typo": "kasi->khasi",
+          "amount": 12000
+        }
+      },
+      {
+        "role": "user",
+        "text": "khasi ho"
+      },
+      {
+        "role": "ai",
+        "text": "Khasi 20 kg bikri Rs. 12000 done! Jamma aaja bikri 12000.",
+        "state": {
+          "recorded": true,
+          "item": "khasi"
+        }
+      },
+      {
+        "role": "user",
+        "text": "ani ranga ko masu 15 kg 10500"
+      },
+      {
+        "role": "ai",
+        "text": "Ranga 15 kg Rs. 10500 record bhayo.\nTotal: 22,500.\nAja kharid kehi bhayo?",
+        "state": {
+          "running_total": 22500,
+          "asking_expense": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "bihan pasu kinya thiye 16000 ma"
+      },
+      {
+        "role": "ai",
+        "text": "Kharid 16000 record gare.\nNet: 22,500 - 16,000 = 6,500.\nBistarai thik huncha din bhari ma.",
+        "state": {
+          "net_profit": 6500,
+          "expense": 16000
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_013",
+    "scenario_type": "question_session",
+    "user_profile": "student running small tuition, curious about features",
+    "key_behaviors": [
+      "identifies niche use-case",
+      "bulk operation explanation",
+      "proactive upselling (reminders)",
+      "youth-friendly tone"
+    ],
+    "user_satisfaction_markers": [
+      "wowed by features",
+      "ready for demo"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "ma monthly fee collect garchhu, track garna milcha?",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "ma monthly fee collect garchhu, track garna milcha?"
+      },
+      {
+        "role": "ai",
+        "text": "Milchha! Student ko naam rakhne, ra \"Ram ko fee 1500 aayo\" bhanera record garne. Mahina ko end ma \"ko ko baaki\" bhanera pani herna sakincha.",
+        "state": {
+          "use_case_confirmed": "fee_collection"
+        }
+      },
+      {
+        "role": "user",
+        "text": "multiple students ek saath record garna milchha?"
+      },
+      {
+        "role": "ai",
+        "text": "Bulk entry pani milchha. \"Ram 1000, Sita 1200, Hari 800 fee\" bhanne bitikai sabai ko individual account ma separate jaanchha. Summary ma jamma dekhauchha.",
+        "state": {
+          "feature_explained": "bulk_entry"
+        }
+      },
+      {
+        "role": "user",
+        "text": "ani kasaile fee diyena bhane reminder aunchha?"
+      },
+      {
+        "role": "ai",
+        "text": "Huncha. Tapai \"reminder set gara\" bhanera date diye, ma SMS ya notification pathaune schedule gar dinchhu. Udharo type ma rakhdine ho.",
+        "state": {
+          "feature_explained": "reminders"
+        }
+      },
+      {
+        "role": "user",
+        "text": "wow, ramro raicha"
+      },
+      {
+        "role": "ai",
+        "text": "Dhanyabaad! Tapai ko tuition center lai sabai hisab milayera professional banauchha. Koi euta student ko demo entry garum?",
+        "state": {
+          "offering_demo": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_014",
+    "scenario_type": "error_correction_session",
+    "user_profile": "pani puri stall, tiny transactions, huge volume",
+    "key_behaviors": [
+      "rate awareness",
+      "recalculation",
+      "future-proofing (default change)",
+      "clear audit trail"
+    ],
+    "user_satisfaction_markers": [
+      "accepted new total",
+      "rate default updated"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "aaj 350 plate beche",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "aaj 350 plate beche"
+      },
+      {
+        "role": "ai",
+        "text": "350 plate x 50 (rate setting ma Rs. 50 chha) = Rs. 17,500. Sahi chha?",
+        "state": {
+          "calculated": true,
+          "rate": 50,
+          "amount": 17500
+        }
+      },
+      {
+        "role": "user",
+        "text": "nahi aaj rate 60 thyo"
+      },
+      {
+        "role": "ai",
+        "text": "Oh, rate change bhayo. K rate update garum? Pahilo 350 plate ko entry cancel garera naya rate ma garna parcha. Ma rate 60 banauchhu.",
+        "state": {
+          "correcting_rate": true,
+          "old_rate": 50,
+          "new_rate": 60
+        }
+      },
+      {
+        "role": "user",
+        "text": "yes rate 60 banau"
+      },
+      {
+        "role": "ai",
+        "text": "Rate Rs. 60 update bhayo. Naya hisab: 350 x 60 = Rs. 21,000. Cancel #112, New #113 created. Update complete.",
+        "state": {
+          "correction_done": true,
+          "new_total": 21000
+        }
+      },
+      {
+        "role": "user",
+        "text": "thik chha"
+      },
+      {
+        "role": "ai",
+        "text": "Aaja ko naya bikri 21,000. Rate 60 default set bhayo bholi ko lagi. Aru kehi?",
+        "state": {
+          "rate_default_changed": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_015",
+    "scenario_type": "report_request",
+    "user_profile": "grocery store, wants visual chart, semi-literate",
+    "key_behaviors": [
+      "visual representation (text-based chart)",
+      "highest point identification",
+      "product-level drill down",
+      "multimedia export"
+    ],
+    "user_satisfaction_markers": [
+      "understood the chart",
+      "asked for photo share"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "mero hapta ko bikri ko chart dekhau",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "mero hapta ko bikri ko chart dekhau"
+      },
+      {
+        "role": "ai",
+        "text": "Kun hapta? Yo 7 din ki pachillo?",
+        "state": {
+          "clarifying": "week"
+        }
+      },
+      {
+        "role": "user",
+        "text": "yo 7 din ko"
+      },
+      {
+        "role": "ai",
+        "text": "Yo hapta (Mon-Sun) Bikri Chart:\nMon: 5000 ████\nTue: 3500 ███\nWed: 8000 ██████\nThu: 2000 ██\nFri: 6500 █████\nSat: 9500 ███████ (Highest!)\nSun: 4000 ███\n\nJamma: 38,500",
+        "state": {
+          "report_shown": "weekly_chart"
+        }
+      },
+      {
+        "role": "user",
+        "text": "saturday dherai cha, k product badi bikiryo?"
+      },
+      {
+        "role": "ai",
+        "text": "Saturday ko top products:\n1. Rice Bags: 3,000\n2. Cooking Oil: 2,500\n3. Sugar: 1,500\n\nBaki 2,500 aru items.",
+        "state": {
+          "drill_down": "product_wise"
+        }
+      },
+      {
+        "role": "user",
+        "text": "yehi report photo pathau na mobile ma"
+      },
+      {
+        "role": "ai",
+        "text": "WhatsApp number dinus. Ma yo chart ko screenshot jaise image generate garera pathaidinchhu.",
+        "state": {
+          "ready_to_export_image": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_016",
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "mobile recharge shop, multi-service, young",
+    "key_behaviors": [
+      "service categorization",
+      "commission handling",
+      "profit split",
+      "automation suggestion"
+    ],
+    "user_satisfaction_markers": [
+      "immediate entry success",
+      "recognized value"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "hi, mero pasal ma recharge, bill payment, sabai huncha. track huncha?",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "hi, mero pasal ma recharge, bill payment, sabai huncha. track huncha?"
+      },
+      {
+        "role": "ai",
+        "text": "Sabai huncha! Ma different \"service\" category banauchhu. Tapai \"Ncell recharge 500\" ya \"Electricity bill 1200\" lekhe, ma alag-alag track garchhu. Tapaiko pasal ko naam?",
+        "state": {
+          "greeted": true,
+          "multi_service": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "Digital Seva Kendra"
+      },
+      {
+        "role": "ai",
+        "text": "Digital Seva Kendra profile set. Khasgari tapailai \"commission\" track garna important huncha. Euta Ncell recharge 500 ko entry garum? Commission 5% huncha?",
+        "state": {
+          "profile_set": true,
+          "commission_aware": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "ho, 5%"
+      },
+      {
+        "role": "ai",
+        "text": "Recorded: Ncell Recharge Rs. 500. Tapai ko cash ma 475 gayo (25 commission). Ani \"Commission Income\" ma 25 add bhayo. Profit tracking ko lagi best.",
+        "state": {
+          "recorded": "recharge_with_commission",
+          "cash": 475,
+          "commission": 25
+        }
+      },
+      {
+        "role": "user",
+        "text": "sahi ho. aru service ni yesari nai?"
+      },
+      {
+        "role": "ai",
+        "text": "Exactly! Bill payment, ticket booking, sabai service ma commission % preset garam, automatically calculate huncha. Ready to automate?",
+        "state": {
+          "ready_for_setup": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_017",
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "vegetable vendor, early morning, rapid entries",
+    "key_behaviors": [
+      "fast entry",
+      "margin tracking",
+      "proactive missing info",
+      "categorization"
+    ],
+    "user_satisfaction_markers": [
+      "all goods tracked",
+      "profit clear"
+    ],
+    "turn_count": 10,
+    "user_turn_count": 5,
+    "first_user_text": "bihanai aayo",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "bihanai aayo"
+      },
+      {
+        "role": "ai",
+        "text": "Subha Prabhat! Tarkari taja cha? Hisab suru garum?",
+        "state": {
+          "greeted": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "gara. aalu 50 kg beche 2000 ma"
+      },
+      {
+        "role": "ai",
+        "text": "Aalu 50 kg bikri Rs. 2000.",
+        "state": {
+          "recorded": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "pyaaj 30 kg 1500, tamatar 20 kg 800"
+      },
+      {
+        "role": "ai",
+        "text": "Pyaaj 1500, Tamatar 800. Jamma bikri 4300. Tarkari kharid ko hisab bhayo?",
+        "state": {
+          "recorded": true,
+          "total": 4300
+        }
+      },
+      {
+        "role": "user",
+        "text": "aalu kinye 1200, pyaaj 900"
+      },
+      {
+        "role": "ai",
+        "text": "Kharid: Aalu 1200, Pyaaj 900 = 2100.\nBikri 4300 - Kharid 2100 = Margin 2200.\nTamatar ko kharid cha?",
+        "state": {
+          "margin_calculated": true,
+          "missing_info": "tamatar_cost"
+        }
+      },
+      {
+        "role": "user",
+        "text": "tamatar 400"
+      },
+      {
+        "role": "ai",
+        "text": "Final: Bikri 4300, Kharid 2500, Profit 1800. Aaja ko lagi sabai ready!",
+        "state": {
+          "complete": true,
+          "profit": 1800
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_018",
+    "scenario_type": "question_session",
+    "user_profile": "hardware shop owner, needs strong inventory, technical",
+    "key_behaviors": [
+      "complex inventory handling",
+      "link between modules",
+      "proactive feature discovery",
+      "data import"
+    ],
+    "user_satisfaction_markers": [
+      "understood automation",
+      "asking for import"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "mero pasal ma 500+ items chan. inventory manage huncha?",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "mero pasal ma 500+ items chan. inventory manage huncha?"
+      },
+      {
+        "role": "ai",
+        "text": "Huncha! Ma item catalog banauchhu. Tapai \"Cement 10 bag add\" bhane stock badcha. \"Sale 2 bag\" bhane ghatcha. Real-time stock dekhincha. Excel jasto sochnus.",
+        "state": {
+          "feature_explained": "inventory"
+        }
+      },
+      {
+        "role": "user",
+        "text": "kasaile udhaar ma saman lage stock ghatcha automatically?"
+      },
+      {
+        "role": "ai",
+        "text": "Huncha. Udhaar entry dida ni stock ghatcha. Jaise: \"Hari lai pipe 5 udhaar\" bhane stock 5 le ghatera Hari ko balance ma 5 pipe jancha.",
+        "state": {
+          "clarified": "udhaar_inventory_link"
+        }
+      },
+      {
+        "role": "user",
+        "text": "reorder level set garna sakincha?"
+      },
+      {
+        "role": "ai",
+        "text": "Yes! \"Pipe ko reorder 20 units\" bhanne. Stock 20 bhanda tala gayo bhane ma alert dinchhu, \"Pipe kinne bela bhayo\".",
+        "state": {
+          "explained": "reorder_alerts"
+        }
+      },
+      {
+        "role": "user",
+        "text": "superb. aba mero stock import garne feature cha?"
+      },
+      {
+        "role": "ai",
+        "text": "Cha. Ma Excel/CSV import support garchhu. File pathai dinus, ma load garchhu. Sahi data check garera confirm garchu.",
+        "state": {
+          "explained_import": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_019",
+    "scenario_type": "error_correction_session",
+    "user_profile": "bakery, late night, tired, deletes wrong entry",
+    "key_behaviors": [
+      "confirmation on destructive action",
+      "undelete/restore capability",
+      "modification after restore",
+      "calm reassurance"
+    ],
+    "user_satisfaction_markers": [
+      "recovered from mistake",
+      "correct item recorded"
+    ],
+    "turn_count": 10,
+    "user_turn_count": 5,
+    "first_user_text": "cake 2000 beche",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "cake 2000 beche"
+      },
+      {
+        "role": "ai",
+        "text": "Cake bikri Rs. 2000 recorded.",
+        "state": {
+          "recorded": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "delete garnu tyo cake"
+      },
+      {
+        "role": "ai",
+        "text": "Confirm gardinus: Cake bikri Rs. 2000 (#201) delete garne ho? Yes/No.",
+        "state": {
+          "confirming_delete": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "yes"
+      },
+      {
+        "role": "ai",
+        "text": "Deleted: #201 Cake 2000. Tapaiko aajako total bikri Rs. 2000 le ghatyo.",
+        "state": {
+          "deleted": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "ahhhh wait! pastries becheko thye, cake haina. restore garnu paryo."
+      },
+      {
+        "role": "ai",
+        "text": "Oh tension nalinus. Delete restore garna sakincha.\n- Restore #201 (Cake 2000)?\nAni tyaspachi item change garera 'Pastries' banauchhu.",
+        "state": {
+          "offering_restore": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "huss restore gara"
+      },
+      {
+        "role": "ai",
+        "text": "Restored! #201 Cake 2000 lai modify garera \"Pastries 2000\" update gare. Aba thik chha?",
+        "state": {
+          "restored_and_modified": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_020",
+    "scenario_type": "report_request",
+    "user_profile": "medical store, needs expiry report, formal",
+    "key_behaviors": [
+      "specific regulatory awareness (pharma)",
+      "batch tracking",
+      "actionable suggestion (return/clear)",
+      "secure link"
+    ],
+    "user_satisfaction_markers": [
+      "got expiry list with batch",
+      "asked for print"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "ausadi ko expiry report cha, aaudo 3 mahina ma expire hune",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "ausadi ko expiry report cha, aaudo 3 mahina ma expire hune"
+      },
+      {
+        "role": "ai",
+        "text": "Aaudo 3 mahina bhitra expire hune sabai ausadi ko list nikalchu. Batch number sahit cha ki naam matra?",
+        "state": {
+          "clarifying": "detail_level"
+        }
+      },
+      {
+        "role": "user",
+        "text": "naam ra quantity, date sahit"
+      },
+      {
+        "role": "ai",
+        "text": "Expiry Report (Aug-Oct 2081):\n1. Cetzine Syrup (Batch B32): 15 bottle, Exp 15 Aug\n2. Amoxil Caps (Batch A12): 200 cap, Exp 30 Aug\n3. Dolo 650 (Batch D45): 50 strip, Exp 10 Sep\n...\n\nJamma 12 items. Kehi return ma pathaune ho ki stock clear?"
+      },
+      {
+        "role": "user",
+        "text": "yo list print gardinus"
+      },
+      {
+        "role": "ai",
+        "text": "PDF format ma download link ready chha. Link: ekhata.io/reports/exp209.pdf. Print garnu ya share garnu.",
+        "state": {
+          "export_ready": true,
+          "format": "pdf",
+          "link": "ekhata.io/reports/exp209.pdf"
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_021",
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "housewife selling homemade pickles, informal, pure Nepali",
+    "key_behaviors": [
+      "warm familial tone",
+      "unit/quantity tracking",
+      "simple demo",
+      "gradual complexity intro"
+    ],
+    "user_satisfaction_markers": [
+      "explicit 'sajilo'",
+      "understood flow"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "namaste bhai, mero ghar ko achar bechchhu, hisab rakna sikaidinu na",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "namaste bhai, mero ghar ko achar bechchhu, hisab rakna sikaidinu na"
+      },
+      {
+        "role": "ai",
+        "text": "Namaste didi! Khusi lagyo. Ghar ko achar ko business ma hisab rakhna sajilo cha. Tapai ko naam ra achar ko type bhannus pahile.",
+        "state": {
+          "greeted": true,
+          "informal": "didi/bhai"
+        }
+      },
+      {
+        "role": "user",
+        "text": "sita sharma, achar 2 type: mula ko ra lapsi ko"
+      },
+      {
+        "role": "ai",
+        "text": "Sita didi, tapai ko lagi 2 item banaye: Mula Achar ra Lapsi Achar. Bikri record garna \"Mula achar 2 jar 500\" type garne. Try garum?",
+        "state": {
+          "profile_set": true,
+          "items_created": [
+            "Mula Achar",
+            "Lapsi Achar"
+          ]
+        }
+      },
+      {
+        "role": "user",
+        "text": "mula achar 2 jar 500 beche"
+      },
+      {
+        "role": "ai",
+        "text": "Wah! Record ready: Mula Achar 2 jar bikri Rs. 500. Yesto sajilo! Aba tapai aru din yesari nai lekhdai janu.",
+        "state": {
+          "demo_done": true,
+          "item": "Mula Achar",
+          "quantity": 2,
+          "unit": "jar"
+        }
+      },
+      {
+        "role": "user",
+        "text": "hait, sajilo raicha ta"
+      },
+      {
+        "role": "ai",
+        "text": "Ho didi, phone mai hisab. Bistarai profit, sabai customer ko record rakhna milcha. Koi customer lai udhaar diyeko record garne ho?",
+        "state": {
+          "onboarding_complete": true,
+          "next_step": "udhaar"
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_022",
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "transport ticket counter, cash-heavy, fast",
+    "key_behaviors": [
+      "route tracking",
+      "unit/price consistency",
+      "cargo separate",
+      "cash management hint"
+    ],
+    "user_satisfaction_markers": [
+      "fast entries",
+      "route-wise clear"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "suru aajako",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "suru aajako"
+      },
+      {
+        "role": "ai",
+        "text": "Hajur, ready!",
+        "state": {
+          "ready": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "ktm-pkr 2 ticket 2400"
+      },
+      {
+        "role": "ai",
+        "text": "KTM-PKR 2 tickets Rs. 2400.",
+        "state": {
+          "recorded": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "ktm-bhairawa 1 1400, ktm-chitwan 3 2400"
+      },
+      {
+        "role": "ai",
+        "text": "Bhairawa 1x1400, Chitwan 3x2400. Running total: 6200.",
+        "state": {
+          "running_total": 6200
+        }
+      },
+      {
+        "role": "user",
+        "text": "ani cargo 5 packet 1500"
+      },
+      {
+        "role": "ai",
+        "text": "Cargo 5 packet Rs. 1500. Jamma aaja bikri: 7700. Bhada ma thapne?",
+        "state": {
+          "total": 7700,
+          "asking_deposit": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_023",
+    "scenario_type": "question_session",
+    "user_profile": "kindergarten owner, billing cycle question",
+    "key_behaviors": [
+      "structured billing (invoice)",
+      "profile linking",
+      "sample generation",
+      "multi-channel sending"
+    ],
+    "user_satisfaction_markers": [
+      "understood invoice cycle",
+      "explored sending"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "ma monthly invoice generate garna chahanchhu parents lai",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "ma monthly invoice generate garna chahanchhu parents lai"
+      },
+      {
+        "role": "ai",
+        "text": "Huncha. Tapai \"invoice\" feature use garne. Suruma bachha ko profile banaune, ani monthly fee set garne. Ma automatic every 1st ma generate gardinchhu.",
+        "state": {
+          "explained": "invoice_feature"
+        }
+      },
+      {
+        "role": "user",
+        "text": "euta bachha ko lagi sample banauna sakchhau?"
+      },
+      {
+        "role": "ai",
+        "text": "Avashya. Bachha ko naam ra fee bhannus.",
+        "state": {
+          "prompting": "sample"
+        }
+      },
+      {
+        "role": "user",
+        "text": "bikash rai, fee 3000"
+      },
+      {
+        "role": "ai",
+        "text": "Bikash Rai ko lagi Invoice #INV-001:\n- Student: Bikash Rai\n- Fee: Rs. 3000\n- Due Date: 5th Asar 2081\n\nYo tapai \"Bikash ko invoice\" bhanera anytime nikalna saknu huncha.",
+        "state": {
+          "sample_generated": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "katai pathauna milchha directly?"
+      },
+      {
+        "role": "ai",
+        "text": "Parent ko WhatsApp ya email number rakhnu, ma directly invoice pathaidinchu every month. SMS pani pathauna sakincha.",
+        "state": {
+          "feature_explained": "direct_send"
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_024",
+    "scenario_type": "error_correction_session",
+    "user_profile": "jewelry shop, high value, very cautious",
+    "key_behaviors": [
+      "high value flag",
+      "security pin",
+      "audit trail",
+      "reassurance on security"
+    ],
+    "user_satisfaction_markers": [
+      "praised security",
+      "corrected safely"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "sun ko set beche 125000",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "sun ko set beche 125000"
+      },
+      {
+        "role": "ai",
+        "text": "Gold Set bikri Rs. 1,25,000. Confirm gardinus, amount thulo cha.",
+        "state": {
+          "recorded": true,
+          "high_value_flag": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "nai nai, 115000 ho. maile 125 lekhe"
+      },
+      {
+        "role": "ai",
+        "text": "Thik cha, 1,15,000 ma update garna lai authorized PIN ya confirmation code linu parcha (high value transaction ho). Code dinus.",
+        "state": {
+          "security_check": "high_value_correction"
+        }
+      },
+      {
+        "role": "user",
+        "text": "1212"
+      },
+      {
+        "role": "ai",
+        "text": "Code verified ✓. Update: Rs. 1,25,000 → Rs. 1,15,000. Fully audited and logged.",
+        "state": {
+          "corrected": true,
+          "verified": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "dhanyabaad. security ramro cha"
+      },
+      {
+        "role": "ai",
+        "text": "High value transactions ma 2-factor confirmation mandatory cha. Tapai ko sun safe!",
+        "state": {
+          "security_acknowledged": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_025",
+    "scenario_type": "report_request",
+    "user_profile": "consultant, needs time tracking report",
+    "key_behaviors": [
+      "hourly tracking",
+      "client segmentation",
+      "billable hours",
+      "professional invoicing"
+    ],
+    "user_satisfaction_markers": [
+      "received time report",
+      "invoice sent"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "aaja ko client-wise hours ko report deu",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "aaja ko client-wise hours ko report deu"
+      },
+      {
+        "role": "ai",
+        "text": "Aaja (Asar 15) ko Client Hours:\n1. Everest Bank: 3 hrs @ 5000 = 15000\n2. Himalayan Tea: 2 hrs @ 4000 = 8000\n3. Admin Work: 1 hr\n\nBillable Total: 5 hrs, Rs. 23,000",
+        "state": {
+          "report_shown": "time_tracking"
+        }
+      },
+      {
+        "role": "user",
+        "text": "himalayan tea ko detail invoice pathau"
+      },
+      {
+        "role": "ai",
+        "text": "Himalayan Tea ko liye invoice:\nDate: Asar 15, 2081\nService: Consulting\nHours: 2 x 4000 = Rs. 8000\nPayment: Due\n\nEmail pathaune ki print?",
+        "state": {
+          "invoice_ready": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "email pathau: hr@himalayantea.com"
+      },
+      {
+        "role": "ai",
+        "text": "hr@himalayantea.com ma invoice pathai sakyo. Subject: \"Consulting Invoice - Asar 15\".",
+        "state": {
+          "sent": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_026",
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "freelance plumber, wants customer history",
+    "key_behaviors": [
+      "customer-centric",
+      "service history",
+      "simple demo",
+      "future value reminder"
+    ],
+    "user_satisfaction_markers": [
+      "understood customer history",
+      "first entry done"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "malai mero purano customer ko hisab hernu cha, huncha?",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "malai mero purano customer ko hisab hernu cha, huncha?"
+      },
+      {
+        "role": "ai",
+        "text": "Huncha! Plumbing business ko lagi customer wise history sabai record garna milcha. Tapai ko naam ra number bhannus.",
+        "state": {
+          "greeted": true,
+          "use_case_identified": "plumbing"
+        }
+      },
+      {
+        "role": "user",
+        "text": "raj kumar, 9841..."
+      },
+      {
+        "role": "ai",
+        "text": "Raj Kumar ji, profile set. Aba \"customer add\" garne. Euta purano customer ko naam dinus, demo dekhauchhu.",
+        "state": {
+          "profile_set": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "sharma ji, uniharuko ghar ma pipe fitting gareko thiye"
+      },
+      {
+        "role": "ai",
+        "text": "Sharma ji ko account kholiyo. Aba tapai \"Sharma ji - Pipe fitting 1500\" record garne. Pheri uniharuko pura history \"Sharma ji ko khatta\" ma dekhincha.",
+        "state": {
+          "customer_created": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "huss, 1500 record gara"
+      },
+      {
+        "role": "ai",
+        "text": "Recorded! Sharma ji ko khata ma Rs. 1500. Aba future ma uniharuko lagi sabai records yahi milcha. Aru customer add garne?",
+        "state": {
+          "demo_done": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_027",
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "cloth merchant, festival season, high volume",
+    "key_behaviors": [
+      "festival awareness",
+      "bulk mode",
+      "unit price breakdown",
+      "financial advice"
+    ],
+    "user_satisfaction_markers": [
+      "high volume handled",
+      "cash management tip"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "dashain ko rush cha, dherai bikri record garnu cha",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "dashain ko rush cha, dherai bikri record garnu cha"
+      },
+      {
+        "role": "ai",
+        "text": "Dashain ko shubhakamana! Bulk entry mode on garchhu. Tapai kehi format ma bhandinus: \"Saari 5, Kurta 10, Dhoti 4\".",
+        "state": {
+          "ready": true,
+          "bulk_mode": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "saari 10 50000, kurta 20 60000, lehenga 5 75000"
+      },
+      {
+        "role": "ai",
+        "text": "Bulk recorded:\nSaari 10x5000=50000\nKurta 20x3000=60000\nLehenga 5x15000=75000\nJamma: 1,85,000\nAru?",
+        "state": {
+          "recorded": true,
+          "total": 185000
+        }
+      },
+      {
+        "role": "user",
+        "text": "dhoti 15 7500"
+      },
+      {
+        "role": "ai",
+        "text": "Dhoti 15x500=7500. Total Bikri: 1,92,500. Cash flow dherai cha, deposit garisaknu hola.",
+        "state": {
+          "updated": true,
+          "total": 192500,
+          "advice": "deposit"
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_028",
+    "scenario_type": "question_session",
+    "user_profile": "farmer cooperative, member shares, complex",
+    "key_behaviors": [
+      "cooperative terms",
+      "complex calculation",
+      "annual cycle awareness",
+      "automation"
+    ],
+    "user_satisfaction_markers": [
+      "understood share mechanism",
+      "asked about closing"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "hamro cooperative ma 50 jana member chan, share hisab garna milcha?",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "hamro cooperative ma 50 jana member chan, share hisab garna milcha?"
+      },
+      {
+        "role": "ai",
+        "text": "Avashya! Cooperative accounting module chha. Member ko 500/share ko dar le \"Ram le 5 share kinye\" record garna milcha. Dividend ni distribute garna sakincha.",
+        "state": {
+          "use_case_confirmed": "cooperative"
+        }
+      },
+      {
+        "role": "user",
+        "text": "dividend bhaneko k ho?"
+      },
+      {
+        "role": "ai",
+        "text": "Dividend bhaneko nafa bata member lai share anusar dine paisa. Jaise, 10% dividend bhanepachi Ram le 2500 ko share ma 250 pauchha.",
+        "state": {
+          "defined": "dividend"
+        }
+      },
+      {
+        "role": "user",
+        "text": "ani yearly closing ma k hunca"
+      },
+      {
+        "role": "ai",
+        "text": "Yearly closing ma Profit & Loss account clear garera, member ko capital ma transfer garna saknuhuncha. Ma \"year end closing\" feature le automate garchu.",
+        "state": {
+          "explained": "year_end"
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_029",
+    "scenario_type": "error_correction_session",
+    "user_profile": "tea stall, morning, reverses two entries",
+    "key_behaviors": [
+      "bulk reversal",
+      "explicit confirmation",
+      "paired reversal entries",
+      "net effect clarity"
+    ],
+    "user_satisfaction_markers": [
+      "bulk action succeeded"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "malai pachillo 2 entry revert garnu thyo",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "malai pachillo 2 entry revert garnu thyo"
+      },
+      {
+        "role": "ai",
+        "text": "Pachillo 2 entries: #455 Khari 100, #456 Chiya 200. Kun reverse garne? Ki duitai?",
+        "state": {
+          "clarifying": "which"
+        }
+      },
+      {
+        "role": "user",
+        "text": "duitai reverse gara"
+      },
+      {
+        "role": "ai",
+        "text": "Confirm gardinus: Reverse #455 (100) ra #456 (200), jamma 300 ko reversal huncha. Net effect 0. Agadi badhau?",
+        "state": {
+          "confirming_reverse": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "huss"
+      },
+      {
+        "role": "ai",
+        "text": "Done! #455, #456 reversed with #457, #458. Balance adjusted. Aba thik cha?",
+        "state": {
+          "reversed": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "aba thik cha"
+      },
+      {
+        "role": "ai",
+        "text": "Ramro! Sabai clear.",
+        "state": {
+          "completed": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_030",
+    "scenario_type": "report_request",
+    "user_profile": "cable TV operator, monthly collection report",
+    "key_behaviors": [
+      "collection rate",
+      "due list with location",
+      "agent/warden sharing",
+      "percentage metrics"
+    ],
+    "user_satisfaction_markers": [
+      "got due list",
+      "shared to warden"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "yo mahina ko collection report dekhau",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "yo mahina ko collection report dekhau"
+      },
+      {
+        "role": "ai",
+        "text": "Yo mahina (Asar) Cable Collection:\n- Total Customers: 120\n- Collected: 115 x 500 = 57,500\n- Due: 5 x 500 = 2,500\n- Collection %: 95.8%",
+        "state": {
+          "report_shown": "collection"
+        }
+      },
+      {
+        "role": "user",
+        "text": "kasko due cha?"
+      },
+      {
+        "role": "ai",
+        "text": "Due list:\n1. Hari Bhakta - 500 (Ward 4)\n2. Sita Adhikari - 500 (Ward 7)\n3. Kamal Thapa - 500 (Ward 1)\n4. Pema Sherpa - 500 (Ward 2)\n5. Dil Maya - 500 (Ward 5)",
+        "state": {
+          "detail": "due_list"
+        }
+      },
+      {
+        "role": "user",
+        "text": "yo list warden lai pathaidinu"
+      },
+      {
+        "role": "ai",
+        "text": "Warden ko number dinus, SMS ya WhatsApp ma list pathauchhu. Tyesma amount ra address clear huncha.",
+        "state": {
+          "ready_to_share": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_031",
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "street pan shop, uses voice notes, shy",
+    "key_behaviors": [
+      "voice-first interaction",
+      "transcription demonstration",
+      "shy user encouragement",
+      "next step prompt"
+    ],
+    "user_satisfaction_markers": [
+      "surprised by ease",
+      "ready to use voice"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "yo app ma bolera hisab rakhna milcha?",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "yo app ma bolera hisab rakhna milcha?"
+      },
+      {
+        "role": "ai",
+        "text": "Hajur, milchha! Tapai mic thichera \"200 ko pan beche\" bhannus, ma text ma badalera record garchhu. Tapaiko naam bhannus.",
+        "state": {
+          "greeted": true,
+          "voice_feature": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "bhola"
+      },
+      {
+        "role": "ai",
+        "text": "Bhola ji, welcome! Try garum ta? Mic press garnus ra \"aaj 500 ko saman beche\" bhannus.",
+        "state": {
+          "prompting_voice": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "[voice] aaj 500 ko pan beche"
+      },
+      {
+        "role": "ai",
+        "text": "Voice record bhayo: \"aaj 500 ko pan beche\". Hisab ma Rs. 500 bikri add bhayo. Heridinus, bolera ni sajilo!",
+        "state": {
+          "voice_transcribed": true,
+          "amount": 500
+        }
+      },
+      {
+        "role": "user",
+        "text": "oho, majja aayo"
+      },
+      {
+        "role": "ai",
+        "text": "Khusi lagyo! Aba tapai jhan busy huda ni bolera record garne, ma dhyanna rakchhu. Koi customer udhaar ma chha?",
+        "state": {
+          "onboarding_complete": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_032",
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "carpenter, mix of labor and material billing",
+    "key_behaviors": [
+      "split billing",
+      "professional invoicing",
+      "customer linkage"
+    ],
+    "user_satisfaction_markers": [
+      "billed correctly",
+      "invoice ready"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "sharma ko ghar ma kaam gare",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "sharma ko ghar ma kaam gare"
+      },
+      {
+        "role": "ai",
+        "text": "Sharma ji ko lagi labour charge ra material entry garau.",
+        "state": {
+          "prompting": "labour_material_split"
+        }
+      },
+      {
+        "role": "user",
+        "text": "labour 5000, wood material 12000"
+      },
+      {
+        "role": "ai",
+        "text": "Sharma ji ko khata:\nLabour: Rs. 5000\nMaterial: Rs. 12,000\nTotal Due: 17,000\nInvoice ready garne?",
+        "state": {
+          "recorded": true,
+          "labour": 5000,
+          "material": 12000
+        }
+      },
+      {
+        "role": "user",
+        "text": "ho, invoice deu"
+      },
+      {
+        "role": "ai",
+        "text": "Invoice #INV-102 for Sharma ji created. Labour+Material = 17,000. Share ya print garda huncha.",
+        "state": {
+          "invoiced": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_033",
+    "scenario_type": "question_session",
+    "user_profile": "small restaurant, wants recipe costing",
+    "key_behaviors": [
+      "costing module",
+      "breakdown",
+      "margin highlight",
+      "upselling analytics"
+    ],
+    "user_satisfaction_markers": [
+      "shocked at margin",
+      "wants full menu"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "plate ko hisab lekhdina, euta momo plate ma kati cost aucha?",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "plate ko hisab lekhdina, euta momo plate ma kati cost aucha?"
+      },
+      {
+        "role": "ai",
+        "text": "Tyo \"Recipe Costing\" huncha. Tapai momo banune sabai saman (maida, masu, masala) ko price ra quantity dinus, ma per plate cost nikalchu.",
+        "state": {
+          "introducing": "recipe_costing"
+        }
+      },
+      {
+        "role": "user",
+        "text": "maida 1 kg 80, masu 1 kg 500, masala 100, gas 100, bana 10 plate"
+      },
+      {
+        "role": "ai",
+        "text": "Total Cost: 80+500+100+100 = 780.\n10 plate banauda per plate cost = Rs. 78.\nTapai ko selling price 150 bhaye Profit = Rs. 72/plate (92% margin).",
+        "state": {
+          "calculated": true,
+          "cost_per_plate": 78,
+          "profit_margin": "92%"
+        }
+      },
+      {
+        "role": "user",
+        "text": "damn 92% margin! aru item ni yesari nai?"
+      },
+      {
+        "role": "ai",
+        "text": "Ho, menu ma jati item chan sabai ko cost nikalera profit maximize garna sakincha. \"Recipe add\" bhanera item list banaunus.",
+        "state": {
+          "encouraging_menu_analysis": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_034",
+    "scenario_type": "error_correction_session",
+    "user_profile": "gym owner, monthly fee correction",
+    "key_behaviors": [
+      "plan linking",
+      "future-proofing",
+      "complete profile update"
+    ],
+    "user_satisfaction_markers": [
+      "fee corrected",
+      "plan updated for future"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "rajan ko fee 2000 aayo",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "rajan ko fee 2000 aayo"
+      },
+      {
+        "role": "ai",
+        "text": "Rajan ko monthly fee Rs. 2000 record bhayo.",
+        "state": {
+          "recorded": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "tyo 2000 haina, 2500 ho. plan platinum ho"
+      },
+      {
+        "role": "ai",
+        "text": "Plan Platinum ko fee Rs. 2500 huncha. Correction garum. Rajan ko plan ni update garne?",
+        "state": {
+          "correcting_amount": true,
+          "updating_plan": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "ho plan platinum update gara"
+      },
+      {
+        "role": "ai",
+        "text": "Update done! Rajan - Plan Platinum, Fee 2500. Future ma auto 2500 nai generate huncha.",
+        "state": {
+          "corrected": true,
+          "future_auto": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_035",
+    "scenario_type": "report_request",
+    "user_profile": "kirana store, year-end stock valuation",
+    "key_behaviors": [
+      "compliance (Tax)",
+      "valuation basis",
+      "professional PDF",
+      "CA-friendly"
+    ],
+    "user_satisfaction_markers": [
+      "got year end valuation",
+      "will share to CA"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "salko antim stock value chaincha tax ko lagi",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "salko antim stock value chaincha tax ko lagi"
+      },
+      {
+        "role": "ai",
+        "text": "Year-End Stock Valuation Report nikalchu. Kun maiti date samma ko? 2080 Asar 31?",
+        "state": {
+          "clarifying": "date"
+        }
+      },
+      {
+        "role": "user",
+        "text": "ho 2080 asar 31"
+      },
+      {
+        "role": "ai",
+        "text": "Stock Valuation (Asar 31, 2080):\n- Total Items: 245\n- Total Cost Value: Rs. 4,25,000\n- Total Market Value: Rs. 5,10,000\n- Basis: Cost or Market whichever lower (4,25,000)\n\nPDF format ma download link dinchhu.",
+        "state": {
+          "report_generated": true,
+          "value": 425000
+        }
+      },
+      {
+        "role": "user",
+        "text": "link deu"
+      },
+      {
+        "role": "ai",
+        "text": "Link: ekhata.io/stock/yr80.pdf. CA lai share garidinuhola.",
+        "state": {
+          "link_shared": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_036",
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "dairy farmer, milk collection, morning routine",
+    "key_behaviors": [
+      "industry-specific (dairy)",
+      "unit/rate tracking",
+      "routine building",
+      "simple demo"
+    ],
+    "user_satisfaction_markers": [
+      "first collection recorded",
+      "understood daily habit"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "malai duh ko hisab rakhna cha",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "malai duh ko hisab rakhna cha"
+      },
+      {
+        "role": "ai",
+        "text": "Dairy farm ko lagi milk collection perfect huncha. Tapai ko naam ra gau bhanidinus.",
+        "state": {
+          "greeted": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "gopal, dhulikhel"
+      },
+      {
+        "role": "ai",
+        "text": "Gopal ji! Dhulikhel Dairy. Aba milk collection entry: \"bihan 50 litre\" ya \"sajh 40 litre\" type garne. Rate set garau.",
+        "state": {
+          "profile_set": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "rate 65 per litre ho"
+      },
+      {
+        "role": "ai",
+        "text": "Rate Rs. 65/litre set bhayo. Entry garum: \"bihan 30 litre\" bhannus.",
+        "state": {
+          "rate_set": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "bihan 30 litre"
+      },
+      {
+        "role": "ai",
+        "text": "Record: 30L x 65 = Rs. 1950. Sahaj! Daily morning/evening record garne bani basau.",
+        "state": {
+          "demo_done": true,
+          "amount": 1950
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_037",
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "salon, service-based, per employee tracking",
+    "key_behaviors": [
+      "employee tracking",
+      "commission auto-calc",
+      "net profit after salary"
+    ],
+    "user_satisfaction_markers": [
+      "employee-wise clear",
+      "commission calculated"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "aaj hair cut 5, shave 3, facial 2",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "aaj hair cut 5, shave 3, facial 2"
+      },
+      {
+        "role": "ai",
+        "text": "Kasko dwara? Employee name dinus ta.",
+        "state": {
+          "asking_employee": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "ram le garyo"
+      },
+      {
+        "role": "ai",
+        "text": "Ram (Employee):\nHaircut 5 x 200 = 1000\nShave 3 x 100 = 300\nFacial 2 x 500 = 1000\nTotal: 2300. Commission 30% = 690.",
+        "state": {
+          "recorded": true,
+          "employee": "Ram",
+          "commission": 690
+        }
+      },
+      {
+        "role": "user",
+        "text": "shyam le pani haircut 3 garyo"
+      },
+      {
+        "role": "ai",
+        "text": "Shyam: Haircut 3x200=600. Comm 180.\nSalon Total: 2300+600=2900.\nNet after commission: 2030.",
+        "state": {
+          "multi_employee": true,
+          "net": 2030
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_038",
+    "scenario_type": "question_session",
+    "user_profile": "online seller, e-commerce settlement",
+    "key_behaviors": [
+      "e-commerce terms",
+      "reconciliation",
+      "tax integration",
+      "clear illustration"
+    ],
+    "user_satisfaction_markers": [
+      "understood reconciliation",
+      "asked about GST"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "daraz bata payment ayo 5000, tara commission katyo",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "daraz bata payment ayo 5000, tara commission katyo"
+      },
+      {
+        "role": "ai",
+        "text": "Tyo \"Marketplace Settlement\" huncha. Tapai record garda: \"Daraz Sale 5000, Commission 750, Net 4250\". Ma sabai reconcile gardinchhu.",
+        "state": {
+          "explained": "settlement"
+        }
+      },
+      {
+        "role": "user",
+        "text": "reconcile bhaneko ke ho?"
+      },
+      {
+        "role": "ai",
+        "text": "Matlab, tapai ko 5000 bikri, daraz ko 750 commission, bank ma aayo 4250. Ma yo sabai milayera genuine profit dekhauchhu.",
+        "state": {
+          "defined": "reconcile"
+        }
+      },
+      {
+        "role": "user",
+        "text": "e, ani GST pani cha bhane?"
+      },
+      {
+        "role": "ai",
+        "text": "GST input/output ni track huncha. \"GST collected\" ra \"GST paid\" le tapai ko tax liability clear herna milcha.",
+        "state": {
+          "explained": "gst"
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_039",
+    "scenario_type": "error_correction_session",
+    "user_profile": "books store, wrong book title entry",
+    "key_behaviors": [
+      "typo understanding",
+      "quantity inference",
+      "inventory adjustment",
+      "confirmation"
+    ],
+    "user_satisfaction_markers": [
+      "book title corrected",
+      "inventory tracked"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "muna madan beche 500",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "muna madan beche 500"
+      },
+      {
+        "role": "ai",
+        "text": "Muna Madan bikri Rs. 500.",
+        "state": {
+          "recorded": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "typo, muna madan haina, muna madan 5 copies"
+      },
+      {
+        "role": "ai",
+        "text": "Ma 'Muna Madan' lai 'Muna Madan' update garne ani quantity 5 rakhne. Total 2500 huncha. Confirm gardinus.",
+        "state": {
+          "calculating": true,
+          "new_total": 2500
+        }
+      },
+      {
+        "role": "user",
+        "text": "yes"
+      },
+      {
+        "role": "ai",
+        "text": "Correction: Muna Madan 5 copies x 500 = 2500. Inventory 5 le ghatyo.",
+        "state": {
+          "corrected": true,
+          "inventory_adjusted": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_040",
+    "scenario_type": "report_request",
+    "user_profile": "petrol pump, daily cash tally",
+    "key_behaviors": [
+      "meter/cash reconciliation",
+      "variance explanation",
+      "source identification",
+      "final assurance"
+    ],
+    "user_satisfaction_markers": [
+      "variance solved",
+      "tally perfect"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "meter reading ra cash tally report deu aaja ko",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "meter reading ra cash tally report deu aaja ko"
+      },
+      {
+        "role": "ai",
+        "text": "Aaja ko Pump Report:\nMeter Reading (Closing): 12500 L\nOpening: 11000 L\nSold: 1500 L x 170 = Rs. 2,55,000\nCash in Drawer: Rs. 2,54,500\nDifference: Rs. 500 (Short)",
+        "state": {
+          "report_shown": "pump_tally",
+          "difference": -500
+        }
+      },
+      {
+        "role": "user",
+        "text": "500 kina short?"
+      },
+      {
+        "role": "ai",
+        "text": "Credit card sale Rs. 500 le bhayeko ho. Card settlement machine report check garnuhola.",
+        "state": {
+          "explained": "card_sales"
+        }
+      },
+      {
+        "role": "user",
+        "text": "tehi ho, card 500 thiyo. thik cha."
+      },
+      {
+        "role": "ai",
+        "text": "Great! Tally perfect. Meter reading ra cash 100% reconcile bhayo.",
+        "state": {
+          "reconciled": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_041",
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "small hotel, manual register user, migrating",
+    "key_behaviors": [
+      "respect for manual history",
+      "opening balance migration",
+      "gradual digital transition",
+      "room-level tracking"
+    ],
+    "user_satisfaction_markers": [
+      "first digital entry done",
+      "understood migration"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "ma 10 barsa dekhi register ma hisab lekhchu, yo app ma kasari jane?",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "ma 10 barsa dekhi register ma hisab lekhchu, yo app ma kasari jane?"
+      },
+      {
+        "role": "ai",
+        "text": "10 barsa ko hisab! Tyo ta euta khajana ho. Tapai ko register herera ma data entry garna help garchhu. Pahile tapai ko hotel ko naam dinus.",
+        "state": {
+          "greeted": true,
+          "migration_mode": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "shree pashupati hotel"
+      },
+      {
+        "role": "ai",
+        "text": "Shree Pashupati Hotel, ready. Aba tapai ko purano register ko \"Opening Balance\" entry garau. Jaise, cash ma kati cha, bank ma kati cha.",
+        "state": {
+          "profile_set": true,
+          "asking_opening_balance": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "cash 15000, bank 55000"
+      },
+      {
+        "role": "ai",
+        "text": "Opening balance set: Cash 15000, Bank 55000. Aba bistarai daily transaction suru garau. Euta room rent ko entry garau ta.",
+        "state": {
+          "opening_set": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "room 101 bada 2000 aayo"
+      },
+      {
+        "role": "ai",
+        "text": "Perfect! Room 101 rent Rs. 2000. Cash balance 17000 bhayo. Yestai gari sabai record hudai jancha. Purai register digitize gardim?",
+        "state": {
+          "transaction_done": true,
+          "new_balance": 17000
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_042",
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "whole-seller, bulk orders, multiple godowns",
+    "key_behaviors": [
+      "godown management",
+      "bulk dispatch",
+      "credit period tracking",
+      "auto invoice"
+    ],
+    "user_satisfaction_markers": [
+      "stock deducted",
+      "invoice with credit"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "godown 1 bata 50 sack chiura pathayo hari ko pasal ma",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "godown 1 bata 50 sack chiura pathayo hari ko pasal ma"
+      },
+      {
+        "role": "ai",
+        "text": "Godown 1 (Stock -50). Hari ko Pasal ma delivery. Value ra rate?",
+        "state": {
+          "godown_adjusted": true,
+          "asking_value": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "2000 per sack, 50 sack = 1 lakh"
+      },
+      {
+        "role": "ai",
+        "text": "Hari ko khata: Rs. 1,00,000 udhaar (Godown 1 bata). Godown 1 stock updated. Invoice pathaune?",
+        "state": {
+          "recorded": true,
+          "value": 100000
+        }
+      },
+      {
+        "role": "user",
+        "text": "invoice pathau, credit period 15 din"
+      },
+      {
+        "role": "ai",
+        "text": "Invoice #WH-501 created. Hari ko Pasal, Rs. 1L, Due: 30 Asar 2081. Send gardinchhu.",
+        "state": {
+          "invoiced": true,
+          "due_date": "30 Asar 2081"
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_043",
+    "scenario_type": "question_session",
+    "user_profile": "pharmacist, schedule H drug tracking",
+    "key_behaviors": [
+      "regulatory compliance",
+      "mandatory fields",
+      "inspection readiness"
+    ],
+    "user_satisfaction_markers": [
+      "compliance need met",
+      "ready for audit"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "schedule H ausadi ko record rakhna milcha?",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "schedule H ausadi ko record rakhna milcha?"
+      },
+      {
+        "role": "ai",
+        "text": "Milchha. Schedule H ausadi ko lagi batch number, doctor prescription reference, ra patient detail record garne field chha.",
+        "state": {
+          "feature_available": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "batch no. mandatory cha, expiry sangai track huncha?"
+      },
+      {
+        "role": "ai",
+        "text": "Yes, batch no. mandatory field ho. Expiry date anusar auto alert dinchhu. Ra doctor ko prescription ID ni link garna milcha.",
+        "state": {
+          "explained": "batch_expiry_rx"
+        }
+      },
+      {
+        "role": "user",
+        "text": "inspection huda report jhikna sajilo huncha?"
+      },
+      {
+        "role": "ai",
+        "text": "Ekdam sajilo! DCA inspection ma \"Schedule H Report\" button thiche pachi sabai required format ma nikalcha.",
+        "state": {
+          "explained": "compliance_report"
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_044",
+    "scenario_type": "error_correction_session",
+    "user_profile": "electrician, wrong customer linked",
+    "key_behaviors": [
+      "inter-account transfer",
+      "non-judgmental",
+      "quick fix"
+    ],
+    "user_satisfaction_markers": [
+      "error moved to correct customer"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "sharma ko ghar ma fitting gare 2500",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "sharma ko ghar ma fitting gare 2500"
+      },
+      {
+        "role": "ai",
+        "text": "Sharma ji ko khata ma Rs. 2500 labour added.",
+        "state": {
+          "recorded": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "oh shit, sharma haina, bhattarai ko ghar ma ho"
+      },
+      {
+        "role": "ai",
+        "text": "Easily fix. K entry Sharma ko account bata Bhattarai ma transfer garne? Amount 2500 nai ho?",
+        "state": {
+          "offering_transfer": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "yes"
+      },
+      {
+        "role": "ai",
+        "text": "Done! Sharma ji ko bata 2500 transfer garera Bhattarai ji ko ma record bhayo. Dono account adjust bhaisakyo.",
+        "state": {
+          "transferred": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_045",
+    "scenario_type": "report_request",
+    "user_profile": "sari shop, wants bestseller report for restock",
+    "key_behaviors": [
+      "bestseller analytics",
+      "restock suggestion",
+      "purchase order generation"
+    ],
+    "user_satisfaction_markers": [
+      "ready to restock",
+      "PO auto-generated"
+    ],
+    "turn_count": 4,
+    "user_turn_count": 2,
+    "first_user_text": "sabse dherai bikne saari ko report deu",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "sabse dherai bikne saari ko report deu"
+      },
+      {
+        "role": "ai",
+        "text": "Top 5 Bestselling Sari (Last Month):\n1. Kanjivaram Silk: 25 pcs\n2. Banarasi: 20 pcs\n3. Chiffon: 18 pcs\n4. Georgette: 15 pcs\n5. Cotton: 12 pcs\n\nKun ma restock garnu cha?",
+        "state": {
+          "report_shown": "bestseller"
+        }
+      },
+      {
+        "role": "user",
+        "text": "kanjivaram ra banarasi restock order pathau supplier lai"
+      },
+      {
+        "role": "ai",
+        "text": "Supplier list cha bhane dinus. Ma purchase order generate gardinchu: 30 Kanjivaram, 25 Banarasi.",
+        "state": {
+          "po_ready": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_046",
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "tutorial teacher, wants batch-wise tracking",
+    "key_behaviors": [
+      "batch management",
+      "student/fee linking",
+      "simple add process"
+    ],
+    "user_satisfaction_markers": [
+      "batches created",
+      "first student enrolled"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "ma 3 batch padhauchu, sabai ko fee alag cha",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "ma 3 batch padhauchu, sabai ko fee alag cha"
+      },
+      {
+        "role": "ai",
+        "text": "Batch-wise tracking huncha! Batch 1, 2, 3 banaune, student add garne, ra fee assign garne. Batch ko naam dinus.",
+        "state": {
+          "greeted": true,
+          "batch_mode": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "batch A (Class 10), Batch B (Class 9), Batch C (Class 8)"
+      },
+      {
+        "role": "ai",
+        "text": "3 batches banaye. Aba student add garam. Batch A ma \"Ram\" add garau? Fee kati ho?",
+        "state": {
+          "batches_created": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "ram lai batch A, fee 1500"
+      },
+      {
+        "role": "ai",
+        "text": "Ram (Batch A) Fee 1500. Uslai fee magaune record \"Ram 1500 paid\" le huncha. Easy!",
+        "state": {
+          "student_added": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_047",
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "bar, bottle sales, per peg breakdown",
+    "key_behaviors": [
+      "peg/full bottle mode",
+      "inventory deduction",
+      "upsell snack tracking"
+    ],
+    "user_satisfaction_markers": [
+      "bottle inventory done",
+      "peg calculation right"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "black label 1 bottle beche",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "black label 1 bottle beche"
+      },
+      {
+        "role": "ai",
+        "text": "Full bottle ki peg ma? Rate kati rakhne?",
+        "state": {
+          "asking_mode": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "peg ma, 40 peg @ 500"
+      },
+      {
+        "role": "ai",
+        "text": "Black Label 1 Bottle (40 pegs) x 500 = Rs. 20,000. Inventory adjusted (1 Bottle out).",
+        "state": {
+          "recorded": true,
+          "amount": 20000,
+          "pegs": 40
+        }
+      },
+      {
+        "role": "user",
+        "text": "kingfisher beer 10 bottle @ 450"
+      },
+      {
+        "role": "ai",
+        "text": "Kingfisher 10 x 450 = 4500. Total Beverage Sales: 24,500. Snacks kehi?",
+        "state": {
+          "updated": true,
+          "total": 24500
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_048",
+    "scenario_type": "question_session",
+    "user_profile": "businessman, wants multi-currency support",
+    "key_behaviors": [
+      "forex integration",
+      "dual balance display",
+      "auto rate fetching",
+      "sample conversion"
+    ],
+    "user_satisfaction_markers": [
+      "understood conversion",
+      "ready for forex entry"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "US dollars ma paisa aucha, track huncha?",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "US dollars ma paisa aucha, track huncha?"
+      },
+      {
+        "role": "ai",
+        "text": "Huncha! Multi-currency support active garchhu. USD, INR, EUR sabai ko rate manual ya auto fetch garera NPR ma convert gardinchu.",
+        "state": {
+          "feature": "multi_currency"
+        }
+      },
+      {
+        "role": "user",
+        "text": "rate automatic fetch huncha?"
+      },
+      {
+        "role": "ai",
+        "text": "Hajur, NRB ko forex rate daily update huncha. Transaction dinus, ma us din ko rate ma convert garera NPR ra USD dono dekhauchhu.",
+        "state": {
+          "rate_auto": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "euta sample dekhau ta"
+      },
+      {
+        "role": "ai",
+        "text": "Maanidinus: \"Client bata $500 aayo\". Aaj ko rate 132.50 le Rs. 66,250 record huncha. USD balance $500, NPR balance 66,250.",
+        "state": {
+          "sample_shown": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_049",
+    "scenario_type": "error_correction_session",
+    "user_profile": "event decorator, change order after final",
+    "key_behaviors": [
+      "change order management",
+      "invoice versioning",
+      "transparent add-on"
+    ],
+    "user_satisfaction_markers": [
+      "extra added successfully",
+      "new invoice sent"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "bhandari ko bihe ko decoration 50000",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "bhandari ko bihe ko decoration 50000"
+      },
+      {
+        "role": "ai",
+        "text": "Bhandari Wedding Decoration Rs. 50,000 recorded.",
+        "state": {
+          "recorded": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "flower arrangement extra add bhayo, 7000 thapau"
+      },
+      {
+        "role": "ai",
+        "text": "Change Order #1 for Bhandari Wedding: +Rs. 7,000 (Flower arrangement). New Total: 57,000. Update invoice pani garne?",
+        "state": {
+          "updated": true,
+          "new_total": 57000,
+          "change_order": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "ho invoice update gara"
+      },
+      {
+        "role": "ai",
+        "text": "Invoice updated to Rs. 57,000. Version 2 sent to Bhandari ji. Change log maintained.",
+        "state": {
+          "invoice_updated": true,
+          "version": 2
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_050",
+    "scenario_type": "report_request",
+    "user_profile": "chit fund manager, member passbook",
+    "key_behaviors": [
+      "chit specific module",
+      "passbook generation",
+      "dividend calculation",
+      "whatsapp integration"
+    ],
+    "user_satisfaction_markers": [
+      "individual passbook received",
+      "shared easily"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "sabai member ko individual passbook banauna milcha?",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "sabai member ko individual passbook banauna milcha?"
+      },
+      {
+        "role": "ai",
+        "text": "Milchha! Monthly chit collection, auction, dividend sabai member-wise record huncha. \"Passbook print\" bhane individual PDF nikalcha.",
+        "state": {
+          "feature_available": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "ram babu ko passbook banaideu"
+      },
+      {
+        "role": "ai",
+        "text": "Ram Babu ko Chit Passbook (Apr-Jun):\nInstalment Paid: 3 x 5000 = 15000\nDividend Earned: 300\nAuction Bid: Not yet\nBalance: 15,300\n\nPDF link: ekhata.io/chit/rambabu.pdf",
+        "state": {
+          "passbook_generated": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "link pathau whatsapp ma"
+      },
+      {
+        "role": "ai",
+        "text": "Ram Babu ko number ma passbook link pathai sakyo.",
+        "state": {
+          "shared": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_051",
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "retired army, pension investment tracking",
+    "key_behaviors": [
+      "respectful military tone",
+      "portfolio creation",
+      "trade recording",
+      "encouraging banter"
+    ],
+    "user_satisfaction_markers": [
+      "addressed as soldier",
+      "first trade recorded"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "mero pension bata share market ma invest garchhu, hisab rakna cha",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "mero pension bata share market ma invest garchhu, hisab rakna cha"
+      },
+      {
+        "role": "ai",
+        "text": "Jai Nepal Sir! Pension ra investment dono track garna milchha. Portfolio mode ma share kinbech, dividend sabai record huncha. Tapaiko naam?",
+        "state": {
+          "greeted": true,
+          "respectful": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "captain bhandari (retd)"
+      },
+      {
+        "role": "ai",
+        "text": "Captain Bhandari, respect! Portfolio setup garau. Bank, Demat, ra Cash account banaye. Aba \"Nabil share 50 kitta @ 1200\" type garne.",
+        "state": {
+          "profile_set": true,
+          "portfolio_ready": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "nabil share 50 kitta @ 1200"
+      },
+      {
+        "role": "ai",
+        "text": "Nabil 50 kitta x 1200 = Rs. 60,000. Demat ma jamma, bank bata 60,000 debit. Portfolio updated sir!",
+        "state": {
+          "trade_recorded": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "good job, soldier!"
+      },
+      {
+        "role": "ai",
+        "text": "Thank you, Captain! Aba IPO, right share, dividend sabai track garum. Portfolio strong banaune!",
+        "state": {
+          "onboarding_complete": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_052",
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "fruit vendor, seasonal price fluctuation",
+    "key_behaviors": [
+      "dynamic pricing",
+      "buy/sell spread",
+      "margin highlight"
+    ],
+    "user_satisfaction_markers": [
+      "profit per unit clear"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "aaja mango ko rate 150 bhayo",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "aaja mango ko rate 150 bhayo"
+      },
+      {
+        "role": "ai",
+        "text": "Mango rate Rs. 150/kg update bhayo. Pahila 120 thiyo. Bikri record garum?",
+        "state": {
+          "rate_updated": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "15 kg beche"
+      },
+      {
+        "role": "ai",
+        "text": "Mango 15 kg x 150 = Rs. 2250.\nKharid entry chha? (Buying rate ni change bhayo?)",
+        "state": {
+          "recorded": true,
+          "asking_buying_rate": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "kharid 120 thyo ahile ni"
+      },
+      {
+        "role": "ai",
+        "text": "Profit: 15 kg x (150-120) = 450. Good margin! Mango season ma tracking tight rakhnus.",
+        "state": {
+          "profit_calculated": 450
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_053",
+    "scenario_type": "question_session",
+    "user_profile": "dance teacher, term fee and costume",
+    "key_behaviors": [
+      "fee splitting",
+      "partial payment handling",
+      "due tracking",
+      "reminder"
+    ],
+    "user_satisfaction_markers": [
+      "understood split billing",
+      "ready to automate reminders"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "term fee ra costume fee eutai invoice ma huncha ki different?",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "term fee ra costume fee eutai invoice ma huncha ki different?"
+      },
+      {
+        "role": "ai",
+        "text": "Different fee head ma rakhda best huncha. Term fee ra costume fee split garera invoice ma itemize garda student lai clear huncha.",
+        "state": {
+          "advised": "split"
+        }
+      },
+      {
+        "role": "user",
+        "text": "student le costume fee diye tara term fee diyena bhane?"
+      },
+      {
+        "role": "ai",
+        "text": "Tyo case ma partial payment record huncha. \"Sita - costume 500 paid, term 2000 due\". Due list ma dekhirahanecha term fee.",
+        "state": {
+          "explained": "partial_payment"
+        }
+      },
+      {
+        "role": "user",
+        "text": "due reminder individual student lai jaancha?"
+      },
+      {
+        "role": "ai",
+        "text": "Huncha! \"Reminder Sita term fee\" le usko number ma SMS trigger huncha. Fully automated.",
+        "state": {
+          "explained": "reminder"
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_054",
+    "scenario_type": "error_correction_session",
+    "user_profile": "kirana store, udhaar settlement partial",
+    "key_behaviors": [
+      "partial payment correction",
+      "balance query",
+      "reversal",
+      "transparency"
+    ],
+    "user_satisfaction_markers": [
+      "correct due shown",
+      "partial settlement handled"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "ram le 5000 tiryo",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "ram le 5000 tiryo"
+      },
+      {
+        "role": "ai",
+        "text": "Ram ko khata ma Rs. 5000 credit bhayo. Ram ko baki Rs. 0 bhayo?",
+        "state": {
+          "settled": true,
+          "querying_balance": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "hoina, usle 3000 matra tiryo. baki 2000 cha"
+      },
+      {
+        "role": "ai",
+        "text": "Correction: Ram le Rs. 3000 matra tireko. Usako baki Rs. 2000 update gardai chhu.",
+        "state": {
+          "correcting": true,
+          "new_due": 2000
+        }
+      },
+      {
+        "role": "user",
+        "text": "huss"
+      },
+      {
+        "role": "ai",
+        "text": "Done! Ram ko baki 2000. Tyo pahilo 5000 wala entry reverse garera 3000 settlement naya entry banaye.",
+        "state": {
+          "corrected": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_055",
+    "scenario_type": "report_request",
+    "user_profile": "car rental agency, vehicle-wise revenue",
+    "key_behaviors": [
+      "fleet management",
+      "vehicle-wise P&L",
+      "contribution margin"
+    ],
+    "user_satisfaction_markers": [
+      "fleet revenue clear",
+      "net contribution useful"
+    ],
+    "turn_count": 4,
+    "user_turn_count": 2,
+    "first_user_text": "gaadi anusar aamdani ko report deu",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "gaadi anusar aamdani ko report deu"
+      },
+      {
+        "role": "ai",
+        "text": "Vehicle-wise Revenue (This Month):\n1. Ba 1 Cha 2345 (Scorpio): 75,000\n2. Ba 2 Cha 5678 (Swift): 45,000\n3. Ba 3 Cha 9012 (Ertiga): 60,000\n\nTotal Fleet Revenue: 1,80,000",
+        "state": {
+          "report_shown": "vehicle_wise"
+        }
+      },
+      {
+        "role": "user",
+        "text": "scorpio ko detail herum"
+      },
+      {
+        "role": "ai",
+        "text": "Scorpio (Ba 1 Cha 2345):\n- Days Rented: 20/30\n- Maintenance: 5000\n- Fuel Paid: 15,000\n- Driver Salary: 12,000\n- Net Contribution: 43,000",
+        "state": {
+          "detailed": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_056",
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "canteen boy, school canteen, simple language",
+    "key_behaviors": [
+      "informal sibling tone",
+      "simple item listing",
+      "auto calculation",
+      "motivational"
+    ],
+    "user_satisfaction_markers": [
+      "laughed",
+      "found easy"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "dai, ma canteen ma kaam garchhu, hisab rakhna sikau na",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "dai, ma canteen ma kaam garchhu, hisab rakhna sikau na"
+      },
+      {
+        "role": "ai",
+        "text": "Bhai! Canteen ko hisab rakhna ekdam sajilo. Pahile bhan, tero canteen ma ke ke bechchhas?",
+        "state": {
+          "greeted": true,
+          "informal": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "chiya, samosa, chowmin, biscuits"
+      },
+      {
+        "role": "ai",
+        "text": "4 items ready. Aba bikri record: \"10 chiya, 5 samosa, 2 chowmin\" type garne. Ma aafa calculate gardinchu. Try gar ta?",
+        "state": {
+          "items_set": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "10 chiya, 5 samosa, 2 chowmin"
+      },
+      {
+        "role": "ai",
+        "text": "Masta! 10 chiya (150), 5 samosa (125), 2 chowmin (140) = 415. Bhai le master bhayera record garyo!",
+        "state": {
+          "demo_done": true,
+          "total": 415
+        }
+      },
+      {
+        "role": "user",
+        "text": "hehe, sajilo raicha dai"
+      },
+      {
+        "role": "ai",
+        "text": "Bhaneko! Aba din ko end ma total kati bhayo bhanera \"total\" bhanera sodh, ma sabai hisab dinchhu. Chalau bhai!",
+        "state": {
+          "onboarding_complete": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_057",
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "boutique shop, custom tailoring",
+    "key_behaviors": [
+      "custom order tracking",
+      "cost/revenue split",
+      "delivery schedule",
+      "automated alert"
+    ],
+    "user_satisfaction_markers": [
+      "order fully tracked",
+      "delivery alert set"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "kriti lai blouse silaune order aayo",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "kriti lai blouse silaune order aayo"
+      },
+      {
+        "role": "ai",
+        "text": "Kriti ko Blouse order. Tailoring charge ra material cost entry garau.",
+        "state": {
+          "prompting": "custom_order"
+        }
+      },
+      {
+        "role": "user",
+        "text": "tailoring 1500, material 2000"
+      },
+      {
+        "role": "ai",
+        "text": "Kriti - Blouse (Custom):\nTailoring: 1500\nMaterial: 2000\nTotal Bill: 3500\nDelivery date dinus.",
+        "state": {
+          "recorded": true,
+          "asking_delivery": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "15 gatey bhitra"
+      },
+      {
+        "role": "ai",
+        "text": "Delivery Date: 15 Asar set. Kriti lai SMS alert schedule garne?",
+        "state": {
+          "date_set": true,
+          "offering_alert": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "ho gara"
+      },
+      {
+        "role": "ai",
+        "text": "SMS Alert set for 14 Asar: \"Kriti ji, blouse ready for delivery tomorrow\".",
+        "state": {
+          "alert_set": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_058",
+    "scenario_type": "question_session",
+    "user_profile": "cattle trader, wants weight-based pricing",
+    "key_behaviors": [
+      "weight unit tracking",
+      "shrinkage handling",
+      "per kg profitability"
+    ],
+    "user_satisfaction_markers": [
+      "understood weight tracking",
+      "ready to use"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "gai beche, weight hisab le hisab milcha?",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "gai beche, weight hisab le hisab milcha?"
+      },
+      {
+        "role": "ai",
+        "text": "Milchha! \"Live Weight\" ma kharid bikri garna \"Gai 200 kg @ 300 = 60,000\" type garne. Weight ra rate dono record huncha.",
+        "state": {
+          "feature_available": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "kharid ma 200 kg, tara bechda 190 kg bhayo bhane?"
+      },
+      {
+        "role": "ai",
+        "text": "Tyo \"Shrinkage\" huncha. Kharid 200 kg, Sale 190 kg, 10 kg loss. Ma weight tally report ma yehi dekhau chu.",
+        "state": {
+          "explained": "shrinkage"
+        }
+      },
+      {
+        "role": "user",
+        "text": "thik cha, profit herna sajilo"
+      },
+      {
+        "role": "ai",
+        "text": "Ho, per kg profit ya loss clear. \"Weight Balance Sheet\" bhanera sodhnu, ma detail dekhai dinchu.",
+        "state": {
+          "explained": "weight_balance"
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_059",
+    "scenario_type": "error_correction_session",
+    "user_profile": "mobile shop, IMEI number error",
+    "key_behaviors": [
+      "serial number tracking",
+      "warranty check",
+      "precision on IMEI"
+    ],
+    "user_satisfaction_markers": [
+      "IMEI corrected",
+      "warranty info got"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "samsung m14 beche 18000, imei 1234",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "samsung m14 beche 18000, imei 1234"
+      },
+      {
+        "role": "ai",
+        "text": "Samsung M14 IMEI 1234, Rs. 18,000 record.",
+        "state": {
+          "recorded": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "imei 1234567890 ho, 4 digit haina"
+      },
+      {
+        "role": "ai",
+        "text": "Sorry! IMEI correction: 1234567890 update gardai chhu. Ra M14 ko warranty status check garum.",
+        "state": {
+          "correcting": true,
+          "offering_warranty_check": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "ho check gara"
+      },
+      {
+        "role": "ai",
+        "text": "IMEI updated: 1234567890. Warranty valid till Jan 2025. All good!",
+        "state": {
+          "corrected": true,
+          "warranty_checked": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_060",
+    "scenario_type": "report_request",
+    "user_profile": "cable car operator, tourist vs local rate",
+    "key_behaviors": [
+      "segment reporting",
+      "rate per segment",
+      "trend comparison"
+    ],
+    "user_satisfaction_markers": [
+      "segments clear",
+      "trend spotted"
+    ],
+    "turn_count": 4,
+    "user_turn_count": 2,
+    "first_user_text": "tourist ra local ko alag alag bikri report deu",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "tourist ra local ko alag alag bikri report deu"
+      },
+      {
+        "role": "ai",
+        "text": "Aajako Ticket Sales:\n- Local (Rate 500): 120 pax = 60,000\n- Tourist (SAARC Rate 1000): 30 = 30,000\n- Tourist (Foreigner Rate 2000): 15 = 30,000\nTotal: 165 pax, Rs. 1,20,000",
+        "state": {
+          "report_shown": "segmented_sales"
+        }
+      },
+      {
+        "role": "user",
+        "text": "aile saarc tourist dherai aaye jasto lagyo"
+      },
+      {
+        "role": "ai",
+        "text": "Yes, compared to last week, SAARC tourist 20% le badhyo. Peak season suru.",
+        "state": {
+          "trend_highlight": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_061",
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "small NGO, fund tracking",
+    "key_behaviors": [
+      "NGO specific",
+      "grant tracking",
+      "donor reporting hint"
+    ],
+    "user_satisfaction_markers": [
+      "project funded",
+      "expense recorded"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "hamro NGO ma project-wise fund track garnu cha",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "hamro NGO ma project-wise fund track garnu cha"
+      },
+      {
+        "role": "ai",
+        "text": "NGO accounting perfect! Project fund, grant, expense sabai track huncha. NGO ko naam ra project dinus.",
+        "state": {
+          "greeted": true,
+          "ngo_mode": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "asha nepal, project: shiksha sudhar"
+      },
+      {
+        "role": "ai",
+        "text": "Asha Nepal - Shiksha Sudhar project created. Aba \"grant received\" ra \"expense\" record garau. Fund balance dekhirahanechau.",
+        "state": {
+          "project_set": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "grant aayo 5 lakh, bank ma"
+      },
+      {
+        "role": "ai",
+        "text": "Grant Received: Rs. 5,00,000. Fund Balance: 5L. Aba expense garau: \"Books kharid 50,000\".",
+        "state": {
+          "fund_updated": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "books kharid 50,000"
+      },
+      {
+        "role": "ai",
+        "text": "Expensed: 50,000. Remaining Balance: 4,50,000. Donor lai report pathaune bela ma \"project report\" bhanne!",
+        "state": {
+          "expense_done": true,
+          "remaining": 450000
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_062",
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "pet shop, live animals and feed",
+    "key_behaviors": [
+      "livestock tracking",
+      "detail capture (breed/age)",
+      "document linking"
+    ],
+    "user_satisfaction_markers": [
+      "puppy sale recorded",
+      "inventory updated"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "aaja 2 ota puppy beche",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "aaja 2 ota puppy beche"
+      },
+      {
+        "role": "ai",
+        "text": "Puppy breed, age, ra price dinus.",
+        "state": {
+          "asking_details": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "golden retriever, 2 months, 20000 each"
+      },
+      {
+        "role": "ai",
+        "text": "2 Golden Retriever puppies x 20,000 = 40,000.\nInventory: Livestock count -2. Certificate/medical record link garna milcha.",
+        "state": {
+          "recorded": true,
+          "livestock_updated": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "ani dog food 5 pack beche, 2500"
+      },
+      {
+        "role": "ai",
+        "text": "Dog food 5 pack = 2500. Total Sales: 42,500. Pet shop booming!",
+        "state": {
+          "updated": true,
+          "total": 42500
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_063",
+    "scenario_type": "question_session",
+    "user_profile": "printing press, paper stock and wastage",
+    "key_behaviors": [
+      "wastage formula",
+      "reconciliation",
+      "threshold alert"
+    ],
+    "user_satisfaction_markers": [
+      "understood wastage tracking",
+      "alert useful"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "paper wastage track garna milcha?",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "paper wastage track garna milcha?"
+      },
+      {
+        "role": "ai",
+        "text": "Printing press ko lagi wastage tracking essential. \"Paper stock: 1000 sheet, Wastage: 50 sheet\" record garne. Wastage % nikaldinchhu.",
+        "state": {
+          "feature_available": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "kharid 1000, beche 900, 100 wastage bhanera?"
+      },
+      {
+        "role": "ai",
+        "text": "Exactly! 1000-900-100=0. Perfect tally. Wastage 10% rahecha. \"Wastage report\" bhanera monthly herna milcha.",
+        "state": {
+          "explained": "reconciliation"
+        }
+      },
+      {
+        "role": "user",
+        "text": "wastage dherai bhayo bhane alert?"
+      },
+      {
+        "role": "ai",
+        "text": "Hajur, 10% bhanda mathi gayo bhane \"High Wastage Alert\" dinchhu. Machine check garau.",
+        "state": {
+          "alert_feature": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_064",
+    "scenario_type": "error_correction_session",
+    "user_profile": "electric shop, wrong voltage bulb returned",
+    "key_behaviors": [
+      "sales return handling",
+      "exchange logic",
+      "dual stock adjustment"
+    ],
+    "user_satisfaction_markers": [
+      "exchange done",
+      "stock correct"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "sharma ji le 230v ko bulb firtaye",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "sharma ji le 230v ko bulb firtaye"
+      },
+      {
+        "role": "ai",
+        "text": "Sales return record garna \"Return Inward\". Sharma ji le bulb return, Rs. 500 wapas dine ho?",
+        "state": {
+          "clarifying_return": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "hoina, 110v ko thiyo, pherna 230v ko diye. price same."
+      },
+      {
+        "role": "ai",
+        "text": "Exchange! 110v inward, 230v outward. Stock adjust: 110v +1, 230v -1. Value same xa, entry adjust gardinchu.",
+        "state": {
+          "exchange_handled": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "thik cha, stock adjust bhayo?"
+      },
+      {
+        "role": "ai",
+        "text": "Ho! 110v stock +1, 230v stock -1. Sharma ji ko khata clear. Exchange complete.",
+        "state": {
+          "stock_adjusted": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_065",
+    "scenario_type": "report_request",
+    "user_profile": "travel agency, commission per airline",
+    "key_behaviors": [
+      "vendor wise reporting",
+      "commission tracking",
+      "recovery invoice"
+    ],
+    "user_satisfaction_markers": [
+      "commission clear",
+      "recovery process started"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "airlines anusar commission report deu",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "airlines anusar commission report deu"
+      },
+      {
+        "role": "ai",
+        "text": "Airline Commission Report (Asar):\n1. Yeti Airlines: 50 tickets, Rs. 25,000\n2. Buddha Air: 40 tickets, Rs. 20,000\n3. Saurya: 10 tickets, Rs. 5,000\nTotal Commission: 50,000",
+        "state": {
+          "report_shown": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "yeti bata recover garnu baki cha, invoice banau"
+      },
+      {
+        "role": "ai",
+        "text": "Yeti Airlines ko lagi 25,000 ko commission invoice generate gardai chhu. Email: sales@yetiairlines.com ma pathaune?",
+        "state": {
+          "invoicing": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "pathau"
+      },
+      {
+        "role": "ai",
+        "text": "Invoice sent to Yeti Airlines. Recovery track ma rakhidinchhu.",
+        "state": {
+          "sent": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_066",
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "popcorn seller outside cinema, kid, very young",
+    "key_behaviors": [
+      "youth encouragement",
+      "simple math",
+      "early financial education",
+      "fun tone"
+    ],
+    "user_satisfaction_markers": [
+      "felt like entrepreneur",
+      "profit clear"
+    ],
+    "turn_count": 8,
+    "user_turn_count": 4,
+    "first_user_text": "mero popcorn ko hisab rakhna milcha? ma 15 barsa ko chhu",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "mero popcorn ko hisab rakhna milcha? ma 15 barsa ko chhu"
+      },
+      {
+        "role": "ai",
+        "text": "15 barsa ko entrepreneur! Kya baat! Milchha, safalta ko hisab rakhne. Pahile bhannus, ek packet ko kati paisa?",
+        "state": {
+          "greeted": true,
+          "encouraging": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "salt wala 50, caramel 80"
+      },
+      {
+        "role": "ai",
+        "text": "2 types set. Aba record: \"10 salt, 5 caramel beche\". Try garum?",
+        "state": {
+          "items_set": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "10 salt, 5 caramel beche"
+      },
+      {
+        "role": "ai",
+        "text": "Fantastic! 10x50=500, 5x80=400. Jamma 900 kamaayo! Aajako kharid cha bhane record garam.",
+        "state": {
+          "demo_done": true,
+          "total": 900
+        }
+      },
+      {
+        "role": "user",
+        "text": "kharid: 5 kg corn 400"
+      },
+      {
+        "role": "ai",
+        "text": "Profit: 900-400 = 500. Dhanna safal! Masta profit bhairako. Aba bistarai thulo businessman banne!",
+        "state": {
+          "profit_calculated": 500
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_067",
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "marriage garden, advance booking",
+    "key_behaviors": [
+      "event booking",
+      "advance/due split",
+      "service add-on"
+    ],
+    "user_satisfaction_markers": [
+      "booking recorded",
+      "add-on done"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "malakar ko bihe ko lagi garden book bhayo",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "malakar ko bihe ko lagi garden book bhayo"
+      },
+      {
+        "role": "ai",
+        "text": "Malakar Wedding Booking. Date, amount, ra advance?",
+        "state": {
+          "asking_booking_details": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "date 25th asar, advance 50,000 aayo"
+      },
+      {
+        "role": "ai",
+        "text": "Malakar Garden Booking:\nDate: 25 Asar\nAdvance: 50,000\nTotal Value: 2,00,000\nBalance Due: 1,50,000\nBooking confirmed!",
+        "state": {
+          "recorded": true,
+          "due": 150000
+        }
+      },
+      {
+        "role": "user",
+        "text": "catering pani hamrai ho, 1 lakh ma fix bhayo"
+      },
+      {
+        "role": "ai",
+        "text": "Catering add: +1,00,000. Malakar ko Jamma Bill: 3,00,000. Paid: 50,000, Due: 2,50,000.",
+        "state": {
+          "updated": true,
+          "new_total": 300000
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_068",
+    "scenario_type": "question_session",
+    "user_profile": "bike workshop, spare parts inventory",
+    "key_behaviors": [
+      "job card concept",
+      "auto inventory deduction",
+      "mechanic ledger"
+    ],
+    "user_satisfaction_markers": [
+      "understood job card",
+      "commission feature"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "spare parts ko inventory ra labour charge ek saath rakna milcha?",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "spare parts ko inventory ra labour charge ek saath rakna milcha?"
+      },
+      {
+        "role": "ai",
+        "text": "Workshop mode ma \"Job Card\" feature chha. Bike ko number entry garne, parts used (inventory bata deduct) ra labour charge add garne. Single bill.",
+        "state": {
+          "introduced": "job_card"
+        }
+      },
+      {
+        "role": "user",
+        "text": "parts inventory automatically ghatcha?"
+      },
+      {
+        "role": "ai",
+        "text": "Huncha! Jaise \"oil filter 1 piece\" entry gare, inventory 1 le ghatcha. Labour 500 add gare, bill ma jodcha. Fully integrated.",
+        "state": {
+          "explained": "auto_inventory"
+        }
+      },
+      {
+        "role": "user",
+        "text": "majdur lai commission ni rakhna milcha?"
+      },
+      {
+        "role": "ai",
+        "text": "Milchha! Mechanic name select gare, labour ko 20% ya fixed commission auto calculate garera mechanic ko ledger ma jancha.",
+        "state": {
+          "explained": "mechanic_commission"
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_069",
+    "scenario_type": "error_correction_session",
+    "user_profile": "restaurant, split bill correction",
+    "key_behaviors": [
+      "split payment handling",
+      "bill modification",
+      "total integrity"
+    ],
+    "user_satisfaction_markers": [
+      "split recorded correctly"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "table 5 ko bill 3000 aayo",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "table 5 ko bill 3000 aayo"
+      },
+      {
+        "role": "ai",
+        "text": "Table 5 bill Rs. 3000 recorded.",
+        "state": {
+          "recorded": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "split bill thiyo, 2 jana le 1500 each cash diye"
+      },
+      {
+        "role": "ai",
+        "text": "Table 5 bill modify garera 2 payments: 1500+1500 banaye. Update garda total 3000 nai chha.",
+        "state": {
+          "split_applied": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "yes, thik cha"
+      },
+      {
+        "role": "ai",
+        "text": "Split payment 1500x2 recorded. Table 5 fully settled. Good practice!",
+        "state": {
+          "split_confirmed": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_070",
+    "scenario_type": "report_request",
+    "user_profile": "pharmacy, near-expiry stock clearance report",
+    "key_behaviors": [
+      "expiry urgency",
+      "clearance strategy",
+      "doctor coordination",
+      "smart messaging"
+    ],
+    "user_satisfaction_markers": [
+      "clearance plan ready",
+      "shared to doctor"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "30 din ma expire hune sabai ausadi ko list deu",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "30 din ma expire hune sabai ausadi ko list deu"
+      },
+      {
+        "role": "ai",
+        "text": "30-Day Expiry Alert (Before 15 Shrawan):\n1. Metacin Syrup (B99) - 10 bottle\n2. Ciprofloxacin (C45) - 50 tab\n3. Omez (O12) - 20 cap\n\nJamma 3 items. Discount scheme launch garda ramro.",
+        "state": {
+          "report_shown": true,
+          "advice": "discount"
+        }
+      },
+      {
+        "role": "user",
+        "text": "yo list doctor lai share garnu, bideshinu ki"
+      },
+      {
+        "role": "ai",
+        "text": "Doctor lai prescription push ko lagi list share gardinchhu. WhatsApp ya email?",
+        "state": {
+          "sharing_ready": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "whatsapp garau"
+      },
+      {
+        "role": "ai",
+        "text": "Near-expiry list WhatsApp message compose bhayo. \"Dear Doctor, ye items prescribe garda stock clear help huncha\". Pathaune?",
+        "state": {
+          "composed": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_071",
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "housewife, expense tracking for home",
+    "key_behaviors": [
+      "home budgeting",
+      "category preset",
+      "remaining budget"
+    ],
+    "user_satisfaction_markers": [
+      "budget set",
+      "first expense tracked"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "ghar ko monthly expense track garna man cha",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "ghar ko monthly expense track garna man cha"
+      },
+      {
+        "role": "ai",
+        "text": "Grihani ko lagi best! Home Budget mode on garchhu. Sabai category: Kitchen, Bills, Education, Entertainment banaye.",
+        "state": {
+          "greeted": true,
+          "home_mode": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "monthly budget 30000 cha"
+      },
+      {
+        "role": "ai",
+        "text": "Budget 30,000 set. Aba entry garda \"Budget left\" herna milcha. Euta kitchen expense try garum? \"Tarkari 500\".",
+        "state": {
+          "budget_set": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "tarkari 500"
+      },
+      {
+        "role": "ai",
+        "text": "Kitchen: 500. Budget Left: 29,500. Yestai gari track gardai janu, end ma saving pani dekhincha.",
+        "state": {
+          "expense_tracked": true,
+          "remaining": 29500
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_072",
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "liquor store, government regulation, tax",
+    "key_behaviors": [
+      "tax compliance",
+      "MRP/discount",
+      "VAT auto-calc"
+    ],
+    "user_satisfaction_markers": [
+      "tax invoice ready",
+      "VAT calculated"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "whisky 10 bottle beche, 750ml",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "whisky 10 bottle beche, 750ml"
+      },
+      {
+        "role": "ai",
+        "text": "Whisky 10x750ml. MRP ya Selling Price? Tax invoice generate garnu parcha.",
+        "state": {
+          "asking_price": true,
+          "tax_alert": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "MRP 2500 each, 10% discount ma"
+      },
+      {
+        "role": "ai",
+        "text": "MRP 25,000, Discount -2500, Net 22,500. VAT 13% included? Invoice ready garum.",
+        "state": {
+          "calculated": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "ho VAT included invoice deu"
+      },
+      {
+        "role": "ai",
+        "text": "Tax Invoice #TX-89: Whisky 10 bottles, Net 22,500 (inc VAT 2,588.50). Cash/Credit?",
+        "state": {
+          "invoiced": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_073",
+    "scenario_type": "question_session",
+    "user_profile": "small publisher, royalty calculation",
+    "key_behaviors": [
+      "royalty calculation",
+      "co-author split",
+      "annual statement"
+    ],
+    "user_satisfaction_markers": [
+      "understood royalty",
+      "auto statement needed"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "book writer lai royalty dina parcha, calculate garna milcha?",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "book writer lai royalty dina parcha, calculate garna milcha?"
+      },
+      {
+        "role": "ai",
+        "text": "Royalty module active garchau. Book sale anusar % set garne. Jaise \"Muna Madan sale 1000 copies, Royalty 10% = 50,000\".",
+        "state": {
+          "feature_available": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "multiple writer bhaye?"
+      },
+      {
+        "role": "ai",
+        "text": "Book ma co-authors add garne, % split garne. Muna Madan: Writer A 70%, Writer B 30%. Sale ma auto split huncha.",
+        "state": {
+          "explained": "split_royalty"
+        }
+      },
+      {
+        "role": "user",
+        "text": "annual royalty statement pathauna sakincha?"
+      },
+      {
+        "role": "ai",
+        "text": "Author-wise annual royalty statement auto generate garera email ma pathaune feature cha. Author happy, publisher happy!",
+        "state": {
+          "statement_feature": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_074",
+    "scenario_type": "error_correction_session",
+    "user_profile": "gold shop, rate fluctuation adjustment",
+    "key_behaviors": [
+      "rate adjustment",
+      "hallmark compliance",
+      "high value precision"
+    ],
+    "user_satisfaction_markers": [
+      "rate corrected",
+      "hallmark bill ready"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "gold beche 10 tola @ 90000",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "gold beche 10 tola @ 90000"
+      },
+      {
+        "role": "ai",
+        "text": "Gold 10 tola x 90,000 = 9,00,000. Hallmark bill generate garne?",
+        "state": {
+          "recorded": true,
+          "asking_hallmark": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "rate galat, 91,500 thyo actual ma"
+      },
+      {
+        "role": "ai",
+        "text": "Rate correction: 90,000 → 91,500. New total: 10 x 91,500 = 9,15,000. Difference +15,000. Update gardai chhu.",
+        "state": {
+          "correcting_rate": true,
+          "new_total": 915000
+        }
+      },
+      {
+        "role": "user",
+        "text": "yes, hallmark bill sangai deu"
+      },
+      {
+        "role": "ai",
+        "text": "Updated Hallmark Bill for 9,15,000 generated with purity and weight details.",
+        "state": {
+          "corrected": true,
+          "hallmark_bill": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_075",
+    "scenario_type": "report_request",
+    "user_profile": "cargo service, per kg revenue",
+    "key_behaviors": [
+      "per unit economics",
+      "route analysis",
+      "cost/profit per kg"
+    ],
+    "user_satisfaction_markers": [
+      "revenue clear",
+      "profit per kg useful"
+    ],
+    "turn_count": 4,
+    "user_turn_count": 2,
+    "first_user_text": "per kg revenue report deu yo mahina ko",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "per kg revenue report deu yo mahina ko"
+      },
+      {
+        "role": "ai",
+        "text": "Cargo Revenue/kg (Asar):\n- Total Weight Shipped: 5000 kg\n- Total Revenue: Rs. 3,00,000\n- Avg Rate/kg: Rs. 60\n- Top Route: KTM-PKR (2000 kg, 1,20,000)",
+        "state": {
+          "report_shown": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "profit per kg chaincha"
+      },
+      {
+        "role": "ai",
+        "text": "Cost per kg: Rs. 35 (fuel+handling). Profit/kg: 60-35 = Rs. 25. Total Profit: 5000x25 = 1,25,000.",
+        "state": {
+          "profit_reported": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_076",
+    "scenario_type": "new_user_onboarding",
+    "user_profile": "street barber, roadside, mobile data",
+    "key_behaviors": [
+      "informal respectful tone",
+      "minimal data use",
+      "rate preset",
+      "simple start"
+    ],
+    "user_satisfaction_markers": [
+      "found affordable and easy"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "bhai, ma road ma kapal katne manche, kam chincha, chalau?",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "bhai, ma road ma kapal katne manche, kam chincha, chalau?"
+      },
+      {
+        "role": "ai",
+        "text": "Daju, chalcha ni! Thoda data lagcha. Ekdin ma 10 jana ko katyo bhane \"10 haircut\" bhanne, 1000 ready. Naam bhannus.",
+        "state": {
+          "greeted": true,
+          "affordable": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "kancha nai"
+      },
+      {
+        "role": "ai",
+        "text": "Kancha ji, set! Aba \"haircut 100, shave 50\" rate rakham. Aaja \"5 haircut, 2 shave\" entry garum.",
+        "state": {
+          "rate_set": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "5 haircut, 2 shave"
+      },
+      {
+        "role": "ai",
+        "text": "5x100=500, 2x50=100, total 600. Kancha le sajilo mobile bata hisab garna thalnu bhayo!",
+        "state": {
+          "demo_done": true,
+          "total": 600
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_077",
+    "scenario_type": "daily_transaction_recording",
+    "user_profile": "departmental store, multiple counters",
+    "key_behaviors": [
+      "multi counter",
+      "department wise",
+      "cash vs udhaar reconciliation"
+    ],
+    "user_satisfaction_markers": [
+      "counters tracked",
+      "udhaar adjusted"
+    ],
+    "turn_count": 4,
+    "user_turn_count": 2,
+    "first_user_text": "counter 1: grocery 5000, counter 2: cosmetics 3000, counter 3: stationery 1500",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "counter 1: grocery 5000, counter 2: cosmetics 3000, counter 3: stationery 1500"
+      },
+      {
+        "role": "ai",
+        "text": "Counter-wise billing recorded:\nC1 (Grocery): 5000\nC2 (Cosmetics): 3000\nC3 (Stationery): 1500\nTotal: 9500. Sabai counter ko cash tally garne time.",
+        "state": {
+          "recorded": true,
+          "total": 9500
+        }
+      },
+      {
+        "role": "user",
+        "text": "counter 1 ma 200 udhaar cha"
+      },
+      {
+        "role": "ai",
+        "text": "C1 Udhaar 200. Cash collected: 4800, Udhaar: 200. Total 5000 intact. Counter 1 clear.",
+        "state": {
+          "udhaar_adjusted": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_078",
+    "scenario_type": "question_session",
+    "user_profile": "small manufacturer, production cost",
+    "key_behaviors": [
+      "manufacturing BOM",
+      "cost build-up",
+      "margin analysis"
+    ],
+    "user_satisfaction_markers": [
+      "cost per unit clear",
+      "margin understood"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "hamro production cost nikalna cha, raw material dekhi final samma",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "hamro production cost nikalna cha, raw material dekhi final samma"
+      },
+      {
+        "role": "ai",
+        "text": "Manufacturing module on! \"Bill of Material\" banaune. Jaise: Jutta banauna leather, sole, labour. Sabai cost add garera per unit cost nikalcha.",
+        "state": {
+          "introduced": "bom"
+        }
+      },
+      {
+        "role": "user",
+        "text": "leather 500, sole 200, labour 300 = 1 jod jutta"
+      },
+      {
+        "role": "ai",
+        "text": "BOM: Jutta 1 jod = 500+200+300 = Rs. 1000.\nAba 10 jod production record gare, stock ma 10 jod (Cost 10,000) add huncha.",
+        "state": {
+          "calculated": true,
+          "stock_added": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "bikri 1500 ma gare profit 500 per jod?"
+      },
+      {
+        "role": "ai",
+        "text": "Exactly! Margin 33.33%. Production se bazaar tak ka safar track ho raha hai.",
+        "state": {
+          "profit_confirmed": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_079",
+    "scenario_type": "error_correction_session",
+    "user_profile": "internet service provider, plan change",
+    "key_behaviors": [
+      "plan change handling",
+      "prorated billing",
+      "future billing setup"
+    ],
+    "user_satisfaction_markers": [
+      "upgrade handled",
+      "proration done"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "customer le plan upgrade gare, 10 mbps bata 20 mbps",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "customer le plan upgrade gare, 10 mbps bata 20 mbps"
+      },
+      {
+        "role": "ai",
+        "text": "Customer plan upgrade: 10→20 Mbps. Old rate 1000, new rate 1500. Aajabata apply garne ki next billing cycle?",
+        "state": {
+          "asking_effective_date": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "aaja bata, paisa liyo upgrade ko 500"
+      },
+      {
+        "role": "ai",
+        "text": "Prorated charge: Upgrade 500 liyo. Plan 20 Mbps activate. Next bill 1500 generate huncha. All updated.",
+        "state": {
+          "upgraded": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "thik cha"
+      },
+      {
+        "role": "ai",
+        "text": "ISP plan aur billing upgrade complete!",
+        "state": {
+          "corrected": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  },
+  {
+    "id": "scene_080",
+    "scenario_type": "report_request",
+    "user_profile": "flower shop, occasion based report",
+    "key_behaviors": [
+      "occasion-based report",
+      "bestseller highlight",
+      "future planning",
+      "smart reminder"
+    ],
+    "user_satisfaction_markers": [
+      "occasional sales clear",
+      "next year planned"
+    ],
+    "turn_count": 6,
+    "user_turn_count": 3,
+    "first_user_text": "valentines day ma kati bikri bhayo report deu",
+    "conversation": [
+      {
+        "role": "user",
+        "text": "valentines day ma kati bikri bhayo report deu"
+      },
+      {
+        "role": "ai",
+        "text": "Valentine's Day (Feb 14) Sales:\n- Rose Bouquet: 50 pcs x 1000 = 50,000\n- Mixed Flowers: 30 x 1500 = 45,000\n- Chocolates: 20 x 500 = 10,000\nTotal: 1,05,000.\nFantastic day!",
+        "state": {
+          "report_shown": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "best selling item rose bouquet raicha. next year stock rakhda yehi."
+      },
+      {
+        "role": "ai",
+        "text": "Good plan! Year-on-year comparison pani garna milcha. Next Valentine ma \"Rose 100 pcs pre-order\" garna reminder set garum.",
+        "state": {
+          "suggestion": true
+        }
+      },
+      {
+        "role": "user",
+        "text": "yes gara reminder"
+      },
+      {
+        "role": "ai",
+        "text": "Reminder set for Jan 14: \"Bulk pre-order Rose bouquet for Valentine's Day\".",
+        "state": {
+          "reminder_set": true
+        }
+      }
+    ],
+    "conversation_summary": null
+  }
+]
