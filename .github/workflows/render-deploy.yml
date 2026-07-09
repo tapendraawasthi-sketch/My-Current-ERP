@@ -23,6 +23,7 @@ jobs:
       - name: Install and build
         env:
           GITHUB_SHA: ${{ github.sha }}
+          NODE_OPTIONS: --max-old-space-size=6144
         run: |
           npm ci
           npm run build

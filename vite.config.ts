@@ -28,6 +28,7 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
       "node:fs": path.resolve(__dirname, "./src/lib/ekhata/vocabulary/stubs/node-fs.ts"),
+      "node:module": path.resolve(__dirname, "./src/lib/ekhata/vocabulary/stubs/node-module.ts"),
       "node:path": path.resolve(__dirname, "./src/lib/ekhata/vocabulary/stubs/node-path.ts"),
       "node:url": path.resolve(__dirname, "./src/lib/ekhata/vocabulary/stubs/node-url.ts"),
     },
