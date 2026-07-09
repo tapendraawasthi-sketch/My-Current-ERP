@@ -101,6 +101,7 @@ class ChatResponse(BaseModel):
     sources: list[str]
     session_id: str
     route: RouteInfo | None = None
+    card: dict | None = None  # Phase 4: Khata confirmation card
 
 
 class KhataChatRequest(BaseModel):
@@ -227,6 +228,7 @@ def chat(req: ChatRequest) -> ChatResponse:
             sources=result.get("sources", []),
             session_id=req.session_id,
             route=route_info,
+            card=result.get("card"),  # Phase 4: Khata confirmation card
         )
     except Exception as e:
         return ChatResponse(
@@ -497,4 +499,77 @@ def clear_session(payload: dict) -> dict:
             "start a new session_id client-side to get a fresh conversation; "
             "in-memory history is process-local and clears on server restart"
         ),
+    }
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PHASE 4 — KHATA ENTRY ENGINE ENDPOINTS
+# ══════════════════════════════════════════════════════════════════════════════
+
+class KhataParseRequest(BaseModel):
+    message: str = Field(..., max_length=1000, min_length=1)
+    use_llm_always: bool = False
+    language: str | None = None
+
+
+@app.post("/khata/parse")
+async def khata_parse_entry(req: KhataParseRequest) -> dict:
+    """Phase 4 — Parse a transaction message into a journal entry.
+    
+    Returns parsed transaction with journal lines, or clarification request.
+    """
+    from ..khata.entry_engine import parse_khata_entry, generate_confirmation_message
+    
+    result = await parse_khata_entry(req.message, use_llm_always=req.use_llm_always)
+    
+    if result.success and result.transaction:
+        txn = result.transaction
+        lang = req.language or "mixed"
+        confirmation = generate_confirmation_message(txn, lang)
+        
+        return {
+            "success": True,
+            "kind": "entry",
+            "card": txn.to_card(),
+            "confirmation": confirmation,
+            "is_balanced": txn.is_balanced,
+            "method": txn.method,
+            "confidence": txn.confidence,
+        }
+    elif result.clarification_needed:
+        return {
+            "success": False,
+            "kind": "clarify",
+            "clarification": result.clarification_needed,
+            "card": None,
+        }
+    else:
+        return {
+            "success": False,
+            "kind": "error",
+            "error": result.error or "Could not parse transaction",
+            "card": None,
+        }
+
+
+@app.post("/khata/validate")
+async def khata_validate_entry(payload: dict) -> dict:
+    """Validate a journal entry (check balance, account codes, etc.)."""
+    from decimal import Decimal
+    
+    journal_lines = payload.get("journalLines", [])
+    if not journal_lines:
+        return {"valid": False, "error": "No journal lines provided"}
+    
+    total_dr = sum(Decimal(str(l.get("debit", 0))) for l in journal_lines)
+    total_cr = sum(Decimal(str(l.get("credit", 0))) for l in journal_lines)
+    
+    is_balanced = abs(total_dr - total_cr) < Decimal("0.01")
+    
+    return {
+        "valid": is_balanced,
+        "total_debit": float(total_dr),
+        "total_credit": float(total_cr),
+        "difference": float(abs(total_dr - total_cr)),
+        "error": None if is_balanced else "Journal entry does not balance (Dr ≠ Cr)",
     }

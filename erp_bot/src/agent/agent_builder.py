@@ -406,6 +406,8 @@ async def run_routed_agent(
     logger.info(f"Route: {route.intent} ({route.confidence:.2f}) via {route.method}")
     
     # Step 2: Route based on intent
+    card = None  # For khata confirmation cards
+    
     if route.intent == "chitchat":
         # Direct LLM response without tools — fast and conversational
         answer = await _direct_llm_response(question, history)
@@ -413,8 +415,8 @@ async def run_routed_agent(
         # Direct LLM response — may use general knowledge
         answer = await _direct_llm_response(question, history)
     elif route.intent == "khata_entry":
-        # Structured parsing + confirmation — handled specially
-        answer = await _handle_khata_entry(question, history)
+        # Phase 4: Structured parsing + validation + confirmation
+        answer, card = await _handle_khata_entry(question, history)
     else:
         # accounting_qa, erp_howto, code_qa — use RAG + tools
         rag_query = get_rag_query(question, route.intent)
@@ -427,7 +429,7 @@ async def run_routed_agent(
             # accounting_qa — use RAG context but no code tools
             answer = await _rag_augmented_response(question, history, rag_context)
     
-    return {
+    result = {
         "answer": answer,
         "sources": [],
         "route": {
@@ -437,6 +439,12 @@ async def run_routed_agent(
             "reasoning": route.reasoning,
         },
     }
+    
+    # Phase 4: Include confirmation card for khata entries
+    if card:
+        result["card"] = card
+    
+    return result
 
 
 async def _direct_llm_response(
@@ -548,18 +556,43 @@ Answer the question using the reference information above. If the reference does
 async def _handle_khata_entry(
     question: str,
     history: list[dict[str, str]] | None = None,
-) -> str:
-    """Handle khata entry — parse transaction and ask for confirmation.
+) -> tuple[str, dict | None]:
+    """Phase 4 — Handle khata entry using structured parser + validator.
     
-    For now, this generates a journal entry suggestion. Phase 3+ will
-    add structured parsing and confirmation flow.
+    Uses:
+    1. LLM-based extraction (with regex fast-path)
+    2. Deterministic double-entry validation (must balance)
+    3. Natural-language confirmation card
+    
+    Returns:
+        Response text with confirmation message
     """
-    # For now, use the agent to understand and propose the entry
-    # Phase 3 will add proper structured parsing
-    llm = get_conversational_llm()
-    chat_history = _format_conversation_history(history or [])
+    from ..khata.entry_engine import parse_khata_entry, generate_confirmation_message
     
-    khata_prompt = f"""The user is describing a transaction to record. Parse it and show the double-entry journal:
+    # Detect language
+    has_devanagari = bool(re.search(r"[\u0900-\u097F]", question))
+    has_english = bool(re.search(r"\b(sold|bought|paid|received|credit|debit)\b", question, re.I))
+    lang = "nepali" if has_devanagari else ("english" if has_english else "mixed")
+    
+    try:
+        result = await parse_khata_entry(question)
+        
+        if result.success and result.transaction:
+            # Generate confirmation message
+            return generate_confirmation_message(result.transaction, lang)
+        
+        elif result.clarification_needed:
+            if lang == "english":
+                return f"I need more details to record this transaction. {result.clarification_needed}"
+            else:
+                return f"Transaction record garna thora detail chahiyo. {result.clarification_needed}"
+        
+        else:
+            # Fallback to conversational LLM
+            llm = get_conversational_llm()
+            chat_history = _format_conversation_history(history or [])
+            
+            khata_prompt = f"""The user is describing a transaction to record. Parse it and show the double-entry journal:
 
 User: {question}
 
@@ -568,21 +601,23 @@ Show the accounting entry with:
 2. DEBIT and CREDIT accounts with amounts
 3. Ask for confirmation before recording
 
-Respond in the same language as the user (English, Nepali, or Romanized Nepali)."""
-    
-    messages: list[BaseMessage] = [
-        SystemMessage(content=SYSTEM_PROMPT),
-        *chat_history,
-        HumanMessage(content=khata_prompt),
-    ]
-    
-    try:
-        result = await asyncio.to_thread(llm.invoke, messages)
-        text = result.content if hasattr(result, "content") else str(result)
-        return _trim_thinking_tags(text)
+Respond in the same language as the user."""
+            
+            messages: list[BaseMessage] = [
+                SystemMessage(content=SYSTEM_PROMPT),
+                *chat_history,
+                HumanMessage(content=khata_prompt),
+            ]
+            
+            result_msg = await asyncio.to_thread(llm.invoke, messages)
+            text = result_msg.content if hasattr(result_msg, "content") else str(result_msg)
+            return _trim_thinking_tags(text)
+        
     except Exception as e:
         logger.exception("Khata entry handling failed")
-        return f"माफ गर्नुहोस्, transaction बुझ्न सकिएन। (Error: {e})"
+        if lang == "english":
+            return f"Sorry, I couldn't understand the transaction. Please try rephrasing. (Error: {e})"
+        return f"माफ गर्नुहोस्, transaction बुझ्न सकिएन। फेरि प्रयास गर्नुहोस्। (Error: {e})"
 
 
 # ══════════════════════════════════════════════════════════════════════════════
