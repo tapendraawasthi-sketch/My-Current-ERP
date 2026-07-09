@@ -305,6 +305,9 @@ export function answerFromGrammarKnowledge(
   question: string,
   lang: "nepali" | "english" | "mixed",
 ): { reply: string; confidence: number } | null {
+  // Bare "X k ho?" — handled by glossary/simple defs; grammar corpus adds noise here.
+  if (/^.{1,40}\s+(k|ke)\s+ho\s*\??$/i.test(question.trim())) return null;
+
   const hits = searchNepaliGrammar(question, 3);
   if (!hits.length) return null;
 

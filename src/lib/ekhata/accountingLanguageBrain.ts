@@ -307,6 +307,51 @@ function answerEntryEffect(concept: string, intent: KhataIntent | undefined, lan
   );
 }
 
+/** Extract "X k ho?" / "what is X" term for direct glossary lookup */
+function extractDefinitionTerm(text: string): string | null {
+  const t = text.trim();
+  const ne = t.match(/^(.+?)\s+(k|ke)\s+ho\s*\??$/i);
+  if (ne?.[1]) return ne[1].trim();
+  const en = t.match(/^(?:what\s+is|what\s+are|define|explain)\s+(.+?)\s*\??$/i);
+  if (en?.[1]) return en[1].trim();
+  return null;
+}
+
+function answerSimpleDefinitionQuestion(
+  text: string,
+  lang: UserLanguage,
+): AccountingLanguageResult | null {
+  const term = extractDefinitionTerm(text);
+  if (!term || term.length > 48) return null;
+
+  const glossary =
+    matchAccountingGlossary(term) ||
+    matchAccountingGlossary(text) ||
+    getGlossaryByConceptKey(term.replace(/\s+/g, "_"));
+  if (glossary) {
+    return {
+      kind: "answer",
+      reply: formatGlossaryDefinition(glossary, lang),
+      language: lang,
+      confidence: 0.92,
+      questionType: "definition",
+    };
+  }
+
+  const def = answerDefinition(term, lang, text);
+  if (def) {
+    return {
+      kind: "answer",
+      reply: def,
+      language: lang,
+      confidence: 0.9,
+      questionType: "definition",
+    };
+  }
+
+  return null;
+}
+
 /** Prefer lexicon glossary; fall back to a few Nepal-specific hard defs not in the user batch. */
 function answerDefinition(concept: string, lang: UserLanguage, rawText?: string): string | null {
   const regulated =
@@ -328,6 +373,22 @@ function answerDefinition(concept: string, lang: UserLanguage, rawText?: string)
 
   // Nepal-specific extras not covered (or more precise) than the plain glossary rows
   const defs: Record<string, { en: string; ne: string }> = {
+    lekha: {
+      en: "**Accounting (Lekha)** is the systematic recording, classifying, and summarizing of financial transactions. In this ERP it covers khata entries, journals, ledgers, balance sheet, VAT/TDS, and reports.",
+      ne: "**लेखा (Lekha)** vaneko arthik len-den, bikri-kharid, kharcha-aamdani ra sampatti-dayitwo lai hisab kitab ma record garne, classify garne ra report banau-ne vyavastha ho. Yo Sutra ERP ma lekha = khata entry, journal, balance sheet, VAT/TDS ra reports.",
+    },
+    hisab: {
+      en: "**Hisab (accounts)** means the books and records of money in and out — parties, balances, udhaar, and daily transactions in your khata.",
+      ne: "**हिसाब** vaneko paisa aune-jane, party ko baki, udhaar, ra daily transaction haru ko record ho — tapaiko khata nai hisab ko core ho.",
+    },
+    khata: {
+      en: "**Khata** is your running account book — credit sales (udhaar), payments, purchases, and expenses recorded party-wise.",
+      ne: "**खाता** vaneko chalne hisab kitab ho — udhaar bikri, payment, kharid, kharcha party anusar record hunchha. Orbix bata Nepali/English ma entry garna saknuhunchha.",
+    },
+    accounting: {
+      en: "**Accounting** is the language of business finance — assets, liabilities, income, expenses, double-entry journals, and financial statements.",
+      ne: "**Accounting** vaneko business finance ko bhasa ho — sampatti, dayitwo, aamdani, kharcha, double-entry journal, ra financial statement.",
+    },
     bank_overdraft: {
       en: "Bank overdraft is a **liability** — you owe the bank, not an asset.",
       ne: "Bank overdraft **liability** ho — tapai bank lai tirna baki, asset hoina.",
@@ -701,8 +762,11 @@ export function understandAccountingLanguage(text: string): AccountingLanguageRe
     return { kind: "answer", reply, language: lang, confidence: 0.75, questionType: "general", relatedIntent };
   }
 
+  const simpleDef = answerSimpleDefinitionQuestion(text, lang);
+  if (simpleDef) return simpleDef;
+
   const grammarAnswer = answerFromGrammarKnowledge(text, lang);
-  if (grammarAnswer && grammarAnswer.confidence >= 0.55) {
+  if (grammarAnswer && grammarAnswer.confidence >= 0.72) {
     return {
       kind: "answer",
       reply: grammarAnswer.reply,

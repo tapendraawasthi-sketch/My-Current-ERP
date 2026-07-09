@@ -9,7 +9,7 @@ import {
   buildLocalizedEntryReply,
   detectUserLanguage,
 } from "./accountingLanguageBrain";
-import { generateConversationalReply, type ConversationTurn } from "./conversationalBrain";
+import { generateConversationalReply, analyzeQuestion, type ConversationTurn } from "./conversationalBrain";
 import { understandConceptualFramework } from "./conceptualFrameworkBrain";
 import { understandAccountingLanguage } from "./accountingLanguageBrain";
 import { analyzeMessageMeaning } from "./meaningEngine";
@@ -126,6 +126,8 @@ export interface ProcessMessageOptions {
   llmOnline?: boolean;
   llmModel?: string;
   conversationContext?: EKhataConversationContext;
+  /** Logged-in ERP user — for "do you know me?" style replies */
+  userName?: string;
 }
 
 function localizeClarify(question: string, lang: ReturnType<typeof detectUserLanguage>): string {
@@ -171,6 +173,42 @@ function trySafetyRefusal(
   }
 
   return null;
+}
+
+function tryConversationalChat(
+  trimmed: string,
+  normalizedText: string,
+  options: ProcessMessageOptions,
+): EKhataProcessResult | null {
+  const analysis = analyzeQuestion(trimmed, options.history ?? []);
+  const socialKinds = new Set([
+    "about_bot_identity",
+    "about_bot_gender",
+    "about_bot_human",
+    "about_bot_feelings",
+    "about_bot_age",
+    "about_user_identity",
+    "greeting",
+    "farewell",
+    "thanks",
+    "help",
+    "capability",
+    "abuse",
+    "small_talk",
+  ]);
+  if (analysis.confidence < 0.85 || !socialKinds.has(analysis.kind)) return null;
+
+  const reply = generateConversationalReply(trimmed, {
+    balance: options.balance,
+    history: options.history,
+    userName: options.userName,
+  });
+  return {
+    kind: "chat",
+    reply,
+    normalizedText,
+    engine: "brain",
+  };
 }
 
 function tryAccountingQuestion(
@@ -889,6 +927,10 @@ export function processEKhataMessage(
       };
     }
   }
+
+  // Conversational / identity — before accounting-question detector ("timi ko?" has "?")
+  const conversational = tryConversationalChat(trimmed, normalizedText, options);
+  if (conversational) return conversational;
 
   const accountingQuestion = tryAccountingQuestion(trimmed, normalizedText);
   if (accountingQuestion) return accountingQuestion;

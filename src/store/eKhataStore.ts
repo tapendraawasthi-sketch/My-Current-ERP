@@ -370,6 +370,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
     }
 
     const balance = getKhataBalance();
+    const userName = useStore.getState().currentUser?.name || useStore.getState().currentUser?.username;
 
     if (isSelfContainedAi()) {
       try {
@@ -382,6 +383,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
           balance,
           history,
           conversationContext,
+          userName,
         });
 
         if (result.kind === "entry" && result.card) {

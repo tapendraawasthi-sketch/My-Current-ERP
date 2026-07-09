@@ -27,6 +27,7 @@ export type QuestionKind =
   | "about_bot_human"
   | "about_bot_feelings"
   | "about_bot_age"
+  | "about_user_identity"
   | "opinion_preference"
   | "opinion_thought"
   | "factual_what"
@@ -187,36 +188,63 @@ export function analyzeQuestion(text: string, history: ConversationTurn[] = []):
 
   // Bot gender / identity questions — must come BEFORE affirmation check
   if (
+    /^(timi|tapai|ta)\s*ko\s*\??$/i.test(t) ||
+    /\bwho\s*are\s*you\b/i.test(t) ||
+    /\b(ta\s*ko\s*ho|timro\s*naam|your\s*name|about\s*you|introduce\s*yourself)\b/i.test(t) ||
+    /\b(timi|tapai|you)\s*(ko|kun)(\s*(ho|hau|cha|xau|hunchha))?\s*\??\s*$/i.test(t) ||
     /\b(timi|tapai|you)\s*(ko\s*)?(kta|keta|boy|male|man|ladka|larka)\b/i.test(t) ||
     /\b(timi|tapai|you)\s*(ko\s*)?(kt|keti|girl|female|woman|ladki|larki)\b/i.test(t) ||
     /\b(are\s*you\s*(a\s*)?(boy|girl|man|woman|male|female))\b/i.test(t) ||
     /\b(timi\s*(human|manav|manushya)\s*ho|are\s*you\s*human)\b/i.test(t)
   ) {
     const isGender = /\b(kta|keta|boy|male|kt|keti|girl|female|ladka|ladki|larka|larki)\b/i.test(t);
-    return {
-      kind: isGender ? "about_bot_gender" : "about_bot_human",
-      topic: null,
-      subject: "bot",
-      isQuestion: true,
-      language: lang,
-      confidence: 0.92,
-      rawIntent: isGender ? "gender_question" : "human_question",
-    };
-  }
-
-  if (
-    /\b(timi|tapai|you)\s*(ko|kun)\s*(ho|hau|hau|cha|xau)\b/i.test(t) ||
-    /\bwho\s*are\s*you\b/i.test(t) ||
-    /\b(ta\s*ko\s*ho|timro\s*naam|your\s*name|about\s*you|introduce\s*yourself)\b/i.test(t)
-  ) {
+    if (isGender) {
+      return {
+        kind: "about_bot_gender",
+        topic: null,
+        subject: "bot",
+        isQuestion: true,
+        language: lang,
+        confidence: 0.92,
+        rawIntent: "gender_question",
+      };
+    }
+    if (/\b(human|manav|manushya)\b/i.test(t)) {
+      return {
+        kind: "about_bot_human",
+        topic: null,
+        subject: "bot",
+        isQuestion: true,
+        language: lang,
+        confidence: 0.92,
+        rawIntent: "human_question",
+      };
+    }
     return {
       kind: "about_bot_identity",
       topic: null,
       subject: "bot",
       isQuestion: true,
       language: lang,
-      confidence: 0.9,
+      confidence: 0.95,
       rawIntent: "identity",
+    };
+  }
+
+  // Logged-in user identity — "do you know me?"
+  if (
+    /\b(do\s+you\s+know\s+me|you\s+know\s+me|who\s+am\s+i|mero\s+naam|mero\s+name|ma\s+ko\s+ho|malai\s+chinchhau|malai\s+chineko|mero\s+barema|mero\s+parichay)\b/i.test(
+      t,
+    )
+  ) {
+    return {
+      kind: "about_user_identity",
+      topic: null,
+      subject: "user",
+      isQuestion: true,
+      language: lang,
+      confidence: 0.93,
+      rawIntent: "user_identity",
     };
   }
 
@@ -529,7 +557,11 @@ const BOT_RESPONSES: Record<QuestionKind, string[]> = {
     "Ma manav hoina — ma **e-Khata AI** ho, tapaiko khata ra accounting ko digital sahayogi. Computer bhitra chalne program ho, tara dherai kura bujhna sakchhu!\n\nKhata entry, tax info, wa kunai sawal — sodhnus!",
   ],
   about_bot_identity: [
-    "Ma **e-Khata** (इ-खाता) ho — tapaiko personal digital khata assistant!\n\nMa garna sakne kaam:\n• Khata entries: udhaar, bikri, kharid, kharcha record\n• Nepali/English/Roman Nepali bujhchhu\n• Accounting concepts explain garchhu\n• Nepal ko tax, VAT, TDS ko info dinchhu\n• General knowledge — Nepal, khana, mausam, entertainment\n\nKuni pani external app chaina — ma yahi ERP bhitra chalchhu!",
+    "Ma **Orbix** ho — Sutra ERP ko AI accounting sahayogi (e-Khata)!\n\nMa garna sakne kaam:\n• Khata entries: udhaar, bikri, kharid, kharcha record\n• Nepali, English, Roman Nepali bujhchhu\n• Accounting concepts explain garchhu (lekha, debit-credit, balance sheet)\n• Nepal ko tax, VAT, TDS ko info dinchhu\n\nKuni pani external app chaina — ma yahi ERP bhitra chalchhu!",
+    "Namaste! Ma **Orbix** — tapaiko digital lekhankan saathi. Khata entry, hisab-kitab sawal, tax info — sabai yahi bata. Ke help chahiyo?",
+  ],
+  about_user_identity: [
+    "Hajur, ERP ma login bhayeko user ko record chha — tara ma tapaiko personal jivan ko sabai kura thaaha paudina. Khata, party, ra company ko hisab ma help garna sakchhu!",
   ],
   about_bot_feelings: [
     "Ma AI bhaye pani tapailai help garna pauda 'digital khushi' feel garchhu! 😊 Aaja kasto din cha tapaiko? Kei help chahiyo?",
@@ -693,7 +725,17 @@ function buildBaseReply(
   analysis: QuestionAnalysis,
   history: ConversationTurn[],
   balance?: LedgerBalanceSnapshot,
+  userName?: string,
 ): string {
+  if (analysis.kind === "about_user_identity") {
+    if (userName) {
+      return analysis.language === "english"
+        ? `Yes — you're logged in as **${userName}** in this ERP session. I can help with your khata, entries, reports, and accounting questions. What would you like to do?`
+        : `Hajur, tapai **${userName}** ko rup ma login hunubhayo — yo ERP session ma tapaiko record chha. Ma tapaiko khata, entry, report ra hisab-kitab sawal ma help garna sakchhu. Aaja ke garna cha?`;
+    }
+    return pick(BOT_RESPONSES.about_user_identity, text);
+  }
+
   if (analysis.kind === "balance" && balance) {
     return replyBalance(balance);
   }
@@ -757,13 +799,14 @@ export function generateConversationalReply(
   options: {
     balance?: LedgerBalanceSnapshot;
     history?: ConversationTurn[];
+    userName?: string;
   } = {},
 ): string {
   const history = options.history ?? [];
   const analysis = analyzeQuestion(text, history);
   const emotional = detectEmotionalContext(text, history);
 
-  const baseReply = buildBaseReply(text, analysis, history, options.balance);
+  const baseReply = buildBaseReply(text, analysis, history, options.balance, options.userName);
 
   // Apply emotional intelligence layer — empathy, politeness, tone
   return composeEmotionalReply(baseReply || pick(BOT_RESPONSES.unknown, text), emotional, {
