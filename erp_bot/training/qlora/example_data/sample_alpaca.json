@@ -1,0 +1,102 @@
+[
+  {
+    "instruction": "namaste",
+    "input": "",
+    "output": "Namaste! Sutra ERP ma swagat cha. Ke help chahiyo aaja?"
+  },
+  {
+    "instruction": "kasto cha",
+    "input": "",
+    "output": "Thik cha, dhanyabad! Tapaiko ni kasto cha? Accounting related kei help chahiyo?"
+  },
+  {
+    "instruction": "Ram lai 5000 udhaar becheko",
+    "input": "",
+    "output": "**Credit Sale (Udhaar Bikri)** — Ram lai Rs 5,000\n\nJournal Entry:\n  DEBIT: Accounts Receivable (Ram) — Rs 5,000\n  CREDIT: Sales Revenue — Rs 5,000\n\nYo thik cha? Confirm garnus."
+  },
+  {
+    "instruction": "Shyam bata 10000 payo",
+    "input": "",
+    "output": "**Payment Received** — Shyam bata Rs 10,000\n\nJournal Entry:\n  DEBIT: Cash — Rs 10,000\n  CREDIT: Accounts Receivable (Shyam) — Rs 10,000\n\nYo thik cha? Confirm garnus."
+  },
+  {
+    "instruction": "supplier lai 20000 tireko",
+    "input": "",
+    "output": "**Payment Made** — Supplier lai Rs 20,000\n\nJournal Entry:\n  DEBIT: Accounts Payable (Supplier) — Rs 20,000\n  CREDIT: Cash — Rs 20,000\n\nYo thik cha? Confirm garnus."
+  },
+  {
+    "instruction": "office rent 15000 tireko",
+    "input": "",
+    "output": "**Rent Payment** — Rs 15,000\n\nJournal Entry:\n  DEBIT: Rent Expense — Rs 15,000\n  CREDIT: Cash — Rs 15,000\n\nYo thik cha? Confirm garnus."
+  },
+  {
+    "instruction": "VAT rate Nepal ma kati ho?",
+    "input": "",
+    "output": "Nepal ma standard VAT rate **13%** ho. Basic necessities (rice, dal, vegetables, etc.) ma VAT exempt huncha. Latest rates ko lagi IRD website check garnus: https://ird.gov.np"
+  },
+  {
+    "instruction": "TDS k ho?",
+    "input": "",
+    "output": "TDS (Tax Deducted at Source) bhanya payment garda advance tax katnu ho. Different payments ma different rates:\n- Professional services: 15%\n- Rent: 10%\n- Goods supply: 1.5%\n\nPAN holder lai low rate, non-PAN lai 15% apply huncha."
+  },
+  {
+    "instruction": "SSF contribution rate kati ho?",
+    "input": "",
+    "output": "SSF contribution rates (basic salary ko):\n- **Employee contribution:** 11%\n- **Employer contribution:** 20%\n- **Total:** 31%\n\nEmployee ko 10% provident fund + 1% social security ho."
+  },
+  {
+    "instruction": "double entry rule k ho?",
+    "input": "",
+    "output": "Double entry accounting ko golden rules:\n\n1. **Real Account:** Debit what comes IN, Credit what goes OUT\n2. **Personal Account:** Debit the RECEIVER, Credit the GIVER\n3. **Nominal Account:** Debit all EXPENSES, Credit all INCOME\n\nHar transaction ma Dr = Cr hunu parchha."
+  },
+  {
+    "instruction": "journal entry kata cha?",
+    "input": "",
+    "output": "Journal Entry yaha cha: **Transactions → Journal Entry**\n\nKeyboard shortcut: **F5**\n\nDirect navigate garna menu bar ma Transactions click garera Journal Entry select garnus."
+  },
+  {
+    "instruction": "fiscal year Nepal ma kahile suru huncha?",
+    "input": "",
+    "output": "Nepal ko fiscal year **Shrawan 1** (mid-July) ma suru huncha ra **Ashad End** (mid-July next year) ma sakincha.\n\nAD ma roughly July 16 - July 15 huncha. Bikram Sambat calendar follow huncha."
+  },
+  {
+    "instruction": "राम लाई ५००० उधारो बेचेको",
+    "input": "",
+    "output": "**उधारो बिक्री** — राम लाई रु ५,०००\n\nजर्नल एन्ट्री:\n  डेबिट: प्राप्य खाता (राम) — रु ५,०००\n  क्रेडिट: बिक्री आय — रु ५,०००\n\nयो ठिक छ? Confirm गर्नुहोस्।"
+  },
+  {
+    "instruction": "Sold goods to Ram for Rs 5000 on credit",
+    "input": "",
+    "output": "**Credit Sale** — Ram for Rs 5,000\n\nJournal Entry:\n  DEBIT: Accounts Receivable (Ram) — Rs 5,000\n  CREDIT: Sales Revenue — Rs 5,000\n\nIs this correct? Click Confirm to record."
+  },
+  {
+    "instruction": "Received payment of Rs 10000 from Hari",
+    "input": "",
+    "output": "**Payment Received** — From Hari Rs 10,000\n\nJournal Entry:\n  DEBIT: Cash — Rs 10,000\n  CREDIT: Accounts Receivable (Hari) — Rs 10,000\n\nIs this correct? Click Confirm to record."
+  },
+  {
+    "instruction": "dhanyabad",
+    "input": "",
+    "output": "Swagat cha! Aru kei help chahiyo bhane bhannus. Ramro din hos!"
+  },
+  {
+    "instruction": "thanks",
+    "input": "",
+    "output": "You're welcome! Let me know if you need any other help. Have a great day!"
+  },
+  {
+    "instruction": "bye",
+    "input": "",
+    "output": "Namaste! Pheri bhetaula. Take care!"
+  },
+  {
+    "instruction": "gratuity kati dincha?",
+    "input": "",
+    "output": "Gratuity rates (non-SSF members):\n- 3-7 years service: 50% × last basic × years\n- 7-15 years: 67% × last basic × years\n- 15-20 years: 81% × last basic × years\n- 20+ years: 100% × last basic × years\n\nSSF members ko lagi gratuity employer ko 8.33% contribution ma covered huncha."
+  },
+  {
+    "instruction": "depreciation entry kasari garnu?",
+    "input": "",
+    "output": "Depreciation entry:\n\nDEBIT: Depreciation Expense — [Amount]\nCREDIT: Accumulated Depreciation — [Amount]\n\nNepal ma common rates:\n- Building: 5%\n- Furniture: 15%\n- Vehicle: 20%\n- Computer: 25%\n\nStraight line method commonly use huncha."
+  }
+]

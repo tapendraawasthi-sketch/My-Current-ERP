@@ -1,0 +1,28 @@
+# QLoRA Fine-Tuning Dependencies
+# Install on a machine with GPU (not the production L4 — use a training instance)
+
+# Option 1: Unsloth (recommended — 2x faster)
+unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git
+# After unsloth, install these without deps:
+# pip install --no-deps trl peft accelerate bitsandbytes
+
+# Option 2: Standard TRL/PEFT
+transformers>=4.40.0
+trl>=0.8.0
+peft>=0.10.0
+bitsandbytes>=0.43.0
+accelerate>=0.28.0
+
+# Common
+datasets>=2.18.0
+torch>=2.1.0
+sentencepiece
+protobuf
+
+# Evaluation
+sacrebleu  # BLEU score
+rouge-score  # ROUGE metrics
+
+# Conversion
+# For GGUF conversion, clone llama.cpp separately:
+# git clone https://github.com/ggerganov/llama.cpp
