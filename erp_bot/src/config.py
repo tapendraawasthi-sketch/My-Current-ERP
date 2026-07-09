@@ -59,6 +59,43 @@ DEEP_MODEL = os.getenv("DEEP_MODEL_NAME", CONVERSATIONAL_MODEL)
 # Increase if you have more VRAM, decrease if you see OOM errors
 CONTEXT_SIZE = int(os.getenv("CONTEXT_SIZE", "8192"))
 
+# ══════════════════════════════════════════════════════════════════════════════
+# PHASE 6 — OLLAMA SERVING OPTIMIZATION (L4 GPU)
+# ══════════════════════════════════════════════════════════════════════════════
+#
+# Performance expectations on NVIDIA L4 (24GB VRAM):
+#
+#   Model           | Load Time | First Token | Tokens/sec | VRAM Usage
+#   ----------------|-----------|-------------|------------|------------
+#   qwen3:32b Q4    | ~12s      | ~2-3s       | 8-15 t/s   | ~18-20GB
+#   qwen3:14b Q4    | ~6s       | ~1-2s       | 15-25 t/s  | ~10-12GB
+#   qwen3:8b Q4     | ~4s       | <1s         | 25-40 t/s  | ~6-8GB
+#   qwen3:4b        | ~2s       | <0.5s       | 40-60 t/s  | ~3-4GB
+#   nomic-embed     | ~1s       | instant     | N/A        | ~0.5GB
+#
+# Key optimization flags (set via OLLAMA_* env vars or Modelfile):
+#
+#   OLLAMA_NUM_GPU=99          # Use all GPU layers (default: auto)
+#   OLLAMA_KEEP_ALIVE="10m"    # Keep model in VRAM 10min after last request
+#   OLLAMA_NUM_PARALLEL=2      # Concurrent requests (careful with VRAM)
+#   OLLAMA_MAX_LOADED_MODELS=2 # Keep fast + main model loaded
+#
+# ══════════════════════════════════════════════════════════════════════════════
+
+# Keep model in VRAM between requests (reduces cold start)
+OLLAMA_KEEP_ALIVE = os.getenv("OLLAMA_KEEP_ALIVE", "10m")
+
+# Number of parallel requests (2 allows fast model + main model concurrent)
+OLLAMA_NUM_PARALLEL = int(os.getenv("OLLAMA_NUM_PARALLEL", "2"))
+
+# Response caching for repeated questions
+CACHE_ENABLED = os.getenv("CACHE_ENABLED", "true").lower() == "true"
+CACHE_TTL_SECONDS = int(os.getenv("CACHE_TTL_SECONDS", "3600"))
+CACHE_MAX_SIZE = int(os.getenv("CACHE_MAX_SIZE", "500"))
+
+# Streaming chunk size (characters per SSE event)
+STREAMING_CHUNK_SIZE = int(os.getenv("STREAMING_CHUNK_SIZE", "10"))
+
 # Conversational model options — warmer temperature for natural chat
 CONVERSATIONAL_MODEL_OPTIONS: dict[str, float | int] = {
     "temperature": float(os.getenv("TEMPERATURE", "0.7")),

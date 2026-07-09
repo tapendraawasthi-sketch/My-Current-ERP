@@ -19,6 +19,7 @@ from pydantic import BaseModel, Field
 from ..agent import agent_builder
 from ..config import (
     BOT_ROOT,
+    CACHE_ENABLED,
     CONVERSATIONAL_MODEL,
     EMBED_MODEL,
     ERP_PATH,
@@ -26,6 +27,7 @@ from ..config import (
     KHATA_STRUCTURED_PARSE,
     MODEL_NAME,
     OLLAMA_BASE_URL,
+    OLLAMA_KEEP_ALIVE,
 )
 from ..ingestion import embedder
 from ..vectorstore import chroma_store
@@ -203,7 +205,7 @@ def status() -> dict:
 
 @app.post("/chat", response_model=ChatResponse)
 def chat(req: ChatRequest) -> ChatResponse:
-    """Standard chat endpoint with conversation memory and Phase 2 intent routing."""
+    """Standard chat endpoint with conversation memory, Phase 2 routing, Phase 6 caching."""
     try:
         if not req.message.strip():
             return ChatResponse(
@@ -211,16 +213,44 @@ def chat(req: ChatRequest) -> ChatResponse:
                 sources=[],
                 session_id=req.session_id,
             )
+        
+        # Phase 6: Check cache first
+        if CACHE_ENABLED:
+            from .cache import get_response_cache
+            cache = get_response_cache()
+            cached = cache.get(req.message)
+            if cached:
+                route_info = None
+                if cached.get("route"):
+                    route_info = RouteInfo(**cached["route"])
+                return ChatResponse(
+                    answer=cached["response"],
+                    sources=cached.get("sources", []),
+                    session_id=req.session_id,
+                    route=route_info,
+                )
+        
         result = agent_builder.ask(req.message, req.session_id)
         
         # Build route info if available
         route_info = None
+        route_dict = None
         if "route" in result and result["route"]:
-            route_info = RouteInfo(
-                intent=result["route"].get("intent", "unknown"),
-                confidence=result["route"].get("confidence", 0),
-                method=result["route"].get("method", "unknown"),
-                reasoning=result["route"].get("reasoning"),
+            route_dict = {
+                "intent": result["route"].get("intent", "unknown"),
+                "confidence": result["route"].get("confidence", 0),
+                "method": result["route"].get("method", "unknown"),
+                "reasoning": result["route"].get("reasoning"),
+            }
+            route_info = RouteInfo(**route_dict)
+        
+        # Phase 6: Cache the response
+        if CACHE_ENABLED:
+            cache.put(
+                query=req.message,
+                response=result["answer"],
+                sources=result.get("sources", []),
+                route=route_dict,
             )
         
         return ChatResponse(
@@ -572,4 +602,87 @@ async def khata_validate_entry(payload: dict) -> dict:
         "total_credit": float(total_cr),
         "difference": float(abs(total_dr - total_cr)),
         "error": None if is_balanced else "Journal entry does not balance (Dr ≠ Cr)",
+    }
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PHASE 6 — CACHE MANAGEMENT ENDPOINTS
+# ══════════════════════════════════════════════════════════════════════════════
+
+@app.get("/cache/stats")
+def cache_stats() -> dict:
+    """Get response cache statistics.
+    
+    Returns hit rate, entry count, and performance metrics.
+    """
+    if not CACHE_ENABLED:
+        return {"enabled": False, "message": "Cache is disabled"}
+    
+    from .cache import get_response_cache
+    cache = get_response_cache()
+    stats = cache.get_stats()
+    stats["enabled"] = True
+    return stats
+
+
+@app.post("/cache/clear")
+def cache_clear() -> dict:
+    """Clear all cached responses."""
+    if not CACHE_ENABLED:
+        return {"status": "skipped", "message": "Cache is disabled"}
+    
+    from .cache import get_response_cache
+    cache = get_response_cache()
+    cache.clear()
+    return {"status": "ok", "message": "Cache cleared"}
+
+
+@app.get("/performance")
+def performance_info() -> dict:
+    """Phase 6 — Performance and latency information for L4 GPU.
+    
+    Returns expected tokens/sec, latency estimates, and optimization tips.
+    """
+    from .cache import get_response_cache
+    
+    cache_stats = {}
+    if CACHE_ENABLED:
+        cache = get_response_cache()
+        cache_stats = cache.get_stats()
+    
+    return {
+        "gpu": "NVIDIA L4 (24GB VRAM)",
+        "models": {
+            "conversational": {
+                "name": CONVERSATIONAL_MODEL,
+                "expected_tokens_per_sec": "8-15 t/s (32B Q4) or 15-25 t/s (14B Q4)",
+                "first_token_latency": "2-3s (32B) or 1-2s (14B)",
+                "context_size": 8192,
+            },
+            "fast": {
+                "name": FAST_MODEL,
+                "expected_tokens_per_sec": "40-60 t/s",
+                "first_token_latency": "<0.5s",
+                "use_case": "Intent routing, quick extractions",
+            },
+            "embedding": {
+                "name": EMBED_MODEL,
+                "latency": "<100ms",
+                "use_case": "RAG retrieval, cache similarity",
+            },
+        },
+        "optimizations": {
+            "cache_enabled": CACHE_ENABLED,
+            "cache_stats": cache_stats,
+            "keep_alive": OLLAMA_KEEP_ALIVE,
+            "streaming": True,
+        },
+        "tips": [
+            "Use streaming to show tokens as they generate — reduces perceived latency",
+            "Cache common questions (VAT rate, TDS, etc.) for instant responses",
+            "Keep Ollama model loaded with OLLAMA_KEEP_ALIVE=10m",
+            "Use fast model (4B) for routing, big model (32B) only for final response",
+            "Show 'thinking...' indicator during first-token latency",
+            "Batch embedding requests when possible",
+        ],
     }
