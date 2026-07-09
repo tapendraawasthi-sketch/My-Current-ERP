@@ -565,34 +565,21 @@ async def _handle_khata_entry(
     3. Natural-language confirmation card
     
     Returns:
-        Response text with confirmation message
+        (response_text, card_dict_or_none)
     """
-    from ..khata.entry_engine import parse_khata_entry, generate_confirmation_message
-    
-    # Detect language
-    has_devanagari = bool(re.search(r"[\u0900-\u097F]", question))
-    has_english = bool(re.search(r"\b(sold|bought|paid|received|credit|debit)\b", question, re.I))
-    lang = "nepali" if has_devanagari else ("english" if has_english else "mixed")
+    from ..khata.khata_engine import handle_khata_intent
     
     try:
-        result = await parse_khata_entry(question)
+        response, card = await handle_khata_intent(question, history)
         
-        if result.success and result.transaction:
-            # Generate confirmation message
-            return generate_confirmation_message(result.transaction, lang)
+        if response:
+            return response, card
         
-        elif result.clarification_needed:
-            if lang == "english":
-                return f"I need more details to record this transaction. {result.clarification_needed}"
-            else:
-                return f"Transaction record garna thora detail chahiyo. {result.clarification_needed}"
+        # Khata engine returned empty — fall back to LLM
+        llm = get_conversational_llm()
+        chat_history = _format_conversation_history(history or [])
         
-        else:
-            # Fallback to conversational LLM
-            llm = get_conversational_llm()
-            chat_history = _format_conversation_history(history or [])
-            
-            khata_prompt = f"""The user is describing a transaction to record. Parse it and show the double-entry journal:
+        khata_prompt = f"""The user is describing a transaction to record. Parse it and show the double-entry journal:
 
 User: {question}
 
@@ -601,23 +588,21 @@ Show the accounting entry with:
 2. DEBIT and CREDIT accounts with amounts
 3. Ask for confirmation before recording
 
-Respond in the same language as the user."""
-            
-            messages: list[BaseMessage] = [
-                SystemMessage(content=SYSTEM_PROMPT),
-                *chat_history,
-                HumanMessage(content=khata_prompt),
-            ]
-            
-            result_msg = await asyncio.to_thread(llm.invoke, messages)
-            text = result_msg.content if hasattr(result_msg, "content") else str(result_msg)
-            return _trim_thinking_tags(text)
+Respond in the same language as the user (English, Nepali, or Romanized Nepali)."""
+        
+        messages: list[BaseMessage] = [
+            SystemMessage(content=SYSTEM_PROMPT),
+            *chat_history,
+            HumanMessage(content=khata_prompt),
+        ]
+        
+        result = await asyncio.to_thread(llm.invoke, messages)
+        text = result.content if hasattr(result, "content") else str(result)
+        return _trim_thinking_tags(text), None
         
     except Exception as e:
         logger.exception("Khata entry handling failed")
-        if lang == "english":
-            return f"Sorry, I couldn't understand the transaction. Please try rephrasing. (Error: {e})"
-        return f"माफ गर्नुहोस्, transaction बुझ्न सकिएन। फेरि प्रयास गर्नुहोस्। (Error: {e})"
+        return f"माफ गर्नुहोस्, transaction बुझ्न सकिएन। (Error: {e})", None
 
 
 # ══════════════════════════════════════════════════════════════════════════════
