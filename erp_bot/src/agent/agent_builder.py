@@ -375,20 +375,213 @@ def clear_session_history(session_id: str) -> None:
 
 
 # ══════════════════════════════════════════════════════════════════════════════
+# PHASE 2 — ROUTED GENERATION
+# ══════════════════════════════════════════════════════════════════════════════
+
+async def run_routed_agent(
+    question: str,
+    history: list[dict[str, str]] | None = None,
+) -> dict[str, any]:
+    """Run the agent with intent-based routing.
+    
+    Phase 2 routing:
+    - chitchat → LLM directly (no tools)
+    - general_qa → LLM directly (no tools)
+    - accounting_qa → RAG(knowledge) → LLM
+    - erp_howto → RAG(code/nav) → LLM with tools
+    - code_qa → RAG(code) → LLM with tools
+    - khata_entry → structured parser → LLM confirmation
+    
+    Returns:
+        {
+            "answer": str,
+            "sources": list[str],
+            "route": {"intent": str, "confidence": float, "method": str}
+        }
+    """
+    from .intent_router import classify_intent, should_skip_tools, get_rag_query
+    
+    # Step 1: Classify intent
+    route = await classify_intent(question)
+    logger.info(f"Route: {route.intent} ({route.confidence:.2f}) via {route.method}")
+    
+    # Step 2: Route based on intent
+    if route.intent == "chitchat":
+        # Direct LLM response without tools — fast and conversational
+        answer = await _direct_llm_response(question, history)
+    elif route.intent == "general_qa":
+        # Direct LLM response — may use general knowledge
+        answer = await _direct_llm_response(question, history)
+    elif route.intent == "khata_entry":
+        # Structured parsing + confirmation — handled specially
+        answer = await _handle_khata_entry(question, history)
+    else:
+        # accounting_qa, erp_howto, code_qa — use RAG + tools
+        rag_query = get_rag_query(question, route.intent)
+        rag_context = await _fetch_rag_context(rag_query, route.rag_collection)
+        
+        if route.intent in ("erp_howto", "code_qa"):
+            # Use full agent with tools
+            answer = await run_agent(question, history)
+        else:
+            # accounting_qa — use RAG context but no code tools
+            answer = await _rag_augmented_response(question, history, rag_context)
+    
+    return {
+        "answer": answer,
+        "sources": [],
+        "route": {
+            "intent": route.intent,
+            "confidence": route.confidence,
+            "method": route.method,
+            "reasoning": route.reasoning,
+        },
+    }
+
+
+async def _direct_llm_response(
+    question: str,
+    history: list[dict[str, str]] | None = None,
+) -> str:
+    """Generate a direct LLM response without tools (for chitchat/general_qa)."""
+    llm = get_conversational_llm()
+    chat_history = _format_conversation_history(history or [])
+    
+    messages: list[BaseMessage] = [
+        SystemMessage(content=SYSTEM_PROMPT),
+        *chat_history,
+        HumanMessage(content=question),
+    ]
+    
+    try:
+        result = await asyncio.to_thread(llm.invoke, messages)
+        text = result.content if hasattr(result, "content") else str(result)
+        return _trim_thinking_tags(text)
+    except Exception as e:
+        logger.exception("Direct LLM response failed")
+        return f"माफ गर्नुहोस्, कुनै समस्या भयो। (Error: {e})"
+
+
+async def _fetch_rag_context(query: str | None, collection: str | None) -> str:
+    """Fetch relevant context from RAG for the query."""
+    if not query or not collection:
+        return ""
+    
+    try:
+        if collection == "knowledge":
+            # Use accounting/tax knowledge base
+            from ..vectorstore.ca_knowledge_store import search_ca_knowledge
+            results = search_ca_knowledge(query, k=3)
+            if results:
+                return "\n\n---\n\n".join(results)
+        elif collection == "code":
+            # Use codebase index
+            from ..vectorstore import chroma_store
+            results = chroma_store.search(query, k=5)
+            if results:
+                return "\n\n---\n\n".join(
+                    f"[{r.get('source', 'unknown')}]\n{r.get('content', '')}"
+                    for r in results
+                )
+    except Exception as e:
+        logger.warning(f"RAG fetch failed: {e}")
+    
+    return ""
+
+
+async def _rag_augmented_response(
+    question: str,
+    history: list[dict[str, str]] | None = None,
+    rag_context: str = "",
+) -> str:
+    """Generate a response augmented with RAG context."""
+    llm = get_conversational_llm()
+    chat_history = _format_conversation_history(history or [])
+    
+    # Build augmented prompt
+    if rag_context:
+        augmented_question = f"""Based on the following reference information:
+
+{rag_context}
+
+---
+
+User question: {question}
+
+Answer the question using the reference information above. If the reference doesn't contain the answer, say so and provide what you know."""
+    else:
+        augmented_question = question
+    
+    messages: list[BaseMessage] = [
+        SystemMessage(content=SYSTEM_PROMPT),
+        *chat_history,
+        HumanMessage(content=augmented_question),
+    ]
+    
+    try:
+        result = await asyncio.to_thread(llm.invoke, messages)
+        text = result.content if hasattr(result, "content") else str(result)
+        return _trim_thinking_tags(text)
+    except Exception as e:
+        logger.exception("RAG-augmented response failed")
+        return f"माफ गर्नुहोस्, कुनै समस्या भयो। (Error: {e})"
+
+
+async def _handle_khata_entry(
+    question: str,
+    history: list[dict[str, str]] | None = None,
+) -> str:
+    """Handle khata entry — parse transaction and ask for confirmation.
+    
+    For now, this generates a journal entry suggestion. Phase 3+ will
+    add structured parsing and confirmation flow.
+    """
+    # For now, use the agent to understand and propose the entry
+    # Phase 3 will add proper structured parsing
+    llm = get_conversational_llm()
+    chat_history = _format_conversation_history(history or [])
+    
+    khata_prompt = f"""The user is describing a transaction to record. Parse it and show the double-entry journal:
+
+User: {question}
+
+Show the accounting entry with:
+1. What the transaction is
+2. DEBIT and CREDIT accounts with amounts
+3. Ask for confirmation before recording
+
+Respond in the same language as the user (English, Nepali, or Romanized Nepali)."""
+    
+    messages: list[BaseMessage] = [
+        SystemMessage(content=SYSTEM_PROMPT),
+        *chat_history,
+        HumanMessage(content=khata_prompt),
+    ]
+    
+    try:
+        result = await asyncio.to_thread(llm.invoke, messages)
+        text = result.content if hasattr(result, "content") else str(result)
+        return _trim_thinking_tags(text)
+    except Exception as e:
+        logger.exception("Khata entry handling failed")
+        return f"माफ गर्नुहोस्, transaction बुझ्न सकिएन। (Error: {e})"
+
+
+# ══════════════════════════════════════════════════════════════════════════════
 # MAIN API: ask() — synchronous entry point for /chat endpoint
 # ══════════════════════════════════════════════════════════════════════════════
 
 def ask(question: str, session_id: str) -> dict[str, any]:
     """Synchronous entry point for the /chat endpoint.
     
-    Maintains conversation history per session and returns the agent's response.
+    Uses Phase 2 intent routing for smarter responses.
     
     Args:
         question: The user's question
         session_id: Unique session identifier for conversation continuity
     
     Returns:
-        {"answer": str, "sources": list[str]}
+        {"answer": str, "sources": list[str], "route": {...}}
     """
     import asyncio
     
@@ -399,21 +592,63 @@ def ask(question: str, session_id: str) -> dict[str, any]:
     add_to_history(session_id, "user", question)
     
     try:
-        # Run the agent
-        answer = asyncio.get_event_loop().run_until_complete(
-            run_agent(question, history)
-        )
-    except RuntimeError:
-        # No event loop running, create one
-        answer = asyncio.run(run_agent(question, history))
+        # Run the routed agent
+        try:
+            loop = asyncio.get_event_loop()
+            if loop.is_running():
+                # We're in an async context, use thread pool
+                import concurrent.futures
+                with concurrent.futures.ThreadPoolExecutor() as pool:
+                    future = pool.submit(asyncio.run, run_routed_agent(question, history))
+                    result = future.result(timeout=120)
+            else:
+                result = loop.run_until_complete(run_routed_agent(question, history))
+        except RuntimeError:
+            result = asyncio.run(run_routed_agent(question, history))
+    except Exception as e:
+        logger.exception("Routed agent failed")
+        result = {
+            "answer": f"माफ गर्नुहोस्, कुनै समस्या भयो। (Error: {e})",
+            "sources": [],
+            "route": {"intent": "error", "confidence": 0, "method": "error"},
+        }
     
     # Add assistant response to history
-    add_to_history(session_id, "assistant", answer)
+    add_to_history(session_id, "assistant", result["answer"])
     
-    # Extract sources from tool calls (simplified - real impl would track tool results)
-    sources: list[str] = []
+    return result
+
+
+async def ask_async(question: str, session_id: str) -> dict[str, any]:
+    """Async entry point for the /chat endpoint.
     
-    return {"answer": answer, "sources": sources}
+    Args:
+        question: The user's question
+        session_id: Unique session identifier for conversation continuity
+    
+    Returns:
+        {"answer": str, "sources": list[str], "route": {...}}
+    """
+    # Get existing history
+    history = get_session_history(session_id)
+    
+    # Add user message to history
+    add_to_history(session_id, "user", question)
+    
+    try:
+        result = await run_routed_agent(question, history)
+    except Exception as e:
+        logger.exception("Routed agent failed")
+        result = {
+            "answer": f"माफ गर्नुहोस्, कुनै समस्या भयो। (Error: {e})",
+            "sources": [],
+            "route": {"intent": "error", "confidence": 0, "method": "error"},
+        }
+    
+    # Add assistant response to history
+    add_to_history(session_id, "assistant", result["answer"])
+    
+    return result
 
 
 # ══════════════════════════════════════════════════════════════════════════════

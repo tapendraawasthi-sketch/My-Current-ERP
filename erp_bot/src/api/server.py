@@ -84,14 +84,23 @@ def on_startup():
 
 
 class ChatRequest(BaseModel):
-    message: str = Field(..., max_length=2000, min_length=1)
+    message: str = Field(..., max_length=4000, min_length=1)
     session_id: str
+
+
+class RouteInfo(BaseModel):
+    """Phase 2 — Intent routing information."""
+    intent: str
+    confidence: float
+    method: str
+    reasoning: str | None = None
 
 
 class ChatResponse(BaseModel):
     answer: str
     sources: list[str]
     session_id: str
+    route: RouteInfo | None = None
 
 
 class KhataChatRequest(BaseModel):
@@ -191,7 +200,7 @@ def status() -> dict:
 
 @app.post("/chat", response_model=ChatResponse)
 def chat(req: ChatRequest) -> ChatResponse:
-    """Standard chat endpoint with conversation memory."""
+    """Standard chat endpoint with conversation memory and Phase 2 intent routing."""
     try:
         if not req.message.strip():
             return ChatResponse(
@@ -200,10 +209,22 @@ def chat(req: ChatRequest) -> ChatResponse:
                 session_id=req.session_id,
             )
         result = agent_builder.ask(req.message, req.session_id)
+        
+        # Build route info if available
+        route_info = None
+        if "route" in result and result["route"]:
+            route_info = RouteInfo(
+                intent=result["route"].get("intent", "unknown"),
+                confidence=result["route"].get("confidence", 0),
+                method=result["route"].get("method", "unknown"),
+                reasoning=result["route"].get("reasoning"),
+            )
+        
         return ChatResponse(
             answer=result["answer"],
-            sources=result["sources"],
+            sources=result.get("sources", []),
             session_id=req.session_id,
+            route=route_info,
         )
     except Exception as e:
         return ChatResponse(
@@ -270,6 +291,32 @@ def get_chat_history(session_id: str) -> dict:
     """Get conversation history for a session."""
     history = agent_builder.get_session_history(session_id)
     return {"session_id": session_id, "history": history}
+
+
+class ClassifyRequest(BaseModel):
+    message: str = Field(..., max_length=4000, min_length=1)
+    use_llm_always: bool = False
+
+
+@app.post("/classify")
+async def classify_intent_endpoint(req: ClassifyRequest) -> dict:
+    """Phase 2 — Classify message intent without generating a response.
+    
+    Useful for testing and debugging the intent router.
+    """
+    from ..agent.intent_router import classify_intent
+    
+    result = await classify_intent(req.message, use_llm_always=req.use_llm_always)
+    return {
+        "message": req.message,
+        "intent": result.intent,
+        "confidence": result.confidence,
+        "method": result.method,
+        "reasoning": result.reasoning,
+        "needs_rag": result.needs_rag,
+        "needs_parser": result.needs_parser,
+        "rag_collection": result.rag_collection,
+    }
 
 
 @app.post("/khata/chat", response_model=KhataChatResponse)

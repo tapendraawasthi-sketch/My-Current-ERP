@@ -19,6 +19,7 @@ import {
   getErpBotSessionId,
   clearChatSession,
   type ErpBotStatus,
+  type RouteInfo,
 } from "../lib/erpBotClient";
 import {
   askSmartAssistant,
@@ -118,6 +119,7 @@ export interface FalconChatMessage {
   suggestions?: string[];
   isStreaming?: boolean;
   isOfflineMode?: boolean;
+  route?: RouteInfo; // Phase 2 — Intent routing info
 }
 
 export interface FalconContext {
@@ -426,6 +428,7 @@ export const useFalconStore = create<FalconState>()(
                       sources: result.sources,
                       suggestions: followUps,
                       falconIntent,
+                      route: result.route, // Phase 2 — Include route info
                     }
                   : m,
               ),

@@ -122,14 +122,33 @@ export async function checkErpBotStatus(): Promise<ErpBotStatus> {
 }
 
 /**
- * Standard chat endpoint with conversation memory.
+ * Phase 2 — Route info from intent classification.
+ */
+export interface RouteInfo {
+  intent: string;
+  confidence: number;
+  method: string;
+  reasoning?: string;
+}
+
+/**
+ * Chat response with Phase 2 routing info.
+ */
+export interface ChatResult {
+  answer: string;
+  sources: string[];
+  route?: RouteInfo;
+}
+
+/**
+ * Standard chat endpoint with conversation memory and Phase 2 routing.
  */
 export async function askErpBot(
   message: string,
   sessionId: string,
   signal?: AbortSignal,
   contextBlock?: string,
-): Promise<{ answer: string; sources: string[] }> {
+): Promise<ChatResult> {
   if (isSelfContainedAi()) {
     throw new Error(SELF_CONTAINED_STATUS.detail);
   }
@@ -149,7 +168,37 @@ export async function askErpBot(
   return {
     answer: data.answer || "No response generated.",
     sources: Array.isArray(data.sources) ? data.sources : [],
+    route: data.route || undefined,
   };
+}
+
+/**
+ * Phase 2 — Classify intent without generating a response.
+ */
+export async function classifyIntent(message: string): Promise<RouteInfo> {
+  if (isSelfContainedAi()) {
+    return { intent: "unknown", confidence: 0, method: "offline" };
+  }
+
+  try {
+    const resp = await fetch(`${ERP_BOT_URL}/classify`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message }),
+    });
+    if (!resp.ok) {
+      return { intent: "unknown", confidence: 0, method: "error" };
+    }
+    const data = await resp.json();
+    return {
+      intent: data.intent,
+      confidence: data.confidence,
+      method: data.method,
+      reasoning: data.reasoning,
+    };
+  } catch {
+    return { intent: "unknown", confidence: 0, method: "error" };
+  }
 }
 
 /**
