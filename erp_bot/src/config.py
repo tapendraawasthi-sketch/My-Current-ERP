@@ -1,4 +1,12 @@
-"""Single source of truth for all erp_bot configuration."""
+"""Single source of truth for all erp_bot configuration.
+
+Model architecture for L4 GPU (24GB VRAM):
+- CONVERSATIONAL_MODEL: Qwen3-32B (AWQ/Q4) for warm, natural conversation
+- FAST_MODEL: qwen3:4b for quick routing/classification
+- EMBED_MODEL: nomic-embed-text for RAG retrieval
+
+Set via environment variables or .env file.
+"""
 
 from __future__ import annotations
 
@@ -16,39 +24,100 @@ _erp_path_env = os.getenv("ERP_PATH", "").strip()
 ERP_PATH = (_erp_path_env if _erp_path_env else str(DEFAULT_ERP_PATH))
 ERP_PATH = Path(ERP_PATH).resolve()
 
-# Multi-model architecture:
-#   FAST_MODEL    — primary model for ALL operations (must be fast <3s)
-#   DEEP_MODEL    — complex multi-step reasoning (only when explicitly needed)
-# Using qwen3:4b for quality multilingual accounting intelligence
-FAST_MODEL = os.getenv("FAST_MODEL_NAME", "qwen3:4b")
-PRIMARY_MODEL = FAST_MODEL
-DEEP_MODEL = os.getenv("DEEP_MODEL_NAME", "qwen3:14b")
-MODEL_NAME = FAST_MODEL
+# ══════════════════════════════════════════════════════════════════════════════
+# MODEL CONFIGURATION
+# ══════════════════════════════════════════════════════════════════════════════
+#
+# For L4 GPU (24GB VRAM), recommended setup:
+#   CONVERSATIONAL_MODEL=qwen3:32b (or qwen3:32b-q4_K_M for quantized)
+#   FAST_MODEL=qwen3:4b
+#   EMBED_MODEL=nomic-embed-text
+#
+# If you have less VRAM, use qwen3:14b or qwen3:8b as CONVERSATIONAL_MODEL.
+# ══════════════════════════════════════════════════════════════════════════════
 
+# Primary conversational model — this is the "brain" that talks to users
+# Use the largest Qwen3 your GPU can handle: 32B > 14B > 8B > 4B
+CONVERSATIONAL_MODEL = os.getenv("CONVERSATIONAL_MODEL", "qwen3:32b")
+
+# Fast model for routing, classification, quick extractions (must be <3s response)
+FAST_MODEL = os.getenv("FAST_MODEL_NAME", "qwen3:4b")
+
+# Embedding model for RAG retrieval
+EMBED_MODEL = os.getenv("EMBED_MODEL", "nomic-embed-text")
+
+# Legacy aliases (for backward compatibility with existing code)
+MODEL_NAME = os.getenv("MODEL_NAME", CONVERSATIONAL_MODEL)
+PRIMARY_MODEL = MODEL_NAME
+DEEP_MODEL = os.getenv("DEEP_MODEL_NAME", CONVERSATIONAL_MODEL)
+
+# ══════════════════════════════════════════════════════════════════════════════
+# GENERATION PARAMETERS
+# ══════════════════════════════════════════════════════════════════════════════
+
+# Context window — L4 can handle 8K-12K comfortably with 32B quantized
+# Increase if you have more VRAM, decrease if you see OOM errors
+CONTEXT_SIZE = int(os.getenv("CONTEXT_SIZE", "8192"))
+
+# Conversational model options — warmer temperature for natural chat
+CONVERSATIONAL_MODEL_OPTIONS: dict[str, float | int] = {
+    "temperature": float(os.getenv("TEMPERATURE", "0.7")),
+    "num_ctx": CONTEXT_SIZE,
+    "top_p": float(os.getenv("TOP_P", "0.9")),
+    "repeat_penalty": float(os.getenv("REPEAT_PENALTY", "1.1")),
+}
+
+# Fast model options — lower temperature for deterministic routing
 FAST_MODEL_OPTIONS: dict[str, float | int] = {
-    "temperature": 0.2,
-    "num_ctx": 4096,
+    "temperature": 0.1,
+    "num_ctx": 2048,
     "top_p": 0.9,
 }
-PRIMARY_MODEL_OPTIONS = FAST_MODEL_OPTIONS
+
+# Legacy alias
+PRIMARY_MODEL_OPTIONS = CONVERSATIONAL_MODEL_OPTIONS
+
+# ══════════════════════════════════════════════════════════════════════════════
+# OLLAMA & API SETTINGS
+# ══════════════════════════════════════════════════════════════════════════════
+
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+API_PORT = int(os.getenv("API_PORT", "8765"))
+
+# ══════════════════════════════════════════════════════════════════════════════
+# KHATA / NLU SETTINGS
+# ══════════════════════════════════════════════════════════════════════════════
 
 KHATA_STRUCTURED_PARSE = os.getenv("KHATA_USE_STRUCTURED_PARSE", "true").lower() == "true"
 KHATA_SYNTHESIZE_CONTEXT = os.getenv("KHATA_SYNTHESIZE_CONTEXT", "true").lower() == "true"
-EMBED_MODEL = os.getenv("EMBED_MODEL", "nomic-embed-text")
-OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-API_PORT = int(os.getenv("API_PORT", "8765"))
+
+# Regex confidence — below this threshold, always use LLM for parsing
+REGEX_CONFIDENCE_THRESHOLD = float(os.getenv("NLU_REGEX_THRESHOLD", "0.85"))
+
+# ══════════════════════════════════════════════════════════════════════════════
+# RAG / INDEXING SETTINGS
+# ══════════════════════════════════════════════════════════════════════════════
+
 CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "1500"))
 CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "200"))
 MAX_CHUNK_CHARS = int(os.getenv("MAX_CHUNK_CHARS", "3000"))
-MAX_AGENT_ITERATIONS = int(os.getenv("MAX_AGENT_ITERATIONS", "12"))
-# Regex confidence — below this, always run LLM parse pass
-REGEX_CONFIDENCE_THRESHOLD = float(os.getenv("NLU_REGEX_THRESHOLD", "0.92"))
-
-# Use agent loop for data-heavy questions
-USE_AGENT_FOR_DATA_QUERIES = os.getenv("USE_AGENT_FOR_DATA", "true").lower() == "true"
 
 _chroma_path_env = os.getenv("CHROMA_PATH", "./data/chroma_db")
 CHROMA_PATH = str((BOT_ROOT / _chroma_path_env).resolve())
+
+# ══════════════════════════════════════════════════════════════════════════════
+# AGENT SETTINGS
+# ══════════════════════════════════════════════════════════════════════════════
+
+MAX_AGENT_ITERATIONS = int(os.getenv("MAX_AGENT_ITERATIONS", "12"))
+USE_AGENT_FOR_DATA_QUERIES = os.getenv("USE_AGENT_FOR_DATA", "true").lower() == "true"
+
+# Conversation history — how many turns to keep in context
+MAX_CONVERSATION_TURNS = int(os.getenv("MAX_CONVERSATION_TURNS", "10"))
+
+# ══════════════════════════════════════════════════════════════════════════════
+# FILE INDEXING FILTERS
+# ══════════════════════════════════════════════════════════════════════════════
 
 SKIP_FOLDERS = frozenset({
     "node_modules", ".git", "dist", "build", ".vite", ".turbo", ".workspace",
@@ -70,4 +139,12 @@ EXCLUDE_FILENAMES = frozenset({
 })
 MAX_FILE_BYTES = 1_500_000
 
+# ══════════════════════════════════════════════════════════════════════════════
+# STARTUP LOG
+# ══════════════════════════════════════════════════════════════════════════════
+
 print(f"[CONFIG] ERP_PATH resolved to: {ERP_PATH}")
+print(f"[CONFIG] CONVERSATIONAL_MODEL: {CONVERSATIONAL_MODEL}")
+print(f"[CONFIG] FAST_MODEL: {FAST_MODEL}")
+print(f"[CONFIG] CONTEXT_SIZE: {CONTEXT_SIZE}")
+print(f"[CONFIG] Temperature: {CONVERSATIONAL_MODEL_OPTIONS['temperature']}")

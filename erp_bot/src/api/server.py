@@ -1,16 +1,25 @@
-"""Expose the chatbot over HTTP for the widget."""
+"""Expose the chatbot over HTTP for the widget.
+
+Phase 1 — Conversation Brain:
+- Multi-turn conversation with memory
+- Streaming responses via SSE
+- Warm, natural, tri-lingual (EN/Devanagari/Romanized Nepali)
+"""
 
 from __future__ import annotations
 
+import asyncio
 import httpx
 from fastapi import BackgroundTasks, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from ..agent import agent_builder
 from ..config import (
     BOT_ROOT,
+    CONVERSATIONAL_MODEL,
     EMBED_MODEL,
     ERP_PATH,
     FAST_MODEL,
@@ -166,7 +175,8 @@ def status() -> dict:
 
     return {
         "status": "online",
-        "model": MODEL_NAME,
+        "model": CONVERSATIONAL_MODEL,
+        "conversational_model": CONVERSATIONAL_MODEL,
         "fast_model": FAST_MODEL,
         "embed_model": EMBED_MODEL,
         "erp_path": str(ERP_PATH),
@@ -174,11 +184,14 @@ def status() -> dict:
         "ollama": ollama_status,
         "watcher": "active",
         "khata_llm": ollama_status == "connected",
+        "conversation_memory": True,
+        "streaming": True,
     }
 
 
 @app.post("/chat", response_model=ChatResponse)
 def chat(req: ChatRequest) -> ChatResponse:
+    """Standard chat endpoint with conversation memory."""
     try:
         if not req.message.strip():
             return ChatResponse(
@@ -198,6 +211,65 @@ def chat(req: ChatRequest) -> ChatResponse:
             sources=[],
             session_id=req.session_id,
         )
+
+
+class StreamChatRequest(BaseModel):
+    message: str = Field(..., max_length=4000, min_length=1)
+    session_id: str = Field(..., min_length=1)
+
+
+@app.post("/chat/stream")
+async def chat_stream(req: StreamChatRequest):
+    """Streaming chat endpoint using Server-Sent Events.
+    
+    Returns tokens as they're generated for responsive UX.
+    Use with EventSource or fetch with streaming on the frontend.
+    """
+    if not req.message.strip():
+        async def empty_response():
+            yield "data: Message cannot be empty.\n\n"
+            yield "data: [DONE]\n\n"
+        return StreamingResponse(empty_response(), media_type="text/event-stream")
+    
+    # Get history and add user message
+    history = agent_builder.get_session_history(req.session_id)
+    agent_builder.add_to_history(req.session_id, "user", req.message)
+    
+    collected_response: list[str] = []
+    
+    async def generate():
+        try:
+            async for chunk in agent_builder.run_agent_stream(req.message, history):
+                if chunk:
+                    collected_response.append(chunk)
+                    # Escape newlines for SSE format
+                    safe_chunk = chunk.replace("\n", "\\n")
+                    yield f"data: {safe_chunk}\n\n"
+            
+            # Save complete response to history
+            full_response = "".join(collected_response)
+            agent_builder.add_to_history(req.session_id, "assistant", full_response)
+            
+            yield "data: [DONE]\n\n"
+        except Exception as e:
+            yield f"data: Error: {e}\n\n"
+            yield "data: [DONE]\n\n"
+    
+    return StreamingResponse(generate(), media_type="text/event-stream")
+
+
+@app.delete("/chat/session/{session_id}")
+def clear_chat_session(session_id: str) -> dict:
+    """Clear conversation history for a session."""
+    agent_builder.clear_session_history(session_id)
+    return {"status": "ok", "session_id": session_id}
+
+
+@app.get("/chat/session/{session_id}/history")
+def get_chat_history(session_id: str) -> dict:
+    """Get conversation history for a session."""
+    history = agent_builder.get_session_history(session_id)
+    return {"session_id": session_id, "history": history}
 
 
 @app.post("/khata/chat", response_model=KhataChatResponse)

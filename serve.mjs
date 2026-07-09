@@ -44,8 +44,9 @@ async function readRequestBody(req) {
 async function handleErpBotRequest(req, res, method, rawPath) {
   const subpath = rawPath.replace(/^\/erp-bot/, "") || "/";
 
-  // No backend configured — serve the built-in offline status/response so the
-  // frontend gracefully falls back to the rule-based brain.
+  // No backend configured — serve the built-in offline status/response.
+  // PHASE 1: This is now clearly labeled as OFFLINE FALLBACK ONLY.
+  // The LLM path is PRIMARY for full conversational AI.
   if (!ERP_BOT_BACKEND) {
     if (method === "GET" && subpath === "/status") {
       res.writeHead(200, { "Content-Type": "application/json" });
@@ -57,7 +58,11 @@ async function handleErpBotRequest(req, res, method, rawPath) {
           khata_llm: false,
           khata_brain: "builtin",
           indexed_files: 0,
-          message: "Self-contained CA brain — no external API required. Set ERP_BOT_BACKEND_URL to enable the local LLM.",
+          conversation_memory: false,
+          streaming: false,
+          message:
+            "⚠️ OFFLINE MODE: Using built-in rule-based brain (limited). " +
+            "Set ERP_BOT_BACKEND_URL to enable full AI conversation with Qwen3.",
         }),
       );
       return;
@@ -66,9 +71,11 @@ async function handleErpBotRequest(req, res, method, rawPath) {
     res.writeHead(503, { "Content-Type": "application/json" });
     res.end(
       JSON.stringify({
-        error: "External ERP bot not configured",
+        error: "LLM backend not configured — using offline fallback",
         mode: "builtin",
-        hint: "Set ERP_BOT_BACKEND_URL to your self-hosted erp_bot instance to enable the local LLM.",
+        hint:
+          "Set ERP_BOT_BACKEND_URL to your self-hosted erp_bot instance " +
+          "(e.g., http://YOUR_VPS_IP:8765) to enable full AI conversation.",
       }),
     );
     return;
@@ -78,19 +85,56 @@ async function handleErpBotRequest(req, res, method, rawPath) {
   const targetUrl = `${ERP_BOT_BACKEND}${subpath}`;
   const body = method === "GET" || method === "HEAD" ? undefined : await readRequestBody(req);
 
+  // Check if this is a streaming endpoint (SSE)
+  const isStreamingEndpoint = subpath === "/chat/stream" || subpath.endsWith("/stream");
+
   try {
     const forwardHeaders = { ...req.headers };
     delete forwardHeaders.host;
     delete forwardHeaders["content-length"];
 
+    // For streaming, set Accept header
+    if (isStreamingEndpoint) {
+      forwardHeaders.accept = "text/event-stream";
+    }
+
     const upstream = await fetch(targetUrl, {
       method,
       headers: forwardHeaders,
       body,
-      signal: AbortSignal.timeout(30000),
+      signal: AbortSignal.timeout(isStreamingEndpoint ? 120000 : 30000), // 2 min for streaming
     });
 
     const contentType = upstream.headers.get("content-type") || "application/json";
+
+    // Handle SSE streaming response
+    if (isStreamingEndpoint && upstream.body) {
+      res.writeHead(upstream.status, {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
+        "X-Accel-Buffering": "no", // Disable nginx buffering
+      });
+
+      const reader = upstream.body.getReader();
+      const decoder = new TextDecoder();
+
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value, { stream: true });
+          res.write(chunk);
+        }
+      } catch (streamErr) {
+        console.error("[serve.mjs] SSE stream error:", streamErr);
+      } finally {
+        res.end();
+      }
+      return;
+    }
+
+    // Non-streaming response
     const buf = Buffer.from(await upstream.arrayBuffer());
     res.writeHead(upstream.status, { "Content-Type": contentType });
     res.end(buf);
