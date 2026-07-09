@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+import re
 import time
 from dataclasses import dataclass, field
 from threading import Lock
@@ -19,8 +20,10 @@ from typing import Any
 
 # Handle both package import and standalone testing
 try:
-    from ..config import EMBED_MODEL, OLLAMA_BASE_URL
+    from ..config import CACHE_MAX_SIZE, CACHE_TTL_SECONDS, EMBED_MODEL, OLLAMA_BASE_URL
 except ImportError:
+    CACHE_MAX_SIZE = int(os.getenv("CACHE_MAX_SIZE", "500"))
+    CACHE_TTL_SECONDS = int(os.getenv("CACHE_TTL_SECONDS", "3600"))
     EMBED_MODEL = os.getenv("EMBED_MODEL", "nomic-embed-text")
     OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 
@@ -28,10 +31,11 @@ except ImportError:
 # CONFIGURATION
 # ══════════════════════════════════════════════════════════════════════════════
 
-MAX_CACHE_SIZE = 500  # Max cached responses
-CACHE_TTL_SECONDS = 3600  # 1 hour TTL
-SIMILARITY_THRESHOLD = 0.92  # Cosine similarity for "similar enough"
-MIN_QUERY_LENGTH = 4  # Cache short greetings too ("hi", "namaste")
+MAX_CACHE_SIZE = CACHE_MAX_SIZE
+CACHE_TTL_SECONDS = CACHE_TTL_SECONDS
+SIMILARITY_THRESHOLD = 0.92
+MIN_QUERY_LENGTH = 4
+_AMOUNT_IN_QUERY = re.compile(r"\b\d{2,}(?:,\d{3})*(?:\.\d{2})?\b")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -85,9 +89,9 @@ class ResponseCache:
         self._stats = CacheStats()
     
     @staticmethod
-    def _hash_query(query: str) -> str:
+    def _hash_query(query: str, intent: str | None = None) -> str:
         """Create a hash for exact matching."""
-        normalized = query.strip().lower()
+        normalized = f"{intent or ''}:{query.strip().lower()}"
         return hashlib.sha256(normalized.encode()).hexdigest()[:16]
     
     def _get_embedding(self, text: str) -> list[float] | None:
@@ -150,19 +154,17 @@ class ResponseCache:
         
         return best_entry
     
-    def get(self, query: str) -> dict[str, Any] | None:
-        """Get cached response for a query.
-        
-        Returns dict with keys: response, sources, route, cache_type
-        """
+    def get(self, query: str, intent: str | None = None) -> dict[str, Any] | None:
+        """Get cached response for a query."""
         if len(query) < MIN_QUERY_LENGTH:
             return None
-        
+
+        skip_semantic = bool(_AMOUNT_IN_QUERY.search(query))
+
         with self._lock:
             self._stats.total_queries += 1
-            
-            # Try exact match first
-            query_hash = self._hash_query(query)
+
+            query_hash = self._hash_query(query, intent)
             if query_hash in self._cache:
                 entry = self._cache[query_hash]
                 if not entry.is_expired():
@@ -174,43 +176,42 @@ class ResponseCache:
                         "route": entry.route,
                         "cache_type": "exact",
                     }
-                else:
-                    # Remove expired entry
-                    del self._cache[query_hash]
-            
-            # Try semantic similarity
-            embedding = self._get_embedding(query)
-            if embedding:
-                similar = self._find_similar(query, embedding)
-                if similar:
-                    similar.hit_count += 1
-                    self._stats.similar_hits += 1
-                    return {
-                        "response": similar.response,
-                        "sources": similar.sources,
-                        "route": similar.route,
-                        "cache_type": "similar",
-                    }
-            
+                del self._cache[query_hash]
+
+            if not skip_semantic:
+                embedding = self._get_embedding(query)
+                if embedding:
+                    similar = self._find_similar(query, embedding)
+                    if similar:
+                        similar.hit_count += 1
+                        self._stats.similar_hits += 1
+                        return {
+                            "response": similar.response,
+                            "sources": similar.sources,
+                            "route": similar.route,
+                            "cache_type": "similar",
+                        }
+
             self._stats.misses += 1
             return None
-    
+
     def put(
         self,
         query: str,
         response: str,
         sources: list[str] | None = None,
         route: dict[str, Any] | None = None,
+        intent: str | None = None,
     ):
         """Cache a response."""
         if len(query) < MIN_QUERY_LENGTH:
             return
-        
+
         with self._lock:
             self._evict_if_needed()
-            
-            query_hash = self._hash_query(query)
-            embedding = self._get_embedding(query)
+
+            query_hash = self._hash_query(query, intent)
+            embedding = None if _AMOUNT_IN_QUERY.search(query) else self._get_embedding(query)
             
             entry = CacheEntry(
                 query=query,

@@ -35,6 +35,8 @@ import {
   type OrbixChatSession,
   type OrbixWindowMode,
 } from "../lib/ekhata/orbixChatStorage";
+import { handleOrbixLocalQuery } from "../lib/ekhata/orbixLocalEngine";
+import { buildSessionSnapshot } from "../lib/ekhata/dexieBridge";
 import { handleOrbixReportQuery } from "../lib/ekhata/orbixReportEngine";
 import type { PendingOrbixReport } from "../lib/ekhata/orbixReportTypes";
 import { useStore } from "./useStore";
@@ -371,6 +373,21 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
       /* fall through to normal chat */
     }
 
+    try {
+      const localResult = await handleOrbixLocalQuery(trimmed);
+      if (localResult) {
+        finalize({
+          messages: get().messages.map((m) =>
+            m.id === assistantId ? { ...m, text: localResult.text } : m,
+          ),
+          engineLabel: "orbix-local",
+        });
+        return;
+      }
+    } catch {
+      /* fall through to LLM */
+    }
+
     const balance = getKhataBalance();
     const userName = useStore.getState().currentUser?.name || useStore.getState().currentUser?.username;
 
@@ -378,13 +395,24 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
     if (!get().llmOnline) {
       await get().refreshLlmStatus();
     }
-    const llmStatus = await checkEKhataLlmStatus();
+    const stateAfterRefresh = get();
+    const llmStatus = stateAfterRefresh.llmOnline
+      ? {
+          khataLlm: true,
+          model: stateAfterRefresh.llmModel || "qwen3:32b",
+          degraded: false,
+        }
+      : await checkEKhataLlmStatus();
     const sessionId = getEKhataSessionId();
 
     // ── QWEN-ONLY PATH (ultra stack: router + RAG + qwen3:32b) ─────────────────
     if (llmStatus.khataLlm && !isSelfContainedAi()) {
       try {
-        await streamOrbixQwen(trimmed, sessionId, {
+        const sessionSnapshot = await buildSessionSnapshot();
+        await streamOrbixQwen(
+          trimmed,
+          sessionId,
+          {
           onThinkingStart: () => {
             set({ streamingText: "", activeTools: [] });
           },
@@ -438,7 +466,9 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
               engineLabel: `qwen3 (${llmStatus.model || "32b"})`,
             });
           },
-        });
+        },
+          { context: sessionSnapshot },
+        );
         return;
       } catch (error) {
         finalize({

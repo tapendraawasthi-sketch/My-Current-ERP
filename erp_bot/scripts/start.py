@@ -45,6 +45,14 @@ try:
         )
         fast_test.raise_for_status()
         print(f"[START] Fast model warmed: {FAST_MODEL}")
+        # Warm 32b conversational model (reduces first-token latency on tax queries)
+        main_test = httpx.post(
+            f"{OLLAMA_BASE_URL}/api/generate",
+            json={"model": MODEL_NAME, "prompt": "ok", "stream": False, "keep_alive": "30m"},
+            timeout=120,
+        )
+        main_test.raise_for_status()
+        print(f"[START] Main model warmed: {MODEL_NAME}")
     except Exception as e:
         print(f"[FATAL] Ollama chat model '{MODEL_NAME}' cannot generate: {e}")
         print("[HINT] If you see 'segmentation fault', install Ollama 0.5.7:")
@@ -75,6 +83,7 @@ else:
 
 from src.vectorstore.nepali_grammar_store import get_nepali_grammar_count, ingest_nepali_grammar
 from src.vectorstore.ca_knowledge_store import get_ca_knowledge_count, ingest_ca_knowledge
+from src.vectorstore.nav_index_store import get_nav_index_count, ingest_nav_index
 
 ng_count = get_nepali_grammar_count()
 if ng_count == 0:
@@ -91,6 +100,14 @@ if ca_count == 0:
     print(f"[INFO] CA knowledge ingest: {result}")
 else:
     print(f"[INFO] CA/IFRS knowledge index: {ca_count} chunks")
+
+nav_count = get_nav_index_count()
+if nav_count == 0:
+    print("[INFO] Nav index collection empty — ingesting UI routes/pages...")
+    result = ingest_nav_index()
+    print(f"[INFO] Nav index ingest: {result}")
+else:
+    print(f"[INFO] Nav index: {nav_count} chunks")
 
 # ── Orbix v2 — initialize reasoning agent (memory DB, tools, engine) ─────────
 try:

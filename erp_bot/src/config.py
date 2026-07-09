@@ -162,6 +162,12 @@ SKIP_FOLDERS = frozenset({
     "__pycache__", "vendor", "migrations", ".husky", ".github", ".next", ".cache",
 })
 
+# Relative path prefixes excluded from erp_codebase index (training/NLU data, not source)
+SKIP_RELATIVE_PREFIXES = frozenset({
+    "data/nepal-ai",
+    "data/ekhata",
+})
+
 CODE_EXTENSIONS = frozenset({".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs"})
 SQL_EXTENSIONS = frozenset({".sql"})
 FALLBACK_EXTENSIONS = frozenset({".css", ".html", ".json", ".yml", ".yaml", ".toml"})

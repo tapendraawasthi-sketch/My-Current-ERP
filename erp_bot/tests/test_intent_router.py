@@ -78,6 +78,21 @@ class TestRegexFastpath:
             assert result is not None, f"'{text}' should match"
             assert result.intent == "code_qa"
     
+    def test_ledger_query_patterns(self):
+        """Live-book queries should be ledger_query, not accounting_qa."""
+        texts = [
+            "ani aaja entry vayo kunai?",
+            "aaj kati entry gareko?",
+            "Ram ko baki kati cha?",
+            "cash kati cha?",
+            "aajako sales kati?",
+        ]
+        for text in texts:
+            result = _regex_fastpath(text)
+            assert result is not None, f"'{text}' should match"
+            assert result.intent == "ledger_query"
+            assert result.confidence >= 0.90
+
     def test_erp_navigation(self):
         """ERP navigation questions should be erp_howto."""
         texts = [
@@ -135,6 +150,11 @@ class TestRouteDecision:
         assert RouteDecision("khata_entry", 0.9, "test", "").needs_parser is True
         assert RouteDecision("chitchat", 0.9, "test", "").needs_parser is False
         assert RouteDecision("accounting_qa", 0.9, "test", "").needs_parser is False
+
+    def test_needs_ledger_tools(self):
+        """ledger_query should use Dexie tools, not RAG."""
+        assert RouteDecision("ledger_query", 0.9, "test", "").needs_ledger_tools is True
+        assert RouteDecision("accounting_qa", 0.9, "test", "").needs_ledger_tools is False
     
     def test_rag_collection(self):
         """Test rag_collection property."""

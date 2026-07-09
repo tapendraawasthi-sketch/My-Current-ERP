@@ -4,6 +4,7 @@ Routes messages into:
 - chitchat     → casual conversation, greetings → LLM directly
 - general_qa   → general knowledge questions → LLM directly
 - accounting_qa → Nepal tax/accounting questions → RAG(knowledge) → LLM
+- ledger_query → balances, today's entries, party khata from live books → tools
 - erp_howto    → ERP navigation/how-to → RAG(code/nav index) → LLM
 - khata_entry  → transaction entry ("Ram lai 5000 diye") → parser → LLM confirm
 - code_qa      → developer questions about source code → RAG(code) → LLM
@@ -40,11 +41,18 @@ class Intent(str, Enum):
     ACCOUNTING_QA = "accounting_qa"
     ERP_HOWTO = "erp_howto"
     KHATA_ENTRY = "khata_entry"
+    LEDGER_QUERY = "ledger_query"
     CODE_QA = "code_qa"
 
 
 IntentType = Literal[
-    "chitchat", "general_qa", "accounting_qa", "erp_howto", "khata_entry", "code_qa"
+    "chitchat",
+    "general_qa",
+    "accounting_qa",
+    "ledger_query",
+    "erp_howto",
+    "khata_entry",
+    "code_qa",
 ]
 
 
@@ -66,6 +74,11 @@ class RouteDecision:
     def needs_parser(self) -> bool:
         """Whether this intent needs structured parsing."""
         return self.intent == "khata_entry"
+
+    @property
+    def needs_ledger_tools(self) -> bool:
+        """Whether this intent needs Dexie/session ledger tools."""
+        return self.intent == "ledger_query"
     
     @property
     def rag_collection(self) -> str | None:
@@ -124,20 +137,39 @@ _CODE_PATTERNS = re.compile(
 _ERP_NAV_PATTERNS = re.compile(
     r"\b(where (is|do i|can i)|"
     r"how (do i |to |can i )?(open|access|find|go to|navigate|see|view)|"
-    r"shortcut|hotkey|keyboard|menu (for|of)|path (to|for)|"
+    r"shortcut|hotkey|keyboard|menu (for|of)|path (to|for)|billing\s*tab|"
     r"journal|voucher|invoice|ledger|trial\s*balance|report|"
+    r"kaha\s*cha|kasari\s*(print|herne|khulne|garne|dekha)|"
     r"कहाँ छ|कसरी|के गर्ने)\b",
+    re.IGNORECASE,
+)
+
+# Ledger / live books — balances, entry counts, party khata (NOT tax theory)
+_LEDGER_QUERY_PATTERNS = re.compile(
+    r"(aaja|aaj|today|hijo|yesterday|yo\s*mahina|this\s*month|"
+    r"entry\s*vayo|kunai\s*entry|kati\s*entry|entry\s*gareko|entry\s*cha|"
+    r"aajako\s*entry|recent\s*entr|last\s*entr|"
+    r"cash\s*kati|bank\s*balance|baki\s*cha|baki\s*kati|udhaar\s*list|"
+    r"party\s*balance|ko\s*baki|ko\s*khata|ledger\s*dekha|"
+    r"aajako\s*sales|sales\s*kati|khata\s*hera|"
+    r"आज.*प्रविष्टि|कति\s*प्रविष्टि|बाँकी|खाता\s*हेर)",
     re.IGNORECASE,
 )
 
 # Nepal accounting/tax specific
 _ACCOUNTING_PATTERNS = re.compile(
-    r"\b(vat|tds|ssf|eis|cit|advance\s*tax|withholding|"
+    r"\b(vat|tds|ssf|eis|cit|advance\s*tax|withholding|gst|nfrs|gratuity|"
     r"income\s*tax|business\s*income|depreciation|"
     r"debit|credit|journal\s*entry|double\s*entry|accounting\s*(rule|standard|treatment)|"
     r"nepal\s*(tax|accounting)|ird|inland\s*revenue|"
     r"fiscal\s*year|shrawan|bhadra|ashadh|jestha|chaitra|"
     r"भ्याट|करको|आयकर|श्रावण|भद्र)\b",
+    re.IGNORECASE,
+)
+
+# Tax/regulatory terms — win over generic nav words like "invoice"
+_STRONG_ACCOUNTING = re.compile(
+    r"\b(vat|tds|ssf|eis|cit|gst|nfrs|gratuity|withholding|ird|income\s*tax)\b",
     re.IGNORECASE,
 )
 
@@ -173,6 +205,15 @@ def _regex_fastpath(text: str) -> RouteDecision | None:
             reasoning="Casual chat / greeting detected",
         )
     
+    # Ledger query — live books (before accounting_qa; "entry vayo" is data not tax)
+    if _LEDGER_QUERY_PATTERNS.search(text) and not _ACCOUNTING_PATTERNS.search(text):
+        return RouteDecision(
+            intent="ledger_query",
+            confidence=0.92,
+            method="regex_fastpath",
+            reasoning="Ledger/balance/entry status query detected",
+        )
+
     # Khata entry — has Nepali transaction words + amount
     if _KHATA_PATTERNS.search(text) and _HAS_AMOUNT.search(text):
         return RouteDecision(
@@ -191,11 +232,13 @@ def _regex_fastpath(text: str) -> RouteDecision | None:
             reasoning="Developer/code keywords detected",
         )
     
-    # Nepal accounting — tax/accounting keywords
-    if _ACCOUNTING_PATTERNS.search(text) and not _ERP_NAV_PATTERNS.search(text):
+    # Nepal accounting — tax/regulatory keywords (strong terms beat nav words like "invoice")
+    if _STRONG_ACCOUNTING.search(text) or (
+        _ACCOUNTING_PATTERNS.search(text) and not _ERP_NAV_PATTERNS.search(text)
+    ):
         return RouteDecision(
             intent="accounting_qa",
-            confidence=0.80,
+            confidence=0.88 if _STRONG_ACCOUNTING.search(text) else 0.80,
             method="regex_fastpath",
             reasoning="Nepal accounting/tax keywords detected",
         )
@@ -222,7 +265,8 @@ Classify the user message into EXACTLY ONE of these categories:
 
 - chitchat: Casual conversation, greetings, thanks, farewells, small talk
 - general_qa: General knowledge questions (not about accounting, tax, or this ERP)
-- accounting_qa: Questions about Nepal tax rules, accounting standards, VAT, TDS, entries
+- accounting_qa: Questions about Nepal tax rules, accounting standards, VAT, TDS, IFRS theory
+- ledger_query: Questions about THIS user's books — today's entries, balances, party khata, cash
 - erp_howto: Questions about how to use the ERP, where to find screens, navigation
 - khata_entry: User describing a transaction to record (e.g., "Ram lai 5000 diye" = gave Ram 5000)
 - code_qa: Developer questions about source code, implementation, files
@@ -239,6 +283,12 @@ User: "VAT rate Nepal ma kati ho?"
 
 User: "journal entry kahile garnu parchha?"
 {"intent": "erp_howto", "confidence": 0.88, "reason": "ERP how-to question"}
+
+User: "ani aaja entry vayo kunai?"
+{"intent": "ledger_query", "confidence": 0.94, "reason": "Asking if any entries posted today"}
+
+User: "Ram ko baki kati cha?"
+{"intent": "ledger_query", "confidence": 0.93, "reason": "Party balance from live books"}
 
 User: "Ram lai 5000 udhaar diye"
 {"intent": "khata_entry", "confidence": 0.94, "reason": "Transaction to record - credit sale"}
@@ -427,6 +477,7 @@ _LEGACY_INTENT_MAP = {
     "chitchat": "general",
     "general_qa": "general",
     "accounting_qa": "effect",
+    "ledger_query": "query",
     "erp_howto": "nav",
     "khata_entry": "action_path",
     "code_qa": "code",

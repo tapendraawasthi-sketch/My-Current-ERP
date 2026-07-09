@@ -39,6 +39,9 @@ COLLECTION_NAME = "nepal_knowledge"
 _BOT_ROOT = Path(__file__).resolve().parent.parent.parent
 KNOWLEDGE_DIR = _BOT_ROOT / "knowledge" / "nepal"
 
+# Meta/router docs — not embedded as RAG chunks
+SKIP_INDEX_FILES = frozenset({"README.md", "quick_reference.md"})
+
 
 def get_collection():
     """Get or create the Nepal knowledge collection."""
@@ -230,8 +233,12 @@ def ingest_nepal_knowledge(force_reindex: bool = False) -> dict:
     if not KNOWLEDGE_DIR.exists():
         return {"status": "error", "message": f"Knowledge directory not found: {KNOWLEDGE_DIR}"}
     
-    # Get all markdown files
-    md_files = list(KNOWLEDGE_DIR.glob("*.md"))
+    # Get all markdown files (including facts/ subfolder; skip meta docs)
+    md_files = sorted(
+        p
+        for p in KNOWLEDGE_DIR.rglob("*.md")
+        if p.name not in SKIP_INDEX_FILES
+    )
     if not md_files:
         return {"status": "skipped", "message": "No markdown files found", "files": 0}
     

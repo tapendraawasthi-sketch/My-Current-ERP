@@ -96,6 +96,14 @@ const EKhataPanel: React.FC = () => {
     }
   }, [isOpen, windowMode, closeFalcon, refreshLlmStatus]);
 
+  useEffect(() => {
+    if (!isOpen || windowMode === "minimized") return;
+    const interval = window.setInterval(() => {
+      refreshLlmStatus();
+    }, 60_000);
+    return () => window.clearInterval(interval);
+  }, [isOpen, windowMode, refreshLlmStatus]);
+
   const handleSend = useCallback(async () => {
     const text = input.trim();
     if (!text || isLoading) return;

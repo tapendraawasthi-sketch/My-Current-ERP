@@ -164,7 +164,7 @@ export async function streamOrbixQwen(
   message: string,
   sessionId: string,
   callbacks: OrbixQwenCallbacks,
-  signal?: AbortSignal,
+  options?: { context?: Record<string, unknown>; signal?: AbortSignal },
 ): Promise<void> {
   if (!ORBIX_QWEN_URL) {
     callbacks.onError(new Error("Orbix Qwen backend URL not configured"));
@@ -177,8 +177,12 @@ export async function streamOrbixQwen(
       "Content-Type": "application/json",
       Accept: "text/event-stream",
     },
-    body: JSON.stringify({ message, session_id: sessionId }),
-    signal,
+    body: JSON.stringify({
+      message,
+      session_id: sessionId,
+      context: options?.context,
+    }),
+    signal: options?.signal,
   });
 
   if (!resp.ok) {

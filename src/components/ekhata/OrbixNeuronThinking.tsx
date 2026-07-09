@@ -14,6 +14,7 @@ const INTENT_LABELS: Record<string, { label: string; sub: string }> = {
   erp_howto: { label: "ERP navigation", sub: "Searching menus & screens" },
   khata_entry: { label: "Khata entry", sub: "Parsing transaction · validating Dr/Cr" },
   code_qa: { label: "Code search", sub: "Scanning source files" },
+  ledger_query: { label: "Live khata lookup", sub: "Reading your books · Dexie snapshot" },
   cached: { label: "Instant recall", sub: "Cached answer" },
 };
 

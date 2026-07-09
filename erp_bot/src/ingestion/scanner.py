@@ -13,10 +13,23 @@ from ..config import (
     FALLBACK_EXTENSIONS,
     MAX_FILE_BYTES,
     SKIP_FOLDERS,
+    SKIP_RELATIVE_PREFIXES,
     SQL_EXTENSIONS,
     WHOLE_FILE_EXTENSIONS,
     WHOLE_FILE_FILENAMES,
 )
+
+
+def _relative_path(path: Path, base_path: Path) -> str:
+    try:
+        return str(path.relative_to(base_path)).replace("\\", "/")
+    except ValueError:
+        return str(path).replace("\\", "/")
+
+
+def _should_skip_file(path: Path, base_path: Path) -> bool:
+    rel = _relative_path(path, base_path)
+    return any(rel == prefix or rel.startswith(prefix + "/") for prefix in SKIP_RELATIVE_PREFIXES)
 
 
 def get_all_files(base_path: Path | None = None) -> list[Path]:
@@ -37,6 +50,9 @@ def get_all_files(base_path: Path | None = None) -> list[Path]:
                 continue
 
             path = Path(root) / filename
+
+            if _should_skip_file(path, base_path):
+                continue
 
             try:
                 if path.stat().st_size > MAX_FILE_BYTES:

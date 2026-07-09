@@ -273,6 +273,7 @@ def chat(req: ChatRequest) -> ChatResponse:
 class StreamChatRequest(BaseModel):
     message: str = Field(..., max_length=4000, min_length=1)
     session_id: str = Field(..., min_length=1)
+    context: dict | None = None
 
 
 @app.post("/chat/stream")
@@ -338,13 +339,21 @@ async def orbix_chat_stream(req: StreamChatRequest):
     history = agent_builder.get_session_history(req.session_id)
     agent_builder.add_to_history(req.session_id, "user", req.message)
 
+    if req.context:
+        set_session_context(req.session_id, req.context)
+
     async def generate():
         yield _sse_json({"type": "thinking_start"})
         full_message = ""
         card = None
         route_info = None
         try:
-            async for event in agent_builder.run_routed_agent_stream(req.message, history):
+            async for event in agent_builder.run_routed_agent_stream(
+                req.message,
+                history,
+                session_id=req.session_id,
+                context=req.context,
+            ):
                 if event.get("type") == "route":
                     route_info = event.get("route")
                     yield _sse_json({"type": "route", "route": route_info})
@@ -363,6 +372,7 @@ async def orbix_chat_stream(req: StreamChatRequest):
                         req.message,
                         full_message,
                         route=route_info,
+                        intent=(route_info or {}).get("intent"),
                     )
                 except Exception:
                     pass

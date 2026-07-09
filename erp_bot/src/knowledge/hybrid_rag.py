@@ -3,12 +3,17 @@
 from __future__ import annotations
 
 import logging
+import pickle
+from pathlib import Path
 from typing import Any
 
 from ..vectorstore.ca_knowledge_store import search_ca_knowledge
 from .knowledge_registry import authority_score
 
 logger = logging.getLogger(__name__)
+
+_BOT_ROOT = Path(__file__).resolve().parent.parent.parent
+BM25_CACHE_PATH = _BOT_ROOT / "data" / "bm25_index.pkl"
 
 try:
   from rank_bm25 import BM25Okapi
@@ -32,6 +37,37 @@ class HybridRAG:
     self._doc_metadata = [dict(d.get("metadata") or {}) for d in documents]
     if BM25Okapi and texts:
       self._bm25_index = BM25Okapi([t.lower().split() for t in texts])
+
+  def save_to_disk(self, path: Path | None = None) -> bool:
+    target = path or BM25_CACHE_PATH
+    try:
+      target.parent.mkdir(parents=True, exist_ok=True)
+      payload = {
+        "corpus": self._bm25_corpus,
+        "doc_ids": self._doc_ids,
+        "doc_metadata": self._doc_metadata,
+      }
+      target.write_bytes(pickle.dumps(payload))
+      return True
+    except Exception as exc:
+      logger.warning("BM25 save failed: %s", exc)
+      return False
+
+  def load_from_disk(self, path: Path | None = None) -> bool:
+    target = path or BM25_CACHE_PATH
+    if not target.exists() or not BM25Okapi:
+      return False
+    try:
+      payload = pickle.loads(target.read_bytes())
+      self._bm25_corpus = list(payload.get("corpus") or [])
+      self._doc_ids = list(payload.get("doc_ids") or [])
+      self._doc_metadata = list(payload.get("doc_metadata") or [])
+      if self._bm25_corpus:
+        self._bm25_index = BM25Okapi([t.lower().split() for t in self._bm25_corpus])
+        return True
+    except Exception as exc:
+      logger.warning("BM25 load failed: %s", exc)
+    return False
 
   def _authority_boost(self, metadata: dict[str, Any], task: str) -> float:
     seg = str(metadata.get("segment") or "")

@@ -124,7 +124,12 @@ def ensure_knowledge_indexes() -> dict:
             logger.warning("Tiered knowledge corpus load failed: %s", exc)
 
         rag = get_hybrid_rag()
-        rag.index_documents(docs)
-        result["bm25_docs"] = len(docs)
+        if docs and rag.load_from_disk():
+            result["bm25_docs"] = len(rag._doc_ids)
+            logger.info("BM25 index loaded from disk: %d docs", result["bm25_docs"])
+        elif docs:
+            rag.index_documents(docs)
+            rag.save_to_disk()
+            result["bm25_docs"] = len(docs)
 
     return result

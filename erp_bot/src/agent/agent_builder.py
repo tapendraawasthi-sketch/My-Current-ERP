@@ -27,7 +27,7 @@ from ..config import (
     OLLAMA_BASE_URL,
 )
 from .system_prompt import CHITCHAT_SYSTEM_PROMPT, SYSTEM_PROMPT
-from .tools import TOOLS
+from .unified_tools import UNIFIED_TOOLS as TOOLS
 
 logger = logging.getLogger(__name__)
 
@@ -450,6 +450,9 @@ async def _stream_text_chunks(text: str, chunk_size: int = 16) -> AsyncIterator[
 async def run_routed_agent_stream(
     question: str,
     history: list[dict[str, str]] | None = None,
+    *,
+    session_id: str = "default",
+    context: dict | None = None,
 ) -> AsyncIterator[dict]:
     """Stream a routed Qwen response (Orbix ultra stack).
     
@@ -458,14 +461,20 @@ async def run_routed_agent_stream(
       {"type": "token", "content": "..."}
       {"type": "complete", "message": "...", "card": {...}|None, "route": {...}}
     """
-    from .intent_router import classify_intent, get_rag_query
+    from .cascade_router import classify_cascade
+    from .ledger_query_handler import handle_ledger_query
+    from .answer_verifier import append_verification_note
     from ..config import CACHE_ENABLED
+    from ..bridges.session_data import set_session_context
+
+    if context:
+        set_session_context(session_id, context)
 
     # Cache hit — instant stream for repeated questions
     if CACHE_ENABLED:
         try:
             from ..api.cache import get_response_cache
-            cached = get_response_cache().get(question)
+            cached = get_response_cache().get(question, intent=None)
             if cached and cached.get("response"):
                 route_dict = cached.get("route") or {
                     "intent": "cached",
@@ -486,12 +495,27 @@ async def run_routed_agent_stream(
         except Exception:
             pass
 
-    route = await classify_intent(question)
+    # Quick RAG probe for cascade model selection
+    from .intent_router import get_rag_query
+    from ..knowledge.unified_retriever import retrieve, format_retrieved_context
+
+    pre_route = await classify_cascade(question, rag_hit=False)
+    rag_context = ""
+    if pre_route.needs_rag:
+        rq = get_rag_query(question, pre_route.intent)
+        if rq:
+            chunks = retrieve(rq, intent=pre_route.intent, k=5)
+            rag_context = format_retrieved_context(chunks)
+    cascade = await classify_cascade(question, rag_hit=bool(rag_context))
+
+    route = cascade.route
     route_dict = {
         "intent": route.intent,
         "confidence": route.confidence,
         "method": route.method,
         "reasoning": route.reasoning,
+        "model_tier": cascade.model,
+        "escalate_reason": cascade.escalate_reason,
     }
     yield {"type": "route", "route": route_dict}
 
@@ -518,20 +542,43 @@ async def run_routed_agent_stream(
                 parts.append(chunk)
                 yield {"type": "token", "content": chunk}
 
+        elif route.intent == "ledger_query":
+            result = handle_ledger_query(question, session_id)
+            answer = str(result.get("answer", ""))
+            if result.get("template") or cascade.model == "none":
+                async for chunk in _stream_text_chunks(answer):
+                    parts.append(chunk)
+                    yield {"type": "token", "content": chunk}
+            else:
+                augmented = f"Ledger facts:\n{result.get('facts')}\n\nUser: {question}"
+                async for chunk in _direct_llm_stream(
+                    augmented,
+                    history,
+                    system_prompt=CHITCHAT_SYSTEM_PROMPT,
+                    use_fast=True,
+                    max_history_turns=2,
+                ):
+                    parts.append(chunk)
+                    yield {"type": "token", "content": chunk}
+
         elif route.intent == "general_qa":
+            use_fast = cascade.model == "4b"
             async for chunk in _direct_llm_stream(
                 question,
                 history,
                 system_prompt=SYSTEM_PROMPT,
-                use_fast=False,
+                use_fast=use_fast,
                 no_think=True,
             ):
                 parts.append(chunk)
                 yield {"type": "token", "content": chunk}
 
         elif route.intent == "accounting_qa":
-            rag_query = get_rag_query(question, route.intent)
-            rag_context = await _fetch_rag_context(rag_query, route.rag_collection)
+            if not rag_context:
+                rq = get_rag_query(question, route.intent)
+                if rq:
+                    chunks = retrieve(rq, intent=route.intent, k=5)
+                    rag_context = format_retrieved_context(chunks)
             if rag_context:
                 augmented = f"""Reference (Nepal accounting/tax):
 
@@ -544,20 +591,66 @@ Question: {question}
 Answer from the reference. Be concise. Cite the source file when possible."""
             else:
                 augmented = question
+            use_fast = cascade.model == "4b"
+            stream_parts: list[str] = []
             async for chunk in _direct_llm_stream(
                 augmented,
                 history,
                 system_prompt=SYSTEM_PROMPT,
-                use_fast=False,
+                use_fast=use_fast,
                 no_think=True,
                 max_history_turns=5,
             ):
+                stream_parts.append(chunk)
                 parts.append(chunk)
                 yield {"type": "token", "content": chunk}
+            if not use_fast and rag_context:
+                full = "".join(stream_parts)
+                verified = append_verification_note(full, rag_context)
+                if verified != full:
+                    parts = [verified]
 
-        elif route.intent in ("erp_howto", "code_qa"):
-            answer = await run_agent(question, history)
-            async for chunk in _stream_text_chunks(answer):
+        elif route.intent == "erp_howto":
+            from .nav_resolver import resolve_navigation
+            nav = resolve_navigation(question)
+            if nav and "not found" not in nav.lower():
+                async for chunk in _stream_text_chunks(nav):
+                    parts.append(chunk)
+                    yield {"type": "token", "content": chunk}
+            else:
+                from ..vectorstore.nav_index_store import search_nav_index
+
+                rag_query = get_rag_query(question, route.intent)
+                nav_hits = search_nav_index(rag_query, k=4)
+                nav_ctx = "\n\n".join(
+                    f"[{h.get('source', '')}]\n{h.get('text', '')[:800]}" for h in nav_hits
+                )
+                code_ctx = await _fetch_rag_context(rag_query, "code")
+                sections = [s for s in (nav_ctx, code_ctx) if s]
+                prompt = (
+                    "\n\n".join(sections) + f"\n\nQuestion: {question}"
+                    if sections
+                    else question
+                )
+                async for chunk in _direct_llm_stream(
+                    prompt,
+                    history,
+                    use_fast=True,
+                    max_history_turns=3,
+                ):
+                    parts.append(chunk)
+                    yield {"type": "token", "content": chunk}
+
+        elif route.intent == "code_qa":
+            rag_query = get_rag_query(question, route.intent)
+            code_ctx = await _fetch_rag_context(rag_query, "code")
+            prompt = f"{code_ctx}\n\nQuestion: {question}" if code_ctx else question
+            async for chunk in _direct_llm_stream(
+                prompt,
+                history,
+                use_fast=False,
+                max_history_turns=5,
+            ):
                 parts.append(chunk)
                 yield {"type": "token", "content": chunk}
 
@@ -604,39 +697,21 @@ async def _direct_llm_response(
 
 
 async def _fetch_rag_context(query: str | None, collection: str | None) -> str:
-    """Fetch relevant context from RAG for the query.
-    
-    Phase 3: Nepal knowledge base is PRIMARY for accounting questions.
-    Falls back to CA/IFRS knowledge if Nepal KB has no results.
-    """
+    """Fetch relevant context from unified RAG or codebase index."""
     if not query or not collection:
         return ""
-    
+
     try:
         if collection == "knowledge":
-            # Phase 3: Nepal knowledge base is PRIMARY for accounting/tax
-            from ..vectorstore.nepal_knowledge_store import (
-                search_nepal_knowledge,
-                format_nepal_context,
-            )
-            
-            nepal_results = search_nepal_knowledge(query, k=3)
-            if nepal_results:
-                context = format_nepal_context(nepal_results, max_chars=2500)
-                if context:
-                    return context
-            
-            # Fallback: CA/IFRS conceptual framework (for theory questions)
-            from ..vectorstore.ca_knowledge_store import search_ca_knowledge, format_ifrs_context
-            
-            ca_results = search_ca_knowledge(query, k=3)
-            if ca_results:
-                return format_ifrs_context(ca_results)
-                
+            from ..knowledge.unified_retriever import retrieve, format_retrieved_context
+
+            chunks = retrieve(query, intent="accounting_qa", k=5)
+            return format_retrieved_context(chunks, max_chars=2500)
+
         elif collection == "code":
-            # Use codebase index
             from ..vectorstore import chroma_store
-            results = chroma_store.search(query, k=5)
+
+            results = chroma_store.search_codebase(query, k=5)
             if results:
                 return "\n\n---\n\n".join(
                     f"[{r.get('source', 'unknown')}]\n{r.get('content', '')}"
@@ -644,7 +719,7 @@ async def _fetch_rag_context(query: str | None, collection: str | None) -> str:
                 )
     except Exception as e:
         logger.warning(f"RAG fetch failed: {e}")
-    
+
     return ""
 
 
