@@ -8,6 +8,7 @@ import chromadb
 from langchain_ollama import OllamaEmbeddings
 
 from ..config import CHROMA_PATH, EMBED_MODEL, OLLAMA_BASE_URL
+from ..knowledge.embed_cache import embed_query_cached
 
 _client = chromadb.PersistentClient(path=CHROMA_PATH)
 _embedder = OllamaEmbeddings(model=EMBED_MODEL, base_url=OLLAMA_BASE_URL)
@@ -102,7 +103,7 @@ def search_codebase(query: str, k: int = 8) -> list[dict]:
     """
     try:
         collection = get_collection()
-        vec = _embedder.embed_query(query)
+        vec = embed_query_cached(query)
 
         # Fetch more candidates for hybrid re-ranking
         fetch_count = max(k * 3, 24)

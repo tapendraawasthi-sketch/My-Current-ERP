@@ -22,6 +22,7 @@ import chromadb
 from langchain_ollama import OllamaEmbeddings
 
 from ..config import CHROMA_PATH, EMBED_MODEL, OLLAMA_BASE_URL
+from ..knowledge.embed_cache import embed_query_cached
 
 logger = logging.getLogger(__name__)
 
@@ -342,7 +343,7 @@ def search_nepal_knowledge(query: str, k: int = 5) -> list[dict]:
             return []
         
         # Embed query
-        query_vec = _embedder.embed_query(query)
+        query_vec = embed_query_cached(query)
         
         # Search
         result = collection.query(

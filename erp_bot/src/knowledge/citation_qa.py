@@ -1,6 +1,4 @@
-"""
-Citation-enforced Q&A from retrieved knowledge passages.
-"""
+"""Citation-enforced Q&A from retrieved knowledge passages."""
 
 from __future__ import annotations
 
@@ -10,8 +8,8 @@ from typing import Any
 from ollama import Client
 
 from ..config import OLLAMA_BASE_URL, PRIMARY_MODEL, PRIMARY_MODEL_OPTIONS
-from .hybrid_rag import get_hybrid_rag
-from .knowledge_registry import ROUTE_TO_TASK, format_tiered_context, search_tiered_knowledge
+from .knowledge_registry import ROUTE_TO_TASK
+from .unified_retriever import format_retrieved_context, retrieve
 
 logger = logging.getLogger(__name__)
 
@@ -37,28 +35,14 @@ def answer_with_citations(
     extra_context: str = "",
     task: str = "accounting_qa",
 ) -> tuple[str, list[dict[str, Any]]]:
-    """Retrieve hybrid RAG + tiered segments and generate cited answer."""
-    passages = get_hybrid_rag().search(question, top_k=top_k, task=task)
-
-    tiered_hits = search_tiered_knowledge(question, task=task, top_k=top_k)
-    tiered_block = format_tiered_context(question, task=task, max_chars=2000)
-
-    if not passages and not tiered_hits:
+    """Retrieve unified RAG and generate cited answer (single retrieval pass)."""
+    chunks = retrieve(question, intent=task, k=top_k)
+    if not chunks:
         return "", []
 
-    block_parts: list[str] = []
-    if tiered_block:
-        block_parts.append(tiered_block)
-    if passages:
-        block_parts.append(
-            "\n\n---\n\n".join(
-                f"[{p.get('id', 'doc')}] "
-                f"(segment={p.get('metadata', {}).get('segment', 'legacy')}) "
-                f"{p.get('text', '')[:1200]}"
-                for p in passages
-            )
-        )
-    block = "\n\n".join(block_parts)
+    block = format_retrieved_context(chunks, max_chars=3500)
+    if not block:
+        return "", []
 
     client = Client(host=OLLAMA_BASE_URL)
     messages = [
@@ -82,18 +66,11 @@ def answer_with_citations(
                 "num_ctx": int(PRIMARY_MODEL_OPTIONS.get("num_ctx", 8192)),
             },
         )
-        merged_passages = passages + [
-            {"id": c.id, "text": c.content, "metadata": {"segment": c.segment, "authority": c.authority}}
-            for c in tiered_hits
-        ]
-        return (response.message.content or "").strip(), merged_passages
+        return (response.message.content or "").strip(), chunks
     except Exception as exc:
         logger.warning("Citation QA failed: %s", exc)
-        if tiered_hits:
-            top = tiered_hits[0].content[:500]
-            return f"(Retrieved — {tiered_hits[0].segment})\n{top}", passages
-        top = passages[0].get("text", "")[:500] if passages else ""
-        return f"(Retrieved)\n{top}", passages
+        top = chunks[0].get("text", "")[:500] if chunks else ""
+        return f"(Retrieved)\n{top}", chunks
 
 
 def task_for_route(route_mode: str) -> str:

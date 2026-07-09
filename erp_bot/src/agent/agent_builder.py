@@ -25,6 +25,7 @@ from ..config import (
     MAX_AGENT_ITERATIONS,
     MAX_CONVERSATION_TURNS,
     OLLAMA_BASE_URL,
+    OLLAMA_KEEP_ALIVE,
 )
 from .system_prompt import CHITCHAT_SYSTEM_PROMPT, SYSTEM_PROMPT
 from .unified_tools import UNIFIED_TOOLS as TOOLS
@@ -32,7 +33,7 @@ from .unified_tools import UNIFIED_TOOLS as TOOLS
 logger = logging.getLogger(__name__)
 
 
-def _build_conversational_llm() -> ChatOllama:
+def _build_conversational_llm(*, reasoning: bool = False) -> ChatOllama:
     """Create the primary conversational LLM with warm settings."""
     return ChatOllama(
         model=CONVERSATIONAL_MODEL,
@@ -41,18 +42,20 @@ def _build_conversational_llm() -> ChatOllama:
         num_ctx=int(CONVERSATIONAL_MODEL_OPTIONS["num_ctx"]),
         top_p=CONVERSATIONAL_MODEL_OPTIONS.get("top_p", 0.9),
         repeat_penalty=CONVERSATIONAL_MODEL_OPTIONS.get("repeat_penalty", 1.1),
-        reasoning=True,
+        reasoning=reasoning,
+        keep_alive=OLLAMA_KEEP_ALIVE,
     )
 
 
 def _build_fast_llm() -> ChatOllama:
-    """Create the fast routing LLM for intent classification."""
+    """Create the fast LLM for simple responses (chitchat, erp_howto)."""
     return ChatOllama(
         model=FAST_MODEL,
         base_url=OLLAMA_BASE_URL,
         temperature=FAST_MODEL_OPTIONS["temperature"],
         num_ctx=int(FAST_MODEL_OPTIONS["num_ctx"]),
-        reasoning=True,
+        reasoning=False,
+        keep_alive=OLLAMA_KEEP_ALIVE,
     )
 
 
@@ -150,8 +153,10 @@ async def _stream_filtered_llm(
 
 
 def _with_no_think(prompt: str) -> str:
-    """Pass through — reasoning=True on ChatOllama keeps thinking out of content."""
-    return prompt
+    """Append Qwen3 no-thinking suffix for faster generation."""
+    if "/no_think" in prompt:
+        return prompt
+    return f"{prompt} /no_think"
 
 
 def _format_conversation_history(
@@ -272,9 +277,18 @@ async def _direct_llm_stream(
     use_fast: bool = False,
     no_think: bool = True,
     max_history_turns: int | None = None,
+    use_reasoning: bool = False,
 ) -> AsyncIterator[str]:
     """Fast direct LLM stream — no tools, optional fast model for chitchat."""
-    llm = get_fast_llm() if use_fast else get_conversational_llm()
+    if use_fast:
+        llm = get_fast_llm()
+    else:
+        global _conversational_llm
+        if use_reasoning:
+            _conversational_llm = _build_conversational_llm(reasoning=True)
+        else:
+            _conversational_llm = _build_conversational_llm(reasoning=False)
+        llm = _conversational_llm
     turns = max_history_turns if max_history_turns is not None else (3 if use_fast else MAX_CONVERSATION_TURNS)
     chat_history = _format_conversation_history(history or [], max_turns=turns)
     user_text = _with_no_think(question) if no_think else question
@@ -495,18 +509,50 @@ async def run_routed_agent_stream(
         except Exception:
             pass
 
-    # Quick RAG probe for cascade model selection
+    # Static FAQ — instant answer, no LLM
+    from ..knowledge.static_answers import get_static_answer
+
+    static = get_static_answer(question)
+    if static:
+        route_dict = {
+            "intent": "accounting_qa",
+            "confidence": 1.0,
+            "method": "static_faq",
+            "reasoning": "Precomputed FAQ answer",
+            "model_tier": "none",
+        }
+        yield {"type": "route", "route": route_dict}
+        async for chunk in _stream_text_chunks(static):
+            yield {"type": "token", "content": chunk}
+        yield {
+            "type": "complete",
+            "message": static,
+            "card": None,
+            "route": route_dict,
+        }
+        return
+
+    # Single router pass — classify once, update model tier based on RAG hit
+    from dataclasses import replace
     from .intent_router import get_rag_query
     from ..knowledge.unified_retriever import retrieve, format_retrieved_context
 
-    pre_route = await classify_cascade(question, rag_hit=False)
+    cascade = await classify_cascade(question, rag_hit=False)
     rag_context = ""
-    if pre_route.needs_rag:
-        rq = get_rag_query(question, pre_route.intent)
+    if cascade.needs_rag:
+        rq = get_rag_query(question, cascade.route.intent)
         if rq:
-            chunks = retrieve(rq, intent=pre_route.intent, k=5)
+            chunks = retrieve(rq, intent=cascade.route.intent, k=5)
             rag_context = format_retrieved_context(chunks)
-    cascade = await classify_cascade(question, rag_hit=bool(rag_context))
+            # Update model tier for accounting_qa if RAG hit + high confidence
+            if (
+                rag_context
+                and cascade.route.intent == "accounting_qa"
+                and cascade.confidence >= 0.90
+                and cascade.model == "32b"
+                and cascade.escalate_reason == "no_rag_context"
+            ):
+                cascade = replace(cascade, model="4b", escalate_reason=None)
 
     route = cascade.route
     route_dict = {
@@ -613,8 +659,9 @@ Answer from the reference. Be concise. Cite the source file when possible."""
         elif route.intent == "erp_howto":
             from .nav_resolver import resolve_navigation
             nav = resolve_navigation(question)
-            if nav and "not found" not in nav.lower():
-                async for chunk in _stream_text_chunks(nav):
+            if nav and nav.get("found"):
+                nav_text = nav.get("answer", "")
+                async for chunk in _stream_text_chunks(nav_text):
                     parts.append(chunk)
                     yield {"type": "token", "content": chunk}
             else:
@@ -650,6 +697,7 @@ Answer from the reference. Be concise. Cite the source file when possible."""
                 history,
                 use_fast=False,
                 max_history_turns=5,
+                use_reasoning=True,
             ):
                 parts.append(chunk)
                 yield {"type": "token", "content": chunk}

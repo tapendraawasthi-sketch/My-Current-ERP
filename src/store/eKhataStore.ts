@@ -373,8 +373,11 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
       /* fall through to normal chat */
     }
 
+    let sessionSnapshot: Awaited<ReturnType<typeof buildSessionSnapshot>> | null = null;
+
     try {
-      const localResult = await handleOrbixLocalQuery(trimmed);
+      sessionSnapshot = await buildSessionSnapshot();
+      const localResult = await handleOrbixLocalQuery(trimmed, sessionSnapshot);
       if (localResult) {
         finalize({
           messages: get().messages.map((m) =>
@@ -408,7 +411,9 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
     // ── QWEN-ONLY PATH (ultra stack: router + RAG + qwen3:32b) ─────────────────
     if (llmStatus.khataLlm && !isSelfContainedAi()) {
       try {
-        const sessionSnapshot = await buildSessionSnapshot();
+        if (!sessionSnapshot) {
+          sessionSnapshot = await buildSessionSnapshot();
+        }
         await streamOrbixQwen(
           trimmed,
           sessionId,

@@ -21,6 +21,7 @@ from typing import Any
 # Handle both package import and standalone testing
 try:
     from ..config import CACHE_MAX_SIZE, CACHE_TTL_SECONDS, EMBED_MODEL, OLLAMA_BASE_URL
+    from ..knowledge.embed_cache import embed_query_cached
 except ImportError:
     CACHE_MAX_SIZE = int(os.getenv("CACHE_MAX_SIZE", "500"))
     CACHE_TTL_SECONDS = int(os.getenv("CACHE_TTL_SECONDS", "3600"))
@@ -90,24 +91,16 @@ class ResponseCache:
     
     @staticmethod
     def _hash_query(query: str, intent: str | None = None) -> str:
-        """Create a hash for exact matching."""
-        normalized = f"{intent or ''}:{query.strip().lower()}"
+        """Create a hash for exact matching (query-only so get/put align on stream path)."""
+        normalized = query.strip().lower()
         return hashlib.sha256(normalized.encode()).hexdigest()[:16]
     
     def _get_embedding(self, text: str) -> list[float] | None:
         """Get embedding for semantic similarity."""
         try:
-            import httpx
-            resp = httpx.post(
-                f"{OLLAMA_BASE_URL}/api/embeddings",
-                json={"model": EMBED_MODEL, "prompt": text},
-                timeout=10.0,
-            )
-            if resp.status_code == 200:
-                return resp.json().get("embedding")
+            return embed_query_cached(text)
         except Exception:
-            pass
-        return None
+            return None
     
     @staticmethod
     def _cosine_similarity(a: list[float], b: list[float]) -> float:

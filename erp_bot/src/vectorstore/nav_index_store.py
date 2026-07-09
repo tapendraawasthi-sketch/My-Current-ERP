@@ -11,6 +11,7 @@ import chromadb
 from langchain_ollama import OllamaEmbeddings
 
 from ..config import CHROMA_PATH, EMBED_MODEL, ERP_PATH, OLLAMA_BASE_URL
+from ..knowledge.embed_cache import embed_query_cached
 
 logger = logging.getLogger(__name__)
 
@@ -123,7 +124,7 @@ def search_nav_index(query: str, k: int = 5) -> list[dict]:
     if collection.count() == 0:
         return []
     try:
-        embedding = _embedder.embed_query(query)
+        embedding = embed_query_cached(query)
         results = collection.query(query_embeddings=[embedding], n_results=min(k, collection.count()))
         out: list[dict] = []
         for i, doc_id in enumerate(results.get("ids", [[]])[0]):

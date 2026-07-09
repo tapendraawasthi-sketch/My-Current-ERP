@@ -5,6 +5,8 @@
 
 import { buildSessionSnapshot, getPartyBalance } from "./dexieBridge";
 
+export type SessionSnapshot = Awaited<ReturnType<typeof buildSessionSnapshot>>;
+
 export interface OrbixLocalResult {
   text: string;
   kind: "entry_count" | "party_balance" | "cash_bank" | "recent_entries";
@@ -20,16 +22,19 @@ function fmt(n: number): string {
   return `Rs. ${Number(n || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-export async function handleOrbixLocalQuery(text: string): Promise<OrbixLocalResult | null> {
+export async function handleOrbixLocalQuery(
+  text: string,
+  snapshot?: SessionSnapshot,
+): Promise<OrbixLocalResult | null> {
   const trimmed = text.trim();
   if (!trimmed) return null;
 
   const today = new Date().toISOString().slice(0, 10);
-  const snapshot = await buildSessionSnapshot();
-  const recent = (snapshot.recent_entries as Array<Record<string, unknown>>) || [];
+  const data = snapshot ?? (await buildSessionSnapshot());
+  const recent = (data.recent_entries as Array<Record<string, unknown>>) || [];
 
   if (TODAY_ENTRY.test(trimmed)) {
-    const count = Number(snapshot.today_entry_count ?? 0);
+    const count = Number(data.today_entry_count ?? 0);
     const todayRows = recent.filter((e) => String(e.date) === today);
     if (count === 0) {
       return { text: "Aaja kunai entry vayeko chaina (0 wota).", kind: "entry_count" };
@@ -59,14 +64,14 @@ export async function handleOrbixLocalQuery(text: string): Promise<OrbixLocalRes
 
   if (CASH_Q.test(trimmed)) {
     return {
-      text: `Cash balance: ${fmt(Number(snapshot.cash_balance || 0))}.`,
+      text: `Cash balance: ${fmt(Number(data.cash_balance || 0))}.`,
       kind: "cash_bank",
     };
   }
 
   if (BANK_Q.test(trimmed)) {
     return {
-      text: `Bank balance: ${fmt(Number(snapshot.bank_balance || 0))}.`,
+      text: `Bank balance: ${fmt(Number(data.bank_balance || 0))}.`,
       kind: "cash_bank",
     };
   }

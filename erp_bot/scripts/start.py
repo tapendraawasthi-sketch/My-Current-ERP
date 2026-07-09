@@ -12,7 +12,7 @@ sys.path.insert(0, str(BOT_ROOT))
 import httpx
 
 import src.config  # noqa: F401 — prints resolved ERP_PATH on import
-from src.config import API_PORT, EMBED_MODEL, FAST_MODEL, MODEL_NAME, OLLAMA_BASE_URL
+from src.config import API_PORT, EMBED_MODEL, FAST_MODEL, MODEL_NAME, OLLAMA_BASE_URL, OLLAMA_KEEP_ALIVE
 
 print(f"[START] PRIMARY_MODEL={MODEL_NAME}, FAST_MODEL={FAST_MODEL}, EMBED_MODEL={EMBED_MODEL}")
 
@@ -40,7 +40,7 @@ try:
         # Warm fast router model so first Orbix message is not cold
         fast_test = httpx.post(
             f"{OLLAMA_BASE_URL}/api/generate",
-            json={"model": FAST_MODEL, "prompt": "ok", "stream": False, "keep_alive": "10m"},
+            json={"model": FAST_MODEL, "prompt": "ok", "stream": False, "keep_alive": OLLAMA_KEEP_ALIVE},
             timeout=60,
         )
         fast_test.raise_for_status()
@@ -48,11 +48,19 @@ try:
         # Warm 32b conversational model (reduces first-token latency on tax queries)
         main_test = httpx.post(
             f"{OLLAMA_BASE_URL}/api/generate",
-            json={"model": MODEL_NAME, "prompt": "ok", "stream": False, "keep_alive": "30m"},
+            json={"model": MODEL_NAME, "prompt": "ok", "stream": False, "keep_alive": OLLAMA_KEEP_ALIVE},
             timeout=120,
         )
         main_test.raise_for_status()
         print(f"[START] Main model warmed: {MODEL_NAME}")
+        # Warm embedding model
+        embed_test = httpx.post(
+            f"{OLLAMA_BASE_URL}/api/embeddings",
+            json={"model": EMBED_MODEL, "prompt": "warmup"},
+            timeout=30,
+        )
+        embed_test.raise_for_status()
+        print(f"[START] Embed model warmed: {EMBED_MODEL}")
     except Exception as e:
         print(f"[FATAL] Ollama chat model '{MODEL_NAME}' cannot generate: {e}")
         print("[HINT] If you see 'segmentation fault', install Ollama 0.5.7:")
@@ -128,6 +136,32 @@ try:
     )
 except Exception as _orbix_exc:
     print(f"[START] Orbix v2 init skipped: {_orbix_exc}")
+
+import threading
+import time
+
+
+def _keep_models_warm() -> None:
+    """Ping Ollama every 5 minutes so 4b/32b stay loaded."""
+    while True:
+        time.sleep(300)
+        try:
+            httpx.post(
+                f"{OLLAMA_BASE_URL}/api/generate",
+                json={"model": FAST_MODEL, "prompt": ".", "stream": False, "keep_alive": OLLAMA_KEEP_ALIVE},
+                timeout=30,
+            )
+            httpx.post(
+                f"{OLLAMA_BASE_URL}/api/generate",
+                json={"model": MODEL_NAME, "prompt": ".", "stream": False, "keep_alive": OLLAMA_KEEP_ALIVE},
+                timeout=60,
+            )
+        except Exception:
+            pass
+
+
+threading.Thread(target=_keep_models_warm, daemon=True, name="ollama-keepalive").start()
+print("[START] Ollama keep-alive thread started (5m interval)")
 
 import uvicorn
 from src.api.server import app

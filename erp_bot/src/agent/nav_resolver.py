@@ -182,17 +182,24 @@ def _match_route(query: str, busy_paths: dict, sidebar_paths: dict) -> tuple[str
     return None, []
 
 
-def resolve_navigation(feature_query: str) -> dict:
-    """Return path, shortcut, sources for a natural-language feature query."""
+_NAV_CACHE: dict | None = None
+
+
+def _load_nav_data() -> dict:
+    """Load and cache parsed navigation data from ERP source files."""
+    global _NAV_CACHE
+    if _NAV_CACHE is not None:
+        return _NAV_CACHE
+
     busy_path = ERP_PATH / "src" / "components" / "BusyMenuBar.tsx"
     sidebar_path = ERP_PATH / "src" / "components" / "Sidebar.tsx"
     app_path = ERP_PATH / "src" / "App.tsx"
 
-    sources: list[str] = []
     shortcuts: dict[str, str] = {}
     busy_paths: dict[str, list[str]] = {}
     sidebar_paths: dict[str, list[str]] = {}
     route_files: dict[str, str] = {}
+    sources: list[str] = []
 
     if busy_path.exists():
         busy_src = busy_path.read_text(encoding="utf-8", errors="ignore")
@@ -211,6 +218,24 @@ def resolve_navigation(feature_query: str) -> dict:
         route_files = _parse_app_routes(app_src)
         sources.append("src/App.tsx")
 
+    _NAV_CACHE = {
+        "shortcuts": shortcuts,
+        "busy_paths": busy_paths,
+        "sidebar_paths": sidebar_paths,
+        "route_files": route_files,
+        "sources": sources,
+    }
+    return _NAV_CACHE
+
+
+def resolve_navigation(feature_query: str) -> dict:
+    """Return path, shortcut, sources for a natural-language feature query."""
+    data = _load_nav_data()
+    shortcuts = data["shortcuts"]
+    busy_paths = data["busy_paths"]
+    sidebar_paths = data["sidebar_paths"]
+    route_files = data["route_files"]
+    sources = list(data["sources"])
     route, paths = _match_route(feature_query, busy_paths, sidebar_paths)
     if not route or not paths:
         return {

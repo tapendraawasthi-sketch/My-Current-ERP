@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import re
 from typing import Any
 
 from ..vectorstore.ca_knowledge_store import search_ca_knowledge
@@ -13,6 +14,10 @@ from .knowledge_registry import authority_score
 logger = logging.getLogger(__name__)
 
 RRF_K = 60
+_NEPAL_SPECIFIC = re.compile(
+    r"\b(vat|tds|ssf|eis|cit|gst|gratuity|ird|nepal|income\s*tax|nfrs|withholding)\b",
+    re.I,
+)
 
 
 def _rrf_merge(lists: list[list[dict[str, Any]]], top_k: int = 5) -> list[dict[str, Any]]:
@@ -41,6 +46,37 @@ def _rrf_merge(lists: list[list[dict[str, Any]]], top_k: int = 5) -> list[dict[s
 
 def retrieve(query: str, intent: str = "accounting_qa", k: int = 5) -> list[dict[str, Any]]:
     """Retrieve ranked chunks for accounting / compliance questions."""
+    if intent == "code_qa":
+        from ..vectorstore import chroma_store
+
+        code = chroma_store.search_codebase(query, k=k)
+        return [
+            {
+                "id": r.get("id", f"code-{i}"),
+                "text": r.get("content", r.get("text", "")),
+                "metadata": {"source": r.get("source", "erp_codebase")},
+            }
+            for i, r in enumerate(code)
+        ]
+
+    if intent == "accounting_qa" and _NEPAL_SPECIFIC.search(query):
+        try:
+            nepal = search_nepal_knowledge(query, k=k)
+            return [
+                {
+                    "id": r.get("id", f"nepal-{i}"),
+                    "text": r.get("content", r.get("text", "")),
+                    "metadata": {
+                        "source": r.get("source", "nepal_knowledge"),
+                        "section": r.get("section", ""),
+                        "segment": "professional.legal-compliance",
+                    },
+                }
+                for i, r in enumerate(nepal)
+            ]
+        except Exception as e:
+            logger.warning("Nepal-only retrieval failed: %s", e)
+
     lists: list[list[dict[str, Any]]] = []
 
     try:

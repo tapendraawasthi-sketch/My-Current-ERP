@@ -10,6 +10,7 @@ import chromadb
 from langchain_ollama import OllamaEmbeddings
 
 from ..config import CHROMA_PATH, EMBED_MODEL, OLLAMA_BASE_URL
+from ..knowledge.embed_cache import embed_query_cached
 
 _client = chromadb.PersistentClient(path=CHROMA_PATH)
 _embedder = OllamaEmbeddings(model=EMBED_MODEL, base_url=OLLAMA_BASE_URL)
@@ -73,7 +74,7 @@ def search_ca_knowledge(query: str, k: int = 6) -> list[dict]:
         if collection.count() == 0:
             return []
 
-        vec = _embedder.embed_query(query)
+        vec = embed_query_cached(query)
         result = collection.query(
             query_embeddings=[vec],
             n_results=k,

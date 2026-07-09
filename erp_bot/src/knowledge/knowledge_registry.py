@@ -298,6 +298,10 @@ def _apply_conflict_rules(chunks: list[KnowledgeChunk], task: str) -> list[Knowl
     return chunks
 
 
+_tiered_search_cache: dict[tuple[str, str, int, float], list[KnowledgeChunk]] = {}
+_TIERED_CACHE_MAX = 64
+
+
 def search_tiered_knowledge(
     query: str,
     *,
@@ -319,6 +323,10 @@ def search_tiered_knowledge(
         session_sector=session_sector,
     )
 
+    cache_key = (query.strip().lower(), task, top_k, min_relevance)
+    if cache_key in _tiered_search_cache:
+        return _tiered_search_cache[cache_key]
+
     chunks = load_all_chunks()
     scored: list[tuple[float, KnowledgeChunk]] = []
 
@@ -336,7 +344,11 @@ def search_tiered_knowledge(
     scored.sort(key=lambda x: -x[0])
     top = [c for _, c in scored[: top_k * 2]]
     resolved = _apply_conflict_rules(top, task)
-    return resolved[:top_k]
+    result = resolved[:top_k]
+    if len(_tiered_search_cache) >= _TIERED_CACHE_MAX:
+        _tiered_search_cache.pop(next(iter(_tiered_search_cache)))
+    _tiered_search_cache[cache_key] = result
+    return result
 
 
 def format_tiered_context(

@@ -28,7 +28,7 @@ from typing import Literal
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_ollama import ChatOllama
 
-from ..config import FAST_MODEL, FAST_MODEL_OPTIONS, OLLAMA_BASE_URL
+from ..config import FAST_MODEL, FAST_MODEL_OPTIONS, OLLAMA_BASE_URL, OLLAMA_KEEP_ALIVE
 
 logger = logging.getLogger(__name__)
 
@@ -238,7 +238,7 @@ def _regex_fastpath(text: str) -> RouteDecision | None:
     ):
         return RouteDecision(
             intent="accounting_qa",
-            confidence=0.88 if _STRONG_ACCOUNTING.search(text) else 0.80,
+            confidence=0.88 if _STRONG_ACCOUNTING.search(text) else 0.88,
             method="regex_fastpath",
             reasoning="Nepal accounting/tax keywords detected",
         )
@@ -247,7 +247,7 @@ def _regex_fastpath(text: str) -> RouteDecision | None:
     if _ERP_NAV_PATTERNS.search(text):
         return RouteDecision(
             intent="erp_howto",
-            confidence=0.80,
+            confidence=0.88,
             method="regex_fastpath",
             reasoning="ERP navigation keywords detected",
         )
@@ -304,7 +304,11 @@ _router_llm: ChatOllama | None = None
 
 
 def _get_router_llm() -> ChatOllama:
-    """Get or create the fast router LLM (qwen3:4b)."""
+    """Get or create the fast router LLM (qwen3:4b).
+    
+    No reasoning=True here — router only needs JSON output, not thinking.
+    This saves 2-10s per router call.
+    """
     global _router_llm
     if _router_llm is None:
         _router_llm = ChatOllama(
@@ -313,7 +317,8 @@ def _get_router_llm() -> ChatOllama:
             temperature=FAST_MODEL_OPTIONS.get("temperature", 0.1),
             num_ctx=int(FAST_MODEL_OPTIONS.get("num_ctx", 2048)),
             format="json",
-            reasoning=True,
+            reasoning=False,
+            keep_alive=OLLAMA_KEEP_ALIVE,
         )
     return _router_llm
 
