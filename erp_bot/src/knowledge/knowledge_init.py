@@ -1,5 +1,8 @@
 """
 Bootstrap knowledge indexes on erp_bot startup.
+
+Phase 3: Nepal Knowledge Base takes priority for accounting questions.
+The JSONL template corpus becomes fine-tuning data only, not runtime source.
 """
 
 from __future__ import annotations
@@ -11,6 +14,11 @@ from pathlib import Path
 from ..config import ERP_PATH
 from ..vectorstore.ca_knowledge_store import get_ca_knowledge_count, ingest_ca_knowledge
 from ..vectorstore.nlu_knowledge_store import get_nlu_knowledge_count, ingest_nlu_knowledge
+from ..vectorstore.nepal_knowledge_store import (
+    get_nepal_knowledge_count,
+    ingest_nepal_knowledge,
+    get_knowledge_stats as get_nepal_stats,
+)
 from .hybrid_rag import get_hybrid_rag
 
 logger = logging.getLogger(__name__)
@@ -65,15 +73,32 @@ def _load_corpus_documents() -> list[dict]:
 
 
 def ensure_knowledge_indexes() -> dict:
-    """Index Chroma + BM25 if needed. Safe to call on every startup."""
-    result: dict = {"chroma": None, "bm25_docs": 0}
+    """Index Chroma + BM25 if needed. Safe to call on every startup.
+    
+    Phase 3: Nepal Knowledge Base is indexed from markdown files.
+    This replaces the JSONL template corpus as the runtime source of truth.
+    """
+    result: dict = {"chroma": None, "bm25_docs": 0, "nepal_knowledge": None}
 
+    # Phase 3 — Nepal accounting/tax knowledge (PRIMARY for accounting questions)
+    if get_nepal_knowledge_count() == 0:
+        result["nepal_knowledge"] = ingest_nepal_knowledge()
+        logger.info("Nepal knowledge ingest: %s", result["nepal_knowledge"])
+    else:
+        result["nepal_knowledge"] = {
+            "status": "ready",
+            "count": get_nepal_knowledge_count(),
+            **get_nepal_stats(),
+        }
+
+    # IFRS Conceptual Framework (for theory/standards questions)
     if get_ca_knowledge_count() == 0:
         result["chroma"] = ingest_ca_knowledge()
         logger.info("CA knowledge ingest: %s", result["chroma"])
     else:
         result["chroma"] = {"status": "ready", "count": get_ca_knowledge_count()}
 
+    # NLU knowledge embeddings
     if get_nlu_knowledge_count() == 0:
         result["nlu_embeddings"] = ingest_nlu_knowledge()
         logger.info("NLU knowledge embeddings: %s", result["nlu_embeddings"])

@@ -154,6 +154,7 @@ def health() -> dict:
     """Lightweight readiness probe for deploy scripts."""
     from ..vectorstore.ca_knowledge_store import get_ca_knowledge_count
     from ..vectorstore.nlu_knowledge_store import get_nlu_knowledge_count
+    from ..vectorstore.nepal_knowledge_store import get_nepal_knowledge_count
 
     ollama_ok = False
     try:
@@ -167,6 +168,7 @@ def health() -> dict:
         "ollama": "connected" if ollama_ok else "unreachable",
         "khata_llm": ollama_ok,
         "indexed_files": chroma_store.get_indexed_file_count(),
+        "nepal_knowledge_chunks": get_nepal_knowledge_count(),
         "ca_knowledge_chunks": get_ca_knowledge_count(),
         "nlu_knowledge_chunks": get_nlu_knowledge_count(),
         "model": MODEL_NAME,
@@ -443,6 +445,48 @@ def khata_training_stats() -> dict:
 def reindex(background_tasks: BackgroundTasks) -> dict:
     background_tasks.add_task(embedder.ingest_all)
     return {"status": "reindex started", "erp_path": str(ERP_PATH)}
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PHASE 3 — NEPAL KNOWLEDGE BASE ENDPOINTS
+# ══════════════════════════════════════════════════════════════════════════════
+
+@app.get("/knowledge/nepal/stats")
+def nepal_knowledge_stats() -> dict:
+    """Get statistics about the Nepal accounting/tax knowledge base."""
+    from ..vectorstore.nepal_knowledge_store import get_knowledge_stats
+    return get_knowledge_stats()
+
+
+@app.post("/knowledge/nepal/reindex")
+def nepal_knowledge_reindex(background_tasks: BackgroundTasks) -> dict:
+    """Reindex Nepal knowledge base from markdown files."""
+    from ..vectorstore.nepal_knowledge_store import ingest_nepal_knowledge
+    
+    def _reindex():
+        result = ingest_nepal_knowledge(force_reindex=True)
+        print(f"[KNOWLEDGE] Nepal reindex complete: {result}")
+    
+    background_tasks.add_task(_reindex)
+    return {"status": "reindex started", "collection": "nepal_knowledge"}
+
+
+@app.post("/knowledge/nepal/search")
+async def nepal_knowledge_search(payload: dict) -> dict:
+    """Search the Nepal knowledge base (for testing/debugging).
+    
+    Body: {"query": "VAT rate in Nepal", "k": 5}
+    """
+    from ..vectorstore.nepal_knowledge_store import search_nepal_knowledge
+    
+    query = payload.get("query", "")
+    k = payload.get("k", 5)
+    
+    if not query:
+        return {"error": "query is required", "results": []}
+    
+    results = search_nepal_knowledge(query, k=k)
+    return {"query": query, "results": results, "count": len(results)}
 
 
 @app.post("/clear_session")

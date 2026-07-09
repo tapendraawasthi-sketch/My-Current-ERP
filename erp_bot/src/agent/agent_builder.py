@@ -463,17 +463,35 @@ async def _direct_llm_response(
 
 
 async def _fetch_rag_context(query: str | None, collection: str | None) -> str:
-    """Fetch relevant context from RAG for the query."""
+    """Fetch relevant context from RAG for the query.
+    
+    Phase 3: Nepal knowledge base is PRIMARY for accounting questions.
+    Falls back to CA/IFRS knowledge if Nepal KB has no results.
+    """
     if not query or not collection:
         return ""
     
     try:
         if collection == "knowledge":
-            # Use accounting/tax knowledge base
-            from ..vectorstore.ca_knowledge_store import search_ca_knowledge
-            results = search_ca_knowledge(query, k=3)
-            if results:
-                return "\n\n---\n\n".join(results)
+            # Phase 3: Nepal knowledge base is PRIMARY for accounting/tax
+            from ..vectorstore.nepal_knowledge_store import (
+                search_nepal_knowledge,
+                format_nepal_context,
+            )
+            
+            nepal_results = search_nepal_knowledge(query, k=5)
+            if nepal_results:
+                context = format_nepal_context(nepal_results, max_chars=4000)
+                if context:
+                    return context
+            
+            # Fallback: CA/IFRS conceptual framework (for theory questions)
+            from ..vectorstore.ca_knowledge_store import search_ca_knowledge, format_ifrs_context
+            
+            ca_results = search_ca_knowledge(query, k=3)
+            if ca_results:
+                return format_ifrs_context(ca_results)
+                
         elif collection == "code":
             # Use codebase index
             from ..vectorstore import chroma_store
