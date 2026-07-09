@@ -4,12 +4,14 @@ services:
     runtime: node
     branch: main
     autoDeploy: true
-    buildCommand: npm ci && npm run build
+    buildCommand: NODE_OPTIONS=--max-old-space-size=6144 npm install && npm run build
     startCommand: npm start
     pullRequestPreviewsEnabled: false
     envVars:
       - key: NODE_ENV
         value: production
+      - key: NODE_OPTIONS
+        value: --max-old-space-size=6144
       - key: PORT
         value: 10000
       - key: NODE_VERSION

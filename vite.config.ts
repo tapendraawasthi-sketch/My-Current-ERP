@@ -42,6 +42,11 @@ export default defineConfig({
       },
       output: {
         manualChunks(id) {
+          // Split large in-repo data so Render/Vite rolldown stays under WASM memory limits.
+          if (id.includes("runtimeMaps")) return "nepal-runtime-maps";
+          if (id.includes("lib/nepal-ai/")) return "nepal-ai";
+          if (id.includes("lib/ekhata/")) return "ekhata-brain";
+          if (id.includes("/src/ai/")) return "sutra-ai";
           if (id.includes("node_modules/react") || id.includes("node_modules/react-dom"))
             return "react";
           if (id.includes("node_modules/lucide-react") || id.includes("node_modules/recharts"))
