@@ -84,6 +84,26 @@ if ca_count == 0:
 else:
     print(f"[INFO] CA/IFRS knowledge index: {ca_count} chunks")
 
+# ── Orbix v2 — initialize reasoning agent (memory DB, tools, engine) ─────────
+try:
+    import asyncio
+
+    from src.orbix.bootstrap import get_engine
+    from src.orbix.config import get_config as get_orbix_config
+
+    _oc = get_orbix_config()
+    print(
+        f"[START] Orbix v2: agent={_oc.agent_model} verifier={_oc.verifier_model} "
+        f"router={_oc.router_model} embed={_oc.embed_model}"
+    )
+    _engine = asyncio.run(get_engine())
+    print(
+        f"[START] Orbix engine ready — {len(_engine.tools.list_specs())} tools, "
+        f"memory at {_oc.memory_db_path}"
+    )
+except Exception as _orbix_exc:
+    print(f"[START] Orbix v2 init skipped: {_orbix_exc}")
+
 import uvicorn
 from src.api.server import app
 

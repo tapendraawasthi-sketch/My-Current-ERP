@@ -32,6 +32,15 @@ from .streaming import router as streaming_router
 app = FastAPI(title="ERP AI Chatbot")
 app.include_router(streaming_router)
 
+# Orbix v2 — genuine local reasoning agent (plan/tool/verify loop).
+try:
+    from ..orbix.api import router as orbix_router
+
+    app.include_router(orbix_router)
+    print("[SERVER] Orbix v2 router mounted at /orbix")
+except Exception as _orbix_exc:  # keep legacy endpoints working if Orbix fails to import
+    print(f"[SERVER] Orbix v2 unavailable: {_orbix_exc}")
+
 # Local dev tool only — tighten origins if ever exposed beyond localhost.
 app.add_middleware(
     CORSMiddleware,
