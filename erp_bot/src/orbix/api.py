@@ -12,7 +12,7 @@ from .config import get_config
 from .llm.ollama_client import OllamaClient
 from .schemas import OrbixChatRequest, OrbixChatResponse
 
-router = APIRouter(prefix="/orbix", tags=["orbix"])
+router = APIRouter(prefix="/orbix/v2", tags=["orbix-v2"])
 
 
 @router.get("/status")

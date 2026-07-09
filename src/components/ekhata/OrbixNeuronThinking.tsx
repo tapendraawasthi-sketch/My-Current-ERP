@@ -4,12 +4,30 @@ import OrbixLogo from "./OrbixLogo";
 interface OrbixNeuronThinkingProps {
   label?: string;
   tools?: string[];
+  intent?: string;
 }
 
+const INTENT_LABELS: Record<string, { label: string; sub: string }> = {
+  chitchat: { label: "Quick reply", sub: "Casual chat · qwen3:4b fast path" },
+  general_qa: { label: "Thinking", sub: "General knowledge · qwen3:32b" },
+  accounting_qa: { label: "Nepal tax lookup", sub: "RAG knowledge → qwen3:32b" },
+  erp_howto: { label: "ERP navigation", sub: "Searching menus & screens" },
+  khata_entry: { label: "Khata entry", sub: "Parsing transaction · validating Dr/Cr" },
+  code_qa: { label: "Code search", sub: "Scanning source files" },
+  cached: { label: "Instant recall", sub: "Cached answer" },
+};
+
 const OrbixNeuronThinking: React.FC<OrbixNeuronThinkingProps> = ({
-  label = "Connecting Neurons",
+  label,
   tools = [],
-}) => (
+  intent,
+}) => {
+  const intentKey = intent || tools[0] || "";
+  const mapped = INTENT_LABELS[intentKey];
+  const displayLabel = label || mapped?.label || "Connecting Neurons";
+  const subLabel = mapped?.sub || "Accounting Mode · Analyzing ledger data";
+
+  return (
   <div className="flex items-start gap-2.5 px-1 py-1">
     <div className="relative mt-0.5 flex-shrink-0">
       <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-md animate-pulse" />
@@ -22,7 +40,7 @@ const OrbixNeuronThinking: React.FC<OrbixNeuronThinkingProps> = ({
 
     <div className="flex-1 min-w-0 rounded-xl rounded-tl-sm border border-cyan-500/20 bg-gradient-to-br from-cyan-500/8 to-violet-500/8 px-3 py-2.5">
       <div className="flex items-center gap-2">
-        <p className="text-[11px] font-medium text-cyan-300">{label}</p>
+        <p className="text-[11px] font-medium text-cyan-300">{displayLabel}</p>
         <div className="flex gap-0.5">
           {[0, 1, 2, 3].map((i) => (
             <span
@@ -62,15 +80,14 @@ const OrbixNeuronThinking: React.FC<OrbixNeuronThinkingProps> = ({
         ))}
       </div>
 
-      <p className="mt-1.5 text-[10px] text-slate-500">
-        Accounting Mode · Analyzing ledger data
-      </p>
+      <p className="mt-1.5 text-[10px] text-slate-500">{subLabel}</p>
 
       {tools.length > 0 && (
         <p className="mt-1 text-[9px] text-slate-600 truncate">Tools: {tools.join(" · ")}</p>
       )}
     </div>
   </div>
-);
+  );
+};
 
 export default OrbixNeuronThinking;

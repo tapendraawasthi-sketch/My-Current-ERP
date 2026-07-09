@@ -48,7 +48,7 @@ try:
     from ..orbix.api import router as orbix_router
 
     app.include_router(orbix_router)
-    print("[SERVER] Orbix v2 router mounted at /orbix")
+    print("[SERVER] Orbix v2 router mounted at /orbix/v2")
 except Exception as _orbix_exc:  # keep legacy endpoints working if Orbix fails to import
     print(f"[SERVER] Orbix v2 unavailable: {_orbix_exc}")
 
@@ -356,6 +356,16 @@ async def orbix_chat_stream(req: StreamChatRequest):
                     route_info = event.get("route") or route_info
 
             agent_builder.add_to_history(req.session_id, "assistant", full_message)
+            if CACHE_ENABLED and full_message and not card:
+                try:
+                    from .cache import get_response_cache
+                    get_response_cache().put(
+                        req.message,
+                        full_message,
+                        route=route_info,
+                    )
+                except Exception:
+                    pass
             yield _sse_json({"type": "thinking_done"})
             yield _sse_json(
                 {

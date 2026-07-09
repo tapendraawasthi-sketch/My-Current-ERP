@@ -81,13 +81,22 @@ class RouteDecision:
 # REGEX PRE-FILTER (fast-path for high-confidence matches)
 # ══════════════════════════════════════════════════════════════════════════════
 
-# Greetings and chitchat — very high confidence patterns
+# Greetings and chitchat — exact short messages
 _CHITCHAT_PATTERNS = re.compile(
     r"^(namaste|namaskar|hello|hi|hey|good\s*(morning|afternoon|evening|night)|"
     r"k cha|kasto cha|khana khayeu|khai|ke cha|thik cha|"
     r"धन्यवाद|नमस्ते|नमस्कार|के छ|कस्तो छ|खान खायौ|ठिक छ|"
     r"thanks|thank you|bye|goodbye|see you|take care|"
     r"how are you|what'?s up|sup|yo)\s*[?!.]*$",
+    re.IGNORECASE,
+)
+
+# Greetings + casual chat anywhere in the message (e.g. "hello qwen how are you doing")
+_CHITCHAT_LOOSE = re.compile(
+    r"\b(namaste|namaskar|hello|hi|hey|good\s*(morning|afternoon|evening)|"
+    r"how are you|how r u|what'?s up|whats up|are you (there|awake|intelligent|smart)|"
+    r"hello qwen|hey qwen|timi ko|k xa|halkhabar|k cha|kasto cha|khana khayeu|"
+    r"नमस्ते|नमस्कार|के छ|कस्तो छ)\b",
     re.IGNORECASE,
 )
 
@@ -141,13 +150,27 @@ def _regex_fastpath(text: str) -> RouteDecision | None:
     """
     text = text.strip()
     
-    # Chitchat — greetings are very distinctive
+    # Chitchat — greetings and casual small talk (no accounting keywords)
     if _CHITCHAT_PATTERNS.match(text):
         return RouteDecision(
             intent="chitchat",
             confidence=0.95,
             method="regex_fastpath",
             reasoning="Greeting/chitchat pattern matched",
+        )
+
+    if (
+        len(text) < 140
+        and _CHITCHAT_LOOSE.search(text)
+        and not _ACCOUNTING_PATTERNS.search(text)
+        and not _KHATA_PATTERNS.search(text)
+        and not _CODE_PATTERNS.search(text)
+    ):
+        return RouteDecision(
+            intent="chitchat",
+            confidence=0.92,
+            method="regex_fastpath",
+            reasoning="Casual chat / greeting detected",
         )
     
     # Khata entry — has Nepali transaction words + amount
@@ -239,7 +262,8 @@ def _get_router_llm() -> ChatOllama:
             base_url=OLLAMA_BASE_URL,
             temperature=FAST_MODEL_OPTIONS.get("temperature", 0.1),
             num_ctx=int(FAST_MODEL_OPTIONS.get("num_ctx", 2048)),
-            format="json",  # Force JSON output
+            format="json",
+            reasoning=True,
         )
     return _router_llm
 

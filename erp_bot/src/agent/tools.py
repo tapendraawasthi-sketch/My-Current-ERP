@@ -194,3 +194,15 @@ def fetch_webpage(url: str) -> str:
         return _textwrap.shorten(text, width=3000, placeholder=" …[truncated]")
     except Exception as e:
         return f"Could not fetch webpage: {e}"
+
+
+TOOLS = [
+    search_codebase,
+    read_full_file,
+    list_directory,
+    find_references,
+    get_project_conventions,
+    find_navigation_path,
+    web_search,
+    fetch_webpage,
+]

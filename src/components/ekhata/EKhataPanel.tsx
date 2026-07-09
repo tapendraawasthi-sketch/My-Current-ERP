@@ -312,7 +312,7 @@ const EKhataPanel: React.FC = () => {
                 )}
 
                 {showTyping && (
-                  <OrbixNeuronThinking label="Connecting Neurons" tools={activeTools} />
+                  <OrbixNeuronThinking intent={activeTools[0]} tools={activeTools} />
                 )}
                 <div ref={messagesEndRef} />
               </div>

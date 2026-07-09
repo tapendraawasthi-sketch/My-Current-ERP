@@ -31,7 +31,7 @@ except ImportError:
 MAX_CACHE_SIZE = 500  # Max cached responses
 CACHE_TTL_SECONDS = 3600  # 1 hour TTL
 SIMILARITY_THRESHOLD = 0.92  # Cosine similarity for "similar enough"
-MIN_QUERY_LENGTH = 10  # Don't cache very short queries
+MIN_QUERY_LENGTH = 4  # Cache short greetings too ("hi", "namaste")
 
 
 # ══════════════════════════════════════════════════════════════════════════════

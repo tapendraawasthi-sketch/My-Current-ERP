@@ -374,8 +374,10 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
     const balance = getKhataBalance();
     const userName = useStore.getState().currentUser?.name || useStore.getState().currentUser?.username;
 
-    // Refresh live Qwen status on every message
-    await get().refreshLlmStatus();
+    // Refresh Qwen status only when previously offline (saves ~1s per message)
+    if (!get().llmOnline) {
+      await get().refreshLlmStatus();
+    }
     const llmStatus = await checkEKhataLlmStatus();
     const sessionId = getEKhataSessionId();
 

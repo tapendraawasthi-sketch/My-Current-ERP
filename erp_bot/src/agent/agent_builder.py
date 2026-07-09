@@ -26,7 +26,7 @@ from ..config import (
     MAX_CONVERSATION_TURNS,
     OLLAMA_BASE_URL,
 )
-from .system_prompt import SYSTEM_PROMPT
+from .system_prompt import CHITCHAT_SYSTEM_PROMPT, SYSTEM_PROMPT
 from .tools import TOOLS
 
 logger = logging.getLogger(__name__)
@@ -41,6 +41,7 @@ def _build_conversational_llm() -> ChatOllama:
         num_ctx=int(CONVERSATIONAL_MODEL_OPTIONS["num_ctx"]),
         top_p=CONVERSATIONAL_MODEL_OPTIONS.get("top_p", 0.9),
         repeat_penalty=CONVERSATIONAL_MODEL_OPTIONS.get("repeat_penalty", 1.1),
+        reasoning=True,
     )
 
 
@@ -51,6 +52,7 @@ def _build_fast_llm() -> ChatOllama:
         base_url=OLLAMA_BASE_URL,
         temperature=FAST_MODEL_OPTIONS["temperature"],
         num_ctx=int(FAST_MODEL_OPTIONS["num_ctx"]),
+        reasoning=True,
     )
 
 
@@ -76,16 +78,80 @@ def get_fast_llm() -> ChatOllama:
 
 
 def _trim_thinking_tags(text: str) -> str:
-    """Remove Qwen3 <think>...</think> blocks from response.
-    
-    Qwen3 uses thinking mode for complex reasoning, but users shouldn't
-    see the chain-of-thought. We strip it here before showing the response.
-    """
-    # Remove <think>...</think> blocks (may span multiple lines)
+    """Remove Qwen3 ... blocks from a completed response."""
     text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL | re.IGNORECASE)
-    # Remove any orphan tags
+    text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL | re.IGNORECASE)
     text = re.sub(r"</?think>", "", text, flags=re.IGNORECASE)
     return text.strip()
+
+
+_THINK_OPEN_TAGS = ("<think>", "<think>")
+_THINK_CLOSE_TAGS = ("</think>", "</think>")
+_TAG_KEEP_TAIL = 22  # longest partial open tag we might buffer
+
+
+def _find_earliest_marker(buffer: str, markers: tuple[str, ...]) -> tuple[int, str] | None:
+    """Return (index, marker) of the earliest marker in buffer (case-insensitive)."""
+    lower = buffer.lower()
+    best: tuple[int, str] | None = None
+    for marker in markers:
+        idx = lower.find(marker.lower())
+        if idx >= 0 and (best is None or idx < best[0]):
+            best = (idx, marker)
+    return best
+
+
+async def _stream_filtered_llm(
+    messages: list[BaseMessage],
+    llm: ChatOllama,
+) -> AsyncIterator[str]:
+    """Stream LLM output, stripping Qwen3 thinking blocks before yielding."""
+    buffer = ""
+    in_think_block = False
+
+    async for chunk in llm.astream(messages):
+        content = chunk.content if hasattr(chunk, "content") else ""
+        extra = getattr(chunk, "additional_kwargs", None) or {}
+        # When reasoning=True, thinking tokens arrive separately — never show them
+        if not content and extra.get("reasoning_content"):
+            continue
+        if not content:
+            continue
+        buffer += content
+
+        while buffer:
+            if not in_think_block:
+                hit = _find_earliest_marker(buffer, _THINK_OPEN_TAGS)
+                if hit:
+                    start, marker = hit
+                    if start > 0:
+                        yield buffer[:start]
+                    buffer = buffer[start + len(marker) :]
+                    in_think_block = True
+                    continue
+
+                if len(buffer) > _TAG_KEEP_TAIL:
+                    yield buffer[:-_TAG_KEEP_TAIL]
+                    buffer = buffer[-_TAG_KEEP_TAIL:]
+                break
+
+            hit = _find_earliest_marker(buffer, _THINK_CLOSE_TAGS)
+            if hit:
+                end, marker = hit
+                buffer = buffer[end + len(marker) :]
+                in_think_block = False
+                continue
+            break
+
+    if buffer and not in_think_block:
+        cleaned = _trim_thinking_tags(buffer)
+        if cleaned:
+            yield cleaned
+
+
+def _with_no_think(prompt: str) -> str:
+    """Pass through — reasoning=True on ChatOllama keeps thinking out of content."""
+    return prompt
 
 
 def _format_conversation_history(
@@ -187,73 +253,40 @@ async def run_agent_stream(
     question: str,
     history: list[dict[str, str]] | None = None,
 ) -> AsyncIterator[str]:
-    """Run the agent and stream the response token-by-token.
-    
-    Yields chunks of text as they're generated. Thinking tags are buffered
-    and removed before yielding to the user.
-    
-    Args:
-        question: The user's question
-        history: Previous conversation turns
-    
-    Yields:
-        Text chunks (tokens or small groups of tokens)
-    """
-    llm = get_conversational_llm()
-    chat_history = _format_conversation_history(history or [])
-    
-    # Build full message list
+    """Stream conversational LLM output (no tools) with thinking stripped."""
+    async for chunk in _direct_llm_stream(
+        question,
+        history,
+        system_prompt=SYSTEM_PROMPT,
+        use_fast=False,
+        no_think=True,
+    ):
+        yield chunk
+
+
+async def _direct_llm_stream(
+    question: str,
+    history: list[dict[str, str]] | None = None,
+    *,
+    system_prompt: str = SYSTEM_PROMPT,
+    use_fast: bool = False,
+    no_think: bool = True,
+    max_history_turns: int | None = None,
+) -> AsyncIterator[str]:
+    """Fast direct LLM stream — no tools, optional fast model for chitchat."""
+    llm = get_fast_llm() if use_fast else get_conversational_llm()
+    turns = max_history_turns if max_history_turns is not None else (3 if use_fast else MAX_CONVERSATION_TURNS)
+    chat_history = _format_conversation_history(history or [], max_turns=turns)
+    user_text = _with_no_think(question) if no_think else question
+
     messages: list[BaseMessage] = [
-        SystemMessage(content=SYSTEM_PROMPT),
+        SystemMessage(content=system_prompt),
         *chat_history,
-        HumanMessage(content=question),
+        HumanMessage(content=user_text),
     ]
-    
-    # For streaming, we do a simple generation without tool calling
-    # (tool calling streaming is complex; we use non-streaming for tool-heavy queries)
-    
-    buffer = ""
-    in_think_block = False
-    
-    async for chunk in llm.astream(messages):
-        if hasattr(chunk, "content"):
-            text = chunk.content
-            buffer += text
-            
-            # Handle thinking blocks
-            while True:
-                if not in_think_block:
-                    # Look for start of thinking
-                    think_start = buffer.lower().find("<think>")
-                    if think_start >= 0:
-                        # Yield everything before the tag
-                        if think_start > 0:
-                            yield buffer[:think_start]
-                        buffer = buffer[think_start + 7:]  # Skip <think>
-                        in_think_block = True
-                        continue
-                    else:
-                        # No tag yet — yield everything except last 7 chars
-                        # (in case tag is split across chunks)
-                        if len(buffer) > 7:
-                            yield buffer[:-7]
-                            buffer = buffer[-7:]
-                        break
-                else:
-                    # Inside thinking block — look for end
-                    think_end = buffer.lower().find("</think>")
-                    if think_end >= 0:
-                        # Discard thinking content, continue after tag
-                        buffer = buffer[think_end + 8:]  # Skip </think>
-                        in_think_block = False
-                        continue
-                    else:
-                        # Still in thinking block — keep buffering
-                        break
-    
-    # Flush remaining buffer
-    if buffer and not in_think_block:
-        yield buffer.strip()
+
+    async for chunk in _stream_filtered_llm(messages, llm):
+        yield chunk
 
 
 async def simple_generate(
@@ -294,56 +327,16 @@ async def simple_generate_stream(
     system: str | None = None,
     use_fast: bool = False,
 ) -> AsyncIterator[str]:
-    """Stream a simple one-shot generation.
-    
-    Args:
-        prompt: The user prompt
-        system: Optional system prompt override
-        use_fast: If True, use the fast model
-    
-    Yields:
-        Text chunks
-    """
+    """Stream a simple one-shot generation."""
     llm = get_fast_llm() if use_fast else get_conversational_llm()
-    
+
     messages: list[BaseMessage] = []
     if system:
         messages.append(SystemMessage(content=system))
-    messages.append(HumanMessage(content=prompt))
-    
-    buffer = ""
-    in_think_block = False
-    
-    async for chunk in llm.astream(messages):
-        if hasattr(chunk, "content"):
-            text = chunk.content
-            buffer += text
-            
-            while True:
-                if not in_think_block:
-                    think_start = buffer.lower().find("<think>")
-                    if think_start >= 0:
-                        if think_start > 0:
-                            yield buffer[:think_start]
-                        buffer = buffer[think_start + 7:]
-                        in_think_block = True
-                        continue
-                    else:
-                        if len(buffer) > 7:
-                            yield buffer[:-7]
-                            buffer = buffer[-7:]
-                        break
-                else:
-                    think_end = buffer.lower().find("</think>")
-                    if think_end >= 0:
-                        buffer = buffer[think_end + 8:]
-                        in_think_block = False
-                        continue
-                    else:
-                        break
-    
-    if buffer and not in_think_block:
-        yield buffer.strip()
+    messages.append(HumanMessage(content=_with_no_think(prompt)))
+
+    async for chunk in _stream_filtered_llm(messages, llm):
+        yield chunk
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -466,6 +459,32 @@ async def run_routed_agent_stream(
       {"type": "complete", "message": "...", "card": {...}|None, "route": {...}}
     """
     from .intent_router import classify_intent, get_rag_query
+    from ..config import CACHE_ENABLED
+
+    # Cache hit — instant stream for repeated questions
+    if CACHE_ENABLED:
+        try:
+            from ..api.cache import get_response_cache
+            cached = get_response_cache().get(question)
+            if cached and cached.get("response"):
+                route_dict = cached.get("route") or {
+                    "intent": "cached",
+                    "confidence": 1.0,
+                    "method": "cache",
+                    "reasoning": cached.get("cache_type", "exact"),
+                }
+                yield {"type": "route", "route": route_dict}
+                async for chunk in _stream_text_chunks(cached["response"]):
+                    yield {"type": "token", "content": chunk}
+                yield {
+                    "type": "complete",
+                    "message": cached["response"],
+                    "card": None,
+                    "route": route_dict,
+                }
+                return
+        except Exception:
+            pass
 
     route = await classify_intent(question)
     route_dict = {
@@ -486,8 +505,27 @@ async def run_routed_agent_stream(
                 parts.append(chunk)
                 yield {"type": "token", "content": chunk}
 
-        elif route.intent in ("chitchat", "general_qa"):
-            async for chunk in run_agent_stream(question, history):
+        elif route.intent == "chitchat":
+            # Fast path: qwen3:4b + short prompt (skip 32b load for greetings)
+            async for chunk in _direct_llm_stream(
+                question,
+                history,
+                system_prompt=CHITCHAT_SYSTEM_PROMPT,
+                use_fast=True,
+                no_think=True,
+                max_history_turns=3,
+            ):
+                parts.append(chunk)
+                yield {"type": "token", "content": chunk}
+
+        elif route.intent == "general_qa":
+            async for chunk in _direct_llm_stream(
+                question,
+                history,
+                system_prompt=SYSTEM_PROMPT,
+                use_fast=False,
+                no_think=True,
+            ):
                 parts.append(chunk)
                 yield {"type": "token", "content": chunk}
 
@@ -495,18 +533,25 @@ async def run_routed_agent_stream(
             rag_query = get_rag_query(question, route.intent)
             rag_context = await _fetch_rag_context(rag_query, route.rag_collection)
             if rag_context:
-                augmented = f"""Based on the following reference information:
+                augmented = f"""Reference (Nepal accounting/tax):
 
 {rag_context}
 
 ---
 
-User question: {question}
+Question: {question}
 
-Answer using the reference above. Cite sources when possible."""
+Answer from the reference. Be concise. Cite the source file when possible."""
             else:
                 augmented = question
-            async for chunk in run_agent_stream(augmented, history):
+            async for chunk in _direct_llm_stream(
+                augmented,
+                history,
+                system_prompt=SYSTEM_PROMPT,
+                use_fast=False,
+                no_think=True,
+                max_history_turns=5,
+            ):
                 parts.append(chunk)
                 yield {"type": "token", "content": chunk}
 
@@ -546,7 +591,7 @@ async def _direct_llm_response(
     messages: list[BaseMessage] = [
         SystemMessage(content=SYSTEM_PROMPT),
         *chat_history,
-        HumanMessage(content=question),
+        HumanMessage(content=_with_no_think(question)),
     ]
     
     try:
@@ -575,9 +620,9 @@ async def _fetch_rag_context(query: str | None, collection: str | None) -> str:
                 format_nepal_context,
             )
             
-            nepal_results = search_nepal_knowledge(query, k=5)
+            nepal_results = search_nepal_knowledge(query, k=3)
             if nepal_results:
-                context = format_nepal_context(nepal_results, max_chars=4000)
+                context = format_nepal_context(nepal_results, max_chars=2500)
                 if context:
                     return context
             

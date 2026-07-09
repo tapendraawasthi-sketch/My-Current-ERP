@@ -1,4 +1,4 @@
-/** Orbix v2 API client — talks to the erp_bot /orbix reasoning endpoints. */
+/** Orbix v2 API client — talks to the erp_bot /orbix/v2 reasoning endpoints. */
 
 import { resolveErpBotUrl } from "../erpBotClient";
 import { isSelfContainedAi } from "../selfContainedAi";
@@ -16,7 +16,7 @@ export async function checkOrbixStatus(): Promise<OrbixStatus> {
     return { online: false, mode: "offline", error: "erp_bot URL not configured" };
   }
   try {
-    const resp = await fetch(`${ORBIX_BOT_URL}/orbix/status`, {
+    const resp = await fetch(`${ORBIX_BOT_URL}/orbix/v2/status`, {
       signal: AbortSignal.timeout(8000),
     });
     if (!resp.ok) return { online: false, mode: "offline", error: `HTTP ${resp.status}` };
@@ -43,7 +43,7 @@ export async function sendOrbixMessage(
   if (isSelfContainedAi() || !ORBIX_BOT_URL) {
     throw new Error("Orbix reasoning backend not configured");
   }
-  const resp = await fetch(`${ORBIX_BOT_URL}/orbix/chat`, {
+  const resp = await fetch(`${ORBIX_BOT_URL}/orbix/v2/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(req),
@@ -61,7 +61,7 @@ export async function* streamOrbixMessage(
   if (isSelfContainedAi() || !ORBIX_BOT_URL) {
     throw new Error("Orbix reasoning backend not configured");
   }
-  const resp = await fetch(`${ORBIX_BOT_URL}/orbix/chat/stream`, {
+  const resp = await fetch(`${ORBIX_BOT_URL}/orbix/v2/chat/stream`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(req),
@@ -119,7 +119,7 @@ function parseSseFrame(frame: string): OrbixStreamEvent | null {
 export async function forgetOrbixSession(sessionId: string): Promise<void> {
   if (isSelfContainedAi() || !ORBIX_BOT_URL) return;
   try {
-    await fetch(`${ORBIX_BOT_URL}/orbix/memory/forget`, {
+    await fetch(`${ORBIX_BOT_URL}/orbix/v2/memory/forget`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ session_id: sessionId }),

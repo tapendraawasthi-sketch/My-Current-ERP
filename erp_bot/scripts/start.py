@@ -37,6 +37,14 @@ try:
         )
         chat_test.raise_for_status()
         print("[START] Ollama chat inference: OK")
+        # Warm fast router model so first Orbix message is not cold
+        fast_test = httpx.post(
+            f"{OLLAMA_BASE_URL}/api/generate",
+            json={"model": FAST_MODEL, "prompt": "ok", "stream": False, "keep_alive": "10m"},
+            timeout=60,
+        )
+        fast_test.raise_for_status()
+        print(f"[START] Fast model warmed: {FAST_MODEL}")
     except Exception as e:
         print(f"[FATAL] Ollama chat model '{MODEL_NAME}' cannot generate: {e}")
         print("[HINT] If you see 'segmentation fault', install Ollama 0.5.7:")
