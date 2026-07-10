@@ -401,6 +401,27 @@ async def feeds_refresh(live: bool = True) -> dict:
     return {"ok": True, "feeds": load_feeds(), "source": result.get("source")}
 
 
+@router.get("/feeds/export/nepse")
+async def feeds_export_nepse() -> dict:
+    from .knowledge.feeds import NEPSE_FEED
+
+    return NEPSE_FEED
+
+
+@router.get("/feeds/export/gov")
+async def feeds_export_gov() -> list:
+    from .knowledge.feeds import GOV_FEED
+
+    return GOV_FEED
+
+
+@router.get("/telemetry/stats")
+async def telemetry_stats() -> dict:
+    from .kernel.telemetry_store import telemetry_store
+
+    return telemetry_store.stats()
+
+
 @router.post("/compile/uil")
 async def compile_uil(payload: dict) -> dict:
     from .dsl.compilers.uil_compiler import compile_uil_pipeline

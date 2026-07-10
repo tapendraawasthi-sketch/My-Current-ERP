@@ -136,7 +136,10 @@ class NiosGateway:
         }
         meta_best = meta_reasoner.best_action(meta_ctx)
         with self.kernel.telemetry.span("cognitive_meta"):
-            decision = self.kernel.cognitive.meta_decide(message, uil.confidence, caps)
+            decision = self.kernel.cognitive.meta_decide(
+                message, uil.confidence, caps,
+                evidence_coverage=min(1.0, len(fed_evidence) / 3) if fed_evidence else 0.5,
+            )
             trace["stages"].append({
                 "stage": "meta_reason",
                 "decision": asdict(decision),
@@ -213,8 +216,34 @@ class NiosGateway:
             resource_manager.record_latency((time.perf_counter() - t0) * 1000)
             return route_result
 
-        # ── Tier 3+: Research + Multi-agent + Cascade ──
-        research = await autonomous_research(message, intent="accounting_qa")
+        # ── Tier 3+: Research + Multi-agent + Cascade (with Cognitive OS retry) ──
+        research = None
+        attempt = 0
+        max_attempts = decision.retry.max_attempts if decision.retry else 3
+        while attempt < max_attempts:
+            query = message
+            if attempt > 0 and decision.sub_problems:
+                query = decision.sub_problems[min(attempt - 1, len(decision.sub_problems) - 1)]
+            research = await autonomous_research(query, intent="accounting_qa")
+            if research.confidence >= 0.5:
+                break
+            if not decision.retry or not decision.retry.should_retry:
+                break
+            attempt += 1
+            evidence_cov = min(1.0, len(research.chunks) / 5)
+            decision = self.kernel.cognitive.meta_decide(
+                message, uil.confidence, caps,
+                attempt=attempt,
+                evidence_coverage=evidence_cov,
+            )
+            trace["stages"].append({
+                "stage": "cognitive_retry",
+                "attempt": attempt,
+                "reason": decision.retry.reason if decision.retry else "",
+                "confidence": research.confidence,
+            })
+
+        assert research is not None
         eval_report = merge_evaluations(
             evaluate_uil_confidence(uil.confidence),
             evaluate_retrieval(research.chunks),
@@ -437,6 +466,36 @@ class NiosGateway:
         trace: dict[str, Any],
         uil,
     ) -> dict[str, Any] | None:
+        # Sell / purchase — AccountingDSL journal proposal
+        if uil.action in ("sell", "purchase"):
+            from .dsl.compilers.uil_compiler import compile_uil_pipeline
+
+            compiled = compile_uil_pipeline(message)
+            acct = compiled.get("accounting", {})
+            lines = acct.get("lines", [])
+            if lines and acct.get("balanced"):
+                line_text = "\n".join(
+                    f"  {l.get('account', '?')}: Dr {l.get('debit', 0)} / Cr {l.get('credit', 0)}"
+                    for l in lines[:6]
+                )
+                tax_note = ""
+                if compiled.get("tax"):
+                    tax_note = f"\nVAT: Rs.{compiled['tax'].get('vat_amount', 0)}"
+                answer = (
+                    f"**{uil.action.title()} journal (proposed)**\n{line_text}{tax_note}\n"
+                    f"Party: {acct.get('party', '—')} | Balanced: yes"
+                )
+                trace["stages"].append({"stage": "accounting_dsl", "action": uil.action})
+                return self._response(
+                    answer,
+                    session_id=ctx.session_id,
+                    intent=uil.action,
+                    confidence=uil.confidence,
+                    engine="nios_accounting_dsl",
+                    capabilities_used=["cap.khata.entry.parse", "cap.engine.accounting", "cap.tax.vat.calculate"],
+                    trace=trace,
+                )
+
         # Legal Nepal (Phase 6)
         if _LEGAL.search(message) or uil.action == "legal_query":
             result = self.kernel.legal.search(message)
@@ -671,6 +730,17 @@ class NiosGateway:
         card: dict | None = None,
     ) -> dict[str, Any]:
         resource_manager.record_tier("none", "execute_capability", engine=engine)
+        latency_ms = resource_manager._recent_latencies[-1] if resource_manager._recent_latencies else 0.0
+        high_trust = any(
+            engine.startswith(p)
+            for p in ("nios_deterministic", "nios_erp", "nios_scheduler", "nios_accounting", "nios_cache", "nios_legal", "nios_investment")
+        ) or any("engine" in c or "erp" in c for c in capabilities_used)
+        resource_manager.persist_request(
+            engine=engine,
+            latency_ms=latency_ms,
+            intent=intent,
+            has_high_trust_evidence=high_trust,
+        )
         trace["spans"] = self.kernel.telemetry.flush()
         self.kernel.events.emit(
             "nios.chat.completed",

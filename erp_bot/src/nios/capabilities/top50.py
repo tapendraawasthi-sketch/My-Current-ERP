@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from ..contracts.intelligence_contract import ObserveContext
+from ..execution.engines.erp_engine import aging_report, ledger_balance, profit_loss, trial_balance
 from ..execution.engines.tax_engine import compute_payroll, compute_tds, compute_vat, round2
 from ..execution.simulation.engine import simulate_salary_increase
 from ..execution.optimization.engine import optimization_engine
@@ -105,9 +106,8 @@ def _exec_journal(ctx: dict[str, Any]) -> dict[str, Any]:
 
 
 def _exec_balance(ctx: dict[str, Any]) -> dict[str, Any]:
-    bal = ctx.get("balance") or {}
-    cash = bal.get("cash", bal.get("cashBalance", 0))
-    return {"ok": True, "summary": f"Cash Rs.{cash}", "cash": cash}
+    from ..execution.engines.erp_engine import ledger_balance
+    return ledger_balance(ctx.get("balance"))
 
 
 def _exec_accounting_ratios(ctx: dict[str, Any]) -> dict[str, Any]:
@@ -232,6 +232,9 @@ EXECUTOR_MAP: dict[str, Any] = {
     "cap.erp.journal_validate": _exec_journal,
     "cap.erp.ledger.balance": _exec_balance,
     "cap.engine.accounting": _exec_accounting_ratios,
+    "cap.erp.trial_balance": lambda ctx: trial_balance(ctx.get("balance")),
+    "cap.erp.profit_loss": lambda ctx: profit_loss(ctx.get("balance")),
+    "cap.erp.aging_report": lambda ctx: aging_report(ctx.get("balance")),
     "cap.engine.depreciation": _exec_depreciation,
     "cap.engine.optimization": _exec_optimization,
     "cap.consultant.pricing_optimize": _exec_pricing,

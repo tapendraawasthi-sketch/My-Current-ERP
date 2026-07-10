@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from ..intelligence.provenance_graph import provenance_graph
-from ..kernel.memory_bus import memory_bus
+from ..kernel.kernel import get_kernel
 from ..benchmarks.nightly.runner import nightly_runner, ALL_SUITES_WITH_NEPAL_AI
 from ..capabilities.runtime import capability_runtime
 
@@ -80,7 +80,7 @@ class QualityGateEngine:
             pass_rate = 100.0
             nightly_ok = False
 
-        mem_stats = memory_bus.stats()
+        mem_stats = get_kernel().memory_bus.stats()
 
         gates = [
             self._gate("provenance_coverage", prov_cov, self.TARGETS["provenance_coverage"], ">="),
@@ -147,7 +147,14 @@ class QualityGateEngine:
         return resource_manager.stats()
 
     def _hallucination_proxy(self) -> float:
-        """Proxy: % of research answers without tool/erp/law evidence in last provenance batch."""
+        """Proxy from persisted telemetry when live traffic exists, else provenance batch."""
+        try:
+            from ..kernel.telemetry_store import telemetry_store
+            stats = telemetry_store.stats()
+            if stats.get("request_count", 0) >= 10:
+                return float(stats.get("hallucination_proxy_pct", 0.5))
+        except Exception:
+            pass
         data_dir = Path(os.getenv("NIOS_DATA_DIR", "data"))
         db = data_dir / "nios_provenance.sqlite3"
         if not db.exists():

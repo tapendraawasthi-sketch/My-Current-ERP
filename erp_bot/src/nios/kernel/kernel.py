@@ -26,7 +26,7 @@ from ..representations.world_state.engine import world_state_engine
 from .autonomous_tasks import autonomous_task_engine
 from .capability_registry import registry
 from .event_bus import event_bus
-from .memory_bus import memory_bus
+from .memory_bus import create_memory_bus
 from .plugin_loader import plugin_loader
 from .security_manager import security_manager
 from ..dsl.workflow_dsl import workflow_engine
@@ -59,7 +59,7 @@ class NiosKernel:
         self.meta_reasoner = meta_reasoner
         self.scheduler = scheduler
         self.telemetry = Telemetry()
-        self.memory_bus = memory_bus
+        self.memory_bus = create_memory_bus()
         self.security = security_manager
         self.plugins = plugin_loader
         self.world_state = world_state_engine
@@ -76,6 +76,7 @@ class NiosKernel:
         self.universal_sim = universal_simulation
         self.learning_automation = learning_automation
         self._bootstrap_platform_scale()
+        self._bootstrap_production_ops()
         self._register_default_event_handlers()
         plugin_loader.load_builtin(self.registry)
 
@@ -128,6 +129,18 @@ class NiosKernel:
             plugin_counts["skills"],
             plugin_counts["workflows"],
         )
+
+    def _bootstrap_production_ops(self) -> None:
+        """Refresh feeds and log memory backend on startup."""
+        try:
+            from ..knowledge.feeds import refresh_feeds
+
+            feeds = refresh_feeds(live=True)
+            logger.info("[NIOS] Feeds refreshed: source=%s", feeds.get("source"))
+        except Exception as exc:
+            logger.warning("[NIOS] Feed refresh skipped: %s", exc)
+        backend = getattr(self.memory_bus, "backend", "sqlite")
+        logger.info("[NIOS] Memory bus backend: %s", backend)
 
     def _register_default_event_handlers(self) -> None:
         def on_voucher_posted(event) -> None:

@@ -34,13 +34,8 @@ def _family_executor(cap_id: str):
         return {"ok": True, "summary": f"Net Rs.{r['net_pay']}", **r}
 
     def _erp(ctx: dict[str, Any]) -> dict[str, Any]:
-        bal = ctx.get("balance") or {}
-        return {
-            "ok": True,
-            "summary": f"ERP {cap_id.split('.')[-1]} executed",
-            "snapshot": bal,
-            "capability": cap_id,
-        }
+        from ..execution.engines.erp_engine import execute_erp_capability
+        return execute_erp_capability(cap_id, ctx)
 
     def _legal(ctx: dict[str, Any]) -> dict[str, Any]:
         from ..domains.legal.engine import legal_engine
@@ -82,10 +77,56 @@ def _family_executor(cap_id: str):
         return {"ok": True, "summary": plan.steps[0] if plan.steps else "Advisory", "confidence": plan.confidence}
 
     def _compliance(ctx: dict[str, Any]) -> dict[str, Any]:
-        return {"ok": True, "summary": f"Compliance check: {cap_id}", "status": "monitored"}
+        from ..knowledge.feeds import gov_search
+
+        op = cap_id.split(".")[-1]
+        if "vat" in op and "deadline" in op:
+            return {
+                "ok": True,
+                "summary": "VAT return due by 25th of following month (IRD Nepal)",
+                "deadline_rule": "monthly_vat_25",
+                "status": "monitored",
+            }
+        if "cbms" in op:
+            hits = gov_search("cbms mandatory", topic="cbms")
+            text = hits[0]["text"] if hits else "CBMS real-time reporting required for VAT invoices"
+            return {"ok": True, "summary": text[:200], "status": "required", "authority": "IRD"}
+        if "tds" in op and "deadline" in op:
+            return {
+                "ok": True,
+                "summary": "TDS return due within 25 days after month end",
+                "deadline_rule": "tds_25_days",
+                "status": "monitored",
+            }
+        if "policy" in op:
+            from ..knowledge.policy_engine import PolicyContext, evaluate_policies
+            violations = evaluate_policies(PolicyContext(capability_id=cap_id, jurisdiction="NP"))
+            return {
+                "ok": len([v for v in violations if v.get("severity") == "block"]) == 0,
+                "summary": f"Policy check: {len(violations)} note(s)",
+                "violations": violations[:3],
+            }
+        return {"ok": True, "summary": f"Compliance {op}: monitored", "status": "ok"}
 
     def _reporting(ctx: dict[str, Any]) -> dict[str, Any]:
-        return {"ok": True, "summary": f"Report generated: {cap_id}", "format": "pdf"}
+        from ..execution.engines.erp_engine import profit_loss, trial_balance, aging_report
+
+        bal = ctx.get("balance") or {}
+        op = cap_id.split(".")[-1]
+        if "profit" in op or "kpi" in op:
+            return profit_loss(bal)
+        if "trial" in op:
+            return trial_balance(bal)
+        if "aging" in op:
+            return aging_report(bal)
+        if "dashboard" in op:
+            pl = profit_loss(bal)
+            return {
+                "ok": True,
+                "summary": pl["summary"],
+                "kpis": {"revenue": pl["revenue"], "expense": pl["expense"], "profit": pl["gross_profit"]},
+            }
+        return {"ok": True, "summary": f"Report {op} ready", "format": "pdf"}
 
     if cap_id.startswith("cap.tax.") or "tax" in cap_id:
         return _tax
@@ -107,6 +148,18 @@ def _family_executor(cap_id: str):
         return _compliance
     if cap_id.startswith("cap.reporting."):
         return _reporting
+    if cap_id.startswith("cap.audit.") or cap_id.startswith("cap.treasury.") or cap_id.startswith("cap.hr."):
+        def _y2_workflow(ctx: dict[str, Any]) -> dict[str, Any]:
+            op = cap_id.split(".")[-1]
+            if "policy" in op:
+                from ..knowledge.policy_engine import PolicyContext, evaluate_policies
+                v = evaluate_policies(PolicyContext(capability_id=cap_id))
+                return {"ok": True, "summary": f"Policy {op}: {len(v)} check(s)", "violations": len(v)}
+            if "report" in op or "generate" in op:
+                from ..execution.engines.erp_engine import profit_loss
+                return profit_loss(ctx.get("balance"))
+            return {"ok": True, "summary": f"{cap_id.split('.')[1].title()} {op} completed", "capability": cap_id}
+        return _y2_workflow
     if "simulation" in cap_id or "scenario" in cap_id:
         def _sim(ctx: dict[str, Any]) -> dict[str, Any]:
             sim = simulate_salary_increase(50000, 10)

@@ -17,6 +17,7 @@ from dotenv import load_dotenv
 
 BOT_ROOT = Path(__file__).resolve().parent.parent
 load_dotenv(dotenv_path=BOT_ROOT / ".env")
+load_dotenv(dotenv_path=BOT_ROOT.parent / ".env", override=False)
 
 DEFAULT_ERP_PATH = BOT_ROOT.parent
 

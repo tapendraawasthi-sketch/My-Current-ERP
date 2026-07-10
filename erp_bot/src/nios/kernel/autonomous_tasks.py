@@ -42,6 +42,8 @@ class AutonomousTaskEngine:
         self._monitors: list[Callable[[dict], list[AutonomousTask]]] = [
             self._monitor_vat_deadline,
             self._monitor_low_liquidity,
+            self._monitor_high_payables,
+            self._monitor_tds_filing,
         ]
 
     def on_event(self, event_type: str, payload: dict) -> list[AutonomousTask]:
@@ -135,6 +137,35 @@ class AutonomousTaskEngine:
                 f"Low liquidity alert: Rs. {liquidity:,.0f}",
                 payload={"liquidity": liquidity},
                 priority=9,
+            )
+        ]
+
+    def _monitor_high_payables(self, context: dict) -> list[AutonomousTask]:
+        balance = context.get("balance") or {}
+        payable = float(balance.get("payable", balance.get("payables", 0)) or 0)
+        receivable = float(balance.get("receivable", balance.get("receivables", 0)) or 0)
+        if payable <= 0 or payable < receivable * 1.5:
+            return []
+        return [
+            self.schedule(
+                "alert",
+                f"High payables vs receivables: Rs. {payable:,.0f} payable",
+                payload={"payable": payable, "receivable": receivable},
+                priority=7,
+            )
+        ]
+
+    def _monitor_tds_filing(self, context: dict) -> list[AutonomousTask]:
+        ws = world_state_engine.query(intent="tax_query", balance=context.get("balance"))
+        if ws.summary.get("tds_filing_due") is not True:
+            return []
+        return [
+            self.schedule(
+                "compliance",
+                "TDS return filing due — prepare Form 16 and payment",
+                payload={"filing": "tds"},
+                priority=8,
+                due_in_days=5,
             )
         ]
 

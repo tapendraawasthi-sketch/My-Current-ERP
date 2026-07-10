@@ -38,6 +38,7 @@ export const NiosShell: React.FC = () => {
   const [ocrText, setOcrText] = useState("");
   const [qualityGates, setQualityGates] = useState<Record<string, unknown> | null>(null);
   const [archScore, setArchScore] = useState<Record<string, unknown> | null>(null);
+  const [platformStatus, setPlatformStatus] = useState<Record<string, unknown> | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -138,10 +139,11 @@ export const NiosShell: React.FC = () => {
   const runBenchmark = async () => {
     setLoading(true);
     try {
-      const [benchRes, gateRes, archRes] = await Promise.all([
+      const [benchRes, gateRes, archRes, statusRes] = await Promise.all([
         fetch(`${resolveNiosUrl()}/benchmarks/nightly/run`, { method: "POST" }),
         fetch(`${resolveNiosUrl()}/quality-gates`),
         fetch(`${resolveNiosUrl()}/architecture/score`),
+        fetch(`${resolveNiosUrl()}/status`),
       ]);
       const data = await benchRes.json();
       setBenchmarkResult(data);
@@ -150,6 +152,9 @@ export const NiosShell: React.FC = () => {
       }
       if (archRes.ok) {
         setArchScore(await archRes.json());
+      }
+      if (statusRes.ok) {
+        setPlatformStatus(await statusRes.json());
       }
     } finally {
       setLoading(false);
@@ -219,6 +224,15 @@ export const NiosShell: React.FC = () => {
           <div className="space-y-2 text-[12px] text-gray-700">
             <button onClick={refreshState} className="h-7 px-2.5 text-[11px] border border-gray-300 rounded-md hover:bg-gray-50">
               Refresh
+            </button>
+            <button
+              onClick={async () => {
+                await fetch(`${resolveNiosUrl()}/feeds/refresh`, { method: "POST" });
+                refreshState();
+              }}
+              className="h-7 px-2.5 text-[11px] border border-gray-300 rounded-md hover:bg-gray-50"
+            >
+              Refresh feeds
             </button>
             {worldStateSummary ? (
               <pre className="text-[11px] bg-gray-50 p-2 rounded-md overflow-x-auto">
@@ -302,8 +316,14 @@ export const NiosShell: React.FC = () => {
                     ))}
                     <div className="text-[10px] text-gray-500">
                       Provenance {String(qualityGates.provenance_coverage)} · Contract {String(qualityGates.contract_adoption_pct)}%
-                      {qualityGates.p95_latency_ms != null && ` · P95 ${String(qualityGates.p95_latency_ms)}ms`}
+                    {qualityGates.p95_latency_ms != null && ` · P95 ${String(qualityGates.p95_latency_ms)}ms`}
+                      {qualityGates.request_count != null && ` · ${String(qualityGates.request_count)} requests`}
                     </div>
+                  </div>
+                )}
+                {platformStatus && (
+                  <div className="text-[10px] text-gray-500">
+                    {String(platformStatus.capabilities_registered)} capabilities · contract v{String(platformStatus.contract_version)}
                   </div>
                 )}
                 {archScore && (

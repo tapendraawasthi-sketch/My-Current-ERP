@@ -30,6 +30,14 @@ class ResourceManager:
         self._request_count: int = 0
 
     def stats(self) -> dict[str, float]:
+        try:
+            from .telemetry_store import telemetry_store
+            persisted = telemetry_store.stats()
+            if persisted.get("request_count", 0) > 0:
+                return persisted
+        except Exception:
+            pass
+
         total = sum(self._tier_counts.values()) or 1
         sorted_lat = sorted(self._recent_latencies)
         p95 = sorted_lat[int(len(sorted_lat) * 0.95)] if sorted_lat else 0.0
@@ -41,6 +49,46 @@ class ResourceManager:
             "p95_latency_ms": round(p95, 1),
             "request_count": self._request_count,
         }
+
+    def infer_tier_label(self, *, engine: str, tier: ModelTier = "none", meta_action: str = "") -> str:
+        if engine.startswith("nios_cache") or engine.startswith("nios_deterministic") or engine.startswith("nios_erp"):
+            return "tier_0_2"
+        if engine.startswith("nios_scheduler") or engine.startswith("nios_accounting"):
+            return "tier_0_2"
+        if engine.startswith("nios_research") and "32b" not in engine:
+            return "tier_3"
+        if engine.startswith("nios_cascade") or "planner" in engine:
+            return "tier_4_5"
+        if meta_action in ("execute_capability", "calculate", "simulate") or tier == "none":
+            return "tier_0_2"
+        if tier == "4b":
+            return "tier_3"
+        return "tier_4_5"
+
+    def persist_request(
+        self,
+        *,
+        engine: str,
+        tier: ModelTier = "none",
+        meta_action: str = "",
+        latency_ms: float,
+        intent: str | None = None,
+        has_high_trust_evidence: bool = False,
+        policy_blocked: bool = False,
+    ) -> None:
+        try:
+            from .telemetry_store import telemetry_store
+
+            telemetry_store.record_request(
+                engine=engine,
+                tier=self.infer_tier_label(engine=engine, tier=tier, meta_action=meta_action),
+                latency_ms=latency_ms,
+                intent=intent,
+                has_high_trust_evidence=has_high_trust_evidence,
+                policy_blocked=policy_blocked,
+            )
+        except Exception:
+            pass
 
     def record_tier(self, tier: ModelTier, meta_action: str, *, engine: str = "") -> None:
         """Record tier usage from gateway response path."""

@@ -164,6 +164,16 @@ class MemoryBus:
 
 def create_memory_bus():
     """Factory — SQLite default; PostgreSQL when NIOS_MEMORY_BACKEND=postgres."""
+    try:
+        from pathlib import Path
+        from dotenv import load_dotenv
+
+        bot_root = Path(__file__).resolve().parents[2]
+        load_dotenv(bot_root / ".env")
+        load_dotenv(bot_root.parent / ".env", override=False)
+    except Exception:
+        pass
+
     backend = os.getenv("NIOS_MEMORY_BACKEND", "sqlite").lower()
     if backend == "postgres":
         dsn = os.getenv("NIOS_PG_URL") or os.getenv("DATABASE_URL")

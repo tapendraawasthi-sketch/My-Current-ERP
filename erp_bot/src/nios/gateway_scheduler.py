@@ -83,7 +83,7 @@ async def execute_goal_tree(
     summaries = [
         r.get("summary", "")
         for r in result.step_results.values()
-        if r.get("summary") and not r.get("skipped")
+        if r.get("summary") and not r.get("skipped") and " executed" not in r.get("summary", "")
     ]
     caps_used = [
         r.get("capability", "")
