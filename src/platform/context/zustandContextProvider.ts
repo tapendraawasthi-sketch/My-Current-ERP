@@ -1,6 +1,7 @@
 import type { IContextProvider, ITenantContext } from "@fios/kernel";
 import { isMigrationFlagEnabled } from "@/platform/flags/registry";
-import { bootstrapIdentity, getIdentityProvider } from "@/platform/identity/identityBootstrap";
+import { bootstrapIdentity } from "@/platform/identity/identityBootstrap";
+import { getIdentityProvider } from "@/platform/identity/identityProvider";
 import { useStore } from "@/store";
 import type { AppState } from "@/store/store.types";
 
