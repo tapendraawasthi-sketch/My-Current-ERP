@@ -122,10 +122,35 @@ import ReversingJournals from "./pages/ReversingJournals";
 import RejectionVoucherPage from "./pages/RejectionVoucherPage";
 import JobWorkRegister from "./pages/JobWorkRegister";
 
-const App: React.FC = () => {
+const TOAST_OPTIONS = {
+  style: {
+    background: "#ffffff",
+    color: "#1f2937",
+    border: "1px solid #e5e7eb",
+    fontSize: "12px",
+    borderRadius: "8px",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+  },
+  success: {
+    iconTheme: { primary: "#1557b0", secondary: "#ffffff" },
+  },
+  error: {
+    iconTheme: { primary: "#dc2626", secondary: "#ffffff" },
+  },
+} as const;
+
+type AppProps = {
+  onMounted?: () => void;
+};
+
+const App: React.FC<AppProps> = ({ onMounted }) => {
   const { currentPage, authStage, initializeApp, setCurrentPage } = useStore();
 
   const initCalledRef = useRef(false);
+  useEffect(() => {
+    onMounted?.();
+  }, [onMounted]);
+
   useEffect(() => {
     if (initCalledRef.current) return;
     initCalledRef.current = true;
@@ -170,62 +195,62 @@ const App: React.FC = () => {
     return () => window.removeEventListener("keydown", handler);
   }, [setCurrentPage]);
 
-  if (authStage === "checking") {
-    return (
-      <div
-        className="min-h-screen flex items-center justify-center"
-        style={{ background: "#f5f6fa" }}
-      >
-        <div className="text-center">
-          <div
-            style={{
-              width: 40,
-              height: 40,
-              border: "4px solid #1557b0",
-              borderTopColor: "transparent",
-              borderRadius: "50%",
-              animation: "spin 0.8s linear infinite",
-            }}
-            className="mx-auto mb-4"
-          />
-          <p className="text-[12px] mt-1" style={{ color: "#6b7280" }}>
-            Loading Sutra ERP…
-          </p>
+  const renderAuthStage = () => {
+    if (authStage === "checking") {
+      return (
+        <div
+          className="min-h-screen flex items-center justify-center"
+          style={{ background: "#f5f6fa" }}
+        >
+          <div className="text-center">
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                border: "4px solid #1557b0",
+                borderTopColor: "transparent",
+                borderRadius: "50%",
+                animation: "spin 0.8s linear infinite",
+              }}
+              className="mx-auto mb-4"
+            />
+            <p className="text-[12px] mt-1" style={{ color: "#6b7280" }}>
+              Loading Sutra ERP…
+            </p>
+          </div>
         </div>
-      </div>
-    );
-  }
+      );
+    }
 
-  if (authStage === "error") {
-    return (
-      <>
-        <Toaster position="bottom-right" />
-        <InitErrorScreen />
-      </>
-    );
-  }
+    if (authStage === "error") {
+      return <InitErrorScreen />;
+    }
 
-  if (authStage === "no-company")
+    if (authStage === "no-company") {
+      return <SignUpWizard />;
+    }
+
+    if (authStage === "gateway") {
+      return <GatewayScreen />;
+    }
+
+    if (authStage === "company-login") {
+      return <CompanyLoginScreen />;
+    }
+
     return (
-      <>
-        <Toaster position="bottom-right" />
-        <SignUpWizard />
-      </>
+      <F12Provider>
+        <Layout>
+          <div className="flex flex-col h-full">
+            <main className="flex-1 overflow-y-auto" style={{ background: "#f5f6fa" }}>
+              {renderPage()}
+            </main>
+          </div>
+        </Layout>
+        <F12Panel />
+      </F12Provider>
     );
-  if (authStage === "gateway")
-    return (
-      <>
-        <Toaster position="bottom-right" />
-        <GatewayScreen />
-      </>
-    );
-  if (authStage === "company-login")
-    return (
-      <>
-        <Toaster position="bottom-right" />
-        <CompanyLoginScreen />
-      </>
-    );
+  };
 
   const renderPage = () => {
     switch (currentPage) {
@@ -518,35 +543,8 @@ const App: React.FC = () => {
 
   return (
     <>
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          style: {
-            background: "#ffffff",
-            color: "#1f2937",
-            border: "1px solid #e5e7eb",
-            fontSize: "12px",
-            borderRadius: "8px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-          },
-          success: {
-            iconTheme: { primary: "#1557b0", secondary: "#ffffff" },
-          },
-          error: {
-            iconTheme: { primary: "#dc2626", secondary: "#ffffff" },
-          },
-        }}
-      />
-      <F12Provider>
-        <Layout>
-          <div className="flex flex-col h-full">
-            <main className="flex-1 overflow-y-auto" style={{ background: "#f5f6fa" }}>
-              {renderPage()}
-            </main>
-          </div>
-        </Layout>
-        <F12Panel />
-      </F12Provider>
+      <Toaster position="top-right" toastOptions={TOAST_OPTIONS} />
+      {renderAuthStage()}
     </>
   );
 };
