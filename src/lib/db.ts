@@ -1208,6 +1208,34 @@ export class SutraERPDatabase extends Dexie {
   recurringTemplates!: Table<DBRecurringTemplate>;
   recurringPostings!: Table<DBRecurringPosting>;
   syncOutbox!: Table<DBSyncOutboxRecord>;
+  domainEvents!: Table<any>;
+  eventSnapshots!: Table<any>;
+  eventStoreCursors!: Table<any>;
+  eventDedupKeys!: Table<any>;
+  projectionMeta!: Table<any>;
+  projectionCheckpoints!: Table<any>;
+  projectionGlobalCursor!: Table<any>;
+  projectionAccountBalances!: Table<any>;
+  projectionGeneralLedger!: Table<any>;
+  projectionTrialBalance!: Table<any>;
+  projectionVouchers!: Table<any>;
+  projectionInvoices!: Table<any>;
+  projectionParties!: Table<any>;
+  projectionInventory!: Table<any>;
+  projectionStockLedger!: Table<any>;
+  projectionStockBalances!: Table<any>;
+  projectionTax!: Table<any>;
+  projectionAudit!: Table<any>;
+  projectionNotifications!: Table<any>;
+  projectionCompany!: Table<any>;
+  projectionFiscalYear!: Table<any>;
+  projectionNumberSeries!: Table<any>;
+  projectionSyncCursor!: Table<any>;
+  projectionParityResults!: Table<any>;
+  eventSyncQueue!: Table<any>;
+  eventSyncCursors!: Table<any>;
+  eventSyncDeadLetter!: Table<any>;
+  eventSyncConflicts!: Table<any>;
 
   constructor() {
     super("SutraERPDatabase");
@@ -1366,6 +1394,47 @@ export class SutraERPDatabase extends Dexie {
     this.version(22).stores({
       syncOutbox: "id, entityType, entityId, operation, syncedAt, syncAttempts, createdAt, status",
     });
+
+    // Version 23 — append-only domain event store (F4)
+    this.version(23).stores({
+      domainEvents:
+        "id, tenantId, companyId, aggregateType, aggregateId, sequence, globalSequence, eventType, correlationId, causationId, commandId, [aggregateType+aggregateId+sequence], [causationId+eventType], [tenantId+globalSequence], occurredAt",
+      eventSnapshots: "aggregateKey, sequence, createdAt",
+      eventStoreCursors: "id, tenantId",
+      eventDedupKeys: "id, causationId, eventType",
+    });
+
+    // Version 24 — disposable CQRS projection caches (F6)
+    this.version(24).stores({
+      projectionMeta: "id, projectionName, status, lastGlobalSequence, updatedAt",
+      projectionCheckpoints: "id, projectionName, globalSequence, updatedAt",
+      projectionGlobalCursor: "id, lastGlobalSequence, status, updatedAt",
+      projectionAccountBalances: "id, accountId, globalSequence, updatedAt",
+      projectionGeneralLedger: "id, accountId, voucherId, date, globalSequence",
+      projectionTrialBalance: "id, accountId, snapshotSequence, updatedAt",
+      projectionVouchers: "id, aggregateId, globalSequence, updatedAt",
+      projectionInvoices: "id, aggregateId, globalSequence, updatedAt",
+      projectionParties: "id, aggregateId, globalSequence, updatedAt",
+      projectionInventory: "id, itemId, globalSequence, updatedAt",
+      projectionStockLedger: "id, itemId, date, globalSequence",
+      projectionStockBalances: "id, itemId, globalSequence, updatedAt",
+      projectionTax: "id, entryId, globalSequence, updatedAt",
+      projectionAudit: "id, entryId, globalSequence, updatedAt",
+      projectionNotifications: "id, notificationId, globalSequence, updatedAt",
+      projectionCompany: "id, globalSequence, updatedAt",
+      projectionFiscalYear: "id, globalSequence, updatedAt",
+      projectionNumberSeries: "id, seriesKey, globalSequence, updatedAt",
+      projectionSyncCursor: "id, lastGlobalSequence, updatedAt",
+      projectionParityResults: "id, projectionName, metric, recordedAt",
+    });
+
+    // Version 25 — event-carried sync pipeline (F8)
+    this.version(25).stores({
+      eventSyncQueue: "id, eventId, globalSequence, tenantId, status, createdAt, syncedAt",
+      eventSyncCursors: "id, deviceId, tenantId, lastGlobalSequence, updatedAt",
+      eventSyncDeadLetter: "id, eventId, createdAt",
+      eventSyncConflicts: "id, eventId, classification, createdAt",
+    });
   }
 }
 
@@ -1393,11 +1462,24 @@ export async function resetDB(): Promise<SutraERPDatabase> {
 
 /**
  * Opens the DB and ensures it is actually reachable before returning.
- * If the DB is blocked (another tab holds an older version), this will
- * wait up to 8 seconds then force-delete the old DB and create a fresh one.
+ * When MIGRATION_SAFE_OPEN_DB or MIGRATION_EVENT_STORE is enabled, uses
+ * non-destructive safe-open (never deletes the database).
  */
 export async function openDB() {
+  const { isSafeOpenEnabled, safeOpenDatabase, SafeOpenError } = await import(
+    "@/platform/event-store/safeOpen"
+  );
+
   const db = getDB();
+
+  if (isSafeOpenEnabled()) {
+    const result = await safeOpenDatabase(db);
+    if (!result.ok) {
+      throw new SafeOpenError(result);
+    }
+    return result.db;
+  }
+
   try {
     await Promise.race([
       db.open(),

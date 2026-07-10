@@ -19,7 +19,24 @@
     "forceConsistentCasingInFileNames": true,
     "useUnknownInCatchVariables": false,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@fios/kernel": ["./src/platform/kernel/index.ts"],
+      "@fios/platform": ["./src/platform/index.ts"],
+      "@fios/legacy": ["./src/legacy/index.ts"],
+      "@fios/command-bus": ["./src/platform/command-bus/index.ts"],
+      "@fios/event-bus": ["./src/platform/event-bus/index.ts"],
+      "@fios/event-store": ["./src/platform/event-store/index.ts"],
+      "@fios/query-bus": ["./src/platform/query-bus/index.ts"],
+      "@fios/projections": ["./src/platform/projections/index.ts"],
+      "@fios/identity": ["./src/platform/identity/index.ts"],
+      "@fios/sync": ["./src/platform/sync/index.ts"],
+      "@fios/domains": ["./src/domains/index.ts"],
+      "@fios/inventory-engine": ["./src/domains/inventory-engine/index.ts"],
+      "@fios/accounting-engine": ["./src/domains/accounting-engine/index.ts"],
+      "@fios/report-engine": ["./src/domains/report-engine/index.ts"],
+      "@fios/nios-core": ["./src/domains/nios-core/index.ts"],
+      "@fios/ai-proposal": ["./src/domains/ai-proposal/index.ts"],
+      "@fios/plugin-kernel": ["./src/domains/plugin-kernel/index.ts"]
     }
   },
   "include": ["src"],

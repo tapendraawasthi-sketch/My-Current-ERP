@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { confirmKhataEntry } from "../lib/ekhata/confirmKhata";
+import { confirmKhataViaProposal } from "../domains/nios";
 import {
   checkEKhataLlmStatus,
   getEKhataSessionId,
@@ -619,12 +619,10 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
       if (get().isLoading) return;
       set({ isLoading: true });
       try {
-        const { addVoucher } = useStore.getState();
+        const sessionId = get().activeSessionId;
         const voucherNos: string[] = [];
         for (const part of batch.parts) {
-          const { voucherNo } = await confirmKhataEntry(part.card, {
-            addVoucher: addVoucher as (voucher: Record<string, unknown>) => Promise<unknown>,
-          });
+          const { voucherNo } = await confirmKhataViaProposal(part.card, sessionId);
           voucherNos.push(voucherNo);
           recordTrainingFeedback(part.card, "confirmed");
         }
@@ -674,10 +672,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
 
     set({ isLoading: true });
     try {
-      const { addVoucher } = useStore.getState();
-      const { voucherNo } = await confirmKhataEntry(card, {
-        addVoucher: addVoucher as (voucher: Record<string, unknown>) => Promise<unknown>,
-      });
+      const { voucherNo } = await confirmKhataViaProposal(card, get().activeSessionId);
 
       const appendMsg: EKhataChatMessage = {
         id: genId(),

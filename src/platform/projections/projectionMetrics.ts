@@ -1,0 +1,37 @@
+const counters: Record<string, number> = {
+  eventsProcessed: 0,
+  projectionsApplied: 0,
+  rebuilds: 0,
+  parityChecks: 0,
+  parityFailures: 0,
+  errors: 0,
+};
+
+export const projectionMetrics = {
+  incrementEventsProcessed(count = 1): void {
+    counters.eventsProcessed += count;
+  },
+  incrementProjectionsApplied(count = 1): void {
+    counters.projectionsApplied += count;
+  },
+  incrementRebuilds(): void {
+    counters.rebuilds += 1;
+  },
+  incrementParityChecks(): void {
+    counters.parityChecks += 1;
+  },
+  incrementParityFailures(): void {
+    counters.parityFailures += 1;
+  },
+  incrementErrors(): void {
+    counters.errors += 1;
+  },
+  snapshot(): Record<string, number> {
+    return { ...counters };
+  },
+  reset(): void {
+    for (const key of Object.keys(counters)) {
+      counters[key] = 0;
+    }
+  },
+};

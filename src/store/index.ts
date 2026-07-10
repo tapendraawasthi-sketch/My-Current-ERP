@@ -52,7 +52,33 @@ import { computeNepalTDS } from "../lib/nepalTax";
 import { startCbmsQueueWorker } from "../lib/cbmsService";
 import { migrateWorkflowFields } from "../lib/workflowMigration";
 import { computeNextDueDate } from "../lib/recurringUtils";
-import { enqueueSyncRecord } from "../lib/syncEngine";
+import { registerWriteInternals } from "./writeInternals";
+import {
+  facadeAddAccount,
+  facadeAddAuditLog,
+  facadeAddInvoice,
+  facadeAddItem,
+  facadeAddNotification,
+  facadeAddParty,
+  facadeAddTdsEntry,
+  facadeAddVoucher,
+  facadeCancelInvoice,
+  facadeCancelVoucher,
+  facadeClearNotifications,
+  facadeDeleteAccount,
+  facadeLoadAuditLogs,
+  facadeMarkNotificationRead,
+  facadeSetCurrentFiscalYear,
+  facadeUpdateAccount,
+  facadeUpdateCompanySettings,
+  facadeUpdateInvoice,
+  facadeUpdateItem,
+  facadeUpdateParty,
+  facadeUpdateTdsEntry,
+  facadeUpdateVoucher,
+} from "./facadeWriteRouter";
+import { enqueueAfterDomainWrite } from "./syncEnqueueRouter";
+import { bootstrapPlatformRuntime } from "./platformBootstrap";
 
 export const useStore = create<AppState>()((...a) => {
   const [set, get, api] = a;
@@ -60,6 +86,48 @@ export const useStore = create<AppState>()((...a) => {
   const inventorySlice = createInventorySlice(set, get, api);
   const voucherSlice = createVoucherSlice(set, get, api);
   const settingsSlice = createSettingsSlice(set, get, api);
+
+  const loadAuditLogsImpl = async () => {
+    try {
+      const db = getDB();
+      const logs = await db
+        .table("auditLogs")
+        .orderBy("timestamp")
+        .reverse()
+        .limit(500)
+        .toArray();
+      set({ auditLogs: logs });
+    } catch (err) {
+      console.error("[loadAuditLogs]", err);
+      set({ auditLogs: [] });
+    }
+  };
+
+  registerWriteInternals({
+    addVoucher: voucherSlice.addVoucher,
+    updateVoucher: voucherSlice.updateVoucher,
+    cancelVoucher: voucherSlice.cancelVoucher,
+    addInvoice: voucherSlice.addInvoice,
+    updateInvoice: voucherSlice.updateInvoice,
+    cancelInvoice: voucherSlice.cancelInvoice,
+    addAccount: accountSlice.addAccount,
+    updateAccount: accountSlice.updateAccount,
+    deleteAccount: accountSlice.deleteAccount,
+    addParty: accountSlice.addParty,
+    updateParty: accountSlice.updateParty,
+    addItem: inventorySlice.addItem,
+    updateItem: inventorySlice.updateItem,
+    updateCompanySettings: settingsSlice.updateCompanySettings,
+    setCurrentFiscalYear: settingsSlice.setCurrentFiscalYear,
+    addNotification: settingsSlice.addNotification,
+    markNotificationRead: settingsSlice.markNotificationRead,
+    clearNotifications: settingsSlice.clearNotifications,
+    loadAuditLogs: loadAuditLogsImpl,
+    addAuditLog: voucherSlice.addAuditLog,
+    addTdsEntry: accountSlice.addTdsEntry,
+    updateTdsEntry: accountSlice.updateTdsEntry,
+  });
+
   return {
     ...createInventorySlice(set, get, api),
     isDbReady: false,
@@ -172,21 +240,7 @@ export const useStore = create<AppState>()((...a) => {
     chequeBooks: [],
     cheques: [],
     auditLogs: [],
-    loadAuditLogs: async () => {
-      try {
-        const db = getDB();
-        const logs = await db
-          .table("auditLogs")
-          .orderBy("timestamp")
-          .reverse()
-          .limit(500)
-          .toArray();
-        set({ auditLogs: logs });
-      } catch (err) {
-        console.error("[loadAuditLogs]", err);
-        set({ auditLogs: [] });
-      }
-    },
+    loadAuditLogs: loadAuditLogsImpl,
     depositSlips: [],
     pdCheques: [],
     pdcRegister: [],
@@ -249,6 +303,7 @@ export const useStore = create<AppState>()((...a) => {
           // upgrade it will force-delete + recreate the DB, preventing the
           // forever-loading spinner that was caused by an IndexedDB version hang.
           const db = await openDB();
+          bootstrapPlatformRuntime();
 
           // ── Seed default data if tables are empty ──────────────────────────────
           const accountCount = await db.accounts.count();
@@ -1782,39 +1837,42 @@ export const useStore = create<AppState>()((...a) => {
       set({ recurringTemplates, recurringPostings });
     },
 
-    // ─── Sync outbox wrappers (offline-first) ─────────────────────────────────
+    // ─── Domain-facade write path (F15 cutover) ─────────────────────────────
     addAccount: async (account) => {
-      const result = await accountSlice.addAccount(account);
-      await enqueueSyncRecord({
+      const result = await facadeAddAccount(account);
+      await enqueueAfterDomainWrite({
         entityType: "account",
-        entityId: String(result?.id ?? ""),
+        entityId: String((result as { id?: string })?.id ?? ""),
         operation: "create",
         payload: result as Record<string, unknown>,
       });
       return result;
     },
     updateAccount: async (id, updates) => {
-      await accountSlice.updateAccount(id, updates);
-      await enqueueSyncRecord({
+      await facadeUpdateAccount(id, updates);
+      await enqueueAfterDomainWrite({
         entityType: "account",
         entityId: id,
         operation: "update",
         payload: { id, ...updates },
       });
     },
+    deleteAccount: async (id) => {
+      await facadeDeleteAccount(id);
+    },
     addParty: async (party) => {
-      const result = await accountSlice.addParty(party);
-      await enqueueSyncRecord({
+      const result = await facadeAddParty(party);
+      await enqueueAfterDomainWrite({
         entityType: "party",
-        entityId: String(result?.id ?? ""),
+        entityId: String((result as { id?: string })?.id ?? ""),
         operation: "create",
         payload: result as Record<string, unknown>,
       });
       return result;
     },
     updateParty: async (id, updates) => {
-      await accountSlice.updateParty(id, updates);
-      await enqueueSyncRecord({
+      await facadeUpdateParty(id, updates);
+      await enqueueAfterDomainWrite({
         entityType: "party",
         entityId: id,
         operation: "update",
@@ -1822,62 +1880,92 @@ export const useStore = create<AppState>()((...a) => {
       });
     },
     addItem: async (item) => {
-      const result = await inventorySlice.addItem(item);
-      await enqueueSyncRecord({
+      const result = await facadeAddItem(item);
+      await enqueueAfterDomainWrite({
         entityType: "item",
-        entityId: String(result?.id ?? ""),
+        entityId: String((result as { id?: string })?.id ?? ""),
         operation: "create",
         payload: result as Record<string, unknown>,
       });
       return result;
     },
     updateItem: async (item) => {
-      const result = await inventorySlice.updateItem(item);
-      await enqueueSyncRecord({
+      const result = await facadeUpdateItem(item);
+      await enqueueAfterDomainWrite({
         entityType: "item",
-        entityId: String(item?.id ?? ""),
+        entityId: String((item as { id?: string })?.id ?? ""),
         operation: "update",
         payload: item as Record<string, unknown>,
       });
       return result;
     },
     addVoucher: async (voucher) => {
-      const result = await voucherSlice.addVoucher(voucher);
-      await enqueueSyncRecord({
+      const result = await facadeAddVoucher(voucher);
+      await enqueueAfterDomainWrite({
         entityType: "voucher",
-        entityId: String(result?.id ?? ""),
+        entityId: String((result as { id?: string })?.id ?? ""),
         operation: "create",
         payload: result as Record<string, unknown>,
       });
       return result;
     },
     updateVoucher: async (id, updates) => {
-      await voucherSlice.updateVoucher(id, updates);
-      await enqueueSyncRecord({
+      await facadeUpdateVoucher(id, updates);
+      await enqueueAfterDomainWrite({
         entityType: "voucher",
         entityId: id,
         operation: "update",
         payload: { id, ...updates },
       });
     },
+    cancelVoucher: async (id, reason) => {
+      await facadeCancelVoucher(id, reason);
+    },
     addInvoice: async (invoice) => {
-      const result = await voucherSlice.addInvoice(invoice);
-      await enqueueSyncRecord({
+      const result = await facadeAddInvoice(invoice);
+      await enqueueAfterDomainWrite({
         entityType: "invoice",
-        entityId: String(result?.id ?? ""),
+        entityId: String((result as { id?: string })?.id ?? ""),
         operation: "create",
         payload: result as Record<string, unknown>,
       });
       return result;
     },
     updateInvoice: async (id, updates) => {
-      await voucherSlice.updateInvoice(id, updates);
-      await enqueueSyncRecord({
+      await facadeUpdateInvoice(id, updates);
+      await enqueueAfterDomainWrite({
         entityType: "invoice",
         entityId: id,
         operation: "update",
         payload: { id, ...updates },
       });
+    },
+    cancelInvoice: async (id, reason) => {
+      await facadeCancelInvoice(id, reason);
+    },
+    updateCompanySettings: async (settings) => {
+      await facadeUpdateCompanySettings(settings);
+    },
+    setCurrentFiscalYear: (fy) => {
+      facadeSetCurrentFiscalYear(fy);
+    },
+    addNotification: (message, type) => {
+      facadeAddNotification(message, type);
+    },
+    markNotificationRead: (id) => {
+      facadeMarkNotificationRead(id);
+    },
+    clearNotifications: () => {
+      facadeClearNotifications();
+    },
+    addAuditLog: async (params) => {
+      await facadeAddAuditLog(params);
+    },
+    addTdsEntry: async (entry) => {
+      return facadeAddTdsEntry(entry);
+    },
+    updateTdsEntry: async (id, updates) => {
+      await facadeUpdateTdsEntry(id, updates);
     },
   };
 });

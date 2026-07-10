@@ -2,6 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./styles.css";
+import { bootstrapPlatformRuntime } from "./store/platformBootstrap";
+
+bootstrapPlatformRuntime();
 
 declare const __APP_BUILD_SHA__: string;
 // Referenced so Vite emits a new content hash per commit (browser cache bust on Render)
