@@ -1,3 +1,16 @@
+# Python virtual environments and caches
+.venv/
+venv/
+env/
+ENV/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.coverage
+build/
+*.egg-info/
+
 # Logs
 logs
 *.log
@@ -35,3 +48,4 @@ dist-ssr
 .env.*
 !.env.example
 backend/.env
+erp_bot/.env
