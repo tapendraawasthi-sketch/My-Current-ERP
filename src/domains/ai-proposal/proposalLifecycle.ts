@@ -1,7 +1,7 @@
 import { ProposalStatuses } from "./proposalTypes";
 import type { AiProposal } from "./proposalTypes";
-import { getProposalById, updateProposalRecord } from "./proposalStore";
-import { listProposalsByStatus } from "./proposalRepository";
+import { getProposalById, listProposalsByStatus } from "./proposalRepository";
+import { updateProposalRecord } from "./proposalStore";
 import { recordProposalAudit } from "./approvalAudit";
 
 const VALID_TRANSITIONS: Record<string, string[]> = {
