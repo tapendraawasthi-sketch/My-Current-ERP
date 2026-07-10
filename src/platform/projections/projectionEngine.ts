@@ -2,8 +2,7 @@ import type { IDomainEvent } from "@fios/kernel";
 import { isMigrationFlagEnabled } from "@/platform/flags/registry";
 import { getEventRepository } from "@/platform/event-store/eventRepository";
 import { EventTypes } from "@/platform/event-bus/eventTypes";
-import { ProjectionRegistry } from "./projectionRegistry";
-import { ALL_PROJECTION_HANDLERS } from "./handlers/projectionHandlers";
+import { getProjectionRegistry, type ProjectionRegistry } from "./projectionRegistry";
 import {
   isProjectionSchemaReady,
   updateProjectionStatus,
@@ -21,22 +20,6 @@ const SKIPPED_EVENT_TYPES = new Set<string>([
   EventTypes.COMMAND_ACCEPTED,
   EventTypes.HANDLER_FAILED,
 ]);
-
-let registryInstance: ProjectionRegistry | null = null;
-
-export function getProjectionRegistry(): ProjectionRegistry {
-  if (!registryInstance) {
-    registryInstance = new ProjectionRegistry();
-    for (const handler of ALL_PROJECTION_HANDLERS) {
-      registryInstance.register(handler);
-    }
-  }
-  return registryInstance;
-}
-
-export function resetProjectionRegistry(): void {
-  registryInstance = null;
-}
 
 export function isProjectionsEnabled(): boolean {
   return isMigrationFlagEnabled("MIGRATION_PROJECTIONS");

@@ -1,4 +1,5 @@
 import type { IDomainEvent } from "@fios/kernel";
+import { ALL_PROJECTION_HANDLERS } from "./handlers/projectionHandlers";
 
 export interface ProjectionContext {
   globalSequence: number;
@@ -42,4 +43,21 @@ export class ProjectionRegistry {
   clear(): void {
     this.handlers.clear();
   }
+}
+
+let registryInstance: ProjectionRegistry | null = null;
+
+/** Returns the process-wide projection handler registry (singleton, handlers registered once). */
+export function getProjectionRegistry(): ProjectionRegistry {
+  if (!registryInstance) {
+    registryInstance = new ProjectionRegistry();
+    for (const handler of ALL_PROJECTION_HANDLERS) {
+      registryInstance.register(handler);
+    }
+  }
+  return registryInstance;
+}
+
+export function resetProjectionRegistry(): void {
+  registryInstance = null;
 }
