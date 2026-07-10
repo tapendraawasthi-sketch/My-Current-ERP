@@ -6,6 +6,7 @@ import { validateManifest } from "./pluginValidation";
 import { checkCompatibility } from "./pluginCompatibility";
 import { grantPermissions } from "./pluginPermissions";
 import { recordPluginDiagnostic } from "./pluginDiagnostics";
+import { pluginLogger } from "./pluginLogger";
 import { pluginMetrics } from "./pluginMetrics";
 import { isForbiddenApi } from "./pluginSecurity";
 import { blockDirectStoreAccess, blockDirectDexieAccess } from "./pluginSandbox";
