@@ -1,13 +1,13 @@
 import type { JsonObject } from "@fios/kernel";
-import type { AiToolDefinition, AiToolInvocation, AiToolResult, IAiTool } from "../contracts/toolContract";
-import { getConfidenceEvaluator } from "../confidence";
+import type { AiToolDefinition, AiToolInvocation, AiToolResult, IAiTool } from "../../contracts/toolContract";
+import { getConfidenceEvaluator } from "../../confidence";
 
 function defineTool(
-  id: import("../contracts/toolContract").AiToolId,
+  id: import("../../contracts/toolContract").AiToolId,
   name: string,
   description: string,
   domain: string,
-  permissions: import("../contracts/toolContract").AiPermission[],
+  permissions: import("../../contracts/toolContract").AiPermission[],
   invokeFn: (invocation: AiToolInvocation) => Promise<unknown>,
 ): IAiTool {
   const definition: AiToolDefinition = {
