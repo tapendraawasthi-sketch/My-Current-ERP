@@ -7,4 +7,5 @@ export * from "./query-bus";
 export * from "./projections";
 export * from "./identity";
 export * from "./sync";
+export * from "./ai-runtime";
 export { getContextProvider, getLegacyAppState } from "./context/zustandContextProvider";

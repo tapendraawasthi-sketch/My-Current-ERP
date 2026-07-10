@@ -70,6 +70,7 @@ import StockJournalPage from "./pages/StockJournalPage";
 import ProductionPage from "./pages/ProductionPage";
 import InventoryReport from "./pages/InventoryReport";
 import SignUpWizard from "./components/auth/SignUpWizard";
+import InitErrorScreen from "./components/InitErrorScreen";
 import GatewayScreen from "./components/auth/GatewayScreen";
 import CompanyLoginScreen from "./components/auth/CompanyLoginScreen";
 import BusyMenuBar from "./components/BusyMenuBar";
@@ -169,22 +170,6 @@ const App: React.FC = () => {
     return () => window.removeEventListener("keydown", handler);
   }, [setCurrentPage]);
 
-  // Hard safety net: If we are stuck on checking for 10 seconds, force gateway
-  useEffect(() => {
-    if (authStage === "checking") {
-      const timer = setTimeout(() => {
-        console.error("App.tsx safety net: stuck in checking for 10s, forcing gateway");
-        useStore.setState((state: any) => ({
-          ...state,
-          isInitializing: false,
-          isDbReady: true,
-          authStage: "gateway",
-        }));
-      }, 10000);
-      return () => clearTimeout(timer);
-    }
-  }, [authStage]);
-
   if (authStage === "checking") {
     return (
       <div
@@ -208,6 +193,15 @@ const App: React.FC = () => {
           </p>
         </div>
       </div>
+    );
+  }
+
+  if (authStage === "error") {
+    return (
+      <>
+        <Toaster position="bottom-right" />
+        <InitErrorScreen />
+      </>
     );
   }
 

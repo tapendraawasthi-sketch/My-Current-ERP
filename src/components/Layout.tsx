@@ -15,6 +15,7 @@ import NiosProvider from "./nios/NiosProvider";
 import EKhataProvider from "./ekhata/EKhataProvider";
 import SutraAiProvider from "./sutra-ai/SutraAiProvider";
 import SyncStatusIndicator from "./SyncStatusIndicator";
+import DataLoadWarningBanner from "./DataLoadWarningBanner";
 import { startSyncLoop, stopSyncLoop } from "../lib/syncEngine";
 import { startAutoBackupScheduler, stopAutoBackupScheduler } from "../lib/autoBackupScheduler";
 
@@ -744,6 +745,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     >
       <TopMenuBar />
       <BusyMenuBar />
+      <DataLoadWarningBanner />
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
         <main style={{ flex: 1, overflowY: "auto", padding: 20, background: "#f5f6fa" }}>
           <div

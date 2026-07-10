@@ -1,4 +1,5 @@
 import { getDB } from "../lib/db";
+import { enforcePostingPeriodLockIfPosted } from "../lib/ledger/postingPeriodGuard";
 import {
   WorkflowVoucher,
   WorkflowVoucherLine,
@@ -77,6 +78,8 @@ export const createWorkflowActions = (set: any, get: any) => ({
       updates.push(updatedPo);
     }
 
+    await enforcePostingPeriodLockIfPosted(grn, db);
+
     await db.transaction("rw", db.vouchers, async () => {
       await db.vouchers.put(grn as any);
       await db.goodsReceiptNotes.put({ ...grn, grnNo: grn.voucherNo } as any);
@@ -153,6 +156,8 @@ export const createWorkflowActions = (set: any, get: any) => ({
       };
     });
 
+    await enforcePostingPeriodLockIfPosted(invoice, db);
+
     await db.transaction("rw", db.vouchers, async () => {
       await db.vouchers.put(invoice as any);
       await db.invoices.put({ ...invoice } as any);
@@ -206,6 +211,8 @@ export const createWorkflowActions = (set: any, get: any) => ({
       workflowStatus: computeSalesOrderStatus(so, nextAll),
       linkedDocuments: addLinkedDocument(so, docRef(dc)),
     }));
+
+    await enforcePostingPeriodLockIfPosted(dc, db);
 
     await db.transaction("rw", db.vouchers, async () => {
       await db.vouchers.put(dc as any);
@@ -283,6 +290,8 @@ export const createWorkflowActions = (set: any, get: any) => ({
       };
     });
 
+    await enforcePostingPeriodLockIfPosted(invoice, db);
+
     await db.transaction("rw", db.vouchers, async () => {
       await db.vouchers.put(invoice as any);
       await db.invoices.put({ ...invoice } as any);
@@ -351,6 +360,8 @@ export const createWorkflowActions = (set: any, get: any) => ({
           linkedDocuments: addLinkedDocument(doc, docRef(rejection)),
         };
       });
+
+    await enforcePostingPeriodLockIfPosted(rejection, db);
 
     await db.transaction("rw", db.vouchers, async () => {
       await db.vouchers.put(rejection as any);

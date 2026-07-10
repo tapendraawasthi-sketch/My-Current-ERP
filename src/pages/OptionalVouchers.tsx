@@ -12,7 +12,7 @@ function money(v: number): string {
 }
 
 const OptionalVouchers: React.FC = () => {
-  const { vouchers, scenarios, addVoucher, accounts, currentFiscalYear } = useStore();
+  const { vouchers, scenarios, addVoucher, updateVoucher, accounts, currentFiscalYear } = useStore();
   const [activeTab, setActiveTab] = useState(0);
   const [showForm, setShowForm] = useState(false);
   const [editingVoucher, setEditingVoucher] = useState<any>(null);
@@ -167,8 +167,9 @@ const OptionalVouchers: React.FC = () => {
       window.confirm("Are you sure you want to convert this optional voucher to an actual voucher?")
     ) {
       try {
-        const db = getDB();
-        await db.vouchers.update(voucherId, {
+        const voucher = await getDB().vouchers.get(voucherId);
+        if (!voucher) throw new Error("Voucher not found");
+        await updateVoucher(voucherId, {
           isOptional: false,
           status: "posted",
           convertedDate: new Date().toISOString(),

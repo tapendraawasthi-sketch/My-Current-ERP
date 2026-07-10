@@ -28,16 +28,14 @@ import toast from "react-hot-toast";
 import { migrateWorkflowFields } from "../../lib/workflowMigration";
 import { createWorkflowActions } from "../workflowActions";
 import { mergeSystemConfiguration } from "../../lib/systemConfiguration";
+import { enforcePostingPeriodLock } from "../../lib/ledger/postingPeriodGuard";
 
-/** Checks IndexedDB periodLocks table and throws if the given date is locked. */
-async function enforceperiodLock(date: string, db: ReturnType<typeof getDB>): Promise<void> {
-  if (!db.tables.some((t) => t.name === "periodLocks")) return;
-  const d = new Date(date);
-  const key = `${d.getFullYear()}-${d.getMonth() + 1}`;
-  const locks: any[] = await db.table("periodLocks").toArray();
-  if (locks.some((l: any) => l.periodKey === key)) {
-    throw new Error(`Period is locked for date ${date}. Unlock the period before posting.`);
-  }
+/** Enforces Dexie period lock for posting when W1_PERIOD_LOCK_ENFORCE is enabled. */
+async function enforcePeriodLockForPost(
+  date: string,
+  db: ReturnType<typeof getDB>,
+): Promise<void> {
+  await enforcePostingPeriodLock(date, db);
 }
 
 /** Same guards as addVoucher for any path that posts journal lines. */
@@ -71,7 +69,7 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
 
     // Enforce period lock for posted vouchers.
     if ((voucher.status || "draft") === "posted") {
-      await enforceperiodLock(voucher.date, db);
+      await enforcePeriodLockForPost(voucher.date, db);
     }
 
     const isDraft = (voucher.status || "draft") === "draft";
@@ -165,7 +163,7 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
       const postDate = updates.date ?? original?.date;
 
       if (newStatus === "posted") {
-        await enforceperiodLock(postDate, db);
+        await enforcePeriodLockForPost(postDate, db);
         guardPostedVoucher({ date: postDate, lines: newLines }, get, false);
       }
 
@@ -216,6 +214,7 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
         const reversalDate = new Date().toISOString().split("T")[0];
         const { currentFiscalYear } = get();
         assertDateInFiscalYear(reversalDate, currentFiscalYear);
+        await enforcePeriodLockForPost(reversalDate, db);
 
         const reversalVoucher = {
           id: reversalVoucherId,
@@ -288,7 +287,7 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
 
     // Enforce period lock for posted invoices.
     if ((invoice.status || "draft") === "posted") {
-      await enforceperiodLock(invoice.date, db);
+      await enforcePeriodLockForPost(invoice.date, db);
     }
 
     const id = generateId();
@@ -331,6 +330,13 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
     const existing = await db.invoices.get(id);
     const wasPosted = existing?.status === "posted";
     const willBePosted = (updates.status ?? existing?.status) === "posted";
+    const { currentFiscalYear } = get();
+
+    if (willBePosted) {
+      const postDate = updates.date ?? existing?.date;
+      assertDateInFiscalYear(postDate, currentFiscalYear);
+      await enforcePeriodLockForPost(postDate, db);
+    }
 
     return db.transaction(
       "rw",
@@ -417,11 +423,12 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
 
             const reversalDate = new Date().toISOString().split("T")[0];
             assertDateInFiscalYear(reversalDate, get().currentFiscalYear);
+            await enforcePeriodLockForPost(reversalDate, db);
 
             const reversalVoucher = {
               id: generateId(),
               voucherNo: await generateNextVoucherNo("reversal", db),
-              date: new Date().toISOString().split("T")[0],
+              date: reversalDate,
               type: "reversal",
               status: "posted",
               narration: `Reversal of ${originalVoucher.voucherNo}: ${reason}`,
@@ -699,7 +706,7 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
     const voucherToAdd = { ...journalData, id: vId, createdAt: now };
 
     if ((voucherToAdd as any).status === "posted") {
-      await enforceperiodLock((voucherToAdd as any).date, db);
+      await enforcePeriodLockForPost((voucherToAdd as any).date, db);
       guardPostedVoucher(voucherToAdd as any, get, false);
     }
 

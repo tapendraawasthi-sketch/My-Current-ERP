@@ -1,4 +1,5 @@
 import { getDB, type DBSyncOutboxRecord } from "./db";
+import { enforcePostingPeriodLockIfPosted } from "./ledger/postingPeriodGuard";
 
 export type SyncEntityType = "account" | "party" | "item" | "voucher" | "invoice";
 
@@ -79,6 +80,71 @@ export async function enqueueSyncRecord(input: EnqueueSyncInput): Promise<void> 
 
 const SYNC_PULL_KEY = "sutra_last_sync_pull";
 
+/** Applies remote voucher/invoice rows from sync pull (exported for integration tests). */
+export async function applySyncPullFinancialRecords(
+  data: { vouchers?: Record<string, unknown>[]; invoices?: Record<string, unknown>[] },
+  db: ReturnType<typeof getDB> = getDB(),
+): Promise<void> {
+  for (const row of data.vouchers || []) {
+    const id = String(row.id);
+    const existing = await db.vouchers.get(id);
+    const nextStatus = String(row.status || "draft");
+    const date = String(row.voucher_date || existing?.date || "").slice(0, 10);
+    await enforcePostingPeriodLockIfPosted({ status: nextStatus, date }, db);
+
+    await db.vouchers.put({
+      ...(existing || {}),
+      id,
+      voucherNo: String(row.voucher_no || ""),
+      date,
+      type: String(row.voucher_type || "journal"),
+      status: nextStatus,
+      narration: row.narration ? String(row.narration) : existing?.narration,
+      partyId: row.party_id ? String(row.party_id) : existing?.partyId,
+      totalDebit: Number(row.total_debit ?? existing?.totalDebit ?? 0),
+      totalCredit: Number(row.total_credit ?? existing?.totalCredit ?? 0),
+      grandTotal: Number(row.grand_total ?? existing?.grandTotal ?? 0),
+      lines: existing?.lines || [],
+    } as any);
+  }
+
+  for (const row of data.invoices || []) {
+    const id = String(row.id);
+    const existing = await db.invoices.get(id);
+    const pulledLines = Array.isArray(row.lines) ? row.lines : [];
+    const lines =
+      pulledLines.length > 0
+        ? pulledLines.map((l: Record<string, unknown>, idx: number) => ({
+            id: String(l.id || `${id}-line-${idx}`),
+            itemId: l.item_id ? String(l.item_id) : undefined,
+            quantity: Number(l.quantity || 0),
+            qty: Number(l.quantity || 0),
+            rate: Number(l.rate || 0),
+            amount: Number(l.amount || 0),
+            vatAmount: Number(l.vat_amount || 0),
+          }))
+        : existing?.lines || [];
+
+    const nextStatus = String(row.status || existing?.status || "draft");
+    const date = String(row.invoice_date || existing?.date || "").slice(0, 10);
+    await enforcePostingPeriodLockIfPosted({ status: nextStatus, date }, db);
+
+    await db.invoices.put({
+      ...(existing || {}),
+      id,
+      invoiceNo: String(row.invoice_no || existing?.invoiceNo || ""),
+      date,
+      type: String(row.invoice_type || existing?.type || "sales"),
+      status: nextStatus,
+      partyId: row.party_id ? String(row.party_id) : existing?.partyId,
+      subTotal: Number(row.sub_total ?? existing?.subTotal ?? 0),
+      vatAmount: Number(row.vat_amount ?? existing?.vatAmount ?? 0),
+      grandTotal: Number(row.grand_total ?? existing?.grandTotal ?? 0),
+      lines,
+    } as any);
+  }
+}
+
 async function pullRemoteChanges(): Promise<void> {
   const token = getAuthToken();
   if (!token) return;
@@ -138,56 +204,7 @@ async function pullRemoteChanges(): Promise<void> {
     } as any);
   }
 
-  for (const row of data.vouchers || []) {
-    const id = String(row.id);
-    const existing = await db.vouchers.get(id);
-    await db.vouchers.put({
-      ...(existing || {}),
-      id,
-      voucherNo: String(row.voucher_no || ""),
-      date: String(row.voucher_date || "").slice(0, 10),
-      type: String(row.voucher_type || "journal"),
-      status: String(row.status || "draft"),
-      narration: row.narration ? String(row.narration) : existing?.narration,
-      partyId: row.party_id ? String(row.party_id) : existing?.partyId,
-      totalDebit: Number(row.total_debit ?? existing?.totalDebit ?? 0),
-      totalCredit: Number(row.total_credit ?? existing?.totalCredit ?? 0),
-      grandTotal: Number(row.grand_total ?? existing?.grandTotal ?? 0),
-      lines: existing?.lines || [],
-    } as any);
-  }
-
-  for (const row of data.invoices || []) {
-    const id = String(row.id);
-    const existing = await db.invoices.get(id);
-    const pulledLines = Array.isArray(row.lines) ? row.lines : [];
-    const lines =
-      pulledLines.length > 0
-        ? pulledLines.map((l: Record<string, unknown>, idx: number) => ({
-            id: String(l.id || `${id}-line-${idx}`),
-            itemId: l.item_id ? String(l.item_id) : undefined,
-            quantity: Number(l.quantity || 0),
-            qty: Number(l.quantity || 0),
-            rate: Number(l.rate || 0),
-            amount: Number(l.amount || 0),
-            vatAmount: Number(l.vat_amount || 0),
-          }))
-        : existing?.lines || [];
-
-    await db.invoices.put({
-      ...(existing || {}),
-      id,
-      invoiceNo: String(row.invoice_no || existing?.invoiceNo || ""),
-      date: String(row.invoice_date || existing?.date || "").slice(0, 10),
-      type: String(row.invoice_type || existing?.type || "sales"),
-      status: String(row.status || existing?.status || "draft"),
-      partyId: row.party_id ? String(row.party_id) : existing?.partyId,
-      subTotal: Number(row.sub_total ?? existing?.subTotal ?? 0),
-      vatAmount: Number(row.vat_amount ?? existing?.vatAmount ?? 0),
-      grandTotal: Number(row.grand_total ?? existing?.grandTotal ?? 0),
-      lines,
-    } as any);
-  }
+  await applySyncPullFinancialRecords(data, db);
 
   localStorage.setItem(SYNC_PULL_KEY, now);
 }

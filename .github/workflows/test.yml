@@ -31,6 +31,9 @@ jobs:
       - name: Run TypeScript Check
         run: npx tsc --noEmit
 
+      - name: Run accounting tests
+        run: npm run test:accounting
+
       - name: Install backend dependencies
         run: npm ci
         working-directory: packages/backend

@@ -1,35 +1,26 @@
 import { getDB } from "@/lib/db";
+import {
+  checkPeriodLock as checkPeriodLockWithDb,
+  isDateLocked as isDateLockedWithDb,
+  type PeriodLockViolation,
+} from "@/lib/ledger/periodLockService";
 
-export interface PeriodLockViolation {
-  date: string;
-  periodKey: string;
-  message: string;
-}
+export type { PeriodLockViolation };
 
-function periodKeyFromDate(date: string): string {
-  const d = new Date(date);
-  return `${d.getFullYear()}-${d.getMonth() + 1}`;
-}
-
+/** Domain-engine entry: resolves Dexie from getDB(). */
 export async function isDateLocked(date: string): Promise<boolean> {
-  try {
-    const db = getDB();
-    if (!db.tables.some((t) => t.name === "periodLocks")) return false;
-    const key = periodKeyFromDate(date);
-    const locks: Array<{ periodKey?: string }> = await db.table("periodLocks").toArray();
-    return locks.some((l) => l.periodKey === key);
-  } catch {
-    return false;
-  }
+  return isDateLockedWithDb(date, getDB());
 }
 
+/** Domain-engine entry: resolves Dexie from getDB(). */
 export async function checkPeriodLock(date: string): Promise<PeriodLockViolation | null> {
-  const locked = await isDateLocked(date);
-  if (!locked) return null;
-  const periodKey = periodKeyFromDate(date);
-  return {
-    date,
-    periodKey,
-    message: `Period is locked for date ${date}`,
-  };
+  return checkPeriodLockWithDb(date, getDB());
 }
+
+export {
+  assertPeriodUnlockedForPosting,
+  enforcePeriodLockForPosting,
+  invalidatePeriodLockCache,
+  normalizePeriodKey,
+  periodKeyFromDate,
+} from "@/lib/ledger/periodLockService";

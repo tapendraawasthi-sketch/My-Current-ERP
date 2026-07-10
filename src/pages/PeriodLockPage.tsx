@@ -2,6 +2,11 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useStore } from "../store/useStore";
 import { getDB, generateId } from "../lib/db";
+import {
+  hasLegacyPeriodLocksInLocalStorage,
+  importLegacyPeriodLocksIntoDexie,
+} from "../lib/periodLock";
+import { invalidatePeriodLockCache } from "../lib/ledger/periodLockService";
 import toast from "react-hot-toast";
 import * as XLSX from "xlsx";
 import {
@@ -44,7 +49,9 @@ export function isPeriodLocked(dateString: string, periodLocks: any[]): boolean 
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const key = `${year}-${month}`;
-  return (periodLocks || []).some((l) => l.periodKey === key);
+  return (periodLocks || []).some(
+    (l) => l.periodKey === key && l.isUnlocked !== true,
+  );
 }
 
 function todayISO() {
@@ -143,14 +150,51 @@ export default function PeriodLockPage() {
 
   const [healthChecks, setHealthChecks] = useState([]);
   const [expandedHealthIndex, setExpandedHealthIndex] = useState(null);
+  const [legacyLocksPending, setLegacyLocksPending] = useState(false);
+  const [migratingLegacyLocks, setMigratingLegacyLocks] = useState(false);
+
+  useEffect(() => {
+    setLegacyLocksPending(hasLegacyPeriodLocksInLocalStorage());
+  }, []);
+
+  async function refreshPeriodLocks() {
+    const db = getDB();
+    const rows = await db
+      .table("periodLocks")
+      .toArray()
+      .catch(() => []);
+    setPeriodLocks(rows);
+    invalidatePeriodLockCache();
+  }
+
+  async function migrateLegacyPeriodLocks() {
+    setMigratingLegacyLocks(true);
+    try {
+      const db = getDB();
+      const result = await importLegacyPeriodLocksIntoDexie(db, {
+        clearLocalStorageAfterImport: true,
+      });
+      await refreshPeriodLocks();
+      setLegacyLocksPending(hasLegacyPeriodLocksInLocalStorage());
+      if (result.imported > 0) {
+        toast.success(`Imported ${result.imported} period lock(s) into the database.`);
+      } else if (result.skipped > 0) {
+        toast.success("Legacy locks were already present in the database.");
+        setLegacyLocksPending(false);
+      } else {
+        toast.success("No legacy period locks to import.");
+        setLegacyLocksPending(false);
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Could not import legacy period locks.");
+    } finally {
+      setMigratingLegacyLocks(false);
+    }
+  }
 
   useEffect(() => {
     const db = getDB();
-
-    db.table("periodLocks")
-      .toArray()
-      .catch(() => [])
-      .then(setPeriodLocks);
+    void refreshPeriodLocks();
 
     db.table("securitySettings")
       .get("global")
@@ -176,7 +220,9 @@ export default function PeriodLockPage() {
     for (const p of periods) {
       const ended = new Date(p.endDate);
       const daysPast = Math.floor((now.getTime() - ended.getTime()) / 86400000);
-      const alreadyLocked = periodLocks.some((l) => l.periodKey === p.periodKey);
+      const alreadyLocked = periodLocks.some(
+        (l) => l.periodKey === p.periodKey && l.isUnlocked !== true,
+      );
 
       if (daysPast > autoLockDays && !alreadyLocked) {
         const row = {
@@ -186,11 +232,13 @@ export default function PeriodLockPage() {
           lockedBy: "system",
           lockedByName: "Auto Lock",
           requiresPin: false,
+          isUnlocked: false,
         };
         await db
           .table("periodLocks")
           .put(row)
           .catch(() => {});
+        invalidatePeriodLockCache();
         setPeriodLocks((locks) => [...locks, row]);
       }
     }
@@ -233,12 +281,14 @@ export default function PeriodLockPage() {
         lockedBy: currentUser?.id,
         lockedByName: currentUser?.name,
         requiresPin: Boolean(requiredPin),
+        isUnlocked: false,
       };
 
       await db
         .table("periodLocks")
         .put(row)
         .catch(() => {});
+      invalidatePeriodLockCache();
       setPeriodLocks((locks) => locks.filter((l) => l.periodKey !== row.periodKey).concat(row));
       toast.success("Period locked.");
     }
@@ -250,6 +300,7 @@ export default function PeriodLockPage() {
           .table("periodLocks")
           .delete(lock.id)
           .catch(() => {});
+        invalidatePeriodLockCache();
         setPeriodLocks((locks) => locks.filter((l) => l.id !== lock.id));
         toast.success("Period unlocked.");
       }
@@ -511,6 +562,26 @@ export default function PeriodLockPage() {
           </p>
         </div>
       </div>
+
+      {legacyLocksPending ? (
+        <div className="mb-4 bg-amber-50 border border-amber-200 rounded-md px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-[12px] font-medium text-amber-800">Legacy period locks detected</p>
+            <p className="text-[11px] text-amber-700 mt-0.5">
+              Older versions stored period locks in browser localStorage. Import them into the
+              database so posting enforcement applies consistently after reload.
+            </p>
+          </div>
+          <button
+            type="button"
+            className={primaryBtn}
+            disabled={migratingLegacyLocks}
+            onClick={() => void migrateLegacyPeriodLocks()}
+          >
+            {migratingLegacyLocks ? "Importing…" : "Import legacy locks"}
+          </button>
+        </div>
+      ) : null}
 
       <div className="flex gap-2 mb-6 border-b border-gray-200 overflow-x-auto">
         {tabs.map((t) => (

@@ -1,10 +1,25 @@
 // ─── Auth Stage Machine ────────────────────────────────────────────────────────
 export type AuthStage =
   | "checking" // initializeApp() is running — show spinner
+  | "error" // Fatal init failure — show InitErrorScreen (FI-022)
   | "no-company" // Dexie has zero companySettings — show SignUpWizard
   | "gateway" // Company exists, no valid session — show GatewayScreen
   | "company-login" // User picked a company, not yet logged in — show CompanyLoginScreen
   | "authenticated"; // Valid credentials entered — show full app shell
+
+export interface InitErrorState {
+  message: string;
+  code?: string;
+  occurredAt: string;
+}
+
+/** Application initialization lifecycle (single source of truth). */
+export type InitLifecycleState =
+  | "initializing"
+  | "loading"
+  | "ready"
+  | "recoverable-error"
+  | "fatal-error";
 
 // Types-only file — no runtime imports here.
 import type {
@@ -693,6 +708,9 @@ export interface AppState extends MultiGodownStoreSlice {
   auditLogs: DBAuditLog[];
   loadAuditLogs: () => Promise<void>;
   isInitializing: boolean;
+  initLifecycle: InitLifecycleState;
+  initError: InitErrorState | null;
+  dataLoadWarning: string | null;
   // Auth Stage Machine
   authStage: AuthStage;
   selectedCompanyId: string | null;
@@ -817,6 +835,9 @@ export interface AppState extends MultiGodownStoreSlice {
   showHelp?: boolean;
   // Actions
   initializeApp: () => Promise<void>;
+  retryInitializeApp: () => Promise<void>;
+  clearDatabaseAndRetryInit: () => Promise<void>;
+  dismissDataLoadWarning: () => void;
   login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
   createCompanyAndAdmin: (data: {

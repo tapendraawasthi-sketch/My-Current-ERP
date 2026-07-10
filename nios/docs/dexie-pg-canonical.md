@@ -31,3 +31,17 @@ All memory bus, provenance, and world-state writes include `tenant_id` + `compan
 1. Money calculations always use deterministic engines (`cap.engine.*`), never LLM output.
 2. Dexie is authoritative for offline edits until sync succeeds.
 3. PostgreSQL wins on conflict for closed fiscal years.
+
+## Period locks (Wave 1 — Dexie v26)
+
+| Entity | Dexie table | Storage | Enforcement |
+|--------|-------------|---------|-------------|
+| Period lock | `periodLocks` | IndexedDB (authoritative) | `src/lib/ledger/periodLockService.ts` at posting boundary |
+
+**Schema (v26):** `periodLocks: id, companyId, periodKey, fiscalYear, lockedAt, isUnlocked`
+
+**Migration:** On upgrade to v26, active rows from legacy `localStorage` key `sutra_period_locks` are imported once and deduped by `periodKey`. Manual import: Period Lock page banner or `importLegacyPeriodLocksIntoDexie()`.
+
+**Feature flags:** `W1_PERIOD_LOCK_ENFORCE` (default `true`) gates posting checks; `W1_FAIL_CLOSED_INIT` (default `true`) gates fatal startup behavior.
+
+**Posting paths (Stage 1):** voucher post, invoice post/update-to-posted, invoice journal, PDC conversion — cancel/reversal lock deferred to Stage 4.

@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useStore } from "../store/useStore";
 import { getDB, generateId } from "../lib/db";
+import { invalidatePeriodLockCache } from "../lib/ledger/periodLockService";
 import toast from "react-hot-toast";
 import * as XLSX from "xlsx";
 import {
@@ -119,6 +120,7 @@ export default function YearEndProcess() {
     fiscalYears = [],
     employees = [],
     currentUser = {},
+    selectedCompanyId,
     addVoucher,
     updateFiscalYear,
   } = useStore();
@@ -464,12 +466,8 @@ export default function YearEndProcess() {
       ],
     };
 
-    if (addVoucher) await addVoucher(voucher);
-    else
-      await getDB()
-        .table("vouchers")
-        .put(voucher)
-        .catch(() => {});
+    if (!addVoucher) throw new Error("Year-end posting requires store addVoucher.");
+    await addVoucher(voucher);
 
     setAdjustmentStatus((s) => ({ ...s, [manualJournalType]: "Posted" }));
     setManualJournalModal(false);
@@ -526,12 +524,8 @@ export default function YearEndProcess() {
       ],
     };
 
-    if (addVoucher) await addVoucher(voucher);
-    else
-      await getDB()
-        .table("vouchers")
-        .put(voucher)
-        .catch(() => {});
+    if (!addVoucher) throw new Error("Year-end posting requires store addVoucher.");
+    await addVoucher(voucher);
 
     setAdjustmentStatus((s) => ({ ...s, gratuity: "Posted" }));
     toast.success("Gratuity provision posted");
@@ -602,12 +596,8 @@ export default function YearEndProcess() {
       grandTotal: Math.abs(plSummary.netProfit),
     };
 
-    if (addVoucher) await addVoucher(voucher);
-    else
-      await getDB()
-        .table("vouchers")
-        .put(voucher)
-        .catch(() => {});
+    if (!addVoucher) throw new Error("Year-end posting requires store addVoucher.");
+    await addVoucher(voucher);
 
     setClosingPosted(true);
     toast.success("P&L closing entries posted");
@@ -640,6 +630,35 @@ export default function YearEndProcess() {
         closedBy: currentUser?.id,
       }).catch(() => {});
     }
+
+    const start = new Date(currentFiscalYear?.startDate || new Date(new Date().getFullYear(), 0, 1));
+    for (let i = 0; i < 12; i += 1) {
+      const monthStart = new Date(start.getFullYear(), start.getMonth() + i, 1);
+      const periodKey = `${monthStart.getFullYear()}-${monthStart.getMonth() + 1}`;
+      const existing = await db
+        .table("periodLocks")
+        .where("periodKey")
+        .equals(periodKey)
+        .first()
+        .catch(() => null);
+      if (!existing) {
+        await db
+          .table("periodLocks")
+          .put({
+            id: generateId(),
+            periodKey,
+            fiscalYear: currentFiscalYear?.id,
+            companyId: selectedCompanyId || companySettings?.id || "main",
+            lockedAt: new Date().toISOString(),
+            lockedBy: currentUser?.id,
+            lockedByName: currentUser?.name,
+            lockReason: `Fiscal year ${currentFiscalYear?.name} closed`,
+            isUnlocked: false,
+          })
+          .catch(() => {});
+      }
+    }
+    invalidatePeriodLockCache();
 
     toast.success("Fiscal year locked successfully.");
     setLockModal(false);

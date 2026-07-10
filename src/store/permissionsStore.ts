@@ -3,6 +3,7 @@
 // @ts-nocheck
 import { create } from "zustand";
 import { getDB } from "../lib/db";
+import { enforcePostingPeriodLock } from "../lib/ledger/postingPeriodGuard";
 import { UserPermission, getDefaultPermissionsForRole } from "../lib/permissions";
 
 // ─── Pending Approval record shape ────────────────────────────────────────────
@@ -168,6 +169,9 @@ export const usePermissionsStore = create<PermissionsState>((set, get) => ({
     // Update the actual voucher status to POSTED
     const approval = (await db.pendingApprovals?.get(approvalId)) as PendingApproval | undefined;
     if (approval?.voucherId) {
+      if (approval.voucherDate) {
+        await enforcePostingPeriodLock(String(approval.voucherDate).slice(0, 10), db);
+      }
       const voucherTbl = db.vouchers ?? db.invoices;
       await voucherTbl?.update(approval.voucherId, { status: "posted" });
     }

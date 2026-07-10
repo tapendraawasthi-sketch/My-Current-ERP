@@ -36,6 +36,7 @@
       "@fios/report-engine": ["./src/domains/report-engine/index.ts"],
       "@fios/nios-core": ["./src/domains/nios-core/index.ts"],
       "@fios/ai-proposal": ["./src/domains/ai-proposal/index.ts"],
+      "@fios/ai-runtime": ["./src/platform/ai-runtime/index.ts"],
       "@fios/plugin-kernel": ["./src/domains/plugin-kernel/index.ts"]
     }
   },

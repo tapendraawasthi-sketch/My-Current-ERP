@@ -79,6 +79,13 @@ import {
 } from "./facadeWriteRouter";
 import { enqueueAfterDomainWrite } from "./syncEnqueueRouter";
 import { bootstrapPlatformRuntime } from "./platformBootstrap";
+import {
+  INIT_APP_TIMEOUT_MS,
+  readyInitPatch,
+  recoverableDataLoadPatch,
+  resolveInitFailureState,
+} from "../lib/ledger/initLifecycle";
+import { enforcePostingPeriodLock } from "../lib/ledger/postingPeriodGuard";
 
 export const useStore = create<AppState>()((...a) => {
   const [set, get, api] = a;
@@ -132,6 +139,9 @@ export const useStore = create<AppState>()((...a) => {
     ...createInventorySlice(set, get, api),
     isDbReady: false,
     isInitializing: false,
+    initLifecycle: "initializing" as import("./store.types").InitLifecycleState,
+    initError: null,
+    dataLoadWarning: null,
     isAuthenticated: false,
     authStage: "checking" as AuthStage,
     selectedCompanyId: null as string | null,
@@ -290,11 +300,15 @@ export const useStore = create<AppState>()((...a) => {
     initializeApp: async () => {
       const { isInitializing, isDbReady } = get();
       if (isInitializing || isDbReady) return;
-      set({ isInitializing: true, authStage: "checking" as AuthStage });
+      set({
+        isInitializing: true,
+        authStage: "checking" as AuthStage,
+        initLifecycle: "initializing",
+      });
 
       try {
         const timeoutPromise = new Promise<never>((_, reject) => {
-          setTimeout(() => reject(new Error("SUTRA_INIT_TIMEOUT")), 15000);
+          setTimeout(() => reject(new Error("SUTRA_INIT_TIMEOUT")), INIT_APP_TIMEOUT_MS);
         });
 
         const initPromise = (async () => {
@@ -419,11 +433,19 @@ export const useStore = create<AppState>()((...a) => {
               const sessionUser = (await db.users.get(sessionUserId)) as any;
               const sessionCompany = (await db.companySettings.get(sessionCompanyId)) as any;
               if (sessionUser && sessionUser.isActive && sessionCompany) {
-                await get()._loadAllData();
+                let dataLoadFailed = false;
+                set({ initLifecycle: "loading" });
+                try {
+                  await get()._loadAllData();
+                } catch (loadErr) {
+                  console.error("[initializeApp] _loadAllData failed during session restore:", loadErr);
+                  dataLoadFailed = true;
+                }
                 return {
                   action: "authenticated",
                   user: sessionUser as StoreUser,
                   companyId: sessionCompanyId,
+                  dataLoadFailed,
                 };
               }
             } catch {
@@ -451,11 +473,14 @@ export const useStore = create<AppState>()((...a) => {
         const result = await Promise.race([initPromise, timeoutPromise]);
 
         if (result.action === "no-company") {
-          set({ isDbReady: true, isInitializing: false, authStage: "no-company" as AuthStage });
+          set({
+            ...readyInitPatch(),
+            authStage: "no-company" as AuthStage,
+          });
         } else if (result.action === "authenticated") {
           set({
-            isDbReady: true,
-            isInitializing: false,
+            ...readyInitPatch(),
+            ...(result.dataLoadFailed ? recoverableDataLoadPatch() : { dataLoadWarning: null }),
             isAuthenticated: true,
             currentUser: result.user,
             selectedCompanyId: result.companyId,
@@ -463,8 +488,7 @@ export const useStore = create<AppState>()((...a) => {
           });
         } else if (result.action === "gateway") {
           set({
-            isDbReady: true,
-            isInitializing: false,
+            ...readyInitPatch(),
             companySettings: result.companySettings,
             lastLoginInfo: result.lastLoginInfo,
             authStage: "gateway" as AuthStage,
@@ -472,9 +496,66 @@ export const useStore = create<AppState>()((...a) => {
         }
       } catch (err: any) {
         console.error("[Sutra ERP] initializeApp failed:", err);
-        set({ authStage: "no-company", isInitializing: false, isDbReady: true });
+        const failure = resolveInitFailureState(err);
+        set({
+          authStage: failure.authStage,
+          isInitializing: false,
+          isDbReady: failure.isDbReady,
+          initError: failure.initError,
+          initLifecycle: failure.initLifecycle,
+        });
       }
     },
+
+    retryInitializeApp: async () => {
+      set({
+        isInitializing: false,
+        isDbReady: false,
+        initError: null,
+        authStage: "checking" as AuthStage,
+        initLifecycle: "initializing",
+      });
+      await get().initializeApp();
+    },
+
+    clearDatabaseAndRetryInit: async () => {
+      set({
+        isInitializing: true,
+        isDbReady: false,
+        initError: null,
+        dataLoadWarning: null,
+        authStage: "checking" as AuthStage,
+        initLifecycle: "initializing",
+      });
+      try {
+        const Dexie = (await import("dexie")).default;
+        await Dexie.delete("SutraERPDatabase");
+        await resetDB();
+        sessionStorage.removeItem("sutra_user_id");
+        sessionStorage.removeItem("sutra_company_id");
+      } catch (clearErr) {
+        console.error("[clearDatabaseAndRetryInit] failed:", clearErr);
+        const failure = resolveInitFailureState(clearErr);
+        set({
+          authStage: failure.authStage,
+          isInitializing: false,
+          isDbReady: failure.isDbReady,
+          initLifecycle: failure.initLifecycle,
+          initError: {
+            message:
+              failure.initError?.message ||
+              "Could not clear the local database. Try again or use browser settings to clear site data.",
+            code: "CLEAR_DB_FAILED",
+            occurredAt: new Date().toISOString(),
+          },
+        });
+        return;
+      }
+      set({ isInitializing: false });
+      await get().initializeApp();
+    },
+
+    dismissDataLoadWarning: () => set({ dataLoadWarning: null }),
 
     // ── Internal helper: load ALL data tables after login ─────────────────────
     _loadAllData: async () => {
@@ -893,11 +974,13 @@ export const useStore = create<AppState>()((...a) => {
       sessionStorage.setItem("sutra_company_id", companyId);
 
       // Load ALL data (deferred from initializeApp — only runs after authentication)
-      // Wrapped in try-catch: data loading failure must NEVER block a successful login
+      let dataLoadFailed = false;
+      set({ initLifecycle: "loading" });
       try {
         await get()._loadAllData();
       } catch (e) {
         console.error("[login] _loadAllData failed (non-fatal, user still logged in):", e);
+        dataLoadFailed = true;
         if (!get().currentFiscalYear) {
           try {
             const db = getDB();
@@ -925,6 +1008,8 @@ export const useStore = create<AppState>()((...a) => {
       }
 
       set({
+        ...readyInitPatch(),
+        ...(dataLoadFailed ? recoverableDataLoadPatch() : { dataLoadWarning: null }),
         isAuthenticated: true,
         currentUser: user as StoreUser,
         currentPage: "dashboard",
@@ -2026,6 +2111,8 @@ export async function postInvoiceJournal(
   get: any,
   set: any,
 ) {
+  await enforcePostingPeriodLock(invoice.date, db);
+
   const lines: any[] = [];
   const partyAccountId =
     invoice.partyAccountId ||

@@ -491,6 +491,24 @@ export interface DBFiscalYear {
   updatedAt?: string;
 }
 
+/** Wave 1 (FI-021): fiscal period lock rows — authoritative store for posting enforcement. */
+export interface DBPeriodLock {
+  id: string;
+  companyId?: string;
+  fiscalYear?: string;
+  periodKey: string;
+  lockedMonth?: string;
+  lockedAt: string;
+  lockedBy?: string;
+  lockedByName?: string;
+  lockReason?: string;
+  isUnlocked?: boolean;
+  unlockedBy?: string;
+  unlockedAt?: string;
+  unlockReason?: string;
+  requiresPin?: boolean;
+}
+
 // ─── Company Settings ─────────────────────────────────────────────────────────
 export interface DBCompanySettings {
   id: string;
@@ -1117,6 +1135,7 @@ export class SutraERPDatabase extends Dexie {
   unitConversions!: Table<DBUnitConversion>;
   costCenters!: Table<DBCostCenter>;
   fiscalYears!: Table<DBFiscalYear>;
+  periodLocks!: Table<DBPeriodLock>;
   companySettings!: Table<DBCompanySettings>;
   users!: Table<DBUser>;
   notifications!: Table<DBNotification>;
@@ -1435,6 +1454,26 @@ export class SutraERPDatabase extends Dexie {
       eventSyncDeadLetter: "id, eventId, createdAt",
       eventSyncConflicts: "id, eventId, classification, createdAt",
     });
+
+    // Version 26 — Wave 1 FI-021: authoritative periodLocks table + legacy localStorage import
+    this.version(26)
+      .stores({
+        periodLocks: "id, companyId, periodKey, fiscalYear, lockedAt, isUnlocked",
+      })
+      .upgrade(async (trans) => {
+        try {
+          const { importLegacyPeriodLocksIntoDexie } = await import("./periodLock");
+          await importLegacyPeriodLocksIntoDexie(trans, { clearLocalStorageAfterImport: true });
+        } catch (err) {
+          console.warn("[SutraERP] periodLocks v26 legacy import failed (non-fatal):", err);
+        }
+        try {
+          const { notePeriodLockDbUpgrade } = await import("./ledger/periodLockService");
+          notePeriodLockDbUpgrade();
+        } catch {
+          /* non-fatal */
+        }
+      });
   }
 }
 
