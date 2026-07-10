@@ -1,4 +1,4 @@
-import type { PromptTemplateVersion } from "../contracts/promptContract";
+import type { PromptTemplateVersion } from "../../contracts/promptContract";
 
 export const SYSTEM_PROMPT_V1: PromptTemplateVersion = {
   id: "system",

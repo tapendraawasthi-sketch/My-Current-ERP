@@ -1,5 +1,5 @@
 import { isMigrationFlagEnabled } from "@/platform/flags/registry";
-import { QueryTypes } from "../queryTypes";
+import { QueryTypes } from "./queryTypes";
 import {
   readProjectionAccountBalance,
   readProjectionTrialBalanceTotal,
@@ -8,7 +8,7 @@ import {
   validateTrialBalanceParity,
 } from "@/platform/projections/projectionParity";
 import { diffValues, summarizeDiff } from "@/platform/projections/projectionDiff";
-import { recordQueryDiagnostic } from "../queryDiagnostics";
+import { recordQueryDiagnostic } from "./queryDiagnostics";
 
 export interface ShadowCompareResult {
   queryType: string;
