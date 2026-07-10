@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nios.local/contracts/evidence.schema.json",
+  "title": "NIOS Evidence Object",
+  "description": "Universal Evidence Engine — 11 typed evidence sources per Intelligence Contract",
+  "type": "object",
+  "required": ["id", "type", "statement", "source", "confidence", "timestamp"],
+  "properties": {
+    "id": { "type": "string", "format": "uuid" },
+    "type": {
+      "enum": [
+        "erp",
+        "law",
+        "ontology",
+        "user",
+        "ocr",
+        "bank",
+        "graph",
+        "research",
+        "tool",
+        "simulation",
+        "inference",
+        "conversation"
+      ]
+    },
+    "statement": { "type": "string" },
+    "source": { "type": "string", "description": "capability or federation id" },
+    "authority": { "type": "number", "minimum": 0, "maximum": 1 },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "jurisdiction": { "type": "string", "default": "NP" },
+    "lineage_ids": { "type": "array", "items": { "type": "string" } },
+    "metadata": { "type": "object" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "verification_status": {
+      "enum": ["verified_deterministic", "verified_evidence", "inferred", "unverified"]
+    }
+  }
+}

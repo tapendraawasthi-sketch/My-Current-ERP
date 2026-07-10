@@ -767,3 +767,5 @@ CREATE INDEX IF NOT EXISTS idx_khata_transactions_tenant_company
   ON khata_transactions(tenant_id, company_id);
 CREATE INDEX IF NOT EXISTS idx_khata_transactions_sync_status
   ON khata_transactions(tenant_id, company_id, sync_status);
+
+-- Knowledge document pipeline tables: apply backend/knowledge/schema.sql

@@ -5,6 +5,7 @@ import { FalconPanel } from "./FalconPanel";
 import FalconLauncher from "./FalconLauncher";
 import { AlertCircle } from "lucide-react";
 import { findPageByRoute } from "../../lib/falcon/pageIndexSearch";
+import { isNiosPlatformEnabled } from "../../nios/session";
 
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
   constructor(props: { children: React.ReactNode }) {
@@ -64,6 +65,11 @@ export const FalconProvider: React.FC = () => {
       });
     }
   }, [currentPage, companySettings, setContext]);
+
+  // When NIOS v3 is enabled, Falcon defers to NiosShell (unified AI stack)
+  if (isNiosPlatformEnabled()) {
+    return null;
+  }
 
   // Hide entirely if not authenticated or DB not ready
   if (!isAuthenticated || !isDbReady) {

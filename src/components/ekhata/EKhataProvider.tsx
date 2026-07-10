@@ -4,6 +4,7 @@ import { useEKhataStore } from "../../store/eKhataStore";
 import { useFalconStore } from "../../store/falconStore";
 import EKhataLauncher from "./EKhataLauncher";
 import EKhataPanel from "./EKhataPanel";
+import { isNiosPlatformEnabled } from "../../nios/session";
 
 const EKhataProvider: React.FC = () => {
   const isAuthenticated = useStore((state) => state.isAuthenticated);
@@ -35,6 +36,10 @@ const EKhataProvider: React.FC = () => {
       refreshLlmStatus();
     }
   }, [isAuthenticated, isDbReady, refreshLlmStatus]);
+
+  if (isNiosPlatformEnabled()) {
+    return null;
+  }
 
   if (!isAuthenticated || !isDbReady) {
     return null;

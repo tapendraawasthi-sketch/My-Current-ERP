@@ -43,6 +43,17 @@ export const ERP_BOT_URL = resolveErpBotUrl();
 const SESSION_KEY = "erp_bot_session_id";
 
 export function getErpBotSessionId(): string {
+  const niosEnabled =
+    (import.meta.env.VITE_NIOS_PLATFORM_V3 as string | undefined) === "true" ||
+    (import.meta.env.VITE_NIOS_PLATFORM_V3 as string | undefined) === "1";
+  if (niosEnabled && typeof localStorage !== "undefined") {
+    const niosId = localStorage.getItem("nios_session_id");
+    if (niosId) {
+      localStorage.setItem(SESSION_KEY, niosId);
+      return niosId;
+    }
+  }
+
   let id = localStorage.getItem(SESSION_KEY);
   if (!id) {
     id = crypto.randomUUID();
@@ -151,6 +162,7 @@ export interface ChatResult {
 
 /**
  * Standard chat endpoint with conversation memory and Phase 2 routing.
+ * Routes through NIOS v3 gateway when VITE_NIOS_PLATFORM_V3=true.
  */
 export async function askErpBot(
   message: string,
@@ -160,6 +172,36 @@ export async function askErpBot(
 ): Promise<ChatResult> {
   if (isSelfContainedAi()) {
     throw new Error(SELF_CONTAINED_STATUS.detail);
+  }
+
+  const niosEnabled =
+    (import.meta.env.VITE_NIOS_PLATFORM_V3 as string | undefined) === "true" ||
+    (import.meta.env.VITE_NIOS_PLATFORM_V3 as string | undefined) === "1";
+
+  if (niosEnabled) {
+    try {
+      const { niosChat, getNiosSessionScope } = await import("../nios/client/niosClient");
+      const scope = getNiosSessionScope();
+      const result = await niosChat({
+        message: contextBlock ? `${contextBlock}\n\n--- USER QUESTION ---\n${message}` : message,
+        session_id: sessionId || scope.sessionId,
+        tenant_id: scope.tenantId,
+        company_id: scope.companyId,
+      });
+      return {
+        answer: result.answer,
+        sources: [],
+        route: result.intent
+          ? {
+              intent: result.intent,
+              confidence: result.confidence ?? 0.5,
+              method: result.engine || "nios_v3",
+            }
+          : undefined,
+      };
+    } catch (err) {
+      console.warn("[NIOS] gateway failed, falling back to /chat", err);
+    }
   }
 
   const payload = contextBlock ? `${contextBlock}\n\n--- USER QUESTION ---\n${message}` : message;

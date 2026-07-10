@@ -3,6 +3,7 @@ import { Brain } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { useSutraAiStore } from "@/store/sutraAiStore";
 import SutraAIChat from "@/ai/interface/AIChat";
+import { isNiosPlatformEnabled } from "@/nios/session";
 
 const SutraAiLauncher: React.FC = () => {
   const togglePanel = useSutraAiStore((s) => s.togglePanel);
@@ -52,6 +53,10 @@ const SutraAiProvider: React.FC = () => {
       refreshLlmStatus(true);
     }
   }, [isAuthenticated, isDbReady, refreshLlmStatus]);
+
+  if (isNiosPlatformEnabled()) {
+    return null;
+  }
 
   if (!isAuthenticated || !isDbReady) {
     return null;

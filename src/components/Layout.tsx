@@ -11,6 +11,7 @@ import { useIsMobile } from "../hooks/use-mobile";
 import { LayoutDashboard, FileText, BookOpen, TrendingUp, Settings, Menu, X } from "lucide-react";
 import toast from "react-hot-toast";
 import FalconProvider from "./falcon/FalconProvider";
+import NiosProvider from "./nios/NiosProvider";
 import EKhataProvider from "./ekhata/EKhataProvider";
 import SutraAiProvider from "./sutra-ai/SutraAiProvider";
 import SyncStatusIndicator from "./SyncStatusIndicator";
@@ -722,6 +723,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </>
         )}
         <FalconProvider />
+        <NiosProvider />
         <EKhataProvider />
         <SutraAiProvider />
       </div>
@@ -756,6 +758,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </div>
       <StatusBar />
       <FalconProvider />
+      <NiosProvider />
       <EKhataProvider />
     </div>
   );

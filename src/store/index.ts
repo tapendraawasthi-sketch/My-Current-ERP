@@ -2184,6 +2184,31 @@ export async function postInvoiceJournal(
       }
     }
   }
+
+  // NIOS Event Bus — voucher.posted + invoice.created
+  try {
+    const { emitNiosEvent } = await import("../nios/events/eventBus");
+    const eventPayload = {
+      voucherId: id,
+      voucherNo,
+      voucherType: "journal",
+      referenceId: invoice.id,
+      referenceNo: invoice.invoiceNo,
+      grandTotal: totalDebit,
+      partyName: invoice.partyName,
+    };
+    emitNiosEvent("voucher.posted", eventPayload);
+    emitNiosEvent("invoice.created", {
+      invoiceId: invoice.id,
+      invoiceNo: invoice.invoiceNo,
+      invoiceType: invoice.type || invoice.invoiceType,
+      partyName: invoice.partyName,
+      grandTotal: totalDebit,
+      voucherId: id,
+    });
+  } catch {
+    // NIOS optional during rollout
+  }
 }
 
 export async function postInvoiceStock(

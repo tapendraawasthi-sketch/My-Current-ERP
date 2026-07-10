@@ -43,6 +43,34 @@ from .streaming import router as streaming_router
 app = FastAPI(title="ERP AI Chatbot")
 app.include_router(streaming_router)
 
+# NIOS v3 — Financial Intelligence Platform gateway
+try:
+    from ..nios.api import router as nios_router
+
+    app.include_router(nios_router)
+    print("[SERVER] NIOS v3 router mounted at /nios/v1")
+except Exception as _nios_exc:
+    print(f"[SERVER] NIOS v3 unavailable: {_nios_exc}")
+
+# Cloudflare R2 storage health check
+try:
+    from backend.api.health_routes import router as storage_health_router
+
+    app.include_router(storage_health_router)
+    print("[SERVER] R2 storage health mounted at /storage/health")
+except Exception as _storage_exc:
+    print(f"[SERVER] R2 storage health unavailable: {_storage_exc}")
+
+# Knowledge document ingestion pipeline
+try:
+    from backend.knowledge.api import router as knowledge_router
+    from backend.knowledge.jobs.worker import start_knowledge_worker
+
+    app.include_router(knowledge_router)
+    print("[SERVER] Knowledge pipeline mounted at /knowledge/v1")
+except Exception as _knowledge_exc:
+    print(f"[SERVER] Knowledge pipeline unavailable: {_knowledge_exc}")
+
 # Orbix v2 — genuine local reasoning agent (plan/tool/verify loop).
 try:
     from ..orbix.api import router as orbix_router
@@ -83,6 +111,27 @@ def on_startup():
         print(f"[SERVER] Knowledge indexes: {idx}")
     except Exception as exc:
         print(f"[SERVER] Knowledge index warning: {exc}")
+
+    # Optional R2 connection verification (set R2_STARTUP_VERIFY=true in production)
+    import os
+
+    if os.getenv("R2_STARTUP_VERIFY", "false").lower() in {"1", "true", "yes"}:
+        try:
+            from backend.storage import startup_verify_r2
+
+            startup_verify_r2()
+            print("[SERVER] R2 storage connection verified")
+        except Exception as exc:
+            print(f"[SERVER] R2 storage verification failed: {exc}")
+            raise
+
+    try:
+        from backend.knowledge.jobs.worker import start_knowledge_worker
+
+        start_knowledge_worker()
+        print("[SERVER] Knowledge ingestion worker started")
+    except Exception as exc:
+        print(f"[SERVER] Knowledge worker warning: {exc}")
 
 
 class ChatRequest(BaseModel):
