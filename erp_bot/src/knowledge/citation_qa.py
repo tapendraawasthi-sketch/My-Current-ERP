@@ -8,6 +8,7 @@ from typing import Any
 from ollama import Client
 
 from ..config import OLLAMA_BASE_URL, PRIMARY_MODEL, PRIMARY_MODEL_OPTIONS
+from ..llm.reasoning_filter import append_no_think, strip_reasoning
 from .knowledge_registry import ROUTE_TO_TASK
 from .unified_retriever import format_retrieved_context, retrieve
 
@@ -52,7 +53,7 @@ def answer_with_citations(
             "content": (
                 f"[RETRIEVED PASSAGES — task={task}]\n{block}\n\n"
                 f"{extra_context}\n\n"
-                f"Question: {question}"
+                f"Question: {append_no_think(question)}"
             ),
         },
     ]
@@ -61,12 +62,13 @@ def answer_with_citations(
         response = client.chat(
             model=PRIMARY_MODEL,
             messages=messages,
+            think=False,
             options={
                 "temperature": float(PRIMARY_MODEL_OPTIONS.get("temperature", 0.2)),
                 "num_ctx": int(PRIMARY_MODEL_OPTIONS.get("num_ctx", 8192)),
             },
         )
-        return (response.message.content or "").strip(), chunks
+        return strip_reasoning(response.message.content or ""), chunks
     except Exception as exc:
         logger.warning("Citation QA failed: %s", exc)
         top = chunks[0].get("text", "")[:500] if chunks else ""

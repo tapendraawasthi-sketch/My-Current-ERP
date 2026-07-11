@@ -21,6 +21,7 @@ from ..schemas import (
     ToolCallRecord,
 )
 from ..tools.registry import ToolRegistry
+from ..llm.reasoning_filter import strip_reasoning
 from . import answerer, planner, verifier
 
 
@@ -240,7 +241,7 @@ class OrbixAgentEngine:
             )
         if atype == "ask_clarification":
             return AgentAction(type="ask_clarification", question=parsed.get("question"))
-        return AgentAction(type="final_answer", answer=parsed.get("answer"))
+        return AgentAction(type="final_answer", answer=strip_reasoning(parsed.get("answer") or ""))
 
     # ── accounting (khata) path ─────────────────────────────────────────────────
     def _looks_like_entry(self, message: str) -> bool:

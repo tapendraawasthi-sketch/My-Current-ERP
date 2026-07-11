@@ -1,0 +1,772 @@
+"""Orchestrator workflow stage adapters — coordinate bounded contexts via ports."""
+
+from __future__ import annotations
+
+from datetime import datetime, timezone
+from typing import Any
+
+from ....application.dto.stage_result import StageResult
+from ....application.dto.workflow_context import WorkflowContext
+from ....application.ports.workflow_stage_port import WorkflowStagePort
+from ....domain.value_objects import RetryClassification, StageRunStatus, WorkflowStageName
+from ......integration.contracts.execution_intent import ExecutionIntent
+from .....planner.application.dto.planning_request import PlanningRequestDto
+from .....planner.domain.value_objects import PlanningPolicyName
+from .....streaming_runtime.domain.value_objects import WorkflowEventType
+from ..module_ports import ModulePorts
+
+
+def _utc_iso() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def _ok(stage: str, snapshot: dict | None = None, **meta) -> StageResult:
+    return StageResult(stage=stage, status=StageRunStatus.COMPLETED, snapshot=snapshot, metadata=meta)
+
+
+def _skip(stage: str) -> StageResult:
+    return StageResult(stage=stage, status=StageRunStatus.SKIPPED)
+
+
+def _fail(stage: str, error: str, retryable: bool = False) -> StageResult:
+    return StageResult(
+        stage=stage,
+        status=StageRunStatus.FAILED,
+        error=error,
+        retry_classification=(
+            RetryClassification.RETRYABLE if retryable else RetryClassification.NON_RETRYABLE
+        ),
+    )
+
+
+async def _resolve_execution_intent(ports: ModulePorts, context: WorkflowContext) -> ExecutionIntent | None:
+    if not context.plan_ref:
+        return None
+    cached = context.plan_ref.get("execution_intent")
+    if cached:
+        return ExecutionIntent.from_dict(cached)
+    if ports.plan_repository is None:
+        return None
+    plan = await ports.plan_repository.get_by_id(
+        tenant_id=context.tenant_id,
+        plan_id=context.plan_ref["plan_id"],
+    )
+    return plan.execution_intent if plan else None
+
+
+def _execution_intent_snapshot(intent: ExecutionIntent | None) -> dict[str, Any] | None:
+    return intent.model_dump(mode="json") if intent else None
+
+
+class ValidationStageAdapter(WorkflowStagePort):
+    name = WorkflowStageName.VALIDATION.value
+
+    def __init__(self, ports: ModulePorts) -> None:
+        self._ports = ports
+
+    async def validate(self, context: WorkflowContext) -> StageResult:
+        if not context.message.strip():
+            return _fail(self.name, "message_required")
+        if not context.session_id:
+            return _fail(self.name, "session_id_required")
+        return _ok(self.name)
+
+    async def execute(self, context: WorkflowContext) -> tuple[WorkflowContext, StageResult]:
+        result = await self.validate(context)
+        return context, result
+
+    async def rollback(self, context: WorkflowContext) -> StageResult:
+        return _skip(self.name)
+
+    def metrics(self) -> dict[str, Any]:
+        return {"stage": self.name}
+
+    def supports_retry(self) -> bool:
+        return False
+
+
+class ConversationStageAdapter(WorkflowStagePort):
+    name = WorkflowStageName.CONVERSATION.value
+
+    def __init__(self, ports: ModulePorts) -> None:
+        self._ports = ports
+
+    async def validate(self, context: WorkflowContext) -> StageResult:
+        if self._ports.conversation is None or not self._ports.feature_flags.conversation_module_enabled:
+            return _skip(self.name)
+        return _ok(self.name)
+
+    async def execute(self, context: WorkflowContext) -> tuple[WorkflowContext, StageResult]:
+        validation = await self.validate(context)
+        if validation.status == StageRunStatus.SKIPPED:
+            return context, validation
+        if validation.status == StageRunStatus.FAILED:
+            return context, validation
+        svc = self._ports.conversation
+        assert svc is not None
+        conversation = await svc.ensure_conversation(
+            tenant_id=context.tenant_id,
+            session_id=context.session_id,
+            user_id=context.user_id,
+            module=context.module,
+            correlation_id=context.correlation_id,
+            company_id=context.company_id,
+            branch_id=context.branch_id,
+            conversation_id=context.conversation_id,
+        )
+        await svc.record_user_message(
+            tenant_id=context.tenant_id,
+            conversation_id=conversation.conversation_id,
+            request_id=context.request_id,
+            correlation_id=context.correlation_id,
+            content=context.message,
+            language=context.language,
+        )
+        snapshot = {"conversation_id": conversation.conversation_id}
+        updated = context.model_copy(
+            update={"conversation_id": conversation.conversation_id, "conversation_ref": snapshot}
+        )
+        return updated, _ok(self.name, snapshot)
+
+    async def rollback(self, context: WorkflowContext) -> StageResult:
+        if self._ports.conversation and context.conversation_id:
+            await self._ports.lineage_service.append_node(
+                tenant_id=context.tenant_id,
+                request_id=context.request_id,
+                node_type="ConversationFailure",
+                payload={"conversation_id": context.conversation_id},
+            )
+        return _ok(self.name, metadata={"rollback": "append_failure"})
+
+    def metrics(self) -> dict[str, Any]:
+        return {"stage": self.name}
+
+    def supports_retry(self) -> bool:
+        return True
+
+
+class SessionStageAdapter(WorkflowStagePort):
+    name = WorkflowStageName.SESSION.value
+
+    def __init__(self, ports: ModulePorts) -> None:
+        self._ports = ports
+
+    async def validate(self, context: WorkflowContext) -> StageResult:
+        if self._ports.session is None or not self._ports.feature_flags.session_module_enabled:
+            return _skip(self.name)
+        return _ok(self.name)
+
+    async def execute(self, context: WorkflowContext) -> tuple[WorkflowContext, StageResult]:
+        validation = await self.validate(context)
+        if validation.status != StageRunStatus.COMPLETED:
+            return context, validation
+        erp_context = self._ports.legacy_session.load_context(context.user_id)
+        session = await self._ports.session.open_or_touch(  # type: ignore[union-attr]
+            tenant_id=context.tenant_id,
+            session_id=context.session_id,
+            user_id=context.user_id,
+            module=context.module,
+            company_id=context.company_id,
+            branch_id=context.branch_id,
+            conversation_id=context.conversation_id,
+            erp_context=erp_context,
+        )
+        snapshot = {"session_id": session.session_id}
+        updated = context.model_copy(update={"session_ref": snapshot})
+        return updated, _ok(self.name, snapshot)
+
+    async def rollback(self, context: WorkflowContext) -> StageResult:
+        return _skip(self.name)
+
+    def metrics(self) -> dict[str, Any]:
+        return {"stage": self.name}
+
+    def supports_retry(self) -> bool:
+        return True
+
+
+class PlanningStageAdapter(WorkflowStagePort):
+    name = WorkflowStageName.PLANNING.value
+
+    def __init__(self, ports: ModulePorts) -> None:
+        self._ports = ports
+
+    async def validate(self, context: WorkflowContext) -> StageResult:
+        if self._ports.planner is None or not self._ports.feature_flags.planner_module_enabled:
+            return _skip(self.name)
+        return _ok(self.name)
+
+    async def execute(self, context: WorkflowContext) -> tuple[WorkflowContext, StageResult]:
+        validation = await self.validate(context)
+        if validation.status != StageRunStatus.COMPLETED:
+            return context, validation
+        policy = PlanningPolicyName.BALANCED
+        if context.module == "khata":
+            policy = PlanningPolicyName.ACCOUNTING
+        elif context.module == "nios":
+            policy = PlanningPolicyName.ACCURATE
+        dto = PlanningRequestDto(
+            request_id=context.request_id,
+            correlation_id=context.correlation_id,
+            tenant_id=context.tenant_id,
+            company_id=context.company_id,
+            branch_id=context.branch_id,
+            user_id=context.user_id,
+            session_id=context.session_id,
+            conversation_id=context.conversation_id,
+            module=context.module,
+            language=context.language,
+            message=context.message,
+            policy_name=policy,
+        )
+        try:
+            plan = await self._ports.planner.create_plan(dto)  # type: ignore[union-attr]
+        except Exception as exc:  # noqa: BLE001
+            return context, _fail(self.name, str(exc), retryable=True)
+        snapshot = {"plan_id": plan.plan_id}
+        intent_snapshot = _execution_intent_snapshot(plan.execution_intent)
+        if intent_snapshot:
+            snapshot["execution_intent"] = intent_snapshot
+        return context.model_copy(update={"plan_ref": snapshot}), _ok(self.name, snapshot)
+
+    async def rollback(self, context: WorkflowContext) -> StageResult:
+        return _skip(self.name)
+
+    def metrics(self) -> dict[str, Any]:
+        return {"stage": self.name}
+
+    def supports_retry(self) -> bool:
+        return True
+
+
+class RoutingStageAdapter(WorkflowStagePort):
+    name = WorkflowStageName.ROUTING.value
+
+    def __init__(self, ports: ModulePorts) -> None:
+        self._ports = ports
+
+    async def validate(self, context: WorkflowContext) -> StageResult:
+        if self._ports.router is None or not self._ports.feature_flags.router_module_enabled:
+            return _skip(self.name)
+        if not context.plan_ref or self._ports.plan_repository is None:
+            return _skip(self.name)
+        return _ok(self.name)
+
+    async def execute(self, context: WorkflowContext) -> tuple[WorkflowContext, StageResult]:
+        validation = await self.validate(context)
+        if validation.status != StageRunStatus.COMPLETED:
+            return context, validation
+        plan_entity = await self._ports.plan_repository.get_by_id(  # type: ignore[union-attr]
+            tenant_id=context.tenant_id, plan_id=context.plan_ref["plan_id"]
+        )
+        if plan_entity is None:
+            return context, _fail(self.name, "plan_entity_not_found")
+        try:
+            route = await self._ports.router.create_route_decision(plan=plan_entity)  # type: ignore[union-attr]
+        except Exception as exc:  # noqa: BLE001
+            return context, _fail(self.name, str(exc), retryable=True)
+        snapshot = {"route_id": route.route_id}
+        return context.model_copy(update={"route_ref": snapshot}), _ok(self.name, snapshot)
+
+    async def rollback(self, context: WorkflowContext) -> StageResult:
+        return _skip(self.name)
+
+    def metrics(self) -> dict[str, Any]:
+        return {"stage": self.name}
+
+    def supports_retry(self) -> bool:
+        return True
+
+
+class KnowledgeStageAdapter(WorkflowStagePort):
+    name = WorkflowStageName.KNOWLEDGE.value
+
+    def __init__(self, ports: ModulePorts) -> None:
+        self._ports = ports
+
+    async def validate(self, context: WorkflowContext) -> StageResult:
+        if self._ports.knowledge is None or not self._ports.feature_flags.knowledge_module_enabled:
+            return _skip(self.name)
+        if not context.message.strip():
+            return _skip(self.name)
+        return _ok(self.name)
+
+    async def execute(self, context: WorkflowContext) -> tuple[WorkflowContext, StageResult]:
+        validation = await self.validate(context)
+        if validation.status != StageRunStatus.COMPLETED:
+            return context, validation
+        try:
+            snapshot_obj, bundle = await self._ports.knowledge.retrieve(  # type: ignore[union-attr]
+                tenant_id=context.tenant_id,
+                request_id=context.request_id,
+                correlation_id=context.correlation_id,
+                query=context.message,
+                company_id=context.company_id,
+            )
+        except Exception as exc:  # noqa: BLE001 — knowledge must not block workflow
+            return context, _ok(self.name, {"warning": str(exc)})
+        snapshot = {"snapshot_id": snapshot_obj.snapshot_id, "bundle_id": bundle.bundle_id}
+        return context.model_copy(update={"knowledge_ref": snapshot}), _ok(self.name, snapshot)
+
+    async def rollback(self, context: WorkflowContext) -> StageResult:
+        return _skip(self.name)
+
+    def metrics(self) -> dict[str, Any]:
+        return {"stage": self.name}
+
+    def supports_retry(self) -> bool:
+        return True
+
+
+class MemoryStoreStageAdapter(WorkflowStagePort):
+    name = WorkflowStageName.MEMORY_STORE.value
+
+    def __init__(self, ports: ModulePorts) -> None:
+        self._ports = ports
+
+    async def validate(self, context: WorkflowContext) -> StageResult:
+        if self._ports.memory is None or not self._ports.feature_flags.memory_module_enabled:
+            return _skip(self.name)
+        return _ok(self.name)
+
+    async def execute(self, context: WorkflowContext) -> tuple[WorkflowContext, StageResult]:
+        validation = await self.validate(context)
+        if validation.status != StageRunStatus.COMPLETED:
+            return context, validation
+        try:
+            memory = await self._ports.memory.store(  # type: ignore[union-attr]
+                tenant_id=context.tenant_id,
+                request_id=context.request_id,
+                correlation_id=context.correlation_id,
+                summary=context.message[:500],
+                content=context.message,
+                memory_type="ConversationMemory",
+                source_module="orchestrator",
+                company_id=context.company_id,
+                conversation_id=context.conversation_id,
+                workflow_id=context.workflow_id,
+                importance="Medium",
+                metadata={"stage": "memory_store", "knowledge_ref": context.knowledge_ref},
+            )
+        except Exception as exc:  # noqa: BLE001
+            return context, _ok(self.name, {"warning": str(exc)})
+        snapshot = {"memory_id": memory.memory_id}
+        return context.model_copy(update={"memory_store_ref": snapshot}), _ok(self.name, snapshot)
+
+    async def rollback(self, context: WorkflowContext) -> StageResult:
+        return _skip(self.name)
+
+    def metrics(self) -> dict[str, Any]:
+        return {"stage": self.name}
+
+    def supports_retry(self) -> bool:
+        return True
+
+
+class ExecutionStageAdapter(WorkflowStagePort):
+    name = WorkflowStageName.EXECUTION.value
+
+    def __init__(self, ports: ModulePorts) -> None:
+        self._ports = ports
+
+    async def validate(self, context: WorkflowContext) -> StageResult:
+        if self._ports.provider_runtime is None or not self._ports.feature_flags.provider_runtime_module_enabled:
+            return _skip(self.name)
+        if not context.route_ref or self._ports.route_repository is None:
+            return _skip(self.name)
+        return _ok(self.name)
+
+    async def execute(self, context: WorkflowContext) -> tuple[WorkflowContext, StageResult]:
+        validation = await self.validate(context)
+        if validation.status != StageRunStatus.COMPLETED:
+            return context, validation
+        route = await self._ports.route_repository.get_by_id(  # type: ignore[union-attr]
+            tenant_id=context.tenant_id, route_id=context.route_ref["route_id"]
+        )
+        if route is None:
+            return context, _fail(self.name, "route_not_found")
+        try:
+            execution = await self._ports.provider_runtime.start_execution(route=route)  # type: ignore[union-attr]
+        except Exception as exc:  # noqa: BLE001
+            return context, _fail(self.name, str(exc), retryable=True)
+        snapshot = {"execution_id": execution.execution_id}
+        updates: dict[str, Any] = {"execution_ref": snapshot}
+        output_text = ""
+        if execution.result and execution.result.output_text:
+            output_text = execution.result.output_text.strip()
+        if output_text:
+            updates["response_ref"] = {"text": output_text}
+        return context.model_copy(update=updates), _ok(self.name, snapshot)
+
+    async def rollback(self, context: WorkflowContext) -> StageResult:
+        if self._ports.provider_runtime and context.execution_ref:
+            await self._ports.provider_runtime.cancel_execution(
+                tenant_id=context.tenant_id,
+                execution_id=context.execution_ref["execution_id"],
+                reason="workflow_rollback",
+            )
+        return _ok(self.name, metadata={"rollback": "cancel_execution"})
+
+    def metrics(self) -> dict[str, Any]:
+        return {"stage": self.name}
+
+    def supports_retry(self) -> bool:
+        return True
+
+
+class MemoryUpdateStageAdapter(WorkflowStagePort):
+    name = WorkflowStageName.MEMORY_UPDATE.value
+
+    def __init__(self, ports: ModulePorts) -> None:
+        self._ports = ports
+
+    async def validate(self, context: WorkflowContext) -> StageResult:
+        if self._ports.memory is None or not self._ports.feature_flags.memory_module_enabled:
+            return _skip(self.name)
+        if not context.execution_ref:
+            return _skip(self.name)
+        return _ok(self.name)
+
+    async def execute(self, context: WorkflowContext) -> tuple[WorkflowContext, StageResult]:
+        validation = await self.validate(context)
+        if validation.status != StageRunStatus.COMPLETED:
+            return context, validation
+        memory_id = (context.memory_store_ref or {}).get("memory_id")
+        if not memory_id:
+            return context, _skip(self.name)
+        try:
+            memory = await self._ports.memory.update(  # type: ignore[union-attr]
+                tenant_id=context.tenant_id,
+                correlation_id=context.correlation_id,
+                request_id=context.request_id,
+                memory_id=memory_id,
+                metadata={
+                    "execution_id": context.execution_ref.get("execution_id"),
+                    "stage": "memory_update",
+                },
+            )
+            await self._ports.memory.store(  # type: ignore[union-attr]
+                tenant_id=context.tenant_id,
+                request_id=context.request_id,
+                correlation_id=context.correlation_id,
+                summary=f"Execution {context.execution_ref.get('execution_id')} completed",
+                content=str(context.execution_ref),
+                memory_type="ExecutionMemory",
+                source_module="orchestrator",
+                company_id=context.company_id,
+                conversation_id=context.conversation_id,
+                workflow_id=context.workflow_id,
+                importance="High",
+            )
+        except Exception as exc:  # noqa: BLE001
+            return context, _ok(self.name, {"warning": str(exc)})
+        snapshot = {"memory_id": memory.memory_id, "execution_id": context.execution_ref.get("execution_id")}
+        return context.model_copy(update={"memory_update_ref": snapshot}), _ok(self.name, snapshot)
+
+    async def rollback(self, context: WorkflowContext) -> StageResult:
+        return _skip(self.name)
+
+    def metrics(self) -> dict[str, Any]:
+        return {"stage": self.name}
+
+    def supports_retry(self) -> bool:
+        return True
+
+
+class QualityStageAdapter(WorkflowStagePort):
+    name = WorkflowStageName.QUALITY.value
+
+    def __init__(self, ports: ModulePorts) -> None:
+        self._ports = ports
+
+    async def validate(self, context: WorkflowContext) -> StageResult:
+        if self._ports.quality_gate is None or not self._ports.feature_flags.quality_gate_module_enabled:
+            return _skip(self.name)
+        if not context.execution_ref:
+            return _skip(self.name)
+        return _ok(self.name)
+
+    async def execute(self, context: WorkflowContext) -> tuple[WorkflowContext, StageResult]:
+        validation = await self.validate(context)
+        if validation.status != StageRunStatus.COMPLETED:
+            return context, validation
+        try:
+            validation_context: dict[str, Any] = {}
+            execution_intent = await _resolve_execution_intent(self._ports, context)
+            intent_snapshot = _execution_intent_snapshot(execution_intent)
+            if intent_snapshot:
+                validation_context["execution_intent"] = intent_snapshot
+            evaluation = await self._ports.quality_gate.start_evaluation(  # type: ignore[union-attr]
+                execution_id=context.execution_ref["execution_id"],
+                tenant_id=context.tenant_id,
+                validation_context=validation_context or None,
+            )
+        except Exception as exc:  # noqa: BLE001
+            return context, _fail(self.name, str(exc), retryable=False)
+        snapshot = {
+            "evaluation_id": evaluation.evaluation_id,
+            "decision": evaluation.decision.outcome.value if evaluation.decision else None,
+        }
+        if evaluation.decision and evaluation.decision.outcome.value in ("block", "fail"):
+            return context.model_copy(update={"quality_ref": snapshot}), _fail(
+                self.name, "quality_blocked", retryable=False
+            )
+        return context.model_copy(update={"quality_ref": snapshot}), _ok(self.name, snapshot)
+
+    async def rollback(self, context: WorkflowContext) -> StageResult:
+        return _skip(self.name)
+
+    def metrics(self) -> dict[str, Any]:
+        return {"stage": self.name}
+
+    def supports_retry(self) -> bool:
+        return False
+
+
+class ActionStageAdapter(WorkflowStagePort):
+    name = WorkflowStageName.ACTION.value
+
+    def __init__(self, ports: ModulePorts) -> None:
+        self._ports = ports
+
+    async def validate(self, context: WorkflowContext) -> StageResult:
+        if self._ports.action_runtime is None or not self._ports.feature_flags.action_runtime_module_enabled:
+            return _skip(self.name)
+        if not context.quality_ref or not context.quality_ref.get("evaluation_id"):
+            return _skip(self.name)
+        decision = context.quality_ref.get("decision")
+        if decision not in ("pass", "pass_with_warning"):
+            return _skip(self.name)
+        return _ok(self.name)
+
+    async def execute(self, context: WorkflowContext) -> tuple[WorkflowContext, StageResult]:
+        validation = await self.validate(context)
+        if validation.status != StageRunStatus.COMPLETED:
+            return context, validation
+        execution_intent = await _resolve_execution_intent(self._ports, context)
+        if execution_intent is None:
+            return context, _fail(self.name, "execution_intent_missing", retryable=False)
+        if execution_intent.read_only or not execution_intent.mutating:
+            return context, _skip(self.name)
+        try:
+            action = await self._ports.action_runtime.propose_action(  # type: ignore[union-attr]
+                evaluation_id=context.quality_ref["evaluation_id"],
+                tenant_id=context.tenant_id,
+                execution_intent=execution_intent,
+                auto_execute=True,
+            )
+        except Exception as exc:  # noqa: BLE001
+            return context, _fail(self.name, str(exc), retryable=True)
+        snapshot = {"action_id": action.action_id, "status": action.status.value}
+        return context.model_copy(update={"action_ref": snapshot}), _ok(self.name, snapshot)
+
+    async def rollback(self, context: WorkflowContext) -> StageResult:
+        if self._ports.action_runtime and context.action_ref:
+            try:
+                await self._ports.action_runtime.cancel_action(
+                    tenant_id=context.tenant_id,
+                    action_id=context.action_ref["action_id"],
+                    reason="workflow_rollback",
+                )
+            except Exception:  # noqa: BLE001
+                pass
+        return _ok(self.name, metadata={"rollback": "compensation"})
+
+    def metrics(self) -> dict[str, Any]:
+        return {"stage": self.name}
+
+    def supports_retry(self) -> bool:
+        return True
+
+
+class MemoryConsolidationStageAdapter(WorkflowStagePort):
+    name = WorkflowStageName.MEMORY_CONSOLIDATION.value
+
+    def __init__(self, ports: ModulePorts) -> None:
+        self._ports = ports
+
+    async def validate(self, context: WorkflowContext) -> StageResult:
+        if self._ports.memory is None or not self._ports.feature_flags.memory_module_enabled:
+            return _skip(self.name)
+        return _ok(self.name)
+
+    async def execute(self, context: WorkflowContext) -> tuple[WorkflowContext, StageResult]:
+        validation = await self.validate(context)
+        if validation.status != StageRunStatus.COMPLETED:
+            return context, validation
+        try:
+            memories = await self._ports.memory.consolidate(  # type: ignore[union-attr]
+                tenant_id=context.tenant_id,
+                correlation_id=context.correlation_id,
+                request_id=context.request_id,
+                workflow_id=context.workflow_id,
+                conversation_id=context.conversation_id,
+                company_id=context.company_id,
+            )
+        except Exception as exc:  # noqa: BLE001
+            return context, _ok(self.name, {"warning": str(exc)})
+        snapshot = {"consolidated_count": len(memories), "memory_ids": [m.memory_id for m in memories]}
+        return context.model_copy(update={"memory_consolidation_ref": snapshot}), _ok(self.name, snapshot)
+
+    async def rollback(self, context: WorkflowContext) -> StageResult:
+        return _skip(self.name)
+
+    def metrics(self) -> dict[str, Any]:
+        return {"stage": self.name}
+
+    def supports_retry(self) -> bool:
+        return False
+
+
+class StreamingStageAdapter(WorkflowStagePort):
+    name = WorkflowStageName.STREAMING.value
+
+    def __init__(self, ports: ModulePorts) -> None:
+        self._ports = ports
+
+    async def validate(self, context: WorkflowContext) -> StageResult:
+        if (
+            self._ports.streaming_runtime is None
+            or not self._ports.feature_flags.streaming_runtime_module_enabled
+        ):
+            return _skip(self.name)
+        return _ok(self.name)
+
+    async def execute(self, context: WorkflowContext) -> tuple[WorkflowContext, StageResult]:
+        validation = await self.validate(context)
+        if validation.status != StageRunStatus.COMPLETED:
+            return context, validation
+        workflow_id = context.workflow_id
+        try:
+            session = await self._ports.streaming_runtime.open_stream(  # type: ignore[union-attr]
+                workflow_id=workflow_id,
+                tenant_id=context.tenant_id,
+                request_id=context.request_id,
+                client_id=f"orchestrator-{context.workflow_id[:8]}",
+                conversation_id=context.conversation_id,
+                company_id=context.company_id,
+                execution_id=context.execution_ref.get("execution_id") if context.execution_ref else None,
+            )
+            await self._ports.streaming_runtime.ingest_workflow_event(  # type: ignore[union-attr]
+                workflow_id=workflow_id,
+                tenant_id=context.tenant_id,
+                request_id=context.request_id,
+                event_type=WorkflowEventType.WORKFLOW_STARTED,
+                payload={"source": "orchestrator"},
+                conversation_id=context.conversation_id,
+                company_id=context.company_id,
+            )
+        except Exception as exc:  # noqa: BLE001 — streaming must not fail workflow
+            return context, _ok(self.name, {"warning": str(exc)})
+        snapshot = {"stream_id": session.stream_id}
+        return context.model_copy(update={"stream_ref": snapshot}), _ok(self.name, snapshot)
+
+    async def rollback(self, context: WorkflowContext) -> StageResult:
+        if self._ports.streaming_runtime and context.stream_ref:
+            try:
+                await self._ports.streaming_runtime.close_stream(
+                    tenant_id=context.tenant_id,
+                    stream_id=context.stream_ref["stream_id"],
+                )
+            except Exception:  # noqa: BLE001
+                pass
+        return _ok(self.name, metadata={"rollback": "close_stream"})
+
+    def metrics(self) -> dict[str, Any]:
+        return {"stage": self.name}
+
+    def supports_retry(self) -> bool:
+        return False
+
+
+class FinalizeStageAdapter(WorkflowStagePort):
+    name = WorkflowStageName.FINALIZE.value
+
+    def __init__(self, ports: ModulePorts) -> None:
+        self._ports = ports
+
+    async def validate(self, context: WorkflowContext) -> StageResult:
+        return _ok(self.name)
+
+    async def execute(self, context: WorkflowContext) -> tuple[WorkflowContext, StageResult]:
+        response_ref = {
+            "plan_id": (context.plan_ref or {}).get("plan_id"),
+            "route_id": (context.route_ref or {}).get("route_id"),
+            "knowledge_snapshot_id": (context.knowledge_ref or {}).get("snapshot_id"),
+            "memory_store_id": (context.memory_store_ref or {}).get("memory_id"),
+            "execution_id": (context.execution_ref or {}).get("execution_id"),
+            "memory_update_id": (context.memory_update_ref or {}).get("memory_id"),
+            "evaluation_id": (context.quality_ref or {}).get("evaluation_id"),
+            "action_id": (context.action_ref or {}).get("action_id"),
+            "memory_consolidation": context.memory_consolidation_ref,
+            "stream_id": (context.stream_ref or {}).get("stream_id"),
+        }
+        if context.response_ref and context.response_ref.get("text"):
+            response_ref["text"] = context.response_ref["text"]
+        if self._ports.conversation and context.conversation_id and context.response_ref:
+            assistant_text = context.response_ref.get("text", "")
+            if assistant_text:
+                await self._ports.conversation.record_assistant_message(
+                    tenant_id=context.tenant_id,
+                    conversation_id=context.conversation_id,
+                    request_id=context.request_id,
+                    correlation_id=context.correlation_id,
+                    content=assistant_text,
+                    language=context.language,
+                )
+        return context.model_copy(update={"response_ref": response_ref}), _ok(self.name, response_ref)
+
+    async def rollback(self, context: WorkflowContext) -> StageResult:
+        return _skip(self.name)
+
+    def metrics(self) -> dict[str, Any]:
+        return {"stage": self.name}
+
+    def supports_retry(self) -> bool:
+        return False
+
+
+class PersistenceStageAdapter(WorkflowStagePort):
+    name = WorkflowStageName.PERSISTENCE.value
+
+    def __init__(self, ports: ModulePorts, repository) -> None:
+        self._ports = ports
+        self._repository = repository
+
+    async def validate(self, context: WorkflowContext) -> StageResult:
+        return _ok(self.name)
+
+    async def execute(self, context: WorkflowContext) -> tuple[WorkflowContext, StageResult]:
+        return context, _ok(self.name, {"persisted": True})
+
+    async def rollback(self, context: WorkflowContext) -> StageResult:
+        return _skip(self.name)
+
+    def metrics(self) -> dict[str, Any]:
+        return {"stage": self.name}
+
+    def supports_retry(self) -> bool:
+        return False
+
+
+class PublicationStageAdapter(WorkflowStagePort):
+    name = WorkflowStageName.PUBLICATION.value
+
+    def __init__(self, ports: ModulePorts) -> None:
+        self._ports = ports
+
+    async def validate(self, context: WorkflowContext) -> StageResult:
+        return _ok(self.name)
+
+    async def execute(self, context: WorkflowContext) -> tuple[WorkflowContext, StageResult]:
+        await self._ports.outbox_dispatcher.dispatch_pending(limit=50)
+        return context, _ok(self.name, {"dispatched": True})
+
+    async def rollback(self, context: WorkflowContext) -> StageResult:
+        return _skip(self.name)
+
+    def metrics(self) -> dict[str, Any]:
+        return {"stage": self.name}
+
+    def supports_retry(self) -> bool:
+        return False

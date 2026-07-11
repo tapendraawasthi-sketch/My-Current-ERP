@@ -17,6 +17,8 @@ from typing import Any, AsyncIterator
 
 import httpx
 
+from ...llm.reasoning_filter import append_no_think, strip_reasoning
+
 _JSON_FENCE_RE = re.compile(r"```(?:json)?\s*(\{.*?\}|\[.*?\])\s*```", re.DOTALL)
 
 
@@ -71,11 +73,44 @@ def extract_json_object(text: str) -> dict[str, Any] | list[Any] | None:
     return None
 
 
+_THINK_OPEN_TAGS = ("<think>", "<" + "think>")
+_THINK_CLOSE_TAGS = ("</think>", "</" + "think>")
+_TAG_KEEP_TAIL = 24
+
+
+def _find_earliest_marker(buffer: str, markers: tuple[str, ...]) -> tuple[int, str] | None:
+    lower = buffer.lower()
+    best: tuple[int, str] | None = None
+    for marker in markers:
+        idx = lower.find(marker.lower())
+        if idx >= 0 and (best is None or idx < best[0]):
+            best = (idx, marker)
+    return best
+
+
 class OllamaClient:
     def __init__(self, base_url: str, model: str, timeout: float = 120.0):
         self.base_url = base_url.rstrip("/")
         self.model = model
         self.timeout = timeout
+
+    @staticmethod
+    def _prepare_messages(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        """Disable Qwen3 thinking per-turn and append /no_think to the last user turn."""
+        prepared = [dict(m) for m in messages]
+        for i in range(len(prepared) - 1, -1, -1):
+            if prepared[i].get("role") == "user" and prepared[i].get("content"):
+                prepared[i]["content"] = append_no_think(str(prepared[i]["content"]))
+                break
+        return prepared
+
+    @staticmethod
+    def _clean_message(msg: dict[str, Any]) -> dict[str, Any]:
+        content = strip_reasoning(msg.get("content") or "")
+        cleaned = dict(msg)
+        cleaned["content"] = content
+        cleaned.pop("thinking", None)
+        return cleaned
 
     async def chat(
         self,
@@ -89,8 +124,9 @@ class OllamaClient:
         """Return the raw Ollama message dict (may contain ``tool_calls``)."""
         payload: dict[str, Any] = {
             "model": model or self.model,
-            "messages": messages,
+            "messages": self._prepare_messages(messages),
             "stream": False,
+            "think": False,
             "options": {"temperature": temperature, "num_ctx": num_ctx},
         }
         if tools:
@@ -102,7 +138,8 @@ class OllamaClient:
             resp = await client.post(f"{self.base_url}/api/chat", json=payload)
             resp.raise_for_status()
             data = resp.json()
-        return data.get("message", {"role": "assistant", "content": ""})
+        msg = data.get("message", {"role": "assistant", "content": ""})
+        return self._clean_message(msg)
 
     async def chat_json(
         self,
@@ -131,10 +168,13 @@ class OllamaClient:
         """Yield incremental content tokens from a streaming chat."""
         payload = {
             "model": model or self.model,
-            "messages": messages,
+            "messages": self._prepare_messages(messages),
             "stream": True,
+            "think": False,
             "options": {"temperature": temperature, "num_ctx": num_ctx},
         }
+        buffer = ""
+        in_think_block = False
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             async with client.stream(
                 "POST", f"{self.base_url}/api/chat", json=payload
@@ -147,10 +187,42 @@ class OllamaClient:
                         chunk = json.loads(line)
                     except Exception:
                         continue
-                    piece = chunk.get("message", {}).get("content", "")
+                    msg = chunk.get("message", {})
+                    if msg.get("thinking"):
+                        continue
+                    piece = msg.get("content", "")
                     if piece:
-                        yield piece
+                        buffer += piece
+                        while buffer:
+                            if not in_think_block:
+                                hit = _find_earliest_marker(buffer, _THINK_OPEN_TAGS)
+                                if hit:
+                                    start, marker = hit
+                                    if start > 0:
+                                        safe = strip_reasoning(buffer[:start])
+                                        if safe:
+                                            yield safe
+                                    buffer = buffer[start + len(marker) :]
+                                    in_think_block = True
+                                    continue
+                                if len(buffer) > _TAG_KEEP_TAIL:
+                                    yield strip_reasoning(buffer[:-_TAG_KEEP_TAIL])
+                                    buffer = buffer[-_TAG_KEEP_TAIL:]
+                                break
+
+                            hit = _find_earliest_marker(buffer, _THINK_CLOSE_TAGS)
+                            if hit:
+                                end, marker = hit
+                                buffer = buffer[end + len(marker) :]
+                                in_think_block = False
+                                continue
+                            break
+
                     if chunk.get("done"):
+                        if buffer and not in_think_block:
+                            tail = strip_reasoning(buffer)
+                            if tail:
+                                yield tail
                         break
 
     async def embed(self, text: str, model: str | None = None) -> list[float]:

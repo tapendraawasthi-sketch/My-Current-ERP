@@ -11,8 +11,14 @@ from .bootstrap import get_engine, get_memory
 from .config import get_config
 from .llm.ollama_client import OllamaClient
 from .schemas import OrbixChatRequest, OrbixChatResponse
+from ..llm.reasoning_filter import strip_reasoning
 
 router = APIRouter(prefix="/orbix/v2", tags=["orbix-v2"])
+
+
+def _sanitize_response(resp: OrbixChatResponse) -> OrbixChatResponse:
+    resp.answer = strip_reasoning(resp.answer)
+    return resp
 
 
 @router.get("/status")
@@ -45,7 +51,7 @@ async def chat(req: OrbixChatRequest) -> OrbixChatResponse:
         resp = await engine.chat(req)
         if not resp.session_id:
             resp.session_id = req.session_id
-        return resp
+        return _sanitize_response(resp)
     except Exception as exc:
         return OrbixChatResponse(
             answer=f"Orbix error: {exc}",
@@ -71,6 +77,7 @@ async def chat_stream(req: OrbixChatRequest):
             resp = await engine.chat(req)
             if not resp.session_id:
                 resp.session_id = req.session_id
+            resp = _sanitize_response(resp)
             for record in resp.tool_trace:
                 yield _sse("tool", record.model_dump())
             yield _sse("answer", resp.model_dump())

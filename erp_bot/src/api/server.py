@@ -37,6 +37,7 @@ from ..conversation import get_conversation_manager
 from ..khata import khata_chat
 from ..khata.feedback_store import append_feedback, append_feedback_bulk, feedback_stats
 from ..khata.khata_chat import clear_session as khata_clear_session
+from ..llm.reasoning_filter import strip_reasoning
 
 from .streaming import router as streaming_router
 
@@ -79,6 +80,27 @@ try:
     print("[SERVER] Orbix v2 router mounted at /orbix/v2")
 except Exception as _orbix_exc:  # keep legacy endpoints working if Orbix fails to import
     print(f"[SERVER] Orbix v2 unavailable: {_orbix_exc}")
+
+# OIP — Orbix Intelligence Platform (Constitutional Phase 0)
+try:
+    from ..oip.api import router as oip_router
+    from ..oip.config.settings import get_oip_settings
+    from ..oip.infrastructure.di.container import shutdown_container
+
+    if get_oip_settings().enabled:
+        from ..oip.api.middleware import SecurityContextMiddleware
+
+        app.add_middleware(SecurityContextMiddleware)
+        app.include_router(oip_router)
+        print("[SERVER] OIP kernel mounted at /oip/v1")
+
+        @app.on_event("shutdown")
+        async def _oip_shutdown() -> None:
+            await shutdown_container()
+    else:
+        print("[SERVER] OIP disabled (OIP_ENABLED=false)")
+except Exception as _oip_exc:
+    print(f"[SERVER] OIP unavailable: {_oip_exc}")
 
 # Local dev tool only — tighten origins if ever exposed beyond localhost.
 app.add_middleware(
@@ -275,7 +297,7 @@ def chat(req: ChatRequest) -> ChatResponse:
                 if cached.get("route"):
                     route_info = RouteInfo(**cached["route"])
                 return ChatResponse(
-                    answer=cached["response"],
+                    answer=strip_reasoning(cached["response"]),
                     sources=cached.get("sources", []),
                     session_id=req.session_id,
                     route=route_info,
@@ -305,7 +327,7 @@ def chat(req: ChatRequest) -> ChatResponse:
             )
         
         return ChatResponse(
-            answer=result["answer"],
+            answer=strip_reasoning(result["answer"]),
             sources=result.get("sources", []),
             session_id=req.session_id,
             route=route_info,
@@ -350,7 +372,7 @@ async def chat_stream(req: StreamChatRequest):
                     yield f"data: {safe_chunk}\n\n"
             
             # Save complete response to history
-            full_response = "".join(collected_response)
+            full_response = strip_reasoning("".join(collected_response))
             agent_builder.add_to_history(req.session_id, "assistant", full_response)
             
             yield "data: [DONE]\n\n"
@@ -407,9 +429,11 @@ async def orbix_chat_stream(req: StreamChatRequest):
                     route_info = event.get("route")
                     yield _sse_json({"type": "route", "route": route_info})
                 elif event.get("type") == "token":
-                    yield _sse_json({"type": "token", "content": event.get("content", "")})
+                    token = strip_reasoning(str(event.get("content", "")))
+                    if token:
+                        yield _sse_json({"type": "token", "content": token})
                 elif event.get("type") == "complete":
-                    full_message = str(event.get("message") or "")
+                    full_message = strip_reasoning(str(event.get("message") or ""))
                     card = event.get("card")
                     route_info = event.get("route") or route_info
 

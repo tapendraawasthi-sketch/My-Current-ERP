@@ -27,6 +27,7 @@ from ..config import (
     OLLAMA_BASE_URL,
     OLLAMA_KEEP_ALIVE,
 )
+from ..llm.reasoning_filter import append_no_think, strip_reasoning
 from .system_prompt import CHITCHAT_SYSTEM_PROMPT, SYSTEM_PROMPT
 from .unified_tools import UNIFIED_TOOLS as TOOLS
 
@@ -81,15 +82,12 @@ def get_fast_llm() -> ChatOllama:
 
 
 def _trim_thinking_tags(text: str) -> str:
-    """Remove Qwen3 ... blocks from a completed response."""
-    text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL | re.IGNORECASE)
-    text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL | re.IGNORECASE)
-    text = re.sub(r"</?think>", "", text, flags=re.IGNORECASE)
-    return text.strip()
+    """Remove Qwen3 reasoning blocks from a completed response."""
+    return strip_reasoning(text)
 
 
-_THINK_OPEN_TAGS = ("<think>", "<think>")
-_THINK_CLOSE_TAGS = ("</think>", "</think>")
+_THINK_OPEN_TAGS = ("<think>", "<" + "think>")
+_THINK_CLOSE_TAGS = ("</think>", "</" + "think>")
 _TAG_KEEP_TAIL = 22  # longest partial open tag we might buffer
 
 
@@ -154,9 +152,7 @@ async def _stream_filtered_llm(
 
 def _with_no_think(prompt: str) -> str:
     """Append Qwen3 no-thinking suffix for faster generation."""
-    if "/no_think" in prompt:
-        return prompt
-    return f"{prompt} /no_think"
+    return append_no_think(prompt)
 
 
 def _format_conversation_history(
@@ -277,18 +273,12 @@ async def _direct_llm_stream(
     use_fast: bool = False,
     no_think: bool = True,
     max_history_turns: int | None = None,
-    use_reasoning: bool = False,
 ) -> AsyncIterator[str]:
     """Fast direct LLM stream — no tools, optional fast model for chitchat."""
     if use_fast:
         llm = get_fast_llm()
     else:
-        global _conversational_llm
-        if use_reasoning:
-            _conversational_llm = _build_conversational_llm(reasoning=True)
-        else:
-            _conversational_llm = _build_conversational_llm(reasoning=False)
-        llm = _conversational_llm
+        llm = _build_conversational_llm(reasoning=False)
     turns = max_history_turns if max_history_turns is not None else (3 if use_fast else MAX_CONVERSATION_TURNS)
     chat_history = _format_conversation_history(history or [], max_turns=turns)
     user_text = _with_no_think(question) if no_think else question
@@ -437,7 +427,7 @@ async def run_routed_agent(
             answer = await _rag_augmented_response(question, history, rag_context)
     
     result = {
-        "answer": answer,
+        "answer": strip_reasoning(answer),
         "sources": [],
         "route": {
             "intent": route.intent,
@@ -696,8 +686,8 @@ Answer from the reference. Be concise. Cite the source file when possible."""
                 prompt,
                 history,
                 use_fast=False,
+                no_think=True,
                 max_history_turns=5,
-                use_reasoning=True,
             ):
                 parts.append(chunk)
                 yield {"type": "token", "content": chunk}
@@ -715,7 +705,7 @@ Answer from the reference. Be concise. Cite the source file when possible."""
 
     yield {
         "type": "complete",
-        "message": "".join(parts),
+        "message": strip_reasoning("".join(parts)),
         "card": card,
         "route": route_dict,
     }
@@ -907,7 +897,7 @@ def ask(question: str, session_id: str) -> dict[str, any]:
             "route": {"intent": "error", "confidence": 0, "method": "error"},
         }
     
-    # Add assistant response to history
+    result["answer"] = strip_reasoning(result.get("answer", ""))
     add_to_history(session_id, "assistant", result["answer"])
     
     return result
@@ -939,7 +929,7 @@ async def ask_async(question: str, session_id: str) -> dict[str, any]:
             "route": {"intent": "error", "confidence": 0, "method": "error"},
         }
     
-    # Add assistant response to history
+    result["answer"] = strip_reasoning(result.get("answer", ""))
     add_to_history(session_id, "assistant", result["answer"])
     
     return result
