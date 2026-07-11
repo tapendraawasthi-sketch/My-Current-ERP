@@ -30,16 +30,16 @@ if (!existsSync(INDEX_PATH)) {
 
 console.log(`✅ dist/ folder verified at ${DIST_DIR}`);
 
-// Set ERP_BOT_BACKEND_URL on Render to your GPU server running erp_bot + Ollama.
-// Example: ERP_BOT_BACKEND_URL=http://YOUR_GPU_IP:8765
+// Set ERP_BOT_BACKEND_URL on Render to the sutra-erp-bot Python service URL.
+// In render.yaml this is wired automatically via fromService → RENDER_EXTERNAL_URL.
 // Frontend always calls /erp-bot (same-origin proxy) — no VITE_ERP_BOT_URL required.
 const ERP_BOT_BACKEND = (process.env.ERP_BOT_BACKEND_URL || "").trim().replace(/\/$/, "");
 
 if (ERP_BOT_BACKEND) {
-  console.log(`🧠 Orbix Qwen proxy: /erp-bot → ${ERP_BOT_BACKEND}`);
+  console.log(`🧠 Orbix OIP proxy: /erp-bot → ${ERP_BOT_BACKEND}`);
 } else {
   console.warn(
-    "⚠️  ERP_BOT_BACKEND_URL not set — Orbix will show offline until you connect a GPU server with Ollama + erp_bot",
+    "⚠️  ERP_BOT_BACKEND_URL not set — Orbix will show offline until sutra-erp-bot is deployed",
   );
 }
 
@@ -70,7 +70,7 @@ async function handleErpBotRequest(req, res, method, rawPath) {
           streaming: false,
           message:
             "⚠️ OFFLINE MODE: Using built-in rule-based brain (limited). " +
-            "Set ERP_BOT_BACKEND_URL to enable full AI conversation with Qwen3.",
+            "Deploy sutra-erp-bot on Render and set ERP_BOT_BACKEND_URL to enable OIP chat via Groq.",
         }),
       );
       return;
@@ -82,8 +82,8 @@ async function handleErpBotRequest(req, res, method, rawPath) {
         error: "LLM backend not configured — using offline fallback",
         mode: "builtin",
         hint:
-          "Set ERP_BOT_BACKEND_URL to your self-hosted erp_bot instance " +
-          "(e.g., http://YOUR_VPS_IP:8765) to enable full AI conversation.",
+          "Deploy the sutra-erp-bot Render service (Python erp_bot) and set ERP_BOT_BACKEND_URL " +
+          "to its onrender.com URL to enable OIP chat via Groq.",
       }),
     );
     return;

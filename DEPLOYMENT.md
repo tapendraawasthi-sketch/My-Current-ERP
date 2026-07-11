@@ -2,50 +2,109 @@
 
 Production URL: **https://my-current-erp.onrender.com**
 
+## Architecture (production)
+
+```
+Browser → sutra-erp (Node) → sutra-erp-bot (Python erp_bot) → OIP Kernel → Groq API
+```
+
+There is **no** dependency on Google Cloud GPU, Ollama, or qwen3 in production chat.
+
+## Services (render.yaml)
+
+| Service | Runtime | Purpose |
+|---------|---------|---------|
+| **sutra-erp** | Node | SPA + `/erp-bot/*` reverse proxy |
+| **sutra-erp-bot** | Python | FastAPI erp_bot + OIP Provider Runtime (Groq) |
+
 ## How deploys work
 
 1. Push to **`main`** on GitHub.
-2. **Render** rebuilds if the service is connected to this repo with **Auto-Deploy** enabled.
+2. **Render** rebuilds both services if connected with **Auto-Deploy** enabled.
 3. GitHub Actions workflow **`Render Deploy`** also builds and can trigger a **Deploy Hook** (recommended).
 
-## One-time Render setup (required if auto-deploy is not working)
+## One-time Render setup
 
-1. Open [Render Dashboard](https://dashboard.render.com) → service **sutra-erp**.
-2. **Settings → Build & Deploy**
-   - **Branch:** `main`
-   - **Auto-Deploy:** Yes
-   - **Build command:** `npm ci && npm run build`
-   - **Start command:** `npm start`
-3. **Settings → Deploy Hook** → copy the hook URL.
-4. GitHub repo → **Settings → Secrets → Actions** → add:
-   - Name: `RENDER_DEPLOY_HOOK`
-   - Value: *(paste deploy hook URL)*
+### Option A — Blueprint (recommended)
+
+1. Render Dashboard → **Blueprints** → **New Blueprint Instance**.
+2. Connect this repo; Render reads `render.yaml` and creates **sutra-erp-bot** + updates **sutra-erp**.
+3. On **sutra-erp-bot**, set secret **`OIP_GROQ_API_KEY`** (Dashboard → Environment).
+4. On **sutra-erp**, **remove** any manual `ERP_BOT_BACKEND_URL=http://35.202.84.218:8765` — the blueprint wires it via `fromService`.
+
+### Option B — Manual second service
+
+If **sutra-erp** already exists:
+
+1. Create **Web Service** → name `sutra-erp-bot`, runtime **Python 3**, root directory **`erp_bot`**.
+2. **Build command:** `bash scripts/render-build.sh`
+3. **Start command:** `python scripts/start_render.py`
+4. **Health check path:** `/health`
+5. Set env vars (see table below).
+6. On **sutra-erp**, set `ERP_BOT_BACKEND_URL` to the **sutra-erp-bot** `https://….onrender.com` URL (no trailing slash).
+
+### Deploy hook (optional)
+
+1. **sutra-erp** → Settings → Deploy Hook → copy URL.
+2. GitHub → Settings → Secrets → `RENDER_DEPLOY_HOOK`.
+
+## Environment variables
+
+### sutra-erp-bot (Python)
+
+| Variable | Value | Notes |
+|----------|-------|-------|
+| `OIP_ENABLED` | `true` | OIP kernel on |
+| `OIP_FORCE_STUB_PROVIDERS` | `false` | Real Groq calls |
+| `OIP_PROVIDER` | `groq` | Provider Runtime selection |
+| `OIP_GROQ_API_KEY` | *(secret)* | Groq API key — **never commit** |
+| `OIP_DEFAULT_MODEL` | `llama-3.3-70b-versatile` | Default chat model |
+| `OIP_AUTH_REQUIRED` | `false` | No JWT for Orbix proxy |
+| `OIP_PROVIDER_RUNTIME_ENABLED` | `true` | Provider Runtime on |
+| `OIP_ORCHESTRATOR_ENABLED` | `true` | Orchestrator on |
+| `OIP_DATABASE_URL` | `sqlite+aiosqlite:///./data/oip/oip.db` | OIP state (ephemeral disk) |
+| `PYTHON_VERSION` | `3.11.11` | Set in render.yaml |
+| `PORT` | *(auto)* | Render injects; do not hardcode |
+
+Render also sets `RENDER=true` — erp_bot skips Ollama/Chroma ingest and file watcher on startup.
+
+### sutra-erp (Node)
+
+| Variable | Value | Notes |
+|----------|-------|-------|
+| `ERP_BOT_BACKEND_URL` | `https://sutra-erp-bot.onrender.com` | Auto via `fromService` in render.yaml |
+| `NODE_ENV` | `production` | |
+| `PORT` | `10000` | Render default |
+| `NODE_OPTIONS` | `--max-old-space-size=6144` | Build memory |
+
+**Remove** legacy `ERP_BOT_BACKEND_URL=http://35.202.84.218:8765` from the dashboard.
 
 ## Verify a deploy landed
 
 ```bash
-curl https://my-current-erp.onrender.com/health
+# Frontend commit SHA
+curl -s https://my-current-erp.onrender.com/health | jq .
+
+# erp_bot OIP status (via proxy)
+curl -s https://my-current-erp.onrender.com/erp-bot/status | jq .
+
+# Direct erp_bot (replace with your sutra-erp-bot URL)
+curl -s https://sutra-erp-bot.onrender.com/status | jq .
 ```
 
-Response includes `"commit":"<git-sha>"` matching the latest `main` commit.
+Expected `/status` (OIP mode):
 
-After deploy, hard-refresh the browser: **Ctrl+Shift+R** (Windows/Linux) or **Cmd+Shift+R** (Mac) to bypass cached JS bundles.
-
-## Manual deploy
-
-Render Dashboard → **sutra-erp** → **Manual Deploy** → **Deploy latest commit**.
-
-Or run the **Render Deploy** workflow manually: GitHub → Actions → Render Deploy → Run workflow.
-
----
-
-## e-Khata / Orbix AI (OIP Provider Runtime — Groq production)
-
-Production chat uses the **OIP kernel** (not local Ollama):
-
+```json
+{
+  "mode": "oip",
+  "provider_runtime_ready": true,
+  "configured_provider": "groq"
+}
 ```
-Browser → Render (serve.mjs) → erp_bot → IntelligenceKernelFacade → Orchestrator → Provider Runtime → Groq
-```
+
+After deploy, hard-refresh: **Ctrl+Shift+R** / **Cmd+Shift+R**.
+
+## e-Khata / Orbix AI (OIP + Groq)
 
 ### Local development
 
@@ -61,38 +120,52 @@ python scripts/start.py
 npm run dev
 ```
 
-Open e-Khata. Status should show **Provider Runtime ready** (not Ollama connected).
+### Production chat path
 
-### API endpoints (proxied as `/erp-bot/...` in production)
+```
+Browser → serve.mjs (/erp-bot) → erp_bot /orbix/chat/stream
+  → oip_chat_ingress → IntelligenceKernelFacade → Orchestrator
+  → Provider Runtime → GroqProviderAdapter → api.groq.com
+```
+
+### API endpoints (proxied as `/erp-bot/...`)
 
 | Endpoint | Purpose |
 |----------|---------|
-| `GET /status` | Provider Runtime readiness + configured provider |
-| `POST /orbix/chat/stream` | Orbix chat via OIP kernel (JSON SSE) |
+| `GET /health` | Render health check |
+| `GET /status` | Provider Runtime readiness |
+| `POST /orbix/chat/stream` | Orbix chat via OIP kernel (SSE) |
 | `POST /chat` | Non-streaming chat via OIP kernel |
-
-### Production on Render
-
-1. Deploy `erp_bot` on a **second service** or VM (port **8765**). Ollama GPU is **not required** for chat.
-2. Set on **erp_bot** host:
-   - `OIP_FORCE_STUB_PROVIDERS=false`
-   - `OIP_PROVIDER=groq`
-   - `OIP_GROQ_API_KEY=<secret>`
-   - `OIP_DEFAULT_MODEL=llama-3.3-70b-versatile`
-3. Set on **sutra-erp** (Render Node):
-   - `ERP_BOT_BACKEND_URL=https://your-erp-bot-host:8765`
 
 Without `ERP_BOT_BACKEND_URL`, e-Khata uses the **built-in Nepali brain** (offline fallback).
 
-### Legacy Ollama (offline/tests only)
+### Legacy Ollama (local dev / tests only)
 
-For local tests with `OIP_ENABLED=false`, use `ollama serve` and legacy qwen models. This path is not used in production when OIP is enabled.
+Set `OIP_ENABLED=false` and run `ollama serve` with qwen models. Not used in production.
 
-### Verify Provider Runtime from browser network
+## Smoke tests
 
 ```bash
-curl http://localhost:8765/status
-curl -X POST http://localhost:8765/orbix/chat/stream \
+BASE=https://my-current-erp.onrender.com
+BOT=https://sutra-erp-bot.onrender.com  # adjust to your URL
+
+# 1. Frontend health
+curl -sf "$BASE/health" | jq -e '.commit'
+
+# 2. Proxied OIP status
+curl -sf "$BASE/erp-bot/status" | jq -e '.mode == "oip" and .provider_runtime_ready == true'
+
+# 3. Direct erp_bot status
+curl -sf "$BOT/status" | jq -e '.configured_provider == "groq"'
+
+# 4. Streaming chat (first SSE event)
+curl -sf -N -X POST "$BASE/erp-bot/orbix/chat/stream" \
   -H 'Content-Type: application/json' \
-  -d '{"message":"namaste","session_id":"test-1"}'
+  -d '{"message":"namaste","session_id":"smoke-1"}' | head -5
 ```
+
+## Manual deploy
+
+Render Dashboard → service → **Manual Deploy** → **Deploy latest commit**.
+
+Or: GitHub → Actions → **Render Deploy** → Run workflow.

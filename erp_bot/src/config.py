@@ -120,7 +120,8 @@ PRIMARY_MODEL_OPTIONS = CONVERSATIONAL_MODEL_OPTIONS
 # ══════════════════════════════════════════════════════════════════════════════
 
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-API_PORT = int(os.getenv("API_PORT", "8765"))
+# Render sets PORT; local dev uses API_PORT (default 8765).
+API_PORT = int(os.getenv("PORT", os.getenv("API_PORT", "8765")))
 
 # ══════════════════════════════════════════════════════════════════════════════
 # KHATA / NLU SETTINGS

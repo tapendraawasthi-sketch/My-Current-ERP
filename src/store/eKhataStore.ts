@@ -306,7 +306,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
         llmOnline: status.khataLlm,
         llmModel: status.khataLlm ? status.model : status.degraded ? "KB-only" : status.model,
         engineLabel: status.khataLlm
-          ? `qwen3 (${status.model || "32b"})`
+          ? status.model || "groq"
           : status.degraded
             ? "degraded"
             : "offline",
@@ -402,7 +402,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
     const llmStatus = stateAfterRefresh.llmOnline
       ? {
           khataLlm: true,
-          model: stateAfterRefresh.llmModel || "qwen3:32b",
+          model: stateAfterRefresh.llmModel || "llama-3.3-70b-versatile",
           degraded: false,
         }
       : await checkEKhataLlmStatus();

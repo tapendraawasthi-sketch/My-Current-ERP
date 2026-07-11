@@ -163,8 +163,8 @@ const EKhataPanel: React.FC = () => {
                 className={`inline-block h-1.5 w-1.5 rounded-full ${llmOnline ? "bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.6)]" : "bg-amber-400"}`}
               />
               {llmOnline
-                ? `Qwen · ${llmModel || "32b"}`
-                : "Offline — connect GPU server"}
+                ? `Groq · ${llmModel || "llama-3.3-70b"}`
+                : "Offline — connect erp_bot"}
             </p>
           </div>
 

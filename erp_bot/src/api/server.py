@@ -127,24 +127,29 @@ app.mount(
 
 @app.on_event("startup")
 def on_startup():
-    start_watcher()
-    print("[SERVER] Watcher started")
-    if chroma_store.get_indexed_file_count() == 0:
-        print(
-            "[SERVER] WARNING: index is empty — run scripts/start.py's initial scan, "
-            "or POST /reindex"
-        )
-    try:
-        from ..knowledge.knowledge_init import ensure_knowledge_indexes
-
-        idx = ensure_knowledge_indexes()
-        print(f"[SERVER] Knowledge indexes: {idx}")
-    except Exception as exc:
-        print(f"[SERVER] Knowledge index warning: {exc}")
-
-    # Optional R2 connection verification (set R2_STARTUP_VERIFY=true in production)
     import os
 
+    _is_render = os.getenv("RENDER", "").lower() == "true"
+
+    if _is_render:
+        print("[SERVER] Render deploy — skipping file watcher and Chroma ingest (OIP chat only)")
+    else:
+        start_watcher()
+        print("[SERVER] Watcher started")
+        if chroma_store.get_indexed_file_count() == 0:
+            print(
+                "[SERVER] WARNING: index is empty — run scripts/start.py's initial scan, "
+                "or POST /reindex"
+            )
+        try:
+            from ..knowledge.knowledge_init import ensure_knowledge_indexes
+
+            idx = ensure_knowledge_indexes()
+            print(f"[SERVER] Knowledge indexes: {idx}")
+        except Exception as exc:
+            print(f"[SERVER] Knowledge index warning: {exc}")
+
+    # Optional R2 connection verification (set R2_STARTUP_VERIFY=true in production)
     if os.getenv("R2_STARTUP_VERIFY", "false").lower() in {"1", "true", "yes"}:
         try:
             from backend.storage import startup_verify_r2
@@ -155,13 +160,14 @@ def on_startup():
             print(f"[SERVER] R2 storage verification failed: {exc}")
             raise
 
-    try:
-        from backend.knowledge.jobs.worker import start_knowledge_worker
+    if not _is_render:
+        try:
+            from backend.knowledge.jobs.worker import start_knowledge_worker
 
-        start_knowledge_worker()
-        print("[SERVER] Knowledge ingestion worker started")
-    except Exception as exc:
-        print(f"[SERVER] Knowledge worker warning: {exc}")
+            start_knowledge_worker()
+            print("[SERVER] Knowledge ingestion worker started")
+        except Exception as exc:
+            print(f"[SERVER] Knowledge worker warning: {exc}")
 
 
 class ChatRequest(BaseModel):

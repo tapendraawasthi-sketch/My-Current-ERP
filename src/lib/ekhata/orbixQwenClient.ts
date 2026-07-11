@@ -247,17 +247,18 @@ export async function streamOrbixQwen(
   }
 }
 
-export const ORBIX_OFFLINE_MESSAGE = `⚠️ **Orbix AI offline** — Qwen3 brain is not connected.
+export const ORBIX_OFFLINE_MESSAGE = `⚠️ **Orbix AI offline** — OIP Provider Runtime is not connected.
 
-**On Render**, set environment variable:
-\`ERP_BOT_BACKEND_URL=http://YOUR_GPU_SERVER_IP:8765\`
+**On Render**, ensure the **sutra-erp-bot** Python service is deployed and **sutra-erp** has:
+\`ERP_BOT_BACKEND_URL\` set to the erp_bot service URL (auto-wired in \`render.yaml\`).
 
-**On your GPU server**, run:
+**Required on sutra-erp-bot:**
 \`\`\`
-ollama pull qwen3:32b
-ollama pull qwen3:4b
-ollama pull nomic-embed-text
-cd erp_bot && python scripts/start.py
+OIP_ENABLED=true
+OIP_FORCE_STUB_PROVIDERS=false
+OIP_PROVIDER=groq
+OIP_GROQ_API_KEY=<your-groq-key>
+OIP_DEFAULT_MODEL=llama-3.3-70b-versatile
 \`\`\`
 
-Then redeploy Render and refresh this page.`;
+Then redeploy both services and refresh this page.`;

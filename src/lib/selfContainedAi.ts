@@ -8,7 +8,7 @@
  *
  * Render/production:
  *   → Frontend always calls same-origin /erp-bot (serve.mjs proxy)
- *   → Set ERP_BOT_BACKEND_URL on Render to your erp_bot host (:8765)
+ *   → ERP_BOT_BACKEND_URL points to sutra-erp-bot (Render Python service)
  *   → No VITE_ERP_BOT_URL required at build time
  */
 

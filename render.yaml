@@ -1,4 +1,37 @@
 services:
+  # Python erp_bot — OIP kernel + Groq Provider Runtime (no GPU/Ollama).
+  - type: web
+    name: sutra-erp-bot
+    runtime: python
+    branch: main
+    autoDeploy: true
+    rootDir: erp_bot
+    buildCommand: bash scripts/render-build.sh
+    startCommand: python scripts/start_render.py
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.11"
+      - key: OIP_ENABLED
+        value: "true"
+      - key: OIP_FORCE_STUB_PROVIDERS
+        value: "false"
+      - key: OIP_PROVIDER
+        value: "groq"
+      - key: OIP_GROQ_API_KEY
+        sync: false
+      - key: OIP_DEFAULT_MODEL
+        value: "llama-3.3-70b-versatile"
+      - key: OIP_AUTH_REQUIRED
+        value: "false"
+      - key: OIP_PROVIDER_RUNTIME_ENABLED
+        value: "true"
+      - key: OIP_ORCHESTRATOR_ENABLED
+        value: "true"
+      - key: OIP_DATABASE_URL
+        value: "sqlite+aiosqlite:///./data/oip/oip.db"
+
+  # Node frontend — SPA + /erp-bot reverse proxy to sutra-erp-bot.
   - type: web
     name: sutra-erp
     runtime: node
@@ -16,4 +49,9 @@ services:
         value: 10000
       - key: NODE_VERSION
         value: "20"
+      - key: ERP_BOT_BACKEND_URL
+        fromService:
+          type: web
+          name: sutra-erp-bot
+          envVarKey: RENDER_EXTERNAL_URL
     healthCheckPath: /health
