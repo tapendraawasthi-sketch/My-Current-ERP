@@ -16,6 +16,22 @@ class DefaultToolRegistryAdapter(ToolRegistryPort):
             self._detectors[intent] = detector
 
         register(
+            "sales_entry",
+            lambda message, module: (
+                ToolRequirement(tool_id="erp.sales.invoice", purpose="draft_sales_invoice"),
+                ToolRequirement(tool_id="erp.inventory.adjust", purpose="update_stock"),
+                ToolRequirement(tool_id="erp.journal.draft", purpose="draft_journal_entry"),
+            ),
+        )
+        register(
+            "purchase_entry",
+            lambda message, module: (
+                ToolRequirement(tool_id="erp.purchase.invoice", purpose="draft_purchase_invoice"),
+                ToolRequirement(tool_id="erp.inventory.adjust", purpose="update_stock"),
+                ToolRequirement(tool_id="erp.journal.draft", purpose="draft_journal_entry"),
+            ),
+        )
+        register(
             "ledger_balance_query",
             lambda message, module: (
                 ToolRequirement(tool_id="erp.ledger.balance", purpose="fetch_party_balance"),

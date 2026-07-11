@@ -48,6 +48,18 @@ def create_default_intent_registry() -> IntentClassifierRegistry:
             return "journal_entry", 0.88
         return None
 
+    def sales_entry(*, message: str, module: str) -> tuple[str, float] | None:
+        if "journal entry" in message:
+            return None
+        if any(k in message for k in ("sold", "becheko", "beche", "bikri")):
+            return "sales_entry", 0.87
+        return None
+
+    def purchase_entry(*, message: str, module: str) -> tuple[str, float] | None:
+        if any(k in message for k in ("bought", "purchase", "kineko", "kinyo", "kharid")):
+            return "purchase_entry", 0.86
+        return None
+
     def report_query(*, message: str, module: str) -> tuple[str, float] | None:
         if any(k in message for k in ("report", "trial balance", "profit", "loss")):
             return "report_generation", 0.9
@@ -71,6 +83,8 @@ def create_default_intent_registry() -> IntentClassifierRegistry:
         return None
 
     registry.register("balance_query", balance_query, priority=10)
+    registry.register("sales_entry", sales_entry, priority=15)
+    registry.register("purchase_entry", purchase_entry, priority=16)
     registry.register("journal_entry", journal_entry, priority=20)
     registry.register("vat_calculation", vat_calculation, priority=25)
     registry.register("report_query", report_query, priority=30)

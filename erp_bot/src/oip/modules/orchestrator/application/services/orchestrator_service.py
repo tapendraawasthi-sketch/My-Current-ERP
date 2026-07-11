@@ -271,8 +271,27 @@ class OrchestratorService(OrchestratorPort):
     ) -> IntelligenceResponseDto:
         response_snapshot = completed.snapshots.get("response") or final_context.response_ref or {}
         text = self._extract_response_text(response_snapshot)
+        card = response_snapshot.get("card") if isinstance(response_snapshot, dict) else None
         actions: tuple[ActionPayload, ...] = ()
-        if text:
+        if card:
+            actions = (
+                ActionPayload(
+                    action_type=ActionType.JOURNAL_ENTRY,
+                    body=dict(card),
+                    confidence=1.0,
+                    requires_confirmation=True,
+                ),
+            )
+            if text:
+                actions = actions + (
+                    ActionPayload(
+                        action_type=ActionType.ANSWER,
+                        body={"text": text},
+                        confidence=1.0,
+                        requires_confirmation=False,
+                    ),
+                )
+        elif text:
             actions = (
                 ActionPayload(
                     action_type=ActionType.ANSWER,

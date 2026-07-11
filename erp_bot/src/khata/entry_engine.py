@@ -334,6 +334,12 @@ _PURCHASE_PATTERN = re.compile(
     re.IGNORECASE,
 )
 
+# Generic sale patterns (English + Nepali)
+_SALE_PATTERN = re.compile(
+    r"\b(sold|becheko|beche|bech|bikri|sale|sales)\b",
+    re.IGNORECASE,
+)
+
 # Party name extraction
 _PARTY_PATTERN = re.compile(
     r"(?:bata|lai|sanga|from|to|बाट|लाई|सँग)\s+([A-Za-z\u0900-\u097F][A-Za-z\u0900-\u097F\s]{1,30}?)(?:\s+(?:lai|bata|ko|को|लाई|बाट)|\s*\d|\s*$)",
@@ -342,7 +348,33 @@ _PARTY_PATTERN = re.compile(
 
 
 def _extract_amount(text: str) -> Decimal | None:
-    """Extract amount from text, handling Nepali number words."""
+    """Extract amount from text, handling Nepali number words and qty × rate."""
+    rate_qty = re.search(
+        r"(\d+(?:\.\d+)?)\s*(?:kg|kgs|kilogram|unit|pcs|piece)\b.*?"
+        r"(?:at|@|rate)\s*(?:rs\.?|npr|रु\.?|₹)?\s*(\d+(?:\.\d+)?)",
+        text,
+        re.IGNORECASE,
+    )
+    if rate_qty:
+        qty = Decimal(rate_qty.group(1))
+        rate = Decimal(rate_qty.group(2))
+        total = (qty * rate).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        if total > 0:
+            return total
+
+    explicit_rs = re.findall(
+        r"(?:rs\.?|npr|रु\.?|₹)\s*(\d{1,3}(?:,\d{3})*(?:\.\d{2})?|\d+(?:\.\d+)?)",
+        text,
+        re.IGNORECASE,
+    )
+    if explicit_rs:
+        try:
+            return Decimal(explicit_rs[-1].replace(",", "")).quantize(
+                Decimal("0.01"), rounding=ROUND_HALF_UP
+            )
+        except Exception:
+            pass
+
     # Try numeric pattern first
     match = _AMOUNT_PATTERN.search(text)
     if match:
@@ -416,6 +448,9 @@ def regex_fast_path(text: str) -> ParseResult | None:
         else:
             txn_type = TransactionType.CASH_PURCHASE
         confidence = 0.82
+    elif _SALE_PATTERN.search(text):
+        txn_type = TransactionType.CREDIT_SALE if party else TransactionType.CASH_SALE
+        confidence = 0.86 if party else 0.80
     
     # Require high confidence for regex path
     if not txn_type or confidence < 0.80:

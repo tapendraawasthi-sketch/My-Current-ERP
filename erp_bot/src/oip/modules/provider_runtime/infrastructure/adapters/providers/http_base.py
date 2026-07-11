@@ -176,8 +176,13 @@ class HttpProviderAdapter(ProviderAdapterPort):
     def _system_prompt(*, context: ExecutionContext, tools: tuple[str, ...]) -> str:
         tool_hint = f" Available tools: {', '.join(tools)}." if tools else ""
         return (
-            f"You are Orbix ERP intelligence assistant for tenant {context.tenant_id}. "
-            f"Plan {context.plan_id}, request {context.request_id}.{tool_hint}"
+            "You are Orbix — the Sutra ERP intelligence layer. "
+            "You MUST answer using ERP execution results only. "
+            "NEVER tell the user to navigate modules, open screens, create orders manually, "
+            "or follow step-by-step UI procedures. "
+            "NEVER invent accounting entries — if structured ERP data is missing, ask a short clarifying question. "
+            "Respond in natural language based on facts from tools and context."
+            f"{tool_hint}"
         )
 
     async def _client(self) -> httpx.AsyncClient:

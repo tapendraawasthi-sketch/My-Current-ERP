@@ -10,6 +10,7 @@ from ....application.dto.workflow_context import WorkflowContext
 from ....application.ports.workflow_stage_port import WorkflowStagePort
 from ....domain.value_objects import RetryClassification, StageRunStatus, WorkflowStageName
 from ......integration.contracts.execution_intent import ExecutionIntent
+from ......integration.khata_preprocess import preprocess_erp_message
 from .....planner.application.dto.planning_request import PlanningRequestDto
 from .....planner.domain.value_objects import PlanningPolicyName
 from .....streaming_runtime.domain.value_objects import WorkflowEventType
@@ -380,6 +381,26 @@ class ExecutionStageAdapter(WorkflowStagePort):
         validation = await self.validate(context)
         if validation.status != StageRunStatus.COMPLETED:
             return context, validation
+
+        erp_result = preprocess_erp_message(context.message)
+        if erp_result and erp_result.skip_llm:
+            snapshot = {
+                "source": "erp_preprocess",
+                "method": erp_result.method,
+                "intent": erp_result.intent,
+            }
+            response_ref: dict[str, Any] = {
+                "text": erp_result.text,
+                "intent": erp_result.intent,
+                "method": erp_result.method,
+            }
+            if erp_result.card:
+                response_ref["card"] = erp_result.card
+            return (
+                context.model_copy(update={"response_ref": response_ref, "execution_ref": snapshot}),
+                _ok(self.name, snapshot, erp_deterministic=True),
+            )
+
         route = await self._ports.route_repository.get_by_id(  # type: ignore[union-attr]
             tenant_id=context.tenant_id, route_id=context.route_ref["route_id"]
         )

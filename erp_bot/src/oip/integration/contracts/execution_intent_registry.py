@@ -74,6 +74,30 @@ def create_default_execution_intent_registry() -> ExecutionIntentRegistry:
     registry = ExecutionIntentRegistry()
     definitions = (
         _intent(
+            "sales_entry",
+            domain=IntentDomain.ACCOUNTING,
+            operation=IntentOperation.MUTATE,
+            risk=IntentRiskLevel.HIGH,
+            mutating=True,
+            approval_required=True,
+            erp_command_type=ErpCommandType.POST_JOURNAL_ENTRY,
+            action_type="journal_entry",
+            capabilities=("Accounting", "Inventory", "ReadWrite"),
+            permissions=("erp:write", "journal:post", "inventory:adjust"),
+        ),
+        _intent(
+            "purchase_entry",
+            domain=IntentDomain.ACCOUNTING,
+            operation=IntentOperation.MUTATE,
+            risk=IntentRiskLevel.HIGH,
+            mutating=True,
+            approval_required=True,
+            erp_command_type=ErpCommandType.POST_JOURNAL_ENTRY,
+            action_type="journal_entry",
+            capabilities=("Accounting", "Inventory", "ReadWrite"),
+            permissions=("erp:write", "journal:post", "inventory:adjust"),
+        ),
+        _intent(
             "journal_entry",
             domain=IntentDomain.ACCOUNTING,
             operation=IntentOperation.MUTATE,
