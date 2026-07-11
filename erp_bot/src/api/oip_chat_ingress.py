@@ -3,14 +3,18 @@
 from __future__ import annotations
 
 import json
+import os
 from typing import Any, AsyncIterator
 
 from ..oip.application.dto.intelligence_request import IntelligenceRequestDto, IntelligenceResponseDto
 from ..oip.config.settings import OipSettings, get_oip_settings
 from ..oip.domain.value_objects import ActionType
 from ..oip.infrastructure.di.container import get_container
+from ..oip.infrastructure.observability.logging import log_event
 from ..oip.modules.router.application.queries import GetProviderHealthQuery
 from ..oip.shared.ids import TenantId, new_correlation_id, new_request_id
+
+_OIP_CHAT_DEBUG = os.getenv("OIP_CHAT_DEBUG", "false").lower() in {"1", "true", "yes"}
 
 
 def oip_chat_enabled() -> bool:
@@ -73,8 +77,18 @@ async def build_intelligence_request(
 
 
 async def submit_chat(message: str, session_id: str, *, context: dict[str, Any] | None = None) -> IntelligenceResponseDto:
+    if _OIP_CHAT_DEBUG:
+        log_event("oip.chat_ingress.incoming", message=message, session_id=session_id)
     container = await get_container()
     request = await build_intelligence_request(message=message, session_id=session_id, context=context)
+    if _OIP_CHAT_DEBUG:
+        log_event(
+            "oip.chat_ingress.payload",
+            request_id=request.request_id,
+            question=request.question,
+            module=request.module,
+            session_id=request.session_id,
+        )
     return await container.kernel.submit(request)
 
 

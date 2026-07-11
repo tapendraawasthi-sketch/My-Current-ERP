@@ -31,7 +31,26 @@ from ..ports.execution_ports import (
     ToolSandboxPort,
     UsageCollectorPort,
 )
+import os
+
+from .....infrastructure.observability.logging import log_event
 from .context import ExecutionPipelineContext
+
+_OIP_CHAT_DEBUG = os.getenv("OIP_CHAT_DEBUG", "false").lower() in {"1", "true", "yes"}
+_EXPLICIT_WORKFLOW_INTENTS = frozenset({"workflow_approval"})
+
+
+def _resolve_provider_prompt(*, route, policy_decisions: dict) -> str:
+    """Use the user's message for chat; reserve plan-execution phrasing for explicit workflows."""
+    intent_type = policy_decisions.get("execution_intent_type") or policy_decisions.get(
+        "intent_type", "general_query"
+    )
+    user_message = str(policy_decisions.get("user_message") or "").strip()
+    if intent_type in _EXPLICIT_WORKFLOW_INTENTS:
+        return f"Execute plan {route.plan_id} for request {route.request_id}"
+    if user_message:
+        return user_message
+    return f"Execute plan {route.plan_id} for request {route.request_id}"
 
 
 def _utc_now() -> datetime:
@@ -72,6 +91,7 @@ class ExecutionContextStage:
         execution = context.execution
         if execution is None:
             return context
+        policy_decisions = dict(route.policy_decisions or {})
         context.context = ExecutionContext(
             context_id=str(uuid.uuid4()),
             execution_id=execution.execution_id,
@@ -90,7 +110,16 @@ class ExecutionContextStage:
             sandbox_id="",
             metadata={"estimated_tokens": route.estimated_tokens},
         )
-        context.prompt = f"Execute plan {route.plan_id} for request {route.request_id}"
+        context.prompt = _resolve_provider_prompt(route=route, policy_decisions=policy_decisions)
+        if _OIP_CHAT_DEBUG:
+            log_event(
+                "oip.provider_runtime.execution_context",
+                intent_type=policy_decisions.get("execution_intent_type"),
+                user_message=policy_decisions.get("user_message"),
+                provider_prompt=context.prompt,
+                plan_id=route.plan_id,
+                request_id=route.request_id,
+            )
         return context
 
 
@@ -203,6 +232,13 @@ class ProviderInvocationStage:
                 continue
             started = time.perf_counter()
             try:
+                if _OIP_CHAT_DEBUG:
+                    log_event(
+                        "oip.provider_runtime.provider_invocation",
+                        provider_id=provider_id,
+                        prompt=context.prompt,
+                        tools=list(tool_ids),
+                    )
                 response = await adapter.invoke(
                     provider_id=provider_id,
                     context=context.context.model_copy(update={"provider_id": provider_id}),
@@ -210,6 +246,12 @@ class ProviderInvocationStage:
                     tools=tool_ids,
                     streaming=context.streaming_enabled,
                 )
+                if _OIP_CHAT_DEBUG:
+                    log_event(
+                        "oip.provider_runtime.provider_response",
+                        provider_id=provider_id,
+                        response_preview=str(response.get("text", ""))[:500],
+                    )
                 latency_ms = int((time.perf_counter() - started) * 1000)
                 response["_latency_ms"] = latency_ms
                 response["_retry_count"] = attempt

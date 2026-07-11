@@ -139,6 +139,10 @@ class PlanAssemblyStage:
             objective=f"Fulfill intent: {context.intent}",
             success_criteria=("actions_materialized", "quality_gate_passed"),
             output_type="actions",
-            metadata={"intent": context.intent, "module": context.request.module},
+            metadata={
+                "intent": context.intent,
+                "module": context.request.module,
+                "user_message": context.normalized_message,
+            },
         )
         return context

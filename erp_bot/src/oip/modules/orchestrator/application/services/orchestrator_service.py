@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import uuid
 from datetime import datetime, timezone
 from typing import Any
@@ -33,6 +34,9 @@ from ..projectors.orchestrator_projectors import (
     WorkflowProjector,
     WorkflowTimelineProjector,
 )
+from .....infrastructure.observability.logging import log_event
+
+_OIP_CHAT_DEBUG = os.getenv("OIP_CHAT_DEBUG", "false").lower() in {"1", "true", "yes"}
 
 
 def _utc_now() -> datetime:
@@ -148,6 +152,13 @@ class OrchestratorService(OrchestratorPort):
             message=request.question,
             execution_mode=workflow.execution_mode.value,
         )
+        if _OIP_CHAT_DEBUG:
+            log_event(
+                "oip.orchestrator.input",
+                workflow_id=workflow.workflow_id,
+                message=context.message,
+                module=context.module,
+            )
 
         completed, final_context = await self._engine.run(workflow=workflow, context=context)
         await self._repository.save(completed)

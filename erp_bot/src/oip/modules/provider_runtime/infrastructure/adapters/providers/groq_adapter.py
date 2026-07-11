@@ -3,13 +3,17 @@
 from __future__ import annotations
 
 import json
+import os
 from typing import Any
 
 import httpx
 
 from ....domain.value_objects import ExecutionContext
+from ......infrastructure.observability.logging import log_event
 from .errors import ProviderNetworkError, ProviderTimeoutError
 from .http_base import GenerationParams, HttpProviderAdapter
+
+_OIP_CHAT_DEBUG = os.getenv("OIP_CHAT_DEBUG", "false").lower() in {"1", "true", "yes"}
 
 
 class GroqProviderAdapter(HttpProviderAdapter):
@@ -39,6 +43,13 @@ class GroqProviderAdapter(HttpProviderAdapter):
         if tool_defs:
             body["tools"] = tool_defs
 
+        if _OIP_CHAT_DEBUG:
+            log_event(
+                "oip.groq.request",
+                model=params.model,
+                messages=body["messages"],
+            )
+
         client = await self._client()
         try:
             response = await client.post(
@@ -58,6 +69,8 @@ class GroqProviderAdapter(HttpProviderAdapter):
         choice = (payload.get("choices") or [{}])[0]
         message = choice.get("message") or {}
         text = message.get("content") or ""
+        if _OIP_CHAT_DEBUG:
+            log_event("oip.groq.response", text=text[:500])
         return self._normalize_response(
             params=params,
             text=text,

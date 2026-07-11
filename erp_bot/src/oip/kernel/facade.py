@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import time
 from typing import Any
 
@@ -18,6 +19,8 @@ from ..infrastructure.observability.logging import log_event
 from ..infrastructure.observability.tracing import span
 from ..modules.orchestrator.application.services.orchestrator_service import OrchestratorService
 from ..shared.ids import CorrelationId, TenantId
+
+_OIP_CHAT_DEBUG = os.getenv("OIP_CHAT_DEBUG", "false").lower() in {"1", "true", "yes"}
 
 
 class IntelligenceKernelFacade(IntelligenceIngressPort):
@@ -50,6 +53,13 @@ class IntelligenceKernelFacade(IntelligenceIngressPort):
         try:
             with span("intelligence.submit", module=request.module, tenant_id=request.tenant_id):
                 await self._record_shadow_start(request)
+                if _OIP_CHAT_DEBUG:
+                    log_event(
+                        "oip.kernel.submit",
+                        request_id=request.request_id,
+                        question=request.question,
+                        module=request.module,
+                    )
 
                 if not self._orchestrator or not self._flags.orchestrator_module_enabled:
                     raise RuntimeError("orchestrator_required_for_native_execution")

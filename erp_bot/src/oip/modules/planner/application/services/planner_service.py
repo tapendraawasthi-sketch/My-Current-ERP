@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import uuid
 from datetime import datetime, timezone
 
@@ -31,6 +32,9 @@ from ..read_models.execution_plan_read_model import (
     to_plan_read_model,
     to_step_read_models,
 )
+from .....infrastructure.observability.logging import log_event
+
+_OIP_CHAT_DEBUG = os.getenv("OIP_CHAT_DEBUG", "false").lower() in {"1", "true", "yes"}
 
 
 def _utc_now() -> datetime:
@@ -123,6 +127,14 @@ class PlannerService(PlannerPort):
         )
         await self._record_lineage(plan, request)
         await self._audit_mutation(plan, "planner.plan.created")
+        if _OIP_CHAT_DEBUG:
+            log_event(
+                "oip.planner.output",
+                plan_id=plan.plan_id,
+                intent=plan.intent,
+                user_message=plan.goal.metadata.get("user_message") if plan.goal else None,
+                execution_intent_type=plan.execution_intent.intent_type if plan.execution_intent else plan.intent,
+            )
         return plan
 
     async def validate_plan(self, *, tenant_id: str, plan_id: str) -> ExecutionPlan:

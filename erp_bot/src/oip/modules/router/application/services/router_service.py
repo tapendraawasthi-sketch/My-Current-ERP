@@ -105,6 +105,17 @@ class RouterService(RoutingPort):
         if primary_meta:
             estimated_cost = (plan.estimated_tokens // 1000 + 1) * primary_meta.default_cost_micros_per_1k
 
+        goal_meta = plan.goal.metadata if plan.goal else {}
+        execution_intent_type = (
+            plan.execution_intent.intent_type if plan.execution_intent else plan.intent
+        )
+        policy_decisions = {
+            **context.policy_decisions,
+            "intent_type": plan.intent,
+            "execution_intent_type": execution_intent_type,
+            "user_message": goal_meta.get("user_message", ""),
+        }
+
         decision = RouteDecision(
             route_id=route_id,
             plan_id=plan.plan_id,
@@ -130,7 +141,7 @@ class RouterService(RoutingPort):
             estimated_latency_ms=estimated_latency,
             estimated_tokens=plan.estimated_tokens,
             expected_quality=primary_meta.quality_score if primary_meta else 0.7,
-            policy_decisions=context.policy_decisions,
+            policy_decisions=policy_decisions,
             reason_codes=tuple(RouteReason(code) for code in context.reason_codes if code in RouteReason._value2member_map_),
             health_snapshot=context.health_snapshot,
             created_at=now,
