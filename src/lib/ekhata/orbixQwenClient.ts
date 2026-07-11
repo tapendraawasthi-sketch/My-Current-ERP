@@ -1,14 +1,9 @@
 /**
- * Orbix Qwen-only client — ultra stack for production + local.
- *
- * Routes every message through erp_bot:
- *   qwen3:4b router → RAG / khata engine → qwen3:32b brain
- *
- * Endpoint: POST /orbix/chat/stream (JSON SSE)
+ * Orbix chat client — production ingress via OIP kernel at /orbix/chat/stream.
  */
 
 import { resolveErpBotUrl } from "../erpBotClient";
-import { isSelfContainedAi } from "../selfContainedAi";
+import { isProviderRuntimeReady, isSelfContainedAi } from "../selfContainedAi";
 import type { AccountClass, KhataConfirmationCard, KhataIntent } from "./types";
 
 export const ORBIX_QWEN_URL = resolveErpBotUrl();
@@ -72,15 +67,20 @@ export async function checkOrbixQwenStatus(): Promise<OrbixQwenStatus> {
 
     const data = await resp.json();
     const botOk = data.status === "online";
-    const ollamaOk = data.ollama === "connected";
-    const isBuiltin = data.mode === "builtin" || !ollamaOk;
+    const runtimeReady = isProviderRuntimeReady(data);
+    const isBuiltin = data.mode === "builtin" || !runtimeReady;
+    const modelLabel =
+      data.default_model ||
+      data.configured_provider ||
+      data.conversational_model ||
+      data.model;
 
     return {
       online: botOk && data.mode !== "builtin",
-      qwenReady: botOk && ollamaOk && Boolean(data.khata_llm ?? data.conversational_model),
-      degraded: botOk && !ollamaOk,
-      model: data.model,
-      conversationalModel: data.conversational_model || data.model,
+      qwenReady: botOk && runtimeReady,
+      degraded: botOk && !runtimeReady,
+      model: modelLabel,
+      conversationalModel: modelLabel,
       streaming: Boolean(data.streaming),
       mode: isBuiltin ? "builtin" : "llm",
       error: isBuiltin ? data.message : undefined,

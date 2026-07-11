@@ -39,59 +39,60 @@ Or run the **Render Deploy** workflow manually: GitHub → Actions → Render De
 
 ---
 
-## e-Khata full LLM (Ollama — no API keys)
+## e-Khata / Orbix AI (OIP Provider Runtime — Groq production)
 
-e-Khata uses **local Ollama** via `erp_bot` for ChatGPT-style Nepali conversation + khata entries.
+Production chat uses the **OIP kernel** (not local Ollama):
 
-### Local development (recommended)
+```
+Browser → Render (serve.mjs) → erp_bot → IntelligenceKernelFacade → Orchestrator → Provider Runtime → Groq
+```
+
+### Local development
 
 ```bash
-# Terminal 1 — Ollama
-ollama serve
-ollama pull qwen2.5-coder:7b    # or llama3.2:3b for lighter Nepali chat
-ollama pull nomic-embed-text    # for Falcon codebase index
-
-# Terminal 2 — erp_bot API (port 8765)
+# Terminal 1 — erp_bot API (port 8765)
 cd erp_bot
 pip install -r requirements.txt
 cp .env.example .env
+# Set OIP_FORCE_STUB_PROVIDERS=false, OIP_PROVIDER=groq, OIP_GROQ_API_KEY=...
 python scripts/start.py
 
-# Terminal 3 — Sutra ERP
+# Terminal 2 — Sutra ERP
 npm run dev
 ```
 
-Open e-Khata (green book icon). Status should show **Ollama LLM connected**.
+Open e-Khata. Status should show **Provider Runtime ready** (not Ollama connected).
 
 ### API endpoints (proxied as `/erp-bot/...` in production)
 
 | Endpoint | Purpose |
 |----------|---------|
-| `GET /status` | Ollama + `khata_llm: true` when ready |
-| `POST /khata/chat` | Full Nepali chat + entry detection |
-| `POST /khata/clear_session` | Reset conversation memory |
+| `GET /status` | Provider Runtime readiness + configured provider |
+| `POST /orbix/chat/stream` | Orbix chat via OIP kernel (JSON SSE) |
+| `POST /chat` | Non-streaming chat via OIP kernel |
 
 ### Production on Render
 
-The default `sutra-erp` Node service **does not** run Ollama. For full LLM on Render:
-
-1. Deploy `erp_bot` on a **second service** (Docker/VM with Ollama installed) or run erp_bot on your own server.
-2. Set on **sutra-erp** service:
+1. Deploy `erp_bot` on a **second service** or VM (port **8765**). Ollama GPU is **not required** for chat.
+2. Set on **erp_bot** host:
+   - `OIP_FORCE_STUB_PROVIDERS=false`
+   - `OIP_PROVIDER=groq`
+   - `OIP_GROQ_API_KEY=<secret>`
+   - `OIP_DEFAULT_MODEL=llama-3.3-70b-versatile`
+3. Set on **sutra-erp** (Render Node):
    - `ERP_BOT_BACKEND_URL=https://your-erp-bot-host:8765`
-3. Rebuild — Falcon and e-Khata use `/erp-bot` proxy in `serve.mjs`.
 
-Without `ERP_BOT_BACKEND_URL`, e-Khata uses the **built-in Nepali brain** — fully self-contained in the app:
+Without `ERP_BOT_BACKEND_URL`, e-Khata uses the **built-in Nepali brain** (offline fallback).
 
-- **Conversation** — `khana khayeu?`, `k xa`, `timi ko ho?`, weather, food, greetings — understood via built-in Nepali language engine (no Ollama, no WebLLM, no API keys).
-- **Khata entries** — `Ram lai 500 udhaar diye` parsed accurately with confirm card.
+### Legacy Ollama (offline/tests only)
 
-Optional: deploy `erp_bot` + Ollama for extended LLM (not required).
+For local tests with `OIP_ENABLED=false`, use `ollama serve` and legacy qwen models. This path is not used in production when OIP is enabled.
 
-### Verify Ollama from browser network
+### Verify Provider Runtime from browser network
 
 ```bash
 curl http://localhost:8765/status
-curl -X POST http://localhost:8765/khata/chat \
+curl -X POST http://localhost:8765/orbix/chat/stream \
   -H 'Content-Type: application/json' \
-  -d '{"message":"namaste, kasto cha?","session_id":"test-1"}'
+  -d '{"message":"namaste","session_id":"test-1"}'
 ```

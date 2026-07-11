@@ -1,16 +1,37 @@
 /**
  * Self-contained AI mode detection and status.
  *
- * QWEN-ONLY MODE: The LLM path is PRIMARY everywhere (local + Render).
+ * Production chat uses the OIP kernel (Provider Runtime) via erp_bot.
  * The built-in rule-based brain runs ONLY when:
  *   - VITE_SELF_CONTAINED_AI=true is set explicitly, OR
- *   - erp_bot/Ollama is unreachable after a live /erp-bot/status check
+ *   - erp_bot Provider Runtime is unreachable after a live /erp-bot/status check
  *
  * Render/production:
  *   → Frontend always calls same-origin /erp-bot (serve.mjs proxy)
- *   → Set ERP_BOT_BACKEND_URL on Render to your GPU server (erp_bot :8765)
+ *   → Set ERP_BOT_BACKEND_URL on Render to your erp_bot host (:8765)
  *   → No VITE_ERP_BOT_URL required at build time
  */
+
+export function isProviderRuntimeReady(statusResponse: {
+  mode?: string;
+  provider_runtime_enabled?: boolean;
+  provider_runtime_ready?: boolean;
+  llm_ready?: boolean;
+  khata_llm?: boolean;
+  ollama?: string;
+  conversational_model?: string;
+  default_model?: string;
+  configured_provider?: string;
+}): boolean {
+  if (statusResponse.mode === "oip") {
+    return Boolean(
+      statusResponse.provider_runtime_ready ??
+        statusResponse.llm_ready ??
+        statusResponse.khata_llm,
+    );
+  }
+  return statusResponse.ollama === "connected" && Boolean(statusResponse.conversational_model);
+}
 
 /**
  * Whether to use the self-contained (rule-based) AI mode.
@@ -35,16 +56,19 @@ export function determineAiMode(statusResponse: {
   ollama?: string;
   conversational_model?: string;
   streaming?: boolean;
+  provider_runtime_enabled?: boolean;
+  provider_runtime_ready?: boolean;
+  llm_ready?: boolean;
+  khata_llm?: boolean;
+  default_model?: string;
+  configured_provider?: string;
 }): "llm" | "builtin" {
-  // If mode is explicitly 'builtin', we're in fallback mode
   if (statusResponse.mode === "builtin") return "builtin";
 
-  // If ollama is connected and we have a model, we're in LLM mode
-  if (statusResponse.ollama === "connected" && statusResponse.conversational_model) {
+  if (isProviderRuntimeReady(statusResponse)) {
     return "llm";
   }
 
-  // Default to builtin if unclear
   return "builtin";
 }
 
@@ -77,7 +101,7 @@ export function createLlmModeStatus(model: string, streaming: boolean): AiModeSt
   return {
     mode: "llm",
     label: "🧠 AI Connected",
-    detail: `Using ${model} — full conversational AI with memory`,
+    detail: `Using ${model} via OIP Provider Runtime`,
     model,
     streaming,
   };

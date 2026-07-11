@@ -39,6 +39,14 @@ from ..khata.feedback_store import append_feedback, append_feedback_bulk, feedba
 from ..khata.khata_chat import clear_session as khata_clear_session
 from ..llm.reasoning_filter import strip_reasoning
 
+from .oip_chat_ingress import (
+    map_response_to_orbix,
+    oip_chat_enabled,
+    provider_runtime_status_payload,
+    sse_json,
+    stream_orbix_kernel_events,
+    submit_chat,
+)
 from .streaming import router as streaming_router
 
 app = FastAPI(title="ERP AI Chatbot")
@@ -224,11 +232,29 @@ class KhataFeedbackRequest(BaseModel):
 
 
 @app.get("/health")
-def health() -> dict:
+async def health() -> dict:
     """Lightweight readiness probe for deploy scripts."""
     from ..vectorstore.ca_knowledge_store import get_ca_knowledge_count
     from ..vectorstore.nlu_knowledge_store import get_nlu_knowledge_count
     from ..vectorstore.nepal_knowledge_store import get_nepal_knowledge_count
+
+    if oip_chat_enabled():
+        runtime = await provider_runtime_status_payload()
+        return {
+            "status": "online",
+            "mode": runtime.get("mode", "oip"),
+            "provider_runtime_enabled": runtime.get("provider_runtime_enabled", False),
+            "provider_runtime_ready": runtime.get("provider_runtime_ready", False),
+            "llm_ready": runtime.get("llm_ready", False),
+            "configured_provider": runtime.get("configured_provider"),
+            "default_model": runtime.get("default_model"),
+            "resolved_provider": runtime.get("resolved_provider"),
+            "provider_health": runtime.get("provider_health"),
+            "indexed_files": chroma_store.get_indexed_file_count(),
+            "nepal_knowledge_chunks": get_nepal_knowledge_count(),
+            "ca_knowledge_chunks": get_ca_knowledge_count(),
+            "nlu_knowledge_chunks": get_nlu_knowledge_count(),
+        }
 
     ollama_ok = False
     try:
@@ -239,6 +265,7 @@ def health() -> dict:
 
     return {
         "status": "online",
+        "mode": "legacy",
         "ollama": "connected" if ollama_ok else "unreachable",
         "khata_llm": ollama_ok,
         "indexed_files": chroma_store.get_indexed_file_count(),
@@ -250,7 +277,19 @@ def health() -> dict:
 
 
 @app.get("/status")
-def status() -> dict:
+async def status() -> dict:
+    if oip_chat_enabled():
+        runtime = await provider_runtime_status_payload()
+        runtime.update(
+            {
+                "erp_path": str(ERP_PATH),
+                "indexed_files": chroma_store.get_indexed_file_count(),
+                "watcher": "active",
+                "embed_model": EMBED_MODEL,
+            }
+        )
+        return runtime
+
     try:
         resp = httpx.get(f"{OLLAMA_BASE_URL}/api/tags", timeout=10)
         resp.raise_for_status()
@@ -260,6 +299,7 @@ def status() -> dict:
 
     return {
         "status": "online",
+        "mode": "legacy",
         "model": CONVERSATIONAL_MODEL,
         "conversational_model": CONVERSATIONAL_MODEL,
         "fast_model": FAST_MODEL,
@@ -269,16 +309,17 @@ def status() -> dict:
         "ollama": ollama_status,
         "watcher": "active",
         "khata_llm": ollama_status == "connected",
+        "llm_ready": ollama_status == "connected",
         "conversation_memory": True,
         "streaming": True,
         "orbix_qwen_stream": True,
-        "stack": "qwen3:4b router + qwen3:32b brain + hybrid RAG",
+        "stack": "legacy ollama stack (offline/tests only)",
     }
 
 
 @app.post("/chat", response_model=ChatResponse)
-def chat(req: ChatRequest) -> ChatResponse:
-    """Standard chat endpoint with conversation memory, Phase 2 routing, Phase 6 caching."""
+async def chat(req: ChatRequest) -> ChatResponse:
+    """Standard chat endpoint — OIP kernel when enabled, legacy agent offline/tests only."""
     try:
         if not req.message.strip():
             return ChatResponse(
@@ -286,8 +327,20 @@ def chat(req: ChatRequest) -> ChatResponse:
                 sources=[],
                 session_id=req.session_id,
             )
-        
-        # Phase 6: Check cache first
+
+        if oip_chat_enabled():
+            response = await submit_chat(req.message, req.session_id)
+            text, card, route_info = map_response_to_orbix(response)
+            route = RouteInfo(**route_info) if route_info else None
+            return ChatResponse(
+                answer=text or "No response generated.",
+                sources=[],
+                session_id=req.session_id,
+                route=route,
+                card=card,
+            )
+
+        # Legacy offline/tests path
         if CACHE_ENABLED:
             from .cache import get_response_cache
             cache = get_response_cache()
@@ -302,10 +355,9 @@ def chat(req: ChatRequest) -> ChatResponse:
                     session_id=req.session_id,
                     route=route_info,
                 )
-        
+
         result = agent_builder.ask(req.message, req.session_id)
-        
-        # Build route info if available
+
         route_info = None
         route_dict = None
         if "route" in result and result["route"]:
@@ -316,22 +368,23 @@ def chat(req: ChatRequest) -> ChatResponse:
                 "reasoning": result["route"].get("reasoning"),
             }
             route_info = RouteInfo(**route_dict)
-        
-        # Phase 6: Cache the response
+
         if CACHE_ENABLED:
-            cache.put(
+            from .cache import get_response_cache
+
+            get_response_cache().put(
                 query=req.message,
                 response=result["answer"],
                 sources=result.get("sources", []),
                 route=route_dict,
             )
-        
+
         return ChatResponse(
             answer=strip_reasoning(result["answer"]),
             sources=result.get("sources", []),
             session_id=req.session_id,
             route=route_info,
-            card=result.get("card"),  # Phase 4: Khata confirmation card
+            card=result.get("card"),
         )
     except Exception as e:
         return ChatResponse(
@@ -349,51 +402,59 @@ class StreamChatRequest(BaseModel):
 
 @app.post("/chat/stream")
 async def chat_stream(req: StreamChatRequest):
-    """Streaming chat endpoint using Server-Sent Events (Falcon — plain text)."""
+    """Streaming chat — OIP kernel when enabled, legacy agent for offline/tests."""
     if not req.message.strip():
         async def empty_response():
             yield "data: Message cannot be empty.\n\n"
             yield "data: [DONE]\n\n"
         return StreamingResponse(empty_response(), media_type="text/event-stream")
-    
-    # Get history and add user message
+
+    if oip_chat_enabled():
+        async def generate_oip():
+            try:
+                response = await submit_chat(req.message, req.session_id)
+                text, _, _ = map_response_to_orbix(response)
+                if text:
+                    safe_chunk = text.replace("\n", "\\n")
+                    yield f"data: {safe_chunk}\n\n"
+                yield "data: [DONE]\n\n"
+            except Exception as exc:
+                yield f"data: Error: {exc}\n\n"
+                yield "data: [DONE]\n\n"
+
+        return StreamingResponse(generate_oip(), media_type="text/event-stream")
+
     history = agent_builder.get_session_history(req.session_id)
     agent_builder.add_to_history(req.session_id, "user", req.message)
-    
+
     collected_response: list[str] = []
-    
+
     async def generate():
         try:
             async for chunk in agent_builder.run_agent_stream(req.message, history):
                 if chunk:
                     collected_response.append(chunk)
-                    # Escape newlines for SSE format
                     safe_chunk = chunk.replace("\n", "\\n")
                     yield f"data: {safe_chunk}\n\n"
-            
-            # Save complete response to history
+
             full_response = strip_reasoning("".join(collected_response))
             agent_builder.add_to_history(req.session_id, "assistant", full_response)
-            
+
             yield "data: [DONE]\n\n"
         except Exception as e:
             yield f"data: Error: {e}\n\n"
             yield "data: [DONE]\n\n"
-    
+
     return StreamingResponse(generate(), media_type="text/event-stream")
 
 
 def _sse_json(data: dict) -> str:
-    import json
-    return f"data: {json.dumps(data, default=str)}\n\n"
+    return sse_json(data)
 
 
 @app.post("/orbix/chat/stream")
 async def orbix_chat_stream(req: StreamChatRequest):
-    """Orbix Qwen-only stream — routed agent with JSON SSE events.
-    
-    Stack: qwen3:4b router → RAG/khata/tools → qwen3:32b brain → stream tokens.
-    """
+    """Orbix chat stream — canonical ingress via IntelligenceKernelFacade."""
     if not req.message.strip():
         async def empty_response():
             yield _sse_json({"type": "error", "message": "Message cannot be empty."})
@@ -407,18 +468,24 @@ async def orbix_chat_stream(req: StreamChatRequest):
             },
         )
 
-    history = agent_builder.get_session_history(req.session_id)
-    agent_builder.add_to_history(req.session_id, "user", req.message)
-
     if req.context:
         set_session_context(req.session_id, req.context)
 
     async def generate():
-        yield _sse_json({"type": "thinking_start"})
-        full_message = ""
-        card = None
-        route_info = None
         try:
+            if oip_chat_enabled():
+                response = await submit_chat(req.message, req.session_id, context=req.context)
+                async for event in stream_orbix_kernel_events(response):
+                    yield event
+                return
+
+            # Legacy offline/tests path
+            history = agent_builder.get_session_history(req.session_id)
+            agent_builder.add_to_history(req.session_id, "user", req.message)
+            yield _sse_json({"type": "thinking_start"})
+            full_message = ""
+            card = None
+            route_info = None
             async for event in agent_builder.run_routed_agent_stream(
                 req.message,
                 history,
@@ -438,17 +505,6 @@ async def orbix_chat_stream(req: StreamChatRequest):
                     route_info = event.get("route") or route_info
 
             agent_builder.add_to_history(req.session_id, "assistant", full_message)
-            if CACHE_ENABLED and full_message and not card:
-                try:
-                    from .cache import get_response_cache
-                    get_response_cache().put(
-                        req.message,
-                        full_message,
-                        route=route_info,
-                        intent=(route_info or {}).get("intent"),
-                    )
-                except Exception:
-                    pass
             yield _sse_json({"type": "thinking_done"})
             yield _sse_json(
                 {

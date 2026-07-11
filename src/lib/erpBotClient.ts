@@ -8,10 +8,11 @@
  */
 
 import {
+  createLlmModeStatus,
+  determineAiMode,
+  isProviderRuntimeReady,
   isSelfContainedAi,
   SELF_CONTAINED_STATUS,
-  determineAiMode,
-  createLlmModeStatus,
   type AiModeStatus,
 } from "./selfContainedAi";
 
@@ -114,20 +115,26 @@ export async function checkErpBotStatus(): Promise<ErpBotStatus> {
 
     const data = await resp.json();
     const aiMode = determineAiMode(data);
-    const online = data.status === "online" && data.ollama === "connected";
+    const runtimeReady = isProviderRuntimeReady(data);
+    const online = data.status === "online" && runtimeReady;
+    const modelLabel =
+      data.default_model ||
+      data.configured_provider ||
+      data.conversational_model ||
+      data.model;
 
     return {
       online,
       indexedFiles: data.indexed_files ?? 0,
-      model: data.model,
-      conversationalModel: data.conversational_model,
+      model: modelLabel,
+      conversationalModel: modelLabel,
       fastModel: data.fast_model,
       mode: aiMode,
       streaming: data.streaming ?? false,
       conversationMemory: data.conversation_memory ?? false,
       modeStatus:
         aiMode === "llm" && online
-          ? createLlmModeStatus(data.conversational_model || data.model || "Unknown", data.streaming ?? false)
+          ? createLlmModeStatus(modelLabel || "Provider Runtime", data.streaming ?? false)
           : SELF_CONTAINED_STATUS,
     };
   } catch (e: any) {
