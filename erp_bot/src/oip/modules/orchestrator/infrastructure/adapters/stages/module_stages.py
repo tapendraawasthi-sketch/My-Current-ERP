@@ -382,17 +382,40 @@ class ExecutionStageAdapter(WorkflowStagePort):
         if validation.status != StageRunStatus.COMPLETED:
             return context, validation
 
-        erp_result = preprocess_erp_message(context.message)
+        meta = context.metadata or {}
+        orbix_mode = meta.get("orbix_mode") or "ask"
+        client_ctx = meta.get("client_context") or {}
+        erp_result = preprocess_erp_message(
+            context.message,
+            orbix_mode=orbix_mode,
+            session_id=context.session_id,
+            tenant_id=context.tenant_id,
+            company_id=context.company_id or "",
+            user_id=context.user_id,
+            user_role=client_ctx.get("user_role") or client_ctx.get("role"),
+            permissions=client_ctx.get("permissions"),
+            has_active_report=bool(client_ctx.get("has_active_report")),
+            has_pending_confirmation=bool(client_ctx.get("has_pending_confirmation")),
+        )
         if erp_result and erp_result.skip_llm:
             snapshot = {
                 "source": "erp_preprocess",
                 "method": erp_result.method,
                 "intent": erp_result.intent,
+                "orbix_mode": erp_result.orbix_mode or orbix_mode,
+                "operation_class": erp_result.operation_class,
+                "draft_id": erp_result.draft_id,
             }
             response_ref: dict[str, Any] = {
                 "text": erp_result.text,
                 "intent": erp_result.intent,
                 "method": erp_result.method,
+                "orbix_mode": erp_result.orbix_mode or orbix_mode,
+                "operation_class": erp_result.operation_class,
+                "capabilities": erp_result.capabilities,
+                "error": erp_result.error,
+                "report_spec": erp_result.report_spec,
+                "draft_id": erp_result.draft_id,
             }
             if erp_result.card:
                 response_ref["card"] = erp_result.card

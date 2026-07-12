@@ -52,21 +52,46 @@ async def build_intelligence_request(
     context: dict[str, Any] | None = None,
     module: str = "orbix",
     language: str | None = None,
+    orbix_mode: str | None = None,
 ) -> IntelligenceRequestDto:
+    from ..orbix.mode_policy import normalize_orbix_mode
+
     settings = get_oip_settings()
     request_id = str(new_request_id())
     correlation_id = str(new_correlation_id())
     metadata: dict[str, Any] = {}
     if context:
         metadata["client_context"] = context
+    # Prefer explicit top-level mode; fall back to context; missing → ask
+    raw_mode = orbix_mode
+    if raw_mode is None and context:
+        raw_mode = context.get("orbix_mode")
+    mode = normalize_orbix_mode(raw_mode, invalid_policy="ask")
+    metadata["orbix_mode"] = mode
     company_id = settings.default_service_company_id or "company-a"
+    if context and context.get("company_id"):
+        company_id = str(context["company_id"])
+    tenant_id = settings.default_service_tenant_id
+    if context and context.get("tenant_id"):
+        tenant_id = str(context["tenant_id"])
+    user_id = "orbix-user"
+    if context and context.get("user_id"):
+        user_id = str(context["user_id"])
+    log_event(
+        "oip.chat_ingress.mode",
+        request_id=request_id,
+        session_id=session_id,
+        orbix_mode=mode,
+        tenant_id=tenant_id,
+        company_id=company_id,
+    )
     return IntelligenceRequestDto(
         request_id=request_id,
         correlation_id=correlation_id,
         idempotency_key=request_id,
-        tenant_id=settings.default_service_tenant_id,
+        tenant_id=tenant_id,
         company_id=company_id,
-        user_id="orbix-user",
+        user_id=user_id,
         session_id=session_id,
         conversation_id=session_id,
         module=module,
@@ -76,11 +101,22 @@ async def build_intelligence_request(
     )
 
 
-async def submit_chat(message: str, session_id: str, *, context: dict[str, Any] | None = None) -> IntelligenceResponseDto:
+async def submit_chat(
+    message: str,
+    session_id: str,
+    *,
+    context: dict[str, Any] | None = None,
+    orbix_mode: str | None = None,
+) -> IntelligenceResponseDto:
     if _OIP_CHAT_DEBUG:
         log_event("oip.chat_ingress.incoming", message=message, session_id=session_id)
     container = await get_container()
-    request = await build_intelligence_request(message=message, session_id=session_id, context=context)
+    request = await build_intelligence_request(
+        message=message,
+        session_id=session_id,
+        context=context,
+        orbix_mode=orbix_mode,
+    )
     if _OIP_CHAT_DEBUG:
         log_event(
             "oip.chat_ingress.payload",
@@ -88,6 +124,7 @@ async def submit_chat(message: str, session_id: str, *, context: dict[str, Any] 
             question=request.question,
             module=request.module,
             session_id=request.session_id,
+            orbix_mode=(request.metadata or {}).get("orbix_mode"),
         )
     return await container.kernel.submit(request)
 
@@ -106,15 +143,21 @@ def map_response_to_orbix(
             card = dict(action.body)
     metadata = dict(response.metadata or {})
     route_info: dict[str, Any] | None = None
-    if metadata.get("intent") or metadata.get("routing_policy"):
+    if metadata.get("intent") or metadata.get("routing_policy") or metadata.get("operation_class"):
         route_info = {
             "intent": metadata.get("intent", "general_qa"),
             "confidence": float(metadata.get("confidence", 0.85)),
             "method": "oip",
             "reasoning": metadata.get("reasoning"),
+            "operation_class": metadata.get("operation_class"),
+            "orbix_mode": metadata.get("orbix_mode"),
         }
     if not text and metadata.get("text"):
         text = str(metadata["text"])
+    # Pull fields from response_ref-style metadata when present
+    for key in ("operation_class", "orbix_mode", "draft_id", "error", "report_spec", "capabilities"):
+        if key in metadata and route_info is not None:
+            route_info[key] = metadata[key]
     return text.strip(), card, route_info
 
 
@@ -139,6 +182,7 @@ async def stream_orbix_kernel_events(
                 token += " "
             yield sse_json({"type": "token", "content": token})
     yield sse_json({"type": "thinking_done"})
+    meta = dict(response.metadata or {})
     yield sse_json(
         {
             "type": "complete",
@@ -146,9 +190,14 @@ async def stream_orbix_kernel_events(
             "card": card,
             "route": route_info,
             "action": "confirm" if card else "chat",
-            "provider": response.provider or response.metadata.get("provider_id"),
+            "provider": response.provider or meta.get("provider_id"),
             "model": response.model,
             "provider_runtime": True,
+            "orbix_mode": meta.get("orbix_mode") or (route_info or {}).get("orbix_mode"),
+            "operation_class": meta.get("operation_class") or (route_info or {}).get("operation_class"),
+            "error": meta.get("error") or (route_info or {}).get("error"),
+            "draft_id": meta.get("draft_id") or (route_info or {}).get("draft_id"),
+            "report_spec": meta.get("report_spec") or (route_info or {}).get("report_spec"),
         }
     )
 

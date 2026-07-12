@@ -13,6 +13,8 @@ import OrbixChatSidebar from "./OrbixChatSidebar";
 import OrbixNeuronThinking from "./OrbixNeuronThinking";
 import OrbixReportTable from "./OrbixReportTable";
 import OrbixReportDateClarify from "./OrbixReportDateClarify";
+import OrbixModeSelector from "./OrbixModeSelector";
+import { ORBIX_MODE_META } from "../../lib/ekhata/orbixOperatingMode";
 
 /** TopMenuBar (40px) + BusyMenuBar (40px) on desktop — panel stays below ERP menus */
 const ORBIX_CHROME_TOP_DESKTOP = 80;
@@ -31,15 +33,18 @@ function useOrbixChromeInsets() {
   return { top, bottom: ORBIX_CHROME_BOTTOM };
 }
 
-const EmptyChatState: React.FC = () => (
+const EmptyChatState: React.FC<{ modeLabel: string; modeDescription: string }> = ({
+  modeLabel,
+  modeDescription,
+}) => (
   <div className="flex flex-col items-center justify-center h-full min-h-[200px] px-6 text-center">
     <div className="relative mb-4">
       <div className="absolute inset-0 rounded-full bg-cyan-500/20 blur-xl scale-150" />
       <OrbixLogo size={48} variant="full" className="relative opacity-80" />
     </div>
-    <p className="text-[13px] font-medium text-slate-300">Orbix — Accounting Mode</p>
-    <p className="mt-1.5 text-[11px] text-slate-600 max-w-[260px] leading-relaxed">
-      Record entries, check balances, or ask accounting questions in Nepali or English.
+    <p className="text-[13px] font-medium text-slate-300">Orbix — {modeLabel} Mode</p>
+    <p className="mt-1.5 text-[11px] text-slate-600 max-w-[280px] leading-relaxed">
+      {modeDescription}
     </p>
   </div>
 );
@@ -70,6 +75,8 @@ const EKhataPanel: React.FC = () => {
     cancelPending,
     refreshLlmStatus,
     generateOrbixReport,
+    orbixMode,
+    setOrbixMode,
   } = useEKhataStore();
   const closeFalcon = useFalconStore((state) => state.closePanel);
   const parties = useStore((s) => s.parties ?? []);
@@ -246,7 +253,10 @@ const EKhataPanel: React.FC = () => {
         <div className="flex flex-col flex-1 min-w-0">
           <div className="flex-1 overflow-y-auto px-3 py-3 min-h-0">
             {messages.length === 0 && !pendingCard && !pendingCompoundBatch && !showTyping ? (
-              <EmptyChatState />
+              <EmptyChatState
+                modeLabel={ORBIX_MODE_META[orbixMode].label}
+                modeDescription={ORBIX_MODE_META[orbixMode].description}
+              />
             ) : (
               <div className="space-y-3">
                 {messages.map((msg) => {
@@ -330,6 +340,11 @@ const EKhataPanel: React.FC = () => {
           {/* Input */}
           <div className="flex-shrink-0 border-t border-white/10 bg-[#0a0e17]/80 backdrop-blur-sm p-3">
             <div className="flex items-center gap-2 max-w-3xl mx-auto w-full">
+              <OrbixModeSelector
+                mode={orbixMode}
+                onChange={setOrbixMode}
+                disabled={isLoading}
+              />
               <input
                 ref={inputRef}
                 value={input}
@@ -340,7 +355,11 @@ const EKhataPanel: React.FC = () => {
                     handleSend();
                   }
                 }}
-                placeholder="Ask in Nepali or English — entries, balances, reports..."
+                placeholder={
+                  orbixMode === "accountant"
+                    ? "Ask, report, or create authorized entries…"
+                    : "Ask questions or generate reports (read-only)…"
+                }
                 disabled={isLoading}
                 className="h-9 flex-1 rounded-lg border border-white/10 bg-white/[0.05] px-3 text-[12px] text-slate-200 placeholder:text-slate-600 focus:border-cyan-500/40 focus:outline-none focus:ring-1 focus:ring-cyan-500/20 disabled:opacity-50 transition-colors"
                 data-component="ekhata-input"
@@ -356,7 +375,8 @@ const EKhataPanel: React.FC = () => {
               </button>
             </div>
             <p className="mt-1.5 text-center text-[9px] text-slate-600">
-              Ctrl+Shift+K · Chats saved 7 days · Saves to ledger
+              Mode: {ORBIX_MODE_META[orbixMode].label} · Ctrl+Shift+K · Chats saved 7 days
+              {orbixMode === "accountant" ? " · Confirm before posting" : " · Read-only"}
             </p>
           </div>
         </div>

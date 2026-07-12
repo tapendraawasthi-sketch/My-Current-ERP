@@ -292,9 +292,10 @@ def build_journal_entry(
 # REGEX FAST-PATH (optimization, not sole decision)
 # ══════════════════════════════════════════════════════════════════════════════
 
-# Amount patterns
+# Amount patterns — prefer full integers; comma-groups only when commas are present
+# Supports both Western (1,000,000) and Indian (1,00,000) grouping.
 _AMOUNT_PATTERN = re.compile(
-    r"(?:rs\.?|npr|रु\.?|₹)?\s*(\d{1,3}(?:,\d{3})*(?:\.\d{2})?|\d+)",
+    r"(?:rs\.?|npr|रु\.?|₹)?\s*(\d{1,3}(?:,\d{2,3})+(?:\.\d{1,2})?|\d+(?:\.\d{1,2})?)",
     re.IGNORECASE,
 )
 
@@ -345,10 +346,18 @@ _PARTY_PATTERN = re.compile(
     r"(?:bata|lai|sanga|from|to|बाट|लाई|सँग)\s+([A-Za-z\u0900-\u097F][A-Za-z\u0900-\u097F\s]{1,30}?)(?:\s+(?:lai|bata|ko|को|लाई|बाट)|\s*\d|\s*$)",
     re.IGNORECASE,
 )
+# Nepali postposition form: "Ram lai 5000" / "Shyam bata 15000"
+_PARTY_BEFORE_POSTPOSITION = re.compile(
+    r"\b([A-Za-z\u0900-\u097F][A-Za-z\u0900-\u097F]{1,30})\s+(?:lai|bata|लाई|बाट)\b",
+    re.IGNORECASE,
+)
 
 
 def _extract_amount(text: str) -> Decimal | None:
-    """Extract amount from text, handling Nepali number words and qty × rate."""
+    """Extract amount from text, handling Nepali number words and qty × rate.
+
+    Never treat a bare quantity (e.g. "50 kg") as a monetary amount.
+    """
     rate_qty = re.search(
         r"(\d+(?:\.\d+)?)\s*(?:kg|kgs|kilogram|unit|pcs|piece)\b.*?"
         r"(?:at|@|rate)\s*(?:rs\.?|npr|रु\.?|₹)?\s*(\d+(?:\.\d+)?)",
@@ -362,8 +371,34 @@ def _extract_amount(text: str) -> Decimal | None:
         if total > 0:
             return total
 
+    # Prefer Nepali multiplier phrases before bare digit capture ("5 hajar" → 5000)
+    text_lower = text.lower()
+    nepali_total = 0
+    multipliers = {"saya": 100, "hajar": 1000, "lakh": 100000}
+    units = {"ek": 1, "dui": 2, "tin": 3, "char": 4, "panch": 5}
+    for word, value in multipliers.items():
+        num_match = re.search(rf"(\d+)\s*{word}\b", text_lower)
+        if num_match:
+            nepali_total += int(num_match.group(1)) * value
+            continue
+        word_match = re.search(
+            rf"\b(ek|dui|tin|char|panch)\s+{word}\b",
+            text_lower,
+        )
+        if word_match:
+            nepali_total += units[word_match.group(1)] * value
+            continue
+        if re.search(rf"\b{word}\b", text_lower):
+            nepali_total += value
+    if nepali_total == 0:
+        for word, value in units.items():
+            if re.search(rf"\b{word}\b", text_lower):
+                nepali_total += value
+    if nepali_total > 0:
+        return Decimal(nepali_total)
+
     explicit_rs = re.findall(
-        r"(?:rs\.?|npr|रु\.?|₹)\s*(\d{1,3}(?:,\d{3})*(?:\.\d{2})?|\d+(?:\.\d+)?)",
+        r"(?:rs\.?|npr|रु\.?|₹)\s*(\d{1,3}(?:,\d{2,3})+(?:\.\d{1,2})?|\d+(?:\.\d{1,2})?)",
         text,
         re.IGNORECASE,
     )
@@ -375,7 +410,33 @@ def _extract_amount(text: str) -> Decimal | None:
         except Exception:
             pass
 
-    # Try numeric pattern first
+    total_phrase = re.search(
+        r"(?:total|amount|worth)\s*(?:of\s*)?(?:rs\.?|npr|रु\.?|₹)?\s*"
+        r"(\d{1,3}(?:,\d{2,3})+(?:\.\d{1,2})?|\d+(?:\.\d{1,2})?)"
+        r"|"
+        r"(?:for)\s+(?:rs\.?|npr|रु\.?|₹)\s*"
+        r"(\d{1,3}(?:,\d{2,3})+(?:\.\d{1,2})?|\d+(?:\.\d{1,2})?)",
+        text,
+        re.IGNORECASE,
+    )
+    if total_phrase:
+        raw = total_phrase.group(1) or total_phrase.group(2)
+        try:
+            return Decimal(raw.replace(",", "")).quantize(
+                Decimal("0.01"), rounding=ROUND_HALF_UP
+            )
+        except Exception:
+            pass
+
+    # Quantity-with-unit present but no rate/total → amount is unknown (not the qty)
+    if re.search(
+        r"\b\d+(?:\.\d+)?\s*(?:kg|kgs|kilogram|unit|pcs|piece|grams?|ltr|liters?|bag|bags)\b",
+        text,
+        re.IGNORECASE,
+    ):
+        return None
+
+    # Try numeric pattern only when no unit-quantity ambiguity
     match = _AMOUNT_PATTERN.search(text)
     if match:
         num_str = match.group(1).replace(",", "")
@@ -383,29 +444,31 @@ def _extract_amount(text: str) -> Decimal | None:
             return Decimal(num_str).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
         except Exception:
             pass
-    
-    # Try Nepali number words
-    text_lower = text.lower()
-    total = 0
-    for word, value in _NEPALI_NUMBERS.items():
-        if word in text_lower:
-            # Check for multiplier before the word
-            num_match = re.search(rf"(\d+)\s*{word}", text_lower)
-            if num_match:
-                total += int(num_match.group(1)) * value
-            else:
-                total += value
-    
-    return Decimal(total) if total > 0 else None
+
+    return None
 
 
 def _extract_party(text: str) -> str | None:
     """Extract party name from text."""
+    # Prefer "Name lai/bata" (Nepali postposition) before "lai Name"
+    match = _PARTY_BEFORE_POSTPOSITION.search(text)
+    if match:
+        party = match.group(1).strip()
+        if len(party) > 1 and party.lower() not in {
+            "cash", "bank", "udhaar", "credit", "paid", "from", "to",
+        }:
+            return party.title()
     match = _PARTY_PATTERN.search(text)
     if match:
         party = match.group(1).strip()
         # Clean up common suffixes
         party = re.sub(r"\s*(lai|bata|ko|को|लाई|बाट)$", "", party, flags=re.IGNORECASE)
+        party = re.sub(
+            r"\b(udhaar|credit|cash|sale|bikri|becheko|beche|bech)\b.*$",
+            "",
+            party,
+            flags=re.IGNORECASE,
+        ).strip()
         if len(party) > 1:
             return party.title()
     return None
@@ -694,9 +757,9 @@ def generate_confirmation_message(
         Confirmation message asking user to verify
     """
     amount = f"Rs {int(transaction.amount):,}"
-    party = transaction.party or "N/A"
+    party = transaction.party  # Never invent "N/A" as a factual party value
     txn_type = transaction.transaction_type
-    
+
     # Format journal entry
     journal_str = ""
     for line in transaction.journal_lines:
@@ -704,7 +767,7 @@ def generate_confirmation_message(
             journal_str += f"\n  DEBIT: {line.account_name} — {amount}"
         if line.credit > 0:
             journal_str += f"\n  CREDIT: {line.account_name} — {amount}"
-    
+
     if language == "english":
         type_labels = {
             TransactionType.CREDIT_SALE: "Credit Sale",
@@ -718,13 +781,14 @@ def generate_confirmation_message(
             TransactionType.RENT: "Rent Payment",
         }
         label = type_labels.get(txn_type, txn_type.value.replace("_", " ").title())
-        
-        return f"""**{label}** to {party} for {amount}
+        party_clause = f" to {party}" if party else ""
+
+        return f"""**{label}**{party_clause} for {amount}
 
 Journal Entry:{journal_str}
 
 Is this correct? Click **Confirm** to record or **Edit** to change."""
-    
+
     else:  # Nepali / mixed
         type_labels = {
             TransactionType.CREDIT_SALE: "Udhaar Bikri",
@@ -738,8 +802,9 @@ Is this correct? Click **Confirm** to record or **Edit** to change."""
             TransactionType.RENT: "Bhaada Bhuktan",
         }
         label = type_labels.get(txn_type, txn_type.value.replace("_", " ").title())
-        
-        return f"""**{label}** — {party} lai {amount}
+        party_clause = f" — {party} lai {amount}" if party else f" — {amount}"
+
+        return f"""**{label}**{party_clause}
 
 Journal Entry:{journal_str}
 

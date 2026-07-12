@@ -151,6 +151,7 @@ class OrchestratorService(OrchestratorPort):
             language=request.language,
             message=request.question,
             execution_mode=workflow.execution_mode.value,
+            metadata=dict(request.metadata or {}),
         )
         if _OIP_CHAT_DEBUG:
             log_event(

@@ -404,6 +404,32 @@ class StreamChatRequest(BaseModel):
     message: str = Field(..., max_length=4000, min_length=1)
     session_id: str = Field(..., min_length=1)
     context: dict | None = None
+    orbix_mode: str | None = Field(
+        default=None,
+        description="Operating mode: 'ask' (read-only) or 'accountant' (authorized mutations).",
+    )
+    conversation_id: str | None = None
+    tenant_id: str | None = None
+    company_id: str | None = None
+    user_id: str | None = None
+    request_id: str | None = None
+
+
+def _merge_stream_context(req: "StreamChatRequest") -> dict:
+    ctx = dict(req.context or {})
+    if req.tenant_id:
+        ctx.setdefault("tenant_id", req.tenant_id)
+    if req.company_id:
+        ctx.setdefault("company_id", req.company_id)
+    if req.user_id:
+        ctx.setdefault("user_id", req.user_id)
+    if req.conversation_id:
+        ctx.setdefault("conversation_id", req.conversation_id)
+    if req.request_id:
+        ctx.setdefault("request_id", req.request_id)
+    if req.orbix_mode:
+        ctx["orbix_mode"] = req.orbix_mode
+    return ctx
 
 
 @app.post("/chat/stream")
@@ -418,7 +444,13 @@ async def chat_stream(req: StreamChatRequest):
     if oip_chat_enabled():
         async def generate_oip():
             try:
-                response = await submit_chat(req.message, req.session_id)
+                ctx = _merge_stream_context(req)
+                response = await submit_chat(
+                    req.message,
+                    req.session_id,
+                    context=ctx,
+                    orbix_mode=req.orbix_mode,
+                )
                 text, _, _ = map_response_to_orbix(response)
                 if text:
                     safe_chunk = text.replace("\n", "\\n")
@@ -474,13 +506,44 @@ async def orbix_chat_stream(req: StreamChatRequest):
             },
         )
 
+    # Validate mode early — invalid values never grant write access
+    from ..orbix.mode_policy import ModeValidationError, normalize_orbix_mode
+
+    try:
+        resolved_mode = normalize_orbix_mode(req.orbix_mode, invalid_policy="error")
+    except ModeValidationError as exc:
+        async def invalid_mode():
+            yield _sse_json(
+                {
+                    "type": "error",
+                    "message": str(exc),
+                    "error": {"type": "validation_error", "fields": ["orbix_mode"]},
+                }
+            )
+        return StreamingResponse(
+            invalid_mode(),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+                "X-Accel-Buffering": "no",
+            },
+        )
+
+    ctx = _merge_stream_context(req)
+    ctx["orbix_mode"] = resolved_mode
     if req.context:
-        set_session_context(req.session_id, req.context)
+        set_session_context(req.session_id, ctx)
 
     async def generate():
         try:
             if oip_chat_enabled():
-                response = await submit_chat(req.message, req.session_id, context=req.context)
+                response = await submit_chat(
+                    req.message,
+                    req.session_id,
+                    context=ctx,
+                    orbix_mode=resolved_mode,
+                )
                 async for event in stream_orbix_kernel_events(response):
                     yield event
                 return
@@ -496,7 +559,7 @@ async def orbix_chat_stream(req: StreamChatRequest):
                 req.message,
                 history,
                 session_id=req.session_id,
-                context=req.context,
+                context=ctx,
             ):
                 if event.get("type") == "route":
                     route_info = event.get("route")
@@ -510,6 +573,10 @@ async def orbix_chat_stream(req: StreamChatRequest):
                     card = event.get("card")
                     route_info = event.get("route") or route_info
 
+            # Ask mode must never return a mutation card on legacy path
+            if resolved_mode == "ask":
+                card = None
+
             agent_builder.add_to_history(req.session_id, "assistant", full_message)
             yield _sse_json({"type": "thinking_done"})
             yield _sse_json(
@@ -519,6 +586,7 @@ async def orbix_chat_stream(req: StreamChatRequest):
                     "card": card,
                     "route": route_info,
                     "action": "confirm" if card else "chat",
+                    "orbix_mode": resolved_mode,
                 }
             )
         except Exception as exc:

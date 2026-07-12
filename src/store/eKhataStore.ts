@@ -39,6 +39,12 @@ import { handleOrbixLocalQuery } from "../lib/ekhata/orbixLocalEngine";
 import { buildSessionSnapshot } from "../lib/ekhata/dexieBridge";
 import { handleOrbixReportQuery } from "../lib/ekhata/orbixReportEngine";
 import type { PendingOrbixReport } from "../lib/ekhata/orbixReportTypes";
+import {
+  loadOrbixOperatingMode,
+  saveOrbixOperatingMode,
+  type OrbixOperatingMode,
+} from "../lib/ekhata/orbixOperatingMode";
+import { isAccountantOrAdmin } from "../lib/permissions";
 import { useStore } from "./useStore";
 
 function genId(): string {
@@ -138,6 +144,7 @@ export interface EKhataState {
   streamingText: string;
   activeTools: string[];
   engineLabel: string;
+  orbixMode: OrbixOperatingMode;
   openPanel: () => void;
   openWithPendingCard: (card: KhataConfirmationCard) => void;
   closePanel: () => void;
@@ -150,6 +157,7 @@ export interface EKhataState {
   selectSession: (id: string) => void;
   deleteSession: (id: string) => void;
   refreshLlmStatus: () => Promise<void>;
+  setOrbixMode: (mode: OrbixOperatingMode) => void;
   sendMessage: (text: string) => Promise<void>;
   generateOrbixReport: (pending: PendingOrbixReport) => Promise<void>;
   confirmPending: () => Promise<void>;
@@ -171,6 +179,12 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
   streamingText: "",
   activeTools: [],
   engineLabel: "qwen3",
+  orbixMode: loadOrbixOperatingMode(),
+
+  setOrbixMode: (mode: OrbixOperatingMode) => {
+    saveOrbixOperatingMode(mode);
+    set({ orbixMode: mode });
+  },
 
   openPanel: () => set({ isOpen: true, windowMode: "normal" }),
 
@@ -357,6 +371,9 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
 
       const reportResult = await handleOrbixReportQuery(trimmed, {
         pendingReport: pendingFromChat,
+        activeReportSpec: [...get().messages]
+          .reverse()
+          .find((m) => m.report?.spec)?.report?.spec,
         ...getReportContext(),
       });
 
@@ -453,7 +470,10 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
             });
           },
           onError: async () => {
-            const fallback = await askOrbixQwen(trimmed, sessionId);
+            const fallback = await askOrbixQwen(trimmed, sessionId, {
+              orbixMode: get().orbixMode,
+              context: sessionSnapshot || undefined,
+            });
             if (fallback.card) {
               conversationContext = updateContextAfterEntry(
                 conversationContext,
@@ -472,7 +492,18 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
             });
           },
         },
-          { context: sessionSnapshot },
+          {
+            context: {
+              ...(sessionSnapshot || {}),
+              orbix_mode: get().orbixMode,
+              has_pending_confirmation: Boolean(get().pendingCard),
+              has_active_report: Boolean(
+                [...get().messages].reverse().find((m) => m.report)?.report,
+              ),
+              user_role: useStore.getState().currentUser?.role,
+            },
+            orbixMode: get().orbixMode,
+          },
         );
         return;
       } catch (error) {
@@ -505,6 +536,25 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
           conversationContext,
           userName,
         });
+
+        if (result.kind === "entry" || result.kind === "compound") && get().orbixMode === "ask") {
+          finalize({
+            messages: get().messages.map((m) =>
+              m.id === assistantId
+                ? {
+                    ...m,
+                    text:
+                      "I can explain or preview the entry in Ask Mode, but posting requires Accountant Mode.\n\nSwitch to Accountant Mode to create or modify authorized ERP records.",
+                  }
+                : m,
+            ),
+            pendingCard: null,
+            pendingCompoundBatch: null,
+            engineLabel: "builtin (ask)",
+            llmOnline: false,
+          });
+          return;
+        }
 
         if (result.kind === "entry" && result.card) {
           conversationContext = updateContextAfterEntry(conversationContext, result.card, trimmed);
@@ -614,6 +664,39 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
   },
 
   confirmPending: async () => {
+    if (get().orbixMode !== "accountant") {
+      set((s) => ({
+        messages: [
+          ...s.messages,
+          {
+            id: genId(),
+            role: "assistant",
+            text: "Posting requires Accountant Mode. Switch to Accountant Mode, then confirm again.",
+            timestamp: new Date(),
+          },
+        ],
+      }));
+      return;
+    }
+
+    const role = useStore.getState().currentUser?.role;
+    if (!isAccountantOrAdmin(role) && role !== "manager") {
+      set((s) => ({
+        messages: [
+          ...s.messages,
+          {
+            id: genId(),
+            role: "assistant",
+            text: "Permission denied: your role cannot post purchase or khata entries.",
+            timestamp: new Date(),
+          },
+        ],
+        pendingCard: null,
+        pendingCompoundBatch: null,
+      }));
+      return;
+    }
+
     const batch = get().pendingCompoundBatch;
     if (batch) {
       if (get().isLoading) return;

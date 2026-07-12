@@ -3,15 +3,25 @@
 Architecture:
     plan -> tool call -> observe -> reflect -> verify -> grounded answer
 
-This package replaces pattern-dispatch "intelligence" with a real agentic
-loop backed by Ollama, typed tools, layered memory, deterministic ledger
-math, and an evidence-grounding verifier.
-
-The legacy Falcon/agent pipeline remains as a compatibility fallback.
+This package also hosts the dual-mode operating policy (Ask / Accountant)
+used by the production OIP chat ingress.
 """
 
 from __future__ import annotations
 
-__all__ = ["__version__"]
+from .mode_policy import (
+    ASK_CAPABILITIES,
+    ModeCapabilities,
+    normalize_orbix_mode,
+    resolve_capabilities,
+)
 
-__version__ = "2.0.0"
+__all__ = [
+    "__version__",
+    "ASK_CAPABILITIES",
+    "ModeCapabilities",
+    "normalize_orbix_mode",
+    "resolve_capabilities",
+]
+
+__version__ = "2.1.0"

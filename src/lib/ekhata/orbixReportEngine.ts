@@ -13,10 +13,79 @@ import type {
   OrbixReportClarifyResult,
   OrbixReportHandleResult,
   OrbixReportPayload,
+  OrbixReportSpec,
   PendingOrbixReport,
 } from "./orbixReportTypes";
 
 const ISO_DATE = /\b(20\d{2}-\d{2}-\d{2})\b/g;
+
+const REPORT_FOLLOW_UP = /^\s*(compare|include|exclude|expand|collapse|hide\s+zero|show\s+zero|with\s+subgroups?|with\s+ledgers?|previous\s+year|last\s+year|only\s+major|groups?\s+and\s+subgroups?|drill)/i;
+
+function kindToReportType(kind: PendingOrbixReport["kind"]): string {
+  if (kind === "profit_loss") return "profit_and_loss";
+  if (kind === "party_ledger") return "account_ledger";
+  return kind;
+}
+
+function buildReportSpec(
+  kind: PendingOrbixReport["kind"],
+  text: string,
+  base?: OrbixReportSpec,
+): OrbixReportSpec {
+  const spec: OrbixReportSpec = {
+    report_type: base?.report_type || kindToReportType(kind),
+    period: base?.period || { type: "financial_year", financial_year: "current" },
+    comparison: base?.comparison || { enabled: false },
+    detail_level: base?.detail_level || "group",
+    include_groups: base?.include_groups ?? true,
+    include_subgroups: base?.include_subgroups ?? false,
+    include_ledgers: base?.include_ledgers ?? false,
+    include_vouchers: base?.include_vouchers ?? false,
+    include_zero_balances: base?.include_zero_balances ?? false,
+    filters: { ...(base?.filters || {}) },
+    expanded_groups: [...(base?.expanded_groups || [])],
+  };
+
+  const lower = text.toLowerCase();
+  if (/previous\s+year|last\s+year|compare/.test(lower)) {
+    spec.comparison = {
+      enabled: true,
+      comparison_type: "previous_financial_year",
+      periods: ["current", "previous"],
+    };
+  }
+  if (/groups?\s+and\s+subgroups?/.test(lower)) {
+    spec.include_groups = true;
+    spec.include_subgroups = true;
+    spec.detail_level = "subgroup";
+  } else if (/subgroups?/.test(lower) && !/not\s+.*subgroup|without\s+subgroup/.test(lower)) {
+    spec.include_subgroups = true;
+    spec.detail_level = "subgroup";
+  }
+  if (/not\s+.*ledgers?|without\s+ledgers?|but\s+not\s+ledgers?/.test(lower)) {
+    spec.include_ledgers = false;
+  } else if (/\bledgers?\b|individual\s+ledgers?/.test(lower)) {
+    spec.include_ledgers = true;
+    spec.detail_level = "ledger";
+  }
+  if (/hide\s+zero|exclude\s+zero/.test(lower)) spec.include_zero_balances = false;
+  if (/include\s+zero|show\s+zero/.test(lower)) spec.include_zero_balances = true;
+  if (/only\s+major|summary/.test(lower)) {
+    spec.detail_level = "summary";
+    spec.include_subgroups = false;
+    spec.include_ledgers = false;
+  }
+  const expand = lower.match(/expand\s+([a-z][a-z\s]{2,40}?)(?:\.|$|,|and\b)/);
+  if (expand) {
+    const group = expand[1].trim();
+    if (!spec.expanded_groups!.includes(group)) spec.expanded_groups!.push(group);
+    spec.filters!.expanded_group = group;
+  }
+  const branch = lower.match(/under\s+([a-z][a-z\s]{2,40}?)(?:\s+and|\s+with|\.|$)/);
+  if (branch) spec.filters!.branch = branch[1].trim();
+
+  return spec;
+}
 
 const REPORT_PATTERNS: { kind: PendingOrbixReport["kind"]; patterns: RegExp[] }[] = [
   {
@@ -358,19 +427,38 @@ export async function handleOrbixReportQuery(
     fyStart?: string;
     fyEnd?: string;
     companyName?: string;
+    activeReportSpec?: OrbixReportSpec | null;
   },
 ): Promise<OrbixReportHandleResult> {
-  const kind = detectReportKind(text) || ctx.pendingReport?.kind;
+  const followUpOnly =
+    Boolean(ctx.activeReportSpec || ctx.pendingReport) && REPORT_FOLLOW_UP.test(text);
+  const kind =
+    detectReportKind(text) ||
+    ctx.pendingReport?.kind ||
+    (followUpOnly && ctx.activeReportSpec
+      ? ((ctx.activeReportSpec.report_type === "profit_and_loss"
+          ? "profit_loss"
+          : ctx.activeReportSpec.report_type === "account_ledger"
+            ? "party_ledger"
+            : ctx.activeReportSpec.report_type) as PendingOrbixReport["kind"])
+      : null);
   if (!kind) return null;
 
   const partyName =
     extractPartyName(text, ctx.parties) || ctx.pendingReport?.partyName;
 
+  const spec = buildReportSpec(kind, text, ctx.activeReportSpec || ctx.pendingReport?.spec);
+
   if (kind === "party_ledger" && !partyName) {
     return {
       type: "clarify",
       text: "Which party ledger do you need? Select the party and date range below.",
-      pending: { kind, fromDate: ctx.fyStart, toDate: ctx.fyEnd || new Date().toISOString().slice(0, 10) },
+      pending: {
+        kind,
+        fromDate: ctx.fyStart,
+        toDate: ctx.fyEnd || new Date().toISOString().slice(0, 10),
+        spec,
+      },
     };
   }
 
@@ -445,13 +533,28 @@ export async function handleOrbixReportQuery(
 
     if (!report) return null;
 
+    report = { ...report, spec };
+
+    const detailNote = [
+      spec.comparison?.enabled ? "vs previous year" : null,
+      spec.include_subgroups ? "subgroups" : null,
+      spec.include_ledgers ? "ledgers" : null,
+      spec.expanded_groups?.length
+        ? `expanded: ${spec.expanded_groups.join(", ")}`
+        : null,
+      spec.filters?.branch ? `under ${spec.filters.branch}` : null,
+      spec.include_zero_balances === false ? "zeros hidden" : null,
+    ]
+      .filter(Boolean)
+      .join(" · ");
+
     const textSummary =
       kind === "trial_balance"
-        ? `Trial Balance (${from} to ${to}) — ${report.rows.length} accounts.`
+        ? `Trial Balance (${from} to ${to}) — ${report.rows.length} accounts.${detailNote ? ` (${detailNote})` : ""}`
         : kind === "balance_sheet"
-          ? `Balance Sheet as at ${to}.`
+          ? `Balance Sheet as at ${to}.${detailNote ? ` (${detailNote})` : ""}`
           : kind === "profit_loss"
-            ? `Profit & Loss (${from} to ${to}).`
+            ? `Profit & Loss (${from} to ${to}).${detailNote ? ` (${detailNote})` : ""}`
             : `Ledger for ${partyName} (${from} to ${to}) — ${report.rows.length - 1} entries.`;
 
     return { type: "report", text: textSummary, report };

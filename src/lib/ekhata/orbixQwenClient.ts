@@ -130,7 +130,11 @@ export function normalizeOrbixCard(raw: Record<string, unknown> | null | undefin
 export async function askOrbixQwen(
   message: string,
   sessionId: string,
-  signal?: AbortSignal,
+  options?: {
+    signal?: AbortSignal;
+    orbixMode?: string;
+    context?: Record<string, unknown>;
+  },
 ): Promise<{
   answer: string;
   card: KhataConfirmationCard | null;
@@ -143,8 +147,13 @@ export async function askOrbixQwen(
   const resp = await fetch(`${ORBIX_QWEN_URL}/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message, session_id: sessionId }),
-    signal,
+    body: JSON.stringify({
+      message,
+      session_id: sessionId,
+      orbix_mode: options?.orbixMode || "ask",
+      context: options?.context,
+    }),
+    signal: options?.signal,
   });
 
   if (!resp.ok) {
@@ -164,7 +173,11 @@ export async function streamOrbixQwen(
   message: string,
   sessionId: string,
   callbacks: OrbixQwenCallbacks,
-  options?: { context?: Record<string, unknown>; signal?: AbortSignal },
+  options?: {
+    context?: Record<string, unknown>;
+    signal?: AbortSignal;
+    orbixMode?: string;
+  },
 ): Promise<void> {
   if (!ORBIX_QWEN_URL) {
     callbacks.onError(new Error("Orbix Qwen backend URL not configured"));
@@ -180,6 +193,7 @@ export async function streamOrbixQwen(
     body: JSON.stringify({
       message,
       session_id: sessionId,
+      orbix_mode: options?.orbixMode || "ask",
       context: options?.context,
     }),
     signal: options?.signal,

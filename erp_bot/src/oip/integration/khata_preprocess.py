@@ -11,6 +11,7 @@ from ...khata.entry_engine import (
     parse_khata_entry_sync,
     regex_fast_path,
 )
+from .mode_aware_erp import handle_mode_aware_erp
 
 _TRANSACTION_SIGNAL = re.compile(
     r"\b(\d+|saya|hajar|lakh)\b.*\b(udhaar|salary|ssf|gratuity|vat|tds|"
@@ -38,13 +39,75 @@ class ErpPreprocessResult:
     card: dict[str, Any] | None = None
     intent: str | None = None
     method: str = "erp_preprocess"
+    operation_class: str | None = None
+    orbix_mode: str | None = None
+    capabilities: dict[str, bool] | None = None
+    error: dict[str, Any] | None = None
+    report_spec: dict[str, Any] | None = None
+    draft_id: str | None = None
 
 
-def preprocess_erp_message(text: str) -> ErpPreprocessResult | None:
+def preprocess_erp_message(
+    text: str,
+    *,
+    orbix_mode: str | None = None,
+    session_id: str = "",
+    tenant_id: str = "",
+    company_id: str = "",
+    user_id: str = "",
+    user_role: str | None = None,
+    permissions: dict[str, Any] | None = None,
+    has_active_report: bool = False,
+    has_pending_confirmation: bool = False,
+) -> ErpPreprocessResult | None:
     """Parse ERP transactions deterministically. Returns None for non-ERP chat."""
     stripped = text.strip()
+
+    mode_result = handle_mode_aware_erp(
+        stripped,
+        orbix_mode=orbix_mode,
+        session_id=session_id,
+        tenant_id=tenant_id,
+        company_id=company_id,
+        user_id=user_id,
+        user_role=user_role,
+        permissions=permissions,
+        has_active_report=has_active_report,
+        has_pending_confirmation=has_pending_confirmation,
+    )
+    if mode_result is not None and mode_result.skip_llm:
+        return ErpPreprocessResult(
+            skip_llm=True,
+            text=mode_result.text,
+            card=mode_result.card,
+            intent=mode_result.intent,
+            method=mode_result.method,
+            operation_class=mode_result.operation_class,
+            orbix_mode=mode_result.orbix_mode,
+            capabilities=mode_result.capabilities,
+            error=mode_result.error,
+            report_spec=mode_result.report_spec,
+            draft_id=mode_result.draft_id,
+        )
+
     if not is_erp_transaction_message(stripped):
         return None
+
+    # In Ask mode, never create mutation cards via legacy fast-path
+    mode = (orbix_mode or "ask").strip().lower()
+    if mode == "ask":
+        from ...orbix.mode_policy import ask_mode_mutation_message, mode_restriction_payload
+
+        return ErpPreprocessResult(
+            skip_llm=True,
+            text=ask_mode_mutation_message(),
+            card=None,
+            intent="mode_restriction",
+            method="mode_policy",
+            operation_class="transaction_create",
+            orbix_mode="ask",
+            error=mode_restriction_payload(operation="transaction_create"),
+        )
 
     fast = regex_fast_path(stripped)
     if fast and fast.success and fast.transaction:
