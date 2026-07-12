@@ -537,7 +537,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
           userName,
         });
 
-        if (result.kind === "entry" || result.kind === "compound") && get().orbixMode === "ask") {
+        if ((result.kind === "entry" || result.kind === "compound") && get().orbixMode === "ask") {
           finalize({
             messages: get().messages.map((m) =>
               m.id === assistantId
