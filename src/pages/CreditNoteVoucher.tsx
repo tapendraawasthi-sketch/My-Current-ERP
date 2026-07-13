@@ -26,7 +26,6 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { formatNumber } from "../lib/utils";
-import { ADToBSString } from "../lib/nepaliDate";
 import { generateSerialNumber } from "../lib/accounting";
 import { VoucherType, VoucherStatus } from "../lib/types";
 import {
@@ -45,7 +44,6 @@ const CreditNoteVoucher: React.FC = () => {
     invoices,
     companySettings,
     currentFiscalYear,
-    addVoucher,
   } = useStore();
 
   const [date, setDate] = useState<string>(() => new Date().toISOString().split("T")[0]);
@@ -90,7 +88,10 @@ const CreditNoteVoucher: React.FC = () => {
   const originalInvoiceOptions = useMemo(() => {
     return invoices
       .filter(
-        (inv) => inv.type === VoucherType.SALES_INVOICE && (inv.partyId === partyId || !partyId),
+        (inv) =>
+          (inv.type === VoucherType.SALES_INVOICE || String(inv.type) === "sales-invoice") &&
+          String(inv.status || "").toLowerCase() === "posted" &&
+          (inv.partyId === partyId || !partyId),
       )
       .map((inv) => ({
         value: inv.id,
@@ -141,23 +142,34 @@ const CreditNoteVoucher: React.FC = () => {
 
         // Populate lines from original invoice
         const newLines =
-          originalInvoice.lines?.map((line: any) => ({
-            key: Math.random().toString(36).substring(7),
-            itemId: line.itemId,
-            itemName: line.itemName,
-            quantity: line.quantity, // Start with full quantity, user can reduce
-            unit: line.unit,
-            rate: line.rate,
-            discount: line.discount || 0,
-            discountAmount: line.discountAmount || 0,
-            taxRate: line.taxRate || 0,
-            taxAmount: line.taxAmount || 0,
-            amount: line.amount || 0,
-            totalAmount: line.totalAmount || 0,
-            godownId: line.godownId || "",
-            narration: line.narration || "",
-            originalQuantity: line.quantity, // Store original for comparison
-          })) || [];
+          originalInvoice.lines?.map((line: any, idx: number) => {
+            const qty = Number(line.qty ?? line.quantity ?? 0);
+            const rate = Number(line.rate || 0);
+            const discountAmount = Number(line.discountAmount || 0);
+            const amount = Number(line.netAmount ?? line.amount ?? rate * qty - discountAmount);
+            const taxAmount = Number(line.vatAmount ?? line.taxAmount ?? 0);
+            const totalAmount = Number(
+              line.lineTotal ?? line.totalAmount ?? amount + taxAmount,
+            );
+            return {
+              key: Math.random().toString(36).substring(7),
+              itemId: line.itemId,
+              itemName: line.itemName,
+              quantity: qty,
+              unit: line.unit,
+              rate,
+              discount: line.discountPercent ?? line.discount ?? 0,
+              discountAmount,
+              taxRate: line.vatRate ?? line.taxRate ?? 0,
+              taxAmount,
+              amount,
+              totalAmount,
+              godownId: line.warehouseId || line.godownId || "",
+              narration: line.narration || "",
+              originalQuantity: qty,
+              originalSalesLineId: line.id || `line-${originalInvoice.id}-${idx}`,
+            };
+          }) || [];
 
         setLines(newLines);
       }
@@ -183,6 +195,7 @@ const CreditNoteVoucher: React.FC = () => {
       godownId: "",
       narration: "",
       originalQuantity: 0,
+      originalSalesLineId: "",
     };
   }
 
@@ -259,12 +272,19 @@ const CreditNoteVoucher: React.FC = () => {
       return;
     }
 
+    if (!originalInvoiceId?.trim()) {
+      toast.error("Select the original sales invoice");
+      return;
+    }
+
     if (!creditReason) {
       toast.error("Please select a reason for credit");
       return;
     }
 
-    const hasValidLine = lines.some((line) => line.itemId && line.quantity > 0);
+    const hasValidLine = lines.some(
+      (line) => line.itemId && (isInventoryReturn ? line.quantity > 0 : line.totalAmount > 0),
+    );
     if (!hasValidLine) {
       toast.error("Please add at least one item");
       return;
@@ -278,38 +298,106 @@ const CreditNoteVoucher: React.FC = () => {
     setSaving(true);
 
     try {
-      const voucher = {
-        id: "cn-" + Date.now(),
-        type: VoucherType.CREDIT_NOTE,
-        voucherNo: voucherNumber,
-        date: date,
-        dateNepali: ADToBSString(date),
-        partyId: partyId,
-        partyName: partyName,
-        lines: lines.map(({ key, originalQuantity, ...rest }) => rest),
-        narration: narration,
-        status: VoucherStatus.POSTED,
-        originalInvoiceId: originalInvoiceId,
-        originalInvoiceNo: originalInvoiceNo,
-        creditReason: creditReason,
-        isInventoryReturn: isInventoryReturn,
-        subTotal: subTotal,
-        discountAmount: totalDiscount,
-        taxableAmount: subTotal - totalDiscount,
-        vatAmount: totalTax,
-        grandTotal: grandTotal,
-        paidAmount: 0,
-        paymentStatus: "credited",
-        createdAt: new Date().toISOString(),
-      };
+      const original = invoices.find((inv) => inv.id === originalInvoiceId);
+      if (!original || String(original.type) !== "sales-invoice") {
+        toast.error("Original sales invoice not found");
+        setSaving(false);
+        return;
+      }
 
-      await addVoucher(voucher);
-      toast.success(`Credit note saved successfully — ${voucherNumber}`);
+      const { postSalesAdjustmentTransaction } = await import(
+        "@/domains/sales/postSalesAdjustmentTransaction"
+      );
+      const { generateId } = await import("@/lib/db");
 
-      // Reset form
+      const goodwillOrPricing =
+        !isInventoryReturn &&
+        /post-sale-discount|rate-difference|pricing|goodwill|service-cancellation/i.test(
+          creditReason,
+        );
+      const settlementMethod = goodwillOrPricing
+        ? ("customer_credit" as const)
+        : ("reduce_receivable" as const);
+
+      const adjLines = lines
+        .filter((line) => line.itemId)
+        .map((line) => {
+          let originalSalesLineId = line.originalSalesLineId as string | undefined;
+          if (!originalSalesLineId) {
+            const origIdx = (original.lines || []).findIndex(
+              (ol: any) => String(ol.itemId) === String(line.itemId),
+            );
+            if (origIdx < 0) return null;
+            const origLine = original.lines![origIdx];
+            originalSalesLineId =
+              (origLine as { id?: string }).id || `line-${original.id}-${origIdx}`;
+          }
+          if (isInventoryReturn) {
+            if (!(Number(line.quantity) > 0)) return null;
+            return {
+              originalSalesLineId,
+              itemId: String(line.itemId),
+              returnQuantity: Number(line.quantity),
+              stockCondition: "resalable" as const,
+            };
+          }
+          const financialAdjustment = Number(line.totalAmount || line.amount || 0);
+          if (!(financialAdjustment > 0)) return null;
+          return {
+            originalSalesLineId,
+            itemId: String(line.itemId),
+            financialAdjustment,
+          };
+        })
+        .filter(Boolean);
+
+      if (!adjLines.length) {
+        toast.error("Could not map credit lines to the original invoice");
+        setSaving(false);
+        return;
+      }
+
+      const requestId = generateId();
+      const result = await postSalesAdjustmentTransaction({
+        commandId: requestId,
+        requestId,
+        idempotencyKey: `manual-credit-note-${requestId}`,
+        companyId: String(
+          (companySettings as { companyId?: string } | null)?.companyId ||
+            companySettings?.id ||
+            "main",
+        ),
+        financialYearId: currentFiscalYear?.id ?? null,
+        userId: useStore.getState().currentUser?.id || "manual-user",
+        userRole: useStore.getState().currentUser?.role || "accountant",
+        source: "manual_form",
+        adjustment: {
+          adjustmentType: isInventoryReturn
+            ? "inventory_sales_return"
+            : "financial_credit_note",
+          originalInvoiceId,
+          transactionDate: date,
+          customerId: partyId || original.partyId || null,
+          settlementMethod,
+          reasonCode: creditReason || "credit_note",
+          narration:
+            narration ||
+            `${creditReason}: credit note vs ${original.invoiceNo || originalInvoiceNo}`,
+          lines: adjLines as any,
+          currency: "NPR",
+        },
+      });
+
+      if (result.type !== "posting_completed") {
+        throw new Error(result.payload.safe_message || "Credit note posting failed");
+      }
+
+      toast.success(
+        `Credit note posted — ${result.payload.invoice_number}`,
+      );
+
       resetForm();
 
-      // Generate new voucher number
       const newNumber = await generateSerialNumber(
         VoucherType.CREDIT_NOTE,
         undefined,

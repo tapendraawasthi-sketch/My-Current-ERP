@@ -40,6 +40,7 @@ export default defineConfig({
       input: {
         main: path.resolve(__dirname, "index.html"),
         ekhataHarness: path.resolve(__dirname, "e2e/ekhata.html"),
+        uiQaHarness: path.resolve(__dirname, "e2e/ui-qa.html"),
       },
       output: {
         manualChunks(id) {
@@ -70,5 +71,26 @@ export default defineConfig({
     host: true,
     strictPort: true,
     allowedHosts: true,
+    // Training feedback / sync file stores must not trigger full client reloads
+    // mid-posting (breaks Orbix E2E after confirm).
+    watch: {
+      ignored: [
+        "**/data/**",
+        "**/.data/**",
+        "**/.data-*/**",
+        "**/artifacts/**",
+        "**/test-results/**",
+        "**/playwright-report/**",
+        "**/e2e/**/*.spec.ts",
+      ],
+    },
+    proxy: {
+      // Local connected Orbix: browser on :3000 → erp_bot on :8765
+      "/erp-bot": {
+        target: process.env.ERP_BOT_BACKEND_URL || "http://127.0.0.1:8765",
+        changeOrigin: true,
+        rewrite: (p) => p.replace(/^\/erp-bot/, ""),
+      },
+    },
   },
 });

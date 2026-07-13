@@ -139,11 +139,16 @@ export function computeInvoiceOutstanding(inv: any, vouchers: any[] = []): numbe
   const original = Number(inv.grandTotal ?? inv.total ?? 0);
   if (original <= 0) return 0;
 
-  let allocated = Number(inv.paidAmount ?? 0);
-  if (inv.type === "sales-invoice") {
-    allocated += voucherAllocationsForInvoice(inv, vouchers, "receipt");
-  } else if (inv.type === "purchase-invoice") {
-    allocated += voucherAllocationsForInvoice(inv, vouchers, "payment");
+  // Phase 9: paidAmount is a rebuildable projection from settlementAllocations.
+  // Prefer it alone so we do not double-count legacy voucher bill-ref heuristics.
+  const projected = Number(inv.paidAmount ?? 0);
+  let allocated = projected;
+  if (!(projected > 0) && Array.isArray(vouchers) && vouchers.length) {
+    if (inv.type === "sales-invoice") {
+      allocated += voucherAllocationsForInvoice(inv, vouchers, "receipt");
+    } else if (inv.type === "purchase-invoice") {
+      allocated += voucherAllocationsForInvoice(inv, vouchers, "payment");
+    }
   }
 
   return Math.max(0, parseFloat((original - allocated).toFixed(2)));

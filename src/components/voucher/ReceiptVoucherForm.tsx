@@ -46,6 +46,9 @@ import { generateSerialNumber } from "@/lib/accounting";
 import { generateVoucherPDF } from "@/lib/printUtils";
 import { VoucherType, VoucherStatus, AccountType, PaymentStatus } from "@/lib/types";
 import toast from "react-hot-toast";
+import { postReceiptTransaction } from "@/domains/settlement/postReceiptTransaction";
+import { getOrCreateDocumentSettlementState } from "@/domains/settlement/settlementState";
+import { getDB, generateId } from "@/lib/db";
 
 interface ReceiptVoucherFormProps {
   voucherId?: string;
@@ -86,6 +89,7 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
     costCenters,
     companySettings,
     currentFiscalYear,
+    currentUser,
     addVoucher,
     updateVoucher,
     updateInvoice,
@@ -467,6 +471,72 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
     }
     setSaving(true);
     try {
+      // Phase 9: new posted receipts go through authoritative settlement engine
+      if (!isEdit && status === VoucherStatus.POSTED) {
+        const debitLedgerId = payMode === "cash" ? cashAccount?.id : bankAccountId;
+        if (!debitLedgerId) {
+          toast.error("Cash/Bank ledger is required.");
+          return;
+        }
+        const companyId = String(
+          (companySettings as any)?.companyId || (companySettings as any)?.id || "main",
+        );
+        const db = getDB();
+        const allocations = [];
+        for (const invId of selectedInvoiceIds) {
+          const allocatedAmount = invoiceAllocations[invId] || 0;
+          if (allocatedAmount <= 0) continue;
+          const state = await getOrCreateDocumentSettlementState(db, companyId, invId);
+          allocations.push({
+            document_id: invId,
+            amount: allocatedAmount.toFixed(2),
+            expected_settlement_version: state.settlementVersion,
+          });
+        }
+        const result = await postReceiptTransaction({
+          commandId: generateId(),
+          requestId: generateId(),
+          idempotencyKey: `manual-receipt-${generateId()}`,
+          companyId,
+          financialYearId: currentFiscalYear?.id || null,
+          userId: currentUser?.id || "manual-user",
+          userRole: currentUser?.role || "accountant",
+          source: "manual_form",
+          receipt: {
+            receiptType: allocations.length
+              ? "customer_receipt"
+              : partyId
+                ? "customer_advance_receipt"
+                : "other_receipt",
+            transactionDate: date,
+            partyId: partyId || null,
+            cashOrBankAccountId: debitLedgerId,
+            amount: totals.net.toFixed(2),
+            withholding: tdsEnabled && totals.tds > 0 ? totals.tds.toFixed(2) : null,
+            currency: "NPR",
+            narration: narration.trim() || `Receipt ${voucherNoPreview}`,
+            instrument: {
+              instrument_type: payMode === "cheque" ? "cheque" : payMode === "bank" ? "bank_transfer" : "cash",
+              instrument_no: payMode === "cheque" ? chequeNo.trim() : undefined,
+              instrument_date: payMode === "cheque" ? chequeDate : undefined,
+            },
+            allocations,
+          },
+        });
+        if (result.type !== "posting_completed") {
+          toast.error(result.payload.safe_message || "Failed to post receipt.");
+          return;
+        }
+        toast.success("Receipt voucher posted.");
+        setDirty(false);
+        setSavedVoucher({
+          id: result.payload.voucher_id,
+          voucherNo: result.payload.voucher_number,
+          status: VoucherStatus.POSTED,
+        });
+        return;
+      }
+
       const payload = buildPayload(status);
       let result;
       if (isEdit) {
@@ -491,9 +561,6 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
           for (const prevInvId of existing.settledInvoiceIds) {
             const prevInv = invoices.find((i: any) => i.id === prevInvId);
             if (!prevInv) continue;
-            // We don't have per-invoice allocation stored on the old voucher,
-            // so reset paidAmount by re-deriving from remaining allocations
-            // (excluding the voucher being edited).
             const otherAllocations = (getBillAllocationsForInvoice(prevInvId) || []).filter(
               (a: any) => a.voucherId !== voucherId,
             );

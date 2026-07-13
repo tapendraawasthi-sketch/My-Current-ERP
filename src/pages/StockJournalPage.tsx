@@ -8,10 +8,8 @@
 
 import { DualDate } from "../components/ui/DualDate";
 import React, { useMemo, useState } from "react";
-import { ActionToolbar } from "../components/ui";
 import { useStore } from "../store/useStore";
 import {
-  Card,
   Badge,
   Button,
   Input,
@@ -20,7 +18,7 @@ import {
   SearchableTable,
 } from "../components/ui";
 import ItemSelect from "../components/ui/ItemSelect";
-import { Plus, Save, ArrowLeftRight, Package, ArrowRightLeft } from "lucide-react";
+import { Plus } from "lucide-react";
 import { formatNumber } from "../lib/utils";
 import { ADToBSString } from "../lib/nepaliDate";
 import { VoucherStatus, StockJournalLine } from "../lib/types";
@@ -209,7 +207,7 @@ const StockJournalPage: React.FC = () => {
     {
       key: "journalNo",
       header: "Journal No",
-      render: (v: string) => <span className="font-mono font-bold text-[#000000]">{v}</span>,
+      render: (v: string) => <span className="font-mono font-bold text-[var(--ox-text)]">{v}</span>,
     },
     {
       key: "date",
@@ -261,50 +259,46 @@ const StockJournalPage: React.FC = () => {
             Post
           </Button>
         ) : (
-          <span className="text-xs text-[#000000]">—</span>
+          <span className="text-xs text-[var(--ox-text)]">—</span>
         ),
     },
   ];
 
   if (mode === "new") {
     return (
-      <div className="flex flex-col gap-5 animate-fadeIn text-xs select-none">
-        <ActionToolbar title="Stock Journal" subtitle="Stock transfer and adjustment entries" />
-        <div className="flex items-center justify-between border-b border-[#9DC07A] pb-4">
-          <div className="flex items-center gap-3">
+      <div className="min-h-screen bg-[var(--ox-bg,#f5f6fa)] p-4 text-[12px] text-[var(--ox-text)]">
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <h1 className="text-[15px] font-semibold text-gray-800">Stock Journal</h1>
+            <p className="mt-0.5 text-[11px] text-gray-500">
+              Transfer inventory between warehouses
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
             <button
+              type="button"
               onClick={() => {
                 setMode("list");
                 resetForm();
               }}
-              className="p-2 rounded-md hover:bg-[#EBF5E2] text-[#000000]"
+              className="h-8 rounded-md border border-gray-300 bg-white px-3 text-[12px] font-medium text-gray-700 hover:bg-gray-50"
             >
-              <ArrowLeftRight className="h-4 w-4" />
+              Back to list
             </button>
-            <div>
-              <h2 className="text-lg font-bold text-[#000000] tracking-tight flex items-center gap-2">
-                <Package className="h-5 w-5 text-[#1557b0]" />
-                STOCK JOURNAL TRANSFER
-              </h2>
-              <p className="text-[11px] text-[#000000] mt-0.5 uppercase tracking-wider font-bold">
-                Transfer inventory between warehouses
-              </p>
-            </div>
           </div>
-          <Badge variant="info" size="md">
-            STOCK JOURNAL
-          </Badge>
         </div>
 
-        <div className="card">
-          <h3 className="section-title">Stock Journal Info</h3>
-          <div className="form-grid">
+        <div className="rounded-md border border-[var(--ox-border)] bg-[var(--ox-surface)] p-4">
+          <p className="mb-3 text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+            Journal details
+          </p>
+          <div className="mb-4 grid grid-cols-1 gap-3 md:grid-cols-3">
             <div>
-              <label className="block text-[11px] font-medium text-gray-600 mb-1">Date</label>
+              <label className="mb-1 block text-[11px] font-medium text-gray-600">Date</label>
               <NepaliDatePicker value={date} onChange={setDate} required />
             </div>
-            <div className="col-span-2">
-              <label className="block text-[11px] font-medium text-gray-600 mb-1">Narration</label>
+            <div className="md:col-span-2">
+              <label className="mb-1 block text-[11px] font-medium text-gray-600">Narration</label>
               <Input
                 value={narration}
                 onChange={setNarration}
@@ -313,12 +307,15 @@ const StockJournalPage: React.FC = () => {
             </div>
           </div>
 
-          <h4 className="section-title mt-6">Transfer Lines</h4>
+          <p className="mb-3 text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+            Transfer lines
+          </p>
           <div className="space-y-3">
-            {lines.map((line, index) => {
-              const item = items.find((it) => it.id === line.itemId);
-              return (
-                <div key={line.id} className="form-row">
+            {lines.map((line, index) => (
+              <div
+                key={line.id}
+                className="grid grid-cols-1 gap-2 rounded-md border border-[var(--ox-border)] bg-[var(--ox-surface-muted)] p-3 md:grid-cols-6"
+              >
                   <div className="md:col-span-2">
                     <ItemSelect
                       label={`Item ${index + 1}`}
@@ -333,14 +330,14 @@ const StockJournalPage: React.FC = () => {
                     />
                   </div>
                   <Select
-                    label="From Warehouse"
+                    label="From warehouse"
                     value={line.fromWarehouseId}
                     onChange={(val) => updateLine(line.id, { fromWarehouseId: val })}
                     options={[{ value: "", label: "Select warehouse" }, ...warehouseOptions]}
                     required
                   />
                   <Select
-                    label="To Warehouse"
+                    label="To warehouse"
                     value={line.toWarehouseId}
                     onChange={(val) => updateLine(line.id, { toWarehouseId: val })}
                     options={[{ value: "", label: "Select warehouse" }, ...warehouseOptions]}
@@ -354,27 +351,27 @@ const StockJournalPage: React.FC = () => {
                     placeholder="0"
                     required
                   />
-                  <Input
-                    label="Rate"
-                    type="number"
-                    value={line.rate || ""}
-                    onChange={(val) => updateLine(line.id, { rate: Number(val) || 0 })}
-                    prefix={symbol}
-                    placeholder="0.00"
-                    required
-                  />
-                  <div className="space-y-1">
-                    <div className="text-xs font-semibold text-[#000000]">Line Value</div>
-                    <div className="text-right text-[#000000] font-mono">
-                      {symbol} {formatNumber((line.qty || 0) * (line.rate || 0))}
+                  <div>
+                    <Input
+                      label="Rate"
+                      type="number"
+                      value={line.rate || ""}
+                      onChange={(val) => updateLine(line.id, { rate: Number(val) || 0 })}
+                      prefix={symbol}
+                      placeholder="0.00"
+                      required
+                    />
+                    <div className="mt-1 flex items-center justify-between">
+                      <span className="font-mono text-[11px] text-gray-600">
+                        {symbol} {formatNumber((line.qty || 0) * (line.rate || 0))}
+                      </span>
+                      <Button size="xs" variant="danger" onClick={() => removeLine(line.id)}>
+                        Remove
+                      </Button>
                     </div>
-                    <Button size="xs" variant="danger" onClick={() => removeLine(line.id)}>
-                      Remove
-                    </Button>
                   </div>
-                </div>
-              );
-            })}
+              </div>
+            ))}
 
             <div className="flex flex-wrap items-center justify-between gap-3">
               <Button
@@ -383,31 +380,33 @@ const StockJournalPage: React.FC = () => {
                 icon={<Plus className="h-4 w-4" />}
                 onClick={() => setLines((prev) => [...prev, createLine()])}
               >
-                Add Line
+                Add line
               </Button>
-              <div className="text-right text-[11px] text-[#000000]">
-                Total Qty:{" "}
-                <span className="font-semibold text-[#000000]">
+              <div className="text-right text-[11px] text-gray-600">
+                Total qty:{" "}
+                <span className="font-mono font-semibold text-gray-800">
                   {formatNumber(totals.totalQty)}
                 </span>
                 <br />
-                Total Value:{" "}
-                <span className="font-semibold text-[#000000]">
+                Total value:{" "}
+                <span className="font-mono font-semibold text-gray-800">
                   {symbol} {formatNumber(totals.totalValue)}
                 </span>
               </div>
             </div>
           </div>
-          <div className="actions pt-4 border-t border-gray-100 mt-4">
+          <div className="mt-4 flex flex-wrap gap-2 border-t border-[var(--ox-border)] pt-4">
             <button
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
+              type="button"
+              className="h-8 rounded-md bg-[#1557b0] px-3 text-[12px] font-medium text-white hover:bg-[#0f4a96] disabled:opacity-50"
               onClick={handleCreate}
               disabled={saving}
             >
-              Save Stock Journal
+              Save stock journal
             </button>
             <button
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+              type="button"
+              className="h-8 rounded-md border border-gray-300 bg-white px-3 text-[12px] font-medium text-gray-700 hover:bg-gray-50"
               onClick={() => {
                 setMode("list");
                 resetForm();
@@ -422,28 +421,27 @@ const StockJournalPage: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col gap-5 animate-fadeIn text-xs select-none">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#9DC07A] pb-4">
+    <div className="min-h-screen bg-[var(--ox-bg,#f5f6fa)] p-4 text-[12px]">
+      <div className="mb-4 flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-[#000000] tracking-tight flex items-center gap-2">
-            <ArrowRightLeft className="h-5 w-5 text-[#000000]" />
-            STOCK JOURNAL TRANSFERS
-          </h2>
-          <p className="text-xs text-[#000000] mt-1 leading-none uppercase tracking-wider font-semibold">
+          <h1 className="text-[15px] font-semibold text-gray-800">Stock Journal</h1>
+          <p className="mt-0.5 text-[11px] text-gray-500">
             Draft and post warehouse transfer journals
           </p>
         </div>
-        <Button
-          variant="primary"
-          size="sm"
-          icon={<Plus className="h-4 w-4" />}
-          onClick={() => setMode("new")}
-        >
-          New Stock Journal
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="primary"
+            size="sm"
+            icon={<Plus className="h-4 w-4" />}
+            onClick={() => setMode("new")}
+          >
+            New stock journal
+          </Button>
+        </div>
       </div>
 
-      <div className="table-card">
+      <div className="overflow-hidden rounded-md border border-[var(--ox-border)] bg-[var(--ox-surface)]">
         <SearchableTable
           columns={columns as any}
           data={journalRows}

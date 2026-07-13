@@ -1,13 +1,15 @@
 import {
   generateNextVoucherNo,
   reloadAccounts,
-  generateNextInvoiceNo,
-  postInvoiceJournal,
-  postInvoiceStock,
   repostInvoiceJournalAndStock,
   reverseInvoiceJournal,
   reverseInvoiceStock,
 } from "../index";
+import {
+  generateNextInvoiceNo,
+  postInvoiceJournal,
+  postInvoiceStock,
+} from "../invoicePostingWriters";
 import {
   StoreUser,
   CompanySettings,
@@ -295,7 +297,7 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
 
     return db.transaction(
       "rw",
-      [db.invoices, db.vouchers, db.stockMovements, db.accounts],
+      [db.invoices, db.vouchers, db.stockMovements, db.accounts, db.auditLogs, db.syncOutbox],
       async () => {
         const invoiceNo = await generateNextInvoiceNo(type, db);
         const newInvoice = {
@@ -311,6 +313,28 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
         if ((newInvoice as any).status === "posted") {
           await postInvoiceJournal(newInvoice as any, db, get, set);
           await postInvoiceStock(newInvoice as any, db, get, set);
+
+          // Required audit inside the same transaction (manual purchase path)
+          const user = get().currentUser;
+          await db.auditLogs.add({
+            id: generateId(),
+            timestamp: new Date().toISOString(),
+            userId: user?.id || "system",
+            userName: user?.name || "system",
+            action:
+              type === "purchase-invoice" || String(type).includes("purchase")
+                ? "PURCHASE_POSTED"
+                : "INVOICE_POSTED",
+            module: "invoices",
+            entityType: "invoice",
+            entityId: id,
+            recordId: id,
+            recordType: type,
+            after: { invoiceNo, grandTotal: (newInvoice as any).grandTotal },
+          } as any);
+
+          // Phase 6: posted invoices use eventSyncQueue via postPurchase/postSales —
+          // do not enqueue legacy syncOutbox accounting rows here.
         }
 
         const allInvoices = await db.invoices.toArray();

@@ -4,15 +4,37 @@
 
 import { resolveErpBotUrl } from "../erpBotClient";
 import { isProviderRuntimeReady, isSelfContainedAi } from "../selfContainedAi";
-import type { AccountClass, KhataConfirmationCard, KhataIntent } from "./types";
+import type { KhataConfirmationCard } from "./types";
+import { normalizeOrbixCard } from "./orbixCardNormalize";
+import { parseOrbixResponse } from "./orbixResponseAdapter";
+import type { OrbixResponse } from "./orbixResponseTypes";
 
-export const ORBIX_QWEN_URL = resolveErpBotUrl();
+export { normalizeOrbixCard } from "./orbixCardNormalize";
 
 export interface OrbixRouteInfo {
   intent: string;
   confidence: number;
   method: string;
   reasoning?: string;
+  operation_class?: string;
+  orbix_mode?: string;
+  draft_id?: string;
+  error?: Record<string, unknown>;
+  report_spec?: Record<string, unknown>;
+}
+
+export interface OrbixStreamCompleteResult {
+  message: string;
+  card: KhataConfirmationCard | null;
+  route?: OrbixRouteInfo;
+  action: "confirm" | "chat";
+  /** Typed domain response — prefer over heuristics */
+  response: OrbixResponse | null;
+  draft_id?: string | null;
+  operation_class?: string | null;
+  report_spec?: Record<string, unknown> | null;
+  error?: Record<string, unknown> | null;
+  response_type?: string | null;
 }
 
 export interface OrbixQwenStatus {
@@ -31,12 +53,7 @@ export interface OrbixQwenCallbacks {
   onThinkingDone?: () => void;
   onRoute?: (route: OrbixRouteInfo) => void;
   onToken: (token: string) => void;
-  onComplete: (result: {
-    message: string;
-    card: KhataConfirmationCard | null;
-    route?: OrbixRouteInfo;
-    action: "confirm" | "chat";
-  }) => void;
+  onComplete: (result: OrbixStreamCompleteResult) => void;
   onError: (error: Error) => void;
 }
 
@@ -98,33 +115,7 @@ export async function checkOrbixQwenStatus(): Promise<OrbixQwenStatus> {
   }
 }
 
-/** Map backend khata card JSON to frontend KhataConfirmationCard. */
-export function normalizeOrbixCard(raw: Record<string, unknown> | null | undefined): KhataConfirmationCard | null {
-  if (!raw) return null;
-
-  const journalLines = Array.isArray(raw.journalLines)
-    ? raw.journalLines.map((line: Record<string, unknown>) => ({
-        accountCode: String(line.accountCode ?? line.account_code ?? ""),
-        accountName: String(line.accountName ?? line.account_name ?? ""),
-        accountClass: (line.accountClass as AccountClass | undefined) ?? "asset",
-        debit: Number(line.debit ?? 0),
-        credit: Number(line.credit ?? 0),
-        narration: line.narration ? String(line.narration) : undefined,
-      }))
-    : undefined;
-
-  return {
-    intent: String(raw.intent ?? "khata_expense") as KhataIntent,
-    party: raw.party != null ? String(raw.party) : null,
-    amount: Number(raw.amount ?? 0),
-    item: raw.item != null ? String(raw.item) : null,
-    date: raw.date != null ? String(raw.date) : undefined,
-    raw_text: String(raw.raw_text ?? raw.narration ?? ""),
-    journalLines,
-    narration: raw.narration ? String(raw.narration) : undefined,
-    confidence: raw.confidence != null ? Number(raw.confidence) : undefined,
-  };
-}
+export const ORBIX_QWEN_URL = resolveErpBotUrl();
 
 /** Non-streaming fallback — POST /chat (routed Qwen). */
 export async function askOrbixQwen(
@@ -139,6 +130,7 @@ export async function askOrbixQwen(
   answer: string;
   card: KhataConfirmationCard | null;
   route?: OrbixRouteInfo;
+  response: OrbixResponse | null;
 }> {
   if (!ORBIX_QWEN_URL) {
     throw new Error("Orbix Qwen backend URL not configured");
@@ -161,10 +153,25 @@ export async function askOrbixQwen(
   }
 
   const data = await resp.json();
+  const parseResult = parseOrbixResponse({
+    message: data.answer || data.message || "",
+    card: data.card,
+    route: data.route,
+    action: data.action,
+    orbix_mode: data.orbix_mode || options?.orbixMode,
+    operation_class: data.operation_class,
+    error: data.error,
+    draft_id: data.draft_id,
+    report_spec: data.report_spec,
+    response_type: data.response_type,
+  });
+  const response = parseResult.ok ? parseResult.response : null;
+
   return {
-    answer: data.answer || "",
+    answer: data.answer || data.message || "",
     card: normalizeOrbixCard(data.card),
     route: data.route,
+    response,
   };
 }
 
@@ -239,12 +246,24 @@ export async function streamOrbixQwen(
             if (data.content) callbacks.onToken(String(data.content));
             break;
           case "complete": {
+            const parseResult = parseOrbixResponse(data);
+            const response = parseResult.ok ? parseResult.response : null;
             const card = normalizeOrbixCard(data.card as Record<string, unknown> | undefined);
+            const serverAction = data.action === "confirm" || data.action === "chat" ? data.action : null;
             callbacks.onComplete({
               message: String(data.message || ""),
               card,
               route: data.route as OrbixRouteInfo | undefined,
-              action: card ? "confirm" : "chat",
+              action: serverAction || (card ? "confirm" : "chat"),
+              response,
+              draft_id: (data.draft_id as string | null | undefined) ?? null,
+              operation_class: (data.operation_class as string | null | undefined) ?? null,
+              report_spec: (data.report_spec as Record<string, unknown> | null | undefined) ?? null,
+              error: (data.error as Record<string, unknown> | null | undefined) ?? null,
+              response_type:
+                (data.response_type as string | null | undefined) ??
+                response?.response_type ??
+                null,
             });
             return;
           }
@@ -261,18 +280,11 @@ export async function streamOrbixQwen(
   }
 }
 
-export const ORBIX_OFFLINE_MESSAGE = `⚠️ **Orbix AI offline** — OIP Provider Runtime is not connected.
+export const ORBIX_OFFLINE_MESSAGE = `Orbix is temporarily limited.
 
-**On Render**, ensure the **sutra-erp-bot** Python service is deployed and **sutra-erp** has:
-\`ERP_BOT_BACKEND_URL\` set to the erp_bot service URL (auto-wired in \`render.yaml\`).
+We could not reach the AI service for this request. You can still browse reports and masters in the ERP, then try Orbix again once the connection is restored.
 
-**Required on sutra-erp-bot:**
-\`\`\`
-OIP_ENABLED=true
-OIP_FORCE_STUB_PROVIDERS=false
-OIP_PROVIDER=groq
-OIP_GROQ_API_KEY=<your-groq-key>
-OIP_DEFAULT_MODEL=llama-3.3-70b-versatile
-\`\`\`
+If this continues, ask your administrator to check that the Orbix service is running.`;
 
-Then redeploy both services and refresh this page.`;
+/** Developer-facing diagnostics (not shown as primary chat copy). */
+export const ORBIX_OFFLINE_DIAGNOSTICS = `OIP Provider Runtime offline. Ensure sutra-erp-bot is deployed and ERP_BOT_BACKEND_URL / OIP_* env vars are set.`;

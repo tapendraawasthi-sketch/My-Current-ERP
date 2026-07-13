@@ -168,6 +168,9 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
   const [date, setDate] = useState(existing?.date || new Date().toISOString().split("T")[0]);
   const [dueDate, setDueDate] = useState(existing?.dueDate || "");
   const [referenceNo, setReferenceNo] = useState(existing?.referenceNo || "");
+  const [originalInvoiceId, setOriginalInvoiceId] = useState(
+    (existing as { originalInvoiceId?: string } | undefined)?.originalInvoiceId || "",
+  );
   const [orderRef, setOrderRef] = useState(existing?.orderRef || "");
   const [challanRef, setChallanRef] = useState(existing?.challanRef || "");
   const [narration, setNarration] = useState(existing?.narration || "");
@@ -178,6 +181,34 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
   const [partyId, setPartyId] = useState(existing?.partyId || "");
   const party = useMemo(() => parties.find((p) => p.id === partyId), [parties, partyId]);
   const [billTo, setBillTo] = useState(existing?.billTo || party?.address || "");
+
+  const originalSalesInvoiceOptions = useMemo(() => {
+    return invoices
+      .filter((inv) => {
+        if (String(inv.type) !== "sales-invoice") return false;
+        if (String(inv.status || "").toLowerCase() !== "posted") return false;
+        if (partyId && inv.partyId && inv.partyId !== partyId) return false;
+        return true;
+      })
+      .map((inv) => ({
+        value: inv.id,
+        label: `${inv.invoiceNo} — ${inv.partyName || "Customer"} — ${symbol}${formatNumber(Number(inv.grandTotal || 0))}`,
+      }));
+  }, [invoices, partyId, symbol]);
+
+  const originalPurchaseInvoiceOptions = useMemo(() => {
+    return invoices
+      .filter((inv) => {
+        if (String(inv.type) !== "purchase-invoice") return false;
+        if (String(inv.status || "").toLowerCase() !== "posted") return false;
+        if (partyId && inv.partyId && inv.partyId !== partyId) return false;
+        return true;
+      })
+      .map((inv) => ({
+        value: inv.id,
+        label: `${inv.invoiceNo} — ${inv.partyName || "Supplier"} — ${symbol}${formatNumber(Number(inv.grandTotal || 0))}`,
+      }));
+  }, [invoices, partyId, symbol]);
 
   useEffect(() => {
     if (party && !isEdit) setBillTo(party.address || "");
@@ -509,9 +540,279 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
     try {
       const payload = buildPayload(status);
       let result: any;
-      if (isEdit) {
+
+      // Phase 7: new posted sales returns require original invoice + adjustment engine
+      const isNewPostedSalesReturn =
+        !isEdit && status === VoucherStatus.POSTED && type === "sales-return";
+      // Phase 8: new posted purchase returns require original invoice + adjustment engine
+      const isNewPostedPurchaseReturn =
+        !isEdit && status === VoucherStatus.POSTED && type === "purchase-return";
+
+      if (isNewPostedPurchaseReturn) {
+        if (!originalInvoiceId?.trim()) {
+          toast.error("Select the original purchase invoice for this return.");
+          setSaving(false);
+          return;
+        }
+        const original = invoices.find((inv) => inv.id === originalInvoiceId);
+        if (!original || String(original.type) !== "purchase-invoice") {
+          toast.error("Original purchase invoice not found.");
+          setSaving(false);
+          return;
+        }
+        const { postPurchaseAdjustmentTransaction } = await import(
+          "@/domains/purchase/postPurchaseAdjustmentTransaction"
+        );
+        const { generateId } = await import("@/lib/db");
+        const pay = String(payload.paymentMode || "credit").toLowerCase();
+        const settlementMethod =
+          pay === "cash"
+            ? ("cash_refund_received" as const)
+            : pay === "bank" || pay === "bank-transfer"
+              ? ("bank_refund_received" as const)
+              : ("reduce_payable" as const);
+        const requestId = generateId();
+        const formLines = (payload.lines || []).filter((l: { itemId?: string }) => l.itemId);
+        const adjLines = formLines
+          .map((l: any) => {
+            const origIdx = (original.lines || []).findIndex(
+              (ol: any) => String(ol.itemId) === String(l.itemId),
+            );
+            if (origIdx < 0) return null;
+            const origLine = original.lines![origIdx];
+            const originalPurchaseLineId =
+              (origLine as { id?: string }).id || `line-${original.id}-${origIdx}`;
+            return {
+              originalPurchaseLineId,
+              itemId: String(l.itemId),
+              returnQuantity: Number(l.qty) || 0,
+              stockCondition: "resalable" as const,
+            };
+          })
+          .filter(Boolean) as Array<{
+          originalPurchaseLineId: string;
+          itemId: string;
+          returnQuantity: number;
+          stockCondition: "resalable";
+        }>;
+        if (!adjLines.length) {
+          toast.error("Return lines must match items on the original purchase invoice.");
+          setSaving(false);
+          return;
+        }
+        const adjResult = await postPurchaseAdjustmentTransaction({
+          commandId: requestId,
+          requestId,
+          idempotencyKey: `manual-purchase-return-${requestId}`,
+          companyId: String(
+            (companySettings as { companyId?: string } | null)?.companyId ||
+              companySettings?.id ||
+              "main",
+          ),
+          financialYearId: currentFiscalYear?.id ?? null,
+          userId: useStore.getState().currentUser?.id || "manual-user",
+          userRole: useStore.getState().currentUser?.role || "accountant",
+          source: "manual_form",
+          adjustment: {
+            adjustmentType: "inventory_purchase_return",
+            originalInvoiceId,
+            transactionDate: payload.date,
+            supplierId: payload.partyId || original.partyId || null,
+            settlementMethod,
+            settlementAccountId:
+              settlementMethod === "cash_refund_received"
+                ? "acc-cash"
+                : settlementMethod === "bank_refund_received"
+                  ? payload.bankAccountId || "acc-bank"
+                  : null,
+            destinationWarehouseId:
+              formLines[0]?.warehouseId ||
+              warehouses.find((w) => w.isDefault)?.id ||
+              "wh-main",
+            reasonCode: "purchase_return",
+            narration: payload.narration || `Purchase return vs ${original.invoiceNo}`,
+            lines: adjLines,
+            currency: payload.currencyCode || "NPR",
+          },
+        });
+        if (adjResult.type !== "posting_completed") {
+          throw new Error(adjResult.payload.safe_message || "Purchase return posting failed");
+        }
+        result = {
+          id: adjResult.payload.invoice_id,
+          invoiceNo: adjResult.payload.invoice_number,
+          ...payload,
+          status: VoucherStatus.POSTED,
+        };
+      } else if (isNewPostedSalesReturn) {
+        if (!originalInvoiceId?.trim()) {
+          toast.error("Select the original sales invoice for this return.");
+          setSaving(false);
+          return;
+        }
+        const original = invoices.find((inv) => inv.id === originalInvoiceId);
+        if (!original || String(original.type) !== "sales-invoice") {
+          toast.error("Original sales invoice not found.");
+          setSaving(false);
+          return;
+        }
+        const { postSalesAdjustmentTransaction } = await import(
+          "@/domains/sales/postSalesAdjustmentTransaction"
+        );
+        const { generateId } = await import("@/lib/db");
+        const pay = String(payload.paymentMode || "credit").toLowerCase();
+        const settlementMethod =
+          pay === "cash"
+            ? ("cash_refund" as const)
+            : pay === "bank" || pay === "bank-transfer"
+              ? ("bank_refund" as const)
+              : ("reduce_receivable" as const);
+        const requestId = generateId();
+        const formLines = (payload.lines || []).filter((l: { itemId?: string }) => l.itemId);
+        const adjLines = formLines
+          .map((l: any) => {
+            const origIdx = (original.lines || []).findIndex(
+              (ol: any) => String(ol.itemId) === String(l.itemId),
+            );
+            if (origIdx < 0) return null;
+            const origLine = original.lines![origIdx];
+            const originalSalesLineId =
+              (origLine as { id?: string }).id || `line-${original.id}-${origIdx}`;
+            return {
+              originalSalesLineId,
+              itemId: String(l.itemId),
+              returnQuantity: Number(l.qty) || 0,
+              stockCondition: "resalable" as const,
+            };
+          })
+          .filter(Boolean) as Array<{
+          originalSalesLineId: string;
+          itemId: string;
+          returnQuantity: number;
+          stockCondition: "resalable";
+        }>;
+        if (!adjLines.length) {
+          toast.error("Return lines must match items on the original sales invoice.");
+          setSaving(false);
+          return;
+        }
+        const adjResult = await postSalesAdjustmentTransaction({
+          commandId: requestId,
+          requestId,
+          idempotencyKey: `manual-sales-return-${requestId}`,
+          companyId: String(
+            (companySettings as { companyId?: string } | null)?.companyId ||
+              companySettings?.id ||
+              "main",
+          ),
+          financialYearId: currentFiscalYear?.id ?? null,
+          userId: useStore.getState().currentUser?.id || "manual-user",
+          userRole: useStore.getState().currentUser?.role || "accountant",
+          source: "manual_form",
+          adjustment: {
+            adjustmentType: "inventory_sales_return",
+            originalInvoiceId,
+            transactionDate: payload.date,
+            customerId: payload.partyId || original.partyId || null,
+            settlementMethod,
+            settlementAccountId:
+              settlementMethod === "cash_refund"
+                ? "acc-cash"
+                : settlementMethod === "bank_refund"
+                  ? payload.bankAccountId || "acc-bank"
+                  : null,
+            destinationWarehouseId:
+              formLines[0]?.warehouseId ||
+              warehouses.find((w) => w.isDefault)?.id ||
+              "wh-main",
+            reasonCode: "sales_return",
+            narration: payload.narration || `Sales return vs ${original.invoiceNo}`,
+            lines: adjLines,
+            currency: payload.currencyCode || "NPR",
+          },
+        });
+        if (adjResult.type !== "posting_completed") {
+          throw new Error(adjResult.payload.safe_message || "Sales return posting failed");
+        }
+        result = {
+          id: adjResult.payload.invoice_id,
+          invoiceNo: adjResult.payload.invoice_number,
+          ...payload,
+          status: VoucherStatus.POSTED,
+        };
+      } else if (
+        // Phase 6: new posted inventory sales converge on postSalesTransaction
+        !isEdit &&
+        status === VoucherStatus.POSTED &&
+        type === "sales" &&
+        (payload.lines || []).some((l: { itemId?: string }) => !!l.itemId)
+      ) {
+        const { postSalesTransaction } = await import("@/domains/sales/postSalesTransaction");
+        const { generateId } = await import("@/lib/db");
+        const payMode = String(payload.paymentMode || "credit").toLowerCase();
+        const paymentMethod =
+          payMode === "cash" || payMode === "bank" ? (payMode as "cash" | "bank") : "credit";
+        const party = parties.find((p) => p.id === payload.partyId);
+        const requestId = generateId();
+        const lines = (payload.lines || []).filter((l: { itemId?: string }) => l.itemId);
+        const saleResult = await postSalesTransaction({
+          commandId: requestId,
+          requestId,
+          idempotencyKey: `manual-sale-${requestId}`,
+          companyId: String(
+            (companySettings as { companyId?: string } | null)?.companyId ||
+              companySettings?.id ||
+              "main",
+          ),
+          financialYearId: currentFiscalYear?.id ?? null,
+          userId: useStore.getState().currentUser?.id || "manual-user",
+          userRole: useStore.getState().currentUser?.role || "accountant",
+          source: "manual_form",
+          sale: {
+            transactionDate: payload.date,
+            customerId: payload.partyId || null,
+            customerName: party?.name || payload.partyName || null,
+            paymentMethod,
+            paymentAccountId:
+              paymentMethod === "cash"
+                ? "acc-cash"
+                : paymentMethod === "bank"
+                  ? payload.bankAccountId || "acc-bank"
+                  : null,
+            warehouseId: lines[0]?.warehouseId || warehouses.find((w) => w.isDefault)?.id || "wh-main",
+            items: lines.map((l: any) => ({
+              itemId: l.itemId,
+              quantity: String(l.qty),
+              unit: l.unit || "pcs",
+              rate: String(l.rate),
+              discountAmount: String(l.discountAmount || 0),
+              taxAmount: String(l.vatAmount || 0),
+              lineAmount: String(l.lineTotal ?? l.totalAmount ?? l.netAmount ?? 0),
+            })),
+            subtotal: String(payload.subTotal ?? payload.taxableAmount ?? payload.grandTotal),
+            discountAmount: String(payload.discountAmount || 0),
+            taxAmount: String(payload.vatAmount || 0),
+            grandTotal: String(payload.grandTotal),
+            currency: payload.currencyCode || "NPR",
+            narration: payload.narration || `Sales invoice ${payload.invoiceNo || ""}`.trim(),
+          },
+        });
+        if (saleResult.type !== "posting_completed") {
+          throw new Error(saleResult.payload.safe_message || "Sales posting failed");
+        }
+        result = {
+          id: saleResult.payload.invoice_id,
+          invoiceNo: saleResult.payload.invoice_number,
+          ...payload,
+          status: VoucherStatus.POSTED,
+        };
+      } else if (isEdit) {
         await updateInvoice(invoiceId!, payload as any);
         result = { ...existing, ...payload };
+      } else if (type === "sales-return" && status === VoucherStatus.POSTED) {
+        toast.error("Select the original sales invoice for this return.");
+        setSaving(false);
+        return;
       } else {
         result = await addInvoice(payload as any);
       }
@@ -814,6 +1115,36 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
               placeholder="Optional"
               disabled={readOnly}
             />
+            {type === "sales-return" && (
+              <Select
+                label="Original Sales Invoice"
+                value={originalInvoiceId}
+                onChange={(v) => {
+                  setOriginalInvoiceId(v);
+                  const orig = invoices.find((inv) => inv.id === v);
+                  if (orig?.partyId && !partyId) setPartyId(orig.partyId);
+                  markDirty();
+                }}
+                options={originalSalesInvoiceOptions}
+                placeholder="Select original invoice"
+                disabled={readOnly}
+              />
+            )}
+            {type === "purchase-return" && (
+              <Select
+                label="Original Purchase Invoice"
+                value={originalInvoiceId}
+                onChange={(v) => {
+                  setOriginalInvoiceId(v);
+                  const orig = invoices.find((inv) => inv.id === v);
+                  if (orig?.partyId && !partyId) setPartyId(orig.partyId);
+                  markDirty();
+                }}
+                options={originalPurchaseInvoiceOptions}
+                placeholder="Select original invoice"
+                disabled={readOnly}
+              />
+            )}
             </div>
           </div>
 

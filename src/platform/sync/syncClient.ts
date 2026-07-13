@@ -3,23 +3,29 @@ import { getEventRepository } from "@/platform/event-store/eventRepository";
 import { getIdentityProvider } from "@/platform/identity/identityProvider";
 import { buildSyncEnvelope, validateSyncEnvelope } from "./syncEnvelope";
 import {
+  claimSyncEvents,
   getPendingSyncEvents,
+  markEventConflict,
   markEventSynced,
   markEventSyncFailed,
-  markEventSyncing,
+  releaseSyncClaim,
   scanUnqueuedEvents,
+  type DBEventSyncQueueRow,
 } from "./syncQueue";
-import { advanceSyncCursor, getLastSyncedGlobalSequence } from "./syncCursor";
+import { advanceSyncCursor, getLastSyncedGlobalSequence, readSyncCursor } from "./syncCursor";
 import { getOrCreateDeviceId, getOrCreateReplicaId, vectorClockFromString } from "./vectorClock";
 import { transportPush, transportPull, SyncAuthError } from "./syncTransport";
 import { detectConflict } from "./conflictDetector";
 import { resolveConflict } from "./conflictResolver";
 import { recordSyncDiagnostic } from "./syncDiagnostics";
 import { syncMetrics } from "./syncMetrics";
-import { withSyncRetry } from "./syncRetry";
+import { classifySyncFailure, computeNextAttemptAt, withSyncRetry } from "./syncRetry";
 import { writeDeadLetter } from "./syncDeadLetter";
 import { verifySyncEnvelopeIntegrity } from "./syncIntegrity";
-import { readSyncCursor } from "./syncCursor";
+import { verifyAccountingEnvelopeIntegrity } from "./accountingSyncContract";
+import { applyRemoteSyncEnvelope } from "./applyRemoteEvent";
+import { getSyncWorkerId, withSyncWorkerLock } from "./syncWorkerLock";
+import type { SyncEventEnvelope } from "./syncServerContracts";
 
 const BATCH_SIZE = 20;
 
@@ -44,97 +50,202 @@ export class EventSyncClient {
   async pushPending(): Promise<number> {
     if (!isMigrationFlagEnabled("MIGRATION_EVENT_SYNC")) return 0;
 
-    const pending = await getPendingSyncEvents(BATCH_SIZE);
-    if (pending.length === 0) return 0;
+    const locked = await withSyncWorkerLock(async () => {
+      const pending = await getPendingSyncEvents(BATCH_SIZE);
+      if (pending.length === 0) return 0;
 
-    const principal = getIdentityProvider().getPrincipal();
-    const repository = getEventRepository();
-    const envelopes = [];
+      const workerId = getSyncWorkerId();
+      const claimed = await claimSyncEvents(pending, workerId);
+      if (claimed.length === 0) return 0;
 
-    for (const row of pending) {
-      await markEventSyncing(row.id);
-      const record = await repository.readRecordById(row.eventId);
-      if (!record) {
-        await markEventSyncFailed(row.id, "Event record not found", row.syncAttempts + 1);
-        continue;
-      }
-      const envelope = buildSyncEnvelope(record, principal);
-      if (!validateSyncEnvelope(envelope) || !verifySyncEnvelopeIntegrity(envelope)) {
-        await markEventSyncFailed(row.id, "Invalid envelope", row.syncAttempts + 1);
-        continue;
-      }
-      envelopes.push(envelope);
-    }
+      const principal = getIdentityProvider().getPrincipal();
+      const repository = getEventRepository();
+      const envelopes: SyncEventEnvelope[] = [];
+      const envelopeByEventId = new Map<string, DBEventSyncQueueRow>();
 
-    if (envelopes.length === 0) return 0;
+      for (const row of claimed) {
+        let envelope = row.envelope;
+        if (!envelope) {
+          const record = await repository.readRecordById(row.eventId);
+          if (!record) {
+            await markEventSyncFailed(row.id, "Event record not found", row.syncAttempts + 1, {
+              errorCode: "invalid_schema",
+              retryable: false,
+            });
+            continue;
+          }
+          envelope = buildSyncEnvelope(record, principal);
+        }
 
-    try {
-      const deviceId = getOrCreateDeviceId();
-      const cursor = await readSyncCursor(deviceId);
-      const response = await withSyncRetry(() =>
-        transportPush({
-          deviceId,
-          replicaId: getOrCreateReplicaId(),
-          tenantId: principal?.tenantId ?? "local",
-          vectorClock: vectorClockFromString(cursor?.vectorClock),
-          envelopes,
-        }),
-      );
+        const accountingCheck = await verifyAccountingEnvelopeIntegrity(envelope);
+        if (accountingCheck.ok === false) {
+          // Material integrity failures must not ship (purchase or sales).
+          await markEventConflict(row.id, accountingCheck.code, accountingCheck.code);
+          continue;
+        }
 
-      syncMetrics.incrementPushBatches();
-      syncMetrics.incrementEventsPushed(response.accepted);
-
-      for (const row of pending.slice(0, response.accepted)) {
-        await markEventSynced(row.id);
-      }
-
-      for (const conflict of response.conflicts ?? []) {
-        const detected = detectConflict({
-          eventId: conflict.eventId,
-          aggregateId: conflict.aggregateId,
-          aggregateType: conflict.aggregateType,
-          localVersion: conflict.localVersion,
-          remoteVersion: conflict.remoteVersion,
-        });
-        resolveConflict(detected);
-        syncMetrics.incrementConflicts();
+        if (!validateSyncEnvelope(envelope) || !verifySyncEnvelopeIntegrity(envelope)) {
+          await markEventSyncFailed(row.id, "Invalid envelope", row.syncAttempts + 1, {
+            errorCode: "invalid_schema",
+            retryable: false,
+          });
+          continue;
+        }
+        envelopes.push(envelope);
+        envelopeByEventId.set(String(envelope.eventId), row);
       }
 
-      const maxSeq = Math.max(...envelopes.map((e) => e.globalSequence));
-      await advanceSyncCursor(principal?.tenantId ?? "local", maxSeq);
-
-      recordSyncDiagnostic({
-        stage: "push-success",
-        message: `accepted=${response.accepted}`,
-        timestamp: new Date().toISOString(),
-      });
-
-      return response.accepted;
-    } catch (error) {
-      if (error instanceof SyncAuthError) {
-        recordSyncDiagnostic({
-          stage: "auth-rejected",
-          message: error.message,
-          timestamp: new Date().toISOString(),
-        });
+      if (envelopes.length === 0) {
+        for (const row of claimed) {
+          await releaseSyncClaim(row.id, {
+            error: "No valid envelopes in claimed batch",
+            errorCode: "empty_envelope_batch",
+          });
+        }
         return 0;
       }
 
-      const message = error instanceof Error ? error.message : String(error);
-      for (const row of pending) {
-        const attempts = row.syncAttempts + 1;
-        if (attempts >= 5) {
-          await writeDeadLetter(row.eventId, message);
+      try {
+        const deviceId = getOrCreateDeviceId();
+        const cursor = await readSyncCursor(deviceId);
+        const response = await withSyncRetry(() =>
+          transportPush({
+            deviceId,
+            replicaId: getOrCreateReplicaId(),
+            tenantId: principal?.tenantId ?? "local",
+            vectorClock: vectorClockFromString(cursor?.vectorClock),
+            envelopes,
+          }),
+        );
+
+        syncMetrics.incrementPushBatches();
+        let acceptedCount = 0;
+
+        const results = response.results;
+        if (results?.length) {
+          for (const result of results) {
+            const row = envelopeByEventId.get(String(result.eventId));
+            if (!row) continue;
+            if (result.status === "accepted" || result.status === "duplicate") {
+              await markEventSynced(row.id, {
+                remoteEventId: result.remoteEventId ?? undefined,
+                remoteSequence: result.remoteSequence ?? undefined,
+                acknowledgedAt: result.acknowledgedAt ?? undefined,
+              });
+              acceptedCount += 1;
+            } else if (result.status === "conflict") {
+              await markEventConflict(
+                row.id,
+                result.errorCode ?? "conflict",
+                result.errorCode ?? "conflict",
+              );
+              syncMetrics.incrementConflicts();
+              if (result.conflict) {
+                resolveConflict(
+                  detectConflict({
+                    eventId: String(result.eventId),
+                    aggregateId: result.conflict.aggregateId,
+                    aggregateType: result.conflict.aggregateType,
+                    localVersion: result.conflict.localVersion,
+                    remoteVersion: result.conflict.remoteVersion,
+                  }),
+                );
+              }
+            } else {
+              const attempts = row.syncAttempts + 1;
+              const code = result.errorCode ?? "rejected";
+              const klass = classifySyncFailure(code);
+              if (klass === "permanent" || attempts >= 8) {
+                await writeDeadLetter(row.eventId, code);
+                await markEventSyncFailed(row.id, code, attempts, {
+                  errorCode: code,
+                  retryable: false,
+                });
+              } else {
+                await markEventSyncFailed(row.id, code, attempts, {
+                  errorCode: code,
+                  retryable: true,
+                  nextAttemptAt: computeNextAttemptAt(attempts),
+                });
+              }
+            }
+          }
         } else {
-          await markEventSyncFailed(row.id, message, attempts);
+          // Legacy aggregate response
+          for (const row of claimed.slice(0, response.accepted)) {
+            await markEventSynced(row.id);
+            acceptedCount += 1;
+          }
+          for (const conflict of response.conflicts ?? []) {
+            const row = envelopeByEventId.get(String(conflict.eventId));
+            if (row) {
+              await markEventConflict(row.id, conflict.classification, conflict.classification);
+            }
+            resolveConflict(
+              detectConflict({
+                eventId: conflict.eventId,
+                aggregateId: conflict.aggregateId,
+                aggregateType: conflict.aggregateType,
+                localVersion: conflict.localVersion,
+                remoteVersion: conflict.remoteVersion,
+              }),
+            );
+            syncMetrics.incrementConflicts();
+          }
         }
+
+        syncMetrics.incrementEventsPushed(acceptedCount);
+
+        recordSyncDiagnostic({
+          stage: "push-success",
+          message: `accepted=${acceptedCount}`,
+          timestamp: new Date().toISOString(),
+        });
+
+        return acceptedCount;
+      } catch (error) {
+        if (error instanceof SyncAuthError) {
+          recordSyncDiagnostic({
+            stage: "auth-rejected",
+            message: error.message,
+            timestamp: new Date().toISOString(),
+          });
+          for (const row of claimed) {
+            await releaseSyncClaim(row.id, {
+              error: error.message,
+              errorCode: "auth_rejected",
+            });
+          }
+          return 0;
+        }
+
+        const message = error instanceof Error ? error.message : String(error);
+        const klass = classifySyncFailure(message);
+        for (const row of claimed) {
+          const attempts = row.syncAttempts + 1;
+          if (klass === "permanent" || attempts >= 8) {
+            await writeDeadLetter(row.eventId, message);
+            await markEventSyncFailed(row.id, message, attempts, {
+              errorCode: message,
+              retryable: false,
+            });
+          } else {
+            await markEventSyncFailed(row.id, message, attempts, {
+              errorCode: message,
+              retryable: true,
+              nextAttemptAt: computeNextAttemptAt(attempts),
+            });
+          }
+        }
+        syncMetrics.incrementPushFailures();
+        throw error;
       }
-      syncMetrics.incrementPushFailures();
-      throw error;
-    }
+    });
+
+    return locked ?? 0;
   }
 
-  async pullRemote(): Promise<number> {
+  async pullRemote(companyId?: string): Promise<number> {
     if (!isMigrationFlagEnabled("MIGRATION_EVENT_SYNC")) return 0;
 
     const deviceId = getOrCreateDeviceId();
@@ -147,26 +258,57 @@ export class EventSyncClient {
         tenantId: principal?.tenantId ?? "local",
         sinceGlobalSequence: cursor?.lastGlobalSequence ?? 0,
         vectorClock: vectorClockFromString(cursor?.vectorClock),
+        companyId,
       });
 
       syncMetrics.incrementPullBatches();
-      syncMetrics.incrementEventsPulled(response.envelopes.length);
 
-      if (response.envelopes.length > 0) {
+      let applied = 0;
+      let lastAppliedSeq = cursor?.lastGlobalSequence ?? 0;
+
+      for (const envelope of response.envelopes) {
+        const result = await applyRemoteSyncEnvelope(envelope as SyncEventEnvelope);
+        if (result.status === "applied" || result.status === "duplicate" || result.status === "same_origin_ack") {
+          applied += 1;
+          lastAppliedSeq = Math.max(
+            lastAppliedSeq,
+            (envelope as { remoteSequence?: number }).remoteSequence ?? envelope.globalSequence,
+          );
+        } else if (result.status === "conflict") {
+          syncMetrics.incrementConflicts();
+          // Do not advance cursor past unapplied conflict — stop page
+          recordSyncDiagnostic({
+            stage: "pull-conflict",
+            message: result.code,
+            timestamp: new Date().toISOString(),
+          });
+          break;
+        } else {
+          recordSyncDiagnostic({
+            stage: "pull-reject",
+            message: result.code,
+            timestamp: new Date().toISOString(),
+          });
+          break;
+        }
+      }
+
+      if (applied > 0) {
         await advanceSyncCursor(
           principal?.tenantId ?? "local",
-          response.lastGlobalSequence,
+          lastAppliedSeq,
           response.vectorClock,
         );
       }
 
+      syncMetrics.incrementEventsPulled(applied);
       recordSyncDiagnostic({
         stage: "pull-success",
-        message: `count=${response.envelopes.length}`,
+        message: `applied=${applied}`,
         timestamp: new Date().toISOString(),
       });
 
-      return response.envelopes.length;
+      return applied;
     } catch (error) {
       if (error instanceof SyncAuthError) {
         recordSyncDiagnostic({

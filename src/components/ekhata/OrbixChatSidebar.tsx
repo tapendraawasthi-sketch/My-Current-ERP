@@ -30,12 +30,12 @@ const OrbixChatSidebar: React.FC<OrbixChatSidebarProps> = ({
 
   if (collapsed) {
     return (
-      <div className="flex flex-col items-center py-3 gap-3 border-r border-white/10 bg-[#080c14] w-12 flex-shrink-0">
+      <div className="flex w-full flex-col items-center gap-2 py-3">
         <button
           type="button"
           onClick={onToggleCollapse}
           title="Show chat history"
-          className="p-2 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-white/10 transition-colors"
+          className="rounded-[var(--ox-radius-md)] p-2 text-[var(--ox-text-muted)] hover:bg-[var(--ox-surface)] hover:text-[var(--ox-text)]"
         >
           <PanelLeft className="h-4 w-4" />
         </button>
@@ -43,40 +43,40 @@ const OrbixChatSidebar: React.FC<OrbixChatSidebarProps> = ({
           type="button"
           onClick={onNewChat}
           title="New chat"
-          className="p-2 rounded-lg text-cyan-400 hover:bg-cyan-500/10 transition-colors"
+          className="rounded-[var(--ox-radius-md)] p-2 text-[var(--ox-primary)] hover:bg-[var(--ox-primary-soft)]"
         >
           <MessageSquarePlus className="h-4 w-4" />
         </button>
         <div className="flex-1" />
-        <OrbixLogo size={22} />
+        <OrbixLogo size={20} />
       </div>
     );
   }
 
   return (
-    <aside className="flex flex-col w-[220px] flex-shrink-0 border-r border-white/10 bg-[#080c14]">
-      <div className="flex items-center gap-2 px-3 py-2.5 border-b border-white/10">
+    <aside className="flex w-full flex-col">
+      <div className="flex items-center gap-2 border-b border-[var(--ox-border)] px-2 py-2">
         <button
           type="button"
           onClick={onNewChat}
-          className="flex-1 flex items-center justify-center gap-2 h-8 rounded-lg border border-white/10 bg-white/[0.04] text-[11px] font-medium text-slate-200 hover:bg-white/[0.08] hover:border-cyan-500/30 transition-all"
+          className="flex h-8 flex-1 items-center justify-center gap-2 rounded-[var(--ox-radius-md)] border border-[var(--ox-border)] bg-[var(--ox-surface)] text-[12px] font-medium text-[var(--ox-text)] hover:bg-[var(--ox-primary-soft)]"
         >
-          <MessageSquarePlus className="h-3.5 w-3.5 text-cyan-400" />
-          New chat
+          <MessageSquarePlus className="h-3.5 w-3.5 text-[var(--ox-primary)]" />
+          New conversation
         </button>
         <button
           type="button"
           onClick={onToggleCollapse}
           title="Hide sidebar"
-          className="p-1.5 rounded-md text-slate-500 hover:text-slate-300 hover:bg-white/10"
+          className="rounded-[var(--ox-radius-md)] p-1.5 text-[var(--ox-text-muted)] hover:bg-[var(--ox-surface)]"
         >
           <PanelLeftClose className="h-4 w-4" />
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto py-2 px-2 space-y-3 min-h-0">
+      <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-2 py-2">
         {groups.length === 0 && (
-          <p className="px-2 py-4 text-[10px] text-slate-600 text-center leading-relaxed">
+          <p className="px-2 py-6 text-center text-[12px] leading-relaxed text-[var(--ox-text-subtle)]">
             No conversations yet.
             <br />
             Start typing to begin.
@@ -84,38 +84,36 @@ const OrbixChatSidebar: React.FC<OrbixChatSidebarProps> = ({
         )}
         {groups.map((group) => (
           <div key={group.label}>
-            <p className="px-2 mb-1 text-[9px] font-semibold uppercase tracking-wide text-slate-600">
+            <p className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-wide text-[var(--ox-text-subtle)]">
               {group.label}
             </p>
             <ul className="space-y-0.5">
-              {group.sessions.map((session) => {
+              {group.sessions.map((session: OrbixChatSession) => {
                 const active = session.id === activeSessionId;
                 return (
                   <li key={session.id} className="group relative">
                     <button
                       type="button"
                       onClick={() => onSelectSession(session.id)}
-                      className={`w-full text-left rounded-lg px-2.5 py-2 pr-7 transition-all ${
+                      className={`w-full rounded-[var(--ox-radius-md)] px-2.5 py-2 pr-8 text-left transition-colors ${
                         active
-                          ? "bg-cyan-500/15 border border-cyan-500/25 text-slate-100"
-                          : "border border-transparent text-slate-400 hover:bg-white/[0.05] hover:text-slate-200"
+                          ? "bg-[var(--ox-primary-soft)] text-[var(--ox-primary)]"
+                          : "text-[var(--ox-text)] hover:bg-[var(--ox-surface)]"
                       }`}
                     >
-                      <p className="text-[11px] font-medium truncate leading-snug">
-                        {session.title}
-                      </p>
-                      <p className="text-[9px] text-slate-600 mt-0.5 tabular-nums">
+                      <span className="block truncate text-[12px] font-medium">
+                        {session.title || "New conversation"}
+                      </span>
+                      <span className="mt-0.5 block text-[10px] text-[var(--ox-text-subtle)]">
                         {formatSessionTime(session.updatedAt)}
-                      </p>
+                      </span>
                     </button>
                     <button
                       type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onDeleteSession(session.id);
-                      }}
-                      title="Delete chat"
-                      className="absolute right-1.5 top-1/2 -translate-y-1/2 p-1 rounded opacity-0 group-hover:opacity-100 text-slate-600 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                      onClick={() => onDeleteSession(session.id)}
+                      className="absolute right-1 top-1.5 hidden h-6 w-6 items-center justify-center rounded text-[var(--ox-text-subtle)] hover:bg-[var(--ox-danger-soft)] hover:text-[var(--ox-danger)] group-hover:inline-flex"
+                      title="Delete conversation"
+                      aria-label="Delete conversation"
                     >
                       <Trash2 className="h-3 w-3" />
                     </button>
@@ -126,12 +124,9 @@ const OrbixChatSidebar: React.FC<OrbixChatSidebarProps> = ({
           </div>
         ))}
       </div>
-
-      <div className="px-3 py-2 border-t border-white/10">
-        <p className="text-[9px] text-slate-600 text-center">
-          Chats kept for 7 days
-        </p>
-      </div>
+      <p className="border-t border-[var(--ox-border)] px-3 py-2 text-[10px] text-[var(--ox-text-subtle)]">
+        History: 7 days
+      </p>
     </aside>
   );
 };

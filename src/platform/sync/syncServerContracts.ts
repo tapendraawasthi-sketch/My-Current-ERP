@@ -25,10 +25,24 @@ export interface SyncPushRequest {
   envelopes: SyncEventEnvelope[];
 }
 
+export type SyncEventResultStatus = "accepted" | "duplicate" | "rejected" | "conflict";
+
+export interface SyncEventPushResult {
+  eventId: EntityId;
+  status: SyncEventResultStatus;
+  remoteEventId?: string | null;
+  remoteSequence?: number | null;
+  acknowledgedAt?: string | null;
+  errorCode?: string | null;
+  conflict?: SyncConflictRecord | null;
+}
+
 export interface SyncPushResponse {
   accepted: number;
   rejected: number;
   conflicts: SyncConflictRecord[];
+  /** Phase 5 per-event results (preferred). */
+  results?: SyncEventPushResult[];
 }
 
 export interface SyncPullRequest {
@@ -36,6 +50,7 @@ export interface SyncPullRequest {
   tenantId: EntityId;
   sinceGlobalSequence: number;
   vectorClock: Record<string, number>;
+  companyId?: string;
 }
 
 export interface SyncPullResponse {

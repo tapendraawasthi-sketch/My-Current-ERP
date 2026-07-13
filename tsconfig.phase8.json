@@ -1,0 +1,28 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [
+    "src/domains/purchase/**/*.ts",
+    "src/store/invoicePostingWriters.ts",
+    "src/platform/sync/applyRemoteEvent.ts",
+    "src/platform/sync/accountingSyncContract.ts",
+    "src/platform/sync/reconciliation.ts",
+    "src/platform/sync/syncStatusAggregate.ts",
+    "src/platform/sync/syncTransport.ts",
+    "src/platform/sync/enqueuePurchaseSync.ts",
+    "src/platform/sync/enqueuePurchaseAdjustmentSync.ts",
+    "src/platform/sync/payloadHash.ts",
+    "src/platform/sync/companySyncPolicy.ts",
+    "src/platform/sync/localSequence.ts",
+    "src/platform/sync/syncQueue.ts",
+    "src/platform/sync/vectorClock.ts",
+    "src/platform/sync/syncServerContracts.ts",
+    "src/platform/sync/syncDiagnostics.ts",
+    "src/lib/db.ts",
+    "src/__tests__/orbix/postPurchaseAdjustmentTransaction.test.ts",
+    "src/__tests__/orbix/purchaseReturnRemoteApplyNoRecalc.test.ts",
+    "src/__tests__/orbix/postPurchaseTransaction.test.ts"
+  ]
+}

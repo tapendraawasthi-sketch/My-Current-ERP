@@ -32,14 +32,14 @@ const AmountInput: React.FC<AmountInputProps> = ({
       {label && (
         <label
           htmlFor={id}
-          className="text-[11px] font-medium text-[#000000] flex items-center gap-0.5"
+          className="flex items-center gap-0.5 text-[11px] font-medium text-[var(--ox-text-muted)]"
         >
           {label}
-          {required && <span className="text-red-500 font-bold">*</span>}
+          {required && <span className="font-bold text-[var(--ox-danger)]">*</span>}
         </label>
       )}
-      <div className="relative flex items-center w-full rounded-md shadow-sm">
-        <span className="absolute left-2.5 text-[12px] text-[#000000] font-medium pointer-events-none">
+      <div className="relative flex w-full items-center">
+        <span className="pointer-events-none absolute left-2.5 text-[12px] font-medium text-[var(--ox-text-muted)]">
           {symbol}
         </span>
         <input
@@ -54,13 +54,13 @@ const AmountInput: React.FC<AmountInputProps> = ({
           disabled={disabled}
           required={required}
           className={`
-            block w-full h-8 pl-10 pr-2.5 text-[12px] bg-white border text-[#000000] font-medium text-right transition-all focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] rounded-md
-            ${error ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "border-[#9DC07A]"}
-            ${disabled ? "bg-[#EBF5E2] text-[#000000] cursor-not-allowed" : ""}
+            block h-8 w-full rounded-[var(--ox-radius-md)] border bg-[var(--ox-surface)] pl-10 pr-2.5 text-right text-[12px] font-medium tabular-nums text-[var(--ox-text)] transition-all focus:outline-none focus:ring-2 focus:ring-[var(--ox-focus-ring)] focus:border-[var(--ox-primary)]
+            ${error ? "border-[var(--ox-danger)]" : "border-[var(--ox-border-strong)]"}
+            ${disabled ? "cursor-not-allowed bg-[var(--ox-surface-muted)] text-[var(--ox-text-subtle)]" : ""}
           `}
         />
       </div>
-      {error && <span className="text-xs text-red-650 font-medium">{error}</span>}
+      {error && <span className="text-[11px] font-medium text-[var(--ox-danger)]">{error}</span>}
     </div>
   );
 };

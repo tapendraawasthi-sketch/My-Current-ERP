@@ -46,7 +46,10 @@
     "generate:ekhata-corpus": "npx tsx scripts/generate-ekhata-training-corpus.ts",
     "validate:ekhata-corpus": "npx tsx scripts/validate-ekhata-corpus.ts",
     "build:ca-knowledge": "node scripts/build-conceptual-framework-knowledge.mjs",
-    "test:accounting": "vitest run src/__tests__/accounting/"
+    "test:accounting": "vitest run src/__tests__/accounting/",
+    "test:orbix-contract": "vitest run src/__tests__/orbix/",
+    "test:e2e:orbix-connected": "playwright test e2e/orbix-connected.spec.ts",
+    "check:no-emitted-js": "node scripts/check-no-emitted-js.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1075.0",

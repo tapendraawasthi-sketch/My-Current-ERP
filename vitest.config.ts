@@ -5,7 +5,11 @@ export default defineConfig({
   plugins: [tsconfigPaths()],
   test: {
     environment: "node",
-    include: ["src/__tests__/accounting/**/*.test.ts", "src/__tests__/plugin-kernel/**/*.test.ts"],
+    include: [
+      "src/__tests__/accounting/**/*.test.ts",
+      "src/__tests__/plugin-kernel/**/*.test.ts",
+      "src/__tests__/orbix/**/*.test.ts",
+    ],
     setupFiles: ["src/__tests__/accounting/setup.ts"],
     pool: "forks",
   },

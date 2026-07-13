@@ -100,6 +100,9 @@ export interface DBItem {
   rate?: number;
   price?: number;
   costPrice?: number;
+  /** Runtime on-hand projection (updated by stock movements / seeding). */
+  currentStock?: number;
+  openingQty?: number;
   openingStock?: number;
   openingStockRate?: number;
   reorderLevel?: number;
@@ -251,6 +254,14 @@ export interface DBInvoiceLine {
   taxableAmount?: number;
   exemptAmount?: number;
   hsCode?: string;
+  /** Phase 7 — link return/credit line back to original sales line */
+  originalSalesLineId?: string;
+  unitCost?: number;
+  costAmount?: number;
+  taxRuleVersion?: string;
+  valuationMethod?: string;
+  costAllocationId?: string;
+  stockCondition?: string;
 }
 
 // ─── Invoice ──────────────────────────────────────────────────────────────────
@@ -323,6 +334,11 @@ export interface DBInvoice {
   priceListId?: string;
   currencyCode?: string;
   exchangeRate?: number;
+  /** Phase 7 — original sales invoice for returns / credit notes */
+  originalInvoiceId?: string;
+  taxRuleVersion?: string;
+  inventoryAccounting?: string;
+  valuationMethod?: string;
   payments?: {
     cash?: number;
     card?: number;
@@ -561,6 +577,9 @@ export interface DBCompanySettings {
   lastLoginBy?: string;
   lastLoginAt?: string;
   lastLoginIp?: string;
+  /** Phase 5: explicit sync policy — local_only | sync_enabled | sync_required */
+  syncPolicy?: "local_only" | "sync_enabled" | "sync_required";
+  companyId?: string;
 }
 
 // ─── User ─────────────────────────────────────────────────────────────────────
@@ -1117,6 +1136,29 @@ export interface DBSyncOutboxRecord {
   status?: "pending" | "sync_failed";
 }
 
+/** Dexie-scoped Orbix / purchase posting idempotency receipt (v27+) */
+export interface DBOrbixPostingReceiptRow {
+  id: string;
+  idempotencyKey: string;
+  scopedKey: string;
+  tenantId: string;
+  companyId: string;
+  userId: string;
+  operation: string;
+  draftId: string | null;
+  draftVersion: number | null;
+  previewVersion: string | null;
+  previewHash: string | null;
+  status: "processing" | "completed" | "failed";
+  postingId: string;
+  voucherId: string | null;
+  invoiceId: string | null;
+  journalId: string | null;
+  result: Record<string, unknown> | null;
+  createdAt: string;
+  completedAt: string | null;
+}
+
 // ─── Database Class ───────────────────────────────────────────────────────────
 
 // SCHEMA_VERSION retired — version blocks are now explicit in the constructor
@@ -1255,6 +1297,29 @@ export class SutraERPDatabase extends Dexie {
   eventSyncCursors!: Table<any>;
   eventSyncDeadLetter!: Table<any>;
   eventSyncConflicts!: Table<any>;
+  orbixPostingReceipts!: Table<DBOrbixPostingReceiptRow>;
+  /** Phase 5 — company-scoped local sync sequence + hash chain tip */
+  syncLocalSequences!: Table<any>;
+  /** Phase 6.5 — persisted sales line cost allocations */
+  salesCostAllocations!: Table<any>;
+  /** Phase 7 — optimistic concurrency for sales returns / credit notes */
+  salesInvoiceAdjustmentState!: Table<any>;
+  /** Phase 8 — optimistic concurrency for purchase returns / debit notes */
+  purchaseInvoiceAdjustmentState!: Table<any>;
+  /** Phase 9 — settlement allocations + document/advance state */
+  settlementAllocations!: Table<any>;
+  documentSettlementState!: Table<any>;
+  partyAdvances!: Table<any>;
+  partyAdvanceApplications!: Table<any>;
+  unappliedBalances!: Table<any>;
+  /** Phase 10 — treasury / bank reconciliation */
+  bankAccounts!: Table<any>;
+  bankStatementBatches!: Table<any>;
+  bankStatementLines!: Table<any>;
+  bankReconciliationLinks!: Table<any>;
+  bankReconciliationSessions!: Table<any>;
+  chequeInstruments!: Table<any>;
+  treasuryForecastItems!: Table<any>;
 
   constructor() {
     super("SutraERPDatabase");
@@ -1474,6 +1539,60 @@ export class SutraERPDatabase extends Dexie {
           /* non-fatal */
         }
       });
+
+    // Version 27 — Orbix / purchase posting idempotency receipts (Model B)
+    this.version(27).stores({
+      orbixPostingReceipts:
+        "id, scopedKey, idempotencyKey, companyId, draftId, status, postingId, invoiceId, createdAt",
+    });
+
+    // Version 28 — Phase 5 durable accounting sync (local sequence + queue indexes)
+    this.version(28).stores({
+      syncLocalSequences: "id, companyId, tenantId, lastSequence, updatedAt",
+      eventSyncQueue:
+        "id, eventId, globalSequence, tenantId, companyId, status, createdAt, syncedAt, nextAttemptAt",
+    });
+
+    // Version 29 — Phase 6.5 sales cost allocations (exact unit/total cost at posting)
+    this.version(29).stores({
+      salesCostAllocations:
+        "id, posting_id, invoice_id, item_id, company_id, sales_line_id, valued_at",
+    });
+
+    // Version 30 — Phase 7 sales return / credit note adjustment state
+    this.version(30).stores({
+      salesInvoiceAdjustmentState: "id, companyId, adjustmentVersion, updatedAt",
+    });
+
+    // Version 31 — Phase 8 purchase return / debit note adjustment state
+    this.version(31).stores({
+      purchaseInvoiceAdjustmentState: "id, companyId, adjustmentVersion, updatedAt",
+    });
+
+    // Version 32 — Phase 9 settlement allocations / advances / unapplied balances
+    this.version(32).stores({
+      settlementAllocations:
+        "id, companyId, voucherId, targetDocumentId, partyId, component, status, createdAt",
+      documentSettlementState: "id, companyId, settlementVersion, updatedAt",
+      partyAdvances: "id, companyId, partyId, side, advanceVersion, status, updatedAt",
+      partyAdvanceApplications: "id, companyId, advanceId, documentId, allocationId, createdAt",
+      unappliedBalances: "id, companyId, partyId, classification, status, sourceVoucherId, createdAt",
+    });
+
+    // Version 33 — Phase 10 treasury / bank reconciliation
+    this.version(33).stores({
+      bankAccounts: "id, companyId, ledgerAccountId, currency, isActive, updatedAt",
+      bankStatementBatches:
+        "id, companyId, bankAccountId, sourceHash, status, importedAt, periodStart, periodEnd",
+      bankStatementLines:
+        "id, batchId, bankAccountId, companyId, transactionDate, status, reconciliationVersion, rawHash, lineNumber",
+      bankReconciliationLinks: "id, companyId, bankAccountId, sessionId, status, version, confirmedAt",
+      bankReconciliationSessions:
+        "id, companyId, bankAccountId, status, version, periodStart, periodEnd, closedAt",
+      chequeInstruments:
+        "id, companyId, bankAccountId, partyId, instrumentNumber, status, instrumentVersion, amountPaisa, chequeDate",
+      treasuryForecastItems: "id, companyId, date, side, amountPaisa, confidence, status",
+    });
   }
 }
 

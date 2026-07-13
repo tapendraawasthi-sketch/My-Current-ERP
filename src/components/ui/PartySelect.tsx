@@ -74,40 +74,40 @@ const PartySelect: React.FC<PartySelectProps> = ({
 
   return (
     <div className="flex flex-col gap-1 w-full relative" ref={containerRef} id={id}>
-      {label && <label className="text-[11px] font-semibold text-[#000000]">{label}</label>}
+      {label && (
+        <label className="text-[11px] font-medium text-[var(--ox-text-muted)]">{label}</label>
+      )}
 
       <div className="relative w-full">
         <button
           type="button"
           disabled={disabled}
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full h-8 px-2.5 text-left text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] flex items-center justify-between disabled:bg-[#EBF5E2] disabled:cursor-not-allowed"
+          className="flex h-8 w-full items-center justify-between rounded-[var(--ox-radius-md)] border border-[var(--ox-border-strong)] bg-[var(--ox-surface)] px-2.5 text-left text-[12px] text-[var(--ox-text)] focus:border-[var(--ox-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ox-focus-ring)] disabled:cursor-not-allowed disabled:bg-[var(--ox-surface-muted)]"
         >
           <span className="truncate">
             {selectedParty ? `${getPrefix(selectedParty.type)} ${selectedParty.name}` : placeholder}
           </span>
-          <ChevronDown className="h-3 w-3 text-[#000000] shrink-0 ml-1" />
+          <ChevronDown className="ml-1 h-3 w-3 shrink-0 text-[var(--ox-text-subtle)]" />
         </button>
 
         {isOpen && (
-          <div className="absolute z-50 w-full mt-1 bg-white border border-[#9DC07A] rounded-md shadow-lg max-h-64 overflow-hidden flex flex-col">
-            {/* Search input */}
-            <div className="p-1 border-b border-[#9DC07A] flex items-center gap-1 bg-[#EBF5E2] shrink-0">
-              <Search className="h-3 w-3 text-[#000000] ml-1.5" />
+          <div className="absolute z-50 mt-1 flex max-h-64 w-full flex-col overflow-hidden rounded-[var(--ox-radius-md)] border border-[var(--ox-border)] bg-[var(--ox-surface-elevated)] shadow-[var(--ox-shadow-md)]">
+            <div className="flex shrink-0 items-center gap-1 border-b border-[var(--ox-border)] bg-[var(--ox-surface-muted)] p-1">
+              <Search className="ml-1.5 h-3 w-3 text-[var(--ox-text-subtle)]" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search party..."
-                className="w-full h-7 px-1 text-[11px] bg-transparent border-none focus:outline-none"
+                className="h-7 w-full border-none bg-transparent px-1 text-[11px] text-[var(--ox-text)] focus:outline-none"
                 autoFocus
               />
             </div>
 
-            {/* List */}
-            <div className="overflow-y-auto max-h-52 py-1">
+            <div className="max-h-52 overflow-y-auto py-1">
               {filteredParties.length === 0 ? (
-                <div className="px-3 py-2 text-[11px] text-[#000000] text-center font-bold">
+                <div className="px-3 py-2 text-center text-[11px] text-[var(--ox-text-muted)]">
                   No matching parties
                 </div>
               ) : (
@@ -123,10 +123,10 @@ const PartySelect: React.FC<PartySelectProps> = ({
                         setIsOpen(false);
                         setSearch("");
                       }}
-                      className={`w-full px-3 py-1.5 text-left text-[12px] transition-colors flex items-center justify-between ${
+                      className={`flex w-full items-center justify-between px-3 py-1.5 text-left text-[12px] transition-colors ${
                         isSelected
-                          ? "bg-[#D4EABD] text-[#000000] font-semibold"
-                          : "text-[#000000] hover:bg-[#EBF5E2]"
+                          ? "bg-[var(--ox-primary-soft)] font-semibold text-[var(--ox-primary)]"
+                          : "text-[var(--ox-text)] hover:bg-[var(--ox-surface-muted)]"
                       }`}
                     >
                       <span className="truncate">

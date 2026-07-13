@@ -60,6 +60,7 @@ import PayrollRun from "./pages/PayrollRun";
 import BudgetVsActual from "./pages/BudgetVsActual";
 import RecurringVouchers from "./pages/RecurringVouchers";
 import FinancialDashboard from "./pages/FinancialDashboard";
+import OrbixWorkspacePage from "./pages/OrbixWorkspacePage";
 import GeneralLedger from "./pages/GeneralLedger";
 import VatReports from "./pages/VatReports";
 import BillingInvoice from "./pages/BillingInvoice";
@@ -73,7 +74,6 @@ import SignUpWizard from "./components/auth/SignUpWizard";
 import InitErrorScreen from "./components/InitErrorScreen";
 import GatewayScreen from "./components/auth/GatewayScreen";
 import CompanyLoginScreen from "./components/auth/CompanyLoginScreen";
-import BusyMenuBar from "./components/BusyMenuBar";
 // import { TitleBar, StatusBar, CommandHintBar, ShortcutSidebar } from "./components/BusyShell";
 
 // NEW BUSY FEATURE PAGES
@@ -100,6 +100,7 @@ import VATClassificationMaster from "./pages/VATClassificationMaster";
 import MasterControlCentre from "./pages/MasterControlCentre";
 import UsersManagement from "./pages/UsersManagement";
 import CompanySettings from "./pages/CompanySettings";
+import SalesReconciliationPanel from "./components/SalesReconciliationPanel";
 import BankReconciliation from "./pages/BankReconciliation";
 import EmployeeMaster from "./pages/EmployeeMaster";
 import BackupRestore from "./pages/BackupRestore";
@@ -240,13 +241,7 @@ const App: React.FC<AppProps> = ({ onMounted }) => {
 
     return (
       <F12Provider>
-        <Layout>
-          <div className="flex flex-col h-full">
-            <main className="flex-1 overflow-y-auto" style={{ background: "#f5f6fa" }}>
-              {renderPage()}
-            </main>
-          </div>
-        </Layout>
+        <Layout>{renderPage()}</Layout>
         <F12Panel />
       </F12Provider>
     );
@@ -258,6 +253,9 @@ const App: React.FC<AppProps> = ({ onMounted }) => {
       case "financial-dashboard":
       case "dashboard":
         return <FinancialDashboard />;
+
+      case "orbix":
+        return <OrbixWorkspacePage />;
 
       // New Modules
       case "pdc-register":
@@ -356,8 +354,9 @@ const App: React.FC<AppProps> = ({ onMounted }) => {
 
       // Purchase Transactions
       case "purchase":
-      case "purchase-return":
         return <PurchaseVoucher />;
+      case "purchase-return":
+        return <BillingInvoice />;
       case "goods-receipt":
       case "grn":
         return <GoodsReceiptNote />;
@@ -516,6 +515,12 @@ const App: React.FC<AppProps> = ({ onMounted }) => {
       case "settings":
       case "company-settings":
         return <CompanySettings />;
+      case "sales-reconciliation":
+        return (
+          <div className="p-4">
+            <SalesReconciliationPanel />
+          </div>
+        );
       case "backup":
       case "backup-restore":
         return <BackupRestore />;

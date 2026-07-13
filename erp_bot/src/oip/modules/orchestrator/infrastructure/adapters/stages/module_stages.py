@@ -396,6 +396,7 @@ class ExecutionStageAdapter(WorkflowStagePort):
             permissions=client_ctx.get("permissions"),
             has_active_report=bool(client_ctx.get("has_active_report")),
             has_pending_confirmation=bool(client_ctx.get("has_pending_confirmation")),
+            draft_id=client_ctx.get("draft_id") or client_ctx.get("active_draft_id"),
         )
         if erp_result and erp_result.skip_llm:
             snapshot = {

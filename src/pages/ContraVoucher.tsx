@@ -25,6 +25,9 @@ import { generateVoucherNo } from "../lib/accounting";
 import { generateVoucherPDF } from "../lib/printUtils";
 import { VoucherType, VoucherStatus } from "../lib/types";
 import toast from "react-hot-toast";
+import { postContraTransaction } from "@/domains/settlement/postContraTransaction";
+import { generateId } from "@/lib/db";
+import type { ContraType } from "@/domains/settlement/types";
 
 const round2 = (n: number) => Math.round((Number(n) || 0) * 100) / 100;
 
@@ -74,7 +77,8 @@ const KindBadge = ({ kind }: { kind: "Cash" | "Bank" | "" }) => {
 };
 
 const ContraVoucher: React.FC = () => {
-  const { accounts, vouchers, companySettings, currentFiscalYear, addVoucher } = useStore();
+  const { accounts, vouchers, companySettings, currentFiscalYear, currentUser, addVoucher } =
+    useStore();
 
   const symbol = companySettings?.currencySymbol || "Rs.";
 
@@ -206,9 +210,54 @@ const ContraVoucher: React.FC = () => {
     }
     setSaving(true);
     try {
+      if (status === VoucherStatus.POSTED) {
+        const fk = acctKind(fromAcct);
+        const tk = acctKind(toAcct);
+        let contraType: ContraType = "bank_to_bank";
+        if (fk === "Cash" && tk === "Bank") contraType = "cash_to_bank";
+        else if (fk === "Bank" && tk === "Cash") contraType = "bank_to_cash";
+        else if (fk === "Cash" && tk === "Cash") contraType = "cash_to_cash";
+        else contraType = "bank_to_bank";
+
+        const companyId = String(
+          (companySettings as any)?.companyId || (companySettings as any)?.id || "main",
+        );
+        const result = await postContraTransaction({
+          commandId: generateId(),
+          requestId: generateId(),
+          idempotencyKey: `manual-contra-${generateId()}`,
+          companyId,
+          financialYearId: currentFiscalYear?.id || null,
+          userId: currentUser?.id || "manual-user",
+          userRole: currentUser?.role || "accountant",
+          source: "manual_form",
+          contra: {
+            contraType,
+            transactionDate: date,
+            fromAccountId: fromId,
+            toAccountId: toId,
+            amount: round2(amount).toFixed(2),
+            currency: "NPR",
+            narration: narration.trim() || `Contra: ${fromAcct?.name} → ${toAcct?.name}`,
+          },
+        });
+        if (result.type !== "posting_completed") {
+          toast.error(result.payload.safe_message || "Failed to post contra.");
+          return;
+        }
+        toast.success("Contra voucher posted.");
+        setDirty(false);
+        setSavedVoucher({
+          id: result.payload.voucher_id,
+          voucherNo: result.payload.voucher_number,
+          status: VoucherStatus.POSTED,
+        });
+        return;
+      }
+
       const payload = buildPayload(status);
       const result = await addVoucher(payload);
-      toast.success(status === VoucherStatus.POSTED ? "Contra voucher posted." : "Draft saved.");
+      toast.success("Draft saved.");
       setDirty(false);
       setSavedVoucher(result);
     } catch (e: any) {

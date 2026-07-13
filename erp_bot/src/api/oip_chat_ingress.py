@@ -129,6 +129,51 @@ async def submit_chat(
     return await container.kernel.submit(request)
 
 
+def derive_orbix_response_type(
+    *,
+    error: dict[str, Any] | None,
+    card: dict[str, Any] | None,
+    report_spec: dict[str, Any] | None,
+    action: str,
+) -> str:
+    """Stable discriminator for frontend structured rendering."""
+    if error and isinstance(error, dict):
+        err_type = error.get("type")
+        if err_type == "mode_restriction":
+            return "mode_restriction"
+        if err_type == "clarification_required":
+            return "clarification_required"
+        if err_type == "permission_denied":
+            return "permission_denied"
+        if err_type == "validation_error":
+            return "validation_error"
+    if report_spec:
+        if isinstance(report_spec, dict) and report_spec.get("updated"):
+            return "report_updated"
+        return "report_result"
+    if card or action == "confirm":
+        return "confirmation_required"
+    return "normal_answer"
+
+
+def derive_orbix_status(response_type: str) -> str:
+    mapping = {
+        "mode_restriction": "requires_input",
+        "clarification_required": "requires_input",
+        "confirmation_required": "requires_confirmation",
+        "transaction_preview": "requires_confirmation",
+        "report_result": "success",
+        "report_updated": "success",
+        "permission_denied": "failed",
+        "validation_error": "failed",
+        "provider_offline": "failed",
+        "posting_completed": "success",
+        "posting_failed": "failed",
+        "posting_progress": "processing",
+    }
+    return mapping.get(response_type, "success")
+
+
 def map_response_to_orbix(
     response: IntelligenceResponseDto,
 ) -> tuple[str, dict[str, Any] | None, dict[str, Any] | None]:
@@ -183,21 +228,35 @@ async def stream_orbix_kernel_events(
             yield sse_json({"type": "token", "content": token})
     yield sse_json({"type": "thinking_done"})
     meta = dict(response.metadata or {})
+    error = meta.get("error") or (route_info or {}).get("error")
+    draft_id = meta.get("draft_id") or (route_info or {}).get("draft_id")
+    report_spec = meta.get("report_spec") or (route_info or {}).get("report_spec")
+    action = "confirm" if card else "chat"
+    response_type = derive_orbix_response_type(
+        error=error if isinstance(error, dict) else None,
+        card=card,
+        report_spec=report_spec if isinstance(report_spec, dict) else None,
+        action=action,
+    )
     yield sse_json(
         {
             "type": "complete",
+            "schema_version": "1.0",
+            "request_id": response.request_id,
             "message": text,
             "card": card,
             "route": route_info,
-            "action": "confirm" if card else "chat",
+            "action": action,
             "provider": response.provider or meta.get("provider_id"),
             "model": response.model,
             "provider_runtime": True,
             "orbix_mode": meta.get("orbix_mode") or (route_info or {}).get("orbix_mode"),
             "operation_class": meta.get("operation_class") or (route_info or {}).get("operation_class"),
-            "error": meta.get("error") or (route_info or {}).get("error"),
-            "draft_id": meta.get("draft_id") or (route_info or {}).get("draft_id"),
-            "report_spec": meta.get("report_spec") or (route_info or {}).get("report_spec"),
+            "error": error,
+            "draft_id": draft_id,
+            "report_spec": report_spec,
+            "response_type": response_type,
+            "status": derive_orbix_status(response_type),
         }
     )
 

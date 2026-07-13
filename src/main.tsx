@@ -4,6 +4,7 @@ import App from "./App";
 import "./styles.css";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { bootstrapPlatformRuntime } from "./store/platformBootstrap";
+import { ThemeProvider } from "./context/ThemeContext";
 
 bootstrapPlatformRuntime();
 
@@ -125,7 +126,9 @@ try {
   reactRoot = ReactDOM.createRoot(rootElement);
   reactRoot.render(
     <ErrorBoundary>
-      <App onMounted={dismissRootLoading} />
+      <ThemeProvider>
+        <App onMounted={dismissRootLoading} />
+      </ThemeProvider>
     </ErrorBoundary>,
   );
 } catch (err) {

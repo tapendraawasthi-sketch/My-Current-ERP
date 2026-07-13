@@ -40,6 +40,9 @@ function saveRecords(records: TrainingFeedbackRecord[]): void {
 
 function syncFeedbackToServer(record: TrainingFeedbackRecord): void {
   if (isSelfContainedAi() || !EKHATA_BOT_URL) return;
+  // Connected E2E: writing feedback.jsonl under the repo triggers Vite full reloads
+  // mid-post and blanks the UI QA harness. Skip remote feedback sync in test harness.
+  if (typeof window !== "undefined" && window.__orbixE2E) return;
 
   fetch(`${EKHATA_BOT_URL}/khata/feedback`, {
     method: "POST",

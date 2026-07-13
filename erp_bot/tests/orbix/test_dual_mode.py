@@ -224,6 +224,48 @@ class TestPurchaseDraft:
         assert get_posted_result(draft.draft_id) == result
         assert get_posted_result(draft.draft_id) == result  # second read same
 
+    def test_phase4_bike_incomplete_then_clarify(self):
+        d1 = start_or_merge_purchase(
+            "I bought a bike.",
+            session_id="bike-1",
+            tenant_id="t-e2e",
+            company_id="c-e2e",
+        )
+        assert d1.item.name == "Bike"
+        assert d1.quantity is None
+        assert d1.total_amount is None
+        assert d1.payment_method is None
+        assert d1.status == "awaiting_clarification"
+        assert d1.version == 1
+        assert "quantity" in d1.missing_fields
+        assert "rate_or_total" in d1.missing_fields
+        assert "payment_method" in d1.missing_fields
+
+        d2 = start_or_merge_purchase(
+            "1, 50000 cash",
+            session_id="bike-1",
+            tenant_id="t-e2e",
+            company_id="c-e2e",
+            existing=d1,
+        )
+        assert d2.draft_id == d1.draft_id
+        assert d2.version == 2
+        assert d2.quantity == Decimal("1")
+        assert d2.unit == "pcs"
+        assert d2.total_amount == Decimal("50000.00")
+        assert d2.payment_method == "cash"
+        assert d2.item.name == "Bike"
+        assert d2.status == "previewed"
+        assert d2.preview is not None
+        assert d2.preview["amount"] == 50000.0
+        assert d2.preview_hash
+        journal = d2.preview["journalLines"]
+        debit = sum(Decimal(str(j["debit"])) for j in journal)
+        credit = sum(Decimal(str(j["credit"])) for j in journal)
+        assert debit == credit == Decimal("50000")
+        assert d2.preview.get("draft_version") == 2
+        assert d2.preview.get("preview_version") == 2
+
 
 def clarification_safe(draft) -> str:
     from src.khata.purchase_draft import clarification_message

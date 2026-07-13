@@ -11,6 +11,21 @@ export type AccountClass =
 
 /** All supported e-Khata transaction intents — basic khata + CA-level */
 export type KhataIntent =
+  // Phase 9 settlement (authoritative RPCJ)
+  | "customer_receipt"
+  | "other_receipt"
+  | "customer_advance_receipt"
+  | "unapplied_customer_receipt"
+  | "supplier_payment"
+  | "expense_payment"
+  | "supplier_advance_payment"
+  | "unapplied_supplier_payment"
+  | "cash_to_bank"
+  | "bank_to_cash"
+  | "bank_to_bank"
+  | "cash_to_cash"
+  | "general_journal"
+  | "adjustment_journal"
   // Basic trader khata (backward compatible)
   | "khata_credit_sale"
   | "khata_cash_sale"
@@ -92,6 +107,40 @@ export interface KhataConfirmationCard {
   jeRuleId?: string | null;
   /** Fine-grained JE then_intent before base_intent bridge */
   jeThenIntent?: string | null;
+  /** Structured Orbix draft correlation */
+  draft_id?: string | null;
+  preview_hash?: string | null;
+  preview_version?: string | number | null;
+  idempotency_key?: string | null;
+  /** Phase 9 settlement — passed through confirm to domain commands */
+  party_id?: string | null;
+  cash_or_bank_account_id?: string | null;
+  from_account_id?: string | null;
+  to_account_id?: string | null;
+  receipt_type?: string | null;
+  payment_type?: string | null;
+  contra_type?: string | null;
+  settlement_kind?: string | null;
+  bank_charge?: number | null;
+  withholding?: number | null;
+  allocations?: Array<{
+    document_id?: string;
+    invoice_no?: string;
+    invoiceNo?: string;
+    amount?: string | number;
+    expected_settlement_version?: number | null;
+  }>;
+  /** Phase 10 bank recon / treasury */
+  bank_recon_kind?: string | null;
+  bank_account_id?: string | null;
+  statement_line_id?: string | null;
+  erp_document_ids?: string[] | null;
+  cheque_id?: string | null;
+  cheque_number?: string | null;
+  cheque_next_status?: string | null;
+  adjustment_type?: string | null;
+  expected_statement_line_version?: number | null;
+  reference?: string | null;
 }
 
 export interface KhataParseResult {
@@ -108,9 +157,31 @@ export interface EKhataChatMessage {
   timestamp: Date;
   report?: OrbixReportPayload;
   reportClarify?: PendingOrbixReport;
+  /** Correlation / stream */
+  requestId?: string;
+  streamStatus?: "pending" | "streaming" | "completed" | "failed";
+  /** Structured Orbix domain response (authoritative UI state) */
+  orbixResponse?: import("./orbixResponseTypes").OrbixResponse | null;
+  relatedDraftId?: string | null;
+  relatedReportId?: string | null;
+  relatedPostingId?: string | null;
 }
 
 export const KHATA_INTENT_LABELS: Record<KhataIntent, string> = {
+  customer_receipt: "Customer Receipt",
+  other_receipt: "Other Receipt",
+  customer_advance_receipt: "Customer Advance Receipt",
+  unapplied_customer_receipt: "Unapplied Customer Receipt",
+  supplier_payment: "Supplier Payment",
+  expense_payment: "Expense Payment",
+  supplier_advance_payment: "Supplier Advance Payment",
+  unapplied_supplier_payment: "Unapplied Supplier Payment",
+  cash_to_bank: "Contra — Cash to Bank",
+  bank_to_cash: "Contra — Bank to Cash",
+  bank_to_bank: "Contra — Bank to Bank",
+  cash_to_cash: "Contra — Cash to Cash",
+  general_journal: "General Journal",
+  adjustment_journal: "Adjustment Journal",
   khata_credit_sale: "Credit Sale (Udhaar / Receivable)",
   khata_cash_sale: "Cash Sale",
   khata_payment_in: "Payment Received (Receivable Settlement)",

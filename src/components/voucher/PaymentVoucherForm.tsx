@@ -50,6 +50,9 @@ import {
 } from "@/lib/types";
 import { calculateNepalTds, getApplicableNepalTdsRates } from "@/lib/tdsNepal";
 import toast from "react-hot-toast";
+import { postPaymentTransaction } from "@/domains/settlement/postPaymentTransaction";
+import { getOrCreateDocumentSettlementState } from "@/domains/settlement/settlementState";
+import { getDB, generateId } from "@/lib/db";
 
 interface PaymentVoucherFormProps {
   voucherId?: string;
@@ -91,6 +94,7 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
     costCenters,
     companySettings,
     currentFiscalYear,
+    currentUser,
     addVoucher,
     updateVoucher,
     addBillAllocation,
@@ -497,6 +501,73 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
     }
     setSaving(true);
     try {
+      // Phase 9: new posted payments go through authoritative settlement engine
+      if (!isEdit && status === VoucherStatus.POSTED) {
+        const creditLedgerId = payMode === "cash" ? cashAccount?.id : bankAccountId;
+        if (!creditLedgerId) {
+          toast.error("Cash/Bank ledger is required.");
+          return;
+        }
+        const companyId = String(
+          (companySettings as any)?.companyId || (companySettings as any)?.id || "main",
+        );
+        const db = getDB();
+        const allocations = [];
+        for (const invId of selectedInvoiceIds) {
+          const allocatedAmount = invoiceAllocations[invId] || 0;
+          if (allocatedAmount <= 0) continue;
+          const state = await getOrCreateDocumentSettlementState(db, companyId, invId);
+          allocations.push({
+            document_id: invId,
+            amount: allocatedAmount.toFixed(2),
+            expected_settlement_version: state.settlementVersion,
+          });
+        }
+        const result = await postPaymentTransaction({
+          commandId: generateId(),
+          requestId: generateId(),
+          idempotencyKey: `manual-payment-${generateId()}`,
+          companyId,
+          financialYearId: currentFiscalYear?.id || null,
+          userId: currentUser?.id || "manual-user",
+          userRole: currentUser?.role || "accountant",
+          source: "manual_form",
+          payment: {
+            paymentType: allocations.length
+              ? "supplier_payment"
+              : partyId
+                ? "supplier_advance_payment"
+                : "expense_payment",
+            transactionDate: date,
+            partyId: partyId || null,
+            cashOrBankAccountId: creditLedgerId,
+            amount: totals.net.toFixed(2),
+            withholding: totals.tds > 0 ? totals.tds.toFixed(2) : null,
+            currency: "NPR",
+            narration: narration.trim() || `Payment ${voucherNoPreview}`,
+            instrument: {
+              instrument_type:
+                payMode === "cheque" ? "cheque" : payMode === "bank" ? "bank_transfer" : "cash",
+              instrument_no: payMode === "cheque" ? chequeNo.trim() : undefined,
+              instrument_date: payMode === "cheque" ? chequeDate : undefined,
+            },
+            allocations,
+          },
+        });
+        if (result.type !== "posting_completed") {
+          toast.error(result.payload.safe_message || "Failed to post payment.");
+          return;
+        }
+        toast.success("Payment voucher posted.");
+        setDirty(false);
+        setSavedVoucher({
+          id: result.payload.voucher_id,
+          voucherNo: result.payload.voucher_number,
+          status: VoucherStatus.POSTED,
+        });
+        return;
+      }
+
       const payload = buildPayload(status);
       let result;
       if (isEdit) {

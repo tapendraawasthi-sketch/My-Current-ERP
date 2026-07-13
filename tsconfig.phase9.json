@@ -1,0 +1,28 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [
+    "src/domains/settlement/**/*.ts",
+    "src/domains/purchase/money.ts",
+    "src/domains/purchase/e2eSeed.ts",
+    "src/domains/purchase/postPurchaseTransaction.ts",
+    "src/store/invoicePostingWriters.ts",
+    "src/platform/sync/applyRemoteEvent.ts",
+    "src/platform/sync/accountingSyncContract.ts",
+    "src/platform/sync/enqueueFinancialSync.ts",
+    "src/platform/sync/reconciliation.ts",
+    "src/platform/sync/syncStatusAggregate.ts",
+    "src/platform/sync/syncTransport.ts",
+    "src/platform/sync/payloadHash.ts",
+    "src/platform/sync/companySyncPolicy.ts",
+    "src/platform/sync/localSequence.ts",
+    "src/platform/sync/syncQueue.ts",
+    "src/platform/sync/vectorClock.ts",
+    "src/platform/sync/syncServerContracts.ts",
+    "src/platform/sync/syncDiagnostics.ts",
+    "src/lib/db.ts",
+    "src/__tests__/orbix/phase9Settlement.test.ts"
+  ]
+}

@@ -1,16 +1,21 @@
 import React from "react";
 import { useEKhataStore } from "../../store/eKhataStore";
 import { useFalconStore } from "../../store/falconStore";
+import { useStore } from "../../store/useStore";
 import OrbixLogo from "./OrbixLogo";
 
 const EKhataLauncher: React.FC = () => {
-  const { isOpen, windowMode, openPanel, restorePanel } = useEKhataStore();
+  const { isOpen, windowMode, openPanel, restorePanel, maximizePanel } = useEKhataStore();
   const closeFalcon = useFalconStore((state) => state.closePanel);
+  const currentPage = useStore((s) => s.currentPage);
+  const setCurrentPage = useStore((s) => s.setCurrentPage);
+
+  // First-class Orbix route owns the workspace — never show floating launcher there.
+  if (currentPage === "orbix") return null;
 
   const isMinimized = isOpen && windowMode === "minimized";
-  const isActive = isOpen && windowMode !== "minimized";
-
-  if (isActive) return null;
+  const isActiveOverlay = isOpen && windowMode !== "minimized";
+  if (isActiveOverlay) return null;
 
   return (
     <button
@@ -19,38 +24,28 @@ const EKhataLauncher: React.FC = () => {
         e.stopPropagation();
         closeFalcon();
         if (isMinimized) {
+          setCurrentPage("orbix");
           restorePanel();
-        } else {
-          openPanel();
+          maximizePanel();
+          return;
         }
+        setCurrentPage("orbix");
+        openPanel();
+        maximizePanel();
       }}
-      className="fixed bottom-[4.75rem] right-5 z-[9998] group"
-      title={
-        isMinimized
-          ? "Restore Orbix — AI (Ctrl+Shift+K)"
-          : "Orbix — AI Accounting Mode (Ctrl+Shift+K)"
-      }
-      aria-label={isMinimized ? "Restore Orbix AI" : "Open Orbix AI accounting assistant"}
+      className="fixed bottom-5 right-5 z-[40] group no-print"
+      title="Open Orbix (Ctrl+Shift+K)"
+      aria-label="Open Orbix AI accounting workspace"
     >
       <div className="relative">
-        <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-md scale-125 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        <div
-          className="relative h-12 w-12 rounded-full flex items-center justify-center transition-all duration-200 group-hover:scale-105 shadow-lg shadow-black/30 border border-white/10"
-          style={{
-            background: isMinimized
-              ? "linear-gradient(135deg, #0e7490 0%, #1d4ed8 50%, #7c3aed 100%)"
-              : "linear-gradient(135deg, #0e7490 0%, #1d4ed8 50%, #7c3aed 100%)",
-          }}
-        >
-          <OrbixLogo size={28} variant="full" />
+        <div className="absolute inset-0 scale-125 rounded-full bg-[var(--ox-intelligence)]/20 opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100" />
+        <div className="relative flex h-12 w-12 items-center justify-center rounded-full border border-[var(--ox-border)] bg-[var(--ox-primary)] shadow-[var(--ox-shadow-md)] transition-transform duration-200 group-hover:scale-105">
+          <OrbixLogo size={26} variant="full" />
         </div>
         {isMinimized && (
-          <span className="absolute -top-1 -right-1 px-1.5 py-0.5 rounded-full bg-orange-500 text-[8px] font-bold text-white shadow-lg">
+          <span className="absolute -right-1 -top-1 rounded-full bg-[var(--ox-warning)] px-1.5 py-0.5 text-[8px] font-bold text-white">
             —
           </span>
-        )}
-        {!isOpen && (
-          <span className="absolute -top-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-400 border-2 border-[#0a0e17] shadow-[0_0_8px_rgba(52,211,153,0.7)]" />
         )}
       </div>
     </button>

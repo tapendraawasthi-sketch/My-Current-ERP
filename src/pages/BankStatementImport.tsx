@@ -4,6 +4,7 @@ import { useStore } from "../store/useStore";
 import { getDB, generateId } from "../lib/db";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
+import { importStatementViaTreasury, postAdjustmentViaTreasury } from "@/domains/treasury/uiAdapters";
 import {
   AlertTriangle,
   ArrowDownCircle,
@@ -386,17 +387,62 @@ export default function BankStatementImport() {
     try {
       const db = getDB();
 
-      const [dbAccounts, dbVouchers, dbRows, dbBatches] = await Promise.all([
-        tableAll(db, "accounts"),
-        tableAll(db, "vouchers"),
-        tableAll(db, "bankStatementRows"),
-        tableAll(db, "bankStatementBatches"),
-      ]);
+      const [dbAccounts, dbVouchers, dbDomainLines, dbLegacyRows, dbBatches, dbBanks] =
+        await Promise.all([
+          tableAll(db, "accounts"),
+          tableAll(db, "vouchers"),
+          tableAll(db, "bankStatementLines"),
+          tableAll(db, "bankStatementRows"),
+          tableAll(db, "bankStatementBatches"),
+          tableAll(db, "bankAccounts"),
+        ]);
+
+      const ledgerByBank = new Map(
+        (dbBanks || []).map((b: any) => [String(b.id), String(b.ledgerAccountId || "")]),
+      );
+
+      // Phase 10: domain lines win when present; legacy bankStatementRows only as fallback.
+      const mappedDomain = (dbDomainLines || []).map((l: any) => {
+        const ledgerId = ledgerByBank.get(String(l.bankAccountId)) || l.ledgerAccountId || "";
+        return {
+          id: l.id,
+          batchId: l.batchId,
+          bankAccountId: ledgerId || l.bankAccountId,
+          treasuryBankAccountId: l.bankAccountId,
+          date: l.transactionDate || l.date,
+          narration: l.description || l.narration || "",
+          refNo: l.reference || l.chequeNumber || "",
+          debit: Number(l.debitPaisa || 0) / 100,
+          credit: Number(l.creditPaisa || 0) / 100,
+          balance: Number(l.balancePaisa || 0) / 100,
+          status:
+            l.status === "matched" || Number(l.remainingMatchPaisa) === 0
+              ? "Matched"
+              : l.status === "partial"
+                ? "Probable"
+                : "Unmatched",
+          matchedVoucherNo: Array.isArray(l.matchedDocumentNos)
+            ? l.matchedDocumentNos.join(", ")
+            : "",
+          matchReason: l.matchMethod || "",
+          authority: "phase10_bankStatementLines",
+          reconciliationVersion: l.reconciliationVersion,
+        };
+      });
+      const displayRows =
+        mappedDomain.length > 0
+          ? mappedDomain
+          : (dbLegacyRows || []).map((r: any) => ({
+              ...r,
+              authority: "legacy_bankStatementRows_fallback",
+            }));
 
       setAccounts(dbAccounts?.length ? dbAccounts : storeAccounts);
       setVouchers(dbVouchers?.length ? dbVouchers : storeVouchers);
       setStatementRows(
-        (dbRows || []).sort((a, b) => String(b.date || "").localeCompare(String(a.date || ""))),
+        displayRows.sort((a: any, b: any) =>
+          String(b.date || "").localeCompare(String(a.date || "")),
+        ),
       );
       setBatches(
         (dbBatches || []).sort((a, b) =>
@@ -502,40 +548,52 @@ export default function BankStatementImport() {
     }
 
     try {
+      const result = await importStatementViaTreasury({
+        ledgerOrBankAccountId: selectedBankId,
+        previewRows,
+        bankAccountName: accountName(accounts, selectedBankId),
+        source: "manual_form",
+      });
+      if (result.type !== "posting_completed") {
+        toast.error(result.payload?.safe_message || "Could not commit import");
+        return;
+      }
+      const batchId = result.payload.batch_id;
       const db = getDB();
-
-      const batchId = previewRows[0].batchId;
-
+      const domainLines = (await tableAll(db, "bankStatementLines")).filter(
+        (r) => r.batchId === batchId,
+      );
+      const uiRows = domainLines.map((line) => ({
+        id: line.id,
+        batchId: line.batchId,
+        bankAccountId: selectedBankId,
+        date: line.transactionDate,
+        description: line.description,
+        narration: line.description,
+        reference: line.reference || "",
+        debit: (line.debitPaisa || 0) / 100,
+        credit: (line.creditPaisa || 0) / 100,
+        balance: line.balancePaisa != null ? line.balancePaisa / 100 : 0,
+        status: "Unmatched",
+        reconciliationVersion: line.reconciliationVersion,
+      }));
       const batch = {
         id: batchId,
         bankAccountId: selectedBankId,
         bankAccountName: accountName(accounts, selectedBankId),
         importedAt: nowISO(),
         importedBy: currentUser?.id || "",
-        rowCount: previewRows.length,
-        matchedCount: previewRows.filter((r) => r.status === "Matched").length,
-        probableCount: previewRows.filter((r) => r.status === "Probable").length,
-        totalDebit: previewRows.reduce((sum, r) => sum + Number(r.debit || 0), 0),
-        totalCredit: previewRows.reduce((sum, r) => sum + Number(r.credit || 0), 0),
+        rowCount: result.payload.line_count,
+        matchedCount: 0,
+        probableCount: 0,
+        totalDebit: uiRows.reduce((sum, r) => sum + Number(r.debit || 0), 0),
+        totalCredit: uiRows.reduce((sum, r) => sum + Number(r.credit || 0), 0),
       };
-
-      await tablePut(db, "bankStatementRows", previewRows);
-      await tablePut(db, "bankStatementBatches", [batch]);
-      await tablePut(db, "auditLogs", [
-        makeAuditRow(
-          currentUser,
-          "Bank Statement Imported",
-          `${batch.rowCount} rows imported for ${batch.bankAccountName}`,
-          "Medium",
-        ),
-      ]);
-
-      setStatementRows((prev) => [...previewRows, ...prev]);
+      setStatementRows((prev) => [...uiRows, ...prev]);
       setBatches((prev) => [batch, ...prev]);
       setPreviewRows([]);
       setModalType("");
       setSelectedBatchId(batchId);
-
       toast.success("Bank statement imported");
     } catch (err) {
       console.error(err);
@@ -661,8 +719,12 @@ export default function BankStatementImport() {
       return;
     }
 
-    const isReceipt = Number(selectedRow.amount || 0) >= 0;
-    const amt = Math.abs(Number(selectedRow.amount || 0));
+    const isReceipt = Number(selectedRow.amount || selectedRow.credit || 0) >= Number(selectedRow.debit || 0);
+    const amt = Math.abs(
+      Number(selectedRow.amount || 0) ||
+        Number(selectedRow.debit || 0) ||
+        Number(selectedRow.credit || 0),
+    );
 
     if (!amt) {
       toast.error("Invalid amount");
@@ -670,98 +732,37 @@ export default function BankStatementImport() {
     }
 
     try {
-      const db = getDB();
-
-      const voucherNo = `BANK-${selectedRow.date.split("-").join("")}-${String(Date.now()).slice(-5)}`;
-
-      const lines = isReceipt
-        ? [
-            {
-              id: generateId(),
-              accountId: selectedBankId,
-              debit: amt,
-              credit: 0,
-              narration: voucherForm.narration,
-            },
-            {
-              id: generateId(),
-              accountId: voucherForm.accountId,
-              debit: 0,
-              credit: amt,
-              narration: voucherForm.narration,
-            },
-          ]
-        : [
-            {
-              id: generateId(),
-              accountId: voucherForm.accountId,
-              debit: amt,
-              credit: 0,
-              narration: voucherForm.narration,
-            },
-            {
-              id: generateId(),
-              accountId: selectedBankId,
-              debit: 0,
-              credit: amt,
-              narration: voucherForm.narration,
-            },
-          ];
-
-      const voucher = {
-        id: generateId(),
-        voucherNo,
-        type: voucherForm.type,
-        date: selectedRow.date,
-        narration: voucherForm.narration || selectedRow.narration,
-        refNo: selectedRow.refNo,
-        lines,
-        totalDebit: amt,
-        totalCredit: amt,
-        status: "posted",
-        fiscalYearId: fiscalYear?.id || "",
-        sourceType: "bankStatement",
-        sourceId: selectedRow.id,
-        createdBy: currentUser?.id || "",
-        createdAt: nowISO(),
-      };
+      const version = Number(selectedRow.reconciliationVersion ?? 1);
+      const result = await postAdjustmentViaTreasury({
+        ledgerOrBankAccountId: selectedBankId,
+        statementLineId: selectedRow.id,
+        expectedStatementLineVersion: version,
+        adjustmentType: isReceipt ? "bank_interest" : "bank_charge",
+        amount: amt,
+        offsetAccountId: voucherForm.accountId,
+        useJournal: true,
+        narration: voucherForm.narration || selectedRow.narration || selectedRow.description,
+      });
+      if (result.type !== "posting_completed") {
+        toast.error(result.payload?.safe_message || "Could not create voucher");
+        return;
+      }
 
       const updatedRow = {
         ...selectedRow,
         status: "Reconciled",
-        matchedVoucherId: voucher.id,
-        matchedVoucherNo: voucher.voucherNo,
+        matchedVoucherId: result.payload.voucher_id,
+        matchedVoucherNo: result.payload.voucher_number,
         matchScore: 100,
-        matchReason: "voucher created",
+        matchReason: "phase9_adjustment",
         reconciledAt: nowISO(),
         reconciledBy: currentUser?.id || "",
       };
 
-      await tablePut(db, "vouchers", [voucher]);
-      await tablePut(db, "bankStatementRows", [updatedRow]);
-      await tablePut(db, "auditLogs", [
-        makeAuditRow(
-          currentUser,
-          "Voucher Created From Bank Statement",
-          `${voucher.voucherNo} ${money(amt)}`,
-          "Medium",
-        ),
-      ]);
-
-      if (store.addVoucher) {
-        try {
-          store.addVoucher(voucher);
-        } catch {
-          // ignore
-        }
-      }
-
-      setVouchers((prev) => [voucher, ...prev]);
       setStatementRows((prev) => prev.map((r) => (r.id === updatedRow.id ? updatedRow : r)));
       setModalType("");
       setSelectedRow(null);
-
-      toast.success("Voucher created and reconciled");
+      toast.success("Adjustment posted via Phase 9 and reconciled");
     } catch (err) {
       console.error(err);
       toast.error("Could not create voucher");

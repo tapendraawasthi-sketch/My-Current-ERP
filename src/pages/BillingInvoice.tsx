@@ -276,6 +276,8 @@ const BillingInvoice: React.FC = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search invoice no, party or reference…"
+              data-testid="billing-search"
+              aria-label="Search invoices"
               className={`${inputCls} w-full pl-8`}
             />
           </div>

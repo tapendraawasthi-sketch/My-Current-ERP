@@ -17,6 +17,7 @@ interface OrbixJournalCardProps {
   journalLines: JournalLineDraft[];
   balance: BalanceInfo | null;
   isLoading: boolean;
+  postingStages?: string[];
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -30,58 +31,52 @@ function JournalTable({
 }) {
   if (!lines.length) return null;
   return (
-    <div className="mt-3 rounded-lg border border-white/10 overflow-hidden">
-      <div className="px-2.5 py-1.5 bg-white/[0.04] border-b border-white/10">
-        <p className="text-[9px] font-semibold uppercase tracking-wide text-slate-500">
-          Journal Lines
+    <div className="mt-3 overflow-hidden rounded-[var(--ox-radius-md)] border border-[var(--ox-border)]" data-testid="orbix-journal-preview">
+      <div className="border-b border-[var(--ox-border)] bg-[var(--ox-surface-muted)] px-3 py-1.5">
+        <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ox-text-muted)]">
+          Journal preview
         </p>
       </div>
-      <table className="w-full text-[11px]">
+      <table className="w-full text-[12px]">
         <thead>
-          <tr className="border-b border-white/10">
-            <th className="px-2.5 py-1.5 text-left text-[9px] font-semibold text-slate-500 uppercase tracking-wide">
+          <tr className="border-b border-[var(--ox-border)]">
+            <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-[var(--ox-text-muted)]">
               Account
             </th>
-            <th className="px-2 py-1.5 text-right text-[9px] font-semibold text-slate-500 uppercase tracking-wide w-16">
-              Dr
+            <th className="w-24 px-2 py-2 text-right text-[10px] font-semibold uppercase tracking-wide text-[var(--ox-text-muted)]">
+              Debit
             </th>
-            <th className="px-2 py-1.5 text-right text-[9px] font-semibold text-slate-500 uppercase tracking-wide w-16">
-              Cr
+            <th className="w-24 px-2 py-2 text-right text-[10px] font-semibold uppercase tracking-wide text-[var(--ox-text-muted)]">
+              Credit
             </th>
           </tr>
         </thead>
         <tbody>
           {lines.map((line, i) => (
-            <tr key={i} className="border-b border-white/5 last:border-0">
-              <td className="px-2.5 py-1.5 text-slate-300">
+            <tr key={i} className="border-b border-[var(--ox-border)]/70 last:border-0">
+              <td className="px-3 py-2 text-[var(--ox-text)]">
                 {line.accountName}
-                <span className="ml-1 text-[9px] text-slate-600">({line.accountClass})</span>
+                <span className="ml-1 text-[10px] text-[var(--ox-text-subtle)]">
+                  ({line.accountClass})
+                </span>
               </td>
-              <td className="px-2 py-1.5 font-mono text-right text-slate-300 tabular-nums">
-                {line.debit > 0 ? (
-                  <span className="text-[#fb923c]">{line.debit.toLocaleString()}</span>
-                ) : (
-                  <span className="text-slate-600">—</span>
-                )}
+              <td className="px-2 py-2 text-right font-mono tabular-nums text-[var(--ox-text)]">
+                {line.debit > 0 ? line.debit.toLocaleString() : "—"}
               </td>
-              <td className="px-2 py-1.5 font-mono text-right text-slate-300 tabular-nums">
-                {line.credit > 0 ? (
-                  <span className="text-cyan-400">{line.credit.toLocaleString()}</span>
-                ) : (
-                  <span className="text-slate-600">—</span>
-                )}
+              <td className="px-2 py-2 text-right font-mono tabular-nums text-[var(--ox-text)]">
+                {line.credit > 0 ? line.credit.toLocaleString() : "—"}
               </td>
             </tr>
           ))}
         </tbody>
         {balance && (
           <tfoot>
-            <tr className="bg-cyan-500/10 border-t border-cyan-500/20 font-semibold text-[11px]">
-              <td className="px-2.5 py-1.5 text-slate-300">Total</td>
-              <td className="px-2 py-1.5 font-mono text-right text-[#fb923c] tabular-nums">
+            <tr className="border-t-2 border-[var(--ox-border-strong)] bg-[var(--ox-primary-soft)] font-semibold">
+              <td className="px-3 py-2 text-[var(--ox-text)]">Total</td>
+              <td className="px-2 py-2 text-right font-mono tabular-nums">
                 {balance.totalDebit.toLocaleString()}
               </td>
-              <td className="px-2 py-1.5 font-mono text-right text-cyan-400 tabular-nums">
+              <td className="px-2 py-2 text-right font-mono tabular-nums">
                 {balance.totalCredit.toLocaleString()}
               </td>
             </tr>
@@ -90,19 +85,19 @@ function JournalTable({
       </table>
       {balance && (
         <div
-          className={`mx-2.5 mb-2.5 mt-1 rounded-md px-2 py-1 text-[10px] font-medium border flex items-center gap-1.5 ${
+          className={`mx-2.5 mb-2.5 mt-2 flex items-center gap-1.5 rounded-[var(--ox-radius-md)] border px-2.5 py-1.5 text-[12px] font-medium ${
             balance.balanced
-              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
-              : "bg-red-500/10 text-red-400 border-red-500/30"
+              ? "border-green-200 bg-[var(--ox-success-soft)] text-[var(--ox-success)]"
+              : "border-amber-200 bg-[var(--ox-warning-soft)] text-[var(--ox-warning)]"
           }`}
         >
           {balance.balanced ? (
             <>
-              <Check className="h-3 w-3" /> Journal Balanced
+              <Check className="h-3.5 w-3.5" /> Balanced
             </>
           ) : (
             <>
-              <X className="h-3 w-3" /> Journal Unbalanced
+              <X className="h-3.5 w-3.5" /> Needs correction
             </>
           )}
         </div>
@@ -117,45 +112,46 @@ const OrbixJournalCard: React.FC<OrbixJournalCardProps> = ({
   journalLines,
   balance,
   isLoading,
+  postingStages = [],
   onConfirm,
   onCancel,
 }) => {
   if (pendingCompoundBatch) {
     return (
-      <div className="rounded-xl border border-cyan-500/20 bg-gradient-to-b from-cyan-500/5 to-transparent p-3 shadow-lg shadow-black/20">
-        <div className="flex items-center gap-2 mb-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-cyan-500/15 border border-cyan-500/25">
-            <BookOpen className="h-3.5 w-3.5 text-cyan-400" />
+      <div
+        className="rounded-[var(--ox-radius-xl)] border border-[var(--ox-border)] bg-[var(--ox-surface)] p-4 shadow-[var(--ox-shadow-sm)]"
+        data-component="transaction-draft-card"
+      >
+        <div className="mb-3 flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-[var(--ox-radius-md)] bg-[var(--ox-primary-soft)] text-[var(--ox-primary)]">
+            <BookOpen className="h-4 w-4" />
           </div>
           <div>
-            <p className="text-[11px] font-semibold text-slate-200">
-              Confirm Batch Entry
-            </p>
-            <p className="text-[10px] text-slate-500">
-              {pendingCompoundBatch.compoundCount} transactions ·{" "}
-              <span className="font-mono text-[#fb923c]">
-                NPR {pendingCompoundBatch.amount.toLocaleString()}
-              </span>
+            <p className="text-[14px] font-semibold text-[var(--ox-text)]">Batch draft</p>
+            <p className="text-[12px] text-[var(--ox-text-muted)]">
+              {pendingCompoundBatch.compoundCount} transactions · NPR{" "}
+              {pendingCompoundBatch.amount.toLocaleString()}
             </p>
           </div>
+          <span className="ml-auto rounded-full bg-[var(--ox-warning-soft)] px-2 py-0.5 text-[10px] font-semibold uppercase text-[var(--ox-warning)]">
+            Draft
+          </span>
         </div>
 
-        <div className="space-y-1.5 max-h-32 overflow-y-auto">
+        <div className="max-h-32 space-y-1.5 overflow-y-auto">
           {pendingCompoundBatch.parts.map((part) => (
             <div
               key={part.index}
-              className="rounded-lg border border-white/8 bg-white/[0.03] px-2.5 py-1.5"
+              className="rounded-[var(--ox-radius-md)] border border-[var(--ox-border)] bg-[var(--ox-surface-muted)] px-2.5 py-1.5"
             >
-              <p className="text-[11px] font-medium text-slate-200 truncate">
+              <p className="truncate text-[12px] font-medium text-[var(--ox-text)]">
                 {part.index}. {part.text}
               </p>
-              <p className="text-[10px] text-slate-500 mt-0.5">
+              <p className="mt-0.5 text-[11px] text-[var(--ox-text-muted)]">
                 {KHATA_INTENT_LABELS[part.card.intent]}
                 {part.card.party ? ` · ${part.card.party}` : ""}
                 {" · "}
-                <span className="font-mono text-[#fb923c]">
-                  NPR {part.card.amount.toLocaleString()}
-                </span>
+                NPR {part.card.amount.toLocaleString()}
               </p>
             </div>
           ))}
@@ -166,19 +162,19 @@ const OrbixJournalCard: React.FC<OrbixJournalCardProps> = ({
         <div className="mt-3 flex gap-2">
           <button
             type="button"
-            onClick={onConfirm}
-            disabled={isLoading || (balance !== null && !balance.balanced)}
-            className="h-8 flex-1 rounded-md bg-gradient-to-r from-cyan-600 to-blue-600 text-[12px] font-medium text-white hover:from-cyan-500 hover:to-blue-500 disabled:opacity-40 flex items-center justify-center gap-1.5"
+            onClick={onCancel}
+            disabled={isLoading}
+            className="h-9 flex-1 rounded-[var(--ox-radius-md)] border border-[var(--ox-border)] bg-[var(--ox-surface)] text-[12px] font-medium text-[var(--ox-text)] hover:bg-[var(--ox-surface-muted)] disabled:opacity-40"
           >
-            <Check className="h-3.5 w-3.5" /> Confirm All
+            Cancel draft
           </button>
           <button
             type="button"
-            onClick={onCancel}
-            disabled={isLoading}
-            className="h-8 flex-1 rounded-md border border-white/15 bg-white/5 text-[12px] font-medium text-slate-300 hover:bg-white/10 disabled:opacity-40"
+            onClick={onConfirm}
+            disabled={isLoading || (balance !== null && !balance.balanced)}
+            className="h-9 flex-1 rounded-[var(--ox-radius-md)] bg-[var(--ox-primary)] text-[12px] font-medium text-white hover:bg-[var(--ox-primary-hover)] disabled:opacity-40"
           >
-            Cancel
+            Confirm and post
           </button>
         </div>
       </div>
@@ -188,48 +184,48 @@ const OrbixJournalCard: React.FC<OrbixJournalCardProps> = ({
   if (!pendingCard) return null;
 
   const highlights = [
-    { label: "Type", value: KHATA_INTENT_LABELS[pendingCard.intent], accent: true },
-    ...(pendingCard.party ? [{ label: "Party", value: pendingCard.party, accent: false }] : []),
-    {
-      label: "Amount",
-      value: `NPR ${pendingCard.amount.toLocaleString()}`,
-      accent: true,
-      mono: true,
-    },
-    ...(pendingCard.item ? [{ label: "Item", value: pendingCard.item, accent: false }] : []),
-    { label: "Date", value: pendingCard.date, accent: false },
+    { label: "Type", value: KHATA_INTENT_LABELS[pendingCard.intent] },
+    ...(pendingCard.party ? [{ label: "Party", value: pendingCard.party }] : []),
+    { label: "Amount", value: `NPR ${pendingCard.amount.toLocaleString()}`, mono: true },
+    ...(pendingCard.item ? [{ label: "Item", value: pendingCard.item }] : []),
+    { label: "Date", value: pendingCard.date },
   ];
 
   return (
-    <div className="rounded-xl border border-cyan-500/20 bg-gradient-to-b from-cyan-500/5 to-transparent p-3 shadow-lg shadow-black/20">
-      <div className="flex items-center gap-2 mb-2.5">
-        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-orange-500/15 border border-orange-500/25">
-          <BookOpen className="h-3.5 w-3.5 text-orange-400" />
+    <div
+      className="rounded-[var(--ox-radius-xl)] border border-[var(--ox-border)] bg-[var(--ox-surface)] p-4 shadow-[var(--ox-shadow-sm)]"
+      data-component="transaction-draft-card"
+      data-testid="orbix-transaction-preview"
+    >
+      <div className="mb-3 flex items-center gap-2">
+        <div className="flex h-8 w-8 items-center justify-center rounded-[var(--ox-radius-md)] bg-[var(--ox-primary-soft)] text-[var(--ox-primary)]">
+          <BookOpen className="h-4 w-4" />
         </div>
         <div>
-          <p className="text-[11px] font-semibold text-slate-200">Confirm Journal Entry</p>
+          <p className="text-[14px] font-semibold text-[var(--ox-text)]">Transaction draft</p>
           {pendingCard.primaryClass && (
-            <span className="inline-block mt-0.5 rounded px-1.5 py-0.5 text-[9px] font-semibold uppercase bg-violet-500/15 text-violet-300 border border-violet-500/25">
+            <span className="mt-0.5 inline-block rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase text-[var(--ox-text-muted)]">
               {pendingCard.primaryClass}
             </span>
           )}
         </div>
+        <span className="ml-auto rounded-full bg-[var(--ox-warning-soft)] px-2 py-0.5 text-[10px] font-semibold uppercase text-[var(--ox-warning)]">
+          Ready for review
+        </span>
       </div>
 
-      <div className="rounded-lg border border-white/10 bg-white/[0.03] overflow-hidden">
+      <div className="overflow-hidden rounded-[var(--ox-radius-md)] border border-[var(--ox-border)]">
         {highlights.map((row, i) => (
           <div
             key={row.label}
-            className={`flex items-center justify-between gap-3 px-2.5 py-1.5 text-[11px] ${i > 0 ? "border-t border-white/5" : ""}`}
+            className={`flex items-center justify-between gap-3 px-3 py-2 text-[12px] ${
+              i > 0 ? "border-t border-[var(--ox-border)]" : ""
+            }`}
           >
-            <span className="text-slate-500">{row.label}</span>
+            <span className="text-[var(--ox-text-muted)]">{row.label}</span>
             <span
-              className={`text-right truncate ${
-                "mono" in row && row.mono
-                  ? "font-mono font-medium text-[#fb923c]"
-                  : row.accent
-                    ? "text-cyan-300 font-medium"
-                    : "text-slate-200"
+              className={`truncate text-right font-medium text-[var(--ox-text)] ${
+                "mono" in row && row.mono ? "font-mono tabular-nums" : ""
               }`}
             >
               {row.value}
@@ -241,7 +237,7 @@ const OrbixJournalCard: React.FC<OrbixJournalCardProps> = ({
       <JournalTable lines={journalLines} balance={balance} />
 
       {pendingCard.caExplanation && (
-        <p className="mt-2 text-[10px] text-slate-500 italic leading-snug border-l-2 border-cyan-500/30 pl-2">
+        <p className="mt-2 border-l-2 border-[var(--ox-intelligence)] pl-2 text-[12px] leading-snug text-[var(--ox-text-muted)]">
           {pendingCard.caExplanation}
         </p>
       )}
@@ -249,21 +245,32 @@ const OrbixJournalCard: React.FC<OrbixJournalCardProps> = ({
       <div className="mt-3 flex gap-2">
         <button
           type="button"
-          onClick={onConfirm}
-          disabled={isLoading || (balance !== null && !balance.balanced)}
-          className="h-8 flex-1 rounded-md bg-gradient-to-r from-cyan-600 to-blue-600 text-[12px] font-medium text-white hover:from-cyan-500 hover:to-blue-500 disabled:opacity-40 flex items-center justify-center gap-1.5"
+          onClick={onCancel}
+          disabled={isLoading}
+          className="h-9 flex-1 rounded-[var(--ox-radius-md)] border border-[var(--ox-border)] bg-[var(--ox-surface)] text-[12px] font-medium text-[var(--ox-text)] hover:bg-[var(--ox-surface-muted)] disabled:opacity-40"
         >
-          <Check className="h-3.5 w-3.5" /> Confirm
+          Cancel draft
         </button>
         <button
           type="button"
-          onClick={onCancel}
-          disabled={isLoading}
-          className="h-8 flex-1 rounded-md border border-white/15 bg-white/5 text-[12px] font-medium text-slate-300 hover:bg-white/10 disabled:opacity-40"
+          data-testid="orbix-confirm-post"
+          onClick={onConfirm}
+          disabled={isLoading || (balance !== null && !balance.balanced)}
+          className="h-9 flex-1 rounded-[var(--ox-radius-md)] bg-[var(--ox-primary)] text-[12px] font-medium text-white hover:bg-[var(--ox-primary-hover)] disabled:opacity-40"
         >
-          Cancel
+          {isLoading ? "Posting…" : "Confirm and post"}
         </button>
       </div>
+      {isLoading && postingStages.length > 0 && (
+        <p className="mt-2 text-[11px] text-[var(--ox-text-muted)]" data-testid="orbix-posting-stages">
+          {postingStages[postingStages.length - 1].replace(/_/g, " ")}
+        </p>
+      )}
+      {pendingCard.draft_id && (
+        <p className="mt-1 text-[10px] text-[var(--ox-text-subtle)]" data-testid="orbix-draft-id">
+          Draft {pendingCard.draft_id.slice(0, 8)}…
+        </p>
+      )}
     </div>
   );
 };

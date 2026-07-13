@@ -1,0 +1,115 @@
+/* Orbix / Sutra ERP — unified quiet-premium fintech tokens */
+
+:root,
+[data-theme="light"] {
+  --ox-bg: #f4f6f9;
+  --ox-surface: #ffffff;
+  --ox-surface-elevated: #ffffff;
+  --ox-surface-muted: #eef1f6;
+  --ox-surface-sidebar: #121826;
+  --ox-surface-sidebar-hover: #1a2233;
+  --ox-surface-sidebar-active: #243049;
+  --ox-border: #e2e8f0;
+  --ox-border-strong: #cbd5e1;
+  --ox-border-sidebar: #243049;
+  --ox-text: #0f172a;
+  --ox-text-muted: #64748b;
+  --ox-text-subtle: #94a3b8;
+  --ox-text-on-dark: #e2e8f0;
+  --ox-text-on-dark-muted: #94a3b8;
+  --ox-primary: #1557b0;
+  --ox-primary-hover: #0f4a96;
+  --ox-primary-active: #0c3d7a;
+  --ox-primary-soft: #e8f0fb;
+  --ox-intelligence: #0891b2;
+  --ox-intelligence-soft: #ecfeff;
+  --ox-success: #059669;
+  --ox-success-soft: #ecfdf5;
+  --ox-warning: #d97706;
+  --ox-warning-soft: #fffbeb;
+  --ox-danger: #dc2626;
+  --ox-danger-soft: #fef2f2;
+  --ox-info: #0284c7;
+  --ox-info-soft: #f0f9ff;
+  --ox-focus-ring: rgba(21, 87, 176, 0.28);
+  --ox-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --ox-shadow-md: 0 4px 12px rgba(15, 23, 42, 0.06);
+  --ox-radius-sm: 6px;
+  --ox-radius-md: 8px;
+  --ox-radius-lg: 12px;
+  --ox-radius-xl: 16px;
+  --ox-topbar-h: 56px;
+  --ox-sidenav-w: 240px;
+  --ox-sidenav-collapsed-w: 72px;
+  --ox-font:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Noto Sans Devanagari",
+    "Noto Sans",
+    sans-serif;
+  --ox-font-mono: "IBM Plex Mono", "SF Mono", "Cascadia Code", "Courier New", monospace;
+
+  /* Legacy aliases used across ERP pages */
+  --bg: var(--ox-bg);
+  --bg-card: var(--ox-surface);
+  --bg-muted: var(--ox-surface-muted);
+  --bg-hover: var(--ox-primary-soft);
+  --border: var(--ox-border);
+  --border-soft: var(--ox-border-strong);
+  --text: var(--ox-text);
+  --text-muted: var(--ox-text-muted);
+  --accent: var(--ox-primary);
+  --color-positive: var(--ox-success);
+  --color-negative: var(--ox-danger);
+  --color-accent: var(--ox-primary);
+  --color-warning: var(--ox-warning);
+  --color-surface-raised: var(--ox-surface-muted);
+  --font-mono: var(--ox-font-mono);
+}
+
+[data-theme="dark"] {
+  --ox-bg: #0b1220;
+  --ox-surface: #121a2b;
+  --ox-surface-elevated: #1a2438;
+  --ox-surface-muted: #162033;
+  --ox-surface-sidebar: #0a101c;
+  --ox-surface-sidebar-hover: #152033;
+  --ox-surface-sidebar-active: #1e2d48;
+  --ox-border: #243049;
+  --ox-border-strong: #334155;
+  --ox-border-sidebar: #1e2d48;
+  --ox-text: #e8eef7;
+  --ox-text-muted: #94a3b8;
+  --ox-text-subtle: #64748b;
+  --ox-text-on-dark: #e8eef7;
+  --ox-text-on-dark-muted: #94a3b8;
+  --ox-primary: #3b82f6;
+  --ox-primary-hover: #60a5fa;
+  --ox-primary-active: #2563eb;
+  --ox-primary-soft: rgba(59, 130, 246, 0.14);
+  --ox-intelligence: #22d3ee;
+  --ox-intelligence-soft: rgba(34, 211, 238, 0.12);
+  --ox-success: #34d399;
+  --ox-success-soft: rgba(52, 211, 153, 0.12);
+  --ox-warning: #fbbf24;
+  --ox-warning-soft: rgba(251, 191, 36, 0.12);
+  --ox-danger: #f87171;
+  --ox-danger-soft: rgba(248, 113, 113, 0.12);
+  --ox-info: #38bdf8;
+  --ox-info-soft: rgba(56, 189, 248, 0.12);
+  --ox-focus-ring: rgba(59, 130, 246, 0.35);
+  --ox-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
+  --ox-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

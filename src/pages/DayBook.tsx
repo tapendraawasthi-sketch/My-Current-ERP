@@ -12,6 +12,7 @@ import {
   Search,
 } from "lucide-react";
 import ReportDateRangePicker, { DateRange } from "../components/ui/ReportDateRangePicker";
+import DataTable from "../components/ui/DataTable";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 import * as XLSX from "xlsx";
 import toast from "react-hot-toast";
@@ -298,13 +299,151 @@ const DayBook: React.FC = () => {
 
   const handlePrint = () => window.print();
 
+  const dayBookColumns = useMemo(
+    () => [
+      { key: "date", header: "Date", width: "7rem", sortable: true },
+      {
+        key: "voucherNo",
+        header: "Voucher no.",
+        width: "7rem",
+        sortable: true,
+        mono: true,
+        render: (row) => (
+          <span
+            className="font-medium text-[var(--ox-primary)]"
+            data-voucher-no={String(row.voucherNo || "")}
+          >
+            {String(row.voucherNo)}
+          </span>
+        ),
+      },
+      {
+        key: "type",
+        header: "Type",
+        width: "7rem",
+        sortable: true,
+        render: (row) => {
+          const typeColor = getTypeColor(String(row.type || ""));
+          return (
+            <span
+              className={`inline-block rounded px-2 py-0.5 text-[10px] font-semibold uppercase border ${typeColor.bg} ${typeColor.text} ${typeColor.border}`}
+            >
+              {formatVoucherType(String(row.type || ""))}
+            </span>
+          );
+        },
+      },
+      {
+        key: "partyName",
+        header: "Party",
+        width: "9rem",
+        render: (row) => (
+          <span className="block max-w-[140px] truncate" title={String(row.partyName || "")}>
+            {row.partyName ? String(row.partyName) : "—"}
+          </span>
+        ),
+      },
+      {
+        key: "narration",
+        header: "Narration",
+        render: (row) => (
+          <span className="block max-w-[240px] truncate" title={String(row.narration || "")}>
+            {String(row.narration || "—")}
+          </span>
+        ),
+      },
+      {
+        key: "debit",
+        header: "Debit",
+        align: "right",
+        width: "8rem",
+        sortable: true,
+        mono: true,
+        render: (row) => (Number(row.debit) > 0 ? money(Number(row.debit)) : "—"),
+      },
+      {
+        key: "credit",
+        header: "Credit",
+        align: "right",
+        width: "8rem",
+        sortable: true,
+        mono: true,
+        render: (row) => (Number(row.credit) > 0 ? money(Number(row.credit)) : "—"),
+      },
+      {
+        key: "status",
+        header: "Status",
+        width: "5rem",
+        render: (row) =>
+          row._kind === "line" ? null : (
+            <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-green-100 text-green-700">
+              {String(row.status || "posted")}
+            </span>
+          ),
+      },
+      {
+        key: "createdByName",
+        header: "Created by",
+        width: "7rem",
+        render: (row) => (row._kind === "line" ? null : String(row.createdByName || "—")),
+      },
+      {
+        key: "actions",
+        header: "Actions",
+        align: "right",
+        width: "4rem",
+        render: (row) =>
+          row._kind === "line" ? null : (
+            <button
+              type="button"
+              aria-label={`Open ${String(row.voucherNo)}`}
+              className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[var(--ox-border)] bg-[var(--ox-surface)] text-[var(--ox-text-muted)] hover:bg-[var(--ox-surface-muted)]"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedEntry(row);
+              }}
+            >
+              <Eye className="h-3.5 w-3.5" />
+            </button>
+          ),
+      },
+    ],
+    [],
+  );
+
+  const tableRows = useMemo(() => {
+    const rows = [];
+    for (const entry of filteredEntries) {
+      rows.push({ ...entry, _kind: "voucher" });
+      if (viewMode === "detailed") {
+        (entry.lines || []).forEach((line, lineIdx) => {
+          rows.push({
+            id: `${entry.id}-line-${lineIdx}`,
+            date: "",
+            voucherNo: "",
+            type: "",
+            narration: `${line.accountName || "—"}${line.narration ? ` — ${line.narration}` : ""}`,
+            partyName: "",
+            debit: line.debit,
+            credit: line.credit,
+            status: "",
+            createdByName: "",
+            _kind: "line",
+            _parentId: entry.id,
+          });
+        });
+      }
+    }
+    return rows;
+  }, [filteredEntries, viewMode]);
+
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="erp-report flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-y-auto p-4 md:p-6">
-      <div className="erp-report-toolbar flex items-center justify-between mb-4">
+    <div className="erp-report flex h-full min-h-0 flex-col overflow-y-auto bg-[var(--ox-bg)] p-4 md:p-6">
+      <div className="erp-report-toolbar mb-4 flex items-center justify-between">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Day Book</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
+          <h1 className="text-[15px] font-semibold text-[var(--ox-text)]">Day Book</h1>
+          <p className="mt-0.5 text-[11px] text-[var(--ox-text-muted)]">
             All vouchers and transactions for a selected date
           </p>
         </div>
@@ -312,18 +451,16 @@ const DayBook: React.FC = () => {
           <button
             type="button"
             onClick={handleExportExcel}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 transition-colors"
+            className="flex h-8 items-center gap-1.5 rounded-md border border-[var(--ox-border)] bg-[var(--ox-surface)] px-3 text-[12px] font-medium text-[var(--ox-text)] hover:bg-[var(--ox-surface-muted)]"
           >
-            <FileSpreadsheet className="h-3.5 w-3.5" />
-            Export
+            <FileSpreadsheet className="h-3.5 w-3.5" /> Export
           </button>
           <button
             type="button"
             onClick={handlePrint}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5 transition-colors"
+            className="flex h-8 items-center gap-1.5 rounded-md border border-[var(--ox-border)] bg-[var(--ox-surface)] px-3 text-[12px] font-medium text-[var(--ox-text)] hover:bg-[var(--ox-surface-muted)]"
           >
-            <Printer className="h-3.5 w-3.5" />
-            Print
+            <Printer className="h-3.5 w-3.5" /> Print
           </button>
         </div>
       </div>
@@ -332,40 +469,40 @@ const DayBook: React.FC = () => {
         <ReportDateRangePicker value={dateRange} onChange={setDateRange} label="Day Book Period" />
       </div>
 
-      <div className="no-print bg-white border border-gray-200 rounded-md p-3 mb-4 space-y-3">
+      <div className="no-print mb-4 space-y-3 rounded-[var(--ox-radius-lg)] border border-[var(--ox-border)] bg-[var(--ox-surface)] p-3">
         <div className="flex flex-wrap items-center gap-2">
-          <div className="relative flex-1 min-w-[160px] max-w-xs">
-            <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <div className="relative min-w-[160px] max-w-xs flex-1">
+            <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--ox-text-subtle)]" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search voucher, narration, party…"
-              className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+              data-testid="daybook-search"
+              aria-label="Search day book"
+              className="h-8 w-full rounded-md border border-[var(--ox-border)] bg-[var(--ox-surface)] pl-8 pr-3 text-[12px] text-[var(--ox-text)] focus:border-[var(--ox-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ox-primary)]/20"
             />
           </div>
-
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 rounded-md border border-[var(--ox-border)] bg-[var(--ox-surface)] px-2.5 text-[12px] text-[var(--ox-text)] focus:border-[var(--ox-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ox-primary)]/20"
           >
             <option value="all">All types</option>
-            {uniqueTypes.map((t: string) => (
+            {uniqueTypes.map((t) => (
               <option key={t} value={t}>
                 {formatVoucherType(t)}
               </option>
             ))}
           </select>
-
-          <div className="flex items-center rounded-md border border-gray-300 bg-white overflow-hidden">
+          <div className="flex items-center overflow-hidden rounded-md border border-[var(--ox-border)] bg-[var(--ox-surface)]">
             <button
               type="button"
               onClick={() => setViewMode("condensed")}
-              className={`h-8 px-3 text-[11px] font-medium transition-colors ${
+              className={`h-8 px-3 text-[11px] font-medium ${
                 viewMode === "condensed"
-                  ? "bg-[#1557b0] text-white"
-                  : "text-gray-600 hover:bg-gray-50"
+                  ? "bg-[var(--ox-primary)] text-white"
+                  : "text-[var(--ox-text-muted)] hover:bg-[var(--ox-surface-muted)]"
               }`}
             >
               Condensed
@@ -373,21 +510,19 @@ const DayBook: React.FC = () => {
             <button
               type="button"
               onClick={() => setViewMode("detailed")}
-              className={`h-8 px-3 text-[11px] font-medium transition-colors ${
+              className={`h-8 px-3 text-[11px] font-medium ${
                 viewMode === "detailed"
-                  ? "bg-[#1557b0] text-white"
-                  : "text-gray-600 hover:bg-gray-50"
+                  ? "bg-[var(--ox-primary)] text-white"
+                  : "text-[var(--ox-text-muted)] hover:bg-[var(--ox-surface-muted)]"
               }`}
             >
               Detailed
             </button>
           </div>
-
-          <span className="text-[11px] text-gray-500">
+          <span className="text-[11px] text-[var(--ox-text-muted)]">
             {filteredEntries.length} entr{filteredEntries.length === 1 ? "y" : "ies"}
           </span>
         </div>
-
         <div className="flex flex-wrap items-center gap-2">
           <input
             ref={jumpInputRef}
@@ -396,223 +531,98 @@ const DayBook: React.FC = () => {
             onChange={(e) => setJumpQuery(e.target.value)}
             onKeyDown={handleJump}
             placeholder="Jump to voucher no."
-            className="h-8 w-40 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 w-40 rounded-md border border-[var(--ox-border)] bg-[var(--ox-surface)] px-2.5 text-[12px] text-[var(--ox-text)] focus:border-[var(--ox-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ox-primary)]/20"
           />
           <button
             type="button"
-            onClick={() => handleJump({ key: "Enter" } as React.KeyboardEvent<HTMLInputElement>)}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+            onClick={() => handleJump({ key: "Enter" })}
+            className="h-8 rounded-md border border-[var(--ox-border)] bg-[var(--ox-surface)] px-3 text-[12px] font-medium text-[var(--ox-text)] hover:bg-[var(--ox-surface-muted)]"
           >
             Find
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-        <div className="bg-white border border-gray-200 rounded-md px-4 py-3 flex items-center justify-between">
+      <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className="flex items-center justify-between rounded-[var(--ox-radius-lg)] border border-[var(--ox-border)] bg-[var(--ox-surface)] px-4 py-3">
           <div>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ox-text-muted)]">
               Vouchers
             </p>
-            <p className="text-[14px] font-semibold text-gray-800 mt-0.5">
+            <p className="mt-0.5 text-[14px] font-semibold text-[var(--ox-text)]">
               {summary.totalVouchers}
             </p>
           </div>
-          <BookOpen className="h-6 w-6 text-[#1557b0] opacity-20" />
+          <BookOpen className="h-5 w-5 text-[var(--ox-primary)]" />
         </div>
-
-        <div className="bg-white border border-gray-200 rounded-md px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center justify-between rounded-[var(--ox-radius-lg)] border border-[var(--ox-border)] bg-[var(--ox-surface)] px-4 py-3">
           <div>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ox-text-muted)]">
               Total debit
             </p>
-            <p className="text-[14px] font-semibold text-[#1557b0] mt-0.5 font-mono">
+            <p className="mt-0.5 font-mono text-[14px] font-semibold text-[var(--ox-text)]">
               {money(summary.totalDebit)}
             </p>
           </div>
-          <TrendingUp className="h-6 w-6 text-[#1557b0] opacity-20" />
+          <TrendingUp className="h-5 w-5 text-[var(--ox-success)]" />
         </div>
-
-        <div className="bg-white border border-gray-200 rounded-md px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center justify-between rounded-[var(--ox-radius-lg)] border border-[var(--ox-border)] bg-[var(--ox-surface)] px-4 py-3">
           <div>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ox-text-muted)]">
               Total credit
             </p>
-            <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
+            <p className="mt-0.5 font-mono text-[14px] font-semibold text-[var(--ox-text)]">
               {money(summary.totalCredit)}
             </p>
           </div>
-          <TrendingDown className="h-6 w-6 text-gray-400 opacity-30" />
+          <TrendingDown className="h-5 w-5 text-[var(--ox-danger)]" />
         </div>
       </div>
 
       {filteredEntries.length === 0 ? (
-        <div className="bg-white border border-gray-200 rounded-md">
+        <div className="rounded-[var(--ox-radius-lg)] border border-[var(--ox-border)] bg-[var(--ox-surface)]">
           <ReportEmptyState
             message="No vouchers recorded in this period"
             hint="Adjust the date range or filter settings."
           />
         </div>
       ) : (
-        <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-          <div className="px-4 py-2.5 border-b border-gray-200 bg-[#f5f6fa] flex items-center justify-between">
-            <h3 className="text-[12px] font-semibold text-gray-700">
-              Day Book ({dateRange.fromDate} to {dateRange.toDate})
-            </h3>
-            <p className="text-[11px] text-gray-500">
-              {filteredEntries.length} entr{filteredEntries.length === 1 ? "y" : "ies"}
-            </p>
-          </div>
-
-          <div className="overflow-x-auto" ref={tableRef}>
-            <table className="data-table w-full min-w-[700px]">
-              <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
-                    Voucher no.
-                  </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
-                    Type
-                  </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                    Narration
-                  </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-36">
-                    Party
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
-                    Debit
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
-                    Credit
-                  </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-16">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {filteredEntries.map((entry: DayBookEntry) => {
-                  const typeColor = getTypeColor(entry.type);
-                  return (
-                    <React.Fragment key={entry.id as string}>
-                      <tr
-                        data-voucher-no={String(entry.voucherNo) || ""}
-                        className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
-                        onClick={() => setSelectedEntry(entry)}
-                      >
-                        <td className="px-3 py-2.5 text-[12px] font-mono font-medium text-[#1557b0] border-b border-gray-100">
-                          {String(entry.voucherNo)}
-                        </td>
-
-                        <td className="px-3 py-2.5 border-b border-gray-100">
-                          <span
-                            className={`inline-block rounded px-2 py-0.5 text-[10px] font-semibold uppercase border ${typeColor.bg} ${typeColor.text} ${typeColor.border}`}
-                          >
-                            {formatVoucherType(entry.type)}
-                          </span>
-                        </td>
-
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 max-w-[240px] border-b border-gray-100">
-                          <span className="block truncate" title={String(entry.narration)}>
-                            {String(entry.narration || "—")}
-                          </span>
-                        </td>
-
-                        <td className="px-3 py-2.5 text-[12px] text-gray-700 max-w-[140px] border-b border-gray-100">
-                          <span className="block truncate" title={String(entry.partyName ?? "")}>
-                            {entry.partyName ? String(entry.partyName) : "—"}
-                          </span>
-                        </td>
-
-                        <td className="number-cell-dr border-b border-gray-100">
-                          {entry.debit > 0 ? money(entry.debit) : "—"}
-                        </td>
-
-                        <td className="number-cell-cr border-b border-gray-100">
-                          {entry.credit > 0 ? money(entry.credit) : "—"}
-                        </td>
-
-                        <td className="px-3 py-2.5 text-right border-b border-gray-100">
-                          <button
-                            type="button"
-                            className="h-7 w-7 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 opacity-0 group-hover:opacity-100 transition-opacity"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSelectedEntry(entry);
-                            }}
-                          >
-                            <Eye className="h-3.5 w-3.5" />
-                          </button>
-                        </td>
-                      </tr>
-
-                      {viewMode === "detailed" &&
-                        (entry.lines ?? []).length > 0 &&
-                        (entry.lines as DayBookLine[]).map((line: DayBookLine, lineIdx: number) => (
-                          <tr key={`${String(entry.id)}-line-${lineIdx}`} className="bg-gray-50/60">
-                            <td className="px-3 py-1.5 pl-8 text-[10px] text-gray-400 font-mono border-b border-gray-100">
-                              ↳
-                            </td>
-                            <td className="px-3 py-1.5 border-b border-gray-100" />
-                            <td
-                              colSpan={2}
-                              className="px-3 py-1.5 text-[11px] text-gray-500 border-b border-gray-100"
-                            >
-                              {line.accountName ? String(line.accountName) : "—"}
-                              {line.narration ? ` — ${String(line.narration)}` : ""}
-                            </td>
-                            <td className="px-3 py-1.5 text-right font-mono text-[11px] text-gray-500 border-b border-gray-100">
-                              {line.debit > 0 ? money(line.debit) : "—"}
-                            </td>
-                            <td className="px-3 py-1.5 text-right font-mono text-[11px] text-gray-500 border-b border-gray-100">
-                              {line.credit > 0 ? money(line.credit) : "—"}
-                            </td>
-                            <td className="border-b border-gray-100" />
-                          </tr>
-                        ))}
-                    </React.Fragment>
-                  );
-                })}
-              </tbody>
-
-              {/* Footer totals */}
-              {filteredEntries.length > 0 && (
-                <tfoot>
-                  <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-                    <td colSpan={4} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
-                      Total ({summary.totalVouchers} vouchers)
-                    </td>
-                    <td className="number-cell-bold">
-                      {money(summary.totalDebit)}
-                    </td>
-                    <td className="number-cell-bold">
-                      {money(summary.totalCredit)}
-                    </td>
-                    <td />
-                  </tr>
-
-                  {/* Balance check row */}
-                  {Math.abs(summary.totalDebit - summary.totalCredit) > 0.01 && (
-                    <tr className="bg-red-50 border-t border-red-200">
-                      <td colSpan={4} className="px-3 py-2 text-[11px] font-semibold text-red-700">
-                        ⚠ Imbalance detected
-                      </td>
-                      <td
-                        colSpan={3}
-                        className="px-3 py-2 text-right font-mono text-[11px] font-bold text-red-700"
-                      >
-                        Difference: {money(Math.abs(summary.totalDebit - summary.totalCredit))}
-                      </td>
-                    </tr>
-                  )}
-                </tfoot>
-              )}
-            </table>
-          </div>
-          <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
-            {filteredEntries.length} day book entr{filteredEntries.length === 1 ? "y" : "ies"}
+        <div ref={tableRef} className="min-w-0">
+          <DataTable
+            columns={dayBookColumns}
+            rows={tableRows}
+            rowKey={(row) => String(row.id)}
+            showSearch={false}
+            emptyTitle="No matching vouchers"
+            emptyDescription="Try adjusting filters or search terms."
+            onRowClick={(row) => {
+              if (row._kind === "line") {
+                const parent = filteredEntries.find((e) => e.id === row._parentId);
+                if (parent) setSelectedEntry(parent);
+                return;
+              }
+              setSelectedEntry(row);
+            }}
+            toolbarExtra={
+              <span className="text-[11px] text-[var(--ox-text-muted)]">
+                Day Book ({dateRange.fromDate} to {dateRange.toDate})
+              </span>
+            }
+          />
+          <div className="overflow-hidden rounded-b-[var(--ox-radius-lg)] border border-t-0 border-[var(--ox-border)] bg-[var(--ox-primary-soft)]">
+            <div className="flex items-center justify-between px-3 py-2.5 text-[12px] font-bold text-[var(--ox-text)]">
+              <span>Total ({summary.totalVouchers} vouchers)</span>
+              <div className="flex gap-8 font-mono tabular-nums">
+                <span>{money(summary.totalDebit)}</span>
+                <span>{money(summary.totalCredit)}</span>
+              </div>
+            </div>
+            {Math.abs(summary.totalDebit - summary.totalCredit) > 0.01 && (
+              <div className="border-t border-[var(--ox-danger)]/30 bg-[var(--ox-danger-soft)] px-3 py-2 text-[11px] font-semibold text-[var(--ox-danger)]">
+                Imbalance detected — Difference:{" "}
+                {money(Math.abs(summary.totalDebit - summary.totalCredit))}
+              </div>
+            )}
           </div>
         </div>
       )}

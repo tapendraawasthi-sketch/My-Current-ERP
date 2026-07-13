@@ -278,6 +278,89 @@ const DebitNoteVoucher: React.FC = () => {
     setSaving(true);
 
     try {
+      // Phase 8: route posted debit notes with a linked purchase invoice through the
+      // authoritative purchase adjustment engine (never mutates the original).
+      const original = originalInvoiceId
+        ? invoices.find((inv) => inv.id === originalInvoiceId)
+        : null;
+      if (original && String(original.type) === VoucherType.PURCHASE_INVOICE) {
+        const { postPurchaseAdjustmentTransaction } = await import(
+          "@/domains/purchase/postPurchaseAdjustmentTransaction"
+        );
+        const { generateId } = await import("@/lib/db");
+        const requestId = generateId();
+        const adjLines = lines
+          .filter((l) => l.itemId && (isInventoryReturn ? Number(l.quantity) > 0 : true))
+          .map((l) => {
+            const origIdx = (original.lines || []).findIndex(
+              (ol: any) => String(ol.itemId) === String(l.itemId),
+            );
+            if (origIdx < 0) return null;
+            const origLine = original.lines[origIdx];
+            const originalPurchaseLineId = origLine.id || `line-${original.id}-${origIdx}`;
+            return isInventoryReturn
+              ? {
+                  originalPurchaseLineId,
+                  itemId: String(l.itemId),
+                  returnQuantity: Number(l.quantity) || 0,
+                  stockCondition: "resalable" as const,
+                }
+              : {
+                  originalPurchaseLineId,
+                  itemId: String(l.itemId),
+                  financialAdjustment: Number(l.totalAmount) || Number(l.amount) || 0,
+                };
+          })
+          .filter(Boolean) as any[];
+        if (!adjLines.length) {
+          toast.error("Debit note lines must match items on the original purchase invoice.");
+          setSaving(false);
+          return;
+        }
+        const adjResult = await postPurchaseAdjustmentTransaction({
+          commandId: requestId,
+          requestId,
+          idempotencyKey: `manual-debit-note-${requestId}`,
+          companyId: String(
+            (companySettings as { companyId?: string } | null)?.companyId ||
+              companySettings?.id ||
+              "main",
+          ),
+          financialYearId: currentFiscalYear?.id ?? null,
+          userId: useStore.getState().currentUser?.id || "manual-user",
+          userRole: useStore.getState().currentUser?.role || "accountant",
+          source: "manual_form",
+          adjustment: {
+            adjustmentType: isInventoryReturn
+              ? "inventory_purchase_return"
+              : "financial_supplier_debit_note",
+            originalInvoiceId,
+            transactionDate: date,
+            supplierId: partyId || original.partyId || null,
+            settlementMethod: "reduce_payable",
+            settlementAccountId: null,
+            reasonCode: creditReason || "supplier_adjustment",
+            narration: narration || `Debit note vs ${original.invoiceNo || originalInvoiceNo}`,
+            lines: adjLines,
+            currency: original.currencyCode || "NPR",
+          },
+        });
+        if (adjResult.type !== "posting_completed") {
+          throw new Error(adjResult.payload.safe_message || "Debit note posting failed");
+        }
+        toast.success(`Debit note posted successfully — ${adjResult.payload.invoice_number}`);
+        resetForm();
+        const nextNumber = await generateSerialNumber(
+          VoucherType.DEBIT_NOTE,
+          undefined,
+          currentFiscalYear?.fiscalYearBS,
+        );
+        setVoucherNumber(nextNumber);
+        setSaving(false);
+        setDirty(false);
+        return;
+      }
+
       const voucher = {
         id: "dn-" + Date.now(),
         type: VoucherType.DEBIT_NOTE,

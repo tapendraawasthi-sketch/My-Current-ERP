@@ -8,16 +8,18 @@ import { isNiosPlatformEnabled } from "@/nios/session";
 const SutraAiLauncher: React.FC = () => {
   const togglePanel = useSutraAiStore((s) => s.togglePanel);
   const isOpen = useSutraAiStore((s) => s.isOpen);
+  const currentPage = useStore((s) => s.currentPage);
 
-  if (isOpen) return null;
+  if (isOpen || currentPage === "orbix") return null;
 
   return (
     <button
       type="button"
       onClick={togglePanel}
       title="SUTRA AI (Ctrl+Shift+A)"
-      className="fixed bottom-4 left-4 z-[9997] h-10 w-10 flex items-center justify-center rounded-full shadow-lg transition-all bg-[#1557b0] hover:bg-[#0f4a96] text-white hover:scale-105"
+      className="fixed bottom-4 left-4 z-[40] flex h-10 w-10 items-center justify-center rounded-full bg-[var(--ox-primary)] text-white shadow-[var(--ox-shadow-md)] transition-all hover:bg-[var(--ox-primary-hover)] hover:scale-105 no-print"
       data-component="sutra-ai-launcher"
+      aria-label="Open Sutra AI"
     >
       <Brain className="h-5 w-5" />
     </button>

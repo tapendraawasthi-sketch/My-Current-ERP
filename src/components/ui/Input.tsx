@@ -44,44 +44,25 @@ const Input: React.FC<InputProps> = ({
   autoFocus,
   inputClassName = "",
   className = "",
+  id,
+  error,
 }) => {
-  const inputStyle: React.CSSProperties = {
-    background: "#EBF5E2",
-    color: "#000000",
-    border: "1px solid #000000",
-    height: 32,
-    padding: "0 8px",
-    fontSize: 12,
-    borderRadius: 3,
-    width: "100%",
-    textAlign: align,
-    outline: "none",
-  };
-
   return (
     <div className={`flex flex-col gap-0.5 ${className}`}>
       {label && (
-        <label style={{ fontSize: 11, fontWeight: 600, color: "#000000", marginBottom: 2 }}>
+        <label htmlFor={id} className="mb-0.5 text-[11px] font-medium text-[var(--ox-text-muted)]">
           {label}
-          {required && <span style={{ color: "#000000", marginLeft: 2 }}>*</span>}
+          {required && <span className="ml-0.5 text-[var(--ox-danger)]">*</span>}
         </label>
       )}
-      <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
+      <div className="relative flex items-center">
         {prefix && (
-          <span
-            style={{
-              position: "absolute",
-              left: 8,
-              fontSize: 11,
-              color: "#000000",
-              pointerEvents: "none",
-              userSelect: "none",
-            }}
-          >
+          <span className="pointer-events-none absolute left-2.5 select-none text-[11px] text-[var(--ox-text-subtle)]">
             {prefix}
           </span>
         )}
         <input
+          id={id}
           type={type}
           value={value}
           onChange={onChange ? (e) => onChange(e.target.value) : undefined}
@@ -94,29 +75,22 @@ const Input: React.FC<InputProps> = ({
           step={step}
           maxLength={maxLength}
           autoFocus={autoFocus}
+          aria-invalid={Boolean(error)}
+          className={`h-8 w-full rounded-[var(--ox-radius-md)] border border-[var(--ox-border-strong)] bg-[var(--ox-surface)] px-2.5 text-[12px] text-[var(--ox-text)] outline-none focus:border-[var(--ox-primary)] focus:ring-2 focus:ring-[var(--ox-focus-ring)] disabled:cursor-not-allowed disabled:bg-[var(--ox-surface-muted)] disabled:text-[var(--ox-text-subtle)] ${inputClassName}`}
           style={{
-            ...inputStyle,
-            paddingLeft: prefix ? 28 : 8,
-            paddingRight: suffix ? 28 : 8,
+            textAlign: align,
+            paddingLeft: prefix ? 28 : undefined,
+            paddingRight: suffix ? 28 : undefined,
           }}
-          className={inputClassName}
         />
         {suffix && (
-          <span
-            style={{
-              position: "absolute",
-              right: 8,
-              fontSize: 11,
-              color: "#000000",
-              pointerEvents: "none",
-              userSelect: "none",
-            }}
-          >
+          <span className="pointer-events-none absolute right-2.5 select-none text-[11px] text-[var(--ox-text-subtle)]">
             {suffix}
           </span>
         )}
       </div>
-      {hint && <span style={{ fontSize: 10, color: "#000000", opacity: 0.6 }}>{hint}</span>}
+      {error && <span className="text-[11px] text-[var(--ox-danger)]">{error}</span>}
+      {hint && !error && <span className="text-[10px] text-[var(--ox-text-subtle)]">{hint}</span>}
     </div>
   );
 };

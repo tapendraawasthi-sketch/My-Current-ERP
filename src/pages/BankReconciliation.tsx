@@ -1,6 +1,6 @@
 // src/pages/BankReconciliation.tsx
 // @ts-nocheck
-import React, { useState, useMemo, useRef, useCallback } from "react";
+import React, { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import { ActionToolbar, Select, NepaliDatePicker, Button } from "../components/ui";
 import {
@@ -32,6 +32,13 @@ import {
   MatchPair,
   MatchConfidence,
 } from "../lib/bankMatchingEngine";
+import {
+  confirmMatchViaTreasury,
+  postAdjustmentViaTreasury,
+  closeSessionViaTreasury,
+  openSessionViaTreasury,
+} from "@/domains/treasury/uiAdapters";
+import { getDB } from "@/lib/db";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -79,21 +86,34 @@ function buildStatementEntries(
   dateTo: string,
 ): StatementEntry[] {
   return (bankStatements as any[])
-    .filter(
-      (bs) =>
-        bs.bankAccountId === accountId &&
-        !bs.reconciled &&
-        (!dateFrom || bs.date >= dateFrom) &&
-        (!dateTo || bs.date <= dateTo),
-    )
+    .filter((bs) => {
+      if (bs.bankAccountId !== accountId && bs.ledgerAccountId !== accountId) return false;
+      // Phase 10 domain lines: unmatched / remaining > 0. Never trust contradictory legacy reconciled flag when domain status exists.
+      const hasDomainStatus = bs.status != null || bs.remainingMatchPaisa != null;
+      if (hasDomainStatus) {
+        const remaining = Number(bs.remainingMatchPaisa ?? -1);
+        const unmatched =
+          bs.status === "unmatched" ||
+          bs.status === "partial" ||
+          remaining > 0 ||
+          (bs.status !== "matched" && bs.status !== "Matched" && remaining !== 0);
+        if (!unmatched && remaining === 0) return false;
+        if (bs.status === "matched" || bs.status === "Matched") return false;
+      } else if (bs.reconciled) {
+        return false;
+      }
+      if (dateFrom && (bs.date || bs.transactionDate) < dateFrom) return false;
+      if (dateTo && (bs.date || bs.transactionDate) > dateTo) return false;
+      return true;
+    })
     .map((bs) => ({
       id: bs.id,
-      date: bs.date,
+      date: bs.date || bs.transactionDate,
       description: bs.narration || bs.description || "",
-      refNo: bs.chequeNo || bs.refNo || "",
-      debit: Number(bs.debit ?? 0),
-      credit: Number(bs.credit ?? 0),
-      balance: Number(bs.balance ?? 0),
+      refNo: bs.chequeNo || bs.refNo || bs.reference || "",
+      debit: Number(bs.debit ?? (bs.debitPaisa != null ? Number(bs.debitPaisa) / 100 : 0)),
+      credit: Number(bs.credit ?? (bs.creditPaisa != null ? Number(bs.creditPaisa) / 100 : 0)),
+      balance: Number(bs.balance ?? (bs.balancePaisa != null ? Number(bs.balancePaisa) / 100 : 0)),
       bankFormat: bs.bankFormat,
     }));
 }
@@ -135,12 +155,13 @@ export default function BankReconciliation() {
     setCurrentPage,
   } = useStore();
 
-  // ── Filter state ──────────────────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState<ActiveTab>("bank");
   const [selectedAccountId, setSelectedAccountId] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [digitalMode, setDigitalMode] = useState<DigitalMode>("esewa");
+  /** Phase 10 authoritative statement lines (wins over legacy store.bankStatements). */
+  const [domainStatementLines, setDomainStatementLines] = useState<any[]>([]);
 
   // ── Reconciliation state ──────────────────────────────────────────────────
   const [matchedPairs, setMatchedPairs] = useState<MatchPair[]>([]);
@@ -156,6 +177,35 @@ export default function BankReconciliation() {
     counterAccountId: string;
     narration: string;
   } | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const db = getDB();
+        const lines = (db as any).bankStatementLines
+          ? await (db as any).bankStatementLines.toArray()
+          : [];
+        const banks = (db as any).bankAccounts
+          ? await (db as any).bankAccounts.toArray()
+          : [];
+        const ledgerByBank = new Map(
+          (banks || []).map((b: any) => [String(b.id), String(b.ledgerAccountId || "")]),
+        );
+        const enriched = (Array.isArray(lines) ? lines : []).map((l: any) => ({
+          ...l,
+          ledgerAccountId: ledgerByBank.get(String(l.bankAccountId)) || l.ledgerAccountId,
+          authority: "phase10_bankStatementLines",
+        }));
+        if (!cancelled) setDomainStatementLines(enriched);
+      } catch {
+        if (!cancelled) setDomainStatementLines([]);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [matchedPairs.length, hasRun]);
 
   // ── Derived data ──────────────────────────────────────────────────────────
   const bankAccounts = useMemo(
@@ -173,12 +223,20 @@ export default function BankReconciliation() {
     [vouchers, selectedAccountId],
   );
 
+  const statementSource = useMemo(() => {
+    if (domainStatementLines.length > 0) return domainStatementLines;
+    return (bankStatements || []).map((r: any) => ({
+      ...r,
+      authority: "legacy_bankStatements_fallback",
+    }));
+  }, [domainStatementLines, bankStatements]);
+
   const allStmtEntries = useMemo(
     () =>
       selectedAccountId
-        ? buildStatementEntries(bankStatements, selectedAccountId, dateFrom, dateTo)
+        ? buildStatementEntries(statementSource, selectedAccountId, dateFrom, dateTo)
         : [],
-    [bankStatements, selectedAccountId, dateFrom, dateTo],
+    [statementSource, selectedAccountId, dateFrom, dateTo],
   );
 
   // Already-matched IDs
@@ -261,15 +319,26 @@ export default function BankReconciliation() {
       return;
     }
     try {
-      const updates = matchedPairs.map((p) => ({
-        id: p.statementEntry.id,
-        updates: {
-          reconciled: true,
-          reconciledVoucherId: p.bookEntry.voucherId,
-          reconciledDate: new Date().toISOString().split("T")[0],
-        },
-      }));
-      await updateBankStatements(updates);
+      const db = getDB();
+      let confirmed = 0;
+      for (const p of matchedPairs) {
+        const line = await (db as any).bankStatementLines?.get?.(p.statementEntry.id);
+        const version = Number(line?.reconciliationVersion ?? 1);
+        const amount = Number(p.statementEntry.debit || p.statementEntry.credit || p.bookEntry.amount || 0);
+        const result = await confirmMatchViaTreasury({
+          ledgerOrBankAccountId: selectedAccountId,
+          statementLineId: p.statementEntry.id,
+          erpDocumentIds: [p.bookEntry.voucherId],
+          matchedAmount: amount,
+          expectedStatementLineVersion: version,
+          explanation: p.matchReason || "Manual UI match",
+        });
+        if (result.type !== "posting_completed") {
+          toast.error(result.payload?.safe_message || "Match failed");
+          return;
+        }
+        confirmed += 1;
+      }
       await saveAuditLog?.({
         id: generateId(),
         timestamp: new Date().toISOString(),
@@ -279,15 +348,45 @@ export default function BankReconciliation() {
         recordId: selectedAccountId,
         recordType: "bank-account",
         details: JSON.stringify({
-          matched: matchedPairs.length,
+          matched: confirmed,
           period: `${dateFrom} to ${dateTo}`,
+          authority: "confirmBankMatch",
         }),
       });
-      toast.success(`Reconciliation saved — ${matchedPairs.length} pairs.`);
+      toast.success(`Reconciliation saved — ${confirmed} pairs.`);
       setMatchedPairs([]);
       setHasRun(false);
     } catch (err: any) {
       toast.error("Save failed: " + err.message);
+    }
+  };
+
+  const handleCloseReconciliation = async () => {
+    try {
+      const statementBalancePaisa = Math.round(Number(summary?.statementBalance || 0) * 100);
+      const bookBalancePaisa = Math.round(Number(bookBalance || 0) * 100);
+      const opened = await openSessionViaTreasury({
+        ledgerOrBankAccountId: selectedAccountId,
+        periodStart: dateFrom,
+        periodEnd: dateTo,
+        statementBalancePaisa,
+        bookBalancePaisa,
+      });
+      if (opened.type !== "posting_completed") {
+        toast.error(opened.payload?.safe_message || "Could not open session");
+        return;
+      }
+      const closed = await closeSessionViaTreasury({
+        sessionId: opened.payload.session_id,
+        expectedVersion: opened.payload.session_version,
+      });
+      if (closed.type !== "posting_completed") {
+        toast.error(closed.payload?.safe_message || "Close rejected (difference?)");
+        return;
+      }
+      toast.success("Reconciliation session closed.");
+    } catch (err: any) {
+      toast.error("Close failed: " + err.message);
     }
   };
 
@@ -313,59 +412,37 @@ export default function BankReconciliation() {
     try {
       const isDebit = stmt.debit > 0;
       const amount = isDebit ? stmt.debit : stmt.credit;
-      const vId = generateId();
-      const lineId1 = generateId();
-      const lineId2 = generateId();
-
-      await addVoucher({
-        id: vId,
-        voucherNo: `BNK-${Date.now().toString().slice(-5)}`,
-        date: stmt.date,
-        dateNepali: formatADToBS(stmt.date),
-        type,
-        status: "posted",
+      const db = getDB();
+      const line = await (db as any).bankStatementLines?.get?.(stmt.id);
+      const version = Number(line?.reconciliationVersion ?? 1);
+      const adjustmentType = isDebit ? "bank_charge" : "bank_interest";
+      const result = await postAdjustmentViaTreasury({
+        ledgerOrBankAccountId: selectedAccountId,
+        statementLineId: stmt.id,
+        expectedStatementLineVersion: version,
+        adjustmentType,
+        amount,
+        offsetAccountId: counterAccountId,
+        useJournal: type === "journal",
         narration,
-        partyId: null,
-        partyName: "",
-        lines: [
-          {
-            id: lineId1,
-            accountId: selectedAccountId,
-            accountName: bankAccount?.name || "",
-            drAmount: isDebit ? 0 : amount,
-            crAmount: isDebit ? amount : 0,
-            particulars: narration,
-          },
-          {
-            id: lineId2,
-            accountId: counterAccountId,
-            accountName: accounts.find((a: any) => a.id === counterAccountId)?.name || "",
-            drAmount: isDebit ? amount : 0,
-            crAmount: isDebit ? 0 : amount,
-            particulars: narration,
-          },
-        ],
-        totalDebit: amount,
-        totalCredit: amount,
-        grandTotal: amount,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        postedBy: currentUser?.id,
       });
-
-      // Auto-link the new book entry to this statement
+      if (result.type !== "posting_completed") {
+        toast.error(result.payload?.safe_message || "Adjustment failed");
+        return;
+      }
+      const vId = result.payload.voucher_id;
       const newBookEntry: BookEntry = {
         id: `${vId}-0`,
         date: stmt.date,
         amount,
         description: narration,
         voucherId: vId,
-        voucherNo: `BNK-${Date.now().toString().slice(-5)}`,
+        voucherNo: result.payload.voucher_number,
         type: isDebit ? "credit" : "debit",
       };
       setMatchedPairs((prev) => [...prev, createManualMatch(newBookEntry, stmt)]);
       setVoucherModal(null);
-      toast.success("Voucher created and linked to statement.");
+      toast.success("Adjustment posted via Phase 9 and linked to statement.");
     } catch (err: any) {
       toast.error("Failed to create voucher: " + err.message);
     }
@@ -390,48 +467,28 @@ export default function BankReconciliation() {
     }
 
     try {
-      const vId = generateId();
-      await addVoucher({
-        id: vId,
-        voucherNo: `COMM-${Date.now().toString().slice(-5)}`,
-        date: stmt.date,
-        dateNepali: formatADToBS(stmt.date),
-        type: "journal",
-        status: "posted",
+      const db = getDB();
+      const line = await (db as any).bankStatementLines?.get?.(stmt.id);
+      const version = Number(line?.reconciliationVersion ?? 1);
+      const result = await postAdjustmentViaTreasury({
+        ledgerOrBankAccountId: selectedAccountId,
+        statementLineId: stmt.id,
+        expectedStatementLineVersion: version,
+        adjustmentType: "bank_charge",
+        amount: commission,
+        offsetAccountId: commissionAcct.id,
+        useJournal: true,
         narration: `${digitalMode.toUpperCase()} commission on ${stmt.description}`,
-        lines: [
-          {
-            id: generateId(),
-            accountId: commissionAcct.id,
-            accountName: commissionAcct.name,
-            drAmount: commission,
-            crAmount: 0,
-            particulars: "Payment gateway commission",
-          },
-          {
-            id: generateId(),
-            accountId: selectedAccountId,
-            accountName: bankAccount?.name || "",
-            drAmount: 0,
-            crAmount: commission,
-            particulars: "Commission deducted",
-          },
-        ],
-        totalDebit: commission,
-        totalCredit: commission,
-        grandTotal: commission,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
       });
+      if (result.type !== "posting_completed") {
+        toast.error(result.payload?.safe_message || "Commission adjustment failed");
+        return;
+      }
       toast.success(`Commission voucher created: Rs.${formatNumber(commission)}`);
     } catch (err: any) {
       toast.error("Failed: " + err.message);
     }
   };
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // PRINT REPORT
-  // ─────────────────────────────────────────────────────────────────────────
 
   const printReport = () => {
     const company = companySettings?.companyNameEn || companySettings?.name || "Company";
@@ -645,6 +702,11 @@ export default function BankReconciliation() {
             icon: <CheckCircle className="h-3.5 w-3.5" />,
             variant: "primary",
             disabled: matchedPairs.length === 0,
+          },
+          {
+            label: "Close Session",
+            onClick: handleCloseReconciliation,
+            icon: <CheckCircle2 className="h-3.5 w-3.5" />,
           },
           {
             label: "Print Report",

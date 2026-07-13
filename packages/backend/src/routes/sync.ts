@@ -3,8 +3,12 @@ import { authMiddleware } from "../middleware/auth.js";
 import { sendSuccess } from "../middleware/responseEnvelope.js";
 import { processSyncRecord, type SyncRecordInput } from "../lib/syncHandlers.js";
 import { fetchSyncPull } from "../lib/syncPull.js";
+import syncEventsRouter from "./syncEvents.js";
 
 const router = Router();
+
+/** Phase 5 event-carried accounting sync (canonical). */
+router.use(syncEventsRouter);
 
 /** Returns server-side master changes since optional ISO timestamp. */
 router.get("/pull", authMiddleware, async (req, res) => {

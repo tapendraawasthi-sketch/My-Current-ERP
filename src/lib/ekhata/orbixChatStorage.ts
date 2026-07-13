@@ -14,6 +14,12 @@ export interface StoredOrbixMessage {
   timestamp: string;
   report?: import("./orbixReportTypes").OrbixReportPayload;
   reportClarify?: import("./orbixReportTypes").PendingOrbixReport;
+  requestId?: string;
+  streamStatus?: "pending" | "streaming" | "completed" | "failed";
+  orbixResponse?: import("./orbixResponseTypes").OrbixResponse | null;
+  relatedDraftId?: string | null;
+  relatedReportId?: string | null;
+  relatedPostingId?: string | null;
 }
 
 export interface OrbixChatSession {
@@ -33,6 +39,12 @@ export function serializeMessage(m: EKhataChatMessage): StoredOrbixMessage {
     timestamp: m.timestamp instanceof Date ? m.timestamp.toISOString() : String(m.timestamp),
     report: m.report,
     reportClarify: m.reportClarify,
+    requestId: m.requestId,
+    streamStatus: m.streamStatus,
+    orbixResponse: m.orbixResponse,
+    relatedDraftId: m.relatedDraftId,
+    relatedReportId: m.relatedReportId,
+    relatedPostingId: m.relatedPostingId,
   };
 }
 
@@ -44,6 +56,12 @@ export function deserializeMessage(m: StoredOrbixMessage): EKhataChatMessage {
     timestamp: new Date(m.timestamp),
     report: m.report,
     reportClarify: m.reportClarify,
+    requestId: m.requestId,
+    streamStatus: m.streamStatus,
+    orbixResponse: m.orbixResponse,
+    relatedDraftId: m.relatedDraftId,
+    relatedReportId: m.relatedReportId,
+    relatedPostingId: m.relatedPostingId,
   };
 }
 

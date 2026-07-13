@@ -35,6 +35,8 @@ import { VoucherType, VoucherStatus } from "@/lib/types";
 import { generateSerialNumber, validateDoubleEntry } from "@/lib/accounting";
 import toast from "react-hot-toast";
 import { PillTitle, FormPanel } from "@/components/BusyShell";
+import { postJournalTransaction } from "@/domains/settlement/postJournalTransaction";
+import { generateId } from "@/lib/db";
 
 interface JournalVoucherFormProps {
   voucherId?: string;
@@ -75,6 +77,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
     costCenters,
     companySettings,
     currentFiscalYear,
+    currentUser,
     addVoucher,
     updateVoucher,
   } = useStore();
@@ -286,6 +289,50 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
     }
     setSaving(true);
     try {
+      // Phase 9: new posted journals go through authoritative settlement engine
+      if (!isEdit && status === VoucherStatus.POSTED) {
+        const companyId = String(
+          (companySettings as any)?.companyId || (companySettings as any)?.id || "main",
+        );
+        const cleanLines = lines
+          .filter((l) => l.accountId && (Number(l.debit) > 0 || Number(l.credit) > 0))
+          .map((l) => ({
+            accountId: l.accountId,
+            debit: Number(l.debit) > 0 ? Number(l.debit).toFixed(2) : "0.00",
+            credit: Number(l.credit) > 0 ? Number(l.credit).toFixed(2) : "0.00",
+            narration: l.narration?.trim() || undefined,
+          }));
+        const result = await postJournalTransaction({
+          commandId: generateId(),
+          requestId: generateId(),
+          idempotencyKey: `manual-journal-${generateId()}`,
+          companyId,
+          financialYearId: currentFiscalYear?.id || null,
+          userId: currentUser?.id || "manual-user",
+          userRole: currentUser?.role || "accountant",
+          source: "manual_form",
+          journal: {
+            transactionDate: date,
+            lines: cleanLines,
+            narration: narration.trim(),
+            currency: "NPR",
+            allowRestrictedControlAccounts: true,
+          },
+        });
+        if (result.type !== "posting_completed") {
+          toast.error(result.payload.safe_message || "Failed to post journal.");
+          return;
+        }
+        toast.success("Journal voucher posted.");
+        setDirty(false);
+        onSave?.({
+          id: result.payload.voucher_id,
+          voucherNo: result.payload.voucher_number,
+          status: VoucherStatus.POSTED,
+        });
+        return;
+      }
+
       const payload = buildPayload(status);
       let result;
       if (isEdit) {

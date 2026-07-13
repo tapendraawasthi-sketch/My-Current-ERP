@@ -59,6 +59,7 @@ def preprocess_erp_message(
     permissions: dict[str, Any] | None = None,
     has_active_report: bool = False,
     has_pending_confirmation: bool = False,
+    draft_id: str | None = None,
 ) -> ErpPreprocessResult | None:
     """Parse ERP transactions deterministically. Returns None for non-ERP chat."""
     stripped = text.strip()
@@ -74,6 +75,7 @@ def preprocess_erp_message(
         permissions=permissions,
         has_active_report=has_active_report,
         has_pending_confirmation=has_pending_confirmation,
+        draft_id=draft_id,
     )
     if mode_result is not None and mode_result.skip_llm:
         return ErpPreprocessResult(

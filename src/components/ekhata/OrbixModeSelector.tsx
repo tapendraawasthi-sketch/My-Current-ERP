@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import React, { useState } from "react";
+import { BookOpen, Shield, Info } from "lucide-react";
 import {
   ORBIX_MODE_META,
   type OrbixOperatingMode,
@@ -12,71 +12,96 @@ interface Props {
 }
 
 const OrbixModeSelector: React.FC<Props> = ({ mode, onChange, disabled }) => {
-  const [open, setOpen] = useState(false);
-  const rootRef = useRef<HTMLDivElement>(null);
-  const meta = ORBIX_MODE_META[mode];
-
-  useEffect(() => {
-    if (!open) return;
-    const onDoc = (e: MouseEvent) => {
-      if (!rootRef.current?.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", onDoc);
-    return () => document.removeEventListener("mousedown", onDoc);
-  }, [open]);
+  const [infoOpen, setInfoOpen] = useState(false);
 
   return (
-    <div ref={rootRef} className="relative">
+    <div className="relative flex items-center gap-1" data-component="orbix-mode-selector" data-testid="orbix-mode-selector">
+      <div
+        role="tablist"
+        aria-label="Orbix operating mode"
+        className="inline-flex rounded-[var(--ox-radius-md)] border border-[var(--ox-border)] bg-[var(--ox-surface-muted)] p-0.5"
+      >
+        {(["ask", "accountant"] as OrbixOperatingMode[]).map((m) => {
+          const selected = m === mode;
+          const Icon = m === "ask" ? Shield : BookOpen;
+          return (
+            <button
+              key={m}
+              type="button"
+              role="tab"
+              aria-selected={selected}
+              disabled={disabled}
+              data-testid={`orbix-mode-${m}`}
+              onClick={() => onChange(m)}
+              className={`inline-flex h-8 items-center gap-1.5 rounded-[6px] px-2.5 text-[12px] font-medium transition-colors duration-200 disabled:opacity-50 ${
+                selected
+                  ? m === "ask"
+                    ? "bg-[var(--ox-surface)] text-[var(--ox-info)] shadow-[var(--ox-shadow-sm)]"
+                    : "bg-[var(--ox-surface)] text-[var(--ox-primary)] shadow-[var(--ox-shadow-sm)]"
+                  : "text-[var(--ox-text-muted)] hover:text-[var(--ox-text)]"
+              }`}
+              title={ORBIX_MODE_META[m].description}
+            >
+              <Icon className="h-3.5 w-3.5" aria-hidden />
+              {ORBIX_MODE_META[m].label}
+              {selected && (
+                <span className="hidden text-[10px] font-normal text-[var(--ox-text-subtle)] sm:inline">
+                  {m === "ask" ? "· Read only" : "· Confirm"}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
       <button
         type="button"
-        disabled={disabled}
-        onClick={() => setOpen((v) => !v)}
-        className="flex h-7 max-w-[220px] items-center gap-1.5 rounded-md border border-white/10 bg-white/[0.04] px-2 text-left hover:bg-white/[0.07] disabled:opacity-50"
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        aria-label={`Orbix mode: ${meta.label}`}
-        data-component="orbix-mode-selector"
+        onClick={() => setInfoOpen((v) => !v)}
+        className="inline-flex h-8 w-8 items-center justify-center rounded-[var(--ox-radius-md)] text-[var(--ox-text-subtle)] hover:bg-[var(--ox-surface-muted)] hover:text-[var(--ox-text)]"
+        aria-label="About Ask and Accountant modes"
+        aria-expanded={infoOpen}
       >
-        <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
-          Mode
-        </span>
-        <span className="truncate text-[11px] font-medium text-slate-200">{meta.label}</span>
-        <ChevronDown className="h-3 w-3 flex-shrink-0 text-slate-500" />
+        <Info className="h-3.5 w-3.5" />
       </button>
 
-      {open && (
-        <div
-          role="listbox"
-          className="absolute bottom-full left-0 z-50 mb-1 w-[280px] overflow-hidden rounded-md border border-white/10 bg-[#121722] shadow-xl"
-        >
-          {(["ask", "accountant"] as OrbixOperatingMode[]).map((m) => {
-            const info = ORBIX_MODE_META[m];
-            const selected = m === mode;
-            return (
-              <button
-                key={m}
-                type="button"
-                role="option"
-                aria-selected={selected}
-                onClick={() => {
-                  onChange(m);
-                  setOpen(false);
-                }}
-                className={`block w-full px-3 py-2.5 text-left hover:bg-white/[0.06] ${
-                  selected ? "bg-cyan-500/10" : ""
-                }`}
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-[12px] font-medium text-slate-100">{info.label}</span>
-                  {selected && (
-                    <span className="text-[9px] font-semibold uppercase text-cyan-400">Active</span>
-                  )}
-                </div>
-                <p className="mt-0.5 text-[10px] leading-snug text-slate-500">{info.description}</p>
-              </button>
-            );
-          })}
-        </div>
+      {infoOpen && (
+        <>
+          <button
+            type="button"
+            className="fixed inset-0 z-40"
+            aria-label="Close mode help"
+            onClick={() => setInfoOpen(false)}
+          />
+          <div
+            role="dialog"
+            className="absolute right-0 top-full z-50 mt-2 w-80 rounded-[var(--ox-radius-lg)] border border-[var(--ox-border)] bg-[var(--ox-surface-elevated)] p-3 shadow-[var(--ox-shadow-md)]"
+          >
+            <div className="mb-3">
+              <p className="flex items-center gap-1.5 text-[13px] font-semibold text-[var(--ox-text)]">
+                <Shield className="h-3.5 w-3.5 text-[var(--ox-info)]" />
+                Ask Mode
+              </p>
+              <ul className="mt-1.5 space-y-1 text-[12px] text-[var(--ox-text-muted)]">
+                <li>· Ask questions</li>
+                <li>· Generate reports</li>
+                <li>· Analyze ERP data</li>
+                <li>· No record changes</li>
+              </ul>
+            </div>
+            <div>
+              <p className="flex items-center gap-1.5 text-[13px] font-semibold text-[var(--ox-text)]">
+                <BookOpen className="h-3.5 w-3.5 text-[var(--ox-primary)]" />
+                Accountant Mode
+              </p>
+              <ul className="mt-1.5 space-y-1 text-[12px] text-[var(--ox-text-muted)]">
+                <li>· Everything in Ask Mode</li>
+                <li>· Create transaction drafts</li>
+                <li>· Modify authorized records</li>
+                <li>· Confirmation before posting</li>
+              </ul>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );

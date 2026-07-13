@@ -17,12 +17,22 @@ const EKhataProvider: React.FC = () => {
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === "k") {
         e.preventDefault();
         const state = useEKhataStore.getState();
-        if (state.isOpen && state.windowMode === "minimized") {
-          state.restorePanel();
-        } else if (!state.isOpen) {
-          state.openPanel();
-        } else {
+        const page = useStore.getState().currentPage;
+        const setPage = useStore.getState().setCurrentPage;
+        if (page === "orbix") {
+          setPage("dashboard");
           state.minimizePanel();
+        } else if (state.isOpen && state.windowMode === "minimized") {
+          setPage("orbix");
+          state.restorePanel();
+          state.maximizePanel();
+        } else if (!state.isOpen) {
+          setPage("orbix");
+          state.openPanel();
+          state.maximizePanel();
+        } else {
+          setPage("orbix");
+          state.maximizePanel();
         }
         closeFalcon();
       }

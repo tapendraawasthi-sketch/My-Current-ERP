@@ -89,6 +89,15 @@ try:
 except Exception as _orbix_exc:  # keep legacy endpoints working if Orbix fails to import
     print(f"[SERVER] Orbix v2 unavailable: {_orbix_exc}")
 
+# Orbix draft ack (Model B — Dexie posts, Python draft status sync)
+try:
+    from .orbix_drafts import router as orbix_drafts_router
+
+    app.include_router(orbix_drafts_router)
+    print("[SERVER] Orbix drafts router mounted at /orbix/drafts")
+except Exception as _drafts_exc:
+    print(f"[SERVER] Orbix drafts router unavailable: {_drafts_exc}")
+
 # OIP — Orbix Intelligence Platform (Constitutional Phase 0)
 try:
     from ..oip.api import router as oip_router
@@ -280,6 +289,38 @@ async def health() -> dict:
         "nlu_knowledge_chunks": get_nlu_knowledge_count(),
         "model": MODEL_NAME,
     }
+
+
+@app.get("/ready")
+async def ready() -> dict:
+    """Development readiness — distinguishes API vs provider vs Orbix pipeline."""
+    payload: dict = {
+        "status": "ready",
+        "api": True,
+        "database": True,
+        "provider": False,
+        "orbix_pipeline": False,
+        "posting_authority": "dexie_local_first",
+        "version": "phase4",
+    }
+    try:
+        if oip_chat_enabled():
+            runtime = await provider_runtime_status_payload()
+            payload["provider"] = bool(
+                runtime.get("llm_ready") or runtime.get("provider_runtime_ready")
+            )
+            payload["orbix_pipeline"] = bool(runtime.get("provider_runtime_enabled"))
+            payload["force_stub_providers"] = runtime.get("force_stub_providers")
+            payload["configured_provider"] = runtime.get("configured_provider")
+            if not payload["provider"]:
+                payload["status"] = "degraded"
+        else:
+            payload["status"] = "degraded"
+            payload["orbix_pipeline"] = False
+    except Exception as exc:
+        payload["status"] = "degraded"
+        payload["error"] = str(exc)[:200]
+    return payload
 
 
 @app.get("/status")

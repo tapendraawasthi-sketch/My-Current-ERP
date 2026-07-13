@@ -266,10 +266,10 @@ async def _simulate_voucher(args: dict) -> ToolResult:
 
 # ── post_confirmed_voucher (mutation; requires confirmation token) ────────────────
 async def _post_confirmed_voucher(args: dict) -> ToolResult:
-    # This tool is gated by requires_confirmation=True at the registry level, so
-    # the engine will only ever call it after the frontend echoes a confirm token.
-    # Actual persistence is delegated to the ERP frontend via confirmation_payload;
-    # the backend does not write to the browser ledger directly.
+    # Gated by requires_confirmation=True at the registry level.
+    # IMPORTANT (Model B): This tool does NOT write to the browser Dexie ledger.
+    # It only signals that the client may execute a local authoritative post.
+    # Never treat `ready_for_local_post` as proof that vouchers/journals/stock exist.
     if not args.get("confirmed"):
         return ToolResult(
             ok=False,
@@ -278,8 +278,19 @@ async def _post_confirmed_voucher(args: dict) -> ToolResult:
     payload = args.get("confirmation_payload") or {}
     return ToolResult(
         ok=True,
-        summary="Voucher confirmed for posting. The ERP client will persist it to the ledger.",
-        data={"posted": True, "confirmation_payload": payload},
+        summary=(
+            "Confirmation accepted for client-side posting. "
+            "The ERP browser will persist accounting records to Dexie; "
+            "this backend did not write the ledger."
+        ),
+        data={
+            "ready_for_local_post": True,
+            "confirmation_accepted_for_client_execution": True,
+            # Deprecated misleading field — kept false to prevent false ledger claims
+            "posted": False,
+            "posting_authority": "dexie_local_first",
+            "confirmation_payload": payload,
+        },
     )
 
 

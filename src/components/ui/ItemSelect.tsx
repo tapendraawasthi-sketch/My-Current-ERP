@@ -6,7 +6,7 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import { useStore } from "../../store/useStore";
 import { computeStockPosition } from "../../lib/stockUtils";
-import { ChevronDown, Search } from "lucide-react";
+import { ChevronDown, Search, X } from "lucide-react";
 
 interface ItemSelectProps {
   label?: string;
@@ -33,7 +33,9 @@ const ItemSelect: React.FC<ItemSelectProps> = ({
   const stockMovements = useStore((state) => state.stockMovements);
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [highlight, setHighlight] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
@@ -52,7 +54,7 @@ const ItemSelect: React.FC<ItemSelectProps> = ({
         const q = search.toLowerCase();
         return (
           item.name.toLowerCase().includes(q) ||
-          item.code.toLowerCase().includes(q) ||
+          (item.code || "").toLowerCase().includes(q) ||
           (item.nameNepali && item.nameNepali.toLowerCase().includes(q))
         );
       }
@@ -60,11 +62,14 @@ const ItemSelect: React.FC<ItemSelectProps> = ({
     });
   }, [items, search]);
 
+  useEffect(() => {
+    setHighlight(0);
+  }, [search, isOpen]);
+
   const selectedItem = useMemo(() => {
     return items.find((item) => item.id === value);
   }, [items, value]);
 
-  // Compute stock position map for filtered items to make rendering faster
   const stockPositions = useMemo(() => {
     const map = new Map<string, number>();
     filteredItems.forEach((item) => {
@@ -74,65 +79,161 @@ const ItemSelect: React.FC<ItemSelectProps> = ({
     return map;
   }, [filteredItems, stockMovements]);
 
+  const selectItem = (itemId: string) => {
+    onChange(itemId);
+    setIsOpen(false);
+    setSearch("");
+  };
+
+  const clearSelection = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onChange("");
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (disabled) return;
+    if (!isOpen && (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ")) {
+      e.preventDefault();
+      setIsOpen(true);
+      return;
+    }
+    if (!isOpen) return;
+    if (e.key === "Escape") {
+      e.preventDefault();
+      setIsOpen(false);
+      return;
+    }
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlight((h) => Math.min(h + 1, Math.max(filteredItems.length - 1, 0)));
+      return;
+    }
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlight((h) => Math.max(h - 1, 0));
+      return;
+    }
+    if (e.key === "Enter" && filteredItems[highlight]) {
+      e.preventDefault();
+      selectItem(filteredItems[highlight].id);
+    }
+  };
+
+  useEffect(() => {
+    if (!isOpen || !listRef.current) return;
+    const el = listRef.current.querySelector(`[data-idx="${highlight}"]`) as HTMLElement | null;
+    el?.scrollIntoView({ block: "nearest" });
+  }, [highlight, isOpen]);
+
   return (
-    <div className="flex flex-col gap-1 w-full relative" ref={containerRef} id={id}>
-      {label && <label className="text-[11px] font-semibold text-[#000000]">{label}</label>}
+    <div
+      className="relative flex w-full flex-col gap-1"
+      ref={containerRef}
+      id={id}
+      data-testid="item-select"
+    >
+      {label && (
+        <label className="text-[11px] font-medium text-[var(--ox-text-muted)]">
+          {label}
+          {required ? <span className="ml-0.5 text-[var(--ox-danger)]">*</span> : null}
+        </label>
+      )}
 
       <div className="relative w-full">
         <button
           type="button"
           disabled={disabled}
-          onClick={() => setIsOpen(!isOpen)}
-          className="w-full h-8 px-2.5 text-left text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] flex items-center justify-between disabled:bg-[#EBF5E2] disabled:cursor-not-allowed"
+          aria-haspopup="listbox"
+          aria-expanded={isOpen}
+          aria-invalid={Boolean(error) || undefined}
+          onClick={() => !disabled && setIsOpen(!isOpen)}
+          onKeyDown={onKeyDown}
+          className={`flex h-8 w-full items-center justify-between rounded-[var(--ox-radius-md)] border bg-[var(--ox-surface)] px-2.5 text-left text-[12px] text-[var(--ox-text)] focus:border-[var(--ox-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ox-focus-ring)] disabled:cursor-not-allowed disabled:bg-[var(--ox-surface-muted)] disabled:opacity-60 ${
+            error ? "border-[var(--ox-danger)]" : "border-[var(--ox-border-strong)]"
+          }`}
         >
-          <span className="truncate">
-            {selectedItem ? `${selectedItem.name} [${selectedItem.code}]` : placeholder}
+          <span className="min-w-0 flex-1 truncate">
+            {selectedItem
+              ? `${selectedItem.name}${selectedItem.code ? ` · ${selectedItem.code}` : ""}${
+                  selectedItem.unit ? ` · ${selectedItem.unit}` : ""
+                }`
+              : placeholder}
           </span>
-          <ChevronDown className="h-3 w-3 text-[#000000] shrink-0 ml-1" />
+          <span className="ml-1 flex shrink-0 items-center gap-0.5">
+            {selectedItem && !disabled ? (
+              <span
+                role="button"
+                tabIndex={-1}
+                aria-label="Clear selected item"
+                onClick={clearSelection}
+                className="rounded p-0.5 text-[var(--ox-text-subtle)] hover:bg-[var(--ox-surface-muted)] hover:text-[var(--ox-text)]"
+              >
+                <X className="h-3 w-3" />
+              </span>
+            ) : null}
+            <ChevronDown className="h-3 w-3 text-[var(--ox-text-subtle)]" />
+          </span>
         </button>
 
-        {isOpen && (
-          <div className="absolute z-50 w-full mt-1 bg-white border border-[#9DC07A] rounded-md shadow-lg max-h-64 overflow-hidden flex flex-col">
-            {/* Search input */}
-            <div className="p-1 border-b border-[#9DC07A] flex items-center gap-1 bg-[#EBF5E2] shrink-0">
-              <Search className="h-3 w-3 text-[#000000] ml-1.5" />
+        {isOpen && !disabled && (
+          <div
+            className="absolute z-50 mt-1 flex max-h-64 w-full flex-col overflow-hidden rounded-[var(--ox-radius-md)] border border-[var(--ox-border)] bg-[var(--ox-surface-elevated)] shadow-[var(--ox-shadow-md)]"
+            role="listbox"
+          >
+            <div className="flex shrink-0 items-center gap-1 border-b border-[var(--ox-border)] bg-[var(--ox-surface-muted)] p-1">
+              <Search className="ml-1.5 h-3 w-3 text-[var(--ox-text-subtle)]" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search item..."
-                className="w-full h-7 px-1 text-[11px] bg-transparent border-none focus:outline-none"
+                onKeyDown={onKeyDown}
+                placeholder="Search name or code…"
+                aria-label="Search items"
+                className="h-7 w-full border-none bg-transparent px-1 text-[11px] text-[var(--ox-text)] placeholder:text-[var(--ox-text-subtle)] focus:outline-none"
                 autoFocus
               />
             </div>
 
-            {/* List */}
-            <div className="overflow-y-auto max-h-52 py-1">
+            <div className="max-h-52 overflow-y-auto py-1" ref={listRef}>
               {filteredItems.length === 0 ? (
-                <div className="px-3 py-2 text-[11px] text-[#000000] text-center font-bold">
+                <div className="px-3 py-2 text-center text-[11px] text-[var(--ox-text-muted)]">
                   No matching items
                 </div>
               ) : (
-                filteredItems.map((item) => {
+                filteredItems.map((item, idx) => {
                   const isSelected = item.id === value;
                   const currentStock = stockPositions.get(item.id) ?? 0;
+                  const active = idx === highlight;
                   return (
                     <button
                       key={item.id}
                       type="button"
-                      onClick={() => {
-                        onChange(item.id);
-                        setIsOpen(false);
-                        setSearch("");
-                      }}
-                      className={`w-full px-3 py-1.5 text-left text-[12px] transition-colors flex items-center justify-between ${
-                        isSelected
-                          ? "bg-[#D4EABD] text-[#000000] font-semibold"
-                          : "text-[#000000] hover:bg-[#EBF5E2]"
-                      }`}
+                      role="option"
+                      aria-selected={isSelected}
+                      data-idx={idx}
+                      onMouseEnter={() => setHighlight(idx)}
+                      onClick={() => selectItem(item.id)}
+                      className={`flex w-full items-start justify-between gap-2 px-3 py-1.5 text-left text-[12px] transition-colors ${
+                        isSelected || active
+                          ? "bg-[var(--ox-primary-soft)] text-[var(--ox-primary)]"
+                          : "text-[var(--ox-text)] hover:bg-[var(--ox-surface-muted)]"
+                      } ${isSelected ? "font-semibold" : ""}`}
                     >
-                      <span className="truncate">
-                        [{item.code || ""}] {item.name} | Stock: {currentStock}
+                      <span className="min-w-0 flex-1 truncate">
+                        <span className="font-medium">{item.name}</span>
+                        {item.code ? (
+                          <span className="ml-1 text-[11px] text-[var(--ox-text-muted)]">
+                            {item.code}
+                          </span>
+                        ) : null}
+                        {item.unit ? (
+                          <span className="ml-1 text-[10px] uppercase text-[var(--ox-text-subtle)]">
+                            {item.unit}
+                          </span>
+                        ) : null}
+                      </span>
+                      <span className="shrink-0 font-mono text-[10px] tabular-nums text-[var(--ox-text-muted)]">
+                        {currentStock}
                       </span>
                     </button>
                   );
@@ -143,7 +244,9 @@ const ItemSelect: React.FC<ItemSelectProps> = ({
         )}
       </div>
 
-      {error && <span className="text-[10px] text-red-500 font-semibold mt-0.5">{error}</span>}
+      {error ? (
+        <span className="mt-0.5 text-[10px] font-semibold text-[var(--ox-danger)]">{error}</span>
+      ) : null}
     </div>
   );
 };

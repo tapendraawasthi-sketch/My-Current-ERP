@@ -7,6 +7,8 @@ import pytest
 from src.oip.application.dto.intelligence_request import IntelligenceResponseDto
 from src.oip.domain.value_objects import ActionPayload, ActionType
 from src.api.oip_chat_ingress import (
+    derive_orbix_response_type,
+    derive_orbix_status,
     map_response_to_orbix,
     oip_chat_enabled,
     provider_runtime_llm_ready,
@@ -66,4 +68,42 @@ async def test_stream_orbix_kernel_events_emits_complete():
     joined = "".join(events)
     assert '"type": "complete"' in joined
     assert "Hello from kernel" in joined
+    assert '"response_type": "normal_answer"' in joined
     assert oip_chat_enabled() is True
+
+
+def test_derive_orbix_response_type_mode_restriction():
+    assert (
+        derive_orbix_response_type(
+            error={"type": "mode_restriction"},
+            card=None,
+            report_spec=None,
+            action="chat",
+        )
+        == "mode_restriction"
+    )
+    assert derive_orbix_status("mode_restriction") == "requires_input"
+
+
+def test_derive_orbix_response_type_clarification():
+    assert (
+        derive_orbix_response_type(
+            error={"type": "clarification_required", "draft_id": "d1"},
+            card=None,
+            report_spec=None,
+            action="chat",
+        )
+        == "clarification_required"
+    )
+
+
+def test_derive_orbix_response_type_confirmation():
+    assert (
+        derive_orbix_response_type(
+            error=None,
+            card={"draft_id": "d1", "amount": 100},
+            report_spec=None,
+            action="confirm",
+        )
+        == "confirmation_required"
+    )

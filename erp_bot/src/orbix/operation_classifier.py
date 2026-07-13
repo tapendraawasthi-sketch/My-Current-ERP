@@ -33,9 +33,9 @@ _GREETING = re.compile(
     re.I,
 )
 _ACCOUNTING_Q = re.compile(
-    r"\b(what\s+is|explain|how\s+(do|does|to)|define|meaning\s+of)\b.*"
-    r"\b(depreciation|journal|ledger|double[\s-]?entry|vat|tds|nfrs|ifrs|"
-    r"balance\s+sheet|trial\s+balance|accrual|provision)\b",
+    r"\b(what\s+is|explain|how\s+(?:is|are|was|were|do|does|to)|define|meaning\s+of)\b.*"
+    r"\b(depreciation|journal|ledger|double[\s-]?entry|vat|output\s+vat|tds|nfrs|ifrs|"
+    r"balance\s+sheet|trial\s+balance|accrual|provision|sales\s+return|credit\s*note)\b",
     re.I,
 )
 _REPORT = re.compile(
@@ -53,9 +53,12 @@ _REPORT_FOLLOW = re.compile(
 )
 _TXN_CREATE = re.compile(
     r"\b(enter|create|record|post|pass|make)\b.*\b(purchase|sale|sales|payment|"
-    r"receipt|journal|voucher|entry|invoice)\b|"
+    r"receipt|journal|voucher|entry|invoice|return|credit\s*note|contra)\b|"
     r"\b(bought|purchased|kineko|kinyo|kharid|sold|becheko|bikri|paid|received|"
-    r"tiryo|diyo|payo)\b",
+    r"tiryo|diyo|payo|returned|return(?:ing)?|firta|deposit|withdraw(?:al)?|"
+    r"transfer)\b|"
+    r"\b(sales\s+return|credit\s*notes?|cash\s+to\s+bank|bank\s+to\s+cash|"
+    r"general\s+journal)\b",
     re.I,
 )
 _TXN_MODIFY = re.compile(
@@ -120,8 +123,9 @@ def classify_operation(
     if has_pending_draft:
         # Prefer merging into the open draft unless the user clearly starts a new txn/report
         new_txn = re.search(
-            r"\b(enter|create|record|post)\b.*\b(purchase|sale|payment|receipt|journal|voucher|entry)\b|"
-            r"\b(i\s+)?(bought|purchased|sold|kineko|kinyo|kharid|becheko)\b",
+            r"\b(enter|create|record|post)\b.*\b(purchase|sale|payment|receipt|journal|voucher|entry|return|credit\s*note)\b|"
+            r"\b(i\s+)?(bought|purchased|sold|kineko|kinyo|kharid|becheko|returned|firta)\b|"
+            r"\b(sales\s+return|credit\s*notes?)\b",
             text,
             re.I,
         )
@@ -146,6 +150,10 @@ def classify_operation(
     if _REPORT.search(text):
         return ClassificationResult(OperationClass.REPORT_REQUEST, 0.92, "report_generation")
 
+    # Conceptual VAT / return questions must win over return-language txn create
+    if _ACCOUNTING_Q.search(text):
+        return ClassificationResult(OperationClass.ACCOUNTING_QUESTION, 0.85, "accounting_qa")
+
     if _TXN_REVERSE.search(text):
         return ClassificationResult(OperationClass.TRANSACTION_REVERSE, 0.88, "transaction_reverse")
     if _TXN_MODIFY.search(text):
@@ -155,14 +163,26 @@ def classify_operation(
     if _MASTER_MODIFY.search(text):
         return ClassificationResult(OperationClass.MASTER_DATA_MODIFY, 0.85, "master_modify")
     if _TXN_CREATE.search(text):
-        intent = "purchase_entry" if re.search(r"\b(bought|purchase|kineko|kinyo|kharid)\b", text, re.I) else "transaction_create"
+        if re.search(r"\b(bought|purchase|kineko|kinyo|kharid)\b", text, re.I) and not re.search(
+            r"\b(paid|received|deposit|transfer|contra)\b", text, re.I
+        ):
+            intent = "purchase_entry"
+        elif re.search(r"\b(returned|return|firta|credit\s*note|sales\s+return)\b", text, re.I):
+            intent = "sales_return_entry"
+        elif re.search(r"\b(received|payment\s+in|customer\s+paid|collected)\b", text, re.I):
+            intent = "customer_receipt"
+        elif re.search(r"\b(paid|payment\s+out|supplier\s+payment)\b", text, re.I):
+            intent = "supplier_payment"
+        elif re.search(r"\b(contra|cash\s+to\s+bank|deposit|withdraw|transfer)\b", text, re.I):
+            intent = "cash_to_bank"
+        elif re.search(r"\b(journal|debit\s+.\s+credit)\b", text, re.I):
+            intent = "general_journal"
+        else:
+            intent = "transaction_create"
         return ClassificationResult(OperationClass.TRANSACTION_CREATE, 0.9, intent)
 
     if _ERP_QUERY.search(text):
         return ClassificationResult(OperationClass.ERP_DATA_QUERY, 0.85, "erp_query")
-
-    if _ACCOUNTING_Q.search(text):
-        return ClassificationResult(OperationClass.ACCOUNTING_QUESTION, 0.85, "accounting_qa")
 
     if has_active_report and len(text) < 120:
         return ClassificationResult(OperationClass.REPORT_FOLLOW_UP, 0.6, "report_follow_up")

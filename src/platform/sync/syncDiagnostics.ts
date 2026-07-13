@@ -7,6 +7,8 @@ export interface SyncDiagnosticRecord {
     | "push-failed"
     | "pull-success"
     | "pull-failed"
+    | "pull-conflict"
+    | "pull-reject"
     | "auth-rejected"
     | "conflict"
     | "bootstrap";

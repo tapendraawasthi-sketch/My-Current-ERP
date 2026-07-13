@@ -10,12 +10,11 @@ export const ORBIX_MODE_META: Record<
 > = {
   ask: {
     label: "Ask",
-    description: "Ask questions, generate reports and analyze ERP data.",
+    description: "Questions, reports and analysis — read only.",
   },
   accountant: {
     label: "Accountant",
-    description:
-      "Ask questions, generate reports and create or modify authorized ERP records.",
+    description: "Create and modify authorized records — confirmation required.",
   },
 };
 

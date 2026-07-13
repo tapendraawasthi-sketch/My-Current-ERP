@@ -169,6 +169,8 @@ const StockBook: React.FC = () => {
           <select
             value={selectedItemId}
             onChange={(e) => setSelectedItemId(e.target.value)}
+            data-testid="stockbook-item-select"
+            aria-label="Stock item"
             className={`${inputCls} min-w-[220px]`}
           >
             <option value="">Select item</option>

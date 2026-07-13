@@ -41,6 +41,16 @@ const LEGACY_KHATA_ACCOUNTS: Record<KhataIntent, { debit: string; credit: string
   khata_stock_purchase: { debit: "KH-STOCK", credit: "KH-CASH" },
   khata_stock_sale_cogs: { debit: "KH-PUR", credit: "KH-STOCK" },
   khata_contra_cash_bank: { debit: "KH-BANK", credit: "KH-CASH" },
+  // Authoritative returns use postSalesAdjustmentTransaction; legacy map unused.
+  khata_sales_return: null,
+  khata_purchase_return: null,
+  khata_customer_advance: { debit: "KH-BANK", credit: "KH-DEBT" },
+  khata_employee_advance: { debit: "KH-DEBT", credit: "KH-CASH" },
+  khata_opening_balance: null,
+  khata_asset_disposal: null,
+  khata_inventory_write_down: { debit: "KH-EXP", credit: "KH-STOCK" },
+  khata_commission_income: { debit: "KH-CASH", credit: "KH-OTH-INC" },
+  khata_rent_expense: { debit: "KH-EXP", credit: "KH-CASH" },
 };
 
 async function ensureKhataAccounts(): Promise<Map<string, string>> {

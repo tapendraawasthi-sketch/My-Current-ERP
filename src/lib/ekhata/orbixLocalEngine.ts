@@ -14,9 +14,12 @@ export interface OrbixLocalResult {
 
 const TODAY_ENTRY = /\b(aaja|aaj|today).*(entry|prawisti|प्रविष्टि)|entry\s*vayo|kunai\s*entry|kati\s*entry|aajako\s*entry/i;
 const YESTERDAY_ENTRY = /\b(hijo|yesterday).*(entry|prawisti)/i;
-const CASH_Q = /\b(cash|nagad|नगद)\s*(kati|balance|baki)?/i;
-const BANK_Q = /\b(bank)\s*(balance|kati)?/i;
+const CASH_Q = /\b(cash|nagad|नगद)\s+(kati|balance|baki)\b/i;
+const BANK_Q = /\b(bank)\s+(balance|kati)\b|\b(bank\s*balance|cash\s*balance)\b/i;
 const PARTY_BAKI = /(\w{2,})\s+ko\s+(baki|balance|khata|udhaar)/i;
+/** Mutations must reach Orbix draft/preview — never answer as a balance lookup. */
+const MUTATION_SIGNAL =
+  /\b(return(?:ed|ing)?|firta|refund|credit\s*note|debit\s*note|sold|sell(?:ing)?|sale|bought|purchase|record|post|enter|invoice\s+(?:SI-|PI-)|received|receipt|paid|payment|deposit|withdraw(?:al)?|transfer|contra|journal|advance|withholding|adjust)\b/i;
 
 function fmt(n: number): string {
   return `Rs. ${Number(n || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -28,6 +31,12 @@ export async function handleOrbixLocalQuery(
 ): Promise<OrbixLocalResult | null> {
   const trimmed = text.trim();
   if (!trimmed) return null;
+
+  // Sales returns / refunds / sales often contain the word "cash" or "bank"
+  // without being a balance inquiry (e.g. "refund the customer in cash").
+  if (MUTATION_SIGNAL.test(trimmed)) {
+    return null;
+  }
 
   const today = new Date().toISOString().slice(0, 10);
   const data = snapshot ?? (await buildSessionSnapshot());

@@ -45,7 +45,9 @@ async function openHarness(page: import("@playwright/test").Page) {
 }
 
 function confirmCardAmount(page: import("@playwright/test").Page, amount: string) {
-  return page.locator('[data-component="ekhata-panel"] dd.font-mono').filter({ hasText: amount });
+  return page
+    .locator('[data-component="transaction-draft-card"], [data-component="ekhata-panel"]')
+    .getByText(amount, { exact: false });
 }
 
 async function sendEkhataMessage(page: import("@playwright/test").Page, text: string) {
@@ -55,7 +57,9 @@ async function sendEkhataMessage(page: import("@playwright/test").Page, text: st
 }
 
 async function waitForConfirmCard(page: import("@playwright/test").Page) {
-  await expect(page.getByText(/Confirm CA Journal Entry/i)).toBeVisible({ timeout: 20_000 });
+  await expect(
+    page.locator('[data-component="transaction-draft-card"]').or(page.getByText(/Confirm (CA )?Journal Entry|Transaction draft|Batch draft/i)),
+  ).toBeVisible({ timeout: 20_000 });
 }
 
 test.describe("e-Khata panel", () => {
@@ -67,19 +71,19 @@ test.describe("e-Khata panel", () => {
     await sendEkhataMessage(page, "Ram lai 500 udhaar diye");
     await waitForConfirmCard(page);
     await expect(confirmCardAmount(page, "NPR 500")).toBeVisible();
-    await expect(page.getByText("Journal Balanced")).toBeVisible();
+    await expect(page.getByText(/Journal Balanced|Balanced/i)).toBeVisible();
   });
 
   test("cash sale confirm and cancel", async ({ page }) => {
     await sendEkhataMessage(page, "aaja 200 ko nagad bikri vayo");
     await waitForConfirmCard(page);
-    await page.getByRole("button", { name: "Cancel ✗" }).click();
-    await expect(page.getByText("Confirm CA Journal Entry")).toHaveCount(0);
+    await page.getByRole("button", { name: /Cancel draft|Cancel/i }).first().click();
+    await expect(page.locator('[data-component="transaction-draft-card"]')).toHaveCount(0);
   });
 
   test("accounting question stays in chat", async ({ page }) => {
     await sendEkhataMessage(page, "sampatti k ho");
-    await expect(page.getByText("Confirm CA Journal Entry")).toHaveCount(0);
+    await expect(page.locator('[data-component="transaction-draft-card"]')).toHaveCount(0);
     await expect(page.locator('[data-component="ekhata-panel"]')).toContainText(/asset|sampatti/i);
   });
 
@@ -94,11 +98,11 @@ test.describe("e-Khata panel", () => {
 
     await sendEkhataMessage(page, "Ram lai 500 udhaar diye");
     await waitForConfirmCard(page);
-    await page.getByRole("button", { name: "Confirm ✓" }).click();
+    await page.getByRole("button", { name: /Confirm and post|Confirm/i }).first().click();
 
     await expect(page.getByText(/Safalta! Entry save bhayo/i)).toBeVisible({ timeout: 20_000 });
     await expect(page.getByText(/KH-\d+/)).toBeVisible();
-    await expect(page.getByText("Confirm CA Journal Entry")).toHaveCount(0);
+    await expect(page.locator('[data-component="transaction-draft-card"]')).toHaveCount(0);
 
     await expect
       .poll(async () => (await getKhataVouchers(page)).length, { timeout: 10_000 })
@@ -120,7 +124,7 @@ test.describe("e-Khata panel", () => {
   test("cash sale confirm writes voucher with correct amount", async ({ page }) => {
     await sendEkhataMessage(page, "aaja 200 ko nagad bikri vayo");
     await waitForConfirmCard(page);
-    await page.getByRole("button", { name: "Confirm ✓" }).click();
+    await page.getByRole("button", { name: /Confirm and post|Confirm/i }).first().click();
     await expect(page.getByText(/Safalta! Entry save bhayo/i)).toBeVisible({ timeout: 20_000 });
 
     const vouchers = await getKhataVouchers(page);
@@ -136,7 +140,7 @@ test.describe("e-Khata panel", () => {
     await sendEkhataMessage(page, "Shyam le 2000 tiryo");
     await waitForConfirmCard(page);
     await expect(confirmCardAmount(page, "NPR 2,000")).toBeVisible();
-    await page.getByRole("button", { name: "Confirm ✓" }).click();
+    await page.getByRole("button", { name: /Confirm and post|Confirm/i }).first().click();
 
     await expect(page.getByText(/Safalta! Entry save bhayo/i)).toBeVisible({ timeout: 20_000 });
 
@@ -162,7 +166,7 @@ test.describe("e-Khata panel", () => {
     await sendEkhataMessage(page, "Hari lai 1500 payment gareko");
     await waitForConfirmCard(page);
     await expect(confirmCardAmount(page, "NPR 1,500")).toBeVisible();
-    await page.getByRole("button", { name: "Confirm ✓" }).click();
+    await page.getByRole("button", { name: /Confirm and post|Confirm/i }).first().click();
 
     await expect(page.getByText(/Safalta! Entry save bhayo/i)).toBeVisible({ timeout: 20_000 });
 
@@ -187,7 +191,7 @@ test.describe("e-Khata panel", () => {
     await sendEkhataMessage(page, "electricity kharcha 3500");
     await waitForConfirmCard(page);
     await expect(confirmCardAmount(page, "NPR 3,500")).toBeVisible();
-    await page.getByRole("button", { name: "Confirm ✓" }).click();
+    await page.getByRole("button", { name: /Confirm and post|Confirm/i }).first().click();
 
     await expect(page.getByText(/Safalta! Entry save bhayo/i)).toBeVisible({ timeout: 20_000 });
 
@@ -209,7 +213,7 @@ test.describe("e-Khata panel", () => {
     await sendEkhataMessage(page, "kharid 4500 cash ma");
     await waitForConfirmCard(page);
     await expect(confirmCardAmount(page, "NPR 4,500")).toBeVisible();
-    await page.getByRole("button", { name: "Confirm ✓" }).click();
+    await page.getByRole("button", { name: /Confirm and post|Confirm/i }).first().click();
 
     await expect(page.getByText(/Safalta! Entry save bhayo/i)).toBeVisible({ timeout: 20_000 });
 
@@ -231,7 +235,7 @@ test.describe("e-Khata panel", () => {
     await sendEkhataMessage(page, "Gita bata 6000 udhaar ma saman kineko");
     await waitForConfirmCard(page);
     await expect(confirmCardAmount(page, "NPR 6,000")).toBeVisible();
-    await page.getByRole("button", { name: "Confirm ✓" }).click();
+    await page.getByRole("button", { name: /Confirm and post|Confirm/i }).first().click();
 
     await expect(page.getByText(/Safalta! Entry save bhayo/i)).toBeVisible({ timeout: 20_000 });
 

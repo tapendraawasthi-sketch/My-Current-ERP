@@ -50,7 +50,9 @@ _EXPLICIT_MONEY = re.compile(
 _ITEM = re.compile(
     r"\b(?:bought|purchased|kineko|kinyo|kharid|purchase(?:d)?)\s+"
     r"(?:(?:\d+(?:\.\d+)?)\s*\w+\s+)?(?:of\s+)?"
-    r"([A-Za-z\u0900-\u097F][A-Za-z\u0900-\u097F\s]{1,40}?)(?:\s+from|\s+at|\s+@|\s+for|\s+in|\s+on|\s*$)",
+    r"(?:(?:a|an|the)\s+)?"
+    r"([A-Za-z\u0900-\u097F][A-Za-z\u0900-\u097F\s]{0,40}?)"
+    r"(?:\s+from|\s+at|\s+@|\s+for|\s+in|\s+on|[.,;!?]*)\s*$",
     re.I,
 )
 _ITEM_BARE = re.compile(
@@ -67,6 +69,12 @@ _BANK = re.compile(r"\b(bank|cheque|check|transfer|neft|rtgs)\b", re.I)
 _CREDIT = re.compile(r"\b(credit|udhaar|udhar|उधारो?|on\s+account)\b", re.I)
 _PURCHASE_SIGNAL = re.compile(
     r"\b(bought|purchased|purchase|kineko|kinyo|kharid|किनेको|खरिद)\b",
+    re.I,
+)
+# Clarification shorthand: "1, 50000 cash" or "1 50000 cash"
+_CLARIFY_QTY_TOTAL_PAY = re.compile(
+    r"^\s*(\d+(?:\.\d+)?)\s*[, ]+\s*(\d+(?:,\d{3})*(?:\.\d+)?)\s+"
+    r"(cash|bank|credit|nagar|नगद)\s*[.!]?\s*$",
     re.I,
 )
 
@@ -115,6 +123,7 @@ class PurchaseDraft:
     draft_id: str
     status: DraftStatus
     intent: str = "purchase"
+    version: int = 1
     item: ItemRef = field(default_factory=ItemRef)
     quantity: Decimal | None = None
     unit: str | None = None
@@ -163,6 +172,7 @@ class PurchaseDraft:
             draft_id=data["draft_id"],
             status=data.get("status", "draft"),
             intent=data.get("intent", "purchase"),
+            version=int(data.get("version") or 1),
             item=ItemRef(id=item.get("id"), name=item.get("name"), raw_name=item.get("raw_name")),
             quantity=_d(data.get("quantity")),
             unit=data.get("unit"),
@@ -204,6 +214,25 @@ def is_purchase_message(text: str) -> bool:
 def extract_purchase_fields(text: str) -> dict[str, Any]:
     """Extract known purchase fields. Unknown stay absent (caller leaves null)."""
     fields: dict[str, Any] = {}
+
+    clarify = _CLARIFY_QTY_TOTAL_PAY.match(text.strip())
+    if clarify:
+        fields["quantity"] = _d(clarify.group(1))
+        if not fields.get("unit"):
+            fields["unit"] = "pcs"
+        fields["total_amount"] = _d(clarify.group(2).replace(",", ""))
+        pay = clarify.group(3).lower()
+        if pay in {"nagar", "नगद"} or pay == "cash":
+            fields["payment_method"] = "cash"
+            fields["purchase_type"] = "cash"
+        elif pay == "bank":
+            fields["payment_method"] = "bank"
+            fields["purchase_type"] = "bank"
+        else:
+            fields["payment_method"] = "credit"
+            fields["purchase_type"] = "credit"
+        return fields
+
     qty_match = _QTY_UNIT.search(text)
     if qty_match:
         fields["quantity"] = _d(qty_match.group(1))
@@ -283,23 +312,40 @@ def extract_purchase_fields(text: str) -> dict[str, Any]:
 
 def merge_fields(draft: PurchaseDraft, fields: dict[str, Any], message: str) -> PurchaseDraft:
     draft.source_messages.append(message)
+    changed = False
     if fields.get("quantity") is not None and draft.quantity is None:
         draft.quantity = fields["quantity"]
+        changed = True
     if fields.get("unit") and not draft.unit:
         draft.unit = fields["unit"]
-    if fields.get("rate") is not None:
+        changed = True
+    if fields.get("rate") is not None and draft.rate != fields["rate"]:
         draft.rate = fields["rate"]
-    if fields.get("total_amount") is not None:
+        changed = True
+    if fields.get("total_amount") is not None and draft.total_amount != fields["total_amount"]:
         draft.total_amount = fields["total_amount"]
+        changed = True
     if fields.get("item"):
         item = fields["item"]
-        draft.item = ItemRef(id=item.get("id"), name=item.get("name"), raw_name=item.get("raw_name"))
+        new_item = ItemRef(id=item.get("id"), name=item.get("name"), raw_name=item.get("raw_name"))
+        if (draft.item.name or "") != (new_item.name or ""):
+            changed = True
+        draft.item = new_item
     if fields.get("supplier"):
         supplier = fields["supplier"]
-        draft.supplier = PartyRef(id=supplier.get("id"), name=supplier.get("name"))
-    if fields.get("payment_method"):
+        new_supplier = PartyRef(id=supplier.get("id"), name=supplier.get("name"))
+        if (draft.supplier.name or "") != (new_supplier.name or ""):
+            changed = True
+        draft.supplier = new_supplier
+    if fields.get("payment_method") and draft.payment_method != fields["payment_method"]:
         draft.payment_method = fields["payment_method"]
         draft.purchase_type = fields.get("purchase_type") or fields["payment_method"]
+        changed = True
+    if changed and draft.source_messages and len(draft.source_messages) > 1:
+        draft.version = int(draft.version or 1) + 1
+        # Invalidate prior preview when authoritative fields change
+        draft.preview = None
+        draft.preview_hash = None
     return draft
 
 
@@ -443,7 +489,8 @@ def build_preview(draft: PurchaseDraft) -> dict[str, Any]:
         + f" @ {_money(draft.rate)}/{draft.unit}",
         "confidence": 0.95,
         "method": "purchase_draft",
-        "preview_version": 1,
+        "draft_version": draft.version,
+        "preview_version": draft.version,
     }
     preview["preview_hash"] = _preview_hash(preview)
     return preview
@@ -575,6 +622,8 @@ def to_confirmation_card(draft: PurchaseDraft) -> dict[str, Any] | None:
         return None
     card = dict(draft.preview)
     card["draft_id"] = draft.draft_id
+    card["draft_version"] = draft.version
+    card["preview_version"] = draft.version
     card["preview_hash"] = draft.preview_hash
     card["idempotency_key"] = draft.idempotency_key
     card["raw_text"] = " | ".join(draft.source_messages)
