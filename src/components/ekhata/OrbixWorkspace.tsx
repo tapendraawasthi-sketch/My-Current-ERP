@@ -141,7 +141,13 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
       setShowJumpLatest(true);
       return;
     }
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = scrollRef.current;
+    if (!el) return;
+    // scrollIntoView(block:start) on the end sentinel pins an empty node to the
+    // top of the scrollport and hides all messages above it.
+    requestAnimationFrame(() => {
+      el.scrollTop = el.scrollHeight;
+    });
     setShowJumpLatest(false);
   }, [messages, pendingCard, pendingCompoundBatch, isLoading, stickToBottom]);
 
@@ -171,7 +177,12 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
   const jumpToLatest = () => {
     setStickToBottom(true);
     setShowJumpLatest(false);
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = scrollRef.current;
+    if (el) {
+      requestAnimationFrame(() => {
+        el.scrollTop = el.scrollHeight;
+      });
+    }
   };
 
   const handleSend = async (textOverride?: string) => {
@@ -312,11 +323,11 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
         </div>
 
         {/* Main canvas */}
-        <div className="flex min-w-0 flex-1 flex-col">
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col">
           <div
             ref={scrollRef}
             onScroll={handleScroll}
-            className="relative flex-1 overflow-y-auto px-4 py-4"
+            className="relative min-h-0 flex-1 overflow-y-auto px-4 py-4"
           >
             {messages.length === 0 && !pendingCard && !pendingCompoundBatch && !showTyping ? (
               <div className="mx-auto flex max-w-2xl flex-col items-center px-4 py-10 text-center">

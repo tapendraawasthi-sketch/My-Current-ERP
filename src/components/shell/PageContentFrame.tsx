@@ -63,7 +63,7 @@ export const PageContentFrame: React.FC<{
       data-testid="shell-page-content-frame"
       className={`page-enter w-full outline-none ${MODE_CLASS[mode]} ${
         immersive
-          ? "h-full"
+          ? "h-full min-h-0"
           : isMobile
             ? "pb-[max(1rem,env(safe-area-inset-bottom))]"
             : ""

@@ -144,7 +144,7 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
         <main
           className={`min-w-0 flex-1 bg-[var(--ds-canvas)] ${
             isOrbixPage
-              ? "overflow-hidden p-2 sm:p-3"
+              ? "flex h-full min-h-0 flex-col overflow-hidden p-2 sm:p-3"
               : isMobile
                 ? "overflow-y-auto p-3 pb-20"
                 : "overflow-y-auto p-4 md:p-5"
