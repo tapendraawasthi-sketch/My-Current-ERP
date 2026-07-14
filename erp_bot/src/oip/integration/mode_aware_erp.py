@@ -123,11 +123,15 @@ def handle_mode_aware_erp(
     has_active_report: bool = False,
     has_pending_confirmation: bool = False,
     draft_id: str | None = None,
+    last_party: str | None = None,
+    recent_parties: list[str] | None = None,
 ) -> ModeAwareResult | None:
     """Return a deterministic result when mode/classification handles the turn.
 
     Returns None to fall through to legacy preprocess / LLM for general chat.
     """
+    from .nepali_shop_nlu import handle_shop_nlu, is_greeting_message
+
     mode = normalize_orbix_mode(orbix_mode, invalid_policy="ask")
     can_post = user_may_post_purchase(role=user_role, permissions=permissions)
     caps = resolve_capabilities(mode, can_post=can_post)
@@ -349,7 +353,40 @@ def handle_mode_aware_erp(
         )
 
     if op == OperationClass.GENERAL_QUESTION and not pending:
+        # Greeting must never fall through to Language KB / encyclopedia LLM.
+        if (classification.intent_hint == "greeting") or is_greeting_message(message):
+            shop = handle_shop_nlu(message, session_id=session_id)
+            if shop and shop.skip_llm:
+                return ModeAwareResult(
+                    skip_llm=True,
+                    text=shop.text,
+                    intent=shop.intent,
+                    method=shop.method,
+                    operation_class=op.value,
+                    orbix_mode=mode,
+                    capabilities=caps.to_dict(),
+                )
         return None
+
+    if op == OperationClass.ERP_DATA_QUERY:
+        shop = handle_shop_nlu(
+            message,
+            session_id=session_id,
+            last_party=last_party,
+            recent_parties=recent_parties,
+        )
+        if shop and shop.skip_llm:
+            return ModeAwareResult(
+                skip_llm=True,
+                text=shop.text,
+                intent=shop.intent,
+                method=shop.method,
+                operation_class=op.value,
+                orbix_mode=mode,
+                capabilities=caps.to_dict(),
+            )
+        return None
+
     # Accounting / VAT explanation questions fall through to LLM - never mutate
     if op == OperationClass.ACCOUNTING_QUESTION:
         return None

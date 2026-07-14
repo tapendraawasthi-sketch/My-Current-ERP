@@ -17,9 +17,21 @@ const YESTERDAY_ENTRY = /\b(hijo|yesterday).*(entry|prawisti)/i;
 const CASH_Q = /\b(cash|nagad|नगद)\s+(kati|balance|baki)\b/i;
 const BANK_Q = /\b(bank)\s+(balance|kati)\b|\b(bank\s*balance|cash\s*balance)\b/i;
 const PARTY_BAKI = /(\w{2,})\s+ko\s+(baki|balance|khata|udhaar)/i;
+const PARTY_LAI = /([A-Za-z\u0900-\u097F]{2,40})\s+lai\s+(?:kati\s+)?(?:dinu|tirnu|paunu)/i;
+const BARE_TIRNU = /\b(?:paisa\s+)?kati\s+(?:tirnu|dinu|paunu)\b/i;
 /** Mutations must reach Orbix draft/preview — never answer as a balance lookup. */
 const MUTATION_SIGNAL =
-  /\b(return(?:ed|ing)?|firta|refund|credit\s*note|debit\s*note|sold|sell(?:ing)?|sale|bought|purchase|record|post|enter|invoice\s+(?:SI-|PI-)|received|receipt|paid|payment|deposit|withdraw(?:al)?|transfer|contra|journal|advance|withholding|adjust)\b/i;
+  /\b(return(?:ed|ing)?|firta|refund|credit\s*note|debit\s*note|sold|sell(?:ing)?|sale|bought|purchase|kineko|kinye|kinyo|record|post|enter|invoice\s+(?:SI-|PI-)|received|receipt|paid|payment|deposit|withdraw(?:al)?|transfer|contra|journal|advance|withholding|adjust)\b/i;
+
+const STOP_PARTY = new Set(["maile", "mai", "paisa", "kati", "ko", "lai", "cash", "bank", "aaja", "hijo"]);
+
+export function extractPartyMention(text: string): string | null {
+  const lai = text.match(PARTY_LAI);
+  if (lai?.[1] && !STOP_PARTY.has(lai[1].toLowerCase())) return lai[1];
+  const ko = text.match(PARTY_BAKI);
+  if (ko?.[1] && !STOP_PARTY.has(ko[1].toLowerCase())) return ko[1];
+  return null;
+}
 
 function fmt(n: number): string {
   return `Rs. ${Number(n || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -85,10 +97,10 @@ export async function handleOrbixLocalQuery(
     };
   }
 
-  const partyMatch = trimmed.match(PARTY_BAKI);
+  const partyMatch = trimmed.match(PARTY_BAKI) || trimmed.match(PARTY_LAI);
   if (partyMatch?.[1]) {
     const party = partyMatch[1];
-    if (!["ko", "aaja", "hijo", "cash", "bank"].includes(party.toLowerCase())) {
+    if (!STOP_PARTY.has(party.toLowerCase())) {
       try {
         const bal = await getPartyBalance(party);
         const net = bal.netBalance;
@@ -103,6 +115,11 @@ export async function handleOrbixLocalQuery(
         return null;
       }
     }
+  }
+
+  // Bare follow-up like "paisa kati tirnu xa" needs backend discourse memory.
+  if (BARE_TIRNU.test(trimmed)) {
+    return null;
   }
 
   return null;

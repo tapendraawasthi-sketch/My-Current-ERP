@@ -29,7 +29,9 @@ class OperationClass(str, Enum):
 
 _GREETING = re.compile(
     r"^\s*(hi|hello|hey|namaste|namaskar|good\s+(morning|afternoon|evening)|"
-    r"what\s+can\s+you\s+do|help|thanks|thank\s+you)\b",
+    r"k\s*(?:xa|cha)|ke\s*(?:xa|cha)|kasto\s*(?:xa|cha)|halkhabar|hal\s*khabar|"
+    r"sanchai(?:\s*(?:xa|cha))?|"
+    r"what\s+can\s+you\s+do|help(?:\s+me)?|thanks|thank\s+you)\b",
     re.I,
 )
 _ACCOUNTING_Q = re.compile(
@@ -54,7 +56,7 @@ _REPORT_FOLLOW = re.compile(
 _TXN_CREATE = re.compile(
     r"\b(enter|create|record|post|pass|make)\b.*\b(purchase|sale|sales|payment|"
     r"receipt|journal|voucher|entry|invoice|return|credit\s*note|contra)\b|"
-    r"\b(bought|purchased|kineko|kinyo|kharid|sold|becheko|bikri|paid|received|"
+    r"\b(bought|purchased|kineko|kinyo|kinye|kine|kinne|kharid|sold|becheko|bikri|paid|received|"
     r"tiryo|diyo|payo|returned|return(?:ing)?|firta|deposit|withdraw(?:al)?|"
     r"transfer)\b|"
     r"\b(sales\s+return|credit\s*notes?|cash\s+to\s+bank|bank\s+to\s+cash|"
@@ -82,7 +84,11 @@ _CANCEL = re.compile(r"^\s*(no|n|cancel|nahi|nahin|stop|abort)\s*[.!]?$", re.I)
 _ERP_QUERY = re.compile(
     r"\b(balance\s+of|who\s+owes|top\s+debtors|overdue|stock\s+below|"
     r"how\s+much\s+(vat|payable|receivable)|show\s+vouchers|"
-    r"ledger\s+of|party\s+statement)\b",
+    r"ledger\s+of|party\s+statement|"
+    r"(?:[A-Za-z\u0900-\u097F]{2,40})\s+ko\s+(?:baki|balance|khata|udhaar|udhar|hisab)|"
+    r"(?:[A-Za-z\u0900-\u097F]{2,40})\s+lai\s+(?:kati\s+)?(?:dinu|tirnu|paunu)|"
+    r"kati\s+(?:dinu|tirnu|paunu|baki)|"
+    r"paisa\s+kati\s+(?:tirnu|dinu|paunu))\b",
     re.I,
 )
 
@@ -111,7 +117,9 @@ def classify_operation(
     has_pending_confirmation: bool = False,
 ) -> ClassificationResult:
     """Classify a user message into an operation class."""
-    text = (message or "").strip()
+    from ..nlu.text_normalize import normalize_accounting_text
+
+    text = normalize_accounting_text(message or "").strip() or (message or "").strip()
     if not text:
         return ClassificationResult(OperationClass.GENERAL_QUESTION, 0.5)
 
@@ -163,7 +171,7 @@ def classify_operation(
     if _MASTER_MODIFY.search(text):
         return ClassificationResult(OperationClass.MASTER_DATA_MODIFY, 0.85, "master_modify")
     if _TXN_CREATE.search(text):
-        if re.search(r"\b(bought|purchase|kineko|kinyo|kharid)\b", text, re.I) and not re.search(
+        if re.search(r"\b(bought|purchase|kineko|kinyo|kinye|kine|kharid)\b", text, re.I) and not re.search(
             r"\b(paid|received|deposit|transfer|contra)\b", text, re.I
         ):
             intent = "purchase_entry"

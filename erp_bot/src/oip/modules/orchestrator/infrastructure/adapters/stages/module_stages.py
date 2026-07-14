@@ -400,6 +400,13 @@ class ExecutionStageAdapter(WorkflowStagePort):
         meta = context.metadata or {}
         orbix_mode = meta.get("orbix_mode") or "ask"
         client_ctx = meta.get("client_context") or {}
+        last_party = (
+            client_ctx.get("last_party")
+            or client_ctx.get("lastParty")
+            or None
+        )
+        recent_raw = client_ctx.get("recent_parties") or client_ctx.get("lastParties") or []
+        recent_parties = [str(p) for p in recent_raw if p] if isinstance(recent_raw, list) else []
         erp_result = preprocess_erp_message(
             context.message,
             orbix_mode=orbix_mode,
@@ -412,6 +419,8 @@ class ExecutionStageAdapter(WorkflowStagePort):
             has_active_report=bool(client_ctx.get("has_active_report")),
             has_pending_confirmation=bool(client_ctx.get("has_pending_confirmation")),
             draft_id=client_ctx.get("draft_id") or client_ctx.get("active_draft_id"),
+            last_party=str(last_party) if last_party else None,
+            recent_parties=recent_parties,
         )
         if erp_result and erp_result.skip_llm:
             snapshot = {

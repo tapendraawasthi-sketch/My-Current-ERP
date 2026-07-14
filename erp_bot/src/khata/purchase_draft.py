@@ -31,7 +31,7 @@ DraftStatus = Literal[
 PaymentMethod = Literal["cash", "bank", "credit"]
 
 _QTY_UNIT = re.compile(
-    r"\b(\d+(?:\.\d+)?)\s*(kg|kgs|kilogram|kilograms|g|gram|grams|ltr|liter|litre|"
+    r"\b(\d+(?:\.\d+)?)\s*(kg|kgs|kilo|kilos|kilogram|kilograms|g|gram|grams|ltr|liter|litre|"
     r"pcs|pc|piece|pieces|unit|units|bag|bags|box|boxes|dozen|mt|ton|tons)\b",
     re.I,
 )
@@ -47,12 +47,18 @@ _EXPLICIT_MONEY = re.compile(
     r"(?:rs\.?|npr|रु\.?|₹)\s*(\d+(?:,\d{3})*(?:\.\d+)?)",
     re.I,
 )
+_PURCHASE_VERBS = r"bought|purchased|kineko|kinyo|kinye|kine|kinne|kharid|purchase(?:d)?"
 _ITEM = re.compile(
-    r"\b(?:bought|purchased|kineko|kinyo|kharid|purchase(?:d)?)\s+"
+    rf"\b(?:{_PURCHASE_VERBS})\s+"
     r"(?:(?:\d+(?:\.\d+)?)\s*\w+\s+)?(?:of\s+)?"
     r"(?:(?:a|an|the)\s+)?"
     r"([A-Za-z\u0900-\u097F][A-Za-z\u0900-\u097F\s]{0,40}?)"
     r"(?:\s+from|\s+at|\s+@|\s+for|\s+in|\s+on|[.,;!?]*)\s*$",
+    re.I,
+)
+# Item-before-verb: "chiura kinye 4 kilo" / "dal kineko"
+_ITEM_BEFORE_VERB = re.compile(
+    rf"\b([A-Za-z\u0900-\u097F]{{2,40}})\s+(?:{_PURCHASE_VERBS})\b",
     re.I,
 )
 _ITEM_BARE = re.compile(
@@ -68,7 +74,7 @@ _CASH = re.compile(r"\b(cash|nagar|नगद)\b", re.I)
 _BANK = re.compile(r"\b(bank|cheque|check|transfer|neft|rtgs)\b", re.I)
 _CREDIT = re.compile(r"\b(credit|udhaar|udhar|उधारो?|on\s+account)\b", re.I)
 _PURCHASE_SIGNAL = re.compile(
-    r"\b(bought|purchased|purchase|kineko|kinyo|kharid|किनेको|खरिद)\b",
+    rf"\b({_PURCHASE_VERBS}|किनेको|खरिद)\b",
     re.I,
 )
 # Clarification shorthand: "1, 50000 cash" or "1 50000 cash"
@@ -208,11 +214,21 @@ class PurchaseDraft:
 
 
 def is_purchase_message(text: str) -> bool:
-    return bool(_PURCHASE_SIGNAL.search(text or ""))
+    from ..nlu.text_normalize import normalize_accounting_text
+
+    raw = text or ""
+    return bool(
+        _PURCHASE_SIGNAL.search(raw)
+        or _PURCHASE_SIGNAL.search(normalize_accounting_text(raw))
+    )
 
 
 def extract_purchase_fields(text: str) -> dict[str, Any]:
     """Extract known purchase fields. Unknown stay absent (caller leaves null)."""
+    from ..nlu.text_normalize import normalize_accounting_text
+
+    # Match on normalized text so kinye/kilo variants resolve permanently.
+    text = normalize_accounting_text(text or "")
     fields: dict[str, Any] = {}
 
     clarify = _CLARIFY_QTY_TOTAL_PAY.match(text.strip())
@@ -236,11 +252,12 @@ def extract_purchase_fields(text: str) -> dict[str, Any]:
     qty_match = _QTY_UNIT.search(text)
     if qty_match:
         fields["quantity"] = _d(qty_match.group(1))
-        fields["unit"] = qty_match.group(2).lower().rstrip("s") if qty_match.group(2).lower() not in {"pcs", "g"} else qty_match.group(2).lower()
-        if fields["unit"] == "kgs":
-            fields["unit"] = "kg"
-        if fields["unit"] in {"kilogram", "kilograms"}:
-            fields["unit"] = "kg"
+        unit = qty_match.group(2).lower()
+        if unit in {"kgs", "kilo", "kilos", "kilogram", "kilograms"}:
+            unit = "kg"
+        elif unit not in {"pcs", "g"}:
+            unit = unit.rstrip("s")
+        fields["unit"] = unit
 
     rate_match = _RATE.search(text)
     if rate_match:
@@ -259,36 +276,61 @@ def extract_purchase_fields(text: str) -> dict[str, Any]:
             # Skip if this number is the quantity itself without currency near a unit
             fields["total_amount"] = _d(m.group(1))
 
-    item_match = _ITEM.search(text) or _ITEM_BARE.search(text)
+    item_match = _ITEM.search(text) or _ITEM_BEFORE_VERB.search(text) or _ITEM_BARE.search(text)
     if item_match:
         raw = item_match.group(1).strip(" .,")
         # Strip trailing payment words
         raw = re.sub(r"\s+(in|by|with|on)\s+(cash|bank|credit).*$", "", raw, flags=re.I).strip()
+        raw = re.sub(r"^(maile|mai|le)\s+", "", raw, flags=re.I).strip()
         if raw.lower() not in _GENERIC_ITEMS and raw.lower() not in {"goods", "kg", "rice at"}:
             # Prefer last meaningful token sequence like "50 kg rice" → rice already captured
             cleaned = re.sub(
-                r"^\d+(?:\.\d+)?\s*(?:kg|kgs|pcs|unit|units|g|ltr)?\s*",
+                r"^\d+(?:\.\d+)?\s*(?:kg|kgs|kilo|kilos|pcs|unit|units|g|ltr)?\s*",
                 "",
                 raw,
                 flags=re.I,
             ).strip()
             name = cleaned or raw
-            if name.lower() not in _GENERIC_ITEMS:
+            if name.lower() not in _GENERIC_ITEMS and name.lower() not in {
+                "kineko",
+                "kinyo",
+                "kinye",
+                "kharid",
+                "bought",
+            }:
                 fields["item"] = {"name": name.title() if name.isascii() else name, "raw_name": name}
 
-    # Better item capture: "50 kg rice"
+    # Better item capture: "50 kg rice" / "chiura kineko 4 kg"
     if "item" not in fields and qty_match:
         after = text[qty_match.end() :].strip()
         item_after = re.match(
-            r"(?:of\s+)?([A-Za-z\u0900-\u097F][A-Za-z\u0900-\u097F\s]{1,30}?)(?:\s+from|\s+at|\s+@|\s+for|\s+in|\s+on|\s*$)",
+            r"(?:of\s+)?([A-Za-z\u0900-\u097F][A-Za-z\u0900-\u097F\s]{1,30}?)(?:\s+from|\s+at|\s+@|\s+for|\s+in|\s+on|\s+kineko|\s*$)",
             after,
             re.I,
         )
         if item_after:
             name = item_after.group(1).strip(" .,")
-            name = re.sub(r"\s+(from|at|@|for|in|on)\b.*$", "", name, flags=re.I).strip()
+            name = re.sub(r"\s+(from|at|@|for|in|on|kineko)\b.*$", "", name, flags=re.I).strip()
             if name.lower() not in _GENERIC_ITEMS and len(name) > 1:
                 fields["item"] = {"name": name.title() if name.isascii() else name, "raw_name": name}
+        if "item" not in fields:
+            before = text[: qty_match.start()].strip()
+            item_before = re.search(
+                rf"\b([A-Za-z\u0900-\u097F]{{2,40}})\s+(?:{_PURCHASE_VERBS})\s*$",
+                before,
+                re.I,
+            )
+            if item_before:
+                name = item_before.group(1).strip()
+                if name.lower() not in _GENERIC_ITEMS and name.lower() not in {
+                    "maile",
+                    "mai",
+                    "le",
+                }:
+                    fields["item"] = {
+                        "name": name.title() if name.isascii() else name,
+                        "raw_name": name,
+                    }
 
     supplier_match = _SUPPLIER.search(text)
     if supplier_match:

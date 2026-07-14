@@ -18,12 +18,24 @@ _SPELLING_VARIANTS: dict[str, str] = {
     "becheko": "becheko",
     "bechyo": "becheko",
     "becha": "becheko",
+    "bechye": "becheko",
+    "bechera": "becheko",
     "kinyo": "kineko",
     "kinya": "kineko",
+    "kinye": "kineko",
+    "kine": "kineko",
+    "kinne": "kineko",
+    "kiniyo": "kineko",
+    "kineye": "kineko",
+    "kinera": "kineko",
+    "kinchu": "kineko",
+    "kinchhu": "kineko",
     "tireko": "tiryo",
     "tira": "tiryo",
+    "tire": "tiryo",
     "diyeko": "diye",
     "deko": "diye",
+    "diyo": "diye",
     "liye": "liyo",
     "liya": "liyo",
     "chha": "cha",
@@ -46,6 +58,12 @@ _SPELLING_VARIANTS: dict[str, str] = {
     "connectips": "connectips",
     "esewa": "esewa",
     "khalti": "khalti",
+    # units — permanent aliases so parsers only need canonical forms
+    "kilo": "kg",
+    "kilos": "kg",
+    "kilogram": "kg",
+    "kilograms": "kg",
+    "kgs": "kg",
 }
 
 _vocab_aliases_loaded = False
@@ -74,6 +92,8 @@ def normalize_accounting_text(text: str) -> str:
         return ""
     t = unicodedata.normalize("NFKC", text.strip())
     t = t.translate(_DEVANAGARI_DIGIT)
+    # Phrase-level unit alias before tokenization
+    t = re.sub(r"\b(\d+(?:\.\d+)?)\s*kilos?\b", r"\1 kg", t, flags=re.I)
     t = re.sub(r"\s+", " ", t)
     # Token-level variant map (preserve Devanagari tokens)
     tokens = re.findall(r"[\u0900-\u097F]+|[a-zA-Z0-9]+", t, re.I)

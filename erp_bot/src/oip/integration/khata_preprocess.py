@@ -11,22 +11,24 @@ from ...khata.entry_engine import (
     parse_khata_entry_sync,
     regex_fast_path,
 )
+from ...nlu.text_normalize import normalize_accounting_text
 from .mode_aware_erp import handle_mode_aware_erp
+from .nepali_shop_nlu import handle_shop_nlu
 
 _TRANSACTION_SIGNAL = re.compile(
     r"\b(\d+|saya|hajar|lakh)\b.*\b(udhaar|salary|ssf|gratuity|vat|tds|"
-    r"depreciation|bad\s*debt|loan|capital|drawings|stock|kharcha|bikri|kineko|kinyo|"
+    r"depreciation|bad\s*debt|loan|capital|drawings|stock|kharcha|bikri|kineko|kinyo|kinye|kine|"
     r"tiryo|diyo|becheko|sold|purchase|bought|payment|commission|advance|return|rent|bhaada)\b",
     re.I,
 )
 _TRANSACTION_SIGNAL_ALT = re.compile(
-    r"\b(sold|bought|paid|received|tiryo|kineko|kinyo|becheko|bech|bikri|kharid)\b.*\d",
+    r"\b(sold|bought|paid|received|tiryo|kineko|kinyo|kinye|kine|becheko|bech|bikri|kharid)\b.*\d",
     re.I,
 )
 
 
 def is_erp_transaction_message(text: str) -> bool:
-    stripped = text.strip()
+    stripped = normalize_accounting_text(text or "").strip() or (text or "").strip()
     if not stripped:
         return False
     return bool(_TRANSACTION_SIGNAL.search(stripped) or _TRANSACTION_SIGNAL_ALT.search(stripped))
@@ -45,6 +47,7 @@ class ErpPreprocessResult:
     error: dict[str, Any] | None = None
     report_spec: dict[str, Any] | None = None
     draft_id: str | None = None
+    party: str | None = None
 
 
 def preprocess_erp_message(
@@ -60,9 +63,31 @@ def preprocess_erp_message(
     has_active_report: bool = False,
     has_pending_confirmation: bool = False,
     draft_id: str | None = None,
+    last_party: str | None = None,
+    recent_parties: list[str] | None = None,
 ) -> ErpPreprocessResult | None:
     """Parse ERP transactions deterministically. Returns None for non-ERP chat."""
-    stripped = text.strip()
+    stripped = (text or "").strip()
+    if not stripped:
+        return None
+
+    # Permanent shop-speech layer first (greetings + party khata).
+    shop = handle_shop_nlu(
+        stripped,
+        session_id=session_id,
+        last_party=last_party,
+        recent_parties=recent_parties,
+    )
+    if shop is not None and shop.skip_llm:
+        return ErpPreprocessResult(
+            skip_llm=True,
+            text=shop.text,
+            intent=shop.intent,
+            method=shop.method,
+            operation_class=shop.operation_class,
+            orbix_mode=orbix_mode,
+            party=shop.party,
+        )
 
     mode_result = handle_mode_aware_erp(
         stripped,
@@ -76,6 +101,8 @@ def preprocess_erp_message(
         has_active_report=has_active_report,
         has_pending_confirmation=has_pending_confirmation,
         draft_id=draft_id,
+        last_party=last_party,
+        recent_parties=recent_parties,
     )
     if mode_result is not None and mode_result.skip_llm:
         return ErpPreprocessResult(

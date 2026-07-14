@@ -194,7 +194,26 @@ def build_prompt_grounding(
 
 
 def _looks_like_language_question(text: str) -> bool:
-    t = (text or "").lower()
+    """True only for language-meta questions — never greetings or ERP speech."""
+    try:
+        from ..oip.integration.nepali_shop_nlu import is_greeting_message, is_party_balance_query
+        from ..khata.purchase_draft import is_purchase_message
+
+        if is_greeting_message(text):
+            return False
+        if is_party_balance_query(text):
+            return False
+        if is_purchase_message(text):
+            return False
+    except Exception:
+        pass
+    t = (text or "").lower().strip()
+    # Short greetings / chitchat must never trigger Language KB encyclopedia path.
+    if len(t) <= 24 and re.search(
+        r"^(k\s*(xa|cha)|ke\s*(xa|cha)|kasto|halkhabar|namaste|hello|hi|hey)\b",
+        t,
+    ):
+        return False
     markers = (
         "nepali",
         "nepal",
@@ -204,13 +223,8 @@ def _looks_like_language_question(text: str) -> bool:
         "language",
         "bhasa",
         "bhasha",
-        "understand",
-        "meaning",
-        "ke ho",
-        "k ho",
-        "k xa",
-        "k cha",
-        "halkhabar",
+        "meaning of",
+        "what is nepali",
     )
     return any(m in t for m in markers)
 

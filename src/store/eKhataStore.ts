@@ -62,7 +62,7 @@ import {
   type OrbixChatSession,
   type OrbixWindowMode,
 } from "../lib/ekhata/orbixChatStorage";
-import { handleOrbixLocalQuery } from "../lib/ekhata/orbixLocalEngine";
+import { extractPartyMention, handleOrbixLocalQuery } from "../lib/ekhata/orbixLocalEngine";
 import { buildSessionSnapshot } from "../lib/ekhata/dexieBridge";
 import { handleOrbixReportQuery } from "../lib/ekhata/orbixReportEngine";
 import type { PendingOrbixReport } from "../lib/ekhata/orbixReportTypes";
@@ -551,6 +551,19 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
       if (!get().activeDraftId) {
         const localResult = await handleOrbixLocalQuery(trimmed, sessionSnapshot);
         if (localResult) {
+          const mentioned = extractPartyMention(trimmed);
+          if (mentioned) {
+            conversationContext = {
+              ...conversationContext,
+              lastParty: mentioned,
+              lastParties: [
+                mentioned,
+                ...(conversationContext.lastParties || []).filter(
+                  (p) => p.toLowerCase() !== mentioned.toLowerCase(),
+                ),
+              ].slice(0, 5),
+            };
+          }
           finalize({
             messages: get().messages.map((m) =>
               m.id === assistantId ? { ...m, text: localResult.text } : m,
@@ -586,6 +599,19 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
       try {
         if (!sessionSnapshot) {
           sessionSnapshot = await buildSessionSnapshot();
+        }
+        const mentionedParty = extractPartyMention(trimmed);
+        if (mentionedParty) {
+          conversationContext = {
+            ...conversationContext,
+            lastParty: mentionedParty,
+            lastParties: [
+              mentionedParty,
+              ...(conversationContext.lastParties || []).filter(
+                (p) => p.toLowerCase() !== mentionedParty.toLowerCase(),
+              ),
+            ].slice(0, 5),
+          };
         }
         await streamOrbixQwen(
           trimmed,
@@ -665,6 +691,8 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
                   [...get().messages].reverse().find((m) => m.report)?.report,
                 ),
                 user_role: useStore.getState().currentUser?.role,
+                last_party: conversationContext.lastParty || undefined,
+                recent_parties: conversationContext.lastParties || undefined,
               },
             });
             const typed = fallback.response;
@@ -704,6 +732,8 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
                 [...get().messages].reverse().find((m) => m.report)?.report,
               ),
               user_role: useStore.getState().currentUser?.role,
+              last_party: conversationContext.lastParty || undefined,
+              recent_parties: conversationContext.lastParties || undefined,
             },
             orbixMode: get().orbixMode,
           },
