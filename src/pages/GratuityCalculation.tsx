@@ -110,7 +110,7 @@ const GratuityCalculation: React.FC = () => {
             <Calculator className="h-4 w-4 text-[var(--ds-action-primary)]" />
             Gratuity
           </h1>
-          <p className=\"text-[12px] text-gray-500 mt-0.5\">Gratuity calculation.</p>
+            <p className="text-[12px] text-gray-500 mt-0.5">Gratuity calculation.</p>
           <p className="text-[12px] text-gray-500 mt-0.5">
             Labour Act 2074 — 8.33% of basic salary per year of service
           </p>

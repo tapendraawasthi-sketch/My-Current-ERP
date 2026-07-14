@@ -199,7 +199,6 @@ export default function TdsReport() {
             Export TDS return
           </button>
         </div>
-      </div>
 
       <div className="no-print bg-white border border-gray-200 rounded-md p-3 mb-4">
         <div className="grid gap-3 md:grid-cols-3">

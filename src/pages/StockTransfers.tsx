@@ -210,7 +210,7 @@ const StockTransfers: React.FC = () => {
         setPendingSelectedToWarehouseId(selectedToWarehouseId);
         setPendingSelectedItemId(selectedItemId);
         setOptionsOpen(true);
-      }}, { label: "Export" }]}
+      }}
       filterSlot={
         <div className="flex items-center gap-1.5 flex-wrap">
           <label className="text-[12px] font-medium text-gray-600 flex items-center gap-1.5">

@@ -227,7 +227,6 @@ export const SPELLING_ALIASES: Record<string, string> = {
   sakiyo: "sakyo",
   garisakyo: "sakyo",
   paayo: "paayo",
-  payo: "paayo",
   payeko: "paayeko",
   paaeko: "paayeko",
   chahiyo: "chahiyo",

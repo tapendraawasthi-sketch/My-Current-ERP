@@ -16,11 +16,10 @@ const SutraAiLauncher: React.FC = () => {
     <button
       type="button"
       onClick={togglePanel}
-      title="SUTRA AI (Ctrl+Shift+A)"
+      title="Assist"
       className="fixed bottom-4 left-4 z-[var(--ds-z-drawer)] flex h-10 w-10 items-center justify-center rounded-full bg-[var(--ds-action-primary)] text-[var(--ds-action-primary-text)] shadow-[var(--ds-shadow-2)] transition-colors hover:bg-[var(--ds-action-primary-hover)] no-print"
       data-component="sutra-ai-launcher"
       aria-label="Open Sutra AI"
-      title="Assist"
     >
       <Brain className="h-5 w-5" />
     </button>

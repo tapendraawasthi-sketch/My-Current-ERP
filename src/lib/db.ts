@@ -1451,8 +1451,6 @@ export class SutraERPDatabase extends Dexie {
       followUpNotes: "++id, partyId, date, createdAt",
       jobWorkOrders: "++id, orderNo, date, status, createdAt",
       priceFloorPolicies: "++id, itemId, isActive, createdAt",
-      stockCategories: "++id, name, parentId",
-      voucherTypeMasters: "++id, name, parentId, type",
       voucherSeriesConfig: "++id, voucherType, seriesName",
       reportSchedules: "++id, name, isActive, createdAt",
       salespersons: "++id, name, isActive, createdAt",

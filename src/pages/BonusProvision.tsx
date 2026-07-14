@@ -119,7 +119,7 @@ const BonusProvision: React.FC = () => {
             <Gift className="h-4 w-4 text-[var(--ds-action-primary)]" />
             Bonus provision
           </h1>
-          <p className=\"text-[12px] text-gray-500 mt-0.5\">Bonus set aside.</p>
+          <p className="text-[12px] text-gray-500 mt-0.5">Bonus set aside.</p>
           <p className="text-[12px] text-gray-500 mt-0.5">
             Compute bonus provision from net profit and eligible employees
           </p>
