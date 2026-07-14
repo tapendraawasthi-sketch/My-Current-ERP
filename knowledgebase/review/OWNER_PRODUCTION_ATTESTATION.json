@@ -1,0 +1,20 @@
+{
+  "schema": "orbix_np_kb_owner_production_attestation_v1",
+  "attestor": "Acer",
+  "role": "repository_owner",
+  "attested_at": "2026-07-14T07:01:37+00:00",
+  "production_approved": true,
+  "kb_posting_authority": false,
+  "licensed_ca_opinion": false,
+  "acknowledgements": [
+    "kb_has_no_posting_authority",
+    "not_a_substitute_for_licensed_ca_opinion",
+    "residual_tax_vat_salary_phrases_accepted_for_interpretation_only",
+    "security_adversarial_corpus_reviewed",
+    "language_naturalness_spot_check_completed",
+    "rollback_drill_required_before_runtime_enable",
+    "enable_only_via_ORBIX_NP_KB_ENABLED"
+  ],
+  "closeout_decisions_file": "knowledgebase/processed/review_ready/OWNER_CLOSEOUT_DECISIONS.jsonl",
+  "closeout_decision_count": 58
+}

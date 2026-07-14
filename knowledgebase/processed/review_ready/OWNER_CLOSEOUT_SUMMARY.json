@@ -1,0 +1,11 @@
+{
+  "generated_at": "2026-07-14T07:01:37+00:00",
+  "decisions": 58,
+  "batches": {
+    "security": 10,
+    "language": 28,
+    "tax_owner": 20
+  },
+  "attestation": "knowledgebase/review/OWNER_PRODUCTION_ATTESTATION.json",
+  "decisions_file": "knowledgebase/processed/review_ready/OWNER_CLOSEOUT_DECISIONS.jsonl"
+}

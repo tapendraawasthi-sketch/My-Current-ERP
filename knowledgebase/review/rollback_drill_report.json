@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-07-14T07:01:39+00:00",
+  "drill": "staging_enable_then_rollback",
+  "enable_smoke": {
+    "returncode": 0,
+    "stdout_tail": "{\n  \"hits_total\": 36,\n  \"all_execution_forbidden\": true,\n  \"path\": \"C:\\\\Users\\\\Acer\\\\Documents\\\\My-Current-ERP\\\\knowledgebase\\\\review\\\\retrieval_smoke_test.json\",\n  \"per_query_hits\": [\n    5,\n    5,\n    5,\n    5,\n    5,\n    5,\n    5,\n    1\n  ]\n}\n",
+    "stderr_tail": ""
+  },
+  "disable_smoke": {
+    "returncode": 0,
+    "stdout_tail": "{\n  \"hits_total\": 0,\n  \"all_execution_forbidden\": true,\n  \"path\": \"C:\\\\Users\\\\Acer\\\\Documents\\\\My-Current-ERP\\\\knowledgebase\\\\review\\\\retrieval_smoke_test.json\",\n  \"per_query_hits\": [\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0,\n    0\n  ]\n}\nKB disabled \u00e2\u20ac\u201d re-run with --enable for live hits\n",
+    "stderr_tail": ""
+  },
+  "rollback_tested": true,
+  "kb_posting_authority": false,
+  "note": "Flag toggled for drill only; does not edit committed .env. Runtime enable remains operator-controlled."
+}

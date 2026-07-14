@@ -1,8 +1,11 @@
 # Final Release Report
 
-Status: **staging_candidate**
+Status: **production_owner_attested**
+production_approved: **True**
 
-This gate does **not** assert production readiness, linguistic approval,
-accounting approval, or legal/tax approval.
+KB posting authority: **false** (always).
 
-Next: Approve-class overlay threshold met — still requires language/accounting sign-off before production; production_approved stays false.
+Owner attestation unlocks interpretation-only enablement; it is **not** a
+licensed CA, legal, or tax professional certification.
+
+Next: Owner-attested production unlock for interpretation-only enablement. Set ORBIX_NP_KB_ENABLED=true in the target environment; KB still cannot post.

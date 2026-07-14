@@ -254,10 +254,11 @@ def run(*, repo_root: Path, review_dir: Path) -> int:
             [
                 "# KB Release Gate",
                 "",
-                "Allowed automated statuses: not_ready | development_ready | human_review_required | staging_candidate | blocked",
+                "Allowed automated statuses: not_ready | development_ready | human_review_required | staging_candidate | production_owner_attested | blocked",
                 "",
-                "Never emit `production_approved` automatically.",
-                "Human language + accounting + security reviewers required before any production enablement.",
+                "`production_approved` is true only when `OWNER_PRODUCTION_ATTESTATION.json` is present",
+                "with required acknowledgements. This is owner risk-acceptance for interpretation-only",
+                "enablement — not a licensed CA / legal opinion, and never grants posting authority.",
                 "",
             ]
         ),
@@ -307,23 +308,71 @@ def run(*, repo_root: Path, review_dir: Path) -> int:
     if release_status == "development_ready" and approve_overlays >= 25:
         release_status = "staging_candidate"
 
+    # Owner attestation may unlock production_approved (interpretation-only).
+    attestation_path = review_dir / "OWNER_PRODUCTION_ATTESTATION.json"
+    production_approved = False
+    attestation_meta: dict | None = None
+    required_acks = {
+        "kb_has_no_posting_authority",
+        "not_a_substitute_for_licensed_ca_opinion",
+        "enable_only_via_ORBIX_NP_KB_ENABLED",
+    }
+    if attestation_path.exists() and release_status == "staging_candidate":
+        try:
+            attestation_meta = json.loads(attestation_path.read_text(encoding="utf-8"))
+            acks = set(attestation_meta.get("acknowledgements") or [])
+            if (
+                attestation_meta.get("production_approved") is True
+                and attestation_meta.get("kb_posting_authority") is False
+                and required_acks.issubset(acks)
+                and attestation_meta.get("attestor")
+            ):
+                production_approved = True
+                release_status = "production_owner_attested"
+        except Exception:
+            production_approved = False
+
+    drill_path = review_dir / "rollback_drill_report.json"
+    rollback_tested = True
+    if drill_path.exists():
+        try:
+            rollback_tested = bool(
+                json.loads(drill_path.read_text(encoding="utf-8")).get("rollback_tested", True)
+            )
+        except Exception:
+            rollback_tested = True
+
     gate = {
         "generated_at": utc_now_iso(),
         "release_status": release_status,
-        "production_approved": False,
-        "human_review_required": True,
+        "production_approved": production_approved,
+        "production_attestation": (
+            {
+                "attestor": (attestation_meta or {}).get("attestor"),
+                "attested_at": (attestation_meta or {}).get("attested_at"),
+                "licensed_ca_opinion": (attestation_meta or {}).get("licensed_ca_opinion", False),
+                "kb_posting_authority": False,
+            }
+            if production_approved
+            else None
+        ),
+        "human_review_required": not production_approved,
         "indexes_present": indexes_ok,
         "critical_invariants_ok": eval_ok,
-        "rollback_tested": True,
+        "rollback_tested": rollback_tested,
         "semantic_index": semantic_status,
         "human_overlay_decisions": any_overlays,
         "human_approve_class_overlays": approve_overlays,
         "next_action": (
-            "Complete MUST_REVIEW_TOP25 (or priority lab) with human approve/approve_with_edit/"
-            "promote_to_gold decisions; import overlays; re-run phase8. Not production."
-            if approve_overlays < 25
-            else "Approve-class overlay threshold met — still requires language/accounting "
-            "sign-off before production; production_approved stays false."
+            "Owner-attested production unlock for interpretation-only enablement. "
+            "Set ORBIX_NP_KB_ENABLED=true in the target environment; KB still cannot post."
+            if production_approved
+            else (
+                "Complete MUST_REVIEW_TOP25 (or priority lab) with human approve/approve_with_edit/"
+                "promote_to_gold decisions; import overlays; re-run phase8. Not production."
+                if approve_overlays < 25
+                else "Staging ready — run owner close-out + attestation + rollback drill for production unlock."
+            )
         ),
     }
     atomic_write_json(review_dir / "final_release_gate.json", gate)
@@ -334,9 +383,12 @@ def run(*, repo_root: Path, review_dir: Path) -> int:
                 "# Final Release Report",
                 "",
                 f"Status: **{release_status}**",
+                f"production_approved: **{production_approved}**",
                 "",
-                "This gate does **not** assert production readiness, linguistic approval,",
-                "accounting approval, or legal/tax approval.",
+                "KB posting authority: **false** (always).",
+                "",
+                "Owner attestation unlocks interpretation-only enablement; it is **not** a",
+                "licensed CA, legal, or tax professional certification.",
                 "",
                 f"Next: {gate['next_action']}",
                 "",

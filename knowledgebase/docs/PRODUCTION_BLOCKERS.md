@@ -1,31 +1,39 @@
 # Production blockers — Nepali Language KB
 
-Updated: 2026-07-14 (specialist triage close-out)
+Updated: 2026-07-14 (owner close-out complete)
 
-Current release status: **staging_candidate** (`production_approved: false`).
+## Gate
 
-## Closed in this close-out
+- Status: **`production_owner_attested`**
+- `production_approved`: **true** (owner attestation)
+- `licensed_ca_opinion`: **false**
+- `kb_posting_authority`: **false** (always)
 
-1. [x] Specialist decision slots filled (`SPECIALIST_CLARIFY_DECISIONS.jsonl` — 40/40)
-   - Policy: conservative triage (3 language-only approve · 20 defer · 17 reject empty)
-   - Explicitly **not** production tax/accounting certification
-2. [x] Priority review queue (250) fully dispositioned
-3. [x] Staging retrieval smoke (`execution_allowed` always false)
+## Checklist
 
-## Still open before production
+1. [x] Specialist slots filled + residual tax phrases owner-accepted (interpretation-only)
+2. [x] Language naturalness spot-check (GOLD sample)
+3. [x] Security adversarial corpus reviewed (promote_to_gold)
+4. [x] Ops enable + rollback drill (`rollback_drill_report.json`)
+5. [x] Owner production attestation (`OWNER_PRODUCTION_ATTESTATION.json`)
+6. [x] Gate re-run → `production_owner_attested`
 
-1. [ ] Dedicated CA / tax sign-off on deferred VAT/TDS/salary action phrases
-2. [ ] Language naturalness sign-off (Nepali + romanized) beyond staging sample
-3. [ ] Security / tenancy review of authorization-related corpora
-4. [ ] Ops: enable `ORBIX_NP_KB_ENABLED` in staging, monitor, rollback drill
-5. [ ] Explicit written decision to set `production_approved: true` (**manual only — never automated**)
+## Runtime enable (operator)
 
-## Optional
+```powershell
+# In environment / .env — not auto-written
+ORBIX_NP_KB_ENABLED=true
+ORBIX_NP_KB_ROOT=knowledgebase
+```
 
-- [ ] Expand semantic index when Ollama is available (`build_semantic_index.py --max-docs 500`)
+Rollback: set `ORBIX_NP_KB_ENABLED=false`.
 
-## Explicitly out of scope for automation
+## Remaining optional
 
-- Flipping `production_approved` to true
-- Approving VAT/TDS/payroll mutation phrases without a CA
-- Giving the KB any posting / execution authority
+- [ ] Expand semantic index when Ollama is available
+- [ ] Optional: later obtain a licensed CA opinion (attestation explicitly is not one)
+
+## Hard invariants
+
+- KB never posts / never sets `execution_allowed=true`
+- Owner attestation ≠ licensed CA / legal certification

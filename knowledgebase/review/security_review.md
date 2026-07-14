@@ -1,6 +1,6 @@
 # Security Review (Phase 8)
 
-Generated: 2026-07-14T06:59:25+00:00
+Generated: 2026-07-14T07:01:39+00:00
 
 Knowledge content is untrusted data. Retrieved records must never become system instructions.
 

@@ -68,6 +68,8 @@
     "kb:eval": "python knowledgebase/scripts/run_kb_evaluation.py",
     "kb:smoke": "python knowledgebase/scripts/smoke_test_retrieval.py --enable",
     "kb:gate": "python knowledgebase/scripts/phase8_release_gate.py",
+    "kb:closeout": "python knowledgebase/scripts/complete_owner_closeout.py",
+    "kb:rollback-drill": "python knowledgebase/scripts/staging_enable_rollback_drill.py",
     "kb:must-review": "python knowledgebase/scripts/export_must_review_packet.py",
     "kb:specialist": "python knowledgebase/scripts/build_specialist_and_defer_batch.py --skip-defer",
     "kb:review-lab": "python knowledgebase/scripts/build_review_lab.py",

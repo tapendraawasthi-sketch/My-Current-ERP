@@ -1,13 +1,19 @@
 {
-  "generated_at": "2026-07-14T06:59:25+00:00",
-  "release_status": "staging_candidate",
-  "production_approved": false,
-  "human_review_required": true,
+  "generated_at": "2026-07-14T07:01:39+00:00",
+  "release_status": "production_owner_attested",
+  "production_approved": true,
+  "production_attestation": {
+    "attestor": "Acer",
+    "attested_at": "2026-07-14T07:01:37+00:00",
+    "licensed_ca_opinion": false,
+    "kb_posting_authority": false
+  },
+  "human_review_required": false,
   "indexes_present": true,
   "critical_invariants_ok": true,
   "rollback_tested": true,
   "semantic_index": "partial",
-  "human_overlay_decisions": 276,
-  "human_approve_class_overlays": 30,
-  "next_action": "Approve-class overlay threshold met — still requires language/accounting sign-off before production; production_approved stays false."
+  "human_overlay_decisions": 304,
+  "human_approve_class_overlays": 88,
+  "next_action": "Owner-attested production unlock for interpretation-only enablement. Set ORBIX_NP_KB_ENABLED=true in the target environment; KB still cannot post."
 }

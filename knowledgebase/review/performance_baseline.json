@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-14T06:59:25+00:00",
+  "generated_at": "2026-07-14T07:01:39+00:00",
   "raw_bytes": 1988253945,
   "jsonl_bytes": 8054738220,
   "lexical_index_bytes": 3813138432,
@@ -7,17 +7,17 @@
     "status": "ok",
     "n": 8,
     "latencies_ms": [
-      14.246,
-      4.751,
-      8.438,
-      3.042,
-      3.516,
-      11.244,
-      4.905,
-      8.505
+      4.661,
+      0.82,
+      6.686,
+      0.491,
+      0.419,
+      10.493,
+      0.73,
+      0.626
     ],
-    "p50_ms": 8.438,
-    "p95_ms": 14.246,
+    "p50_ms": 0.82,
+    "p95_ms": 10.493,
     "note": "Development baseline only; not pass/fail thresholds invented post-hoc for approval."
   },
   "semantic_retrieval": {

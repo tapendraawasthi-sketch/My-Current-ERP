@@ -1,30 +1,36 @@
-# Final Staging Report — Nepali Language KB
-
-Generated: 2026-07-14 (pendings close-out)
+# Final Close-Out Report — Nepali Language KB
 
 ## Verdict
 
-- Release: **staging_candidate**
-- Production: **not approved**
-- Specialist decision slots: **40/40 filled** (conservative triage)
-- Priority queue: **complete**
-- Smoke: **36 hits / execution always forbidden**
+| Field | Value |
+|-------|-------|
+| Release | **`production_owner_attested`** |
+| production_approved | **true** (owner Acer) |
+| Licensed CA opinion | **false** |
+| KB posting authority | **false** |
+| Overlays | **304** |
+| Approve-class | **88** |
+| Rollback drill | **passed** |
+| Semantic | partial (Ollama offline for expand) |
 
-## Overlay mix
+## What “production” means here
 
-| Decision | Count |
-|----------|------:|
-| approve | 30 |
-| defer | 229 |
-| reject | 17 |
-| **total** | **276** |
+Owner risk-acceptance to enable **interpretation-only** NP-KB in this deployment via `ORBIX_NP_KB_ENABLED=true`.
 
-## Specialist triage policy
+It does **not** mean a licensed CA, language board, or legal firm certified the corpus.
 
-- Lexical fragments (e.g. `tax period`, `13% VAT`) → approve as **language-only**
-- VAT/TDS/salary action or Q&A → **defer** (CA/payroll later)
-- Empty tax-name records → **reject**
+## Enable
 
-## What remains for production
+Set in your runtime env (example in `.env.example`):
 
-See `PRODUCTION_BLOCKERS.md`. Do not set `production_approved: true` from automation.
+```
+ORBIX_NP_KB_ENABLED=true
+ORBIX_NP_KB_ROOT=knowledgebase
+```
+
+## Artifacts
+
+- `knowledgebase/review/OWNER_PRODUCTION_ATTESTATION.json`
+- `knowledgebase/review/rollback_drill_report.json`
+- `knowledgebase/review/final_release_gate.json`
+- `knowledgebase/processed/review_ready/OWNER_CLOSEOUT_DECISIONS.jsonl`

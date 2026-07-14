@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated_at": "2026-07-14T06:59:25+00:00",
+  "updated_at": "2026-07-14T07:02:11+00:00",
   "package": "Orbix Nepali Language Intelligence (ONLI)",
   "phases": {
     "0": {
@@ -99,8 +99,8 @@
       "phase_name": "Streaming Parser and Canonical JSONL Conversion",
       "status": "passed",
       "next_phase": "3",
-      "start_time": "2026-07-14T06:39:14+00:00",
-      "completion_time": "2026-07-14T06:39:14+00:00",
+      "start_time": "2026-07-14T07:02:11+00:00",
+      "completion_time": "2026-07-14T07:02:11+00:00",
       "commands_executed": [
         "python knowledgebase/scripts/parse_kb_to_jsonl.py"
       ],
@@ -152,19 +152,19 @@
       "status": "passed",
       "next_phase": "5",
       "start_time": "2026-07-14T05:44:57+00:00",
-      "completion_time": "2026-07-14T06:59:25+00:00",
+      "completion_time": "2026-07-14T07:01:38+00:00",
       "commands_executed": [
-        "python knowledgebase/scripts/import_human_reviews.py --input C:\\Users\\Acer\\Documents\\My-Current-ERP\\knowledgebase\\processed\\review_ready\\SPECIALIST_CLARIFY_DECISIONS_FILLED.jsonl"
+        "python knowledgebase/scripts/import_human_reviews.py --input C:\\Users\\Acer\\Documents\\My-Current-ERP\\knowledgebase\\processed\\review_ready\\OWNER_CLOSEOUT_DECISIONS.jsonl"
       ],
       "outputs": [
         "knowledgebase/processed/records/review_overlays.jsonl"
       ],
       "findings": [
-        "Imported overlays: 276",
+        "Imported overlays: 304",
         "Skipped empty decisions: 0"
       ],
       "warnings": [],
-      "overlay_count": 276
+      "overlay_count": 304
     },
     "5": {
       "phase_id": "5",
@@ -247,8 +247,8 @@
       "phase_name": "Performance, Security, Release, and Rollback Gates",
       "status": "passed",
       "next_phase": "complete",
-      "start_time": "2026-07-14T06:59:25+00:00",
-      "completion_time": "2026-07-14T06:59:25+00:00",
+      "start_time": "2026-07-14T07:01:39+00:00",
+      "completion_time": "2026-07-14T07:01:39+00:00",
       "commands_executed": [
         "python knowledgebase/scripts/phase8_release_gate.py"
       ],
@@ -258,7 +258,7 @@
         "knowledgebase/review/final_release_gate.json"
       ],
       "findings": [
-        "release_status=staging_candidate"
+        "release_status=production_owner_attested"
       ],
       "warnings": [
         "Human review required before any production enablement"
