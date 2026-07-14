@@ -158,6 +158,16 @@ class KnowledgeRuntimeService(KnowledgeRuntimePort):
         doc_ids = tuple(r.get("document_id", "") for r in result.ranked_results if r.get("document_id"))
         raw = "|".join(sorted(doc_ids)) + "|" + result.normalized_query
         evidence_hash = EvidenceHash(hash_value=hashlib.sha256(raw.encode()).hexdigest(), document_ids=doc_ids)
+        snippets = [
+            {
+                "document_id": r.get("document_id"),
+                "title": r.get("title"),
+                "snippet": r.get("snippet"),
+                "score": r.get("score"),
+            }
+            for r in (result.ranked_results or [])[:5]
+            if r.get("snippet") or r.get("document_id")
+        ]
         bundle = EvidenceBundle(
             bundle_id=str(uuid.uuid4()),
             retrieval_id=retrieval_id,
@@ -170,6 +180,7 @@ class KnowledgeRuntimeService(KnowledgeRuntimePort):
             evidence_hash=evidence_hash,
             scores=tuple(result.scores),
             blocked_document_ids=tuple(b.get("document_id", "") for b in result.blocked_documents),
+            metadata={"snippets": snippets},
             created_at=_utc_now(),
         )
         await self._repository.save_bundle(bundle)

@@ -306,7 +306,22 @@ class KnowledgeStageAdapter(WorkflowStagePort):
             )
         except Exception as exc:  # noqa: BLE001 — knowledge must not block workflow
             return context, _ok(self.name, {"warning": str(exc)})
-        snapshot = {"snapshot_id": snapshot_obj.snapshot_id, "bundle_id": bundle.bundle_id}
+        snippets = []
+        try:
+            meta = getattr(bundle, "metadata", None) or {}
+            raw_snips = meta.get("snippets") if isinstance(meta, dict) else None
+            if isinstance(raw_snips, list):
+                snippets = [
+                    s for s in raw_snips
+                    if isinstance(s, dict) and (s.get("snippet") or s.get("document_id"))
+                ][:5]
+        except Exception:
+            snippets = []
+        snapshot = {
+            "snapshot_id": snapshot_obj.snapshot_id,
+            "bundle_id": bundle.bundle_id,
+            "snippets": snippets,
+        }
         return context.model_copy(update={"knowledge_ref": snapshot}), _ok(self.name, snapshot)
 
     async def rollback(self, context: WorkflowContext) -> StageResult:
@@ -430,6 +445,38 @@ class ExecutionStageAdapter(WorkflowStagePort):
         )
         if route is None:
             return context, _fail(self.name, "route_not_found")
+
+        # Ground the provider prompt with NP Language KB (+ OIP knowledge snippets).
+        try:
+            from src.nlu.prompt_grounding import build_prompt_grounding
+
+            knowledge_snippets = None
+            if isinstance(context.knowledge_ref, dict):
+                raw = context.knowledge_ref.get("snippets")
+                if isinstance(raw, list):
+                    knowledge_snippets = raw
+            grounding = build_prompt_grounding(
+                context.message,
+                knowledge_snippets=knowledge_snippets,
+                top_k=5,
+            )
+            grounded_meta = grounding.to_metadata()
+            route = route.model_copy(
+                update={
+                    "policy_decisions": {
+                        **dict(route.policy_decisions or {}),
+                        "user_message": str(
+                            (route.policy_decisions or {}).get("user_message") or context.message
+                        ),
+                        **grounded_meta,
+                        "knowledge_snippets": knowledge_snippets or [],
+                    }
+                }
+            )
+        except Exception:
+            # Soft-fail: ungrounded execution is better than blocking chat.
+            pass
+
         try:
             execution = await self._ports.provider_runtime.start_execution(route=route)  # type: ignore[union-attr]
         except Exception as exc:  # noqa: BLE001

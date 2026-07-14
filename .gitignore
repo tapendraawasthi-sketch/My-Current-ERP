@@ -66,6 +66,7 @@ knowledgebase/processed/quarantine/
 knowledgebase/processed/records/
 knowledgebase/indexes/lexical/*.sqlite
 knowledgebase/indexes/lexical/*.sqlite-*
+!knowledgebase/indexes/lexical/kb_grounding.sqlite
 knowledgebase/indexes/metadata/*.sqlite
 knowledgebase/indexes/metadata/*.sqlite-*
 knowledgebase/indexes/semantic/

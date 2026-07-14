@@ -1,7 +1,7 @@
 """Orbix Nepali Language KB runtime adapter.
 
 Extends existing NLU/Orbix retrieval without granting posting authority.
-Disabled by default via ORBIX_NP_KB_ENABLED.
+Enabled by default (owner-attested); set ORBIX_NP_KB_ENABLED=false to disable.
 """
 
 from __future__ import annotations
@@ -33,19 +33,40 @@ def _bool_env(name: str, default: bool = False) -> bool:
     return raw.strip().lower() in {"1", "true", "yes", "on"}
 
 
-def _repo_root() -> Path:
-    # erp_bot/src/nlu/np_kb_adapter.py → parents[3] = repo root
-    here = Path(__file__).resolve() if "__file__" in globals() else Path.cwd()
-    try:
-        return here.parents[3]
-    except IndexError:
-        return Path.cwd()
+def _resolve_kb_root(root_env: str = "") -> Path:
+    """Resolve knowledgebase root for local monorepo and Render (erp_bot rootDir)."""
+    here = Path(__file__).resolve()
+    erp_bot_root = here.parents[2]
+    monorepo_root = here.parents[3] if len(here.parents) > 3 else Path.cwd()
+    candidates: list[Path] = []
+    if root_env:
+        raw = Path(root_env)
+        if raw.is_absolute():
+            candidates.append(raw)
+        else:
+            candidates.extend(
+                [
+                    erp_bot_root / root_env,
+                    Path.cwd() / root_env,
+                    monorepo_root / root_env,
+                ]
+            )
+    candidates.extend(
+        [
+            erp_bot_root / "knowledgebase",  # bundled on Render
+            monorepo_root / "knowledgebase",  # local monorepo
+        ]
+    )
+    for candidate in candidates:
+        if (candidate / "indexes" / "lexical" / "kb_lexical.sqlite").exists():
+            return candidate
+    return candidates[0] if candidates else (monorepo_root / "knowledgebase")
 
 
 @dataclass
 class NpKbConfig:
     enabled: bool = False
-    root: Path = field(default_factory=_repo_root)
+    root: Path = field(default_factory=lambda: _resolve_kb_root())
     lexical_enabled: bool = True
     semantic_enabled: bool = False
     lexical_top_k: int = 8
@@ -57,12 +78,12 @@ class NpKbConfig:
     @classmethod
     def from_env(cls) -> "NpKbConfig":
         root_env = os.environ.get("ORBIX_NP_KB_ROOT", "").strip()
-        root = Path(root_env) if root_env else (_repo_root() / "knowledgebase")
+        root = _resolve_kb_root(root_env)
         policy = os.environ.get("ORBIX_NP_KB_REVIEW_POLICY", "development_all").strip()
         if policy not in {"reviewed_only", "reviewed_and_generated", "development_all"}:
             policy = "development_all"
         return cls(
-            enabled=_bool_env("ORBIX_NP_KB_ENABLED", False),
+            enabled=_bool_env("ORBIX_NP_KB_ENABLED", True),
             root=root,
             lexical_enabled=_bool_env("ORBIX_NP_KB_LEXICAL_ENABLED", True),
             semantic_enabled=_bool_env("ORBIX_NP_KB_SEMANTIC_ENABLED", False),
@@ -199,11 +220,92 @@ def lightweight_normalize(text: str) -> str:
     return restore_tokens(norm, mapping)
 
 
+_FTS_STOPWORDS = frozenset(
+    {
+        "a",
+        "an",
+        "the",
+        "is",
+        "are",
+        "was",
+        "were",
+        "be",
+        "been",
+        "do",
+        "does",
+        "did",
+        "you",
+        "your",
+        "me",
+        "my",
+        "we",
+        "our",
+        "it",
+        "its",
+        "this",
+        "that",
+        "these",
+        "those",
+        "what",
+        "which",
+        "who",
+        "whom",
+        "how",
+        "why",
+        "when",
+        "where",
+        "about",
+        "with",
+        "from",
+        "into",
+        "for",
+        "and",
+        "or",
+        "of",
+        "to",
+        "in",
+        "on",
+        "at",
+        "as",
+        "by",
+        "can",
+        "could",
+        "would",
+        "should",
+        "please",
+        "tell",
+        "explain",
+        "understand",
+        "know",
+        "mean",
+        "meaning",
+        "means",
+    }
+)
+
+
 def _sanitize_fts_query(query: str) -> str:
-    # Strip FTS5 operators to reduce injection / malformed query risk.
-    cleaned = re.sub(r'[^\w\u0900-\u097F\s]', " ", query, flags=re.UNICODE)
-    tokens = [t for t in cleaned.split() if t]
-    return " ".join(tokens[:32])
+    """Build an FTS5 query with OR tokens for recall; drop English stopwords."""
+    cleaned = re.sub(r"[^\w\u0900-\u097F\s]", " ", query or "", flags=re.UNICODE)
+    raw_tokens = [t for t in cleaned.split() if t]
+    if not raw_tokens:
+        return ""
+    kept = [t for t in raw_tokens if t.lower() not in _FTS_STOPWORDS]
+    if not kept:
+        # All-stopword queries (e.g. "do you understand it") must not FTS-blast;
+        # prompt_grounding applies language fallback seeds when appropriate.
+        return ""
+    tokens = kept
+    # Quote tokens that are purely alphanumeric to avoid FTS operator issues.
+    parts: list[str] = []
+    for t in tokens[:24]:
+        if re.fullmatch(r"[\w\u0900-\u097F]+", t, flags=re.UNICODE):
+            parts.append(t)
+        else:
+            parts.append(f'"{t}"')
+    if len(parts) == 1:
+        return parts[0]
+    return " OR ".join(parts)
 
 
 def _lookup_overlay_status(metadata_db: Path | None, record_id: str) -> str | None:
@@ -459,7 +561,9 @@ def interpret_user_text(text: str, *, cfg: NpKbConfig | None = None) -> NpKbInte
     retrieval_ms = 0.0
     semantic_ms = 0.0
     if cfg.lexical_enabled:
-        lexical_db = cfg.root / "indexes" / "lexical" / "kb_lexical.sqlite"
+        lexical_db = cfg.root / "indexes" / "lexical" / "kb_grounding.sqlite"
+        if not lexical_db.exists():
+            lexical_db = cfg.root / "indexes" / "lexical" / "kb_lexical.sqlite"
         if not lexical_db.exists():
             lexical_db = Path(cfg.root) / "indexes" / "lexical" / "kb_lexical.sqlite"
         retriever = NpKbLexicalRetriever(lexical_db)

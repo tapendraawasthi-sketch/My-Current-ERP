@@ -30,6 +30,14 @@ services:
         value: "true"
       - key: OIP_DATABASE_URL
         value: "sqlite+aiosqlite:///./data/oip/oip.db"
+      - key: ORBIX_NP_KB_ENABLED
+        value: "true"
+      - key: ORBIX_NP_KB_ROOT
+        value: "knowledgebase"
+      - key: ORBIX_NP_KB_LEXICAL_ENABLED
+        value: "true"
+      - key: ORBIX_NP_KB_CITATIONS_ENABLED
+        value: "true"
 
   # Node frontend — SPA + /erp-bot reverse proxy to sutra-erp-bot.
   - type: web

@@ -53,6 +53,36 @@ def _resolve_provider_prompt(*, route, policy_decisions: dict) -> str:
     return f"Execute plan {route.plan_id} for request {route.request_id}"
 
 
+def _build_execution_grounding(policy_decisions: dict) -> dict:
+    """Attach NP Language KB (+ optional OIP snippets) into execution metadata."""
+    user_message = str(policy_decisions.get("user_message") or "").strip()
+    # Prefer pre-built grounding from orchestrator; otherwise retrieve here.
+    prebuilt = str(policy_decisions.get("grounding_block") or "").strip()
+    if prebuilt:
+        return {
+            "grounding_block": prebuilt,
+            "grounding_citation_count": int(policy_decisions.get("grounding_citation_count") or 0),
+            "grounding_language_form": policy_decisions.get("grounding_language_form"),
+            "grounding_normalized_text": policy_decisions.get("grounding_normalized_text"),
+            "grounding_np_kb_enabled": bool(policy_decisions.get("grounding_np_kb_enabled")),
+            "grounding_oip_snippet_count": int(policy_decisions.get("grounding_oip_snippet_count") or 0),
+            "grounding_sources": list(policy_decisions.get("grounding_sources") or []),
+            "np_kb": policy_decisions.get("np_kb") or {"enabled": False},
+        }
+    if not user_message:
+        return {}
+    try:
+        from src.nlu.prompt_grounding import build_prompt_grounding
+
+        snippets = policy_decisions.get("knowledge_snippets")
+        if not isinstance(snippets, list):
+            snippets = None
+        grounding = build_prompt_grounding(user_message, knowledge_snippets=snippets, top_k=5)
+        return grounding.to_metadata()
+    except Exception:
+        return {}
+
+
 def _utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
@@ -92,6 +122,7 @@ class ExecutionContextStage:
         if execution is None:
             return context
         policy_decisions = dict(route.policy_decisions or {})
+        grounding_meta = _build_execution_grounding(policy_decisions)
         context.context = ExecutionContext(
             context_id=str(uuid.uuid4()),
             execution_id=execution.execution_id,
@@ -108,7 +139,10 @@ class ExecutionContextStage:
             deployment_mode=route.deployment_mode,
             capability_token_id="",
             sandbox_id="",
-            metadata={"estimated_tokens": route.estimated_tokens},
+            metadata={
+                "estimated_tokens": route.estimated_tokens,
+                **grounding_meta,
+            },
         )
         context.prompt = _resolve_provider_prompt(route=route, policy_decisions=policy_decisions)
         if _OIP_CHAT_DEBUG:
@@ -117,6 +151,8 @@ class ExecutionContextStage:
                 intent_type=policy_decisions.get("execution_intent_type"),
                 user_message=policy_decisions.get("user_message"),
                 provider_prompt=context.prompt,
+                grounding_citations=grounding_meta.get("grounding_citation_count"),
+                grounding_sources=grounding_meta.get("grounding_sources"),
                 plan_id=route.plan_id,
                 request_id=route.request_id,
             )

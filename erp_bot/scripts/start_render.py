@@ -16,6 +16,12 @@ sys.path.insert(0, str(BOT_ROOT))
 for subdir in ("data/oip", "data/chroma_db", "data/orbix"):
     (BOT_ROOT / subdir).mkdir(parents=True, exist_ok=True)
 
+# Prefer bundled indexes under erp_bot/knowledgebase (Render rootDir).
+_bundled_kb = BOT_ROOT / "knowledgebase"
+if _bundled_kb.exists() and not os.environ.get("ORBIX_NP_KB_ROOT"):
+    os.environ["ORBIX_NP_KB_ROOT"] = str(_bundled_kb)
+os.environ.setdefault("ORBIX_NP_KB_ENABLED", "true")
+
 import src.config  # noqa: F401 — load env + print ERP_PATH
 from src.api.oip_chat_ingress import provider_runtime_active
 from src.config import API_PORT

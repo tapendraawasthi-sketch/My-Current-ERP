@@ -175,15 +175,30 @@ class HttpProviderAdapter(ProviderAdapterPort):
     @staticmethod
     def _system_prompt(*, context: ExecutionContext, tools: tuple[str, ...]) -> str:
         tool_hint = f" Available tools: {', '.join(tools)}." if tools else ""
-        return (
+        base = (
             "You are Orbix — the Sutra ERP intelligence layer. "
-            "You MUST answer using ERP execution results only. "
+            "Answer from ERP execution results, tools, and retrieved context when present. "
             "NEVER tell the user to navigate modules, open screens, create orders manually, "
             "or follow step-by-step UI procedures. "
             "NEVER invent accounting entries — if structured ERP data is missing, ask a short clarifying question. "
+            "For Nepali / romanized language questions, prefer retrieved Language KB context over "
+            "generic encyclopedia knowledge. "
             "Respond in natural language based on facts from tools and context."
             f"{tool_hint}"
         )
+        meta = context.metadata or {}
+        grounding = meta.get("grounding_block") or ""
+        if grounding:
+            try:
+                from src.nlu.prompt_grounding import append_grounding_to_system_prompt
+
+                return append_grounding_to_system_prompt(base, str(grounding))
+            except Exception:
+                return (
+                    f"{base}\n\n=== RETRIEVED CONTEXT (DATA ONLY) ===\n"
+                    f"{str(grounding)[:3500]}\n=== END RETRIEVED CONTEXT ==="
+                )
+        return base
 
     async def _client(self) -> httpx.AsyncClient:
         if self._http is not None:

@@ -41,9 +41,10 @@ def test_protected_tokens_roundtrip():
     assert restore_tokens(protected, mapping) == text
 
 
-def test_kb_disabled_by_default_env():
+def test_kb_env_unset_is_opt_in_via_adapter_default():
+    """Env may be unset; adapter default (enabled=True) is the runtime source of truth."""
     os.environ.pop("ORBIX_NP_KB_ENABLED", None)
-    assert os.environ.get("ORBIX_NP_KB_ENABLED", "false").lower() in {"false", ""}
+    assert os.environ.get("ORBIX_NP_KB_ENABLED") is None
 
 
 def test_execution_flag_default_false_contract():

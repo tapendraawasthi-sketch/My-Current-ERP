@@ -137,6 +137,7 @@ async def np_kb_status() -> dict:
 
     cfg = NpKbConfig.from_env()
     root = Path(cfg.root)
+    grounding = root / "indexes" / "lexical" / "kb_grounding.sqlite"
     lex = root / "indexes" / "lexical" / "kb_lexical.sqlite"
     meta = root / "indexes" / "metadata" / "kb_metadata.sqlite"
     sem = root / "indexes" / "semantic" / "semantic_index_status.json"
@@ -148,17 +149,22 @@ async def np_kb_status() -> dict:
             sem_payload = json.loads(sem.read_text(encoding="utf-8"))
         except Exception:
             sem_payload = {"status": "unreadable"}
+    active_lexical = grounding if grounding.exists() else lex
     return {
         "enabled": cfg.enabled,
         "env_ORBIX_NP_KB_ENABLED": os.environ.get("ORBIX_NP_KB_ENABLED"),
+        "kb_root": str(root),
+        "grounding_db_exists": grounding.exists(),
         "lexical_db_exists": lex.exists(),
+        "active_lexical_db": str(active_lexical) if active_lexical.exists() else None,
+        "prompt_grounding": True,
         "metadata_db_exists": meta.exists(),
         "semantic": sem_payload,
         "review_policy": cfg.review_policy,
         "lexical_enabled": cfg.lexical_enabled,
         "semantic_enabled": cfg.semantic_enabled,
         "execution_authority": False,
-        "note": "Knowledge base never posts transactions; ERP services remain authoritative.",
+        "note": "Knowledge base never posts transactions; ERP services remain authoritative. Citations are injected into provider prompts when enabled.",
     }
 
 

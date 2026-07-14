@@ -20,19 +20,18 @@ logger = logging.getLogger(__name__)
 
 RRF_K = 60
 USE_HYBRID_NLU = os.getenv("USE_HYBRID_NLU_SEARCH", "true").lower() != "false"
-USE_NP_KB_ENRICH = os.getenv("ORBIX_NP_KB_ENABLED", "").strip().lower() in {
-    "1",
-    "true",
-    "yes",
-    "on",
-}
 
-_chunk_by_id: dict[str, KnowledgeChunk] | None = None
+
+def _np_kb_enrich_enabled() -> bool:
+    raw = os.getenv("ORBIX_NP_KB_ENABLED")
+    if raw is None:
+        return True  # matches NpKbConfig default after owner attestation
+    return raw.strip().lower() in {"1", "true", "yes", "on"}
 
 
 def _np_kb_query_boost(query: str) -> tuple[str, dict[str, Any]]:
     """Optionally normalize/enrich query via ONLI KB; never execute mutations."""
-    if not USE_NP_KB_ENRICH:
+    if not _np_kb_enrich_enabled():
         return query, {"enabled": False}
     try:
         from .np_kb_adapter import enrich_nlu_context
@@ -45,6 +44,9 @@ def _np_kb_query_boost(query: str) -> tuple[str, dict[str, Any]]:
     except Exception as exc:  # soft-fail
         logger.debug("NP KB enrich skipped: %s", exc)
         return query, {"enabled": False, "reason": str(exc)}
+
+
+_chunk_by_id: dict[str, KnowledgeChunk] | None = None
 
 
 @dataclass(frozen=True)

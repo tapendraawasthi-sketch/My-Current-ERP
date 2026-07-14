@@ -18,7 +18,10 @@ def load_kb_config() -> dict[str, Any]:
 
 
 def is_enabled() -> bool:
-    return os.environ.get("ORBIX_NP_KB_ENABLED", "").strip().lower() in {
+    raw = os.environ.get("ORBIX_NP_KB_ENABLED")
+    if raw is None:
+        return True  # owner-attested default; set false to disable
+    return raw.strip().lower() in {
         "1",
         "true",
         "yes",

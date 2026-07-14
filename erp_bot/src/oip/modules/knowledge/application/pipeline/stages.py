@@ -220,7 +220,11 @@ class PoisonDetectionStage:
                     {"document_id": doc_id, "reason": PoisonReason.HASH_MISMATCH.value}
                 )
                 continue
-            safe.append(result)
+            # Attach short content for prompt grounding (interpretation-only).
+            enriched = dict(result)
+            enriched["title"] = doc.title
+            enriched["snippet"] = (doc.content or "")[:400]
+            safe.append(enriched)
         context.ranked_results = safe
         context.audit_events.append(
             {"stage": self.name, "blocked": len(context.blocked_documents), "safe": len(safe)}
