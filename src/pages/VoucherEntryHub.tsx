@@ -17,7 +17,7 @@ import {
   getVoucherGroupForType,
   getVoucherTypeShortcut,
 } from "../lib/voucherUtils";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 // Lazy-load all voucher pages
 const ContraVoucher = lazy(() => import("./ContraVoucher"));

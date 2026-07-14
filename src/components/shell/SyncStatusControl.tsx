@@ -79,56 +79,70 @@ const SyncStatusControl: React.FC = () => {
       label: "Synced",
       icon: CheckCircle2,
       className:
-        "text-[var(--ox-success)] bg-[var(--ox-success-soft)] border-[color:rgba(5,150,105,0.25)]",
+        "text-[var(--ds-status-success)] bg-[var(--ds-status-success-surface)] border-[color:rgba(5,150,105,0.25)]",
       detail: agg?.detail ?? "All local changes are synced.",
     },
     syncing: {
       label: "Syncing",
       icon: Loader2,
       className:
-        "text-[var(--ox-warning)] bg-[var(--ox-warning-soft)] border-[color:rgba(217,119,6,0.25)]",
+        "text-[var(--ds-status-warning)] bg-[var(--ds-status-warning-surface)] border-[color:rgba(217,119,6,0.25)]",
       detail: agg?.detail ?? "Synchronizing pending changes…",
     },
     pending: {
       label: agg && agg.pendingCount > 0 ? `${agg.pendingCount} pending` : "Pending changes",
       icon: RefreshCw,
       className:
-        "text-[var(--ox-warning)] bg-[var(--ox-warning-soft)] border-[color:rgba(217,119,6,0.25)]",
+        "text-[var(--ds-status-warning)] bg-[var(--ds-status-warning-surface)] border-[color:rgba(217,119,6,0.25)]",
       detail: agg?.detail ?? "Changes waiting to sync.",
     },
     failed: {
       label: "Sync failed",
       icon: AlertCircle,
       className:
-        "text-[var(--ox-danger)] bg-[var(--ox-danger-soft)] border-[color:rgba(220,38,38,0.25)]",
+        "text-[var(--ds-status-danger)] bg-[var(--ds-status-danger-surface)] border-[color:rgba(220,38,38,0.25)]",
       detail: agg?.detail ?? "Sync failed — local records are safe.",
+    },
+    retry_scheduled: {
+      label: "Retry scheduled",
+      icon: RefreshCw,
+      className:
+        "text-[var(--ds-status-warning)] bg-[var(--ds-status-warning-surface)] border-[color:rgba(217,119,6,0.25)]",
+      detail: agg?.detail ?? "Retry scheduled — remote acknowledgement pending.",
+    },
+    stale: {
+      label: "Possibly stale",
+      icon: CloudOff,
+      className:
+        "text-[var(--ds-text-muted)] bg-[var(--ds-surface-muted)] border-[var(--ds-border-default)]",
+      detail: agg?.detail ?? "Last remote acknowledgement is aged.",
     },
     conflict: {
       label: "Conflict detected",
       icon: ShieldAlert,
       className:
-        "text-[var(--ox-danger)] bg-[var(--ox-danger-soft)] border-[color:rgba(220,38,38,0.25)]",
+        "text-[var(--ds-status-danger)] bg-[var(--ds-status-danger-surface)] border-[color:rgba(220,38,38,0.25)]",
       detail: agg?.detail ?? "Conflict detected — review required.",
     },
     action_required: {
       label: "Action required",
       icon: ShieldAlert,
       className:
-        "text-[var(--ox-danger)] bg-[var(--ox-danger-soft)] border-[color:rgba(220,38,38,0.25)]",
+        "text-[var(--ds-status-danger)] bg-[var(--ds-status-danger-surface)] border-[color:rgba(220,38,38,0.25)]",
       detail: agg?.detail ?? "Dead-letter events require attention.",
     },
     offline: {
       label: "Offline",
       icon: CloudOff,
       className:
-        "text-[var(--ox-text-muted)] bg-[var(--ox-surface-muted)] border-[var(--ox-border)]",
+        "text-[var(--ds-text-muted)] bg-[var(--ds-surface-muted)] border-[var(--ds-border-default)]",
       detail: agg?.detail ?? "Offline — will sync later.",
     },
     local_only: {
       label: "Local-only",
       icon: CloudOff,
       className:
-        "text-[var(--ox-text-muted)] bg-[var(--ox-surface-muted)] border-[var(--ox-border)]",
+        "text-[var(--ds-text-muted)] bg-[var(--ds-surface-muted)] border-[var(--ds-border-default)]",
       detail: agg?.detail ?? "Local-only company.",
     },
   };
@@ -141,7 +155,7 @@ const SyncStatusControl: React.FC = () => {
       setOpen((v) => !v);
       return;
     }
-    if (effective === "failed" || effective === "action_required") {
+    if (effective === "failed" || effective === "action_required" || effective === "retry_scheduled") {
       void retryFailedSync();
       void runEventSyncCycle();
       return;
@@ -165,7 +179,7 @@ const SyncStatusControl: React.FC = () => {
           refreshAgg();
         }}
         onDoubleClick={handlePrimary}
-        className={`inline-flex h-8 items-center gap-1.5 rounded-[var(--ox-radius-md)] border px-2.5 text-[12px] font-medium transition-colors duration-150 ${meta.className}`}
+        className={`inline-flex h-8 items-center gap-1.5 rounded-[var(--ds-radius-md)] border px-2.5 text-[12px] font-medium transition-colors duration-150 ${meta.className}`}
         title={`${meta.detail} Click for details.`}
         aria-label={`Sync status: ${meta.label}`}
         aria-expanded={open}
@@ -186,14 +200,14 @@ const SyncStatusControl: React.FC = () => {
             role="dialog"
             aria-label="Sync details"
             data-testid="sync-status-panel"
-            className="absolute right-0 top-full z-50 mt-2 w-80 rounded-[var(--ox-radius-lg)] border border-[var(--ox-border)] bg-[var(--ox-surface-elevated)] p-3 shadow-[var(--ox-shadow-md)]"
+            className="absolute right-0 top-full z-[var(--ds-z-dropdown)] mt-2 w-80 rounded-[var(--ds-radius-lg)] border border-[var(--ds-border-default)] bg-[var(--ds-surface-raised)] p-3 shadow-[var(--ds-shadow-2)]"
           >
             <div className="flex items-start gap-2">
               <Icon className={`mt-0.5 h-4 w-4 ${effective === "syncing" ? "animate-spin" : ""}`} />
               <div className="min-w-0 flex-1">
-                <p className="text-[13px] font-semibold text-[var(--ox-text)]">{meta.label}</p>
-                <p className="mt-0.5 text-[12px] text-[var(--ox-text-muted)]">{meta.detail}</p>
-                <div className="mt-2 space-y-0.5 text-[11px] text-[var(--ox-text-subtle)]">
+                <p className="text-[13px] font-semibold text-[var(--ds-text-default)]">{meta.label}</p>
+                <p className="mt-0.5 text-[12px] text-[var(--ds-text-muted)]">{meta.detail}</p>
+                <div className="mt-2 space-y-0.5 text-[12px] text-[var(--ds-text-subtle)]">
                   <p>Connection: {online ? "Online" : "Offline"}</p>
                   <p>
                     Device: {agg?.deviceIdShort ?? agg?.deviceId?.slice(0, 8) ?? "—"}
@@ -220,7 +234,7 @@ const SyncStatusControl: React.FC = () => {
                   handlePrimary();
                   setOpen(false);
                 }}
-                className="h-8 flex-1 rounded-[var(--ox-radius-md)] bg-[var(--ox-primary)] px-3 text-[12px] font-medium text-white hover:bg-[var(--ox-primary-hover)] disabled:opacity-50"
+                className="h-8 flex-1 rounded-[var(--ds-radius-md)] bg-[var(--ds-action-primary)] px-3 text-[12px] font-medium text-white hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-50"
               >
                 {effective === "failed" || effective === "action_required"
                   ? "Retry sync"
@@ -229,7 +243,7 @@ const SyncStatusControl: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="h-8 rounded-[var(--ox-radius-md)] border border-[var(--ox-border)] bg-[var(--ox-surface)] px-3 text-[12px] font-medium text-[var(--ox-text)] hover:bg-[var(--ox-surface-muted)]"
+                className="h-8 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-3 text-[12px] font-medium text-[var(--ds-text-default)] hover:bg-[var(--ds-surface-muted)]"
               >
                 Close
               </button>

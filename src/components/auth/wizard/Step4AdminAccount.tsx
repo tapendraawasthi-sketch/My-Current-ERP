@@ -1,30 +1,11 @@
 import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { Input, Label, FieldError, Alert } from "@/design-system";
+import type { WizardStepProps } from "./wizardTypes";
 
-interface Props {
-  data: any;
-  onChange: (data: any) => void;
-  errors?: Record<string, string>;
-}
-
-const labelClass = "block text-[11px] font-medium text-gray-600 mb-1";
-const fieldClass =
-  "w-full h-8 px-2.5 text-[12px] rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/30 focus:border-[#1557b0] transition-colors";
-
-const FieldError = ({ msg }: { msg?: string }) =>
-  msg ? (
-    <p className="mt-1 text-[11px] text-red-600 flex items-center gap-1">
-      <span className="font-bold shrink-0">!</span> {msg}
-    </p>
-  ) : null;
-
-const inputStyle = (hasError: boolean) => ({
-  background: "#ffffff",
-  border: `1px solid ${hasError ? "#dc2626" : "#d1d5db"}`,
-  color: "#111827",
-});
-
-const getPasswordStrength = (password: string) => {
+function passwordStrength(
+  password: string,
+): { label: string; barClass: string; textClass: string; widthClass: string } | null {
   if (!password) return null;
   let score = 0;
   if (password.length >= 6) score++;
@@ -32,139 +13,152 @@ const getPasswordStrength = (password: string) => {
   if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
   if (/\d/.test(password)) score++;
   if (/[^a-zA-Z0-9]/.test(password)) score++;
-  if (score <= 2) return { label: "Weak", color: "#dc2626", width: "33%" };
-  if (score <= 3) return { label: "Fair", color: "#d97706", width: "55%" };
-  if (score <= 4) return { label: "Good", color: "#2563eb", width: "77%" };
-  return { label: "Strong", color: "#059669", width: "100%" };
-};
+  if (score <= 2)
+    return {
+      label: "Weak",
+      barClass: "bg-[var(--ds-status-danger)]",
+      textClass: "text-[var(--ds-status-danger)]",
+      widthClass: "w-1/3",
+    };
+  if (score <= 3)
+    return {
+      label: "Fair",
+      barClass: "bg-[var(--ds-status-warning)]",
+      textClass: "text-[var(--ds-status-warning)]",
+      widthClass: "w-[55%]",
+    };
+  if (score <= 4)
+    return {
+      label: "Good",
+      barClass: "bg-[var(--ds-status-info)]",
+      textClass: "text-[var(--ds-status-info)]",
+      widthClass: "w-[77%]",
+    };
+  return {
+    label: "Strong",
+    barClass: "bg-[var(--ds-status-success)]",
+    textClass: "text-[var(--ds-status-success)]",
+    widthClass: "w-full",
+  };
+}
 
-export default function Step4AdminAccount({ data, onChange, errors = {} }: Props) {
+export default function Step4AdminAccount({ data, onChange, errors = {} }: WizardStepProps) {
   const [showPassword, setShowPassword] = useState({ password: false, confirm: false });
-  const strength = getPasswordStrength(data.password || "");
-
-  const set = (key: string, val: string) => onChange({ ...data, [key]: val });
+  const strength = passwordStrength(data.password);
+  const set = <K extends keyof typeof data>(key: K, val: (typeof data)[K]) =>
+    onChange({ ...data, [key]: val });
 
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="text-[18px] font-bold text-gray-800">Admin Account</h2>
-        <p className="text-[12px] text-gray-500 mt-1">Create your administrator account</p>
+        <h2 className="text-[18px] font-semibold text-[var(--ds-text-strong)]">Administrator and security</h2>
+        <p className="mt-1 text-[13px] text-[var(--ds-text-muted)]">
+          Creates the first administrator through existing user authority. Additional users are managed after activation.
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Full Name */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="md:col-span-2">
-          <label className={labelClass}>
-            Full Name <span className="text-red-600">*</span>
-          </label>
-          <input
-            type="text"
-            value={data.fullName || ""}
+          <Label htmlFor="wiz-fullname">
+            Full name <span className="text-[var(--ds-status-danger)]">*</span>
+          </Label>
+          <Input
+            id="wiz-fullname"
+            value={data.fullName}
             onChange={(e) => set("fullName", e.target.value)}
-            className={fieldClass}
-            style={inputStyle(!!errors.fullName)}
-            placeholder="e.g. Tapendra Awasthi"
+            invalid={Boolean(errors.fullName)}
+            autoComplete="name"
           />
-          <FieldError msg={errors.fullName} />
+          <FieldError>{errors.fullName}</FieldError>
         </div>
 
-        {/* Username */}
         <div className="md:col-span-2">
-          <label className={labelClass}>
-            Username <span className="text-red-600">*</span>{" "}
-            <span className="text-gray-400 font-normal">(alphanumeric, min 4 characters)</span>
-          </label>
-          <input
-            type="text"
-            value={data.username || ""}
+          <Label htmlFor="wiz-username">
+            Username <span className="text-[var(--ds-status-danger)]">*</span>
+          </Label>
+          <Input
+            id="wiz-username"
+            value={data.username}
             onChange={(e) => set("username", e.target.value.replace(/[^a-zA-Z0-9]/g, ""))}
-            className={fieldClass}
-            style={inputStyle(!!errors.username)}
-            placeholder="admin"
+            invalid={Boolean(errors.username)}
+            autoComplete="username"
             minLength={4}
           />
-          <FieldError msg={errors.username} />
+          <p className="mt-1 text-[13px] text-[var(--ds-text-muted)]">Alphanumeric, minimum 4 characters.</p>
+          <FieldError>{errors.username}</FieldError>
         </div>
 
-        {/* Password */}
         <div>
-          <label className={labelClass}>
-            Password <span className="text-red-600">*</span>{" "}
-            <span className="text-gray-400 font-normal">(min 6 chars, letters + numbers)</span>
-          </label>
+          <Label htmlFor="wiz-password">
+            Password <span className="text-[var(--ds-status-danger)]">*</span>
+          </Label>
           <div className="relative">
-            <input
+            <Input
+              id="wiz-password"
               type={showPassword.password ? "text" : "password"}
-              value={data.password || ""}
+              value={data.password}
               onChange={(e) => set("password", e.target.value)}
-              className={fieldClass}
-              style={{ ...inputStyle(!!errors.password), paddingRight: "36px" }}
-              placeholder="••••••••"
+              invalid={Boolean(errors.password)}
+              autoComplete="new-password"
+              className="pr-11"
             />
             <button
               type="button"
+              className="ds-focus-ring absolute right-1 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-[var(--ds-radius-sm)] text-[var(--ds-text-muted)]"
+              aria-label={showPassword.password ? "Hide password" : "Show password"}
               onClick={() => setShowPassword((s) => ({ ...s, password: !s.password }))}
-              className="absolute right-2 top-1/2 -translate-y-1/2"
-              style={{ background: "none", border: "none", cursor: "pointer", color: "#6b7280" }}
             >
-              {showPassword.password ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              {showPassword.password ? <EyeOff className="h-4 w-4" aria-hidden /> : <Eye className="h-4 w-4" aria-hidden />}
             </button>
           </div>
-          {strength && (
+          {strength ? (
             <div className="mt-1.5">
-              <div className="h-1 rounded-full overflow-hidden" style={{ background: "#e5e7eb" }}>
+              <div className="h-1 overflow-hidden rounded-full bg-[var(--ds-surface-muted)]">
                 <div
-                  className="h-1 rounded-full transition-all duration-300"
-                  style={{ width: strength.width, background: strength.color }}
+                  className={`h-1 rounded-full transition-[width] duration-[var(--ds-duration-normal)] ${strength.barClass} ${strength.widthClass}`}
                 />
               </div>
-              <p className="text-[10px] mt-0.5" style={{ color: strength.color }}>
+              <p className={`mt-0.5 text-[13px] ${strength.textClass}`}>
                 Password strength: {strength.label}
               </p>
             </div>
-          )}
-          <FieldError msg={errors.password} />
+          ) : null}
+          <FieldError>{errors.password}</FieldError>
         </div>
 
-        {/* Confirm Password */}
         <div>
-          <label className={labelClass}>
-            Confirm Password <span className="text-red-600">*</span>
-          </label>
+          <Label htmlFor="wiz-confirm">
+            Confirm password <span className="text-[var(--ds-status-danger)]">*</span>
+          </Label>
           <div className="relative">
-            <input
+            <Input
+              id="wiz-confirm"
               type={showPassword.confirm ? "text" : "password"}
-              value={data.confirmPassword || ""}
+              value={data.confirmPassword}
               onChange={(e) => set("confirmPassword", e.target.value)}
-              className={fieldClass}
-              style={{ ...inputStyle(!!errors.confirmPassword), paddingRight: "36px" }}
-              placeholder="••••••••"
+              invalid={Boolean(errors.confirmPassword)}
+              autoComplete="new-password"
+              className="pr-11"
             />
             <button
               type="button"
+              className="ds-focus-ring absolute right-1 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-[var(--ds-radius-sm)] text-[var(--ds-text-muted)]"
+              aria-label={showPassword.confirm ? "Hide confirm password" : "Show confirm password"}
               onClick={() => setShowPassword((s) => ({ ...s, confirm: !s.confirm }))}
-              className="absolute right-2 top-1/2 -translate-y-1/2"
-              style={{ background: "none", border: "none", cursor: "pointer", color: "#6b7280" }}
             >
-              {showPassword.confirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              {showPassword.confirm ? <EyeOff className="h-4 w-4" aria-hidden /> : <Eye className="h-4 w-4" aria-hidden />}
             </button>
           </div>
-          {data.confirmPassword &&
-            data.password === data.confirmPassword &&
-            !errors.confirmPassword && (
-              <p className="mt-1 text-[11px] text-green-600">✓ Passwords match</p>
-            )}
-          <FieldError msg={errors.confirmPassword} />
+          {data.confirmPassword && data.password === data.confirmPassword && !errors.confirmPassword ? (
+            <p className="mt-1 text-[13px] text-[var(--ds-status-success)]">Passwords match</p>
+          ) : null}
+          <FieldError>{errors.confirmPassword}</FieldError>
         </div>
       </div>
 
-      <div
-        className="px-3 py-2 rounded-md text-[11px]"
-        style={{ background: "#eff6ff", border: "1px solid #bfdbfe", color: "#1e40af" }}
-      >
-        <strong>Note:</strong> This account will have full admin access. You can add more users
-        after setup.
-      </div>
+      <Alert tone="info" title="Access note">
+        This account receives full administrator access for this company. Passwords are never restored from setup drafts.
+      </Alert>
     </div>
   );
 }

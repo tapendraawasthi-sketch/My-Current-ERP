@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useStore } from "../store/useStore";
 import { getDB, generateId } from "../lib/db";
 import * as XLSX from "xlsx";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { importStatementViaTreasury, postAdjustmentViaTreasury } from "@/domains/treasury/uiAdapters";
 import {
   AlertTriangle,
@@ -34,16 +34,16 @@ const money = (v: any) =>
   })}`;
 
 const btn =
-  "inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md bg-[#1557b0] text-white text-[12px] font-medium hover:bg-[#0f4a96] disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
+  "inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md bg-[var(--ds-action-primary)] text-white text-[12px] font-medium hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 const btn2 =
   "inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-gray-300 text-gray-700 text-[12px] font-medium hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 const btnDanger =
   "inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md bg-red-600 text-white text-[12px] font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 const input =
-  "w-full h-8 px-2.5 rounded-md border border-gray-300 bg-white text-[12px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0]";
+  "w-full h-8 px-2.5 rounded-md border border-gray-300 bg-white text-[12px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]";
 const card = "bg-white border border-gray-200 rounded-lg p-4 text-gray-800 shadow-sm";
 const th =
-  "px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200 text-gray-500";
+  "px-3 py-2.5 text-left text-[12px] font-semibold uppercase tracking-wide bg-[var(--ds-surface-muted)] border-b border-gray-200 text-gray-500";
 const td = "px-3 py-2.5 text-[12px] border-b border-gray-100 align-top text-gray-800";
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
@@ -312,7 +312,7 @@ const makeAuditRow = (currentUser: any, action: string, narration: string, risk 
   userId: currentUser?.id || "",
   userName: currentUser?.name || currentUser?.username || "System",
   role: currentUser?.role || "",
-  module: "Bank Statement Import",
+  module: "Import bank statement",
   action,
   narration,
   status: "Success",
@@ -324,11 +324,11 @@ const Modal = ({ open, title, children, onClose, max = "max-w-4xl" }: any) => {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[var(--ds-z-dropdown)] bg-black/40 flex items-center justify-center p-4">
       <div
         className={`bg-white rounded-lg border border-gray-300 shadow-xl w-full ${max} max-h-[90vh] flex flex-col`}
       >
-        <div className="flex items-center justify-between px-4 py-3 bg-[#f5f6fa] border-b border-gray-200">
+        <div className="flex items-center justify-between px-4 py-3 bg-[var(--ds-surface-muted)] border-b border-gray-200">
           <h3 className="text-[14px] font-semibold text-gray-800">{title}</h3>
           <button onClick={onClose} className="p-1 rounded-md hover:bg-gray-200 text-gray-500">
             <XCircle className="h-4 w-4" />
@@ -876,22 +876,22 @@ export default function BankStatementImport() {
   const renderSummary = () => (
     <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-7 gap-3">
       <div className={card}>
-        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Rows</p>
+        <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">Rows</p>
         <p className="text-[15px] font-bold text-gray-800">{stats.count}</p>
       </div>
 
       <div className={card}>
-        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Receipts</p>
+        <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">Receipts</p>
         <p className="text-[15px] font-bold text-emerald-600">{money(stats.receipts)}</p>
       </div>
 
       <div className={card}>
-        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Payments</p>
+        <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">Payments</p>
         <p className="text-[15px] font-bold text-red-600">{money(stats.payments)}</p>
       </div>
 
       <div className={card}>
-        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Net</p>
+        <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">Net</p>
         <p
           className={`text-[15px] font-bold ${stats.net >= 0 ? "text-emerald-600" : "text-red-600"}`}
         >
@@ -900,17 +900,17 @@ export default function BankStatementImport() {
       </div>
 
       <div className={card}>
-        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Matched</p>
-        <p className="text-[15px] font-bold text-[#1557b0]">{stats.matched}</p>
+        <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">Matched</p>
+        <p className="text-[15px] font-bold text-[var(--ds-action-primary)]">{stats.matched}</p>
       </div>
 
       <div className={card}>
-        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Probable</p>
+        <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">Probable</p>
         <p className="text-[15px] font-bold text-amber-600">{stats.probable}</p>
       </div>
 
       <div className={card}>
-        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+        <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
           Reconciled
         </p>
         <p className="text-[15px] font-bold text-emerald-600">{stats.reconciled}</p>
@@ -922,7 +922,7 @@ export default function BankStatementImport() {
     <div className={card}>
       <div className="grid grid-cols-1 md:grid-cols-6 gap-3">
         <div>
-          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+          <label className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
             Bank Account
           </label>
           <select
@@ -940,7 +940,7 @@ export default function BankStatementImport() {
         </div>
 
         <div>
-          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+          <label className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
             Batch
           </label>
           <select
@@ -960,7 +960,7 @@ export default function BankStatementImport() {
         </div>
 
         <div>
-          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+          <label className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
             Status
           </label>
           <select
@@ -975,7 +975,7 @@ export default function BankStatementImport() {
         </div>
 
         <div className="md:col-span-2">
-          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+          <label className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
             Search
           </label>
           <div className="relative">
@@ -1015,10 +1015,10 @@ export default function BankStatementImport() {
         <div className="flex flex-wrap justify-between gap-3">
           <div>
             <h3 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2">
-              <Upload className="h-4 w-4 text-[#1557b0]" />
-              Import Bank Statement
+              <Upload className="h-4 w-4 text-[var(--ds-action-primary)]" />
+              Import bank statement
             </h3>
-            <p className="text-[11px] text-gray-500 mt-0.5">
+            <p className="text-[12px] text-gray-500 mt-0.5">
               Upload Excel/CSV statement, preview rows, auto-match to vouchers and reconcile.
             </p>
           </div>
@@ -1096,18 +1096,18 @@ export default function BankStatementImport() {
                         <div className="font-semibold text-gray-800">
                           {r.matchedVoucherNo || r.matchedVoucherId}
                         </div>
-                        <div className="text-[10px] text-gray-500">
+                        <div className="text-[12px] text-gray-500">
                           Score {r.matchScore || 0} • {r.matchReason || "-"}
                         </div>
                       </div>
                     ) : (
-                      <span className="text-[11px] font-medium text-gray-400">No match</span>
+                      <span className="text-[12px] font-medium text-gray-400">No match</span>
                     )}
                   </td>
 
                   <td className={td}>
                     <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${statusClass(
+                      className={`px-2 py-0.5 rounded text-[12px] font-bold uppercase ${statusClass(
                         r.status,
                       )}`}
                     >
@@ -1139,7 +1139,7 @@ export default function BankStatementImport() {
 
                       {!r.matchedVoucherId && (
                         <button
-                          className="p-1.5 rounded-md hover:bg-gray-100 text-[#1557b0]"
+                          className="p-1.5 rounded-md hover:bg-gray-100 text-[var(--ds-action-primary)]"
                           onClick={() => openCreateVoucher(r)}
                           title="Create voucher"
                         >
@@ -1182,10 +1182,10 @@ export default function BankStatementImport() {
         <div className="flex justify-between gap-3">
           <div>
             <h3 className="text-[14px] font-semibold text-gray-800 flex items-center gap-2">
-              <WalletCards className="h-4 w-4 text-[#1557b0]" />
+              <WalletCards className="h-4 w-4 text-[var(--ds-action-primary)]" />
               Import Batches
             </h3>
-            <p className="text-[11px] text-gray-500 mt-0.5">
+            <p className="text-[12px] text-gray-500 mt-0.5">
               Review imported statement batches and delete if wrongly imported.
             </p>
           </div>
@@ -1212,7 +1212,7 @@ export default function BankStatementImport() {
               <tr key={b.id} className="hover:bg-gray-50">
                 <td className={td}>
                   <div className="font-medium">{String(b.importedAt).slice(0, 10)}</div>
-                  <div className="text-[10px] text-gray-400">
+                  <div className="text-[12px] text-gray-400">
                     {String(b.importedAt).slice(11, 19)}
                   </div>
                 </td>
@@ -1291,7 +1291,7 @@ export default function BankStatementImport() {
                       {r.matchedVoucherId ? (
                         <div>
                           <div className="font-semibold text-gray-800">{r.matchedVoucherNo}</div>
-                          <div className="text-[10px] text-gray-500">
+                          <div className="text-[12px] text-gray-500">
                             Score {r.matchScore} • {r.matchReason}
                           </div>
                         </div>
@@ -1301,7 +1301,7 @@ export default function BankStatementImport() {
                     </td>
                     <td className={td}>
                       <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${statusClass(
+                        className={`px-2 py-0.5 rounded text-[12px] font-bold uppercase ${statusClass(
                           r.status,
                         )}`}
                       >
@@ -1354,29 +1354,29 @@ export default function BankStatementImport() {
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
             <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                 Date
               </p>
               <p className="font-semibold text-gray-800">{selectedRow.date}</p>
             </div>
             <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                 Debit
               </p>
               <p className="font-semibold text-red-600">{money(selectedRow.debit)}</p>
             </div>
             <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                 Credit
               </p>
               <p className="font-semibold text-emerald-600">{money(selectedRow.credit)}</p>
             </div>
             <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                 Status
               </p>
               <span
-                className={`inline-flex mt-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase ${statusClass(
+                className={`inline-flex mt-1 px-2 py-0.5 rounded text-[12px] font-bold uppercase ${statusClass(
                   selectedRow.status,
                 )}`}
               >
@@ -1386,27 +1386,27 @@ export default function BankStatementImport() {
           </div>
 
           <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
               Narration
             </p>
             <p className="font-medium text-[12px] text-gray-800">{selectedRow.narration || "-"}</p>
           </div>
 
           <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Match</p>
+            <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">Match</p>
             <p className="font-semibold text-gray-800">
               {selectedRow.matchedVoucherNo || selectedRow.matchedVoucherId || "No match"}
             </p>
-            <p className="text-[11px] font-medium text-gray-500">
+            <p className="text-[12px] font-medium text-gray-500">
               Score {selectedRow.matchScore || 0} • {selectedRow.matchReason || "-"}
             </p>
           </div>
 
           <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+            <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
               Raw Imported Data
             </p>
-            <pre className="text-[10px] bg-white border border-gray-200 p-3 rounded-lg overflow-auto max-h-64">
+            <pre className="text-[12px] bg-white border border-gray-200 p-3 rounded-lg overflow-auto max-h-64">
               {JSON.stringify(selectedRow.raw || selectedRow, null, 2)}
             </pre>
           </div>
@@ -1428,13 +1428,13 @@ export default function BankStatementImport() {
               {Number(selectedRow.amount || 0) >= 0 ? "Receipt" : "Payment"} •{" "}
               {money(Math.abs(Number(selectedRow.amount || 0)))}
             </p>
-            <p className="text-[11px] font-medium mt-1">
+            <p className="text-[12px] font-medium mt-1">
               {selectedRow.date} • {selectedRow.narration || selectedRow.refNo || "-"}
             </p>
           </div>
 
           <div>
-            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+            <label className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
               Voucher Type
             </label>
             <select
@@ -1450,7 +1450,7 @@ export default function BankStatementImport() {
           </div>
 
           <div>
-            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+            <label className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
               Bank Account
             </label>
             <input
@@ -1461,7 +1461,7 @@ export default function BankStatementImport() {
           </div>
 
           <div>
-            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+            <label className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
               Opposite Account {Number(selectedRow.amount || 0) >= 0 ? "(Credit)" : "(Debit)"}
             </label>
             <select
@@ -1481,7 +1481,7 @@ export default function BankStatementImport() {
           </div>
 
           <div>
-            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+            <label className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
               Narration
             </label>
             <textarea
@@ -1508,16 +1508,15 @@ export default function BankStatementImport() {
   );
 
   return (
-    <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen text-gray-800">
+    <div className="p-4 md:p-6 bg-[var(--ds-surface-muted)] min-h-screen text-gray-800">
       <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-            <Banknote className="h-4 w-4 text-[#1557b0]" />
-            Bank Statement Import
+            <Banknote className="h-4 w-4 text-[var(--ds-action-primary)]" />
+            Import bank statement
           </h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
-            Import Excel/CSV bank statements, auto-match vouchers, reconcile and create missing
-            vouchers.
+          <p className="text-[12px] text-gray-500 mt-0.5">
+            Load a bank file.
           </p>
         </div>
 
@@ -1549,7 +1548,7 @@ export default function BankStatementImport() {
             onClick={() => setActiveTab(name)}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium transition-colors border ${
               activeTab === name
-                ? "bg-[#1557b0] text-white border-[#1557b0]"
+                ? "bg-[var(--ds-action-primary)] text-white border-[var(--ds-action-primary)]"
                 : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
             }`}
           >
@@ -1561,7 +1560,7 @@ export default function BankStatementImport() {
 
       {loading && (
         <div className={`${card} mb-4`}>
-          <div className="flex items-center gap-2 text-[12px] font-medium text-[#1557b0]">
+          <div className="flex items-center gap-2 text-[12px] font-medium text-[var(--ds-action-primary)]">
             <RefreshCcw className="h-4 w-4 animate-spin" />
             Processing bank statement operation...
           </div>

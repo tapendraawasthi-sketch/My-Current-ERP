@@ -7,21 +7,21 @@
 import React, { useState, useMemo } from "react";
 import { Plus, Edit2, Trash2, Search, X, Save } from "lucide-react";
 import { useStore } from "../store/useStore";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { ConfirmDialog } from "../components/ui";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 import { Employee } from "../lib/types";
 
-const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const th = "px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 const inputCls =
-  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
-const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
-const sectionTitle = "text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
+const labelCls = "text-[12px] font-medium text-gray-600 mb-1 block";
+const sectionTitle = "text-[12px] font-semibold text-gray-500 uppercase tracking-wide";
 
 const emptyForm = (): Omit<Employee, "id"> => ({
   name: "",
@@ -133,13 +133,14 @@ export default function EmployeeMaster() {
   };
 
   return (
-    <div className="flex h-full min-h-0 bg-[#f5f6fa]">
+    <div className="flex h-full min-h-0 bg-[var(--ds-canvas)]">
       <div className={`flex flex-1 flex-col min-w-0 ${showForm ? "border-r border-gray-200" : ""}`}>
         <div className="p-4 pb-0">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">Employee Master</h1>
-              <p className="text-[11px] text-gray-500 mt-0.5">
+              <h1 className="text-[15px] font-semibold text-gray-800">Employees</h1>
+          <p className="text-[12px] text-gray-500 mt-0.5">Staff records.</p>
+              <p className="text-[12px] text-gray-500 mt-0.5">
                 Manage staff, designations, and payroll details
               </p>
             </div>
@@ -177,7 +178,7 @@ export default function EmployeeMaster() {
             <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                  <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
                     <th className={th}>Name</th>
                     <th className={th}>Designation</th>
                     <th className={th}>Department</th>
@@ -191,20 +192,20 @@ export default function EmployeeMaster() {
                   {filteredEmployees.map((emp) => (
                     <tr
                       key={emp.id}
-                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
                       onClick={() => handleEdit(emp)}
                     >
                       <td className={td}>
                         <div className="font-medium text-gray-800">{emp.name}</div>
                         {emp.nameNe && (
-                          <div className="text-[10px] text-gray-500">{emp.nameNe}</div>
+                          <div className="text-[12px] text-gray-500">{emp.nameNe}</div>
                         )}
                       </td>
                       <td className={td}>{emp.designation}</td>
                       <td className={`${td} text-gray-500`}>{emp.department || "—"}</td>
                       <td className={`${td} text-center`}>
                         <span
-                          className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+                          className={`rounded px-2 py-0.5 text-[12px] font-semibold uppercase ${
                             emp.status === "active"
                               ? "bg-green-100 text-green-700"
                               : "bg-red-100 text-red-700"
@@ -215,7 +216,7 @@ export default function EmployeeMaster() {
                       </td>
                       <td className={`${td} text-center`}>
                         {emp.ssf ? (
-                          <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 text-blue-700">
+                          <span className="rounded px-2 py-0.5 text-[12px] font-semibold uppercase bg-blue-100 text-blue-700">
                             Enrolled
                           </span>
                         ) : (
@@ -250,7 +251,7 @@ export default function EmployeeMaster() {
                   ))}
                 </tbody>
               </table>
-              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+              <div className="px-3 py-2 border-t border-gray-200 bg-[var(--ds-canvas)] text-[12px] text-gray-500">
                 {filteredEmployees.length} employee{filteredEmployees.length === 1 ? "" : "s"}
               </div>
             </div>
@@ -264,7 +265,7 @@ export default function EmployeeMaster() {
             <span className="text-[13px] font-semibold text-gray-800">
               {selectedEmp ? "Edit employee" : "Add employee"}
             </span>
-            <button type="button" className="text-gray-500 hover:text-gray-700" onClick={resetForm}>
+            <button type="button" className="text-gray-500 hover:text-gray-700" aria-label="Close form" onClick={resetForm}>
               <X className="h-4 w-4" />
             </button>
           </div>
@@ -484,7 +485,7 @@ export default function EmployeeMaster() {
                   id="ssf"
                   checked={formData.ssf}
                   onChange={(e) => setFormData({ ...formData, ssf: e.target.checked })}
-                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                 />
                 Contributes to Social Security Fund (SSF)
               </label>
@@ -506,7 +507,7 @@ export default function EmployeeMaster() {
                   id="bonusEligible"
                   checked={formData.bonusEligible !== false}
                   onChange={(e) => setFormData({ ...formData, bonusEligible: e.target.checked })}
-                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                 />
                 Eligible for annual bonus provision
               </label>

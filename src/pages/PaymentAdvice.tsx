@@ -1,11 +1,10 @@
 // @ts-nocheck
 import React, { useState, useMemo } from "react";
 import { ActionToolbar, Select, NepaliDatePicker, Button, Badge } from "../components/ui";
-import { PillTitle, FormPanel } from "../components/BusyShell";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
 import { generateId } from "../lib/db";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { FileCheck, Send, Mail, Printer, Plus, Eye } from "lucide-react";
 import { formatADToBS } from "../lib/nepaliDate";
 
@@ -455,7 +454,7 @@ ${companySettings?.addressEn || "Your Address"}`;
 
       {/* Generate Advice Modal */}
       {(generateModalOpen || bulkGenerateOpen) && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[var(--ds-z-dropdown)]">
           <div className="bg-white rounded-lg w-full max-w-4xl max-h-[80vh] overflow-auto">
             <div className="p-4 border-b">
               <h3 className="font-bold text-lg">

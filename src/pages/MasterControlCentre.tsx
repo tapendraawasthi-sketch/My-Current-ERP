@@ -223,14 +223,14 @@ const MasterControlCentre: React.FC = () => {
       <div
         key={index}
         onClick={() => setCurrentPage(card.page)}
-        className="bg-white border border-gray-200 rounded-md p-4 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-[#1557b0] hover:shadow-md transition-all group"
+        className="bg-white border border-gray-200 rounded-md p-4 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-[var(--ds-action-primary)] hover:shadow-md transition-all group"
       >
-        <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-[#1557b0] group-hover:bg-[#1557b0] group-hover:text-white transition-colors">
+        <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-[var(--ds-action-primary)] group-hover:bg-[var(--ds-action-primary)] group-hover:text-white transition-colors">
           <IconComponent size={24} />
         </div>
         <div className="text-center">
-          <div className="text-[13px] font-semibold text-[#000000]">{card.label}</div>
-          <div className="text-[11px] text-[#000000] mt-1">
+          <div className="text-[13px] font-semibold text-[var(--ds-text-default)]">{card.label}</div>
+          <div className="text-[12px] text-[var(--ds-text-default)] mt-1">
             {card.count === null ? "View →" : `Count: ${card.count}`}
           </div>
         </div>
@@ -239,11 +239,11 @@ const MasterControlCentre: React.FC = () => {
   };
 
   return (
-    <div className="h-[calc(100vh-80px)] flex flex-col bg-[#f5f6fa] overflow-hidden">
+    <div className="h-[calc(100vh-80px)] flex flex-col bg-[var(--ds-surface-muted)] overflow-hidden">
       <div className="p-4 bg-white border-b border-gray-200">
-        <h2 className="text-[18px] font-bold text-[#000000]">Master Control Centre</h2>
-        <p className="text-[12px] text-[#000000] mt-1">
-          Centralized dashboard for all masters in the ERP
+        <h2 className="text-[18px] font-bold text-[var(--ds-text-default)]">Setup centre</h2>
+        <p className="text-[12px] text-[var(--ds-text-default)] mt-1">
+          All setup in one place.
         </p>
       </div>
 
@@ -251,28 +251,28 @@ const MasterControlCentre: React.FC = () => {
         {/* Stats Summary Bar */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <div className="bg-white border-l-4 border-blue-500 rounded-md p-4 shadow-sm">
-            <div className="text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+            <div className="text-[12px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wide">
               Total Ledgers
             </div>
-            <div className="text-2xl font-bold mt-1 text-[#000000]">{totalLedgers}</div>
+            <div className="text-2xl font-bold mt-1 text-[var(--ds-text-default)]">{totalLedgers}</div>
           </div>
           <div className="bg-white border-l-4 border-green-500 rounded-md p-4 shadow-sm">
-            <div className="text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+            <div className="text-[12px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wide">
               Stock Items
             </div>
-            <div className="text-2xl font-bold mt-1 text-[#000000]">{(items || []).length}</div>
+            <div className="text-2xl font-bold mt-1 text-[var(--ds-text-default)]">{(items || []).length}</div>
           </div>
           <div className="bg-white border-l-4 border-amber-500 rounded-md p-4 shadow-sm">
-            <div className="text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+            <div className="text-[12px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wide">
               Total Employees
             </div>
-            <div className="text-2xl font-bold mt-1 text-[#000000]">{(employees || []).length}</div>
+            <div className="text-2xl font-bold mt-1 text-[var(--ds-text-default)]">{(employees || []).length}</div>
           </div>
           <div className="bg-white border-l-4 border-purple-500 rounded-md p-4 shadow-sm">
-            <div className="text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+            <div className="text-[12px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wide">
               Pay Heads
             </div>
-            <div className="text-2xl font-bold mt-1 text-[#000000]">{(payHeads || []).length}</div>
+            <div className="text-2xl font-bold mt-1 text-[var(--ds-text-default)]">{(payHeads || []).length}</div>
           </div>
         </div>
 
@@ -289,8 +289,8 @@ const MasterControlCentre: React.FC = () => {
               onClick={() => setActiveTab(tab.key)}
               className={`px-4 py-2 text-[13px] font-medium border-b-2 ${
                 activeTab === tab.key
-                  ? "bg-white text-[#1557b0] border-[#1557b0]"
-                  : "text-[#000000] hover:bg-gray-100 border-transparent"
+                  ? "bg-white text-[var(--ds-action-primary)] border-[var(--ds-action-primary)]"
+                  : "text-[var(--ds-text-default)] hover:bg-gray-100 border-transparent"
               }`}
             >
               {tab.label}
@@ -319,17 +319,17 @@ const MasterControlCentre: React.FC = () => {
                   <FileText size={16} />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-[#000000] text-[13px]">
+                  <h3 className="font-semibold text-[var(--ds-text-default)] text-[13px]">
                     Statutory Compliance Information
                   </h3>
-                  <p className="text-[12px] text-[#000000] mt-1">
+                  <p className="text-[12px] text-[var(--ds-text-default)] mt-1">
                     Manage all statutory masters required for compliance with Nepal's tax laws. For
                     assistance with IRD (Inland Revenue Department) requirements, visit{" "}
                     <a
                       href="https://ird.gov.np"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[#1557b0] underline"
+                      className="text-[var(--ds-action-primary)] underline"
                     >
                       www.ird.gov.np
                     </a>

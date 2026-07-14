@@ -10,7 +10,7 @@ import React, { useMemo, useEffect, useState } from "react";
 import { useStore } from "@/store/useStore";
 import { Button, Card, Input, Select, PartySelect, ConfirmDialog, Badge } from "../ui";
 import { ArrowLeft, Plus, Save, Truck, CheckCircle2, ClipboardList, FilePlus } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { getDB } from "@/lib/db";
 import { ChallanStatus, MovementType, PartyType } from "@/lib/types";
 

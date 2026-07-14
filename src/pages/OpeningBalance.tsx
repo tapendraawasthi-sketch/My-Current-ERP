@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import { getDB, generateId } from "../lib/db";
 import * as XLSX from "xlsx";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import {
   AlertTriangle,
   ArrowDownToLine,

@@ -1,13 +1,8 @@
 import React from "react";
 import { AlertTriangle, RefreshCw, Trash2 } from "lucide-react";
 import { useStore } from "../store/useStore";
-
-const primaryBtn =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center justify-center gap-1.5 disabled:opacity-50";
-const outlineBtn =
-  "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center justify-center gap-1.5 disabled:opacity-50";
-const dangerBtn =
-  "h-8 px-3 bg-red-600 hover:bg-red-700 text-white text-[12px] font-medium rounded-md inline-flex items-center justify-center gap-1.5 disabled:opacity-50";
+import { Button, Alert } from "@/design-system";
+import { PreWorkspaceShell } from "./auth/PreWorkspaceShell";
 
 export default function InitErrorScreen() {
   const { initError, isInitializing, retryInitializeApp, clearDatabaseAndRetryInit } = useStore();
@@ -17,45 +12,41 @@ export default function InitErrorScreen() {
     "The application could not initialize its local database. Financial data may be unavailable until this is resolved.";
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center p-4"
-      style={{ background: "#f5f6fa" }}
-    >
-      <div className="bg-white border border-gray-200 rounded-md shadow-sm max-w-lg w-full p-6">
-        <div className="flex items-start gap-3 mb-4">
-          <div className="mt-0.5 text-red-600">
-            <AlertTriangle size={20} />
-          </div>
+    <PreWorkspaceShell title="Unable to start" showBrandPanel={false}>
+      <div
+        className="w-full max-w-lg rounded-[var(--ds-radius-lg)] border border-[var(--ds-border-default)] bg-[var(--ds-surface-raised)] p-6 shadow-[var(--ds-shadow-1)]"
+        data-testid="init-error-screen"
+      >
+        <div className="mb-4 flex items-start gap-3">
+          <AlertTriangle className="mt-0.5 h-5 w-5 text-[var(--ds-status-danger)]" aria-hidden />
           <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Unable to start Sutra ERP</h1>
-            <p className="text-[11px] text-gray-500 mt-0.5">
-              Database initialization failed. Posting and reports are disabled until recovery
-              succeeds.
+            <h2 className="text-[15px] font-semibold text-[var(--ds-text-strong)]">Unable to start Orbix ERP</h2>
+            <p className="mt-0.5 text-[13px] text-[var(--ds-text-muted)]">
+              Local database initialization failed. Posting and reports stay unavailable until recovery succeeds.
             </p>
           </div>
         </div>
 
-        <div className="bg-red-50 text-red-700 border border-red-200 rounded-md px-3 py-2 text-[12px] mb-4">
+        <Alert tone="danger" title="Initialization failed" className="mb-4">
           {message}
-        </div>
+        </Alert>
 
         {initError?.code ? (
-          <p className="text-[10px] text-gray-500 mb-4 font-mono">Code: {initError.code}</p>
+          <p className="mb-4 font-mono text-[12px] text-[var(--ds-text-muted)]">Reference: {initError.code}</p>
         ) : null}
 
         <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            className={primaryBtn}
+          <Button
+            variant="primary"
             disabled={isInitializing}
+            loading={isInitializing}
             onClick={() => void retryInitializeApp()}
           >
-            <RefreshCw size={14} className={isInitializing ? "animate-spin" : ""} />
+            <RefreshCw className="h-3.5 w-3.5" aria-hidden />
             {isInitializing ? "Retrying…" : "Retry initialization"}
-          </button>
-          <button
-            type="button"
-            className={dangerBtn}
+          </Button>
+          <Button
+            variant="destructive"
             disabled={isInitializing}
             onClick={() => {
               if (
@@ -67,24 +58,14 @@ export default function InitErrorScreen() {
               }
             }}
           >
-            <Trash2 size={14} />
-            Clear local data &amp; retry
-          </button>
-          <button
-            type="button"
-            className={outlineBtn}
-            disabled={isInitializing}
-            onClick={() => window.location.reload()}
-          >
+            <Trash2 className="h-3.5 w-3.5" aria-hidden />
+            Clear local data & retry
+          </Button>
+          <Button variant="secondary" disabled={isInitializing} onClick={() => window.location.reload()}>
             Reload page
-          </button>
+          </Button>
         </div>
-
-        <p className="text-[11px] text-gray-500 mt-4">
-          If the problem persists, restore from Backup &amp; Restore or contact support with the
-          error code above.
-        </p>
       </div>
-    </div>
+    </PreWorkspaceShell>
   );
 }

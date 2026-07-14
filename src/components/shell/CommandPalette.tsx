@@ -7,7 +7,7 @@ import {
   Receipt,
   Search,
   Settings,
-  Sparkles,
+  MessageSquare,
   Sun,
   TrendingUp,
   Users,
@@ -16,6 +16,7 @@ import { useStore } from "../../store/useStore";
 import { useGlobalSearch } from "../../hooks/useGlobalSearch";
 import { useTheme } from "../../context/ThemeContext";
 import { useEKhataStore } from "../../store/eKhataStore";
+import { filterNavForRole, canNavigateToPage } from "./shellNavVisibility";
 
 export interface CommandPaletteProps {
   isOpen: boolean;
@@ -23,30 +24,42 @@ export interface CommandPaletteProps {
 }
 
 type PaletteRow =
-  | { kind: "command"; id: string; label: string; hint?: string; run: () => void; icon: React.ReactNode }
+  | {
+      kind: "command";
+      id: string;
+      label: string;
+      hint?: string;
+      category?: string;
+      run: () => void;
+      icon: React.ReactNode;
+    }
   | { kind: "result"; id: string; label: string; meta: string; run: () => void; icon: React.ReactNode };
 
 const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState(0);
-  const { setCurrentPage } = useStore();
+  const { setCurrentPage, currentUser } = useStore();
+  const role = currentUser?.role;
   const { theme, setThemePreference } = useTheme();
   const openOrbix = useEKhataStore((s) => s.openPanel);
   const maximizeOrbix = useEKhataStore((s) => s.maximizePanel);
   const { results } = useGlobalSearch(query);
 
+  const go = (page: string) => () => {
+    if (!canNavigateToPage(page, role)) return;
+    setCurrentPage(page);
+    onClose();
+  };
+
   const commands = useMemo<PaletteRow[]>(() => {
-    const go = (page: string) => () => {
-      setCurrentPage(page);
-      onClose();
-    };
     const rows: PaletteRow[] = [
       {
         kind: "command",
         id: "orbix",
         label: "Ask Orbix",
         hint: "Ctrl+Shift+K",
-        icon: <Sparkles className="h-4 w-4" />,
+        category: "Orbix",
+        icon: <MessageSquare className="h-4 w-4" />,
         run: () => {
           setCurrentPage("orbix");
           openOrbix();
@@ -57,42 +70,48 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
       {
         kind: "command",
         id: "new-sale",
-        label: "New sale",
+        label: "New Sales Invoice",
+        category: "Actions",
         icon: <TrendingUp className="h-4 w-4" />,
         run: go("billing"),
       },
       {
         kind: "command",
         id: "new-purchase",
-        label: "New purchase",
+        label: "Record Purchase",
+        category: "Actions",
         icon: <Receipt className="h-4 w-4" />,
         run: go("purchase"),
       },
       {
         kind: "command",
         id: "new-receipt",
-        label: "New receipt",
+        label: "Receive Money",
+        category: "Actions",
         icon: <FileText className="h-4 w-4" />,
         run: go("receipt"),
       },
       {
         kind: "command",
         id: "new-payment",
-        label: "New payment",
+        label: "Make Payment",
+        category: "Actions",
         icon: <FileText className="h-4 w-4" />,
         run: go("payment"),
       },
       {
         kind: "command",
-        id: "balance-sheet",
-        label: "Open Balance Sheet",
+        id: "day-book",
+        label: "Open Day Book",
+        category: "Actions",
         icon: <LayoutDashboard className="h-4 w-4" />,
-        run: go("balance-sheet"),
+        run: go("day-book"),
       },
       {
         kind: "command",
         id: "trial-balance",
-        label: "Open Trial Balance",
+        label: "Run Trial Balance",
+        category: "Reports",
         icon: <LayoutDashboard className="h-4 w-4" />,
         run: go("trial-balance"),
       },
@@ -100,6 +119,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
         kind: "command",
         id: "settings",
         label: "Open settings",
+        category: "Pages",
         icon: <Settings className="h-4 w-4" />,
         run: go("settings"),
       },
@@ -107,6 +127,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
         kind: "command",
         id: "theme-light",
         label: "Theme: Light",
+        category: "Actions",
         icon: <Sun className="h-4 w-4" />,
         run: () => {
           setThemePreference("light");
@@ -117,6 +138,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
         kind: "command",
         id: "theme-dark",
         label: "Theme: Dark",
+        category: "Actions",
         icon: <Moon className="h-4 w-4" />,
         run: () => {
           setThemePreference("dark");
@@ -127,6 +149,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
         kind: "command",
         id: "theme-system",
         label: "Theme: System",
+        category: "Actions",
         icon: theme === "dark" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />,
         run: () => {
           setThemePreference("system");
@@ -135,10 +158,32 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
       },
     ];
 
+    const pageRows: PaletteRow[] = filterNavForRole(role)
+      .flatMap((g) =>
+        g.items.length
+          ? g.items
+          : g.page
+            ? [{ id: g.id, label: g.label, page: g.page, icon: g.icon, orbix: g.orbix }]
+            : [],
+      )
+      .filter((i) => i.page !== "orbix")
+      .map((i) => {
+        const Icon = i.icon;
+        return {
+          kind: "command" as const,
+          id: `nav-${i.id}`,
+          label: i.label,
+          category: "Pages",
+          icon: <Icon className="h-4 w-4" />,
+          run: go(i.page),
+        };
+      });
+
+    const merged = [...rows, ...pageRows];
     const q = query.trim().toLowerCase();
-    if (!q) return rows;
-    return rows.filter((r) => r.label.toLowerCase().includes(q));
-  }, [maximizeOrbix, onClose, openOrbix, query, setCurrentPage, setThemePreference, theme]);
+    if (!q) return merged.slice(0, 24);
+    return merged.filter((r) => r.label.toLowerCase().includes(q));
+  }, [maximizeOrbix, onClose, openOrbix, query, role, setCurrentPage, setThemePreference, theme]);
 
   const searchRows = useMemo<PaletteRow[]>(() => {
     if (query.trim().length < 2) return [];
@@ -153,6 +198,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
       const page = String(p.path || "")
         .replace(/^\//, "")
         .replace("chart-of-accounts", "accounts");
+      if (!canNavigateToPage(page, role)) return;
       out.push({
         kind: "result",
         id: `page-${p.path}`,
@@ -197,17 +243,26 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
         id: `acc-${a.id}`,
         label: a.name,
         meta: "Account",
-        icon: iconFor("accounts"),
+        icon: <FileText className="h-4 w-4" />,
         run: () => {
           setCurrentPage("accounts");
           onClose();
         },
       });
     });
-    return out.slice(0, 20);
-  }, [onClose, query, results, setCurrentPage]);
+    return out;
+  }, [onClose, query, results, role, setCurrentPage]);
 
-  const rows = [...commands, ...searchRows];
+  const rows = useMemo(() => {
+    const seen = new Set<string>();
+    const out: PaletteRow[] = [];
+    for (const r of [...commands, ...searchRows]) {
+      if (seen.has(r.id)) continue;
+      seen.add(r.id);
+      out.push(r);
+    }
+    return out;
+  }, [commands, searchRows]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -218,7 +273,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     setSelected(0);
-  }, [query, rows.length]);
+  }, [query]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -226,13 +281,25 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
       if (e.key === "Escape") {
         e.preventDefault();
         onClose();
-      } else if (e.key === "ArrowDown") {
+        return;
+      }
+      if (e.key === "ArrowDown") {
         e.preventDefault();
-        setSelected((i) => Math.min(i + 1, Math.max(rows.length - 1, 0)));
-      } else if (e.key === "ArrowUp") {
+        setSelected((i) => Math.min(i + 1, Math.max(0, rows.length - 1)));
+      }
+      if (e.key === "ArrowUp") {
         e.preventDefault();
         setSelected((i) => Math.max(i - 1, 0));
-      } else if (e.key === "Enter") {
+      }
+      if (e.key === "Home") {
+        e.preventDefault();
+        setSelected(0);
+      }
+      if (e.key === "End") {
+        e.preventDefault();
+        setSelected(Math.max(0, rows.length - 1));
+      }
+      if (e.key === "Enter") {
         e.preventDefault();
         rows[selected]?.run();
       }
@@ -244,57 +311,64 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[10000] flex items-start justify-center bg-black/40 px-4 pt-[12vh]">
-      <button type="button" className="absolute inset-0" aria-label="Close palette" onClick={onClose} />
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-label="Command palette"
-        className="relative z-10 w-full max-w-xl overflow-hidden rounded-[var(--ox-radius-xl)] border border-[var(--ox-border)] bg-[var(--ox-surface-elevated)] shadow-[var(--ox-shadow-md)]"
-      >
-        <div className="flex h-12 items-center gap-2 border-b border-[var(--ox-border)] px-3">
-          <Search className="h-4 w-4 text-[var(--ox-text-subtle)]" />
+    <div
+      className="fixed inset-0 z-[var(--ds-z-command-palette)] flex items-start justify-center bg-[color-mix(in_srgb,var(--ds-surface-inverse)_40%,transparent)] p-4 pt-[12vh] max-md:items-stretch max-md:p-0 max-md:pt-0"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Command palette"
+      data-testid="shell-command-palette"
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="flex w-full max-w-xl flex-col overflow-hidden rounded-[var(--ds-radius-lg)] border border-[var(--ds-border-default)] bg-[var(--ds-surface-raised)] shadow-[var(--ds-shadow-3)] max-md:h-full max-md:max-w-none max-md:rounded-none">
+        <div className="flex items-center gap-2 border-b border-[var(--ds-border-subtle)] px-3 py-2">
+          <Search className="h-4 w-4 text-[var(--ds-text-subtle)]" aria-hidden />
           <input
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search accounts, vouchers, reports, parties, items…"
-            className="h-full w-full border-0 bg-transparent text-[14px] text-[var(--ox-text)] outline-none placeholder:text-[var(--ox-text-subtle)]"
+            placeholder="Search pages, actions, parties, accounts, items…"
+            className="ds-focus-ring h-10 w-full bg-transparent text-[14px] text-[var(--ds-text-default)] outline-none"
+            aria-label="Command search"
+            aria-controls="command-palette-results"
           />
-          <kbd className="rounded border border-[var(--ox-border)] px-1.5 py-0.5 text-[10px] text-[var(--ox-text-subtle)]">
-            Esc
-          </kbd>
+          <span className="sr-only" aria-live="polite">
+            {rows.length} results
+          </span>
         </div>
-        <div className="max-h-[50vh] overflow-y-auto py-1">
-          {rows.length === 0 && (
-            <p className="px-4 py-8 text-center text-[13px] text-[var(--ox-text-muted)]">
-              No matching commands or results
-            </p>
+        <ul
+          id="command-palette-results"
+          className="max-h-[min(60vh,420px)] overflow-y-auto p-2 max-md:max-h-none max-md:flex-1"
+          role="listbox"
+        >
+          {!rows.length ? (
+            <li className="px-3 py-6 text-center text-[13px] text-[var(--ds-text-muted)]">No matches</li>
+          ) : (
+            rows.map((r, idx) => (
+              <li key={r.id} role="option" aria-selected={idx === selected}>
+                <button
+                  type="button"
+                  className={`flex w-full items-center gap-3 rounded-[var(--ds-radius-md)] px-3 py-2 text-left text-[14px] ${
+                    idx === selected
+                      ? "bg-[var(--ds-surface-selected)] text-[var(--ds-text-strong)]"
+                      : "text-[var(--ds-text-default)] hover:bg-[var(--ds-surface-hover)]"
+                  }`}
+                  onMouseEnter={() => setSelected(idx)}
+                  onClick={() => r.run()}
+                >
+                  <span className="text-[var(--ds-text-muted)]">{r.icon}</span>
+                  <span className="min-w-0 flex-1 truncate">{r.label}</span>
+                  <span className="text-[12px] text-[var(--ds-text-muted)]">
+                    {r.kind === "command" ? r.category || r.hint : r.meta}
+                  </span>
+                </button>
+              </li>
+            ))
           )}
-          {rows.map((row, index) => (
-            <button
-              key={row.id}
-              type="button"
-              onClick={row.run}
-              onMouseEnter={() => setSelected(index)}
-              className={`flex w-full items-center gap-3 px-3 py-2.5 text-left ${
-                index === selected ? "bg-[var(--ox-primary-soft)]" : "hover:bg-[var(--ox-surface-muted)]"
-              }`}
-            >
-              <span className="text-[var(--ox-text-muted)]">{row.icon}</span>
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-[13px] font-medium text-[var(--ox-text)]">
-                  {row.label}
-                </span>
-                {"meta" in row && row.meta && (
-                  <span className="text-[11px] text-[var(--ox-text-subtle)]">{row.meta}</span>
-                )}
-              </span>
-              {"hint" in row && row.hint && (
-                <span className="text-[11px] text-[var(--ox-text-subtle)]">{row.hint}</span>
-              )}
-            </button>
-          ))}
+        </ul>
+        <div className="border-t border-[var(--ds-border-subtle)] px-3 py-2 text-[12px] text-[var(--ds-text-muted)]">
+          Actions open established workflows — they do not post or mutate accounting data from the palette.
         </div>
       </div>
     </div>

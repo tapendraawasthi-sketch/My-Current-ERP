@@ -1,0 +1,47 @@
+{
+  "generated_at": "2026-07-13T00:00:00.000Z",
+  "note": "Analytical role→route matrix. Not enforced at runtime. Permissions remain domain-owned.",
+  "roles": {
+    "business_owner": {
+      "primary": ["dashboard", "orbix", "financial-dashboard", "profit-loss", "balance-sheet", "outstanding-receivables", "outstanding-payables", "sales-analysis"],
+      "secondary": ["day-book", "trial-balance", "audit-log", "settings"],
+      "hidden_ideal": ["voucher-types", "misc-masters", "configuration-hub"]
+    },
+    "accountant": {
+      "primary": ["journal", "day-book", "ledger", "trial-balance", "profit-loss", "balance-sheet", "billing", "purchase", "receipt", "payment", "vat-reports", "accounts", "parties"],
+      "secondary": ["bank-reconciliation", "bank-statement-import", "credit-note", "debit-note", "contra"],
+      "hidden_ideal": ["pos", "payroll"]
+    },
+    "cashier": {
+      "primary": ["receipt", "payment", "billing", "parties", "day-book"],
+      "secondary": ["orbix", "dashboard"],
+      "hidden_ideal": ["users", "backup-restore", "accounts-configuration"]
+    },
+    "auditor": {
+      "primary": ["audit-log", "day-book", "ledger", "trial-balance", "balance-sheet", "profit-loss", "vat-reports"],
+      "secondary": ["users", "period-lock"],
+      "hidden_ideal": ["billing", "purchase"]
+    },
+    "inventory_user": {
+      "primary": ["items", "item-groups", "stock-summary", "stock-ledger", "stock-transfer", "stock-journal", "physical-stock", "warehouses", "batch-management"],
+      "secondary": ["purchase", "goods-receipt"],
+      "hidden_ideal": ["payroll", "vat-reports"]
+    },
+    "banking_user": {
+      "primary": ["bank-reconciliation", "bank-statement-import", "receipt", "payment", "contra", "cheque-register", "pdc-register", "day-book"],
+      "secondary": ["bank-book"],
+      "hidden_ideal": ["stock-journal", "payroll"]
+    },
+    "administrator": {
+      "primary": ["users", "settings", "backup-restore", "configuration-hub", "accounts-configuration", "inventory-config", "fiscal-year", "audit-log"],
+      "secondary": ["data-import-export", "master-control-centre"],
+      "hidden_ideal": []
+    }
+  },
+  "findings": [
+    "SHELL_NAV is feature-oriented; all roles see the same tree today.",
+    "Bank reconciliation and statement import are App routes but missing from Banking nav group.",
+    "Duplicate destinations exist for receipt/payment/contra/day-book/VAT/ratio/fiscal-year.",
+    "92 authenticated routes lack a primary nav entry."
+  ]
+}

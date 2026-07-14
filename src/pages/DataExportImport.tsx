@@ -110,7 +110,7 @@ export default function DataExportImport() {
         }}
       >
         <Database style={{ width: 16, height: 16 }} />
-        <span style={{ fontWeight: 700, fontSize: 14 }}>Data Export / Import</span>
+        <span className="text-[14px] font-bold">Import & export</span>
       </div>
 
       {/* Tabs */}

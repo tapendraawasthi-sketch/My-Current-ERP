@@ -33,7 +33,7 @@ import {
   validateVoucherDate,
   formatVoucherDisplayDate,
 } from "../lib/voucherUtils";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 const CreditNoteVoucher: React.FC = () => {
   const {
@@ -442,7 +442,7 @@ const CreditNoteVoucher: React.FC = () => {
       {/* Top Bar */}
       <ActionToolbar className="mb-4 sticky top-0 z-10 bg-white shadow-sm">
         <div className="flex items-center gap-2">
-          <h1 className="text-xl font-bold text-red-700">Credit Note</h1>
+          <h1 className="text-[16px] font-semibold text-red-700">Customer credit note</h1>
           <Badge variant="outline" className="bg-blue-100 text-blue-700">
             {isInventoryReturn ? "With Return" : "Without Return"}
           </Badge>

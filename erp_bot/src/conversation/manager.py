@@ -358,6 +358,7 @@ class ConversationManager:
         if resp.metadata.get("tool_calls"):
             resp.metadata["tools_used"] = resp.metadata["tool_calls"]
         resp.session_id = session_id
+        self._attach_np_kb_metadata(resp, text)
 
         session.messages.append({"role": "assistant", "content": resp.message})
         memory.add_message("assistant", resp.message, metadata=resp.metadata)
@@ -370,6 +371,23 @@ class ConversationManager:
             memory.save_long_term()
         self._persist_session(session)
         return resp
+
+    def _attach_np_kb_metadata(self, resp: Response, text: str) -> None:
+        """Optional ONLI enrichment. Never authorizes posting; soft-fails when disabled."""
+        try:
+            from ..nlu.np_kb_adapter import enrich_nlu_context
+
+            enrich = enrich_nlu_context(text, top_k=3)
+            resp.metadata["np_kb"] = enrich
+            # Hard invariant: KB path cannot flip posting authority.
+            if isinstance(enrich, dict):
+                enrich["execution_allowed"] = False
+        except Exception as exc:
+            resp.metadata["np_kb"] = {
+                "enabled": False,
+                "reason": f"adapter_error: {exc}",
+                "execution_allowed": False,
+            }
 
     def _detect_mode(self, message: str, session: Session) -> ConversationMode:
         """Detect conversation mode from message signals."""

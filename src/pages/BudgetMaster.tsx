@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from "react";
 import { Plus, X, Search, Save } from "lucide-react";
 import { useStore } from "../store";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 
 const BS_MONTHS = [

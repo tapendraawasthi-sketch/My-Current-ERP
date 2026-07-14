@@ -1,0 +1,10 @@
+{
+  "generated_at": "2026-07-14T06:15:37+00:00",
+  "rows": 250,
+  "suggestion_counts": {
+    "needs_clarification": 40,
+    "defer": 210
+  },
+  "lab": "knowledgebase/processed/review_ready/priority_review_lab.html",
+  "disclaimer": "Suggestions are assistive only; not human approval."
+}

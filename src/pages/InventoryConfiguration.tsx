@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import { Settings, Save } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 const DEFAULT_CONFIG = {
   enableMultiGodown: false,
@@ -81,7 +81,7 @@ export default function InventoryConfiguration() {
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
             <Settings className="h-4 w-4 text-[#1557b0]" />
-            Inventory Configuration
+            Inventory setup
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Configure inventory features and behavior

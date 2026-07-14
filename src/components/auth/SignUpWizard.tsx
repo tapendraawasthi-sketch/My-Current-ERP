@@ -1,55 +1,94 @@
-// @ts-nocheck
-import React, { useState } from "react";
-import { CheckCircle, AlertCircle } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import Step1CompanyProfile from "./wizard/Step1CompanyProfile";
 import Step2TaxRegistration from "./wizard/Step2TaxRegistration";
 import Step3AccountingSetup from "./wizard/Step3AccountingSetup";
 import Step4AdminAccount from "./wizard/Step4AdminAccount";
+import type { WizardForm } from "./wizard/wizardTypes";
 import { useStore } from "@/store/useStore";
+import { Button, ErrorSummary, StepProgress, Alert } from "@/design-system";
+import { PreWorkspaceShell } from "./PreWorkspaceShell";
+
+const RESUME_KEY = "orbix_onboarding_draft_v1";
+
+const defaultForm: WizardForm = {
+  companyNameEn: "",
+  companyNameNe: "",
+  businessType: "",
+  address: "",
+  city: "",
+  district: "",
+  province: "",
+  phone: "",
+  email: "",
+  website: "",
+  panNumber: "",
+  hasVAT: false,
+  vatNumber: "",
+  irdProvince: "",
+  irdOfficeName: "",
+  fiscalYear: "2083/84",
+  dateFormat: "BS",
+  enableStock: true,
+  enableCostCenter: false,
+  enableBillWise: true,
+  fullName: "",
+  username: "",
+  password: "",
+  confirmPassword: "",
+};
+
+function loadDraft(): { step: number; form: WizardForm } | null {
+  try {
+    const raw = localStorage.getItem(RESUME_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { step?: number; form?: Partial<WizardForm> };
+    if (!parsed?.form) return null;
+    return {
+      step: Math.min(4, Math.max(1, parsed.step || 1)),
+      form: { ...defaultForm, ...parsed.form, password: "", confirmPassword: "" },
+    };
+  } catch {
+    return null;
+  }
+}
 
 export default function SignUpWizard() {
   const { createCompanyAndAdmin } = useStore();
-  const [currentStep, setCurrentStep] = useState(1);
+  const draft = loadDraft();
+  const [currentStep, setCurrentStep] = useState(draft?.step || 1);
   const [submitError, setSubmitError] = useState("");
   const [submitLoading, setSubmitLoading] = useState(false);
   const [stepErrors, setStepErrors] = useState<Record<number, Record<string, string>>>({});
-
-  const [formData, setFormData] = useState({
-    companyNameEn: "",
-    companyNameNe: "",
-    businessType: "",
-    address: "",
-    city: "",
-    phone: "",
-    email: "",
-    panNumber: "",
-    hasVAT: false,
-    vatNumber: "",
-    irdProvince: "",
-    fiscalYear: "2083/84",
-    dateFormat: "BS",
-    enableStock: true,
-    enableCostCenter: false,
-    enableBillWise: true,
-    fullName: "",
-    username: "",
-    password: "",
-    confirmPassword: "",
-  });
+  const [formData, setFormData] = useState<WizardForm>(draft?.form || defaultForm);
+  const [resumed, setResumed] = useState(Boolean(draft));
 
   const steps = [
-    { id: 1, name: "Company Profile", component: Step1CompanyProfile },
-    { id: 2, name: "Tax Registration", component: Step2TaxRegistration },
-    { id: 3, name: "Accounting Setup", component: Step3AccountingSetup },
-    { id: 4, name: "Admin Account", component: Step4AdminAccount },
+    { id: 1, name: "Company identity", component: Step1CompanyProfile },
+    { id: 2, name: "Fiscal & tax", component: Step2TaxRegistration },
+    { id: 3, name: "Accounting", component: Step3AccountingSetup },
+    { id: 4, name: "Admin & security", component: Step4AdminAccount },
   ];
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        RESUME_KEY,
+        JSON.stringify({
+          step: currentStep,
+          form: { ...formData, password: "", confirmPassword: "" },
+          savedAt: new Date().toISOString(),
+        }),
+      );
+    } catch {
+      /* ignore */
+    }
+  }, [currentStep, formData]);
 
   const validateStep = (step: number): Record<string, string> => {
     const errors: Record<string, string> = {};
     switch (step) {
       case 1:
-        if (!formData.companyNameEn.trim())
-          errors.companyNameEn = "Company name (English) is required";
+        if (!formData.companyNameEn.trim()) errors.companyNameEn = "Company name (English) is required";
         if (!formData.businessType) errors.businessType = "Business type is required";
         if (!formData.address.trim()) errors.address = "Address is required";
         if (!formData.city.trim()) errors.city = "City is required";
@@ -60,8 +99,7 @@ export default function SignUpWizard() {
         break;
       case 2:
         if (!formData.panNumber) errors.panNumber = "PAN number is required";
-        else if (!/^\d{9}$/.test(formData.panNumber))
-          errors.panNumber = "PAN must be exactly 9 digits";
+        else if (!/^\d{9}$/.test(formData.panNumber)) errors.panNumber = "PAN must be exactly 9 digits";
         if (!formData.irdProvince) errors.irdProvince = "IRD Province is required";
         if (!formData.fiscalYear) errors.fiscalYear = "Fiscal year is required";
         break;
@@ -74,8 +112,7 @@ export default function SignUpWizard() {
         else if (!/^[a-zA-Z0-9]{4,}$/.test(formData.username))
           errors.username = "Username must be alphanumeric, min 4 characters";
         if (!formData.password) errors.password = "Password is required";
-        else if (formData.password.length < 6)
-          errors.password = "Password must be at least 6 characters";
+        else if (formData.password.length < 6) errors.password = "Password must be at least 6 characters";
         else if (!/[a-zA-Z]/.test(formData.password) || !/\d/.test(formData.password))
           errors.password = "Password must contain both letters and numbers";
         if (!formData.confirmPassword) errors.confirmPassword = "Please confirm your password";
@@ -120,9 +157,9 @@ export default function SignUpWizard() {
           vatNumber: formData.vatNumber,
           defaultCurrency: "NPR",
           currencySymbol: "Rs.",
-          defaultDateFormat: formData.dateFormat as any,
+          defaultDateFormat: formData.dateFormat as "BS" | "AD",
           fiscalYearStartMonth: 4,
-          stockValuationMethod: "weighted_average" as any,
+          stockValuationMethod: "weighted_average",
           enableCostCenter: formData.enableCostCenter,
           enableMultiCurrency: false,
           enableBillWiseTracking: formData.enableBillWise,
@@ -134,19 +171,26 @@ export default function SignUpWizard() {
           businessType: formData.businessType,
           dateFormat: formData.dateFormat,
           enableBillWise: formData.enableBillWise,
-        },
+        } as never,
         adminUser: {
           name: formData.fullName,
           username: formData.username,
           password: formData.password,
-          role: "admin" as any,
+          role: "admin",
           isActive: true,
-        },
+        } as never,
       });
-    } catch (error: any) {
-      setSubmitError(
-        error?.message || "Failed to setup company. Please check your inputs and try again.",
-      );
+      try {
+        localStorage.removeItem(RESUME_KEY);
+      } catch {
+        /* ignore */
+      }
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Company setup could not be completed. Check your inputs and try again.";
+      setSubmitError(message);
     } finally {
       setSubmitLoading(false);
     }
@@ -154,99 +198,40 @@ export default function SignUpWizard() {
 
   const currentErrors = stepErrors[currentStep] || {};
   const CurrentStepComponent = steps[currentStep - 1].component;
+  const errorList = Object.entries(currentErrors).map(([id, message]) => ({ id, message }));
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center p-6"
-      style={{ background: "#f5f6fa" }}
-    >
+    <PreWorkspaceShell title="Company setup" showBrandPanel={false} contentWidth="wide">
       <div
-        className="w-full max-w-3xl rounded-xl shadow-lg p-8"
-        style={{ background: "#ffffff", border: "1px solid #e5e7eb" }}
+        className="w-full rounded-[var(--ds-radius-lg)] border border-[var(--ds-border-default)] bg-[var(--ds-surface-raised)] p-6 shadow-[var(--ds-shadow-1)] sm:p-8"
+        data-testid="signup-wizard"
       >
-        {/* Progress bar */}
-        <div
-          className="relative h-1.5 rounded-full overflow-hidden mb-6"
-          style={{ background: "#e5e7eb" }}
-        >
-          <div
-            className="absolute top-0 left-0 h-full rounded-full transition-all duration-300"
-            style={{
-              width: `${(currentStep / steps.length) * 100}%`,
-              background: "#1557b0",
-            }}
-          />
-        </div>
-
-        {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-[22px] font-bold text-gray-800 mb-1">Welcome to Sutra ERP</h1>
-          <p className="text-[13px] text-gray-500">
-            Let's set up your accounting system in just 4 steps
+        <div className="mb-4">
+          <h2 className="text-[18px] font-semibold text-[var(--ds-text-strong)]">Set up your company</h2>
+          <p className="mt-1 text-[13px] text-[var(--ds-text-muted)]">
+            Required steps create company identity, fiscal and tax context, accounting foundations, and the first
+            administrator. Progress is saved on this device until setup finishes. Passwords are never stored in drafts.
           </p>
         </div>
 
-        {/* Step indicators */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            {steps.map((step, index) => {
-              const hasErrors = stepErrors[step.id] && Object.keys(stepErrors[step.id]).length > 0;
-              return (
-                <React.Fragment key={step.id}>
-                  <div className="flex flex-col items-center">
-                    <div
-                      className="w-10 h-10 rounded-full flex items-center justify-center font-semibold text-[13px] transition-colors"
-                      style={{
-                        background: hasErrors
-                          ? "#dc2626"
-                          : currentStep > step.id
-                            ? "#059669"
-                            : currentStep === step.id
-                              ? "#1557b0"
-                              : "#e5e7eb",
-                        color: currentStep >= step.id || hasErrors ? "#ffffff" : "#6b7280",
-                      }}
-                    >
-                      {hasErrors ? (
-                        <AlertCircle className="w-5 h-5" />
-                      ) : currentStep > step.id ? (
-                        <CheckCircle className="w-5 h-5" />
-                      ) : (
-                        step.id
-                      )}
-                    </div>
-                    <span
-                      className="text-[11px] mt-2 font-medium"
-                      style={{
-                        color: currentStep === step.id ? "#1557b0" : "#6b7280",
-                      }}
-                    >
-                      {step.name}
-                    </span>
-                  </div>
-                  {index < steps.length - 1 && (
-                    <div
-                      className="flex-1 h-0.5 mx-2"
-                      style={{
-                        background: currentStep > step.id ? "#059669" : "#e5e7eb",
-                        marginTop: "-18px",
-                      }}
-                    />
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </div>
-        </div>
+        {resumed ? (
+          <Alert tone="info" title="Resumed setup" className="mb-4" onDismiss={() => setResumed(false)}>
+            Continuing from a saved draft on this device.
+          </Alert>
+        ) : null}
 
-        {/* Step content */}
+        <StepProgress steps={steps.map((s) => s.name)} current={currentStep - 1} className="mb-6" />
+
+        {errorList.length ? (
+          <ErrorSummary title="Please fix the following" errors={errorList} className="mb-4" />
+        ) : null}
+
         <div className="mb-6">
           <CurrentStepComponent
             data={formData}
-            onChange={(newData: any) => {
+            onChange={(newData) => {
               setFormData(newData);
-              // Clear errors for fields as user types
-              if (currentErrors && Object.keys(currentErrors).length > 0) {
+              if (Object.keys(currentErrors).length > 0) {
                 setStepErrors((prev) => ({ ...prev, [currentStep]: {} }));
               }
             }}
@@ -254,82 +239,40 @@ export default function SignUpWizard() {
           />
         </div>
 
-        {/* Global submit error */}
-        {submitError && (
-          <div
-            className="mb-4 px-4 py-3 rounded-md flex items-start gap-2"
-            style={{
-              background: "#fef2f2",
-              border: "1px solid #fca5a5",
-              color: "#b91c1c",
-            }}
-          >
-            <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
-            <span className="text-[12px] font-medium">{submitError}</span>
-          </div>
-        )}
+        {submitError ? (
+          <ErrorSummary
+            title="Setup could not finish"
+            errors={[{ id: "submit", message: submitError }]}
+            className="mb-4"
+          />
+        ) : null}
 
-        {/* Navigation buttons */}
-        <div
-          className="flex justify-between items-center pt-4"
-          style={{ borderTop: "1px solid #e5e7eb" }}
-        >
-          <button
-            onClick={handleBack}
-            disabled={currentStep === 1}
-            className="h-8 px-4 text-[12px] font-medium rounded-md transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-            style={{
-              background: "#ffffff",
-              border: "1px solid #d1d5db",
-              color: "#374151",
-            }}
-          >
-            Previous
-          </button>
-
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--ds-border-subtle)] pt-4">
+          <Button variant="secondary" onClick={handleBack} disabled={currentStep === 1 || submitLoading}>
+            Back
+          </Button>
           <div className="flex items-center gap-2">
-            <span className="text-[11px] text-gray-400">
+            <span className="text-[12px] text-[var(--ds-text-muted)]">
               Step {currentStep} of {steps.length}
             </span>
             {currentStep < 4 ? (
-              <button
-                onClick={handleNext}
-                className="h-8 px-4 text-[12px] font-medium rounded-md transition-colors"
-                style={{
-                  background: "#1557b0",
-                  color: "#ffffff",
-                  border: "none",
-                }}
-              >
-                Next →
-              </button>
+              <Button variant="primary" onClick={handleNext}>
+                Save and continue
+              </Button>
             ) : (
-              <button
-                onClick={handleFinish}
+              <Button
+                variant="primary"
+                onClick={() => void handleFinish()}
                 disabled={submitLoading}
-                className="h-8 px-4 text-[12px] font-medium rounded-md transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
-                style={{
-                  background: "#1557b0",
-                  color: "#ffffff",
-                  border: "none",
-                }}
+                loading={submitLoading}
+                data-testid="wizard-activate"
               >
-                {submitLoading ? (
-                  <>
-                    <span
-                      className="w-3.5 h-3.5 rounded-full border-2 animate-spin"
-                      style={{ borderColor: "#ffffff", borderTopColor: "transparent" }}
-                    />
-                    Setting up…
-                  </>
-                ) : (
-                  "Finish & Launch"
-                )}
-              </button>
+                {submitLoading ? "Activating…" : "Review complete — activate company"}
+              </Button>
             )}
           </div>
         </div>
       </div>
-    </div>
+    </PreWorkspaceShell>
   );
 }

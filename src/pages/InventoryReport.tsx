@@ -3,7 +3,7 @@ import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
 import { VoucherStatus } from "../lib/types";
-import ReportShell from "../components/reporting/ReportShell";
+import { ReportWorkspace } from "@/features/reports";
 import ReportGrid from "../components/reporting/ReportGrid";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 import { useScreenF12 } from "../hooks/useF12Config";
@@ -166,9 +166,9 @@ const InventoryReport: React.FC = () => {
       let colorClass = "text-gray-700";
       // Highlight > 90 days slow moving stock
       if (columnKey === "b90plus") {
-        colorClass = "text-[#dc2626] font-semibold"; // Red for very slow moving
+        colorClass = "text-[var(--ds-status-danger)] font-semibold"; // Red for very slow moving
       } else if (columnKey === "b61to90") {
-        colorClass = "text-[#d97706] font-medium"; // Amber for approaching slow
+        colorClass = "text-[var(--ds-status-warning)] font-medium"; // Amber for approaching slow
       }
 
       return <span className={`font-mono ${colorClass}`}>{formatNumber(value)}</span>;
@@ -182,7 +182,7 @@ const InventoryReport: React.FC = () => {
       else if (value === "NIL STOCK") bgClass = "bg-gray-100 text-gray-600";
 
       return (
-        <span className={`px-2 py-0.5 text-[10px] font-semibold uppercase rounded-md ${bgClass}`}>
+        <span className={`px-2 py-0.5 text-[12px] font-semibold uppercase rounded-md ${bgClass}`}>
           {value}
         </span>
       );
@@ -192,35 +192,34 @@ const InventoryReport: React.FC = () => {
   };
 
   return (
-    <ReportShell
-      title="Inventory Ageing Report"
-      subtitle="Stock age distribution analysis"
+    <ReportWorkspace
+      title="Stock summary"
+      description="Quantities and values."
       companyName={companySettings?.companyNameEn || companySettings?.name}
-      periodText={`As on ${asOnDate}`}
+      periodLabel={`As on ${asOnDate}`}
       onPrint={() => window.print()}
       onOptions={() => {
         setPendingAsOnDate(asOnDate);
         setPendingSelectedGroupId(selectedGroupId);
         setPendingShowOnlySlowMoving(showOnlySlowMoving);
         setOptionsOpen(true);
-      }}
-      actionBarButtons={[{ label: "Print" }, { label: "Export" }]}
-      toolbarLeft={
+      }}, { label: "Export" }]}
+      filterSlot={
         <div className="flex items-center gap-1.5 flex-wrap">
-          <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
+          <label className="text-[12px] font-medium text-gray-600 flex items-center gap-1.5">
             As On:
             <input
               type="date"
               value={asOnDate}
               onChange={(e) => setAsOnDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
           <select
             value={selectedGroupId}
             onChange={(e) => setSelectedGroupId(e.target.value)}
-            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] ml-1 w-[160px]"
+            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] ml-1 w-[160px]"
           >
             {itemGroupOptions.map((group) => (
               <option key={group.id} value={group.id}>
@@ -234,7 +233,7 @@ const InventoryReport: React.FC = () => {
               type="checkbox"
               checked={showOnlySlowMoving}
               onChange={(e) => setShowOnlySlowMoving(e.target.checked)}
-              className="w-4 h-4 text-[#1557b0] border-gray-300 rounded focus:ring-[#1557b0]"
+              className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
             />
             Show only slow-moving items
           </label>
@@ -244,21 +243,21 @@ const InventoryReport: React.FC = () => {
       {/* Summary stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5 flex flex-col">
-          <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+          <span className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
             Items with stock &gt;90 days old
           </span>
           <span
-            className={`text-[14px] font-semibold mt-1 ${reportData.summary.slowMovingCount > 0 ? "text-[#d97706]" : "text-gray-900"}`}
+            className={`text-[14px] font-semibold mt-1 ${reportData.summary.slowMovingCount > 0 ? "text-[var(--ds-status-warning)]" : "text-gray-900"}`}
           >
             {reportData.summary.slowMovingCount}
           </span>
         </div>
         <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5 flex flex-col">
-          <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+          <span className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
             Total Slow-Moving Stock Value
           </span>
           <span
-            className={`text-[14px] font-semibold mt-1 font-mono ${reportData.summary.totalSlowValue > 0 ? "text-[#dc2626]" : "text-gray-900"}`}
+            className={`text-[14px] font-semibold mt-1 font-mono ${reportData.summary.totalSlowValue > 0 ? "text-[var(--ds-status-danger)]" : "text-gray-900"}`}
           >
             Rs. {formatNumber(reportData.summary.totalSlowValue)}
           </span>
@@ -280,7 +279,7 @@ const InventoryReport: React.FC = () => {
           ]}
           data={reportData.rows}
           getRowClassName={(row) => {
-            if (row.isTotal) return "bg-[#eef2ff] border-t-2 border-[#c7d2fe]";
+            if (row.isTotal) return "bg-[var(--ds-surface-selected)] border-t-2 border-[var(--ds-border-strong)]";
             if (row.b90plus > 0) return "bg-red-50 hover:bg-red-100 transition-colors";
             return "";
           }}
@@ -290,27 +289,27 @@ const InventoryReport: React.FC = () => {
 
       <ReportOptionsModal
         open={optionsOpen}
-        title="Inventory Ageing Report Options"
+        title="Stock summary Options"
         onClose={() => setOptionsOpen(false)}
         onApply={applyOptions}
       >
         <div className="space-y-4">
-          <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
+          <label className="flex flex-col gap-1 text-[12px] font-medium text-gray-600">
             As On Date
             <input
               type="date"
               value={pendingAsOnDate}
               onChange={(e) => setPendingAsOnDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
-          <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
+          <label className="flex flex-col gap-1 text-[12px] font-medium text-gray-600">
             Item Group
             <select
               value={pendingSelectedGroupId}
               onChange={(e) => setPendingSelectedGroupId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               {itemGroupOptions.map((group) => (
                 <option key={group.id} value={group.id}>
@@ -325,13 +324,13 @@ const InventoryReport: React.FC = () => {
               type="checkbox"
               checked={pendingShowOnlySlowMoving}
               onChange={(e) => setPendingShowOnlySlowMoving(e.target.checked)}
-              className="w-4 h-4 text-[#1557b0] border-gray-300 rounded focus:ring-[#1557b0]"
+              className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
             />
             Show Only Slow-Moving Items (&gt;90 days)
           </label>
         </div>
       </ReportOptionsModal>
-    </ReportShell>
+    </ReportWorkspace>
   );
 };
 

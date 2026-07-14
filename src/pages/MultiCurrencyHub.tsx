@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { getDB, generateId } from "../lib/db";
 import { useStore } from "../store/useStore";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import * as XLSX from "xlsx";
 import {
   RefreshCw,

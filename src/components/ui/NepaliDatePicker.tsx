@@ -308,20 +308,20 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
 
   // Input style
   const inputCls = [
-    "w-full h-8 px-2.5 pr-8 text-[12px] border rounded-md bg-white",
-    "focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]",
-    "cursor-pointer select-none",
-    error ? "border-red-400" : "border-gray-300",
-    disabled ? "bg-gray-50 cursor-not-allowed opacity-60" : "",
+    "w-full h-[var(--ds-control-height)] px-2.5 pr-8 text-[13px] border rounded-[var(--ds-radius-md)] bg-[var(--ds-surface)] text-[var(--ds-text-default)]",
+    "focus:outline-none focus:ring-2 focus:ring-[var(--ds-focus-ring)] focus:border-[var(--ds-border-focus)]",
+    "cursor-pointer select-none ds-focus-ring",
+    error ? "border-[var(--ds-status-danger)]" : "border-[var(--ds-border-default)] hover:border-[var(--ds-border-strong)]",
+    disabled ? "bg-[var(--ds-surface-disabled)] cursor-not-allowed opacity-60" : "",
     className,
   ].join(" ");
 
   return (
     <div className="flex flex-col gap-1" ref={ref} style={{ position: "relative" }}>
       {label && (
-        <label className="text-[11px] font-medium text-gray-600 flex items-center gap-0.5">
+        <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex items-center gap-0.5">
           {label}
-          {required && <span className="text-red-500 ml-0.5">*</span>}
+          {required && <span className="text-[var(--ds-status-danger)] ml-0.5">*</span>}
         </label>
       )}
 
@@ -346,30 +346,32 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
           {value && !disabled && (
             <button
               type="button"
-              className="text-gray-300 hover:text-gray-600 transition-colors"
+              aria-label="Clear date"
+              className="text-[var(--ds-text-disabled)] hover:text-[var(--ds-text-muted)] transition-colors"
               onClick={(e) => {
                 e.stopPropagation();
                 onChange("");
               }}
             >
-              <X className="h-3 w-3" />
+              <X className="h-3.5 w-3.5" />
             </button>
           )}
-          <Calendar className="h-3.5 w-3.5 text-gray-400 pointer-events-none" />
+          <Calendar className="h-3.5 w-3.5 text-[var(--ds-text-subtle)] pointer-events-none" />
         </div>
       </div>
-      {error && <p className="text-[11px] text-red-600">{error}</p>}
+      {error && <p className="text-[12px] text-[var(--ds-status-danger)]">{error}</p>}
 
       {/* ── Calendar Panel ── */}
       {open && !disabled && (
         <div
-          className="absolute top-full mt-1 left-0 z-[9999] bg-white rounded-xl shadow-2xl border border-gray-200"
+          className="absolute top-full mt-1 left-0 z-[var(--ds-z-popover)] bg-[var(--ds-surface)] rounded-[var(--ds-radius-md)] shadow-[var(--ds-shadow-3)] border border-[var(--ds-border-default)]"
           style={{ width: 308 }}
         >
           {/* Header row */}
-          <div className="flex items-center justify-between px-3 py-2 bg-[#1557b0] rounded-t-xl">
+          <div className="flex items-center justify-between px-3 py-2 bg-[var(--ds-action-primary)] rounded-t-[var(--ds-radius-md)]">
             <button
               type="button"
+              aria-label="Previous month"
               onClick={prevMonth}
               className="p-1 rounded text-white/80 hover:text-white hover:bg-white/20 transition-colors"
             >
@@ -381,11 +383,11 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
               <select
                 value={vm}
                 onChange={(e) => setVm(Number(e.target.value))}
-                className="text-[11px] font-bold text-white bg-transparent border border-white/30 rounded px-1.5 py-0.5 focus:outline-none focus:ring-1 focus:ring-white cursor-pointer"
-                style={{ WebkitAppearance: "none" }}
+                aria-label="BS month"
+                className="appearance-none text-[12px] font-semibold text-white bg-transparent border border-white/30 rounded px-1.5 py-0.5 focus:outline-none focus:ring-1 focus:ring-white cursor-pointer"
               >
                 {BS_MONTHS_EN.map((name, i) => (
-                  <option key={i} value={i} style={{ background: "#1e3a5f", color: "#fff" }}>
+                  <option key={i} value={i} className="bg-[var(--ds-surface-inverse)] text-[var(--ds-text-inverse)]">
                     {name} ({BS_MONTHS_NP[i]})
                   </option>
                 ))}
@@ -394,11 +396,11 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
               <select
                 value={vy}
                 onChange={(e) => setVy(Number(e.target.value))}
-                className="text-[11px] font-bold text-white bg-transparent border border-white/30 rounded px-1.5 py-0.5 focus:outline-none focus:ring-1 focus:ring-white cursor-pointer"
-                style={{ WebkitAppearance: "none" }}
+                aria-label="BS year"
+                className="appearance-none text-[12px] font-semibold text-white bg-transparent border border-white/30 rounded px-1.5 py-0.5 focus:outline-none focus:ring-1 focus:ring-white cursor-pointer"
               >
                 {years.map((y) => (
-                  <option key={y} value={y} style={{ background: "#1e3a5f", color: "#fff" }}>
+                  <option key={y} value={y} className="bg-[var(--ds-surface-inverse)] text-[var(--ds-text-inverse)]">
                     {y}
                   </option>
                 ))}
@@ -407,6 +409,7 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
 
             <button
               type="button"
+              aria-label="Next month"
               onClick={nextMonth}
               className="p-1 rounded text-white/80 hover:text-white hover:bg-white/20 transition-colors"
             >
@@ -415,8 +418,8 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
           </div>
 
           {/* Sub-header: BS month label */}
-          <div className="text-center py-1 text-[10px] text-gray-500 border-b border-gray-100 bg-gray-50">
-            <span className="font-semibold text-[#1557b0]">
+          <div className="text-center py-1 text-[12px] text-[var(--ds-text-muted)] border-b border-[var(--ds-border-subtle)] bg-[var(--ds-surface-muted)]">
+            <span className="font-semibold text-[var(--ds-action-primary)]">
               {BS_MONTHS_NP[vm]} {vy}
             </span>
             <span className="mx-1 text-gray-400">/</span>
@@ -424,7 +427,7 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
               {BS_MONTHS_EN[vm]} {vy} B.S.
             </span>
             {firstAD && (
-              <span className="text-gray-400 ml-1">
+              <span className="text-[var(--ds-text-subtle)] ml-1">
                 · {AD_MON[firstAD.getMonth()]} {firstAD.getFullYear()} A.D.
               </span>
             )}
@@ -435,7 +438,7 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
             {DOW_EN.map((d) => (
               <div
                 key={d}
-                className="text-center text-[9px] font-bold text-gray-400 uppercase tracking-wide pb-1"
+                className="text-center text-[12px] font-semibold text-[var(--ds-text-subtle)] uppercase tracking-wide pb-1"
               >
                 {d}
               </div>
@@ -473,22 +476,24 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
                   onClick={() => selectDay(bsDay)}
                   title={adStr ? `A.D. ${adStr}` : ""}
                   className={[
-                    "flex flex-col items-center justify-center rounded-lg transition-all",
+                    "flex flex-col items-center justify-center rounded-[var(--ds-radius-sm)] transition-colors",
                     "h-10 w-full px-0 leading-none",
                     isSelected
-                      ? "bg-[#1557b0] text-white shadow-md scale-105"
+                      ? "bg-[var(--ds-action-primary)] text-[var(--ds-action-primary-text)]"
                       : isToday
-                        ? "bg-blue-50 text-[#1557b0] ring-1 ring-[#1557b0] font-bold"
-                        : "hover:bg-[#f0f5ff] text-gray-700",
+                        ? "bg-[var(--ds-surface-selected)] text-[var(--ds-action-primary)] ring-1 ring-[var(--ds-action-primary)] font-semibold"
+                        : "hover:bg-[var(--ds-surface-hover)] text-[var(--ds-text-default)]",
                     isDisabled ? "opacity-25 cursor-not-allowed" : "cursor-pointer",
                   ].join(" ")}
                 >
                   {/* BS day — LARGE */}
                   <span
                     className={[
-                      "font-bold leading-none",
-                      isSelected ? "text-[15px] text-white" : "text-[14px] text-gray-800",
-                      isToday && !isSelected ? "text-[#1557b0]" : "",
+                      "font-semibold leading-none",
+                      isSelected
+                        ? "text-[15px] text-[var(--ds-action-primary-text)]"
+                        : "text-[14px] text-[var(--ds-text-strong)]",
+                      isToday && !isSelected ? "text-[var(--ds-action-primary)]" : "",
                     ].join(" ")}
                   >
                     {bsDay}
@@ -496,9 +501,9 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
                   {/* AD day — SMALL below */}
                   <span
                     className={[
-                      "text-[8.5px] leading-none mt-0.5 font-medium",
-                      isSelected ? "text-blue-100" : "text-gray-400",
-                      isToday && !isSelected ? "text-blue-400" : "",
+                      "text-[12px] leading-none mt-0.5 font-medium",
+                      isSelected ? "text-white/80" : "text-[var(--ds-text-subtle)]",
+                      isToday && !isSelected ? "text-[var(--ds-action-primary)]" : "",
                     ].join(" ")}
                   >
                     {adDay}
@@ -510,10 +515,10 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
           </div>
 
           {/* Footer */}
-          <div className="border-t border-gray-100 px-3 py-2 flex items-center justify-between bg-gray-50 rounded-b-xl">
-            <div className="text-[10px] text-gray-500">
+          <div className="border-t border-[var(--ds-border-subtle)] px-3 py-2 flex items-center justify-between bg-[var(--ds-surface-muted)] rounded-b-[var(--ds-radius-md)]">
+            <div className="text-[12px] text-[var(--ds-text-muted)]">
               Today:{" "}
-              <span className="font-semibold text-gray-700">
+              <span className="font-semibold text-[var(--ds-text-default)]">
                 {todayBS.y}-{String(todayBS.m + 1).padStart(2, "0")}-
                 {String(todayBS.d).padStart(2, "0")} B.S.
               </span>
@@ -524,7 +529,7 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
                 onClick={() => {
                   setOpen(false);
                 }}
-                className="text-[10px] text-gray-500 hover:text-gray-700 px-2 py-0.5 rounded hover:bg-gray-200 transition-colors"
+                className="text-[12px] text-[var(--ds-text-muted)] hover:text-[var(--ds-text-default)] px-2 py-0.5 rounded hover:bg-[var(--ds-surface-hover)] transition-colors"
               >
                 Close
               </button>
@@ -534,7 +539,7 @@ const NepaliDatePicker: React.FC<NepaliDatePickerProps> = ({
                   onChange(fmtAD(todayAD));
                   setOpen(false);
                 }}
-                className="text-[10px] font-semibold text-[#1557b0] hover:underline px-2 py-0.5 rounded hover:bg-blue-50 transition-colors"
+                className="text-[12px] font-semibold text-[var(--ds-action-primary)] hover:underline px-2 py-0.5 rounded hover:bg-[var(--ds-surface-selected)] transition-colors"
               >
                 Today
               </button>

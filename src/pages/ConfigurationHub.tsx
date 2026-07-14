@@ -2,7 +2,7 @@
 import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import { Sliders, Calendar, Plus, Edit2, Trash2, X, Save, ArrowLeft } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { sendTestEmail } from "../lib/messagingService";
 import {
   DEFAULT_SYSTEM_CONFIGURATION,
@@ -845,7 +845,7 @@ export default function ConfigurationHub() {
     <div className="p-4 bg-[#f5f6fa] min-h-screen">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">System Configuration</h1>
+          <h1 className="text-[15px] font-semibold text-gray-800">Setup options</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Company-wide settings for reports, alerts, printing, and integrations
           </p>

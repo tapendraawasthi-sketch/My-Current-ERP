@@ -26,7 +26,7 @@ import { getDB, generateId } from "../../lib/db";
 import { generateNextNumber } from "../../lib/accounting";
 import { startCbmsQueueWorker } from "../../lib/cbmsService";
 import { validateVoucherBalance, assertDateInFiscalYear } from "../store.types";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { migrateWorkflowFields } from "../../lib/workflowMigration";
 import { createWorkflowActions } from "../workflowActions";
 import { mergeSystemConfiguration } from "../../lib/systemConfiguration";

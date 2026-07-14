@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+﻿import React, { useMemo } from "react";
 import { CheckCircle2, AlertCircle, Info, Sparkles } from "lucide-react";
 
 interface OrbixMessageContentProps {
@@ -24,7 +24,7 @@ function renderInline(text: string): React.ReactNode[] {
     const token = match[0];
     if (token.startsWith("**")) {
       parts.push(
-        <strong key={key++} className="font-semibold text-[var(--ox-text)]">
+        <strong key={key++} className="font-semibold text-[var(--ds-text-default)]">
           {token.slice(2, -2)}
         </strong>,
       );
@@ -32,7 +32,7 @@ function renderInline(text: string): React.ReactNode[] {
       parts.push(
         <span
           key={key++}
-          className="font-mono font-medium tabular-nums text-[var(--ox-primary)]"
+          className="font-mono font-medium tabular-nums text-[var(--ds-action-primary)]"
         >
           {token}
         </span>,
@@ -62,10 +62,10 @@ const toneIcon = {
 };
 
 const toneAccent = {
-  success: "border-[color:rgba(5,150,105,0.3)] bg-[var(--ox-success-soft)]",
-  error: "border-[color:rgba(220,38,38,0.3)] bg-[var(--ox-danger-soft)]",
-  info: "border-[color:rgba(8,145,178,0.3)] bg-[var(--ox-intelligence-soft)]",
-  neutral: "border-[var(--ox-border)] bg-[var(--ox-surface-muted)]",
+  success: "border-[color:rgba(5,150,105,0.3)] bg-[var(--ds-status-success-surface)]",
+  error: "border-[color:rgba(220,38,38,0.3)] bg-[var(--ds-status-danger-surface)]",
+  info: "border-[color:rgba(8,145,178,0.3)] bg-[var(--ds-status-info-surface)]",
+  neutral: "border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]",
 };
 
 const OrbixMessageContent: React.FC<OrbixMessageContentProps> = ({ text, isWelcome }) => {
@@ -90,8 +90,8 @@ const OrbixMessageContent: React.FC<OrbixMessageContentProps> = ({ text, isWelco
     return (
       <div className="space-y-3">
         <div className="flex items-start gap-2">
-          <div className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md border border-[var(--ox-border)] bg-[var(--ox-intelligence-soft)]">
-            <Sparkles className="h-3.5 w-3.5 text-[var(--ox-intelligence)]" />
+          <div className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-status-info-surface)]">
+            <Sparkles className="h-3.5 w-3.5 text-[var(--ds-action-primary)]" />
           </div>
           <div className="min-w-0 space-y-2">
             {blocks.map((block, bi) => (
@@ -103,16 +103,16 @@ const OrbixMessageContent: React.FC<OrbixMessageContentProps> = ({ text, isWelco
                       return (
                         <li
                           key={li}
-                          className="flex items-start gap-2 text-[13px] leading-relaxed text-[var(--ox-text)]"
+                          className="flex items-start gap-2 text-[13px] leading-relaxed text-[var(--ds-text-default)]"
                         >
-                          <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-[var(--ox-primary)]" />
+                          <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-[var(--ds-action-primary)]" />
                           <span>{renderInline(cleaned)}</span>
                         </li>
                       );
                     })}
                   </ul>
                 ) : (
-                  <p className="text-[13px] leading-relaxed text-[var(--ox-text)]">
+                  <p className="text-[13px] leading-relaxed text-[var(--ds-text-default)]">
                     {renderInline(block.para.replace(/\n/g, " "))}
                   </p>
                 )}
@@ -131,13 +131,13 @@ const OrbixMessageContent: React.FC<OrbixMessageContentProps> = ({ text, isWelco
           <Icon
             className={`h-3 w-3 flex-shrink-0 ${
               tone === "success"
-                ? "text-[var(--ox-success)]"
+                ? "text-[var(--ds-status-success)]"
                 : tone === "error"
-                  ? "text-[var(--ox-danger)]"
-                  : "text-[var(--ox-intelligence)]"
+                  ? "text-[var(--ds-status-danger)]"
+                  : "text-[var(--ds-action-primary)]"
             }`}
           />
-          <span className="text-[12px] leading-snug text-[var(--ox-text)]">
+          <span className="text-[12px] leading-snug text-[var(--ds-text-default)]">
             {renderInline(text.split("\n")[0])}
           </span>
         </div>
@@ -148,7 +148,7 @@ const OrbixMessageContent: React.FC<OrbixMessageContentProps> = ({ text, isWelco
           return (
             <div
               key={bi}
-              className="overflow-hidden rounded-[var(--ox-radius-md)] border border-[var(--ox-border)] bg-[var(--ox-surface-muted)]"
+              className="overflow-hidden rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]"
             >
               {block.kvLines.map((line, li) => {
                 const m = line.trim().match(KV_RE);
@@ -159,15 +159,15 @@ const OrbixMessageContent: React.FC<OrbixMessageContentProps> = ({ text, isWelco
                   <div
                     key={li}
                     className={`flex items-center justify-between gap-3 px-2.5 py-1.5 text-[12px] ${
-                      li > 0 ? "border-t border-[var(--ox-border)]" : ""
+                      li > 0 ? "border-t border-[var(--ds-border-default)]" : ""
                     }`}
                   >
-                    <span className="flex-shrink-0 text-[var(--ox-text-muted)]">{label}</span>
+                    <span className="flex-shrink-0 text-[var(--ds-text-muted)]">{label}</span>
                     <span
                       className={`truncate text-right ${
                         isAmount
-                          ? "font-mono font-medium tabular-nums text-[var(--ox-primary)]"
-                          : "text-[var(--ox-text)]"
+                          ? "font-mono font-medium tabular-nums text-[var(--ds-action-primary)]"
+                          : "text-[var(--ds-text-default)]"
                       }`}
                     >
                       {value}
@@ -187,9 +187,9 @@ const OrbixMessageContent: React.FC<OrbixMessageContentProps> = ({ text, isWelco
                 return (
                   <li
                     key={li}
-                    className="flex items-start gap-2 text-[13px] leading-relaxed text-[var(--ox-text)]"
+                    className="flex items-start gap-2 text-[13px] leading-relaxed text-[var(--ds-text-default)]"
                   >
-                    <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-[var(--ox-intelligence)]" />
+                    <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-[var(--ds-action-primary)]" />
                     <span>{renderInline(cleaned)}</span>
                   </li>
                 );
@@ -204,7 +204,7 @@ const OrbixMessageContent: React.FC<OrbixMessageContentProps> = ({ text, isWelco
           return (
             <p
               key={bi}
-              className="whitespace-pre-wrap text-[13px] leading-relaxed text-[var(--ox-text)]"
+              className="whitespace-pre-wrap text-[13px] leading-relaxed text-[var(--ds-text-default)]"
             >
               {renderInline(rest)}
             </p>
@@ -214,7 +214,7 @@ const OrbixMessageContent: React.FC<OrbixMessageContentProps> = ({ text, isWelco
         return (
           <p
             key={bi}
-            className="whitespace-pre-wrap text-[13px] leading-relaxed text-[var(--ox-text)]"
+            className="whitespace-pre-wrap text-[13px] leading-relaxed text-[var(--ds-text-default)]"
           >
             {block.lines.map((line, li) => (
               <React.Fragment key={li}>

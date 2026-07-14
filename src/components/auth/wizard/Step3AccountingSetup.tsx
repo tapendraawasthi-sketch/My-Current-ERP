@@ -1,129 +1,71 @@
 import React from "react";
+import { Input, Label, FieldError, Checkbox, Alert } from "@/design-system";
+import type { WizardStepProps } from "./wizardTypes";
 
-interface Props {
-  data: any;
-  onChange: (data: any) => void;
-  errors?: Record<string, string>;
-}
-
-const labelClass = "block text-[11px] font-medium text-gray-600 mb-1";
-const fieldClass =
-  "w-full h-8 px-2.5 text-[12px] rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/30 focus:border-[#1557b0]";
-
-const ToggleRow = ({
-  label,
-  description,
-  checked,
-  onChange,
-}: {
-  label: string;
-  description: string;
-  checked: boolean;
-  onChange: (v: boolean) => void;
-}) => (
-  <div
-    className="flex items-center justify-between py-3"
-    style={{ borderBottom: "1px solid #f3f4f6" }}
-  >
-    <div>
-      <p className="text-[12px] font-medium text-gray-700">{label}</p>
-      <p className="text-[11px] text-gray-500 mt-0.5">{description}</p>
-    </div>
-    <button
-      type="button"
-      onClick={() => onChange(!checked)}
-      className="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none"
-      style={{
-        background: checked ? "#1557b0" : "#d1d5db",
-      }}
-      role="switch"
-      aria-checked={checked}
-    >
-      <span
-        className="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200"
-        style={{ transform: checked ? "translateX(20px)" : "translateX(0)" }}
-      />
-    </button>
-  </div>
-);
-
-export default function Step3AccountingSetup({ data, onChange, errors = {} }: Props) {
+export default function Step3AccountingSetup({ data, onChange, errors = {} }: WizardStepProps) {
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="text-[18px] font-bold text-gray-800">Accounting Setup</h2>
-        <p className="text-[12px] text-gray-500 mt-1">Configure your accounting preferences</p>
+        <h2 className="text-[18px] font-semibold text-[var(--ds-text-strong)]">Accounting foundation</h2>
+        <p className="mt-1 text-[13px] text-[var(--ds-text-muted)]">
+          Base currency, calendar preference, and module features. Chart of accounts uses the existing Nepal NAS seeder
+          when empty — this step does not invent account mappings.
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Currency (read-only) */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
-          <label className={labelClass}>Currency</label>
-          <input
-            type="text"
-            value="Rs. - Nepali Rupee (Rs.)"
-            readOnly
-            className={fieldClass}
-            style={{
-              background: "#f9fafb",
-              border: "1px solid #d1d5db",
-              color: "#6b7280",
-              cursor: "not-allowed",
-            }}
-          />
+          <Label htmlFor="wiz-currency">Currency</Label>
+          <Input id="wiz-currency" value="NPR — Nepali Rupee (Rs.)" readOnly />
         </div>
 
-        {/* Date Format */}
         <div>
-          <label className={labelClass}>
-            Default Date Format <span className="text-red-600">*</span>
-          </label>
+          <Label htmlFor="wiz-date-format">
+            Default date format <span className="text-[var(--ds-status-danger)]">*</span>
+          </Label>
           <select
+            id="wiz-date-format"
             value={data.dateFormat || "BS"}
             onChange={(e) => onChange({ ...data, dateFormat: e.target.value })}
-            className={fieldClass}
-            style={{
-              background: "#ffffff",
-              border: `1px solid ${errors.dateFormat ? "#dc2626" : "#d1d5db"}`,
-              color: "#111827",
-            }}
+            className="ds-focus-ring h-[var(--ds-control-height)] w-full rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-[var(--ds-control-inset-x)] text-[14px]"
           >
             <option value="BS">BS (Bikram Sambat)</option>
-            <option value="AD">AD (Anno Domini)</option>
+            <option value="AD">AD (Gregorian)</option>
           </select>
-          {errors.dateFormat && (
-            <p className="mt-1 text-[11px] text-red-600">! {errors.dateFormat}</p>
-          )}
+          <FieldError>{errors.dateFormat}</FieldError>
         </div>
       </div>
 
-      {/* Feature toggles */}
-      <div
-        className="rounded-md p-4"
-        style={{ background: "#f9fafb", border: "1px solid #e5e7eb" }}
-      >
-        <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-3">
-          Module Features
+      <div className="rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface-subtle)] p-4">
+        <p className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
+          Module features
         </p>
-        <ToggleRow
-          label="Stock Management"
-          description="Enable inventory tracking and stock journals"
-          checked={!!data.enableStock}
-          onChange={(v) => onChange({ ...data, enableStock: v })}
-        />
-        <ToggleRow
-          label="Cost Center"
-          description="Track expenses by department or project"
-          checked={!!data.enableCostCenter}
-          onChange={(v) => onChange({ ...data, enableCostCenter: v })}
-        />
-        <ToggleRow
-          label="Bill-wise Tracking"
-          description="Track receivables and payables by individual bill"
-          checked={!!data.enableBillWise}
-          onChange={(v) => onChange({ ...data, enableBillWise: v })}
-        />
+        <div className="space-y-3">
+          <Checkbox
+            checked={data.enableStock}
+            onCheckedChange={(v) => onChange({ ...data, enableStock: v === true })}
+            label="Stock management"
+            description="Inventory tracking and stock journals. Can be deferred; required before stock posting."
+          />
+          <Checkbox
+            checked={data.enableCostCenter}
+            onCheckedChange={(v) => onChange({ ...data, enableCostCenter: v === true })}
+            label="Cost centre"
+            description="Optional department/project expense tracking."
+          />
+          <Checkbox
+            checked={data.enableBillWise}
+            onCheckedChange={(v) => onChange({ ...data, enableBillWise: v === true })}
+            label="Bill-wise tracking"
+            description="Track receivables and payables by bill. Recommended for credit sales."
+          />
+        </div>
       </div>
+
+      <Alert tone="info" title="Consequence">
+        Changing date format later does not recalculate posted vouchers. Fiscal periods remain under company settings
+        authority after activation.
+      </Alert>
     </div>
   );
 }

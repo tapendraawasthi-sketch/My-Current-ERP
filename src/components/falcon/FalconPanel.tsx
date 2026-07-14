@@ -10,7 +10,7 @@ import {
   Trash2,
   X,
   Bot,
-  Sparkles,
+  MessageSquare,
   Loader2,
   Brain,
   Check,
@@ -88,7 +88,7 @@ function getIntentBadge(falconIntent?: string): { label: string; cls: string } |
 function getDomainBadge(domain?: string): { label: string; cls: string } | null {
   if (!domain) return null;
   const map: Record<string, { label: string; cls: string }> = {
-    erp: { label: "🏢 ERP Expert Mode", cls: "bg-blue-50 text-blue-700 border-blue-200" },
+    erp: { label: "🏢 ERP Expert Mode", cls: "bg-[var(--ds-surface-muted)] text-blue-700 border-blue-200" },
     accounting: { label: "📊 Finance Mode", cls: "bg-green-50 text-green-700 border-green-200" },
     "web-search": {
       label: "🌐 Web Search Mode",
@@ -138,10 +138,10 @@ const MessageBubble = memo(
           className={[
             "relative max-w-[92%] rounded-xl px-3 py-2 text-[12px] shadow-sm transition-all",
             isUser
-              ? "bg-[#1557b0] text-white rounded-tr-sm"
+              ? "bg-[var(--ds-action-primary)] text-[var(--ds-action-primary-text)] rounded-tr-sm"
               : [
                   "bg-white text-gray-800 rounded-tl-sm border",
-                  isStreaming ? "border-blue-300 shadow-blue-100" : "border-gray-200",
+                  isStreaming ? "border-[var(--ds-action-primary)]/40" : "border-gray-200",
                 ].join(" "),
           ].join(" ")}
         >
@@ -152,7 +152,7 @@ const MessageBubble = memo(
               <MarkdownRenderer content={msg.content} compact animate={isStreaming} />
               {/* Blinking cursor while streaming */}
               {isStreaming && (
-                <span className="inline-block w-[7px] h-[13px] bg-blue-500 ml-0.5 animate-pulse rounded-sm align-text-bottom" />
+                <span className="inline-block w-[7px] h-[13px] bg-[var(--ds-action-primary)] ml-0.5 rounded-sm align-text-bottom" />
               )}
             </>
           )}
@@ -171,7 +171,7 @@ const MessageBubble = memo(
 
         {/* Timestamp */}
         {msg.timestamp && (
-          <span className="text-[10px] text-gray-400 px-1">{formatTime(msg.timestamp)}</span>
+          <span className="text-[12px] text-gray-400 px-1">{formatTime(msg.timestamp)}</span>
         )}
 
         {/* Badges — sources + domain */}
@@ -189,14 +189,14 @@ const MessageBubble = memo(
               ))}
             {intentBadge && (
               <span
-                className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] border ${intentBadge.cls}`}
+                className={`inline-flex items-center px-1.5 py-0.5 rounded text-[12px] border ${intentBadge.cls}`}
               >
                 {intentBadge.label}
               </span>
             )}
             {domainBadge && (
               <span
-                className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] border ${domainBadge.cls}`}
+                className={`inline-flex items-center px-1.5 py-0.5 rounded text-[12px] border ${domainBadge.cls}`}
               >
                 {domainBadge.label}
               </span>
@@ -222,7 +222,7 @@ const MessageBubble = memo(
             {msg.suggestions.slice(0, 3).map((s, i) => (
               <button
                 key={i}
-                className="text-[10px] text-blue-600 bg-blue-50 border border-blue-100 rounded-full px-2 py-0.5 hover:bg-blue-100 transition-colors"
+                className="text-[12px] text-[var(--ds-action-primary)] bg-[var(--ds-surface-muted)] border border-[var(--ds-border-default)] rounded-full px-2 py-0.5 hover:bg-[var(--ds-surface-hover)] transition-colors"
                 onClick={() => {
                   // Suggestions are handled by parent via a custom event
                   window.dispatchEvent(new CustomEvent("falcon-suggestion", { detail: s }));
@@ -276,25 +276,25 @@ const SettingsPanel = memo(({ onClose }: { onClose: () => void }) => {
   return (
     <div className="border-t border-gray-200 bg-gray-50 px-3 py-3 space-y-3 text-[12px]">
       <div>
-        <label className="block text-[11px] font-semibold text-gray-600 uppercase tracking-wide mb-1">
+        <label className="block text-[12px] font-semibold text-gray-600 uppercase tracking-wide mb-1">
           Falcon AI (built-in)
         </label>
         <div className="flex items-center gap-2">
           <span className="inline-block h-2 w-2 rounded-full bg-green-500" />
-          <span className="text-[11px] text-gray-700">
+          <span className="text-[12px] text-gray-700">
             {SELF_CONTAINED_STATUS.detail} — {GENERATED_PAGE_INDEX.length} screens indexed
           </span>
         </div>
-        <p className="mt-1 text-[10px] text-gray-500">{SELF_CONTAINED_STATUS.label}</p>
+        <p className="mt-1 text-[12px] text-gray-500">{SELF_CONTAINED_STATUS.label}</p>
       </div>
       <button
         onClick={handleRefresh}
         disabled={checking}
-        className="h-7 px-2.5 bg-[#1557b0] text-white text-[11px] rounded-md hover:bg-[#0f4a96] disabled:opacity-50"
+        className="h-7 px-2.5 bg-[var(--ds-action-primary)] text-[var(--ds-action-primary-text)] text-[12px] rounded-md hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-50"
       >
         {checking ? "Checking…" : "Check connection"}
       </button>
-      <button onClick={onClose} className="text-[11px] text-gray-500 hover:text-gray-700 underline">
+      <button onClick={onClose} className="text-[12px] text-gray-500 hover:text-gray-700 underline">
         Close settings
       </button>
     </div>
@@ -383,22 +383,22 @@ export const FalconPanel: React.FC = () => {
 
   return (
     <div
-      className="fixed bottom-4 right-4 z-[9999] w-[420px] flex flex-col bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden"
+      className="fixed bottom-4 right-4 z-[var(--ds-z-drawer)] w-[420px] flex flex-col bg-white rounded-xl shadow-[var(--ds-shadow-2)] border border-gray-200 overflow-hidden"
       style={{ maxHeight: "min(82vh, 700px)", minHeight: 420 }}
     >
       {/* ── Header ─────────────────────────────────────────────────────────── */}
-      <div className="flex items-center gap-2 px-3 py-2.5 bg-[#1557b0] text-white flex-shrink-0">
+      <div className="flex items-center gap-2 px-3 py-2.5 bg-[var(--ds-action-primary)] text-[var(--ds-action-primary-text)] flex-shrink-0">
         <div className="flex items-center gap-1.5 flex-1 min-w-0">
           <Bot className="h-4 w-4 flex-shrink-0" />
-          <span className="font-bold text-[13px] tracking-tight">FALCON AI</span>
-          <span className="text-[10px] text-blue-200 ml-1">
+          <span className="font-semibold text-[13px] tracking-tight">Assist</span>
+          <span className="text-[12px] text-white/70 ml-1">
             {botOnline ? `${indexedFiles} files` : `${GENERATED_PAGE_INDEX.length} screens indexed`}
           </span>
           {isStreaming && (
-            <span className="text-[10px] text-blue-200 animate-pulse ml-1">● streaming</span>
+            <span className="text-[12px] text-white/70 ml-1">· streaming</span>
           )}
           {isTyping && !isStreaming && (
-            <span className="text-[10px] text-blue-200 animate-pulse ml-1">● thinking</span>
+            <span className="text-[12px] text-white/70 ml-1">· working</span>
           )}
         </div>
         <div className="flex items-center gap-1">
@@ -436,8 +436,8 @@ export const FalconPanel: React.FC = () => {
 
       {/* ── Context Banner ──────────────────────────────────────────────────── */}
       {context.route && (
-        <div className="flex items-center gap-1.5 px-3 py-1 bg-blue-50 border-b border-blue-100 text-[11px] text-blue-700 flex-shrink-0">
-          <Sparkles className="h-3 w-3" />
+        <div className="flex items-center gap-1.5 px-3 py-1 bg-[var(--ds-surface-muted)] border-b border-[var(--ds-border-default)] text-[12px] text-blue-700 flex-shrink-0">
+          <MessageSquare className="h-3 w-3" />
           <span>
             Context: <strong>{context.screenTitle || context.route}</strong>
           </span>
@@ -464,7 +464,7 @@ export const FalconPanel: React.FC = () => {
 
         {/* Streaming indicator (once content starts flowing) */}
         {isStreaming && (
-          <p className="text-[10px] text-blue-400 animate-pulse px-1">Streaming response…</p>
+          <p className="text-[12px] text-[var(--ds-text-muted)]  px-1">Streaming response…</p>
         )}
 
         <div ref={messagesEndRef} />
@@ -474,7 +474,7 @@ export const FalconPanel: React.FC = () => {
       <div className="border-t border-gray-100 flex-shrink-0">
         <button
           onClick={() => setShowQuick((p) => !p)}
-          className="w-full flex items-center justify-between px-3 py-1.5 text-[11px] text-gray-500 hover:bg-gray-50 transition-colors"
+          className="w-full flex items-center justify-between px-3 py-1.5 text-[12px] text-gray-500 hover:bg-gray-50 transition-colors"
         >
           <span className="flex items-center gap-1">
             <Brain className="h-3 w-3" />
@@ -493,9 +493,9 @@ export const FalconPanel: React.FC = () => {
                 <button
                   key={tab}
                   onClick={() => setPromptTab(tab)}
-                  className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-colors ${
+                  className={`px-2 py-0.5 rounded text-[12px] font-semibold transition-colors ${
                     promptTab === tab
-                      ? "bg-[#1557b0] text-white"
+                      ? "bg-[var(--ds-action-primary)] text-[var(--ds-action-primary-text)]"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                   }`}
                 >
@@ -513,7 +513,7 @@ export const FalconPanel: React.FC = () => {
                     setShowQuick(false);
                     textareaRef.current?.focus();
                   }}
-                  className="px-2 py-0.5 text-[10px] bg-white border border-gray-200 rounded-full text-gray-700 hover:border-[#1557b0] hover:text-[#1557b0] transition-colors"
+                  className="px-2 py-0.5 text-[12px] bg-white border border-gray-200 rounded-full text-gray-700 hover:border-[var(--ds-action-primary)] hover:text-[var(--ds-action-primary)] transition-colors"
                 >
                   {p}
                 </button>
@@ -534,7 +534,7 @@ export const FalconPanel: React.FC = () => {
             placeholder="Ask Falcon anything…"
             rows={2}
             disabled={isStreaming}
-            className="flex-1 resize-none rounded-lg border border-gray-300 px-2.5 py-1.5 text-[12px] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#1557b0] focus:ring-1 focus:ring-[#1557b0]/20 disabled:bg-gray-50 disabled:cursor-not-allowed leading-relaxed"
+            className="flex-1 resize-none rounded-lg border border-gray-300 px-2.5 py-1.5 text-[12px] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[var(--ds-action-primary)] focus:ring-1 focus:ring-[var(--ds-action-primary)]/20 disabled:bg-gray-50 disabled:cursor-not-allowed leading-relaxed"
             style={{ minHeight: 52, maxHeight: 120 }}
           />
 
@@ -552,7 +552,7 @@ export const FalconPanel: React.FC = () => {
               onClick={handleSend}
               disabled={!canSend}
               title="Send message (Enter)"
-              className="h-8 w-8 flex items-center justify-center rounded-lg bg-[#1557b0] text-white hover:bg-[#0f4a96] disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+              className="h-8 w-8 flex items-center justify-center rounded-lg bg-[var(--ds-action-primary)] text-[var(--ds-action-primary-text)] hover:bg-[var(--ds-action-primary-hover)] disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex-shrink-0"
             >
               {isTyping ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -564,7 +564,7 @@ export const FalconPanel: React.FC = () => {
         </div>
 
         {/* Hint bar */}
-        <p className="mt-1 text-[10px] text-gray-400 leading-tight">
+        <p className="mt-1 text-[12px] text-gray-400 leading-tight">
           Built-in code index · Ctrl+/ to toggle
         </p>
       </div>

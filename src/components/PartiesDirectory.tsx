@@ -8,7 +8,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import Pagination from "./ui/Pagination";
 import { Search, Plus, Edit2, X, Save } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { validatePAN } from "../lib/taxUtils";
 import { ReportEmptyState } from "./ReportEmptyState";
 

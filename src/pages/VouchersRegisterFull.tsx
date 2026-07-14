@@ -21,7 +21,7 @@ import {
   getVoucherGroupForType,
 } from "../lib/voucherUtils";
 import { VoucherType } from "../lib/types";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 const VouchersRegisterFull: React.FC = () => {
   const { vouchers, invoices, companySettings, currentFiscalYear, parties } = useStore();

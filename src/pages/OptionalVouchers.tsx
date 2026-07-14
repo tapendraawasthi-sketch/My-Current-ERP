@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useStore } from "../store/useStore";
 import { getDB, generateId } from "../lib/db";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { FileText, Plus, Eye, CheckCircle, XCircle, Calendar, Trash2 } from "lucide-react";
 
 function money(v: number): string {

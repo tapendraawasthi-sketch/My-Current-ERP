@@ -1,7 +1,7 @@
 // src/App.tsx
 import React, { useEffect, useRef } from "react";
 import { useStore } from "./store/useStore";
-import { Toaster } from "react-hot-toast";
+import { ToastProvider } from "@/design-system";
 import { F12Provider } from "./hooks/useF12Config";
 import F12Panel from "./components/F12Panel";
 import Layout from "./components/Layout";
@@ -12,7 +12,6 @@ import CostCenters from "./pages/CostCenters";
 import Parties from "./pages/Parties";
 import StockBook from "./pages/StockBook";
 import LedgerMaster from "./pages/LedgerMaster";
-import SalesVoucher from "./pages/SalesVoucher";
 import PurchaseVoucher from "./pages/PurchaseVoucher";
 import PaymentVoucher from "./pages/PaymentVoucher";
 import ReceiptVoucher from "./pages/ReceiptVoucher";
@@ -74,6 +73,7 @@ import SignUpWizard from "./components/auth/SignUpWizard";
 import InitErrorScreen from "./components/InitErrorScreen";
 import GatewayScreen from "./components/auth/GatewayScreen";
 import CompanyLoginScreen from "./components/auth/CompanyLoginScreen";
+import { SessionRestoringScreen } from "./components/auth/AuthAccessSurfaces";
 // import { TitleBar, StatusBar, CommandHintBar, ShortcutSidebar } from "./components/BusyShell";
 
 // NEW BUSY FEATURE PAGES
@@ -111,6 +111,7 @@ import CashBook from "./pages/CashBook";
 import BankBook from "./pages/BankBook";
 import PartyLedgerStatement from "./pages/PartyLedgerStatement";
 import VoucherEntryHub from "./pages/VoucherEntryHub";
+import { TransactionRouteShell } from "./features/transactions";
 import ConfigurationHub from "./pages/ConfigurationHub";
 import CommunicationHub from "./pages/CommunicationHub";
 import ChequeRegister from "./pages/ChequeRegister";
@@ -122,23 +123,6 @@ import UnassemblePage from "./pages/UnassemblePage";
 import ReversingJournals from "./pages/ReversingJournals";
 import RejectionVoucherPage from "./pages/RejectionVoucherPage";
 import JobWorkRegister from "./pages/JobWorkRegister";
-
-const TOAST_OPTIONS = {
-  style: {
-    background: "#ffffff",
-    color: "#1f2937",
-    border: "1px solid #e5e7eb",
-    fontSize: "12px",
-    borderRadius: "8px",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-  },
-  success: {
-    iconTheme: { primary: "#1557b0", secondary: "#ffffff" },
-  },
-  error: {
-    iconTheme: { primary: "#dc2626", secondary: "#ffffff" },
-  },
-} as const;
 
 type AppProps = {
   onMounted?: () => void;
@@ -198,29 +182,7 @@ const App: React.FC<AppProps> = ({ onMounted }) => {
 
   const renderAuthStage = () => {
     if (authStage === "checking") {
-      return (
-        <div
-          className="min-h-screen flex items-center justify-center"
-          style={{ background: "#f5f6fa" }}
-        >
-          <div className="text-center">
-            <div
-              style={{
-                width: 40,
-                height: 40,
-                border: "4px solid #1557b0",
-                borderTopColor: "transparent",
-                borderRadius: "50%",
-                animation: "spin 0.8s linear infinite",
-              }}
-              className="mx-auto mb-4"
-            />
-            <p className="text-[12px] mt-1" style={{ color: "#6b7280" }}>
-              Loading Sutra ERP…
-            </p>
-          </div>
-        </div>
-      );
+      return <SessionRestoringScreen />;
     }
 
     if (authStage === "error") {
@@ -339,45 +301,189 @@ const App: React.FC<AppProps> = ({ onMounted }) => {
         return <MiscMasters />;
 
       // Sales Transactions
-      case "billing":
-      case "sales-return":
-        return <BillingInvoice />;
       case "sales":
-        return <SalesVoucher />;
+      case "billing":
+        return (
+          <TransactionRouteShell
+            family="sales"
+            mode="inventory-document"
+            title="Sales invoice"
+            description="Bill a customer."
+          >
+            <BillingInvoice />
+          </TransactionRouteShell>
+        );
+      case "sales-return":
+        return (
+          <TransactionRouteShell
+            family="sales"
+            mode="inventory-document"
+            title="Sales return"
+            description="Reverse or credit a sale."
+          >
+            <BillingInvoice />
+          </TransactionRouteShell>
+        );
       case "delivery-challan":
-        return <DeliveryChallan />;
+        return (
+          <TransactionRouteShell
+            family="sales"
+            mode="inventory-document"
+            title="Delivery note"
+            description="Goods sent to customer."
+          >
+            <DeliveryChallan />
+          </TransactionRouteShell>
+        );
       case "quotation":
       case "sales-quotation":
-        return <QuotationPage type="sales_quotation" />;
+        return (
+          <TransactionRouteShell
+            family="sales"
+            mode="inventory-document"
+            title="Quotation"
+            description="Price offer."
+          >
+            <QuotationPage type="sales_quotation" />
+          </TransactionRouteShell>
+        );
       case "sales-order":
-        return <OrderVoucherPage type="sales_order" />;
+        return (
+          <TransactionRouteShell
+            family="sales"
+            mode="inventory-document"
+            title="Sales order"
+            description="Customer order before delivery."
+          >
+            <OrderVoucherPage type="sales_order" />
+          </TransactionRouteShell>
+        );
 
       // Purchase Transactions
       case "purchase":
-        return <PurchaseVoucher />;
+        return (
+          <TransactionRouteShell
+            family="purchase"
+            mode="inventory-document"
+            title="Purchase invoice"
+            description="Record a supplier bill."
+          >
+            <PurchaseVoucher />
+          </TransactionRouteShell>
+        );
       case "purchase-return":
-        return <BillingInvoice />;
+        return (
+          <TransactionRouteShell
+            family="purchase"
+            mode="inventory-document"
+            title="Purchase return"
+            description="Return goods to supplier."
+          >
+            <BillingInvoice />
+          </TransactionRouteShell>
+        );
       case "goods-receipt":
       case "grn":
-        return <GoodsReceiptNote />;
+        return (
+          <TransactionRouteShell
+            family="purchase"
+            mode="inventory-document"
+            title="Goods receipt"
+            description="Stock received from supplier."
+          >
+            <GoodsReceiptNote />
+          </TransactionRouteShell>
+        );
       case "purchase-order":
-        return <OrderVoucherPage type="purchase_order" />;
+        return (
+          <TransactionRouteShell
+            family="purchase"
+            mode="inventory-document"
+            title="Purchase order"
+            description="Order placed with supplier."
+          >
+            <OrderVoucherPage type="purchase_order" />
+          </TransactionRouteShell>
+        );
       case "purchase-quotation":
-        return <QuotationPage type="purchase_quotation" />;
+        return (
+          <TransactionRouteShell
+            family="purchase"
+            mode="inventory-document"
+            title="Quotation"
+            description="Price offer."
+          >
+            <QuotationPage type="purchase_quotation" />
+          </TransactionRouteShell>
+        );
 
       // Finance Vouchers
       case "journal":
-        return <JournalEntries />;
+        return (
+          <TransactionRouteShell
+            family="journal"
+            mode="journal-document"
+            title="Manual journal"
+            description="Entries that are not sales or purchases."
+          >
+            <JournalEntries />
+          </TransactionRouteShell>
+        );
       case "payment":
-        return <PaymentVoucher />;
+        return (
+          <TransactionRouteShell
+            family="payment"
+            mode="settlement-document"
+            title="Pay money"
+            description="Money paid to a party."
+          >
+            <PaymentVoucher />
+          </TransactionRouteShell>
+        );
       case "receipt":
-        return <ReceiptVoucher />;
+        return (
+          <TransactionRouteShell
+            family="receipt"
+            mode="settlement-document"
+            title="Receive money"
+            description="Money received from a party."
+          >
+            <ReceiptVoucher />
+          </TransactionRouteShell>
+        );
       case "contra":
-        return <ContraVoucher />;
+        return (
+          <TransactionRouteShell
+            family="contra"
+            mode="transfer-document"
+            title="Transfer between accounts"
+            description="Move money between cash/bank."
+          >
+            <ContraVoucher />
+          </TransactionRouteShell>
+        );
       case "debit-note":
-        return <DebitNoteVoucher />;
+        return (
+          <TransactionRouteShell
+            family="purchase"
+            mode="inventory-document"
+            title="Supplier credit note"
+            description="Reduce what you owe a supplier."
+          >
+            <DebitNoteVoucher />
+          </TransactionRouteShell>
+        );
       case "credit-note":
-        return <CreditNoteVoucher />;
+        return (
+          <TransactionRouteShell
+            family="sales"
+            mode="inventory-document"
+            title="Customer credit note"
+            description="Reduce what a customer owes you."
+          >
+            <CreditNoteVoucher />
+          </TransactionRouteShell>
+        );
       case "recurring-vouchers":
         return <RecurringVouchers />;
 
@@ -547,10 +653,9 @@ const App: React.FC<AppProps> = ({ onMounted }) => {
   };
 
   return (
-    <>
-      <Toaster position="top-right" toastOptions={TOAST_OPTIONS} />
+    <ToastProvider>
       {renderAuthStage()}
-    </>
+    </ToastProvider>
   );
 };
 

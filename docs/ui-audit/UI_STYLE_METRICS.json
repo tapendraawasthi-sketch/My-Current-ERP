@@ -1,0 +1,395 @@
+{
+  "generated_at": "2026-07-13T12:34:17.030Z",
+  "scope": "src/**/*.{css,tsx,jsx}",
+  "css_file_count": 8,
+  "css_files": [
+    "src/design-system/foundations/focus.css",
+    "src/design-system/foundations/index.css",
+    "src/design-system/foundations/print.css",
+    "src/design-system/foundations/tokens.css",
+    "src/design-system/foundations/typography.css",
+    "src/styles/design-tokens.css",
+    "src/styles/tally-green.css",
+    "src/styles.css"
+  ],
+  "tsx_jsx_file_count": 449,
+  "raw_hex_total": 7304,
+  "distinct_hex_count": 258,
+  "most_common_hex": [
+    {
+      "color": "#1557b0",
+      "count": 2879
+    },
+    {
+      "color": "#000000",
+      "count": 762
+    },
+    {
+      "color": "#f5f6fa",
+      "count": 617
+    },
+    {
+      "color": "#0f4a96",
+      "count": 276
+    },
+    {
+      "color": "#9dc07a",
+      "count": 270
+    },
+    {
+      "color": "#ebf5e2",
+      "count": 165
+    },
+    {
+      "color": "#1f2937",
+      "count": 135
+    },
+    {
+      "color": "#059669",
+      "count": 131
+    },
+    {
+      "color": "#dc2626",
+      "count": 131
+    },
+    {
+      "color": "#ffffff",
+      "count": 112
+    },
+    {
+      "color": "#e5e7eb",
+      "count": 96
+    },
+    {
+      "color": "#c7d2fe",
+      "count": 95
+    },
+    {
+      "color": "#eef2ff",
+      "count": 92
+    },
+    {
+      "color": "#000",
+      "count": 87
+    },
+    {
+      "color": "#fff",
+      "count": 83
+    },
+    {
+      "color": "#d1d5db",
+      "count": 73
+    },
+    {
+      "color": "#d97706",
+      "count": 70
+    },
+    {
+      "color": "#f9fafb",
+      "count": 56
+    },
+    {
+      "color": "#d4eabd",
+      "count": 52
+    },
+    {
+      "color": "#374151",
+      "count": 51
+    },
+    {
+      "color": "#6b7280",
+      "count": 49
+    },
+    {
+      "color": "#9ca3af",
+      "count": 47
+    },
+    {
+      "color": "#c9deb5",
+      "count": 45
+    },
+    {
+      "color": "#111827",
+      "count": 34
+    },
+    {
+      "color": "#1e2433",
+      "count": 31
+    },
+    {
+      "color": "#3d6b25",
+      "count": 31
+    },
+    {
+      "color": "#666",
+      "count": 28
+    },
+    {
+      "color": "#2d3748",
+      "count": 25
+    },
+    {
+      "color": "#4a7a30",
+      "count": 24
+    },
+    {
+      "color": "#ccc",
+      "count": 19
+    }
+  ],
+  "rgb_literal_count": 105,
+  "hsl_literal_count": 0,
+  "important_count": 332,
+  "inline_style_file_count": 128,
+  "inline_style_files": [
+    "src/ai/interface/AIChat.tsx",
+    "src/App.tsx",
+    "src/components/accounts/LedgerStatementView.tsx",
+    "src/components/AuditLogs.tsx",
+    "src/components/auth/AuthBrandingPanel.tsx",
+    "src/components/auth/ChangePasswordModal.tsx",
+    "src/components/auth/CompanyLoginScreen.tsx",
+    "src/components/auth/GatewayScreen.tsx",
+    "src/components/auth/SignInForm.tsx",
+    "src/components/auth/SignUpWizard.tsx",
+    "src/components/auth/wizard/Step1CompanyProfile.tsx",
+    "src/components/auth/wizard/Step2TaxRegistration.tsx",
+    "src/components/auth/wizard/Step3AccountingSetup.tsx",
+    "src/components/auth/wizard/Step4AdminAccount.tsx",
+    "src/components/BusyMenuBar.tsx",
+    "src/components/BusyShell.tsx",
+    "src/components/ChartOfAccounts.tsx",
+    "src/components/Dashboard.tsx",
+    "src/components/ekhata/EKhataPanel.tsx",
+    "src/components/ekhata/OrbixNeuronThinking.tsx",
+    "src/components/ekhata/OrbixReportTable.tsx",
+    "src/components/F12Panel.tsx",
+    "src/components/falcon/FalconPanel.tsx",
+    "src/components/falcon/FalconThinkingPanel.tsx",
+    "src/components/Gateway.tsx",
+    "src/components/GatewayTile.tsx",
+    "src/components/GlobalSearch.tsx",
+    "src/components/Header.tsx",
+    "src/components/InitErrorScreen.tsx",
+    "src/components/invoice/SalesInvoiceForm.tsx",
+    "src/components/Layout.tsx",
+    "src/components/nios/NiosProvider.tsx",
+    "src/components/pl/PLDrillDown.tsx",
+    "src/components/pl/PLHorizontal.tsx",
+    "src/components/pl/PLMonthlySummary.tsx",
+    "src/components/pl/PLToolbar.tsx",
+    "src/components/pl/PLVertical.tsx",
+    "src/components/ReportEmptyState.tsx",
+    "src/components/ReportHub.tsx",
+    "src/components/reporting/BsDateCell.tsx",
+    "src/components/reporting/ColumnReportShell.tsx",
+    "src/components/reporting/ErpReportModal.tsx",
+    "src/components/reporting/ReportShell.tsx",
+    "src/components/reporting/TFormatReport.tsx",
+    "src/components/reports/AccountTreeRenderer.tsx",
+    "src/components/reports/NepalStatementTable.tsx",
+    "src/components/reports/ReportFooter.tsx",
+    "src/components/reports/ReportHeader.tsx",
+    "src/components/reports/ReportOptionsModal.tsx",
+    "src/components/RightButtonBar.tsx",
+    "src/components/Sidebar.tsx",
+    "src/components/tally/ControlCentre.tsx",
+    "src/components/tally/DataExportImport.tsx",
+    "src/components/tally/F11CompanyFeatures.tsx",
+    "src/components/tally/PrintConfiguration.tsx",
+    "src/components/tally/TallySalesVoucher.tsx",
+    "src/components/tally/TallyVault.tsx",
+    "src/components/tally/TallyVoucherClass.tsx",
+    "src/components/tally/TallyVoucherConfig.tsx",
+    "src/components/tally/TallyVoucherEntry.tsx",
+    "src/components/topbar/DataMenu.tsx",
+    "src/components/topbar/shared.tsx",
+    "src/components/topbar/TopMenuBar.tsx",
+    "src/components/ui/Button.tsx",
+    "src/components/ui/DataTable.tsx",
+    "src/components/ui/Input.tsx",
+    "src/components/ui/Modal.tsx",
+    "src/components/ui/NepaliDatePicker.tsx",
+    "src/components/ui/NotificationPanel.tsx",
+    "src/components/ui/Pagination.tsx",
+    "src/components/ui/Select.tsx",
+    "src/components/ui/Spinner.tsx",
+    "src/components/ui/Table.tsx",
+    "src/components/VouchersRegister.tsx",
+    "src/design-system/primitives/DataTable/EnterpriseDataTable.tsx",
+    "src/main.tsx",
+    "src/pages/AgingReport.tsx",
+    "src/pages/AuditLog.tsx",
+    "src/pages/BalanceSheet.tsx",
+    "src/pages/BankBook.tsx",
+    "src/pages/BatchManagement.tsx",
+    "src/pages/BranchMaster.tsx",
+    "src/pages/Budgets.tsx",
+    "src/pages/BudgetVsActual.tsx",
+    "src/pages/BulkUpdations.tsx",
+    "src/pages/CashBook.tsx",
+    "src/pages/CashFlowStatement.tsx",
+    "src/pages/CbmsDashboard.tsx",
+    "src/pages/ChequePrinting.tsx",
+    "src/pages/ChequeRegister.tsx",
+    "src/pages/CompanySettings.tsx",
+    "src/pages/ContraRegister.tsx",
+    "src/pages/CostCenterReport.tsx",
+    "src/pages/CostCentre.tsx",
+    "src/pages/CreditLimitManager.tsx",
+    "src/pages/Dashboard.tsx",
+    "src/pages/DataExportImport.tsx",
+    "src/pages/DiscountStructureMaster.tsx",
+    "src/pages/EquityStatement.tsx",
+    "src/pages/F11CompanyFeatures.tsx",
+    "src/pages/FiscalYear.tsx",
+    "src/pages/FixedAssets.tsx",
+    "src/pages/FollowUpTracker.tsx",
+    "src/pages/Form25B.tsx",
+    "src/pages/GeneralLedger.tsx",
+    "src/pages/GodownMaster.tsx",
+    "src/pages/GroupSummaryReport.tsx",
+    "src/pages/IncomeExpenditureAccount.tsx",
+    "src/pages/InventoryAnalysis.tsx",
+    "src/pages/JobWorkRegister.tsx",
+    "src/pages/JournalRegister.tsx",
+    "src/pages/MiscDataEntry.tsx",
+    "src/pages/MultiCurrencyHub.tsx",
+    "src/pages/OutstandingPayables.tsx",
+    "src/pages/OutstandingReceivables.tsx",
+    "src/pages/PartyLedgerStatement.tsx",
+    "src/pages/PDCManagement.tsx",
+    "src/pages/PricePolicyManager.tsx",
+    "src/pages/PurchaseRegister.tsx",
+    "src/pages/RatioAnalysis.tsx",
+    "src/pages/ReportScheduler.tsx",
+    "src/pages/SalesAnalysisReport.tsx",
+    "src/pages/SalespersonMaster.tsx",
+    "src/pages/SalesRegister.tsx",
+    "src/pages/StatutoryCompliance.tsx",
+    "src/pages/StockBook.tsx",
+    "src/pages/StockSummary.tsx",
+    "src/pages/TrialBalance.tsx"
+  ],
+  "arbitrary_tailwind_color_count": 5048,
+  "arbitrary_font_size_count": 8189,
+  "arbitrary_spacing_count": 331,
+  "unique_border_radii": [
+    "0",
+    "10",
+    "10px",
+    "12",
+    "12px",
+    "14",
+    "2",
+    "3",
+    "4",
+    "4px",
+    "5",
+    "50%",
+    "6",
+    "6px",
+    "8",
+    "8px",
+    "9999",
+    "rounded-2xl",
+    "rounded-full",
+    "rounded-lg",
+    "rounded-md",
+    "rounded-none",
+    "rounded-sm",
+    "rounded-xl"
+  ],
+  "unique_border_radii_count": 24,
+  "unique_box_shadows": [
+    "-3px 0 8px rgba(0,0,0,0.18)",
+    "0 1px 3px rgba(0,0,0,0.06)",
+    "0 2px 4px rgba(0,0,0,0.1)",
+    "0 2px 8px rgba(0,0,0,0.3)",
+    "0 4px 12px rgba(0,0,0,0.08)",
+    "0 4px 16px rgba(0,0,0,0.08)",
+    "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+    "0 4px 6px -1px rgba(0,0,0,0.1)",
+    "0 8px 24px rgba(0,0,0,0.12)",
+    "0 8px 32px rgba(0,0,0,0.25)",
+    "shadow-2xl",
+    "shadow-inner",
+    "shadow-lg",
+    "shadow-md",
+    "shadow-none",
+    "shadow-sm",
+    "shadow-xl",
+    "var(--ox-shadow-md)"
+  ],
+  "unique_box_shadows_count": 18,
+  "unique_z_index_values": [
+    1,
+    2,
+    5,
+    10,
+    20,
+    40,
+    45,
+    50,
+    60,
+    70,
+    100,
+    180,
+    200,
+    9997,
+    9998,
+    9999,
+    10000,
+    99999
+  ],
+  "unique_z_index_count": 18,
+  "legacy_green_pattern_hits": 22,
+  "tally_green_css_consumers": [
+    "src/pages/TallyVoucherPage.tsx"
+  ],
+  "black_border_or_pure_black_hits": 896,
+  "typography": {
+    "text_below_12px": 4183,
+    "text_9px": 82,
+    "text_10px": 2009,
+    "text_11px": 2072,
+    "text_12px": 3135,
+    "text_13px": 300,
+    "text_14px": 258,
+    "font_size_distribution_px": {
+      "4": 1,
+      "5": 4,
+      "6": 3,
+      "7": 4,
+      "8": 3,
+      "9": 82,
+      "10": 2009,
+      "11": 2072,
+      "12": 3135,
+      "13": 300,
+      "14": 258,
+      "15": 206,
+      "16": 18,
+      "17": 1,
+      "18": 36,
+      "20": 17,
+      "22": 15,
+      "24": 15,
+      "28": 4,
+      "32": 1,
+      "5.5": 1,
+      "6.5": 1,
+      "8.5": 1,
+      "10.5": 2
+    },
+    "uppercase_class_count": 2125,
+    "font_mono_or_tabular_hits": 892,
+    "tabular_nums_count": 35
+  },
+  "controls": {
+    "h_class_below_32px": 337,
+    "h_class_below_36px": 1740,
+    "h_class_below_44px_touch": 1832,
+    "note": "Counts Tailwind h-* / h-[Npx] utility occurrences, not unique components"
+  }
+}

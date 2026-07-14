@@ -20,6 +20,8 @@
     "useUnknownInCatchVariables": false,
     "paths": {
       "@/*": ["./src/*"],
+      "@/design-system": ["./src/design-system/index.ts"],
+      "@/design-system/*": ["./src/design-system/*"],
       "@fios/kernel": ["./src/platform/kernel/index.ts"],
       "@fios/platform": ["./src/platform/index.ts"],
       "@fios/legacy": ["./src/legacy/index.ts"],

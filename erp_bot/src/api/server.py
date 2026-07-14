@@ -585,7 +585,9 @@ async def orbix_chat_stream(req: StreamChatRequest):
                     context=ctx,
                     orbix_mode=resolved_mode,
                 )
-                async for event in stream_orbix_kernel_events(response):
+                async for event in stream_orbix_kernel_events(
+                    response, user_message=req.message
+                ):
                     yield event
                 return
 

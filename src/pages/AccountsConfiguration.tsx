@@ -28,7 +28,7 @@ const AccountsConfiguration: React.FC = () => {
     <div className="p-4 bg-[#f5f6fa] min-h-screen">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Accounts Configuration</h1>
+          <h1 className="text-[15px] font-semibold text-gray-800">Accounts setup</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Features &amp; Options — Accounts Settings
           </p>

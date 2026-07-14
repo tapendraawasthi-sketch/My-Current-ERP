@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { useStore } from "../store/useStore";
 import type { DBWarehouse } from "../lib/db";
 

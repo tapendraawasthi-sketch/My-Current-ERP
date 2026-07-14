@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useStore } from "../../store/useStore";
 import { Search } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 interface AccountSelectProps {
   value: string;

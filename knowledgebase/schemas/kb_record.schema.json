@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orbix.local/schemas/kb_record.schema.json",
+  "title": "Orbix Nepali Language KB Canonical Record",
+  "description": "Flattened canonical record contract for ONLI package JSONL (schema_version 1.0.0).",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "record_id",
+    "record_type",
+    "schema_version",
+    "source_file_id",
+    "source_filename",
+    "source_sha256",
+    "source_line_start",
+    "source_line_end",
+    "execution_allowed",
+    "parse_status",
+    "content_text",
+    "content_hash",
+    "normalized_content_hash"
+  ],
+  "properties": {
+    "record_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Immutable unique record identifier."
+    },
+    "record_type": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Primary record classification (e.g. language_rule, intent_example, gold_test, normative_section)."
+    },
+    "schema_id": {
+      "type": "string",
+      "default": "SCHEMA.ONLI.CANONICAL_RECORD"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "record_revision": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1
+    },
+    "package_code": {
+      "type": "string",
+      "default": "ONLI"
+    },
+    "package_version": {
+      "type": "string",
+      "default": "1.0.0"
+    },
+    "source_file_id": {
+      "type": "string",
+      "pattern": "^\\d{4}$"
+    },
+    "source_filename": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "source_line_start": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "source_line_end": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "collection": {
+      "type": "string",
+      "description": "Parser-assigned JSONL collection bucket."
+    },
+    "section_title": {
+      "type": ["string", "null"]
+    },
+    "domain": {
+      "type": ["string", "array", "null"],
+      "description": "Business or knowledge domain label(s)."
+    },
+    "language_form": {
+      "type": ["string", "null"],
+      "description": "Surface language form (devanagari_nepali, romanized_nepali, english, mixed, etc.)."
+    },
+    "raw_input": {
+      "type": ["string", "null"],
+      "description": "Exact observed user or source text."
+    },
+    "normalized_input": {
+      "type": ["string", "null"],
+      "description": "Normalized surface text; must not replace raw_input."
+    },
+    "intent": {
+      "type": ["string", "array", "null"]
+    },
+    "operation_class": {
+      "type": ["string", "null"]
+    },
+    "read_only": {
+      "type": ["boolean", "null"]
+    },
+    "preview": {
+      "type": ["boolean", "null"]
+    },
+    "mutation": {
+      "type": ["boolean", "null"]
+    },
+    "destructive": {
+      "type": ["boolean", "null"]
+    },
+    "entities": {
+      "type": ["array", "object", "null"],
+      "items": {}
+    },
+    "slots": {
+      "type": ["array", "object", "null"],
+      "items": {}
+    },
+    "rules": {
+      "type": ["array", "object", "null"]
+    },
+    "expected_behavior": {
+      "type": ["string", "object", "null"]
+    },
+    "execution_allowed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Must default to false; true only when explicitly authorized in source."
+    },
+    "safety_labels": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "content_text": {
+      "type": "string",
+      "description": "Canonical searchable body text for indexing."
+    },
+    "content_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "normalized_content_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "parse_status": {
+      "type": "string",
+      "enum": ["ok", "warning", "quarantined", "partial"]
+    },
+    "quality_score": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "review_status": {
+      "type": ["string", "null"]
+    },
+    "eligibility": {
+      "type": ["string", "null"],
+      "enum": [
+        "eligible",
+        "eligible_with_warning",
+        "evaluation_only",
+        "quarantined",
+        "human_review_required",
+        null
+      ]
+    },
+    "metadata": {
+      "type": "object",
+      "default": {},
+      "description": "Parser extensions, runtime contract JSON, and non-canonical extras."
+    },
+    "fields": {
+      "type": "object",
+      "description": "Raw key-value fields extracted from source RECORD block.",
+      "default": {}
+    }
+  }
+}

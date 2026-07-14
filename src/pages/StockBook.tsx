@@ -4,7 +4,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 import React, { useMemo, useState } from "react";
 import * as XLSX from "xlsx";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { Download, Package } from "lucide-react";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";

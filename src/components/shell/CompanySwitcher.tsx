@@ -62,18 +62,18 @@ export const CompanySwitcher: React.FC = () => {
           setOpen((v) => !v);
           setFyOpen(false);
         }}
-        className="inline-flex h-8 max-w-[120px] items-center gap-2 rounded-[var(--ox-radius-md)] border border-[var(--ox-border)] bg-[var(--ox-surface)] px-2 hover:bg-[var(--ox-surface-muted)] sm:max-w-[200px]"
+        className="inline-flex h-8 max-w-[120px] items-center gap-2 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-2 hover:bg-[var(--ds-surface-muted)] sm:max-w-[200px]"
         aria-haspopup="menu"
         aria-expanded={open}
         title={companyName}
       >
-        <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md bg-[var(--ox-primary-soft)] text-[10px] font-semibold text-[var(--ox-primary)]">
+        <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md bg-[var(--ds-surface-muted)] text-[12px] font-semibold text-[var(--ds-action-primary)]">
           {initials(companyName)}
         </span>
-        <span className="hidden truncate text-[12px] font-medium text-[var(--ox-text)] sm:inline">
+        <span className="hidden truncate text-[12px] font-medium text-[var(--ds-text-default)] sm:inline">
           {companyName}
         </span>
-        <ChevronDown className="h-3.5 w-3.5 flex-shrink-0 text-[var(--ox-text-subtle)]" />
+        <ChevronDown className="h-3.5 w-3.5 flex-shrink-0 text-[var(--ds-text-subtle)]" />
       </button>
 
       <button
@@ -82,57 +82,57 @@ export const CompanySwitcher: React.FC = () => {
           setFyOpen((v) => !v);
           setOpen(false);
         }}
-        className="inline-flex h-8 max-w-[96px] items-center gap-1.5 rounded-[var(--ox-radius-md)] border border-[var(--ox-border)] bg-[var(--ox-surface)] px-2 hover:bg-[var(--ox-surface-muted)] sm:max-w-[140px]"
+        className="inline-flex h-8 max-w-[96px] items-center gap-1.5 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-2 hover:bg-[var(--ds-surface-muted)] sm:max-w-[140px]"
         aria-haspopup="listbox"
         aria-expanded={fyOpen}
         title="Financial year"
       >
-        <Calendar className="h-3.5 w-3.5 text-[var(--ox-text-muted)]" />
-        <span className="truncate text-[12px] text-[var(--ox-text)]">
+        <Calendar className="h-3.5 w-3.5 text-[var(--ds-text-muted)]" />
+        <span className="truncate text-[12px] text-[var(--ds-text-default)]">
           {currentFiscalYear?.name || "FY"}
         </span>
-        <ChevronDown className="h-3.5 w-3.5 flex-shrink-0 text-[var(--ox-text-subtle)]" />
+        <ChevronDown className="h-3.5 w-3.5 flex-shrink-0 text-[var(--ds-text-subtle)]" />
       </button>
 
       {open && (
         <div
           role="menu"
-          className="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-[var(--ox-radius-lg)] border border-[var(--ox-border)] bg-[var(--ox-surface-elevated)] shadow-[var(--ox-shadow-md)]"
+          className="absolute right-0 top-full z-[var(--ds-z-dropdown)] mt-2 w-64 overflow-hidden rounded-[var(--ds-radius-lg)] border border-[var(--ds-border-default)] bg-[var(--ds-surface-raised)] shadow-[var(--ds-shadow-2)]"
         >
-          <div className="border-b border-[var(--ox-border)] px-3 py-2.5">
-            <p className="text-[12px] font-semibold text-[var(--ox-text)]">{companyName}</p>
-            <p className="mt-0.5 text-[11px] text-[var(--ox-text-muted)]">
+          <div className="border-b border-[var(--ds-border-default)] px-3 py-2.5">
+            <p className="text-[12px] font-semibold text-[var(--ds-text-default)]">{companyName}</p>
+            <p className="mt-0.5 text-[12px] text-[var(--ds-text-muted)]">
               FY {currentFiscalYear?.name || "—"}
             </p>
           </div>
           <button
             type="button"
             role="menuitem"
-            className="flex w-full items-center gap-2 px-3 py-2 text-left text-[12px] text-[var(--ox-text)] hover:bg-[var(--ox-surface-muted)]"
+            className="flex w-full items-center gap-2 px-3 py-2 text-left text-[12px] text-[var(--ds-text-default)] hover:bg-[var(--ds-surface-muted)]"
             onClick={() => {
               setOpen(false);
               setCurrentPage("settings");
             }}
           >
-            <Settings className="h-3.5 w-3.5 text-[var(--ox-text-muted)]" />
+            <Settings className="h-3.5 w-3.5 text-[var(--ds-text-muted)]" />
             Company settings
           </button>
           <button
             type="button"
             role="menuitem"
-            className="flex w-full items-center gap-2 px-3 py-2 text-left text-[12px] text-[var(--ox-text)] hover:bg-[var(--ox-surface-muted)]"
+            className="flex w-full items-center gap-2 px-3 py-2 text-left text-[12px] text-[var(--ds-text-default)] hover:bg-[var(--ds-surface-muted)]"
             onClick={() => {
               setOpen(false);
               setCurrentPage("fiscal-year");
             }}
           >
-            <Building2 className="h-3.5 w-3.5 text-[var(--ox-text-muted)]" />
+            <Building2 className="h-3.5 w-3.5 text-[var(--ds-text-muted)]" />
             Manage fiscal years
           </button>
           <button
             type="button"
             role="menuitem"
-            className="flex w-full items-center gap-2 border-t border-[var(--ox-border)] px-3 py-2 text-left text-[12px] text-[var(--ox-danger)] hover:bg-[var(--ox-danger-soft)]"
+            className="flex w-full items-center gap-2 border-t border-[var(--ds-border-default)] px-3 py-2 text-left text-[12px] text-[var(--ds-status-danger)] hover:bg-[var(--ds-status-danger-surface)]"
             onClick={() => {
               setOpen(false);
               void logout();
@@ -147,22 +147,22 @@ export const CompanySwitcher: React.FC = () => {
       {fyOpen && (
         <div
           role="listbox"
-          className="absolute right-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-[var(--ox-radius-lg)] border border-[var(--ox-border)] bg-[var(--ox-surface-elevated)] shadow-[var(--ox-shadow-md)]"
+          className="absolute right-0 top-full z-[var(--ds-z-dropdown)] mt-2 w-72 overflow-hidden rounded-[var(--ds-radius-lg)] border border-[var(--ds-border-default)] bg-[var(--ds-surface-raised)] shadow-[var(--ds-shadow-2)]"
         >
-          <div className="border-b border-[var(--ox-border)] p-2">
-            <div className="flex h-8 items-center gap-2 rounded-[var(--ox-radius-md)] border border-[var(--ox-border)] bg-[var(--ox-surface)] px-2">
-              <Search className="h-3.5 w-3.5 text-[var(--ox-text-subtle)]" />
+          <div className="border-b border-[var(--ds-border-default)] p-2">
+            <div className="flex h-8 items-center gap-2 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-2">
+              <Search className="h-3.5 w-3.5 text-[var(--ds-text-subtle)]" />
               <input
                 value={fyQuery}
                 onChange={(e) => setFyQuery(e.target.value)}
                 placeholder="Search fiscal years…"
-                className="h-full w-full border-0 bg-transparent text-[12px] text-[var(--ox-text)] outline-none placeholder:text-[var(--ox-text-subtle)]"
+                className="h-full w-full border-0 bg-transparent text-[12px] text-[var(--ds-text-default)] outline-none placeholder:text-[var(--ds-text-subtle)]"
               />
             </div>
           </div>
           <div className="max-h-56 overflow-y-auto py-1">
             {years.length === 0 && (
-              <p className="px-3 py-4 text-center text-[12px] text-[var(--ox-text-muted)]">
+              <p className="px-3 py-4 text-center text-[12px] text-[var(--ds-text-muted)]">
                 No fiscal years found
               </p>
             )}
@@ -174,8 +174,8 @@ export const CompanySwitcher: React.FC = () => {
                   type="button"
                   role="option"
                   aria-selected={selected}
-                  className={`flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-[12px] hover:bg-[var(--ox-surface-muted)] ${
-                    selected ? "bg-[var(--ox-primary-soft)] text-[var(--ox-primary)]" : "text-[var(--ox-text)]"
+                  className={`flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-[12px] hover:bg-[var(--ds-surface-muted)] ${
+                    selected ? "bg-[var(--ds-surface-muted)] text-[var(--ds-action-primary)]" : "text-[var(--ds-text-default)]"
                   }`}
                   onClick={() => {
                     setCurrentFiscalYear(fy);

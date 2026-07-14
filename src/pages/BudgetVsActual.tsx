@@ -204,7 +204,7 @@ export default function BudgetVsActual() {
     }));
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Budget vs Actual");
+    XLSX.utils.book_append_sheet(wb, ws, "Budget vs actual");
     XLSX.writeFile(wb, `BudgetVsActual_${fromDate}_to_${toDate}.xlsx`);
   };
 
@@ -221,9 +221,9 @@ export default function BudgetVsActual() {
     return (
       <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${color}`}>
         {row.isFavourable
-          ? "✓ On Track"
+          ? "On Track"
           : row.utilization >= 100
-            ? "⚠ Exceeded"
+            ? "Exceeded"
             : `${row.utilization}%`}
       </span>
     );
@@ -250,17 +250,17 @@ export default function BudgetVsActual() {
   }
 
   return (
-    <div className="erp-report p-4 md:p-6 bg-[#f5f6fa] min-h-screen space-y-4">
+    <div className="erp-report p-4 md:p-6 bg-[var(--ds-canvas)] min-h-screen space-y-4">
       <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Budget vs Actual</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
-            Compare planned budgets against actual transactions with variance analysis
+          <h1 className="text-[15px] font-semibold text-gray-800">Budget vs actual</h1>
+          <p className="text-[12px] text-gray-500 mt-0.5">
+            Plan vs real figures.
           </p>
         </div>
         <button
           onClick={exportExcel}
-          className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+          className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
         >
           <Download className="w-3.5 h-3.5" /> Export Excel
         </button>

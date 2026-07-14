@@ -1,0 +1,13 @@
+{
+  "generated_at": "2026-07-14T06:59:25+00:00",
+  "reviewer": "Acer",
+  "total": 40,
+  "counts": {
+    "approve": 3,
+    "defer": 20,
+    "reject": 17
+  },
+  "production_certification": false,
+  "output": "knowledgebase/processed/review_ready/SPECIALIST_CLARIFY_DECISIONS_FILLED.jsonl",
+  "policy": "conservative triage; production_approved remains false"
+}

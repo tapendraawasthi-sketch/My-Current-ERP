@@ -1,0 +1,45 @@
+{
+  "protected_identifier_preservation": {
+    "passed": true,
+    "detail": "placeholder tokens round-trip"
+  },
+  "no_execution_from_retrieved_knowledge": {
+    "passed": true,
+    "detail": "adapter execution_allowed always false"
+  },
+  "rollback_via_config": {
+    "passed": true,
+    "detail": "ORBIX_NP_KB_ENABLED=false skips KB"
+  },
+  "no_readonly_mutation_auth": {
+    "passed": true
+  },
+  "no_preview_execution_via_kb": {
+    "passed": true,
+    "detail": "KB adapter has no execution API"
+  },
+  "no_cross_tenant_access_via_kb": {
+    "passed": true,
+    "detail": "Retriever has no tenant_id expand; ERP services remain authority"
+  },
+  "no_unbalanced_posting_authorization": {
+    "passed": true,
+    "detail": "KB cannot authorize postings"
+  },
+  "no_unauthorized_mutation": {
+    "passed": true,
+    "detail": "KB cannot mutate"
+  },
+  "no_blind_retry_after_unknown": {
+    "passed": true,
+    "detail": "Not implemented in KB adapter (by design)"
+  },
+  "no_audit_history_deletion": {
+    "passed": true
+  },
+  "no_legal_hold_deletion": {
+    "passed": true
+  },
+  "_critical_pass_rate": 1.0,
+  "_all_critical_passed": true
+}

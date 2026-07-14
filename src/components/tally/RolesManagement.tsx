@@ -12,7 +12,7 @@ import {
   X,
   ArrowLeft,
 } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 type Permission = "full" | "view" | "none";
 type VoucherPerm = {

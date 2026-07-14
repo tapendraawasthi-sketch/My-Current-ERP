@@ -8,7 +8,7 @@ import {
   computeLedgerTotals,
   computeGroupTotals,
 } from "../lib/reportingHierarchy";
-import ReportShell from "../components/reporting/ReportShell";
+import { ReportWorkspace } from "@/features/reports";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 
 const FundsFlowStatement: React.FC = () => {
@@ -314,37 +314,36 @@ const FundsFlowStatement: React.FC = () => {
   }, [vouchers, accounts, startDate, endDate]);
 
   return (
-    <ReportShell
-      title="Funds Flow Statement"
-      subtitle="Sources and Applications of Working Capital"
+    <ReportWorkspace
+      title="Funds flow"
+      description="Sources and uses of funds."
       companyName={companySettings?.companyNameEn || companySettings?.name}
-      periodText={`${startDate} to ${endDate}`}
+      periodLabel={`${startDate} to ${endDate}`}
       onPrint={() => window.print()}
       onOptions={() => {
         setPendingStart(startDate);
         setPendingEnd(endDate);
         setOptionsOpen(true);
       }}
-      actionBarButtons={[{ label: "Print" }, { label: "Export" }]}
-      toolbarLeft={
+      filterSlot={
         <>
-          <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
+          <label className="text-[12px] font-medium text-gray-600 flex items-center gap-1.5">
             From:
             <input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
-          <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
+          <label className="text-[12px] font-medium text-gray-600 flex items-center gap-1.5">
             To:
             <input
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
         </>
@@ -354,17 +353,17 @@ const FundsFlowStatement: React.FC = () => {
       <div className="overflow-x-auto border border-gray-200 rounded-md bg-white mb-8">
         <table className="w-full text-left whitespace-nowrap">
           <thead>
-            <tr className="bg-[#f5f6fa] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-1/2">
+            <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
+              <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-1/2">
                 SOURCES OF FUNDS
               </th>
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right border-r border-gray-200 w-[120px]">
+              <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-500 uppercase tracking-wide text-right border-r border-gray-200 w-[120px]">
                 Amount (Rs.)
               </th>
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-1/2">
+              <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200 w-1/2">
                 APPLICATIONS OF FUNDS
               </th>
-              <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right w-[120px]">
+              <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-500 uppercase tracking-wide text-right w-[120px]">
                 Amount (Rs.)
               </th>
             </tr>
@@ -406,14 +405,14 @@ const FundsFlowStatement: React.FC = () => {
             })()}
 
             {/* Totals */}
-            <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-              <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 border-r border-[#c7d2fe]">
+            <tr className="bg-[var(--ds-surface-selected)] border-t-2 border-[var(--ds-border-strong)]">
+              <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 border-r border-[var(--ds-border-strong)]">
                 TOTAL SOURCES
               </td>
-              <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right border-r border-[#c7d2fe]">
+              <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right border-r border-[var(--ds-border-strong)]">
                 {formatNumber(fundsFlowData.totalSources)}
               </td>
-              <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 border-r border-[#c7d2fe]">
+              <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 border-r border-[var(--ds-border-strong)]">
                 TOTAL APPLICATIONS
               </td>
               <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-gray-800 text-right">
@@ -430,8 +429,8 @@ const FundsFlowStatement: React.FC = () => {
                 className="px-3 py-3 text-[12px] font-bold text-center border-t border-gray-200"
               >
                 {fundsFlowData.totalSources === fundsFlowData.totalApplications
-                  ? "✓ FUND FLOW STATEMENT BALANCES"
-                  : "⚠️ FUND FLOW STATEMENT DOES NOT BALANCE"}
+                  ? "FUND FLOW STATEMENT BALANCES"
+                  : "FUND FLOW STATEMENT DOES NOT BALANCE"}
               </td>
             </tr>
           </tbody>
@@ -446,20 +445,20 @@ const FundsFlowStatement: React.FC = () => {
         <div className="overflow-x-auto border border-gray-200 rounded-md bg-white">
           <table className="w-full text-left whitespace-nowrap">
             <thead>
-              <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200">
+              <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
+                <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-500 uppercase tracking-wide border-r border-gray-200">
                   Item
                 </th>
-                <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right border-r border-gray-200 w-[140px]">
+                <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-500 uppercase tracking-wide text-right border-r border-gray-200 w-[140px]">
                   Opening (Rs.)
                 </th>
-                <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right border-r border-gray-200 w-[140px]">
+                <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-500 uppercase tracking-wide text-right border-r border-gray-200 w-[140px]">
                   Closing (Rs.)
                 </th>
-                <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right border-r border-gray-200 w-[140px]">
+                <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-500 uppercase tracking-wide text-right border-r border-gray-200 w-[140px]">
                   Increase (Rs.)
                 </th>
-                <th className="px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide text-right w-[140px]">
+                <th className="px-3 py-2.5 text-[12px] font-semibold text-gray-500 uppercase tracking-wide text-right w-[140px]">
                   Decrease (Rs.)
                 </th>
               </tr>
@@ -486,7 +485,7 @@ const FundsFlowStatement: React.FC = () => {
               ))}
 
               {/* Totals row */}
-              <tr className="bg-[#f8fafc] border-t-2 border-gray-200">
+              <tr className="bg-[var(--ds-surface-muted)] border-t-2 border-gray-200">
                 <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800 border-r border-gray-200">
                   TOTAL
                 </td>
@@ -525,10 +524,10 @@ const FundsFlowStatement: React.FC = () => {
               </tr>
 
               {/* Net Change row */}
-              <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
+              <tr className="bg-[var(--ds-surface-selected)] border-t-2 border-[var(--ds-border-strong)]">
                 <td
                   colSpan={2}
-                  className="px-3 py-2.5 text-[12px] font-bold text-gray-800 border-r border-[#c7d2fe]"
+                  className="px-3 py-2.5 text-[12px] font-bold text-gray-800 border-r border-[var(--ds-border-strong)]"
                 >
                   NET CHANGE IN WORKING CAPITAL
                 </td>
@@ -551,33 +550,33 @@ const FundsFlowStatement: React.FC = () => {
 
       <ReportOptionsModal
         open={optionsOpen}
-        title="Funds Flow Statement Options"
+        title="Funds flow Options"
         onClose={() => setOptionsOpen(false)}
         onApply={applyOptions}
       >
         <div className="space-y-4">
-          <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
+          <label className="flex flex-col gap-1 text-[12px] font-medium text-gray-600">
             From Date
             <input
               type="date"
               value={pendingStart}
               onChange={(e) => setPendingStart(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
-          <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
+          <label className="flex flex-col gap-1 text-[12px] font-medium text-gray-600">
             To Date
             <input
               type="date"
               value={pendingEnd}
               onChange={(e) => setPendingEnd(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
         </div>
       </ReportOptionsModal>
-    </ReportShell>
+    </ReportWorkspace>
   );
 };
 

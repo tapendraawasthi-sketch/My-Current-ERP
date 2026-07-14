@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useStore } from "../store";
 import { Plus, Edit2, Trash2, X, Save, Search } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 
 const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";

@@ -1,0 +1,10 @@
+{
+  "generated_at": "2026-07-14T06:35:14+00:00",
+  "reviewer": "Acer",
+  "total_decisions": 52,
+  "needs_clarification": 25,
+  "approve": 27,
+  "output": "knowledgebase/processed/review_ready/OPERATOR_STAGING_REVIEW_DECISIONS.jsonl",
+  "production_certification": false,
+  "note": "Operator staging review of stratified sample. Benign language fragment only. NOT production language, accounting, or legal certification."
+}

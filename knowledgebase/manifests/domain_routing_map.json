@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-07-14T06:02:09+00:00",
+  "domain_routing": {
+    "ACCOUNTING": [
+      "accounting_and_erp",
+      "language_and_normalization"
+    ],
+    "BANKING": [
+      "accounting_and_erp",
+      "safety_and_governance"
+    ],
+    "TAXATION": [
+      "accounting_and_erp"
+    ],
+    "PAYROLL_HR": [
+      "accounting_and_erp"
+    ],
+    "SECURITY": [
+      "safety_and_governance"
+    ],
+    "REGULATORY": [
+      "accounting_and_erp",
+      "safety_and_governance"
+    ],
+    "DEFAULT": [
+      "language_and_normalization",
+      "intent_and_dialogue"
+    ]
+  },
+  "default_collections": [
+    "language_and_normalization",
+    "intent_and_dialogue",
+    "accounting_and_erp",
+    "safety_and_governance",
+    "support_and_help",
+    "analytics_and_decision_support",
+    "evaluation_only"
+  ]
+}

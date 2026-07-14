@@ -85,15 +85,15 @@ export default function StockLedgerReport() {
   }, [selectedItem, items, stockMovements, fromDate, toDate]);
 
   const inputCls =
-    "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
-  const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
+    "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
+  const labelCls = "text-[12px] font-medium text-gray-600 mb-1 block";
 
   return (
-    <div className="erp-report flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-y-auto p-4 md:p-6">
+    <div className="erp-report flex h-full min-h-0 flex-col bg-[var(--ds-canvas)] overflow-y-auto p-4 md:p-6">
       <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">Stock ledger report</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
+          <p className="text-[12px] text-gray-500 mt-0.5">
             Item-wise movement history with running balance (IN/OUT transactions)
           </p>
         </div>
@@ -159,11 +159,11 @@ export default function StockLedgerReport() {
 
       {selectedItem && ledgerData ? (
         <div className="bg-white border border-gray-200 rounded-md overflow-hidden flex-1 min-h-0 flex flex-col">
-          <div className="px-3 py-2 border-b border-gray-200 bg-[#f5f6fa] flex justify-between items-center">
+          <div className="px-3 py-2 border-b border-gray-200 bg-[var(--ds-canvas)] flex justify-between items-center">
             <span className="text-[12px] font-semibold text-gray-800">
               {(ledgerData.item as any)?.name} — stock ledger
             </span>
-            <span className="text-[11px] text-gray-500">
+            <span className="text-[12px] text-gray-500">
               {fromDate} to {toDate}
             </span>
           </div>
@@ -195,7 +195,7 @@ export default function StockLedgerReport() {
             ) : (
               <table className="w-full min-w-[900px] border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                  <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
                     {[
                       "Date",
                       "Particular",
@@ -210,7 +210,7 @@ export default function StockLedgerReport() {
                     ].map((h) => (
                       <th
                         key={h}
-                        className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide"
+                        className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide"
                       >
                         {h}
                       </th>
@@ -221,13 +221,13 @@ export default function StockLedgerReport() {
                   {ledgerData.rows.map((row, idx) => (
                     <tr
                       key={idx}
-                      className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] border-b border-gray-100"
+                      className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)] border-b border-gray-100"
                     >
                       <td className="px-3 py-2.5 text-[12px] text-gray-700">{row.date}</td>
                       <td className="px-3 py-2.5 text-[12px] text-gray-700 capitalize">
                         {row.particular.replace(/-/g, " ")}
                       </td>
-                      <td className="px-3 py-2.5 text-[12px] font-mono text-[#1557b0]">
+                      <td className="px-3 py-2.5 text-[12px] font-mono text-[var(--ds-action-primary)]">
                         {row.referenceNo}
                       </td>
                       <td className="px-3 py-2.5 text-[12px] font-mono text-right text-green-700">
@@ -260,7 +260,7 @@ export default function StockLedgerReport() {
 
           {ledgerData.rows.length > 0 && (
             <>
-              <div className="px-3 py-2.5 border-t-2 border-[#c7d2fe] bg-[#eef2ff] flex justify-between text-[12px] font-semibold text-gray-800">
+              <div className="px-3 py-2.5 border-t-2 border-[var(--ds-border-strong)] bg-[var(--ds-surface-selected)] flex justify-between text-[12px] font-semibold text-gray-800">
                 <span>Closing balance</span>
                 <div className="flex gap-8">
                   <span className="font-mono">
@@ -272,7 +272,7 @@ export default function StockLedgerReport() {
                   </span>
                 </div>
               </div>
-              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+              <div className="px-3 py-2 border-t border-gray-200 bg-[var(--ds-canvas)] text-[12px] text-gray-500">
                 {ledgerData.rows.length} movement{ledgerData.rows.length === 1 ? "" : "s"}
               </div>
             </>

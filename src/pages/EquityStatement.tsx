@@ -1,6 +1,6 @@
 // src/pages/EquityStatement.tsx
 // @ts-nocheck
-// NEW PAGE — Statement of Changes in Equity
+// NEW PAGE — Equity statement
 // Mandatory under NFRS (Nepal Financial Reporting Standards) for companies.
 // Shows movement in equity accounts: opening balance, profit/loss, dividends,
 // capital contributions, and closing balance for each equity component.
@@ -18,7 +18,7 @@ const fmt = (n: number) =>
   });
 
 const thCls =
-  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200 whitespace-nowrap";
+  "px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide bg-[var(--ds-canvas)] border-b border-gray-200 whitespace-nowrap";
 const tdCls = "px-3 py-2 text-[12px] text-gray-700 border-b border-gray-100";
 const amtCls = `${tdCls} font-mono text-right`;
 const totalCls = "px-3 py-2.5 text-[12px] font-bold font-mono text-right border-b border-gray-100";
@@ -210,14 +210,14 @@ export default function EquityStatement() {
 
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
-    <div className="erp-report p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
+    <div className="erp-report p-4 md:p-6 bg-[var(--ds-canvas)] min-h-screen">
       {/* Header */}
       <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">
-            Statement of Changes in Equity
+            Equity statement
           </h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
+          <p className="text-[12px] text-gray-500 mt-0.5">
             {companySettings?.name || "Company"} — {fromDate} to {toDate} • NFRS Compliant
           </p>
         </div>
@@ -232,32 +232,32 @@ export default function EquityStatement() {
       {/* Toolbar */}
       <div className="bg-white border border-gray-200 rounded-lg p-3 mb-4 flex flex-wrap gap-3 items-end no-print">
         <div>
-          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+          <label className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
             Period From
           </label>
           <input
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           />
         </div>
         <div>
-          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+          <label className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
             Period To
           </label>
           <input
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           />
         </div>
       </div>
 
       {/* Info banner */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 text-[11px] text-blue-800">
-        <strong>NFRS Requirement:</strong> The Statement of Changes in Equity is mandatory for all
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 text-[12px] text-blue-800">
+        <strong>NFRS Requirement:</strong> The Equity statement is mandatory for all
         companies under Nepal Financial Reporting Standards. It shows how each component of equity
         changed during the period — through profits, capital contributions, dividends, and other
         comprehensive income.
@@ -284,11 +284,11 @@ export default function EquityStatement() {
           {
             label: "Closing Total Equity",
             value: totals.closingBalance,
-            color: totals.closingBalance >= 0 ? "text-[#1557b0]" : "text-red-600",
+            color: totals.closingBalance >= 0 ? "text-[var(--ds-action-primary)]" : "text-red-600",
           },
         ].map((kpi) => (
           <div key={kpi.label} className="bg-white border border-gray-200 rounded-lg p-3">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
               {kpi.label}
             </p>
             <p className={`text-[14px] font-bold font-mono mt-1 ${kpi.color}`}>
@@ -367,7 +367,7 @@ export default function EquityStatement() {
                   </td>
                   <td
                     className={`${amtCls} font-semibold ${
-                      row.closingBalance >= 0 ? "text-[#1557b0]" : "text-red-600"
+                      row.closingBalance >= 0 ? "text-[var(--ds-action-primary)]" : "text-red-600"
                     }`}
                   >
                     {row.closingBalance < 0 ? "(" : ""}
@@ -380,7 +380,7 @@ export default function EquityStatement() {
 
             {/* Totals row */}
             <tfoot>
-              <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
+              <tr className="bg-[var(--ds-surface-selected)] border-t-2 border-[var(--ds-border-strong)]">
                 <td className="px-3 py-2.5 text-[12px] font-bold text-gray-800">TOTAL EQUITY</td>
                 <td className={totalCls}>Rs. {fmt(totals.openingBalance)}</td>
                 <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-right border-b border-gray-100 text-green-700">
@@ -404,7 +404,7 @@ export default function EquityStatement() {
                 </td>
                 <td
                   className={`${totalCls} ${
-                    totals.closingBalance >= 0 ? "text-[#1557b0]" : "text-red-600"
+                    totals.closingBalance >= 0 ? "text-[var(--ds-action-primary)]" : "text-red-600"
                   }`}
                 >
                   {totals.closingBalance < 0 ? "(" : ""}Rs. {fmt(totals.closingBalance)}
@@ -417,9 +417,9 @@ export default function EquityStatement() {
       </div>
 
       {/* Notes */}
-      <div className="mt-4 bg-white border border-gray-200 rounded-lg p-4 text-[11px] text-gray-600 space-y-2">
+      <div className="mt-4 bg-white border border-gray-200 rounded-lg p-4 text-[12px] text-gray-600 space-y-2">
         <p className="font-semibold text-gray-800 text-[12px]">
-          Notes to Statement of Changes in Equity
+          Notes to Equity statement
         </p>
         <p>
           1. <strong>Capital Contributed:</strong> Represents fresh capital introduced by owners /
@@ -441,7 +441,7 @@ export default function EquityStatement() {
         </p>
       </div>
 
-      <p className="text-[10px] text-gray-400 mt-3">
+      <p className="text-[12px] text-gray-400 mt-3">
         Prepared as per NFRS (Nepal Financial Reporting Standards) • Period: {fromDate} to {toDate}
       </p>
     </div>

@@ -7,7 +7,7 @@ import {
   type StockItemSummary,
 } from "../lib/stockValuation";
 import * as XLSX from "xlsx";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 const th =
   "px-2 py-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border border-gray-200 bg-[#f5f6fa] text-right";
@@ -94,7 +94,7 @@ export default function StockSummary() {
     ]);
     const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Stock Summary");
+    XLSX.utils.book_append_sheet(wb, ws, "Stock summary");
     XLSX.writeFile(wb, `StockSummary_${method}_${toDate}.xlsx`);
     toast.success("Exported to Excel");
   }, [filtered, method, toDate]);
@@ -106,7 +106,7 @@ export default function StockSummary() {
       {/* Page Header */}
       <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Stock Summary</h1>
+          <h1 className="text-[15px] font-semibold text-gray-800">Stock summary</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Opening · During Year · Closing — with valuation method
           </p>

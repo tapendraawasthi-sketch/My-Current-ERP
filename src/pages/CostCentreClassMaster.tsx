@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useStore } from "../store";
 import { Plus, Edit2, Trash2, X, Save, Minus } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 const CostCentreClassMaster: React.FC = () => {
   const {

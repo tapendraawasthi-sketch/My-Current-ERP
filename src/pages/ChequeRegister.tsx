@@ -2,7 +2,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import { getDB, generateId } from "../lib/db";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { formatADToBS } from "../lib/nepaliDate";
 import {
   FileText,
@@ -17,9 +17,9 @@ import {
   Trash2,
 } from "lucide-react";
 
-const BORDER = "1px solid #000";
-const BG_HEADER = "#D4EABD";
-const BG_CARD = "#EBF5E2";
+const BORDER = "1px solid var(--ds-action-primary)";
+const BG_HEADER = "var(--ds-action-primary)";
+const BG_CARD = "var(--ds-surface-muted)";
 
 function money(v) {
   const abs = Math.abs(Number(v || 0));
@@ -345,45 +345,18 @@ export default function ChequeRegister() {
 
     return (
       <div
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: "rgba(0,0,0,0.5)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 1000,
-        }}
       >
         <div
-          style={{
-            backgroundColor: BG_CARD,
-            padding: "20px",
-            borderRadius: "8px",
-            border: BORDER,
-            width: "90%",
-            maxWidth: "600px",
-          }}
         >
           <h2
-            style={{ fontSize: "18px", fontWeight: "bold", color: "#000000", marginBottom: "15px" }}
+            className="mb-4 text-[18px] font-bold text-[var(--ds-text-default)]"
           >
             Cheque Dishonour Processing
           </h2>
 
           <div
-            style={{
-              marginBottom: "15px",
-              padding: "10px",
-              backgroundColor: "#fee2e2",
-              borderRadius: "4px",
-              border: "1px solid #dc2626",
-            }}
           >
-            <div style={{ fontWeight: "bold" }}>Cheque Details:</div>
+            <div>Cheque Details:</div>
             <div>
               No: {cheque.chequeNumber} | Amount: {money(cheque.amount)} |{" "}
               {isReceipt ? "Receipt" : "Payment"}
@@ -391,21 +364,9 @@ export default function ChequeRegister() {
           </div>
 
           <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(2, 1fr)",
-              gap: "15px",
-              marginBottom: "15px",
-            }}
           >
             <div>
               <label
-                style={{
-                  display: "block",
-                  marginBottom: "5px",
-                  fontWeight: "bold",
-                  fontSize: "12px",
-                }}
               >
                 Bounce Date *
               </label>
@@ -413,36 +374,16 @@ export default function ChequeRegister() {
                 type="date"
                 value={bounceForm.bounceDate}
                 onChange={(e) => handleBounceFormChange("bounceDate", e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "6px",
-                  border: BORDER,
-                  borderRadius: "4px",
-                  fontSize: "12px",
-                }}
               />
             </div>
             <div>
               <label
-                style={{
-                  display: "block",
-                  marginBottom: "5px",
-                  fontWeight: "bold",
-                  fontSize: "12px",
-                }}
               >
                 Bounce Reason *
               </label>
               <select
                 value={bounceForm.bounceReason}
                 onChange={(e) => handleBounceFormChange("bounceReason", e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "6px",
-                  border: BORDER,
-                  borderRadius: "4px",
-                  fontSize: "12px",
-                }}
               >
                 <option value="Insufficient Funds">Insufficient Funds</option>
                 <option value="Signature Mismatch">Signature Mismatch</option>
@@ -455,14 +396,8 @@ export default function ChequeRegister() {
             </div>
 
             {bounceForm.bounceReason === "Other" && (
-              <div style={{ gridColumn: "span 2" }}>
+              <div>
                 <label
-                  style={{
-                    display: "block",
-                    marginBottom: "5px",
-                    fontWeight: "bold",
-                    fontSize: "12px",
-                  }}
                 >
                   Other Reason
                 </label>
@@ -470,25 +405,12 @@ export default function ChequeRegister() {
                   type="text"
                   value={bounceForm.otherReason}
                   onChange={(e) => handleBounceFormChange("otherReason", e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "6px",
-                    border: BORDER,
-                    borderRadius: "4px",
-                    fontSize: "12px",
-                  }}
                 />
               </div>
             )}
 
             <div>
               <label
-                style={{
-                  display: "block",
-                  marginBottom: "5px",
-                  fontWeight: "bold",
-                  fontSize: "12px",
-                }}
               >
                 Bank Charges Amount
               </label>
@@ -498,36 +420,16 @@ export default function ChequeRegister() {
                 onChange={(e) =>
                   handleBounceFormChange("bounceCharges", parseFloat(e.target.value) || 0)
                 }
-                style={{
-                  width: "100%",
-                  padding: "6px",
-                  border: BORDER,
-                  borderRadius: "4px",
-                  fontSize: "12px",
-                }}
               />
             </div>
             <div>
               <label
-                style={{
-                  display: "block",
-                  marginBottom: "5px",
-                  fontWeight: "bold",
-                  fontSize: "12px",
-                }}
               >
                 Bank Charges Account
               </label>
               <select
                 value={bounceForm.bankChargesAccountId}
                 onChange={(e) => handleBounceFormChange("bankChargesAccountId", e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "6px",
-                  border: BORDER,
-                  borderRadius: "4px",
-                  fontSize: "12px",
-                }}
               >
                 <option value="">Select Account</option>
                 {bankChargeAccounts.map((acc) => (
@@ -538,25 +440,18 @@ export default function ChequeRegister() {
               </select>
             </div>
 
-            <div style={{ gridColumn: "span 2" }}>
+            <div>
               <label
-                style={{
-                  display: "block",
-                  marginBottom: "5px",
-                  fontWeight: "bold",
-                  fontSize: "12px",
-                }}
               >
                 Party Notification Method
               </label>
-              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+              <div>
                 {["Phone", "WhatsApp", "Legal Notice"].map((method) => (
-                  <label key={method} style={{ display: "flex", alignItems: "center" }}>
+                  <label key={method}>
                     <input
                       type="checkbox"
                       checked={bounceForm.notificationMethods.includes(method)}
                       onChange={() => handleBounceFormChange("notificationMethods", method)}
-                      style={{ marginRight: "5px" }}
                     />
                     {method}
                   </label>
@@ -566,12 +461,6 @@ export default function ChequeRegister() {
 
             <div>
               <label
-                style={{
-                  display: "block",
-                  marginBottom: "5px",
-                  fontWeight: "bold",
-                  fontSize: "12px",
-                }}
               >
                 Recovery Expected By
               </label>
@@ -579,25 +468,12 @@ export default function ChequeRegister() {
                 type="date"
                 value={bounceForm.recoveryExpectedBy}
                 onChange={(e) => handleBounceFormChange("recoveryExpectedBy", e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "6px",
-                  border: BORDER,
-                  borderRadius: "4px",
-                  fontSize: "12px",
-                }}
               />
             </div>
           </div>
 
-          <div style={{ marginBottom: "15px" }}>
+          <div>
             <label
-              style={{
-                display: "block",
-                marginBottom: "5px",
-                fontWeight: "bold",
-                fontSize: "12px",
-              }}
             >
               Internal Notes
             </label>
@@ -605,42 +481,17 @@ export default function ChequeRegister() {
               value={bounceForm.notes}
               onChange={(e) => handleBounceFormChange("notes", e.target.value)}
               rows={3}
-              style={{
-                width: "100%",
-                padding: "6px",
-                border: BORDER,
-                borderRadius: "4px",
-                fontSize: "12px",
-              }}
             />
           </div>
 
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+          <div>
             <button
               onClick={() => setBounceModal({ show: false, cheque: null })}
-              style={{
-                backgroundColor: "#dc2626",
-                color: "white",
-                border: BORDER,
-                padding: "6px 12px",
-                borderRadius: "4px",
-                cursor: "pointer",
-                fontSize: "12px",
-              }}
             >
               Cancel
             </button>
             <button
               onClick={handleBounceSubmit}
-              style={{
-                backgroundColor: "#059669",
-                color: "white",
-                border: BORDER,
-                padding: "6px 12px",
-                borderRadius: "4px",
-                cursor: "pointer",
-                fontSize: "12px",
-              }}
             >
               Process Bounce
             </button>
@@ -652,155 +503,88 @@ export default function ChequeRegister() {
 
   // Render bounce tracker tab
   const renderBounceTracker = () => (
-    <div style={{ backgroundColor: BG_CARD, padding: "15px", borderRadius: "8px", border: BORDER }}>
+    <div>
       <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: "15px",
-          marginBottom: "20px",
-        }}
       >
         <div
-          style={{
-            backgroundColor: "#fee2e2",
-            padding: "15px",
-            borderRadius: "6px",
-            border: BORDER,
-          }}
         >
-          <div style={{ fontSize: "12px", color: "#000000", marginBottom: "5px" }}>
+          <div className="mb-1 text-[12px] text-[var(--ds-text-default)]">
             Total Bounce Amount
           </div>
-          <div style={{ fontSize: "18px", fontWeight: "bold", color: "#dc2626" }}>
+          <div>
             {money(bounceSummary.totalBounceAmount)}
           </div>
         </div>
         <div
-          style={{
-            backgroundColor: "#dcfce7",
-            padding: "15px",
-            borderRadius: "6px",
-            border: BORDER,
-          }}
         >
-          <div style={{ fontSize: "12px", color: "#000000", marginBottom: "5px" }}>
+          <div className="mb-1 text-[12px] text-[var(--ds-text-default)]">
             Total Recovered
           </div>
-          <div style={{ fontSize: "18px", fontWeight: "bold", color: "#059669" }}>
+          <div>
             {money(bounceSummary.totalRecovered)}
           </div>
         </div>
         <div
-          style={{
-            backgroundColor: "#fef9c3",
-            padding: "15px",
-            borderRadius: "6px",
-            border: BORDER,
-          }}
         >
-          <div style={{ fontSize: "12px", color: "#000000", marginBottom: "5px" }}>
+          <div className="mb-1 text-[12px] text-[var(--ds-text-default)]">
             Total Pending Recovery
           </div>
-          <div style={{ fontSize: "18px", fontWeight: "bold", color: "#d97706" }}>
+          <div>
             {money(bounceSummary.totalPending)}
           </div>
         </div>
       </div>
 
-      <div style={{ overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", border: BORDER }}>
+      <div>
+        <table>
           <thead>
-            <tr style={{ backgroundColor: BG_HEADER }}>
-              <th style={{ border: BORDER, padding: "8px" }}>Cheque No</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Party Name</th>
-              <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>Amount</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Bounce Date</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Bounce Reason</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Recovery Expected By</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Recovery Status</th>
-              <th style={{ border: BORDER, padding: "8px", textAlign: "center" }}>Days Overdue</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Actions</th>
+            <tr>
+              <th>Cheque No</th>
+              <th>Party Name</th>
+              <th>Amount</th>
+              <th>Bounce Date</th>
+              <th>Bounce Reason</th>
+              <th>Recovery Expected By</th>
+              <th>Recovery Status</th>
+              <th>Days Overdue</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {bounceTrackerData.map((log, idx) => (
               <tr
                 key={log.cheque.id}
-                style={{ backgroundColor: idx % 2 === 0 ? "#f0f0f0" : "transparent" }}
               >
-                <td style={{ border: BORDER, padding: "8px" }}>{log.cheque.chequeNumber}</td>
-                <td style={{ border: BORDER, padding: "8px" }}>{log.partyName}</td>
-                <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
+                <td>{log.cheque.chequeNumber}</td>
+                <td>{log.partyName}</td>
+                <td>
                   {money(log.amount)}
                 </td>
-                <td style={{ border: BORDER, padding: "8px" }}>{log.bounceDate}</td>
-                <td style={{ border: BORDER, padding: "8px" }}>{log.bounceReason}</td>
-                <td style={{ border: BORDER, padding: "8px" }}>{log.recoveryExpectedBy}</td>
-                <td style={{ border: BORDER, padding: "8px" }}>
+                <td>{log.bounceDate}</td>
+                <td>{log.bounceReason}</td>
+                <td>{log.recoveryExpectedBy}</td>
+                <td>
                   <span
-                    style={{
-                      backgroundColor:
-                        log.recoveryStatus === "Fully Recovered"
-                          ? "#059669"
-                          : log.recoveryStatus === "Written Off"
-                            ? "#dc2626"
-                            : "#d97706",
-                      color: "white",
-                      padding: "2px 6px",
-                      borderRadius: "12px",
-                      fontSize: "11px",
-                      fontWeight: "bold",
-                    }}
                   >
                     {log.recoveryStatus}
                   </span>
                 </td>
-                <td style={{ border: BORDER, padding: "8px", textAlign: "center" }}>
+                <td>
                   {log.daysOverdue}
                 </td>
-                <td style={{ border: BORDER, padding: "8px", textAlign: "center" }}>
+                <td>
                   <button
                     onClick={() => {}}
-                    style={{
-                      backgroundColor: "#059669",
-                      color: "white",
-                      border: BORDER,
-                      padding: "4px 8px",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      fontSize: "11px",
-                      marginRight: "5px",
-                    }}
                   >
                     Mark Recovered
                   </button>
                   <button
                     onClick={() => {}}
-                    style={{
-                      backgroundColor: "#1557b0",
-                      color: "white",
-                      border: BORDER,
-                      padding: "4px 8px",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      fontSize: "11px",
-                      marginRight: "5px",
-                    }}
                   >
                     Send Notice
                   </button>
                   <button
                     onClick={() => {}}
-                    style={{
-                      backgroundColor: "#dc2626",
-                      color: "white",
-                      border: BORDER,
-                      padding: "4px 8px",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      fontSize: "11px",
-                    }}
                   >
                     Write Off
                   </button>
@@ -815,28 +599,17 @@ export default function ChequeRegister() {
 
   // Render cheque book register tab
   const renderChequeBookRegister = () => (
-    <div style={{ backgroundColor: BG_CARD, padding: "15px", borderRadius: "8px", border: BORDER }}>
-      <div style={{ marginBottom: "20px" }}>
+    <div>
+      <div>
         <h3
-          style={{ fontSize: "16px", fontWeight: "bold", color: "#000000", marginBottom: "15px" }}
+          className="mb-4 text-[16px] font-bold text-[var(--ds-text-default)]"
         >
           Add New Cheque Book
         </h3>
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-            gap: "15px",
-          }}
         >
           <div>
             <label
-              style={{
-                display: "block",
-                marginBottom: "5px",
-                fontWeight: "bold",
-                fontSize: "12px",
-              }}
             >
               Bank Account
             </label>
@@ -845,13 +618,6 @@ export default function ChequeRegister() {
               onChange={(e) =>
                 setChequeBookForm({ ...chequeBookForm, bankAccountId: e.target.value })
               }
-              style={{
-                width: "100%",
-                padding: "6px",
-                border: BORDER,
-                borderRadius: "4px",
-                fontSize: "12px",
-              }}
             >
               <option value="">Select Bank Account</option>
               {bankAccounts.map((acc) => (
@@ -863,12 +629,6 @@ export default function ChequeRegister() {
           </div>
           <div>
             <label
-              style={{
-                display: "block",
-                marginBottom: "5px",
-                fontWeight: "bold",
-                fontSize: "12px",
-              }}
             >
               Starting Leaf No
             </label>
@@ -878,23 +638,10 @@ export default function ChequeRegister() {
               onChange={(e) =>
                 setChequeBookForm({ ...chequeBookForm, startingLeaf: e.target.value })
               }
-              style={{
-                width: "100%",
-                padding: "6px",
-                border: BORDER,
-                borderRadius: "4px",
-                fontSize: "12px",
-              }}
             />
           </div>
           <div>
             <label
-              style={{
-                display: "block",
-                marginBottom: "5px",
-                fontWeight: "bold",
-                fontSize: "12px",
-              }}
             >
               Ending Leaf No
             </label>
@@ -902,23 +649,10 @@ export default function ChequeRegister() {
               type="number"
               value={chequeBookForm.endingLeaf}
               onChange={(e) => setChequeBookForm({ ...chequeBookForm, endingLeaf: e.target.value })}
-              style={{
-                width: "100%",
-                padding: "6px",
-                border: BORDER,
-                borderRadius: "4px",
-                fontSize: "12px",
-              }}
             />
           </div>
           <div>
             <label
-              style={{
-                display: "block",
-                marginBottom: "5px",
-                fontWeight: "bold",
-                fontSize: "12px",
-              }}
             >
               Date Received
             </label>
@@ -928,30 +662,11 @@ export default function ChequeRegister() {
               onChange={(e) =>
                 setChequeBookForm({ ...chequeBookForm, dateReceived: e.target.value })
               }
-              style={{
-                width: "100%",
-                padding: "6px",
-                border: BORDER,
-                borderRadius: "4px",
-                fontSize: "12px",
-              }}
             />
           </div>
-          <div style={{ alignSelf: "flex-end" }}>
+          <div>
             <button
               onClick={handleAddChequeBook}
-              style={{
-                backgroundColor: "#1557b0",
-                color: "white",
-                border: BORDER,
-                padding: "8px 16px",
-                borderRadius: "4px",
-                cursor: "pointer",
-                fontSize: "12px",
-                display: "flex",
-                alignItems: "center",
-                gap: "5px",
-              }}
             >
               <Plus size={14} />
               Add Cheque Book
@@ -960,18 +675,18 @@ export default function ChequeRegister() {
         </div>
       </div>
 
-      <div style={{ overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", border: BORDER }}>
+      <div>
+        <table>
           <thead>
-            <tr style={{ backgroundColor: BG_HEADER }}>
-              <th style={{ border: BORDER, padding: "8px" }}>Bank Account</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Starting Leaf</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Ending Leaf</th>
-              <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>Total Leaves</th>
-              <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>Used</th>
-              <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>Remaining</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Status</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Actions</th>
+            <tr>
+              <th>Bank Account</th>
+              <th>Starting Leaf</th>
+              <th>Ending Leaf</th>
+              <th>Total Leaves</th>
+              <th>Used</th>
+              <th>Remaining</th>
+              <th>Status</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -980,66 +695,33 @@ export default function ChequeRegister() {
               return (
                 <tr
                   key={book.id}
-                  style={{ backgroundColor: idx % 2 === 0 ? "#f0f0f0" : "transparent" }}
                 >
-                  <td style={{ border: BORDER, padding: "8px" }}>{bankAccount?.name || "N/A"}</td>
-                  <td style={{ border: BORDER, padding: "8px" }}>{book.fromNumber}</td>
-                  <td style={{ border: BORDER, padding: "8px" }}>{book.toNumber}</td>
-                  <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
+                  <td>{bankAccount?.name || "N/A"}</td>
+                  <td>{book.fromNumber}</td>
+                  <td>{book.toNumber}</td>
+                  <td>
                     {book.totalLeaves}
                   </td>
-                  <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
+                  <td>
                     {book.used}
                   </td>
-                  <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
+                  <td>
                     {book.remaining}
                   </td>
-                  <td style={{ border: BORDER, padding: "8px" }}>
+                  <td>
                     <span
-                      style={{
-                        backgroundColor:
-                          book.status === "Active"
-                            ? "#059669"
-                            : book.status === "Exhausted"
-                              ? "#d97706"
-                              : "#dc2626",
-                        color: "white",
-                        padding: "2px 6px",
-                        borderRadius: "12px",
-                        fontSize: "11px",
-                        fontWeight: "bold",
-                      }}
                     >
                       {book.status}
                     </span>
                   </td>
-                  <td style={{ border: BORDER, padding: "8px", textAlign: "center" }}>
+                  <td>
                     <button
                       onClick={() => {}}
-                      style={{
-                        backgroundColor: "#1557b0",
-                        color: "white",
-                        border: BORDER,
-                        padding: "4px 8px",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                        fontSize: "11px",
-                        marginRight: "5px",
-                      }}
                     >
                       <Edit size={12} />
                     </button>
                     <button
                       onClick={() => {}}
-                      style={{
-                        backgroundColor: "#dc2626",
-                        color: "white",
-                        border: BORDER,
-                        padding: "4px 8px",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                        fontSize: "11px",
-                      }}
                     >
                       <Trash2 size={12} />
                     </button>
@@ -1055,21 +737,21 @@ export default function ChequeRegister() {
 
   // Render existing cheques tab (placeholder)
   const renderChequesTab = () => (
-    <div style={{ backgroundColor: BG_CARD, padding: "15px", borderRadius: "8px", border: BORDER }}>
-      <h2 style={{ fontSize: "16px", fontWeight: "bold", color: "#000000", marginBottom: "15px" }}>
-        Cheque Register
+    <div>
+      <h2 className="mb-4 text-[16px] font-bold text-[var(--ds-text-default)]">
+        Cheque register
       </h2>
-      <div style={{ overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", border: BORDER }}>
+      <div>
+        <table>
           <thead>
-            <tr style={{ backgroundColor: BG_HEADER }}>
-              <th style={{ border: BORDER, padding: "8px" }}>Cheque No</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Bank Account</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Party Name</th>
-              <th style={{ border: BORDER, padding: "8px", textAlign: "right" }}>Amount</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Issue Date</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Status</th>
-              <th style={{ border: BORDER, padding: "8px" }}>Actions</th>
+            <tr>
+              <th>Cheque No</th>
+              <th>Bank Account</th>
+              <th>Party Name</th>
+              <th>Amount</th>
+              <th>Issue Date</th>
+              <th>Status</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -1079,63 +761,38 @@ export default function ChequeRegister() {
 
               const rowStyle = {};
               if (cheque.status === "bounced") {
-                rowStyle.backgroundColor = "#fee2e2";
+                rowStyle.backgroundColor = "var(--ds-action-primary)";
               } else if (cheque.status === "cleared") {
-                rowStyle.backgroundColor = "#dcfce7";
+                rowStyle.backgroundColor = "var(--ds-action-primary)";
               } else {
                 // Check if stale (older than 90 days)
                 const issueDate = new Date(cheque.issueDate);
                 const ninetyDaysAgo = new Date();
                 ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
                 if (issueDate < ninetyDaysAgo) {
-                  rowStyle.backgroundColor = "#fef9c3";
+                  rowStyle.backgroundColor = "var(--ds-action-primary)";
                 }
               }
 
               return (
                 <tr key={cheque.id} style={rowStyle}>
-                  <td style={{ border: BORDER, padding: "8px" }}>{cheque.chequeNumber}</td>
-                  <td style={{ border: BORDER, padding: "8px" }}>{cheque.bankAccountId}</td>
-                  <td style={{ border: BORDER, padding: "8px" }}>{party?.name || "N/A"}</td>
-                  <td style={{ border: BORDER, padding: "8px", textAlign: "right" }}>
+                  <td>{cheque.chequeNumber}</td>
+                  <td>{cheque.bankAccountId}</td>
+                  <td>{party?.name || "N/A"}</td>
+                  <td>
                     {money(cheque.amount)}
                   </td>
-                  <td style={{ border: BORDER, padding: "8px" }}>{cheque.issueDate}</td>
-                  <td style={{ border: BORDER, padding: "8px" }}>
+                  <td>{cheque.issueDate}</td>
+                  <td>
                     <span
-                      style={{
-                        backgroundColor:
-                          cheque.status === "bounced"
-                            ? "#dc2626"
-                            : cheque.status === "cleared"
-                              ? "#059669"
-                              : cheque.status === "cancelled"
-                                ? "#6b7280"
-                                : "#d97706",
-                        color: "white",
-                        padding: "2px 6px",
-                        borderRadius: "12px",
-                        fontSize: "11px",
-                        fontWeight: "bold",
-                      }}
                     >
                       {cheque.status.charAt(0).toUpperCase() + cheque.status.slice(1)}
                     </span>
                   </td>
-                  <td style={{ border: BORDER, padding: "8px", textAlign: "center" }}>
+                  <td>
                     {cheque.status !== "bounced" && (
                       <button
                         onClick={() => openBounceModal(cheque)}
-                        style={{
-                          backgroundColor: "#dc2626",
-                          color: "white",
-                          border: BORDER,
-                          padding: "4px 8px",
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                          fontSize: "11px",
-                          marginRight: "5px",
-                        }}
                       >
                         Mark Bounced
                       </button>
@@ -1151,13 +808,11 @@ export default function ChequeRegister() {
   );
 
   return (
-    <div style={{ backgroundColor: "#E4F1D9", minHeight: "100vh", padding: "20px" }}>
-      <h1 style={{ fontSize: "24px", fontWeight: "bold", color: "#000000", marginBottom: "20px" }}>
-        Cheque Register
-      </h1>
+    <div>
+      <h1 className="mb-4 text-[16px] font-semibold text-[var(--ds-text-strong)]">Cheque register</h1>
 
       {/* Tab Navigation */}
-      <div style={{ display: "flex", gap: "5px", marginBottom: "20px", borderBottom: BORDER }}>
+      <div className="mb-5 flex gap-1 border-b border-[var(--ds-border-default)]">
         {[
           { id: "cheques", label: "Cheques" },
           { id: "bounce", label: "Bounce Tracker" },
@@ -1166,15 +821,6 @@ export default function ChequeRegister() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            style={{
-              backgroundColor: activeTab === tab.id ? BG_HEADER : "transparent",
-              color: activeTab === tab.id ? "#000000" : "#666",
-              border: BORDER,
-              padding: "10px 16px",
-              borderRadius: "4px 4px 0 0",
-              cursor: "pointer",
-              fontWeight: activeTab === tab.id ? "bold" : "normal",
-            }}
           >
             {tab.label}
           </button>

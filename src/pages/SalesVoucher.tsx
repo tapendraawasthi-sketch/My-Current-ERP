@@ -4,7 +4,7 @@ import { useStore } from "../store/useStore";
 import { Plus, Trash2, Save, RefreshCw, X, Eye, Search } from "lucide-react";
 import NepaliDatePicker from "../components/ui/NepaliDatePicker";
 import { ReportEmptyState } from "../components/ReportEmptyState";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import * as XLSX from "xlsx";
 import { computeVatForLine } from "../lib/taxUtils";
 

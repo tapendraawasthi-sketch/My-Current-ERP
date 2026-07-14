@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import * as XLSX from "xlsx";
 import { useStore } from "@/store/useStore";
 import { useTopMenuContext } from "@/hooks/useTopMenuContext";
@@ -378,15 +378,15 @@ function ExportReportsModal({ onClose }: { onClose: () => void }) {
   const setCurrentPage = useStore((state) => state.setCurrentPage);
 
   const reports = [
-    { label: "Trial Balance", page: "trial-balance" },
-    { label: "Profit & Loss", page: "profit-loss" },
-    { label: "Balance Sheet", page: "balance-sheet" },
-    { label: "Cash Flow Statement", page: "cash-flow" },
-    { label: "Ledger Report", page: "ledger" },
-    { label: "VAT Report", page: "vat-reports" },
-    { label: "Stock Summary", page: "stock-summary" },
-    { label: "Sales Register", page: "sales-register" },
-    { label: "Purchase Register", page: "purchase-register" },
+    { label: "Account totals check", page: "trial-balance" },
+    { label: "Profit & loss", page: "profit-loss" },
+    { label: "What you own & owe", page: "balance-sheet" },
+    { label: "Cash flow", page: "cash-flow" },
+    { label: "Account activity", page: "ledger" },
+    { label: "VAT reports", page: "vat-reports" },
+    { label: "Stock summary", page: "stock-summary" },
+    { label: "Sales register", page: "sales-register" },
+    { label: "Purchase register", page: "purchase-register" },
   ];
 
   return (

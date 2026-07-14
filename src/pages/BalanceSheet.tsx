@@ -30,9 +30,10 @@ import {
   BarChart2,
   Scale,
 } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import ReportDateRangePicker from "../components/ui/ReportDateRangePicker";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { ReportWorkspace } from "@/features/reports";
 import NepalFinancialStatementView from "../components/reports/NepalFinancialStatementView";
 import {
   buildBalanceSheetData,
@@ -86,12 +87,12 @@ function OptionsDialog({
   const set = (k: keyof BSOptions, v: any) => setOpts((p) => ({ ...p, [k]: v }));
 
   const inp =
-    "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
-  const lbl = "block text-[11px] font-semibold text-gray-600 uppercase tracking-wide mb-1";
+    "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
+  const lbl = "block text-[12px] font-semibold text-gray-600 uppercase tracking-wide mb-1";
   const tog = (active: boolean) =>
-    `inline-flex h-7 px-3 text-[11px] font-semibold rounded transition-colors ${
+    `inline-flex h-7 px-3 text-[12px] font-semibold rounded transition-colors ${
       active
-        ? "bg-[#1557b0] text-white"
+        ? "bg-[var(--ds-action-primary)] text-white"
         : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
     }`;
 
@@ -163,7 +164,7 @@ function OptionsDialog({
 
           {/* FY presets */}
           {fiscalYear && (
-            <div className="flex gap-2 text-[11px]">
+            <div className="flex gap-2 text-[12px]">
               <button
                 type="button"
                 onClick={() =>
@@ -173,7 +174,7 @@ function OptionsDialog({
                     toDate: fiscalYear.endDate || p.toDate,
                   }))
                 }
-                className="text-[#1557b0] hover:underline"
+                className="text-[var(--ds-action-primary)] hover:underline"
               >
                 Full Fiscal Year ({fiscalYear.name})
               </button>
@@ -181,7 +182,7 @@ function OptionsDialog({
               <button
                 type="button"
                 onClick={() => set("toDate", new Date().toISOString().split("T")[0])}
-                className="text-[#1557b0] hover:underline"
+                className="text-[var(--ds-action-primary)] hover:underline"
               >
                 Up to Today
               </button>
@@ -218,7 +219,7 @@ function OptionsDialog({
                 onClick={() => set(key as any, !opts[key as keyof BSOptions])}
               >
                 <div
-                  className={`mt-0.5 h-4 w-4 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${opts[key as keyof BSOptions] ? "border-[#1557b0] bg-[#1557b0]" : "border-gray-300"}`}
+                  className={`mt-0.5 h-4 w-4 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${opts[key as keyof BSOptions] ? "border-[var(--ds-action-primary)] bg-[var(--ds-action-primary)]" : "border-gray-300"}`}
                 >
                   {opts[key as keyof BSOptions] && (
                     <svg className="h-2.5 w-2.5 text-white" viewBox="0 0 10 10" fill="none">
@@ -234,7 +235,7 @@ function OptionsDialog({
                 </div>
                 <div>
                   <p className="text-[12px] font-medium text-gray-700">{label}</p>
-                  <p className="text-[10px] text-gray-500 mt-0.5">{desc}</p>
+                  <p className="text-[12px] text-gray-500 mt-0.5">{desc}</p>
                 </div>
               </div>
             ))}
@@ -285,7 +286,7 @@ function OptionsDialog({
           <button
             type="button"
             onClick={() => onConfirm(opts)}
-            className="h-8 px-4 text-[12px] font-medium rounded-md bg-[#1557b0] text-white hover:bg-[#0f4a96]"
+            className="h-8 px-4 text-[12px] font-medium rounded-md bg-[var(--ds-action-primary)] text-white hover:bg-[var(--ds-action-primary-hover)]"
           >
             Generate Report
           </button>
@@ -340,7 +341,7 @@ function BSRow({
   return (
     <>
       <tr className={rowClass} onClick={handleClick}>
-        <td style={{ paddingLeft: `${10 + indent}px` }}>
+        <td className={indent <= 0 ? "pl-2.5" : indent <= 1 ? "pl-5" : indent <= 2 ? "pl-8" : indent <= 3 ? "pl-11" : "pl-14"}>
           <div className="flex items-center gap-1.5 min-w-0">
             {hasChildren && (
               <span className="text-gray-500 shrink-0">
@@ -354,24 +355,24 @@ function BSRow({
             <span
               className={`truncate ${row.bold ? "font-semibold text-gray-900" : "text-gray-800"} ${
                 row.isPLLine ? "text-green-700 font-semibold" : ""
-              } ${row.isClosingStock ? "text-[#1557b0] font-medium" : ""}`}
+              } ${row.isClosingStock ? "text-[var(--ds-action-primary)] font-medium" : ""}`}
             >
               {row.caption}
               {isZero && !row.isClosingStock && (
-                <span className="ml-1.5 text-[10px] text-gray-400 font-normal">(0)</span>
+                <span className="ml-1.5 text-[12px] text-gray-400 font-normal">(0)</span>
               )}
               {row.isPLAdjusted && (
-                <span className="ml-1.5 text-[9px] text-amber-600 font-normal">[screen only]</span>
+                <span className="ml-1.5 text-[12px] text-amber-600 font-normal">[screen only]</span>
               )}
             </span>
           </div>
         </td>
         <td className={`erp-bs-amount ${isZero ? "erp-bs-amount-zero" : ""}`}>
           {options.showPercentage && row.percentage !== undefined && !isZero && (
-            <span className="text-[10px] text-gray-500 mr-2">{row.percentage?.toFixed(1)}%</span>
+            <span className="text-[12px] text-gray-500 mr-2">{row.percentage?.toFixed(1)}%</span>
           )}
           {options.showPreviousYear && row.prevYearAmount !== undefined && (
-            <span className="text-[10px] text-gray-500 mr-2 block">
+            <span className="text-[12px] text-gray-500 mr-2 block">
               PY: {fmt(row.prevYearAmount)}
             </span>
           )}
@@ -462,7 +463,7 @@ function HorizontalBS({
           <tr className="erp-bs-adjust-row" key="pl-adjust">
             <td>
               Profit & Loss Adjusted{" "}
-              <span className="text-[9px] font-normal">[screen only, not printed]</span>
+              <span className="text-[12px] font-normal">[screen only, not printed]</span>
             </td>
             <td className="erp-bs-amount">{fmt(Math.abs(bs.plAdjustedAmount))}</td>
           </tr>
@@ -519,9 +520,9 @@ function VerticalBS({
           </React.Fragment>
         ))}
         <tr className="erp-bs-subtotal-row">
-          <td className="text-[#1557b0] font-bold">Total Liabilities & Equity</td>
+          <td className="text-[var(--ds-action-primary)] font-bold">Total Liabilities & Equity</td>
           {options.showPreviousYear && <td />}
-          <td className="erp-bs-amount text-[#1557b0]">{fmt(bs.totalLiabilitiesEquity)}</td>
+          <td className="erp-bs-amount text-[var(--ds-action-primary)]">{fmt(bs.totalLiabilitiesEquity)}</td>
         </tr>
 
         <tr className="erp-bs-section-row">
@@ -590,9 +591,9 @@ function GroupSummaryView({
 
   return (
     <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-      <div className="px-4 py-3 border-b border-gray-200 bg-[#f9fafb]">
+      <div className="px-4 py-3 border-b border-gray-200 bg-[var(--ds-surface-muted)]">
         <h3 className="text-[14px] font-semibold text-gray-800">{groupName}</h3>
-        <p className="text-[11px] text-gray-500 mt-0.5">
+        <p className="text-[12px] text-gray-500 mt-0.5">
           Group Detail · {options.fromDate} to {options.toDate} · {allRows.length} accounts
         </p>
       </div>
@@ -604,17 +605,17 @@ function GroupSummaryView({
       ) : (
         <table className="report-table w-full">
           <thead>
-            <tr className="bg-[#f5f6fa] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
+              <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                 Account
               </th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                 Debit
               </th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                 Credit
               </th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                 Balance
               </th>
             </tr>
@@ -627,14 +628,14 @@ function GroupSummaryView({
                   key={i}
                   className={`transition-colors border-l-[3px] border-l-transparent ${
                     row.accountId
-                      ? "hover:bg-gray-50 hover:border-l-[#1557b0] cursor-pointer"
+                      ? "hover:bg-gray-50 hover:border-l-[var(--ds-action-primary)] cursor-pointer"
                       : ""
                   }`}
                   onClick={() => row.accountId && onDrillAccount(row.accountId, row.caption)}
                 >
-                  <td className="px-3 py-2.5 text-[12px] text-[#1557b0] font-medium">
+                  <td className="px-3 py-2.5 text-[12px] text-[var(--ds-action-primary)] font-medium">
                     {row.caption}
-                    {isZero && <span className="ml-2 text-[10px] text-gray-300">(zero)</span>}
+                    {isZero && <span className="ml-2 text-[12px] text-gray-300">(zero)</span>}
                   </td>
                   <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-600">—</td>
                   <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-600">—</td>
@@ -646,11 +647,11 @@ function GroupSummaryView({
                 </tr>
               );
             })}
-            <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
+            <tr className="bg-[var(--ds-surface-muted)] border-t-2 border-[var(--ds-border-default)]">
               <td className="px-3 py-2 text-[12px] font-bold text-gray-800">Total {groupName}</td>
               <td className="px-3 py-2" />
               <td className="px-3 py-2" />
-              <td className="px-3 py-2 text-right font-mono text-[12px] font-bold text-[#1557b0]">
+              <td className="px-3 py-2 text-right font-mono text-[12px] font-bold text-[var(--ds-action-primary)]">
                 {fmt(Math.abs(allRows.reduce((s, r) => s + (r.amount || 0), 0)))}
               </td>
             </tr>
@@ -690,7 +691,7 @@ function AccountLedgerView({
   if (loading) {
     return (
       <div className="p-8 text-center">
-        <RefreshCw className="h-6 w-6 animate-spin text-[#1557b0] mx-auto" />
+        <RefreshCw className="h-6 w-6 animate-spin text-[var(--ds-action-primary)] mx-auto" />
       </div>
     );
   }
@@ -699,15 +700,15 @@ function AccountLedgerView({
 
   return (
     <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-      <div className="px-4 py-3 border-b border-gray-200 bg-[#f9fafb] flex items-center justify-between">
+      <div className="px-4 py-3 border-b border-gray-200 bg-[var(--ds-surface-muted)] flex items-center justify-between">
         <div>
           <h3 className="text-[14px] font-semibold text-gray-800">{ledger.accountName}</h3>
-          <p className="text-[11px] text-gray-500 mt-0.5">
+          <p className="text-[12px] text-gray-500 mt-0.5">
             Account Ledger · {fromDate} to {toDate} · {ledger.entries.length} transactions
           </p>
         </div>
         <div className="text-right">
-          <p className="text-[10px] font-semibold text-gray-500 uppercase">Closing Balance</p>
+          <p className="text-[12px] font-semibold text-gray-500 uppercase">Closing Balance</p>
           <p
             className={`font-mono text-[14px] font-bold ${ledger.closingBalance >= 0 ? "text-green-700" : "text-red-600"}`}
           >
@@ -717,33 +718,33 @@ function AccountLedgerView({
       </div>
       <table className="report-table w-full">
         <thead>
-          <tr className="bg-[#f5f6fa] border-b border-gray-200">
-            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase w-24">
+          <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
+            <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase w-24">
               Date
             </th>
-            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase">
+            <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase">
               Particulars
             </th>
-            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase w-24">
+            <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase w-24">
               Vch Type
             </th>
-            <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase w-24">
+            <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase w-24">
               Vch No
             </th>
-            <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase w-28">
+            <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase w-28">
               Debit
             </th>
-            <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase w-28">
+            <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase w-28">
               Credit
             </th>
-            <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase w-32">
+            <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase w-32">
               Balance
             </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100">
-          <tr className="bg-[#f5f6fa]">
-            <td className="px-3 py-2 text-[11px] text-gray-500">{fromDate}</td>
+          <tr className="bg-[var(--ds-surface-muted)]">
+            <td className="px-3 py-2 text-[12px] text-gray-500">{fromDate}</td>
             <td className="px-3 py-2 text-[12px] font-semibold text-gray-700" colSpan={3}>
               Opening Balance
             </td>
@@ -762,18 +763,18 @@ function AccountLedgerView({
           {ledger.entries.map((entry, i) => (
             <tr
               key={i}
-              className="group cursor-pointer border-l-[3px] border-l-transparent hover:border-l-[#1557b0] hover:bg-gray-50"
+              className="group cursor-pointer border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)] hover:bg-gray-50"
               onClick={() => onDrillVoucher(entry.voucherId, entry.voucherNo)}
             >
-              <td className="px-3 py-2 text-[11px] text-gray-600">{entry.date}</td>
+              <td className="px-3 py-2 text-[12px] text-gray-600">{entry.date}</td>
               <td className="px-3 py-2 text-[12px] text-gray-800">
                 {entry.particulars}
                 {entry.narration && (
-                  <p className="text-[10px] text-gray-500 mt-0.5">{entry.narration}</p>
+                  <p className="text-[12px] text-gray-500 mt-0.5">{entry.narration}</p>
                 )}
               </td>
-              <td className="px-3 py-2 text-[11px] text-gray-500">{entry.voucherType}</td>
-              <td className="px-3 py-2 text-[11px] font-mono text-[#1557b0]">{entry.voucherNo}</td>
+              <td className="px-3 py-2 text-[12px] text-gray-500">{entry.voucherType}</td>
+              <td className="px-3 py-2 text-[12px] font-mono text-[var(--ds-action-primary)]">{entry.voucherNo}</td>
               <td className="px-3 py-2 text-right font-mono text-[12px]">
                 {entry.debit > 0 ? fmt2(entry.debit) : ""}
               </td>
@@ -787,8 +788,8 @@ function AccountLedgerView({
               </td>
             </tr>
           ))}
-          <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
-            <td className="px-3 py-2 text-[11px] font-bold text-gray-700">{toDate}</td>
+          <tr className="bg-[var(--ds-surface-muted)] border-t-2 border-[var(--ds-border-default)]">
+            <td className="px-3 py-2 text-[12px] font-bold text-gray-700">{toDate}</td>
             <td className="px-3 py-2 text-[12px] font-bold text-gray-800" colSpan={3}>
               Closing Balance
             </td>
@@ -831,7 +832,7 @@ function VoucherView({ voucherId }: { voucherId: string }) {
   if (loading) {
     return (
       <div className="p-8 text-center">
-        <RefreshCw className="h-6 w-6 animate-spin text-[#1557b0] mx-auto" />
+        <RefreshCw className="h-6 w-6 animate-spin text-[var(--ds-action-primary)] mx-auto" />
       </div>
     );
   }
@@ -840,17 +841,17 @@ function VoucherView({ voucherId }: { voucherId: string }) {
 
   return (
     <div className="bg-white border border-gray-200 rounded-md overflow-hidden max-w-3xl mx-auto">
-      <div className="px-4 py-3 border-b border-gray-200 bg-[#f9fafb] flex items-center justify-between">
+      <div className="px-4 py-3 border-b border-gray-200 bg-[var(--ds-surface-muted)] flex items-center justify-between">
         <div>
           <h3 className="text-[14px] font-semibold text-gray-800">
             {voucher.voucherNo || "Voucher"}
           </h3>
-          <p className="text-[11px] text-gray-500 mt-0.5">
+          <p className="text-[12px] text-gray-500 mt-0.5">
             {voucher.type?.toUpperCase()} · Date: {voucher.date}
           </p>
         </div>
         <div className="text-right">
-          <p className="text-[10px] font-semibold text-gray-500 uppercase">Amount</p>
+          <p className="text-[12px] font-semibold text-gray-500 uppercase">Amount</p>
           <p className="font-mono text-[14px] font-bold text-gray-800">
             Rs. {fmt2(voucher.totalDebit || voucher.grandTotal || 0)}
           </p>
@@ -859,7 +860,7 @@ function VoucherView({ voucherId }: { voucherId: string }) {
       <div className="p-4 space-y-4">
         {voucher.narration && (
           <div className="bg-gray-50 border border-gray-200 rounded-md px-3 py-2 text-[12px] text-gray-700">
-            <span className="font-semibold text-gray-500 text-[10px] uppercase mr-2">
+            <span className="font-semibold text-gray-500 text-[12px] uppercase mr-2">
               Narration:
             </span>
             {voucher.narration}
@@ -867,14 +868,14 @@ function VoucherView({ voucherId }: { voucherId: string }) {
         )}
         <table className="report-table w-full border border-gray-200 rounded-md overflow-hidden">
           <thead>
-            <tr className="bg-[#f5f6fa]">
-              <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase">
+            <tr className="bg-[var(--ds-surface-muted)]">
+              <th className="px-3 py-2 text-left text-[12px] font-semibold text-gray-500 uppercase">
                 Account
               </th>
-              <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase">
+              <th className="px-3 py-2 text-right text-[12px] font-semibold text-gray-500 uppercase">
                 Debit
               </th>
-              <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase">
+              <th className="px-3 py-2 text-right text-[12px] font-semibold text-gray-500 uppercase">
                 Credit
               </th>
             </tr>
@@ -885,7 +886,7 @@ function VoucherView({ voucherId }: { voucherId: string }) {
                 <td className="px-3 py-2 text-[12px] text-gray-700">
                   {line.accountName || line.accountId}
                   {line.narration && (
-                    <p className="text-[10px] text-gray-400 mt-0.5">{line.narration}</p>
+                    <p className="text-[12px] text-gray-400 mt-0.5">{line.narration}</p>
                   )}
                 </td>
                 <td className="px-3 py-2 text-right font-mono text-[12px]">
@@ -896,12 +897,12 @@ function VoucherView({ voucherId }: { voucherId: string }) {
                 </td>
               </tr>
             ))}
-            <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
+            <tr className="bg-[var(--ds-surface-muted)] border-t-2 border-[var(--ds-border-default)]">
               <td className="px-3 py-2 text-[12px] font-bold text-gray-800">Total</td>
-              <td className="px-3 py-2 text-right font-mono text-[12px] font-bold text-[#1557b0]">
+              <td className="px-3 py-2 text-right font-mono text-[12px] font-bold text-[var(--ds-action-primary)]">
                 {fmt2(voucher.totalDebit || 0)}
               </td>
-              <td className="px-3 py-2 text-right font-mono text-[12px] font-bold text-[#1557b0]">
+              <td className="px-3 py-2 text-right font-mono text-[12px] font-bold text-[var(--ds-action-primary)]">
                 {fmt2(voucher.totalCredit || 0)}
               </td>
             </tr>
@@ -1033,8 +1034,7 @@ export default function BalanceSheet() {
   };
 
   return (
-    <div className="erp-report flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-hidden relative">
-      {/* Options Dialog */}
+    <>
       {showOptions && (
         <OptionsDialog
           options={options}
@@ -1048,74 +1048,33 @@ export default function BalanceSheet() {
         />
       )}
 
-      <div className="erp-report-toolbar flex items-center justify-between px-4 py-2.5 bg-white border-b border-gray-200 shrink-0 z-10 no-print">
-        <div className="flex items-center gap-4">
-          <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Balance Sheet</h1>
-            <p className="text-[11px] text-gray-500 mt-0.5">
-              {tenant?.name} · As at {options.toDate}
-            </p>
-          </div>
-          {drillState.level > 0 && (
+      <ReportWorkspace
+        title="What you own and owe"
+        description="Assets, liabilities and equity as at the date."
+        companyName={tenant?.name || "Company"}
+        periodLabel={`As at ${options.toDate}`}
+        onRefresh={() => loadBS()}
+        onPrint={() => window.print()}
+        onExportExcel={() => handleExport("excel")}
+        onExportCsv={() => handleExport("csv")}
+        onOptions={() => setShowOptions(true)}
+        breadcrumb={
+          drillState.level > 0 ? (
             <button
+              type="button"
               onClick={() => navigateBack()}
-              className="h-8 px-3 ml-2 bg-white border border-gray-300 rounded-md text-[12px] font-medium text-gray-700 hover:bg-gray-50 inline-flex items-center gap-1.5"
+              className="inline-flex items-center gap-1.5 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-2.5 py-1 text-[13px] font-medium hover:bg-[var(--ds-surface-hover)]"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
               Back
             </button>
-          )}
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => loadBS()}
-            className="h-8 w-8 inline-flex items-center justify-center bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-            title="Refresh (F5)"
-          >
-            <RefreshCw className="h-3.5 w-3.5" />
-          </button>
-
-          <div className="flex bg-white rounded-md border border-gray-300 overflow-hidden">
-            <button
-              onClick={() => handleExport("excel")}
-              className="h-8 px-3 inline-flex items-center gap-1.5 text-[12px] font-medium text-gray-700 hover:bg-gray-50 border-r border-gray-200"
-            >
-              <FileSpreadsheet className="h-3.5 w-3.5 text-green-600" />
-              Excel
-            </button>
-            <button
-              onClick={() => handleExport("csv")}
-              className="h-8 px-3 inline-flex items-center gap-1.5 text-[12px] font-medium text-gray-700 hover:bg-gray-50"
-            >
-              <FileText className="h-3.5 w-3.5 text-blue-600" />
-              CSV
-            </button>
-          </div>
-
-          <button
-            onClick={() => window.print()}
-            className="h-8 px-3 inline-flex items-center gap-1.5 bg-white border border-gray-300 rounded-md text-[12px] font-medium text-gray-700 hover:bg-gray-50"
-          >
-            <Printer className="h-3.5 w-3.5" />
-            Print
-          </button>
-
-          <button
-            onClick={() => setShowOptions(true)}
-            className="erp-btn-primary h-8 px-3 inline-flex items-center gap-1.5 bg-[#1557b0] text-white rounded-md text-[12px] font-medium hover:bg-[#0f4a96] ml-1"
-          >
-            <Settings className="h-3.5 w-3.5" />
-            Options
-          </button>
-        </div>
-      </div>
-
-      <div className="flex-1 overflow-auto p-4 md:p-6 print-container relative min-h-0">
+          ) : null
+        }
+      >
         {loading ? (
           <div className="flex items-center justify-center h-64">
             <div className="flex flex-col items-center gap-3">
-              <RefreshCw className="h-7 w-7 animate-spin text-[#1557b0]" />
+              <RefreshCw className="h-7 w-7 animate-spin text-[var(--ds-action-primary)]" />
               <p className="text-[12px] text-gray-600 font-medium">Computing balance sheet…</p>
             </div>
           </div>
@@ -1131,7 +1090,7 @@ export default function BalanceSheet() {
             {bsData && drillState.level === 0 && (
               <div className="no-print grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
                 <div className="border border-gray-300 bg-white px-3 py-2.5">
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                     Total assets
                   </p>
                   <p className="text-[12px] number-cell-bold text-gray-800 mt-0.5">
@@ -1139,7 +1098,7 @@ export default function BalanceSheet() {
                   </p>
                 </div>
                 <div className="border border-gray-300 bg-white px-3 py-2.5">
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                     Liabilities & equity
                   </p>
                   <p className="text-[12px] number-cell-bold text-gray-800 mt-0.5">
@@ -1147,15 +1106,15 @@ export default function BalanceSheet() {
                   </p>
                 </div>
                 <div className="border border-gray-300 bg-white px-3 py-2.5">
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                     Closing stock
                   </p>
-                  <p className="text-[14px] font-semibold text-[#1557b0] mt-0.5 font-mono">
+                  <p className="text-[14px] font-semibold text-[var(--ds-action-primary)] mt-0.5 font-mono">
                     {fmt2(bsData.closingStock)}
                   </p>
                 </div>
                 <div className="border border-gray-300 bg-white px-3 py-2.5">
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                     Status
                   </p>
                   <p
@@ -1182,7 +1141,7 @@ export default function BalanceSheet() {
                       Rs. {fmt2(Math.abs(bsData.difference))}
                     </span>
                   </p>
-                  <p className="text-[11px] text-red-600 mt-1">
+                  <p className="text-[12px] text-red-600 mt-1">
                     This usually happens if opening balances do not match (Total Dr ≠ Total Cr) or
                     if there are unposted entries.
                     <br />
@@ -1204,7 +1163,7 @@ export default function BalanceSheet() {
               <div className="flex items-center gap-2 text-[12px] text-gray-500 mb-4 px-1 no-print">
                 <button
                   onClick={() => navigateBack(0)}
-                  className="text-[#1557b0] hover:underline font-medium"
+                  className="text-[var(--ds-action-primary)] hover:underline font-medium"
                 >
                   Balance Sheet
                 </button>
@@ -1216,7 +1175,7 @@ export default function BalanceSheet() {
                       className={
                         i === drillState.path.length - 1
                           ? "text-gray-800 font-bold"
-                          : "text-[#1557b0] hover:underline"
+                          : "text-[var(--ds-action-primary)] hover:underline"
                       }
                     >
                       {p.label}
@@ -1282,7 +1241,7 @@ export default function BalanceSheet() {
             </div>
 
             {drillState.level === 0 && bsData && (
-              <div className="mt-4 px-3 py-2 bg-white border border-gray-200 rounded-md text-[11px] text-gray-500 no-print flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+              <div className="mt-4 px-3 py-2 bg-white border border-gray-200 rounded-md text-[12px] text-gray-500 no-print flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
                 <span className="inline-flex items-center gap-1">
                   <Scale className="h-3.5 w-3.5" />
                   Closing stock: {bsData.closingStockSource} (Rs. {fmt2(bsData.closingStock)})
@@ -1301,7 +1260,7 @@ export default function BalanceSheet() {
             )}
           </div>
         )}
-      </div>
-    </div>
+      </ReportWorkspace>
+    </>
   );
 }

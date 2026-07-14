@@ -10,7 +10,7 @@ from fastapi.responses import StreamingResponse
 from .bootstrap import get_engine, get_memory
 from .config import get_config
 from .llm.ollama_client import OllamaClient
-from .schemas import OrbixChatRequest, OrbixChatResponse
+from .schemas import OrbixChatRequest, OrbixChatResponse, EvidenceRef
 from ..llm.reasoning_filter import strip_reasoning
 
 router = APIRouter(prefix="/orbix/v2", tags=["orbix-v2"])
@@ -51,7 +51,9 @@ async def chat(req: OrbixChatRequest) -> OrbixChatResponse:
         resp = await engine.chat(req)
         if not resp.session_id:
             resp.session_id = req.session_id
-        return _sanitize_response(resp)
+        resp = _sanitize_response(resp)
+        resp = _attach_np_kb_metadata(resp, req.message)
+        return resp
     except Exception as exc:
         return OrbixChatResponse(
             answer=f"Orbix error: {exc}",
@@ -61,6 +63,38 @@ async def chat(req: OrbixChatRequest) -> OrbixChatResponse:
             warnings=[str(exc)],
             engine="error",
         )
+
+
+def _attach_np_kb_metadata(resp: OrbixChatResponse, message: str) -> OrbixChatResponse:
+    """Optional KB interpretation metadata; never mutates ERP state."""
+    try:
+        from ..nlu.np_kb_adapter import interpret_user_text
+
+        result = interpret_user_text(message)
+        meta = dict(resp.metadata or {})
+        meta.update(result.to_optional_metadata())
+        resp.metadata = meta
+        # Promote citations into EvidenceRef only when citations enabled and present.
+        np_payload = meta.get("np_kb") or {}
+        if np_payload.get("enabled") and np_payload.get("citations"):
+            for cite in np_payload["citations"][:5]:
+                resp.evidence.append(
+                    EvidenceRef(
+                        id=str(cite.get("record_id") or "np-kb"),
+                        source_type="generated",
+                        uri=f"np-kb://{cite.get('source_file_id')}/{cite.get('record_id')}",
+                        title=cite.get("source_filename"),
+                        line_start=(cite.get("source_line_range") or [None, None])[0],
+                        line_end=(cite.get("source_line_range") or [None, None])[1],
+                        snippet=(cite.get("content") or "")[:240],
+                    )
+                )
+    except Exception as exc:
+        # Soft-fail: KB must never break chat.
+        meta = dict(resp.metadata or {})
+        meta["np_kb"] = {"enabled": False, "reason": f"adapter_error: {exc}"}
+        resp.metadata = meta
+    return resp
 
 
 @router.post("/chat/stream")
@@ -78,6 +112,7 @@ async def chat_stream(req: OrbixChatRequest):
             if not resp.session_id:
                 resp.session_id = req.session_id
             resp = _sanitize_response(resp)
+            resp = _attach_np_kb_metadata(resp, req.message)
             for record in resp.tool_trace:
                 yield _sse("tool", record.model_dump())
             yield _sse("answer", resp.model_dump())
@@ -90,6 +125,41 @@ async def chat_stream(req: OrbixChatRequest):
 
 def _sse(event: str, data: dict) -> str:
     return f"event: {event}\ndata: {json.dumps(data, default=str)}\n\n"
+
+
+@router.get("/np-kb/status")
+async def np_kb_status() -> dict:
+    """Development observability for ONLI KB — does not enable the feature."""
+    import os
+    from pathlib import Path
+
+    from ..nlu.np_kb_adapter import NpKbConfig
+
+    cfg = NpKbConfig.from_env()
+    root = Path(cfg.root)
+    lex = root / "indexes" / "lexical" / "kb_lexical.sqlite"
+    meta = root / "indexes" / "metadata" / "kb_metadata.sqlite"
+    sem = root / "indexes" / "semantic" / "semantic_index_status.json"
+    sem_payload = None
+    if sem.exists():
+        try:
+            import json
+
+            sem_payload = json.loads(sem.read_text(encoding="utf-8"))
+        except Exception:
+            sem_payload = {"status": "unreadable"}
+    return {
+        "enabled": cfg.enabled,
+        "env_ORBIX_NP_KB_ENABLED": os.environ.get("ORBIX_NP_KB_ENABLED"),
+        "lexical_db_exists": lex.exists(),
+        "metadata_db_exists": meta.exists(),
+        "semantic": sem_payload,
+        "review_policy": cfg.review_policy,
+        "lexical_enabled": cfg.lexical_enabled,
+        "semantic_enabled": cfg.semantic_enabled,
+        "execution_authority": False,
+        "note": "Knowledge base never posts transactions; ERP services remain authoritative.",
+    }
 
 
 @router.post("/reindex")

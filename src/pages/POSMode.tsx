@@ -17,7 +17,7 @@ import {
 } from "../lib/types";
 import { formatNumber } from "../lib/utils";
 import { ADToBSString } from "../lib/nepaliDate";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import {
   ShoppingBag,
   Search,

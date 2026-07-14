@@ -1,6 +1,6 @@
 // src/pages/PDCManagement.tsx
 // @ts-nocheck
-// NEW PAGE — Post-Dated Cheque (PDC) Management
+// NEW PAGE — Post-dated cheques
 // Tracks cheques received from customers (for collection) and
 // cheques issued to suppliers (for payment).
 // Alerts when PDCs are due for deposit.
@@ -8,7 +8,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import * as XLSX from "xlsx";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import {
   Plus,
   Download,
@@ -37,11 +37,11 @@ const daysFromToday = (dateStr: string): number => {
 
 const inputCls =
   "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white " +
-  "focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full";
-const labelCls = "text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1";
+  "focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full";
+const labelCls = "text-[12px] font-semibold text-gray-500 uppercase tracking-wide block mb-1";
 const thCls =
-  "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 " +
-  "uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200 whitespace-nowrap";
+  "px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 " +
+  "uppercase tracking-wide bg-[var(--ds-surface-muted)] border-b border-gray-200 whitespace-nowrap";
 const tdCls = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const amtCls = `${tdCls} font-mono text-right`;
 
@@ -224,14 +224,14 @@ export default function PDCManagement() {
 
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
-    <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
+    <div className="p-4 md:p-6 bg-[var(--ds-surface-muted)] min-h-screen">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">
-            Post-Dated Cheque (PDC) Management
+            Post-dated cheques
           </h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
+          <p className="text-[12px] text-gray-500 mt-0.5">
             Track cheques received from customers and issued to suppliers
           </p>
         </div>
@@ -248,7 +248,7 @@ export default function PDCManagement() {
               setEditingId(null);
               setShowModal(true);
             }}
-            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
           >
             <Plus className="h-3.5 w-3.5" /> Add PDC
           </button>
@@ -294,7 +294,7 @@ export default function PDCManagement() {
           },
         ].map((k) => (
           <div key={k.label} className="bg-white border border-gray-200 rounded-lg p-3">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide leading-tight">
+            <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide leading-tight">
               {k.label}
             </p>
             <p className={`font-bold mt-1 ${k.color} text-[13px]`}>{k.value}</p>
@@ -310,7 +310,7 @@ export default function PDCManagement() {
             onClick={() => setActiveTab(tab)}
             className={`h-8 px-4 text-[12px] font-medium rounded-md capitalize transition-colors ${
               activeTab === tab
-                ? "bg-[#1557b0] text-white"
+                ? "bg-[var(--ds-action-primary)] text-white"
                 : "bg-white border border-gray-300 text-gray-600 hover:bg-gray-50"
             }`}
           >
@@ -337,9 +337,9 @@ export default function PDCManagement() {
               <button
                 key={s}
                 onClick={() => setStatusFilter(s)}
-                className={`h-8 px-2.5 text-[11px] font-medium capitalize transition-colors ${
+                className={`h-8 px-2.5 text-[12px] font-medium capitalize transition-colors ${
                   statusFilter === s
-                    ? "bg-[#1557b0] text-white"
+                    ? "bg-[var(--ds-action-primary)] text-white"
                     : "bg-white text-gray-600 hover:bg-gray-50"
                 }`}
               >
@@ -391,7 +391,7 @@ export default function PDCManagement() {
                     <td className={tdCls}>
                       <div>{pdc.bankName}</div>
                       {pdc.branchName && (
-                        <div className="text-[10px] text-gray-400">{pdc.branchName}</div>
+                        <div className="text-[12px] text-gray-400">{pdc.branchName}</div>
                       )}
                     </td>
                     <td
@@ -402,7 +402,7 @@ export default function PDCManagement() {
                     <td className="px-3 py-2.5 text-[12px] border-b border-gray-100">
                       {pdc.status === "pending" ? (
                         <span
-                          className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                          className={`px-2 py-0.5 rounded text-[12px] font-semibold ${
                             isOverdue
                               ? "bg-red-100 text-red-700"
                               : isDueSoon
@@ -421,12 +421,12 @@ export default function PDCManagement() {
                       )}
                     </td>
                     <td className={`${amtCls} font-semibold text-gray-800`}>{fmt(pdc.amount)}</td>
-                    <td className="px-3 py-2.5 text-[11px] font-mono text-gray-500 border-b border-gray-100">
+                    <td className="px-3 py-2.5 text-[12px] font-mono text-gray-500 border-b border-gray-100">
                       {pdc.linkedInvoiceNo || pdc.narration || "—"}
                     </td>
                     <td className="px-3 py-2.5 border-b border-gray-100">
                       <span
-                        className={`px-2 py-0.5 text-[10px] font-semibold rounded uppercase flex items-center gap-1 w-fit ${statusColors[pdc.status] || "bg-gray-100 text-gray-700"}`}
+                        className={`px-2 py-0.5 text-[12px] font-semibold rounded uppercase flex items-center gap-1 w-fit ${statusColors[pdc.status] || "bg-gray-100 text-gray-700"}`}
                       >
                         <StatusIcon status={pdc.status} />
                         {pdc.status}
@@ -440,7 +440,7 @@ export default function PDCManagement() {
                               onClick={() =>
                                 quickUpdateStatus(pdc.id, "deposited", { depositDate: today() })
                               }
-                              className="h-6 px-2 text-[10px] font-medium bg-green-100 text-green-700 rounded hover:bg-green-200"
+                              className="h-6 px-2 text-[12px] font-medium bg-green-100 text-green-700 rounded hover:bg-green-200"
                               title="Mark as Deposited"
                             >
                               ✓ Deposit
@@ -454,7 +454,7 @@ export default function PDCManagement() {
                                     dishonourReason: reason,
                                   });
                               }}
-                              className="h-6 px-2 text-[10px] font-medium bg-red-100 text-red-700 rounded hover:bg-red-200"
+                              className="h-6 px-2 text-[12px] font-medium bg-red-100 text-red-700 rounded hover:bg-red-200"
                               title="Mark as Dishonoured"
                             >
                               ✗ Bounced
@@ -494,11 +494,11 @@ export default function PDCManagement() {
             {/* Footer total */}
             {filtered.length > 0 && (
               <tfoot>
-                <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold">
+                <tr className="bg-[var(--ds-action-primary)] border-t-2 border-[var(--ds-border-default)] font-bold">
                   <td colSpan={5} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
                     TOTAL ({filtered.length} cheques)
                   </td>
-                  <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-right text-[#1557b0] border-b border-gray-100">
+                  <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-right text-[var(--ds-action-primary)] border-b border-gray-100">
                     Rs. {fmt(filtered.reduce((s: number, p: any) => s + p.amount, 0))}
                   </td>
                   <td colSpan={3} />
@@ -509,15 +509,15 @@ export default function PDCManagement() {
         </div>
       </div>
 
-      <p className="text-[10px] text-gray-400 mt-3">
+      <p className="text-[12px] text-gray-400 mt-3">
         PDCs sorted by cheque date • Overdue = cheque date past but not yet deposited
       </p>
 
       {/* ── Add / Edit Modal ───────────────────────────────────────────────── */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/50 z-[var(--ds-z-dropdown)] flex items-center justify-center p-4">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-xl max-h-[90vh] overflow-hidden flex flex-col">
-            <div className="flex items-center justify-between px-4 py-3 bg-[#f5f6fa] border-b border-gray-200">
+            <div className="flex items-center justify-between px-4 py-3 bg-[var(--ds-surface-muted)] border-b border-gray-200">
               <h3 className="text-[14px] font-semibold text-gray-800">
                 {editingId
                   ? "Edit PDC"
@@ -738,7 +738,7 @@ export default function PDCManagement() {
               </button>
               <button
                 onClick={handleSave}
-                className="h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
+                className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md"
               >
                 {editingId ? "Update PDC" : "Record PDC"}
               </button>

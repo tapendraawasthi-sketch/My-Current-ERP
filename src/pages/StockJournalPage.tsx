@@ -3,7 +3,7 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  *
- * Stock Journal / inventory transfer page.
+ * Stock journal / inventory transfer page.
  */
 
 import { DualDate } from "../components/ui/DualDate";
@@ -22,7 +22,7 @@ import { Plus } from "lucide-react";
 import { formatNumber } from "../lib/utils";
 import { ADToBSString } from "../lib/nepaliDate";
 import { VoucherStatus, StockJournalLine } from "../lib/types";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 type Mode = "list" | "new";
 
@@ -266,11 +266,12 @@ const StockJournalPage: React.FC = () => {
 
   if (mode === "new") {
     return (
-      <div className="min-h-screen bg-[var(--ox-bg,#f5f6fa)] p-4 text-[12px] text-[var(--ox-text)]">
+      <div className="min-h-screen bg-[var(--ox-bg,var(--ds-canvas))] p-4 text-[12px] text-[var(--ox-text)]">
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Stock Journal</h1>
-            <p className="mt-0.5 text-[11px] text-gray-500">
+            <h1 className="text-[15px] font-semibold text-gray-800">Stock journal</h1>
+          <p className="text-[12px] text-gray-500 mt-0.5">Adjust stock with accounting.</p>
+            <p className="mt-0.5 text-[12px] text-gray-500">
               Transfer inventory between warehouses
             </p>
           </div>
@@ -289,16 +290,16 @@ const StockJournalPage: React.FC = () => {
         </div>
 
         <div className="rounded-md border border-[var(--ox-border)] bg-[var(--ox-surface)] p-4">
-          <p className="mb-3 text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+          <p className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-gray-500">
             Journal details
           </p>
           <div className="mb-4 grid grid-cols-1 gap-3 md:grid-cols-3">
             <div>
-              <label className="mb-1 block text-[11px] font-medium text-gray-600">Date</label>
+              <label className="mb-1 block text-[12px] font-medium text-gray-600">Date</label>
               <NepaliDatePicker value={date} onChange={setDate} required />
             </div>
             <div className="md:col-span-2">
-              <label className="mb-1 block text-[11px] font-medium text-gray-600">Narration</label>
+              <label className="mb-1 block text-[12px] font-medium text-gray-600">Narration</label>
               <Input
                 value={narration}
                 onChange={setNarration}
@@ -307,7 +308,7 @@ const StockJournalPage: React.FC = () => {
             </div>
           </div>
 
-          <p className="mb-3 text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+          <p className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-gray-500">
             Transfer lines
           </p>
           <div className="space-y-3">
@@ -362,7 +363,7 @@ const StockJournalPage: React.FC = () => {
                       required
                     />
                     <div className="mt-1 flex items-center justify-between">
-                      <span className="font-mono text-[11px] text-gray-600">
+                      <span className="font-mono text-[12px] text-gray-600">
                         {symbol} {formatNumber((line.qty || 0) * (line.rate || 0))}
                       </span>
                       <Button size="xs" variant="danger" onClick={() => removeLine(line.id)}>
@@ -382,7 +383,7 @@ const StockJournalPage: React.FC = () => {
               >
                 Add line
               </Button>
-              <div className="text-right text-[11px] text-gray-600">
+              <div className="text-right text-[12px] text-gray-600">
                 Total qty:{" "}
                 <span className="font-mono font-semibold text-gray-800">
                   {formatNumber(totals.totalQty)}
@@ -398,7 +399,7 @@ const StockJournalPage: React.FC = () => {
           <div className="mt-4 flex flex-wrap gap-2 border-t border-[var(--ox-border)] pt-4">
             <button
               type="button"
-              className="h-8 rounded-md bg-[#1557b0] px-3 text-[12px] font-medium text-white hover:bg-[#0f4a96] disabled:opacity-50"
+              className="h-8 rounded-md bg-[var(--ds-action-primary)] px-3 text-[12px] font-medium text-white hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-50"
               onClick={handleCreate}
               disabled={saving}
             >
@@ -421,11 +422,11 @@ const StockJournalPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--ox-bg,#f5f6fa)] p-4 text-[12px]">
+    <div className="min-h-screen bg-[var(--ox-bg,var(--ds-canvas))] p-4 text-[12px]">
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Stock Journal</h1>
-          <p className="mt-0.5 text-[11px] text-gray-500">
+          <h1 className="text-[15px] font-semibold text-gray-800">Stock journal</h1>
+          <p className="mt-0.5 text-[12px] text-gray-500">
             Draft and post warehouse transfer journals
           </p>
         </div>

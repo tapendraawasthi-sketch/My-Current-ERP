@@ -32,7 +32,7 @@ import {
   validateVoucherDate,
   formatVoucherDisplayDate,
 } from "../lib/voucherUtils";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 const MemorandumVoucher: React.FC = () => {
   const { accounts, vouchers, companySettings, currentFiscalYear, addVoucher } = useStore();

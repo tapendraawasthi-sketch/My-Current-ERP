@@ -1,0 +1,4 @@
+domain_area,passed,total,accuracy
+adversarial,50,50,1.0
+gold,50,50,1.0
+language,4,4,1.0

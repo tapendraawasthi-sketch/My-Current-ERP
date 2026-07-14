@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { useStore } from "../store/useStore";
 import type { DBWarehouse, DBStockTransferLine } from "../lib/db";
 import { computeStockPosition } from "../lib/godownStockUtils";
@@ -172,8 +172,9 @@ const StockTransfer: React.FC = () => {
     <div className="p-4 space-y-4">
       <div className="flex justify-between items-center no-print">
         <div>
-          <h1 className="text-[15px] font-semibold">Stock Transfer Voucher</h1>
-          <p className="text-[11px] text-gray-500">Inter-godown / inter-branch material transfer</p>
+          <h1 className="text-[15px] font-semibold">Stock transfer</h1>
+          <p className="text-[12px] text-gray-500 mt-0.5">Move stock between locations.</p>
+          <p className="text-[12px] text-gray-500">Inter-godown / inter-branch material transfer</p>
         </div>
 
         <div className="flex gap-2">
@@ -182,7 +183,7 @@ const StockTransfer: React.FC = () => {
           </button>
           <button
             onClick={save}
-            className="h-8 px-3 bg-[#1557b0] text-white rounded-md text-[12px]"
+            className="h-8 px-3 bg-[var(--ds-action-primary)] text-white rounded-md text-[12px]"
           >
             Save Transfer
           </button>
@@ -220,7 +221,7 @@ const StockTransfer: React.FC = () => {
         />
 
         <div className="md:col-span-2">
-          <label className="text-[11px] font-medium text-gray-600">Narration</label>
+          <label className="text-[12px] font-medium text-gray-600">Narration</label>
           <input
             value={narration}
             onChange={(e) => setNarration(e.target.value)}
@@ -238,7 +239,7 @@ const StockTransfer: React.FC = () => {
 
       <div className="bg-white border rounded-md overflow-hidden">
         <table className="w-full text-[12px]">
-          <thead className="bg-[#f5f6fa]">
+          <thead className="bg-[var(--ds-canvas)]">
             <tr>
               <th className="px-3 py-2 text-left">Item</th>
               <th className="px-3 py-2 text-left">From Batch</th>
@@ -313,7 +314,7 @@ const StockTransfer: React.FC = () => {
           </tbody>
 
           <tfoot>
-            <tr className="bg-[#eef2ff] font-bold">
+            <tr className="bg-[var(--ds-surface-selected)] font-bold">
               <td colSpan={3} className="px-3 py-2 text-right">
                 Total
               </td>
@@ -357,7 +358,7 @@ const Field = ({
   placeholder?: string;
 }) => (
   <div>
-    <label className="text-[11px] font-medium text-gray-600">{label}</label>
+    <label className="text-[12px] font-medium text-gray-600">{label}</label>
     <input
       type={type}
       value={value}
@@ -381,7 +382,7 @@ const SelectWarehouse = ({
   warehouses: DBWarehouse[];
 }) => (
   <div>
-    <label className="text-[11px] font-medium text-gray-600">{label}</label>
+    <label className="text-[12px] font-medium text-gray-600">{label}</label>
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}

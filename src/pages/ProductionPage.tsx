@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useStore } from "../store";
 import { ProductionEntry, StockJournalItem } from "../lib/types";
 import SearchableTable from "../components/ui/SearchableTable";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 const emptyItem = (): StockJournalItem => ({
   id: crypto.randomUUID(),
@@ -68,12 +68,10 @@ export default function ProductionPage() {
       <div className="page-header">
         <div>
           <h2 className="text-[15px] font-semibold text-gray-800">Production</h2>
-          <p className="text-[11px] text-gray-500 mt-0.5">
-            Total Entries: {productions?.length || 0}
-          </p>
+          <p className="text-[12px] text-gray-500 mt-0.5">Make finished goods.</p>
         </div>
         <button
-          className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
+          className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md"
           onClick={() => setShowForm(true)}
         >
           New Entry
@@ -106,27 +104,27 @@ export default function ProductionPage() {
           <h3 className="section-title">Production Entry</h3>
           <div className="form-grid">
             <div>
-              <label className="block text-[11px] font-medium text-gray-600 mb-1">Date</label>
+              <label className="block text-[12px] font-medium text-gray-600 mb-1">Date</label>
               <input
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 type="date"
                 value={entry.date}
                 onChange={(e) => setEntry({ ...entry, date: e.target.value })}
               />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-gray-600 mb-1">Ref No</label>
+              <label className="block text-[12px] font-medium text-gray-600 mb-1">Ref No</label>
               <input
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 placeholder="Ref No"
                 value={entry.refNo}
                 onChange={(e) => setEntry({ ...entry, refNo: e.target.value })}
               />
             </div>
             <div className="col-span-2">
-              <label className="block text-[11px] font-medium text-gray-600 mb-1">Narration</label>
+              <label className="block text-[12px] font-medium text-gray-600 mb-1">Narration</label>
               <input
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 placeholder="Narration"
                 value={entry.narration}
                 onChange={(e) => setEntry({ ...entry, narration: e.target.value })}
@@ -138,27 +136,27 @@ export default function ProductionPage() {
           {entry.finishedGoods.map((row, i) => (
             <div key={row.id} className="form-row">
               <input
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 placeholder="Item"
                 value={row.itemName}
                 onChange={(e) => updateItem("finishedGoods", i, "itemName", e.target.value)}
               />
               <input
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 type="number"
                 placeholder="Qty"
                 value={row.qty || ""}
                 onChange={(e) => updateItem("finishedGoods", i, "qty", Number(e.target.value))}
               />
               <input
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 type="number"
                 placeholder="Rate"
                 value={row.rate || ""}
                 onChange={(e) => updateItem("finishedGoods", i, "rate", Number(e.target.value))}
               />
               <input
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-[#f5f6fa] cursor-not-allowed"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-[var(--ds-canvas)] cursor-not-allowed"
                 type="number"
                 placeholder="Amount"
                 readOnly
@@ -177,27 +175,27 @@ export default function ProductionPage() {
           {entry.rawMaterials.map((row, i) => (
             <div key={row.id} className="form-row">
               <input
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 placeholder="Item"
                 value={row.itemName}
                 onChange={(e) => updateItem("rawMaterials", i, "itemName", e.target.value)}
               />
               <input
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 type="number"
                 placeholder="Qty"
                 value={row.qty || ""}
                 onChange={(e) => updateItem("rawMaterials", i, "qty", Number(e.target.value))}
               />
               <input
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 type="number"
                 placeholder="Rate"
                 value={row.rate || ""}
                 onChange={(e) => updateItem("rawMaterials", i, "rate", Number(e.target.value))}
               />
               <input
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-[#f5f6fa] cursor-not-allowed"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-[var(--ds-canvas)] cursor-not-allowed"
                 type="number"
                 placeholder="Amount"
                 readOnly
@@ -214,7 +212,7 @@ export default function ProductionPage() {
 
           <div className="actions pt-4 border-t border-gray-100 mt-4">
             <button
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
+              className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md"
               onClick={handleSave}
             >
               Save Entry

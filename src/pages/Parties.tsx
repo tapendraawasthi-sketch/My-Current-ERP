@@ -73,15 +73,13 @@ export default function Parties() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Parties Directory</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
-            Manage your customers, suppliers, and their financial ledgers
-          </p>
+          <h1 className="text-[15px] font-semibold text-gray-800">Customers & suppliers</h1>
+          <p className="text-[12px] text-gray-500 mt-0.5">People you trade with.</p>
         </div>
         <button
           type="button"
           onClick={handleOpenCreate}
-          className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors"
+          className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors"
         >
           <Plus className="h-3.5 w-3.5" />
           New Party
@@ -97,10 +95,10 @@ export default function Parties() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by name, code, PAN or phone…"
-            className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-64"
+            className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
           />
         </div>
-        <span className="text-[11px] text-gray-500 font-medium">
+        <span className="text-[12px] text-gray-500 font-medium">
           {filteredParties.length} of {parties.length} parties
         </span>
       </div>
@@ -170,7 +168,7 @@ export default function Parties() {
                         type="button"
                         onClick={() => handleOpenEdit(p)}
                         title="Edit"
-                        className="text-gray-400 hover:text-[#1557b0] transition-colors"
+                        className="text-gray-400 hover:text-[var(--ds-action-primary)] transition-colors"
                       >
                         <Edit2 className="h-4 w-4" />
                       </button>
@@ -185,7 +183,7 @@ export default function Parties() {
 
       {/* Modal for PartyForm */}
       {showForm && (
-        <div className="fixed inset-0 z-[200] bg-black/40 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[var(--ds-z-modal)] bg-black/40 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg border border-gray-200 w-full max-w-4xl shadow-xl max-h-[90vh] overflow-y-auto">
             <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between bg-gray-50 rounded-t-lg sticky top-0 z-10">
               <h2 className="text-[14px] font-semibold text-gray-800">

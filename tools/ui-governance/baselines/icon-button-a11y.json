@@ -1,0 +1,377 @@
+{
+  "rule": "icon-button-accessible-name",
+  "generated_at": "2026-07-13T17:06:07.008Z",
+  "count": 68,
+  "ids": [
+    "00b28086ff6c7275",
+    "00f6d20ebc5b48ad",
+    "0129522987c06407",
+    "039af48913797869",
+    "0940eef021deb694",
+    "12fae066d3f727d9",
+    "16443327bdfb4f84",
+    "16ab69106f8b771b",
+    "1b626962404cffdf",
+    "2591ac3cfdda08f2",
+    "262cb88be300beff",
+    "268469d0bae20aad",
+    "27792f03a3a57721",
+    "2c52dfaa27cd4e9b",
+    "2e197ef3fbbeff1d",
+    "38e1ecc36b05c429",
+    "3b7f49fbe1e31e66",
+    "40158bbc2af454e2",
+    "40296059ec996396",
+    "42385184a231427d",
+    "435eee3d752e68f2",
+    "4851419d2d8d4449",
+    "4957e60936e9cc3d",
+    "4a76ff085b02c789",
+    "522f6908953c7a6b",
+    "54e13449891f99c8",
+    "561890b6bad289e4",
+    "5c2bb8bac5dc16b6",
+    "62ff33fe8c2541c6",
+    "6816e0fd48ab984a",
+    "690f82d5bf504d14",
+    "6b489812b8dd774b",
+    "6e2a5c56368c7cda",
+    "706d6dae29ce7c5d",
+    "714f4fc9cfd1a6b8",
+    "8121dad88b602774",
+    "852569f4a6fb31da",
+    "86a04ec1ce34d2cd",
+    "877dbed56ecedaf7",
+    "8dcd6c4207d2e47b",
+    "8ee3db3014a065a9",
+    "8f9e538f2e174769",
+    "903071dea0c06333",
+    "94e039e2c9380ca0",
+    "957ffb508deafb2b",
+    "967c5a68eaca2010",
+    "a607d53a1e6690a4",
+    "a675f44deeb70744",
+    "acd9b8c7bd68a454",
+    "ad55fffeecdd007a",
+    "ad74dda385e88012",
+    "b04276cd95ef5f63",
+    "b2d9659d3bf3ce39",
+    "b2f7097d9e6787ba",
+    "b870abcd86e42b75",
+    "b8c825cc20447136",
+    "bc71b6b6cce473e3",
+    "bd74a11ce226ec7f",
+    "c3514748d6555903",
+    "c698be02b8edc020",
+    "cf609bb12ef81e20",
+    "d7cd1618f985ca24",
+    "d932ba90c2cb5ad6",
+    "df622d99d5966ce8",
+    "e3741353fbbd914f",
+    "ee3b0544555b408a",
+    "fb06184cbbf987ea",
+    "fceaaa9d3088582b"
+  ],
+  "samples": [
+    {
+      "id": "877dbed56ecedaf7",
+      "file": "src/ai/interface/AIChat.tsx",
+      "line": 757,
+      "snippet": "<button type=\"button\" onClick={handleSend} disabled={!input.trim() || isLoading} className=\"h-8 px-3 bg-[#1557b0] hover:"
+    },
+    {
+      "id": "957ffb508deafb2b",
+      "file": "src/components/auth/ChangePasswordModal.tsx",
+      "line": 80,
+      "snippet": "<button onClick={onClose} className=\"text-[#1f2937] hover:text-[#1f2937]\"> <X className=\"w-5 h-5\" /> </button>"
+    },
+    {
+      "id": "2c52dfaa27cd4e9b",
+      "file": "src/components/GlobalSearch.tsx",
+      "line": 120,
+      "snippet": "<button onClick={onClose} className=\"text-[#1f2937] hover:text-[#1f2937] ml-2 cursor-pointer\" > <X className=\"w-4 h-4\" /"
+    },
+    {
+      "id": "268469d0bae20aad",
+      "file": "src/components/invoice/InvoicePrint.tsx",
+      "line": 149,
+      "snippet": "<button onClick={onClose} className=\"h-8 w-8 bg-white border border-gray-200 text-gray-800 rounded-md hover:bg-[#f5f6fa]"
+    },
+    {
+      "id": "bc71b6b6cce473e3",
+      "file": "src/components/invoice/SalesInvoiceForm.tsx",
+      "line": 996,
+      "snippet": "<button onClick={handleBack} className=\"p-2 rounded-md hover:bg-[#EBF5E2] text-[#000000]\" > <ArrowLeft className=\"h-4 w-"
+    },
+    {
+      "id": "714f4fc9cfd1a6b8",
+      "file": "src/components/nios/NiosShell.tsx",
+      "line": 355,
+      "snippet": "<button onClick={sendChat} disabled={loading} className=\"h-8 w-8 flex items-center justify-center bg-[#1557b0] hover:bg-"
+    },
+    {
+      "id": "16443327bdfb4f84",
+      "file": "src/components/orbix/OrbixPanel.tsx",
+      "line": 298,
+      "snippet": "<button onClick={onClose} className=\"h-7 w-7 flex items-center justify-center rounded-md text-gray-500 hover:bg-gray-100"
+    },
+    {
+      "id": "ad55fffeecdd007a",
+      "file": "src/components/order/OrderForm.tsx",
+      "line": 380,
+      "snippet": "<button onClick={handleBack} className=\"p-2 rounded-md hover:bg-[#EBF5E2] text-[#000000]\"> <ArrowLeft className=\"h-4 w-4"
+    },
+    {
+      "id": "86a04ec1ce34d2cd",
+      "file": "src/components/PartiesDirectory.tsx",
+      "line": 361,
+      "snippet": "<button type=\"button\" className=\"text-gray-500 hover:text-gray-700\" onClick={resetForm}> <X className=\"h-4 w-4\" /> </but"
+    },
+    {
+      "id": "27792f03a3a57721",
+      "file": "src/components/party/PartyForm.tsx",
+      "line": 317,
+      "snippet": "<button onClick={onClose} className=\"p-2 hover:bg-gray-100 rounded-lg transition-colors\"> <X className=\"w-5 h-5 text-gra"
+    },
+    {
+      "id": "54e13449891f99c8",
+      "file": "src/components/print/ReportPrint.tsx",
+      "line": 55,
+      "snippet": "<button onClick={onClose} className=\"text-[#000000] hover:text-[#000000]\"> <X className=\"w-5 h-5\" /> </button>"
+    },
+    {
+      "id": "00f6d20ebc5b48ad",
+      "file": "src/components/print/VoucherPrint.tsx",
+      "line": 119,
+      "snippet": "<button onClick={onClose} className=\"text-[#000000] hover:text-[#000000]\"> <X className=\"w-5 h-5\" /> </button>"
+    },
+    {
+      "id": "d932ba90c2cb5ad6",
+      "file": "src/components/tally/TallyBankAllocation.tsx",
+      "line": 52,
+      "snippet": "<button onClick={onClose}> <X size={14} /> </button>"
+    },
+    {
+      "id": "0129522987c06407",
+      "file": "src/components/tally/TallyBillWiseAllocation.tsx",
+      "line": 59,
+      "snippet": "<button onClick={onClose}> <X size={16} /> </button>"
+    },
+    {
+      "id": "2e197ef3fbbeff1d",
+      "file": "src/components/tally/TallyCashDenomination.tsx",
+      "line": 46,
+      "snippet": "<button onClick={onClose}> <X size={14} /> </button>"
+    },
+    {
+      "id": "b2d9659d3bf3ce39",
+      "file": "src/components/tally/TallySalesVoucher.tsx",
+      "line": 173,
+      "snippet": "<button onClick={onClose}> <X size={16} /> </button>"
+    },
+    {
+      "id": "262cb88be300beff",
+      "file": "src/components/tally/TallyVoucherClass.tsx",
+      "line": 89,
+      "snippet": "<button onClick={onClose}> <X size={16} /> </button>"
+    },
+    {
+      "id": "8dcd6c4207d2e47b",
+      "file": "src/components/tally/TallyVoucherClass.tsx",
+      "line": 116,
+      "snippet": "<button type=\"button\" className=\"tally-btn tally-btn-primary\" onClick={addCls} disabled={!name.trim() || !accountId} > <"
+    },
+    {
+      "id": "40296059ec996396",
+      "file": "src/components/tally/TallyVoucherConfig.tsx",
+      "line": 116,
+      "snippet": "<button onClick={onClose} className=\"hover:opacity-75\"> <X size={16} /> </button>"
+    },
+    {
+      "id": "40158bbc2af454e2",
+      "file": "src/components/tally/TallyVoucherEntry.tsx",
+      "line": 184,
+      "snippet": "<button onClick={onClose}> <X size={16} /> </button>"
+    },
+    {
+      "id": "6816e0fd48ab984a",
+      "file": "src/components/tally/TallyVoucherEntry.tsx",
+      "line": 321,
+      "snippet": "<button onClick={onClose}> <X size={16} /> </button>"
+    },
+    {
+      "id": "4957e60936e9cc3d",
+      "file": "src/components/tally/TallyVoucherEntry.tsx",
+      "line": 469,
+      "snippet": "<button onClick={onClose}> <X size={16} /> </button>"
+    },
+    {
+      "id": "8ee3db3014a065a9",
+      "file": "src/components/tally/TallyVoucherList.tsx",
+      "line": 46,
+      "snippet": "<button onClick={onClose}> <X size={14} /> </button>"
+    },
+    {
+      "id": "561890b6bad289e4",
+      "file": "src/components/ui/NepaliDatePicker.tsx",
+      "line": 371,
+      "snippet": "<button type=\"button\" onClick={prevMonth} className=\"p-1 rounded text-white/80 hover:text-white hover:bg-white/20 transi"
+    },
+    {
+      "id": "cf609bb12ef81e20",
+      "file": "src/components/ui/NepaliDatePicker.tsx",
+      "line": 408,
+      "snippet": "<button type=\"button\" onClick={nextMonth} className=\"p-1 rounded text-white/80 hover:text-white hover:bg-white/20 transi"
+    },
+    {
+      "id": "bd74a11ce226ec7f",
+      "file": "src/pages/AttendanceTypeMaster.tsx",
+      "line": 307,
+      "snippet": "<button onClick={resetForm} className=\"text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-200 transition-colors"
+    },
+    {
+      "id": "a675f44deeb70744",
+      "file": "src/pages/BackupRestore.tsx",
+      "line": 292,
+      "snippet": "<button onClick={onClose} className=\"p-1 rounded-md hover:bg-gray-100 text-gray-500\"> <X className=\"h-4 w-4\" /> </button"
+    },
+    {
+      "id": "12fae066d3f727d9",
+      "file": "src/pages/BankStatementImport.tsx",
+      "line": 333,
+      "snippet": "<button onClick={onClose} className=\"p-1 rounded-md hover:bg-gray-200 text-gray-500\"> <XCircle className=\"h-4 w-4\" /> </"
+    },
+    {
+      "id": "c698be02b8edc020",
+      "file": "src/pages/BatchManagement.tsx",
+      "line": 812,
+      "snippet": "<button type=\"button\" className=\"text-gray-500 hover:text-gray-700\" onClick={resetBatchForm} > <X className=\"h-4 w-4\" />"
+    },
+    {
+      "id": "8121dad88b602774",
+      "file": "src/pages/BatchManagement.tsx",
+      "line": 969,
+      "snippet": "<button type=\"button\" className=\"text-gray-500 hover:text-gray-700\" onClick={resetSNForm} > <X className=\"h-4 w-4\" /> </"
+    },
+    {
+      "id": "d7cd1618f985ca24",
+      "file": "src/pages/BatchMaster.tsx",
+      "line": 255,
+      "snippet": "<button onClick={resetForm} className=\"text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-200 transition-colors"
+    },
+    {
+      "id": "522f6908953c7a6b",
+      "file": "src/pages/BillSundryMaster.tsx",
+      "line": 354,
+      "snippet": "<button type=\"button\" className=\"text-gray-500 hover:text-gray-700\" onClick={resetForm}> <X className=\"h-4 w-4\" /> </but"
+    },
+    {
+      "id": "16ab69106f8b771b",
+      "file": "src/pages/BudgetMaster.tsx",
+      "line": 264,
+      "snippet": "<button type=\"button\" className=\"text-gray-500 hover:text-gray-700\" onClick={resetForm}> <X className=\"h-4 w-4\" /> </but"
+    },
+    {
+      "id": "b04276cd95ef5f63",
+      "file": "src/pages/ConfigurationHub.tsx",
+      "line": 784,
+      "snippet": "<button onClick={resetHolidayForm}> <X className=\"w-4 h-4 text-gray-500\" /> </button>"
+    },
+    {
+      "id": "3b7f49fbe1e31e66",
+      "file": "src/pages/CostCategoryMaster.tsx",
+      "line": 224,
+      "snippet": "<button onClick={resetForm} className=\"text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-200 transition-colors"
+    },
+    {
+      "id": "852569f4a6fb31da",
+      "file": "src/pages/CostCentreClassMaster.tsx",
+      "line": 285,
+      "snippet": "<button onClick={resetForm} className=\"text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-200 transition-colors"
+    },
+    {
+      "id": "690f82d5bf504d14",
+      "file": "src/pages/DiscountStructureMaster.tsx",
+      "line": 223,
+      "snippet": "<button style={{ marginLeft: \"auto\", background: \"transparent\", border: \"none\", cursor: \"pointer\", }} onClick={resetForm"
+    },
+    {
+      "id": "0940eef021deb694",
+      "file": "src/pages/EmployeeGroupMaster.tsx",
+      "line": 233,
+      "snippet": "<button onClick={resetForm} className=\"text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-200 transition-colors"
+    },
+    {
+      "id": "42385184a231427d",
+      "file": "src/pages/EmployeeMaster.tsx",
+      "line": 267,
+      "snippet": "<button type=\"button\" className=\"text-gray-500 hover:text-gray-700\" onClick={resetForm}> <X className=\"h-4 w-4\" /> </but"
+    },
+    {
+      "id": "4851419d2d8d4449",
+      "file": "src/pages/HSCodeMaster.tsx",
+      "line": 249,
+      "snippet": "<button onClick={resetForm} className=\"text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-200 transition-colors"
+    },
+    {
+      "id": "a607d53a1e6690a4",
+      "file": "src/pages/ItemGroupMaster.tsx",
+      "line": 209,
+      "snippet": "<button type=\"button\" className=\"text-gray-500 hover:text-gray-700\" onClick={resetForm}> <X className=\"h-4 w-4\" /> </but"
+    },
+    {
+      "id": "acd9b8c7bd68a454",
+      "file": "src/pages/LedgerMaster.tsx",
+      "line": 423,
+      "snippet": "<button type=\"button\" onClick={resetForms} className=\"text-gray-500 hover:text-gray-700\" > <X className=\"h-4 w-4\" /> </b"
+    },
+    {
+      "id": "fceaaa9d3088582b",
+      "file": "src/pages/MiscMasters.tsx",
+      "line": 545,
+      "snippet": "<button type=\"button\" className=\"text-gray-500 hover:text-gray-700\" onClick={resetForm}> <X className=\"h-4 w-4\" /> </but"
+    },
+    {
+      "id": "039af48913797869",
+      "file": "src/pages/MiscMasters.tsx",
+      "line": 620,
+      "snippet": "<button type=\"button\" className=\"text-gray-500 hover:text-gray-700\" onClick={resetForm}> <X className=\"h-4 w-4\" /> </but"
+    },
+    {
+      "id": "6b489812b8dd774b",
+      "file": "src/pages/OpeningBalance.tsx",
+      "line": 170,
+      "snippet": "<button onClick={onClose} className=\"p-1 rounded-md hover:bg-gray-200 text-gray-500\"> <X className=\"h-4 w-4\" /> </button"
+    },
+    {
+      "id": "b8c825cc20447136",
+      "file": "src/pages/PayHeadMaster.tsx",
+      "line": 484,
+      "snippet": "<button type=\"button\" className=\"text-gray-500 hover:text-gray-700\" onClick={resetForm}> <X className=\"h-4 w-4\" /> </but"
+    },
+    {
+      "id": "b2f7097d9e6787ba",
+      "file": "src/pages/PayrollUnitMaster.tsx",
+      "line": 251,
+      "snippet": "<button onClick={resetForm} className=\"text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-200 transition-colors"
+    },
+    {
+      "id": "8f9e538f2e174769",
+      "file": "src/pages/POSBilling.tsx",
+      "line": 231,
+      "snippet": "<button onClick={onClose} className=\"p-1 rounded-md hover:bg-gray-200 text-gray-500\"> <XCircle className=\"h-5 w-5\" /> </"
+    },
+    {
+      "id": "94e039e2c9380ca0",
+      "file": "src/pages/POSBilling.tsx",
+      "line": 1349,
+      "snippet": "<button className=\"text-gray-400 hover:text-red-600 p-1.5 rounded\" onClick={clearCart} > <Trash2 className=\"h-4 w-4\" /> "
+    },
+    {
+      "id": "2591ac3cfdda08f2",
+      "file": "src/pages/PriceLevelMaster.tsx",
+      "line": 197,
+      "snippet": "<button onClick={resetForm} className=\"text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-200 transition-colors"
+    }
+  ]
+}

@@ -5,7 +5,7 @@ import { getDB, generateId } from "../lib/db";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import {
   Printer,
   Mail,

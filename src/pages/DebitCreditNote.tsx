@@ -37,7 +37,7 @@ import { ArrowLeft, Plus, Save, FileText, Receipt } from "lucide-react";
 import { formatNumber } from "../lib/utils";
 import { ADToBSString } from "../lib/nepaliDate";
 import { VoucherType, VoucherStatus, PartyType } from "../lib/types";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 type NoteKind = "debit" | "credit";
 type Mode = "list" | "new" | "view";

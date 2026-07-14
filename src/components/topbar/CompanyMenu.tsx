@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { useStore } from "@/store/useStore";
 import { useTopbarStore } from "@/store/topbarStore";
 import { isAdminOrOwner } from "@/lib/permissions";

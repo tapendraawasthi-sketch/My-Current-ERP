@@ -23,9 +23,9 @@ const FieldRow: React.FC<FieldRowProps> = ({ field, value, onChange }) => {
           <button
             type="button"
             onClick={() => onChange(field.key, true)}
-            className={`px-3 py-1 text-[11px] font-semibold border ${
+            className={`px-3 py-1 text-[12px] font-semibold border ${
               boolVal
-                ? "bg-[#1557b0] text-white border-[#1557b0] z-10"
+                ? "bg-[var(--ds-action-primary)] text-white border-[var(--ds-action-primary)] z-10"
                 : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
             } rounded-l-md`}
           >
@@ -34,9 +34,9 @@ const FieldRow: React.FC<FieldRowProps> = ({ field, value, onChange }) => {
           <button
             type="button"
             onClick={() => onChange(field.key, false)}
-            className={`px-3 py-1 text-[11px] font-semibold border-y border-r ${
+            className={`px-3 py-1 text-[12px] font-semibold border-y border-r ${
               !boolVal
-                ? "bg-red-600 text-white border-red-600 z-10"
+                ? "bg-[var(--ds-status-danger)] text-white border-[var(--ds-status-danger)] z-10"
                 : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
             } rounded-r-md -ml-px`}
           >
@@ -51,7 +51,7 @@ const FieldRow: React.FC<FieldRowProps> = ({ field, value, onChange }) => {
         <select
           value={String(value)}
           onChange={(e) => onChange(field.key, e.target.value)}
-          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] min-w-[180px]"
+          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] min-w-[180px]"
         >
           {field.options.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -70,7 +70,7 @@ const FieldRow: React.FC<FieldRowProps> = ({ field, value, onChange }) => {
           min={field.min ?? 0}
           max={field.max ?? 99}
           onChange={(e) => onChange(field.key, parseInt(e.target.value, 10) || 0)}
-          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-[80px] text-center"
+          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[80px] text-center"
         />
       );
     }
@@ -82,7 +82,7 @@ const FieldRow: React.FC<FieldRowProps> = ({ field, value, onChange }) => {
           value={String(value)}
           maxLength={field.type === "char" ? 1 : undefined}
           onChange={(e) => onChange(field.key, e.target.value)}
-          className={`h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] ${
+          className={`h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] ${
             field.type === "char" ? "w-[50px] text-center" : "w-[200px]"
           }`}
         />
@@ -98,7 +98,7 @@ const FieldRow: React.FC<FieldRowProps> = ({ field, value, onChange }) => {
         <span className="text-[12px] font-medium text-gray-800 block leading-tight">
           {field.label}
         </span>
-        <span className="text-[11px] text-gray-500 block mt-1 leading-snug">
+        <span className="text-[12px] text-gray-500 block mt-1 leading-snug">
           {field.description}
         </span>
       </div>
@@ -118,8 +118,8 @@ interface SectionProps {
 const F12Section: React.FC<SectionProps> = ({ section, values, onChange }) => {
   return (
     <div className="mb-2">
-      <div className="bg-[#f5f6fa] border-y border-gray-200 px-4 py-2">
-        <h3 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+      <div className="bg-[var(--ds-surface-muted)] border-y border-[var(--ds-border-default)] px-4 py-2">
+        <h3 className="text-[12px] font-semibold text-[var(--ds-text-muted)] uppercase tracking-wide">
           {section.sectionLabel}
         </h3>
       </div>
@@ -250,7 +250,7 @@ const F12Panel: React.FC = () => {
 
         {/* Footer */}
         <div className="erp-report-modal-footer">
-          <span className="text-[11px] text-gray-500 flex items-center mr-auto">
+          <span className="text-[12px] text-gray-500 flex items-center mr-auto">
             Press{" "}
             <kbd className="bg-gray-200 px-1.5 py-0.5 rounded text-gray-700 font-sans mx-1">
               Esc
@@ -264,23 +264,23 @@ const F12Panel: React.FC = () => {
           <button
             type="button"
             onClick={handleReset}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[13px] font-medium rounded-md hover:bg-gray-50"
           >
             Reset to Defaults
           </button>
           <button
             type="button"
             onClick={closeF12}
-            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[13px] font-medium rounded-md hover:bg-gray-50"
           >
             Cancel
           </button>
           <button
             type="button"
             onClick={handleSave}
-            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
+            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[13px] font-medium rounded-md"
           >
-            ✓ Save
+            Save
           </button>
         </div>
       </div>

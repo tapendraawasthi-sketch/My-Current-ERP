@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState, useMemo } from "react";
 import { useStore } from "../store";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { DBSalesPerson } from "../lib/db";
 import { Plus, Edit2, Trash2, X, Save, Search, User, Phone, Mail, Percent } from "lucide-react";
 import { ReportEmptyState } from "../components/ReportEmptyState";

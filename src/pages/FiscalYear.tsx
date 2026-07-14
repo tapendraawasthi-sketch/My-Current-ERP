@@ -1,13 +1,13 @@
 // @ts-nocheck
 import React, { useState } from "react";
 import { Calendar, Plus, Lock, AlertTriangle } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import NepaliDatePicker from "../components/ui/NepaliDatePicker";
 import { ADToBSString } from "../lib/nepaliDate";
 import { useStore } from "../store/useStore";
-import { FiscalYear, FiscalYearStatus } from "../lib/types";
+import { FiscalYear as FiscalYearRecord, FiscalYearStatus } from "../lib/types";
 
-export default function FiscalYear() {
+export default function FiscalYearPage() {
   const { fiscalYears, currentUser, addFiscalYear, setCurrentFiscalYear, closeFiscalYear } =
     useStore();
 
@@ -60,7 +60,7 @@ export default function FiscalYear() {
         ? `${formData.startDateBS} - ${formData.endDateBS}`
         : formData.name;
 
-      const newFY: FiscalYear = {
+      const newFY: FiscalYearRecord = {
         id: "",
         name: formData.name.trim(),
         startDate: formData.startDate,

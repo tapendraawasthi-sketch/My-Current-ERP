@@ -1,11 +1,10 @@
 // @ts-nocheck
 import React, { useState, useMemo, useRef } from "react";
 import { ActionToolbar, Select, NepaliDatePicker, Button, Badge } from "../components/ui";
-import { PillTitle, FormPanel } from "../components/BusyShell";
 import { useStore } from "../store/useStore";
 import { formatNumber, numberToWords } from "../lib/utils";
 import { generateId } from "../lib/db";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { formatADToBS } from "../lib/nepaliDate";
 import { Printer, Settings, Plus, RefreshCw, Eye } from "lucide-react";
 
@@ -335,7 +334,7 @@ export default function ChequePrinting() {
 
   return (
     <div className="flex flex-col h-full">
-      <ActionToolbar title="Cheque Printing" icon={<Printer size={16} />}>
+      <ActionToolbar title="Print cheques" icon={<Printer size={16} />}>
         <Button size="sm" variant="outline" onClick={() => setSetupModalOpen(true)}>
           <Settings size={14} className="mr-1" />
           Cheque Book Setup
@@ -467,7 +466,7 @@ export default function ChequePrinting() {
 
       {/* Assign Cheque Numbers Modal */}
       {assignModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[var(--ds-z-dropdown)]">
           <div className="bg-white rounded-lg w-full max-w-2xl max-h-[80vh] overflow-auto">
             <div className="p-4 border-b">
               <h3 className="font-bold text-lg">Assign Cheque Numbers</h3>
@@ -533,7 +532,7 @@ export default function ChequePrinting() {
 
       {/* Cheque Book Setup Modal */}
       {setupModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[var(--ds-z-dropdown)]">
           <div className="bg-white rounded-lg w-full max-w-2xl max-h-[80vh] overflow-auto">
             <div className="p-4 border-b">
               <h3 className="font-bold text-lg">
@@ -792,10 +791,10 @@ export default function ChequePrinting() {
 
       {/* Print Preview Modal */}
       {printPreviewOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[var(--ds-z-dropdown)]">
           <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-auto">
             <div className="p-4 border-b flex justify-between items-center">
-              <h3 className="font-bold text-lg">Cheque Print Preview</h3>
+              <h3 className="font-bold text-lg">Cheque preview</h3>
               <Button variant="outline" onClick={() => setPrintPreviewOpen(false)}>
                 Close
               </Button>
@@ -904,8 +903,8 @@ export default function ChequePrinting() {
             margin-bottom: 20px;
           }
           .fixed.inset-0 {
-             position: absolute !important;
-             background: transparent !important;
+             position: absolute;
+             background: transparent;
           }
         }
       `}</style>

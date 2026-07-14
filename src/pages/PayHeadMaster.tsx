@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useStore } from "../store";
 import { Plus, Edit2, Trash2, X, Save, Search } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 
-const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const th = "px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 const inputCls =
-  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
-const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
+  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
+const labelCls = "text-[12px] font-medium text-gray-600 mb-1 block";
 
 const emptyForm = () => ({
   name: "",
@@ -355,13 +355,14 @@ const PayHeadMaster: React.FC = () => {
   const ledgerOptions = (accounts || []).filter((acc) => !acc.isGroup);
 
   return (
-    <div className="flex h-full min-h-0 bg-[#f5f6fa]">
+    <div className="flex h-full min-h-0 bg-[var(--ds-canvas)]">
       <div className={`flex flex-1 flex-col min-w-0 ${showForm ? "border-r border-gray-200" : ""}`}>
         <div className="p-4 pb-0">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-[15px] font-semibold text-gray-800">Pay Head Master</h1>
-              <p className="text-[11px] text-gray-500 mt-0.5">
+              <h1 className="text-[15px] font-semibold text-gray-800">Pay heads</h1>
+          <p className="text-[12px] text-gray-500 mt-0.5">Salary components.</p>
+              <p className="text-[12px] text-gray-500 mt-0.5">
                 Manage earnings, deductions, and statutory pay components
               </p>
             </div>
@@ -399,7 +400,7 @@ const PayHeadMaster: React.FC = () => {
             <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                  <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
                     <th className={th}>Name</th>
                     <th className={th}>Type</th>
                     <th className={th}>Calc type</th>
@@ -413,7 +414,7 @@ const PayHeadMaster: React.FC = () => {
                   {filteredHeads.map((head) => (
                     <tr
                       key={head.id}
-                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
                       onClick={() => loadFormForEdit(head)}
                     >
                       <td className={`${td} font-medium text-gray-800`}>{head.name}</td>
@@ -422,7 +423,7 @@ const PayHeadMaster: React.FC = () => {
                       <td className={`${td} text-right font-mono`}>{rateDisplay(head)}</td>
                       <td className={`${td} text-center`}>
                         <span
-                          className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+                          className={`rounded px-2 py-0.5 text-[12px] font-semibold uppercase ${
                             head.affectsNetSalary
                               ? "bg-green-100 text-green-700"
                               : "bg-gray-100 text-gray-700"
@@ -433,7 +434,7 @@ const PayHeadMaster: React.FC = () => {
                       </td>
                       <td className={`${td} text-center`}>
                         <span
-                          className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+                          className={`rounded px-2 py-0.5 text-[12px] font-semibold uppercase ${
                             head.isActive
                               ? "bg-green-100 text-green-700"
                               : "bg-gray-100 text-gray-700"
@@ -467,7 +468,7 @@ const PayHeadMaster: React.FC = () => {
                   ))}
                 </tbody>
               </table>
-              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+              <div className="px-3 py-2 border-t border-gray-200 bg-[var(--ds-canvas)] text-[12px] text-gray-500">
                 {filteredHeads.length} pay head{filteredHeads.length === 1 ? "" : "s"}
               </div>
             </div>
@@ -481,7 +482,7 @@ const PayHeadMaster: React.FC = () => {
             <span className="text-[13px] font-semibold text-gray-800">
               {selected ? "Edit pay head" : "Add pay head"}
             </span>
-            <button type="button" className="text-gray-500 hover:text-gray-700" onClick={resetForm}>
+            <button type="button" className="text-gray-500 hover:text-gray-700" aria-label="Close form" onClick={resetForm}>
               <X className="h-4 w-4" />
             </button>
           </div>
@@ -541,24 +542,24 @@ const PayHeadMaster: React.FC = () => {
                 <label className="flex items-start gap-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] mt-0.5"
+                    className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] mt-0.5"
                     checked={form.affectsNetSalary}
                     onChange={(e) => setForm({ ...form, affectsNetSalary: e.target.checked })}
                   />
-                  <span className="text-[11px] font-medium text-gray-700 leading-tight">
+                  <span className="text-[12px] font-medium text-gray-700 leading-tight">
                     Affects net salary
                   </span>
                 </label>
                 <label className="flex items-start gap-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] mt-0.5"
+                    className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] mt-0.5"
                     checked={form.ssfApplicable}
                     onChange={(e) => setForm({ ...form, ssfApplicable: e.target.checked })}
                   />
-                  <span className="text-[11px] font-medium text-gray-700 leading-tight">
+                  <span className="text-[12px] font-medium text-gray-700 leading-tight">
                     SSF applicable
-                    <span className="block text-[10px] text-gray-500 font-normal">
+                    <span className="block text-[12px] text-gray-500 font-normal">
                       Social Security Fund
                     </span>
                   </span>
@@ -566,13 +567,13 @@ const PayHeadMaster: React.FC = () => {
                 <label className="flex items-start gap-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] mt-0.5"
+                    className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] mt-0.5"
                     checked={form.citApplicable}
                     onChange={(e) => setForm({ ...form, citApplicable: e.target.checked })}
                   />
-                  <span className="text-[11px] font-medium text-gray-700 leading-tight">
+                  <span className="text-[12px] font-medium text-gray-700 leading-tight">
                     CIT applicable
-                    <span className="block text-[10px] text-gray-500 font-normal">
+                    <span className="block text-[12px] text-gray-500 font-normal">
                       Citizen Investment Trust
                     </span>
                   </span>
@@ -582,24 +583,24 @@ const PayHeadMaster: React.FC = () => {
                 <label className="flex items-start gap-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] mt-0.5"
+                    className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] mt-0.5"
                     checked={form.incomeTaxApplicable}
                     onChange={(e) => setForm({ ...form, incomeTaxApplicable: e.target.checked })}
                   />
-                  <span className="text-[11px] font-medium text-gray-700 leading-tight">
+                  <span className="text-[12px] font-medium text-gray-700 leading-tight">
                     Income tax (TDS) applicable
                   </span>
                 </label>
                 <label className="flex items-start gap-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] mt-0.5"
+                    className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] mt-0.5"
                     checked={form.pfApplicable}
                     onChange={(e) => setForm({ ...form, pfApplicable: e.target.checked })}
                   />
-                  <span className="text-[11px] font-medium text-gray-700 leading-tight">
+                  <span className="text-[12px] font-medium text-gray-700 leading-tight">
                     PF applicable
-                    <span className="block text-[10px] text-gray-500 font-normal">
+                    <span className="block text-[12px] text-gray-500 font-normal">
                       Provident Fund
                     </span>
                   </span>
@@ -607,11 +608,11 @@ const PayHeadMaster: React.FC = () => {
                 <label className="flex items-start gap-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] mt-0.5"
+                    className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] mt-0.5"
                     checked={form.isActive}
                     onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
                   />
-                  <span className="text-[11px] font-medium text-gray-700 leading-tight">
+                  <span className="text-[12px] font-medium text-gray-700 leading-tight">
                     Active
                   </span>
                 </label>
@@ -706,7 +707,7 @@ const PayHeadMaster: React.FC = () => {
               <div>
                 <label className={labelCls}>Formula</label>
                 <textarea
-                  className="w-full px-2.5 py-1.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] resize-none h-16"
+                  className="w-full px-2.5 py-1.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] resize-none h-16"
                   value={form.formula}
                   onChange={(e) => setForm({ ...form, formula: e.target.value })}
                   placeholder="Enter formula..."

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useStore } from "../store/useStore";
 import { getDB, generateId } from "../lib/db";
 import * as XLSX from "xlsx";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import {
   User,
   Shield,
@@ -690,7 +690,7 @@ export default function UsersManagement() {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-            <Shield size={16} className="text-[#1557b0]" /> Users Management
+            <Shield size={16} className="text-[var(--ds-action-primary)]" /> Users
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Field-level permissions, branch isolation, login audit and security policies

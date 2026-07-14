@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useStore } from "../store";
 import { CostCenterLevel, CostCenter } from "../lib/types";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 
 const btnPrimary =

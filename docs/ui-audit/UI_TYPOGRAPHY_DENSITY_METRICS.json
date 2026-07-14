@@ -1,0 +1,49 @@
+{
+  "generated_at": "2026-07-13T12:34:17.030Z",
+  "typography": {
+    "text_below_12px": 4183,
+    "text_9px": 82,
+    "text_10px": 2009,
+    "text_11px": 2072,
+    "text_12px": 3135,
+    "text_13px": 300,
+    "text_14px": 258,
+    "font_size_distribution_px": {
+      "4": 1,
+      "5": 4,
+      "6": 3,
+      "7": 4,
+      "8": 3,
+      "9": 82,
+      "10": 2009,
+      "11": 2072,
+      "12": 3135,
+      "13": 300,
+      "14": 258,
+      "15": 206,
+      "16": 18,
+      "17": 1,
+      "18": 36,
+      "20": 17,
+      "22": 15,
+      "24": 15,
+      "28": 4,
+      "32": 1,
+      "5.5": 1,
+      "6.5": 1,
+      "8.5": 1,
+      "10.5": 2
+    },
+    "uppercase_class_count": 2125,
+    "font_mono_or_tabular_hits": 892,
+    "tabular_nums_count": 35
+  },
+  "controls": {
+    "h_class_below_32px": 337,
+    "h_class_below_36px": 1740,
+    "h_class_below_44px_touch": 1832,
+    "note": "Counts Tailwind h-* / h-[Npx] utility occurrences, not unique components"
+  },
+  "black_border_or_pure_black_hits": 896,
+  "legacy_green_pattern_hits": 22
+}

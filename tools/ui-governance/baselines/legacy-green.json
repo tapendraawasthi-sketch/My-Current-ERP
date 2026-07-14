@@ -1,0 +1,16 @@
+{
+  "rule": "no-legacy-green-import",
+  "generated_at": "2026-07-13T17:06:07.011Z",
+  "count": 1,
+  "ids": [
+    "b9911b9d8f360239"
+  ],
+  "samples": [
+    {
+      "id": "b9911b9d8f360239",
+      "file": "src/pages/TallyVoucherPage.tsx",
+      "line": 10,
+      "snippet": "import \"../styles/tally-green.css\";"
+    }
+  ]
+}

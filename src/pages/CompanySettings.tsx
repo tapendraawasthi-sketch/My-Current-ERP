@@ -1,8 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect } from "react";
 import { Save, Eye, EyeOff, X } from "lucide-react";
-import { PillTitle, FormPanel } from "../components/BusyShell";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 const NEPAL_PROVINCES = [
   "Koshi Province (Province 1)",
@@ -152,7 +151,7 @@ export default function CompanySettings() {
     smtp_user: "",
     smtp_pass: "",
     smtp_from: "",
-    theme_color: "#1a2744",
+    theme_color: "",
     enable_nepali_date: true,
     show_both_dates: true,
     financial_year_start_month: 4,
@@ -246,20 +245,19 @@ export default function CompanySettings() {
   const availableDistricts = formData.province ? NEPAL_DISTRICTS[formData.province] || [] : [];
 
   return (
-    <div style={{ background: "#f5f6fa", padding: 12, minHeight: "100vh" }}>
-      <PillTitle title="Modify Company" />
-      <FormPanel>
+    <div className="min-h-screen bg-[var(--ds-surface-muted)] p-3">
+<div className="mb-4 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-4">
         <div className="flex flex-col gap-4 animate-fadeIn pb-4 text-xs select-none">
           {/* Header with title and Save button */}
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-[#000000]">Company Settings</h2>
+            <h2 className="text-lg font-bold text-[var(--ds-text-default)]">Company settings</h2>
             <button
               onClick={handleSave}
               disabled={!isDirty}
               className={`h-8 px-4 rounded-md text-[12px] font-medium flex items-center gap-2 ${
                 isDirty
-                  ? "bg-[#3D6B25] hover:bg-[#2D5A1A] text-white"
-                  : "bg-[#EBF5E2] text-[#000000] cursor-not-allowed"
+                  ? "bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white"
+                  : "bg-[var(--ds-surface-muted)] text-[var(--ds-text-default)] cursor-not-allowed"
               }`}
             >
               <Save size={14} />
@@ -268,7 +266,7 @@ export default function CompanySettings() {
           </div>
 
           {/* Tab bar — 5 tabs */}
-          <div className="flex items-center gap-0 border-b border-[#9DC07A] mb-4">
+          <div className="flex items-center gap-0 border-b border-[var(--ds-border-default)] mb-4">
             {[
               { key: "general", label: "Basic Info" },
               { key: "financial", label: "Financial" },
@@ -281,12 +279,12 @@ export default function CompanySettings() {
                 type="button"
                 onClick={() => setActiveTab(tab.key as any)}
                 className={`px-4 py-2 text-[12px] font-medium relative ${
-                  activeTab === tab.key ? "text-[#1557b0]" : "text-[#000000] hover:bg-[#EBF5E2]"
+                  activeTab === tab.key ? "text-[var(--ds-action-primary)]" : "text-[var(--ds-text-default)] hover:bg-[var(--ds-surface-muted)]"
                 }`}
               >
                 {tab.label}
                 {activeTab === tab.key && (
-                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#1557b0]"></div>
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--ds-action-primary)]"></div>
                 )}
               </button>
             ))}
@@ -298,44 +296,44 @@ export default function CompanySettings() {
             {activeTab === "general" && (
               <div className="space-y-4">
                 {/* Section 1 - Company Profile */}
-                <div className="bg-white border border-[#9DC07A] rounded-lg overflow-hidden mb-4">
-                  <div className="px-4 py-2.5 border-b border-[#9DC07A] bg-[#EBF5E2]">
-                    <h3 className="text-[11px] font-semibold text-[#000000] uppercase tracking-wider">
+                <div className="bg-white border border-[var(--ds-border-default)] rounded-lg overflow-hidden mb-4">
+                  <div className="px-4 py-2.5 border-b border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]">
+                    <h3 className="text-[12px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wider">
                       Company Profile
                     </h3>
                   </div>
                   <div className="p-4 grid grid-cols-2 gap-4">
                     <div className="col-span-2">
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Company Name (English)*
                       </label>
                       <input
                         type="text"
                         value={formData.company_name}
                         onChange={(e) => handleChange("company_name", e.target.value)}
-                        className={`h-8 px-2.5 w-full text-[12px] border rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] ${fieldErrors.company_name ? "border-red-500" : "border-[#9DC07A]"}`}
+                        className={`h-8 px-2.5 w-full text-[12px] border rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] ${fieldErrors.company_name ? "border-red-500" : "border-[var(--ds-border-default)]"}`}
                         placeholder="Company Name"
                       />
                       {fieldErrors.company_name && (
-                        <p className="text-red-600 text-[10px] mt-0.5">
+                        <p className="text-red-600 text-[12px] mt-0.5">
                           {fieldErrors.company_name}
                         </p>
                       )}
                     </div>
                     <div className="col-span-2">
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Company Name (Nepali)
                       </label>
                       <input
                         type="text"
                         value={formData.company_name_nepali}
                         onChange={(e) => handleChange("company_name_nepali", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="कम्पनी नाम"
                       />
                     </div>
                     <div className="col-span-2">
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Logo Upload
                       </label>
                       <div className="flex items-center gap-2">
@@ -344,18 +342,18 @@ export default function CompanySettings() {
                             <img
                               src={formData.logo_url}
                               alt="Preview"
-                              className="max-h-16 max-w-32 object-contain border border-[#9DC07A]"
+                              className="max-h-16 max-w-32 object-contain border border-[var(--ds-border-default)]"
                             />
                             <button
                               type="button"
                               onClick={() => handleChange("logo_url", "")}
-                              className="absolute -top-2 -right-2 bg-white border border-[#9DC07A] rounded-full p-1 text-[#000000] hover:bg-[#EBF5E2]"
+                              className="absolute -top-2 -right-2 bg-white border border-[var(--ds-border-default)] rounded-full p-1 text-[var(--ds-text-default)] hover:bg-[var(--ds-surface-muted)]"
                             >
                               <X size={12} />
                             </button>
                           </div>
                         ) : (
-                          <div className="border border-dashed border-[#9DC07A] rounded-md w-16 h-16 flex items-center justify-center text-[#000000] text-[10px]">
+                          <div className="border border-dashed border-[var(--ds-border-default)] rounded-md w-16 h-16 flex items-center justify-center text-[var(--ds-text-default)] text-[12px]">
                             No Image
                           </div>
                         )}
@@ -364,9 +362,9 @@ export default function CompanySettings() {
                             type="file"
                             accept="image/jpeg,image/png,image/svg+xml,image/webp"
                             onChange={handleLogoUpload}
-                            className="text-[10px] text-[#000000] w-full"
+                            className="text-[12px] text-[var(--ds-text-default)] w-full"
                           />
-                          <p className="text-[10px] text-[#000000] mt-1">
+                          <p className="text-[12px] text-[var(--ds-text-default)] mt-1">
                             Max 2MB. JPG, PNG, SVG, WebP
                           </p>
                         </div>
@@ -376,57 +374,57 @@ export default function CompanySettings() {
                 </div>
 
                 {/* Section 2 - Address & Contact */}
-                <div className="bg-white border border-[#9DC07A] rounded-lg overflow-hidden mb-4">
-                  <div className="px-4 py-2.5 border-b border-[#9DC07A] bg-[#EBF5E2]">
-                    <h3 className="text-[11px] font-semibold text-[#000000] uppercase tracking-wider">
+                <div className="bg-white border border-[var(--ds-border-default)] rounded-lg overflow-hidden mb-4">
+                  <div className="px-4 py-2.5 border-b border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]">
+                    <h3 className="text-[12px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wider">
                       Address & Contact
                     </h3>
                   </div>
                   <div className="p-4 grid grid-cols-2 gap-4">
                     <div className="col-span-2">
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Address
                       </label>
                       <input
                         type="text"
                         value={formData.address}
                         onChange={(e) => handleChange("address", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="Full Address"
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         City
                       </label>
                       <input
                         type="text"
                         value={formData.city}
                         onChange={(e) => handleChange("city", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="City"
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Ward / Tole Number
                       </label>
                       <input
                         type="text"
                         value={formData.ward_number}
                         onChange={(e) => handleChange("ward_number", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="Ward/Tole"
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Province
                       </label>
                       <select
                         value={formData.province}
                         onChange={(e) => handleProvinceChange(e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       >
                         <option value="">— Select Province —</option>
                         {NEPAL_PROVINCES.map((p) => (
@@ -437,13 +435,13 @@ export default function CompanySettings() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         District
                       </label>
                       <select
                         value={formData.district}
                         onChange={(e) => handleChange("district", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         disabled={availableDistricts.length === 0}
                       >
                         <option value="">
@@ -459,53 +457,53 @@ export default function CompanySettings() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Phone
                       </label>
                       <input
                         type="text"
                         value={formData.phone}
                         onChange={(e) => handleChange("phone", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="01-4XXXXXX or 98XXXXXXXX"
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Mobile
                       </label>
                       <input
                         type="text"
                         value={formData.mobile}
                         onChange={(e) => handleChange("mobile", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="98XXXXXXXX"
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Email
                       </label>
                       <input
                         type="email"
                         value={formData.email}
                         onChange={(e) => handleChange("email", e.target.value)}
-                        className={`h-8 px-2.5 w-full text-[12px] border rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] ${fieldErrors.email ? "border-red-500" : "border-[#9DC07A]"}`}
+                        className={`h-8 px-2.5 w-full text-[12px] border rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] ${fieldErrors.email ? "border-red-500" : "border-[var(--ds-border-default)]"}`}
                         placeholder="info@company.com"
                       />
                       {fieldErrors.email && (
-                        <p className="text-red-600 text-[10px] mt-0.5">{fieldErrors.email}</p>
+                        <p className="text-red-600 text-[12px] mt-0.5">{fieldErrors.email}</p>
                       )}
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Website
                       </label>
                       <input
                         type="url"
                         value={formData.website}
                         onChange={(e) => handleChange("website", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="https://www.company.com.np"
                       />
                     </div>
@@ -513,17 +511,17 @@ export default function CompanySettings() {
                 </div>
 
                 {/* Section 3 - Tax Registration */}
-                <div className="bg-white border border-[#9DC07A] rounded-lg overflow-hidden mb-4">
-                  <div className="px-4 py-2.5 border-b border-[#9DC07A] bg-[#EBF5E2]">
-                    <h3 className="text-[11px] font-semibold text-[#000000] uppercase tracking-wider">
+                <div className="bg-white border border-[var(--ds-border-default)] rounded-lg overflow-hidden mb-4">
+                  <div className="px-4 py-2.5 border-b border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]">
+                    <h3 className="text-[12px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wider">
                       Tax Registration
                     </h3>
                   </div>
                   <div className="p-4 grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         PAN No.{" "}
-                        <span className="text-[#000000] font-normal">
+                        <span className="text-[var(--ds-text-default)] font-normal">
                           ({formData.pan_number.length}/9 digits)
                         </span>
                       </label>
@@ -534,52 +532,52 @@ export default function CompanySettings() {
                         onChange={(e) =>
                           handleChange("pan_number", e.target.value.replace(/\D/g, ""))
                         }
-                        className={`h-8 px-2.5 w-full text-[12px] border rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] ${fieldErrors.pan_number ? "border-red-500" : "border-[#9DC07A]"}`}
+                        className={`h-8 px-2.5 w-full text-[12px] border rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] ${fieldErrors.pan_number ? "border-red-500" : "border-[var(--ds-border-default)]"}`}
                         placeholder="123456789"
                       />
                       {/^\d{9}$/.test(formData.pan_number) && (
-                        <p className="text-green-600 text-[10px] mt-0.5">✓ Valid PAN format</p>
+                        <p className="text-green-600 text-[12px] mt-0.5">✓ Valid PAN format</p>
                       )}
                       {fieldErrors.pan_number && (
-                        <p className="text-red-600 text-[10px] mt-0.5">{fieldErrors.pan_number}</p>
+                        <p className="text-red-600 text-[12px] mt-0.5">{fieldErrors.pan_number}</p>
                       )}
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         VAT No.
                       </label>
                       <input
                         type="text"
                         value={formData.vat_number}
                         readOnly
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-[#f0f0f0] text-[#000000] focus:outline-none"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-[var(--ds-action-primary)] text-[var(--ds-text-default)] focus:outline-none"
                         placeholder="Auto-filled from PAN"
                       />
-                      <p className="text-[10px] text-[#000000] mt-1">
+                      <p className="text-[12px] text-[var(--ds-text-default)] mt-1">
                         In Nepal, PAN and VAT numbers are the same 9-digit number. Auto-filled from
                         PAN when VAT is enabled.
                       </p>
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Company Reg. No. (OCR)
                       </label>
                       <input
                         type="text"
                         value={formData.registration_number}
                         onChange={(e) => handleChange("registration_number", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="Reg. No."
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Business Registration Type
                       </label>
                       <select
                         value={formData.registration_type}
                         onChange={(e) => handleChange("registration_type", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       >
                         <option value="">— Select Type —</option>
                         <option value="Pvt. Ltd. Registration">Pvt. Ltd. Registration</option>
@@ -598,40 +596,40 @@ export default function CompanySettings() {
             {activeTab === "financial" && (
               <div className="space-y-4">
                 {/* Section 1 - Currency & Decimals */}
-                <div className="bg-white border border-[#9DC07A] rounded-lg overflow-hidden mb-4">
-                  <div className="px-4 py-2.5 border-b border-[#9DC07A] bg-[#EBF5E2]">
-                    <h3 className="text-[11px] font-semibold text-[#000000] uppercase tracking-wider">
+                <div className="bg-white border border-[var(--ds-border-default)] rounded-lg overflow-hidden mb-4">
+                  <div className="px-4 py-2.5 border-b border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]">
+                    <h3 className="text-[12px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wider">
                       Currency & Decimals
                     </h3>
                   </div>
                   <div className="p-4 grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Currency Symbol
                       </label>
                       <input
                         type="text"
                         value={formData.currency_symbol}
                         onChange={(e) => handleChange("currency_symbol", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="Rs."
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Currency Code
                       </label>
                       <input
                         type="text"
                         value={formData.currency_code}
                         readOnly
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-[#f0f0f0] text-[#000000] focus:outline-none"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-[var(--ds-action-primary)] text-[var(--ds-text-default)] focus:outline-none"
                         placeholder="NPR"
                       />
-                      <p className="text-[10px] text-[#000000] mt-1">Nepali Rupee</p>
+                      <p className="text-[12px] text-[var(--ds-text-default)] mt-1">Nepali Rupee</p>
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Decimal Places
                       </label>
                       <input
@@ -642,53 +640,53 @@ export default function CompanySettings() {
                         onChange={(e) =>
                           handleChange("decimal_places", parseInt(e.target.value) || 0)
                         }
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Section 1b - Bank Details (for invoice printing) */}
-                <div className="bg-white border border-[#9DC07A] rounded-lg overflow-hidden mb-4">
-                  <div className="px-4 py-2.5 border-b border-[#9DC07A] bg-[#EBF5E2]">
-                    <h3 className="text-[11px] font-semibold text-[#000000] uppercase tracking-wider">
+                <div className="bg-white border border-[var(--ds-border-default)] rounded-lg overflow-hidden mb-4">
+                  <div className="px-4 py-2.5 border-b border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]">
+                    <h3 className="text-[12px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wider">
                       Bank Details
                     </h3>
                   </div>
                   <div className="p-4 grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Bank Name
                       </label>
                       <input
                         type="text"
                         value={formData.bank_name}
                         onChange={(e) => handleChange("bank_name", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="e.g. Nepal Bank Ltd."
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Bank Branch
                       </label>
                       <input
                         type="text"
                         value={formData.bank_branch}
                         onChange={(e) => handleChange("bank_branch", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="e.g. Kathmandu Main"
                       />
                     </div>
                     <div className="col-span-2">
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Bank Account Number
                       </label>
                       <input
                         type="text"
                         value={formData.bank_account}
                         onChange={(e) => handleChange("bank_account", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="Account number"
                       />
                     </div>
@@ -696,15 +694,15 @@ export default function CompanySettings() {
                 </div>
 
                 {/* Section 2 - Fiscal Year */}
-                <div className="bg-white border border-[#9DC07A] rounded-lg overflow-hidden mb-4">
-                  <div className="px-4 py-2.5 border-b border-[#9DC07A] bg-[#EBF5E2]">
-                    <h3 className="text-[11px] font-semibold text-[#000000] uppercase tracking-wider">
+                <div className="bg-white border border-[var(--ds-border-default)] rounded-lg overflow-hidden mb-4">
+                  <div className="px-4 py-2.5 border-b border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]">
+                    <h3 className="text-[12px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wider">
                       Fiscal Year
                     </h3>
                   </div>
                   <div className="p-4 grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Fiscal Year Start Month (BS)
                       </label>
                       <select
@@ -712,7 +710,7 @@ export default function CompanySettings() {
                         onChange={(e) =>
                           handleChange("financial_year_start_month", parseInt(e.target.value))
                         }
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       >
                         <option value="1">Baishakh</option>
                         <option value="2">Jestha</option>
@@ -729,23 +727,23 @@ export default function CompanySettings() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Fiscal Year Calendar Type
                       </label>
                       <select
                         value={formData.fiscal_year_type}
                         onChange={(e) => handleChange("fiscal_year_type", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       >
                         <option value="BS">BS - Bikram Sambat (Nepal)</option>
                         <option value="AD">AD - Anno Domini</option>
                       </select>
                     </div>
                     <div className="col-span-2">
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Calculated Fiscal Year
                       </label>
-                      <span className="text-[12px] text-[#000000]">
+                      <span className="text-[12px] text-[var(--ds-text-default)]">
                         Fiscal Year: 1 Shrawan to 31 Ashadh
                       </span>
                     </div>
@@ -753,55 +751,55 @@ export default function CompanySettings() {
                 </div>
 
                 {/* Section 3 - Voucher Numbering */}
-                <div className="bg-white border border-[#9DC07A] rounded-lg overflow-hidden mb-4">
-                  <div className="px-4 py-2.5 border-b border-[#9DC07A] bg-[#EBF5E2]">
-                    <h3 className="text-[11px] font-semibold text-[#000000] uppercase tracking-wider">
+                <div className="bg-white border border-[var(--ds-border-default)] rounded-lg overflow-hidden mb-4">
+                  <div className="px-4 py-2.5 border-b border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]">
+                    <h3 className="text-[12px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wider">
                       Voucher Numbering
                     </h3>
                   </div>
                   <div className="p-4 grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Invoice Prefix
                       </label>
                       <input
                         type="text"
                         value={formData.invoice_prefix}
                         onChange={(e) => handleChange("invoice_prefix", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="INV"
                       />
-                      <p className="text-[10px] text-[#000000] mt-1">
+                      <p className="text-[12px] text-[var(--ds-text-default)] mt-1">
                         Example: {formData.invoice_prefix}-2082/83-00001
                       </p>
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Receipt Prefix
                       </label>
                       <input
                         type="text"
                         value={formData.receipt_prefix}
                         onChange={(e) => handleChange("receipt_prefix", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="RCP"
                       />
-                      <p className="text-[10px] text-[#000000] mt-1">
+                      <p className="text-[12px] text-[var(--ds-text-default)] mt-1">
                         Example: {formData.receipt_prefix}-2082/83-00001
                       </p>
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Voucher Prefix
                       </label>
                       <input
                         type="text"
                         value={formData.voucher_prefix}
                         onChange={(e) => handleChange("voucher_prefix", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="VCH"
                       />
-                      <p className="text-[10px] text-[#000000] mt-1">
+                      <p className="text-[12px] text-[var(--ds-text-default)] mt-1">
                         Example: {formData.voucher_prefix}-2082/83-00001
                       </p>
                     </div>
@@ -809,9 +807,9 @@ export default function CompanySettings() {
                 </div>
 
                 {/* Section 4 - Nepali Date Settings */}
-                <div className="bg-white border border-[#9DC07A] rounded-lg overflow-hidden mb-4">
-                  <div className="px-4 py-2.5 border-b border-[#9DC07A] bg-[#EBF5E2]">
-                    <h3 className="text-[11px] font-semibold text-[#000000] uppercase tracking-wider">
+                <div className="bg-white border border-[var(--ds-border-default)] rounded-lg overflow-hidden mb-4">
+                  <div className="px-4 py-2.5 border-b border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]">
+                    <h3 className="text-[12px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wider">
                       Nepali Date Settings
                     </h3>
                   </div>
@@ -821,9 +819,9 @@ export default function CompanySettings() {
                         type="checkbox"
                         checked={formData.enable_nepali_date}
                         onChange={(e) => handleChange("enable_nepali_date", e.target.checked)}
-                        className="rounded border-[#9DC07A] h-4 w-4"
+                        className="rounded border-[var(--ds-border-default)] h-4 w-4"
                       />
-                      <label className="text-[12px] font-medium text-[#000000]">
+                      <label className="text-[12px] font-medium text-[var(--ds-text-default)]">
                         Enable Nepali Date (BS) as Primary
                       </label>
                     </div>
@@ -832,9 +830,9 @@ export default function CompanySettings() {
                         type="checkbox"
                         checked={formData.show_both_dates}
                         onChange={(e) => handleChange("show_both_dates", e.target.checked)}
-                        className="rounded border-[#9DC07A] h-4 w-4"
+                        className="rounded border-[var(--ds-border-default)] h-4 w-4"
                       />
-                      <label className="text-[12px] font-medium text-[#000000]">
+                      <label className="text-[12px] font-medium text-[var(--ds-text-default)]">
                         Show Both BS and AD Dates
                       </label>
                     </div>
@@ -847,9 +845,9 @@ export default function CompanySettings() {
             {activeTab === "tax" && (
               <div className="space-y-4">
                 {/* Section 1 - Value Added Tax */}
-                <div className="bg-white border border-[#9DC07A] rounded-lg overflow-hidden mb-4">
-                  <div className="px-4 py-2.5 border-b border-[#9DC07A] bg-[#EBF5E2]">
-                    <h3 className="text-[11px] font-semibold text-[#000000] uppercase tracking-wider">
+                <div className="bg-white border border-[var(--ds-border-default)] rounded-lg overflow-hidden mb-4">
+                  <div className="px-4 py-2.5 border-b border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]">
+                    <h3 className="text-[12px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wider">
                       Value Added Tax (VAT)
                     </h3>
                   </div>
@@ -859,12 +857,12 @@ export default function CompanySettings() {
                         type="checkbox"
                         checked={formData.enable_vat}
                         onChange={(e) => handleChange("enable_vat", e.target.checked)}
-                        className="rounded border-[#9DC07A] h-4 w-4"
+                        className="rounded border-[var(--ds-border-default)] h-4 w-4"
                       />
-                      <label className="text-[12px] font-medium text-[#000000]">Enable VAT</label>
+                      <label className="text-[12px] font-medium text-[var(--ds-text-default)]">Enable VAT</label>
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         VAT Rate (%)
                       </label>
                       <input
@@ -874,33 +872,33 @@ export default function CompanySettings() {
                         step="0.01"
                         value={formData.vat_rate}
                         onChange={(e) => handleChange("vat_rate", parseFloat(e.target.value) || 0)}
-                        className={`h-8 px-2.5 w-full text-[12px] border rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] ${fieldErrors.vat_rate ? "border-red-500" : "border-[#9DC07A]"}`}
+                        className={`h-8 px-2.5 w-full text-[12px] border rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] ${fieldErrors.vat_rate ? "border-red-500" : "border-[var(--ds-border-default)]"}`}
                       />
                       {fieldErrors.vat_rate && (
-                        <p className="text-red-600 text-[10px] mt-0.5">{fieldErrors.vat_rate}</p>
+                        <p className="text-red-600 text-[12px] mt-0.5">{fieldErrors.vat_rate}</p>
                       )}
-                      <p className="text-[10px] text-[#000000] mt-1">
+                      <p className="text-[12px] text-[var(--ds-text-default)] mt-1">
                         Nepal mandates 13% VAT under IRD regulations.
                       </p>
                     </div>
                     <div className="col-span-2">
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         VAT Registration Date
                       </label>
                       <input
                         type="date"
                         value={formData.vat_registration_date}
                         onChange={(e) => handleChange("vat_registration_date", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Section 2 - Tax Deducted at Source */}
-                <div className="bg-white border border-[#9DC07A] rounded-lg overflow-hidden mb-4">
-                  <div className="px-4 py-2.5 border-b border-[#9DC07A] bg-[#EBF5E2]">
-                    <h3 className="text-[11px] font-semibold text-[#000000] uppercase tracking-wider">
+                <div className="bg-white border border-[var(--ds-border-default)] rounded-lg overflow-hidden mb-4">
+                  <div className="px-4 py-2.5 border-b border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]">
+                    <h3 className="text-[12px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wider">
                       Tax Deducted at Source (TDS)
                     </h3>
                   </div>
@@ -910,13 +908,13 @@ export default function CompanySettings() {
                         type="checkbox"
                         checked={formData.enable_tds}
                         onChange={(e) => handleChange("enable_tds", e.target.checked)}
-                        className="rounded border-[#9DC07A] h-4 w-4"
+                        className="rounded border-[var(--ds-border-default)] h-4 w-4"
                       />
-                      <label className="text-[12px] font-medium text-[#000000]">Enable TDS</label>
+                      <label className="text-[12px] font-medium text-[var(--ds-text-default)]">Enable TDS</label>
                     </div>
                     {formData.enable_tds && (
-                      <div className="col-span-2 bg-[#f0f0f0] border border-[#9DC07A] rounded-md p-2">
-                        <p className="text-[10px] text-[#000000]">
+                      <div className="col-span-2 bg-[var(--ds-action-primary)] border border-[var(--ds-border-default)] rounded-md p-2">
+                        <p className="text-[12px] text-[var(--ds-text-default)]">
                           TDS applies on contractor payments (1.5%), rent (10%), professional fees
                           (15%), commission (5%), interest (15%). Deducted from payee, deposited to
                           IRD.
@@ -927,15 +925,15 @@ export default function CompanySettings() {
                 </div>
 
                 {/* Section 3 - IRD / CBMS e-Billing */}
-                <div className="bg-white border border-[#9DC07A] rounded-lg overflow-hidden mb-4">
-                  <div className="px-4 py-2.5 border-b border-[#9DC07A] bg-[#EBF5E2]">
-                    <h3 className="text-[11px] font-semibold text-[#000000] uppercase tracking-wider">
+                <div className="bg-white border border-[var(--ds-border-default)] rounded-lg overflow-hidden mb-4">
+                  <div className="px-4 py-2.5 border-b border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]">
+                    <h3 className="text-[12px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wider">
                       IRD / CBMS e-Billing
                     </h3>
                   </div>
                   <div className="p-4">
-                    <div className="bg-blue-50 border border-blue-200 text-[#000000] p-3 rounded-md">
-                      <p className="text-[10px]">
+                    <div className="bg-blue-50 border border-blue-200 text-[var(--ds-text-default)] p-3 rounded-md">
+                      <p className="text-[12px]">
                         Nepal's Inland Revenue Department requires VAT-registered businesses to
                         submit bills via the Compliance Bill Management System (CBMS). Configure
                         CBMS settings in your system admin panel.
@@ -949,21 +947,21 @@ export default function CompanySettings() {
             {/* ── DISPLAY TAB ── */}
             {activeTab === "display" && (
               <div className="space-y-4">
-                <div className="bg-white border border-[#9DC07A] rounded-lg overflow-hidden mb-4">
-                  <div className="px-4 py-2.5 border-b border-[#9DC07A] bg-[#EBF5E2]">
-                    <h3 className="text-[11px] font-semibold text-[#000000] uppercase tracking-wider">
+                <div className="bg-white border border-[var(--ds-border-default)] rounded-lg overflow-hidden mb-4">
+                  <div className="px-4 py-2.5 border-b border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]">
+                    <h3 className="text-[12px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wider">
                       Display Settings
                     </h3>
                   </div>
                   <div className="p-4 grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Date Format
                       </label>
                       <select
                         value={formData.date_format}
                         onChange={(e) => handleChange("date_format", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       >
                         <option value="BS">BS - Bikram Sambat</option>
                         <option value="AD">AD - Anno Domini</option>
@@ -971,27 +969,27 @@ export default function CompanySettings() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Language
                       </label>
                       <select
                         value={formData.language}
                         onChange={(e) => handleChange("language", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       >
                         <option value="en">English</option>
                         <option value="ne">Nepali</option>
                       </select>
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Theme Color
                       </label>
                       <input
                         type="color"
                         value={formData.theme_color}
                         onChange={(e) => handleChange("theme_color", e.target.value)}
-                        className="h-8 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       />
                     </div>
                   </div>
@@ -1002,15 +1000,15 @@ export default function CompanySettings() {
             {/* ── EMAIL TAB ── */}
             {activeTab === "email" && (
               <div className="space-y-4">
-                <div className="bg-white border border-[#9DC07A] rounded-lg overflow-hidden mb-4">
-                  <div className="px-4 py-2.5 border-b border-[#9DC07A] bg-[#EBF5E2]">
-                    <h3 className="text-[11px] font-medium text-[#000000] uppercase tracking-wider">
+                <div className="bg-white border border-[var(--ds-border-default)] rounded-lg overflow-hidden mb-4">
+                  <div className="px-4 py-2.5 border-b border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]">
+                    <h3 className="text-[12px] font-medium text-[var(--ds-text-default)] uppercase tracking-wider">
                       Email / SMTP Settings
                     </h3>
                   </div>
                   <div className="p-4 grid grid-cols-2 gap-4">
                     <div className="col-span-2">
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Email Service Preset
                       </label>
                       <select
@@ -1021,7 +1019,7 @@ export default function CompanySettings() {
                             handleChange("smtp_port", preset.port);
                           }
                         }}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       >
                         <option value="">— Select to auto-fill —</option>
                         {Object.keys(EMAIL_PRESETS).map((k) => (
@@ -1032,19 +1030,19 @@ export default function CompanySettings() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         SMTP Host
                       </label>
                       <input
                         type="text"
                         value={formData.smtp_host}
                         onChange={(e) => handleChange("smtp_host", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="smtp.example.com"
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         SMTP Port
                       </label>
                       <input
@@ -1053,20 +1051,20 @@ export default function CompanySettings() {
                         max="65535"
                         value={formData.smtp_port}
                         onChange={(e) => handleChange("smtp_port", parseInt(e.target.value) || 587)}
-                        className={`h-8 px-2.5 w-full text-[12px] border rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] ${fieldErrors.smtp_port ? "border-red-500" : "border-[#9DC07A]"}`}
+                        className={`h-8 px-2.5 w-full text-[12px] border rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] ${fieldErrors.smtp_port ? "border-red-500" : "border-[var(--ds-border-default)]"}`}
                       />
                       {fieldErrors.smtp_port && (
-                        <p className="text-red-600 text-[10px] mt-0.5">{fieldErrors.smtp_port}</p>
+                        <p className="text-red-600 text-[12px] mt-0.5">{fieldErrors.smtp_port}</p>
                       )}
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         SSL/TLS Mode
                       </label>
                       <select
                         value="STARTTLS"
                         onChange={() => {}}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                       >
                         <option value="STARTTLS">STARTTLS (port 587)</option>
                         <option value="SSL">SSL (port 465)</option>
@@ -1074,19 +1072,19 @@ export default function CompanySettings() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         SMTP User
                       </label>
                       <input
                         type="text"
                         value={formData.smtp_user}
                         onChange={(e) => handleChange("smtp_user", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="user@example.com"
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         SMTP Password
                       </label>
                       <div className="relative">
@@ -1094,13 +1092,13 @@ export default function CompanySettings() {
                           type={showSmtpPass ? "text" : "password"}
                           value={formData.smtp_pass}
                           onChange={(e) => handleChange("smtp_pass", e.target.value)}
-                          className="h-8 px-2.5 pr-9 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                          className="h-8 px-2.5 pr-9 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                           placeholder="••••••••"
                         />
                         <button
                           type="button"
                           onClick={() => setShowSmtpPass((p) => !p)}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 text-[#000000] hover:opacity-70 cursor-pointer"
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--ds-text-default)] hover:opacity-70 cursor-pointer"
                         >
                           {showSmtpPass ? (
                             <EyeOff className="w-4 h-4" />
@@ -1111,19 +1109,19 @@ export default function CompanySettings() {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         From Email
                       </label>
                       <input
                         type="email"
                         value={formData.smtp_from}
                         onChange={(e) => handleChange("smtp_from", e.target.value)}
-                        className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                        className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         placeholder="from@example.com"
                       />
                     </div>
-                    <div className="col-span-2 border-t border-[#9DC07A] pt-4 mt-2">
-                      <label className="block text-[11px] font-medium text-[#000000] mb-1">
+                    <div className="col-span-2 border-t border-[var(--ds-border-default)] pt-4 mt-2">
+                      <label className="block text-[12px] font-medium text-[var(--ds-text-default)] mb-1">
                         Test Email Recipient
                       </label>
                       <div className="flex gap-2">
@@ -1131,7 +1129,7 @@ export default function CompanySettings() {
                           type="email"
                           value={testEmailTarget}
                           onChange={(e) => setTestEmailTarget(e.target.value)}
-                          className="h-8 px-2.5 w-full text-[12px] border border-[#9DC07A] rounded-md bg-white text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                          className="h-8 px-2.5 w-full text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white text-[var(--ds-text-default)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                           placeholder="test@example.com"
                         />
                         <button
@@ -1146,8 +1144,8 @@ export default function CompanySettings() {
                           disabled={!testEmailTarget || testEmailLoading}
                           className={`h-8 px-4 rounded-md text-[12px] font-medium whitespace-nowrap ${
                             testEmailTarget && !testEmailLoading
-                              ? "bg-[#1557b0] hover:bg-[#0f4a96] text-white"
-                              : "bg-[#EBF5E2] text-[#000000] cursor-not-allowed"
+                              ? "bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white"
+                              : "bg-[var(--ds-surface-muted)] text-[var(--ds-text-default)] cursor-not-allowed"
                           }`}
                         >
                           {testEmailLoading ? "Sending..." : "Send Test Email"}
@@ -1160,7 +1158,7 @@ export default function CompanySettings() {
             )}
           </div>
         </div>
-      </FormPanel>
+      </div>
     </div>
   );
 }

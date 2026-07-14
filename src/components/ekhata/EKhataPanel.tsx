@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { useEKhataStore } from "../../store/eKhataStore";
 import { useStore } from "../../store/useStore";
 import OrbixWorkspace from "./OrbixWorkspace";
@@ -26,7 +26,7 @@ const EKhataPanel: React.FC = () => {
   if (isMaximized) {
     return (
       <div
-        className="fixed inset-x-0 bottom-0 z-[45] flex flex-col overflow-hidden border-t border-[var(--ox-border)] bg-[var(--ox-bg)] p-3 shadow-[var(--ox-shadow-md)]"
+        className="fixed inset-x-0 bottom-0 z-[var(--ds-z-drawer)] flex flex-col overflow-hidden border-t border-[var(--ds-border-default)] bg-[var(--ds-canvas)] p-3 shadow-[var(--ds-shadow-2)]"
         style={{ top: ORBIX_CHROME_TOP }}
         data-component="ekhata-panel"
       >
@@ -47,11 +47,11 @@ const EKhataPanel: React.FC = () => {
 
   return (
     <div
-      className="fixed bottom-4 right-4 z-[9998] flex flex-col overflow-hidden rounded-[var(--ox-radius-xl)] border border-[var(--ox-border)] bg-[var(--ox-surface)] shadow-[var(--ox-shadow-md)]"
+      className="fixed bottom-4 right-4 z-[var(--ds-z-emergency)] flex flex-col overflow-hidden rounded-[var(--ds-radius-lg)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] shadow-[var(--ds-shadow-2)]"
       style={{ width: 480, maxHeight: "min(85vh, 720px)", minHeight: 520 }}
       data-component="ekhata-panel"
     >
-      <div className="flex items-center justify-end border-b border-[var(--ox-border)] px-2 py-1">
+      <div className="flex items-center justify-end border-b border-[var(--ds-border-default)] px-2 py-1">
         <OrbixWindowControls
           windowMode={windowMode}
           onMinimize={minimizePanel}

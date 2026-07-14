@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Shield, Eye, EyeOff, AlertTriangle } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { useStore } from "../../store/useStore";
 
 const TallyVault = () => {

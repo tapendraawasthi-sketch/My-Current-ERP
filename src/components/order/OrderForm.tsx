@@ -49,7 +49,7 @@ import {
 import { formatNumber } from "@/lib/utils";
 import { computeVAT } from "@/lib/taxUtils";
 import { PartyType } from "@/lib/types";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 const round2 = (n: number) => Math.round((Number(n) || 0) * 100) / 100;
 const uid = () => Math.random().toString(36).slice(2, 10);

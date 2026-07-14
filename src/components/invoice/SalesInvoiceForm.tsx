@@ -46,9 +46,8 @@ import {
   PartyType,
   TdsType,
 } from "@/lib/types";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { consumeAiInvoiceDraft } from "@/ai/actions/invoiceDraft";
-import { PillTitle, FormPanel } from "@/components/BusyShell";
 import InvoiceLineItem, { InvoiceLineState } from "./InvoiceLineItem";
 import AttachmentUploader from "../ui/AttachmentUploader";
 
@@ -68,7 +67,7 @@ const TYPE_MAP: Record<
 > = {
   sales: {
     vt: VoucherType.SALES_INVOICE,
-    label: "SALES INVOICE",
+    label: "Sales invoice",
     party: PartyType.CUSTOMER,
     color: "success",
     isReturn: false,
@@ -76,7 +75,7 @@ const TYPE_MAP: Record<
   },
   purchase: {
     vt: VoucherType.PURCHASE_INVOICE,
-    label: "PURCHASE INVOICE",
+    label: "Purchase invoice",
     party: PartyType.SUPPLIER,
     color: "info",
     isReturn: false,
@@ -84,7 +83,7 @@ const TYPE_MAP: Record<
   },
   "sales-return": {
     vt: VoucherType.SALES_RETURN,
-    label: "SALES RETURN",
+    label: "Sales return",
     party: PartyType.CUSTOMER,
     color: "warning",
     isReturn: true,
@@ -92,7 +91,7 @@ const TYPE_MAP: Record<
   },
   "purchase-return": {
     vt: VoucherType.PURCHASE_RETURN,
-    label: "PURCHASE RETURN",
+    label: "Purchase return",
     party: PartyType.SUPPLIER,
     color: "warning",
     isReturn: true,
@@ -830,25 +829,25 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                     <CheckCircle2 className="h-4 w-4 text-green-600" />
                   </div>
                   <div>
-                    <p className="text-[12px] font-semibold text-[#000000]">
+                    <p className="text-[12px] font-semibold text-[var(--ds-text-default)]">
                       Invoice posted successfully
                     </p>
-                    <p className="text-[11px] text-[#000000] font-mono">{result.invoiceNo}</p>
+                    <p className="text-[12px] text-[var(--ds-text-default)] font-mono">{result.invoiceNo}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 border-l border-[#9DC07A] pl-3 ml-3">
+                <div className="flex items-center gap-2 border-l border-[var(--ds-border-default)] pl-3 ml-3">
                   <button
                     onClick={() => {
                       toast.dismiss(t.id);
                       handlePrint(result);
                     }}
-                    className="text-[11px] font-bold text-[#1557b0] hover:text-[#0f4a96] hover:underline cursor-pointer"
+                    className="text-[12px] font-bold text-[var(--ds-action-primary)] hover:text-[var(--ds-action-primary-hover)] hover:underline cursor-pointer"
                   >
                     Print
                   </button>
                   <button
                     onClick={() => toast.dismiss(t.id)}
-                    className="text-[11px] font-medium text-[#000000] hover:text-[#000000]"
+                    className="text-[12px] font-medium text-[var(--ds-text-default)] hover:text-[var(--ds-text-default)]"
                   >
                     Dismiss
                   </button>
@@ -950,8 +949,8 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
           <CheckCircle2 className="h-8 w-8 text-green-600" />
         </div>
         <div>
-          <h2 className="text-lg font-bold text-[#000000]">{meta.label} Saved</h2>
-          <p className="text-xs text-[#000000] mt-1">
+          <h2 className="text-lg font-bold text-[var(--ds-text-default)]">{meta.label} Saved</h2>
+          <p className="text-xs text-[var(--ds-text-default)] mt-1">
             {savedInvoice.invoiceNo} · {symbol} {formatNumber(grandTotal)} · {party?.name}
           </p>
         </div>
@@ -978,9 +977,8 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
   const colspan = 13 + (showWarehouse ? 1 : 0);
 
   return (
-    <div style={{ background: "#fffbe6", padding: 12 }}>
-      <PillTitle title={`${meta.label}`} />
-      <FormPanel>
+    <div className="bg-[var(--ds-canvas)] p-3">
+      <div className="rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-4">
         <div className="flex flex-col gap-5 animate-fadeIn text-xs select-none relative">
           {isCancelled && (
             <div className="absolute top-20 left-1/2 -translate-x-1/2 z-10 rotate-[-12deg] pointer-events-none">
@@ -991,17 +989,19 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
           )}
 
           {/* Header */}
-          <div className="flex items-center justify-between py-3 px-4 bg-white border-b border-[#9DC07A] sticky top-0 z-10">
+          <div className="flex items-center justify-between py-3 px-4 bg-white border-b border-[var(--ds-border-default)] sticky top-0 z-10">
             <div className="flex items-center gap-3">
               <button
                 onClick={handleBack}
-                className="p-2 rounded-md hover:bg-[#EBF5E2] text-[#000000]"
+                className="p-2 rounded-md hover:bg-[var(--ds-surface-muted)] text-[var(--ds-text-default)]"
+                aria-label="Back"
+                title="Back"
               >
                 <ArrowLeft className="h-4 w-4" />
               </button>
               <div>
-                <h1 className="text-[13px] font-semibold text-[#000000]">{meta.label}</h1>
-                {isEdit && <p className="text-[11px] text-[#000000] mt-0.5">{invoiceNoPreview}</p>}
+                <h1 className="text-[13px] font-semibold text-[var(--ds-text-default)]">{meta.label}</h1>
+                {isEdit && <p className="text-[12px] text-[var(--ds-text-default)] mt-0.5">{invoiceNoPreview}</p>}
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -1100,8 +1100,8 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
               />
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-[11px] font-medium text-[#000000]">Invoice No</span>
-              <span className="inline-flex items-center h-8 px-2.5 rounded-md bg-[#EBF5E2] border border-[#9DC07A] font-mono font-bold text-[#000000] text-[12px]">
+              <span className="text-[12px] font-medium text-[var(--ds-text-default)]">Invoice No</span>
+              <span className="inline-flex items-center h-8 px-2.5 rounded-md bg-[var(--ds-surface-muted)] border border-[var(--ds-border-default)] font-mono font-bold text-[var(--ds-text-default)] text-[12px]">
                 {invoiceNoPreview}
               </span>
             </div>
@@ -1162,9 +1162,9 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                 Add Line
               </Button>
             </div>
-            <div className="overflow-x-auto rounded-md border border-[#9DC07A]">
+            <div className="overflow-x-auto rounded-md border border-[var(--ds-border-default)]">
               <table className="line-table">
-                <thead className="bg-[#f0f4ff] text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+                <thead className="bg-[var(--ds-action-primary)] text-[12px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wide">
                   <tr>
                     <th className="px-2 py-2 text-center">#</th>
                     <th className="px-2 py-2 text-left">Item</th>
@@ -1201,7 +1201,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                   ))}
                   {lines.length === 0 && (
                     <tr>
-                      <td colSpan={colspan} className="text-center py-6 text-[#000000]">
+                      <td colSpan={colspan} className="text-center py-6 text-[var(--ds-text-default)]">
                         No lines. Click “Add Line”.
                       </td>
                     </tr>
@@ -1214,7 +1214,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
           {/* Bill Sundries */}
           <Card border padding="md">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-[11px] font-bold text-[#000000] uppercase tracking-wider">
+              <h3 className="text-[12px] font-bold text-[var(--ds-text-default)] uppercase tracking-wider">
                 Bill Sundries
               </h3>
               <Button
@@ -1234,9 +1234,9 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
               </Button>
             </div>
             {billSundries.length > 0 && (
-              <div className="overflow-x-auto rounded-md border border-[#9DC07A]">
+              <div className="overflow-x-auto rounded-md border border-[var(--ds-border-default)]">
                 <table className="w-full text-xs">
-                  <thead className="bg-[#f0f4ff] text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+                  <thead className="bg-[var(--ds-action-primary)] text-[12px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wide">
                     <tr>
                       <th className="px-2 py-2 text-left">Sundry Name</th>
                       <th className="px-2 py-2 text-center w-32">Type</th>
@@ -1248,7 +1248,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                     {billSundries.map((sundry, idx) => (
                       <tr
                         key={sundry.id}
-                        className="border-b border-[#9DC07A] hover:bg-[#EBF5E2]/50"
+                        className="border-b border-[var(--ds-border-default)] hover:bg-[var(--ds-surface-muted)]/50"
                       >
                         <td className="px-2 py-1">
                           <input
@@ -1283,7 +1283,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                         <td className="px-2 py-1 text-right">
                           <input
                             type="number"
-                            className="w-full h-7 px-2 text-[12px] border-0 border-b border-[#9DC07A] bg-transparent text-right focus:outline-none focus:border-[#1557b0]"
+                            className="w-full h-7 px-2 text-[12px] border-0 border-b border-[var(--ds-border-default)] bg-transparent text-right focus:outline-none focus:border-[var(--ds-action-primary)]"
                             value={sundry.amount || ""}
                             onChange={(e) => {
                               const n = [...billSundries];
@@ -1304,7 +1304,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                                 setBillSundries((p) => p.filter((s) => s.id !== sundry.id));
                                 markDirty();
                               }}
-                              className="p-1 text-[#000000] hover:text-red-500 rounded"
+                              className="p-1 text-[var(--ds-text-default)] hover:text-red-500 rounded"
                             >
                               <Trash2 className="h-4 w-4" />
                             </button>
@@ -1322,7 +1322,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-4 items-start">
             {/* Payment & TDS & Narration */}
             <Card border padding="md">
-              <h3 className="text-[11px] font-bold text-[#000000] uppercase tracking-wider mb-3">
+              <h3 className="text-[12px] font-bold text-[var(--ds-text-default)] uppercase tracking-wider mb-3">
                 Payment
               </h3>
               <div className="grid grid-cols-3 gap-2 mb-3">
@@ -1339,7 +1339,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                       setPayMode(id as PaymentMode);
                       markDirty();
                     }}
-                    className={`inline-flex items-center justify-center gap-1.5 h-9 rounded-md border text-xs font-bold transition-colors ${payMode === id ? "bg-[#3D6B25] text-white border-indigo-600" : "bg-white text-[#000000] border-[#9DC07A] hover:bg-[#EBF5E2]"}`}
+                    className={`inline-flex items-center justify-center gap-1.5 h-9 rounded-md border text-xs font-bold transition-colors ${payMode === id ? "bg-[var(--ds-action-primary)] text-white border-indigo-600" : "bg-white text-[var(--ds-text-default)] border-[var(--ds-border-default)] hover:bg-[var(--ds-surface-muted)]"}`}
                   >
                     <Icon className="h-4 w-4" /> {label}
                   </button>
@@ -1349,7 +1349,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
               {payMode === PaymentMode.BANK_TRANSFER && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <div className="flex flex-col gap-1 w-full">
-                    <label className="text-[11px] text-[#000000] font-medium">Bank Account</label>
+                    <label className="text-[12px] text-[var(--ds-text-default)] font-medium">Bank Account</label>
                     <select
                       value={bankAccountId}
                       onChange={(e) => {
@@ -1357,7 +1357,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                         markDirty();
                       }}
                       disabled={readOnly}
-                      className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                      className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                     >
                       <option value="" disabled>
                         Select bank
@@ -1406,7 +1406,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                     disabled={readOnly}
                   />
                   <div className="flex flex-col gap-1">
-                    <span className="text-xs font-semibold text-[#000000]">Balance Due</span>
+                    <span className="text-xs font-semibold text-[var(--ds-text-default)]">Balance Due</span>
                     <span
                       className={`font-mono font-bold text-base ${balance > 0 ? "text-red-600" : "text-green-600"}`}
                     >
@@ -1417,7 +1417,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
               )}
 
               {party?.subjectToTds && (
-                <div className="mt-4 pt-4 border-t border-[#9DC07A]">
+                <div className="mt-4 pt-4 border-t border-[var(--ds-border-default)]">
                   <div className="flex items-center gap-2 mb-3">
                     <input
                       id="tds-enabled"
@@ -1430,7 +1430,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                       }}
                       disabled={readOnly}
                     />
-                    <label htmlFor="tds-enabled" className="text-xs font-bold text-[#000000]">
+                    <label htmlFor="tds-enabled" className="text-xs font-bold text-[var(--ds-text-default)]">
                       Deduct TDS
                     </label>
                   </div>
@@ -1459,7 +1459,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                         disabled={readOnly}
                       />
                       <div className="flex flex-col gap-1">
-                        <span className="text-xs font-semibold text-[#000000]">TDS Amount</span>
+                        <span className="text-xs font-semibold text-[var(--ds-text-default)]">TDS Amount</span>
                         <span className="font-mono font-bold text-orange-600 text-base">
                           {symbol} {formatNumber(tdsAmount)}
                         </span>
@@ -1469,12 +1469,12 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                 </div>
               )}
 
-              <div className="mt-4 pt-4 border-t border-[#9DC07A]">
-                <label className="text-[11px] font-semibold text-[#000000] block mb-1">
+              <div className="mt-4 pt-4 border-t border-[var(--ds-border-default)]">
+                <label className="text-[12px] font-semibold text-[var(--ds-text-default)] block mb-1">
                   Narration (English)
                 </label>
                 <textarea
-                  className="w-full h-16 p-2 text-[12px] border border-[#9DC07A] rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] resize-none"
+                  className="w-full h-16 p-2 text-[12px] border border-[var(--ds-border-default)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] resize-none"
                   value={narration}
                   onChange={(e) => {
                     setNarration(e.target.value.substring(0, 200));
@@ -1483,18 +1483,18 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                   placeholder="Optional notes / description"
                   disabled={readOnly}
                 />
-                <div className="text-right text-[10px] text-[#000000] mt-0.5">
+                <div className="text-right text-[12px] text-[var(--ds-text-default)] mt-0.5">
                   {narration.length}/200
                 </div>
               </div>
 
               <div className="mt-2">
-                <label className="text-[11px] font-semibold text-[#000000] block mb-1">
+                <label className="text-[12px] font-semibold text-[var(--ds-text-default)] block mb-1">
                   Narration (Nepali){" "}
-                  <span className="text-[#000000] font-normal ml-1">Optional</span>
+                  <span className="text-[var(--ds-text-default)] font-normal ml-1">Optional</span>
                 </label>
                 <textarea
-                  className="w-full h-16 p-2 text-[12px] border border-[#9DC07A] rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] resize-none"
+                  className="w-full h-16 p-2 text-[12px] border border-[var(--ds-border-default)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] resize-none"
                   value={narrationNe}
                   onChange={(e) => {
                     setNarrationNe(e.target.value.substring(0, 200));
@@ -1503,13 +1503,13 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
                   placeholder="नेपालीमा कैफियत..."
                   disabled={readOnly}
                 />
-                <div className="text-right text-[10px] text-[#000000] mt-0.5">
+                <div className="text-right text-[12px] text-[var(--ds-text-default)] mt-0.5">
                   {narrationNe.length}/200
                 </div>
               </div>
 
-              <div className="mt-4 pt-4 border-t border-[#9DC07A]">
-                <label className="text-xs font-medium text-[#000000] mb-1 block">Attachments</label>
+              <div className="mt-4 pt-4 border-t border-[var(--ds-border-default)]">
+                <label className="text-xs font-medium text-[var(--ds-text-default)] mb-1 block">Attachments</label>
                 <AttachmentUploader
                   attachments={attachments}
                   onAdd={(b64) => {
@@ -1580,7 +1580,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
 
           {/* Footer actions */}
           <div className="form-footer">
-            <p className="text-[11px] text-gray-500">
+            <p className="text-[12px] text-gray-500">
               Esc Cancel · Ctrl+S Save draft · F2 Save · F9 Remove last line
             </p>
             <div className="flex items-center gap-2">
@@ -1634,7 +1634,7 @@ const SalesInvoiceForm: React.FC<SalesInvoiceFormProps> = ({
             onClose={() => setConfirmCancel(false)}
           />
         </div>
-      </FormPanel>
+      </div>
     </div>
   );
 };

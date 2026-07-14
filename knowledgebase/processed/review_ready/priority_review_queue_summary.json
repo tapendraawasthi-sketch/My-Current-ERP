@@ -1,0 +1,10 @@
+{
+  "generated_at": "2026-07-14T06:13:30+00:00",
+  "source_sample_size": 1801,
+  "priority_queue_size": 250,
+  "outputs": [
+    "knowledgebase/processed/review_ready/priority_review_queue.jsonl",
+    "knowledgebase/processed/review_ready/priority_review_queue.csv"
+  ],
+  "instruction": "Review this queue first. Fill review_decision (approve|approve_with_edit|reject|needs_clarification|defer|promote_to_gold), then import with import_human_reviews.py"
+}

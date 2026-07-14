@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
-import { Toaster } from "react-hot-toast";
+import { ToastProvider } from "@/design-system";
 import { ThemeProvider } from "../context/ThemeContext";
 import { bootstrapUiQaHarness } from "./bootstrapUiQaHarness";
 import AppShell from "../components/shell/AppShell";
@@ -15,8 +15,25 @@ import StockBook from "../pages/StockBook";
 import DayBook from "../pages/DayBook";
 import StockJournalPage from "../pages/StockJournalPage";
 import ChartOfAccounts from "../components/ChartOfAccounts";
+import PurchaseVoucher from "../pages/PurchaseVoucher";
+import ReceiptVoucher from "../pages/ReceiptVoucher";
+import PaymentVoucher from "../pages/PaymentVoucher";
+import GeneralLedger from "../pages/GeneralLedger";
+import TrialBalance from "../pages/TrialBalance";
+import ProfitLoss from "../pages/ProfitLoss";
+import BankReconciliation from "../pages/BankReconciliation";
+import BankStatementImport from "../pages/BankStatementImport";
+import StockSummaryReport from "../pages/StockSummaryReport";
+import AuditLog from "../pages/AuditLog";
+import UsersManagement from "../pages/UsersManagement";
+import CompanySettings from "../pages/CompanySettings";
+import BackupRestore from "../pages/BackupRestore";
 import "../styles.css";
 
+/**
+ * UI QA / visual-baseline page router.
+ * Extends Phase UI-0 critical-screen coverage; does not change accounting behavior.
+ */
 function QaPageRouter() {
   const currentPage = useStore((s) => s.currentPage);
 
@@ -24,6 +41,7 @@ function QaPageRouter() {
     case "orbix":
       return <OrbixWorkspacePage />;
     case "parties":
+    case "party-master":
       return <Parties />;
     case "journal":
       return <JournalEntries />;
@@ -33,19 +51,50 @@ function QaPageRouter() {
     case "sales-return":
     case "purchase-return":
       return <BillingInvoice />;
+    case "purchase":
+      return <PurchaseVoucher />;
+    case "receipt":
+      return <ReceiptVoucher />;
+    case "payment":
+      return <PaymentVoucher />;
     case "day-book":
       return <DayBook />;
+    case "ledger":
+    case "ledger-report":
+      return <GeneralLedger />;
+    case "trial-balance":
+      return <TrialBalance />;
+    case "profit-loss":
+      return <ProfitLoss />;
     case "balance-sheet":
       return <BalanceSheet />;
+    case "bank-reconciliation":
+      return <BankReconciliation />;
+    case "bank-statement-import":
+      return <BankStatementImport />;
     case "items":
     case "item-master":
     case "stock-book":
       return <StockBook />;
+    case "stock-summary":
+    case "inventory-summary":
+      return <StockSummaryReport />;
     case "stock-journal":
       return <StockJournalPage />;
     case "accounts":
     case "chart-of-accounts":
       return <ChartOfAccounts />;
+    case "audit-log":
+      return <AuditLog />;
+    case "users":
+    case "users-management":
+      return <UsersManagement />;
+    case "settings":
+    case "company-settings":
+      return <CompanySettings />;
+    case "backup":
+    case "backup-restore":
+      return <BackupRestore />;
     case "dashboard":
     case "financial-dashboard":
     default:
@@ -83,12 +132,13 @@ function UiQaApp() {
 
   return (
     <ThemeProvider>
-      <div data-testid="ui-qa-harness-ready" className="h-screen">
-        <AppShell>
-          <QaPageRouter />
-        </AppShell>
-        <Toaster position="top-right" />
-      </div>
+      <ToastProvider>
+        <div data-testid="ui-qa-harness-ready" className="h-screen">
+          <AppShell>
+            <QaPageRouter />
+          </AppShell>
+        </div>
+      </ToastProvider>
     </ThemeProvider>
   );
 }

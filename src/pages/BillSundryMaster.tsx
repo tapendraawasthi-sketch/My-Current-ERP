@@ -1,7 +1,7 @@
 // src/pages/BillSundryMaster.tsx
 import React, { useState, useMemo, useEffect } from "react";
 import { useStore } from "../store/useStore";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { Plus, Edit2, Trash2, Search, X, Save } from "lucide-react";
 import { BillSundryType, BillSundryNature } from "../lib/busyTypes";
 import { getDB } from "../lib/db";

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orbix.local/schemas/human_review.schema.json",
+  "title": "Orbix KB Human Review Row",
+  "type": "object",
+  "required": ["record_id", "review_decision"],
+  "properties": {
+    "record_id": { "type": "string", "minLength": 1 },
+    "collection": { "type": ["string", "null"] },
+    "record_type": { "type": ["string", "null"] },
+    "domain": { "type": ["string", "null"] },
+    "language_form": { "type": ["string", "null"] },
+    "raw_input": { "type": ["string", "null"] },
+    "content_text_preview": { "type": ["string", "null"] },
+    "quality_score": { "type": ["number", "null"] },
+    "eligibility": { "type": ["string", "null"] },
+    "stratum": { "type": ["string", "null"] },
+    "review_decision": {
+      "type": "string",
+      "enum": [
+        "approve",
+        "approve_with_edit",
+        "reject",
+        "needs_clarification",
+        "defer",
+        "promote_to_gold",
+        ""
+      ]
+    },
+    "reviewer_notes": { "type": "string", "default": "" },
+    "reviewed_at": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": false
+}

@@ -20,7 +20,7 @@ import {
   Info,
   Smartphone,
 } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { formatNumber, generateId } from "../lib/utils";
 import { formatADToBS } from "../lib/nepaliDate";
 import {
@@ -125,7 +125,7 @@ const ConfidenceBadge: React.FC<{ confidence: MatchConfidence; reason: string }>
   reason,
 }) => (
   <span
-    className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-[9px] font-bold uppercase cursor-help ${CONFIDENCE_COLORS[confidence]}`}
+    className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-[12px] font-bold uppercase cursor-help ${CONFIDENCE_COLORS[confidence]}`}
     title={reason}
   >
     {confidence}
@@ -501,20 +501,20 @@ export default function BankReconciliation() {
 <title>Bank Reconciliation Statement</title>
 <style>
   * { box-sizing: border-box; }
-  body { font-family: Arial, sans-serif; font-size: 11px; color: #000; margin: 0; padding: 16px; }
+  body { font-family: Arial, sans-serif; font-size: 11px; color: var(--ds-action-primary); margin: 0; padding: 16px; }
   h1 { text-align: center; font-size: 15px; margin: 0 0 2px; }
   .company { text-align: center; font-size: 13px; font-weight: bold; margin-bottom: 12px; }
   .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 12px; font-size: 10px; }
   .meta span { display: block; }
   table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
-  th { background: #dde; text-align: left; padding: 4px 6px; font-size: 10px; border: 1px solid #ccc; }
-  td { padding: 3px 6px; border: 1px solid #ddd; }
-  .section-head { background: #eef; font-weight: bold; padding: 4px 6px; }
-  .total { font-weight: bold; border-top: 2px solid #000; }
+  th { background: var(--ds-action-primary); text-align: left; padding: 4px 6px; font-size: 10px; border: 1px solid var(--ds-action-primary); }
+  td { padding: 3px 6px; border: 1px solid var(--ds-action-primary); }
+  .section-head { background: var(--ds-action-primary); font-weight: bold; padding: 4px 6px; }
+  .total { font-weight: bold; border-top: 2px solid var(--ds-action-primary); }
   .diff-ok { color: green; }
   .diff-bad { color: red; }
   .footer { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; }
-  .footer div { border-top: 1px solid #000; padding-top: 4px; text-align: center; font-size: 10px; }
+  .footer div { border-top: 1px solid var(--ds-action-primary); padding-top: 4px; text-align: center; font-size: 10px; }
   @media print { body { padding: 8px; } }
 </style>
 </head>
@@ -543,7 +543,7 @@ export default function BankReconciliation() {
   </tr>`,
     )
     .join("")}
-  ${summary.unclearedCheques.length === 0 ? '<tr><td colspan="2" style="padding-left:16px;color:#777">None</td></tr>' : ""}
+  ${summary.unclearedCheques.length === 0 ? '<tr><td colspan="2" style="padding-left:16px;color:var(--ds-action-primary)">None</td></tr>' : ""}
 
   <tr><td class="section-head" colspan="2">Add: Deposits in Transit / Uncleared Receipts</td></tr>
   ${summary.depositsInTransit
@@ -555,7 +555,7 @@ export default function BankReconciliation() {
   </tr>`,
     )
     .join("")}
-  ${summary.depositsInTransit.length === 0 ? '<tr><td colspan="2" style="padding-left:16px;color:#777">None</td></tr>' : ""}
+  ${summary.depositsInTransit.length === 0 ? '<tr><td colspan="2" style="padding-left:16px;color:var(--ds-action-primary)">None</td></tr>' : ""}
 
   <tr class="total">
     <td>Adjusted Balance as per Bank Statement</td>
@@ -600,24 +600,24 @@ export default function BankReconciliation() {
           ${
             isSelected
               ? "border-blue-400 bg-blue-50 ring-2 ring-blue-200"
-              : "border-[#9DC07A] bg-white hover:bg-[#EBF5E2]"
+              : "border-[var(--ds-border-default)] bg-white hover:bg-[var(--ds-action-primary)]"
           }`}
       >
         <div className="flex justify-between items-start gap-2">
           <div className="min-w-0">
-            <div className="text-[10px] text-gray-500 font-mono">{entry.date}</div>
+            <div className="text-[12px] text-gray-500 font-mono">{entry.date}</div>
             <div
-              className="text-[11px] font-semibold text-gray-800 truncate"
+              className="text-[12px] font-semibold text-gray-800 truncate"
               title={entry.description}
             >
               {entry.description || "No narration"}
             </div>
-            <div className="text-[10px] text-gray-500">{entry.voucherNo}</div>
+            <div className="text-[12px] text-gray-500">{entry.voucherNo}</div>
           </div>
           <AmountChip amount={entry.amount} type={entry.type} />
         </div>
         {entry.refNo && (
-          <div className="text-[9px] text-gray-400 mt-0.5 font-mono">Ref: {entry.refNo}</div>
+          <div className="text-[12px] text-gray-400 mt-0.5 font-mono">Ref: {entry.refNo}</div>
         )}
       </div>
     );
@@ -636,7 +636,7 @@ export default function BankReconciliation() {
           ${
             isSelected
               ? "border-blue-400 bg-blue-50 ring-2 ring-blue-200"
-              : "border-[#9DC07A] bg-white hover:bg-[#EBF5E2]"
+              : "border-[var(--ds-border-default)] bg-white hover:bg-[var(--ds-action-primary)]"
           }`}
       >
         <div
@@ -644,15 +644,15 @@ export default function BankReconciliation() {
           onClick={() => setSelectedStmtId(isSelected ? null : entry.id)}
         >
           <div className="min-w-0">
-            <div className="text-[10px] text-gray-500 font-mono">{entry.date}</div>
+            <div className="text-[12px] text-gray-500 font-mono">{entry.date}</div>
             <div
-              className="text-[11px] font-semibold text-gray-800 truncate"
+              className="text-[12px] font-semibold text-gray-800 truncate"
               title={entry.description}
             >
               {entry.description || "No narration"}
             </div>
             {entry.refNo && (
-              <div className="text-[9px] text-gray-400 font-mono">Ref: {entry.refNo}</div>
+              <div className="text-[12px] text-gray-400 font-mono">Ref: {entry.refNo}</div>
             )}
           </div>
           <AmountChip amount={amount} type={stmtType} />
@@ -664,7 +664,7 @@ export default function BankReconciliation() {
                 e.stopPropagation();
                 onCreateVoucher();
               }}
-              className="flex items-center gap-1 h-6 px-2 bg-[#EBF5E2] hover:bg-[#D4EABD] border border-[#9DC07A] rounded text-[9px] font-bold text-gray-600 transition-colors"
+              className="flex items-center gap-1 h-6 px-2 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary)] border border-[var(--ds-border-default)] rounded text-[12px] font-bold text-gray-600 transition-colors"
             >
               <Plus className="h-2.5 w-2.5" /> Create Voucher
             </button>
@@ -682,8 +682,8 @@ export default function BankReconciliation() {
     <div className="flex flex-col h-full overflow-hidden">
       {/* ── Toolbar ──────────────────────────────────────────────────────── */}
       <ActionToolbar
-        title="Bank Reconciliation"
-        subtitle="Match ERP book entries against imported bank statements"
+        title="Match bank statement"
+        subtitle="Match books to bank/wallets."
         secondaryActions={[
           {
             label: "Auto Match",
@@ -722,20 +722,20 @@ export default function BankReconciliation() {
       />
 
       {/* ── Tab bar ──────────────────────────────────────────────────────── */}
-      <div className="flex gap-0 border-b border-[#9DC07A] bg-white px-4 shrink-0">
+      <div className="flex gap-0 border-b border-[var(--ds-border-default)] bg-white px-4 shrink-0">
         {(
           [
-            { id: "bank", label: "🏦 Bank Reconciliation" },
-            { id: "digital", label: "📱 Digital Payments (eSewa / Khalti / ConnectIPS)" },
+            { id: "bank", label: "Bank" },
+            { id: "digital", label: "eSewa · Khalti · ConnectIPS" },
           ] as { id: ActiveTab; label: string }[]
         ).map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2.5 text-[11px] font-bold border-b-2 transition-colors
+            className={`h-9 px-4 text-[13px] font-semibold border-b-2 transition-colors
               ${
                 activeTab === tab.id
-                  ? "border-[#3D6B25] text-[#3D6B25]"
+                  ? "border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]"
                   : "border-transparent text-gray-500 hover:text-gray-700"
               }`}
           >
@@ -745,7 +745,7 @@ export default function BankReconciliation() {
       </div>
 
       {/* ── Filters ──────────────────────────────────────────────────────── */}
-      <div className="flex items-end gap-3 px-4 py-3 bg-white border-b border-[#9DC07A] shrink-0 flex-wrap">
+      <div className="flex items-end gap-3 px-4 py-3 bg-white border-b border-[var(--ds-border-default)] shrink-0 flex-wrap">
         <div className="w-56">
           <Select
             label="Bank Account"
@@ -791,23 +791,23 @@ export default function BankReconciliation() {
         ) : (
           <div className="grid grid-cols-[1fr_280px_1fr] h-full gap-0 overflow-hidden">
             {/* LEFT: Unmatched Book Entries */}
-            <div className="flex flex-col h-full overflow-hidden border-r border-[#9DC07A]">
-              <div className="flex items-center justify-between px-3 py-2 bg-[#1e2433] shrink-0">
+            <div className="flex flex-col h-full overflow-hidden border-r border-[var(--ds-border-default)]">
+              <div className="flex items-center justify-between px-3 py-2 bg-[var(--ds-action-primary)] shrink-0">
                 <div>
-                  <h3 className="text-[11px] font-bold text-white">📒 Book Entries</h3>
-                  <p className="text-[9px] text-gray-400">{unmatchedBook.length} unmatched</p>
+                  <h3 className="text-[13px] font-semibold text-white">📒 Book Entries</h3>
+                  <p className="text-[12px] text-gray-400">{unmatchedBook.length} unmatched</p>
                 </div>
                 {selectedBookId && (
-                  <span className="text-[9px] bg-blue-500 text-white px-2 py-0.5 rounded-full">
+                  <span className="text-[12px] bg-blue-500 text-white px-2 py-0.5 rounded-full">
                     1 selected
                   </span>
                 )}
               </div>
-              <div className="flex-1 overflow-y-auto p-2 space-y-1.5 bg-[#f8f9fa]">
+              <div className="flex-1 overflow-y-auto p-2 space-y-1.5 bg-[var(--ds-action-primary)]">
                 {unmatchedBook.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-32 text-center text-gray-400">
                     <CheckCircle2 className="h-8 w-8 mb-1 text-green-400" />
-                    <p className="text-[11px]">All book entries matched!</p>
+                    <p className="text-[12px]">All book entries matched!</p>
                   </div>
                 ) : (
                   unmatchedBook.map((entry) => <BookEntryCard key={entry.id} entry={entry} />)
@@ -816,16 +816,16 @@ export default function BankReconciliation() {
             </div>
 
             {/* CENTER: Matched Pairs */}
-            <div className="flex flex-col h-full overflow-hidden border-r border-[#9DC07A]">
-              <div className="px-3 py-2 bg-[#3D6B25] shrink-0">
-                <h3 className="text-[11px] font-bold text-white">🔗 Matched Pairs</h3>
-                <p className="text-[9px] text-green-200">{matchedPairs.length} pair(s)</p>
+            <div className="flex flex-col h-full overflow-hidden border-r border-[var(--ds-border-default)]">
+              <div className="px-3 py-2 bg-[var(--ds-action-primary)] shrink-0">
+                <h3 className="text-[13px] font-semibold text-white">Matched pairs</h3>
+                <p className="text-[12px] text-green-200">{matchedPairs.length} pair(s)</p>
               </div>
-              <div className="flex-1 overflow-y-auto p-2 space-y-2 bg-[#f0f7ee]">
+              <div className="flex-1 overflow-y-auto p-2 space-y-2 bg-[var(--ds-action-primary)]">
                 {matchedPairs.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-32 text-center text-gray-400 px-3">
                     <LinkIcon className="h-7 w-7 mb-1 opacity-30" />
-                    <p className="text-[10px]">
+                    <p className="text-[12px]">
                       Run Auto Match or select one entry from each panel and click Match Selected
                     </p>
                   </div>
@@ -838,20 +838,20 @@ export default function BankReconciliation() {
                       {/* Book side */}
                       <div className="pb-1.5 border-b border-dashed border-gray-200 mb-1.5">
                         <div className="flex justify-between items-center">
-                          <span className="text-[9px] font-bold text-gray-400 uppercase">Book</span>
+                          <span className="text-[12px] font-bold text-gray-400 uppercase">Book</span>
                           <AmountChip amount={pair.bookEntry.amount} type={pair.bookEntry.type} />
                         </div>
-                        <div className="text-[10px] font-semibold text-gray-700 truncate">
+                        <div className="text-[12px] font-semibold text-gray-700 truncate">
                           {pair.bookEntry.description}
                         </div>
-                        <div className="text-[9px] text-gray-400 font-mono">
+                        <div className="text-[12px] text-gray-400 font-mono">
                           {pair.bookEntry.date} · {pair.bookEntry.voucherNo}
                         </div>
                       </div>
                       {/* Statement side */}
                       <div>
                         <div className="flex justify-between items-center">
-                          <span className="text-[9px] font-bold text-gray-400 uppercase">
+                          <span className="text-[12px] font-bold text-gray-400 uppercase">
                             Statement
                           </span>
                           <AmountChip
@@ -863,10 +863,10 @@ export default function BankReconciliation() {
                             type={pair.statementEntry.credit > 0 ? "credit" : "debit"}
                           />
                         </div>
-                        <div className="text-[10px] font-semibold text-gray-700 truncate">
+                        <div className="text-[12px] font-semibold text-gray-700 truncate">
                           {pair.statementEntry.description}
                         </div>
-                        <div className="text-[9px] text-gray-400 font-mono">
+                        <div className="text-[12px] text-gray-400 font-mono">
                           {pair.statementEntry.date}
                         </div>
                       </div>
@@ -875,7 +875,7 @@ export default function BankReconciliation() {
                         <ConfidenceBadge confidence={pair.confidence} reason={pair.matchReason} />
                         <button
                           onClick={() => handleUnmatch(pair.bookEntry.id)}
-                          className="flex items-center gap-0.5 text-[9px] text-red-500 hover:text-red-700 font-bold"
+                          className="flex items-center gap-0.5 text-[12px] text-red-500 hover:text-red-700 font-bold"
                         >
                           <Unlink className="h-2.5 w-2.5" /> Unmatch
                         </button>
@@ -890,7 +890,7 @@ export default function BankReconciliation() {
                 <div className="shrink-0 p-2 bg-blue-50 border-t border-blue-200">
                   <button
                     onClick={handleManualMatch}
-                    className="w-full h-8 bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold rounded-lg flex items-center justify-center gap-1.5"
+                    className="w-full h-8 bg-blue-600 hover:bg-blue-700 text-white text-[12px] font-bold rounded-lg flex items-center justify-center gap-1.5"
                   >
                     <LinkIcon className="h-3.5 w-3.5" /> Match Selected Pair
                   </button>
@@ -900,22 +900,22 @@ export default function BankReconciliation() {
 
             {/* RIGHT: Unmatched Statement Entries */}
             <div className="flex flex-col h-full overflow-hidden">
-              <div className="flex items-center justify-between px-3 py-2 bg-[#1e2433] shrink-0">
+              <div className="flex items-center justify-between px-3 py-2 bg-[var(--ds-action-primary)] shrink-0">
                 <div>
-                  <h3 className="text-[11px] font-bold text-white">🏦 Bank Statement</h3>
-                  <p className="text-[9px] text-gray-400">{unmatchedStmt.length} unmatched</p>
+                  <h3 className="text-[12px] font-semibold text-white">Bank statement</h3>
+                  <p className="text-[12px] text-gray-400">{unmatchedStmt.length} unmatched</p>
                 </div>
                 {selectedStmtId && (
-                  <span className="text-[9px] bg-blue-500 text-white px-2 py-0.5 rounded-full">
+                  <span className="text-[12px] bg-blue-500 text-white px-2 py-0.5 rounded-full">
                     1 selected
                   </span>
                 )}
               </div>
-              <div className="flex-1 overflow-y-auto p-2 space-y-1.5 bg-[#f8f9fa]">
+              <div className="flex-1 overflow-y-auto p-2 space-y-1.5 bg-[var(--ds-action-primary)]">
                 {unmatchedStmt.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-32 text-center text-gray-400">
                     <CheckCircle2 className="h-8 w-8 mb-1 text-green-400" />
-                    <p className="text-[11px]">All statement lines matched!</p>
+                    <p className="text-[12px]">All statement lines matched!</p>
                   </div>
                 ) : (
                   unmatchedStmt.map((stmt) => (
@@ -928,7 +928,7 @@ export default function BankReconciliation() {
                 )}
               </div>
               {unmatchedStmt.length > 0 && (
-                <div className="shrink-0 p-2 border-t border-[#9DC07A] bg-[#f5f9f2] text-[9px] text-gray-500 flex items-center gap-1">
+                <div className="shrink-0 p-2 border-t border-[var(--ds-border-default)] bg-[var(--ds-action-primary)] text-[12px] text-gray-500 flex items-center gap-1">
                   <Info className="h-3 w-3 flex-shrink-0" />
                   Click a statement line to select it, then pick a book entry on the left and click
                   "Match Selected". Use "Create Voucher" for bank charges / interest not in books.
@@ -941,7 +941,7 @@ export default function BankReconciliation() {
 
       {/* ── Reconciliation Summary Footer ─────────────────────────────── */}
       {selectedAccountId && (
-        <div className="shrink-0 border-t border-[#9DC07A] bg-white px-4 py-3">
+        <div className="shrink-0 border-t border-[var(--ds-border-default)] bg-white px-4 py-3">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
             <SummaryTile label="Book Balance" value={summary.bookBalance} color="blue" />
             <SummaryTile
@@ -967,14 +967,14 @@ export default function BankReconciliation() {
             <div
               className={`rounded-lg border p-2.5 ${summary.isReconciled ? "bg-green-50 border-green-300" : "bg-red-50 border-red-300"}`}
             >
-              <div className="text-[9px] uppercase font-bold text-gray-500 mb-0.5">Difference</div>
+              <div className="text-[12px] uppercase font-bold text-gray-500 mb-0.5">Difference</div>
               <div
                 className={`text-[14px] font-bold font-mono ${summary.isReconciled ? "text-green-700" : "text-red-600"}`}
               >
                 Rs. {formatNumber(Math.abs(summary.difference))}
               </div>
               <div
-                className={`text-[9px] font-bold mt-0.5 ${summary.isReconciled ? "text-green-600" : "text-red-500"}`}
+                className={`text-[12px] font-bold mt-0.5 ${summary.isReconciled ? "text-green-600" : "text-red-500"}`}
               >
                 {summary.isReconciled ? "✓ Reconciled" : "✗ Not balanced"}
               </div>
@@ -985,12 +985,12 @@ export default function BankReconciliation() {
 
       {/* ── Create Voucher Modal ──────────────────────────────────────── */}
       {voucherModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div className="fixed inset-0 z-[var(--ds-z-dropdown)] flex items-center justify-center bg-black/50 p-4">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
-            <div className="bg-[#1e2433] px-4 py-3 flex items-center justify-between">
+            <div className="bg-[var(--ds-action-primary)] px-4 py-3 flex items-center justify-between">
               <div>
                 <h2 className="text-[13px] font-bold text-white">Create Voucher from Statement</h2>
-                <p className="text-[10px] text-gray-400 mt-0.5">
+                <p className="text-[12px] text-gray-400 mt-0.5">
                   For bank charges, interest, or other items
                 </p>
               </div>
@@ -1004,7 +1004,7 @@ export default function BankReconciliation() {
 
             <div className="p-4 space-y-3">
               {/* Statement info */}
-              <div className="bg-[#EBF5E2] border border-[#9DC07A] rounded-lg p-3 text-[11px]">
+              <div className="bg-[var(--ds-action-primary)] border border-[var(--ds-border-default)] rounded-lg p-3 text-[12px]">
                 <p className="font-bold text-gray-700 mb-1">Statement Entry</p>
                 <p className="text-gray-600">{voucherModal.stmtEntry.description}</p>
                 <p className="text-gray-500 font-mono mt-0.5">{voucherModal.stmtEntry.date}</p>
@@ -1020,7 +1020,7 @@ export default function BankReconciliation() {
 
               {/* Voucher type */}
               <div>
-                <label className="block text-[10px] font-bold uppercase text-gray-500 mb-1">
+                <label className="block text-[12px] font-bold uppercase text-gray-500 mb-1">
                   Voucher Type
                 </label>
                 <select
@@ -1028,7 +1028,7 @@ export default function BankReconciliation() {
                   onChange={(e) =>
                     setVoucherModal((m) => (m ? { ...m, type: e.target.value as any } : m))
                   }
-                  className="w-full h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md"
+                  className="w-full h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md"
                 >
                   <option value="journal">Journal</option>
                   <option value="payment">Payment</option>
@@ -1038,7 +1038,7 @@ export default function BankReconciliation() {
 
               {/* Counter account */}
               <div>
-                <label className="block text-[10px] font-bold uppercase text-gray-500 mb-1">
+                <label className="block text-[12px] font-bold uppercase text-gray-500 mb-1">
                   Counter Account *
                 </label>
                 <select
@@ -1046,7 +1046,7 @@ export default function BankReconciliation() {
                   onChange={(e) =>
                     setVoucherModal((m) => (m ? { ...m, counterAccountId: e.target.value } : m))
                   }
-                  className="w-full h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md"
+                  className="w-full h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md"
                 >
                   <option value="">Select account...</option>
                   {allAccounts
@@ -1061,7 +1061,7 @@ export default function BankReconciliation() {
 
               {/* Narration */}
               <div>
-                <label className="block text-[10px] font-bold uppercase text-gray-500 mb-1">
+                <label className="block text-[12px] font-bold uppercase text-gray-500 mb-1">
                   Narration
                 </label>
                 <input
@@ -1070,20 +1070,20 @@ export default function BankReconciliation() {
                   onChange={(e) =>
                     setVoucherModal((m) => (m ? { ...m, narration: e.target.value } : m))
                   }
-                  className="w-full h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md"
+                  className="w-full h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md"
                 />
               </div>
 
               <div className="flex gap-2 pt-1">
                 <button
                   onClick={() => setVoucherModal(null)}
-                  className="flex-1 h-8 border border-[#9DC07A] text-gray-600 text-[12px] font-medium rounded-lg hover:bg-[#EBF5E2]"
+                  className="flex-1 h-8 border border-[var(--ds-border-default)] text-gray-600 text-[12px] font-medium rounded-lg hover:bg-[var(--ds-action-primary)]"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleCreateVoucher}
-                  className="flex-1 h-8 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-bold rounded-lg"
+                  className="flex-1 h-8 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary)] text-white text-[12px] font-bold rounded-lg"
                 >
                   Save & Link
                 </button>
@@ -1109,7 +1109,7 @@ const COLOR_MAP: Record<string, string> = {
 function SummaryTile({ label, value, color }: { label: string; value: number; color: string }) {
   return (
     <div className={`rounded-lg border p-2.5 ${COLOR_MAP[color] || COLOR_MAP.gray}`}>
-      <div className="text-[9px] uppercase font-bold opacity-60 mb-0.5">{label}</div>
+      <div className="text-[12px] uppercase font-bold opacity-60 mb-0.5">{label}</div>
       <div className="text-[13px] font-bold font-mono">Rs. {formatNumber(value)}</div>
     </div>
   );

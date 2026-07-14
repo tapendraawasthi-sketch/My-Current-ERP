@@ -23,6 +23,20 @@ export interface OrbixRouteInfo {
   report_spec?: Record<string, unknown>;
 }
 
+export interface OrbixNpKbHint {
+  enabled: boolean;
+  reason?: string;
+  language_form?: string | null;
+  normalized_for_nlu?: string;
+  execution_allowed?: boolean;
+  hint_snippets?: Array<{
+    record_id?: string;
+    domain?: string;
+    snippet?: string;
+    source_file_id?: string;
+  }>;
+}
+
 export interface OrbixStreamCompleteResult {
   message: string;
   card: KhataConfirmationCard | null;
@@ -35,6 +49,8 @@ export interface OrbixStreamCompleteResult {
   report_spec?: Record<string, unknown> | null;
   error?: Record<string, unknown> | null;
   response_type?: string | null;
+  /** Optional language-KB interpretation hints (never posting authority). */
+  npKb?: OrbixNpKbHint | null;
 }
 
 export interface OrbixQwenStatus {
@@ -250,6 +266,12 @@ export async function streamOrbixQwen(
             const response = parseResult.ok ? parseResult.response : null;
             const card = normalizeOrbixCard(data.card as Record<string, unknown> | undefined);
             const serverAction = data.action === "confirm" || data.action === "chat" ? data.action : null;
+            const meta = (data.metadata as Record<string, unknown> | undefined) || undefined;
+            const npRaw = meta?.np_kb;
+            const npKb =
+              npRaw && typeof npRaw === "object"
+                ? (npRaw as OrbixNpKbHint)
+                : null;
             callbacks.onComplete({
               message: String(data.message || ""),
               card,
@@ -264,6 +286,7 @@ export async function streamOrbixQwen(
                 (data.response_type as string | null | undefined) ??
                 response?.response_type ??
                 null,
+              npKb,
             });
             return;
           }

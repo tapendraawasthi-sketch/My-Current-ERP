@@ -1,0 +1,13 @@
+{
+  "generated_at": "2026-07-14T06:59:25+00:00",
+  "release_status": "staging_candidate",
+  "production_approved": false,
+  "human_review_required": true,
+  "indexes_present": true,
+  "critical_invariants_ok": true,
+  "rollback_tested": true,
+  "semantic_index": "partial",
+  "human_overlay_decisions": 276,
+  "human_approve_class_overlays": 30,
+  "next_action": "Approve-class overlay threshold met — still requires language/accounting sign-off before production; production_approved stays false."
+}

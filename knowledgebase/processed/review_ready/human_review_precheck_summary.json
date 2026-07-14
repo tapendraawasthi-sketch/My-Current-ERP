@@ -1,0 +1,15 @@
+{
+  "generated_at": "2026-07-14T06:11:56+00:00",
+  "apply": true,
+  "sample_size": 1801,
+  "files_covered_before": 87,
+  "files_covered_after": 88,
+  "machine_precheck_counts": {
+    "structural_ok_pending_human": 1801
+  },
+  "disclaimer": "Machine structural precheck only. Not human language approval, not accounting/legal approval, not production approval.",
+  "outputs": [
+    "knowledgebase/processed/review_ready/human_review_sample.jsonl",
+    "knowledgebase/processed/review_ready/human_review_sample.csv"
+  ]
+}

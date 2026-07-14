@@ -133,14 +133,14 @@ export default function InvoicePrint({
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4 print:p-0 print:relative print:bg-white print:block">
       <div className="bg-white w-full max-w-4xl rounded-lg shadow-xl overflow-hidden flex flex-col my-4 print:my-0 print:shadow-none print:rounded-none border border-gray-200 print:border-0">
         {/* On-screen Controls (Hidden in Print) */}
-        <div className="no-print flex justify-between items-center px-4 py-3 bg-[#f5f6fa] border-b border-gray-200 select-none">
+        <div className="no-print flex justify-between items-center px-4 py-3 bg-[var(--ds-surface-muted)] border-b border-gray-200 select-none">
           <div>
             <h2 className="text-[13px] font-bold text-gray-800">Print Preview ({printMode})</h2>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrint}
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 cursor-pointer"
+              className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 cursor-pointer"
             >
               <Printer className="w-3.5 h-3.5" />
               <span>Print Invoice</span>
@@ -148,7 +148,10 @@ export default function InvoicePrint({
             {onClose && (
               <button
                 onClick={onClose}
-                className="h-8 w-8 bg-white border border-gray-200 text-gray-800 rounded-md hover:bg-[#f5f6fa] flex items-center justify-center cursor-pointer"
+                type="button"
+                aria-label="Close print preview"
+                title="Close"
+                className="h-8 w-8 bg-white border border-gray-200 text-gray-800 rounded-md hover:bg-[var(--ds-surface-muted)] flex items-center justify-center cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -178,18 +181,18 @@ export default function InvoicePrint({
                       {company.companyNameNe}
                     </h2>
                   )}
-                  <p className="text-[11px] text-gray-800 mt-1">
+                  <p className="text-[12px] text-gray-800 mt-1">
                     {company.address}, {company.city}
                   </p>
-                  <p className="text-[11px] text-gray-800">
+                  <p className="text-[12px] text-gray-800">
                     Phone: {company.phone} | Email: {company.email}
                   </p>
                 </div>
               </div>
               <div className="text-right">
-                <div className="bg-[#1557b0]/5 border border-[#1557b0]/20 rounded-md p-2 text-right">
-                  <p className="text-[11px] font-semibold text-gray-800">PAN / VAT NO.</p>
-                  <p className="text-[15px] font-mono font-bold text-[#1557b0]">
+                <div className="bg-[var(--ds-action-primary)]/5 border border-[var(--ds-action-primary)]/20 rounded-md p-2 text-right">
+                  <p className="text-[12px] font-semibold text-gray-800">PAN / VAT NO.</p>
+                  <p className="text-[15px] font-mono font-bold text-[var(--ds-action-primary)]">
                     {company.panNumber}
                   </p>
                 </div>
@@ -197,7 +200,7 @@ export default function InvoicePrint({
             </div>
 
             {/* TAX INVOICE Title Strip */}
-            <div className="text-center bg-[#f5f6fa] border border-gray-200 py-1.5 mb-5 rounded">
+            <div className="text-center bg-[var(--ds-surface-muted)] border border-gray-200 py-1.5 mb-5 rounded">
               <h2 className="text-[13px] font-bold uppercase tracking-[0.15em] text-gray-800">
                 TAX INVOICE / कर बिजक
               </h2>
@@ -205,27 +208,27 @@ export default function InvoicePrint({
 
             {/* Two-Column Details Layout */}
             <div className="grid grid-cols-2 gap-6 mb-6">
-              <div className="border border-gray-200 rounded p-3 bg-[#f5f6fa]/50">
-                <p className="text-[10px] font-bold uppercase text-gray-800 tracking-wider mb-1.5">
+              <div className="border border-gray-200 rounded p-3 bg-[var(--ds-surface-muted)]/50">
+                <p className="text-[12px] font-bold uppercase text-gray-800 tracking-wider mb-1.5">
                   Buyer / Billed To:
                 </p>
                 <p className="text-[12px] font-bold text-gray-800">{party.name}</p>
                 {party.address && (
-                  <p className="text-[11px] text-gray-800 mt-0.5">{party.address}</p>
+                  <p className="text-[12px] text-gray-800 mt-0.5">{party.address}</p>
                 )}
-                {party.phone && <p className="text-[11px] text-gray-800">Phone: {party.phone}</p>}
+                {party.phone && <p className="text-[12px] text-gray-800">Phone: {party.phone}</p>}
                 {party.pan && (
                   <div className="flex items-center gap-1.5 mt-1.5 pt-1.5 border-t border-gray-200">
-                    <span className="text-[10px] font-semibold text-gray-800">BUYER'S PAN:</span>
-                    <span className="text-[11px] font-mono font-bold text-gray-800">
+                    <span className="text-[12px] font-semibold text-gray-800">BUYER'S PAN:</span>
+                    <span className="text-[12px] font-mono font-bold text-gray-800">
                       {party.pan}
                     </span>
                   </div>
                 )}
               </div>
 
-              <div className="border border-gray-200 rounded p-3 bg-[#f5f6fa]/50 flex flex-col justify-between">
-                <div className="space-y-1.5 text-[11px]">
+              <div className="border border-gray-200 rounded p-3 bg-[var(--ds-surface-muted)]/50 flex flex-col justify-between">
+                <div className="space-y-1.5 text-[12px]">
                   <div className="flex justify-between">
                     <span className="text-gray-800">Invoice Number:</span>
                     <span className="font-mono font-bold text-gray-800">{invoice.invoiceNo}</span>
@@ -247,7 +250,7 @@ export default function InvoicePrint({
                   {invoice.paymentMode && (
                     <div className="flex justify-between">
                       <span className="text-gray-800">Payment Mode:</span>
-                      <span className="font-semibold text-[#15803d] uppercase">
+                      <span className="font-semibold text-[var(--ds-action-primary)] uppercase">
                         {invoice.paymentMode}
                       </span>
                     </div>
@@ -257,9 +260,9 @@ export default function InvoicePrint({
             </div>
 
             {/* Items Table */}
-            <table className="w-full border-collapse border border-gray-200 text-[11px] mb-6">
+            <table className="w-full border-collapse border border-gray-200 text-[12px] mb-6">
               <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
                   <th className="border border-gray-200 p-2 text-center w-[30px] font-bold text-gray-800 uppercase">
                     S.N.
                   </th>
@@ -335,8 +338,8 @@ export default function InvoicePrint({
               {/* Left Side: Remarks & Conditions */}
               <div className="space-y-4">
                 {/* Amount in Words */}
-                <div className="p-2.5 bg-[#f5f6fa] border border-gray-200 rounded text-[11px]">
-                  <p className="text-gray-800 uppercase tracking-wider font-bold text-[9px] mb-0.5">
+                <div className="p-2.5 bg-[var(--ds-surface-muted)] border border-gray-200 rounded text-[12px]">
+                  <p className="text-gray-800 uppercase tracking-wider font-bold text-[12px] mb-0.5">
                     Amount in Words:
                   </p>
                   <p className="italic font-semibold text-gray-800">
@@ -346,8 +349,8 @@ export default function InvoicePrint({
 
                 {/* Bank Details */}
                 {company.printBankDetails && company.bankName && (
-                  <div className="p-2.5 border border-gray-200 rounded text-[11px] bg-white">
-                    <p className="text-gray-800 uppercase tracking-wider font-bold text-[9px] mb-1">
+                  <div className="p-2.5 border border-gray-200 rounded text-[12px] bg-white">
+                    <p className="text-gray-800 uppercase tracking-wider font-bold text-[12px] mb-1">
                       Bank Payment Details:
                     </p>
                     <div className="grid grid-cols-3 gap-1">
@@ -381,8 +384,8 @@ export default function InvoicePrint({
 
                 {/* Terms */}
                 {company.termsConditions && (
-                  <div className="text-[10px] text-gray-800">
-                    <p className="font-bold text-gray-800 uppercase tracking-wider text-[9px] mb-1">
+                  <div className="text-[12px] text-gray-800">
+                    <p className="font-bold text-gray-800 uppercase tracking-wider text-[12px] mb-1">
                       Terms & Conditions:
                     </p>
                     <p className="whitespace-pre-line leading-relaxed">{company.termsConditions}</p>
@@ -393,7 +396,7 @@ export default function InvoicePrint({
               {/* Right Side: Totals Summary */}
               <div className="flex justify-end items-start">
                 <div className="w-full max-w-sm border border-gray-200 rounded overflow-hidden">
-                  <div className="p-2.5 space-y-1.5 text-[11px]">
+                  <div className="p-2.5 space-y-1.5 text-[12px]">
                     <div className="flex justify-between">
                       <span className="text-gray-800">Subtotal:</span>
                       <span className="font-mono font-semibold">
@@ -417,8 +420,8 @@ export default function InvoicePrint({
                       <span className="font-mono">Rs. {invoice.vat.toFixed(2)}</span>
                     </div>
                   </div>
-                  <div className="bg-[#1557b0] text-white px-3 py-2 flex justify-between items-center">
-                    <span className="text-[11px] font-bold uppercase tracking-wider">
+                  <div className="bg-[var(--ds-action-primary)] text-white px-3 py-2 flex justify-between items-center">
+                    <span className="text-[12px] font-bold uppercase tracking-wider">
                       Grand Total:
                     </span>
                     <span className="font-mono text-[14px] font-bold">
@@ -430,7 +433,7 @@ export default function InvoicePrint({
             </div>
 
             {/* Signature Section */}
-            <div className="grid grid-cols-3 gap-8 mt-12 mb-6 text-center text-[10px] text-gray-800">
+            <div className="grid grid-cols-3 gap-8 mt-12 mb-6 text-center text-[12px] text-gray-800">
               <div className="flex flex-col items-center">
                 <div className="w-32 border-b border-gray-200 h-10 mb-1"></div>
                 <p>Prepared By</p>
@@ -446,7 +449,7 @@ export default function InvoicePrint({
             </div>
 
             {/* Print Footer */}
-            <div className="border-t border-gray-200 pt-3 text-center text-[10px] text-gray-800 space-y-0.5 mt-8">
+            <div className="border-t border-gray-200 pt-3 text-center text-[12px] text-gray-800 space-y-0.5 mt-8">
               <p>Thank you for your business!</p>
               <p className="italic">
                 This is a system generated tax invoice. No physical signature is required.
@@ -459,33 +462,7 @@ export default function InvoicePrint({
         </div>
       </div>
 
-      {/* Print CSS Override */}
-      <style>{`
-        @media print {
-          body {
-            background: white !important;
-            color: black !important;
-          }
-          .no-print {
-            display: none !important;
-          }
-          .fixed {
-            position: relative !important;
-            background: transparent !important;
-            padding: 0 !important;
-            inset: auto !important;
-            display: block !important;
-            overflow: visible !important;
-          }
-          .bg-white {
-            background-color: white !important;
-          }
-          @page {
-            size: A4;
-            margin: 1.5cm 1cm;
-          }
-        }
-      `}</style>
+      </div>
     </div>
   );
 }

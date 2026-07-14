@@ -14,7 +14,7 @@ import {
   X,
   RefreshCw,
 } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 interface BackupRecord {
   id: number;

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import { getDB, generateId } from "../lib/db";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import * as XLSX from "xlsx";
 import { Clock, Mail, Calendar, Plus, Edit2, Trash2, Play, CheckCircle, Send } from "lucide-react";
 

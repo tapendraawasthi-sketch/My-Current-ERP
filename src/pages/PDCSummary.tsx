@@ -1,11 +1,10 @@
 // @ts-nocheck
 import React, { useState, useMemo, useEffect } from "react";
 import { ActionToolbar, Select, NepaliDatePicker, Button, Badge } from "../components/ui";
-import { PillTitle, FormPanel } from "../components/BusyShell";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
 import { generateId } from "../lib/db";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import {
   CalendarClock,
   Plus,
@@ -399,7 +398,7 @@ export default function PDCSummary() {
 
   return (
     <div className="flex flex-col h-full">
-      <ActionToolbar title="PDC Summary" icon={<CalendarClock size={16} />}>
+      <ActionToolbar title="Post-dated cheques" icon={<CalendarClock size={16} />}>
         <Button
           size="sm"
           onClick={() => {
@@ -747,7 +746,7 @@ export default function PDCSummary() {
 
       {/* Add PDC Modal */}
       {addModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[var(--ds-z-dropdown)]">
           <div className="bg-white rounded-lg w-full max-w-2xl max-h-[80vh] overflow-auto">
             <div className="p-4 border-b">
               <h3 className="font-bold text-lg">
@@ -878,7 +877,7 @@ export default function PDCSummary() {
 
       {/* Convert PDC Modal */}
       {convertModalOpen && convertingPDC && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[var(--ds-z-dropdown)]">
           <div className="bg-white rounded-lg w-full max-w-md">
             <div className="p-4 border-b">
               <h3 className="font-bold text-lg">Convert PDC to Bank Entry</h3>

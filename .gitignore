@@ -58,3 +58,18 @@ playwright-report/
 # Phase 5 local event-sync file store (dev/test)
 .data/
 .data-test-sync/
+
+# Orbix Nepali Language KB — large/generated artifacts (keep local; do not commit blindly)
+knowledgebase/raw/
+knowledgebase/processed/jsonl/
+knowledgebase/processed/quarantine/
+knowledgebase/processed/records/
+knowledgebase/indexes/lexical/*.sqlite
+knowledgebase/indexes/lexical/*.sqlite-*
+knowledgebase/indexes/metadata/*.sqlite
+knowledgebase/indexes/metadata/*.sqlite-*
+knowledgebase/indexes/semantic/
+knowledgebase/review/phase2_parse.log
+knowledgebase/**/*.jsonl.tmp
+knowledgebase/**/*.partial
+

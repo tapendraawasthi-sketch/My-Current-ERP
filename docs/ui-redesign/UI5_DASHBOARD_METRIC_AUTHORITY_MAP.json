@@ -1,0 +1,218 @@
+{
+  "phase": "UI-5",
+  "generated_at": "2026-07-13",
+  "canonical_home": {
+    "route": "dashboard",
+    "aliases": ["financial-dashboard"],
+    "component": "src/pages/FinancialDashboard.tsx",
+    "framework": "src/features/home"
+  },
+  "metrics": [
+    {
+      "metricId": "cash_and_bank",
+      "title": "Cash and Bank",
+      "authoritativeSource": "readAllAccountBalances + isCashOrBankAccount",
+      "companyScope": "active companySettings.id / selected company",
+      "dateFiscalScope": "as-of account balances (projection)",
+      "currency": "company defaultCurrency / NPR",
+      "permission": "balanceSheet.canView OR dayBook.canView",
+      "freshness": "from adapter load timestamp + sync aggregate",
+      "localRemoteStatus": "projection/local; labelled via DashboardFreshness",
+      "comparisonBasis": "none (deferred — no safe prior-period cash series without new queries)",
+      "drillDownRoute": "day-book",
+      "loadingState": "skeleton metric",
+      "unavailableState": "em dash + reason",
+      "implementationStatus": "implemented",
+      "favourableWhen": "neutral"
+    },
+    {
+      "metricId": "receivables",
+      "title": "Receivables",
+      "authoritativeSource": "computeOutstandingReceivables",
+      "companyScope": "active company store parties/invoices/vouchers",
+      "dateFiscalScope": "posted sales outstanding as of now",
+      "currency": "company defaultCurrency / NPR",
+      "permission": "salesVoucher.canView OR dayBook.canView",
+      "freshness": "adapter",
+      "localRemoteStatus": "local store facts; sync label separate",
+      "comparisonBasis": "none",
+      "drillDownRoute": "outstanding-receivables",
+      "loadingState": "skeleton metric",
+      "unavailableState": "em dash + reason",
+      "implementationStatus": "implemented",
+      "favourableWhen": "lower_is_contextual"
+    },
+    {
+      "metricId": "payables",
+      "title": "Payables",
+      "authoritativeSource": "computeOutstandingPayables",
+      "companyScope": "active company",
+      "dateFiscalScope": "posted purchases outstanding as of now",
+      "currency": "company defaultCurrency / NPR",
+      "permission": "purchaseVoucher.canView OR dayBook.canView",
+      "freshness": "adapter",
+      "localRemoteStatus": "local store",
+      "comparisonBasis": "none",
+      "drillDownRoute": "outstanding-payables",
+      "loadingState": "skeleton metric",
+      "unavailableState": "em dash + reason",
+      "implementationStatus": "implemented",
+      "favourableWhen": "neutral"
+    },
+    {
+      "metricId": "sales_period",
+      "title": "Sales (period)",
+      "authoritativeSource": "buildProfitLossFromProjection.totalIncome",
+      "companyScope": "active company",
+      "dateFiscalScope": "currentFiscalYear.startDate–endDate",
+      "currency": "company defaultCurrency / NPR",
+      "permission": "profitLoss.canView",
+      "freshness": "adapter",
+      "localRemoteStatus": "projection",
+      "comparisonBasis": "none (partial-period warning when FY not complete)",
+      "drillDownRoute": "profit-loss",
+      "loadingState": "skeleton metric",
+      "unavailableState": "em dash + reason",
+      "implementationStatus": "implemented",
+      "favourableWhen": "higher_is_favourable"
+    },
+    {
+      "metricId": "net_result",
+      "title": "Net result",
+      "authoritativeSource": "buildProfitLossFromProjection.netProfit",
+      "companyScope": "active company",
+      "dateFiscalScope": "currentFiscalYear.startDate–endDate",
+      "currency": "company defaultCurrency / NPR",
+      "permission": "profitLoss.canView",
+      "freshness": "adapter",
+      "localRemoteStatus": "projection",
+      "comparisonBasis": "none",
+      "drillDownRoute": "profit-loss",
+      "loadingState": "skeleton metric",
+      "unavailableState": "em dash + reason",
+      "implementationStatus": "implemented",
+      "favourableWhen": "higher_is_favourable"
+    },
+    {
+      "metricId": "inventory_value",
+      "title": "Inventory value",
+      "authoritativeSource": "buildInventoryValuationReport.totalValue",
+      "companyScope": "active company",
+      "dateFiscalScope": "stock projection as-of",
+      "currency": "company defaultCurrency / NPR",
+      "permission": "itemMaster.canView AND stock valuation permitted (hide for cashier without cost)",
+      "freshness": "adapter",
+      "localRemoteStatus": "projection",
+      "comparisonBasis": "none",
+      "drillDownRoute": "stock-summary",
+      "loadingState": "skeleton metric",
+      "unavailableState": "em dash + reason",
+      "implementationStatus": "implemented",
+      "favourableWhen": "neutral"
+    },
+    {
+      "metricId": "trial_balance_health",
+      "title": "Trial balance",
+      "authoritativeSource": "readTrialBalanceFromProjection totals",
+      "companyScope": "active company",
+      "dateFiscalScope": "projection TB",
+      "currency": "n/a (balanced/unbalanced status)",
+      "permission": "trialBalance.canView",
+      "freshness": "adapter",
+      "localRemoteStatus": "projection",
+      "comparisonBasis": "debit vs credit parity",
+      "drillDownRoute": "trial-balance",
+      "loadingState": "skeleton metric",
+      "unavailableState": "em dash + reason",
+      "implementationStatus": "implemented",
+      "favourableWhen": "balanced_is_favourable"
+    },
+    {
+      "metricId": "todays_sales",
+      "title": "Today's sales",
+      "authoritativeSource": "posted sales-invoice grandTotal filtered to today (store invoices — same facts as billing list)",
+      "companyScope": "active company",
+      "dateFiscalScope": "calendar today (ISO date)",
+      "currency": "company defaultCurrency / NPR",
+      "permission": "salesVoucher.canView",
+      "freshness": "adapter",
+      "localRemoteStatus": "local store",
+      "comparisonBasis": "none",
+      "drillDownRoute": "billing",
+      "loadingState": "skeleton metric",
+      "unavailableState": "em dash + reason",
+      "implementationStatus": "implemented",
+      "favourableWhen": "higher_is_favourable",
+      "notes": "Operational cashier metric; not a second P&L engine. Uses posted invoice totals only."
+    },
+    {
+      "metricId": "parties_count",
+      "title": "Parties",
+      "authoritativeSource": "useStore.parties.length",
+      "companyScope": "active company",
+      "dateFiscalScope": "n/a",
+      "currency": "n/a",
+      "permission": "partyMaster.canView",
+      "freshness": "live store",
+      "localRemoteStatus": "local",
+      "comparisonBasis": "none",
+      "drillDownRoute": "parties",
+      "loadingState": "n/a",
+      "unavailableState": "hidden if no permission",
+      "implementationStatus": "implemented_as_secondary",
+      "favourableWhen": "neutral"
+    },
+    {
+      "metricId": "items_count",
+      "title": "Items",
+      "authoritativeSource": "useStore.items.length",
+      "companyScope": "active company",
+      "dateFiscalScope": "n/a",
+      "currency": "n/a",
+      "permission": "itemMaster.canView",
+      "freshness": "live store",
+      "localRemoteStatus": "local",
+      "comparisonBasis": "none",
+      "drillDownRoute": "items",
+      "loadingState": "n/a",
+      "unavailableState": "hidden if no permission",
+      "implementationStatus": "implemented_as_secondary",
+      "favourableWhen": "neutral"
+    }
+  ],
+  "deferred_metrics": [
+    {
+      "metricId": "tax_position",
+      "reason": "No single safe Home aggregator without duplicating VAT return logic; use vat-reports drill-down only"
+    },
+    {
+      "metricId": "purchases_period",
+      "reason": "Prefer P&L expense composition via profit-loss page; avoid second purchase sum"
+    },
+    {
+      "metricId": "cash_flow_forecast",
+      "reason": "Would invent predictions"
+    },
+    {
+      "metricId": "budget_vs_actual",
+      "reason": "Budget authority not proven for Home"
+    }
+  ],
+  "charts": [
+    {
+      "chartId": "receivable_ageing_buckets",
+      "title": "Receivable ageing",
+      "purpose": "Identify overdue concentration",
+      "authoritativeSource": "buildAgingReportFromProjection(asOf, customer)",
+      "unit": "NPR outstanding",
+      "accessibleSummary": "required",
+      "drillDownRoute": "debtors-aging",
+      "implementationStatus": "implemented"
+    },
+    {
+      "chartId": "sales_collection_trend",
+      "implementationStatus": "deferred",
+      "reason": "No authoritative monthly series API without client-side re-aggregation"
+    }
+  ]
+}

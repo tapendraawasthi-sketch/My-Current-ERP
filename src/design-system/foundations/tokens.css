@@ -1,0 +1,300 @@
+/**
+ * Himalayan Precision — semantic colour tokens (Phase UI-1)
+ * Single source of colour literals for the design-system path.
+ * Feature components must use these tokens, not raw hex.
+ */
+
+:root,
+[data-theme="light"],
+[data-ds-theme="light"] {
+  /* Brand scale (IMPLEMENT_NOW — Calm Himalayan ledger) */
+  --ds-brand-950: #0a3a5a;
+  --ds-brand-900: #0a3a5a;
+  --ds-brand-800: #0c4a72;
+  --ds-brand-700: #0f5c8c;
+  --ds-brand-600: #1677b8;
+  --ds-brand-500: #1d8ad1;
+  --ds-brand-100: #e6f2fa;
+  --ds-brand-50: #f0f7fc;
+
+  --ds-intelligence-700: #086868;
+  --ds-intelligence-600: #0a7a7a;
+  --ds-intelligence-100: #dff5f7;
+  --ds-intelligence-50: #f2fbfc;
+
+  /* Canvas & surfaces */
+  --ds-canvas: #f3f5f7;
+  --ds-surface: #ffffff;
+  --ds-surface-subtle: #f8fafc;
+  --ds-surface-raised: #ffffff;
+  --ds-surface-muted: #eef1f4;
+  --ds-surface-inverse: #14212b;
+  --ds-surface-disabled: #f1f4f7;
+  --ds-surface-selected: #e6f2fa;
+  --ds-surface-hover: #f1f5f9;
+  --ds-surface-pressed: #e8eef4;
+
+  /* Text */
+  --ds-text-strong: #14212b;
+  --ds-text-default: #2a3845;
+  --ds-text-muted: #5c6b79;
+  --ds-text-subtle: #81909e;
+  --ds-text-disabled: #a8b4bf;
+  --ds-text-inverse: #f8fafc;
+  --ds-text-link: #0f5c8c;
+
+  /* Borders */
+  --ds-border-subtle: #e8eef4;
+  --ds-border-default: #d5dce3;
+  --ds-border-strong: #b8c4cf;
+  --ds-border-focus: #0f5c8c;
+  --ds-border-disabled: #e2e8ee;
+
+  /* Actions */
+  --ds-action-primary: #0f5c8c;
+  --ds-action-primary-hover: #0c4a72;
+  --ds-action-primary-pressed: #0a3a5a;
+  --ds-action-primary-text: #ffffff;
+  --ds-action-secondary: #ffffff;
+  --ds-action-secondary-hover: #f1f5f9;
+  --ds-action-danger: #b4232f;
+  --ds-action-danger-hover: #91202b;
+
+  /* Status */
+  --ds-status-success: #0f6b56;
+  --ds-status-success-surface: #e7f6f1;
+  --ds-status-warning: #8a5a12;
+  --ds-status-warning-surface: #fff4dd;
+  --ds-status-danger: #b4232f;
+  --ds-status-danger-surface: #fdecef;
+  --ds-status-info: #1769aa;
+  --ds-status-info-surface: #eaf3fb;
+  --ds-status-neutral: #5c6b79;
+  --ds-status-neutral-surface: #eef1f4;
+
+  /* Intelligence (Orbix only) */
+  --ds-intelligence: #0a7a7a;
+  --ds-intelligence-hover: #086868;
+  --ds-intelligence-surface: #f2fbfc;
+  --ds-intelligence-border: #dff5f7;
+
+  /* Financial (never colour-only) */
+  --ds-financial-favourable: #0f6b56;
+  --ds-financial-unfavourable: #b4232f;
+  --ds-financial-neutral: #5c6b79;
+  --ds-financial-debit: #b4232f;
+  --ds-financial-credit: #0f6b56;
+
+  /* Focus */
+  --ds-focus-ring: rgba(15, 92, 140, 0.35);
+  --ds-focus-ring-width: 2px;
+  --ds-focus-ring-offset: 2px;
+
+  /* Radius */
+  --ds-radius-xs: 4px;
+  --ds-radius-sm: 6px;
+  --ds-radius-md: 8px;
+  --ds-radius-lg: 10px;
+  --ds-radius-full: 9999px;
+
+  /* Elevation */
+  --ds-shadow-0: none;
+  --ds-shadow-1: 0 1px 2px rgba(23, 33, 43, 0.06);
+  --ds-shadow-2: 0 4px 12px rgba(23, 33, 43, 0.08);
+  --ds-shadow-3: 0 12px 28px rgba(23, 33, 43, 0.12);
+  --ds-shadow-4: 0 20px 40px rgba(23, 33, 43, 0.16);
+
+  /* Motion */
+  --ds-duration-immediate: 100ms;
+  --ds-duration-component: 160ms;
+  --ds-duration-panel: 220ms;
+  --ds-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Z-index */
+  --ds-z-base: 0;
+  --ds-z-sticky: 100;
+  --ds-z-header: 200;
+  --ds-z-navigation: 300;
+  --ds-z-dropdown: 400;
+  --ds-z-popover: 500;
+  --ds-z-drawer: 600;
+  --ds-z-modal: 700;
+  --ds-z-toast: 800;
+  --ds-z-command-palette: 900;
+  --ds-z-emergency: 1000;
+
+  /* Spacing (4px grid) */
+  --ds-space-0: 0px;
+  --ds-space-0-5: 2px;
+  --ds-space-1: 4px;
+  --ds-space-1-5: 6px;
+  --ds-space-2: 8px;
+  --ds-space-3: 12px;
+  --ds-space-4: 16px;
+  --ds-space-5: 20px;
+  --ds-space-6: 24px;
+  --ds-space-8: 32px;
+  --ds-space-10: 40px;
+  --ds-space-12: 48px;
+  --ds-space-16: 64px;
+
+  /* Typography */
+  --ds-font-sans:
+    "Inter",
+    "Segoe UI",
+    system-ui,
+    -apple-system,
+    "Noto Sans Devanagari",
+    "Noto Sans",
+    sans-serif;
+  --ds-font-mono: "IBM Plex Mono", "SF Mono", "Cascadia Code", ui-monospace, monospace;
+
+  --ds-text-display-size: 28px;
+  --ds-text-display-line: 36px;
+  --ds-text-page-title-size: 16px;
+  --ds-text-page-title-line: 24px;
+  --ds-text-section-title-size: 13px;
+  --ds-text-section-title-line: 20px;
+  --ds-text-card-title-size: 16px;
+  --ds-text-card-title-line: 24px;
+  --ds-text-body-size: 14px;
+  --ds-text-body-line: 21px;
+  --ds-text-label-size: 13px;
+  --ds-text-label-line: 18px;
+  --ds-text-table-size: 13px;
+  --ds-text-table-line: 20px;
+  --ds-text-metadata-size: 12px;
+  --ds-text-metadata-line: 18px;
+  --ds-text-micro-size: 11px;
+  --ds-text-micro-line: 16px;
+  --ds-text-code-size: 13px;
+  --ds-text-code-line: 20px;
+  --ds-text-financial-size: 14px;
+  --ds-text-financial-line: 21px;
+  --ds-text-financial-total-size: 16px;
+  --ds-text-financial-total-line: 24px;
+
+  /* Density defaults = productive */
+  --ds-control-height: 36px;
+  --ds-control-height-sm: 32px;
+  --ds-control-height-lg: 40px;
+  --ds-table-row-height: 36px;
+  --ds-page-padding: 24px;
+  --ds-section-gap: 20px;
+  --ds-field-gap: 12px;
+  --ds-card-padding: 16px;
+  --ds-toolbar-gap: 8px;
+  --ds-control-inset-x: 12px;
+  --ds-table-cell-padding-y: 8px;
+  --ds-table-cell-padding-x: 12px;
+  --ds-hit-target-min: 36px;
+}
+
+[data-theme="dark"],
+[data-ds-theme="dark"] {
+  --ds-canvas: #121a24;
+  --ds-surface: #1a2430;
+  --ds-surface-subtle: #16202a;
+  --ds-surface-raised: #223041;
+  --ds-surface-muted: #1e2a38;
+  --ds-surface-inverse: #e8eef4;
+  --ds-surface-disabled: #1a222c;
+  --ds-surface-selected: rgba(22, 119, 184, 0.22);
+  --ds-surface-hover: #223041;
+  --ds-surface-pressed: #2a3a4d;
+
+  --ds-text-strong: #eef3f7;
+  --ds-text-default: #d5dee6;
+  --ds-text-muted: #9aa8b5;
+  --ds-text-subtle: #7a8a99;
+  --ds-text-disabled: #5c6b79;
+  --ds-text-inverse: #17212b;
+  --ds-text-link: #5eb3e0;
+
+  --ds-border-subtle: #243040;
+  --ds-border-default: #314456;
+  --ds-border-strong: #456078;
+  --ds-border-focus: #5eb3e0;
+  --ds-border-disabled: #2a3644;
+
+  --ds-action-primary: #1d8ad1;
+  --ds-action-primary-hover: #3a9ddb;
+  --ds-action-primary-pressed: #1677b8;
+  --ds-action-primary-text: #0b1220;
+  --ds-action-secondary: #1a2430;
+  --ds-action-secondary-hover: #223041;
+  --ds-action-danger: #e35d6a;
+  --ds-action-danger-hover: #f0717c;
+
+  --ds-status-success: #3db892;
+  --ds-status-success-surface: rgba(20, 125, 100, 0.22);
+  --ds-status-warning: #e0a23a;
+  --ds-status-warning-surface: rgba(167, 102, 11, 0.22);
+  --ds-status-danger: #e35d6a;
+  --ds-status-danger-surface: rgba(180, 35, 47, 0.22);
+  --ds-status-info: #5eb3e0;
+  --ds-status-info-surface: rgba(23, 105, 170, 0.22);
+  --ds-status-neutral: #9aa8b5;
+  --ds-status-neutral-surface: rgba(95, 111, 126, 0.22);
+
+  --ds-intelligence: #2bb3c7;
+  --ds-intelligence-hover: #4ec4d4;
+  --ds-intelligence-surface: rgba(11, 130, 153, 0.18);
+  --ds-intelligence-border: rgba(11, 130, 153, 0.35);
+
+  --ds-financial-favourable: #3db892;
+  --ds-financial-unfavourable: #e35d6a;
+  --ds-financial-neutral: #9aa8b5;
+  --ds-financial-debit: #e35d6a;
+  --ds-financial-credit: #3db892;
+
+  --ds-focus-ring: rgba(94, 179, 224, 0.45);
+
+  --ds-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --ds-shadow-2: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --ds-shadow-3: 0 12px 28px rgba(0, 0, 0, 0.45);
+  --ds-shadow-4: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Density modes */
+[data-density="comfortable"] {
+  --ds-control-height: 44px;
+  --ds-control-height-sm: 40px;
+  --ds-control-height-lg: 48px;
+  --ds-table-row-height: 48px;
+  --ds-page-padding: 28px;
+  --ds-section-gap: 24px;
+  --ds-field-gap: 16px;
+  --ds-card-padding: 20px;
+  --ds-hit-target-min: 44px;
+  --ds-text-table-size: 14px;
+  --ds-text-table-line: 21px;
+}
+
+[data-density="productive"] {
+  --ds-control-height: 36px;
+  --ds-control-height-sm: 32px;
+  --ds-control-height-lg: 40px;
+  --ds-table-row-height: 36px;
+  --ds-hit-target-min: 36px;
+}
+
+[data-density="compact"] {
+  --ds-control-height: 32px;
+  --ds-control-height-sm: 32px;
+  --ds-control-height-lg: 36px;
+  --ds-table-row-height: 32px;
+  --ds-page-padding: 16px;
+  --ds-section-gap: 12px;
+  --ds-field-gap: 8px;
+  --ds-card-padding: 12px;
+  --ds-hit-target-min: 32px;
+  /* Essential text still >= 12px via metadata floor */
+}
+
+@media (max-width: 767px) {
+  :root {
+    --ds-hit-target-min: 44px;
+    --ds-control-height: max(44px, var(--ds-control-height));
+  }
+}

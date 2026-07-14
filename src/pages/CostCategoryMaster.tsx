@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useStore } from "../store";
 import { Plus, Edit2, Trash2, X, Save } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 const CostCategoryMaster: React.FC = () => {
   const { costCategories, addCostCategory, updateCostCategory, deleteCostCategory } = useStore();

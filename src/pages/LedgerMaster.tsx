@@ -13,7 +13,7 @@ import {
   Building2,
   Settings,
 } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { generateId } from "../lib/db";
 import { useScreenF12 } from "../hooks/useF12Config";
 import { ReportEmptyState } from "../components/ReportEmptyState";

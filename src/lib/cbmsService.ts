@@ -1,6 +1,6 @@
 // src/lib/cbmsService.ts
 
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { getDB, type DBInvoice } from "./db";
 
 export type CBMSInvoiceType = "tax-invoice" | "simplified-invoice" | "credit-note" | "debit-note";

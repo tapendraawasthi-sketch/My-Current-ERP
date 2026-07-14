@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useMemo, useState } from "react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import * as XLSX from "xlsx";
 import {
   AlertTriangle,

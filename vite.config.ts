@@ -27,6 +27,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "@/design-system": path.resolve(__dirname, "./src/design-system/index.ts"),
       "node:fs": path.resolve(__dirname, "./src/lib/ekhata/vocabulary/stubs/node-fs.ts"),
       "node:module": path.resolve(__dirname, "./src/lib/ekhata/vocabulary/stubs/node-module.ts"),
       "node:path": path.resolve(__dirname, "./src/lib/ekhata/vocabulary/stubs/node-path.ts"),
@@ -41,6 +42,13 @@ export default defineConfig({
         main: path.resolve(__dirname, "index.html"),
         ekhataHarness: path.resolve(__dirname, "e2e/ekhata.html"),
         uiQaHarness: path.resolve(__dirname, "e2e/ui-qa.html"),
+        // E2E-only auth visual fixture (runtime-gated by VITE_ALLOW_AUTH_FIXTURE / DEV)
+        uiAuthHarness: path.resolve(__dirname, "e2e/ui-auth.html"),
+        dsLabHarness: path.resolve(__dirname, "e2e/ds-lab.html"),
+        shellLabHarness: path.resolve(__dirname, "e2e/shell-lab.html"),
+        uiHomeHarness: path.resolve(__dirname, "e2e/ui-home.html"),
+        uiOrbixHarness: path.resolve(__dirname, "e2e/ui-orbix.html"),
+        uiTxnHarness: path.resolve(__dirname, "e2e/ui-txn.html"),
       },
       output: {
         manualChunks(id) {

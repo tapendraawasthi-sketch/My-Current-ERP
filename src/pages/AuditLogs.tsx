@@ -180,11 +180,11 @@ const DetailModal: React.FC<DetailModalProps> = ({ log, onClose }) => {
     >
       <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 bg-[#f5f6fa]">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 bg-[var(--ds-canvas)]">
           <div className="flex items-center gap-2">
-            <ShieldCheck className="h-4 w-4 text-[#1557b0]" />
+            <ShieldCheck className="h-4 w-4 text-[var(--ds-action-primary)]" />
             <span className="text-[13px] font-semibold text-gray-800">
-              Audit Log Entry #{log.id}
+              Audit log Entry #{log.id}
             </span>
           </div>
           <button
@@ -202,16 +202,16 @@ const DetailModal: React.FC<DetailModalProps> = ({ log, onClose }) => {
           {/* Badges */}
           <div className="flex flex-wrap items-center gap-2">
             <span
-              className={`px-2 py-0.5 text-[10px] font-semibold uppercase rounded border ${actionColor.bg} ${actionColor.text} ${actionColor.border}`}
+              className={`px-2 py-0.5 text-[12px] font-semibold uppercase rounded border ${actionColor.bg} ${actionColor.text} ${actionColor.border}`}
             >
               {log.action}
             </span>
             <span
-              className={`px-2 py-0.5 text-[10px] font-semibold uppercase rounded ${SEVERITY_BADGE[log.severity] ?? "bg-gray-100 text-gray-700"}`}
+              className={`px-2 py-0.5 text-[12px] font-semibold uppercase rounded ${SEVERITY_BADGE[log.severity] ?? "bg-gray-100 text-gray-700"}`}
             >
               {log.severity}
             </span>
-            <span className="px-2 py-0.5 text-[10px] font-semibold uppercase rounded bg-gray-100 text-gray-700">
+            <span className="px-2 py-0.5 text-[12px] font-semibold uppercase rounded bg-gray-100 text-gray-700">
               {log.entityType}
             </span>
           </div>
@@ -219,56 +219,56 @@ const DetailModal: React.FC<DetailModalProps> = ({ log, onClose }) => {
           {/* Metadata grid */}
           <div className="grid grid-cols-2 gap-3 text-[12px]">
             <div className="col-span-2">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+              <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                 Timestamp
               </p>
               <p className="text-gray-800 font-mono">{formatTimestamp(log.timestamp)}</p>
             </div>
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+              <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                 User
               </p>
               <div className="flex items-center gap-2">
-                <div className="h-6 w-6 rounded-full bg-[#1557b0]/10 flex items-center justify-center text-[10px] font-bold text-[#1557b0]">
+                <div className="h-6 w-6 rounded-full bg-[var(--ds-action-primary)]/10 flex items-center justify-center text-[12px] font-bold text-[var(--ds-action-primary)]">
                   {(log.userName || "?").charAt(0).toUpperCase()}
                 </div>
                 <span className="text-gray-800">{log.userName}</span>
               </div>
             </div>
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+              <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                 Role
               </p>
               <p className="text-gray-700">{log.userRole || "—"}</p>
             </div>
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+              <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                 Entity ID
               </p>
-              <p className="text-gray-700 font-mono text-[11px] break-all">{log.entityId || "—"}</p>
+              <p className="text-gray-700 font-mono text-[12px] break-all">{log.entityId || "—"}</p>
             </div>
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+              <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                 Entity Name
               </p>
               <p className="text-gray-700">{log.entityName || "—"}</p>
             </div>
             {log.sessionId && (
               <div className="col-span-2">
-                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                   Session ID
                 </p>
-                <p className="text-gray-600 font-mono text-[11px] break-all">{log.sessionId}</p>
+                <p className="text-gray-600 font-mono text-[12px] break-all">{log.sessionId}</p>
               </div>
             )}
           </div>
 
           {/* Change Description */}
           <div>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+            <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
               Change Description
             </p>
-            <div className="bg-[#f5f6fa] border border-gray-200 rounded-md px-3 py-2.5 text-[12px] text-gray-700 whitespace-pre-wrap break-words">
+            <div className="bg-[var(--ds-canvas)] border border-gray-200 rounded-md px-3 py-2.5 text-[12px] text-gray-700 whitespace-pre-wrap break-words">
               {log.changeDescription || "—"}
             </div>
           </div>
@@ -279,7 +279,7 @@ const DetailModal: React.FC<DetailModalProps> = ({ log, onClose }) => {
               <button
                 type="button"
                 onClick={() => setShowOld((v) => !v)}
-                className="flex items-center gap-1.5 text-[11px] font-semibold text-gray-600 hover:text-gray-800 mb-1"
+                className="flex items-center gap-1.5 text-[12px] font-semibold text-gray-600 hover:text-gray-800 mb-1"
               >
                 <ChevronRight
                   className={`h-3.5 w-3.5 transition-transform ${showOld ? "rotate-90" : ""}`}
@@ -287,7 +287,7 @@ const DetailModal: React.FC<DetailModalProps> = ({ log, onClose }) => {
                 Previous Value (Before Change)
               </button>
               {showOld && (
-                <pre className="bg-red-50 border border-red-100 rounded-md px-3 py-2.5 text-[11px] text-red-800 font-mono whitespace-pre-wrap break-words max-h-48 overflow-auto">
+                <pre className="bg-red-50 border border-red-100 rounded-md px-3 py-2.5 text-[12px] text-red-800 font-mono whitespace-pre-wrap break-words max-h-48 overflow-auto">
                   {formatJsonForDisplay(log.oldValue)}
                 </pre>
               )}
@@ -300,7 +300,7 @@ const DetailModal: React.FC<DetailModalProps> = ({ log, onClose }) => {
               <button
                 type="button"
                 onClick={() => setShowNew((v) => !v)}
-                className="flex items-center gap-1.5 text-[11px] font-semibold text-gray-600 hover:text-gray-800 mb-1"
+                className="flex items-center gap-1.5 text-[12px] font-semibold text-gray-600 hover:text-gray-800 mb-1"
               >
                 <ChevronRight
                   className={`h-3.5 w-3.5 transition-transform ${showNew ? "rotate-90" : ""}`}
@@ -308,7 +308,7 @@ const DetailModal: React.FC<DetailModalProps> = ({ log, onClose }) => {
                 New Value (After Change)
               </button>
               {showNew && (
-                <pre className="bg-green-50 border border-green-100 rounded-md px-3 py-2.5 text-[11px] text-green-800 font-mono whitespace-pre-wrap break-words max-h-48 overflow-auto">
+                <pre className="bg-green-50 border border-green-100 rounded-md px-3 py-2.5 text-[12px] text-green-800 font-mono whitespace-pre-wrap break-words max-h-48 overflow-auto">
                   {formatJsonForDisplay(log.newValue)}
                 </pre>
               )}
@@ -318,10 +318,10 @@ const DetailModal: React.FC<DetailModalProps> = ({ log, onClose }) => {
           {/* Checksum */}
           {log.checksum && (
             <div>
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+              <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                 Integrity Checksum
               </p>
-              <p className="font-mono text-[11px] text-gray-500 break-all bg-[#f5f6fa] border border-gray-200 rounded px-2 py-1">
+              <p className="font-mono text-[12px] text-gray-500 break-all bg-[var(--ds-canvas)] border border-gray-200 rounded px-2 py-1">
                 {log.checksum}
               </p>
             </div>
@@ -329,7 +329,7 @@ const DetailModal: React.FC<DetailModalProps> = ({ log, onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3 border-t border-gray-200 bg-[#f5f6fa] flex justify-end">
+        <div className="px-5 py-3 border-t border-gray-200 bg-[var(--ds-canvas)] flex justify-end">
           <button
             type="button"
             onClick={onClose}
@@ -456,12 +456,12 @@ const AuditLogs: React.FC = () => {
   );
 
   return (
-    <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
+    <div className="p-4 md:p-6 bg-[var(--ds-canvas)] min-h-screen">
       {/* Page Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Secure Audit Monitor Logs</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
+          <h1 className="text-[15px] font-semibold text-gray-800">Audit log</h1>
+          <p className="text-[12px] text-gray-500 mt-0.5">
             Immutable compliance ledger — all system actions recorded
           </p>
         </div>
@@ -479,7 +479,7 @@ const AuditLogs: React.FC = () => {
             type="button"
             onClick={() => exportToCsv(filteredLogs)}
             disabled={filteredLogs.length === 0}
-            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Download className="h-3.5 w-3.5" />
             Export CSV
@@ -496,13 +496,13 @@ const AuditLogs: React.FC = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search user, entity, description…"
-            className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+            className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
           />
         </div>
         <select
           value={actionFilter}
           onChange={(e) => setActionFilter(e.target.value)}
-          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
         >
           <option value="">All Actions</option>
           {actionOptions.map((a) => (
@@ -514,7 +514,7 @@ const AuditLogs: React.FC = () => {
         <select
           value={entityTypeFilter}
           onChange={(e) => setEntityTypeFilter(e.target.value)}
-          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
         >
           <option value="">All Entity Types</option>
           {entityTypeOptions.map((et) => (
@@ -526,7 +526,7 @@ const AuditLogs: React.FC = () => {
         <select
           value={severityFilter}
           onChange={(e) => setSeverityFilter(e.target.value)}
-          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
         >
           <option value="">All Severities</option>
           <option value="INFO">INFO</option>
@@ -538,14 +538,14 @@ const AuditLogs: React.FC = () => {
           value={fromDate}
           onChange={(e) => setFromDate(e.target.value)}
           title="From date"
-          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
         />
         <input
           type="date"
           value={toDate}
           onChange={(e) => setToDate(e.target.value)}
           title="To date"
-          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
         />
         {hasActiveFilters && (
           <button
@@ -561,7 +561,7 @@ const AuditLogs: React.FC = () => {
 
       {/* Summary Bar */}
       <div className="flex items-center justify-between mb-3 px-1">
-        <p className="text-[11px] text-gray-500 font-medium">
+        <p className="text-[12px] text-gray-500 font-medium">
           Showing{" "}
           <span className="font-semibold text-gray-700">
             {Math.min((page - 1) * pageSize + 1, filteredLogs.length)}–
@@ -575,11 +575,11 @@ const AuditLogs: React.FC = () => {
           <span className="font-semibold text-gray-700">{weekCount}</span> this week
         </p>
         <div className="flex items-center gap-2">
-          <span className="text-[11px] text-gray-500">Rows:</span>
+          <span className="text-[12px] text-gray-500">Rows:</span>
           <select
             value={pageSize}
             onChange={(e) => setPageSize(Number(e.target.value))}
-            className="h-7 px-2 text-[11px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0]/20"
+            className="h-7 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/20"
           >
             {PAGE_SIZE_OPTIONS.map((n) => (
               <option key={n} value={n}>
@@ -603,7 +603,7 @@ const AuditLogs: React.FC = () => {
             <p className="text-[13px] font-semibold text-gray-500">
               {hasActiveFilters ? "No entries match your filters" : "No audit log entries yet"}
             </p>
-            <p className="text-[11px] text-gray-400 mt-1">
+            <p className="text-[12px] text-gray-400 mt-1">
               {hasActiveFilters
                 ? "Try clearing some filters to see more results"
                 : "All system actions will be recorded here automatically"}
@@ -613,29 +613,29 @@ const AuditLogs: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[900px]">
               <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-36">
+                <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
+                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-36">
                     Timestamp
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
                     User
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
                     Action
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
                     Entity Type
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-32">
                     Entity Name
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                     Change Description
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-20">
+                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-20">
                     Severity
                   </th>
-                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-14">
+                  <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-14">
                     View
                   </th>
                 </tr>
@@ -646,15 +646,15 @@ const AuditLogs: React.FC = () => {
                   return (
                     <tr
                       key={log.id}
-                      className="hover:bg-[#f5f6fa] transition-colors cursor-pointer"
+                      className="hover:bg-[var(--ds-canvas)] transition-colors cursor-pointer"
                       onClick={() => setSelectedLog(log)}
                     >
-                      <td className="px-3 py-2.5 text-[11px] text-gray-700 font-mono whitespace-nowrap">
+                      <td className="px-3 py-2.5 text-[12px] text-gray-700 font-mono whitespace-nowrap">
                         {formatTimestamp(log.timestamp)}
                       </td>
                       <td className="px-3 py-2.5">
                         <div className="flex items-center gap-1.5">
-                          <div className="h-5 w-5 rounded-full bg-[#1557b0]/10 flex items-center justify-center text-[9px] font-bold text-[#1557b0] shrink-0">
+                          <div className="h-5 w-5 rounded-full bg-[var(--ds-action-primary)]/10 flex items-center justify-center text-[12px] font-bold text-[var(--ds-action-primary)] shrink-0">
                             {(log.userName || "?").charAt(0).toUpperCase()}
                           </div>
                           <span
@@ -667,13 +667,13 @@ const AuditLogs: React.FC = () => {
                       </td>
                       <td className="px-3 py-2.5">
                         <span
-                          className={`inline-block px-2 py-0.5 text-[10px] font-semibold uppercase rounded border ${actionColor.bg} ${actionColor.text} ${actionColor.border}`}
+                          className={`inline-block px-2 py-0.5 text-[12px] font-semibold uppercase rounded border ${actionColor.bg} ${actionColor.text} ${actionColor.border}`}
                         >
                           {log.action}
                         </span>
                       </td>
                       <td className="px-3 py-2.5">
-                        <span className="inline-block px-2 py-0.5 text-[10px] font-semibold uppercase rounded bg-gray-100 text-gray-700">
+                        <span className="inline-block px-2 py-0.5 text-[12px] font-semibold uppercase rounded bg-gray-100 text-gray-700">
                           {log.entityType}
                         </span>
                       </td>
@@ -691,7 +691,7 @@ const AuditLogs: React.FC = () => {
                       </td>
                       <td className="px-3 py-2.5">
                         <span
-                          className={`inline-block px-2 py-0.5 text-[10px] font-semibold uppercase rounded ${SEVERITY_BADGE[log.severity] ?? "bg-gray-100 text-gray-700"}`}
+                          className={`inline-block px-2 py-0.5 text-[12px] font-semibold uppercase rounded ${SEVERITY_BADGE[log.severity] ?? "bg-gray-100 text-gray-700"}`}
                         >
                           {log.severity}
                         </span>
@@ -705,7 +705,7 @@ const AuditLogs: React.FC = () => {
                       >
                         <button
                           type="button"
-                          className="h-6 w-6 rounded flex items-center justify-center text-gray-400 hover:text-[#1557b0] hover:bg-[#1557b0]/10 transition-colors mx-auto"
+                          className="h-6 w-6 rounded flex items-center justify-center text-gray-400 hover:text-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary)]/10 transition-colors mx-auto"
                           title="View details"
                         >
                           <Eye className="h-3.5 w-3.5" />
@@ -721,8 +721,8 @@ const AuditLogs: React.FC = () => {
 
         {/* Pagination */}
         {!loading && filteredLogs.length > 0 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 bg-[#f5f6fa]">
-            <p className="text-[11px] text-gray-500">
+          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 bg-[var(--ds-canvas)]">
+            <p className="text-[12px] text-gray-500">
               Page <span className="font-semibold text-gray-700">{page}</span> of{" "}
               <span className="font-semibold text-gray-700">{totalPages}</span>
             </p>
@@ -734,7 +734,7 @@ const AuditLogs: React.FC = () => {
                 className="h-7 w-7 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 title="First page"
               >
-                <span className="text-[11px] font-bold">«</span>
+                <span className="text-[12px] font-bold">«</span>
               </button>
               <button
                 type="button"
@@ -757,9 +757,9 @@ const AuditLogs: React.FC = () => {
                     key={pageNum}
                     type="button"
                     onClick={() => setPage(pageNum)}
-                    className={`h-7 min-w-[28px] px-1.5 rounded border text-[11px] font-medium transition-colors ${
+                    className={`h-7 min-w-[28px] px-1.5 rounded border text-[12px] font-medium transition-colors ${
                       pageNum === page
-                        ? "bg-[#1557b0] border-[#1557b0] text-white"
+                        ? "bg-[var(--ds-action-primary)] border-[var(--ds-action-primary)] text-white"
                         : "bg-white border-gray-300 text-gray-600 hover:bg-gray-50"
                     }`}
                   >
@@ -784,7 +784,7 @@ const AuditLogs: React.FC = () => {
                 className="h-7 w-7 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 title="Last page"
               >
-                <span className="text-[11px] font-bold">»</span>
+                <span className="text-[12px] font-bold">»</span>
               </button>
             </div>
           </div>

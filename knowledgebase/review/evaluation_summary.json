@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-07-14T06:11:57+00:00",
+  "evidence_classes": {
+    "generated_evaluation": 104,
+    "human_reviewed_evaluation": 0,
+    "integration_tests": 0,
+    "live_production_evidence": 0
+  },
+  "language_cases": 4,
+  "language_passed": 4,
+  "gold_adversarial_cases": 100,
+  "gold_adversarial_passed": 100,
+  "critical_invariants_all_passed": true,
+  "critical_pass_rate": 1.0,
+  "failure_count": 0,
+  "disclaimer": "Synthetic/generated records do not constitute linguistic production accuracy or accounting/legal approval."
+}

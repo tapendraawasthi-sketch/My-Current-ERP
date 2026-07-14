@@ -16,14 +16,14 @@ import { formatNumber } from "../lib/utils";
 import { VoucherType, VoucherStatus } from "../lib/types";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 
-const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+const th = "px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 const inputCls =
-  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 
 const statusBadge = (status: string) => {
   if (status === VoucherStatus.POSTED) return "bg-green-100 text-green-700";
@@ -113,12 +113,12 @@ const PaymentVoucher: React.FC = () => {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-[#f5f6fa]">
+    <div className="flex h-full min-h-0 flex-col bg-[var(--ds-surface-muted)]">
       <div className="p-4 pb-0 shrink-0">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Payment vouchers</h1>
-            <p className="text-[11px] text-gray-500 mt-0.5">
+            <h1 className="text-[15px] font-semibold text-gray-800">Pay money</h1>
+            <p className="text-[12px] text-gray-500 mt-0.5">
               Cash and bank payments — expenses, suppliers, and transfers
             </p>
           </div>
@@ -129,15 +129,15 @@ const PaymentVoucher: React.FC = () => {
         </div>
 
         <div className="no-print flex flex-wrap items-center gap-2 mb-3 p-3 bg-white border border-gray-200 rounded-md">
-          <span className="text-[11px] text-gray-500">From</span>
+          <span className="text-[12px] text-gray-500">From</span>
           <div className="w-32">
             <NepaliDatePicker value={fromDate} onChange={setFromDate} />
           </div>
-          <span className="text-[11px] text-gray-500">To</span>
+          <span className="text-[12px] text-gray-500">To</span>
           <div className="w-32">
             <NepaliDatePicker value={toDate} onChange={setToDate} />
           </div>
-          <span className="text-[11px] text-gray-500">Status</span>
+          <span className="text-[12px] text-gray-500">Status</span>
           <div className="w-36">
             <Select
               options={[
@@ -172,7 +172,7 @@ const PaymentVoucher: React.FC = () => {
             <option value={50}>50 rows</option>
             <option value={100}>100 rows</option>
           </select>
-          <span className="text-[11px] text-gray-500 whitespace-nowrap">
+          <span className="text-[12px] text-gray-500 whitespace-nowrap">
             {searched.length} record{searched.length === 1 ? "" : "s"}
           </span>
           <button type="button" className={btnOutline} onClick={exportCsv}>
@@ -195,7 +195,7 @@ const PaymentVoucher: React.FC = () => {
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                  <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
                     <th className={th}>Voucher no</th>
                     <th className={th}>Date</th>
                     <th className={th}>Paid to</th>
@@ -209,7 +209,7 @@ const PaymentVoucher: React.FC = () => {
                   {displayed.map((row) => (
                     <tr
                       key={row.id}
-                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
                       onClick={() => openEdit(row)}
                     >
                       <td className={`${td} font-mono font-medium text-gray-800`}>
@@ -230,7 +230,7 @@ const PaymentVoucher: React.FC = () => {
                       </td>
                       <td className={`${td} text-center`}>
                         <span
-                          className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${statusBadge(row.status)}`}
+                          className={`rounded px-2 py-0.5 text-[12px] font-semibold uppercase ${statusBadge(row.status)}`}
                         >
                           {(row.status || "").toUpperCase()}
                         </span>
@@ -253,7 +253,7 @@ const PaymentVoucher: React.FC = () => {
                 </tbody>
               </table>
             </div>
-            <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+            <div className="px-3 py-2 border-t border-gray-200 bg-[var(--ds-surface-muted)] text-[12px] text-gray-500">
               Showing {displayed.length} of {searched.length} payment vouchers
             </div>
           </div>

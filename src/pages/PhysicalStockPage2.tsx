@@ -1,7 +1,7 @@
 // src/pages/PhysicalStockPage2.tsx
 import React, { useState, useMemo } from "react";
 import { useStore } from "../store/useStore";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { Package, Download, CheckCircle, AlertTriangle } from "lucide-react";
 import { formatNumber } from "../lib/utils";
 
@@ -134,16 +134,17 @@ export default function PhysicalStockPage2() {
   };
 
   const inputCls =
-    "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
-  const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
+    "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
+  const labelCls = "text-[12px] font-medium text-gray-600 mb-1 block";
 
   return (
-    <div className="p-4 bg-[#f5f6fa] min-h-screen">
+    <div className="p-4 bg-[var(--ds-canvas)] min-h-screen">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Physical Stock Voucher</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
-            Record actual physical stock count — system auto-generates Stock Journal for variances
+          <h1 className="text-[15px] font-semibold text-gray-800">Physical stock count</h1>
+          <p className="text-[12px] text-gray-500 mt-0.5">Count vs books.</p>
+          <p className="text-[12px] text-gray-500 mt-0.5">
+            Record actual physical stock count — system auto-generates Stock journal for variances
           </p>
         </div>
         <div className="flex gap-2">
@@ -158,7 +159,7 @@ export default function PhysicalStockPage2() {
           {loaded && !saved && (
             <button
               onClick={handleSave}
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
+              className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md"
             >
               Save (F2)
             </button>
@@ -198,11 +199,11 @@ export default function PhysicalStockPage2() {
         <div className="mt-3 flex gap-2 items-center">
           <button
             onClick={loadItems}
-            className="h-8 px-3 bg-[#059669] hover:bg-[#047857] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+            className="h-8 px-3 bg-[var(--ds-status-success)] hover:bg-[var(--ds-border-default)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
           >
             <Package className="h-3.5 w-3.5" /> Load Items
           </button>
-          <span className="text-[11px] text-gray-400">
+          <span className="text-[12px] text-gray-400">
             Click "Load Items" to populate all active inventory items from the system
           </span>
         </div>
@@ -234,7 +235,7 @@ export default function PhysicalStockPage2() {
             },
           ].map((stat) => (
             <div key={stat.label} className={`${stat.bg} border border-gray-200 rounded-lg p-3`}>
-              <div className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">
+              <div className="text-[12px] text-gray-500 font-semibold uppercase tracking-wide">
                 {stat.label}
               </div>
               <div className={`text-[18px] font-bold ${stat.color} mt-1`}>{stat.value}</div>
@@ -246,14 +247,14 @@ export default function PhysicalStockPage2() {
       {/* Item Grid */}
       {loaded && (
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-          <div className="px-4 py-2.5 border-b border-gray-200 bg-[#f5f6fa]">
-            <span className="text-[11px] font-semibold text-gray-600 uppercase tracking-wide">
+          <div className="px-4 py-2.5 border-b border-gray-200 bg-[var(--ds-canvas)]">
+            <span className="text-[12px] font-semibold text-gray-600 uppercase tracking-wide">
               Physical Stock Entry — Enter actual counted quantity for each item
             </span>
           </div>
           <div className="overflow-x-auto max-h-[60vh] overflow-y-auto">
             <table className="w-full">
-              <thead className="sticky top-0 bg-[#f5f6fa] z-10">
+              <thead className="sticky top-0 bg-[var(--ds-canvas)] z-10">
                 <tr className="border-b border-gray-200">
                   {[
                     "#",
@@ -266,7 +267,7 @@ export default function PhysicalStockPage2() {
                   ].map((h) => (
                     <th
                       key={h}
-                      className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide"
+                      className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide"
                     >
                       {h}
                     </th>
@@ -279,7 +280,7 @@ export default function PhysicalStockPage2() {
                     key={line.itemId}
                     className={`hover:bg-gray-50 ${line.variance !== 0 ? (line.varianceType === "excess" ? "bg-blue-50/30" : "bg-red-50/30") : ""}`}
                   >
-                    <td className="px-3 py-2 text-[11px] text-gray-400">{idx + 1}</td>
+                    <td className="px-3 py-2 text-[12px] text-gray-400">{idx + 1}</td>
                     <td className="px-3 py-2 text-[12px] font-medium text-gray-800">
                       {line.itemName}
                     </td>
@@ -306,15 +307,15 @@ export default function PhysicalStockPage2() {
                     </td>
                     <td className="px-3 py-2">
                       {line.varianceType === "match" ? (
-                        <span className="flex items-center gap-1 text-[10px] text-green-600 font-semibold">
+                        <span className="flex items-center gap-1 text-[12px] text-green-600 font-semibold">
                           <CheckCircle className="h-3 w-3" /> Match
                         </span>
                       ) : line.varianceType === "excess" ? (
-                        <span className="flex items-center gap-1 text-[10px] text-blue-600 font-semibold">
+                        <span className="flex items-center gap-1 text-[12px] text-blue-600 font-semibold">
                           <AlertTriangle className="h-3 w-3" /> Excess
                         </span>
                       ) : (
-                        <span className="flex items-center gap-1 text-[10px] text-red-600 font-semibold">
+                        <span className="flex items-center gap-1 text-[12px] text-red-600 font-semibold">
                           <AlertTriangle className="h-3 w-3" /> Shortage
                         </span>
                       )}
@@ -327,7 +328,7 @@ export default function PhysicalStockPage2() {
           {saved && (
             <div className="px-4 py-3 border-t border-gray-200 bg-green-50 text-[12px] text-green-700 font-semibold flex items-center gap-2">
               <CheckCircle className="h-4 w-4" />
-              Physical Stock Voucher saved. Stock Journal auto-generated for{" "}
+              Physical stock count saved. Stock journal auto-generated for{" "}
               {summary.totalVarianceItems} variance items.
             </div>
           )}

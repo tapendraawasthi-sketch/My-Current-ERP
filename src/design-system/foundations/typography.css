@@ -1,0 +1,132 @@
+/* Typography utilities — Himalayan Precision */
+
+.ds-font-sans {
+  font-family: var(--ds-font-sans);
+}
+
+.ds-font-mono {
+  font-family: var(--ds-font-mono);
+}
+
+.ds-text-display {
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-display-size);
+  line-height: var(--ds-text-display-line);
+  font-weight: 600;
+  color: var(--ds-text-strong);
+}
+
+.ds-text-page-title {
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-page-title-size);
+  line-height: var(--ds-text-page-title-line);
+  font-weight: 600;
+  color: var(--ds-text-strong);
+}
+
+.ds-text-section-title {
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-section-title-size);
+  line-height: var(--ds-text-section-title-line);
+  font-weight: 600;
+  color: var(--ds-text-strong);
+}
+
+.ds-text-card-title {
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-card-title-size);
+  line-height: var(--ds-text-card-title-line);
+  font-weight: 600;
+  color: var(--ds-text-strong);
+}
+
+.ds-text-body {
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-body-size);
+  line-height: var(--ds-text-body-line);
+  font-weight: 400;
+  color: var(--ds-text-default);
+}
+
+.ds-text-body-strong {
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-body-size);
+  line-height: var(--ds-text-body-line);
+  font-weight: 600;
+  color: var(--ds-text-strong);
+}
+
+.ds-text-label {
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-label-size);
+  line-height: var(--ds-text-label-line);
+  font-weight: 500;
+  color: var(--ds-text-default);
+}
+
+.ds-text-table {
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-table-size);
+  line-height: var(--ds-text-table-line);
+  font-weight: 400;
+  color: var(--ds-text-default);
+}
+
+.ds-text-metadata {
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-metadata-size);
+  line-height: var(--ds-text-metadata-line);
+  font-weight: 400;
+  color: var(--ds-text-muted);
+}
+
+.ds-text-microcopy {
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-micro-size);
+  line-height: var(--ds-text-micro-line);
+  font-weight: 400;
+  color: var(--ds-text-subtle);
+}
+
+.ds-text-code {
+  font-family: var(--ds-font-mono);
+  font-size: var(--ds-text-code-size);
+  line-height: var(--ds-text-code-line);
+}
+
+.ds-financial-value,
+.ds-financial-total {
+  font-family: var(--ds-font-sans);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  text-align: right;
+  color: var(--ds-text-default);
+}
+
+.ds-financial-value {
+  font-size: var(--ds-text-financial-size);
+  line-height: var(--ds-text-financial-line);
+  font-weight: 500;
+}
+
+.ds-financial-total {
+  font-size: var(--ds-text-financial-total-size);
+  line-height: var(--ds-text-financial-total-line);
+  font-weight: 600;
+  color: var(--ds-text-strong);
+}
+
+.ds-financial-debit {
+  color: var(--ds-financial-debit);
+}
+
+.ds-financial-credit {
+  color: var(--ds-financial-credit);
+}
+
+.ds-financial-negative::before {
+  content: "(";
+}
+.ds-financial-negative::after {
+  content: ")";
+}

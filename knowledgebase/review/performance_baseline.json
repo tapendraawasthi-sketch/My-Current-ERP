@@ -1,0 +1,28 @@
+{
+  "generated_at": "2026-07-14T06:59:25+00:00",
+  "raw_bytes": 1988253945,
+  "jsonl_bytes": 8054738220,
+  "lexical_index_bytes": 3813138432,
+  "lexical_retrieval": {
+    "status": "ok",
+    "n": 8,
+    "latencies_ms": [
+      14.246,
+      4.751,
+      8.438,
+      3.042,
+      3.516,
+      11.244,
+      4.905,
+      8.505
+    ],
+    "p50_ms": 8.438,
+    "p95_ms": 14.246,
+    "note": "Development baseline only; not pass/fail thresholds invented post-hoc for approval."
+  },
+  "semantic_retrieval": {
+    "status": "pending_optional",
+    "detail": "Requires local Ollama nomic-embed-text; not required for lexical gate."
+  },
+  "note": "Baselines measured in development; thresholds not invented after results for pass theater."
+}

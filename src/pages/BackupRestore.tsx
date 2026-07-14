@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useStore } from "../store/useStore";
 import { getDB, generateId } from "../lib/db";
 import * as XLSX from "xlsx";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import {
   AlertTriangle,
   Archive,
@@ -222,7 +222,7 @@ const makeAuditRow = (currentUser: any, action: string, narration: string, risk 
   userId: currentUser?.id || "",
   userName: currentUser?.name || currentUser?.username || "System",
   role: currentUser?.role || "",
-  module: "Backup & Restore",
+  module: "Backup & restore",
   action,
   entityType: "backup",
   entityId: "",
@@ -1427,7 +1427,7 @@ export default function BackupRestore() {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-            <Archive className="h-4 w-4 text-[#1557b0]" /> Backup & Restore
+            <Archive className="h-4 w-4 text-[var(--ds-action-primary)]" /> Backup & restore
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Secure database backup, Excel export, restore validation and local backup history.

@@ -222,8 +222,9 @@ export default function RecurringVouchers() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Recurring Vouchers</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-[15px] font-semibold text-gray-800">Recurring entries</h1>
+          <p className="text-[12px] text-gray-500 mt-0.5">Entries that repeat.</p>
+          <p className="text-[12px] text-gray-500 mt-0.5">
             Journal templates with auto-scheduling for rent, depreciation, salaries, subscriptions
             and more
           </p>
@@ -275,7 +276,7 @@ export default function RecurringVouchers() {
             className={`bg-${card.color}-50 rounded-xl p-4 border border-${card.color}-100`}
           >
             <div className="text-xs text-gray-500 mb-1">{card.label}</div>
-            <div className={`text-2xl font-bold text-${card.color}-700`}>{card.value}</div>
+            <div className={`text-[15px] font-semibold text-${card.color}-700`}>{card.value}</div>
           </div>
         ))}
       </div>
@@ -895,7 +896,7 @@ export default function RecurringVouchers() {
                   }`}
                 >
                   <span>
-                    {isBalanced ? "✓ Balanced" : "⚠ Unbalanced – debits must equal credits"}
+                    {isBalanced ? "Balanced" : "Unbalanced – debits must equal credits"}
                   </span>
                   <span>
                     Dr: {fmt(totalDebit)} | Cr: {fmt(totalCredit)}

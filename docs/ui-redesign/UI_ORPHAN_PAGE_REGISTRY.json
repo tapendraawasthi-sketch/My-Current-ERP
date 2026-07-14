@@ -1,0 +1,575 @@
+{
+  "generated": "2026-07-14",
+  "policy": "docs/ui-redesign/ORBIX_UI_IMPLEMENT_NOW.md \u00a77",
+  "wiredPageImportCount": 107,
+  "orphanCount": 110,
+  "orphans": [
+    {
+      "file": "src/pages/AccountGroupMaster.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/AdvancedReportHub.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/AdvancedTaxCompliance.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/ApprovalWorkflow.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/AttendanceTypeMaster.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/AuditLogs.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/AuditTrailLog.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/AuthGateway.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/AutoBankReconciliation.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/Backup.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/BankAccountsPage.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/BankingHub.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/BatchMaster.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/BatchSummary.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/BatchVoucherEntry.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/BillWisePending.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/BOMProduction.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/BranchMaster.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/BranchReports.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/Budgets.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/BulkUpdations.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/CbmsDashboard.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/CompanySelector.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/ContraRegister.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/CostCategoryMaster.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/CostCenterReport.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/CostCentre.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/CostCentreClassMaster.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/CreditLimitManager.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/CreditorsAging.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/CurrencyMaster.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/DebitCreditNote.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/DebtorsAging.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/DepositSlip.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/DiscountStructureMaster.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/EmployeeGroupMaster.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/EPayments.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/ExceptionReports.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/F11CompanyFeatures.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/FollowUpTracker.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/Form25B.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/FundsFlow.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/GodownMaster.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/GodownSummary.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/GroupSummaryReport.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/GroupVouchers.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/HSCodeMaster.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/InventoryAnalysis.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/ItemProfitabilityReport.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/JournalRegister.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/JournalVoucher.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/LeaveManagement.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/MakerCheckerApproval.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/MemorandumVoucher.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/MiscDataEntry.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/MissingVoucherReport.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/MovementAnalysis.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/MultiCurrency.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/MultiCurrencyHub.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/OpeningBalance.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/OptionalVouchers.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/OutstandingManagement.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/OverdueBillsInterest.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/PartyForm.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/PartyReconciliation.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/PaymentAdvice.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/PayrollProcessing.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/PayrollReports.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/PayrollUnitMaster.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/PDCSummary.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/PeriodLockPage.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/POSBilling.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/POSMode.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/PriceHistory.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/PriceLevelMaster.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/PriceListMaster.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/PricePolicyManager.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/PurchaseManagement.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/PurchaseOrderOutstanding.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/QuotationVoucher.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/ReceiptsAndPayments.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/ReorderLevelMaster.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/ReportScheduler.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/SalaryDetailsMaster.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/SalesOrderOutstanding.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/SalesOrderVoucher.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/SalespersonMaster.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/SalesPurchaseAnalysis.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/SalesVoucher.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/ScenarioMaster.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/SerialNumberTracking.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/SmartBankReconciliation.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/StatisticsReport.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/StatutoryCompliance.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/StockAdjustment.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/StockAgeingReport.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/StockCategoryMaster.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/StockItemReport.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/StockTransfers.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/TallyVoucherPage.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/TDSNatureOfPaymentMaster.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/TdsPayment.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/Troubleshooting.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/VouchersLog.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/VouchersRegister.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/VouchersRegisterFull.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/pages/YearEndProcess.tsx",
+      "status": "DEPRECATE",
+      "reason": "Not imported by App.tsx; unwired orphan per IMPLEMENT_NOW \u00a77"
+    },
+    {
+      "file": "src/components/StockItems.tsx",
+      "status": "DEPRECATE",
+      "reason": "AGENTS.md dead-file ban"
+    },
+    {
+      "file": "src/components/invoice/PurchaseInvoiceForm.tsx",
+      "status": "DEPRECATE",
+      "reason": "AGENTS.md dead-file ban"
+    },
+    {
+      "file": "src/components/invoice/ReturnInvoiceForm.tsx",
+      "status": "DEPRECATE",
+      "reason": "AGENTS.md dead-file ban"
+    }
+  ],
+  "quarantine": [
+    {
+      "path": "src/components/tally/",
+      "status": "QUARANTINE",
+      "reason": "Tally clone surface; no new imports"
+    },
+    {
+      "path": "src/styles/tally-green.css",
+      "status": "QUARANTINE",
+      "reason": "Legacy green chrome; scoped under .legacy-tally only"
+    },
+    {
+      "path": "src/components/topbar/TopMenuBar.tsx",
+      "status": "UNUSED",
+      "reason": "Not mounted by Layout/App; orphan menu chrome"
+    }
+  ]
+}

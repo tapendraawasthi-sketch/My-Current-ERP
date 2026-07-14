@@ -5,7 +5,7 @@ import { getDB } from "../lib/db";
 import { useStore } from "../store/useStore";
 import { Calculator, FileSpreadsheet, RefreshCw, Download, TrendingUp } from "lucide-react";
 import * as XLSX from "xlsx";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { mergeSystemConfiguration, getInterestRateForDays } from "../lib/systemConfiguration";
 import { computeInvoiceOutstanding } from "../lib/accounting";
 
@@ -188,7 +188,7 @@ const InterestCalculation: React.FC = () => {
       const wb = XLSX.utils.book_new();
       const wsData = [
         [companyName],
-        ["Interest Calculation Report"],
+        ["Interest Report"],
         [`As of: ${asOfDate} | Rate: ${interestRate}% p.a. | Min Overdue: ${minDaysOverdue} days`],
         [],
         headers,
@@ -197,7 +197,7 @@ const InterestCalculation: React.FC = () => {
         ["TOTAL", "", "", "", "", "", totals.outstanding, "", "", totals.interest, totals.total],
       ];
       const ws = XLSX.utils.aoa_to_sheet(wsData);
-      XLSX.utils.book_append_sheet(wb, ws, "Interest Calculation");
+      XLSX.utils.book_append_sheet(wb, ws, "Interest");
       XLSX.writeFile(wb, `InterestCalc_${asOfDate}.xlsx`);
       toast.success("Interest calculation exported.");
     } catch {
@@ -271,15 +271,13 @@ const InterestCalculation: React.FC = () => {
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="erp-report p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
+    <div className="erp-report p-4 md:p-6 bg-[var(--ds-canvas)] min-h-screen">
       {/* Header */}
       <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-            <Calculator className="h-4 w-4 text-[#1557b0]" />
-            Interest Calculation
-          </h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
+          <h1 className="text-[15px] font-semibold text-gray-800">Interest</h1>
+          <p className="text-[12px] text-gray-500 mt-0.5">Interest on outstanding.</p>
+          <p className="text-[12px] text-gray-500 mt-0.5">
             Calculate overdue interest on outstanding{" "}
             {direction === "receivable" ? "receivables" : "payables"}
           </p>
@@ -298,7 +296,7 @@ const InterestCalculation: React.FC = () => {
             type="button"
             onClick={handleGenerateVouchers}
             disabled={filteredRows.length === 0 || generatingVoucher}
-            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors disabled:opacity-50"
+            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors disabled:opacity-50"
           >
             {generatingVoucher ? (
               <RefreshCw className="h-3.5 w-3.5 animate-spin" />
@@ -312,16 +310,16 @@ const InterestCalculation: React.FC = () => {
 
       {/* Config */}
       <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4 shadow-sm">
-        <h3 className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-3">
+        <h3 className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-3">
           Interest Parameters
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <div>
-            <label className="text-[11px] font-medium text-gray-600 mb-1 block">Direction</label>
+            <label className="text-[12px] font-medium text-gray-600 mb-1 block">Direction</label>
             <select
               value={direction}
               onChange={(e) => setDirection(e.target.value as "receivable" | "payable")}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
             >
               <option value="receivable">Receivables (Sales)</option>
               <option value="payable">Payables (Purchase)</option>
@@ -329,17 +327,17 @@ const InterestCalculation: React.FC = () => {
           </div>
 
           <div>
-            <label className="text-[11px] font-medium text-gray-600 mb-1 block">As of Date</label>
+            <label className="text-[12px] font-medium text-gray-600 mb-1 block">As of Date</label>
             <input
               type="date"
               value={asOfDate}
               onChange={(e) => setAsOfDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
             />
           </div>
 
           <div>
-            <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+            <label className="text-[12px] font-medium text-gray-600 mb-1 block">
               Annual Interest Rate (%)
             </label>
             <input
@@ -349,12 +347,12 @@ const InterestCalculation: React.FC = () => {
               step={0.1}
               value={interestRate}
               onChange={(e) => setInterestRate(parseFloat(e.target.value) || 0)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full text-right"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full text-right"
             />
           </div>
 
           <div>
-            <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+            <label className="text-[12px] font-medium text-gray-600 mb-1 block">
               Min. Days Overdue
             </label>
             <input
@@ -363,7 +361,7 @@ const InterestCalculation: React.FC = () => {
               step={1}
               value={minDaysOverdue}
               onChange={(e) => setMinDaysOverdue(parseInt(e.target.value) || 0)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full text-right"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full text-right"
             />
           </div>
         </div>
@@ -374,7 +372,7 @@ const InterestCalculation: React.FC = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search party, invoice…"
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full max-w-xs"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full max-w-xs"
           />
         </div>
       </div>
@@ -383,15 +381,15 @@ const InterestCalculation: React.FC = () => {
       {!isLoading && filteredRows.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
           <div className="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
               Outstanding Amount
             </p>
-            <p className="text-[18px] font-bold text-[#1557b0] mt-0.5 font-mono">
+            <p className="text-[18px] font-bold text-[var(--ds-action-primary)] mt-0.5 font-mono">
               {money(totals.outstanding)}
             </p>
           </div>
           <div className="bg-white border border-red-200 rounded-lg px-4 py-3 shadow-sm">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
               Interest @ {interestRate}% p.a.
             </p>
             <p className="text-[18px] font-bold text-red-600 mt-0.5 font-mono">
@@ -399,7 +397,7 @@ const InterestCalculation: React.FC = () => {
             </p>
           </div>
           <div className="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
               Total with Interest
             </p>
             <p className="text-[18px] font-bold text-gray-800 mt-0.5 font-mono">
@@ -420,26 +418,26 @@ const InterestCalculation: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[900px]">
               <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
+                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                     Party
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
                     Invoice No.
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
+                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-24">
                     Due Date
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
                     Outstanding
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-20">
+                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-20">
                     Days
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
                     Interest
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-32">
                     Total
                   </th>
                 </tr>
@@ -459,12 +457,12 @@ const InterestCalculation: React.FC = () => {
                           {row.partyName}
                         </div>
                         {row.partyPan && (
-                          <div className="text-[10px] text-gray-500 font-mono">
+                          <div className="text-[12px] text-gray-500 font-mono">
                             PAN: {row.partyPan}
                           </div>
                         )}
                       </td>
-                      <td className="px-3 py-2.5 text-[12px] font-mono text-[#1557b0]">
+                      <td className="px-3 py-2.5 text-[12px] font-mono text-[var(--ds-action-primary)]">
                         {row.invoiceNo}
                       </td>
                       <td className="px-3 py-2.5 text-[12px] text-gray-700">
@@ -501,11 +499,11 @@ const InterestCalculation: React.FC = () => {
 
               {filteredRows.length > 0 && (
                 <tfoot>
-                  <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
+                  <tr className="bg-[var(--ds-surface-selected)] border-t-2 border-[var(--ds-border-strong)]">
                     <td colSpan={3} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
                       Total ({filteredRows.length} invoices)
                     </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-[#1557b0]">
+                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-[var(--ds-action-primary)]">
                       {money(totals.outstanding)}
                     </td>
                     <td className="px-3 py-2.5" />

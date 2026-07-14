@@ -1,0 +1,49 @@
+{
+  "generated_at": "2026-07-13",
+  "production_shell": {
+    "wrapper": "src/components/Layout.tsx",
+    "chrome": "src/components/shell/AppShell.tsx",
+    "top_bar": "src/components/shell/TopCommandBar.tsx",
+    "side_nav": "src/components/shell/PrimarySideNav.tsx",
+    "nav_config": "src/components/shell/navConfig.ts",
+    "command_palette": "src/components/shell/CommandPalette.tsx",
+    "sync_ui": "src/components/shell/SyncStatusControl.tsx",
+    "company_fy": "src/components/shell/CompanySwitcher.tsx"
+  },
+  "route_authority": {
+    "mechanism": "zustand_currentPage_switch",
+    "store": "src/store/index.ts",
+    "switch": "src/App.tsx#renderPage",
+    "inventory": "docs/ui-audit/UI_ROUTE_INVENTORY.json",
+    "approx_authenticated_routes": 156
+  },
+  "permission_authority": {
+    "store": "src/store/permissionsStore.ts",
+    "lib": "src/lib/permissions.ts",
+    "hook": "src/hooks/usePermissions.ts",
+    "nav_filtered_before_ui3": false
+  },
+  "sync_authority": {
+    "legacy_outbox": "src/lib/syncEngine.ts",
+    "event_queue": "src/platform/sync/syncQueue.ts",
+    "coordinator": "src/platform/sync/syncCoordinator.ts",
+    "ui_aggregate": "src/platform/sync/syncStatusAggregate.ts"
+  },
+  "notification_authority": {
+    "store_slice": "src/store/slices/settingsSlice.ts",
+    "dexie": "db.notifications",
+    "legacy_panel": "src/components/ui/NotificationPanel.tsx",
+    "topbar_wired_before_ui3": false
+  },
+  "company_fiscal": {
+    "company": "useStore.companySettings",
+    "fiscal_year": "useStore.currentFiscalYear"
+  },
+  "theme": "src/context/ThemeContext.tsx",
+  "legacy_unused_chrome": [
+    "src/components/Sidebar.tsx",
+    "src/components/Header.tsx",
+    "src/components/BusyMenuBar.tsx",
+    "src/components/topbar/TopMenuBar.tsx"
+  ]
+}

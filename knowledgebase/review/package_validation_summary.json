@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-07-14T04:55:51+00:00",
+  "status": "passed_with_warnings",
+  "numbered_file_count": 88,
+  "missing_file_ids": [],
+  "duplicate_file_ids": [],
+  "zero_byte_files": 0,
+  "utf8_failures": 0,
+  "issue_counts": {
+    "ERROR": 310,
+    "WARNING": 721
+  },
+  "duplicate_hash_groups": {},
+  "cross_file_record_reuse_count": 192,
+  "raw_files_unchanged": true,
+  "total_records_detected": 5692378
+}

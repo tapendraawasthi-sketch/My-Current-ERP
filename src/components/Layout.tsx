@@ -4,7 +4,7 @@ import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import { useGlobalKeyboardShortcuts } from "../hooks/useGlobalKeyboardShortcuts";
 import { useF12Keyboard } from "../hooks/useF12Keyboard";
 import AppShell from "./shell/AppShell";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { startSyncLoop, stopSyncLoop } from "../lib/syncEngine";
 import { startAutoBackupScheduler, stopAutoBackupScheduler } from "../lib/autoBackupScheduler";
 

@@ -14,9 +14,11 @@ export type UiSyncState =
   | "pending"
   | "offline"
   | "failed"
+  | "retry_scheduled"
   | "conflict"
   | "action_required"
-  | "local_only";
+  | "local_only"
+  | "stale";
 
 export interface AggregatedSyncStatus {
   state: UiSyncState;
@@ -143,7 +145,25 @@ export async function getAggregatedSyncStatus(
     };
   }
 
-  if (failedCount > 0 || legacyStatus === "error") {
+  // Transient queue failures with an available retry path are not the same as conflict.
+  if (failedCount > 0 && online) {
+    return {
+      state: "retry_scheduled",
+      pendingCount,
+      syncingCount,
+      failedCount,
+      conflictCount,
+      deadLetterCount,
+      deviceId,
+      deviceIdShort: deviceId.slice(0, 8),
+      registrationStatus: null,
+      lastSuccessfulSync,
+      detail:
+        "Sync retry is scheduled. Local records remain posted; remote acknowledgement is pending.",
+    };
+  }
+
+  if (legacyStatus === "error") {
     return {
       state: "failed",
       pendingCount,
@@ -171,8 +191,29 @@ export async function getAggregatedSyncStatus(
       deviceIdShort: deviceId.slice(0, 8),
       registrationStatus: null,
       lastSuccessfulSync,
-      detail: `${pendingCount} pending change(s) waiting to sync.`,
+      detail: `${pendingCount} pending change(s) waiting to sync. Not remotely acknowledged.`,
     };
+  }
+
+  // Synced only when no pending/failed/conflict and (when known) remote ack exists.
+  // Never treat a bare local Dexie write as synced — that is handled by pending counts above.
+  if (lastSuccessfulSync) {
+    const ageMs = Date.now() - Date.parse(lastSuccessfulSync);
+    if (Number.isFinite(ageMs) && ageMs > 7 * 24 * 60 * 60 * 1000) {
+      return {
+        state: "stale",
+        pendingCount: 0,
+        syncingCount: 0,
+        failedCount: 0,
+        conflictCount: 0,
+        deadLetterCount: 0,
+        deviceId,
+        deviceIdShort: deviceId.slice(0, 8),
+        registrationStatus: null,
+        lastSuccessfulSync,
+        detail: "No pending local events, but the last remote acknowledgement is older than 7 days.",
+      };
+    }
   }
 
   return {
@@ -186,6 +227,8 @@ export async function getAggregatedSyncStatus(
     deviceIdShort: deviceId.slice(0, 8),
     registrationStatus: null,
     lastSuccessfulSync,
-    detail: "All local changes are synced (remote acknowledgement persisted).",
+    detail: lastSuccessfulSync
+      ? "All local changes are synced (remote acknowledgement persisted)."
+      : "No pending local events. Remote acknowledgement history not yet observed for this device.",
   };
 }

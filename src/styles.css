@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 @import "./styles/design-tokens.css";
+@import "./design-system/foundations/index.css";
 
 *,
 *::before,
@@ -848,17 +849,15 @@ aside {
   }
 }
 
-/* ── RADIX UI / SHADCN COMPONENT OVERRIDES ── */
-[data-radix-popper-content-wrapper] {
+/* ── RADIX UI OVERRIDES — scoped to legacy tally only (IMPLEMENT_NOW Wave 0) ── */
+.legacy-tally [data-radix-popper-content-wrapper] {
   background: #ebf5e2 !important;
   border: 1px solid #000000 !important;
   color: #000000 !important;
 }
-[data-state="checked"] {
+.legacy-tally [data-state="checked"] {
   background: #c9deb5 !important;
 }
-/* data-state open — let components handle their own dropdown backgrounds */
-
 /* Dropdown menus — use white for readability */
 [role="menu"],
 [role="listbox"] {
@@ -871,14 +870,14 @@ aside {
   background: #f3f4f6;
 }
 
-/* Popover */
-[data-radix-popover-content] {
+/* Popover — DS path uses component tokens; legacy tally keeps green */
+.legacy-tally [data-radix-popover-content] {
   background: #ebf5e2 !important;
   border: 1px solid #000000 !important;
 }
 
-/* Select dropdown */
-select option {
+/* Select dropdown — do not force green on modern DS path */
+.legacy-tally select option {
   background: #ebf5e2 !important;
   color: #000000 !important;
 }
@@ -903,22 +902,22 @@ header {
   border-color: #000000 !important;
 }
 
-/* Active/selected states */
-.active,
-[aria-selected="true"],
-[aria-current="page"] {
+/* Active/selected — scoped away from DS shell / DS tabs */
+.legacy-tally .active,
+.legacy-tally [aria-selected="true"],
+.legacy-tally [aria-current="page"] {
   background: #c9deb5 !important;
   color: #000000 !important;
 }
 
-/* Tabs */
-[role="tab"] {
+/* Tabs — DS Tabs use underline; keep green only under legacy-tally */
+.legacy-tally [role="tab"] {
   background: #ebf5e2 !important;
   color: #000000 !important;
   border-color: #000000 !important;
 }
-[role="tab"][aria-selected="true"],
-[role="tab"][data-state="active"] {
+.legacy-tally [role="tab"][aria-selected="true"],
+.legacy-tally [role="tab"][data-state="active"] {
   background: #c9deb5 !important;
   color: #000000 !important;
   border-bottom: 2px solid #000000 !important;
@@ -967,7 +966,8 @@ main svg,
 
 /* ── TOAST NOTIFICATIONS ── */
 /* Styling is handled entirely via toastOptions in src/App.tsx.
-   Do NOT add CSS rules here targeting react-hot-toast elements —
+   Do NOT add CSS rules here targeting legacy toast package elements —
+   ToastProvider (@/design-system) owns toast presentation.
    the library uses goober CSS-in-JS with auto-generated class names
    so attribute selectors like [class*="toast"] match wrapper divs
    but not the toast message itself, causing split background/text conflicts. */

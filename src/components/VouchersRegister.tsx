@@ -35,7 +35,7 @@ import { formatCurrency, formatNumber } from "../lib/utils";
 import { VoucherType, VoucherStatus } from "../lib/types";
 import { generateVoucherPDF } from "../lib/printUtils";
 import { exportVouchersToExcel } from "../lib/exportUtils";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 const HoverActionRow: React.FC<{
   voucher: any;

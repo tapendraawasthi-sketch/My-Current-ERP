@@ -1,3 +1,4 @@
+﻿import { syncStatusPresentation, TrustChrome } from "@/features/orbix";
 import React, { Component, type ErrorInfo, type ReactNode } from "react";
 import type { OrbixResponse } from "../../lib/ekhata/orbixResponseTypes";
 import ClarificationCard from "./ClarificationCard";
@@ -31,13 +32,13 @@ class ResponseErrorBoundary extends Component<
   render(): ReactNode {
     if (this.state.hasError) {
       return (
-        <div className="rounded-[var(--ox-radius-lg)] border border-[var(--ox-border)] bg-[var(--ox-surface)] px-3.5 py-3">
-          <p className="text-[13px] text-[var(--ox-text-muted)]">
+        <div className="rounded-[var(--ds-radius-lg)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-3.5 py-3">
+          <p className="text-[13px] text-[var(--ds-text-muted)]">
             We received a response but couldn’t display its structured details. The original message
             is shown below.
           </p>
           {this.props.fallbackText ? (
-            <p className="mt-2 whitespace-pre-wrap text-[13px] text-[var(--ox-text)]">
+            <p className="mt-2 whitespace-pre-wrap text-[13px] text-[var(--ds-text-default)]">
               {this.props.fallbackText}
             </p>
           ) : null}
@@ -58,116 +59,161 @@ function renderByType(
   switch (response.response_type) {
     case "mode_restriction":
       return (
-        <ModeRestrictionCard
-          payload={response.payload}
-          text={text}
-          onSwitchMode={onSwitchMode || (() => undefined)}
-        />
+        <TrustChrome response={response}>
+          <ModeRestrictionCard
+            payload={response.payload}
+            text={text}
+            onSwitchMode={onSwitchMode || (() => undefined)}
+          />
+        </TrustChrome>
       );
     case "clarification_required":
-      return <ClarificationCard clarification={response.payload} text={text} />;
+      return (
+        <TrustChrome response={response}>
+          <ClarificationCard clarification={response.payload} text={text} />
+        </TrustChrome>
+      );
     case "provider_offline":
     case "backend_unavailable":
-      return <ProviderOfflineCard text={text} />;
+      return (
+        <TrustChrome response={response}>
+          <ProviderOfflineCard text={text} />
+        </TrustChrome>
+      );
     case "permission_denied":
     case "validation_error":
-    case "general_error":
+    case "general_error": {
+      const code =
+        "error_code" in response.payload
+          ? String((response.payload as { error_code?: string }).error_code || "")
+          : "";
+      const isStale = code === "stale_preview";
+      const isConflict = code.includes("conflict") || code === "integrity_mismatch";
       return (
-        <div className="rounded-[var(--ox-radius-lg)] border border-[var(--ox-danger)]/30 bg-[var(--ox-danger-soft)] px-3.5 py-3">
-          <p className="text-[13px] font-medium text-[var(--ox-danger)]">
-            {response.payload.safe_message || text}
-          </p>
-        </div>
+        <TrustChrome response={response}>
+          <div
+            className={`rounded-[var(--ds-radius-md)] border px-3 py-2.5 ${
+              isConflict
+                ? "border-[var(--ds-status-danger)]/40 bg-[var(--ds-status-danger-surface)]"
+                : isStale
+                  ? "border-[var(--ds-status-warning)]/40 bg-[var(--ds-status-warning-surface)]"
+                  : "border-[var(--ds-status-danger)]/30 bg-[var(--ds-status-danger-surface)]"
+            }`}
+            data-testid={isStale ? "orbix-stale-preview" : isConflict ? "orbix-conflict" : "orbix-error"}
+            data-error-code={code || undefined}
+          >
+            <p
+              className={`text-[13px] font-medium ${
+                isStale ? "text-[var(--ds-status-warning)]" : "text-[var(--ds-status-danger)]"
+              }`}
+            >
+              {(response.payload as { safe_message?: string }).safe_message || text}
+            </p>
+            {isStale ? (
+              <p className="mt-1 text-[12px] text-[var(--ds-text-muted)]">
+                Confirmation is disabled for this preview. Request a fresh preview before posting.
+              </p>
+            ) : null}
+            {isConflict ? (
+              <p className="mt-1 text-[12px] text-[var(--ds-text-muted)]">
+                This is a conflict, not a temporary failure. Review required — do not retry blindly.
+              </p>
+            ) : null}
+          </div>
+        </TrustChrome>
       );
+    }
     case "posting_completed":
       return (
-        <div
-          className="rounded-[var(--ox-radius-lg)] border border-[var(--ox-success)]/30 bg-[var(--ox-success-soft)] px-3.5 py-3"
-          data-testid="orbix-posting-completed"
-        >
-          <p className="text-[13px] font-semibold text-[var(--ox-success)]">Posted locally</p>
-          {(() => {
-            const sync = response.payload.sync_status;
-            const syncLabel =
-              sync === "synced"
-                ? "Synced"
-                : sync === "disabled"
-                  ? "Local-only company"
-                  : sync === "failed"
-                    ? "Sync failed — local records are safe"
-                    : sync === "conflict"
-                      ? "Conflict detected — review required"
-                      : typeof navigator !== "undefined" && !navigator.onLine
-                        ? "Offline — will sync later"
-                        : "Waiting to sync";
-            const syncTestId =
-              sync === "synced"
-                ? "synced"
-                : sync === "failed"
-                  ? "failed"
-                  : sync === "conflict"
-                    ? "conflict"
-                    : "pending";
-            return (
+        <TrustChrome response={response}>
+          <div data-testid="orbix-posting-completed">
+            <p className="text-[14px] font-semibold text-[var(--ds-status-success)]">
+              {response.payload.idempotent_replay ? "Already posted (safe replay)" : "Posted locally"}
+            </p>
+            {(() => {
+              const { label, testId } = syncStatusPresentation(response.payload.sync_status);
+              return (
+                <p
+                  className="mt-1 text-[12px] text-[var(--ds-text-muted)]"
+                  data-testid="orbix-sync-status"
+                  data-sync-status={testId}
+                >
+                  {label}
+                </p>
+              );
+            })()}
+            {text ? (
+              <div className="mt-1">
+                <OrbixMessageContent text={text} />
+              </div>
+            ) : null}
+            {response.payload.voucher_number ? (
               <p
-                className="mt-1 text-[11px] text-[var(--ox-text-muted)]"
-                data-testid="orbix-sync-status"
-                data-sync-status={syncTestId}
+                className="mt-1 font-mono text-[13px] text-[var(--ds-text-default)]"
+                data-testid="orbix-voucher-ref"
               >
-                {syncLabel}
+                {response.payload.voucher_number}
               </p>
-            );
-          })()}
-          {text ? (
-            <div className="mt-1">
-              <OrbixMessageContent text={text} />
-            </div>
-          ) : null}
-          {response.payload.voucher_number ? (
-            <p className="mt-1 font-mono text-[12px] text-[var(--ox-text)]" data-testid="orbix-voucher-ref">
-              {response.payload.voucher_number}
-            </p>
-          ) : null}
-          {response.payload.amount ? (
-            <p className="mt-0.5 font-mono text-[12px] text-[var(--ox-text)]">
-              {response.payload.currency || "NPR"} {response.payload.amount}
-            </p>
-          ) : null}
-        </div>
+            ) : null}
+            {response.payload.amount ? (
+              <p className="mt-0.5 ds-financial-value text-[13px] text-[var(--ds-text-default)]">
+                {response.payload.currency || "NPR"} {response.payload.amount}
+              </p>
+            ) : null}
+          </div>
+        </TrustChrome>
       );
-    case "posting_failed":
+    case "posting_failed": {
+      const code = response.payload.error_code || "";
+      const isStale = code === "stale_preview";
       return (
-        <div
-          className="rounded-[var(--ox-radius-lg)] border border-[var(--ox-danger)]/30 bg-[var(--ox-danger-soft)] px-3.5 py-3"
-          data-testid="orbix-posting-failed"
-        >
-          <p className="text-[13px] font-medium text-[var(--ox-danger)]">
-            {response.payload.safe_message || text || "Posting failed."}
-          </p>
-        </div>
+        <TrustChrome response={response}>
+          <div
+            className={`rounded-[var(--ds-radius-md)] border px-3 py-2.5 ${
+              isStale
+                ? "border-[var(--ds-status-warning)]/40 bg-[var(--ds-status-warning-surface)]"
+                : "border-[var(--ds-status-danger)]/30 bg-[var(--ds-status-danger-surface)]"
+            }`}
+            data-testid={isStale ? "orbix-stale-preview" : "orbix-posting-failed"}
+            data-error-code={code || undefined}
+          >
+            <p
+              className={`text-[13px] font-medium ${
+                isStale ? "text-[var(--ds-status-warning)]" : "text-[var(--ds-status-danger)]"
+              }`}
+            >
+              {response.payload.safe_message || text || "Posting failed."}
+            </p>
+            {isStale ? (
+              <p className="mt-1 text-[12px] text-[var(--ds-text-muted)]">
+                Generate a new preview before confirming. The previous confirmation is blocked.
+              </p>
+            ) : null}
+          </div>
+        </TrustChrome>
       );
+    }
     case "confirmation_required":
     case "transaction_preview":
     case "journal_preview":
     case "posting_progress":
       // Journal / confirm / posting UI remains in OrbixJournalCard (pendingCard).
       return text ? (
-        <div className="rounded-[var(--ox-radius-lg)] border border-[var(--ox-border)] bg-[var(--ox-surface)] px-3.5 py-3">
+        <TrustChrome response={response}>
           <OrbixMessageContent text={text} />
-        </div>
+        </TrustChrome>
       ) : null;
     case "report_result":
     case "report_updated":
-      // Report table is rendered from message.report by the parent.
       return text ? (
-        <div className="rounded-[var(--ox-radius-lg)] border border-[var(--ox-border)] bg-[var(--ox-surface)] px-3.5 py-3">
+        <TrustChrome response={response}>
           <OrbixMessageContent text={text} />
           {response.response_type === "report_updated" && response.payload.changes?.length ? (
-            <p className="mt-2 text-[11px] text-[var(--ox-text-muted)]">
+            <p className="mt-2 text-[12px] text-[var(--ds-text-muted)]">
               Updated · {response.payload.changes.join(" · ")}
             </p>
           ) : null}
-        </div>
+        </TrustChrome>
       ) : null;
     case "normal_answer":
     case "capability_answer":
@@ -176,9 +222,9 @@ function renderByType(
     case "unknown":
     default:
       return text ? (
-        <div className="rounded-[var(--ox-radius-lg)] border border-[var(--ox-border)] bg-[var(--ox-surface)] px-3.5 py-3">
+        <TrustChrome response={response}>
           <OrbixMessageContent text={text} />
-        </div>
+        </TrustChrome>
       ) : null;
   }
 }
@@ -193,7 +239,7 @@ const OrbixResponseRenderer: React.FC<OrbixResponseRendererProps> = ({
 }) => {
   if (!response) {
     return displayText ? (
-      <div className="rounded-[var(--ox-radius-lg)] border border-[var(--ox-border)] bg-[var(--ox-surface)] px-3.5 py-3">
+      <div className="rounded-[var(--ds-radius-lg)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-3.5 py-3">
         <OrbixMessageContent text={displayText} />
       </div>
     ) : null;

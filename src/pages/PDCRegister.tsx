@@ -1,14 +1,15 @@
 import React from "react";
-import ReportShell from "../components/reporting/ReportShell";
+import { ReportWorkspace } from "@/features/reports";
 
 export default function PDCRegister() {
   return (
-    <ReportShell
-      title="Post Dated Cheques Register"
-      subtitle="Track PDCs received and issued"
-      hasData={false}
+    <ReportWorkspace
+      title="Post-dated cheques"
+      description="Future-dated cheques."
     >
-      <div className="p-4 text-gray-500 text-sm">PDC Register module is under construction.</div>
-    </ReportShell>
+      <p className="p-4 text-[13px] text-[var(--ds-text-muted)]">
+        PDC register module is under construction.
+      </p>
+    </ReportWorkspace>
   );
 }

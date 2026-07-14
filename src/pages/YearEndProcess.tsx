@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useStore } from "../store/useStore";
 import { getDB, generateId } from "../lib/db";
 import { invalidatePeriodLockCache } from "../lib/ledger/periodLockService";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import * as XLSX from "xlsx";
 import {
   CheckCircle,

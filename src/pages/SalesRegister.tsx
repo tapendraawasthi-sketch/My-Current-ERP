@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { DualDate } from "../components/ui/DualDate";
 import React, { useState, useMemo } from "react";
+import { ReportWorkspace } from "@/features/reports";
 import { Download, FileText, Search, Columns3 } from "lucide-react";
 import { PaymentStatus, VoucherType } from "../lib/types";
 import { formatCurrency, formatNumber } from "../lib/utils";
@@ -44,12 +45,12 @@ const AMOUNT_KEYS = new Set([
 ]);
 
 const th =
-  "px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-200";
+  "px-3 py-2.5 text-[12px] font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-200";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnOutline =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 const inputCls =
-  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 
 const paymentBadgeCls = (status: PaymentStatus) => {
   if (status === PaymentStatus.PAID) return "bg-green-100 text-green-700";
@@ -181,7 +182,7 @@ const SalesRegister: React.FC = () => {
       case "status":
         return (
           <span
-            className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${paymentBadgeCls(invoice.paymentStatus)}`}
+            className={`rounded px-2 py-0.5 text-[12px] font-semibold uppercase ${paymentBadgeCls(invoice.paymentStatus)}`}
           >
             {invoice.paymentStatus}
           </span>
@@ -217,59 +218,16 @@ const SalesRegister: React.FC = () => {
   const amountStartIdx = visibleColumnList.findIndex((c) => c.key === "subTotal");
 
   return (
-    <div className="erp-report flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-hidden">
+    <ReportWorkspace
+      title="Sales register"
+      description="List of sales invoices."
+      onPrint={() => window.print()}
+      onExportExcel={handleExportIRD}
+    >
       <div className="p-4 pb-0 shrink-0">
-        <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
-          <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Sales register</h1>
-            <p className="text-[11px] text-gray-500 mt-0.5">All sales invoices and returns</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setShowColPicker((v) => !v)}
-                className={`${btnOutline} ${showColPicker ? "bg-gray-50" : ""}`}
-              >
-                <Columns3 className="h-3.5 w-3.5" />
-                Columns
-              </button>
-              {showColPicker && (
-                <div className="absolute right-0 top-full mt-1 z-50 min-w-[200px] bg-white border border-gray-200 rounded-md shadow-lg p-2">
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide px-2 pb-2">
-                    Show / hide columns
-                  </p>
-                  {ALL_COLUMNS.map((col) => (
-                    <label
-                      key={col.key}
-                      className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-gray-50 cursor-pointer text-[12px] text-gray-700"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={visibleCols.has(col.key)}
-                        onChange={() => toggleCol(col.key)}
-                        className="accent-[#1557b0]"
-                      />
-                      {col.label}
-                    </label>
-                  ))}
-                </div>
-              )}
-            </div>
-            <button type="button" onClick={handleExportIRD} className={btnOutline}>
-              <FileText className="h-3.5 w-3.5" />
-              Export IRD
-            </button>
-            <button type="button" className={btnOutline}>
-              <Download className="h-3.5 w-3.5" />
-              Export Excel
-            </button>
-          </div>
-        </div>
-
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
           <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
               Total sales
             </p>
             <p className="text-[12px] number-cell-bold text-gray-800 mt-0.5">
@@ -277,15 +235,15 @@ const SalesRegister: React.FC = () => {
             </p>
           </div>
           <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
               Invoices
             </p>
-            <p className="text-[14px] font-semibold text-[#1557b0] mt-0.5">
+            <p className="text-[14px] font-semibold text-[var(--ds-action-primary)] mt-0.5">
               {filteredInvoices.length}
             </p>
           </div>
           <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
               Total VAT
             </p>
             <p className="text-[12px] number-cell-bold text-gray-800 mt-0.5">
@@ -293,7 +251,7 @@ const SalesRegister: React.FC = () => {
             </p>
           </div>
           <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
               Posted
             </p>
             <p className="text-[14px] font-semibold text-green-700 mt-0.5">
@@ -307,21 +265,21 @@ const SalesRegister: React.FC = () => {
         <div className="no-print bg-white border border-gray-200 rounded-md p-3 mb-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-3">
             <div>
-              <label className="block text-[11px] font-medium text-gray-600 mb-1">From date</label>
+              <label className="block text-[12px] font-medium text-gray-600 mb-1">From date</label>
               <NepaliDatePicker
                 value={filters.dateFrom}
                 onChange={(value) => setFilters((prev) => ({ ...prev, dateFrom: value }))}
               />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-gray-600 mb-1">To date</label>
+              <label className="block text-[12px] font-medium text-gray-600 mb-1">To date</label>
               <NepaliDatePicker
                 value={filters.dateTo}
                 onChange={(value) => setFilters((prev) => ({ ...prev, dateTo: value }))}
               />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-gray-600 mb-1">Party</label>
+              <label className="block text-[12px] font-medium text-gray-600 mb-1">Party</label>
               <input
                 type="text"
                 value={filters.partyId}
@@ -331,7 +289,7 @@ const SalesRegister: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-gray-600 mb-1">
+              <label className="block text-[12px] font-medium text-gray-600 mb-1">
                 Payment status
               </label>
               <select
@@ -346,7 +304,7 @@ const SalesRegister: React.FC = () => {
               </select>
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-gray-600 mb-1">Item</label>
+              <label className="block text-[12px] font-medium text-gray-600 mb-1">Item</label>
               <input
                 type="text"
                 value={filters.itemId}
@@ -356,7 +314,7 @@ const SalesRegister: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-gray-600 mb-1">
+              <label className="block text-[12px] font-medium text-gray-600 mb-1">
                 Tax category
               </label>
               <select
@@ -381,7 +339,7 @@ const SalesRegister: React.FC = () => {
                 className={`${inputCls} w-full pl-8`}
               />
             </div>
-            <span className="text-[11px] text-gray-500">
+            <span className="text-[12px] text-gray-500">
               {filteredInvoices.length} invoice{filteredInvoices.length === 1 ? "" : "s"}
             </span>
           </div>
@@ -405,7 +363,7 @@ const SalesRegister: React.FC = () => {
                     <col key={c.key} style={{ width: c.width }} />
                   ))}
                 </colgroup>
-                <thead className="sticky top-0 z-10 bg-[#f5f6fa]">
+                <thead className="sticky top-0 z-10 bg-[var(--ds-surface-muted)]">
                   <tr>
                     {visibleColumnList.map((col) => (
                       <th
@@ -421,7 +379,7 @@ const SalesRegister: React.FC = () => {
                   {paginatedInvoices.map((invoice) => (
                     <tr
                       key={invoice.id}
-                      className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                      className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
                     >
                       {visibleColumnList.map((col) => (
                         <td
@@ -435,7 +393,7 @@ const SalesRegister: React.FC = () => {
                   ))}
                 </tbody>
                 <tfoot>
-                  <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
+                  <tr className="bg-[var(--ds-action-primary)] border-t-2 border-[var(--ds-border-default)] font-bold text-[12px]">
                     {visibleColumnList.map((col, idx) => {
                       if (amountStartIdx > 0 && idx === 0) {
                         return (
@@ -463,7 +421,7 @@ const SalesRegister: React.FC = () => {
                         return (
                           <td
                             key={col.key}
-                            className="number-cell-bold text-[#1557b0]"
+                            className="number-cell-bold text-[var(--ds-action-primary)]"
                           >
                             {renderTotalCell(col)}
                           </td>
@@ -478,7 +436,7 @@ const SalesRegister: React.FC = () => {
                 </tfoot>
               </table>
             </div>
-            <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500 shrink-0">
+            <div className="px-3 py-2 border-t border-gray-200 bg-[var(--ds-surface-muted)] text-[12px] text-gray-500 shrink-0">
               {filteredInvoices.length} sales register record
               {filteredInvoices.length === 1 ? "" : "s"}
             </div>
@@ -501,7 +459,7 @@ const SalesRegister: React.FC = () => {
           </div>
         )}
       </div>
-    </div>
+    </ReportWorkspace>
   );
 };
 

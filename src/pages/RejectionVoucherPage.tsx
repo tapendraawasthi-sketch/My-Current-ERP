@@ -3,7 +3,7 @@ import { useStore } from "../store";
 import { StockJournalItem } from "../lib/types";
 import SearchableTable from "../components/ui/SearchableTable";
 import ItemSelect from "../components/ui/ItemSelect";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 const emptyItem = (): StockJournalItem => ({
   id: crypto.randomUUID(),
@@ -20,7 +20,9 @@ interface RejectionVoucherPageProps {
 
 export default function RejectionVoucherPage({ mode }: RejectionVoucherPageProps) {
   const voucherType = mode === "out" ? "rejection-out" : "rejection-in";
-  const title = mode === "out" ? "Rejection Out (to Supplier)" : "Rejection In (from Customer)";
+  const title = "Rejection in/out";
+  const help =
+    mode === "out" ? "Rejected goods sent back to supplier." : "Rejected goods returned by customer.";
   const { vouchers, addVoucher, postRejectionStock, items } = useStore() as any;
 
   const entries = (vouchers || []).filter((v: any) => v.type === voucherType);
@@ -98,14 +100,14 @@ export default function RejectionVoucherPage({ mode }: RejectionVoucherPageProps
   };
 
   return (
-    <div className="page p-4 bg-[#f5f6fa] min-h-screen">
+    <div className="page p-4 bg-[var(--ds-canvas)] min-h-screen">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">{title}</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">Total Entries: {entries.length}</p>
+          <p className="text-[12px] text-gray-500 mt-0.5">{help}</p>
         </div>
         <button
-          className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
+          className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md"
           onClick={() => setShowForm(true)}
         >
           New Entry
@@ -138,7 +140,7 @@ export default function RejectionVoucherPage({ mode }: RejectionVoucherPageProps
           <h3 className="text-[13px] font-semibold text-gray-800 mb-3">New {title}</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
             <div>
-              <label className="text-[11px] font-medium text-gray-600 mb-1 block">Date</label>
+              <label className="text-[12px] font-medium text-gray-600 mb-1 block">Date</label>
               <input
                 type="date"
                 className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md"
@@ -147,7 +149,7 @@ export default function RejectionVoucherPage({ mode }: RejectionVoucherPageProps
               />
             </div>
             <div>
-              <label className="text-[11px] font-medium text-gray-600 mb-1 block">Party</label>
+              <label className="text-[12px] font-medium text-gray-600 mb-1 block">Party</label>
               <input
                 className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md"
                 value={entry.partyName}
@@ -155,7 +157,7 @@ export default function RejectionVoucherPage({ mode }: RejectionVoucherPageProps
               />
             </div>
             <div>
-              <label className="text-[11px] font-medium text-gray-600 mb-1 block">Ref No</label>
+              <label className="text-[12px] font-medium text-gray-600 mb-1 block">Ref No</label>
               <input
                 className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md"
                 value={entry.refNo}
@@ -163,7 +165,7 @@ export default function RejectionVoucherPage({ mode }: RejectionVoucherPageProps
               />
             </div>
             <div className="col-span-2">
-              <label className="text-[11px] font-medium text-gray-600 mb-1 block">Narration</label>
+              <label className="text-[12px] font-medium text-gray-600 mb-1 block">Narration</label>
               <input
                 className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md"
                 value={entry.narration}
@@ -173,11 +175,11 @@ export default function RejectionVoucherPage({ mode }: RejectionVoucherPageProps
           </div>
           <table className="w-full mb-4">
             <thead>
-              <tr className="bg-[#f5f6fa] border-b border-gray-200">
+              <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
                 {["Item", "Qty", "Rate", "Amount", ""].map((h) => (
                   <th
                     key={h}
-                    className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase"
+                    className="px-3 py-2 text-left text-[12px] font-semibold text-gray-500 uppercase"
                   >
                     {h}
                   </th>
@@ -215,7 +217,7 @@ export default function RejectionVoucherPage({ mode }: RejectionVoucherPageProps
                   </td>
                   <td className="px-2 py-1">
                     <button
-                      className="text-[11px] text-red-600"
+                      className="text-[12px] text-red-600"
                       onClick={() =>
                         setEntry((e) => ({ ...e, items: e.items.filter((_, i) => i !== idx) }))
                       }
@@ -235,7 +237,7 @@ export default function RejectionVoucherPage({ mode }: RejectionVoucherPageProps
               Add Row
             </button>
             <button
-              className="h-8 px-3 bg-[#1557b0] text-white text-[12px] rounded-md"
+              className="h-8 px-3 bg-[var(--ds-action-primary)] text-white text-[12px] rounded-md"
               onClick={handleSave}
             >
               Save & Post

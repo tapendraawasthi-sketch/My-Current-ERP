@@ -1,6 +1,6 @@
 // src/pages/SchemeMaster.tsx
 import React, { useState, useMemo } from "react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { Plus, Edit2, Trash2, Search, X, Save } from "lucide-react";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 

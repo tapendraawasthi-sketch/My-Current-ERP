@@ -1,0 +1,48 @@
+{
+  "generated_at": "2026-07-14T06:02:09+00:00",
+  "retrieval_collections": [
+    "language_and_normalization",
+    "intent_and_dialogue",
+    "accounting_and_erp",
+    "safety_and_governance",
+    "support_and_help",
+    "analytics_and_decision_support",
+    "evaluation_only"
+  ],
+  "collection_mapping": {
+    "language_rules": "language_and_normalization",
+    "lexicon": "language_and_normalization",
+    "normalization_examples": "language_and_normalization",
+    "intent_examples": "intent_and_dialogue",
+    "entity_examples": "intent_and_dialogue",
+    "slot_examples": "intent_and_dialogue",
+    "dialogue_examples": "intent_and_dialogue",
+    "domain_records": "accounting_and_erp",
+    "safety_rules": "safety_and_governance",
+    "authorization_rules": "safety_and_governance",
+    "runtime_contracts": "safety_and_governance",
+    "gold_tests": "evaluation_only",
+    "adversarial_tests": "evaluation_only",
+    "e2e_tests": "evaluation_only",
+    "unclassified_records": "language_and_normalization"
+  },
+  "counts_by_retrieval_collection": {
+    "language_and_normalization": 21221,
+    "intent_and_dialogue": 32376,
+    "accounting_and_erp": 5616704,
+    "safety_and_governance": 11917,
+    "support_and_help": 0,
+    "analytics_and_decision_support": 0,
+    "evaluation_only": 12222
+  },
+  "production_fts_table": "prod_fts",
+  "evaluation_fts_table": "eval_fts",
+  "production_rows": 5682218,
+  "evaluation_rows": 12222,
+  "lexical_index": "knowledgebase/indexes/lexical/kb_lexical.sqlite",
+  "metadata_index": "knowledgebase/indexes/metadata/kb_metadata.sqlite",
+  "notes": [
+    "Evaluation records are in eval_fts only and must not be returned by production retrieval.",
+    "Semantic index is optional and non-authoritative for safety decisions."
+  ]
+}

@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { useMemo, useState } from "react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { useScreenContext } from "../context/ScreenContext";
 import { useStore } from "../store/useStore";
 

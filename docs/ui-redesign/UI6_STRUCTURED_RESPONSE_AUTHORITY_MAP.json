@@ -1,0 +1,264 @@
+{
+  "phase": "UI-6",
+  "generated_at": "2026-07-13",
+  "schema_version": "1.0",
+  "authority_file": "src/lib/ekhata/orbixResponseTypes.ts",
+  "discriminator": "response_type",
+  "display_rule": "display.text is presentation only; never authority for posting, mode, or sync",
+  "production_path": {
+    "route": "orbix",
+    "page": "src/pages/OrbixWorkspacePage.tsx",
+    "workspace": "src/components/ekhata/OrbixWorkspace.tsx",
+    "renderer": "src/components/ekhata/OrbixResponseRenderer.tsx",
+    "store": "src/store/eKhataStore.ts",
+    "posting": "src/lib/ekhata/orbixPostingService.ts",
+    "ingress": "erp_bot/src/api/oip_chat_ingress.py",
+    "mode_policy": "erp_bot/src/orbix/mode_policy.py"
+  },
+  "notes": [
+    "OrbixResponseType union includes transaction_draft, posting_started, cancellation_completed — not all appear on the OrbixResponse discriminated union or renderer switch yet.",
+    "Ask Mode mutations blocked client (executeOrbixConfirm) and server (mode_policy).",
+    "confirmPending often omits sync_status on posting_completed chat messages even when posting result has it."
+  ],
+  "response_types": [
+    {
+      "response_type": "normal_answer",
+      "status_typical": ["success", "partial"],
+      "payload": "NormalAnswerPayload",
+      "authority": "structured chat answer; no ledger mutation",
+      "ui_surface": "OrbixMessageContent via OrbixResponseRenderer",
+      "can_mutate": false,
+      "implementation_status": "active"
+    },
+    {
+      "response_type": "capability_answer",
+      "status_typical": ["success"],
+      "payload": "NormalAnswerPayload",
+      "authority": "capability/help answer; no ledger mutation",
+      "ui_surface": "OrbixMessageContent",
+      "can_mutate": false,
+      "implementation_status": "active"
+    },
+    {
+      "response_type": "accounting_explanation",
+      "status_typical": ["success"],
+      "payload": "NormalAnswerPayload",
+      "authority": "explanation only; not a posting preview",
+      "ui_surface": "OrbixMessageContent",
+      "can_mutate": false,
+      "implementation_status": "active"
+    },
+    {
+      "response_type": "erp_data_result",
+      "status_typical": ["success", "partial"],
+      "payload": "NormalAnswerPayload",
+      "authority": "ERP query result presentation; facts from tools/backend — not invented in UI",
+      "ui_surface": "OrbixMessageContent",
+      "can_mutate": false,
+      "implementation_status": "active"
+    },
+    {
+      "response_type": "report_result",
+      "status_typical": ["success"],
+      "payload": "ReportResultPayload",
+      "authority": "report engine / attached OrbixReportPayload on message.report",
+      "ui_surface": "OrbixResponseRenderer text + OrbixReportTable from parent",
+      "can_mutate": false,
+      "implementation_status": "active"
+    },
+    {
+      "response_type": "report_updated",
+      "status_typical": ["success"],
+      "payload": "ReportResultPayload",
+      "authority": "updated report; optional changes[] for presentation",
+      "ui_surface": "OrbixResponseRenderer + OrbixReportTable",
+      "can_mutate": false,
+      "implementation_status": "active"
+    },
+    {
+      "response_type": "mode_restriction",
+      "status_typical": ["requires_input"],
+      "payload": "ModeRestrictionPayload",
+      "authority": "mode_policy + client mode gate; LLM is not security authority",
+      "ui_surface": "ModeRestrictionCard",
+      "can_mutate": false,
+      "required_mode_for_continue": "accountant (when mutation requested)",
+      "implementation_status": "active"
+    },
+    {
+      "response_type": "clarification_required",
+      "status_typical": ["requires_input"],
+      "payload": "ClarificationPayload",
+      "authority": "draft_id + captured/missing fields; nothing_posted true",
+      "ui_surface": "ClarificationCard",
+      "can_mutate": false,
+      "implementation_status": "active"
+    },
+    {
+      "response_type": "transaction_draft",
+      "status_typical": ["requires_input", "partial"],
+      "payload": "schema type listed; not on OrbixResponse union",
+      "authority": "draft in progress — must not post without preview/confirm",
+      "ui_surface": "deferred / adapter-dependent",
+      "can_mutate": false,
+      "implementation_status": "typed_not_fully_wired"
+    },
+    {
+      "response_type": "transaction_preview",
+      "status_typical": ["requires_confirmation"],
+      "payload": "TransactionPreviewPayload",
+      "authority": "draft_id, preview_hash, idempotency_key, totals, journal?, can_confirm, legacy_card?",
+      "ui_surface": "display text in renderer; authoritative card via pendingCard / OrbixJournalCard",
+      "can_mutate": false,
+      "confirm_path": "confirmPending → executeOrbixConfirm",
+      "implementation_status": "active"
+    },
+    {
+      "response_type": "journal_preview",
+      "status_typical": ["requires_confirmation", "success"],
+      "payload": "JournalPreviewPayload",
+      "authority": "balanced flag + debit/credit lines; presentation of preview journal",
+      "ui_surface": "OrbixJournalCard (pending) + optional renderer text",
+      "can_mutate": false,
+      "implementation_status": "active"
+    },
+    {
+      "response_type": "confirmation_required",
+      "status_typical": ["requires_confirmation"],
+      "payload": "ConfirmationRequiredPayload",
+      "authority": "draft_id, preview_hash, idempotency_key, summary, warnings, journal?, legacy_card?",
+      "ui_surface": "pendingCard confirm/cancel; renderer shows display text only",
+      "can_mutate": false,
+      "confirm_path": "confirmPending → executeOrbixConfirm",
+      "implementation_status": "active"
+    },
+    {
+      "response_type": "posting_started",
+      "status_typical": ["processing"],
+      "payload": "schema type listed; not on OrbixResponse union",
+      "authority": "lifecycle marker; stages also tracked on eKhataStore.postingStages",
+      "ui_surface": "postingStages / NeuronThinking",
+      "can_mutate": false,
+      "implementation_status": "typed_not_fully_wired"
+    },
+    {
+      "response_type": "posting_progress",
+      "status_typical": ["processing"],
+      "payload": "PostingProgressPayload",
+      "authority": "stage labels only; not voucher truth",
+      "ui_surface": "renderer text + postingStages",
+      "can_mutate": false,
+      "implementation_status": "active"
+    },
+    {
+      "response_type": "posting_completed",
+      "status_typical": ["success"],
+      "payload": "PostingCompletedPayload",
+      "authority": "orbixPostingService / domain posting result; voucher numbers from result",
+      "ui_surface": "OrbixResponseRenderer posting_completed card (Posted locally + sync line)",
+      "can_mutate": false,
+      "sync_status_field": "optional sync_status | sync_event_id — often omitted by confirmPending message builder",
+      "implementation_status": "active_with_sync_gap"
+    },
+    {
+      "response_type": "posting_failed",
+      "status_typical": ["failed"],
+      "payload": "PostingFailedPayload",
+      "authority": "posting service error_code + safe_message; rolled_back / retryable / draft_retained",
+      "ui_surface": "OrbixResponseRenderer danger card",
+      "can_mutate": false,
+      "implementation_status": "active"
+    },
+    {
+      "response_type": "permission_denied",
+      "status_typical": ["failed"],
+      "payload": "GeneralErrorPayload",
+      "authority": "role or mode gate (client posting service); not LLM",
+      "ui_surface": "OrbixResponseRenderer danger card",
+      "can_mutate": false,
+      "implementation_status": "active"
+    },
+    {
+      "response_type": "validation_error",
+      "status_typical": ["failed"],
+      "payload": "GeneralErrorPayload",
+      "authority": "includes stale_preview when preview_hash mismatch",
+      "ui_surface": "OrbixResponseRenderer danger card; pendingCard retained on stale_preview",
+      "can_mutate": false,
+      "implementation_status": "active"
+    },
+    {
+      "response_type": "cancellation_completed",
+      "status_typical": ["success"],
+      "payload": "schema type listed; not on OrbixResponse union",
+      "authority": "cancel pending without posting",
+      "ui_surface": "cancelPending store action",
+      "can_mutate": false,
+      "implementation_status": "typed_not_fully_wired"
+    },
+    {
+      "response_type": "provider_offline",
+      "status_typical": ["failed"],
+      "payload": "ProviderOfflinePayload",
+      "authority": "provider/LLM availability",
+      "ui_surface": "ProviderOfflineCard",
+      "can_mutate": false,
+      "implementation_status": "active"
+    },
+    {
+      "response_type": "backend_unavailable",
+      "status_typical": ["failed"],
+      "payload": "ProviderOfflinePayload",
+      "authority": "backend/ingress unavailable",
+      "ui_surface": "ProviderOfflineCard",
+      "can_mutate": false,
+      "implementation_status": "active"
+    },
+    {
+      "response_type": "general_error",
+      "status_typical": ["failed"],
+      "payload": "GeneralErrorPayload",
+      "authority": "safe_message + error_code only",
+      "ui_surface": "OrbixResponseRenderer danger card",
+      "can_mutate": false,
+      "implementation_status": "active"
+    },
+    {
+      "response_type": "unknown",
+      "status_typical": ["failed", "partial"],
+      "payload": "Record<string, unknown>",
+      "authority": "fallback parse; display text only",
+      "ui_surface": "OrbixMessageContent",
+      "can_mutate": false,
+      "implementation_status": "active_fallback"
+    }
+  ],
+  "action_types": [
+    "switch_mode",
+    "preview",
+    "confirm",
+    "edit",
+    "cancel",
+    "open_voucher",
+    "view_ledger",
+    "new_transaction",
+    "retry",
+    "dismiss"
+  ],
+  "gates": {
+    "ask_mode": {
+      "client": "executeOrbixConfirm rejects orbixMode !== accountant",
+      "server": "mode_policy + oip_chat_ingress / preprocess",
+      "effective_permission": "mode_capability AND user_role_permission AND company_policy"
+    },
+    "stale_preview": {
+      "compare": "cmd.previewHash vs card.preview_hash",
+      "error_code": "stale_preview",
+      "response_type": "validation_error"
+    },
+    "idempotency": {
+      "sources": ["card.idempotency_key", "buildIdempotencyKey(draftId, previewHash, sessionId)"],
+      "storage": "orbixPostingReceipts (service)"
+    }
+  }
+}

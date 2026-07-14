@@ -1,9 +1,10 @@
 // @ts-nocheck
 import React, { useState, useMemo, useCallback } from "react";
+import { ReportWorkspace } from "@/features/reports";
 import { useStore } from "../store/useStore";
 import { Download, FileSpreadsheet, Printer } from "lucide-react";
 import * as XLSX from "xlsx";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import ReportDateRangePicker, { DateRange } from "../components/ui/ReportDateRangePicker";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 
@@ -31,43 +32,6 @@ interface AnnexEntry {
   type: string;
   exemptAmount?: number;
 }
-
-// ─── ReportShell ──────────────────────────────────────────────────────────────
-
-interface ReportShellProps {
-  title: string;
-  subtitle?: string;
-  children: React.ReactNode;
-  actions?: React.ReactNode;
-  className?: string;
-  printable?: boolean;
-}
-
-const ReportShell: React.FC<ReportShellProps> = ({
-  title,
-  subtitle,
-  children,
-  actions,
-  className = "",
-  printable = true,
-}) => {
-  return (
-    <div
-      className={`erp-report flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-y-auto p-4 md:p-6 ${className}`}
-    >
-      <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
-        <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">{title}</h1>
-          {subtitle && <p className="text-[11px] text-gray-500 mt-0.5">{subtitle}</p>}
-        </div>
-        {actions && <div className="flex items-center gap-2">{actions}</div>}
-      </div>
-      <div className={printable ? "print-content flex-1 min-h-0 flex flex-col" : ""}>
-        {children}
-      </div>
-    </div>
-  );
-};
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -142,11 +106,11 @@ const DataTable: React.FC<DataTableProps> = ({
     <div className="overflow-x-auto">
       <table className="erp-bs-table report-table w-full min-w-max border-collapse">
         <thead>
-          <tr className="bg-[#f5f6fa] border-b border-gray-200">
+          <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
             {columns.map((col) => (
               <th
                 key={col.key}
-                className={`px-3 py-2.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wide ${
+                className={`px-3 py-2.5 text-[12px] font-semibold text-gray-500 uppercase tracking-wide ${
                   col.align === "right"
                     ? "text-right"
                     : col.align === "center"
@@ -163,7 +127,7 @@ const DataTable: React.FC<DataTableProps> = ({
           {data.map((row, rowIdx) => (
             <tr
               key={rowIdx}
-              className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] border-b border-gray-100"
+              className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)] border-b border-gray-100"
             >
               {columns.map((col) => (
                 <td
@@ -499,8 +463,7 @@ const VatReports: React.FC = () => {
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    // ReportShell: NO "actions" prop — buttons rendered as children
-    <ReportShell title="VAT Reports" subtitle="Annex A, B, C and VAT summary for IRD submission">
+        <ReportWorkspace title="VAT reports" description="VAT returns and annexes." onPrint={handlePrint}>
       <div className="no-print bg-white border border-gray-200 rounded-md p-3 mb-4">
         <div className="flex items-center justify-between gap-2 flex-wrap">
           <ReportDateRangePicker value={dateRange} onChange={setDateRange} label="" compact />
@@ -532,14 +495,14 @@ const VatReports: React.FC = () => {
                       : annexCColumns;
                 handleExportExcel("Annex_" + activeAnnex, data, cols);
               }}
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5"
+              className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5"
             >
               <FileSpreadsheet className="h-3.5 w-3.5" />
               Export Excel
             </button>
           </div>
         </div>
-        <p className="text-[11px] text-gray-500 mt-2">
+        <p className="text-[12px] text-gray-500 mt-2">
           {filteredInvoices.length} posted invoice{filteredInvoices.length === 1 ? "" : "s"} in
           period
         </p>
@@ -547,24 +510,24 @@ const VatReports: React.FC = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
         <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
-          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+          <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
             Output VAT (sales)
           </p>
-          <p className="text-[12px] number-cell-bold text-[#1557b0] mt-0.5">
+          <p className="text-[12px] number-cell-bold text-[var(--ds-action-primary)] mt-0.5">
             {fmtVat(vatSummary.outputVat)}
           </p>
-          <p className="text-[11px] text-gray-500 mt-0.5">
+          <p className="text-[12px] text-gray-500 mt-0.5">
             Taxable {fmtVat(vatSummary.outputTaxable)} · {vatSummary.outputCount} invoices
           </p>
         </div>
         <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
-          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+          <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
             Input VAT (purchases)
           </p>
           <p className="text-[12px] number-cell-bold text-green-700 mt-0.5">
             {fmtVat(vatSummary.inputVat)}
           </p>
-          <p className="text-[11px] text-gray-500 mt-0.5">
+          <p className="text-[12px] text-gray-500 mt-0.5">
             Taxable {fmtVat(vatSummary.inputTaxable)} · {vatSummary.inputCount} bills
           </p>
         </div>
@@ -573,7 +536,7 @@ const VatReports: React.FC = () => {
             vatSummary.netVat >= 0 ? "bg-red-50 border-red-200" : "bg-green-50 border-green-200"
           }`}
         >
-          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+          <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
             {vatSummary.netVat >= 0 ? "Net VAT payable to IRD" : "Net VAT refundable"}
           </p>
           <p
@@ -583,7 +546,7 @@ const VatReports: React.FC = () => {
           >
             {fmtVat(Math.abs(vatSummary.netVat))}
           </p>
-          <p className="text-[11px] text-gray-500 mt-0.5">
+          <p className="text-[12px] text-gray-500 mt-0.5">
             Output − input = {vatSummary.netVat >= 0 ? "Payable" : "Refundable"}
           </p>
         </div>
@@ -603,7 +566,7 @@ const VatReports: React.FC = () => {
             onClick={() => setActiveAnnex(tab.key)}
             className={`h-auto min-w-[120px] px-4 py-2 -mb-0.5 text-left border-b-2 transition-colors whitespace-nowrap ${
               activeAnnex === tab.key
-                ? "border-[#1557b0] text-[#1557b0]"
+                ? "border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]"
                 : "border-transparent text-gray-500 hover:text-gray-700"
             }`}
           >
@@ -614,7 +577,7 @@ const VatReports: React.FC = () => {
             >
               {tab.label}
             </span>
-            <span className="block text-[10px] text-gray-400 mt-0.5">{tab.sub}</span>
+            <span className="block text-[12px] text-gray-400 mt-0.5">{tab.sub}</span>
           </button>
         ))}
       </div>
@@ -622,11 +585,11 @@ const VatReports: React.FC = () => {
       {activeAnnex === "summary" && (
         <div className="space-y-4">
           <div className="bg-white border border-gray-200 rounded-b-md rounded-t-none overflow-hidden">
-            <div className="px-3 py-2 border-b border-gray-200 bg-[#f5f6fa]">
+            <div className="px-3 py-2 border-b border-gray-200 bg-[var(--ds-surface-muted)]">
               <h3 className="text-[12px] font-semibold text-gray-800">
                 VAT return statement — {companySettings?.name ?? "Company"}
               </h3>
-              <p className="text-[11px] text-gray-500 mt-0.5">
+              <p className="text-[12px] text-gray-500 mt-0.5">
                 Period: {fromDate} to {toDate}
               </p>
             </div>
@@ -634,14 +597,14 @@ const VatReports: React.FC = () => {
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                       Particulars
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-40">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-40">
                       Taxable amount
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-40">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-40">
                       VAT amount
                     </th>
                   </tr>
@@ -650,12 +613,12 @@ const VatReports: React.FC = () => {
                   <tr className="bg-green-50">
                     <td
                       colSpan={3}
-                      className="px-3 py-2 text-[11px] font-semibold text-green-800 uppercase tracking-wide"
+                      className="px-3 py-2 text-[12px] font-semibold text-green-800 uppercase tracking-wide"
                     >
                       Output VAT (sales)
                     </td>
                   </tr>
-                  <tr className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] border-b border-gray-100">
+                  <tr className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)] border-b border-gray-100">
                     <td className="px-3 py-2.5 text-[12px] text-gray-700 pl-8">
                       Annex A — Sales to VAT registered buyers
                     </td>
@@ -666,7 +629,7 @@ const VatReports: React.FC = () => {
                       {money(annexATotal.vat)}
                     </td>
                   </tr>
-                  <tr className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] border-b border-gray-100">
+                  <tr className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)] border-b border-gray-100">
                     <td className="px-3 py-2.5 text-[12px] text-gray-700 pl-8">
                       Annex B — Retail sales (non-VAT registered)
                     </td>
@@ -677,7 +640,7 @@ const VatReports: React.FC = () => {
                       {money(annexBTotal.vat)}
                     </td>
                   </tr>
-                  <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
+                  <tr className="bg-[var(--ds-action-primary)] border-t-2 border-[var(--ds-border-default)] font-bold text-[12px]">
                     <td className="px-3 py-2.5 text-gray-800 pl-8">Total output VAT</td>
                     <td className="number-cell-bold">
                       {money(vatSummary.outputTaxable)}
@@ -690,12 +653,12 @@ const VatReports: React.FC = () => {
                   <tr className="bg-amber-50">
                     <td
                       colSpan={3}
-                      className="px-3 py-2 text-[11px] font-semibold text-amber-800 uppercase tracking-wide"
+                      className="px-3 py-2 text-[12px] font-semibold text-amber-800 uppercase tracking-wide"
                     >
                       Input VAT (purchases)
                     </td>
                   </tr>
-                  <tr className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] border-b border-gray-100">
+                  <tr className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)] border-b border-gray-100">
                     <td className="px-3 py-2.5 text-[12px] text-gray-700 pl-8">
                       Annex C — Local purchases
                     </td>
@@ -706,7 +669,7 @@ const VatReports: React.FC = () => {
                       {money(annexCTotal.vat)}
                     </td>
                   </tr>
-                  <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
+                  <tr className="bg-[var(--ds-action-primary)] border-t-2 border-[var(--ds-border-default)] font-bold text-[12px]">
                     <td className="px-3 py-2.5 text-gray-800 pl-8">Total input VAT</td>
                     <td className="number-cell-bold">
                       {money(vatSummary.inputTaxable)}
@@ -744,7 +707,7 @@ const VatReports: React.FC = () => {
                 </tbody>
               </table>
             </div>
-            <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+            <div className="px-3 py-2 border-t border-gray-200 bg-[var(--ds-surface-muted)] text-[12px] text-gray-500">
               VAT summary for IRD submission
             </div>
           </div>
@@ -758,7 +721,7 @@ const VatReports: React.FC = () => {
               <h3 className="text-[12px] font-semibold text-gray-800">
                 Annex A — Sales to VAT registered parties
               </h3>
-              <p className="text-[11px] text-gray-500 mt-0.5">
+              <p className="text-[12px] text-gray-500 mt-0.5">
                 {annexAData.length} invoices · Taxable: {money(annexATotal.taxable)} · VAT:{" "}
                 {money(annexATotal.vat)}
               </p>
@@ -779,7 +742,7 @@ const VatReports: React.FC = () => {
               data={annexAData}
               emptyMessage="No sales to VAT-registered parties in this period."
               footerRow={
-                <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
+                <tr className="bg-[var(--ds-action-primary)] border-t-2 border-[var(--ds-border-default)] font-bold text-[12px]">
                   <td colSpan={5} className="px-3 py-2.5 text-gray-800">
                     Total
                   </td>
@@ -799,7 +762,7 @@ const VatReports: React.FC = () => {
               }
             />
             {annexAData.length > 0 && (
-              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+              <div className="px-3 py-2 border-t border-gray-200 bg-[var(--ds-surface-muted)] text-[12px] text-gray-500">
                 {annexAData.length} record{annexAData.length === 1 ? "" : "s"}
               </div>
             )}
@@ -814,7 +777,7 @@ const VatReports: React.FC = () => {
               <h3 className="text-[12px] font-semibold text-gray-800">
                 Annex B — Retail sales (non-VAT registered)
               </h3>
-              <p className="text-[11px] text-gray-500 mt-0.5">
+              <p className="text-[12px] text-gray-500 mt-0.5">
                 {annexBData.length} invoices · Taxable: {money(annexBTotal.taxable)} · VAT:{" "}
                 {money(annexBTotal.vat)}
               </p>
@@ -835,7 +798,7 @@ const VatReports: React.FC = () => {
               data={annexBData}
               emptyMessage="No retail sales in this period."
               footerRow={
-                <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
+                <tr className="bg-[var(--ds-action-primary)] border-t-2 border-[var(--ds-border-default)] font-bold text-[12px]">
                   <td colSpan={4} className="px-3 py-2.5 text-gray-800">
                     Total
                   </td>
@@ -855,7 +818,7 @@ const VatReports: React.FC = () => {
               }
             />
             {annexBData.length > 0 && (
-              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+              <div className="px-3 py-2 border-t border-gray-200 bg-[var(--ds-surface-muted)] text-[12px] text-gray-500">
                 {annexBData.length} record{annexBData.length === 1 ? "" : "s"}
               </div>
             )}
@@ -870,7 +833,7 @@ const VatReports: React.FC = () => {
               <h3 className="text-[12px] font-semibold text-gray-800">
                 Annex C — Purchase invoices
               </h3>
-              <p className="text-[11px] text-gray-500 mt-0.5">
+              <p className="text-[12px] text-gray-500 mt-0.5">
                 {annexCData.length} invoices · Taxable: {money(annexCTotal.taxable)} · VAT:{" "}
                 {money(annexCTotal.vat)}
               </p>
@@ -891,7 +854,7 @@ const VatReports: React.FC = () => {
               data={annexCData}
               emptyMessage="No purchase invoices in this period."
               footerRow={
-                <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
+                <tr className="bg-[var(--ds-action-primary)] border-t-2 border-[var(--ds-border-default)] font-bold text-[12px]">
                   <td colSpan={5} className="px-3 py-2.5 text-gray-800">
                     Total
                   </td>
@@ -908,7 +871,7 @@ const VatReports: React.FC = () => {
               }
             />
             {annexCData.length > 0 && (
-              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+              <div className="px-3 py-2 border-t border-gray-200 bg-[var(--ds-surface-muted)] text-[12px] text-gray-500">
                 {annexCData.length} record{annexCData.length === 1 ? "" : "s"}
               </div>
             )}
@@ -923,7 +886,7 @@ const VatReports: React.FC = () => {
               <h3 className="text-[12px] font-semibold text-gray-800">
                 Annex D — Import purchases
               </h3>
-              <p className="text-[11px] text-gray-500 mt-0.5">{annexDData.length} records</p>
+              <p className="text-[12px] text-gray-500 mt-0.5">{annexDData.length} records</p>
             </div>
             <button
               type="button"
@@ -942,7 +905,7 @@ const VatReports: React.FC = () => {
               emptyMessage="No import purchases recorded in this period."
             />
             {annexDData.length > 0 && (
-              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+              <div className="px-3 py-2 border-t border-gray-200 bg-[var(--ds-surface-muted)] text-[12px] text-gray-500">
                 {annexDData.length} record{annexDData.length === 1 ? "" : "s"}
               </div>
             )}
@@ -950,15 +913,7 @@ const VatReports: React.FC = () => {
         </div>
       )}
 
-      {/* Print styles */}
-      <style>{`
-        @media print {
-          .no-print { display: none !important; }
-          body { background: white !important; }
-          @page { size: A4 landscape; margin: 10mm; }
-        }
-      `}</style>
-    </ReportShell>
+    </ReportWorkspace>
   );
 };
 

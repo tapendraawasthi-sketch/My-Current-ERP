@@ -185,7 +185,12 @@ def handle_mode_aware_erp(
     elif draft_id and pending_purchase and pending_purchase.draft_id == draft_id:
         pending, pending_kind = pending_purchase, "purchase"
     elif pending_bank_recon and pending_bank_recon.status == "awaiting_clarification":
-        pending, pending_kind = pending_bank_recon, "bank_recon"
+        # Do not continue a stale bank-recon clarification when the user clearly
+        # started a settlement/contra utterance (Phase 9 must win).
+        if prefer_financial_settlement(message) and not prefer_bank_recon(message):
+            pending, pending_kind = None, None
+        else:
+            pending, pending_kind = pending_bank_recon, "bank_recon"
     elif pending_financial and pending_financial.status == "awaiting_clarification":
         pending, pending_kind = pending_financial, "financial"
     elif pending_purchase_return and pending_purchase_return.status == "awaiting_clarification":
@@ -197,7 +202,10 @@ def handle_mode_aware_erp(
     elif pending_purchase and pending_purchase.status == "awaiting_clarification":
         pending, pending_kind = pending_purchase, "purchase"
     elif pending_bank_recon:
-        pending, pending_kind = pending_bank_recon, "bank_recon"
+        if prefer_financial_settlement(message) and not prefer_bank_recon(message):
+            pending, pending_kind = (pending_financial, "financial") if pending_financial else (None, None)
+        else:
+            pending, pending_kind = pending_bank_recon, "bank_recon"
     elif pending_financial:
         pending, pending_kind = pending_financial, "financial"
     elif pending_purchase_return:
@@ -495,8 +503,14 @@ def handle_mode_aware_erp(
         )
 
 
-    # Bank recon before settlement so reconcile/statement/cheque language is not stolen
-    if bank_recon_signal and not purchase_return_signal and not return_signal:
+    # Bank recon before settlement so reconcile/statement/cheque language is not stolen.
+    # Never steal Phase 9 contra/transfer settlement phrasing.
+    if (
+        bank_recon_signal
+        and not purchase_return_signal
+        and not return_signal
+        and not (financial_signal and not prefer_bank_recon(message))
+    ):
         kind = detect_bank_recon_kind(message)
         if kind == "treasury_query" or is_bank_recon_read_only_kind(kind):
             return ModeAwareResult(

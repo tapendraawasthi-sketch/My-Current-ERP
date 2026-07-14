@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useStore } from "../store/useStore";
 import { getDB, generateId } from "../lib/db";
 import * as XLSX from "xlsx";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import {
   getMessagingConfigFromSettings,
   sendEmailMessage,
@@ -745,7 +745,7 @@ export default function CommunicationHub() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-            <MessageSquare size={18} className="text-[#1557b0]" /> Communication Hub
+            <MessageSquare size={18} className="text-[var(--ds-action-primary)]" /> Messages & email
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Invoice delivery, payment reminders and external data import utilities.

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useStore } from "../store";
 import { Plus, Edit2, Trash2, X, Save } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { generateId } from "../lib/db";
 
 const AttendanceTypeMaster: React.FC = () => {

@@ -7,7 +7,7 @@ import {
   importLegacyPeriodLocksIntoDexie,
 } from "../lib/periodLock";
 import { invalidatePeriodLockCache } from "../lib/ledger/periodLockService";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import * as XLSX from "xlsx";
 import {
   CheckCircle,

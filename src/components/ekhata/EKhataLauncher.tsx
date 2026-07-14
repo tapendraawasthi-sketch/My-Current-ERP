@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { useEKhataStore } from "../../store/eKhataStore";
 import { useFalconStore } from "../../store/falconStore";
 import { useStore } from "../../store/useStore";
@@ -33,17 +33,17 @@ const EKhataLauncher: React.FC = () => {
         openPanel();
         maximizePanel();
       }}
-      className="fixed bottom-5 right-5 z-[40] group no-print"
+      className="fixed bottom-5 right-5 z-[var(--ds-z-dropdown)] group no-print"
       title="Open Orbix (Ctrl+Shift+K)"
       aria-label="Open Orbix AI accounting workspace"
     >
       <div className="relative">
-        <div className="absolute inset-0 scale-125 rounded-full bg-[var(--ox-intelligence)]/20 opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100" />
-        <div className="relative flex h-12 w-12 items-center justify-center rounded-full border border-[var(--ox-border)] bg-[var(--ox-primary)] shadow-[var(--ox-shadow-md)] transition-transform duration-200 group-hover:scale-105">
+        <div className="absolute inset-0 scale-125 rounded-full bg-[var(--ds-action-primary)]/20 opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100" />
+        <div className="relative flex h-12 w-12 items-center justify-center rounded-full border border-[var(--ds-border-default)] bg-[var(--ds-action-primary)] shadow-[var(--ds-shadow-2)] transition-transform duration-200 group-hover:scale-105">
           <OrbixLogo size={26} variant="full" />
         </div>
         {isMinimized && (
-          <span className="absolute -right-1 -top-1 rounded-full bg-[var(--ox-warning)] px-1.5 py-0.5 text-[8px] font-bold text-white">
+          <span className="absolute -right-1 -top-1 rounded-full bg-[var(--ds-status-warning)] px-1.5 py-0.5 text-[8px] font-bold text-white">
             —
           </span>
         )}

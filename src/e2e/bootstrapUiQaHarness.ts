@@ -822,7 +822,8 @@ export async function bootstrapUiQaHarness(): Promise<void> {
     },
     async pullRemoteEvents() {
       const companyId = E2E_COMPANY_ID;
-      return (await getEventSyncClient().pullRemote(companyId)) as Record<string, unknown>;
+      const result = await getEventSyncClient().pullRemote(companyId);
+      return result as unknown as Record<string, unknown>;
     },
     async getSettlementSnapshot() {
       const db = getDB();

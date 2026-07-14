@@ -7,7 +7,7 @@ import React, { useState } from "react";
 import { useStore } from "../store/useStore";
 import { Card, Button, Input, Select, Modal, ActionToolbar } from "./ui";
 import { Sliders, HelpCircle, Save, Database, AlertTriangle, ShieldCheck } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 const SystemSettings: React.FC = () => {
   const { companySettings, updateCompanySettings, resetAllData } = useStore();

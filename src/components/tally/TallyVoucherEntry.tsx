@@ -21,7 +21,7 @@
  */
 
 import React, { useCallback, useMemo, useState } from "react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { X, Save, Trash2, Plus, Banknote, FileText, Landmark, Calculator } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { ADToBSString } from "@/lib/nepaliDate";

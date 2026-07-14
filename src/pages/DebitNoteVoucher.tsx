@@ -34,7 +34,7 @@ import {
   validateVoucherDate,
   formatVoucherDisplayDate,
 } from "../lib/voucherUtils";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 const DebitNoteVoucher: React.FC = () => {
   const {
@@ -437,7 +437,7 @@ const DebitNoteVoucher: React.FC = () => {
       {/* Top Bar */}
       <ActionToolbar className="mb-4 sticky top-0 z-10 bg-white shadow-sm">
         <div className="flex items-center gap-2">
-          <h1 className="text-xl font-bold text-amber-700">Debit Note</h1>
+          <h1 className="text-[16px] font-semibold text-amber-700">Supplier credit note</h1>
           <Badge variant="outline" className="bg-blue-100 text-blue-700">
             {isInventoryReturn ? "With Return" : "Without Return"}
           </Badge>
@@ -539,7 +539,7 @@ const DebitNoteVoucher: React.FC = () => {
                 { value: "debit-to-supplier", label: "Debit to Supplier" },
                 { value: "rate-difference", label: "Rate Difference" },
                 { value: "damage-shortage-claim", label: "Damage/Shortage Claim" },
-                { value: "gst-debit-note", label: "GST Debit Note" },
+                { value: "gst-debit-note", label: "GST Supplier credit note" },
                 { value: "supplier-adjustment", label: "Supplier Adjustment" },
               ]}
               placeholder="Select reason"

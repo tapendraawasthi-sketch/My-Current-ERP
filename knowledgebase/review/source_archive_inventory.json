@@ -1,0 +1,1299 @@
+{
+  "generated_at": "2026-07-14T04:21:54+00:00",
+  "source_dir": "Knowledge source",
+  "archive_count": 2,
+  "expected_file_count": 88,
+  "combined_numbered_file_ids": [
+    "0001",
+    "0002",
+    "0003",
+    "0004",
+    "0005",
+    "0006",
+    "0007",
+    "0008",
+    "0009",
+    "0010",
+    "0011",
+    "0012",
+    "0013",
+    "0014",
+    "0015",
+    "0016",
+    "0017",
+    "0018",
+    "0019",
+    "0020",
+    "0021",
+    "0022",
+    "0023",
+    "0024",
+    "0025",
+    "0026",
+    "0027",
+    "0028",
+    "0029",
+    "0030",
+    "0031",
+    "0032",
+    "0033",
+    "0034",
+    "0035",
+    "0036",
+    "0037",
+    "0038",
+    "0039",
+    "0040",
+    "0041",
+    "0042",
+    "0043",
+    "0044",
+    "0045",
+    "0046",
+    "0047",
+    "0048",
+    "0049",
+    "0050",
+    "0051",
+    "0052",
+    "0053",
+    "0054",
+    "0055",
+    "0056",
+    "0057",
+    "0058",
+    "0059",
+    "0060",
+    "0061",
+    "0062",
+    "0063",
+    "0064",
+    "0065",
+    "0066",
+    "0067",
+    "0068",
+    "0069",
+    "0070",
+    "0071",
+    "0072",
+    "0073",
+    "0074",
+    "0075",
+    "0076",
+    "0077",
+    "0078",
+    "0079",
+    "0080",
+    "0081",
+    "0082",
+    "0083",
+    "0084",
+    "0085",
+    "0086",
+    "0087",
+    "0088"
+  ],
+  "combined_numbered_file_count": 88,
+  "missing_file_ids": [],
+  "duplicate_file_ids_across_archives": [],
+  "file_id_sources": {
+    "0017": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0018": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0019": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0020": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0021": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0022": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0023": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0024": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0025": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0026": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0027": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0028": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0029": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0030": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0031": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0032": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0033": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0034": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0035": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0036": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0037": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0038": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0039": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0040": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0041": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0042": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0043": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0044": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0045": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0046": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0047": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0048": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0049": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0050": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0051": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0052": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0053": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0054": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0055": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0056": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0057": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0058": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0059": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0060": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0061": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0062": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0063": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0064": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0065": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0066": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0067": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0068": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0069": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0070": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0071": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0072": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0073": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0074": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0075": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0076": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0077": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0078": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0079": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0080": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0081": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0082": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0083": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0084": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0085": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0086": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0087": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0088": [
+      "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip"
+    ],
+    "0001": [
+      "ORBIX_NP_LANGUAGE_KB_FILES_0001_TO_0016.zip"
+    ],
+    "0002": [
+      "ORBIX_NP_LANGUAGE_KB_FILES_0001_TO_0016.zip"
+    ],
+    "0003": [
+      "ORBIX_NP_LANGUAGE_KB_FILES_0001_TO_0016.zip"
+    ],
+    "0004": [
+      "ORBIX_NP_LANGUAGE_KB_FILES_0001_TO_0016.zip"
+    ],
+    "0005": [
+      "ORBIX_NP_LANGUAGE_KB_FILES_0001_TO_0016.zip"
+    ],
+    "0006": [
+      "ORBIX_NP_LANGUAGE_KB_FILES_0001_TO_0016.zip"
+    ],
+    "0007": [
+      "ORBIX_NP_LANGUAGE_KB_FILES_0001_TO_0016.zip"
+    ],
+    "0008": [
+      "ORBIX_NP_LANGUAGE_KB_FILES_0001_TO_0016.zip"
+    ],
+    "0009": [
+      "ORBIX_NP_LANGUAGE_KB_FILES_0001_TO_0016.zip"
+    ],
+    "0010": [
+      "ORBIX_NP_LANGUAGE_KB_FILES_0001_TO_0016.zip"
+    ],
+    "0011": [
+      "ORBIX_NP_LANGUAGE_KB_FILES_0001_TO_0016.zip"
+    ],
+    "0012": [
+      "ORBIX_NP_LANGUAGE_KB_FILES_0001_TO_0016.zip"
+    ],
+    "0013": [
+      "ORBIX_NP_LANGUAGE_KB_FILES_0001_TO_0016.zip"
+    ],
+    "0014": [
+      "ORBIX_NP_LANGUAGE_KB_FILES_0001_TO_0016.zip"
+    ],
+    "0015": [
+      "ORBIX_NP_LANGUAGE_KB_FILES_0001_TO_0016.zip"
+    ],
+    "0016": [
+      "ORBIX_NP_LANGUAGE_KB_FILES_0001_TO_0016.zip"
+    ]
+  },
+  "phase0_status": "passed",
+  "archives": [
+    {
+      "filename": "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip",
+      "relative_path": "Knowledge source/ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip",
+      "size_bytes": 53065864,
+      "sha256": "dcdfe4b204c83b4afe4bfd6e1ac5c10fd5d2df838d3a2724dd18ef1c71cd57c9",
+      "member_count": 73,
+      "accepted_member_count": 73,
+      "rejected_member_count": 0,
+      "numbered_file_ids": [
+        "0017",
+        "0018",
+        "0019",
+        "0020",
+        "0021",
+        "0022",
+        "0023",
+        "0024",
+        "0025",
+        "0026",
+        "0027",
+        "0028",
+        "0029",
+        "0030",
+        "0031",
+        "0032",
+        "0033",
+        "0034",
+        "0035",
+        "0036",
+        "0037",
+        "0038",
+        "0039",
+        "0040",
+        "0041",
+        "0042",
+        "0043",
+        "0044",
+        "0045",
+        "0046",
+        "0047",
+        "0048",
+        "0049",
+        "0050",
+        "0051",
+        "0052",
+        "0053",
+        "0054",
+        "0055",
+        "0056",
+        "0057",
+        "0058",
+        "0059",
+        "0060",
+        "0061",
+        "0062",
+        "0063",
+        "0064",
+        "0065",
+        "0066",
+        "0067",
+        "0068",
+        "0069",
+        "0070",
+        "0071",
+        "0072",
+        "0073",
+        "0074",
+        "0075",
+        "0076",
+        "0077",
+        "0078",
+        "0079",
+        "0080",
+        "0081",
+        "0082",
+        "0083",
+        "0084",
+        "0085",
+        "0086",
+        "0087",
+        "0088"
+      ],
+      "numbered_file_count": 72,
+      "numbered_file_range": "0017-0088",
+      "duplicate_members": [],
+      "unsafe_paths": [],
+      "unsupported_file_types": [],
+      "rejected_members": [],
+      "accepted_members": [
+        "ORBIX_NP_LANG_KB_FILES_0017_TO_0088_MANIFEST.txt",
+        "ORBIX_NP_LANG_KB_0017_ROMANIZED_NEPALI_VOWEL_CONSONANT_ASPIRATION_AND_NASALIZATION_RULES.txt",
+        "ORBIX_NP_LANG_KB_0018_ROMANIZED_NEPALI_COMMON_ORTHOGRAPHIC_VARIATION_RULES.txt",
+        "ORBIX_NP_LANG_KB_0019_ROMANIZED_NEPALI_HIGH_FREQUENCY_WORD_VARIANT_LEXICON.txt",
+        "ORBIX_NP_LANG_KB_0020_ROMANIZED_NEPALI_ENGLISH_COLLISION_AND_PROTECTED_TOKEN_RULES.txt",
+        "ORBIX_NP_LANG_KB_0021_ROMANIZED_NEPALI_TOKEN_JOIN_SPLIT_AND_MOBILE_SHORTHAND_RULES.txt",
+        "ORBIX_NP_LANG_KB_0022_ROMANIZED_NEPALI_REVERSE_GENERATION_AND_RESPONSE_SPELLING_POLICY.txt",
+        "ORBIX_NP_LANG_KB_0023_ROMANIZED_NEPALI_GOLD_CONTRASTIVE_AND_ADVERSARIAL_TESTS.txt",
+        "ORBIX_NP_LANG_KB_0024_TOKEN_LEVEL_LANGUAGE_IDENTIFICATION_AND_SEGMENTATION_RULES.txt",
+        "ORBIX_NP_LANG_KB_0025_CODE_SWITCHING_AND_MIXED_LANGUAGE_GRAMMAR_RULES.txt",
+        "ORBIX_NP_LANG_KB_0026_NEPALI_MORPHOLOGY_ROOT_SUFFIX_AND_INFLECTION_RULES.txt",
+        "ORBIX_NP_LANG_KB_0027_NEPALI_POSTPOSITION_CASE_MARKER_AND_PARTICLE_RULES.txt",
+        "ORBIX_NP_LANG_KB_0028_NEPALI_VERB_TENSE_ASPECT_MOOD_AND_AUXILIARY_RULES.txt",
+        "ORBIX_NP_LANG_KB_0029_NEPALI_PRONOUN_HONORIFIC_AND_REFERENCE_RESOLUTION_RULES.txt",
+        "ORBIX_NP_LANG_KB_0030_NEPALI_NEGATION_PROHIBITION_AND_REVERSAL_LANGUAGE_RULES.txt",
+        "ORBIX_NP_LANG_KB_0031_NEPALI_QUESTION_INTERROGATIVE_AND_CLARIFICATION_GRAMMAR.txt",
+        "ORBIX_NP_LANG_KB_0032_NEPALI_NUMBER_QUANTITY_AMOUNT_RATE_AND_UNIT_LANGUAGE_RULES.txt",
+        "ORBIX_NP_LANG_KB_0033_NEPALI_DATE_TIME_CALENDAR_PERIOD_AND_FISCAL_YEAR_RULES.txt",
+        "ORBIX_NP_LANG_KB_0034_NEPALI_PROPER_NAME_ORGANIZATION_BRAND_AND_IDENTIFIER_PROTECTION_LEXICON.txt",
+        "ORBIX_NP_LANG_KB_0035_ACCOUNTING_ERP_BUSINESS_AND_REGULATORY_ABBREVIATION_LEXICON.txt",
+        "ORBIX_NP_LANG_KB_0036_MIXED_SCRIPT_CODE_MIX_AND_PROTECTED_TOKEN_GOLD_TESTS.txt",
+        "ORBIX_NP_LANG_KB_0037_CORE_NEPALI_NOUN_ADJECTIVE_ADVERB_AND_COMMON_BUSINESS_LEXICON.txt",
+        "ORBIX_NP_LANG_KB_0038_NEPALI_CLAUSE_DEPENDENCY_ARGUMENT_STRUCTURE_AND_ROLE_RULES.txt",
+        "ORBIX_NP_LANG_KB_0039_NEPALI_CONNECTIVE_CONJUNCTION_CONDITION_CAUSE_AND_CONTRAST_RULES.txt",
+        "ORBIX_NP_LANG_KB_0040_ACCOUNTING_ERP_INTENT_EXAMPLE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0041_ACCOUNTING_ERP_ENTITY_EXAMPLE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0042_ACCOUNTING_ERP_SLOT_FILLING_AND_CLARIFICATION_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0043_ACCOUNTING_ERP_DIALOGUE_STATE_AND_MULTI_TURN_REFERENCE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0044_ACCOUNTING_ERP_CONFIRMATION_REJECTION_AND_CORRECTION_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0045_ACCOUNTING_ERP_NEGATIVE_CONTRASTIVE_AND_ADVERSARIAL_INTENT_TESTS.txt",
+        "ORBIX_NP_LANG_KB_0046_ACCOUNTING_ERP_READ_ONLY_QUERY_AND_REPORT_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0047_ACCOUNTING_ERP_MUTATION_COMMAND_AND_SAFETY_GATE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0048_ACCOUNTING_ERP_ERROR_FAILURE_AND_RECOVERY_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0049_ACCOUNTING_ERP_PERMISSION_AUTHORIZATION_AND_ROLE_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0050_ACCOUNTING_ERP_AUDIT_TRAIL_EXPLANATION_AND_PROVENANCE_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0051_ACCOUNTING_ERP_IMPORT_EXPORT_FILE_AND_ATTACHMENT_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0052_ACCOUNTING_ERP_NOTIFICATION_ALERT_AND_ESCALATION_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0053_ACCOUNTING_ERP_SEARCH_FILTER_SORT_AND_DRILLDOWN_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0054_ACCOUNTING_ERP_ACCOUNTING_PERIOD_CLOSE_REOPEN_AND_LOCK_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0055_ACCOUNTING_ERP_BANKING_TREASURY_AND_RECONCILIATION_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0056_ACCOUNTING_ERP_INVENTORY_STOCK_WAREHOUSE_AND_TRANSFER_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0057_ACCOUNTING_ERP_PAYROLL_EMPLOYEE_ATTENDANCE_AND_LEAVE_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0058_ACCOUNTING_ERP_SALES_PURCHASE_RECEIVABLE_PAYABLE_AND_PARTY_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0059_ACCOUNTING_ERP_FIXED_ASSET_DEPRECIATION_AND_DISPOSAL_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0060_ACCOUNTING_ERP_TAX_VAT_TDS_AND_STATUTORY_COMPLIANCE_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0061_ACCOUNTING_ERP_BUDGET_FORECAST_VARIANCE_AND_SCENARIO_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0062_ACCOUNTING_ERP_COST_CENTER_PROJECT_JOB_AND_PROFITABILITY_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0063_ACCOUNTING_ERP_MANUFACTURING_BOM_PRODUCTION_AND_MRP_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0064_ACCOUNTING_ERP_MULTI_CURRENCY_FX_REVALUATION_AND_TRANSLATION_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0065_ACCOUNTING_ERP_CONSOLIDATION_INTERCOMPANY_AND_GROUP_REPORTING_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0066_ACCOUNTING_ERP_LEASE_CONTRACT_AND_RECURRING_BILLING_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0067_ACCOUNTING_ERP_WORKFLOW_APPROVAL_MAKER_CHECKER_AND_SOD_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0068_ACCOUNTING_ERP_DOCUMENT_NUMBERING_REFERENCE_AND_SEQUENCE_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0069_ACCOUNTING_ERP_MASTER_DATA_GOVERNANCE_DUPLICATE_AND_MERGE_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0070_ACCOUNTING_ERP_CONFIGURATION_SETTINGS_FEATURE_FLAG_AND_POLICY_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0071_ACCOUNTING_ERP_DATA_RETENTION_ARCHIVE_PURGE_AND_LEGAL_HOLD_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0072_ACCOUNTING_ERP_INTEGRATION_API_WEBHOOK_AND_EXTERNAL_SYSTEM_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0073_ACCOUNTING_ERP_OFFLINE_SYNC_CONFLICT_AND_EVENTUAL_CONSISTENCY_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0074_ACCOUNTING_ERP_SECURITY_AUTHENTICATION_SESSION_AND_ACCESS_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0075_ACCOUNTING_ERP_OBSERVABILITY_LOG_METRIC_TRACE_AND_INCIDENT_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0076_ACCOUNTING_ERP_DATA_QUALITY_VALIDATION_RECONCILIATION_AND_EXCEPTION_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0077_ACCOUNTING_ERP_BACKUP_RESTORE_DISASTER_RECOVERY_AND_BUSINESS_CONTINUITY_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0078_ACCOUNTING_ERP_AI_ASSISTANT_EXPLANATION_CONFIDENCE_AND_HUMAN_REVIEW_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0079_ACCOUNTING_ERP_MIGRATION_CUTOVER_LEGACY_IMPORT_AND_PARALLEL_RUN_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0080_ACCOUNTING_ERP_PERFORMANCE_CAPACITY_SCALING_AND_WORKLOAD_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0081_ACCOUNTING_ERP_RELEASE_DEPLOYMENT_ROLLBACK_AND_CHANGE_MANAGEMENT_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0082_ACCOUNTING_ERP_TENANT_ORGANIZATION_SUBSCRIPTION_AND_LICENSING_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0083_ACCOUNTING_ERP_MOBILE_DEVICE_NOTIFICATION_AND_USER_EXPERIENCE_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0084_ACCOUNTING_ERP_HELP_SUPPORT_TRAINING_AND_USER_ADOPTION_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0085_ACCOUNTING_ERP_ANALYTICS_KPI_DASHBOARD_AND_DECISION_SUPPORT_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0086_ACCOUNTING_ERP_AUTOMATION_SCHEDULER_BATCH_AND_BACKGROUND_JOB_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0087_ACCOUNTING_ERP_DATA_EXPORT_REGULATORY_EVIDENCE_AND_AUDITOR_PORTAL_LANGUAGE_DATASET.txt",
+        "ORBIX_NP_LANG_KB_0088_ACCOUNTING_ERP_FINAL_INTEGRATION_EVALUATION_AND_PRODUCTION_RELEASE_TEST_SUITE.txt"
+      ],
+      "members": [
+        {
+          "member": "ORBIX_NP_LANG_KB_FILES_0017_TO_0088_MANIFEST.txt",
+          "compress_size": 6072,
+          "file_size": 13037,
+          "CRC": 4042931581,
+          "is_numbered_kb_file": false,
+          "file_id": null
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0017_ROMANIZED_NEPALI_VOWEL_CONSONANT_ASPIRATION_AND_NASALIZATION_RULES.txt",
+          "compress_size": 30433,
+          "file_size": 195133,
+          "CRC": 2759511401,
+          "is_numbered_kb_file": true,
+          "file_id": "0017"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0018_ROMANIZED_NEPALI_COMMON_ORTHOGRAPHIC_VARIATION_RULES.txt",
+          "compress_size": 19501,
+          "file_size": 111435,
+          "CRC": 752994484,
+          "is_numbered_kb_file": true,
+          "file_id": "0018"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0019_ROMANIZED_NEPALI_HIGH_FREQUENCY_WORD_VARIANT_LEXICON.txt",
+          "compress_size": 33765,
+          "file_size": 304586,
+          "CRC": 867320692,
+          "is_numbered_kb_file": true,
+          "file_id": "0019"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0020_ROMANIZED_NEPALI_ENGLISH_COLLISION_AND_PROTECTED_TOKEN_RULES.txt",
+          "compress_size": 20604,
+          "file_size": 142414,
+          "CRC": 2011750287,
+          "is_numbered_kb_file": true,
+          "file_id": "0020"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0021_ROMANIZED_NEPALI_TOKEN_JOIN_SPLIT_AND_MOBILE_SHORTHAND_RULES.txt",
+          "compress_size": 22295,
+          "file_size": 218137,
+          "CRC": 3095498365,
+          "is_numbered_kb_file": true,
+          "file_id": "0021"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0022_ROMANIZED_NEPALI_REVERSE_GENERATION_AND_RESPONSE_SPELLING_POLICY.txt",
+          "compress_size": 31055,
+          "file_size": 216579,
+          "CRC": 3884847575,
+          "is_numbered_kb_file": true,
+          "file_id": "0022"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0023_ROMANIZED_NEPALI_GOLD_CONTRASTIVE_AND_ADVERSARIAL_TESTS.txt",
+          "compress_size": 23291,
+          "file_size": 279287,
+          "CRC": 4028327790,
+          "is_numbered_kb_file": true,
+          "file_id": "0023"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0024_TOKEN_LEVEL_LANGUAGE_IDENTIFICATION_AND_SEGMENTATION_RULES.txt",
+          "compress_size": 21550,
+          "file_size": 169026,
+          "CRC": 3297933800,
+          "is_numbered_kb_file": true,
+          "file_id": "0024"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0025_CODE_SWITCHING_AND_MIXED_LANGUAGE_GRAMMAR_RULES.txt",
+          "compress_size": 31692,
+          "file_size": 419063,
+          "CRC": 3955818781,
+          "is_numbered_kb_file": true,
+          "file_id": "0025"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0026_NEPALI_MORPHOLOGY_ROOT_SUFFIX_AND_INFLECTION_RULES.txt",
+          "compress_size": 26915,
+          "file_size": 206586,
+          "CRC": 2690188661,
+          "is_numbered_kb_file": true,
+          "file_id": "0026"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0027_NEPALI_POSTPOSITION_CASE_MARKER_AND_PARTICLE_RULES.txt",
+          "compress_size": 30472,
+          "file_size": 404509,
+          "CRC": 883209960,
+          "is_numbered_kb_file": true,
+          "file_id": "0027"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0028_NEPALI_VERB_TENSE_ASPECT_MOOD_AND_AUXILIARY_RULES.txt",
+          "compress_size": 31197,
+          "file_size": 503046,
+          "CRC": 1416663383,
+          "is_numbered_kb_file": true,
+          "file_id": "0028"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0029_NEPALI_PRONOUN_HONORIFIC_AND_REFERENCE_RESOLUTION_RULES.txt",
+          "compress_size": 22354,
+          "file_size": 302156,
+          "CRC": 4091198786,
+          "is_numbered_kb_file": true,
+          "file_id": "0029"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0030_NEPALI_NEGATION_PROHIBITION_AND_REVERSAL_LANGUAGE_RULES.txt",
+          "compress_size": 31043,
+          "file_size": 440291,
+          "CRC": 4132297846,
+          "is_numbered_kb_file": true,
+          "file_id": "0030"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0031_NEPALI_QUESTION_INTERROGATIVE_AND_CLARIFICATION_GRAMMAR.txt",
+          "compress_size": 25617,
+          "file_size": 277536,
+          "CRC": 593969318,
+          "is_numbered_kb_file": true,
+          "file_id": "0031"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0032_NEPALI_NUMBER_QUANTITY_AMOUNT_RATE_AND_UNIT_LANGUAGE_RULES.txt",
+          "compress_size": 24997,
+          "file_size": 339341,
+          "CRC": 747437678,
+          "is_numbered_kb_file": true,
+          "file_id": "0032"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0033_NEPALI_DATE_TIME_CALENDAR_PERIOD_AND_FISCAL_YEAR_RULES.txt",
+          "compress_size": 23714,
+          "file_size": 279531,
+          "CRC": 2651793487,
+          "is_numbered_kb_file": true,
+          "file_id": "0033"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0034_NEPALI_PROPER_NAME_ORGANIZATION_BRAND_AND_IDENTIFIER_PROTECTION_LEXICON.txt",
+          "compress_size": 33597,
+          "file_size": 450834,
+          "CRC": 2583387781,
+          "is_numbered_kb_file": true,
+          "file_id": "0034"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0035_ACCOUNTING_ERP_BUSINESS_AND_REGULATORY_ABBREVIATION_LEXICON.txt",
+          "compress_size": 29612,
+          "file_size": 364593,
+          "CRC": 3059937617,
+          "is_numbered_kb_file": true,
+          "file_id": "0035"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0036_MIXED_SCRIPT_CODE_MIX_AND_PROTECTED_TOKEN_GOLD_TESTS.txt",
+          "compress_size": 31248,
+          "file_size": 362150,
+          "CRC": 1481862879,
+          "is_numbered_kb_file": true,
+          "file_id": "0036"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0037_CORE_NEPALI_NOUN_ADJECTIVE_ADVERB_AND_COMMON_BUSINESS_LEXICON.txt",
+          "compress_size": 46737,
+          "file_size": 531431,
+          "CRC": 1104237339,
+          "is_numbered_kb_file": true,
+          "file_id": "0037"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0038_NEPALI_CLAUSE_DEPENDENCY_ARGUMENT_STRUCTURE_AND_ROLE_RULES.txt",
+          "compress_size": 31447,
+          "file_size": 473981,
+          "CRC": 3724251462,
+          "is_numbered_kb_file": true,
+          "file_id": "0038"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0039_NEPALI_CONNECTIVE_CONJUNCTION_CONDITION_CAUSE_AND_CONTRAST_RULES.txt",
+          "compress_size": 55008,
+          "file_size": 1150584,
+          "CRC": 2814369580,
+          "is_numbered_kb_file": true,
+          "file_id": "0039"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0040_ACCOUNTING_ERP_INTENT_EXAMPLE_DATASET.txt",
+          "compress_size": 33481,
+          "file_size": 603251,
+          "CRC": 3272319992,
+          "is_numbered_kb_file": true,
+          "file_id": "0040"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0041_ACCOUNTING_ERP_ENTITY_EXAMPLE_DATASET.txt",
+          "compress_size": 50123,
+          "file_size": 868616,
+          "CRC": 635742432,
+          "is_numbered_kb_file": true,
+          "file_id": "0041"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0042_ACCOUNTING_ERP_SLOT_FILLING_AND_CLARIFICATION_DATASET.txt",
+          "compress_size": 58671,
+          "file_size": 1376889,
+          "CRC": 337853209,
+          "is_numbered_kb_file": true,
+          "file_id": "0042"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0043_ACCOUNTING_ERP_DIALOGUE_STATE_AND_MULTI_TURN_REFERENCE_DATASET.txt",
+          "compress_size": 33776,
+          "file_size": 670835,
+          "CRC": 941161168,
+          "is_numbered_kb_file": true,
+          "file_id": "0043"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0044_ACCOUNTING_ERP_CONFIRMATION_REJECTION_AND_CORRECTION_DATASET.txt",
+          "compress_size": 40750,
+          "file_size": 1079852,
+          "CRC": 955908596,
+          "is_numbered_kb_file": true,
+          "file_id": "0044"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0045_ACCOUNTING_ERP_NEGATIVE_CONTRASTIVE_AND_ADVERSARIAL_INTENT_TESTS.txt",
+          "compress_size": 455874,
+          "file_size": 11551883,
+          "CRC": 2852631027,
+          "is_numbered_kb_file": true,
+          "file_id": "0045"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0046_ACCOUNTING_ERP_READ_ONLY_QUERY_AND_REPORT_LANGUAGE_DATASET.txt",
+          "compress_size": 64440,
+          "file_size": 1235507,
+          "CRC": 3731058717,
+          "is_numbered_kb_file": true,
+          "file_id": "0046"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0047_ACCOUNTING_ERP_MUTATION_COMMAND_AND_SAFETY_GATE_DATASET.txt",
+          "compress_size": 63240,
+          "file_size": 1539421,
+          "CRC": 807933026,
+          "is_numbered_kb_file": true,
+          "file_id": "0047"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0048_ACCOUNTING_ERP_ERROR_FAILURE_AND_RECOVERY_LANGUAGE_DATASET.txt",
+          "compress_size": 59848,
+          "file_size": 1552872,
+          "CRC": 3505627211,
+          "is_numbered_kb_file": true,
+          "file_id": "0048"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0049_ACCOUNTING_ERP_PERMISSION_AUTHORIZATION_AND_ROLE_LANGUAGE_DATASET.txt",
+          "compress_size": 124376,
+          "file_size": 3630355,
+          "CRC": 2362189548,
+          "is_numbered_kb_file": true,
+          "file_id": "0049"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0050_ACCOUNTING_ERP_AUDIT_TRAIL_EXPLANATION_AND_PROVENANCE_LANGUAGE_DATASET.txt",
+          "compress_size": 174728,
+          "file_size": 4976761,
+          "CRC": 3595269098,
+          "is_numbered_kb_file": true,
+          "file_id": "0050"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0051_ACCOUNTING_ERP_IMPORT_EXPORT_FILE_AND_ATTACHMENT_LANGUAGE_DATASET.txt",
+          "compress_size": 90768,
+          "file_size": 2507596,
+          "CRC": 420167481,
+          "is_numbered_kb_file": true,
+          "file_id": "0051"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0052_ACCOUNTING_ERP_NOTIFICATION_ALERT_AND_ESCALATION_LANGUAGE_DATASET.txt",
+          "compress_size": 136444,
+          "file_size": 4835455,
+          "CRC": 2476334329,
+          "is_numbered_kb_file": true,
+          "file_id": "0052"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0053_ACCOUNTING_ERP_SEARCH_FILTER_SORT_AND_DRILLDOWN_LANGUAGE_DATASET.txt",
+          "compress_size": 96787,
+          "file_size": 2707565,
+          "CRC": 2301507122,
+          "is_numbered_kb_file": true,
+          "file_id": "0053"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0054_ACCOUNTING_ERP_ACCOUNTING_PERIOD_CLOSE_REOPEN_AND_LOCK_LANGUAGE_DATASET.txt",
+          "compress_size": 195583,
+          "file_size": 5764658,
+          "CRC": 1033702469,
+          "is_numbered_kb_file": true,
+          "file_id": "0054"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0055_ACCOUNTING_ERP_BANKING_TREASURY_AND_RECONCILIATION_LANGUAGE_DATASET.txt",
+          "compress_size": 188463,
+          "file_size": 5815593,
+          "CRC": 625504296,
+          "is_numbered_kb_file": true,
+          "file_id": "0055"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0056_ACCOUNTING_ERP_INVENTORY_STOCK_WAREHOUSE_AND_TRANSFER_LANGUAGE_DATASET.txt",
+          "compress_size": 278637,
+          "file_size": 9165324,
+          "CRC": 2604940487,
+          "is_numbered_kb_file": true,
+          "file_id": "0056"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0057_ACCOUNTING_ERP_PAYROLL_EMPLOYEE_ATTENDANCE_AND_LEAVE_LANGUAGE_DATASET.txt",
+          "compress_size": 418257,
+          "file_size": 12804986,
+          "CRC": 347846879,
+          "is_numbered_kb_file": true,
+          "file_id": "0057"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0058_ACCOUNTING_ERP_SALES_PURCHASE_RECEIVABLE_PAYABLE_AND_PARTY_LANGUAGE_DATASET.txt",
+          "compress_size": 667564,
+          "file_size": 21907528,
+          "CRC": 2721938039,
+          "is_numbered_kb_file": true,
+          "file_id": "0058"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0059_ACCOUNTING_ERP_FIXED_ASSET_DEPRECIATION_AND_DISPOSAL_LANGUAGE_DATASET.txt",
+          "compress_size": 282419,
+          "file_size": 8959217,
+          "CRC": 1860326156,
+          "is_numbered_kb_file": true,
+          "file_id": "0059"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0060_ACCOUNTING_ERP_TAX_VAT_TDS_AND_STATUTORY_COMPLIANCE_LANGUAGE_DATASET.txt",
+          "compress_size": 664947,
+          "file_size": 22892533,
+          "CRC": 3437514751,
+          "is_numbered_kb_file": true,
+          "file_id": "0060"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0061_ACCOUNTING_ERP_BUDGET_FORECAST_VARIANCE_AND_SCENARIO_LANGUAGE_DATASET.txt",
+          "compress_size": 616412,
+          "file_size": 21907203,
+          "CRC": 649426992,
+          "is_numbered_kb_file": true,
+          "file_id": "0061"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0062_ACCOUNTING_ERP_COST_CENTER_PROJECT_JOB_AND_PROFITABILITY_LANGUAGE_DATASET.txt",
+          "compress_size": 322040,
+          "file_size": 10140272,
+          "CRC": 4015388220,
+          "is_numbered_kb_file": true,
+          "file_id": "0062"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0063_ACCOUNTING_ERP_MANUFACTURING_BOM_PRODUCTION_AND_MRP_LANGUAGE_DATASET.txt",
+          "compress_size": 645019,
+          "file_size": 21983224,
+          "CRC": 2352170268,
+          "is_numbered_kb_file": true,
+          "file_id": "0063"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0064_ACCOUNTING_ERP_MULTI_CURRENCY_FX_REVALUATION_AND_TRANSLATION_LANGUAGE_DATASET.txt",
+          "compress_size": 700056,
+          "file_size": 25036948,
+          "CRC": 3321571701,
+          "is_numbered_kb_file": true,
+          "file_id": "0064"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0065_ACCOUNTING_ERP_CONSOLIDATION_INTERCOMPANY_AND_GROUP_REPORTING_LANGUAGE_DATASET.txt",
+          "compress_size": 1325499,
+          "file_size": 49275774,
+          "CRC": 472594898,
+          "is_numbered_kb_file": true,
+          "file_id": "0065"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0066_ACCOUNTING_ERP_LEASE_CONTRACT_AND_RECURRING_BILLING_LANGUAGE_DATASET.txt",
+          "compress_size": 1227903,
+          "file_size": 45086655,
+          "CRC": 432359829,
+          "is_numbered_kb_file": true,
+          "file_id": "0066"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0067_ACCOUNTING_ERP_WORKFLOW_APPROVAL_MAKER_CHECKER_AND_SOD_LANGUAGE_DATASET.txt",
+          "compress_size": 567868,
+          "file_size": 19112210,
+          "CRC": 3062975583,
+          "is_numbered_kb_file": true,
+          "file_id": "0067"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0068_ACCOUNTING_ERP_DOCUMENT_NUMBERING_REFERENCE_AND_SEQUENCE_LANGUAGE_DATASET.txt",
+          "compress_size": 905349,
+          "file_size": 34735078,
+          "CRC": 1360580175,
+          "is_numbered_kb_file": true,
+          "file_id": "0068"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0069_ACCOUNTING_ERP_MASTER_DATA_GOVERNANCE_DUPLICATE_AND_MERGE_LANGUAGE_DATASET.txt",
+          "compress_size": 2867660,
+          "file_size": 110460024,
+          "CRC": 701126288,
+          "is_numbered_kb_file": true,
+          "file_id": "0069"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0070_ACCOUNTING_ERP_CONFIGURATION_SETTINGS_FEATURE_FLAG_AND_POLICY_LANGUAGE_DATASET.txt",
+          "compress_size": 538424,
+          "file_size": 18172241,
+          "CRC": 3413205086,
+          "is_numbered_kb_file": true,
+          "file_id": "0070"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0071_ACCOUNTING_ERP_DATA_RETENTION_ARCHIVE_PURGE_AND_LEGAL_HOLD_LANGUAGE_DATASET.txt",
+          "compress_size": 2958925,
+          "file_size": 112855074,
+          "CRC": 1114361237,
+          "is_numbered_kb_file": true,
+          "file_id": "0071"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0072_ACCOUNTING_ERP_INTEGRATION_API_WEBHOOK_AND_EXTERNAL_SYSTEM_LANGUAGE_DATASET.txt",
+          "compress_size": 1035970,
+          "file_size": 40012348,
+          "CRC": 3646131983,
+          "is_numbered_kb_file": true,
+          "file_id": "0072"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0073_ACCOUNTING_ERP_OFFLINE_SYNC_CONFLICT_AND_EVENTUAL_CONSISTENCY_LANGUAGE_DATASET.txt",
+          "compress_size": 2211759,
+          "file_size": 83575691,
+          "CRC": 767436138,
+          "is_numbered_kb_file": true,
+          "file_id": "0073"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0074_ACCOUNTING_ERP_SECURITY_AUTHENTICATION_SESSION_AND_ACCESS_LANGUAGE_DATASET.txt",
+          "compress_size": 2047630,
+          "file_size": 80172961,
+          "CRC": 2000887210,
+          "is_numbered_kb_file": true,
+          "file_id": "0074"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0075_ACCOUNTING_ERP_OBSERVABILITY_LOG_METRIC_TRACE_AND_INCIDENT_LANGUAGE_DATASET.txt",
+          "compress_size": 2297365,
+          "file_size": 90649454,
+          "CRC": 2162152965,
+          "is_numbered_kb_file": true,
+          "file_id": "0075"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0076_ACCOUNTING_ERP_DATA_QUALITY_VALIDATION_RECONCILIATION_AND_EXCEPTION_LANGUAGE_DATASET.txt",
+          "compress_size": 605081,
+          "file_size": 21821088,
+          "CRC": 2473992283,
+          "is_numbered_kb_file": true,
+          "file_id": "0076"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0077_ACCOUNTING_ERP_BACKUP_RESTORE_DISASTER_RECOVERY_AND_BUSINESS_CONTINUITY_LANGUAGE_DATASET.txt",
+          "compress_size": 2476406,
+          "file_size": 97759772,
+          "CRC": 3741451169,
+          "is_numbered_kb_file": true,
+          "file_id": "0077"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0078_ACCOUNTING_ERP_AI_ASSISTANT_EXPLANATION_CONFIDENCE_AND_HUMAN_REVIEW_LANGUAGE_DATASET.txt",
+          "compress_size": 1778620,
+          "file_size": 69106210,
+          "CRC": 1324907648,
+          "is_numbered_kb_file": true,
+          "file_id": "0078"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0079_ACCOUNTING_ERP_MIGRATION_CUTOVER_LEGACY_IMPORT_AND_PARALLEL_RUN_LANGUAGE_DATASET.txt",
+          "compress_size": 3624373,
+          "file_size": 139433885,
+          "CRC": 852027762,
+          "is_numbered_kb_file": true,
+          "file_id": "0079"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0080_ACCOUNTING_ERP_PERFORMANCE_CAPACITY_SCALING_AND_WORKLOAD_LANGUAGE_DATASET.txt",
+          "compress_size": 2094251,
+          "file_size": 81965016,
+          "CRC": 2420736144,
+          "is_numbered_kb_file": true,
+          "file_id": "0080"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0081_ACCOUNTING_ERP_RELEASE_DEPLOYMENT_ROLLBACK_AND_CHANGE_MANAGEMENT_LANGUAGE_DATASET.txt",
+          "compress_size": 2693542,
+          "file_size": 103422257,
+          "CRC": 1796537893,
+          "is_numbered_kb_file": true,
+          "file_id": "0081"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0082_ACCOUNTING_ERP_TENANT_ORGANIZATION_SUBSCRIPTION_AND_LICENSING_LANGUAGE_DATASET.txt",
+          "compress_size": 2533808,
+          "file_size": 99499338,
+          "CRC": 1715865419,
+          "is_numbered_kb_file": true,
+          "file_id": "0082"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0083_ACCOUNTING_ERP_MOBILE_DEVICE_NOTIFICATION_AND_USER_EXPERIENCE_LANGUAGE_DATASET.txt",
+          "compress_size": 3669333,
+          "file_size": 148038755,
+          "CRC": 3208222733,
+          "is_numbered_kb_file": true,
+          "file_id": "0083"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0084_ACCOUNTING_ERP_HELP_SUPPORT_TRAINING_AND_USER_ADOPTION_LANGUAGE_DATASET.txt",
+          "compress_size": 3838406,
+          "file_size": 155207473,
+          "CRC": 235587781,
+          "is_numbered_kb_file": true,
+          "file_id": "0084"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0085_ACCOUNTING_ERP_ANALYTICS_KPI_DASHBOARD_AND_DECISION_SUPPORT_LANGUAGE_DATASET.txt",
+          "compress_size": 1284239,
+          "file_size": 49149414,
+          "CRC": 434007865,
+          "is_numbered_kb_file": true,
+          "file_id": "0085"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0086_ACCOUNTING_ERP_AUTOMATION_SCHEDULER_BATCH_AND_BACKGROUND_JOB_LANGUAGE_DATASET.txt",
+          "compress_size": 1270543,
+          "file_size": 47230775,
+          "CRC": 4165480634,
+          "is_numbered_kb_file": true,
+          "file_id": "0086"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0087_ACCOUNTING_ERP_DATA_EXPORT_REGULATORY_EVIDENCE_AND_AUDITOR_PORTAL_LANGUAGE_DATASET.txt",
+          "compress_size": 1011063,
+          "file_size": 39078509,
+          "CRC": 2891222600,
+          "is_numbered_kb_file": true,
+          "file_id": "0087"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0088_ACCOUNTING_ERP_FINAL_INTEGRATION_EVALUATION_AND_PRODUCTION_RELEASE_TEST_SUITE.txt",
+          "compress_size": 1032238,
+          "file_size": 37714506,
+          "CRC": 3109856997,
+          "is_numbered_kb_file": true,
+          "file_id": "0088"
+        }
+      ]
+    },
+    {
+      "filename": "ORBIX_NP_LANGUAGE_KB_FILES_0001_TO_0016.zip",
+      "relative_path": "Knowledge source/ORBIX_NP_LANGUAGE_KB_FILES_0001_TO_0016.zip",
+      "size_bytes": 281737,
+      "sha256": "421f19a2d03ed705cd78716052ca4658e24e53f5d462be3c21dfb1c620016166",
+      "member_count": 16,
+      "accepted_member_count": 16,
+      "rejected_member_count": 0,
+      "numbered_file_ids": [
+        "0001",
+        "0002",
+        "0003",
+        "0004",
+        "0005",
+        "0006",
+        "0007",
+        "0008",
+        "0009",
+        "0010",
+        "0011",
+        "0012",
+        "0013",
+        "0014",
+        "0015",
+        "0016"
+      ],
+      "numbered_file_count": 16,
+      "numbered_file_range": "0001-0016",
+      "duplicate_members": [],
+      "unsafe_paths": [],
+      "unsupported_file_types": [],
+      "rejected_members": [],
+      "accepted_members": [
+        "ORBIX_NP_LANG_KB_0001_LANGUAGE_SCOPE_AND_AUTHORITY.txt",
+        "ORBIX_NP_LANG_KB_0002_KNOWLEDGE_LAYER_SEPARATION_AND_DATA_CLASSIFICATION.txt",
+        "ORBIX_NP_LANG_KB_0003_LANGUAGE_SAFETY_AND_ABSTENTION_POLICY.txt",
+        "ORBIX_NP_LANG_KB_0004_FILE_NAMING_ID_VERSIONING_AND_MANIFEST_STANDARD.txt",
+        "ORBIX_NP_LANG_KB_0005_CANONICAL_RECORD_SCHEMA.txt",
+        "ORBIX_NP_LANG_KB_0006_LANGUAGE_FORM_AND_SCRIPT_TAXONOMY.txt",
+        "ORBIX_NP_LANG_KB_0007_INTENT_TAXONOMY.txt",
+        "ORBIX_NP_LANG_KB_0008_ENTITY_TAXONOMY.txt",
+        "ORBIX_NP_LANG_KB_0009_AMBIGUITY_AND_CONFIDENCE_TAXONOMY.txt",
+        "ORBIX_NP_LANG_KB_0010_PACKAGE_MANIFEST_AND_PROGRESS_CONTROL.txt",
+        "ORBIX_NP_LANG_KB_0011_UNICODE_NORMALIZATION_AND_TEXT_PRESERVATION_STANDARD.txt",
+        "ORBIX_NP_LANG_KB_0012_DEVANAGARI_CHARACTER_MATRA_HALANT_AND_COMBINING_MARK_RULES.txt",
+        "ORBIX_NP_LANG_KB_0013_WHITESPACE_PUNCTUATION_DIGIT_AND_SYMBOL_NORMALIZATION_RULES.txt",
+        "ORBIX_NP_LANG_KB_0014_LEGACY_NEPALI_FONT_PREETI_KANTIPUR_AND_ENCODING_CONVERSION_SAFETY.txt",
+        "ORBIX_NP_LANG_KB_0015_OCR_VOICE_TRANSCRIPTION_AND_CORRUPTED_TEXT_ERROR_TAXONOMY.txt",
+        "ORBIX_NP_LANG_KB_0016_ROMANIZED_NEPALI_CORE_GRAPHEME_AND_PHONEME_MAPPING.txt"
+      ],
+      "members": [
+        {
+          "member": "ORBIX_NP_LANG_KB_0001_LANGUAGE_SCOPE_AND_AUTHORITY.txt",
+          "compress_size": 14443,
+          "file_size": 43406,
+          "CRC": 1269486052,
+          "is_numbered_kb_file": true,
+          "file_id": "0001"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0002_KNOWLEDGE_LAYER_SEPARATION_AND_DATA_CLASSIFICATION.txt",
+          "compress_size": 18885,
+          "file_size": 60423,
+          "CRC": 3226510568,
+          "is_numbered_kb_file": true,
+          "file_id": "0002"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0003_LANGUAGE_SAFETY_AND_ABSTENTION_POLICY.txt",
+          "compress_size": 17853,
+          "file_size": 56812,
+          "CRC": 1044793803,
+          "is_numbered_kb_file": true,
+          "file_id": "0003"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0004_FILE_NAMING_ID_VERSIONING_AND_MANIFEST_STANDARD.txt",
+          "compress_size": 16873,
+          "file_size": 54397,
+          "CRC": 2502965534,
+          "is_numbered_kb_file": true,
+          "file_id": "0004"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0005_CANONICAL_RECORD_SCHEMA.txt",
+          "compress_size": 23058,
+          "file_size": 84131,
+          "CRC": 2296458420,
+          "is_numbered_kb_file": true,
+          "file_id": "0005"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0006_LANGUAGE_FORM_AND_SCRIPT_TAXONOMY.txt",
+          "compress_size": 16381,
+          "file_size": 62731,
+          "CRC": 1752010983,
+          "is_numbered_kb_file": true,
+          "file_id": "0006"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0007_INTENT_TAXONOMY.txt",
+          "compress_size": 16671,
+          "file_size": 93080,
+          "CRC": 2768907544,
+          "is_numbered_kb_file": true,
+          "file_id": "0007"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0008_ENTITY_TAXONOMY.txt",
+          "compress_size": 19161,
+          "file_size": 76468,
+          "CRC": 2750154760,
+          "is_numbered_kb_file": true,
+          "file_id": "0008"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0009_AMBIGUITY_AND_CONFIDENCE_TAXONOMY.txt",
+          "compress_size": 20354,
+          "file_size": 77531,
+          "CRC": 3827233776,
+          "is_numbered_kb_file": true,
+          "file_id": "0009"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0010_PACKAGE_MANIFEST_AND_PROGRESS_CONTROL.txt",
+          "compress_size": 15915,
+          "file_size": 103410,
+          "CRC": 211063732,
+          "is_numbered_kb_file": true,
+          "file_id": "0010"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0011_UNICODE_NORMALIZATION_AND_TEXT_PRESERVATION_STANDARD.txt",
+          "compress_size": 17662,
+          "file_size": 62076,
+          "CRC": 3361120576,
+          "is_numbered_kb_file": true,
+          "file_id": "0011"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0012_DEVANAGARI_CHARACTER_MATRA_HALANT_AND_COMBINING_MARK_RULES.txt",
+          "compress_size": 11567,
+          "file_size": 38291,
+          "CRC": 2623712207,
+          "is_numbered_kb_file": true,
+          "file_id": "0012"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0013_WHITESPACE_PUNCTUATION_DIGIT_AND_SYMBOL_NORMALIZATION_RULES.txt",
+          "compress_size": 16016,
+          "file_size": 54165,
+          "CRC": 1989105442,
+          "is_numbered_kb_file": true,
+          "file_id": "0013"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0014_LEGACY_NEPALI_FONT_PREETI_KANTIPUR_AND_ENCODING_CONVERSION_SAFETY.txt",
+          "compress_size": 17476,
+          "file_size": 59669,
+          "CRC": 3905568001,
+          "is_numbered_kb_file": true,
+          "file_id": "0014"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0015_OCR_VOICE_TRANSCRIPTION_AND_CORRUPTED_TEXT_ERROR_TAXONOMY.txt",
+          "compress_size": 17567,
+          "file_size": 62633,
+          "CRC": 155294942,
+          "is_numbered_kb_file": true,
+          "file_id": "0015"
+        },
+        {
+          "member": "ORBIX_NP_LANG_KB_0016_ROMANIZED_NEPALI_CORE_GRAPHEME_AND_PHONEME_MAPPING.txt",
+          "compress_size": 17635,
+          "file_size": 60604,
+          "CRC": 3687719263,
+          "is_numbered_kb_file": true,
+          "file_id": "0016"
+        }
+      ]
+    }
+  ]
+}

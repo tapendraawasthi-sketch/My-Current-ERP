@@ -83,6 +83,9 @@ class OrbixChatResponse(BaseModel):
     warnings: list[str] = Field(default_factory=list)
     session_id: str = ""
     engine: str = "orbix"
+    # Optional backward-compatible enrichment (Nepali KB interpretation metadata).
+    # Absent/None preserves existing frontend contracts.
+    metadata: dict[str, Any] | None = None
 
 
 class PlanStep(BaseModel):

@@ -115,6 +115,13 @@ _STEAL_SETTLEMENT = re.compile(
     r")\b",
     re.I,
 )
+_STEAL_CONTRA = re.compile(
+    r"\b("
+    r"transfer\s+(?:rs|npr)|bank\s+to\s+bank|from\s+.+\s+to\s+|"
+    r"contra\s+(?:entry|voucher)|with\s+bank\s+charge"
+    r")\b",
+    re.I,
+)
 _STEAL_INVENTORY = re.compile(
     r"\b(bought|purchased|sold|sale(?:s)?\s+invoice|purchase\s+invoice)\b",
     re.I,
@@ -278,6 +285,11 @@ def detect_bank_recon_kind(text: str) -> BankReconKind | None:
 def prefer_bank_recon(text: str) -> bool:
     if is_bank_recon_status_query(text) or is_bank_recon_forecast_query(text):
         return True
+    # Do not steal Phase 9 contra / transfer / settlement phrasing.
+    if _STEAL_CONTRA.search(text or "") and "statement" not in (text or "").lower() and "reconcil" not in (
+        text or ""
+    ).lower():
+        return False
     kind = detect_bank_recon_kind(text)
     if kind is None or kind == "explanation":
         return False

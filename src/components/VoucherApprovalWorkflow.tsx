@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useStore } from "../store/useStore";
 import { CheckCircle, Clock, AlertCircle, ArrowRight, XCircle } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 interface VoucherApprovalProps {
   voucherType: string;

@@ -37,6 +37,8 @@ export default defineConfig({
       ...process.env,
       // Offline UI QA defaults to builtin; connected Orbix needs live bot.
       VITE_SELF_CONTAINED_AI: connected ? "false" : "true",
+      // Auth visual fixture — required for production preview builds of /e2e/ui-auth.html
+      VITE_ALLOW_AUTH_FIXTURE: "true",
       VITE_ERP_BOT_URL: connected ? botURL : "",
       ERP_BOT_BACKEND_URL: botURL,
       // Phase 5 sync E2E — point Vite at isolated sync backend (not production).

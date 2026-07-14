@@ -1,7 +1,7 @@
 // src/pages/QuotationPage.tsx
 import React, { useState, useMemo } from "react";
 import { useStore } from "../store/useStore";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { Plus, Search, X, Printer, FileText } from "lucide-react";
 import { formatNumber } from "../lib/utils";
 
@@ -37,7 +37,7 @@ interface Props {
 export default function QuotationPage({ type }: Props) {
   const { items, parties } = useStore();
   const isSales = type === "sales_quotation";
-  const title = isSales ? "Sales Quotation" : "Purchase Quotation";
+  const title = isSales ? "Quotation" : "Quotation";
   const prefix = isSales ? "SQ-" : "PQ-";
 
   const [quotations, setQuotations] = useState<Quotation[]>([]);
@@ -183,8 +183,8 @@ export default function QuotationPage({ type }: Props) {
   };
 
   const inputCls =
-    "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
-  const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
+    "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
+  const labelCls = "text-[12px] font-medium text-gray-600 mb-1 block";
 
   const statusBadge = (status: Quotation["status"]) => {
     const map: Record<Quotation["status"], string> = {
@@ -194,7 +194,7 @@ export default function QuotationPage({ type }: Props) {
       expired: "bg-gray-100 text-gray-600",
     };
     return (
-      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${map[status]}`}>
+      <span className={`px-2 py-0.5 rounded text-[12px] font-semibold ${map[status]}`}>
         {status.toUpperCase()}
       </span>
     );
@@ -203,13 +203,13 @@ export default function QuotationPage({ type }: Props) {
   // ── FORM VIEW ─────────────────────────────────────────────────────────────
   if (showForm) {
     return (
-      <div className="p-4 bg-[#f5f6fa] min-h-screen">
+      <div className="p-4 bg-[var(--ds-surface-muted)] min-h-screen">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-[15px] font-semibold text-gray-800">
               {editQuotation ? "Modify" : "Add"} {title}
             </h1>
-            <p className="text-[11px] text-gray-500 mt-0.5">
+            <p className="text-[12px] text-gray-500 mt-0.5">
               Quotation No:{" "}
               <strong>
                 {prefix}
@@ -226,7 +226,7 @@ export default function QuotationPage({ type }: Props) {
             </button>
             <button
               onClick={handleSave}
-              className="h-8 px-3 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96]"
+              className="h-8 px-3 bg-[var(--ds-action-primary)] text-white text-[12px] font-medium rounded-md hover:bg-[var(--ds-action-primary-hover)]"
             >
               Save (F2)
             </button>
@@ -274,13 +274,13 @@ export default function QuotationPage({ type }: Props) {
 
         {/* Item grid */}
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-4">
-          <div className="px-4 py-2.5 border-b border-gray-200 bg-[#f5f6fa] flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-gray-600 uppercase tracking-wide">
+          <div className="px-4 py-2.5 border-b border-gray-200 bg-[var(--ds-surface-muted)] flex items-center justify-between">
+            <span className="text-[12px] font-semibold text-gray-600 uppercase tracking-wide">
               Item Details
             </span>
             <button
               onClick={addLine}
-              className="h-7 px-2 text-[11px] bg-[#1557b0] text-white rounded flex items-center gap-1"
+              className="h-7 px-2 text-[12px] bg-[var(--ds-action-primary)] text-white rounded flex items-center gap-1"
             >
               <Plus className="h-3 w-3" /> Add Row (F5)
             </button>
@@ -288,11 +288,11 @@ export default function QuotationPage({ type }: Props) {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[750px]">
               <thead>
-                <tr className="border-b border-gray-100 bg-[#f5f6fa]">
+                <tr className="border-b border-gray-100 bg-[var(--ds-surface-muted)]">
                   {["#", "Item", "Qty", "Unit", "Rate", "Disc %", "Amount", ""].map((h) => (
                     <th
                       key={h}
-                      className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide"
+                      className="px-3 py-2 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide"
                     >
                       {h}
                     </th>
@@ -302,7 +302,7 @@ export default function QuotationPage({ type }: Props) {
               <tbody>
                 {lines.map((line, idx) => (
                   <tr key={idx} className="border-b border-gray-50 hover:bg-gray-50">
-                    <td className="px-3 py-2 text-[11px] text-gray-400">{idx + 1}</td>
+                    <td className="px-3 py-2 text-[12px] text-gray-400">{idx + 1}</td>
                     <td className="px-2 py-1">
                       <select
                         value={line.itemId}
@@ -374,9 +374,9 @@ export default function QuotationPage({ type }: Props) {
             </table>
           </div>
           {/* Total bar */}
-          <div className="px-4 py-3 border-t border-gray-200 bg-[#eef2ff] flex justify-end">
+          <div className="px-4 py-3 border-t border-gray-200 bg-[var(--ds-action-primary)] flex justify-end">
             <div className="text-right">
-              <div className="text-[11px] text-gray-500 uppercase tracking-wide">
+              <div className="text-[12px] text-gray-500 uppercase tracking-wide">
                 Quotation Total
               </div>
               <div className="text-[16px] font-bold text-gray-800 font-mono">
@@ -393,7 +393,7 @@ export default function QuotationPage({ type }: Props) {
             <textarea
               value={narration}
               onChange={(e) => setNarration(e.target.value)}
-              className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 resize-none"
+              className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 resize-none"
               rows={2}
               placeholder="e.g. Being quotation submitted as per request"
             />
@@ -403,7 +403,7 @@ export default function QuotationPage({ type }: Props) {
             <textarea
               value={terms}
               onChange={(e) => setTerms(e.target.value)}
-              className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 resize-none font-mono"
+              className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 resize-none font-mono"
               rows={4}
             />
           </div>
@@ -414,18 +414,18 @@ export default function QuotationPage({ type }: Props) {
 
   // ── LIST VIEW ─────────────────────────────────────────────────────────────
   return (
-    <div className="p-4 bg-[#f5f6fa] min-h-screen">
+    <div className="p-4 bg-[var(--ds-surface-muted)] min-h-screen">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800">{title}</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
+          <p className="text-[12px] text-gray-500 mt-0.5">
             Manage quotations — convert accepted quotations to{" "}
             {isSales ? "sales orders / invoices" : "purchase orders"} via F11
           </p>
         </div>
         <button
           onClick={openAdd}
-          className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+          className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
         >
           <Plus className="h-3.5 w-3.5" /> Add {title}
         </button>
@@ -439,7 +439,7 @@ export default function QuotationPage({ type }: Props) {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search quotations..."
-              className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-md w-52 focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20"
+              className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-md w-52 focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
             />
           </div>
           <div className="flex gap-1">
@@ -447,7 +447,7 @@ export default function QuotationPage({ type }: Props) {
               <button
                 key={s}
                 onClick={() => setStatusFilter(s)}
-                className={`h-7 px-3 rounded text-[11px] font-medium capitalize transition-colors ${statusFilter === s ? "bg-[#1557b0] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+                className={`h-7 px-3 rounded text-[12px] font-medium capitalize transition-colors ${statusFilter === s ? "bg-[var(--ds-action-primary)] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
               >
                 {s}
               </button>
@@ -457,7 +457,7 @@ export default function QuotationPage({ type }: Props) {
 
         <table className="w-full">
           <thead>
-            <tr className="bg-[#f5f6fa] border-b border-gray-200">
+            <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
               {[
                 "Quotation No.",
                 "Date",
@@ -470,7 +470,7 @@ export default function QuotationPage({ type }: Props) {
               ].map((h) => (
                 <th
                   key={h}
-                  className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide"
+                  className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide"
                 >
                   {h}
                 </th>
@@ -480,7 +480,7 @@ export default function QuotationPage({ type }: Props) {
           <tbody className="divide-y divide-gray-100">
             {filtered.map((q) => (
               <tr key={q.id} className="hover:bg-gray-50">
-                <td className="px-3 py-2.5 text-[12px] font-mono font-bold text-[#1557b0]">
+                <td className="px-3 py-2.5 text-[12px] font-mono font-bold text-[var(--ds-action-primary)]">
                   {q.quotationNo}
                 </td>
                 <td className="px-3 py-2.5 text-[12px] text-gray-600">{q.date}</td>
@@ -514,7 +514,7 @@ export default function QuotationPage({ type }: Props) {
                         setTerms(q.terms || "");
                         setShowForm(true);
                       }}
-                      className="h-7 px-2 text-[11px] border border-gray-300 rounded hover:bg-gray-50"
+                      className="h-7 px-2 text-[12px] border border-gray-300 rounded hover:bg-gray-50"
                     >
                       Edit
                     </button>
@@ -522,19 +522,19 @@ export default function QuotationPage({ type }: Props) {
                       <>
                         <button
                           onClick={() => updateStatus(q.id, "accepted")}
-                          className="h-7 px-2 text-[11px] border border-green-200 text-green-700 rounded hover:bg-green-50"
+                          className="h-7 px-2 text-[12px] border border-green-200 text-green-700 rounded hover:bg-green-50"
                         >
                           Accept
                         </button>
                         <button
                           onClick={() => updateStatus(q.id, "rejected")}
-                          className="h-7 px-2 text-[11px] border border-red-200 text-red-600 rounded hover:bg-red-50"
+                          className="h-7 px-2 text-[12px] border border-red-200 text-red-600 rounded hover:bg-red-50"
                         >
                           Reject
                         </button>
                       </>
                     )}
-                    <button className="h-7 px-2 text-[11px] border border-gray-200 text-gray-500 rounded hover:bg-gray-50 flex items-center gap-1">
+                    <button className="h-7 px-2 text-[12px] border border-gray-200 text-gray-500 rounded hover:bg-gray-50 flex items-center gap-1">
                       <Printer className="h-3 w-3" /> Print
                     </button>
                   </div>

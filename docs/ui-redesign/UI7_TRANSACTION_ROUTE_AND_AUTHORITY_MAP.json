@@ -1,0 +1,75 @@
+{
+  "phase": "UI-7",
+  "deep_research_report": "absent",
+  "typescript_baseline_before": 151,
+  "families": [
+    {
+      "family": "sales",
+      "routes": ["billing", "sales"],
+      "page": "src/pages/BillingInvoice.tsx",
+      "form": "src/components/invoice/SalesInvoiceForm.tsx",
+      "posting_command": "postSalesTransaction",
+      "posting_file": "src/domains/sales/postSalesTransaction.ts",
+      "orbix_same_command": true,
+      "mode": "inventory-document"
+    },
+    {
+      "family": "purchase",
+      "routes": ["purchase"],
+      "page": "src/pages/PurchaseVoucher.tsx",
+      "form": "src/pages/PurchaseVoucher.tsx",
+      "posting_command": "postPurchaseTransaction",
+      "posting_file": "src/domains/purchase/postPurchaseTransaction.ts",
+      "orbix_same_command": true,
+      "pre_ui7_command": "addInvoice",
+      "mode": "inventory-document"
+    },
+    {
+      "family": "receipt",
+      "routes": ["receipt"],
+      "page": "src/pages/ReceiptVoucher.tsx",
+      "form": "src/components/voucher/ReceiptVoucherForm.tsx",
+      "posting_command": "postReceiptTransaction",
+      "posting_file": "src/domains/settlement/postReceiptTransaction.ts",
+      "orbix_same_command": true,
+      "mode": "settlement-document"
+    },
+    {
+      "family": "payment",
+      "routes": ["payment"],
+      "page": "src/pages/PaymentVoucher.tsx",
+      "form": "src/components/voucher/PaymentVoucherForm.tsx",
+      "posting_command": "postPaymentTransaction",
+      "posting_file": "src/domains/settlement/postPaymentTransaction.ts",
+      "orbix_same_command": true,
+      "mode": "settlement-document"
+    },
+    {
+      "family": "contra",
+      "routes": ["contra"],
+      "page": "src/pages/ContraVoucher.tsx",
+      "form": "src/pages/ContraVoucher.tsx",
+      "posting_command": "postContraTransaction",
+      "posting_file": "src/domains/settlement/postContraTransaction.ts",
+      "orbix_same_command": true,
+      "mode": "transfer-document"
+    },
+    {
+      "family": "journal",
+      "routes": ["journal"],
+      "page": "src/pages/JournalEntries.tsx",
+      "form": "src/components/voucher/JournalVoucherForm.tsx",
+      "posting_command": "postJournalTransaction",
+      "posting_file": "src/domains/settlement/postJournalTransaction.ts",
+      "orbix_same_command": true,
+      "mode": "journal-document"
+    }
+  ],
+  "legacy_writers": {
+    "addInvoice": "src/store/slices/voucherSlice.ts",
+    "addVoucher": "src/store/slices/voucherSlice.ts",
+    "invoicePostingWriters": "src/store/invoicePostingWriters.ts",
+    "usage": "drafts, edits, non-inventory fallbacks only after UI-7"
+  },
+  "orbix_router": "src/lib/ekhata/orbixPostingService.ts"
+}

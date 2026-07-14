@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useStore } from "../store/useStore";
 import { getDB, generateId } from "../lib/db";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import * as XLSX from "xlsx";
 import {
   Factory,
@@ -396,7 +396,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
     );
 
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Job Work Register");
+    XLSX.utils.book_append_sheet(wb, ws, "Job work");
     XLSX.writeFile(wb, "Job_Work_Register.xlsx");
   };
 
@@ -1587,7 +1587,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
     </div>
   );
 
-  // Render Job Work Register tab
+  // Render Job work tab
   const renderJobWorkRegister = () => (
     <div style={{ padding: "20px" }}>
       <div
@@ -1742,7 +1742,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
         <h2
           style={{ fontSize: "18px", fontWeight: "bold", color: "#000000", marginBottom: "15px" }}
         >
-          Job Work Register
+          Job work
         </h2>
 
         <div style={{ overflowX: "auto" }}>
@@ -2123,7 +2123,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
           marginBottom: "0",
         }}
       >
-        Job Work Register
+        Job work
       </h1>
 
       {/* Tab Navigation */}
@@ -2139,7 +2139,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
         {[
           { id: "out", label: "Job Work Out", icon: ArrowRight },
           { id: "in", label: "Job Work In", icon: ArrowLeft },
-          { id: "register", label: "Job Work Register", icon: FileText },
+          { id: "register", label: "Job work", icon: FileText },
           { id: "bill", label: "Job Work Bill", icon: Factory },
         ].map((tab) => {
           const Icon = tab.icon;

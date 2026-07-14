@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import type { OrbixReportColumn, OrbixReportPayload } from "@/lib/ekhata/orbixReportTypes";
 import { Download, RefreshCw } from "lucide-react";
 
@@ -9,21 +9,21 @@ interface OrbixReportTableProps {
 
 const OrbixReportTable: React.FC<OrbixReportTableProps> = ({ report, maximized = false }) => (
   <div
-    className="mt-1 overflow-hidden rounded-[var(--ox-radius-lg)] border border-[var(--ox-border)] bg-[var(--ox-surface)]"
+    className="mt-1 overflow-hidden rounded-[var(--ds-radius-lg)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)]"
     data-component="orbix-report-viewer"
   >
-    <div className="flex flex-wrap items-start justify-between gap-2 border-b border-[var(--ox-border)] bg-[var(--ox-surface-muted)] px-3.5 py-3">
+    <div className="flex flex-wrap items-start justify-between gap-2 border-b border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)] px-3.5 py-3">
       <div className="min-w-0">
-        <p className="text-[14px] font-semibold text-[var(--ox-text)]">{report.title}</p>
-        <p className="mt-0.5 text-[12px] text-[var(--ox-text-muted)]">{report.subtitle}</p>
+        <p className="text-[14px] font-semibold text-[var(--ds-text-default)]">{report.title}</p>
+        <p className="mt-0.5 text-[12px] text-[var(--ds-text-muted)]">{report.subtitle}</p>
       </div>
       <div className="flex items-center gap-1.5">
-        <span className="rounded-full bg-[var(--ox-surface)] px-2 py-0.5 text-[10px] font-medium text-[var(--ox-text-muted)]">
+        <span className="rounded-full bg-[var(--ds-surface)] px-2 py-0.5 text-[12px] font-medium text-[var(--ds-text-muted)]">
           Report
         </span>
         <button
           type="button"
-          className="inline-flex h-7 items-center gap-1 rounded-[var(--ox-radius-md)] border border-[var(--ox-border)] bg-[var(--ox-surface)] px-2 text-[11px] text-[var(--ox-text-muted)]"
+          className="inline-flex h-7 items-center gap-1 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-2 text-[12px] text-[var(--ds-text-muted)]"
           title="Ask Orbix to refresh or revise this report in chat"
         >
           <RefreshCw className="h-3 w-3" />
@@ -31,7 +31,7 @@ const OrbixReportTable: React.FC<OrbixReportTableProps> = ({ report, maximized =
         </button>
         <button
           type="button"
-          className="inline-flex h-7 w-7 items-center justify-center rounded-[var(--ox-radius-md)] border border-[var(--ox-border)] text-[var(--ox-text-muted)]"
+          className="inline-flex h-7 w-7 items-center justify-center rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] text-[var(--ds-text-muted)]"
           title="Export where supported"
           disabled
         >
@@ -46,11 +46,11 @@ const OrbixReportTable: React.FC<OrbixReportTableProps> = ({ report, maximized =
     >
       <table className="w-full min-w-[480px] text-[13px]">
         <thead>
-          <tr className="border-b border-[var(--ox-border)] bg-[var(--ox-surface-muted)]">
+          <tr className="border-b border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]">
             {report.columns.map((col) => (
               <th
                 key={col.key}
-                className={`px-3 py-2.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--ox-text-muted)] whitespace-nowrap ${
+                className={`px-3 py-2.5 text-[12px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)] whitespace-nowrap ${
                   col.align === "right" ? "text-right" : "text-left"
                 }`}
               >
@@ -64,7 +64,7 @@ const OrbixReportTable: React.FC<OrbixReportTableProps> = ({ report, maximized =
             <tr>
               <td
                 colSpan={report.columns.length}
-                className="px-3 py-8 text-center text-[13px] text-[var(--ox-text-muted)]"
+                className="px-3 py-8 text-center text-[13px] text-[var(--ds-text-muted)]"
               >
                 No data for this period.
               </td>
@@ -77,20 +77,20 @@ const OrbixReportTable: React.FC<OrbixReportTableProps> = ({ report, maximized =
               return (
                 <tr
                   key={i}
-                  className={`border-b border-[var(--ox-border)]/70 hover:bg-[var(--ox-surface-muted)]/60 ${
-                    isTotal ? "bg-[var(--ox-primary-soft)] font-semibold" : ""
+                  className={`border-b border-[var(--ds-border-default)]/70 hover:bg-[var(--ds-surface-muted)]/60 ${
+                    isTotal ? "bg-[var(--ds-surface-selected)] font-semibold" : ""
                   }`}
                 >
                   {report.columns.map((col: OrbixReportColumn, colIdx) => (
                     <td
                       key={col.key}
-                      className={`px-3 py-2 text-[var(--ox-text)] whitespace-nowrap ${
+                      className={`px-3 py-2 text-[var(--ds-text-default)] whitespace-nowrap ${
                         col.align === "right" ? "text-right font-mono tabular-nums" : "text-left"
                       } ${col.mono ? "font-mono tabular-nums text-[12px]" : ""}`}
                       style={colIdx === 0 ? { paddingLeft: 12 + depth * 14 } : undefined}
                     >
                       {colIdx === 0 && depth > 0 && (
-                        <span className="mr-1 text-[var(--ox-text-subtle)]" aria-hidden>
+                        <span className="mr-1 text-[var(--ds-text-subtle)]" aria-hidden>
                           └
                         </span>
                       )}
@@ -106,15 +106,15 @@ const OrbixReportTable: React.FC<OrbixReportTableProps> = ({ report, maximized =
     </div>
 
     {report.summary && report.summary.length > 0 && (
-      <div className="grid gap-2 border-t border-[var(--ox-border)] bg-[var(--ox-surface-muted)] px-3.5 py-3 sm:grid-cols-3">
+      <div className="grid gap-2 border-t border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)] px-3.5 py-3 sm:grid-cols-3">
         {report.summary.map((item) => (
           <div key={item.label}>
-            <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ox-text-subtle)]">
+            <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--ds-text-subtle)]">
               {item.label}
             </p>
             <p
               className={`mt-0.5 font-mono text-[13px] font-semibold tabular-nums ${
-                item.accent ? "text-[var(--ox-primary)]" : "text-[var(--ox-text)]"
+                item.accent ? "text-[var(--ds-action-primary)]" : "text-[var(--ds-text-default)]"
               }`}
             >
               {item.value}
@@ -125,7 +125,7 @@ const OrbixReportTable: React.FC<OrbixReportTableProps> = ({ report, maximized =
     )}
 
     {report.footerNote && (
-      <p className="border-t border-[var(--ox-border)] px-3.5 py-2 text-[11px] text-[var(--ox-text-muted)]">
+      <p className="border-t border-[var(--ds-border-default)] px-3.5 py-2 text-[12px] text-[var(--ds-text-muted)]">
         {report.footerNote}
       </p>
     )}

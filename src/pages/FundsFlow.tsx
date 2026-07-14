@@ -1,6 +1,6 @@
 // src/pages/FundsFlow.tsx
 // @ts-nocheck
-// NEW PAGE — Funds Flow Statement
+// NEW PAGE — Funds flow
 // Shows changes in Working Capital between two balance sheet dates.
 // Different from Cash Flow — focuses on Working Capital as a whole, not just cash.
 // Required by many banks for term loan applications.
@@ -18,7 +18,7 @@ const fmt = (n: number) =>
   });
 
 const thCls =
-  "px-4 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200";
+  "px-4 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide bg-[var(--ds-canvas)] border-b border-gray-200";
 const tdCls = "px-4 py-2 text-[12px] text-gray-700 border-b border-gray-100";
 const amtCls = `${tdCls} font-mono text-right`;
 
@@ -294,12 +294,12 @@ export default function FundsFlow() {
 
   // ─── Main render ──────────────────────────────────────────────────────────
   return (
-    <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
+    <div className="p-4 md:p-6 bg-[var(--ds-canvas)] min-h-screen">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Funds Flow Statement</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
+          <h1 className="text-[15px] font-semibold text-gray-800">Funds flow</h1>
+          <p className="text-[12px] text-gray-500 mt-0.5">
             {companySettings?.name || "Company"} — Changes in Working Capital
           </p>
         </div>
@@ -314,33 +314,33 @@ export default function FundsFlow() {
       {/* Toolbar */}
       <div className="bg-white border border-gray-200 rounded-lg p-3 mb-4 flex flex-wrap gap-3 items-end no-print">
         <div>
-          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+          <label className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
             Opening Date (Start of Period)
           </label>
           <input
             type="date"
             value={openingDate}
             onChange={(e) => setOpeningDate(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           />
         </div>
         <div>
-          <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+          <label className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
             Closing Date (End of Period)
           </label>
           <input
             type="date"
             value={closingDate}
             onChange={(e) => setClosingDate(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           />
         </div>
       </div>
 
       {/* Info banner */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 text-[11px] text-blue-800">
-        <strong>What is the Funds Flow Statement?</strong> Unlike the Cash Flow Statement which
-        tracks only cash movements, the Funds Flow Statement shows how long-term funds (profits,
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 text-[12px] text-blue-800">
+        <strong>What is the Funds flow?</strong> Unlike the Cash flow which
+        tracks only cash movements, the Funds flow shows how long-term funds (profits,
         loans, equity) were raised and used (in fixed assets, to increase working capital, etc.).
         Working Capital = Current Assets − Current Liabilities.
       </div>
@@ -352,7 +352,7 @@ export default function FundsFlow() {
           {
             label: "Closing Working Capital",
             value: closingWC,
-            color: closingWC >= 0 ? "text-[#1557b0]" : "text-red-600",
+            color: closingWC >= 0 ? "text-[var(--ds-action-primary)]" : "text-red-600",
           },
           {
             label: "Net Change in W.C.",
@@ -367,12 +367,12 @@ export default function FundsFlow() {
           },
         ].map((kpi) => (
           <div key={kpi.label} className="bg-white border border-gray-200 rounded-lg p-3">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
               {kpi.label}
             </p>
             {kpi.isLabel ? (
               <p className={`text-[14px] font-bold mt-1 ${kpi.color}`}>
-                {isBalanced ? "✓ Balanced" : "⚠ Unbalanced"}
+                {isBalanced ? "Balanced" : "Unbalanced"}
               </p>
             ) : (
               <p className={`text-[14px] font-bold font-mono mt-1 ${kpi.color}`}>
@@ -389,7 +389,7 @@ export default function FundsFlow() {
         {/* Sources */}
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
           <div className="px-4 py-2.5 bg-green-50 border-b border-green-200">
-            <span className="text-[11px] font-semibold text-green-800 uppercase tracking-wide">
+            <span className="text-[12px] font-semibold text-green-800 uppercase tracking-wide">
               Sources of Funds (Inflows)
             </span>
           </div>
@@ -416,9 +416,9 @@ export default function FundsFlow() {
               )}
             </tbody>
             <tfoot>
-              <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
+              <tr className="bg-[var(--ds-surface-selected)] border-t-2 border-[var(--ds-border-strong)]">
                 <td className="px-4 py-2.5 text-[12px] font-bold text-gray-800">Total Sources</td>
-                <td className="px-4 py-2.5 text-[12px] font-bold font-mono text-right text-[#1557b0]">
+                <td className="px-4 py-2.5 text-[12px] font-bold font-mono text-right text-[var(--ds-action-primary)]">
                   {fmt(totalSources)}
                 </td>
               </tr>
@@ -429,7 +429,7 @@ export default function FundsFlow() {
         {/* Application */}
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
           <div className="px-4 py-2.5 bg-red-50 border-b border-red-200">
-            <span className="text-[11px] font-semibold text-red-800 uppercase tracking-wide">
+            <span className="text-[12px] font-semibold text-red-800 uppercase tracking-wide">
               Application of Funds (Outflows)
             </span>
           </div>
@@ -456,11 +456,11 @@ export default function FundsFlow() {
               )}
             </tbody>
             <tfoot>
-              <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
+              <tr className="bg-[var(--ds-surface-selected)] border-t-2 border-[var(--ds-border-strong)]">
                 <td className="px-4 py-2.5 text-[12px] font-bold text-gray-800">
                   Total Application
                 </td>
-                <td className="px-4 py-2.5 text-[12px] font-bold font-mono text-right text-[#1557b0]">
+                <td className="px-4 py-2.5 text-[12px] font-bold font-mono text-right text-[var(--ds-action-primary)]">
                   {fmt(totalApplication)}
                 </td>
               </tr>
@@ -471,8 +471,8 @@ export default function FundsFlow() {
 
       {/* Working Capital Schedule */}
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-        <div className="px-4 py-2.5 bg-[#f5f6fa] border-b border-gray-200">
-          <span className="text-[11px] font-semibold text-gray-700 uppercase tracking-wide">
+        <div className="px-4 py-2.5 bg-[var(--ds-canvas)] border-b border-gray-200">
+          <span className="text-[12px] font-semibold text-gray-700 uppercase tracking-wide">
             Schedule of Changes in Working Capital
           </span>
         </div>
@@ -509,9 +509,9 @@ export default function FundsFlow() {
                 return (
                   <tr key={i} className="hover:bg-gray-50">
                     <td className={tdCls}>{row.name}</td>
-                    <td className="px-4 py-2 text-[11px] border-b border-gray-100">
+                    <td className="px-4 py-2 text-[12px] border-b border-gray-100">
                       <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
+                        className={`px-2 py-0.5 rounded text-[12px] font-semibold uppercase ${
                           row.type === "current_asset"
                             ? "bg-blue-100 text-blue-700"
                             : "bg-amber-100 text-amber-700"
@@ -553,7 +553,7 @@ export default function FundsFlow() {
               )}
             </tbody>
             <tfoot>
-              <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold">
+              <tr className="bg-[var(--ds-surface-selected)] border-t-2 border-[var(--ds-border-strong)] font-bold">
                 <td colSpan={5} className="px-4 py-2.5 text-[12px] font-bold text-gray-800">
                   Net Change in Working Capital
                 </td>
@@ -569,7 +569,7 @@ export default function FundsFlow() {
         </div>
       </div>
 
-      <p className="text-[10px] text-gray-400 mt-3">
+      <p className="text-[12px] text-gray-400 mt-3">
         Based on posted vouchers • Opening: {openingDate} • Closing: {closingDate}
       </p>
     </div>

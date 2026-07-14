@@ -9,6 +9,8 @@
 
 import { DualDate } from "../components/ui/DualDate";
 import React, { useEffect, useMemo, useState } from "react";
+import { FileSpreadsheet, Printer } from "lucide-react";
+import { ReportWorkspace } from "@/features/reports";
 import { useStore } from "../store/useStore";
 import { NepaliDatePicker, PartySelect } from "../components/ui";
 import { computePartyStatement, computePartyOutstandingSummary, computeInvoiceOutstanding } from "../lib/accounting";
@@ -16,7 +18,7 @@ import { exportLedgerToExcel } from "../lib/exportUtils";
 import { generatePartyStatementPDF } from "../lib/printUtils";
 import { formatNumber, dateToAD } from "../lib/utils";
 import { VoucherType, VoucherStatus, PaymentStatus, Party, ReportPeriodPreset } from "../lib/types";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { mergeSystemConfiguration, getAgeingBucketIndex } from "../lib/systemConfiguration";
 
 const PartyLedgerStatement: React.FC = () => {
@@ -206,36 +208,15 @@ const PartyLedgerStatement: React.FC = () => {
   ];
 
   return (
-    <div className="erp-report flex flex-col gap-4 animate-fadeIn select-none text-xs p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
-      <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
-        <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Party Ledger</h1>
-          <p className="mt-0.5 text-[11px] text-gray-500">
-            Transaction history for a specific party
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handleExport}
-            className="flex h-8 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 text-[12px] font-medium text-gray-700 hover:bg-gray-50"
-          >
-            <span className="text-sm">📄</span>
-            Export Excel
-          </button>
-          <button
-            type="button"
-            onClick={handlePrint}
-            className="flex h-8 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 text-[12px] font-medium text-gray-700 hover:bg-gray-50"
-          >
-            <span className="text-sm">🖨️</span>
-            Print PDF
-          </button>
-        </div>
-      </div>
-
-      <div className="no-print rounded-md border border-gray-200 bg-white p-3">
-        <div className="grid gap-4 lg:grid-cols-4">
+    <ReportWorkspace
+      title="Customer / supplier statement"
+      description="Running balance for one party."
+      companyName={companySettings?.companyNameEn || companySettings?.companyName || companySettings?.name}
+      periodLabel={`${startDate} to ${endDate}`}
+      onPrint={handlePrint}
+      onExportExcel={handleExport}
+      filterSlot={
+        <>
           <PartySelect
             label="Party"
             value={selectedPartyId}
@@ -244,47 +225,46 @@ const PartyLedgerStatement: React.FC = () => {
           />
           <NepaliDatePicker label="From Date" value={startDate} onChange={setStartDate} />
           <NepaliDatePicker label="To Date" value={endDate} onChange={setEndDate} />
-          <div className="flex items-end">
-            <button
-              type="button"
-              onClick={() => {
-                setSelectedPartyId("");
-                setReportFilters({ partyId: undefined });
-                if (currentFiscalYear) {
-                  setStartDate(currentFiscalYear.startDate);
-                  setEndDate(currentFiscalYear.endDate);
-                }
-              }}
-              className="h-8 rounded-md border border-gray-300 bg-white px-3 text-[12px] font-medium text-gray-700 hover:bg-gray-50"
-            >
-              Reset
-            </button>
-          </div>
-        </div>
-      </div>
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedPartyId("");
+              setReportFilters({ partyId: undefined });
+              if (currentFiscalYear) {
+                setStartDate(currentFiscalYear.startDate);
+                setEndDate(currentFiscalYear.endDate);
+              }
+            }}
+            className="h-8 rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-3 text-[13px] font-medium text-[var(--ds-text-default)] hover:bg-[var(--ds-surface-hover)]"
+          >
+            Reset
+          </button>
+        </>
+      }
+    >
 
       {selectedParty && statement ? (
         <>
           <div className="grid gap-4 rounded-md border border-gray-200 bg-white p-4 md:grid-cols-2 xl:grid-cols-4">
             <div>
-              <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+              <div className="mb-1 text-[12px] font-semibold uppercase tracking-wide text-gray-500">
                 Party
               </div>
               <div className="text-[13px] font-semibold text-gray-800">{selectedParty?.name}</div>
-              <div className="text-[11px] text-gray-500">
+              <div className="text-[12px] text-gray-500">
                 {selectedParty?.pan ? `PAN: ${selectedParty.pan}` : ""}
               </div>
             </div>
             <div>
-              <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+              <div className="mb-1 text-[12px] font-semibold uppercase tracking-wide text-gray-500">
                 Type
               </div>
-              <span className="inline-flex rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 text-blue-700">
+              <span className="inline-flex rounded px-2 py-0.5 text-[12px] font-semibold uppercase bg-blue-100 text-blue-700">
                 {selectedParty?.type}
               </span>
             </div>
             <div>
-              <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+              <div className="mb-1 text-[12px] font-semibold uppercase tracking-wide text-gray-500">
                 Opening Balance
               </div>
               <div className="font-mono text-[14px] font-bold text-gray-800">
@@ -292,7 +272,7 @@ const PartyLedgerStatement: React.FC = () => {
               </div>
             </div>
             <div>
-              <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+              <div className="mb-1 text-[12px] font-semibold uppercase tracking-wide text-gray-500">
                 Closing Balance
               </div>
               {(() => {
@@ -321,7 +301,7 @@ const PartyLedgerStatement: React.FC = () => {
                 <span className="text-xs font-semibold text-gray-800">
                   Outstanding Summary Analysis
                 </span>
-                <span className="text-[10px] font-medium text-gray-500">
+                <span className="text-[12px] font-medium text-gray-500">
                   (Click to {summaryExpanded ? "Collapse" : "Expand"})
                 </span>
               </div>
@@ -335,10 +315,10 @@ const PartyLedgerStatement: React.FC = () => {
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
                   {partyDashboard.showOutstanding && (
                     <div className="flex flex-col gap-1">
-                      <div className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                      <div className="text-[12px] font-semibold uppercase tracking-wide text-gray-500">
                         Total Receivable / Payable
                       </div>
-                      <div className="flex items-center gap-4 text-[11px] mt-0.5">
+                      <div className="flex items-center gap-4 text-[12px] mt-0.5">
                         <div>
                           <span className="mr-1 text-gray-500">Receivable:</span>
                           <strong className="text-green-700 font-mono">
@@ -352,7 +332,7 @@ const PartyLedgerStatement: React.FC = () => {
                           </strong>
                         </div>
                       </div>
-                      <div className="mt-1 text-[10px] text-gray-500">
+                      <div className="mt-1 text-[12px] text-gray-500">
                         Net Outstanding:{" "}
                         <strong
                           className={
@@ -370,11 +350,11 @@ const PartyLedgerStatement: React.FC = () => {
 
                   {partyDashboard.showLastInvoice && (
                     <div className="flex flex-col gap-1">
-                      <div className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                      <div className="text-[12px] font-semibold uppercase tracking-wide text-gray-500">
                         Last Invoice
                       </div>
                       {lastInvoice ? (
-                        <div className="mt-0.5 text-[11px] text-gray-700">
+                        <div className="mt-0.5 text-[12px] text-gray-700">
                           <strong>{lastInvoice.invoiceNo || lastInvoice.voucherNo}</strong> dated{" "}
                           <span className="font-mono">{lastInvoice.date}</span>
                           <span className="ml-2 font-mono font-semibold">
@@ -382,7 +362,7 @@ const PartyLedgerStatement: React.FC = () => {
                           </span>
                         </div>
                       ) : (
-                        <div className="mt-0.5 text-[11px] italic text-gray-500">
+                        <div className="mt-0.5 text-[12px] italic text-gray-500">
                           No invoices found.
                         </div>
                       )}
@@ -390,11 +370,11 @@ const PartyLedgerStatement: React.FC = () => {
                   )}
 
                   <div className="flex flex-col gap-1">
-                    <div className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                    <div className="text-[12px] font-semibold uppercase tracking-wide text-gray-500">
                       Oldest Pending Bill
                     </div>
                     {outstandingSummary.oldestBillNo ? (
-                      <div className="mt-0.5 text-[11px] text-gray-700">
+                      <div className="mt-0.5 text-[12px] text-gray-700">
                         <strong>{outstandingSummary.oldestBillNo}</strong> dated{" "}
                         <span className="font-mono">{outstandingSummary.oldestBillDate}</span>
                         <span className="text-red-600 font-semibold ml-2">
@@ -402,7 +382,7 @@ const PartyLedgerStatement: React.FC = () => {
                         </span>
                       </div>
                     ) : (
-                      <div className="mt-0.5 text-[11px] italic text-gray-500">
+                      <div className="mt-0.5 text-[12px] italic text-gray-500">
                         No pending bills.
                       </div>
                     )}
@@ -410,12 +390,12 @@ const PartyLedgerStatement: React.FC = () => {
 
                   {partyDashboard.showCreditLimit && (
                     <div className="flex flex-col gap-1">
-                      <div className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                      <div className="text-[12px] font-semibold uppercase tracking-wide text-gray-500">
                         Credit Limit Utilization
                       </div>
                       {selectedParty.creditLimit && selectedParty.creditLimit > 0 ? (
                         <div className="mt-1">
-                          <div className="mb-1 flex justify-between text-[9px] text-gray-500">
+                          <div className="mb-1 flex justify-between text-[12px] text-gray-500">
                             <span>Limit: रू {formatNumber(selectedParty.creditLimit)}</span>
                             <span>{creditLimitPercent}% Used</span>
                           </div>
@@ -433,7 +413,7 @@ const PartyLedgerStatement: React.FC = () => {
                           </div>
                         </div>
                       ) : (
-                        <div className="mt-0.5 text-[11px] italic text-gray-500">
+                        <div className="mt-0.5 text-[12px] italic text-gray-500">
                           No credit limit set.
                         </div>
                       )}
@@ -443,14 +423,14 @@ const PartyLedgerStatement: React.FC = () => {
 
                 {partyDashboard.showAgingSummary && partyAgingBuckets.length > 0 && (
                   <div>
-                    <div className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                    <div className="mb-2 text-[12px] font-semibold uppercase tracking-wide text-gray-500">
                       Ageing Summary
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {partyAgingBuckets.map((b) => (
                         <span
                           key={b.label}
-                          className="rounded border border-gray-200 bg-gray-50 px-2 py-1 text-[11px] font-mono text-gray-700"
+                          className="rounded border border-gray-200 bg-gray-50 px-2 py-1 text-[12px] font-mono text-gray-700"
                         >
                           {b.label}: रू {formatNumber(b.amount)}
                         </span>
@@ -465,47 +445,47 @@ const PartyLedgerStatement: React.FC = () => {
           <div className="w-full overflow-x-auto rounded-md border border-gray-200 bg-white animate-fadeIn">
             <table className="min-w-full">
               <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
                   <th
                     scope="col"
-                    className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-500"
+                    className="px-3 py-2.5 text-left text-[12px] font-semibold uppercase tracking-wide text-gray-500"
                   >
                     Date (BS)
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-500"
+                    className="px-3 py-2.5 text-left text-[12px] font-semibold uppercase tracking-wide text-gray-500"
                   >
                     Voucher No
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-500"
+                    className="px-3 py-2.5 text-left text-[12px] font-semibold uppercase tracking-wide text-gray-500"
                   >
                     Type
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-500"
+                    className="px-3 py-2.5 text-left text-[12px] font-semibold uppercase tracking-wide text-gray-500"
                     style={{ width: "40%" }}
                   >
                     Narration
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500"
+                    className="px-3 py-2.5 text-right text-[12px] font-semibold uppercase tracking-wide text-gray-500"
                   >
                     Debit
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500"
+                    className="px-3 py-2.5 text-right text-[12px] font-semibold uppercase tracking-wide text-gray-500"
                   >
                     Credit
                   </th>
                   <th
                     scope="col"
-                    className="px-3 py-2.5 text-right text-[10px] font-semibold uppercase tracking-wide text-gray-500"
+                    className="px-3 py-2.5 text-right text-[12px] font-semibold uppercase tracking-wide text-gray-500"
                   >
                     Balance
                   </th>
@@ -540,7 +520,7 @@ const PartyLedgerStatement: React.FC = () => {
                       <td className="px-3 py-2.5 text-[12px] font-semibold text-gray-800">
                         {row.voucherNo}
                         {row.invoiceRef && (
-                          <span className="ml-1 text-[10px] text-gray-500">({row.invoiceRef})</span>
+                          <span className="ml-1 text-[12px] text-gray-500">({row.invoiceRef})</span>
                         )}
                       </td>
                       <td className="px-3 py-2.5 text-[12px] text-gray-700">{row.voucherType}</td>
@@ -563,7 +543,7 @@ const PartyLedgerStatement: React.FC = () => {
                   ))
                 )}
 
-                <tr className="bg-[#eef2ff] text-[12px] font-bold text-gray-800 border-t-2 border-[#c7d2fe]">
+                <tr className="bg-[var(--ds-brand-50)] text-[12px] font-bold text-gray-800 border-t-2 border-[var(--ds-action-primary)]">
                   <td className="px-3 py-2.5">{endDate}</td>
                   <td className="px-3 py-2.5">-</td>
                   <td className="px-3 py-2.5">-</td>
@@ -587,8 +567,6 @@ const PartyLedgerStatement: React.FC = () => {
           Select a party and date range to view the ledger statement.
         </div>
       )}
-    </div>
+    </ReportWorkspace>
   );
-};
-
-export default PartyLedgerStatement;
+}

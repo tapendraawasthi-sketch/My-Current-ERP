@@ -41,7 +41,7 @@ import {
 } from "../lib/types";
 import { generateInvoicePDF } from "../lib/printUtils";
 import { exportInvoicesToExcel } from "../lib/exportUtils";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 const InvoiceHub: React.FC = () => {
   const {

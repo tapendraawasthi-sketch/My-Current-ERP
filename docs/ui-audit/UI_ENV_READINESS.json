@@ -1,0 +1,18 @@
+{
+  "generated_at": "2026-07-13T12:34:45.238Z",
+  "frontend_start_command": "npm run dev",
+  "frontend_url": "http://127.0.0.1:3000",
+  "ui_qa_harness_url": "http://127.0.0.1:3000/e2e/ui-qa.html",
+  "authenticated_ui_test_account": {
+    "exists": true,
+    "mechanism": "UI QA harness bootstrap (skips login UI)",
+    "user": "e2e.accountant / user-e2e-accountant",
+    "company": "orbix-e2e-company / Orbix E2E Test Company"
+  },
+  "visual_tests_safe": true,
+  "isolated_e2e_data": true,
+  "production_urls_configured": "check VITE_API_URL / ORBIX_SYNC — Playwright defaults avoid production",
+  "screenshot_without_accounting_mutation": true,
+  "note": "Harness uses IndexedDB reset/seed for E2E-tagged company only. assertSafeCompany guards mutation APIs.",
+  "readiness": "environment ready for harness-based visual capture; production login screens require separate read-only capture or are blocked if production credentials appear"
+}

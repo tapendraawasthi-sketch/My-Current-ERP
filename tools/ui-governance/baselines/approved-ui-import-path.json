@@ -1,0 +1,5 @@
+{
+  "approved_path": "@/components/ui",
+  "barrel": "src/components/ui/index.ts",
+  "note": "Future feature components should import primitives from this path. Existing direct imports are baseline debt."
+}

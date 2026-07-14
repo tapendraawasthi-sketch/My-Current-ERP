@@ -1,217 +1,149 @@
-// @ts-nocheck
-import React, { useRef, useEffect } from "react";
-import { ChevronRight } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { ChevronRight, Search } from "lucide-react";
 import { useStore } from "@/store/useStore";
+import { Button, EmptyState, LoadingState } from "@/design-system";
+import { PreWorkspaceShell, CompanyMonogram, environmentLabel } from "./PreWorkspaceShell";
+import { CompanyOpeningPanel, TrustSyncHint } from "./AuthAccessSurfaces";
 
 function formatLoginDate(isoString: string): string {
   const d = new Date(isoString);
+  if (Number.isNaN(d.getTime())) return isoString;
   return (
-    d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) +
+    d.toLocaleDateString("en-IN", { year: "numeric", month: "short", day: "numeric" }) +
     " at " +
-    d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
+    d.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })
   );
 }
 
-// Inline logotype — no external dependency, no cartoon icons
-const SutraLogotype: React.FC<{ size?: number }> = ({ size = 44 }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 48 48"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <rect width="48" height="48" rx="10" fill="#1557b0" />
-    <path
-      d="M30 13C30 13 28 11 24 11C19 11 16 13.5 16 17C16 20.5 19 22 24 23C29 24 32 25.5 32 29C32 32.5 29 37 24 37C19 37 16 35 16 35"
-      stroke="white"
-      strokeWidth="3.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      fill="none"
-    />
-    <line
-      x1="13"
-      y1="41"
-      x2="35"
-      y2="41"
-      stroke="rgba(255,255,255,0.45)"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-    />
-    <line
-      x1="16"
-      y1="44.5"
-      x2="32"
-      y2="44.5"
-      stroke="rgba(255,255,255,0.25)"
-      strokeWidth="1"
-      strokeLinecap="round"
-    />
-  </svg>
-);
+function loginAtOf(info: { loginAt?: string; loggedInAt?: string } | null | undefined): string | undefined {
+  return info?.loginAt || info?.loggedInAt;
+}
 
 export default function GatewayScreen() {
-  const { companySettings, lastLoginInfo, selectCompanyForLogin, setAuthStage } = useStore();
+  const { companySettings, lastLoginInfo, selectCompanyForLogin, setAuthStage, isInitializing } =
+    useStore();
   const openBtnRef = useRef<HTMLButtonElement>(null);
+  const [opening, setOpening] = useState(false);
+  const [query, setQuery] = useState("");
+  const env = environmentLabel();
 
   useEffect(() => {
     openBtnRef.current?.focus();
-  }, []);
+  }, [companySettings?.id]);
+
+  const companyName =
+    companySettings?.companyNameEn || companySettings?.name || "My Company";
+  const companies = companySettings ? [companySettings] : [];
+  const filtered = companies.filter((c) => {
+    const n = (c.companyNameEn || c.name || "").toLowerCase();
+    return !query.trim() || n.includes(query.trim().toLowerCase());
+  });
 
   const handleOpen = () => {
     const companyId = companySettings?.id || "main";
+    setOpening(true);
     selectCompanyForLogin(companyId);
   };
 
-  const companyName = companySettings?.companyNameEn || companySettings?.name || "My Company";
-
   return (
-    <div
-      className="min-h-screen flex items-center justify-center"
-      style={{ background: "#f5f6fa" }}
-    >
+    <PreWorkspaceShell title="Choose a company" footerNote="Orbix ERP · Choose which organisation to open">
       <div
-        style={{
-          width: "100%",
-          maxWidth: 400,
-          background: "#ffffff",
-          border: "1px solid #e5e7eb",
-          borderRadius: 12,
-          padding: 36,
-          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-        }}
+        className="rounded-[var(--ds-radius-lg)] border border-[var(--ds-border-default)] bg-[var(--ds-surface-raised)] p-6 shadow-[var(--ds-shadow-1)]"
+        data-testid="gateway-screen"
       >
-        {/* Logotype + title */}
-        <div style={{ textAlign: "center", marginBottom: 28 }}>
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-            <SutraLogotype size={52} />
-          </div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: "#111827", margin: 0 }}>Sutra ERP</h1>
-          <p style={{ fontSize: 12, color: "#6b7280", marginTop: 4 }}>Select a company to open</p>
+        <div className="mb-5">
+          <h2 className="text-[18px] font-semibold text-[var(--ds-text-strong)]">Choose a company</h2>
+          <p className="mt-1 text-[13px] text-[var(--ds-text-muted)]">
+            Open an organisation you are authorised to access.
+            {env.kind !== "production" ? ` Environment: ${env.label}.` : ""}
+          </p>
         </div>
 
-        {/* Company card */}
-        {companySettings ? (
-          <div
-            style={{
-              background: "#f9fafb",
-              border: "1px solid #e5e7eb",
-              borderRadius: 8,
-              padding: "14px 16px",
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              marginBottom: 20,
-            }}
-          >
-            {/* Company initial circle — no cartoon Building2 icon */}
-            <div
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 8,
-                background: "#1557b010",
-                border: "1px solid #1557b030",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-                fontSize: 16,
-                fontWeight: 700,
-                color: "#1557b0",
-              }}
-            >
-              {(companyName.charAt(0) || "C").toUpperCase()}
+        {companies.length > 1 || query ? (
+          <label className="mb-3 block">
+            <span className="sr-only">Search companies</span>
+            <div className="relative">
+              <Search
+                className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--ds-text-subtle)]"
+                aria-hidden
+              />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search companies"
+                className="ds-focus-ring h-9 w-full rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] pl-9 pr-3 text-[14px]"
+              />
             </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div
-                style={{
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: "#111827",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {companyName}
-              </div>
-              <div style={{ fontSize: 11, color: "#6b7280", marginTop: 2 }}>
-                PAN: {companySettings.panNumber || "—"}
-              </div>
-              {lastLoginInfo && (
-                <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 1 }}>
-                  Last: {formatLoginDate(lastLoginInfo.loginAt)} by {lastLoginInfo.username}
-                </div>
-              )}
-            </div>
-            <button
-              ref={openBtnRef}
-              onClick={handleOpen}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 4,
-                height: 32,
-                padding: "0 14px",
-                background: "#1557b0",
-                color: "#ffffff",
-                border: "none",
-                borderRadius: 6,
-                fontSize: 12,
-                fontWeight: 600,
-                cursor: "pointer",
-                flexShrink: 0,
-                transition: "background 150ms ease",
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = "#0f4a96";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = "#1557b0";
-              }}
-            >
-              Open <ChevronRight size={13} />
-            </button>
-          </div>
+          </label>
+        ) : null}
+
+        {isInitializing && !companySettings ? (
+          <LoadingState label="Loading company data…" />
+        ) : !companySettings ? (
+          <EmptyState
+            title="No company available"
+            description="No company is ready on this device. Create a company to continue, or contact an administrator."
+            primaryAction={
+              <Button variant="primary" onClick={() => setAuthStage("no-company")}>
+                Create company
+              </Button>
+            }
+          />
+        ) : filtered.length === 0 ? (
+          <EmptyState title="No matching companies" description="Try a different search." />
         ) : (
-          <div
-            style={{ padding: "24px 16px", textAlign: "center", fontSize: 12, color: "#9ca3af" }}
-          >
-            Loading company data…
-          </div>
+          <ul className="space-y-2" aria-label="Companies">
+            {filtered.map((co) => {
+              const name = co.companyNameEn || co.name || "Company";
+              const lastAt = loginAtOf(lastLoginInfo);
+              return (
+                <li
+                  key={co.id || "main"}
+                  className="flex items-center gap-3 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface-raised)] p-3"
+                >
+                  <CompanyMonogram name={name} />
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate text-[14px] font-semibold text-[var(--ds-text-strong)]">{name}</div>
+                    <div className="text-[13px] text-[var(--ds-text-muted)]">
+                      PAN: {co.panNumber || "—"}
+                      {co.vatNumber ? ` · VAT: ${co.vatNumber}` : ""}
+                    </div>
+                    {lastAt ? (
+                      <div className="text-[13px] text-[var(--ds-text-muted)]">
+                        Last access: {formatLoginDate(lastAt)}
+                        {lastLoginInfo?.username ? ` by ${lastLoginInfo.username}` : ""}
+                      </div>
+                    ) : null}
+                  </div>
+                  <Button
+                    ref={openBtnRef}
+                    variant="primary"
+                    size="small"
+                    onClick={handleOpen}
+                    loading={opening}
+                    disabled={opening}
+                    endIcon={<ChevronRight className="h-3.5 w-3.5" aria-hidden />}
+                    aria-label={`Open company ${name}`}
+                    data-testid="gateway-open-company"
+                  >
+                    Open company
+                  </Button>
+                </li>
+              );
+            })}
+          </ul>
         )}
 
-        {/* Create new */}
-        <div style={{ borderTop: "1px solid #e5e7eb", paddingTop: 16, textAlign: "center" }}>
-          <button
-            onClick={() => setAuthStage("no-company")}
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: 12,
-              fontWeight: 600,
-              color: "#1557b0",
-              cursor: "pointer",
-              transition: "color 150ms ease",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.color = "#0f4a96";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.color = "#1557b0";
-            }}
-          >
-            + Create New Company
-          </button>
-        </div>
+        <TrustSyncHint />
 
-        {/* Copyright footer */}
-        <div style={{ marginTop: 20, textAlign: "center", fontSize: 10, color: "#9ca3af" }}>
-          Sutra ERP v2.0 &nbsp;·&nbsp; All activity is logged for compliance
+        {opening ? <CompanyOpeningPanel companyName={companyName} stage="verifying" /> : null}
+
+        <div className="mt-5 border-t border-[var(--ds-border-subtle)] pt-4 text-center">
+          <Button variant="quiet" onClick={() => setAuthStage("no-company")}>
+            Create new company
+          </Button>
         </div>
       </div>
-    </div>
+    </PreWorkspaceShell>
   );
 }

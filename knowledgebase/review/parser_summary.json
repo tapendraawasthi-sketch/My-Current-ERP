@@ -1,0 +1,33 @@
+{
+  "generated_at": "2026-07-14T05:14:26+00:00",
+  "files_processed": 88,
+  "records_total": 5694750,
+  "records_ok": 5694440,
+  "records_quarantined": 310,
+  "unique_record_ids_estimate": 5694440,
+  "collections": {
+    "language_rules": 4999,
+    "normalization_examples": 290,
+    "gold_tests": 2777,
+    "lexicon": 4996,
+    "unclassified_records": 10936,
+    "adversarial_tests": 9445,
+    "safety_rules": 11901,
+    "intent_examples": 24045,
+    "dialogue_examples": 2097,
+    "authorization_rules": 16,
+    "slot_examples": 3723,
+    "entity_examples": 2511,
+    "domain_records": 5616704
+  },
+  "eval_collections_separated": true,
+  "eval_collection_counts": {
+    "adversarial_tests": 9445,
+    "e2e_tests": 0,
+    "gold_tests": 2777
+  },
+  "notes": [
+    "Record payloads are compact-capped for multi-million scale.",
+    "Duplicate IDs checked within each source file; cross-file reuse was reported in Phase 1."
+  ]
+}

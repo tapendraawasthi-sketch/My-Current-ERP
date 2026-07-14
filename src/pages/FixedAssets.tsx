@@ -11,7 +11,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import * as XLSX from "xlsx";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { Plus, Download, Edit2, Trash2, Calculator, X, ChevronDown, ChevronUp } from "lucide-react";
 
 // ─── Nepal IT Act WDV Rates ───────────────────────────────────────────────────

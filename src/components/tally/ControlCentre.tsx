@@ -17,7 +17,7 @@ import {
   Clock,
   Shield,
 } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { useStore } from "../../store/useStore";
 
 const ControlCentre = () => {

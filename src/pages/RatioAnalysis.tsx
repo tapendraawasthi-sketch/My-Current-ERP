@@ -384,7 +384,7 @@ export default function RatioAnalysis() {
     <div className="bg-[#f5f6fa] min-h-screen">
       <div className="flex items-center justify-between mb-4 px-4 pt-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Ratio Analysis</h1>
+          <h1 className="text-[15px] font-semibold text-gray-800">Ratios</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">Key financial indicators and metrics</p>
         </div>
         <div className="flex items-center gap-2">

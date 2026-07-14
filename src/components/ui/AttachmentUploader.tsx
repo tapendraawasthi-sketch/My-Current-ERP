@@ -5,7 +5,7 @@
 
 import React from "react";
 import { Paperclip, X, FileText, Image } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 interface Props {
   attachments: string[];

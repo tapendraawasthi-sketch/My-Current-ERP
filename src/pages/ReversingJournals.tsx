@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useStore } from "../store/useStore";
 import { getDB, generateId } from "../lib/db";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import {
   Calendar,
   Plus,
@@ -285,13 +285,14 @@ const ReversingJournals: React.FC = () => {
   }, [form.lines]);
 
   return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4">
+    <div className="min-h-screen bg-[var(--ds-canvas)] p-4">
       <div className="w-full">
         {/* Standard Page Header */}
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-[15px] font-semibold text-gray-800">Reversing Journals</h1>
-            <p className="text-[11px] text-gray-500 mt-0.5">
+            <h1 className="text-[15px] font-semibold text-gray-800">Reversing journals</h1>
+          <p className="text-[12px] text-gray-500 mt-0.5">Journals that auto-reverse.</p>
+            <p className="text-[12px] text-gray-500 mt-0.5">
               Manage and automate reversing journal entries
             </p>
           </div>
@@ -302,10 +303,10 @@ const ReversingJournals: React.FC = () => {
           <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 mb-6 max-w-full overflow-auto">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-[14px] font-semibold text-gray-800">
-                Existing Reversing Journals
+                Existing Reversing journals
               </h2>
               <button
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors shadow-sm"
+                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors shadow-sm"
                 onClick={() => {
                   setEditingVoucher(null);
                   setForm({
@@ -326,29 +327,29 @@ const ReversingJournals: React.FC = () => {
             <div className="border border-gray-200 rounded-md overflow-hidden">
               <table className="w-full min-w-max border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                       Voucher No
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                       Original Date
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                       Reversal Date
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                       Narration
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                       Amount
                     </th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                       Status
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                       Reversed Voucher No
                     </th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                       Actions
                     </th>
                   </tr>
@@ -379,7 +380,7 @@ const ReversingJournals: React.FC = () => {
                         </td>
                         <td className="px-3 py-2.5 text-center">
                           <span
-                            className={`${statusInfo.class} px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide`}
+                            className={`${statusInfo.class} px-2 py-0.5 rounded text-[12px] font-semibold uppercase tracking-wide`}
                           >
                             {statusInfo.status}
                           </span>
@@ -389,7 +390,7 @@ const ReversingJournals: React.FC = () => {
                         </td>
                         <td className="px-3 py-2.5 text-center flex items-center justify-center gap-3">
                           <button
-                            className="text-[#1557b0] hover:text-[#0f4a96] transition-colors"
+                            className="text-[var(--ds-action-primary)] hover:text-[var(--ds-action-primary-hover)] transition-colors"
                             onClick={() => {
                               setEditingVoucher(voucher);
                               setForm({
@@ -448,44 +449,44 @@ const ReversingJournals: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                <label className="block text-[12px] font-medium text-gray-600 mb-1">
                   Voucher Date <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="date"
                   value={form.date}
                   onChange={(e) => handleFormChange("date", e.target.value)}
-                  className={`h-8 px-2.5 text-[12px] border ${errors.date ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"} rounded-md bg-white focus:outline-none focus:ring-2 w-full`}
+                  className={`h-8 px-2.5 text-[12px] border ${errors.date ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"} rounded-md bg-white focus:outline-none focus:ring-2 w-full`}
                 />
-                {errors.date && <div className="text-[10px] text-red-500 mt-1">{errors.date}</div>}
+                {errors.date && <div className="text-[12px] text-red-500 mt-1">{errors.date}</div>}
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                <label className="block text-[12px] font-medium text-gray-600 mb-1">
                   Reversal Date <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="date"
                   value={form.reversalDate}
                   onChange={(e) => handleFormChange("reversalDate", e.target.value)}
-                  className={`h-8 px-2.5 text-[12px] border ${errors.reversalDate ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"} rounded-md bg-white focus:outline-none focus:ring-2 w-full`}
+                  className={`h-8 px-2.5 text-[12px] border ${errors.reversalDate ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"} rounded-md bg-white focus:outline-none focus:ring-2 w-full`}
                 />
                 {errors.reversalDate && (
-                  <div className="text-[10px] text-red-500 mt-1">{errors.reversalDate}</div>
+                  <div className="text-[12px] text-red-500 mt-1">{errors.reversalDate}</div>
                 )}
               </div>
             </div>
 
             <div className="mb-6">
-              <label className="block text-[11px] font-medium text-gray-600 mb-1">
+              <label className="block text-[12px] font-medium text-gray-600 mb-1">
                 Narration <span className="text-red-500">*</span>
               </label>
               <textarea
                 value={form.narration}
                 onChange={(e) => handleFormChange("narration", e.target.value)}
-                className={`p-2 text-[12px] border ${errors.narration ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"} rounded-md bg-white focus:outline-none focus:ring-2 w-full h-16 resize-none`}
+                className={`p-2 text-[12px] border ${errors.narration ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"} rounded-md bg-white focus:outline-none focus:ring-2 w-full h-16 resize-none`}
               />
               {errors.narration && (
-                <div className="text-[10px] text-red-500 mt-1">{errors.narration}</div>
+                <div className="text-[12px] text-red-500 mt-1">{errors.narration}</div>
               )}
             </div>
 
@@ -494,7 +495,7 @@ const ReversingJournals: React.FC = () => {
                 <label className="text-[12px] font-semibold text-gray-800">Journal Lines</label>
                 <button
                   type="button"
-                  className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] font-medium rounded hover:bg-gray-50 transition-colors shadow-sm"
+                  className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded hover:bg-gray-50 transition-colors shadow-sm"
                   onClick={addLine}
                 >
                   Add Line
@@ -502,7 +503,7 @@ const ReversingJournals: React.FC = () => {
               </div>
 
               {errors.lines && (
-                <div className="text-[10px] text-red-500 mb-2 p-1.5 bg-red-50 rounded border border-red-100">
+                <div className="text-[12px] text-red-500 mb-2 p-1.5 bg-red-50 rounded border border-red-100">
                   {errors.lines}
                 </div>
               )}
@@ -510,17 +511,17 @@ const ReversingJournals: React.FC = () => {
               <div className="border border-gray-200 rounded-md overflow-hidden">
                 <table className="w-full min-w-max border-collapse">
                   <thead>
-                    <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
+                      <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                         Account <span className="text-red-500">*</span>
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                      <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-32">
                         Dr Amount
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                      <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-32">
                         Cr Amount
                       </th>
-                      <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-12">
+                      <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-12">
                         Actions
                       </th>
                     </tr>
@@ -532,7 +533,7 @@ const ReversingJournals: React.FC = () => {
                           <select
                             value={line.accountId}
                             onChange={(e) => handleLineChange(index, "accountId", e.target.value)}
-                            className={`h-8 px-2.5 text-[12px] border ${errors[`account-${index}`] ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"} rounded-md bg-white focus:outline-none focus:ring-2 w-full`}
+                            className={`h-8 px-2.5 text-[12px] border ${errors[`account-${index}`] ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"} rounded-md bg-white focus:outline-none focus:ring-2 w-full`}
                           >
                             <option value="">Select Account</option>
                             {accounts
@@ -544,7 +545,7 @@ const ReversingJournals: React.FC = () => {
                               ))}
                           </select>
                           {errors[`account-${index}`] && (
-                            <div className="text-[10px] text-red-500 mt-1">
+                            <div className="text-[12px] text-red-500 mt-1">
                               {errors[`account-${index}`]}
                             </div>
                           )}
@@ -555,7 +556,7 @@ const ReversingJournals: React.FC = () => {
                             step="0.01"
                             value={line.debit}
                             onChange={(e) => handleLineChange(index, "debit", e.target.value)}
-                            className={`h-8 px-2.5 text-[12px] border ${errors[`debit-${index}`] ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"} rounded-md bg-white text-right focus:outline-none focus:ring-2 w-full`}
+                            className={`h-8 px-2.5 text-[12px] border ${errors[`debit-${index}`] ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"} rounded-md bg-white text-right focus:outline-none focus:ring-2 w-full`}
                           />
                         </td>
                         <td className="px-3 py-2 align-top">
@@ -564,7 +565,7 @@ const ReversingJournals: React.FC = () => {
                             step="0.01"
                             value={line.credit}
                             onChange={(e) => handleLineChange(index, "credit", e.target.value)}
-                            className={`h-8 px-2.5 text-[12px] border ${errors[`credit-${index}`] ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"} rounded-md bg-white text-right focus:outline-none focus:ring-2 w-full`}
+                            className={`h-8 px-2.5 text-[12px] border ${errors[`credit-${index}`] ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"} rounded-md bg-white text-right focus:outline-none focus:ring-2 w-full`}
                           />
                         </td>
                         <td className="px-3 py-2 align-top text-center">
@@ -583,7 +584,7 @@ const ReversingJournals: React.FC = () => {
                 </table>
               </div>
 
-              <div className="flex justify-end mt-3 p-3 bg-[#f5f6fa] border border-gray-200 rounded-md">
+              <div className="flex justify-end mt-3 p-3 bg-[var(--ds-canvas)] border border-gray-200 rounded-md">
                 <div className="flex items-center gap-6 text-[12px] font-semibold text-gray-800">
                   <div className="flex items-center gap-2">
                     <span className="text-gray-500">Total Debit:</span>
@@ -614,7 +615,7 @@ const ReversingJournals: React.FC = () => {
                 Cancel
               </button>
               <button
-                className="h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
+                className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
                 onClick={handleSave}
               >
                 Save Reversing Journal

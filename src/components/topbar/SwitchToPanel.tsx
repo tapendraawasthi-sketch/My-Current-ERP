@@ -14,21 +14,21 @@ interface SwitchItem {
 
 const SWITCH_ITEMS: SwitchItem[] = [
   { label: "Dashboard", category: "Reports", page: "dashboard" },
-  { label: "Trial Balance", category: "Reports", page: "trial-balance" },
-  { label: "Profit & Loss", category: "Reports", page: "profit-loss" },
-  { label: "Balance Sheet", category: "Reports", page: "balance-sheet" },
-  { label: "Cash Flow Statement", category: "Reports", page: "cash-flow" },
-  { label: "Day Book", category: "Reports", page: "day-book" },
+  { label: "Account totals check", category: "Reports", page: "trial-balance" },
+  { label: "Profit & loss", category: "Reports", page: "profit-loss" },
+  { label: "What you own & owe", category: "Reports", page: "balance-sheet" },
+  { label: "Cash flow", category: "Reports", page: "cash-flow" },
+  { label: "Today's transactions", category: "Reports", page: "day-book" },
   { label: "Cash Book", category: "Reports", page: "cash-book" },
   { label: "Bank Book", category: "Reports", page: "bank-book" },
   { label: "General Ledger", category: "Reports", page: "ledger" },
-  { label: "Sales Register", category: "Reports", page: "sales-register" },
-  { label: "Purchase Register", category: "Reports", page: "purchase-register" },
-  { label: "VAT Reports", category: "Reports", page: "vat-reports" },
-  { label: "Stock Summary", category: "Reports", page: "stock-summary" },
+  { label: "Sales register", category: "Reports", page: "sales-register" },
+  { label: "Purchase register", category: "Reports", page: "purchase-register" },
+  { label: "VAT reports", category: "Reports", page: "vat-reports" },
+  { label: "Stock summary", category: "Reports", page: "stock-summary" },
 
-  { label: "Sales Invoice", category: "Vouchers", page: "sales-invoice" },
-  { label: "Purchase Invoice", category: "Vouchers", page: "purchase-invoice" },
+  { label: "Sales invoice", category: "Vouchers", page: "sales-invoice" },
+  { label: "Purchase invoice", category: "Vouchers", page: "purchase-invoice" },
   { label: "Payment Voucher", category: "Vouchers", page: "payment" },
   { label: "Receipt Voucher", category: "Vouchers", page: "receipt" },
   { label: "Journal Entry", category: "Vouchers", page: "journal" },
@@ -41,11 +41,11 @@ const SWITCH_ITEMS: SwitchItem[] = [
   { label: "Units", category: "Masters", page: "units" },
   { label: "Employees", category: "Masters", page: "employees" },
 
-  { label: "Company Settings", category: "Admin", page: "settings" },
+  { label: "Company settings", category: "Admin", page: "settings" },
   { label: "Fiscal Year", category: "Admin", page: "fiscal-year" },
-  { label: "Users Management", category: "Admin", page: "users" },
-  { label: "Audit Log", category: "Admin", page: "audit-log" },
-  { label: "Backup & Restore", category: "Admin", page: "backup" },
+  { label: "Users", category: "Admin", page: "users" },
+  { label: "Audit log", category: "Admin", page: "audit-log" },
+  { label: "Backup & restore", category: "Admin", page: "backup" },
 ];
 
 function highlightMatch(label: string, query: string): ReactNode {

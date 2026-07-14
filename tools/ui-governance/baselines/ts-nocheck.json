@@ -1,0 +1,493 @@
+{
+  "rule": "no-ts-nocheck",
+  "generated_at": "2026-07-13T17:06:07.009Z",
+  "count": 184,
+  "ids": [
+    "000b892f2c45f6aa",
+    "017eba540cf5cf68",
+    "02524b6cdd9f995e",
+    "0365fc59675c4aef",
+    "06638cca05f5bd1b",
+    "066e72251eefeb5a",
+    "075fea5d360683f4",
+    "0a8b7d436bbf3f78",
+    "0d628c1a479e91f9",
+    "0d781a39c1a598fe",
+    "0e8eb50557120cd3",
+    "100d9781f79dcaf5",
+    "10ab47086d8ef8cf",
+    "121ee41848eda546",
+    "13e3c59309c50d98",
+    "15637b0e1c738d1d",
+    "164b7e0ffbc1ec9f",
+    "18d1643d4258bf97",
+    "19b300c56c7af6b4",
+    "1afab55ff51eff4b",
+    "1e013f163e4a36b3",
+    "1e11c8731e8f0d48",
+    "1ff5353738e066a8",
+    "215bbcb949094342",
+    "218594bb2b9db5e9",
+    "238e05ab675b94b6",
+    "2580c1c75be8c2a8",
+    "2594a2fce7ca66b2",
+    "27c8376c5c294acc",
+    "29df4c44e607ac8a",
+    "2a559fc32a23068c",
+    "2c4de2a1a7cdb1ef",
+    "2dbb016aa5a4fee7",
+    "2ead946456d65335",
+    "31e619922f13f8ce",
+    "3634cdf6ffb73b9c",
+    "380b30291c70b543",
+    "397b3538d61c2f9d",
+    "39d60a8e5c1a4b51",
+    "3a42ddfef1b7e4c4",
+    "3a4619954f96eb04",
+    "3a9aa886718c7e6a",
+    "3f8e3b47698e9638",
+    "4107262eaf2c513f",
+    "45504522dc436a19",
+    "47e09d38e807483e",
+    "4871c5d446aa6512",
+    "4a50cd5146278640",
+    "4bc6ffbeea78c350",
+    "4bdef1901cdf03cf",
+    "4c431a71fdbacba5",
+    "4dec683ac80766e3",
+    "506ec0b29741652c",
+    "509b93bbaa8d0c6e",
+    "51e38299b91bcbaa",
+    "527cdae6515e07d7",
+    "527ef090505156a0",
+    "564b0c084507b84c",
+    "5680f80feb8af62c",
+    "572745c502992d5a",
+    "57a3f24f630d1361",
+    "57de12488336b52d",
+    "5b27ada4667208df",
+    "5c3d5da0da005e43",
+    "5ee636ba27cff6a1",
+    "5fd6d8794acc07e4",
+    "601c2d109dec1f53",
+    "60823280c9847cb9",
+    "62a34f03e659da59",
+    "62e144b4efe4eb57",
+    "65811c9d08f31d6c",
+    "658e14680a47a390",
+    "65f1df2c16a3ef9e",
+    "68dbfc9591b0aa1a",
+    "6a7db81e28e79278",
+    "6bc9aad2c2eac9bc",
+    "6c4a4647695dedd5",
+    "6dfcfb9781e78925",
+    "6e89d444dc23cb6c",
+    "70c4e543e53da921",
+    "71de068fe25a14dc",
+    "72188244402fb0ef",
+    "7371231d25ac3cfa",
+    "73ee6c1b02246981",
+    "740d6254ae27630b",
+    "75740e62ce107c5f",
+    "75f0d0fb3c10f19f",
+    "77196c7206f3981c",
+    "777474463f1640f8",
+    "788a45d68a6bb762",
+    "7ab6ab1c338be237",
+    "7b4f3b65979078b7",
+    "7bad10f2dd9dbb7c",
+    "7c9c48a0fd68a6c4",
+    "7c9ebd352e70329c",
+    "7cd2da1abe13d96c",
+    "7d11c22770730790",
+    "7deb9ce466d4fe33",
+    "831195df711f1188",
+    "8579cf9991466c28",
+    "889d86cd51a2ce6a",
+    "898cdc2c476d2b9f",
+    "8a0d3e1509e32388",
+    "8aad9d22061b7210",
+    "8ad3136025720942",
+    "8ad7706bfd7dc101",
+    "8af397f64023c343",
+    "8d4ce4cc17596a01",
+    "8dd3d191b35c481d",
+    "8efce14e30746d1b",
+    "8fd6ea4cd10dc1fa",
+    "92497644ebe0f30c",
+    "9296a3888c69bb2f",
+    "940e6e89c02577b3",
+    "950074394245c3e9",
+    "96232f22dac31e9b",
+    "98c4adc8e659dbce",
+    "99724a749bb075cf",
+    "9b95994a87dddcde",
+    "9dd7a3efed041f1e",
+    "9dea8615f0de532f",
+    "9e157bd00dd6e845",
+    "9e7db60f287ac311",
+    "9f43789cdf35c97c",
+    "a19dd651d176d322",
+    "a303c4c8de3399e7",
+    "a521e3541bad4f0d",
+    "a61222b5f6dc60e7",
+    "a6db411ef052123e",
+    "a7f99c92ee7b47e2",
+    "a7fc05b61f713761",
+    "a872b0ae45dd67e7",
+    "a88f3b64170313b5",
+    "a90770b3d34c0989",
+    "a97caf5e4e5eaa1f",
+    "ac5be85891af38ad",
+    "ad6616f73f99bb73",
+    "af9010aaa09b813a",
+    "b2cc0a08412cb430",
+    "b57fb45c281b8227",
+    "b64bf2d6f407d892",
+    "b907bd5927c6fc62",
+    "bac4fcb65473d331",
+    "bc2d84c0269b096e",
+    "c10245816a0d6e9b",
+    "c27a8dad47d109ea",
+    "c486c30ca1b1269a",
+    "c6ea2eb21259d37b",
+    "c881b165368b8195",
+    "c95b691c99e82f7e",
+    "cade772f4ab8659e",
+    "ce0fb7e0f6626565",
+    "ce9afa1a57b42246",
+    "d0dbc2505e847f4f",
+    "d3229c638595f041",
+    "d510e3f09a0c7935",
+    "d5a72758151425a9",
+    "d9dd18ce75581ad1",
+    "daa56de8deaaac52",
+    "db3653f5374cd0a9",
+    "dc07eb1241d5382a",
+    "dc952362b71f446a",
+    "dd53e0ad6892f79b",
+    "dd607fb3754f3ba8",
+    "dde7c59ca9a4cc63",
+    "de5d4012f0cf3969",
+    "de888f5243faf344",
+    "e2576de5f6912a89",
+    "e306a6bbca3bb8f1",
+    "ea0efd874f47bebe",
+    "ea32c3f4724790f4",
+    "ed23a67286679cce",
+    "f065e7f616a87a00",
+    "f154430fb1415607",
+    "f2397dc459e3f9bc",
+    "f32645fc976acc74",
+    "f807e34a16f8624c",
+    "f88fd68f4fb5d1e8",
+    "f99f9c04e0f8980b",
+    "fa7d906c0c43baff",
+    "fce6520b71e3facc",
+    "fe38ebd747cec081",
+    "fe465695ae8619b1",
+    "fed888e9db2c037f"
+  ],
+  "samples": [
+    {
+      "id": "a61222b5f6dc60e7",
+      "file": "src/components/BusyMenuBar.tsx",
+      "line": 1,
+      "snippet": "// Removed @ts-nocheck"
+    },
+    {
+      "id": "238e05ab675b94b6",
+      "file": "src/components/ChartOfAccounts.tsx",
+      "line": 2,
+      "snippet": "// Removed @ts-nocheck"
+    },
+    {
+      "id": "96232f22dac31e9b",
+      "file": "src/components/delivery/ChallanForm.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "47e09d38e807483e",
+      "file": "src/components/Gateway.tsx",
+      "line": 1,
+      "snippet": "// Removed @ts-nocheck"
+    },
+    {
+      "id": "b2cc0a08412cb430",
+      "file": "src/components/InvoiceHub.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "19b300c56c7af6b4",
+      "file": "src/components/item/ItemForm.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "e306a6bbca3bb8f1",
+      "file": "src/components/MultiModePayment.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "d9dd18ce75581ad1",
+      "file": "src/components/order/OrderForm.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "65f1df2c16a3ef9e",
+      "file": "src/components/PartiesDirectory.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "4dec683ac80766e3",
+      "file": "src/components/party/PartyForm.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "0d781a39c1a598fe",
+      "file": "src/components/pl/PLDrillDown.tsx",
+      "line": 2,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "380b30291c70b543",
+      "file": "src/components/pl/PLHorizontal.tsx",
+      "line": 2,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "a7fc05b61f713761",
+      "file": "src/components/pl/PLOptionsDialog.tsx",
+      "line": 2,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "ad6616f73f99bb73",
+      "file": "src/components/pl/PLToolbar.tsx",
+      "line": 2,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "564b0c084507b84c",
+      "file": "src/components/Sidebar.tsx",
+      "line": 1,
+      "snippet": "// Removed @ts-nocheck"
+    },
+    {
+      "id": "8d4ce4cc17596a01",
+      "file": "src/components/tally/BackupRestore.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "0d628c1a479e91f9",
+      "file": "src/components/tally/ControlCentre.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "0365fc59675c4aef",
+      "file": "src/components/tally/DataExportImport.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "a521e3541bad4f0d",
+      "file": "src/components/tally/F11CompanyFeatures.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "99724a749bb075cf",
+      "file": "src/components/tally/PrintConfiguration.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "c6ea2eb21259d37b",
+      "file": "src/components/tally/RolesManagement.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "7371231d25ac3cfa",
+      "file": "src/components/tally/SecurityControl.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "06638cca05f5bd1b",
+      "file": "src/components/tally/TallySalesVoucher.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "b907bd5927c6fc62",
+      "file": "src/components/tally/TallyVoucherClass.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "6a7db81e28e79278",
+      "file": "src/components/tally/TallyVoucherConfig.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "a19dd651d176d322",
+      "file": "src/components/tally/TallyVoucherEntry.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "de888f5243faf344",
+      "file": "src/components/tax/VatAnnexExport.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "bc2d84c0269b096e",
+      "file": "src/components/ui/AccountSelect.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "a303c4c8de3399e7",
+      "file": "src/components/ui/BatchSerialSelector.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "f154430fb1415607",
+      "file": "src/components/ui/CalculatorPanel.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "3f8e3b47698e9638",
+      "file": "src/components/ui/DualDate.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "2a559fc32a23068c",
+      "file": "src/components/ui/LanguageModal.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "c95b691c99e82f7e",
+      "file": "src/components/ui/SearchableTable.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "9e7db60f287ac311",
+      "file": "src/components/ui/Select.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "5c3d5da0da005e43",
+      "file": "src/components/voucher/PaymentVoucherForm.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "f88fd68f4fb5d1e8",
+      "file": "src/components/voucher/ReceiptVoucherForm.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "dde7c59ca9a4cc63",
+      "file": "src/components/VoucherApprovalWorkflow.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "4bc6ffbeea78c350",
+      "file": "src/components/VoucherClone.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "98c4adc8e659dbce",
+      "file": "src/components/VouchersRegister.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "100d9781f79dcaf5",
+      "file": "src/context/ScreenContext.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "1e013f163e4a36b3",
+      "file": "src/hooks/usePermissions.ts",
+      "line": 2,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "5ee636ba27cff6a1",
+      "file": "src/hooks/useRightBarButtons.ts",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "f2397dc459e3f9bc",
+      "file": "src/lib/balanceSheetEngine.ts",
+      "line": 2,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "788a45d68a6bb762",
+      "file": "src/lib/db.ts",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "1ff5353738e066a8",
+      "file": "src/lib/db.ts",
+      "line": 1935,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "c486c30ca1b1269a",
+      "file": "src/lib/fxUtils.ts",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "c10245816a0d6e9b",
+      "file": "src/lib/nepalTax.ts",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "d3229c638595f041",
+      "file": "src/lib/recurringUtils.ts",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "8efce14e30746d1b",
+      "file": "src/pages/AccountGroupMaster.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    },
+    {
+      "id": "72188244402fb0ef",
+      "file": "src/pages/AdvancedReportHub.tsx",
+      "line": 1,
+      "snippet": "// @ts-nocheck"
+    }
+  ]
+}

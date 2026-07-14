@@ -8,11 +8,11 @@ import PLVertical from "../components/pl/PLVertical";
 import PLMonthlySummary from "../components/pl/PLMonthlySummary";
 import PLDetailedMonthly from "../components/pl/PLDetailedMonthly";
 import PLDrillDown from "../components/pl/PLDrillDown";
-import PLToolbar from "../components/pl/PLToolbar";
+import { ReportWorkspace } from "@/features/reports";
 import { computeProfitLoss, exportPLToExcel, exportPLToCSV } from "../lib/profitLossEngine";
 import type { PLReportOptions, PLComputation, PLDrillState } from "../lib/plTypes";
 import { RefreshCw, AlertTriangle } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 import NepalFinancialStatementView from "../components/reports/NepalFinancialStatementView";
 import {
@@ -241,107 +241,157 @@ export default function ProfitLoss() {
     );
   }
 
-  return (
-    <div className="erp-report flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-hidden">
-      <PLToolbar
-        options={options}
-        onOpenOptions={() => setShowOptionsDialog(true)}
-        onRefresh={handleRefresh}
-        onExportExcel={handleExportExcel}
-        onExportCSV={handleExportCSV}
-        onExportPDF={handleExportPDF}
-        loading={loading}
-        hasDrill={drillState.level > 0}
-        onBack={handleDrillBack}
-        drillState={drillState}
-        companyName={companyName}
-        plData={plData}
-        closingStock={closingStockOverride ?? plData?.closingStock}
-        onClosingStockChange={handleClosingStockUpdate}
-      />
+  const periodLabel = `${options.fromDate} to ${options.toDate}`;
 
+  return (
+    <ReportWorkspace
+      title="Profit and loss"
+      description="Income and expenses for the period."
+      companyName={companyName}
+      nameNepali={companySettings?.companyNameNe || companySettings?.nameNepali}
+      pan={companySettings?.panNumber || companySettings?.vatNumber}
+      periodLabel={periodLabel}
+      status={
+        plData
+          ? {
+              tone: plData.netProfit >= 0 ? "success" : "danger",
+              label: `${plData.netProfitLabel}: Rs. ${fmtMoney(Math.abs(plData.netProfit))}`,
+            }
+          : undefined
+      }
+      onRefresh={handleRefresh}
+      onPrint={handleExportPDF}
+      onExportExcel={handleExportExcel}
+      onExportCsv={handleExportCSV}
+      onExportPdf={handleExportPDF}
+      onOptions={() => setShowOptionsDialog(true)}
+      breadcrumb={
+        drillState.level > 0 ? (
+          <div className="flex flex-wrap items-center gap-2 text-[13px]">
+            <button
+              type="button"
+              onClick={handleDrillBack}
+              className="rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-2.5 py-1 text-[13px] font-medium hover:bg-[var(--ds-surface-hover)]"
+            >
+              Back
+            </button>
+            <span className="text-[var(--ds-text-muted)]">
+              {[
+                drillState.selectedGroupLabel,
+                drillState.selectedAccountName,
+                drillState.level >= 3 ? "Voucher" : null,
+              ]
+                .filter(Boolean)
+                .join(" · ")}
+            </span>
+          </div>
+        ) : null
+      }
+      filterSlot={
+        options.updateClosingStock ? (
+          <label className="flex flex-col gap-1 text-[12px] text-[var(--ds-text-muted)]">
+            Closing stock (Rs.)
+            <input
+              type="number"
+              className="h-8 w-36 rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-2.5 text-[13px] text-[var(--ds-text-default)]"
+              value={closingStockOverride ?? plData?.closingStock ?? ""}
+              onChange={(e) => {
+                const v = Number(e.target.value);
+                if (!Number.isNaN(v)) handleClosingStockUpdate(v);
+              }}
+            />
+          </label>
+        ) : (
+          <span className="text-[12px] text-[var(--ds-text-muted)]">
+            {VARIANT_LABELS[options.variant]}
+          </span>
+        )
+      }
+      kpiSlot={
+        !loading && !error && plData && drillState.level === 0 ? (
+          <>
+            <div className="rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-3 py-2.5">
+              <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
+                Sales
+              </p>
+              <p className="mt-0.5 font-mono text-[13px] font-semibold text-[var(--ds-text-default)]">
+                {fmtMoney(plData.sales.total)}
+              </p>
+            </div>
+            <div className="rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-3 py-2.5">
+              <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
+                Purchases
+              </p>
+              <p className="mt-0.5 font-mono text-[13px] font-semibold text-[var(--ds-text-default)]">
+                {fmtMoney(plData.purchases.total)}
+              </p>
+            </div>
+            <div className="rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-3 py-2.5">
+              <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
+                {plData.grossProfitLabel}
+              </p>
+              <p
+                className={`mt-0.5 font-mono text-[13px] font-semibold ${
+                  plData.grossProfit >= 0
+                    ? "text-[var(--ds-action-primary)]"
+                    : "text-[var(--ds-status-danger)]"
+                }`}
+              >
+                {fmtMoney(Math.abs(plData.grossProfit))}
+              </p>
+            </div>
+            <div className="rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-3 py-2.5">
+              <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
+                {plData.netProfitLabel}
+              </p>
+              <p
+                className={`mt-0.5 font-mono text-[13px] font-semibold ${
+                  plData.netProfit >= 0
+                    ? "text-[var(--ds-status-success)]"
+                    : "text-[var(--ds-status-danger)]"
+                }`}
+              >
+                {fmtMoney(Math.abs(plData.netProfit))}
+              </p>
+            </div>
+          </>
+        ) : null
+      }
+    >
       {loading && (
-        <div className="flex flex-1 items-center justify-center min-h-[200px]">
+        <div className="flex min-h-[200px] flex-1 items-center justify-center">
           <div className="flex flex-col items-center gap-3">
-            <RefreshCw className="h-7 w-7 animate-spin text-[#1557b0]" />
-            <p className="text-[12px] text-gray-600 font-medium">Computing profit & loss…</p>
+            <RefreshCw className="h-7 w-7 animate-spin text-[var(--ds-action-primary)]" />
+            <p className="text-[13px] font-medium text-[var(--ds-text-muted)]">
+              Computing profit & loss…
+            </p>
           </div>
         </div>
       )}
 
       {error && !loading && (
-        <div className="m-4 p-4 bg-red-50 border border-red-200 rounded-md flex items-start gap-3">
-          <AlertTriangle className="h-5 w-5 text-red-500 shrink-0 mt-0.5" />
+        <div className="m-1 flex items-start gap-3 rounded-md border border-[var(--ds-status-danger)]/30 bg-[var(--ds-status-danger-surface)] p-4">
+          <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-[var(--ds-status-danger)]" />
           <div>
-            <p className="text-[12px] font-semibold text-red-700">Computation error</p>
-            <p className="text-[12px] text-red-600 mt-1">{error}</p>
-            <p className="text-[11px] text-red-500 mt-1">
+            <p className="text-[13px] font-semibold text-[var(--ds-status-danger)]">
+              Computation error
+            </p>
+            <p className="mt-1 text-[13px] text-[var(--ds-status-danger)]">{error}</p>
+            <p className="mt-1 text-[12px] text-[var(--ds-text-muted)]">
               Tip: Ensure account groups are correctly classified (Sales, Purchase, Direct/Indirect
-              Expenses/Income). Go to Chart of Accounts and verify each account's group type.
+              Expenses/Income). Go to Chart of Accounts and verify each account&apos;s group type.
             </p>
           </div>
         </div>
       )}
 
       {!loading && !error && !plData && (
-        <div className="flex-1 p-4 min-h-0">
-          <div className="bg-white border border-gray-200 rounded-md">
-            <ReportEmptyState
-              message="Profit & loss not loaded"
-              hint="Open Options and confirm settings, or click Refresh to compute the report."
-            />
-          </div>
-        </div>
+        <ReportEmptyState
+          message="Profit & loss not loaded"
+          hint="Open Options and confirm settings, or click Refresh to compute the report."
+        />
       )}
 
-      {!loading && !error && plData && drillState.level === 0 && (
-        <div className="no-print px-4 pt-3 shrink-0">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                Sales
-              </p>
-              <p className="text-[12px] text-gray-800 mt-0.5 number-cell-bold">
-                {fmtMoney(plData.sales.total)}
-              </p>
-            </div>
-            <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                Purchases
-              </p>
-              <p className="text-[12px] text-gray-800 mt-0.5 number-cell-bold">
-                {fmtMoney(plData.purchases.total)}
-              </p>
-            </div>
-            <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                {plData.grossProfitLabel}
-              </p>
-              <p
-                className={`text-[12px] mt-0.5 number-cell-bold ${
-                  plData.grossProfit >= 0 ? "text-[#1557b0]" : "text-red-700"
-                }`}
-              >
-                {fmtMoney(Math.abs(plData.grossProfit))}
-              </p>
-            </div>
-            <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
-                {plData.netProfitLabel}
-              </p>
-              <p
-                className={`text-[12px] mt-0.5 number-cell-bold ${
-                  plData.netProfit >= 0 ? "text-green-700" : "text-red-700"
-                }`}
-              >
-                {fmtMoney(Math.abs(plData.netProfit))}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Drill-down overlay */}
       {drillState.level > 0 && !loading && (
         <PLDrillDown
           drillState={drillState}
@@ -354,7 +404,7 @@ export default function ProfitLoss() {
       )}
 
       {!loading && !error && plData && drillState.level === 0 && (
-        <div ref={reportRef} className="flex-1 overflow-auto p-4 min-h-0">
+        <div ref={reportRef}>
           <FinancialStatementHeader
             companyName={companyName}
             companyNameNepali={companySettings?.companyNameNe || companySettings?.nameNepali}
@@ -402,7 +452,7 @@ export default function ProfitLoss() {
             <FinancialStatementFooter />
           )}
 
-          <div className="mt-4 px-3 py-2 bg-white border border-gray-200 rounded-md text-[11px] text-gray-500 no-print">
+          <div className="mt-4 rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-3 py-2 text-[12px] text-[var(--ds-text-muted)] ds-no-print no-print">
             {VARIANT_LABELS[options.variant]} · {plData.fromDate} to {plData.toDate}
             {options.showSecondLevel && " · Detailed view"}
             {options.showPercentage && " · %"}
@@ -410,6 +460,6 @@ export default function ProfitLoss() {
           </div>
         </div>
       )}
-    </div>
+    </ReportWorkspace>
   );
 }

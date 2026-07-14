@@ -1,0 +1,35 @@
+{
+  "generated_at": "2026-07-14T05:44:40+00:00",
+  "records_scored": 5694440,
+  "average_quality_score": 0.8883,
+  "eligibility_counts": {
+    "evaluation_only": 12222,
+    "eligible": 5679769,
+    "eligible_with_warning": 2449
+  },
+  "exact_duplicate_hash_count": 0,
+  "exact_duplicate_record_instances": 0,
+  "near_duplicate_pairs_sampled": 2523,
+  "contradiction_candidates": 0,
+  "collection_counts": {
+    "adversarial_tests": 9445,
+    "authorization_rules": 16,
+    "dialogue_examples": 2097,
+    "domain_records": 5616704,
+    "entity_examples": 2511,
+    "gold_tests": 2777,
+    "intent_examples": 24045,
+    "language_rules": 4999,
+    "lexicon": 4996,
+    "normalization_examples": 290,
+    "safety_rules": 11901,
+    "slot_examples": 3723,
+    "unclassified_records": 10936
+  },
+  "method": {
+    "exact": "streaming content_hash frequency",
+    "near": "bounded SimHash buckets (no all-pairs)",
+    "contradictions": "surface-text execution/intent conflict map (capped)",
+    "quality_score": "explainable weighted components; annotations only — no deletions"
+  }
+}

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Keyboard, Save, X, Edit2, Check } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { useKeyboardShortcuts, Shortcut } from "../hooks/useKeyboardShortcuts";
 import { getDB } from "../lib/db";
 

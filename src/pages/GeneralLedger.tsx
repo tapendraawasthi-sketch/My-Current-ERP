@@ -183,12 +183,12 @@ const GeneralLedger: React.FC = () => {
   }
 
   return (
-    <div className="p-4 bg-[#f5f6fa] min-h-screen flex flex-col">
+    <div className="p-4 bg-[var(--ds-surface-muted)] min-h-screen flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">General Ledger</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
-            Browse account groups, sub-groups, and ledger statements
+          <h1 className="text-[15px] font-semibold text-gray-800">Account activity</h1>
+          <p className="text-[12px] text-gray-500 mt-0.5">
+            History of one account — pick a ledger to open the statement.
           </p>
         </div>
       </div>
@@ -198,7 +198,7 @@ const GeneralLedger: React.FC = () => {
           ref={treeRef}
           tabIndex={0}
           onKeyDown={handleKeyDown}
-          className="overflow-y-auto flex-1 outline-none focus:ring-2 focus:ring-[#1557b0]/20"
+          className="overflow-y-auto flex-1 outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
         >
           <table className="data-table w-full">
             <thead>
@@ -279,7 +279,7 @@ const GeneralLedger: React.FC = () => {
           </table>
         </div>
 
-        <div className="border-t border-gray-200 px-4 py-2 text-[11px] text-gray-500">
+        <div className="border-t border-gray-200 px-4 py-2 text-[12px] text-gray-500">
           ↑↓ Navigate · → Expand · ← Collapse · Enter Open · Type to search
         </div>
       </div>

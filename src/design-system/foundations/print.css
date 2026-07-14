@@ -1,0 +1,44 @@
+/* Print foundations — light only, no chrome */
+
+@media print {
+  .ds-print-root,
+  .ds-print-root * {
+    background: #ffffff !important;
+    color: #17212b !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  .ds-no-print {
+    display: none !important;
+  }
+
+  .ds-print-only {
+    display: block !important;
+  }
+
+  .ds-print-break-before {
+    break-before: page;
+  }
+
+  .ds-print-break-after {
+    break-after: page;
+  }
+
+  .ds-print-avoid-break {
+    break-inside: avoid;
+  }
+
+  thead.ds-print-repeat {
+    display: table-header-group;
+  }
+
+  .ds-financial-value,
+  .ds-financial-total {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+}
+
+.ds-print-only {
+  display: none;
+}

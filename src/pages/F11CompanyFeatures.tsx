@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState, useEffect } from "react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { useStore } from "../store/useStore";
 import { useTallyKeyboard } from "../hooks/useTallyKeyboard";
 

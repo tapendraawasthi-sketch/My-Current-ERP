@@ -1,11 +1,10 @@
 // @ts-nocheck
 import React, { useState, useMemo } from "react";
 import { ActionToolbar, Select, NepaliDatePicker, Button, Badge } from "../components/ui";
-import { PillTitle, FormPanel } from "../components/BusyShell";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
 import { generateId } from "../lib/db";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { Send, Plus, Eye, Download, Upload, FileText } from "lucide-react";
 import { formatADToBS } from "../lib/nepaliDate";
 
@@ -354,7 +353,9 @@ ${paymentsXml}
         </ActionToolbar>
 
         <div className="flex-1 overflow-auto p-4">
-          <FormPanel title="Batch Details">
+          <div className="mb-4 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-4">
+            <h3 className="mb-3 text-[13px] font-semibold text-[var(--ds-text-strong)]">Batch Details</h3>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div>
                 <p>
@@ -402,9 +403,11 @@ ${paymentsXml}
                 </p>
               )}
             </div>
-          </FormPanel>
+          </div>
 
-          <FormPanel title="Payment Entries">
+          <div className="mb-4 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-4">
+            <h3 className="mb-3 text-[13px] font-semibold text-[var(--ds-text-strong)]">Payment Entries</h3>
+
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50">
@@ -451,7 +454,7 @@ ${paymentsXml}
                 </tbody>
               </table>
             </div>
-          </FormPanel>
+          </div>
 
           <div className="mt-6 flex gap-3">
             <Button
@@ -523,7 +526,9 @@ ${paymentsXml}
         </ActionToolbar>
 
         <div className="flex-1 overflow-auto p-4">
-          <FormPanel title="Batch Information">
+          <div className="mb-4 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-4">
+            <h3 className="mb-3 text-[13px] font-semibold text-[var(--ds-text-strong)]">Batch Information</h3>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div>
                 <Select
@@ -576,9 +581,11 @@ ${paymentsXml}
                 placeholder="Additional notes..."
               />
             </div>
-          </FormPanel>
+          </div>
 
-          <FormPanel title="Payment Type Rules">
+          <div className="mb-4 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-4">
+            <h3 className="mb-3 text-[13px] font-semibold text-[var(--ds-text-strong)]">Payment Type Rules</h3>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div>
                 <label className="block text-sm font-medium mb-1">RTGS Threshold (₹)</label>
@@ -607,9 +614,11 @@ ${paymentsXml}
                 </label>
               </div>
             </div>
-          </FormPanel>
+          </div>
 
-          <FormPanel title="Select Payment Vouchers">
+          <div className="mb-4 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-4">
+            <h3 className="mb-3 text-[13px] font-semibold text-[var(--ds-text-strong)]">Select Payment Vouchers</h3>
+
             <p className="text-sm text-gray-600 mb-4">
               Select payment vouchers to include in this batch
             </p>
@@ -709,7 +718,7 @@ ${paymentsXml}
                 <p className="font-bold text-blue-800">{formatNumber(totalAmount)}</p>
               </div>
             </div>
-          </FormPanel>
+          </div>
 
           <div className="mt-6 flex justify-end gap-3">
             <Button variant="outline" onClick={() => setView("list")}>

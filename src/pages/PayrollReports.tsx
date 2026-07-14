@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import * as XLSX from "xlsx";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { CalendarDays, Download, Printer, RefreshCcw, ShieldCheck, Users } from "lucide-react";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 

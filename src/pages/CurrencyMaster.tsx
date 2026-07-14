@@ -19,7 +19,7 @@ import Modal from "../components/ui/Modal";
 import Table from "../components/ui/Table";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 const CurrencyMaster: React.FC = () => {
   const {

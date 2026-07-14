@@ -1,0 +1,11 @@
+/* Design-system entry stylesheet */
+@import "./tokens.css";
+@import "./typography.css";
+@import "./focus.css";
+@import "./print.css";
+
+.ds-root {
+  font-family: var(--ds-font-sans);
+  color: var(--ds-text-default);
+  background: var(--ds-canvas);
+}

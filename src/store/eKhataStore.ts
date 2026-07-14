@@ -20,6 +20,26 @@ import {
 import { legacyCardFromResponse, relatedDraftId } from "../lib/ekhata/orbixResponseAdapter";
 import { parseOrbixResponse } from "../lib/ekhata/orbixResponseAdapter";
 import type { OrbixResponse } from "../lib/ekhata/orbixResponseTypes";
+import type { PostingCompletedPayload } from "../lib/ekhata/orbixResponseTypes";
+
+function normalizePostingSyncStatus(
+  raw: string | undefined | null,
+): PostingCompletedPayload["sync_status"] | undefined {
+  if (!raw) return undefined;
+  const allowed: NonNullable<PostingCompletedPayload["sync_status"]>[] = [
+    "pending",
+    "disabled",
+    "syncing",
+    "synced",
+    "failed",
+    "conflict",
+    "waiting_to_sync",
+    "offline_will_sync",
+  ];
+  return (allowed as string[]).includes(raw)
+    ? (raw as NonNullable<PostingCompletedPayload["sync_status"]>)
+    : "pending";
+}
 import {
   createConversationContext,
   processEKhataMessageAsync,
@@ -266,6 +286,8 @@ export interface EKhataState {
   activeTools: string[];
   engineLabel: string;
   orbixMode: OrbixOperatingMode;
+  /** Last stream Language-KB hints (interpretation only; not posting authority). */
+  lastNpKb: import("../lib/ekhata/orbixQwenClient").OrbixNpKbHint | null;
   openPanel: () => void;
   openWithPendingCard: (card: KhataConfirmationCard) => void;
   closePanel: () => void;
@@ -304,6 +326,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
   activeTools: [],
   engineLabel: "qwen3",
   orbixMode: loadOrbixOperatingMode(),
+  lastNpKb: null,
 
   setOrbixMode: (mode: OrbixOperatingMode) => {
     saveOrbixOperatingMode(mode);
@@ -586,7 +609,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
               return { streamingText: next, messages: nextMessages };
             });
           },
-          onComplete: ({ message, card, action, response, draft_id }) => {
+          onComplete: ({ message, card, action, response, draft_id, npKb }) => {
             const typed = response;
             const draftId =
               draft_id ||
@@ -627,6 +650,7 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
               engineLabel: `qwen3 (${llmStatus.model || "32b"})`,
               llmOnline: true,
               llmModel: llmStatus.model,
+              lastNpKb: npKb && npKb.enabled ? npKb : null,
             });
           },
           onError: async () => {
@@ -1071,6 +1095,9 @@ export const useEKhataStore = create<EKhataState>((set, get) => ({
             currency: "NPR",
             posted_at: result.payload.posted_at || null,
             idempotent_replay: Boolean(result.payload.idempotent_replay),
+            // Pass through authoritative sync state — never invent "synced"
+            sync_status: normalizePostingSyncStatus(result.payload.sync_status),
+            sync_event_id: result.payload.sync_event_id ?? null,
           },
         },
         relatedDraftId: result.payload.draft_id,

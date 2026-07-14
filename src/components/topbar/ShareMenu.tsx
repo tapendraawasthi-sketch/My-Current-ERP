@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import QRCode from "qrcode";
 import { useStore } from "@/store/useStore";
 import { useTopMenuContext } from "@/hooks/useTopMenuContext";

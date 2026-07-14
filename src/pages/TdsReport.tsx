@@ -1,18 +1,19 @@
 // @ts-nocheck
 import React, { useState, useMemo } from "react";
+import { ReportWorkspace } from "@/features/reports";
 import { useStore } from "../store/useStore";
 import { FileSpreadsheet, FileCheck, X } from "lucide-react";
 import { formatNumber } from "../lib/utils";
 import { exportTdsReturnToExcel } from "../lib/exportUtils";
 import { VoucherType, VoucherStatus } from "../lib/types";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 
 const inputCls =
-  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full";
-const labelCls = "block text-[11px] font-medium text-gray-600 mb-1";
+  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full";
+const labelCls = "block text-[12px] font-medium text-gray-600 mb-1";
 const btnPrimary =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 
@@ -180,14 +181,10 @@ export default function TdsReport() {
   }, [filteredEntries]);
 
   return (
-    <div className="erp-report flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-y-auto p-4 md:p-6">
-      <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
-        <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">TDS register</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
-            Section-wise TDS records for Income Tax Act 2058
-          </p>
-        </div>
+    <ReportWorkspace
+      title="TDS report"
+      description="Tax deducted at source."
+    >
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -242,7 +239,7 @@ export default function TdsReport() {
             </select>
           </div>
         </div>
-        <p className="text-[11px] text-gray-500 mt-2">
+        <p className="text-[12px] text-gray-500 mt-2">
           {filteredEntries.length} TDS entr{filteredEntries.length === 1 ? "y" : "ies"}
         </p>
       </div>
@@ -250,7 +247,7 @@ export default function TdsReport() {
       {filteredEntries.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
           <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
               Total gross
             </p>
             <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
@@ -258,7 +255,7 @@ export default function TdsReport() {
             </p>
           </div>
           <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
               Total TDS deducted
             </p>
             <p className="text-[14px] font-semibold text-red-700 mt-0.5 font-mono">
@@ -266,7 +263,7 @@ export default function TdsReport() {
             </p>
           </div>
           <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
               Total net paid
             </p>
             <p className="text-[14px] font-semibold text-green-700 mt-0.5 font-mono">
@@ -293,47 +290,47 @@ export default function TdsReport() {
 
             return (
               <div key={sec} className="bg-white border border-gray-200 rounded-md overflow-hidden">
-                <div className="px-3 py-2 border-b border-gray-200 bg-[#f5f6fa] flex justify-between items-center">
+                <div className="px-3 py-2 border-b border-gray-200 bg-[var(--ds-surface-muted)] flex justify-between items-center">
                   <h3 className="text-[12px] font-semibold text-gray-800">Section {sec}</h3>
-                  <span className="text-[11px] text-gray-500">
+                  <span className="text-[12px] text-gray-500">
                     {entries.length} entr{entries.length === 1 ? "y" : "ies"}
                   </span>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full min-w-[900px] border-collapse">
                     <thead>
-                      <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                        <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
+                        <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                           Date (BS)
                         </th>
-                        <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                           Party
                         </th>
-                        <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                           PAN
                         </th>
-                        <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                           Payment nature
                         </th>
-                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                           Gross amount
                         </th>
-                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                           TDS rate
                         </th>
-                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                           TDS amount
                         </th>
-                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                           Net paid
                         </th>
-                        <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                           Status
                         </th>
-                        <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                        <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                           Challan no.
                         </th>
-                        <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                        <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
                           Actions
                         </th>
                       </tr>
@@ -342,7 +339,7 @@ export default function TdsReport() {
                       {entries.map((entry) => (
                         <tr
                           key={entry.id}
-                          className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] border-b border-gray-100"
+                          className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)] border-b border-gray-100"
                         >
                           <td className="px-3 py-2.5 text-[12px] text-gray-700">{entry.dateBS}</td>
                           <td className="px-3 py-2.5 text-[12px] font-medium text-gray-800">
@@ -368,7 +365,7 @@ export default function TdsReport() {
                           </td>
                           <td className="px-3 py-2.5 text-center">
                             <span
-                              className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${statusBadgeCls(entry.status)}`}
+                              className={`rounded px-2 py-0.5 text-[12px] font-semibold uppercase ${statusBadgeCls(entry.status)}`}
                             >
                               {entry.status || "pending"}
                             </span>
@@ -381,7 +378,7 @@ export default function TdsReport() {
                               <button
                                 type="button"
                                 onClick={() => openChallanModal(entry.id)}
-                                className="h-7 px-2 bg-white border border-gray-300 text-gray-700 text-[11px] font-medium rounded-md hover:bg-gray-50 opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="h-7 px-2 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 opacity-0 group-hover:opacity-100 transition-opacity"
                               >
                                 Generate challan
                               </button>
@@ -391,7 +388,7 @@ export default function TdsReport() {
                       ))}
                     </tbody>
                     <tfoot>
-                      <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
+                      <tr className="bg-[var(--ds-action-primary)] border-t-2 border-[var(--ds-border-default)] font-bold text-[12px]">
                         <td colSpan={4} className="px-3 py-2.5 text-right text-gray-800">
                           Section {sec} total
                         </td>
@@ -410,7 +407,7 @@ export default function TdsReport() {
                     </tfoot>
                   </table>
                 </div>
-                <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+                <div className="px-3 py-2 border-t border-gray-200 bg-[var(--ds-surface-muted)] text-[12px] text-gray-500">
                   {entries.length} record{entries.length === 1 ? "" : "s"} in section {sec}
                 </div>
               </div>
@@ -421,15 +418,15 @@ export default function TdsReport() {
 
       {showChallanModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          className="fixed inset-0 z-[var(--ds-z-dropdown)] flex items-center justify-center bg-black/50 p-4"
           onClick={(e) => {
             if (e.target === e.currentTarget) setShowChallanModal(false);
           }}
         >
           <div className="w-full max-w-md bg-white rounded-md shadow-xl overflow-hidden">
-            <div className="px-4 py-3 border-b border-gray-200 bg-[#f5f6fa] flex items-center justify-between">
+            <div className="px-4 py-3 border-b border-gray-200 bg-[var(--ds-surface-muted)] flex items-center justify-between">
               <h2 className="text-[13px] font-semibold text-gray-800 flex items-center gap-2">
-                <FileCheck className="h-4 w-4 text-[#1557b0]" />
+                <FileCheck className="h-4 w-4 text-[var(--ds-action-primary)]" />
                 Generate challan
               </h2>
               <button
@@ -544,6 +541,6 @@ export default function TdsReport() {
           </div>
         </div>
       )}
-    </div>
+    </ReportWorkspace>
   );
 }

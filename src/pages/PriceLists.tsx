@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState, useMemo } from "react";
 import { useStore } from "../store";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { DBPriceList, DBPriceListLine } from "../lib/db";
 import {
   Plus,

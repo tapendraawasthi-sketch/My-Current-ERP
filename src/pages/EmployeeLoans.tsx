@@ -1,14 +1,10 @@
 import React from "react";
-import ReportShell from "../components/reporting/ReportShell";
+import { ReportWorkspace } from "@/features/reports";
 
 export default function EmployeeLoans() {
   return (
-    <ReportShell
-      title="Employee Loans & Advances"
-      subtitle="Track active loans and salary advances"
-      hasData={false}
-    >
-      <div className="p-4 text-gray-500 text-sm">Employee Loans module is under construction.</div>
-    </ReportShell>
+    <ReportWorkspace title="Employee loans" description="Loans to staff.">
+      <div className="p-4 text-[12px] text-gray-500">Employee loans module is under construction.</div>
+    </ReportWorkspace>
   );
 }

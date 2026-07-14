@@ -106,15 +106,16 @@ export default function SalesAnalysisReport() {
   const maxSales = analysisData.length > 0 ? Math.max(...analysisData.map((r) => r.totalSales)) : 1;
 
   const inputCls =
-    "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
-  const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
+    "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
+  const labelCls = "text-[12px] font-medium text-gray-600 mb-1 block";
 
   return (
-    <div className="erp-report flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-y-auto p-4 md:p-6">
+    <div className="erp-report flex h-full min-h-0 flex-col bg-[var(--ds-canvas)] overflow-y-auto p-4 md:p-6">
       <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Sales Analysis Report</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
+          <h1 className="text-[15px] font-semibold text-gray-800">Sales analysis</h1>
+          <p className="text-[12px] text-gray-500 mt-0.5">Sales breakdown.</p>
+          <p className="text-[12px] text-gray-500 mt-0.5">
             Party turnover, item-wise sales, month-wise trends and purchase analysis
           </p>
         </div>
@@ -174,7 +175,7 @@ export default function SalesAnalysisReport() {
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
         <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
-          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+          <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
             Total {voucherType === "purchase" ? "purchases" : "sales"}
           </p>
           <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
@@ -182,13 +183,13 @@ export default function SalesAnalysisReport() {
           </p>
         </div>
         <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
-          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+          <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
             Total invoices
           </p>
           <p className="text-[14px] font-semibold text-gray-800 mt-0.5">{totals.totalInvoices}</p>
         </div>
         <div className="bg-white border border-gray-200 rounded-md px-3 py-2.5">
-          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+          <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
             Avg per invoice
           </p>
           <p className="text-[14px] font-semibold text-gray-800 mt-0.5 font-mono">
@@ -199,8 +200,8 @@ export default function SalesAnalysisReport() {
       </div>
 
       <div className="bg-white border border-gray-200 rounded-md overflow-hidden flex-1 min-h-0 flex flex-col">
-        <div className="px-3 py-2 border-b border-gray-200 bg-[#f5f6fa]">
-          <span className="text-[11px] font-semibold text-gray-600">
+        <div className="px-3 py-2 border-b border-gray-200 bg-[var(--ds-canvas)]">
+          <span className="text-[12px] font-semibold text-gray-600">
             Analysis by{" "}
             {groupBy === "party" ? "party/account" : groupBy === "item" ? "item" : "month"} —{" "}
             {analysisData.length} records
@@ -217,30 +218,30 @@ export default function SalesAnalysisReport() {
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                       #
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                       {groupBy === "party"
                         ? "Party / Account"
                         : groupBy === "item"
                           ? "Item Name"
                           : "Month"}
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                       Invoices
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                       Total Qty
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                       Avg/Invoice
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                       Total Amount
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-36">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-36">
                       Share
                     </th>
                   </tr>
@@ -253,9 +254,9 @@ export default function SalesAnalysisReport() {
                     return (
                       <tr
                         key={row.key}
-                        className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] border-b border-gray-100"
+                        className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)] border-b border-gray-100"
                       >
-                        <td className="px-3 py-2.5 text-[11px] text-gray-400">{idx + 1}</td>
+                        <td className="px-3 py-2.5 text-[12px] text-gray-400">{idx + 1}</td>
                         <td className="px-3 py-2.5 text-[12px] font-medium text-gray-800">
                           {row.label}
                         </td>
@@ -275,11 +276,11 @@ export default function SalesAnalysisReport() {
                           <div className="flex items-center gap-2">
                             <div className="flex-1 bg-gray-100 rounded-full h-1.5 overflow-hidden">
                               <div
-                                className="bg-[#1557b0] h-full rounded-full"
+                                className="bg-[var(--ds-action-primary)] h-full rounded-full"
                                 style={{ width: `${barWidth}%` }}
                               />
                             </div>
-                            <span className="text-[10px] text-gray-500 w-10 text-right">
+                            <span className="text-[12px] text-gray-500 w-10 text-right">
                               {share.toFixed(1)}%
                             </span>
                           </div>
@@ -291,7 +292,7 @@ export default function SalesAnalysisReport() {
               </table>
             </div>
 
-            <div className="px-3 py-2.5 border-t-2 border-[#c7d2fe] bg-[#eef2ff] flex justify-between text-[12px] font-semibold text-gray-800">
+            <div className="px-3 py-2.5 border-t-2 border-[var(--ds-border-strong)] bg-[var(--ds-surface-selected)] flex justify-between text-[12px] font-semibold text-gray-800">
               <span>
                 Grand total — {analysisData.length}{" "}
                 {groupBy === "party" ? "parties" : groupBy === "item" ? "items" : "months"}
@@ -301,7 +302,7 @@ export default function SalesAnalysisReport() {
                 <span className="font-mono">Rs. {formatNumber(totals.totalSales)}</span>
               </div>
             </div>
-            <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+            <div className="px-3 py-2 border-t border-gray-200 bg-[var(--ds-canvas)] text-[12px] text-gray-500">
               {analysisData.length} record{analysisData.length === 1 ? "" : "s"}
             </div>
           </>

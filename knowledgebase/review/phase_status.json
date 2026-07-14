@@ -1,0 +1,268 @@
+{
+  "schema_version": "1.0.0",
+  "updated_at": "2026-07-14T06:59:25+00:00",
+  "package": "Orbix Nepali Language Intelligence (ONLI)",
+  "phases": {
+    "0": {
+      "phase_id": "0",
+      "phase_name": "Discovery and Source Inventory",
+      "status": "passed",
+      "start_time": "2026-07-14T04:21:54+00:00",
+      "completion_time": "2026-07-14T04:21:54+00:00",
+      "commands_executed": [
+        "python knowledgebase/scripts/phase0_discover.py --source-dir \"C:\\Users\\Acer\\Documents\\My-Current-ERP\\Knowledge source\""
+      ],
+      "tests_executed": [
+        "manual inventory assertions in script"
+      ],
+      "outputs": [
+        "knowledgebase/review/source_archive_inventory.json",
+        "knowledgebase/review/source_archive_inventory.md",
+        "knowledgebase/manifests/SOURCE_SHA256SUMS.txt"
+      ],
+      "findings": [
+        "Found 2 ZIP(s)",
+        "Combined numbered files: 88",
+        "Missing: none"
+      ],
+      "blockers": [],
+      "warnings": [],
+      "next_phase": "1",
+      "sha256_sums": {
+        "ORBIX_NP_LANG_KB_FILES_0017_TO_0088.zip": "dcdfe4b204c83b4afe4bfd6e1ac5c10fd5d2df838d3a2724dd18ef1c71cd57c9",
+        "ORBIX_NP_LANGUAGE_KB_FILES_0001_TO_0016.zip": "421f19a2d03ed705cd78716052ca4658e24e53f5d462be3c21dfb1c620016166"
+      }
+    },
+    "1": {
+      "phase_id": "1",
+      "phase_name": "Safe Extraction, Master Manifest, Integrity Validation",
+      "status": "passed_with_warnings",
+      "next_phase": "2",
+      "start_time": "2026-07-14T04:27:14+00:00",
+      "completion_time": "2026-07-14T04:55:51+00:00",
+      "commands_executed": [
+        "python knowledgebase/scripts/validate_kb_package.py --source-dir \"C:\\Users\\Acer\\Documents\\My-Current-ERP\\knowledgebase\\raw\\nepali_language\" --extract-to \"C:\\Users\\Acer\\Documents\\My-Current-ERP\\knowledgebase\\raw\\nepali_language\" --output-dir \"C:\\Users\\Acer\\Documents\\My-Current-ERP\\knowledgebase\\review\" --skip-extraction"
+      ],
+      "tests_executed": [
+        "knowledgebase/tests/package_validation"
+      ],
+      "outputs": [
+        "knowledgebase/manifests/orbix_np_lang_kb_manifest.json",
+        "knowledgebase/manifests/orbix_np_lang_kb_inventory.csv",
+        "knowledgebase/manifests/SHA256SUMS.txt",
+        "knowledgebase/review/package_validation_summary.json",
+        "knowledgebase/review/package_validation_report.md",
+        "knowledgebase/review/package_validation_errors.csv",
+        "knowledgebase/docs/KB_PHASE_1_PACKAGE_VALIDATION.md"
+      ],
+      "findings": [
+        "Files: 88",
+        "Total records detected: 5692378",
+        "Raw unchanged: True"
+      ],
+      "blockers": [],
+      "warnings": [
+        "generated_lexicon_records=418 but detected records=472",
+        "generated_host_postposition_records=304 but detected records=643",
+        "generated_postposition_join_records=120 but detected records=482",
+        "generated_host_postposition_records=828 but detected records=1058",
+        "generated_regular_TAM_records=520 but detected records=1479",
+        "generated_pronoun_role_records=440 but detected records=875",
+        "generated_deictic_object_records=220 but detected records=875",
+        "generated_negative_action_records=768 but detected records=1327",
+        "generated_reversal_object_records=300 but detected records=1327",
+        "generated_domain_question_records=324 but detected records=866",
+        "generated_clarification_pair_records=64 but detected records=866",
+        "generated_number_unit_records=435 but detected records=1227",
+        "generated_amount_currency_records=120 but detected records=1227",
+        "generated_rate_records=126 but detected records=1227",
+        "generated_numeric_ambiguity_records=240 but detected records=1227",
+        "generated_bound_records=63 but detected records=1227",
+        "generated_month_year_records=132 but detected records=900",
+        "generated_date_role_records=60 but detected records=900",
+        "generated_relative_date_role_records=88 but detected records=900",
+        "generated_period_report_records=96 but detected records=900",
+        "generated_organization_records=288 but detected records=1313",
+        "generated_person_name_records=576 but detected records=1313",
+        "generated_identifier_records=96 but detected records=1313",
+        "generated_postposition_attachment_records=60 but detected records=1313",
+        "generated_suffix_records=200 but detected records=1087",
+        "generated_case_punctuation_variant_records=101 but detected records=1087",
+        "generated_domain_context_records=330 but detected records=1087",
+        "generated_English_noun_postposition_records=120 but detected records=1141",
+        "generated_English_stem_light_verb_records=288 but detected records=1141",
+        "generated_protected_token_marker_records=120 but detected records=1141"
+      ]
+    },
+    "2": {
+      "phase_id": "2",
+      "phase_name": "Streaming Parser and Canonical JSONL Conversion",
+      "status": "passed",
+      "next_phase": "3",
+      "start_time": "2026-07-14T06:39:14+00:00",
+      "completion_time": "2026-07-14T06:39:14+00:00",
+      "commands_executed": [
+        "python knowledgebase/scripts/parse_kb_to_jsonl.py"
+      ],
+      "tests_executed": [
+        "knowledgebase/tests/parser"
+      ],
+      "outputs": [
+        "knowledgebase/processed/jsonl_b",
+        "knowledgebase/processed/quarantine/b/quarantine.jsonl",
+        "knowledgebase/review/b/parser_summary.json"
+      ],
+      "findings": [
+        "Records parsed: 2",
+        "Quarantined: 0",
+        "Collections: 2"
+      ],
+      "warnings": []
+    },
+    "3": {
+      "phase_id": "3",
+      "phase_name": "Deduplication, Contradiction Detection, Quality Scoring",
+      "status": "passed",
+      "next_phase": "4",
+      "start_time": "2026-07-14T05:15:04+00:00",
+      "completion_time": "2026-07-14T05:44:43+00:00",
+      "commands_executed": [
+        "python knowledgebase/scripts/analyze_kb_quality.py"
+      ],
+      "outputs": [
+        "knowledgebase/review/deduplication_report.md",
+        "knowledgebase/review/duplicate_groups.jsonl",
+        "knowledgebase/review/contradiction_candidates.jsonl",
+        "knowledgebase/review/quality_score_summary.json",
+        "knowledgebase/processed/records/quality_annotations.jsonl"
+      ],
+      "findings": [
+        "scored=5694440",
+        "avg_score=0.8883",
+        "exact_dup_hashes=0",
+        "contradictions=0"
+      ],
+      "warnings": [
+        "Near-duplicate detection is sampled/bounded at multi-million scale."
+      ]
+    },
+    "4": {
+      "phase_id": "4",
+      "phase_name": "Human-Review Sample and Gold Promotion Workflow",
+      "status": "passed",
+      "next_phase": "5",
+      "start_time": "2026-07-14T05:44:57+00:00",
+      "completion_time": "2026-07-14T06:59:25+00:00",
+      "commands_executed": [
+        "python knowledgebase/scripts/import_human_reviews.py --input C:\\Users\\Acer\\Documents\\My-Current-ERP\\knowledgebase\\processed\\review_ready\\SPECIALIST_CLARIFY_DECISIONS_FILLED.jsonl"
+      ],
+      "outputs": [
+        "knowledgebase/processed/records/review_overlays.jsonl"
+      ],
+      "findings": [
+        "Imported overlays: 276",
+        "Skipped empty decisions: 0"
+      ],
+      "warnings": [],
+      "overlay_count": 276
+    },
+    "5": {
+      "phase_id": "5",
+      "phase_name": "Retrieval Indexes and Routing Map",
+      "status": "passed",
+      "next_phase": "6",
+      "start_time": "2026-07-14T05:54:35+00:00",
+      "completion_time": "2026-07-14T06:02:09+00:00",
+      "blockers": [
+        "Error binding parameter 10: type 'list' is not supported"
+      ],
+      "commands_executed": [
+        "python knowledgebase/scripts/build_retrieval_indexes.py"
+      ],
+      "outputs": [
+        "knowledgebase/indexes/lexical/kb_lexical.sqlite",
+        "knowledgebase/indexes/metadata/kb_metadata.sqlite",
+        "knowledgebase/manifests/retrieval_collections.json"
+      ],
+      "findings": [
+        "Production FTS rows: 5682218",
+        "Evaluation FTS rows: 12222"
+      ]
+    },
+    "6": {
+      "phase_id": "6",
+      "phase_name": "Orbix Runtime Integration",
+      "status": "passed",
+      "next_phase": "7",
+      "start_time": "2026-07-14T06:02:40+00:00",
+      "completion_time": "2026-07-14T06:09:26+00:00",
+      "commands_executed": [
+        "hybrid_nlu_search enrich hook",
+        "smoke_test_retrieval.py",
+        "run_kb_pipeline.py"
+      ],
+      "tests_executed": [
+        "knowledgebase/tests",
+        "smoke_test_retrieval --enable"
+      ],
+      "outputs": [
+        "knowledgebase/docs/KB_CONTINUATION_HANDOFF.md",
+        "knowledgebase/review/retrieval_smoke_test.json"
+      ],
+      "findings": [
+        "Live FTS smoke: 36 hits",
+        "execution_allowed always false",
+        "NLU enrich soft-gated"
+      ],
+      "warnings": [
+        "Still disabled by default"
+      ]
+    },
+    "7": {
+      "phase_id": "7",
+      "phase_name": "Automated Evaluation and Regression Suite",
+      "status": "passed",
+      "next_phase": "8",
+      "start_time": "2026-07-14T06:11:56+00:00",
+      "completion_time": "2026-07-14T06:11:57+00:00",
+      "commands_executed": [
+        "python knowledgebase/scripts/run_kb_evaluation.py"
+      ],
+      "tests_executed": [
+        "knowledgebase/tests/safety",
+        "knowledgebase/tests/regression"
+      ],
+      "outputs": [
+        "knowledgebase/review/evaluation_summary.json",
+        "knowledgebase/review/evaluation_report.md",
+        "knowledgebase/review/safety_invariant_results.json"
+      ],
+      "findings": [
+        "critical_pass_rate=1.0",
+        "failures=0"
+      ]
+    },
+    "8": {
+      "phase_id": "8",
+      "phase_name": "Performance, Security, Release, and Rollback Gates",
+      "status": "passed",
+      "next_phase": "complete",
+      "start_time": "2026-07-14T06:59:25+00:00",
+      "completion_time": "2026-07-14T06:59:25+00:00",
+      "commands_executed": [
+        "python knowledgebase/scripts/phase8_release_gate.py"
+      ],
+      "outputs": [
+        "knowledgebase/review/performance_baseline.json",
+        "knowledgebase/review/security_review.md",
+        "knowledgebase/review/final_release_gate.json"
+      ],
+      "findings": [
+        "release_status=staging_candidate"
+      ],
+      "warnings": [
+        "Human review required before any production enablement"
+      ]
+    }
+  }
+}

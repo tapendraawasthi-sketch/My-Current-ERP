@@ -210,10 +210,27 @@ def sse_json(data: dict[str, Any]) -> str:
     return f"data: {json.dumps(data, default=str)}\n\n"
 
 
+def _np_kb_stream_metadata(user_message: str | None) -> dict[str, Any]:
+    """Optional language-KB hints for the complete event; never grants posting authority."""
+    if not user_message or not str(user_message).strip():
+        return {"enabled": False, "reason": "no_user_message"}
+    try:
+        from ..nlu.np_kb_adapter import enrich_nlu_context
+
+        payload = enrich_nlu_context(str(user_message), top_k=3)
+        if not isinstance(payload, dict):
+            return {"enabled": False, "reason": "invalid_payload"}
+        payload["execution_allowed"] = False
+        return payload
+    except Exception as exc:  # soft-fail — KB must never break chat
+        return {"enabled": False, "reason": f"adapter_error: {exc}"}
+
+
 async def stream_orbix_kernel_events(
     response: IntelligenceResponseDto,
     *,
     chunk_words: int = 3,
+    user_message: str | None = None,
 ) -> AsyncIterator[str]:
     yield sse_json({"type": "thinking_start"})
     text, card, route_info = map_response_to_orbix(response)
@@ -238,6 +255,9 @@ async def stream_orbix_kernel_events(
         report_spec=report_spec if isinstance(report_spec, dict) else None,
         action=action,
     )
+    np_kb = meta.get("np_kb") if isinstance(meta.get("np_kb"), dict) else None
+    if np_kb is None:
+        np_kb = _np_kb_stream_metadata(user_message)
     yield sse_json(
         {
             "type": "complete",
@@ -257,6 +277,7 @@ async def stream_orbix_kernel_events(
             "report_spec": report_spec,
             "response_type": response_type,
             "status": derive_orbix_status(response_type),
+            "metadata": {"np_kb": np_kb},
         }
     )
 

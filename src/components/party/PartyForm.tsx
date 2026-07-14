@@ -7,7 +7,7 @@ import {
 } from "@/ai/actions/chatQueryDraft";
 import { saveAiAgingReportDraft } from "@/ai/actions/agingReportDraft";
 import { useStore } from "../../store";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { PartyType } from "../../lib/types";
 import {
   Building2,

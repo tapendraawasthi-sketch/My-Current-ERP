@@ -2,7 +2,7 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  *
- * Journal Voucher Form — the core double-entry data entry screen.
+ * Manual journal Form — the core double-entry data entry screen.
  */
 
 import React, { useState, useMemo, useRef, useEffect, useCallback } from "react";
@@ -33,8 +33,7 @@ import { formatNumber } from "@/lib/utils";
 import { ADToBSString } from "@/lib/nepaliDate";
 import { VoucherType, VoucherStatus } from "@/lib/types";
 import { generateSerialNumber, validateDoubleEntry } from "@/lib/accounting";
-import toast from "react-hot-toast";
-import { PillTitle, FormPanel } from "@/components/BusyShell";
+import toast from "@/lib/appToast";
 import { postJournalTransaction } from "@/domains/settlement/postJournalTransaction";
 import { generateId } from "@/lib/db";
 
@@ -155,7 +154,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
     const { isValid, difference } = validateDoubleEntry(lines);
     if (isValid) {
       return (
-        <div className="bg-green-50 text-green-700 border border-green-200 rounded-md px-3 py-2 text-[11px] font-medium flex items-center gap-2">
+        <div className="bg-green-50 text-green-700 border border-green-200 rounded-md px-3 py-2 text-[12px] font-medium flex items-center gap-2">
           <CheckCircle className="w-4 h-4" />
           <span>
             Balanced — Dr {symbol}
@@ -166,7 +165,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
       );
     } else {
       return (
-        <div className="bg-red-50 text-red-700 border border-red-200 rounded-md px-3 py-2 text-[11px] font-medium flex items-center gap-2">
+        <div className="bg-red-50 text-red-700 border border-red-200 rounded-md px-3 py-2 text-[12px] font-medium flex items-center gap-2">
           <AlertCircle className="w-4 h-4" />
           <span>
             Difference {symbol}
@@ -433,9 +432,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
 
   return (
     <div>
-      <PillTitle title="Add Journal Voucher" />
-
-      <FormPanel>
+      <div className="rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-4">
         <div className="flex flex-col gap-5 animate-fadeIn text-xs select-none relative">
           {isCancelled && (
             <div className="absolute top-20 left-1/2 -translate-x-1/2 z-10 rotate-[-12deg] pointer-events-none">
@@ -446,18 +443,18 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
           )}
 
           {/* Header bar */}
-          <div className="flex items-center justify-between py-3 px-4 bg-white border-b border-[#9DC07A] sticky top-0 z-10">
+          <div className="flex items-center justify-between py-3 px-4 bg-white border-b border-[var(--ds-border-default)] sticky top-0 z-10">
             <div className="flex items-center gap-3">
               <button
                 onClick={handleCancel}
-                className="p-2 rounded-md hover:bg-[#EBF5E2] text-[#000000]"
+                className="p-2 rounded-md hover:bg-[var(--ds-surface-muted)] text-[var(--ds-text-default)]"
                 title="Back"
               >
                 <ArrowLeft className="h-4 w-4" />
               </button>
               <div>
-                <h1 className="text-[13px] font-semibold text-[#000000]">Journal Voucher</h1>
-                {isEdit && <p className="text-[11px] text-[#000000] mt-0.5">{voucherNoPreview}</p>}
+                <h1 className="text-[13px] font-semibold text-[var(--ds-text-default)]">Journal Voucher</h1>
+                {isEdit && <p className="text-[12px] text-[var(--ds-text-default)] mt-0.5">{voucherNoPreview}</p>}
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -484,7 +481,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold text-[#000000] w-32 shrink-0">
+                  <span className="text-xs font-semibold text-[var(--ds-text-default)] w-32 shrink-0">
                     Voucher Type
                   </span>
                   <Badge variant="info" size="md">
@@ -492,10 +489,10 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
                   </Badge>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold text-[#000000] w-32 shrink-0">
+                  <span className="text-xs font-semibold text-[var(--ds-text-default)] w-32 shrink-0">
                     Voucher No
                   </span>
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-[#EBF5E2] border border-[#9DC07A] font-mono font-bold text-[#000000]">
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-[var(--ds-surface-muted)] border border-[var(--ds-border-default)] font-mono font-bold text-[var(--ds-text-default)]">
                     {voucherNoPreview}
                   </span>
                 </div>
@@ -522,7 +519,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
                     required
                     disabled={readOnly}
                   />
-                  <p className="text-[11px] text-[#000000] mt-1 font-semibold">AD: {date}</p>
+                  <p className="text-[12px] text-[var(--ds-text-default)] mt-1 font-semibold">AD: {date}</p>
                 </div>
               </div>
             </div>
@@ -530,7 +527,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
             {/* Narration */}
             <div className="mt-4 flex flex-col gap-1.5">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-semibold text-[#000000]">Narration</label>
+                <label className="text-xs font-semibold text-[var(--ds-text-default)]">Narration</label>
                 {!readOnly && (
                   <div className="w-56">
                     <Select
@@ -555,7 +552,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
                 }}
                 disabled={readOnly}
                 placeholder="Describe this transaction…"
-                className="w-full text-xs font-medium p-3 border border-[#9DC07A] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#3D6B25] focus:border-[#9DC07A] bg-white disabled:bg-[#EBF5E2]"
+                className="w-full text-xs font-medium p-3 border border-[var(--ds-border-default)] rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-border-default)] bg-white disabled:bg-[var(--ds-surface-muted)]"
               />
             </div>
           </Card>
@@ -564,18 +561,18 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
           <Card title="Account Postings" padding="none">
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-left border-collapse">
-                <thead className="bg-[#EBF5E2] border-y border-[#9DC07A] text-[#000000] uppercase tracking-wider font-bold">
+                <thead className="bg-[var(--ds-surface-muted)] border-y border-[var(--ds-border-default)] text-[var(--ds-text-default)] uppercase tracking-wider font-bold">
                   <tr>
-                    <th className="px-2 py-2.5 w-10 text-center">#</th>
+                    <th className="px-2 py-2.5 w-10 text-center">No.</th>
                     <th className="px-2 py-2.5 min-w-[220px]">Account</th>
                     <th className="px-2 py-2.5 min-w-[160px]">Sub-Ledger</th>
                     {enableCostCenter && <th className="px-2 py-2.5 min-w-[140px]">Cost Center</th>}
                     {enableBillWise && <th className="px-2 py-2.5 min-w-[110px]">Bill Ref</th>}
                     <th className="px-2 py-2.5 min-w-[140px]">Narration</th>
-                    <th className="text-right text-[10px] font-semibold text-[#1557b0] uppercase px-3 py-2 w-32">
+                    <th className="text-right text-[12px] font-semibold text-[var(--ds-action-primary)] uppercase px-3 py-2 w-32">
                       Debit
                     </th>
-                    <th className="text-right text-[10px] font-semibold text-red-600 uppercase px-3 py-2 w-32">
+                    <th className="text-right text-[12px] font-semibold text-red-600 uppercase px-3 py-2 w-32">
                       Credit
                     </th>
                     <th className="px-2 py-2.5 w-10 text-center"></th>
@@ -583,8 +580,8 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
                 </thead>
                 <tbody className="divide-y divide-gray-150">
                   {lines.map((line, idx) => (
-                    <tr key={line.key} className="hover:bg-[#EBF5E2]/40 align-top">
-                      <td className="px-2 py-2 text-center text-[#000000] font-bold">{idx + 1}</td>
+                    <tr key={line.key} className="hover:bg-[var(--ds-surface-muted)]/40 align-top">
+                      <td className="px-2 py-2 text-center text-[var(--ds-text-default)] font-bold">{idx + 1}</td>
                       <td className="px-2 py-2">
                         <AccountSelect
                           value={line.accountId}
@@ -618,7 +615,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
                           <Input
                             value={line.billRefNo}
                             onChange={(v) => updateLine(idx, "billRefNo", v)}
-                            placeholder="Bill #"
+                            placeholder="Bill no."
                             disabled={readOnly}
                           />
                         </td>
@@ -645,7 +642,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
                           onKeyDown={(e) => handleAmountKeyDown(e, idx, "debit")}
                           placeholder="0.00"
                           disabled={readOnly}
-                          className="w-full h-9 px-2 text-right font-mono border border-[#9DC07A] rounded-md focus:outline-none focus:ring-1 focus:ring-[#3D6B25] disabled:bg-[#EBF5E2]"
+                          className="w-full h-9 px-2 text-right font-mono border border-[var(--ds-border-default)] rounded-md focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] disabled:bg-[var(--ds-surface-muted)]"
                         />
                       </td>
                       <td className="px-2 py-2">
@@ -662,7 +659,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
                           onKeyDown={(e) => handleAmountKeyDown(e, idx, "credit")}
                           placeholder="0.00"
                           disabled={readOnly}
-                          className="w-full h-9 px-2 text-right font-mono border border-[#9DC07A] rounded-md focus:outline-none focus:ring-1 focus:ring-[#3D6B25] disabled:bg-[#EBF5E2]"
+                          className="w-full h-9 px-2 text-right font-mono border border-[var(--ds-border-default)] rounded-md focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] disabled:bg-[var(--ds-surface-muted)]"
                         />
                       </td>
                       <td className="px-2 py-2 text-center">
@@ -672,7 +669,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
                               type="button"
                               onClick={() => duplicateRow(idx)}
                               title="Duplicate (Ctrl+D)"
-                              className="p-1 rounded text-[#000000] hover:text-[#000000] hover:bg-[#D4EABD]"
+                              className="p-1 rounded text-[var(--ds-text-default)] hover:text-[var(--ds-text-default)] hover:bg-[var(--ds-action-primary)]"
                             >
                               <Copy className="h-3.5 w-3.5" />
                             </button>
@@ -680,7 +677,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
                               type="button"
                               onClick={() => removeRow(idx)}
                               title="Remove row"
-                              className="p-1 rounded text-[#000000] hover:text-red-600 hover:bg-red-50"
+                              className="p-1 rounded text-[var(--ds-text-default)] hover:text-red-600 hover:bg-red-50"
                             >
                               <X className="h-3.5 w-3.5" />
                             </button>
@@ -690,15 +687,15 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
                     </tr>
                   ))}
                 </tbody>
-                <tfoot className="bg-[#EBF5E2] border-t border-[#9DC07A] font-bold">
+                <tfoot className="bg-[var(--ds-surface-muted)] border-t border-[var(--ds-border-default)] font-bold">
                   <tr>
                     <td
                       colSpan={colCount - 2}
-                      className="px-3 py-3 text-right uppercase tracking-wider text-[#000000] text-[11px]"
+                      className="px-3 py-3 text-right uppercase tracking-wider text-[var(--ds-text-default)] text-[12px]"
                     >
                       Totals
                     </td>
-                    <td className="px-2 py-3 text-right font-mono text-[#000000]">
+                    <td className="px-2 py-3 text-right font-mono text-[var(--ds-text-default)]">
                       {symbol} {formatNumber(totals.debit)}
                     </td>
                     <td className="px-2 py-3 text-right font-mono text-amber-700">
@@ -711,15 +708,15 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
             </div>
 
             {!readOnly && (
-              <div className="flex items-center justify-between p-3 border-t border-[#9DC07A]">
+              <div className="flex items-center justify-between p-3 border-t border-[var(--ds-border-default)]">
                 <button
                   type="button"
                   onClick={addRow}
-                  className="inline-flex items-center gap-1 text-[11px] text-[#1557b0] hover:text-[#0f4a96] font-medium py-1"
+                  className="inline-flex items-center gap-1 text-[12px] text-[var(--ds-action-primary)] hover:text-[var(--ds-action-primary-hover)] font-medium py-1"
                 >
                   <Plus className="h-3 w-3" /> Add Line
                 </button>
-                <span className="text-[11px] text-[#000000] font-semibold">
+                <span className="text-[12px] text-[var(--ds-text-default)] font-semibold">
                   {lines.length} rows · Shortcuts: Enter/Tab navigate · Ctrl+D duplicate · F12 save
                   · Esc cancel
                 </span>
@@ -732,15 +729,15 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-center gap-6">
                 <div>
-                  <p className="text-[11px] uppercase tracking-wider text-[#000000] font-bold">
+                  <p className="text-[12px] uppercase tracking-wider text-[var(--ds-text-default)] font-bold">
                     Total Debit
                   </p>
-                  <p className="text-base font-bold text-[#000000] font-mono">
+                  <p className="text-base font-bold text-[var(--ds-text-default)] font-mono">
                     {symbol} {formatNumber(totals.debit)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[11px] uppercase tracking-wider text-[#000000] font-bold">
+                  <p className="text-[12px] uppercase tracking-wider text-[var(--ds-text-default)] font-bold">
                     Total Credit
                   </p>
                   <p className="text-base font-bold text-amber-700 font-mono">
@@ -748,7 +745,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
                   </p>
                 </div>
                 <div>
-                  <p className="text-[11px] uppercase tracking-wider text-[#000000] font-bold">
+                  <p className="text-[12px] uppercase tracking-wider text-[var(--ds-text-default)] font-bold">
                     Difference
                   </p>
                   <p
@@ -808,7 +805,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
             danger
           />
         </div>
-      </FormPanel>
+      </div>
     </div>
   );
 };

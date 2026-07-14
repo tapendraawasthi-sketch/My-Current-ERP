@@ -596,17 +596,38 @@ function detectBankReconKind(
     bank_account_id?: string | null;
     cheque_id?: string | null;
     cheque_number?: string | null;
+    settlement_kind?: string | null;
   };
   const kind = ext.bank_recon_kind != null ? String(ext.bank_recon_kind).trim() : "";
   if (kind && kind !== "null" && kind !== "undefined") return kind;
   const intent = String(card.intent || "").toLowerCase();
   const tags = (card.tags || []).map((t) => String(t).toLowerCase());
+  const settlementKind = String(ext.settlement_kind || "").toLowerCase();
+  // Phase 9 settlement / contra intents must never be treated as Phase 10 bank recon.
+  if (
+    tags.includes("phase9_settlement") ||
+    settlementKind === "receipt" ||
+    settlementKind === "payment" ||
+    settlementKind === "contra" ||
+    settlementKind === "journal" ||
+    intent === "bank_to_bank" ||
+    intent === "bank_to_cash" ||
+    intent === "cash_to_bank" ||
+    intent === "cash_to_cash" ||
+    intent === "khata_contra_cash_bank" ||
+    intent === "khata_bank_charges"
+  ) {
+    return null;
+  }
   const isPhase10 =
     tags.includes("phase10_treasury") ||
     tags.some((t) =>
       /statement_import|bank_match|bank_adjustment|cheque_status|recon_close|treasury/.test(t),
     ) ||
-    intent.startsWith("bank_") ||
+    intent.startsWith("bank_statement") ||
+    intent.startsWith("bank_match") ||
+    intent.startsWith("bank_adjustment") ||
+    intent.startsWith("bank_recon") ||
     intent.includes("cheque_status") ||
     intent.includes("treasury_position") ||
     Boolean(ext.bank_account_id) ||
@@ -628,7 +649,6 @@ function detectBankReconKind(
     return "bank_adjustment";
   if (intent.includes("close") || tags.includes("recon_close")) return "recon_close";
   if (intent.includes("match") || tags.includes("bank_match")) return "bank_match";
-  // bank_account_id present but intent stripped — default to statement import only when tagged
   if (tags.includes("statement_import")) return "statement_import";
   if (ext.cheque_id || ext.cheque_number) return "cheque_status";
   if (tags.includes("phase10_treasury") && Number(card.amount) <= 0) return "statement_import";

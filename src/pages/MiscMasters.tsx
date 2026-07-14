@@ -1,6 +1,6 @@
 // src/pages/MiscMasters.tsx
 import React, { useState, useEffect, useMemo } from "react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { Plus, Edit2, Trash2, MapPin, Layers, DollarSign, Search, X, Save } from "lucide-react";
 import { getDB } from "../lib/db";
 import { ReportEmptyState } from "../components/ReportEmptyState";

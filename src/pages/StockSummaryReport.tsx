@@ -128,14 +128,15 @@ export default function StockSummaryReport() {
         : sorted.length > 0;
 
   const inputCls =
-    "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+    "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 
   return (
-    <div className="erp-report p-4 bg-[#f5f6fa] min-h-screen">
+    <div className="erp-report p-4 bg-[var(--ds-canvas)] min-h-screen">
       <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Stock Summary Report</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
+          <h1 className="text-[15px] font-semibold text-gray-800">Stock summary</h1>
+          <p className="text-[12px] text-gray-500 mt-0.5">Quantities and values.</p>
+          <p className="text-[12px] text-gray-500 mt-0.5">
             Closing stock — {valuationMethod.toUpperCase().replace("_", " ")} valuation
           </p>
         </div>
@@ -151,13 +152,13 @@ export default function StockSummaryReport() {
           {
             label: "Stock Value",
             value: `Rs. ${formatNumber(totals.totalValue)}`,
-            color: "text-[#1557b0]",
+            color: "text-[var(--ds-action-primary)]",
           },
           { label: "Zero Stock", value: totals.zeroStockItems, color: "text-amber-600" },
           { label: "Critical Items", value: totals.criticalItems, color: "text-red-600" },
         ].map((stat) => (
           <div key={stat.label} className="rounded-md border border-gray-200 bg-white p-3">
-            <div className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">
+            <div className="text-[12px] text-gray-500 font-semibold uppercase tracking-wide">
               {stat.label}
             </div>
             <div className={`text-[16px] font-bold ${stat.color} mt-1`}>{stat.value}</div>
@@ -178,12 +179,12 @@ export default function StockSummaryReport() {
             <button
               key={key}
               onClick={() => setViewMode(key)}
-              className={`h-8 rounded-md px-3 text-[12px] font-medium transition-colors ${viewMode === key ? "bg-[#1557b0] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+              className={`h-8 rounded-md px-3 text-[12px] font-medium transition-colors ${viewMode === key ? "bg-[var(--ds-action-primary)] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
             >
               {label}
               {key === "critical_level" && totals.criticalItems > 0 && (
                 <span
-                  className={`ml-1.5 rounded px-1.5 py-0.5 text-[10px] ${viewMode === key ? "bg-white/20" : "bg-red-100 text-red-700"}`}
+                  className={`ml-1.5 rounded px-1.5 py-0.5 text-[12px] ${viewMode === key ? "bg-white/20" : "bg-red-100 text-red-700"}`}
                 >
                   {totals.criticalItems}
                 </span>
@@ -192,7 +193,7 @@ export default function StockSummaryReport() {
           ))}
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="text-[11px] text-gray-500">As on:</span>
+          <span className="text-[12px] text-gray-500">As on:</span>
           <input
             type="date"
             value={asOnDate}
@@ -238,7 +239,7 @@ export default function StockSummaryReport() {
             .sort(([a], [b]) => a.localeCompare(b))
             .map(([group, groupItems]) => (
               <div key={group}>
-                <div className="flex justify-between border-b border-blue-200 bg-blue-50 px-4 py-2 text-[12px] font-semibold text-[#1557b0]">
+                <div className="flex justify-between border-b border-blue-200 bg-blue-50 px-4 py-2 text-[12px] font-semibold text-[var(--ds-action-primary)]">
                   <span>
                     {group} — {groupItems.length} items
                   </span>
@@ -255,7 +256,7 @@ export default function StockSummaryReport() {
 
         {/* Grand Total */}
         {hasDisplayRows && (
-          <div className="flex justify-between border-t-2 border-[#c7d2fe] bg-[#eef2ff] px-4 py-2.5 text-[12px] font-bold text-gray-800">
+          <div className="flex justify-between border-t-2 border-[var(--ds-border-strong)] bg-[var(--ds-surface-selected)] px-4 py-2.5 text-[12px] font-bold text-gray-800">
             <span>
               TOTAL — {viewMode === "critical_level" ? criticalItems.length : sorted.length} items
             </span>
@@ -289,7 +290,7 @@ function StockTable({ items }: { items: StockRow[] }) {
   return (
     <table className="report-table w-full table-fixed">
       <thead>
-        <tr className="bg-[#f5f6fa] border-b border-gray-200">
+        <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
           {[
             "Code",
             "Item Name",
@@ -302,7 +303,7 @@ function StockTable({ items }: { items: StockRow[] }) {
           ].map((h) => (
             <th
               key={h}
-              className={`px-3 py-2.5 text-[10px] font-semibold uppercase tracking-wide text-gray-500 ${
+              className={`px-3 py-2.5 text-[12px] font-semibold uppercase tracking-wide text-gray-500 ${
                 h.includes("Qty") || h.includes("Rate") || h.includes("Value")
                   ? "text-right"
                   : "text-left"
@@ -343,7 +344,7 @@ function StockTable({ items }: { items: StockRow[] }) {
                     : "border-l-[3px] border-l-transparent"
               }`}
             >
-              <td className="px-3 py-2.5 text-[11px] font-mono text-gray-500">
+              <td className="px-3 py-2.5 text-[12px] font-mono text-gray-500">
                 {item.code || "—"}
               </td>
               <td className="px-3 py-2.5">
@@ -353,7 +354,7 @@ function StockTable({ items }: { items: StockRow[] }) {
                       title="Stock at or below reorder level — replenishment required"
                       className="shrink-0 text-[12px] text-red-600"
                     >
-                      ⚠
+                      
                     </span>
                   )}
                   <span
@@ -363,7 +364,7 @@ function StockTable({ items }: { items: StockRow[] }) {
                   </span>
                 </div>
               </td>
-              <td className="px-3 py-2.5 text-[11px] text-gray-500">{item.group}</td>
+              <td className="px-3 py-2.5 text-[12px] text-gray-500">{item.group}</td>
               <td className="px-3 py-2.5 text-[12px] text-gray-500">{item.unit}</td>
               <td
                 className={`px-3 py-2.5 text-[12px] font-mono text-right font-bold ${item.qty === 0 ? "text-gray-400" : "text-gray-800"}`}
@@ -378,21 +379,21 @@ function StockTable({ items }: { items: StockRow[] }) {
               </td>
               <td className="px-3 py-2.5">
                 {item.isBelowMin ? (
-                  <span className="flex items-center gap-1 text-[10px] text-red-600 font-semibold">
+                  <span className="flex items-center gap-1 text-[12px] text-red-600 font-semibold">
                     <AlertTriangle className="h-3 w-3" /> Below Min
                   </span>
                 ) : item.isBelowReorder ? (
-                  <span className="flex items-center gap-1 text-[10px] text-red-600 font-semibold">
+                  <span className="flex items-center gap-1 text-[12px] text-red-600 font-semibold">
                     <AlertTriangle className="h-3 w-3" /> Reorder
                   </span>
                 ) : item.isNearReorder ? (
-                  <span className="flex items-center gap-1 text-[10px] text-amber-600 font-semibold">
+                  <span className="flex items-center gap-1 text-[12px] text-amber-600 font-semibold">
                     <AlertTriangle className="h-3 w-3" /> Near Reorder
                   </span>
                 ) : item.isAboveMax ? (
-                  <span className="text-[10px] text-blue-600 font-semibold">Above Max</span>
+                  <span className="text-[12px] text-blue-600 font-semibold">Above Max</span>
                 ) : (
-                  <span className="text-[10px] text-green-600 font-semibold">Normal</span>
+                  <span className="text-[12px] text-green-600 font-semibold">Normal</span>
                 )}
               </td>
             </tr>

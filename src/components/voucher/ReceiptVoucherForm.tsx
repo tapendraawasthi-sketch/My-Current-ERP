@@ -45,7 +45,7 @@ import { ADToBSString } from "@/lib/nepaliDate";
 import { generateSerialNumber } from "@/lib/accounting";
 import { generateVoucherPDF } from "@/lib/printUtils";
 import { VoucherType, VoucherStatus, AccountType, PaymentStatus } from "@/lib/types";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { postReceiptTransaction } from "@/domains/settlement/postReceiptTransaction";
 import { getOrCreateDocumentSettlementState } from "@/domains/settlement/settlementState";
 import { getDB, generateId } from "@/lib/db";
@@ -649,8 +649,8 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
           <CheckCircle2 className="h-8 w-8 text-green-600" />
         </div>
         <div>
-          <h2 className="text-lg font-bold text-[#000000]">Receipt Voucher Saved</h2>
-          <p className="text-xs text-[#000000] mt-1">
+          <h2 className="text-lg font-bold text-[var(--ds-text-default)]">Receive money saved</h2>
+          <p className="text-xs text-[var(--ds-text-default)] mt-1">
             {savedVoucher.voucherNo} · {symbol} {formatNumber(totals.net)} received via{" "}
             {payMode.toUpperCase()}
           </p>
@@ -683,18 +683,18 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
       )}
 
       {/* Header */}
-      <div className="flex items-center justify-between py-3 px-4 bg-white border-b border-[#9DC07A] sticky top-0 z-10">
+      <div className="flex items-center justify-between py-3 px-4 bg-white border-b border-[var(--ds-border-default)] sticky top-0 z-10">
         <div className="flex items-center gap-3">
           <button
             onClick={handleCancel}
-            className="p-2 rounded-md hover:bg-[#EBF5E2] text-[#000000]"
+            className="p-2 rounded-md hover:bg-[var(--ds-surface-muted)] text-[var(--ds-text-default)]"
             title="Back"
           >
             <ArrowLeft className="h-4 w-4" />
           </button>
           <div>
-            <h1 className="text-[13px] font-semibold text-[#000000]">Receipt Voucher</h1>
-            {isEdit && <p className="text-[11px] text-[#000000] mt-0.5">{voucherNoPreview}</p>}
+            <h1 className="text-[13px] font-semibold text-[var(--ds-text-default)]">Receive money</h1>
+            {isEdit && <p className="text-[12px] text-[var(--ds-text-default)] mt-0.5">{voucherNoPreview}</p>}
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -721,8 +721,8 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-[#000000] w-32 shrink-0">Voucher No</span>
-              <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-[#EBF5E2] border border-[#9DC07A] font-mono font-bold text-[#000000]">
+              <span className="text-xs font-semibold text-[var(--ds-text-default)] w-32 shrink-0">Voucher No</span>
+              <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-[var(--ds-surface-muted)] border border-[var(--ds-border-default)] font-mono font-bold text-[var(--ds-text-default)]">
                 {voucherNoPreview}
               </span>
             </div>
@@ -747,13 +747,13 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
                 required
                 disabled={readOnly}
               />
-              <p className="text-[11px] text-[#000000] mt-1 font-semibold">AD: {date}</p>
+              <p className="text-[12px] text-[var(--ds-text-default)] mt-1 font-semibold">AD: {date}</p>
             </div>
           </div>
 
           <div className="flex flex-col gap-3">
             <div>
-              <label className="text-xs font-semibold text-[#000000] mb-1.5 block">
+              <label className="text-xs font-semibold text-[var(--ds-text-default)] mb-1.5 block">
                 Payment Mode
               </label>
               <div className="flex gap-2">
@@ -768,8 +768,8 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
                     }}
                     className={
                       payMode === id
-                        ? "flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-[11px] font-medium rounded-md bg-[#3D6B25] text-white transition-colors"
-                        : "flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-[11px] font-medium rounded-md bg-[#EBF5E2] text-[#000000] hover:bg-[#EBF5E2] transition-colors"
+                        ? "flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-[12px] font-medium rounded-md bg-[var(--ds-action-primary)] text-white transition-colors"
+                        : "flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-[12px] font-medium rounded-md bg-[var(--ds-surface-muted)] text-[var(--ds-text-default)] hover:bg-[var(--ds-surface-muted)] transition-colors"
                     }
                   >
                     <Icon className="h-4 w-4" /> {label}
@@ -829,7 +829,7 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
         </div>
 
         {/* Received from */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-4 pt-4 border-t border-[#9DC07A]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-4 pt-4 border-t border-[var(--ds-border-default)]">
           <PartySelect
             label="Received From (Party)"
             value={partyId}
@@ -842,7 +842,7 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
           />
           {party?.subjectToTds && (
             <div className="flex items-end gap-3">
-              <label className="inline-flex items-center gap-2 h-9 text-xs font-semibold text-[#000000]">
+              <label className="inline-flex items-center gap-2 h-9 text-xs font-semibold text-[var(--ds-text-default)]">
                 <input
                   type="checkbox"
                   checked={tdsEnabled}
@@ -877,7 +877,7 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
         {/* Narration */}
         <div className="mt-4 flex flex-col gap-1.5">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-semibold text-[#000000]">Narration</label>
+            <label className="text-xs font-semibold text-[var(--ds-text-default)]">Narration</label>
             {!readOnly && (
               <div className="w-56">
                 <Select
@@ -902,7 +902,7 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
             }}
             disabled={readOnly}
             placeholder="Describe this receipt…"
-            className="w-full text-xs font-medium p-3 border border-[#9DC07A] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#3D6B25] focus:border-[#9DC07A] bg-white disabled:bg-[#EBF5E2]"
+            className="w-full text-xs font-medium p-3 border border-[var(--ds-border-default)] rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-border-default)] bg-white disabled:bg-[var(--ds-surface-muted)]"
           />
         </div>
       </Card>
@@ -941,15 +941,15 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
                           className="h-4 w-4 accent-green-600"
                         />
                       </td>
-                      <td className="px-3 py-2 font-mono font-bold text-[#000000]">
-                        <FileText className="h-3.5 w-3.5 inline mr-1 text-[#000000]" />
+                      <td className="px-3 py-2 font-mono font-bold text-[var(--ds-text-default)]">
+                        <FileText className="h-3.5 w-3.5 inline mr-1 text-[var(--ds-text-default)]" />
                         {inv.invoiceNo}
                       </td>
                       <td className="px-3 py-2">{inv.dateNepali || inv.date}</td>
                       <td className="px-3 py-2 text-right font-mono">
                         {symbol} {formatNumber(inv.grandTotal || 0)}
                       </td>
-                      <td className="px-3 py-2 text-right font-mono text-[#000000]">
+                      <td className="px-3 py-2 text-right font-mono text-[var(--ds-text-default)]">
                         {symbol} {formatNumber(inv.paidAmount || 0)}
                       </td>
                       <td className="px-3 py-2 text-right font-mono font-bold text-amber-700">
@@ -970,7 +970,7 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
                             step="0.01"
                           />
                         ) : (
-                          <span className="text-[#000000]">—</span>
+                          <span className="text-[var(--ds-text-default)]">—</span>
                         )}
                       </td>
                     </tr>
@@ -979,8 +979,8 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
               </tbody>
             </table>
           </div>
-          <div className="flex items-center justify-between p-3 border-t border-[#9DC07A] bg-[#EBF5E2]/50">
-            <span className="text-[11px] text-[#000000] font-semibold">
+          <div className="flex items-center justify-between p-3 border-t border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]/50">
+            <span className="text-[12px] text-[var(--ds-text-default)] font-semibold">
               Tick invoices and enter allocation amount. Total allocations must equal receipt
               amount.
             </span>
@@ -1005,7 +1005,7 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
       <Card title="Received Into (Credit Accounts)" padding="none">
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-left border-collapse">
-            <thead className="bg-[#EBF5E2] border-y border-[#9DC07A] text-[#000000] uppercase tracking-wider font-bold">
+            <thead className="bg-[var(--ds-surface-muted)] border-y border-[var(--ds-border-default)] text-[var(--ds-text-default)] uppercase tracking-wider font-bold">
               <tr>
                 <th className="px-2 py-2.5 w-10 text-center">#</th>
                 <th className="px-2 py-2.5 min-w-[240px]">Account</th>
@@ -1018,8 +1018,8 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
             </thead>
             <tbody className="divide-y divide-gray-150">
               {lines.map((line, idx) => (
-                <tr key={line.key} className="hover:bg-[#EBF5E2]/40 align-top">
-                  <td className="px-2 py-2 text-center text-[#000000] font-bold">{idx + 1}</td>
+                <tr key={line.key} className="hover:bg-[var(--ds-surface-muted)]/40 align-top">
+                  <td className="px-2 py-2 text-center text-[var(--ds-text-default)] font-bold">{idx + 1}</td>
                   <td className="px-2 py-2">
                     <AccountSelect
                       value={line.accountId}
@@ -1066,7 +1066,7 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
                       onChange={(e) => updateLine(idx, "amount", parseFloat(e.target.value) || 0)}
                       placeholder="0.00"
                       disabled={readOnly}
-                      className="w-full h-9 px-2 text-right font-mono border border-[#9DC07A] rounded-md focus:outline-none focus:ring-1 focus:ring-green-500 disabled:bg-[#EBF5E2]"
+                      className="w-full h-9 px-2 text-right font-mono border border-[var(--ds-border-default)] rounded-md focus:outline-none focus:ring-1 focus:ring-green-500 disabled:bg-[var(--ds-surface-muted)]"
                     />
                   </td>
                   <td className="px-2 py-2 text-center">
@@ -1075,7 +1075,7 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
                         type="button"
                         onClick={() => removeRow(idx)}
                         title="Remove row"
-                        className="p-1 rounded text-[#000000] hover:text-red-600 hover:bg-red-50"
+                        className="p-1 rounded text-[var(--ds-text-default)] hover:text-red-600 hover:bg-red-50"
                       >
                         <X className="h-3.5 w-3.5" />
                       </button>
@@ -1087,7 +1087,7 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
           </table>
         </div>
         {!readOnly && (
-          <div className="flex items-center justify-between p-3 border-t border-[#9DC07A]">
+          <div className="flex items-center justify-between p-3 border-t border-[var(--ds-border-default)]">
             <button
               type="button"
               onClick={addRow}
@@ -1095,7 +1095,7 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
             >
               <Plus className="h-4 w-4" /> Add Row
             </button>
-            <span className="text-[11px] text-[#000000] font-semibold">F12 save · Esc cancel</span>
+            <span className="text-[12px] text-[var(--ds-text-default)] font-semibold">F12 save · Esc cancel</span>
           </div>
         )}
       </Card>
@@ -1103,26 +1103,26 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
       {/* Totals & auto-journal preview */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card border padding="md">
-          <h4 className="text-[11px] uppercase tracking-wider text-[#000000] font-bold mb-3">
+          <h4 className="text-[12px] uppercase tracking-wider text-[var(--ds-text-default)] font-bold mb-3">
             Summary
           </h4>
           <div className="flex flex-col gap-2">
             <div className="flex justify-between">
-              <span className="text-[#000000] font-semibold">Gross Receipt</span>
-              <span className="font-mono font-bold text-[#000000]">
+              <span className="text-[var(--ds-text-default)] font-semibold">Gross Receipt</span>
+              <span className="font-mono font-bold text-[var(--ds-text-default)]">
                 {symbol} {formatNumber(totals.gross)}
               </span>
             </div>
             {tdsEnabled && (
               <div className="flex justify-between">
-                <span className="text-[#000000] font-semibold">Less: TDS @ {tdsRate}%</span>
+                <span className="text-[var(--ds-text-default)] font-semibold">Less: TDS @ {tdsRate}%</span>
                 <span className="font-mono font-bold text-amber-700">
                   - {symbol} {formatNumber(totals.tds)}
                 </span>
               </div>
             )}
-            <div className="flex justify-between border-t border-[#9DC07A] pt-2 mt-1">
-              <span className="text-[#000000] font-bold">Net Amount Received</span>
+            <div className="flex justify-between border-t border-[var(--ds-border-default)] pt-2 mt-1">
+              <span className="text-[var(--ds-text-default)] font-bold">Net Amount Received</span>
               <span className="font-mono font-bold text-green-600 text-sm">
                 {symbol} {formatNumber(totals.net)}
               </span>
@@ -1131,20 +1131,20 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
         </Card>
 
         <Card border padding="md">
-          <h4 className="text-[11px] uppercase tracking-wider text-[#000000] font-bold mb-3">
+          <h4 className="text-[12px] uppercase tracking-wider text-[var(--ds-text-default)] font-bold mb-3">
             Auto Journal Entry
           </h4>
-          <div className="flex flex-col gap-1.5 font-mono text-[11px]">
+          <div className="flex flex-col gap-1.5 font-mono text-[12px]">
             <div className="flex justify-between">
-              <span className="text-[#000000]">
+              <span className="text-[var(--ds-text-default)]">
                 {debitLedgerName || (payMode === "cash" ? "Cash A/C" : "Bank A/C")}
               </span>
-              <span className="text-[#000000]">Dr {formatNumber(totals.net)}</span>
+              <span className="text-[var(--ds-text-default)]">Dr {formatNumber(totals.net)}</span>
             </div>
             {tdsEnabled && totals.tds > 0 && (
               <div className="flex justify-between">
-                <span className="text-[#000000]">TDS Receivable A/C</span>
-                <span className="text-[#000000]">Dr {formatNumber(totals.tds)}</span>
+                <span className="text-[var(--ds-text-default)]">TDS Receivable A/C</span>
+                <span className="text-[var(--ds-text-default)]">Dr {formatNumber(totals.tds)}</span>
               </div>
             )}
             {lines
@@ -1153,7 +1153,7 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
                 const acc = accounts.find((a) => a.id === l.accountId);
                 return (
                   <div key={i} className="flex justify-between">
-                    <span className="text-[#000000] pl-4">{acc?.name || "—"}</span>
+                    <span className="text-[var(--ds-text-default)] pl-4">{acc?.name || "—"}</span>
                     <span className="text-amber-700">Cr {formatNumber(l.amount)}</span>
                   </div>
                 );

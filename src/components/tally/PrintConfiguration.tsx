@@ -12,7 +12,7 @@ import {
   RefreshCw,
   Save,
 } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 interface PrintConfig {
   paperSize: "A4" | "A5" | "Letter" | "Legal";

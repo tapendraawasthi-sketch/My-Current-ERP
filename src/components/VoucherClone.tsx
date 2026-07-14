@@ -2,7 +2,7 @@
 import React from "react";
 import { generateId } from "../lib/db";
 import { Copy } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 interface VoucherCloneProps {
   voucher: any;

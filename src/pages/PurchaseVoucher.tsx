@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import NepaliDatePicker from "../components/ui/NepaliDatePicker";
 import { ReportEmptyState } from "../components/ReportEmptyState";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import * as XLSX from "xlsx";
 import { computeVatForLine } from "../lib/taxUtils";
 import {
@@ -209,7 +209,6 @@ const PurchaseVoucher: React.FC = () => {
     items,
     warehouses,
     invoices,
-    addInvoice,
     updateInvoice,
     addTdsEntry,
     companySettings,
@@ -388,55 +387,48 @@ const PurchaseVoucher: React.FC = () => {
     setSaving(true);
     try {
       const party = parties.find((p) => p.id === partyId);
-
-      await addInvoice({
-        date: voucherDate,
-        dateNepali: voucherDateNepali,
-        type: "purchase-invoice",
-        status: "posted",
-        partyId,
-        partyName: party?.name ?? "",
-        partyPan: party?.pan ?? "",
-        warehouseId: warehouseId || undefined,
-        paymentMode,
-        paymentStatus: paymentMode === "credit" ? "unpaid" : "paid",
-        subTotal: totals.subTotal,
-        discountAmount: totals.lineDiscount + totals.billDisc,
-        taxableAmount: totals.taxable,
-        exemptAmount: totals.exempt,
-        vatAmount: totals.vat,
-        taxAmount: totals.vat,
-        grandTotal: totals.grandTotal,
-        roundOff: totals.roundOff,
-        tdsAmount: enableTds ? totals.tdsAmount : undefined,
-        tdsRate: enableTds ? currentTdsResult?.rate : undefined,
-        tdsSection: enableTds ? currentTdsResult?.sectionCode : undefined,
-        narration: narration.trim(),
-        referenceNo: referenceNo.trim() || undefined,
-        referenceDate: referenceDate || undefined,
-        lines: lines.map((l) => ({
-          itemId: l.itemId,
-          itemName: l.itemName,
-          itemCode: l.itemCode,
-          qty: l.qty,
-          unit: l.unit,
-          rate: l.rate,
-          discountPercent: l.discountPercent,
-          discountAmount: l.discountAmount,
-          netAmount: l.netAmount,
-          vatRate: l.vatRate,
-          vatAmount: l.vatAmount,
-          totalAmount: l.totalAmount,
-          isTaxable: l.isTaxable,
-          vatClassificationId: l.vatClassificationId,
-          warehouseId: l.warehouseId ?? warehouseId,
-          batchNo: l.batchNo,
-          expiryDate: l.expiryDate,
-          costPrice: l.costPrice,
-        })),
-        createdBy: currentUser?.id,
-        createdByName: currentUser?.name,
+      const { postManualPurchaseInvoice } = await import("@/lib/invoice/postManualPurchase");
+      const paymentMethod =
+        paymentMode === "cash" || paymentMode === "bank" ? paymentMode : "credit";
+      const purchaseResult = await postManualPurchaseInvoice({
+        companyId: String(
+          (companySettings as { companyId?: string } | null)?.companyId ||
+            companySettings?.id ||
+            "main",
+        ),
+        financialYearId: currentFiscalYear?.id ?? null,
+        userId: currentUser?.id || "manual-user",
+        userRole: currentUser?.role || "accountant",
+        transactionDate: voucherDate,
+        supplierId: partyId || null,
+        supplierName: party?.name ?? null,
+        paymentMethod,
+        paymentAccountId:
+          paymentMethod === "cash"
+            ? "acc-cash"
+            : paymentMethod === "bank"
+              ? "acc-bank"
+              : null,
+        items: lines
+          .filter((l) => l.itemId)
+          .map((l) => ({
+            itemId: l.itemId,
+            quantity: String(l.qty),
+            unit: l.unit || "pcs",
+            rate: String(l.rate),
+            amount: String(l.totalAmount ?? l.netAmount ?? 0),
+          })),
+        subtotal: String(totals.subTotal),
+        discount: String(totals.lineDiscount + totals.billDisc),
+        tax: String(totals.vat),
+        grandTotal: String(totals.grandTotal),
+        currency: "NPR",
+        narration: narration.trim() || `Purchase from ${party?.name ?? "supplier"}`,
       });
+
+      if (purchaseResult.type !== "posting_completed") {
+        throw new Error(purchaseResult.payload.safe_message || "Purchase posting failed");
+      }
 
       if (enableTds && currentTdsResult?.applicable && totals.tdsAmount > 0) {
         await addTdsEntry({
@@ -454,10 +446,16 @@ const PurchaseVoucher: React.FC = () => {
           status: "pending",
           fiscalYearBS: currentFiscalYear?.fiscalYearBS || currentFiscalYear?.name || "",
           tdsSectionId: currentTdsResult.sectionId,
+          referenceInvoiceId: purchaseResult.payload.invoice_id,
         });
       }
 
-      toast.success("Purchase invoice saved successfully.");
+      toast.success(
+        `Purchase posted locally · ${purchaseResult.payload.invoice_number}` +
+          (purchaseResult.payload.sync_status === "synced"
+            ? " · Synced"
+            : " · Waiting to sync"),
+      );
       resetForm();
       setActiveTab("list");
     } catch (err: any) {
@@ -492,21 +490,21 @@ const PurchaseVoucher: React.FC = () => {
 
   // ─── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-y-auto p-4 md:p-6">
+    <div className="flex h-full min-h-0 flex-col bg-[var(--ds-surface-muted)] overflow-y-auto p-4 md:p-6">
       {/* Page Header — direct div, NOT ActionToolbar with children */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Purchase Invoice</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
+          <h1 className="text-[15px] font-semibold text-gray-800">Purchase invoice</h1>
+          <p className="text-[12px] text-gray-500 mt-0.5">
             Create and manage purchase invoices with TDS
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-gray-100 text-gray-700">
+          <span className="rounded px-2 py-0.5 text-[12px] font-semibold uppercase bg-gray-100 text-gray-700">
             {companySettings?.name ?? "Company"}
           </span>
           {currentFiscalYear && (
-            <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 text-blue-700">
+            <span className="rounded px-2 py-0.5 text-[12px] font-semibold uppercase bg-blue-100 text-blue-700">
               FY {currentFiscalYear.name}
             </span>
           )}
@@ -515,7 +513,7 @@ const PurchaseVoucher: React.FC = () => {
             onClick={() => setActiveTab("new")}
             className={`h-8 px-3 text-[12px] font-medium rounded-md transition-colors ${
               activeTab === "new"
-                ? "bg-[#1557b0] text-white"
+                ? "bg-[var(--ds-action-primary)] text-white"
                 : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
             }`}
           >
@@ -526,7 +524,7 @@ const PurchaseVoucher: React.FC = () => {
             onClick={() => setActiveTab("list")}
             className={`h-8 px-3 text-[12px] font-medium rounded-md transition-colors ${
               activeTab === "list"
-                ? "bg-[#1557b0] text-white"
+                ? "bg-[var(--ds-action-primary)] text-white"
                 : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
             }`}
           >
@@ -543,20 +541,20 @@ const PurchaseVoucher: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
               {/* Date AD */}
               <div>
-                <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                <label className="text-[12px] font-medium text-gray-600 mb-1 block">
                   Date (AD)
                 </label>
                 <input
                   type="date"
                   value={voucherDate}
                   onChange={(e) => setVoucherDate(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 />
               </div>
 
               {/* Date BS — wrap NepaliDatePicker in div; no className on component */}
               <div>
-                <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                <label className="text-[12px] font-medium text-gray-600 mb-1 block">
                   Date (BS)
                 </label>
                 <div className="w-full">
@@ -569,13 +567,13 @@ const PurchaseVoucher: React.FC = () => {
 
               {/* Supplier */}
               <div>
-                <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                <label className="text-[12px] font-medium text-gray-600 mb-1 block">
                   Supplier <span className="text-red-500">*</span>
                 </label>
                 <select
                   value={partyId}
                   onChange={(e) => setPartyId(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 >
                   <option value="">— Select Supplier —</option>
                   {suppliers.map((p) => (
@@ -588,13 +586,13 @@ const PurchaseVoucher: React.FC = () => {
 
               {/* Warehouse */}
               <div>
-                <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                <label className="text-[12px] font-medium text-gray-600 mb-1 block">
                   Warehouse
                 </label>
                 <select
                   value={warehouseId}
                   onChange={(e) => setWarehouseId(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 >
                   <option value="">— Select Warehouse —</option>
                   {warehouses.map((w) => (
@@ -607,13 +605,13 @@ const PurchaseVoucher: React.FC = () => {
 
               {/* Payment Mode */}
               <div>
-                <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                <label className="text-[12px] font-medium text-gray-600 mb-1 block">
                   Payment Mode
                 </label>
                 <select
                   value={paymentMode}
                   onChange={(e) => setPaymentMode(e.target.value as "credit" | "cash" | "bank")}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 >
                   <option value="credit">Credit</option>
                   <option value="cash">Cash</option>
@@ -623,7 +621,7 @@ const PurchaseVoucher: React.FC = () => {
 
               {/* Reference No */}
               <div>
-                <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                <label className="text-[12px] font-medium text-gray-600 mb-1 block">
                   Supplier Invoice No.
                 </label>
                 <input
@@ -631,26 +629,26 @@ const PurchaseVoucher: React.FC = () => {
                   value={referenceNo}
                   onChange={(e) => setReferenceNo(e.target.value)}
                   placeholder="Supplier's invoice number"
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 />
               </div>
 
               {/* Reference Date */}
               <div>
-                <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                <label className="text-[12px] font-medium text-gray-600 mb-1 block">
                   Supplier Invoice Date
                 </label>
                 <input
                   type="date"
                   value={referenceDate}
                   onChange={(e) => setReferenceDate(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 />
               </div>
 
               {/* Narration */}
               <div>
-                <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+                <label className="text-[12px] font-medium text-gray-600 mb-1 block">
                   Narration
                 </label>
                 <input
@@ -658,7 +656,7 @@ const PurchaseVoucher: React.FC = () => {
                   value={narration}
                   onChange={(e) => setNarration(e.target.value)}
                   placeholder="Purchase remarks…"
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 />
               </div>
             </div>
@@ -666,12 +664,12 @@ const PurchaseVoucher: React.FC = () => {
 
           {/* Line Items */}
           <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-200 bg-[#f5f6fa]">
+            <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-200 bg-[var(--ds-surface-muted)]">
               <h3 className="text-[12px] font-semibold text-gray-700">Line Items</h3>
               <button
                 type="button"
                 onClick={addLine}
-                className="h-7 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[11px] font-medium rounded-md flex items-center gap-1.5 transition-colors"
+                className="h-7 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors"
               >
                 <Plus className="h-3 w-3" />
                 Add Line
@@ -681,32 +679,32 @@ const PurchaseVoucher: React.FC = () => {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[950px]">
                 <thead>
-                  <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                       Item
                     </th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-20">
+                    <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-20">
                       Qty
                     </th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-16">
+                    <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-16">
                       Unit
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
                       Rate
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-20">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-20">
                       Disc %
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
                       Net Amt
                     </th>
-                    <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-16">
+                    <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-16">
                       VAT
                     </th>
-                    <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                    <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
                       Total
                     </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                    <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
                       Batch
                     </th>
                     <th className="px-3 py-2.5 w-10" />
@@ -720,7 +718,7 @@ const PurchaseVoucher: React.FC = () => {
                         <select
                           value={line.itemId}
                           onChange={(e) => updateLine(line.id, "itemId", e.target.value)}
-                          className="h-8 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                          className="h-8 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                         >
                           <option value="">— Select Item —</option>
                           {purchaseItems.map((i) => (
@@ -742,7 +740,7 @@ const PurchaseVoucher: React.FC = () => {
                             onChange={(e) =>
                               updateLine(line.id, "qty", parseFloat(e.target.value) || 0)
                             }
-                            className="h-8 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full text-right"
+                            className="h-8 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full text-right"
                           />
                         </div>
                       </td>
@@ -753,7 +751,7 @@ const PurchaseVoucher: React.FC = () => {
                           type="text"
                           value={line.unit}
                           onChange={(e) => updateLine(line.id, "unit", e.target.value)}
-                          className="h-8 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full text-center"
+                          className="h-8 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full text-center"
                         />
                       </td>
 
@@ -768,7 +766,7 @@ const PurchaseVoucher: React.FC = () => {
                             onChange={(e) =>
                               updateLine(line.id, "rate", parseFloat(e.target.value) || 0)
                             }
-                            className="h-8 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full text-right"
+                            className="h-8 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full text-right"
                           />
                         </div>
                       </td>
@@ -789,7 +787,7 @@ const PurchaseVoucher: React.FC = () => {
                                 parseFloat(e.target.value) || 0,
                               )
                             }
-                            className="h-8 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full text-right"
+                            className="h-8 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full text-right"
                           />
                         </div>
                       </td>
@@ -807,7 +805,7 @@ const PurchaseVoucher: React.FC = () => {
                             onChange={(e) =>
                               updateLine(line.id, "vatClassificationId", e.target.value)
                             }
-                            className="h-7 px-1.5 text-[10px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full max-w-[110px]"
+                            className="h-7 px-1.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full max-w-[110px]"
                           >
                             <option value="">Default</option>
                             {(vatClassifications || []).map((vc) => (
@@ -818,7 +816,7 @@ const PurchaseVoucher: React.FC = () => {
                           </select>
                           {line.vatLabel && (
                             <span
-                              className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${vatBadgeCls(line.vatBadgeVariant)}`}
+                              className={`rounded px-2 py-0.5 text-[12px] font-semibold uppercase ${vatBadgeCls(line.vatBadgeVariant)}`}
                             >
                               {line.vatLabel}
                             </span>
@@ -838,7 +836,7 @@ const PurchaseVoucher: React.FC = () => {
                           value={line.batchNo ?? ""}
                           onChange={(e) => updateLine(line.id, "batchNo", e.target.value)}
                           placeholder="Batch #"
-                          className="h-8 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                          className="h-8 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                         />
                       </td>
 
@@ -865,7 +863,7 @@ const PurchaseVoucher: React.FC = () => {
                 <div className="flex-1 max-w-md">
                   <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
                     <div className="flex items-center justify-between mb-2">
-                      <h4 className="text-[11px] font-semibold text-amber-800 uppercase tracking-wide">
+                      <h4 className="text-[12px] font-semibold text-amber-800 uppercase tracking-wide">
                         TDS (Tax Deducted at Source)
                       </h4>
                       <label className="flex items-center gap-1.5 cursor-pointer">
@@ -878,14 +876,14 @@ const PurchaseVoucher: React.FC = () => {
                           }}
                           className="h-4 w-4 rounded border-amber-300 text-amber-600 focus:ring-amber-500/20"
                         />
-                        <span className="text-[11px] font-medium text-amber-800">Enable TDS</span>
+                        <span className="text-[12px] font-medium text-amber-800">Enable TDS</span>
                       </label>
                     </div>
 
                     {enableTds && (
                       <div className="space-y-2">
                         <div>
-                          <label className="text-[10px] font-semibold text-amber-700 mb-0.5 block">
+                          <label className="text-[12px] font-semibold text-amber-700 mb-0.5 block">
                             TDS Section
                           </label>
                           <select
@@ -904,7 +902,7 @@ const PurchaseVoucher: React.FC = () => {
 
                         {tdsSection && (
                           <div>
-                            <label className="text-[10px] font-semibold text-amber-700 mb-0.5 block">
+                            <label className="text-[12px] font-semibold text-amber-700 mb-0.5 block">
                               TDS Rate (%)
                             </label>
                             <div className="w-full">
@@ -924,11 +922,11 @@ const PurchaseVoucher: React.FC = () => {
                         {currentTdsResult &&
                           !currentTdsResult.applicable &&
                           currentTdsResult.reason && (
-                            <p className="text-[10px] text-amber-700">{currentTdsResult.reason}</p>
+                            <p className="text-[12px] text-amber-700">{currentTdsResult.reason}</p>
                           )}
 
                         {currentTdsResult && currentTdsResult.applicable && (
-                          <div className="mt-2 bg-white border border-amber-200 rounded p-2 space-y-1 text-[11px]">
+                          <div className="mt-2 bg-white border border-amber-200 rounded p-2 space-y-1 text-[12px]">
                             <div className="flex justify-between text-amber-700">
                               <span>
                                 Section: {/* Access sectionCode not sectionId */}
@@ -937,13 +935,13 @@ const PurchaseVoucher: React.FC = () => {
                               <span>{currentTdsResult.rate}%</span>
                             </div>
                             {currentTdsResult.description && (
-                              <p className="text-amber-600 text-[10px]">
+                              <p className="text-amber-600 text-[12px]">
                                 {currentTdsResult.description}
                               </p>
                             )}
                             {/* For 'reason' — use optional chaining / type guard to avoid TS error */}
                             {(currentTdsResult as any).reason && (
-                              <p className="text-amber-600 text-[10px] italic">
+                              <p className="text-amber-600 text-[12px] italic">
                                 {(currentTdsResult as any).reason}
                               </p>
                             )}
@@ -989,7 +987,7 @@ const PurchaseVoucher: React.FC = () => {
                           setBillDiscountPercent(parseFloat(e.target.value) || 0);
                           setBillDiscountAmount(0);
                         }}
-                        className="h-7 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full text-right"
+                        className="h-7 px-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full text-right"
                       />
                     </div>
                   </div>
@@ -1015,7 +1013,7 @@ const PurchaseVoucher: React.FC = () => {
                   )}
 
                   {totals.roundOff !== 0 && (
-                    <div className="flex justify-between text-gray-500 text-[11px]">
+                    <div className="flex justify-between text-gray-500 text-[12px]">
                       <span>Round Off</span>
                       <span className="font-mono">{money(totals.roundOff)}</span>
                     </div>
@@ -1023,7 +1021,7 @@ const PurchaseVoucher: React.FC = () => {
 
                   <div className="flex justify-between font-bold text-gray-800 border-t border-gray-200 pt-2 text-[13px]">
                     <span>Grand Total</span>
-                    <span className="font-mono text-[#1557b0]">{money(totals.grandTotal)}</span>
+                    <span className="font-mono text-[var(--ds-action-primary)]">{money(totals.grandTotal)}</span>
                   </div>
 
                   {enableTds && totals.tdsAmount > 0 && (
@@ -1059,7 +1057,7 @@ const PurchaseVoucher: React.FC = () => {
                 type="button"
                 onClick={handleSave}
                 disabled={saving}
-                className="h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {saving ? (
                   <RefreshCw className="h-3.5 w-3.5 animate-spin" />
@@ -1084,26 +1082,26 @@ const PurchaseVoucher: React.FC = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search by invoice no. or supplier…"
-                className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
               />
             </div>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               <option value="all">All statuses</option>
               <option value="posted">Posted</option>
               <option value="draft">Draft</option>
               <option value="cancelled">Cancelled</option>
             </select>
-            <span className="text-[11px] text-gray-500">
+            <span className="text-[12px] text-gray-500">
               {filteredInvoices.length} invoice{filteredInvoices.length === 1 ? "" : "s"}
             </span>
             <button
               type="button"
               onClick={() => setActiveTab("new")}
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+              className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
             >
               <Plus className="h-3.5 w-3.5" />
               New invoice
@@ -1122,26 +1120,26 @@ const PurchaseVoucher: React.FC = () => {
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[700px] border-collapse">
                   <thead>
-                    <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                    <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
+                      <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                         Invoice no.
                       </th>
-                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                         Date
                       </th>
-                      <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                         Supplier
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                         Amount
                       </th>
-                      <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                         TDS
                       </th>
-                      <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                      <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                         Status
                       </th>
-                      <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-16">
+                      <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-16">
                         Actions
                       </th>
                     </tr>
@@ -1150,7 +1148,7 @@ const PurchaseVoucher: React.FC = () => {
                     {filteredInvoices.map((inv) => (
                       <tr
                         key={inv.id}
-                        className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                        className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
                         onClick={() => setSelectedInvoice(inv)}
                       >
                         <td className="px-3 py-2.5 text-[12px] font-mono font-medium text-gray-800 border-b border-gray-100">
@@ -1167,16 +1165,16 @@ const PurchaseVoucher: React.FC = () => {
                         </td>
                         <td className="px-3 py-2.5 text-center border-b border-gray-100">
                           {inv.tdsAmount && inv.tdsAmount > 0 ? (
-                            <span className="inline-block rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-amber-100 text-amber-700">
+                            <span className="inline-block rounded px-2 py-0.5 text-[12px] font-semibold uppercase bg-amber-100 text-amber-700">
                               {money(inv.tdsAmount)}
                             </span>
                           ) : (
-                            <span className="text-[11px] text-gray-400">—</span>
+                            <span className="text-[12px] text-gray-400">—</span>
                           )}
                         </td>
                         <td className="px-3 py-2.5 text-center border-b border-gray-100">
                           <span
-                            className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${statusBadgeCls(inv.status)}`}
+                            className={`rounded px-2 py-0.5 text-[12px] font-semibold uppercase ${statusBadgeCls(inv.status)}`}
                           >
                             {inv.status}
                           </span>
@@ -1198,7 +1196,7 @@ const PurchaseVoucher: React.FC = () => {
                   </tbody>
                 </table>
               </div>
-              <div className="px-3 py-2 border-t border-gray-200 bg-[#f5f6fa] text-[11px] text-gray-500">
+              <div className="px-3 py-2 border-t border-gray-200 bg-[var(--ds-surface-muted)] text-[12px] text-gray-500">
                 {filteredInvoices.length} purchase invoice{filteredInvoices.length === 1 ? "" : "s"}
               </div>
             </div>
@@ -1215,13 +1213,13 @@ const PurchaseVoucher: React.FC = () => {
           }}
         >
           <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 bg-[#f5f6fa]">
+            <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 bg-[var(--ds-surface-muted)]">
               <div className="flex items-center gap-2">
                 <span className="text-[13px] font-semibold text-gray-800">
                   Invoice: {selectedInvoice.invoiceNo}
                 </span>
                 <span
-                  className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${statusBadgeCls(selectedInvoice.status)}`}
+                  className={`rounded px-2 py-0.5 text-[12px] font-semibold uppercase ${statusBadgeCls(selectedInvoice.status)}`}
                 >
                   {selectedInvoice.status}
                 </span>
@@ -1238,7 +1236,7 @@ const PurchaseVoucher: React.FC = () => {
             <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
               <div className="grid grid-cols-2 gap-3 text-[12px]">
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                  <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                     Date
                   </p>
                   <p className="text-gray-800">
@@ -1246,19 +1244,19 @@ const PurchaseVoucher: React.FC = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                  <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                     Supplier
                   </p>
                   <p className="text-gray-800">{selectedInvoice.partyName || "—"}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                  <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                     Payment Mode
                   </p>
                   <p className="text-gray-800 capitalize">{selectedInvoice.paymentMode || "—"}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                  <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                     Grand Total
                   </p>
                   <p className="text-gray-800 font-mono font-semibold">
@@ -1270,13 +1268,13 @@ const PurchaseVoucher: React.FC = () => {
               {/* Lines */}
               {selectedInvoice.lines && selectedInvoice.lines.length > 0 && (
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                  <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-2">
                     Line Items
                   </p>
                   <div className="border border-gray-200 rounded-md overflow-hidden">
-                    <table className="w-full text-[11px]">
+                    <table className="w-full text-[12px]">
                       <thead>
-                        <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                        <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
                           <th className="px-3 py-2 text-left font-semibold text-gray-500 uppercase">
                             Item
                           </th>
@@ -1314,17 +1312,17 @@ const PurchaseVoucher: React.FC = () => {
 
               {selectedInvoice.narration && (
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                  <p className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
                     Narration
                   </p>
-                  <p className="text-[12px] text-gray-700 bg-[#f5f6fa] rounded px-3 py-2 border border-gray-200">
+                  <p className="text-[12px] text-gray-700 bg-[var(--ds-surface-muted)] rounded px-3 py-2 border border-gray-200">
                     {selectedInvoice.narration}
                   </p>
                 </div>
               )}
             </div>
 
-            <div className="px-5 py-3 border-t border-gray-200 bg-[#f5f6fa] flex justify-end gap-2">
+            <div className="px-5 py-3 border-t border-gray-200 bg-[var(--ds-surface-muted)] flex justify-end gap-2">
               {selectedInvoice.status === "posted" && (
                 <button
                   type="button"

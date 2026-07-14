@@ -1,6 +1,6 @@
 // src/pages/PurchaseTypeMaster.tsx
 import React, { useState, useEffect, useMemo } from "react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { Plus, Edit2, Trash2, Search, X, Save } from "lucide-react";
 import { PurchaseType } from "../lib/busyTypes";
 import { getDB } from "../lib/db";

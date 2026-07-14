@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-07-13",
+  "note": "Canonical destinations for primary nav. App.tsx aliases remain valid.",
+  "modules": [
+    { "id": "home", "canonical": "dashboard", "aliases": ["financial-dashboard"] },
+    { "id": "orbix", "canonical": "orbix", "aliases": [] },
+    { "id": "sales", "canonical_pages": ["billing", "sales-return", "sales-order", "delivery-challan", "parties"] },
+    { "id": "purchases", "canonical_pages": ["purchase", "purchase-return", "purchase-order", "goods-receipt"] },
+    { "id": "banking", "canonical_pages": ["receipt", "payment", "contra", "bank-reconciliation", "bank-statement-import", "cheque-register", "pdc-register"] },
+    { "id": "inventory", "canonical_pages": ["items", "item-groups", "stock-summary", "stock-ledger", "stock-transfer", "stock-journal", "physical-stock", "batch-management", "warehouses"] },
+    { "id": "accounting", "canonical_pages": ["journal", "voucher-entry", "debit-note", "credit-note", "accounts", "day-book", "ledger", "fiscal-year", "budget", "cost-centers"] },
+    { "id": "reports", "canonical_pages": ["trial-balance", "profit-loss", "balance-sheet", "cash-flow", "party-statement", "outstanding-receivables", "outstanding-payables", "aging-report", "budget-vs-actual", "sales-analysis", "ratio-analysis", "financial-dashboard"] },
+    { "id": "compliance", "canonical_pages": ["vat-reports", "tds-report", "audit-log"] },
+    { "id": "administration", "canonical_pages": ["settings", "users", "configuration-hub", "accounts-configuration", "inventory-config", "backup-restore", "payroll", "recurring-vouchers", "communication-hub"] }
+  ],
+  "duplicates_removed_from_nav": ["receipt@transactions", "payment@transactions", "contra@transactions", "day-book@banking", "day-book@reports", "vat@reports", "ratio@analytics", "fiscal-year@settings"]
+}

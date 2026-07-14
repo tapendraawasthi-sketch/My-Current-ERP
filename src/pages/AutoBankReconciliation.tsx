@@ -1,11 +1,10 @@
 // @ts-nocheck
 import React, { useState, useMemo } from "react";
 import { ActionToolbar, Select, NepaliDatePicker, Button, Badge } from "../components/ui";
-import { PillTitle, FormPanel } from "../components/BusyShell";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
 import { generateId } from "../lib/db";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import {
   FileText,
   Upload,
@@ -484,7 +483,9 @@ export default function AutoBankReconciliation() {
 
   const renderStep1 = () => (
     <div className="space-y-6">
-      <FormPanel title="Statement Information">
+      <div className="mb-4 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-4">
+            <h3 className="mb-3 text-[13px] font-semibold text-[var(--ds-text-strong)]">Statement Information</h3>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <Select
@@ -503,9 +504,11 @@ export default function AutoBankReconciliation() {
             <NepaliDatePicker label="To Date" value={dateTo} onChange={setDateTo} />
           </div>
         </div>
-      </FormPanel>
+      </div>
 
-      <FormPanel title="Import Settings">
+      <div className="mb-4 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-4">
+            <h3 className="mb-3 text-[13px] font-semibold text-[var(--ds-text-strong)]">Import Settings</h3>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Select
@@ -597,9 +600,11 @@ export default function AutoBankReconciliation() {
             </div>
           )}
         </div>
-      </FormPanel>
+      </div>
 
-      <FormPanel title="Upload Statement">
+      <div className="mb-4 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-4">
+            <h3 className="mb-3 text-[13px] font-semibold text-[var(--ds-text-strong)]">Upload Statement</h3>
+
         <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
           <Upload className="mx-auto h-12 w-12 text-gray-400" />
           <p className="mt-2 text-sm text-gray-600">Upload your bank statement file</p>
@@ -619,10 +624,12 @@ export default function AutoBankReconciliation() {
           </label>
           {file && <p className="mt-2 text-sm text-gray-600">Selected: {file.name}</p>}
         </div>
-      </FormPanel>
+      </div>
 
       {parsedRows.length > 0 && (
-        <FormPanel title="Statement Preview">
+        <div className="mb-4 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-4">
+            <h3 className="mb-3 text-[13px] font-semibold text-[var(--ds-text-strong)]">Statement Preview</h3>
+
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
@@ -668,7 +675,7 @@ export default function AutoBankReconciliation() {
               Showing first 5 rows of {parsedRows.length} total rows
             </p>
           </div>
-        </FormPanel>
+        </div>
       )}
 
       <div className="flex justify-end">
@@ -937,7 +944,9 @@ export default function AutoBankReconciliation() {
 
     return (
       <div className="space-y-6">
-        <FormPanel title="Create Voucher for Statement Entry">
+        <div className="mb-4 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-4">
+            <h3 className="mb-3 text-[13px] font-semibold text-[var(--ds-text-strong)]">Create Voucher for Statement Entry</h3>
+
           <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
             <div className="flex">
               <div className="ml-3">
@@ -1017,7 +1026,7 @@ export default function AutoBankReconciliation() {
             </Button>
             <Button onClick={handleSaveVoucher}>Save & Link</Button>
           </div>
-        </FormPanel>
+        </div>
       </div>
     );
   };
@@ -1027,7 +1036,9 @@ export default function AutoBankReconciliation() {
 
     return (
       <div className="space-y-6">
-        <FormPanel title="Reconciliation Summary">
+        <div className="mb-4 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-4">
+            <h3 className="mb-3 text-[13px] font-semibold text-[var(--ds-text-strong)]">Reconciliation Summary</h3>
+
           <div className="bg-white shadow overflow-hidden sm:rounded-lg">
             <div className="px-4 py-5 sm:p-6">
               <h3 className="text-lg leading-6 font-medium text-gray-900">
@@ -1092,7 +1103,7 @@ export default function AutoBankReconciliation() {
               </dl>
             </div>
           </div>
-        </FormPanel>
+        </div>
 
         <div className="flex justify-end">
           <Button onClick={() => window.print()}>

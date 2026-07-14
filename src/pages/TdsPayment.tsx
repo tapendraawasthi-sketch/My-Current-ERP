@@ -5,8 +5,7 @@ import { ActionToolbar, Card, Button, Select, NepaliDatePicker } from "../compon
 import { Save } from "lucide-react";
 import { dateToAD, formatNumber } from "../lib/utils";
 import { formatADToBS } from "../lib/nepaliDate";
-import { PillTitle, FormPanel } from "../components/BusyShell";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { VoucherType, VoucherStatus, JournalEntryLine } from "../lib/types";
 import { computeWithholdingTDS } from "../lib/taxUtils";
 
@@ -167,21 +166,20 @@ export default function TdsPayment() {
   };
 
   return (
-    <div className="p-3 bg-[#f5f6fa] min-h-full">
-      <PillTitle title="TDS Payment Entry" />
-      <FormPanel>
+    <div className="p-3 bg-[var(--ds-surface-muted)] min-h-full">
+<div className="mb-4 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-4">
         <form onSubmit={handleSubmit} className="flex flex-col gap-6 animate-fadeIn select-none">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-[15px] font-semibold text-[#000000]">TDS Entry Form</h1>
-              <p className="text-[11px] text-[#000000] mt-0.5">
+              <h1 className="text-[15px] font-semibold text-[var(--ds-text-default)]">TDS Entry Form</h1>
+              <p className="text-[12px] text-[var(--ds-text-default)] mt-0.5">
                 Record TDS payments and generate automated journals
               </p>
             </div>
             <div className="flex items-center gap-2">
               <button
                 type="submit"
-                className="h-8 px-3 bg-[#3D6B25] hover:bg-[#2D5A1A] text-white text-[12px] font-medium rounded-md flex items-center gap-1 cursor-pointer"
+                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary)] text-white text-[12px] font-medium rounded-md flex items-center gap-1 cursor-pointer"
               >
                 <Save className="h-3.5 w-3.5" /> Save Entry
               </button>
@@ -218,36 +216,36 @@ export default function TdsPayment() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-[11px] font-medium text-[#000000] block mb-1">
+                    <label className="text-[12px] font-medium text-[var(--ds-text-default)] block mb-1">
                       Section
                     </label>
-                    <div className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-[#EBF5E2] flex items-center">
+                    <div className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-[var(--ds-action-primary)] flex items-center">
                       {section || "-"}
                     </div>
                   </div>
                   <div>
-                    <label className="text-[11px] font-medium text-[#000000] block mb-1">
+                    <label className="text-[12px] font-medium text-[var(--ds-text-default)] block mb-1">
                       TDS Rate (%)
                     </label>
-                    <div className="h-8 px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-[#EBF5E2] flex items-center">
+                    <div className="h-8 px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-[var(--ds-action-primary)] flex items-center">
                       {tdsRate || 0}%
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-medium text-[#000000] block mb-1">
+                  <label className="text-[12px] font-medium text-[var(--ds-text-default)] block mb-1">
                     Gross Amount *
                   </label>
                   <input
                     type="number"
                     value={grossAmount}
                     onChange={(e) => setGrossAmount(e.target.value ? Number(e.target.value) : "")}
-                    className="h-8 w-full px-2.5 text-[12px] border border-[#9DC07A] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                    className="h-8 w-full px-2.5 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                     placeholder="Enter gross amount"
                   />
                   {isBelowThreshold && (
-                    <div className="mt-1 text-[11px] font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2 py-1 rounded">
+                    <div className="mt-1 text-[12px] font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2 py-1 rounded">
                       Below Rs.{formatNumber(threshold)} threshold — TDS not applicable
                     </div>
                   )}
@@ -255,15 +253,15 @@ export default function TdsPayment() {
               </div>
             </div>
 
-            <div className="mt-6 border-t border-[#9DC07A] pt-4 grid grid-cols-3 gap-4">
-              <div className="bg-[#EBF5E2] p-3 rounded border border-[#9DC07A]">
-                <div className="text-[10px] uppercase font-bold text-[#000000]">Gross Amount</div>
-                <div className="text-[14px] font-bold text-[#000000]">
+            <div className="mt-6 border-t border-[var(--ds-border-default)] pt-4 grid grid-cols-3 gap-4">
+              <div className="bg-[var(--ds-action-primary)] p-3 rounded border border-[var(--ds-border-default)]">
+                <div className="text-[12px] uppercase font-bold text-[var(--ds-text-default)]">Gross Amount</div>
+                <div className="text-[14px] font-bold text-[var(--ds-text-default)]">
                   Rs. {formatNumber(grossNum)}
                 </div>
               </div>
               <div className="bg-red-50 p-3 rounded border border-red-200">
-                <div className="text-[10px] uppercase font-bold text-red-700">
+                <div className="text-[12px] uppercase font-bold text-red-700">
                   TDS Amount ({tdsRate}%)
                 </div>
                 <div className="text-[14px] font-bold text-red-800">
@@ -271,7 +269,7 @@ export default function TdsPayment() {
                 </div>
               </div>
               <div className="bg-green-50 p-3 rounded border border-green-200">
-                <div className="text-[10px] uppercase font-bold text-green-700">Net Payable</div>
+                <div className="text-[12px] uppercase font-bold text-green-700">Net Payable</div>
                 <div className="text-[14px] font-bold text-green-800">
                   Rs. {formatNumber(netAmount)}
                 </div>
@@ -279,7 +277,7 @@ export default function TdsPayment() {
             </div>
           </Card>
         </form>
-      </FormPanel>
+      </div>
     </div>
   );
 }

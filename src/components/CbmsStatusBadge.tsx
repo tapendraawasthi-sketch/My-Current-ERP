@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 import QRCode from "qrcode";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { cbmsService } from "../lib/cbmsService";
 import { useStore } from "../store/useStore";
 

@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from "react";
 import { useStore } from "../store/useStore";
 import { generateId } from "../lib/db";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { Play, CheckCircle, RefreshCw, Plus } from "lucide-react";
 
 function money(v: number): string {

@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0.0",
+  "package_code": "ONLI",
+  "package_name": "Orbix Nepali Language Intelligence",
+  "expected_file_count": 88,
+  "file_id_start": 1,
+  "file_id_end": 88,
+  "filename_prefix": "ORBIX_NP_LANG_KB_",
+  "allowed_extensions": [".txt"],
+  "paths": {
+    "source_dir": "Knowledge source",
+    "raw_dir": "knowledgebase/raw/nepali_language",
+    "manifests_dir": "knowledgebase/manifests",
+    "schemas_dir": "knowledgebase/schemas",
+    "processed_jsonl_dir": "knowledgebase/processed/jsonl",
+    "processed_records_dir": "knowledgebase/processed/records",
+    "quarantine_dir": "knowledgebase/processed/quarantine",
+    "review_ready_dir": "knowledgebase/processed/review_ready",
+    "indexes_lexical_dir": "knowledgebase/indexes/lexical",
+    "indexes_semantic_dir": "knowledgebase/indexes/semantic",
+    "indexes_metadata_dir": "knowledgebase/indexes/metadata",
+    "runtime_dir": "knowledgebase/runtime",
+    "review_dir": "knowledgebase/review",
+    "docs_dir": "knowledgebase/docs",
+    "tests_dir": "knowledgebase/tests"
+  },
+  "thresholds": {
+    "min_file_bytes": 200,
+    "max_line_length": 20000,
+    "near_duplicate_simhash_hamming": 3,
+    "shingle_size": 5,
+    "quality_score_eligible_min": 0.55,
+    "quality_score_warning_min": 0.35,
+    "human_review_sample_target_min": 1500,
+    "human_review_sample_target_max": 2000,
+    "lexical_top_k": 8,
+    "semantic_top_k": 8,
+    "min_quality_score_runtime": 0.35
+  },
+  "runtime": {
+    "enabled_env": "ORBIX_NP_KB_ENABLED",
+    "root_env": "ORBIX_NP_KB_ROOT",
+    "lexical_enabled_env": "ORBIX_NP_KB_LEXICAL_ENABLED",
+    "semantic_enabled_env": "ORBIX_NP_KB_SEMANTIC_ENABLED",
+    "lexical_top_k_env": "ORBIX_NP_KB_LEXICAL_TOP_K",
+    "semantic_top_k_env": "ORBIX_NP_KB_SEMANTIC_TOP_K",
+    "min_quality_score_env": "ORBIX_NP_KB_MIN_QUALITY_SCORE",
+    "review_policy_env": "ORBIX_NP_KB_REVIEW_POLICY",
+    "citations_enabled_env": "ORBIX_NP_KB_CITATIONS_ENABLED",
+    "default_review_policy": "development_all",
+    "default_enabled": false
+  },
+  "retrieval_collections": [
+    "language_and_normalization",
+    "intent_and_dialogue",
+    "accounting_and_erp",
+    "safety_and_governance",
+    "support_and_help",
+    "analytics_and_decision_support",
+    "evaluation_only"
+  ]
+}

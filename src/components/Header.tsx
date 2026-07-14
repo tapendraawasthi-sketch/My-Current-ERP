@@ -4,7 +4,7 @@ import { getBSTodayLong, getBSToday } from "../lib/nepaliDate";
 import Breadcrumb from "./Breadcrumb";
 import { GlobalSearch } from "./GlobalSearch";
 import { Bell, User, LogOut, Settings, HelpCircle, Search, Moon, Sun } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 const Header: React.FC = () => {
   const { companySettings, currentUser, logout, notifications, setCurrentPage, currentFiscalYear } =

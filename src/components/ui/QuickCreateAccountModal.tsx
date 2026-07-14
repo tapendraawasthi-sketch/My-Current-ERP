@@ -10,7 +10,7 @@ import Select from "./Select";
 import Button from "./Button";
 import { useStore } from "../../store/useStore";
 import { AccountType, AccountLevel } from "../../lib/types";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 interface QuickCreateAccountModalProps {
   isOpen: boolean;

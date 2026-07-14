@@ -1,0 +1,157 @@
+{
+  "generated_at": "2026-07-13T11:54:20.809Z",
+  "tool": "@axe-core/playwright",
+  "tags": [
+    "wcag2a",
+    "wcag2aa",
+    "wcag21a",
+    "wcag21aa"
+  ],
+  "screens_scanned": [
+    "dashboard",
+    "orbix",
+    "sales-invoice",
+    "journal",
+    "parties",
+    "balance-sheet",
+    "bank-reconciliation"
+  ],
+  "violation_count": 10,
+  "by_impact": {
+    "serious": 7,
+    "critical": 3
+  },
+  "findings": [
+    {
+      "screen": "dashboard",
+      "route": "app://dashboard",
+      "violation_id": "color-contrast",
+      "impact": "serious",
+      "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": 6
+    },
+    {
+      "screen": "orbix",
+      "route": "app://orbix",
+      "violation_id": "color-contrast",
+      "impact": "serious",
+      "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": 13
+    },
+    {
+      "screen": "sales-invoice",
+      "route": "app://billing",
+      "violation_id": "color-contrast",
+      "impact": "serious",
+      "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": 12
+    },
+    {
+      "screen": "sales-invoice",
+      "route": "app://billing",
+      "violation_id": "select-name",
+      "impact": "critical",
+      "description": "Ensure select element has an accessible name",
+      "help": "Select element must have an accessible name",
+      "nodes": 2
+    },
+    {
+      "screen": "journal",
+      "route": "app://journal",
+      "violation_id": "color-contrast",
+      "impact": "serious",
+      "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": 11
+    },
+    {
+      "screen": "journal",
+      "route": "app://journal",
+      "violation_id": "select-name",
+      "impact": "critical",
+      "description": "Ensure select element has an accessible name",
+      "help": "Select element must have an accessible name",
+      "nodes": 2
+    },
+    {
+      "screen": "parties",
+      "route": "app://parties",
+      "violation_id": "color-contrast",
+      "impact": "serious",
+      "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": 8
+    },
+    {
+      "screen": "balance-sheet",
+      "route": "app://balance-sheet",
+      "violation_id": "color-contrast",
+      "impact": "serious",
+      "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": 11
+    },
+    {
+      "screen": "bank-reconciliation",
+      "route": "app://bank-reconciliation",
+      "violation_id": "color-contrast",
+      "impact": "serious",
+      "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "nodes": 8
+    },
+    {
+      "screen": "bank-reconciliation",
+      "route": "app://bank-reconciliation",
+      "violation_id": "select-name",
+      "impact": "critical",
+      "description": "Ensure select element has an accessible name",
+      "help": "Select element must have an accessible name",
+      "nodes": 1
+    }
+  ],
+  "keyboard_smoke": [
+    {
+      "screen": "navigation",
+      "result": "pass-partial",
+      "notes": "After Tab from dashboard, activeElement=BUTTON"
+    },
+    {
+      "screen": "command-palette",
+      "result": "pass",
+      "notes": "Ctrl+K opened command palette dialog"
+    },
+    {
+      "screen": "orbix",
+      "result": "pass",
+      "notes": "Orbix input focusable"
+    },
+    {
+      "screen": "transaction-form",
+      "result": "smoke",
+      "notes": "Sales invoice form loaded for keyboard smoke; full form tab order not exhaustively verified"
+    },
+    {
+      "screen": "table",
+      "result": "smoke",
+      "notes": "Party list loaded; table semantics deferred to axe findings"
+    },
+    {
+      "screen": "report-filters",
+      "result": "smoke",
+      "notes": "Balance sheet loaded for filter/report keyboard smoke"
+    },
+    {
+      "screen": "login",
+      "result": "blocked",
+      "notes": "Login outside harness; not keyboard-tested in UI QA path"
+    }
+  ],
+  "notes": [
+    "Baseline only — backlog not fixed in Phase UI-0",
+    "Auth/login keyboard path blocked by harness auto-authentication"
+  ]
+}

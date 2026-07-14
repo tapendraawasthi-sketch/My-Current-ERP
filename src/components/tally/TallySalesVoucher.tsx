@@ -15,7 +15,7 @@
  */
 
 import React, { useState, useMemo, useCallback } from "react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import {
   X,
   Save,

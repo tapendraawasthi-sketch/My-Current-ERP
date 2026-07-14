@@ -1,9 +1,13 @@
 // @ts-nocheck
 import React, { useState, useMemo, useCallback, useRef } from "react";
 import { useStore } from "../store/useStore";
+import { ReportWorkspace } from "@/features/reports";
+import ReportDateRangePicker, { DateRange } from "../components/ui/ReportDateRangePicker";
+import DataTable from "../components/ui/DataTable";
+import { ReportEmptyState } from "../components/ReportEmptyState";
+import * as XLSX from "xlsx";
+import toast from "@/lib/appToast";
 import {
-  FileSpreadsheet,
-  Printer,
   Eye,
   X,
   TrendingUp,
@@ -11,11 +15,6 @@ import {
   BookOpen,
   Search,
 } from "lucide-react";
-import ReportDateRangePicker, { DateRange } from "../components/ui/ReportDateRangePicker";
-import DataTable from "../components/ui/DataTable";
-import { ReportEmptyState } from "../components/ReportEmptyState";
-import * as XLSX from "xlsx";
-import toast from "react-hot-toast";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -54,7 +53,7 @@ interface DaySummary {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function money(n: number): string {
-  return Number(n || 0).toLocaleString("en-NP", {
+  return Number(n || 0).toLocaleString("en-IN", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
@@ -72,36 +71,12 @@ function formatVoucherType(type: string): string {
     .replace(/\b\w/g, (c: string) => c.toUpperCase());
 }
 
-function getTypeColor(type: string): { bg: string; text: string; border: string } {
-  const t = (type ?? "").toLowerCase();
-  if (t.includes("sales") || t.includes("receipt"))
-    return {
-      bg: "bg-green-50",
-      text: "text-green-700",
-      border: "border-green-200",
-    };
-  if (t.includes("purchase") || t.includes("payment"))
-    return {
-      bg: "bg-red-50",
-      text: "text-red-700",
-      border: "border-red-200",
-    };
-  if (t.includes("journal"))
-    return {
-      bg: "bg-blue-50",
-      text: "text-blue-700",
-      border: "border-blue-200",
-    };
-  if (t.includes("contra"))
-    return {
-      bg: "bg-blue-50",
-      text: "text-blue-700",
-      border: "border-blue-200",
-    };
+/** Quiet type chip — no rainbow (IMPLEMENT_NOW REG). */
+function getTypeColor(_type: string): { bg: string; text: string; border: string } {
   return {
-    bg: "bg-gray-100",
-    text: "text-gray-700",
-    border: "border-gray-200",
+    bg: "bg-[var(--ds-surface-muted)]",
+    text: "text-[var(--ds-text-muted)]",
+    border: "border-[var(--ds-border-default)]",
   };
 }
 
@@ -138,7 +113,7 @@ const DayBook: React.FC = () => {
 
     if (found) {
       (found as HTMLElement).scrollIntoView({ behavior: "smooth", block: "center" });
-      (found as HTMLElement).style.background = "#fef3c7";
+      (found as HTMLElement).style.background = "var(--ds-status-warning-surface)";
       (found as HTMLElement).style.transition = "background 1.5s ease";
       setTimeout(() => {
         if (found) (found as HTMLElement).style.background = "";
@@ -310,7 +285,7 @@ const DayBook: React.FC = () => {
         mono: true,
         render: (row) => (
           <span
-            className="font-medium text-[var(--ox-primary)]"
+            className="font-medium text-[var(--ds-action-primary)]"
             data-voucher-no={String(row.voucherNo || "")}
           >
             {String(row.voucherNo)}
@@ -326,7 +301,7 @@ const DayBook: React.FC = () => {
           const typeColor = getTypeColor(String(row.type || ""));
           return (
             <span
-              className={`inline-block rounded px-2 py-0.5 text-[10px] font-semibold uppercase border ${typeColor.bg} ${typeColor.text} ${typeColor.border}`}
+              className={`inline-block rounded px-2 py-0.5 text-[12px] font-semibold uppercase border ${typeColor.bg} ${typeColor.text} ${typeColor.border}`}
             >
               {formatVoucherType(String(row.type || ""))}
             </span>
@@ -376,7 +351,7 @@ const DayBook: React.FC = () => {
         width: "5rem",
         render: (row) =>
           row._kind === "line" ? null : (
-            <span className="rounded px-2 py-0.5 text-[10px] font-semibold uppercase bg-green-100 text-green-700">
+            <span className="rounded px-2 py-0.5 text-[12px] font-semibold uppercase bg-green-100 text-green-700">
               {String(row.status || "posted")}
             </span>
           ),
@@ -397,7 +372,7 @@ const DayBook: React.FC = () => {
             <button
               type="button"
               aria-label={`Open ${String(row.voucherNo)}`}
-              className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[var(--ox-border)] bg-[var(--ox-surface)] text-[var(--ox-text-muted)] hover:bg-[var(--ox-surface-muted)]"
+              className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)] text-[var(--ds-text-muted)] hover:bg-[var(--ds-surface-muted)]"
               onClick={(e) => {
                 e.stopPropagation();
                 setSelectedEntry(row);
@@ -438,326 +413,307 @@ const DayBook: React.FC = () => {
   }, [filteredEntries, viewMode]);
 
   // ── Render ────────────────────────────────────────────────────────────────
+  const companyName =
+    companySettings?.companyNameEn || companySettings?.companyName || companySettings?.name || "Company";
+  const periodLabel = `${dateRange.fromDate} to ${dateRange.toDate}`;
+  const balanced = Math.abs(summary.totalDebit - summary.totalCredit) <= 0.01;
+
   return (
-    <div className="erp-report flex h-full min-h-0 flex-col overflow-y-auto bg-[var(--ox-bg)] p-4 md:p-6">
-      <div className="erp-report-toolbar mb-4 flex items-center justify-between">
-        <div>
-          <h1 className="text-[15px] font-semibold text-[var(--ox-text)]">Day Book</h1>
-          <p className="mt-0.5 text-[11px] text-[var(--ox-text-muted)]">
-            All vouchers and transactions for a selected date
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handleExportExcel}
-            className="flex h-8 items-center gap-1.5 rounded-md border border-[var(--ox-border)] bg-[var(--ox-surface)] px-3 text-[12px] font-medium text-[var(--ox-text)] hover:bg-[var(--ox-surface-muted)]"
-          >
-            <FileSpreadsheet className="h-3.5 w-3.5" /> Export
-          </button>
-          <button
-            type="button"
-            onClick={handlePrint}
-            className="flex h-8 items-center gap-1.5 rounded-md border border-[var(--ox-border)] bg-[var(--ox-surface)] px-3 text-[12px] font-medium text-[var(--ox-text)] hover:bg-[var(--ox-surface-muted)]"
-          >
-            <Printer className="h-3.5 w-3.5" /> Print
-          </button>
-        </div>
-      </div>
-
-      <div className="no-print mb-4">
-        <ReportDateRangePicker value={dateRange} onChange={setDateRange} label="Day Book Period" />
-      </div>
-
-      <div className="no-print mb-4 space-y-3 rounded-[var(--ox-radius-lg)] border border-[var(--ox-border)] bg-[var(--ox-surface)] p-3">
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="relative min-w-[160px] max-w-xs flex-1">
-            <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--ox-text-subtle)]" />
+    <>
+      <ReportWorkspace
+        title="Today's transactions"
+        description="Everything entered for the dates."
+        companyName={companyName}
+        nameNepali={companySettings?.companyNameNe}
+        pan={companySettings?.pan}
+        periodLabel={periodLabel}
+        status={
+          filteredEntries.length === 0
+            ? undefined
+            : balanced
+              ? { tone: "success", label: "Accounts match" }
+              : {
+                  tone: "danger",
+                  label: `Out by Rs. ${money(Math.abs(summary.totalDebit - summary.totalCredit))}`,
+                }
+        }
+        onPrint={handlePrint}
+        onExportExcel={handleExportExcel}
+        filterSlot={
+          <>
+            <ReportDateRangePicker value={dateRange} onChange={setDateRange} label="Period" />
+            <div className="relative min-w-[160px] max-w-xs flex-1">
+              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--ds-text-subtle)]" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search voucher, narration, party…"
+                data-testid="daybook-search"
+                aria-label="Search day book"
+                className="h-8 w-full rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)] pl-8 pr-3 text-[13px] text-[var(--ds-text-default)] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
+              />
+            </div>
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              aria-label="Voucher type"
+              className="h-8 rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-2.5 text-[13px] text-[var(--ds-text-default)] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
+            >
+              <option value="all">All types</option>
+              {uniqueTypes.map((t) => (
+                <option key={t} value={t}>
+                  {formatVoucherType(t)}
+                </option>
+              ))}
+            </select>
+            <div className="flex items-center overflow-hidden rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)]">
+              <button
+                type="button"
+                onClick={() => setViewMode("condensed")}
+                className={`h-8 px-3 text-[12px] font-medium ${
+                  viewMode === "condensed"
+                    ? "bg-[var(--ds-action-primary)] text-[var(--ds-action-primary-text)]"
+                    : "text-[var(--ds-text-muted)] hover:bg-[var(--ds-surface-muted)]"
+                }`}
+              >
+                Condensed
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode("detailed")}
+                className={`h-8 px-3 text-[12px] font-medium ${
+                  viewMode === "detailed"
+                    ? "bg-[var(--ds-action-primary)] text-[var(--ds-action-primary-text)]"
+                    : "text-[var(--ds-text-muted)] hover:bg-[var(--ds-surface-muted)]"
+                }`}
+              >
+                Detailed
+              </button>
+            </div>
             <input
+              ref={jumpInputRef}
               type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search voucher, narration, party…"
-              data-testid="daybook-search"
-              aria-label="Search day book"
-              className="h-8 w-full rounded-md border border-[var(--ox-border)] bg-[var(--ox-surface)] pl-8 pr-3 text-[12px] text-[var(--ox-text)] focus:border-[var(--ox-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ox-primary)]/20"
+              value={jumpQuery}
+              onChange={(e) => setJumpQuery(e.target.value)}
+              onKeyDown={handleJump}
+              placeholder="Jump to voucher no."
+              aria-label="Jump to voucher number"
+              className="h-8 w-40 rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-2.5 text-[13px] text-[var(--ds-text-default)] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
             />
-          </div>
-          <select
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value)}
-            className="h-8 rounded-md border border-[var(--ox-border)] bg-[var(--ox-surface)] px-2.5 text-[12px] text-[var(--ox-text)] focus:border-[var(--ox-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ox-primary)]/20"
-          >
-            <option value="all">All types</option>
-            {uniqueTypes.map((t) => (
-              <option key={t} value={t}>
-                {formatVoucherType(t)}
-              </option>
-            ))}
-          </select>
-          <div className="flex items-center overflow-hidden rounded-md border border-[var(--ox-border)] bg-[var(--ox-surface)]">
             <button
               type="button"
-              onClick={() => setViewMode("condensed")}
-              className={`h-8 px-3 text-[11px] font-medium ${
-                viewMode === "condensed"
-                  ? "bg-[var(--ox-primary)] text-white"
-                  : "text-[var(--ox-text-muted)] hover:bg-[var(--ox-surface-muted)]"
-              }`}
+              onClick={() => handleJump({ key: "Enter" })}
+              className="h-8 rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-3 text-[13px] font-medium text-[var(--ds-text-default)] hover:bg-[var(--ds-surface-muted)]"
             >
-              Condensed
+              Find
             </button>
-            <button
-              type="button"
-              onClick={() => setViewMode("detailed")}
-              className={`h-8 px-3 text-[11px] font-medium ${
-                viewMode === "detailed"
-                  ? "bg-[var(--ox-primary)] text-white"
-                  : "text-[var(--ox-text-muted)] hover:bg-[var(--ox-surface-muted)]"
-              }`}
-            >
-              Detailed
-            </button>
-          </div>
-          <span className="text-[11px] text-[var(--ox-text-muted)]">
-            {filteredEntries.length} entr{filteredEntries.length === 1 ? "y" : "ies"}
-          </span>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <input
-            ref={jumpInputRef}
-            type="text"
-            value={jumpQuery}
-            onChange={(e) => setJumpQuery(e.target.value)}
-            onKeyDown={handleJump}
-            placeholder="Jump to voucher no."
-            className="h-8 w-40 rounded-md border border-[var(--ox-border)] bg-[var(--ox-surface)] px-2.5 text-[12px] text-[var(--ox-text)] focus:border-[var(--ox-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ox-primary)]/20"
-          />
-          <button
-            type="button"
-            onClick={() => handleJump({ key: "Enter" })}
-            className="h-8 rounded-md border border-[var(--ox-border)] bg-[var(--ox-surface)] px-3 text-[12px] font-medium text-[var(--ox-text)] hover:bg-[var(--ox-surface-muted)]"
-          >
-            Find
-          </button>
-        </div>
-      </div>
-
-      <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <div className="flex items-center justify-between rounded-[var(--ox-radius-lg)] border border-[var(--ox-border)] bg-[var(--ox-surface)] px-4 py-3">
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ox-text-muted)]">
-              Vouchers
-            </p>
-            <p className="mt-0.5 text-[14px] font-semibold text-[var(--ox-text)]">
-              {summary.totalVouchers}
-            </p>
-          </div>
-          <BookOpen className="h-5 w-5 text-[var(--ox-primary)]" />
-        </div>
-        <div className="flex items-center justify-between rounded-[var(--ox-radius-lg)] border border-[var(--ox-border)] bg-[var(--ox-surface)] px-4 py-3">
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ox-text-muted)]">
-              Total debit
-            </p>
-            <p className="mt-0.5 font-mono text-[14px] font-semibold text-[var(--ox-text)]">
-              {money(summary.totalDebit)}
-            </p>
-          </div>
-          <TrendingUp className="h-5 w-5 text-[var(--ox-success)]" />
-        </div>
-        <div className="flex items-center justify-between rounded-[var(--ox-radius-lg)] border border-[var(--ox-border)] bg-[var(--ox-surface)] px-4 py-3">
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ox-text-muted)]">
-              Total credit
-            </p>
-            <p className="mt-0.5 font-mono text-[14px] font-semibold text-[var(--ox-text)]">
-              {money(summary.totalCredit)}
-            </p>
-          </div>
-          <TrendingDown className="h-5 w-5 text-[var(--ox-danger)]" />
-        </div>
-      </div>
-
-      {filteredEntries.length === 0 ? (
-        <div className="rounded-[var(--ox-radius-lg)] border border-[var(--ox-border)] bg-[var(--ox-surface)]">
+            <span className="text-[12px] text-[var(--ds-text-muted)]">
+              {filteredEntries.length} entr{filteredEntries.length === 1 ? "y" : "ies"}
+            </span>
+          </>
+        }
+        kpiSlot={
+          <>
+            <div className="flex items-center justify-between rounded-[var(--ds-radius-lg)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-4 py-3">
+              <div>
+                <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
+                  Vouchers
+                </p>
+                <p className="mt-0.5 text-[14px] font-semibold text-[var(--ds-text-default)]">
+                  {summary.totalVouchers}
+                </p>
+              </div>
+              <BookOpen className="h-5 w-5 text-[var(--ds-action-primary)]" />
+            </div>
+            <div className="flex items-center justify-between rounded-[var(--ds-radius-lg)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-4 py-3">
+              <div>
+                <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
+                  Total debit
+                </p>
+                <p className="mt-0.5 font-mono text-[14px] font-semibold text-[var(--ds-text-default)]">
+                  {money(summary.totalDebit)}
+                </p>
+              </div>
+              <TrendingUp className="h-5 w-5 text-[var(--ds-status-success)]" />
+            </div>
+            <div className="flex items-center justify-between rounded-[var(--ds-radius-lg)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-4 py-3">
+              <div>
+                <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
+                  Total credit
+                </p>
+                <p className="mt-0.5 font-mono text-[14px] font-semibold text-[var(--ds-text-default)]">
+                  {money(summary.totalCredit)}
+                </p>
+              </div>
+              <TrendingDown className="h-5 w-5 text-[var(--ds-status-danger)]" />
+            </div>
+          </>
+        }
+      >
+        {filteredEntries.length === 0 ? (
           <ReportEmptyState
             message="No vouchers recorded in this period"
             hint="Adjust the date range or filter settings."
           />
-        </div>
-      ) : (
-        <div ref={tableRef} className="min-w-0">
-          <DataTable
-            columns={dayBookColumns}
-            rows={tableRows}
-            rowKey={(row) => String(row.id)}
-            showSearch={false}
-            emptyTitle="No matching vouchers"
-            emptyDescription="Try adjusting filters or search terms."
-            onRowClick={(row) => {
-              if (row._kind === "line") {
-                const parent = filteredEntries.find((e) => e.id === row._parentId);
-                if (parent) setSelectedEntry(parent);
-                return;
+        ) : (
+          <div ref={tableRef} className="min-w-0">
+            <DataTable
+              columns={dayBookColumns}
+              rows={tableRows}
+              rowKey={(row) => String(row.id)}
+              showSearch={false}
+              emptyTitle="No matching vouchers"
+              emptyDescription="Try adjusting filters or search terms."
+              onRowClick={(row) => {
+                if (row._kind === "line") {
+                  const parent = filteredEntries.find((e) => e.id === row._parentId);
+                  if (parent) setSelectedEntry(parent);
+                  return;
+                }
+                setSelectedEntry(row);
+              }}
+              toolbarExtra={
+                <span className="text-[12px] text-[var(--ds-text-muted)]">
+                  Day Book ({dateRange.fromDate} to {dateRange.toDate})
+                </span>
               }
-              setSelectedEntry(row);
-            }}
-            toolbarExtra={
-              <span className="text-[11px] text-[var(--ox-text-muted)]">
-                Day Book ({dateRange.fromDate} to {dateRange.toDate})
-              </span>
-            }
-          />
-          <div className="overflow-hidden rounded-b-[var(--ox-radius-lg)] border border-t-0 border-[var(--ox-border)] bg-[var(--ox-primary-soft)]">
-            <div className="flex items-center justify-between px-3 py-2.5 text-[12px] font-bold text-[var(--ox-text)]">
-              <span>Total ({summary.totalVouchers} vouchers)</span>
-              <div className="flex gap-8 font-mono tabular-nums">
-                <span>{money(summary.totalDebit)}</span>
-                <span>{money(summary.totalCredit)}</span>
+            />
+            <div className="overflow-hidden rounded-b-[var(--ds-radius-lg)] border border-t-0 border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]">
+              <div className="flex items-center justify-between px-3 py-2.5 text-[13px] font-bold text-[var(--ds-text-default)]">
+                <span>Total ({summary.totalVouchers} vouchers)</span>
+                <div className="flex gap-8 font-mono tabular-nums">
+                  <span>{money(summary.totalDebit)}</span>
+                  <span>{money(summary.totalCredit)}</span>
+                </div>
               </div>
+              {!balanced && (
+                <div className="border-t border-[var(--ds-status-danger)]/30 bg-[var(--ds-status-danger-surface)] px-3 py-2 text-[12px] font-semibold text-[var(--ds-status-danger)]">
+                  Imbalance detected — Difference:{" "}
+                  {money(Math.abs(summary.totalDebit - summary.totalCredit))}
+                </div>
+              )}
             </div>
-            {Math.abs(summary.totalDebit - summary.totalCredit) > 0.01 && (
-              <div className="border-t border-[var(--ox-danger)]/30 bg-[var(--ox-danger-soft)] px-3 py-2 text-[11px] font-semibold text-[var(--ox-danger)]">
-                Imbalance detected — Difference:{" "}
-                {money(Math.abs(summary.totalDebit - summary.totalCredit))}
-              </div>
-            )}
           </div>
-        </div>
-      )}
+        )}
 
-      {Object.keys(summary.byType).length > 1 && (
-        <div className="mt-4 bg-white border border-gray-200 rounded-md p-4">
-          <h4 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-3">
-            Vouchers by Type
-          </h4>
-          <div className="flex flex-wrap gap-2">
-            {Object.entries(summary.byType).map(([type, count]: [string, number]) => {
-              const color = getTypeColor(type);
-              return (
+        {Object.keys(summary.byType).length > 1 && (
+          <div className="mt-4 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-4">
+            <h4 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
+              Vouchers by type
+            </h4>
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(summary.byType).map(([type, count]: [string, number]) => (
                 <button
                   key={type}
                   type="button"
                   onClick={() => setTypeFilter(typeFilter === type ? "all" : type)}
-                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] font-semibold transition-colors ${
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[12px] font-semibold transition-colors ${
                     typeFilter === type
-                      ? `${color.bg} ${color.text} ${color.border} ring-2 ring-offset-1 ring-current`
-                      : `${color.bg} ${color.text} ${color.border}`
+                      ? "border-[var(--ds-action-primary)] bg-[var(--ds-action-primary)] text-[var(--ds-action-primary-text)]"
+                      : "border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)] text-[var(--ds-text-default)] hover:bg-[var(--ds-surface-hover)]"
                   }`}
                 >
                   {formatVoucherType(type)}
-                  <span className="bg-white/60 rounded-full px-1.5 py-0.5 text-[10px] font-bold">
+                  <span className="rounded-full bg-white/60 px-1.5 py-0.5 text-[12px] font-bold">
                     {String(count)}
                   </span>
                 </button>
-              );
-            })}
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </ReportWorkspace>
 
-      {/* Detail Modal */}
       {selectedEntry && (
         <div
-          className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
+          className="fixed inset-0 z-[var(--ds-z-modal)] flex items-center justify-center bg-black/50 p-4"
           onClick={(e) => {
             if (e.target === e.currentTarget) setSelectedEntry(null);
           }}
         >
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 bg-[#f5f6fa]">
+          <div className="flex max-h-[90vh] w-full max-w-xl flex-col overflow-hidden rounded-lg border border-[var(--ds-border-default)] bg-[var(--ds-surface)] shadow-[var(--ds-shadow-2)]">
+            <div className="flex items-center justify-between border-b border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)] px-5 py-3">
               <div className="flex items-center gap-2">
-                <span className="text-[13px] font-semibold text-gray-800">
+                <span className="text-[13px] font-semibold text-[var(--ds-text-default)]">
                   {String(selectedEntry.voucherNo)}
                 </span>
-                <span
-                  className={`inline-block px-2 py-0.5 text-[10px] font-semibold uppercase rounded border ${
-                    getTypeColor(selectedEntry.type).bg
-                  } ${getTypeColor(selectedEntry.type).text} ${
-                    getTypeColor(selectedEntry.type).border
-                  }`}
-                >
+                <span className="inline-block rounded border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-2 py-0.5 text-[12px] font-semibold uppercase text-[var(--ds-text-muted)]">
                   {formatVoucherType(selectedEntry.type)}
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedEntry(null)}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="text-[var(--ds-text-muted)] hover:text-[var(--ds-text-default)]"
+                aria-label="Close voucher detail"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            {/* Modal Body */}
-            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
-              {/* Meta */}
-              <div className="grid grid-cols-2 gap-3 text-[12px]">
+            <div className="flex-1 space-y-4 overflow-y-auto px-5 py-4">
+              <div className="grid grid-cols-2 gap-3 text-[13px]">
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                  <p className="mb-0.5 text-[12px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
                     Date
                   </p>
-                  <p className="text-gray-800">
+                  <p className="text-[var(--ds-text-default)]">
                     {String(selectedEntry.dateNepali || selectedEntry.date)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                  <p className="mb-0.5 text-[12px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
                     Party
                   </p>
-                  <p className="text-gray-800">
+                  <p className="text-[var(--ds-text-default)]">
                     {selectedEntry.partyName ? String(selectedEntry.partyName) : "—"}
                   </p>
                 </div>
                 <div className="col-span-2">
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                  <p className="mb-0.5 text-[12px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
                     Narration
                   </p>
-                  <p className="text-gray-800">{String(selectedEntry.narration || "—")}</p>
+                  <p className="text-[var(--ds-text-default)]">{String(selectedEntry.narration || "—")}</p>
                 </div>
               </div>
 
-              {/* Ledger lines */}
               {(selectedEntry.lines ?? []).length > 0 && (
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-2">
-                    Ledger Entries
+                  <p className="mb-2 text-[12px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
+                    Ledger entries
                   </p>
-                  <div className="border border-gray-200 rounded-md overflow-hidden">
-                    <table className="report-table w-full text-[11px]">
+                  <div className="overflow-hidden rounded-md border border-[var(--ds-border-default)]">
+                    <table className="report-table w-full text-[12px]">
                       <thead>
-                        <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                          <th className="px-3 py-2 text-left font-semibold text-gray-500 uppercase">
+                        <tr className="border-b border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]">
+                          <th className="px-3 py-2 text-left font-semibold uppercase text-[var(--ds-text-muted)]">
                             Account
                           </th>
-                          <th className="px-3 py-2 text-right font-semibold text-gray-500 uppercase w-24">
+                          <th className="w-24 px-3 py-2 text-right font-semibold uppercase text-[var(--ds-text-muted)]">
                             Debit
                           </th>
-                          <th className="px-3 py-2 text-right font-semibold text-gray-500 uppercase w-24">
+                          <th className="w-24 px-3 py-2 text-right font-semibold uppercase text-[var(--ds-text-muted)]">
                             Credit
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-gray-100">
-                        {/* Fix: explicitly type line as DayBookLine — resolves 'unknown' ReactNode error on line 287 */}
+                      <tbody className="divide-y divide-[var(--ds-border-subtle)]">
                         {(selectedEntry.lines as DayBookLine[]).map(
                           (line: DayBookLine, idx: number) => (
-                            <tr key={idx} className="hover:bg-gray-50">
-                              <td className="px-3 py-2 text-gray-700">
-                                {/* Explicit string cast — fixes 'unknown' assignable to ReactNode */}
+                            <tr key={idx} className="hover:bg-[var(--ds-surface-hover)]">
+                              <td className="px-3 py-2 text-[var(--ds-text-default)]">
                                 {line.accountName ? String(line.accountName) : "—"}
                                 {line.narration && (
-                                  <span className="block text-[10px] text-gray-400">
+                                  <span className="block text-[12px] text-[var(--ds-text-muted)]">
                                     {String(line.narration)}
                                   </span>
                                 )}
                               </td>
-                              <td className="px-3 py-2 text-right font-mono text-gray-700">
+                              <td className="px-3 py-2 text-right font-mono text-[var(--ds-text-default)]">
                                 {line.debit > 0 ? money(line.debit) : "—"}
                               </td>
-                              <td className="px-3 py-2 text-right font-mono text-gray-700">
+                              <td className="px-3 py-2 text-right font-mono text-[var(--ds-text-default)]">
                                 {line.credit > 0 ? money(line.credit) : "—"}
                               </td>
                             </tr>
@@ -765,12 +721,14 @@ const DayBook: React.FC = () => {
                         )}
                       </tbody>
                       <tfoot>
-                        <tr className="bg-[#f5f6fa] border-t border-gray-200">
-                          <td className="px-3 py-2 font-bold text-[12px] text-gray-700">Total</td>
-                          <td className="px-3 py-2 text-right font-mono font-bold text-[12px] text-[#1557b0]">
+                        <tr className="border-t border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]">
+                          <td className="px-3 py-2 text-[13px] font-bold text-[var(--ds-text-default)]">
+                            Total
+                          </td>
+                          <td className="px-3 py-2 text-right font-mono text-[13px] font-bold text-[var(--ds-action-primary)]">
                             {money(selectedEntry.debit)}
                           </td>
-                          <td className="px-3 py-2 text-right font-mono font-bold text-[12px] text-gray-800">
+                          <td className="px-3 py-2 text-right font-mono text-[13px] font-bold text-[var(--ds-text-default)]">
                             {money(selectedEntry.credit)}
                           </td>
                         </tr>
@@ -780,22 +738,21 @@ const DayBook: React.FC = () => {
                 </div>
               )}
 
-              {/* If no lines, show summary amounts */}
               {(selectedEntry.lines ?? []).length === 0 && (
-                <div className="grid grid-cols-2 gap-3 text-[12px]">
+                <div className="grid grid-cols-2 gap-3 text-[13px]">
                   <div>
-                    <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                    <p className="mb-0.5 text-[12px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
                       Debit
                     </p>
-                    <p className="text-[#1557b0] font-mono font-bold">
+                    <p className="font-mono font-bold text-[var(--ds-action-primary)]">
                       {selectedEntry.debit > 0 ? money(selectedEntry.debit) : "—"}
                     </p>
                   </div>
                   <div>
-                    <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
+                    <p className="mb-0.5 text-[12px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
                       Credit
                     </p>
-                    <p className="text-gray-800 font-mono font-bold">
+                    <p className="font-mono font-bold text-[var(--ds-text-default)]">
                       {selectedEntry.credit > 0 ? money(selectedEntry.credit) : "—"}
                     </p>
                   </div>
@@ -804,20 +761,21 @@ const DayBook: React.FC = () => {
 
               {selectedEntry.createdByName && (
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-0.5">
-                    Created By
+                  <p className="mb-0.5 text-[12px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
+                    Created by
                   </p>
-                  <p className="text-[12px] text-gray-700">{String(selectedEntry.createdByName)}</p>
+                  <p className="text-[13px] text-[var(--ds-text-default)]">
+                    {String(selectedEntry.createdByName)}
+                  </p>
                 </div>
               )}
             </div>
 
-            {/* Modal Footer */}
-            <div className="px-5 py-3 border-t border-gray-200 bg-[#f5f6fa] flex justify-end">
+            <div className="flex justify-end border-t border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)] px-5 py-3">
               <button
                 type="button"
                 onClick={() => setSelectedEntry(null)}
-                className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
+                className="h-8 rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-3 text-[13px] font-medium text-[var(--ds-text-default)] hover:bg-[var(--ds-surface-hover)]"
               >
                 Close
               </button>
@@ -825,16 +783,7 @@ const DayBook: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* Print styles */}
-      <style>{`
-        @media print {
-          .no-print { display: none !important; }
-          body { background: white !important; }
-          @page { size: A4; margin: 10mm; }
-        }
-      `}</style>
-    </div>
+    </>
   );
 };
 

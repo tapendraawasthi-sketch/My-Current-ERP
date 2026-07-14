@@ -20,8 +20,31 @@ logger = logging.getLogger(__name__)
 
 RRF_K = 60
 USE_HYBRID_NLU = os.getenv("USE_HYBRID_NLU_SEARCH", "true").lower() != "false"
+USE_NP_KB_ENRICH = os.getenv("ORBIX_NP_KB_ENABLED", "").strip().lower() in {
+    "1",
+    "true",
+    "yes",
+    "on",
+}
 
 _chunk_by_id: dict[str, KnowledgeChunk] | None = None
+
+
+def _np_kb_query_boost(query: str) -> tuple[str, dict[str, Any]]:
+    """Optionally normalize/enrich query via ONLI KB; never execute mutations."""
+    if not USE_NP_KB_ENRICH:
+        return query, {"enabled": False}
+    try:
+        from .np_kb_adapter import enrich_nlu_context
+
+        enrich = enrich_nlu_context(query, top_k=3)
+        if not enrich.get("enabled"):
+            return query, enrich
+        boosted = enrich.get("normalized_for_nlu") or query
+        return boosted, enrich
+    except Exception as exc:  # soft-fail
+        logger.debug("NP KB enrich skipped: %s", exc)
+        return query, {"enabled": False, "reason": str(exc)}
 
 
 @dataclass(frozen=True)
@@ -76,6 +99,8 @@ def hybrid_search_nlu_scored(
     """
     Hybrid search returning per-chunk scores for nearest-neighbor classification.
     """
+    query, _np_meta = _np_kb_query_boost(query)
+
     active_sector = effective_sector_profile(
         sector_profile=sector_profile,
         query=query,

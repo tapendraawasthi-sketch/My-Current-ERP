@@ -1,5 +1,6 @@
-// @ts-nocheck
 import React from "react";
+import { Input, Label, FieldError, Alert } from "@/design-system";
+import type { WizardStepProps } from "./wizardTypes";
 
 const NEPAL_PROVINCES = [
   "Koshi Province (Province 1)",
@@ -11,104 +12,75 @@ const NEPAL_PROVINCES = [
   "Sudurpashchim Province",
 ];
 
-interface Props {
-  data: any;
-  onChange: (data: any) => void;
-  errors?: Record<string, string>;
-}
-
-const fieldClass =
-  "w-full h-8 px-2.5 text-[12px] rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/30 focus:border-[#1557b0] transition-colors";
-const labelClass = "block text-[11px] font-medium text-gray-600 mb-1";
-const errorClass = "mt-1 text-[11px] text-red-600 flex items-center gap-1";
-
-const FieldError = ({ msg }: { msg?: string }) =>
-  msg ? (
-    <p className={errorClass}>
-      <span className="inline-block w-3.5 h-3.5 text-center leading-none font-bold text-red-600">
-        !
-      </span>
-      {msg}
-    </p>
-  ) : null;
-
-const inputStyle = (hasError: boolean) => ({
-  background: "#ffffff",
-  border: `1px solid ${hasError ? "#dc2626" : "#d1d5db"}`,
-  color: "#111827",
-});
-
-export default function Step1CompanyProfile({ data, onChange, errors = {} }: Props) {
-  const set = (key: string, val: any) => onChange({ ...data, [key]: val });
+export default function Step1CompanyProfile({ data, onChange, errors = {} }: WizardStepProps) {
+  const set = <K extends keyof typeof data>(key: K, val: (typeof data)[K]) =>
+    onChange({ ...data, [key]: val });
 
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="text-[18px] font-bold text-gray-800">Company Profile</h2>
-        <p className="text-[12px] text-gray-500 mt-1">Tell us about your business</p>
+        <h2 className="text-[18px] font-semibold text-[var(--ds-text-strong)]">Company identity</h2>
+        <p className="mt-1 text-[13px] text-[var(--ds-text-muted)]">
+          Legal and display details for Nepal business registration.
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Company Name EN */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="md:col-span-2">
-          <label className={labelClass}>
-            Company Name (English) <span className="text-red-600">*</span>
-          </label>
-          <input
-            type="text"
-            value={data.companyNameEn || ""}
+          <Label htmlFor="wiz-company-en">
+            Company name (English) <span className="text-[var(--ds-status-danger)]">*</span>
+          </Label>
+          <Input
+            id="wiz-company-en"
+            value={data.companyNameEn}
             onChange={(e) => set("companyNameEn", e.target.value)}
-            className={fieldClass}
-            style={inputStyle(!!errors.companyNameEn)}
-            placeholder="e.g. Sutra Traders Pvt. Ltd."
+            invalid={Boolean(errors.companyNameEn)}
+            autoComplete="organization"
           />
-          <FieldError msg={errors.companyNameEn} />
+          <FieldError>{errors.companyNameEn}</FieldError>
         </div>
 
-        {/* Company Name NE */}
         <div className="md:col-span-2">
-          <label className={labelClass}>Company Name (Nepali)</label>
-          <input
-            type="text"
-            value={data.companyNameNe || ""}
+          <Label htmlFor="wiz-company-ne">Company name (Nepali)</Label>
+          <Input
+            id="wiz-company-ne"
+            value={data.companyNameNe}
             onChange={(e) => set("companyNameNe", e.target.value)}
-            className={fieldClass}
-            style={inputStyle(false)}
-            placeholder="कम्पनी नाम नेपालीमा"
+            lang="ne"
+            placeholder="कम्पनी नाम"
           />
         </div>
 
-        {/* Business Type */}
         <div>
-          <label className={labelClass}>
-            Business Type <span className="text-red-600">*</span>
-          </label>
+          <Label htmlFor="wiz-business-type">
+            Business type <span className="text-[var(--ds-status-danger)]">*</span>
+          </Label>
           <select
-            value={data.businessType || ""}
+            id="wiz-business-type"
+            value={data.businessType}
             onChange={(e) => set("businessType", e.target.value)}
-            className={fieldClass}
-            style={inputStyle(!!errors.businessType)}
+            aria-invalid={Boolean(errors.businessType) || undefined}
+            className="ds-focus-ring h-[var(--ds-control-height)] w-full rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-[var(--ds-control-inset-x)] text-[14px]"
           >
-            <option value="">— Select Business Type —</option>
+            <option value="">— Select —</option>
             <option value="Sole Proprietorship">Sole Proprietorship</option>
             <option value="Partnership">Partnership</option>
             <option value="Pvt. Ltd.">Pvt. Ltd.</option>
             <option value="Public Ltd.">Public Ltd.</option>
             <option value="Other">Other</option>
           </select>
-          <FieldError msg={errors.businessType} />
+          <FieldError>{errors.businessType}</FieldError>
         </div>
 
-        {/* Province */}
         <div>
-          <label className={labelClass}>Province</label>
+          <Label htmlFor="wiz-province">Province</Label>
           <select
-            value={data.province || ""}
+            id="wiz-province"
+            value={data.province}
             onChange={(e) => onChange({ ...data, province: e.target.value, district: "" })}
-            className={fieldClass}
-            style={inputStyle(false)}
+            className="ds-focus-ring h-[var(--ds-control-height)] w-full rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-[var(--ds-control-inset-x)] text-[14px]"
           >
-            <option value="">— Select Province —</option>
+            <option value="">— Select —</option>
             {NEPAL_PROVINCES.map((p) => (
               <option key={p} value={p}>
                 {p}
@@ -117,104 +89,83 @@ export default function Step1CompanyProfile({ data, onChange, errors = {} }: Pro
           </select>
         </div>
 
-        {/* Address */}
         <div className="md:col-span-2">
-          <label className={labelClass}>
-            Address <span className="text-red-600">*</span>
-          </label>
-          <input
-            type="text"
-            value={data.address || ""}
+          <Label htmlFor="wiz-address">
+            Address <span className="text-[var(--ds-status-danger)]">*</span>
+          </Label>
+          <Input
+            id="wiz-address"
+            value={data.address}
             onChange={(e) => set("address", e.target.value)}
-            className={fieldClass}
-            style={inputStyle(!!errors.address)}
-            placeholder="Street / Tole / Ward"
+            invalid={Boolean(errors.address)}
+            autoComplete="street-address"
           />
-          <FieldError msg={errors.address} />
+          <FieldError>{errors.address}</FieldError>
         </div>
 
-        {/* City */}
         <div>
-          <label className={labelClass}>
-            City <span className="text-red-600">*</span>
-          </label>
-          <input
-            type="text"
-            value={data.city || ""}
+          <Label htmlFor="wiz-city">
+            City <span className="text-[var(--ds-status-danger)]">*</span>
+          </Label>
+          <Input
+            id="wiz-city"
+            value={data.city}
             onChange={(e) => set("city", e.target.value)}
-            className={fieldClass}
-            style={inputStyle(!!errors.city)}
-            placeholder="e.g. Kathmandu"
+            invalid={Boolean(errors.city)}
+            autoComplete="address-level2"
           />
-          <FieldError msg={errors.city} />
+          <FieldError>{errors.city}</FieldError>
         </div>
 
-        {/* District */}
         <div>
-          <label className={labelClass}>District</label>
-          <input
-            type="text"
-            value={data.district || ""}
-            onChange={(e) => set("district", e.target.value)}
-            className={fieldClass}
-            style={inputStyle(false)}
-            placeholder="e.g. Kathmandu"
-          />
+          <Label htmlFor="wiz-district">District</Label>
+          <Input id="wiz-district" value={data.district} onChange={(e) => set("district", e.target.value)} />
         </div>
 
-        {/* Phone */}
         <div>
-          <label className={labelClass}>
-            Phone <span className="text-red-600">*</span>
-          </label>
-          <input
-            type="text"
-            value={data.phone || ""}
+          <Label htmlFor="wiz-phone">
+            Phone <span className="text-[var(--ds-status-danger)]">*</span>
+          </Label>
+          <Input
+            id="wiz-phone"
+            value={data.phone}
             onChange={(e) => set("phone", e.target.value)}
-            className={fieldClass}
-            style={inputStyle(!!errors.phone)}
-            placeholder="01-4XXXXXX or 98XXXXXXXX"
+            invalid={Boolean(errors.phone)}
+            autoComplete="tel"
           />
-          <FieldError msg={errors.phone} />
+          <FieldError>{errors.phone}</FieldError>
         </div>
 
-        {/* Email */}
         <div>
-          <label className={labelClass}>
-            Email <span className="text-red-600">*</span>
-          </label>
-          <input
+          <Label htmlFor="wiz-email">
+            Email <span className="text-[var(--ds-status-danger)]">*</span>
+          </Label>
+          <Input
+            id="wiz-email"
             type="email"
-            value={data.email || ""}
+            value={data.email}
             onChange={(e) => set("email", e.target.value)}
-            className={fieldClass}
-            style={inputStyle(!!errors.email)}
-            placeholder="info@company.com"
+            invalid={Boolean(errors.email)}
+            autoComplete="email"
           />
-          <FieldError msg={errors.email} />
+          <FieldError>{errors.email}</FieldError>
         </div>
 
-        {/* Website */}
         <div>
-          <label className={labelClass}>Website</label>
-          <input
+          <Label htmlFor="wiz-website">Website</Label>
+          <Input
+            id="wiz-website"
             type="url"
-            value={data.website || ""}
+            value={data.website}
             onChange={(e) => set("website", e.target.value)}
-            className={fieldClass}
-            style={inputStyle(false)}
-            placeholder="https://www.company.com.np"
+            autoComplete="url"
           />
         </div>
       </div>
 
-      <div
-        className="px-3 py-2 rounded-md text-[11px]"
-        style={{ background: "#eff6ff", border: "1px solid #bfdbfe", color: "#1e40af" }}
-      >
-        <strong>Tip:</strong> All fields marked with <span className="text-red-600">*</span> are
-        required to proceed.
-      </div>
+      <Alert tone="info" title="Required fields">
+        Items marked * must be completed before continuing. Currency remains NPR for Nepal-first companies.
+      </Alert>
     </div>
   );
 }

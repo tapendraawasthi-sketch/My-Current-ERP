@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+﻿import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   BookOpen,
   CheckCircle2,
@@ -9,7 +9,6 @@ import {
   Send,
   Shield,
   Square,
-  Sparkles,
 } from "lucide-react";
 import { useEKhataStore } from "../../store/eKhataStore";
 import { useFalconStore } from "../../store/falconStore";
@@ -108,6 +107,7 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
     generateOrbixReport,
     orbixMode,
     setOrbixMode,
+    lastNpKb,
   } = useEKhataStore();
   const closeFalcon = useFalconStore((s) => s.closePanel);
   const parties = useStore((s) => s.parties ?? []);
@@ -187,6 +187,17 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
   const lastMessage = messages[messages.length - 1];
   const showTyping = isLoading && lastMessage?.role === "assistant" && !lastMessage.text;
   const activeReport = [...messages].reverse().find((m) => m.report)?.report ?? null;
+  const stalePreview = messages.some((m) => {
+    const code =
+      m.orbixResponse &&
+      "payload" in m.orbixResponse &&
+      m.orbixResponse.payload &&
+      typeof m.orbixResponse.payload === "object" &&
+      "error_code" in m.orbixResponse.payload
+        ? String((m.orbixResponse.payload as { error_code?: string }).error_code || "")
+        : "";
+    return code === "stale_preview";
+  });
 
   const placeholders: Record<OrbixOperatingMode, string> = {
     ask: "Ask about accounts, reports, transactions, inventory or business performance…",
@@ -197,36 +208,40 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
 
   return (
     <div
-      className={`flex h-full min-h-0 flex-col overflow-hidden rounded-[var(--ox-radius-xl)] border border-[var(--ox-border)] bg-[var(--ox-surface)] shadow-[var(--ox-shadow-sm)] ${
+      className={`flex h-full min-h-0 flex-col overflow-hidden rounded-[var(--ds-radius-lg)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] shadow-[var(--ds-shadow-1)] ${
         variant === "page" ? "min-h-0" : ""
       }`}
       data-component="orbix-workspace"
     >
       {/* Workspace header */}
-      <div className="flex flex-shrink-0 flex-wrap items-center gap-3 border-b border-[var(--ox-border)] px-4 py-3">
+      <div className="flex flex-shrink-0 flex-wrap items-center gap-3 border-b border-[var(--ds-border-default)] px-4 py-3">
         <div className="flex min-w-0 items-center gap-2.5">
           <div className="relative">
             {isLoading && (
-              <span className="absolute -inset-1 animate-pulse rounded-full border border-[var(--ox-intelligence)]/40" />
+              <span className="absolute -inset-1 animate-pulse rounded-full border border-[var(--ds-action-primary)]/40" />
             )}
             <OrbixLogo size={28} variant="full" />
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <h1 className="text-[16px] font-semibold text-[var(--ox-text)]">Orbix</h1>
+              <h1 className="text-[16px] font-semibold text-[var(--ds-text-default)]">Orbix</h1>
               <span
-                className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[12px] font-semibold ${
                   llmOnline
-                    ? "bg-[var(--ox-success-soft)] text-[var(--ox-success)]"
-                    : "bg-[var(--ox-warning-soft)] text-[var(--ox-warning)]"
+                    ? "bg-[var(--ds-status-success-surface)] text-[var(--ds-status-success)]"
+                    : "bg-[var(--ds-status-warning-surface)] text-[var(--ds-status-warning)]"
                 }`}
-                title={llmOnline ? `Provider: ${llmModel || "connected"}` : "Connect erp_bot for full AI"}
+                title={
+                  llmOnline
+                    ? "Orbix interpretation available"
+                    : "Orbix interpretation limited — ERP functions remain available"
+                }
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-current" />
-                {llmOnline ? "Orbix Online" : "Limited"}
+                {llmOnline ? "Ready" : "Limited"}
               </span>
             </div>
-            <p className="truncate text-[12px] text-[var(--ox-text-muted)]">
+            <p className="truncate text-[12px] text-[var(--ds-text-muted)]">
               Connected to {companyName} · FY {fyName}
             </p>
           </div>
@@ -237,7 +252,7 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
           <button
             type="button"
             onClick={newChat}
-            className="inline-flex h-8 items-center gap-1.5 rounded-[var(--ox-radius-md)] border border-[var(--ox-border)] bg-[var(--ox-surface)] px-2.5 text-[12px] font-medium text-[var(--ox-text)] hover:bg-[var(--ox-surface-muted)]"
+            className="inline-flex h-8 items-center gap-1.5 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-2.5 text-[12px] font-medium text-[var(--ds-text-default)] hover:bg-[var(--ds-surface-muted)]"
           >
             <MessageSquarePlus className="h-3.5 w-3.5" />
             New
@@ -245,9 +260,9 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
           <button
             type="button"
             onClick={() => setInspectorOpen((v) => !v)}
-            className="hidden h-8 w-8 items-center justify-center rounded-[var(--ox-radius-md)] border border-[var(--ox-border)] text-[var(--ox-text-muted)] hover:bg-[var(--ox-surface-muted)] xl:inline-flex"
-            aria-label="Toggle context inspector"
-            title="Context inspector"
+            className="hidden h-8 w-8 items-center justify-center rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] text-[var(--ds-text-muted)] hover:bg-[var(--ds-surface-muted)] xl:inline-flex"
+            aria-label="Toggle evidence and context panel"
+            title="Evidence and context"
           >
             <PanelRight className="h-4 w-4" />
           </button>
@@ -255,7 +270,7 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
             <button
               type="button"
               onClick={onClose}
-              className="h-8 rounded-[var(--ox-radius-md)] border border-[var(--ox-border)] px-2.5 text-[12px] text-[var(--ox-text-muted)] hover:bg-[var(--ox-surface-muted)]"
+              className="h-8 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] px-2.5 text-[12px] text-[var(--ds-text-muted)] hover:bg-[var(--ds-surface-muted)]"
             >
               Close
             </button>
@@ -266,15 +281,15 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
       <div className="flex min-h-0 flex-1 overflow-hidden">
         {/* Conversation sidebar */}
         <div
-            className={`hidden flex-shrink-0 border-r border-[var(--ox-border)] bg-[var(--ox-surface)] md:flex ${
+            className={`hidden flex-shrink-0 border-r border-[var(--ds-border-default)] bg-[var(--ds-surface)] md:flex ${
             sidebarCollapsed ? "w-14" : "w-[240px]"
           }`}
         >
           <div className="flex w-full flex-col">
             {!sidebarCollapsed && (
-              <div className="border-b border-[var(--ox-border)] p-2">
-                <div className="flex h-8 items-center gap-2 rounded-[var(--ox-radius-md)] border border-[var(--ox-border)] bg-[var(--ox-surface)] px-2">
-                  <Search className="h-3.5 w-3.5 text-[var(--ox-text-subtle)]" />
+              <div className="border-b border-[var(--ds-border-default)] p-2">
+                <div className="flex h-8 items-center gap-2 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-2">
+                  <Search className="h-3.5 w-3.5 text-[var(--ds-text-subtle)]" />
                   <input
                     value={sessionQuery}
                     onChange={(e) => setSessionQuery(e.target.value)}
@@ -305,36 +320,28 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
           >
             {messages.length === 0 && !pendingCard && !pendingCompoundBatch && !showTyping ? (
               <div className="mx-auto flex max-w-2xl flex-col items-center px-4 py-10 text-center">
-                <div className="relative mb-5">
-                  <div className="absolute inset-0 scale-150 rounded-full bg-[var(--ox-intelligence-soft)] blur-2xl" />
-                  <OrbixLogo size={56} variant="full" className="relative" />
-                </div>
-                <h2 className="text-[22px] font-semibold tracking-tight text-[var(--ox-text)]">
+                <OrbixLogo size={48} variant="full" className="mb-5" />
+                <h2 className="text-[22px] font-semibold tracking-tight text-[var(--ds-text-default)]">
                   {greeting()}. What would you like to understand or do in {companyName}?
                 </h2>
-                <p className="mt-2 max-w-md text-[13px] text-[var(--ox-text-muted)]">
+                <p className="mt-2 max-w-md text-[14px] text-[var(--ds-text-muted)]">
                   {ORBIX_MODE_META[orbixMode].description}
                 </p>
                 <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
-                  <span className="rounded-full border border-[var(--ox-border)] bg-[var(--ox-surface)] px-2.5 py-1 text-[11px] text-[var(--ox-text-muted)]">
+                  <span className="rounded-full border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-2.5 py-1 text-[12px] text-[var(--ds-text-muted)]">
                     {companyName}
                   </span>
-                  <span className="rounded-full border border-[var(--ox-border)] bg-[var(--ox-surface)] px-2.5 py-1 text-[11px] text-[var(--ox-text-muted)]">
+                  <span className="rounded-full border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-2.5 py-1 text-[12px] text-[var(--ds-text-muted)]">
                     FY {fyName}
                   </span>
                   <span
-                    className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium ${
+                    className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[12px] font-medium ${
                       orbixMode === "ask"
-                        ? "bg-[var(--ox-info-soft)] text-[var(--ox-info)]"
-                        : "bg-[var(--ox-primary-soft)] text-[var(--ox-primary)]"
+                        ? "bg-[var(--ds-status-info-surface)] text-[var(--ds-status-info)]"
+                        : "bg-[var(--ds-surface-selected)] text-[var(--ds-action-primary)]"
                     }`}
                   >
-                    {orbixMode === "ask" ? (
-                      <Shield className="h-3 w-3" />
-                    ) : (
-                      <BookOpen className="h-3 w-3" />
-                    )}
-                    {ORBIX_MODE_META[orbixMode].label} Mode
+                    {orbixMode === "ask" ? "Ask Mode · read only" : "Accountant Mode · confirm to post"}
                   </span>
                 </div>
                 <div className="mt-8 grid w-full gap-2 sm:grid-cols-2">
@@ -344,9 +351,8 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
                       type="button"
                       disabled={isLoading}
                       onClick={() => void handleSend(s)}
-                      className="rounded-[var(--ox-radius-lg)] border border-[var(--ox-border)] bg-[var(--ox-surface)] px-3 py-3 text-left text-[13px] text-[var(--ox-text)] hover:border-[var(--ox-primary)]/40 hover:bg-[var(--ox-primary-soft)]"
+                      className="rounded-[var(--ds-radius-lg)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-3 py-3 text-left text-[13px] text-[var(--ds-text-default)] hover:border-[var(--ds-action-primary)]/40 hover:bg-[var(--ds-surface-selected)]"
                     >
-                      <Sparkles className="mb-1 h-3.5 w-3.5 text-[var(--ox-intelligence)]" />
                       {s}
                     </button>
                   ))}
@@ -401,7 +407,7 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
                       }
                     >
                       {msg.role === "assistant" && (
-                        <div className="mr-2 mt-1 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border border-[var(--ox-border)] bg-[var(--ox-intelligence-soft)]">
+                        <div className="mr-2 mt-1 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border border-[var(--ds-border-default)] bg-[var(--ds-status-info-surface)]">
                           <OrbixLogo size={14} />
                         </div>
                       )}
@@ -411,7 +417,7 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
                         }`}
                       >
                         {msg.role === "user" ? (
-                          <div className="rounded-[var(--ox-radius-lg)] bg-[var(--ox-primary)] px-3.5 py-2.5 text-[13px] leading-relaxed text-white">
+                          <div className="rounded-[var(--ds-radius-lg)] bg-[var(--ds-action-primary)] px-3.5 py-2.5 text-[13px] leading-relaxed text-white">
                             <p className="whitespace-pre-wrap">{msg.text}</p>
                           </div>
                         ) : (
@@ -447,6 +453,7 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
                     balance={balance}
                     isLoading={isLoading}
                     postingStages={postingStages}
+                    stalePreview={stalePreview}
                     onConfirm={confirmPending}
                     onCancel={cancelPending}
                   />
@@ -462,7 +469,7 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
               <button
                 type="button"
                 onClick={jumpToLatest}
-                className="sticky bottom-3 left-1/2 z-10 mx-auto flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-[var(--ox-border)] bg-[var(--ox-surface-elevated)] px-3 py-1.5 text-[12px] font-medium text-[var(--ox-text)] shadow-[var(--ox-shadow-md)]"
+                className="sticky bottom-3 left-1/2 z-10 mx-auto flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-[var(--ds-border-default)] bg-[var(--ds-surface-raised)] px-3 py-1.5 text-[12px] font-medium text-[var(--ds-text-default)] shadow-[var(--ds-shadow-2)]"
               >
                 <ChevronDown className="h-3.5 w-3.5" />
                 Jump to latest
@@ -471,10 +478,10 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
           </div>
 
           {/* Composer */}
-          <div className="flex-shrink-0 border-t border-[var(--ox-border)] bg-[var(--ox-surface)] px-4 py-3">
+          <div className="flex-shrink-0 border-t border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-4 py-3">
             <div className="mx-auto max-w-4xl">
-              <div className="mb-2 flex flex-wrap items-center gap-1.5 text-[11px] text-[var(--ox-text-muted)]">
-                <span className="inline-flex items-center gap-1 rounded-md bg-[var(--ox-surface-muted)] px-2 py-0.5">
+              <div className="mb-2 flex flex-wrap items-center gap-1.5 text-[12px] text-[var(--ds-text-muted)]">
+                <span className="inline-flex items-center gap-1 rounded-md bg-[var(--ds-surface-muted)] px-2 py-0.5">
                   {orbixMode === "ask" ? (
                     <>
                       <Shield className="h-3 w-3" /> Ask · Read only
@@ -486,7 +493,7 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
                   )}
                 </span>
               </div>
-              <div className="flex items-end gap-2 rounded-[var(--ox-radius-lg)] border border-[var(--ox-border)] bg-[var(--ox-surface-muted)] p-2 focus-within:border-[var(--ox-primary)] focus-within:ring-2 focus-within:ring-[var(--ox-focus-ring)]">
+              <div className="flex items-end gap-2 rounded-[var(--ds-radius-lg)] border border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)] p-2 focus-within:border-[var(--ds-action-primary)] focus-within:ring-2 focus-within:ring-[var(--ds-border-focus)]">
                 <textarea
                   ref={inputRef}
                   value={input}
@@ -504,14 +511,15 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
                   }}
                   placeholder={placeholders[orbixMode]}
                   disabled={isLoading}
-                  className="max-h-[140px] min-h-[40px] flex-1 resize-none border-0 bg-transparent px-2 py-2 text-[13px] text-[var(--ox-text)] outline-none placeholder:text-[var(--ox-text-subtle)]"
+                  className="max-h-[140px] min-h-[40px] flex-1 resize-none border-0 bg-transparent px-2 py-2 text-[13px] text-[var(--ds-text-default)] outline-none placeholder:text-[var(--ds-text-subtle)]"
+                  aria-label="Message to Orbix"
                   data-component="ekhata-input"
                   data-testid="orbix-composer"
                 />
                 {isLoading ? (
                   <button
                     type="button"
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-[var(--ox-radius-md)] bg-[var(--ox-surface)] text-[var(--ox-text-muted)]"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-[var(--ds-radius-md)] bg-[var(--ds-surface)] text-[var(--ds-text-muted)]"
                     title="Generating…"
                     aria-label="Generating"
                     data-testid="orbix-send-busy"
@@ -524,7 +532,7 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
                     type="button"
                     onClick={() => void handleSend()}
                     disabled={!input.trim()}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-[var(--ox-radius-md)] bg-[var(--ox-primary)] text-white hover:bg-[var(--ox-primary-hover)] disabled:opacity-40"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-[var(--ds-radius-md)] bg-[var(--ds-action-primary)] text-white hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-40"
                     aria-label="Send message"
                     data-testid="orbix-send"
                   >
@@ -532,7 +540,7 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
                   </button>
                 )}
               </div>
-              <p className="mt-1.5 text-center text-[11px] text-[var(--ox-text-subtle)]">
+              <p className="mt-1.5 text-center text-[12px] text-[var(--ds-text-subtle)]">
                 Enter to send · Shift+Enter for new line · Ctrl+Shift+K toggles Orbix
               </p>
             </div>
@@ -541,7 +549,7 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
 
         {/* Context inspector */}
         {inspectorOpen && (
-          <div className="hidden w-[280px] flex-shrink-0 border-l border-[var(--ox-border)] xl:block">
+          <div className="hidden w-[280px] flex-shrink-0 border-l border-[var(--ds-border-default)] xl:block">
             <ContextInspector
               companyName={companyName}
               fyName={fyName}
@@ -550,6 +558,7 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
               pendingCard={pendingCard}
               llmOnline={llmOnline}
               llmModel={llmModel}
+              npKb={lastNpKb}
             />
           </div>
         )}

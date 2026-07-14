@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import TallyVoucherShell from "./TallyVoucherShell";
 import TallyAccountSelect from "./TallyAccountSelect";
 import TallyBankAllocation from "./TallyBankAllocation";

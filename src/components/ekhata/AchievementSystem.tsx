@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Gamification — achievements and daily challenges for consistent bookkeeping.
  */
 import { useEffect, useState } from "react";
@@ -100,7 +100,7 @@ export default function AchievementSystem({ compact = false }: AchievementSystem
           </span>
         ))}
         {unlocked.length > 4 && (
-          <span className="text-[10px] text-slate-500">+{unlocked.length - 4}</span>
+          <span className="text-[12px] text-slate-500">+{unlocked.length - 4}</span>
         )}
       </div>
     );
@@ -108,7 +108,7 @@ export default function AchievementSystem({ compact = false }: AchievementSystem
 
   return (
     <div className="border border-gray-200 rounded-md bg-white p-3">
-      <h3 className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2">
+      <h3 className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-2">
         Achievements
       </h3>
       <div className="grid grid-cols-3 gap-2">
@@ -121,11 +121,11 @@ export default function AchievementSystem({ compact = false }: AchievementSystem
             title={a.description}
           >
             <div className="text-[18px]">{a.emoji}</div>
-            <div className="text-[10px] font-medium text-gray-700 mt-0.5">{a.title}</div>
+            <div className="text-[12px] font-medium text-gray-700 mt-0.5">{a.title}</div>
           </div>
         ))}
       </div>
-      <p className="text-[10px] text-gray-500 mt-2">
+      <p className="text-[12px] text-gray-500 mt-2">
         Daily challenge: 5 entries today — keep your khata up to date!
       </p>
     </div>

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import { getDB, generateId } from "../lib/db";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { Calendar, Plus, Edit, Trash2, Check, X, XCircle } from "lucide-react";
 
 const LeaveManagement: React.FC = () => {

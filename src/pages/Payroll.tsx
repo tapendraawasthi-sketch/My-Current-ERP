@@ -247,9 +247,9 @@ export default function Payroll() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Payroll Management</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Nepal-compliant payroll with EPF, CIT, SSF & TDS (IRD 2081/82 slabs)
+          <h1 className="text-[15px] font-semibold text-gray-800">Payroll</h1>
+          <p className="text-[12px] text-gray-500 mt-0.5">
+            Pay employees.
           </p>
         </div>
         <div className="flex gap-2">
@@ -259,7 +259,7 @@ export default function Payroll() {
                 setEditEmp(null);
                 setShowEmpModal(true);
               }}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
+              className="flex items-center gap-2 h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md"
             >
               <Plus className="w-4 h-4" /> Add Employee
             </button>
@@ -267,7 +267,7 @@ export default function Payroll() {
           {activeTab === "salary" && (
             <button
               onClick={() => setShowSalModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium"
+              className="flex items-center gap-2 h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md"
             >
               <Plus className="w-4 h-4" /> Add Salary Structure
             </button>
@@ -275,7 +275,7 @@ export default function Payroll() {
           {activeTab === "register" && selectedRunId && (
             <button
               onClick={exportRegister}
-              className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium"
+              className="flex items-center gap-2 h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
             >
               <Download className="w-4 h-4" /> Export Excel
             </button>
@@ -314,7 +314,7 @@ export default function Payroll() {
             color: "orange",
             icon: Calculator,
           },
-          { label: "Payroll Runs", value: payrollRuns.length, color: "purple", icon: CheckCircle },
+          { label: "Attendances", value: payrollRuns.length, color: "purple", icon: CheckCircle },
         ].map((card) => (
           <div
             key={card.label}
@@ -867,7 +867,7 @@ export default function Payroll() {
               {/* Net Pay */}
               <div className="mt-6 bg-blue-50 rounded-lg p-4 text-center">
                 <div className="text-sm text-gray-600">NET PAY (Take Home)</div>
-                <div className="text-2xl font-bold text-blue-700 mt-1">
+                <div className="text-[15px] font-semibold text-blue-700 mt-1">
                   {fmt(payslipEntry.netPay)}
                 </div>
               </div>

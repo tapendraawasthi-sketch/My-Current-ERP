@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { useStore } from "../store/useStore";
-import ReportShell from "../components/reports/ReportShell";
+import { ReportWorkspace } from "@/features/reports";
 import AccountTreeRenderer, {
   ReportDepth,
   ReportNode,
@@ -55,6 +55,7 @@ const IncomeExpenditureAccount: React.FC = () => {
     accountName: string;
   }>({ open: false, accountId: null, accountName: "" });
   const [branches, setBranches] = useState<{ id: string; name: string }[]>([]);
+  const [depth, setDepth] = useState<ReportDepth>("detailed");
 
   useEffect(() => {
     const load = async () => {
@@ -182,7 +183,7 @@ const IncomeExpenditureAccount: React.FC = () => {
   return (
     <>
       <ReportOptionsModal
-        title="Income & Expenditure Account"
+        title="Income & expenditure"
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         onGenerate={(opts) => {
@@ -195,49 +196,61 @@ const IncomeExpenditureAccount: React.FC = () => {
         branches={branches}
       />
 
-      <ReportShell
-        title="Income &amp; Expenditure Account"
-        subtitle="For non-profit / trust entities — Nepal Accounting Standards"
+      <ReportWorkspace
+        title="Income & expenditure"
+        description="For non-trading entities."
         onPrint={() => window.print()}
-        onExport={handleExport}
-        extraActions={extraActions}
+        onExportCsv={handleExport}
+        meta={extraActions}
+        filterSlot={
+          <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
+            {(
+              [
+                { label: "Summary", value: "summary" as ReportDepth },
+                { label: "Detailed", value: "detailed" as ReportDepth },
+                { label: "Full Detail", value: "ultra_deep" as ReportDepth },
+              ] as const
+            ).map((d) => (
+              <button
+                key={d.value}
+                type="button"
+                onClick={() => setDepth(d.value)}
+                className={`h-8 px-3 text-[12px] font-medium transition-colors ${
+                  depth === d.value
+                    ? "bg-[var(--ds-action-primary)] text-white"
+                    : "bg-white text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                {d.label}
+              </button>
+            ))}
+          </div>
+        }
       >
-        {(depth: ReportDepth) => {
-          if (!reportOptions) {
-            return (
+        {!reportOptions ? (
               <div className="flex items-center justify-center py-20 text-gray-500 text-[12px]">
                 Configure and generate the report.
               </div>
-            );
-          }
-
-          return (
+            ) : (
             <div className="space-y-4">
-              <div
-                style={{
-                  textAlign: "center",
-                  padding: "16px 0 12px",
-                  borderBottom: "1px solid #e5e7eb",
-                  marginBottom: 16,
-                }}
-              >
-                <div style={{ fontSize: 15, fontWeight: 700, color: "#111827" }}>
+              <div className="border-b border-gray-200 pb-3 mb-4 text-center">
+                <div className="text-[15px] font-semibold text-gray-800">
                   {useStore.getState().companySettings?.companyNameEn ||
                     useStore.getState().companySettings?.name ||
                     "Company Name"}
                 </div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#374151", marginTop: 3 }}>
-                  Income &amp; Expenditure Account
+                <div className="text-[13px] font-semibold text-gray-700 mt-1">
+                  Income & expenditure
                 </div>
-                <div style={{ fontSize: 11, color: "#6b7280", marginTop: 4 }}>
+                <div className="text-[12px] text-gray-500 mt-1">
                   For the period from {formatADToBS(reportOptions.fromDate)} to{" "}
                   {formatADToBS(reportOptions.toDate)}
                 </div>
-                <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 2 }}>
+                <div className="text-[12px] text-gray-400 mt-0.5">
                   ({reportOptions.fromDate} to {reportOptions.toDate})
                 </div>
                 {useStore.getState().companySettings?.panNumber && (
-                  <div style={{ fontSize: 10, color: "#9ca3af", marginTop: 2 }}>
+                  <div className="text-[12px] text-gray-400 mt-0.5">
                     PAN: {useStore.getState().companySettings?.panNumber}
                   </div>
                 )}
@@ -246,8 +259,8 @@ const IncomeExpenditureAccount: React.FC = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
                 {/* Income */}
                 <div className="bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col min-h-full">
-                  <div className="px-3 py-2 bg-[#f5f6fa] border-b border-gray-200 shrink-0">
-                    <h3 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <div className="px-3 py-2 bg-[var(--ds-canvas)] border-b border-gray-200 shrink-0">
+                    <h3 className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                       Indirect Income
                     </h3>
                   </div>
@@ -256,7 +269,7 @@ const IncomeExpenditureAccount: React.FC = () => {
                   </table>
                   <table className="w-full shrink-0 mt-auto">
                     <tfoot>
-                      <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
+                      <tr className="bg-[var(--ds-surface-selected)] border-t-2 border-[var(--ds-border-strong)] font-bold text-[12px]">
                         <td className="px-3 py-2 text-gray-800">Total Income</td>
                         <td className="px-3 py-2 text-right font-mono text-gray-800">
                           {fmtAmt(totalIncome)}
@@ -268,8 +281,8 @@ const IncomeExpenditureAccount: React.FC = () => {
 
                 {/* Expenses */}
                 <div className="bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col min-h-full">
-                  <div className="px-3 py-2 bg-[#f5f6fa] border-b border-gray-200 shrink-0">
-                    <h3 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                  <div className="px-3 py-2 bg-[var(--ds-canvas)] border-b border-gray-200 shrink-0">
+                    <h3 className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                       Indirect / Admin Expenses
                     </h3>
                   </div>
@@ -278,7 +291,7 @@ const IncomeExpenditureAccount: React.FC = () => {
                   </table>
                   <table className="w-full shrink-0 mt-auto">
                     <tfoot>
-                      <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe] font-bold text-[12px]">
+                      <tr className="bg-[var(--ds-surface-selected)] border-t-2 border-[var(--ds-border-strong)] font-bold text-[12px]">
                         <td className="px-3 py-2 text-gray-800">Total Expenses</td>
                         <td className="px-3 py-2 text-right font-mono text-gray-800">
                           {fmtAmt(totalExpense)}
@@ -293,37 +306,26 @@ const IncomeExpenditureAccount: React.FC = () => {
               <table className="w-full">
                 <tbody>
                   <tr
-                    style={{
-                      background: surplus >= 0 ? "#f0fdf4" : "#fef2f2",
-                      borderTop: "2px solid #d1d5db",
-                      boxShadow: `inset 0 -4px 0 0 ${surplus >= 0 ? "#86efac" : "#fca5a5"}, inset 0 -7px 0 0 ${surplus >= 0 ? "#f0fdf4" : "#fef2f2"}, inset 0 -8px 0 0 ${surplus >= 0 ? "#86efac" : "#fca5a5"}`,
-                    }}
+                    className={
+                      surplus >= 0
+                        ? "bg-green-50 border-t-2 border-gray-300"
+                        : "bg-red-50 border-t-2 border-gray-300"
+                    }
                   >
-                    <td style={{ padding: "12px 16px" }}>
-                      <div style={{ fontWeight: 700, fontSize: 13, color: "#111827" }}>
+                    <td className="px-4 py-3">
+                      <div className="font-semibold text-[13px] text-gray-900">
                         {surplus >= 0 ? "Surplus for the Period" : "Deficit for the Period"}
                       </div>
-                      <div
-                        style={{
-                          fontSize: 10,
-                          color: "#9ca3af",
-                          fontStyle: "italic",
-                          marginTop: 2,
-                        }}
-                      >
+                      <div className="text-[12px] text-gray-400 italic mt-0.5">
                         {surplus >= 0
                           ? "Transferred to Corpus / General Fund"
                           : "Charged to Corpus / General Fund"}
                       </div>
                     </td>
                     <td
-                      className="num-cell-bold"
-                      style={{
-                        color: surplus >= 0 ? "#059669" : "#dc2626",
-                        fontSize: 14,
-                        padding: "12px 16px",
-                        textAlign: "right",
-                      }}
+                      className={`num-cell-bold px-4 py-3 text-right text-[14px] ${
+                        surplus >= 0 ? "text-[var(--ds-status-success)]" : "text-[var(--ds-status-danger)]"
+                      }`}
                     >
                       {Math.abs(surplus).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                     </td>
@@ -344,9 +346,8 @@ const IncomeExpenditureAccount: React.FC = () => {
                 />
               )}
             </div>
-          );
-        }}
-      </ReportShell>
+            )}
+      </ReportWorkspace>
     </>
   );
 };

@@ -1,11 +1,10 @@
 // @ts-nocheck
 import React, { useState, useMemo, useEffect } from "react";
 import { ActionToolbar, Select, NepaliDatePicker, Button, Badge } from "../components/ui";
-import { PillTitle, FormPanel } from "../components/BusyShell";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
 import { generateId } from "../lib/db";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { Building2, Plus, Eye, Check, RotateCcw } from "lucide-react";
 import { formatADToBS } from "../lib/nepaliDate";
 
@@ -391,7 +390,9 @@ export default function DepositSlip() {
         </ActionToolbar>
 
         <div className="flex-1 overflow-auto p-4">
-          <FormPanel title="Deposit Slip Details">
+          <div className="mb-4 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-4">
+            <h3 className="mb-3 text-[13px] font-semibold text-[var(--ds-text-strong)]">Deposit Slip Details</h3>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div>
                 <Select
@@ -442,9 +443,11 @@ export default function DepositSlip() {
                 placeholder="Additional notes..."
               />
             </div>
-          </FormPanel>
+          </div>
 
-          <FormPanel title="Select Instruments to Deposit">
+          <div className="mb-4 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] p-4">
+            <h3 className="mb-3 text-[13px] font-semibold text-[var(--ds-text-strong)]">Select Instruments to Deposit</h3>
+
             <p className="text-sm text-gray-600 mb-4">
               Select cheques/cash from un-deposited receipt vouchers
             </p>
@@ -538,7 +541,7 @@ export default function DepositSlip() {
                 <p className="font-bold text-blue-800">{formatNumber(totalAmount)}</p>
               </div>
             </div>
-          </FormPanel>
+          </div>
 
           <div className="mt-6 flex justify-end gap-3">
             <Button variant="outline" onClick={() => setView("list")}>

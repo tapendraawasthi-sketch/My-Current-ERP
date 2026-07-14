@@ -1,0 +1,184 @@
+{
+  "rule": "no-new-important",
+  "generated_at": "2026-07-13T17:06:07.003Z",
+  "count": 25,
+  "ids": [
+    "0cfe5b94c7f7a785",
+    "1261d0bebbdf374d",
+    "20a4395dc5fe8d07",
+    "30d228543805ce2b",
+    "35ff9ebc68f9f8da",
+    "365a917a3a4680d9",
+    "37bf0601ba1fbcd4",
+    "5e184ac7bedf60f9",
+    "64eedbc96f4caac7",
+    "672b6b617c34f0a5",
+    "6a53bc73463d14a8",
+    "82b5ba7f8bfc758a",
+    "8a51f12ef9315ea7",
+    "b2472c36c5a90836",
+    "b470bacf8619e423",
+    "c06cf39e2846796f",
+    "e341b538e00ae93b",
+    "e70278d144b03dd8",
+    "e79f0c68b642d8cd",
+    "e8051f7383a3cfe6",
+    "ea4c86719f4949b5",
+    "f2171b67dce4df5d",
+    "faa08f3d96a854e9",
+    "ff3c5bd54866d65e",
+    "ff3eb03bc3adf009"
+  ],
+  "samples": [
+    {
+      "id": "ff3eb03bc3adf009",
+      "file": "src/components/invoice/InvoicePrint.tsx",
+      "line": 466,
+      "snippet": "background: white !important;"
+    },
+    {
+      "id": "e8051f7383a3cfe6",
+      "file": "src/components/invoice/InvoicePrint.tsx",
+      "line": 467,
+      "snippet": "color: black !important;"
+    },
+    {
+      "id": "82b5ba7f8bfc758a",
+      "file": "src/components/invoice/InvoicePrint.tsx",
+      "line": 470,
+      "snippet": "display: none !important;"
+    },
+    {
+      "id": "6a53bc73463d14a8",
+      "file": "src/components/invoice/InvoicePrint.tsx",
+      "line": 473,
+      "snippet": "position: relative !important;"
+    },
+    {
+      "id": "8a51f12ef9315ea7",
+      "file": "src/components/invoice/InvoicePrint.tsx",
+      "line": 474,
+      "snippet": "background: transparent !important;"
+    },
+    {
+      "id": "b2472c36c5a90836",
+      "file": "src/components/invoice/InvoicePrint.tsx",
+      "line": 475,
+      "snippet": "padding: 0 !important;"
+    },
+    {
+      "id": "e341b538e00ae93b",
+      "file": "src/components/invoice/InvoicePrint.tsx",
+      "line": 476,
+      "snippet": "inset: auto !important;"
+    },
+    {
+      "id": "e70278d144b03dd8",
+      "file": "src/components/invoice/InvoicePrint.tsx",
+      "line": 477,
+      "snippet": "display: block !important;"
+    },
+    {
+      "id": "0cfe5b94c7f7a785",
+      "file": "src/components/invoice/InvoicePrint.tsx",
+      "line": 478,
+      "snippet": "overflow: visible !important;"
+    },
+    {
+      "id": "672b6b617c34f0a5",
+      "file": "src/components/invoice/InvoicePrint.tsx",
+      "line": 481,
+      "snippet": "background-color: white !important;"
+    },
+    {
+      "id": "365a917a3a4680d9",
+      "file": "src/components/TdsCertificate.tsx",
+      "line": 199,
+      "snippet": "display: none !important;"
+    },
+    {
+      "id": "ff3c5bd54866d65e",
+      "file": "src/components/TdsCertificate.tsx",
+      "line": 203,
+      "snippet": "background: white !important;"
+    },
+    {
+      "id": "20a4395dc5fe8d07",
+      "file": "src/components/TdsCertificate.tsx",
+      "line": 207,
+      "snippet": "border: none !important;"
+    },
+    {
+      "id": "35ff9ebc68f9f8da",
+      "file": "src/components/TdsCertificate.tsx",
+      "line": 208,
+      "snippet": "box-shadow: none !important;"
+    },
+    {
+      "id": "faa08f3d96a854e9",
+      "file": "src/lib/falcon/kb/extended4.ts",
+      "line": 44,
+      "snippet": "a: \"!important overrides reset theme for .top-menu-bar, .right-button-bar, Sidebar so they keep their own dark styles (#"
+    },
+    {
+      "id": "5e184ac7bedf60f9",
+      "file": "src/lib/printUtils.ts",
+      "line": 289,
+      "snippet": ".no-print { display: none !important; }"
+    },
+    {
+      "id": "1261d0bebbdf374d",
+      "file": "src/pages/ChequePrinting.tsx",
+      "line": 907,
+      "snippet": "position: absolute !important;"
+    },
+    {
+      "id": "37bf0601ba1fbcd4",
+      "file": "src/pages/ChequePrinting.tsx",
+      "line": 908,
+      "snippet": "background: transparent !important;"
+    },
+    {
+      "id": "e79f0c68b642d8cd",
+      "file": "src/pages/CostCenterReport.tsx",
+      "line": 675,
+      "snippet": ".no-print { display: none !important; }"
+    },
+    {
+      "id": "64eedbc96f4caac7",
+      "file": "src/pages/CostCenterReport.tsx",
+      "line": 676,
+      "snippet": "body { background: white !important; }"
+    },
+    {
+      "id": "c06cf39e2846796f",
+      "file": "src/pages/DayBook.tsx",
+      "line": 832,
+      "snippet": ".no-print { display: none !important; }"
+    },
+    {
+      "id": "f2171b67dce4df5d",
+      "file": "src/pages/DayBook.tsx",
+      "line": 833,
+      "snippet": "body { background: white !important; }"
+    },
+    {
+      "id": "30d228543805ce2b",
+      "file": "src/pages/DebtorsAging.tsx",
+      "line": 369,
+      "snippet": ".no-print { display: none !important; }"
+    },
+    {
+      "id": "ea4c86719f4949b5",
+      "file": "src/pages/VatReports.tsx",
+      "line": 956,
+      "snippet": ".no-print { display: none !important; }"
+    },
+    {
+      "id": "b470bacf8619e423",
+      "file": "src/pages/VatReports.tsx",
+      "line": 957,
+      "snippet": "body { background: white !important; }"
+    }
+  ]
+}

@@ -339,7 +339,7 @@ TECHNOLOGY STACK:
   PDF Generation: jsPDF 4 + jspdf-autotable
   Charts: Recharts 2
   Icons: lucide-react
-  Notifications: react-hot-toast
+  Notifications: DS ToastProvider + @/lib/appToast
   UI Primitives: Radix UI (Dialog, Select, Dropdown, Tooltip, etc.)
   Animations: motion (Framer Motion successor)
   Date Library: date-fns 4 + custom Nepali date converter

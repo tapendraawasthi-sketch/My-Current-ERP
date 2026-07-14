@@ -9,7 +9,7 @@
 
 import React, { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useStore } from "../store";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import * as XLSX from "xlsx";
 import {
   Plus,
@@ -62,7 +62,7 @@ const PREDEFINED_GROUPS = [
     category: "Capital/Equity",
     sortOrder: 1,
     icon: "Wallet",
-    color: "#7c3aed",
+    color: "var(--ds-action-primary)",
     subGroups: [
       { id: "sg-partners-capital", name: "Partners Capital Account", parentId: "pg-capital" },
       { id: "sg-share-capital", name: "Share Capital", parentId: "pg-capital" },
@@ -75,7 +75,7 @@ const PREDEFINED_GROUPS = [
     category: "Capital/Equity",
     sortOrder: 2,
     icon: "Wallet",
-    color: "#7c3aed",
+    color: "var(--ds-action-primary)",
     subGroups: [
       { id: "sg-general-reserve", name: "General Reserve", parentId: "pg-reserves" },
       { id: "sg-retained-earnings", name: "Retained Earnings", parentId: "pg-reserves" },
@@ -89,7 +89,7 @@ const PREDEFINED_GROUPS = [
     category: "Liabilities",
     sortOrder: 3,
     icon: "Landmark",
-    color: "#dc2626",
+    color: "var(--ds-action-primary)",
     subGroups: [
       { id: "sg-secured-loans", name: "Secured Loans", parentId: "pg-loans-liability" },
       { id: "sg-unsecured-loans", name: "Unsecured Loans", parentId: "pg-loans-liability" },
@@ -102,7 +102,7 @@ const PREDEFINED_GROUPS = [
     category: "Liabilities",
     sortOrder: 4,
     icon: "Briefcase",
-    color: "#dc2626",
+    color: "var(--ds-action-primary)",
     subGroups: [
       { id: "sg-sundry-creditors", name: "Sundry Creditors", parentId: "pg-current-liability" },
       { id: "sg-duties-taxes", name: "Duties & Taxes", parentId: "pg-current-liability" },
@@ -125,7 +125,7 @@ const PREDEFINED_GROUPS = [
     category: "Liabilities",
     sortOrder: 5,
     icon: "Briefcase",
-    color: "#dc2626",
+    color: "var(--ds-action-primary)",
     subGroups: [
       { id: "sg-provision-tax", name: "Provision for Tax", parentId: "pg-provisions" },
       {
@@ -143,7 +143,7 @@ const PREDEFINED_GROUPS = [
     category: "Assets",
     sortOrder: 6,
     icon: "Building",
-    color: "#0284c7",
+    color: "var(--ds-action-primary)",
     subGroups: [],
   },
   {
@@ -153,7 +153,7 @@ const PREDEFINED_GROUPS = [
     category: "Assets",
     sortOrder: 7,
     icon: "Package",
-    color: "#0284c7",
+    color: "var(--ds-action-primary)",
     subGroups: [
       { id: "sg-cash-in-hand", name: "Cash-in-Hand", parentId: "pg-current-assets" },
       { id: "sg-bank-accounts", name: "Bank Accounts", parentId: "pg-current-assets" },
@@ -169,7 +169,7 @@ const PREDEFINED_GROUPS = [
     category: "Assets",
     sortOrder: 8,
     icon: "TrendingUp",
-    color: "#0284c7",
+    color: "var(--ds-action-primary)",
     subGroups: [
       { id: "sg-fixed-deposits", name: "Fixed Deposits", parentId: "pg-investments" },
       { id: "sg-shares-bonds", name: "Shares & Bonds", parentId: "pg-investments" },
@@ -182,7 +182,7 @@ const PREDEFINED_GROUPS = [
     category: "Assets",
     sortOrder: 9,
     icon: "Users",
-    color: "#0284c7",
+    color: "var(--ds-action-primary)",
     subGroups: [
       { id: "sg-employee-advances", name: "Employee Advances", parentId: "pg-loans-asset" },
       { id: "sg-advances-suppliers", name: "Advances to Suppliers", parentId: "pg-loans-asset" },
@@ -196,7 +196,7 @@ const PREDEFINED_GROUPS = [
     category: "Income/Revenue",
     sortOrder: 10,
     icon: "TrendingUp",
-    color: "#059669",
+    color: "var(--ds-action-primary)",
     subGroups: [
       { id: "sg-sales-accounts", name: "Sales Accounts", parentId: "pg-direct-income" },
       { id: "sg-service-income", name: "Service Income", parentId: "pg-direct-income" },
@@ -209,7 +209,7 @@ const PREDEFINED_GROUPS = [
     category: "Income/Revenue",
     sortOrder: 11,
     icon: "TrendingUp",
-    color: "#059669",
+    color: "var(--ds-action-primary)",
     subGroups: [
       { id: "sg-interest-received", name: "Interest Received", parentId: "pg-indirect-income" },
       { id: "sg-commission-received", name: "Commission Received", parentId: "pg-indirect-income" },
@@ -224,7 +224,7 @@ const PREDEFINED_GROUPS = [
     category: "Expenses",
     sortOrder: 12,
     icon: "TrendingDown",
-    color: "#d97706",
+    color: "var(--ds-action-primary)",
     subGroups: [
       { id: "sg-raw-material", name: "Raw Material Purchase", parentId: "pg-direct-expense" },
       { id: "sg-freight-inward", name: "Freight Inward", parentId: "pg-direct-expense" },
@@ -238,7 +238,7 @@ const PREDEFINED_GROUPS = [
     category: "Expenses",
     sortOrder: 13,
     icon: "TrendingDown",
-    color: "#d97706",
+    color: "var(--ds-action-primary)",
     subGroups: [
       { id: "sg-admin-expenses", name: "Administrative Expenses", parentId: "pg-indirect-expense" },
       { id: "sg-selling-expenses", name: "Selling Expenses", parentId: "pg-indirect-expense" },
@@ -252,7 +252,7 @@ const PREDEFINED_GROUPS = [
     category: "Expenses",
     sortOrder: 14,
     icon: "ShoppingCart",
-    color: "#d97706",
+    color: "var(--ds-action-primary)",
     subGroups: [
       { id: "sg-purchase-local", name: "Purchase (Local)", parentId: "pg-purchase" },
       { id: "sg-purchase-interstate", name: "Purchase (Interstate)", parentId: "pg-purchase" },
@@ -267,7 +267,7 @@ const PREDEFINED_GROUPS = [
     category: "Miscellaneous",
     sortOrder: 15,
     icon: "BarChart2",
-    color: "#6b7280",
+    color: "var(--ds-action-primary)",
     subGroups: [],
   },
 ];
@@ -281,12 +281,12 @@ const CATEGORY_ORDER = [
   "Miscellaneous",
 ];
 const CATEGORY_COLORS: Record<string, string> = {
-  "Capital/Equity": "#7c3aed",
-  Liabilities: "#dc2626",
-  Assets: "#0284c7",
-  "Income/Revenue": "#059669",
-  Expenses: "#d97706",
-  Miscellaneous: "#6b7280",
+  "Capital/Equity": "var(--ds-action-primary)",
+  Liabilities: "var(--ds-action-primary)",
+  Assets: "var(--ds-action-primary)",
+  "Income/Revenue": "var(--ds-action-primary)",
+  Expenses: "var(--ds-action-primary)",
+  Miscellaneous: "var(--ds-action-primary)",
 };
 
 // ─── Account Type Options ─────────────────────────────────────────────────────
@@ -526,10 +526,10 @@ const DEFAULT_MASTER_CONFIG: MasterConfig = {
 
 // ─── Utility ──────────────────────────────────────────────────────────────────
 const inputCls =
-  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
-const labelCls = "text-[11px] font-medium text-gray-600 mb-0.5 block";
+  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
+const labelCls = "text-[12px] font-medium text-gray-600 mb-0.5 block";
 const sectionHdr =
-  "text-[10px] font-bold uppercase tracking-wider text-gray-500 bg-gray-50 px-3 py-1.5 border-y border-gray-200 -mx-4 mb-3 mt-3";
+  "text-[12px] font-bold uppercase tracking-wider text-gray-500 bg-gray-50 px-3 py-1.5 border-y border-gray-200 -mx-4 mb-3 mt-3";
 
 function fmt(n: number): string {
   return (
@@ -996,11 +996,11 @@ const ChartOfAccounts: React.FC = () => {
           <h2 className="text-[14px] font-bold text-gray-800">
             {isEdit ? `Modify Group — ${editGroup?.name}` : "Add Account Group"}
           </h2>
-          <div className="text-[10px] text-gray-500">F2=Save · Esc=Cancel</div>
+          <div className="text-[12px] text-gray-500">F2=Save · Esc=Cancel</div>
         </div>
 
         {isSystemGroup && (
-          <div className="mb-3 p-2 bg-amber-50 border border-amber-200 rounded text-[11px] text-amber-800 flex items-center gap-1.5">
+          <div className="mb-3 p-2 bg-amber-50 border border-amber-200 rounded text-[12px] text-amber-800 flex items-center gap-1.5">
             <Lock className="h-3.5 w-3.5 shrink-0" />
             System group — limited editing allowed
           </div>
@@ -1019,7 +1019,7 @@ const ChartOfAccounts: React.FC = () => {
               className={`${inputCls} ${gErrors.name ? "border-red-400" : ""} ${isSystemGroup ? "bg-gray-50 cursor-not-allowed" : ""}`}
               placeholder="e.g. Office Equipment"
             />
-            {gErrors.name && <p className="text-[11px] text-red-600 mt-0.5">{gErrors.name}</p>}
+            {gErrors.name && <p className="text-[12px] text-red-600 mt-0.5">{gErrors.name}</p>}
           </div>
 
           {/* Alias */}
@@ -1044,19 +1044,19 @@ const ChartOfAccounts: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setGForm((p) => ({ ...p, isPrimary: true, parentId: undefined }))}
-                  className={`flex-1 h-8 text-[11px] font-semibold rounded border transition-colors ${gForm.isPrimary ? "bg-[#1557b0] text-white border-[#1557b0]" : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"}`}
+                  className={`flex-1 h-8 text-[12px] font-semibold rounded border transition-colors ${gForm.isPrimary ? "bg-[var(--ds-action-primary)] text-white border-[var(--ds-action-primary)]" : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"}`}
                 >
                   Y (Top Level)
                 </button>
                 <button
                   type="button"
                   onClick={() => setGForm((p) => ({ ...p, isPrimary: false }))}
-                  className={`flex-1 h-8 text-[11px] font-semibold rounded border transition-colors ${!gForm.isPrimary ? "bg-[#1557b0] text-white border-[#1557b0]" : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"}`}
+                  className={`flex-1 h-8 text-[12px] font-semibold rounded border transition-colors ${!gForm.isPrimary ? "bg-[var(--ds-action-primary)] text-white border-[var(--ds-action-primary)]" : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"}`}
                 >
                   N (Sub-Group)
                 </button>
               </div>
-              <p className="text-[10px] text-gray-500 mt-1">
+              <p className="text-[12px] text-gray-500 mt-1">
                 Primary = Top-level. Non-primary = Sub-group under an existing group.
               </p>
             </div>
@@ -1091,7 +1091,7 @@ const ChartOfAccounts: React.FC = () => {
                   ))}
               </select>
               {gErrors.parentId && (
-                <p className="text-[11px] text-red-600 mt-0.5">{gErrors.parentId}</p>
+                <p className="text-[12px] text-red-600 mt-0.5">{gErrors.parentId}</p>
               )}
             </div>
           )}
@@ -1104,14 +1104,14 @@ const ChartOfAccounts: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setGForm((p) => ({ ...p, nature: "debit" }))}
-                  className={`flex-1 h-8 text-[11px] font-semibold rounded border ${gForm.nature === "debit" ? "bg-[#1557b0] text-white border-[#1557b0]" : "bg-white text-gray-700 border-gray-300"}`}
+                  className={`flex-1 h-8 text-[12px] font-semibold rounded border ${gForm.nature === "debit" ? "bg-[var(--ds-action-primary)] text-white border-[var(--ds-action-primary)]" : "bg-white text-gray-700 border-gray-300"}`}
                 >
                   Debit (Assets/Expenses)
                 </button>
                 <button
                   type="button"
                   onClick={() => setGForm((p) => ({ ...p, nature: "credit" }))}
-                  className={`flex-1 h-8 text-[11px] font-semibold rounded border ${gForm.nature === "credit" ? "bg-[#1557b0] text-white border-[#1557b0]" : "bg-white text-gray-700 border-gray-300"}`}
+                  className={`flex-1 h-8 text-[12px] font-semibold rounded border ${gForm.nature === "credit" ? "bg-[var(--ds-action-primary)] text-white border-[var(--ds-action-primary)]" : "bg-white text-gray-700 border-gray-300"}`}
                 >
                   Credit (Liabilities/Income)
                 </button>
@@ -1126,7 +1126,7 @@ const ChartOfAccounts: React.FC = () => {
               value={gForm.narration || ""}
               onChange={(e) => setGForm((p) => ({ ...p, narration: e.target.value }))}
               rows={2}
-              className="w-full px-2.5 py-1.5 text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] resize-none"
+              className="w-full px-2.5 py-1.5 text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] resize-none"
               placeholder="Internal description..."
             />
           </div>
@@ -1168,7 +1168,7 @@ const ChartOfAccounts: React.FC = () => {
                   </button>
                   <button
                     onClick={() => saveGroup(false)}
-                    className="h-8 px-3 bg-[#1557b0] text-white text-[12px] font-medium rounded hover:bg-[#0f4a96] flex items-center gap-1.5"
+                    className="h-8 px-3 bg-[var(--ds-action-primary)] text-white text-[12px] font-medium rounded hover:bg-[var(--ds-action-primary-hover)] flex items-center gap-1.5"
                   >
                     <Save className="h-3.5 w-3.5" /> Save (F2)
                   </button>
@@ -1177,7 +1177,7 @@ const ChartOfAccounts: React.FC = () => {
               {isSystemGroup && (
                 <button
                   onClick={() => setActivePanel("list")}
-                  className="h-8 px-3 bg-[#1557b0] text-white text-[12px] rounded"
+                  className="h-8 px-3 bg-[var(--ds-action-primary)] text-white text-[12px] rounded"
                 >
                   Close
                 </button>
@@ -1219,7 +1219,7 @@ const ChartOfAccounts: React.FC = () => {
           <h2 className="text-[14px] font-bold text-gray-800">
             {isEdit ? `Modify Ledger — ${editLedger?.name}` : "Add Ledger Account"}
           </h2>
-          <div className="text-[10px] text-gray-500">F2=Save · Esc=Cancel</div>
+          <div className="text-[12px] text-gray-500">F2=Save · Esc=Cancel</div>
         </div>
 
         {/* Tabs */}
@@ -1228,7 +1228,7 @@ const ChartOfAccounts: React.FC = () => {
             <button
               key={tab.id}
               onClick={() => setLedgerTab(tab.id as any)}
-              className={`px-3 py-1.5 text-[11px] font-medium border-b-2 transition-colors -mb-px ${ledgerTab === tab.id ? "border-[#1557b0] text-[#1557b0]" : "border-transparent text-gray-600 hover:text-gray-800"}`}
+              className={`px-3 py-1.5 text-[12px] font-medium border-b-2 transition-colors -mb-px ${ledgerTab === tab.id ? "border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]" : "border-transparent text-gray-600 hover:text-gray-800"}`}
             >
               {tab.label}
             </button>
@@ -1250,7 +1250,7 @@ const ChartOfAccounts: React.FC = () => {
                   placeholder="e.g. HDFC Bank Current A/c 0234"
                   autoFocus
                 />
-                {lErrors.name && <p className="text-[11px] text-red-600 mt-0.5">{lErrors.name}</p>}
+                {lErrors.name && <p className="text-[12px] text-red-600 mt-0.5">{lErrors.name}</p>}
               </div>
               <div>
                 <label className={labelCls}>Alias (optional)</label>
@@ -1295,7 +1295,7 @@ const ChartOfAccounts: React.FC = () => {
                 ))}
               </select>
               {lErrors.groupId && (
-                <p className="text-[11px] text-red-600 mt-0.5">{lErrors.groupId}</p>
+                <p className="text-[12px] text-red-600 mt-0.5">{lErrors.groupId}</p>
               )}
             </div>
 
@@ -1307,13 +1307,13 @@ const ChartOfAccounts: React.FC = () => {
                     key={t}
                     type="button"
                     onClick={() => setLForm((p) => ({ ...p, accountType: t }))}
-                    className={`h-7 px-3 text-[11px] font-semibold rounded border transition-colors ${lForm.accountType === t ? "bg-[#1557b0] text-white border-[#1557b0]" : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"}`}
+                    className={`h-7 px-3 text-[12px] font-semibold rounded border transition-colors ${lForm.accountType === t ? "bg-[var(--ds-action-primary)] text-white border-[var(--ds-action-primary)]" : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"}`}
                   >
                     {t}
                   </button>
                 ))}
               </div>
-              <p className="text-[10px] text-gray-500 mt-1">
+              <p className="text-[12px] text-gray-500 mt-1">
                 Party = Customers/Suppliers · Bank = Bank Accounts · Cash = Cash Accounts · General
                 Ledger = Others
               </p>
@@ -1329,7 +1329,7 @@ const ChartOfAccounts: React.FC = () => {
                       key={t}
                       type="button"
                       onClick={() => setLForm((p) => ({ ...p, ledgerType: t as any }))}
-                      className={`flex-1 h-7 text-[11px] font-semibold rounded border ${lForm.ledgerType === t ? "bg-[#1557b0] text-white border-[#1557b0]" : "bg-white text-gray-700 border-gray-300"}`}
+                      className={`flex-1 h-7 text-[12px] font-semibold rounded border ${lForm.ledgerType === t ? "bg-[var(--ds-action-primary)] text-white border-[var(--ds-action-primary)]" : "bg-white text-gray-700 border-gray-300"}`}
                     >
                       {t}
                     </button>
@@ -1355,9 +1355,9 @@ const ChartOfAccounts: React.FC = () => {
                         ))}
                     </select>
                     {lErrors.parentLedgerId && (
-                      <p className="text-[11px] text-red-600 mt-0.5">{lErrors.parentLedgerId}</p>
+                      <p className="text-[12px] text-red-600 mt-0.5">{lErrors.parentLedgerId}</p>
                     )}
-                    <p className="text-[10px] text-gray-500 mt-1">
+                    <p className="text-[12px] text-gray-500 mt-1">
                       Sub-ledger balance rolls up to the parent in all reports.
                     </p>
                   </div>
@@ -1389,14 +1389,14 @@ const ChartOfAccounts: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setLForm((p) => ({ ...p, openingBalanceType: "Dr" }))}
-                      className={`flex-1 text-[11px] font-bold transition-colors ${lForm.openingBalanceType === "Dr" ? "bg-[#1557b0] text-white" : "bg-white text-gray-700"}`}
+                      className={`flex-1 text-[12px] font-bold transition-colors ${lForm.openingBalanceType === "Dr" ? "bg-[var(--ds-action-primary)] text-white" : "bg-white text-gray-700"}`}
                     >
                       Dr
                     </button>
                     <button
                       type="button"
                       onClick={() => setLForm((p) => ({ ...p, openingBalanceType: "Cr" }))}
-                      className={`flex-1 text-[11px] font-bold transition-colors ${lForm.openingBalanceType === "Cr" ? "bg-[#1557b0] text-white" : "bg-white text-gray-700"}`}
+                      className={`flex-1 text-[12px] font-bold transition-colors ${lForm.openingBalanceType === "Cr" ? "bg-[var(--ds-action-primary)] text-white" : "bg-white text-gray-700"}`}
                     >
                       Cr
                     </button>
@@ -1446,7 +1446,7 @@ const ChartOfAccounts: React.FC = () => {
                 value={lForm.address || ""}
                 onChange={(e) => setLForm((p) => ({ ...p, address: e.target.value }))}
                 rows={2}
-                className="w-full px-2.5 py-1.5 text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] resize-none"
+                className="w-full px-2.5 py-1.5 text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] resize-none"
                 placeholder="Street address, Area"
               />
             </div>
@@ -1539,7 +1539,7 @@ const ChartOfAccounts: React.FC = () => {
                   />
                   <button
                     type="button"
-                    className="h-8 px-2 bg-[#1557b0] text-white text-[10px] rounded hover:bg-[#0f4a96]"
+                    className="h-8 px-2 bg-[var(--ds-action-primary)] text-white text-[12px] rounded hover:bg-[var(--ds-action-primary-hover)]"
                     onClick={() =>
                       toast.success("GSTIN validation requires GST portal integration.")
                     }
@@ -1597,7 +1597,7 @@ const ChartOfAccounts: React.FC = () => {
                     type="checkbox"
                     checked={(lForm as any)[key] || false}
                     onChange={(e) => setLForm((p) => ({ ...p, [key]: e.target.checked }))}
-                    className="h-4 w-4 rounded accent-[#1557b0]"
+                    className="h-4 w-4 rounded accent-[var(--ds-action-primary)]"
                   />
                   <span className="text-[12px] text-gray-700">{label}</span>
                 </label>
@@ -1725,11 +1725,11 @@ const ChartOfAccounts: React.FC = () => {
                       type="checkbox"
                       checked={(lForm as any)[key] || false}
                       onChange={(e) => setLForm((p) => ({ ...p, [key]: e.target.checked }))}
-                      className="h-4 w-4 mt-0.5 rounded accent-[#1557b0] shrink-0"
+                      className="h-4 w-4 mt-0.5 rounded accent-[var(--ds-action-primary)] shrink-0"
                     />
                     <div>
                       <span className="text-[12px] font-semibold text-gray-800 block">{label}</span>
-                      <span className="text-[11px] text-gray-500">{desc}</span>
+                      <span className="text-[12px] text-gray-500">{desc}</span>
                     </div>
                   </label>
                 </div>
@@ -1820,7 +1820,7 @@ const ChartOfAccounts: React.FC = () => {
                             optionalFields: { ...(p.optionalFields || {}), [field.id]: v },
                           }))
                         }
-                        className={`flex-1 h-8 text-[11px] font-semibold rounded border ${(lForm.optionalFields || {})[field.id] === v ? "bg-[#1557b0] text-white border-[#1557b0]" : "bg-white text-gray-700 border-gray-300"}`}
+                        className={`flex-1 h-8 text-[12px] font-semibold rounded border ${(lForm.optionalFields || {})[field.id] === v ? "bg-[var(--ds-action-primary)] text-white border-[var(--ds-action-primary)]" : "bg-white text-gray-700 border-gray-300"}`}
                       >
                         {v}
                       </button>
@@ -1867,7 +1867,7 @@ const ChartOfAccounts: React.FC = () => {
             </button>
             <button
               onClick={() => saveLedger(false)}
-              className="h-8 px-3 bg-[#1557b0] text-white text-[12px] font-medium rounded hover:bg-[#0f4a96] flex items-center gap-1.5"
+              className="h-8 px-3 bg-[var(--ds-action-primary)] text-white text-[12px] font-medium rounded hover:bg-[var(--ds-action-primary-hover)] flex items-center gap-1.5"
             >
               <Save className="h-3.5 w-3.5" /> Save (F2)
             </button>
@@ -1884,7 +1884,7 @@ const ChartOfAccounts: React.FC = () => {
         <h2 className="text-[14px] font-bold text-gray-800">Features / Options — Accounts Tab</h2>
         <button
           onClick={() => setActivePanel("list")}
-          className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] rounded hover:bg-gray-50"
+          className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded hover:bg-gray-50"
         >
           ← Back
         </button>
@@ -1983,11 +1983,11 @@ const ChartOfAccounts: React.FC = () => {
                   saveToLS(LS_KEYS.FEATURES, updated);
                   toast.success(`${label} ${e.target.checked ? "enabled" : "disabled"}.`);
                 }}
-                className="h-4 w-4 mt-0.5 rounded accent-[#1557b0] shrink-0"
+                className="h-4 w-4 mt-0.5 rounded accent-[var(--ds-action-primary)] shrink-0"
               />
               <div>
                 <span className="text-[12px] font-semibold text-gray-800 block">{label}</span>
-                <span className="text-[11px] text-gray-500">{desc}</span>
+                <span className="text-[12px] text-gray-500">{desc}</span>
               </div>
             </label>
           </div>
@@ -2008,13 +2008,13 @@ const ChartOfAccounts: React.FC = () => {
               toast.success("Master Configuration saved. Dropdowns updated.");
               setActivePanel("list");
             }}
-            className="h-7 px-3 bg-[#1557b0] text-white text-[11px] font-medium rounded hover:bg-[#0f4a96]"
+            className="h-7 px-3 bg-[var(--ds-action-primary)] text-white text-[12px] font-medium rounded hover:bg-[var(--ds-action-primary-hover)]"
           >
             Save & Apply
           </button>
           <button
             onClick={() => setActivePanel("list")}
-            className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] rounded hover:bg-gray-50"
+            className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded hover:bg-gray-50"
           >
             ← Back
           </button>
@@ -2078,7 +2078,7 @@ const ChartOfAccounts: React.FC = () => {
                     upd[i] = { ...upd[i], width: Number(e.target.value) };
                     setMasterConfig((p) => ({ ...p, additionalDropdownFields: upd }));
                   }}
-                  className="w-16 h-8 px-2 text-[11px] border border-gray-300 rounded"
+                  className="w-16 h-8 px-2 text-[12px] border border-gray-300 rounded"
                   placeholder="Width"
                 />
                 <button
@@ -2107,7 +2107,7 @@ const ChartOfAccounts: React.FC = () => {
                     ],
                   }))
                 }
-                className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] rounded hover:bg-gray-50 flex items-center gap-1.5 mt-1"
+                className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded hover:bg-gray-50 flex items-center gap-1.5 mt-1"
               >
                 <Plus className="h-3 w-3" /> Add Field
               </button>
@@ -2124,7 +2124,7 @@ const ChartOfAccounts: React.FC = () => {
             type="checkbox"
             checked={masterConfig.showBottomPanel}
             onChange={(e) => setMasterConfig((p) => ({ ...p, showBottomPanel: e.target.checked }))}
-            className="h-4 w-4 rounded accent-[#1557b0]"
+            className="h-4 w-4 rounded accent-[var(--ds-action-primary)]"
           />
           <span className="text-[12px] font-medium text-gray-700">
             Show Additional Information in Bottom of List
@@ -2165,9 +2165,9 @@ const ChartOfAccounts: React.FC = () => {
                           : p.bottomPanelFields.filter((x) => x !== f),
                       }))
                     }
-                    className="h-3.5 w-3.5 rounded accent-[#1557b0]"
+                    className="h-3.5 w-3.5 rounded accent-[var(--ds-action-primary)]"
                   />
-                  <span className="text-[11px] text-gray-700">{f}</span>
+                  <span className="text-[12px] text-gray-700">{f}</span>
                 </label>
               ))}
             </div>
@@ -2228,7 +2228,7 @@ const ChartOfAccounts: React.FC = () => {
                 </div>
               )}
               <div className="flex items-center gap-3">
-                <label className="flex items-center gap-1.5 cursor-pointer text-[11px]">
+                <label className="flex items-center gap-1.5 cursor-pointer text-[12px]">
                   <input
                     type="checkbox"
                     checked={f.mandatory}
@@ -2237,11 +2237,11 @@ const ChartOfAccounts: React.FC = () => {
                       upd[i] = { ...upd[i], mandatory: e.target.checked };
                       setMasterConfig((p) => ({ ...p, optionalFields: upd }));
                     }}
-                    className="h-3.5 w-3.5 rounded accent-[#1557b0]"
+                    className="h-3.5 w-3.5 rounded accent-[var(--ds-action-primary)]"
                   />{" "}
                   Mandatory
                 </label>
-                <label className="flex items-center gap-1.5 cursor-pointer text-[11px]">
+                <label className="flex items-center gap-1.5 cursor-pointer text-[12px]">
                   <input
                     type="checkbox"
                     checked={f.maintainDB}
@@ -2250,7 +2250,7 @@ const ChartOfAccounts: React.FC = () => {
                       upd[i] = { ...upd[i], maintainDB: e.target.checked };
                       setMasterConfig((p) => ({ ...p, optionalFields: upd }));
                     }}
-                    className="h-3.5 w-3.5 rounded accent-[#1557b0]"
+                    className="h-3.5 w-3.5 rounded accent-[var(--ds-action-primary)]"
                   />{" "}
                   Maintain Database
                 </label>
@@ -2263,7 +2263,7 @@ const ChartOfAccounts: React.FC = () => {
                       optionalFields: p.optionalFields.filter((_, j) => j !== i),
                     }))
                   }
-                  className="h-7 px-2 bg-red-50 text-red-600 text-[11px] rounded border border-red-200 hover:bg-red-100"
+                  className="h-7 px-2 bg-red-50 text-red-600 text-[12px] rounded border border-red-200 hover:bg-red-100"
                 >
                   Remove
                 </button>
@@ -2288,7 +2288,7 @@ const ChartOfAccounts: React.FC = () => {
                 ],
               }))
             }
-            className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] rounded hover:bg-gray-50 flex items-center gap-1.5"
+            className="h-7 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded hover:bg-gray-50 flex items-center gap-1.5"
           >
             <Plus className="h-3 w-3" /> Add Optional Field
           </button>
@@ -2302,7 +2302,7 @@ const ChartOfAccounts: React.FC = () => {
     const isGroup = item.kind === "group";
     const isExpanded = expandedIds.has(item.id);
     const hasChildren = isGroup && (item.children?.length > 0 || item.ledgers?.length > 0);
-    const color = CATEGORY_COLORS[item.category] || "#6b7280";
+    const color = CATEGORY_COLORS[item.category] || "var(--ds-action-primary)";
     const group = !isGroup ? allGroups.find((g) => g.id === item.groupId) : null;
     const nature = item.nature || group?.nature || "debit";
     const balance = isGroup ? getGroupBalance(item.id) : item.balance || 0;
@@ -2351,14 +2351,14 @@ const ChartOfAccounts: React.FC = () => {
               >
                 {item.name}
               </span>
-              {item.alias && <span className="text-[10px] text-gray-400 ml-1">({item.alias})</span>}
+              {item.alias && <span className="text-[12px] text-gray-400 ml-1">({item.alias})</span>}
               {isSystem && <span className="badge badge-info ml-1">SYS</span>}
               {isGroup && item.isPrimary && <span className="badge ml-1">PRIMARY</span>}
             </div>
           </td>
 
           {/* Group / Parent */}
-          <td className="px-3 py-1.5 text-[11px] text-gray-500 max-w-[160px] truncate">
+          <td className="px-3 py-1.5 text-[12px] text-gray-500 max-w-[160px] truncate">
             {isGroup
               ? item.isPrimary
                 ? item.category
@@ -2370,7 +2370,7 @@ const ChartOfAccounts: React.FC = () => {
           <td className="px-3 py-1.5">
             {!isGroup && (
               <span
-                className={`px-1.5 py-0.5 text-[10px] font-semibold rounded ${
+                className={`px-1.5 py-0.5 text-[12px] font-semibold rounded ${
                   item.accountType === "Bank"
                     ? "bg-blue-100 text-blue-700"
                     : item.accountType === "Cash"
@@ -2388,7 +2388,7 @@ const ChartOfAccounts: React.FC = () => {
           {/* Nature */}
           <td className="px-3 py-1.5">
             <span
-              className={`text-[10px] font-bold ${nature === "credit" ? "text-green-600" : "text-blue-600"}`}
+              className={`text-[12px] font-bold ${nature === "credit" ? "text-green-600" : "text-blue-600"}`}
             >
               {nature === "credit" ? "Cr" : "Dr"}
             </span>
@@ -2400,7 +2400,7 @@ const ChartOfAccounts: React.FC = () => {
           </td>
 
           {/* GSTIN */}
-          <td className="px-3 py-1.5 text-[11px] text-gray-500 font-mono">
+          <td className="px-3 py-1.5 text-[12px] text-gray-500 font-mono">
             {!isGroup && item.gstin ? item.gstin.slice(0, 15) : ""}
           </td>
 
@@ -2412,7 +2412,7 @@ const ChartOfAccounts: React.FC = () => {
                   e.stopPropagation();
                   isGroup ? openEditGroup(item) : openEditLedger(item);
                 }}
-                className="p-1 rounded text-gray-400 hover:text-[#1557b0] hover:bg-blue-50"
+                className="p-1 rounded text-gray-400 hover:text-[var(--ds-action-primary)] hover:bg-blue-50"
               >
                 <Edit2 className="h-3 w-3" />
               </button>
@@ -2550,12 +2550,12 @@ const ChartOfAccounts: React.FC = () => {
   const displayRows = isSearchActive ? flatList : null;
 
   return (
-    <div className="flex flex-col h-full bg-[#f5f6fa]">
+    <div className="flex flex-col h-full bg-[var(--ds-surface-muted)]">
       {/* ── Top Header ── */}
       <div className="flex items-center justify-between px-4 py-2.5 bg-white border-b border-gray-200">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Chart of Accounts</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
+          <h1 className="text-[15px] font-semibold text-gray-800">Account list</h1>
+          <p className="text-[12px] text-gray-500 mt-0.5">
             {allGroups.length} groups · {allLedgers.length} ledgers
           </p>
         </div>
@@ -2594,7 +2594,7 @@ const ChartOfAccounts: React.FC = () => {
           </button>
           <button
             onClick={() => openAddLedger()}
-            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1"
+            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1"
           >
             <Plus className="h-3.5 w-3.5" /> Add Ledger
           </button>
@@ -2609,13 +2609,13 @@ const ChartOfAccounts: React.FC = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by name, alias, GSTIN..."
-            className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           />
         </div>
         <select
           value={filterGroup}
           onChange={(e) => setFilterGroup(e.target.value)}
-          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
         >
           <option value="ALL">All Groups</option>
           {allGroups.map((g) => (
@@ -2627,7 +2627,7 @@ const ChartOfAccounts: React.FC = () => {
         <select
           value={filterType}
           onChange={(e) => setFilterType(e.target.value)}
-          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
         >
           <option value="ALL">All Types</option>
           <option value="group">Groups Only</option>
@@ -2644,12 +2644,12 @@ const ChartOfAccounts: React.FC = () => {
               setFilterGroup("ALL");
               setFilterType("ALL");
             }}
-            className="h-7 px-2 text-[11px] text-red-600 border border-red-200 rounded hover:bg-red-50"
+            className="h-7 px-2 text-[12px] text-red-600 border border-red-200 rounded hover:bg-red-50"
           >
             Clear Filters
           </button>
         )}
-        <div className="ml-auto flex items-center gap-2 text-[10px] text-gray-400">
+        <div className="ml-auto flex items-center gap-2 text-[12px] text-gray-400">
           <span>F3=Add Ledger · DblClick=Edit · F8=Delete</span>
         </div>
       </div>
@@ -2660,25 +2660,25 @@ const ChartOfAccounts: React.FC = () => {
           <table className="w-full text-[12px] border-collapse">
             <thead className="sticky top-0 bg-gray-50 z-10">
               <tr className="border-b-2 border-gray-200">
-                <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                   Account Name / Group
                 </th>
-                <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                   Under / Category
                 </th>
-                <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                   Type
                 </th>
-                <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                   Nature
                 </th>
-                <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                   Balance
                 </th>
-                <th className="px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <th className="px-3 py-2 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                   GSTIN
                 </th>
-                <th className="px-3 py-2 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-20">
+                <th className="px-3 py-2 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-20">
                   Actions
                 </th>
               </tr>
@@ -2706,7 +2706,7 @@ const ChartOfAccounts: React.FC = () => {
         {/* ── Bottom Panel (Selected Item Details) ── */}
         {masterConfig.showBottomPanel && selectedItem && selectedIsLedger && (
           <div className="border-t-2 border-gray-200 bg-white px-4 py-2 min-h-[80px]">
-            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5">
+            <div className="text-[12px] font-bold text-gray-400 uppercase tracking-wide mb-1.5">
               Account Details
             </div>
             <div className="grid grid-cols-4 gap-x-6 gap-y-1">
@@ -2757,8 +2757,8 @@ const ChartOfAccounts: React.FC = () => {
                 if (!val) return null;
                 return (
                   <div key={f}>
-                    <span className="text-[10px] text-gray-400">{f}: </span>
-                    <span className="text-[11px] text-gray-700 font-medium">{val}</span>
+                    <span className="text-[12px] text-gray-400">{f}: </span>
+                    <span className="text-[12px] text-gray-700 font-medium">{val}</span>
                   </div>
                 );
               })}
@@ -2767,7 +2767,7 @@ const ChartOfAccounts: React.FC = () => {
         )}
 
         {/* ── Status bar ── */}
-        <div className="px-4 py-1 bg-[#f5f6fa] border-t border-gray-200 text-[10px] text-gray-500 flex items-center gap-4">
+        <div className="px-4 py-1 bg-[var(--ds-surface-muted)] border-t border-gray-200 text-[12px] text-gray-500 flex items-center gap-4">
           <span>
             Total Groups: <strong>{allGroups.length}</strong>
           </span>

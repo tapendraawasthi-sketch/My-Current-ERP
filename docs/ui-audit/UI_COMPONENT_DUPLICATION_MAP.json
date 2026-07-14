@@ -1,0 +1,1100 @@
+{
+  "generated_at": "2026-07-13T12:34:45.217Z",
+  "approved_import_path": "@/components/ui",
+  "barrel": "src/components/ui/index.ts",
+  "note": "Consumer counts are heuristic (string match). Use for migration planning, not exact dependency graphs.",
+  "components": [
+    {
+      "primitive": "Button",
+      "implementation_count": 4,
+      "implementations": [
+        {
+          "filename": "src/ai/interface/MessageShareButton.tsx",
+          "export": "MessageShareButton",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        },
+        {
+          "filename": "src/components/ui/Button.tsx",
+          "export": "Button",
+          "active_consumers_sample": [
+            "src/components/ui/index.ts",
+            "src/components/ui/QuickCreateAccountModal.tsx",
+            "src/components/ui/SearchableTable.tsx",
+            "src/design-system/primitives/DataTable/EnterpriseDataTable.tsx",
+            "src/design-system/primitives/Dialog/AlertDialog.tsx",
+            "src/design-system/primitives/Feedback/Patterns.tsx",
+            "src/design-system/primitives/Filters/Filters.tsx",
+            "src/design-system/primitives/Menu/DropdownMenu.tsx",
+            "src/design-system/primitives/Page/Page.tsx",
+            "src/pages/CurrencyMaster.tsx",
+            "src/pages/VouchersLog.tsx"
+          ],
+          "active_consumer_count_estimate": 11,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        },
+        {
+          "filename": "src/design-system/primitives/Button/Button.tsx",
+          "export": "Button",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        },
+        {
+          "filename": "src/design-system/primitives/IconButton/IconButton.tsx",
+          "export": "IconButton",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        }
+      ]
+    },
+    {
+      "primitive": "IconButton",
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/design-system/primitives/IconButton/IconButton.tsx",
+          "export": "IconButton",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        }
+      ]
+    },
+    {
+      "primitive": "Input",
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/components/ui/Input.tsx",
+          "export": "Input",
+          "active_consumers_sample": [
+            "src/ai/interface/AIChat.tsx",
+            "src/ai/interface/InputAutocomplete.tsx",
+            "src/components/ui/CustomFieldRenderer.tsx",
+            "src/components/ui/index.ts",
+            "src/components/ui/QuickCreateAccountModal.tsx",
+            "src/components/ui/SearchableTable.tsx",
+            "src/pages/CurrencyMaster.tsx",
+            "src/pages/VouchersLog.tsx"
+          ],
+          "active_consumer_count_estimate": 8,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        }
+      ]
+    },
+    {
+      "primitive": "Textarea",
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/design-system/primitives/Textarea/Textarea.tsx",
+          "export": "Textarea",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        }
+      ]
+    },
+    {
+      "primitive": "Select",
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/components/ui/Select.tsx",
+          "export": "Select",
+          "active_consumers_sample": [
+            "src/components/ui/CurrencySelect.tsx",
+            "src/components/ui/CustomFieldRenderer.tsx",
+            "src/components/ui/index.ts",
+            "src/components/ui/QuickCreateAccountModal.tsx",
+            "src/pages/VouchersLog.tsx"
+          ],
+          "active_consumer_count_estimate": 5,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        }
+      ]
+    },
+    {
+      "primitive": "Combobox",
+      "implementation_count": 0,
+      "implementations": []
+    },
+    {
+      "primitive": "Checkbox",
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/design-system/primitives/Checkbox/Checkbox.tsx",
+          "export": "Checkbox",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        }
+      ]
+    },
+    {
+      "primitive": "Radio",
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/design-system/primitives/Radio/Radio.tsx",
+          "export": "Radio",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        }
+      ]
+    },
+    {
+      "primitive": "Switch",
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/design-system/primitives/Switch/Switch.tsx",
+          "export": "Switch",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        }
+      ]
+    },
+    {
+      "primitive": "DatePicker",
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/components/ui/NepaliDatePicker.tsx",
+          "export": "NepaliDatePicker",
+          "active_consumers_sample": [
+            "src/components/ui/index.ts",
+            "src/components/ui/ReportDateRangePicker.tsx",
+            "src/components/voucher/VoucherHeader.tsx",
+            "src/pages/FiscalYear.tsx",
+            "src/pages/PurchaseRegister.tsx",
+            "src/pages/PurchaseVoucher.tsx",
+            "src/pages/SalesRegister.tsx",
+            "src/pages/SalesVoucher.tsx",
+            "src/pages/VouchersLog.tsx"
+          ],
+          "active_consumer_count_estimate": 9,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        }
+      ]
+    },
+    {
+      "primitive": "NepaliDatePicker",
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/components/ui/NepaliDatePicker.tsx",
+          "export": "NepaliDatePicker",
+          "active_consumers_sample": [
+            "src/components/ui/index.ts",
+            "src/components/ui/ReportDateRangePicker.tsx",
+            "src/components/voucher/VoucherHeader.tsx",
+            "src/pages/FiscalYear.tsx",
+            "src/pages/PurchaseRegister.tsx",
+            "src/pages/PurchaseVoucher.tsx",
+            "src/pages/SalesRegister.tsx",
+            "src/pages/SalesVoucher.tsx",
+            "src/pages/VouchersLog.tsx"
+          ],
+          "active_consumer_count_estimate": 9,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        }
+      ]
+    },
+    {
+      "primitive": "AmountInput",
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/components/ui/AmountInput.tsx",
+          "export": "AmountInput",
+          "active_consumers_sample": [
+            "src/components/ui/index.ts"
+          ],
+          "active_consumer_count_estimate": 1,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        }
+      ]
+    },
+    {
+      "primitive": "SearchField",
+      "implementation_count": 3,
+      "implementations": [
+        {
+          "filename": "src/ai/rag/GlobalSearchHandler.ts",
+          "export": "GlobalSearchHandler",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        },
+        {
+          "filename": "src/components/GlobalSearch.tsx",
+          "export": "GlobalSearch",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        },
+        {
+          "filename": "src/hooks/useGlobalSearch.ts",
+          "export": "useGlobalSearch",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        }
+      ]
+    },
+    {
+      "primitive": "Card",
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/components/ui/Card.tsx",
+          "export": "Card",
+          "active_consumers_sample": [
+            "src/components/ui/index.ts",
+            "src/pages/CurrencyMaster.tsx",
+            "src/pages/VouchersLog.tsx"
+          ],
+          "active_consumer_count_estimate": 3,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        }
+      ]
+    },
+    {
+      "primitive": "Badge",
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/components/ui/Badge.tsx",
+          "export": "Badge",
+          "active_consumers_sample": [
+            "src/components/ui/index.ts",
+            "src/components/ui/NotificationPanel.tsx",
+            "src/pages/CurrencyMaster.tsx",
+            "src/pages/VouchersLog.tsx"
+          ],
+          "active_consumer_count_estimate": 4,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        }
+      ]
+    },
+    {
+      "primitive": "StatusChip",
+      "implementation_count": 0,
+      "implementations": []
+    },
+    {
+      "primitive": "Table",
+      "implementation_count": 4,
+      "implementations": [
+        {
+          "filename": "src/components/ui/DataTable.tsx",
+          "export": "DataTable",
+          "active_consumers_sample": [
+            "src/pages/DayBook.tsx"
+          ],
+          "active_consumer_count_estimate": 1,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        },
+        {
+          "filename": "src/components/ui/SearchableTable.tsx",
+          "export": "SearchableTable",
+          "active_consumers_sample": [
+            "src/components/ui/index.ts",
+            "src/pages/MaterialIssuedPage.tsx",
+            "src/pages/MaterialReceivedPage.tsx",
+            "src/pages/PhysicalStockPage.tsx",
+            "src/pages/ProductionPage.tsx",
+            "src/pages/RejectionVoucherPage.tsx",
+            "src/pages/UnassemblePage.tsx",
+            "src/pages/VouchersLog.tsx"
+          ],
+          "active_consumer_count_estimate": 8,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        },
+        {
+          "filename": "src/components/ui/Table.tsx",
+          "export": "Table",
+          "active_consumers_sample": [
+            "src/components/ui/index.ts",
+            "src/components/ui/SearchableTable.tsx",
+            "src/pages/CurrencyMaster.tsx"
+          ],
+          "active_consumer_count_estimate": 3,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        },
+        {
+          "filename": "src/design-system/primitives/DataTable/EnterpriseDataTable.tsx",
+          "export": "EnterpriseDataTable",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        }
+      ]
+    },
+    {
+      "primitive": "DataTable",
+      "implementation_count": 2,
+      "implementations": [
+        {
+          "filename": "src/components/ui/DataTable.tsx",
+          "export": "DataTable",
+          "active_consumers_sample": [
+            "src/pages/DayBook.tsx"
+          ],
+          "active_consumer_count_estimate": 1,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        },
+        {
+          "filename": "src/design-system/primitives/DataTable/EnterpriseDataTable.tsx",
+          "export": "EnterpriseDataTable",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        }
+      ]
+    },
+    {
+      "primitive": "Pagination",
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/components/ui/Pagination.tsx",
+          "export": "Pagination",
+          "active_consumers_sample": [
+            "src/components/ui/index.ts",
+            "src/pages/PurchaseRegister.tsx",
+            "src/pages/SalesRegister.tsx"
+          ],
+          "active_consumer_count_estimate": 3,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        }
+      ]
+    },
+    {
+      "primitive": "Modal",
+      "implementation_count": 3,
+      "implementations": [
+        {
+          "filename": "src/components/ui/ConfirmDialog.tsx",
+          "export": "ConfirmDialog",
+          "active_consumers_sample": [
+            "src/components/ui/index.ts"
+          ],
+          "active_consumer_count_estimate": 1,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        },
+        {
+          "filename": "src/components/ui/LanguageModal.tsx",
+          "export": "LanguageModal",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        },
+        {
+          "filename": "src/components/ui/Modal.tsx",
+          "export": "Modal",
+          "active_consumers_sample": [
+            "src/components/ui/index.ts",
+            "src/components/ui/QuickCreateAccountModal.tsx",
+            "src/pages/CurrencyMaster.tsx"
+          ],
+          "active_consumer_count_estimate": 3,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        }
+      ]
+    },
+    {
+      "primitive": "ConfirmDialog",
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/components/ui/ConfirmDialog.tsx",
+          "export": "ConfirmDialog",
+          "active_consumers_sample": [
+            "src/components/ui/index.ts"
+          ],
+          "active_consumer_count_estimate": 1,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        }
+      ]
+    },
+    {
+      "primitive": "Drawer",
+      "implementation_count": 5,
+      "implementations": [
+        {
+          "filename": "src/design-system/primitives/Drawer/Drawer.tsx",
+          "export": "Drawer",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        },
+        {
+          "filename": "src/domains/report-engine/balanceSheetBuilder.ts",
+          "export": "balanceSheetBuilder",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        },
+        {
+          "filename": "src/lib/balanceSheetEngine.ts",
+          "export": "balanceSheetEngine",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        },
+        {
+          "filename": "src/lib/balanceSheetTypes.ts",
+          "export": "balanceSheetTypes",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        },
+        {
+          "filename": "src/pages/BalanceSheet.tsx",
+          "export": "BalanceSheet",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        }
+      ]
+    },
+    {
+      "primitive": "Popover",
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/design-system/primitives/Popover/Popover.tsx",
+          "export": "Popover",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        }
+      ]
+    },
+    {
+      "primitive": "Tooltip",
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/components/ui/Tooltip.tsx",
+          "export": "Tooltip",
+          "active_consumers_sample": [
+            "src/components/ui/index.ts"
+          ],
+          "active_consumer_count_estimate": 1,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        }
+      ]
+    },
+    {
+      "primitive": "Toast",
+      "implementation_count": 0,
+      "implementations": []
+    },
+    {
+      "primitive": "Banner",
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/components/DataLoadWarningBanner.tsx",
+          "export": "DataLoadWarningBanner",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        }
+      ]
+    },
+    {
+      "primitive": "EmptyState",
+      "implementation_count": 2,
+      "implementations": [
+        {
+          "filename": "src/components/ReportEmptyState.tsx",
+          "export": "ReportEmptyState",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        },
+        {
+          "filename": "src/components/ui/EmptyState.tsx",
+          "export": "EmptyState",
+          "active_consumers_sample": [
+            "src/components/ui/index.ts"
+          ],
+          "active_consumer_count_estimate": 1,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        }
+      ]
+    },
+    {
+      "primitive": "LoadingState",
+      "implementation_count": 2,
+      "implementations": [
+        {
+          "filename": "src/components/ui/PageLoader.tsx",
+          "export": "PageLoader",
+          "active_consumers_sample": [
+            "src/components/ui/index.ts"
+          ],
+          "active_consumer_count_estimate": 1,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        },
+        {
+          "filename": "src/components/ui/Spinner.tsx",
+          "export": "Spinner",
+          "active_consumers_sample": [
+            "src/components/ui/index.ts"
+          ],
+          "active_consumer_count_estimate": 1,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        }
+      ]
+    },
+    {
+      "primitive": "Skeleton",
+      "implementation_count": 0,
+      "implementations": []
+    },
+    {
+      "primitive": "PageHeader",
+      "implementation_count": 0,
+      "implementations": []
+    },
+    {
+      "primitive": "Toolbar",
+      "implementation_count": 3,
+      "implementations": [
+        {
+          "filename": "src/components/pl/PLToolbar.tsx",
+          "export": "PLToolbar",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        },
+        {
+          "filename": "src/components/reports/ReportToolbar.tsx",
+          "export": "ReportToolbar",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        },
+        {
+          "filename": "src/components/ui/ActionToolbar.tsx",
+          "export": "ActionToolbar",
+          "active_consumers_sample": [
+            "src/components/ui/index.ts"
+          ],
+          "active_consumer_count_estimate": 1,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        }
+      ]
+    },
+    {
+      "primitive": "Tabs",
+      "implementation_count": 0,
+      "implementations": []
+    },
+    {
+      "primitive": "Breadcrumbs",
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/components/Breadcrumb.tsx",
+          "export": "Breadcrumb",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        }
+      ]
+    },
+    {
+      "primitive": "FormField",
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/design-system/primitives/FormField/FormField.tsx",
+          "export": "FormField",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        }
+      ]
+    },
+    {
+      "primitive": "ErrorMessage",
+      "implementation_count": 0,
+      "implementations": []
+    },
+    {
+      "primitive": "ErrorSummary",
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/components/InitErrorScreen.tsx",
+          "export": "InitErrorScreen",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        }
+      ]
+    },
+    {
+      "primitive": "FileUpload",
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/components/ui/AttachmentUploader.tsx",
+          "export": "AttachmentUploader",
+          "active_consumers_sample": [
+            "src/components/invoice/SalesInvoiceForm.tsx",
+            "src/components/ui/index.ts"
+          ],
+          "active_consumer_count_estimate": 2,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        }
+      ]
+    },
+    {
+      "primitive": "DocumentPreview",
+      "implementation_count": 3,
+      "implementations": [
+        {
+          "filename": "src/components/invoice/InvoicePrint.tsx",
+          "export": "InvoicePrint",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        },
+        {
+          "filename": "src/components/print/VoucherPrint.tsx",
+          "export": "VoucherPrint",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        },
+        {
+          "filename": "src/components/tally/TallyVoucherPrint.tsx",
+          "export": "TallyVoucherPrint",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "legacy-tally",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "deprecate"
+        }
+      ]
+    },
+    {
+      "primitive": "AuditTimeline",
+      "implementation_count": 5,
+      "implementations": [
+        {
+          "filename": "src/components/AuditLogs.tsx",
+          "export": "AuditLogs",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        },
+        {
+          "filename": "src/components/ui/AuditHistoryPanel.tsx",
+          "export": "AuditHistoryPanel",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "design-system-candidate",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "@/components/ui",
+          "test_coverage": "unknown",
+          "recommendation": "canonical candidate"
+        },
+        {
+          "filename": "src/pages/AuditLog.tsx",
+          "export": "AuditLog",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        },
+        {
+          "filename": "src/pages/AuditLogs.tsx",
+          "export": "AuditLogs",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        },
+        {
+          "filename": "src/pages/AuditTrailLog.tsx",
+          "export": "AuditTrailLog",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        }
+      ]
+    },
+    {
+      "primitive": "SyncIndicator",
+      "implementation_count": 1,
+      "implementations": [
+        {
+          "filename": "src/components/shell/SyncStatusControl.tsx",
+          "export": "SyncStatusControl",
+          "active_consumers_sample": [],
+          "active_consumer_count_estimate": 0,
+          "visual_style": "page-local-or-feature",
+          "accessibility": "unverified",
+          "size_variants": "unknown",
+          "semantic_variants": "unknown",
+          "dependency": "direct",
+          "test_coverage": "unknown",
+          "recommendation": "merge"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "primitives_scanned": 40,
+    "primitives_with_multiple_impls": 11,
+    "ui_canonical_files": 19
+  }
+}

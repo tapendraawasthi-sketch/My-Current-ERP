@@ -3,7 +3,7 @@ import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
 import { VoucherType, VoucherStatus } from "../lib/types";
-import ReportShell from "../components/reporting/ReportShell";
+import { ReportWorkspace } from "@/features/reports";
 import ReportGrid from "../components/reporting/ReportGrid";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 import { useScreenF12 } from "../hooks/useF12Config";
@@ -238,17 +238,17 @@ const BankBook: React.FC = () => {
   // Custom cell rendering
   const renderCell = (columnKey: string, value: any, row: any) => {
     if (columnKey === "debit" && value > 0) {
-      return <span style={{ color: "#1557b0" }}>{formatNumber(value)}</span>;
+      return <span className="text-[var(--ds-action-primary)]">{formatNumber(value)}</span>;
     }
     if (columnKey === "credit" && value > 0) {
-      return <span style={{ color: "#dc2626" }}>{formatNumber(value)}</span>;
+      return <span className="text-[var(--ds-status-danger)]">{formatNumber(value)}</span>;
     }
     if (columnKey === "balance" && row.balance !== undefined && row.balance !== "") {
       const isDr = row.balance >= 0;
       const formattedValue = isDr
         ? `${formatNumber(Math.abs(row.balance))} Dr`
         : `${formatNumber(Math.abs(row.balance))} Cr`;
-      return <span style={{ color: isDr ? "#059669" : "#dc2626" }}>{formattedValue}</span>;
+      return <span className={isDr ? "text-[var(--ds-status-success)]" : "text-[var(--ds-status-danger)]"}>{formattedValue}</span>;
     }
     if (columnKey === "voucherType" && value === "Contra ↔") {
       return <span>Contra ↔</span>;
@@ -274,11 +274,11 @@ const BankBook: React.FC = () => {
   }));
 
   return (
-    <ReportShell
-      title="Bank Book"
-      subtitle="Bank transactions register"
+    <ReportWorkspace
+      title="Bank book"
+      description="Bank in and out."
       companyName={companySettings?.companyNameEn || companySettings?.name}
-      periodText={`${startDate} to ${endDate}`}
+      periodLabel={`${startDate} to ${endDate}`}
       onPrint={() => window.print()}
       onOptions={() => {
         setPendingAccountId(selectedAccountId);
@@ -289,14 +289,15 @@ const BankBook: React.FC = () => {
         setPendingShowOnlyPayments(showOnlyPayments);
         setOptionsOpen(true);
       }}
-      toolbarLeft={
+      filterSlot={
         <>
-          <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
-            Bank Account:
+          <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex items-center gap-1.5">
+            Bank account
             <select
               value={selectedAccountId}
               onChange={(e) => setSelectedAccountId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Bank account"
+              className="h-8 px-2.5 text-[13px] font-normal border border-[var(--ds-border-default)] rounded-md bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               {bankAccounts.map((acc) => (
                 <option key={acc.id} value={acc.id}>
@@ -305,24 +306,22 @@ const BankBook: React.FC = () => {
               ))}
             </select>
           </label>
-
-          <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
-            From:
+          <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex items-center gap-1.5">
+            From
             <input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[13px] font-normal border border-[var(--ds-border-default)] rounded-md bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
-
-          <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
-            To:
+          <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex items-center gap-1.5">
+            To
             <input
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[13px] font-normal border border-[var(--ds-border-default)] rounded-md bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
         </>
@@ -332,63 +331,59 @@ const BankBook: React.FC = () => {
 
       <ReportOptionsModal
         open={optionsOpen}
-        title="Bank Book Options"
+        title="Bank book options"
         onClose={() => setOptionsOpen(false)}
         onApply={applyOptions}
       >
         <div className="space-y-4">
-          <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
-            From Date
+          <label className="flex flex-col gap-1 text-[12px] font-medium text-[var(--ds-text-muted)]">
+            From date
             <input
               type="date"
               value={pendingStart}
               onChange={(e) => setPendingStart(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[13px] font-normal border border-[var(--ds-border-default)] rounded-md bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
-
-          <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
-            To Date
+          <label className="flex flex-col gap-1 text-[12px] font-medium text-[var(--ds-text-muted)]">
+            To date
             <input
               type="date"
               value={pendingEnd}
               onChange={(e) => setPendingEnd(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[13px] font-normal border border-[var(--ds-border-default)] rounded-md bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
-
-          <label className="flex items-center gap-2 text-[11px] font-medium text-gray-600 cursor-pointer mt-2">
+          <label className="flex items-center gap-2 text-[12px] font-medium text-[var(--ds-text-muted)] cursor-pointer mt-2">
             <input
               type="checkbox"
               checked={pendingShowNarration}
               onChange={(e) => setPendingShowNarration(e.target.checked)}
-              className="w-4 h-4 text-[#1557b0] rounded border-gray-300 focus:ring-[#1557b0]"
+              className="w-4 h-4 text-[var(--ds-action-primary)] rounded border-gray-300 focus:ring-[var(--ds-action-primary)]"
             />
-            Show Narration below each entry
+            Show narration below each entry
           </label>
-
-          <label className="flex items-center gap-2 text-[11px] font-medium text-gray-600 cursor-pointer">
+          <label className="flex items-center gap-2 text-[12px] font-medium text-[var(--ds-text-muted)] cursor-pointer">
             <input
               type="checkbox"
               checked={pendingShowOnlyReceipts}
               onChange={(e) => setPendingShowOnlyReceipts(e.target.checked)}
-              className="w-4 h-4 text-[#1557b0] rounded border-gray-300 focus:ring-[#1557b0]"
+              className="w-4 h-4 text-[var(--ds-action-primary)] rounded border-gray-300 focus:ring-[var(--ds-action-primary)]"
             />
-            Show only Receipts
+            Show only receipts
           </label>
-
-          <label className="flex items-center gap-2 text-[11px] font-medium text-gray-600 cursor-pointer">
+          <label className="flex items-center gap-2 text-[12px] font-medium text-[var(--ds-text-muted)] cursor-pointer">
             <input
               type="checkbox"
               checked={pendingShowOnlyPayments}
               onChange={(e) => setPendingShowOnlyPayments(e.target.checked)}
-              className="w-4 h-4 text-[#1557b0] rounded border-gray-300 focus:ring-[#1557b0]"
+              className="w-4 h-4 text-[var(--ds-action-primary)] rounded border-gray-300 focus:ring-[var(--ds-action-primary)]"
             />
-            Show only Payments
+            Show only payments
           </label>
         </div>
       </ReportOptionsModal>
-    </ReportShell>
+    </ReportWorkspace>
   );
 };
 

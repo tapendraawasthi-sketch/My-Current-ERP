@@ -285,11 +285,11 @@ const AuditLog = () => {
   const renderFilters = () => {
     const card = "bg-white border border-gray-200 rounded-md p-4";
     const input =
-      "w-full h-8 px-2.5 text-[11px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0]";
+      "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]";
     const btn =
-      "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[11px] font-medium rounded-md flex items-center gap-1.5";
+      "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5";
     const btn2 =
-      "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5";
+      "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5";
     return (
       <div className={card}>
         <div className="flex items-center gap-2 mb-4">
@@ -300,7 +300,7 @@ const AuditLog = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9 gap-3">
           <div>
-            <label className="text-[11px] font-medium text-gray-600 block mb-1">From</label>
+            <label className="text-[12px] font-medium text-gray-600 block mb-1">From</label>
             <Input
               type="date"
               value={filters.fromDate}
@@ -309,7 +309,7 @@ const AuditLog = () => {
             />
           </div>
           <div>
-            <label className="text-[11px] font-medium text-gray-600 block mb-1">To</label>
+            <label className="text-[12px] font-medium text-gray-600 block mb-1">To</label>
             <Input
               type="date"
               value={filters.toDate}
@@ -318,7 +318,7 @@ const AuditLog = () => {
             />
           </div>
           <div>
-            <label className="text-[11px] font-medium text-gray-600 block mb-1">Search</label>
+            <label className="text-[12px] font-medium text-gray-600 block mb-1">Search</label>
             <Input
               placeholder="User, Description..."
               value={filters.search}
@@ -327,7 +327,7 @@ const AuditLog = () => {
             />
           </div>
           <div>
-            <label className="text-[11px] font-medium text-gray-600 block mb-1">Module</label>
+            <label className="text-[12px] font-medium text-gray-600 block mb-1">Module</label>
             <Select
               value={filters.module}
               onChange={(e) => updateFilter("module", e.target.value)}
@@ -352,7 +352,7 @@ const AuditLog = () => {
             </Select>
           </div>
           <div>
-            <label className="text-[11px] font-medium text-gray-600 block mb-1">Action</label>
+            <label className="text-[12px] font-medium text-gray-600 block mb-1">Action</label>
             <Select
               value={filters.action}
               onChange={(e) => updateFilter("action", e.target.value)}
@@ -374,7 +374,7 @@ const AuditLog = () => {
             </Select>
           </div>
           <div>
-            <label className="text-[11px] font-medium text-gray-600 block mb-1">User</label>
+            <label className="text-[12px] font-medium text-gray-600 block mb-1">User</label>
             <Select
               value={filters.user}
               onChange={(e) => updateFilter("user", e.target.value)}
@@ -386,7 +386,7 @@ const AuditLog = () => {
             </Select>
           </div>
           <div>
-            <label className="text-[11px] font-medium text-gray-600 block mb-1">Risk</label>
+            <label className="text-[12px] font-medium text-gray-600 block mb-1">Risk</label>
             <Select
               value={filters.risk}
               onChange={(e) => updateFilter("risk", e.target.value)}
@@ -398,7 +398,7 @@ const AuditLog = () => {
             </Select>
           </div>
           <div>
-            <label className="text-[11px] font-medium text-gray-600 block mb-1">Status</label>
+            <label className="text-[12px] font-medium text-gray-600 block mb-1">Status</label>
             <select
               className={input}
               value={filters.status}
@@ -410,7 +410,7 @@ const AuditLog = () => {
             </select>
           </div>
           <div>
-            <label className="text-[11px] font-medium text-gray-600 block mb-1">Source</label>
+            <label className="text-[12px] font-medium text-gray-600 block mb-1">Source</label>
             <select
               className={input}
               value={filters.source}
@@ -424,7 +424,7 @@ const AuditLog = () => {
         </div>
         <div className="flex items-center gap-3 mt-2 pt-2 border-t border-gray-100">
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-medium text-gray-600">BS Fiscal Year:</span>
+            <span className="text-[12px] font-medium text-gray-600">BS Fiscal Year:</span>
             <select
               className={input + " w-28"}
               value={bsFiscalYear}
@@ -451,19 +451,19 @@ const AuditLog = () => {
     return (
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className={statCard}>
-          <div className="text-gray-500 text-[10px] font-medium uppercase">Total Entries</div>
+          <div className="text-gray-500 text-[12px] font-medium uppercase">Total Entries</div>
           <div className="text-[24px] font-bold text-gray-800">{stats.total}</div>
         </div>
         <div className={statCard}>
-          <div className="text-gray-500 text-[10px] font-medium uppercase">Today</div>
+          <div className="text-gray-500 text-[12px] font-medium uppercase">Today</div>
           <div className="text-[24px] font-bold text-gray-800">{stats.today}</div>
         </div>
         <div className={statCard}>
-          <div className="text-gray-500 text-[10px] font-medium uppercase">High Risk</div>
+          <div className="text-gray-500 text-[12px] font-medium uppercase">High Risk</div>
           <div className="text-[24px] font-bold text-red-600">{stats.highRisk}</div>
         </div>
         <div className={statCard}>
-          <div className="text-gray-500 text-[10px] font-medium uppercase">Failed</div>
+          <div className="text-gray-500 text-[12px] font-medium uppercase">Failed</div>
           <div className="text-[24px] font-bold text-orange-600">{stats.failed}</div>
         </div>
       </div>
@@ -474,7 +474,7 @@ const AuditLog = () => {
   const renderAuditTable = (rows: AuditLogRecord[]) => {
     const card = "bg-white border border-gray-200 rounded-md overflow-hidden";
     const th =
-      "px-3 py-2 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
+      "px-3 py-2 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide";
     const td = "px-3 py-2.5 text-[12px] text-gray-700 align-top";
 
     return (
@@ -482,7 +482,7 @@ const AuditLog = () => {
         <div className="overflow-x-auto">
           <table className="w-full min-w-max border-collapse">
             <thead>
-              <tr className="bg-[#f5f6fa] border-b border-gray-200">
+              <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
                 {[
                   "#",
                   "Timestamp",
@@ -508,7 +508,7 @@ const AuditLog = () => {
                     {(auditPage - 1) * auditPageSize + i + 1}
                   </td>
                   <td className={td}>
-                    <div className="font-medium text-gray-800 text-[11px]">
+                    <div className="font-medium text-gray-800 text-[12px]">
                       {(() => {
                         try {
                           return formatBsDate(r.timestamp);
@@ -517,7 +517,7 @@ const AuditLog = () => {
                         }
                       })()}
                     </div>
-                    <div className="text-[10px] text-gray-400">
+                    <div className="text-[12px] text-gray-400">
                       {String(r.timestamp).slice(11, 19)}
                     </div>
                   </td>
@@ -556,7 +556,7 @@ const AuditLog = () => {
                   <td className={td}>{r.source}</td>
                   <td className={`${td} text-center align-middle`}>
                     <button
-                      className="text-gray-400 hover:text-[#1557b0] transition-colors p-1"
+                      className="text-gray-400 hover:text-[var(--ds-action-primary)] transition-colors p-1"
                       onClick={() => setSelectedLog(r)}
                       title="View details"
                     >
@@ -612,8 +612,8 @@ const AuditLog = () => {
         timestamp: new Date().toISOString(),
         userId: users[0]?.id || "",
         userName: users[0]?.name || users[0]?.username || "System",
-        module: "Audit Log",
-        action: "Old Audit Logs Purged",
+        module: "Audit log",
+        action: "Old Audit logs Purged",
         narration: `${ids.length} audit rows before ${filters.fromDate} purged by ${users[0]?.name || "System"}`,
         status: "Success",
         risk: "Critical",
@@ -681,13 +681,13 @@ const AuditLog = () => {
       const max = Math.max(...entries.map((e) => e[1]), 1);
       return (
         <div className="bg-white border border-gray-200 rounded-md p-4 flex-1 min-w-[250px]">
-          <h4 className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-3">
+          <h4 className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-3">
             {title}
           </h4>
           <div className="space-y-2">
             {entries.map(([label, count]) => (
               <div key={label}>
-                <div className="flex justify-between text-[11px] mb-1">
+                <div className="flex justify-between text-[12px] mb-1">
                   <span className="text-gray-700 truncate mr-2" title={label}>
                     {label || "Unknown"}
                   </span>
@@ -701,7 +701,7 @@ const AuditLog = () => {
                 </div>
               </div>
             ))}
-            {entries.length === 0 && <div className="text-[11px] text-gray-400 py-2">No data</div>}
+            {entries.length === 0 && <div className="text-[12px] text-gray-400 py-2">No data</div>}
           </div>
         </div>
       );
@@ -779,7 +779,7 @@ const AuditLog = () => {
 
     const card = "bg-white border border-gray-200 rounded-md p-4";
     const th =
-      "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200";
+      "px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide bg-[var(--ds-canvas)] border-b border-gray-200";
     const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 
     return (
@@ -789,7 +789,7 @@ const AuditLog = () => {
             <User className="h-4 w-4 text-gray-500" /> Security Events & User Activity
           </h3>
           <button
-            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[11px] font-medium rounded-md flex items-center gap-1.5"
+            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
             onClick={() => exportToExcel(userActivity, "User_Activity_Summary.xlsx")}
           >
             <Download className="h-3 w-3" /> Export Summary
@@ -799,7 +799,7 @@ const AuditLog = () => {
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
-              <thead className="bg-[#f5f6fa]">
+              <thead className="bg-[var(--ds-canvas)]">
                 <tr>
                   <th className={th}>User</th>
                   <th className={th}>Total Events</th>
@@ -842,7 +842,7 @@ const AuditLog = () => {
                       <td className={td}>{u.exportCount}</td>
                       <td className={td}>
                         {u.highRiskCount > 0 ? (
-                          <span className="inline-flex px-1.5 py-0.5 rounded bg-red-50 border border-red-200 text-red-700 text-[10px] font-bold">
+                          <span className="inline-flex px-1.5 py-0.5 rounded bg-red-50 border border-red-200 text-red-700 text-[12px] font-bold">
                             {u.highRiskCount}
                           </span>
                         ) : (
@@ -851,7 +851,7 @@ const AuditLog = () => {
                       </td>
                       <td className={td}>
                         {u.lastSeen ? (
-                          <span className="text-[11px]">
+                          <span className="text-[12px]">
                             {(() => {
                               try {
                                 return formatBsDate(u.lastSeen);
@@ -866,11 +866,11 @@ const AuditLog = () => {
                       </td>
                       <td className={td}>
                         {isSuspicious ? (
-                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-50 border border-amber-200 text-amber-700 text-[10px] font-semibold">
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-50 border border-amber-200 text-amber-700 text-[12px] font-semibold">
                             <AlertTriangle className="h-3 w-3" /> Review
                           </span>
                         ) : (
-                          <span className="text-gray-300 text-[10px]">OK</span>
+                          <span className="text-gray-300 text-[12px]">OK</span>
                         )}
                       </td>
                     </tr>
@@ -891,7 +891,7 @@ const AuditLog = () => {
         {userActivity.some((u: any) => u.deleteCount >= u.createCount && u.deleteCount > 0) && (
           <div className="p-3 rounded bg-amber-50 border border-amber-200 text-[12px] text-amber-800">
             <p className="font-semibold">Suspicious Activity Detected</p>
-            <p className="text-[11px] mt-0.5">
+            <p className="text-[12px] mt-0.5">
               One or more users have more delete/void events than create events in this period. This
               may indicate unauthorized data removal. Review their activity immediately.
             </p>
@@ -935,7 +935,7 @@ const AuditLog = () => {
           <h3 className="text-[13px] font-semibold text-gray-800 flex items-center gap-2">
             <CalendarDays className="h-4 w-4 text-gray-500" /> Period Lock Register
           </h3>
-          <span className="text-[11px] text-gray-500">
+          <span className="text-[12px] text-gray-500">
             {Object.keys(periodMap).length} periods tracked
           </span>
         </div>
@@ -954,20 +954,20 @@ const AuditLog = () => {
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-[12px] font-semibold text-gray-800">{key}</span>
                   <span
-                    className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-[10px] font-medium ${info.locked ? "bg-purple-50 text-purple-700 border-purple-200" : "bg-emerald-50 text-emerald-700 border-emerald-200"}`}
+                    className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-[12px] font-medium ${info.locked ? "bg-purple-50 text-purple-700 border-purple-200" : "bg-emerald-50 text-emerald-700 border-emerald-200"}`}
                   >
                     {info.locked ? <Lock className="h-3 w-3" /> : <Unlock className="h-3 w-3" />}
                     {info.locked ? "Locked" : "Open"}
                   </span>
                 </div>
-                <p className="text-[10px] text-gray-500">
+                <p className="text-[12px] text-gray-500">
                   Last action by {info.lockedBy || "System"} on{" "}
                   {String(info.lockedAt).slice(0, 10) || "—"}
                 </p>
                 {info.history.length > 1 && (
                   <div className="mt-2 border-t border-gray-100 pt-2 space-y-1 max-h-32 overflow-y-auto">
                     {info.history.slice(0, 5).map((h, i) => (
-                      <div key={i} className="text-[10px] text-gray-500 flex items-center gap-1">
+                      <div key={i} className="text-[12px] text-gray-500 flex items-center gap-1">
                         {String(h.action).toLowerCase().includes("unlock") ? (
                           <Unlock className="h-2.5 w-2.5 text-emerald-500 shrink-0" />
                         ) : (
@@ -984,7 +984,7 @@ const AuditLog = () => {
         )}
 
         <div className={card}>
-          <p className="text-[11px] font-semibold text-gray-600 mb-2 uppercase tracking-wide">
+          <p className="text-[12px] font-semibold text-gray-600 mb-2 uppercase tracking-wide">
             Nepal Fiscal Year BS Months
           </p>
           <div className="grid grid-cols-4 md:grid-cols-6 xl:grid-cols-12 gap-2">
@@ -1003,10 +1003,10 @@ const AuditLog = () => {
               return (
                 <div
                   key={month}
-                  className={`rounded p-2 text-center border text-[10px] font-medium ${hasLock ? "bg-purple-50 border-purple-200 text-purple-700" : "bg-gray-50 border-gray-200 text-gray-600"}`}
+                  className={`rounded p-2 text-center border text-[12px] font-medium ${hasLock ? "bg-purple-50 border-purple-200 text-purple-700" : "bg-gray-50 border-gray-200 text-gray-600"}`}
                 >
                   <div>{month.slice(0, 3)}</div>
-                  <div className="text-[9px] opacity-60">M{i + 1}</div>
+                  <div className="text-[12px] opacity-60">M{i + 1}</div>
                 </div>
               );
             })}
@@ -1051,11 +1051,11 @@ const AuditLog = () => {
 
     const card = "bg-white border border-gray-200 rounded-md p-4";
     const btn =
-      "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[11px] font-medium rounded-md flex items-center gap-1.5";
+      "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5";
     const btn2 =
-      "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5";
+      "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5";
     const th =
-      "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200";
+      "px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide bg-[var(--ds-canvas)] border-b border-gray-200";
     const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 
     return (
@@ -1064,7 +1064,7 @@ const AuditLog = () => {
         <div className={card}>
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-[13px] font-semibold text-gray-800">TDS Transaction Register</h3>
-            <span className="text-[11px] text-gray-500">
+            <span className="text-[12px] text-gray-500">
               {tdsRows.length} TDS events in selected period
             </span>
           </div>
@@ -1092,7 +1092,7 @@ const AuditLog = () => {
                       <td className={td}>{r.user}</td>
                       <td className={td}>
                         <span
-                          className={`inline-flex px-1.5 py-0.5 rounded border text-[10px] font-medium ${actionClass(r.action)}`}
+                          className={`inline-flex px-1.5 py-0.5 rounded border text-[12px] font-medium ${actionClass(r.action)}`}
                         >
                           {r.action}
                         </span>
@@ -1100,14 +1100,14 @@ const AuditLog = () => {
                       <td className={`${td} max-w-[240px] truncate`}>{r.description}</td>
                       <td className={td}>
                         <span
-                          className={`inline-flex px-1.5 py-0.5 rounded border text-[10px] font-medium ${String(r.status).toLowerCase().includes("fail") ? "bg-red-50 text-red-700 border-red-200" : "bg-emerald-50 text-emerald-700 border-emerald-200"}`}
+                          className={`inline-flex px-1.5 py-0.5 rounded border text-[12px] font-medium ${String(r.status).toLowerCase().includes("fail") ? "bg-red-50 text-red-700 border-red-200" : "bg-emerald-50 text-emerald-700 border-emerald-200"}`}
                         >
                           {r.status}
                         </span>
                       </td>
                       <td className={td}>
                         <span
-                          className={`inline-flex px-1.5 py-0.5 rounded border text-[10px] font-medium ${riskClass(r.risk)}`}
+                          className={`inline-flex px-1.5 py-0.5 rounded border text-[12px] font-medium ${riskClass(r.risk)}`}
                         >
                           {r.risk}
                         </span>
@@ -1118,7 +1118,7 @@ const AuditLog = () => {
               </table>
             </div>
           )}
-          <div className="mt-3 p-2 rounded bg-amber-50 border border-amber-200 text-[11px] text-amber-800">
+          <div className="mt-3 p-2 rounded bg-amber-50 border border-amber-200 text-[12px] text-amber-800">
             Nepal TDS Rule: TDS must be deposited with IRD by the 25th of the following month per
             Income Tax Act Section 90. Ensure all TDS payment vouchers have narrations including
             "TDS" and the section of IT Act applied.
@@ -1149,14 +1149,14 @@ const AuditLog = () => {
                     key={month}
                     className="bg-gray-50 rounded border border-gray-200 p-2 text-center"
                   >
-                    <p className="text-[11px] font-semibold text-gray-700">{month}</p>
+                    <p className="text-[12px] font-semibold text-gray-700">{month}</p>
                     <p className="text-xl font-bold text-blue-600">{count}</p>
-                    <p className="text-[10px] text-gray-500">billing events</p>
+                    <p className="text-[12px] text-gray-500">billing events</p>
                   </div>
                 ))}
             </div>
           )}
-          <div className="mt-3 p-2 rounded bg-amber-50 border border-amber-200 text-[11px] text-amber-800">
+          <div className="mt-3 p-2 rounded bg-amber-50 border border-amber-200 text-[12px] text-amber-800">
             Nepal VAT Rule: VAT return (VAT-13) must be filed by the 25th of the following month per
             VAT Act Nepal. Cross-check billing event count with your VAT-13 submission totals.
           </div>
@@ -1168,7 +1168,7 @@ const AuditLog = () => {
             <Download className="h-3 w-3" /> Export TDS Register
           </button>
           <button className={btn2} onClick={exportCompliancePack}>
-            <Shield className="h-3 w-3 text-[#1557b0]" /> Full Compliance Pack
+            <Shield className="h-3 w-3 text-[var(--ds-action-primary)]" /> Full Compliance Pack
           </button>
         </div>
       </div>
@@ -1195,9 +1195,9 @@ const AuditLog = () => {
 
     const actionClass = (action: string) => "bg-gray-100 text-gray-700 border-gray-200";
     const btn2 =
-      "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5";
+      "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5";
     const th =
-      "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200";
+      "px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide bg-[var(--ds-canvas)] border-b border-gray-200";
     const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 
     return (
@@ -1208,7 +1208,7 @@ const AuditLog = () => {
           </h3>
           <div className="flex items-center gap-2">
             {reprintWarnings.length > 0 && (
-              <span className="inline-flex items-center gap-1 px-2 py-1 rounded bg-amber-50 border border-amber-200 text-[10px] font-semibold text-amber-700">
+              <span className="inline-flex items-center gap-1 px-2 py-1 rounded bg-amber-50 border border-amber-200 text-[12px] font-semibold text-amber-700">
                 <AlertTriangle className="h-3 w-3" /> {reprintWarnings.length} docs printed multiple
                 times
               </span>
@@ -1224,8 +1224,8 @@ const AuditLog = () => {
 
         {reprintWarnings.length > 0 && (
           <div className="p-3 rounded bg-amber-50 border border-amber-200 text-[12px] text-amber-800">
-            <p className="font-semibold mb-1">⚠ Documents Printed Multiple Times</p>
-            <p className="text-[11px]">
+            <p className="font-semibold mb-1">Documents Printed Multiple Times</p>
+            <p className="text-[12px]">
               The following documents were printed or exported more than once. Review to ensure no
               post-edit reprinting occurred:
             </p>
@@ -1233,7 +1233,7 @@ const AuditLog = () => {
               {reprintWarnings.map((key) => (
                 <span
                   key={key}
-                  className="bg-amber-100 border border-amber-300 px-1.5 py-0.5 rounded text-[10px] font-medium"
+                  className="bg-amber-100 border border-amber-300 px-1.5 py-0.5 rounded text-[12px] font-medium"
                 >
                   {key} ({docPrintCount[key]}×)
                 </span>
@@ -1245,7 +1245,7 @@ const AuditLog = () => {
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
           <div className="overflow-x-auto max-h-[500px]">
             <table className="w-full text-left border-collapse">
-              <thead className="sticky top-0 bg-[#f5f6fa] z-10">
+              <thead className="sticky top-0 bg-[var(--ds-canvas)] z-10">
                 <tr>
                   <th className={th}>Date/Time</th>
                   <th className={th}>Printed By</th>
@@ -1266,18 +1266,18 @@ const AuditLog = () => {
                     >
                       <td className={td}>
                         <div className="font-medium">{String(r.timestamp).slice(0, 10)}</div>
-                        <div className="text-[10px] text-gray-400">
+                        <div className="text-[12px] text-gray-400">
                           {String(r.timestamp).slice(11, 19)}
                         </div>
                       </td>
                       <td className={td}>{r.user}</td>
                       <td className={td}>
-                        <div className="font-medium text-[11px]">{r.module || "Document"}</div>
-                        <div className="text-[10px] text-gray-400">—</div>
+                        <div className="font-medium text-[12px]">{r.module || "Document"}</div>
+                        <div className="text-[12px] text-gray-400">—</div>
                       </td>
                       <td className={td}>
                         <span
-                          className={`inline-flex px-1.5 py-0.5 rounded border text-[10px] font-medium ${actionClass(r.action)}`}
+                          className={`inline-flex px-1.5 py-0.5 rounded border text-[12px] font-medium ${actionClass(r.action)}`}
                         >
                           {r.action}
                         </span>
@@ -1285,7 +1285,7 @@ const AuditLog = () => {
                       <td className={`${td} max-w-[200px] truncate`}>{r.description || "—"}</td>
                       <td className={td}>
                         <span
-                          className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold ${count > 1 ? "bg-amber-100 text-amber-700" : "bg-gray-100 text-gray-600"}`}
+                          className={`inline-flex px-2 py-0.5 rounded-full text-[12px] font-bold ${count > 1 ? "bg-amber-100 text-amber-700" : "bg-gray-100 text-gray-600"}`}
                         >
                           {count}×
                         </span>
@@ -1309,27 +1309,27 @@ const AuditLog = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4 text-gray-800">
+    <div className="min-h-screen bg-[var(--ds-canvas)] p-4 text-gray-800">
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-              <Shield className="h-4 w-4 text-[#1557b0]" /> Audit Log
+              <Shield className="h-4 w-4 text-[var(--ds-action-primary)]" /> Audit log
             </h1>
-            <p className="text-[11px] text-gray-500 mt-0.5">
-              User activity, data change history, security access trail and compliance export.
+            <p className="text-[12px] text-gray-500 mt-0.5">
+              Who changed what.
             </p>
           </div>
           <div className="flex items-center gap-2">
             <button
-              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
+              className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
               onClick={loadAuditData}
               disabled={loading}
             >
               <RefreshCw className={`h-3 w-3 ${loading ? "animate-spin" : ""}`} /> Refresh
             </button>
             <button
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[11px] font-medium rounded-md flex items-center gap-1.5"
+              className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
               onClick={() => exportExcel()}
             >
               <Download className="h-3 w-3" /> Export
@@ -1344,7 +1344,7 @@ const AuditLog = () => {
               key={tab.id}
               className={`px-4 py-2 text-[12px] font-medium transition-colors ${
                 activeTab === tab.id
-                  ? "bg-white text-[#1557b0] border-b-2 border-[#1557b0]"
+                  ? "bg-white text-[var(--ds-action-primary)] border-b-2 border-[var(--ds-action-primary)]"
                   : "text-gray-500 hover:text-gray-800 hover:bg-gray-50"
               }`}
               onClick={() => setActiveTab(tab.id)}
@@ -1356,7 +1356,7 @@ const AuditLog = () => {
 
         {loading && (
           <div className="bg-white border border-gray-200 rounded-md p-4 mb-4 flex items-center gap-2 text-[12px] text-gray-600">
-            <RefreshCw className="h-4 w-4 animate-spin text-[#1557b0]" /> Loading audit data...
+            <RefreshCw className="h-4 w-4 animate-spin text-[var(--ds-action-primary)]" /> Loading audit data...
           </div>
         )}
 
@@ -1375,7 +1375,7 @@ const AuditLog = () => {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-[14px] font-semibold text-gray-800">Data Changes</h2>
-              <button className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[11px] font-medium rounded-md">
+              <button className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md">
                 Export Changes
               </button>
             </div>
@@ -1412,7 +1412,7 @@ const AuditLog = () => {
           <div className="w-full max-w-2xl">
             <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
               <div className="flex items-center justify-between p-4 border-b border-gray-200">
-                <h3 className="text-[15px] font-semibold text-gray-800">Audit Log Details</h3>
+                <h3 className="text-[15px] font-semibold text-gray-800">Audit log Details</h3>
                 <button
                   onClick={() => setSelectedLog(null)}
                   className="p-1 rounded-md hover:bg-gray-100 text-gray-500"
@@ -1433,7 +1433,7 @@ const AuditLog = () => {
                         }
                       })()}
                     </p>
-                    <p className="text-[10px] text-gray-400">{selectedLog.timestamp}</p>
+                    <p className="text-[12px] text-gray-400">{selectedLog.timestamp}</p>
                   </div>
                   <div>
                     <div className="text-gray-500">User</div>
@@ -1492,7 +1492,7 @@ const AuditLog = () => {
                 </div>
                 <div>
                   <div className="text-gray-500">Additional Info</div>
-                  <pre className="whitespace-pre-wrap break-words bg-gray-50 p-2 rounded text-[11px] max-h-40 overflow-y-auto">
+                  <pre className="whitespace-pre-wrap break-words bg-gray-50 p-2 rounded text-[12px] max-h-40 overflow-y-auto">
                     {JSON.stringify(selectedLog.additionalInfo || {}, null, 2)}
                   </pre>
                 </div>
@@ -1501,21 +1501,21 @@ const AuditLog = () => {
                     const diffs = computeDiff(selectedLog.before, selectedLog.after);
                     return (
                       <div className="space-y-2">
-                        <p className="text-[10px] font-semibold text-gray-500 uppercase">
+                        <p className="text-[12px] font-semibold text-gray-500 uppercase">
                           Data Changes
                         </p>
                         {diffs.length > 0 ? (
                           <div className="bg-gray-50 rounded-md border border-gray-200 overflow-hidden">
-                            <table className="w-full text-[11px]">
+                            <table className="w-full text-[12px]">
                               <thead>
                                 <tr className="bg-gray-100">
-                                  <th className="text-left px-3 py-1.5 text-[10px] font-semibold text-gray-500 uppercase w-1/4">
+                                  <th className="text-left px-3 py-1.5 text-[12px] font-semibold text-gray-500 uppercase w-1/4">
                                     Field
                                   </th>
-                                  <th className="text-left px-3 py-1.5 text-[10px] font-semibold text-red-500 uppercase w-[37.5%]">
+                                  <th className="text-left px-3 py-1.5 text-[12px] font-semibold text-red-500 uppercase w-[37.5%]">
                                     Before
                                   </th>
-                                  <th className="text-left px-3 py-1.5 text-[10px] font-semibold text-emerald-600 uppercase w-[37.5%]">
+                                  <th className="text-left px-3 py-1.5 text-[12px] font-semibold text-emerald-600 uppercase w-[37.5%]">
                                     After
                                   </th>
                                 </tr>
@@ -1553,20 +1553,20 @@ const AuditLog = () => {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {selectedLog.before && (
                               <div className="bg-gray-50 rounded-md p-3 border border-gray-200">
-                                <p className="text-[10px] font-semibold text-gray-500 uppercase mb-1">
+                                <p className="text-[12px] font-semibold text-gray-500 uppercase mb-1">
                                   Before (raw)
                                 </p>
-                                <pre className="text-[11px] text-gray-700 bg-white p-2 rounded border border-gray-200 overflow-auto max-h-48 font-mono">
+                                <pre className="text-[12px] text-gray-700 bg-white p-2 rounded border border-gray-200 overflow-auto max-h-48 font-mono">
                                   {stringifySmall(selectedLog.before)}
                                 </pre>
                               </div>
                             )}
                             {selectedLog.after && (
                               <div className="bg-gray-50 rounded-md p-3 border border-gray-200">
-                                <p className="text-[10px] font-semibold text-gray-500 uppercase mb-1">
+                                <p className="text-[12px] font-semibold text-gray-500 uppercase mb-1">
                                   After (raw)
                                 </p>
-                                <pre className="text-[11px] text-gray-700 bg-white p-2 rounded border border-gray-200 overflow-auto max-h-48 font-mono">
+                                <pre className="text-[12px] text-gray-700 bg-white p-2 rounded border border-gray-200 overflow-auto max-h-48 font-mono">
                                   {stringifySmall(selectedLog.after)}
                                 </pre>
                               </div>
@@ -1588,7 +1588,7 @@ const AuditLog = () => {
           <div className="w-full max-w-md">
             <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
               <div className="flex items-center justify-between p-4 border-b border-gray-200">
-                <h3 className="text-[15px] font-semibold text-red-600">Purge Old Audit Logs</h3>
+                <h3 className="text-[15px] font-semibold text-red-600">Purge Old Audit logs</h3>
                 <button
                   onClick={() => setPurgeModal(false)}
                   className="p-1 rounded-md hover:bg-gray-100 text-gray-500"
@@ -1615,13 +1615,13 @@ const AuditLog = () => {
                 />
                 <div className="flex justify-end gap-2 pt-2">
                   <button
-                    className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[11px] font-medium rounded-md hover:bg-gray-50"
+                    className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50"
                     onClick={() => setPurgeModal(false)}
                   >
                     Cancel
                   </button>
                   <button
-                    className="h-8 px-3 bg-red-600 hover:bg-red-700 text-white text-[11px] font-medium rounded-md"
+                    className="h-8 px-3 bg-red-600 hover:bg-red-700 text-white text-[12px] font-medium rounded-md"
                     onClick={purgeOldLogs}
                   >
                     Confirm Purge

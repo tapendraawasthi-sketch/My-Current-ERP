@@ -14,10 +14,11 @@ import {
 } from "@/ai/conversation/WhatsAppShareFormatter";
 import { useSutraAiStore } from "@/store/sutraAiStore";
 import { FileSpreadsheet, RefreshCw, TrendingUp, TrendingDown } from "lucide-react";
+import { ReportWorkspace } from "@/features/reports";
 import ReportDateRangePicker, { DateRange } from "../components/ui/ReportDateRangePicker";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 import * as XLSX from "xlsx";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 import { mergeSystemConfiguration, getAgeingBucketIndex } from "../lib/systemConfiguration";
 import { computeInvoiceOutstanding } from "../lib/accounting";
 
@@ -143,7 +144,7 @@ const AgingBar: React.FC<{ totals: AgingBucket; direction: "receivable" | "payab
 
   return (
     <div className="mb-3 rounded-md border border-gray-200 bg-white px-4 py-3">
-      <div className="mb-2.5 text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+      <div className="mb-2.5 text-[12px] font-semibold uppercase tracking-wide text-gray-500">
         {direction === "receivable" ? "Receivables" : "Payables"} Aging Overview — Total:{" "}
         {fmt(totals.total)}
       </div>
@@ -165,11 +166,11 @@ const AgingBar: React.FC<{ totals: AgingBucket; direction: "receivable" | "payab
         {segments.map((seg) => (
           <div key={seg.label} className="flex items-center gap-1.5">
             <div className={`h-2 w-2 flex-shrink-0 rounded-[2px] ${seg.dotClass}`} />
-            <span className="text-[10px] text-gray-700">{seg.label}</span>
-            <span className={`font-mono text-[10px] font-bold ${seg.valueClass}`}>
+            <span className="text-[12px] text-gray-700">{seg.label}</span>
+            <span className={`font-mono text-[12px] font-bold ${seg.valueClass}`}>
               {fmt(seg.value)}
             </span>
-            <span className="text-[9px] text-gray-400">({(seg.pct || 0).toFixed(0)}%)</span>
+            <span className="text-[12px] text-gray-400">({(seg.pct || 0).toFixed(0)}%)</span>
           </div>
         ))}
       </div>
@@ -389,27 +390,14 @@ const AgingReport: React.FC = () => {
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="erp-report p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
-      {/* Header */}
-      <div className="erp-report-toolbar flex items-center justify-between mb-4 no-print">
-        <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Aging Report</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
-            Outstanding {direction === "receivable" ? "receivables" : "payables"} by age bucket
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handleExport}
-            disabled={filteredRows.length === 0}
-            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors disabled:opacity-50"
-          >
-            <FileSpreadsheet className="h-3.5 w-3.5" />
-            Export
-          </button>
-        </div>
-      </div>
+    <ReportWorkspace
+      title="Overdue by age"
+      description="Balances grouped by how long they are overdue."
+      periodLabel={`As of ${asOfDate}`}
+      onPrint={() => window.print()}
+      onExportExcel={handleExport}
+    >
+
 
       {/* Visual Stacked Bar */}
       {filteredRows.length > 0 && <AgingBar totals={grandTotal} direction={direction} />}
@@ -422,7 +410,7 @@ const AgingReport: React.FC = () => {
             onClick={() => setDirection("receivable")}
             className={`h-8 px-3 text-[12px] font-medium transition-colors flex items-center gap-1.5 ${
               direction === "receivable"
-                ? "bg-[#1557b0] text-white"
+                ? "bg-[var(--ds-action-primary)] text-white"
                 : "bg-white text-gray-600 hover:bg-gray-50"
             }`}
           >
@@ -434,7 +422,7 @@ const AgingReport: React.FC = () => {
             onClick={() => setDirection("payable")}
             className={`h-8 px-3 text-[12px] font-medium transition-colors flex items-center gap-1.5 ${
               direction === "payable"
-                ? "bg-[#1557b0] text-white"
+                ? "bg-[var(--ds-action-primary)] text-white"
                 : "bg-white text-gray-600 hover:bg-gray-50"
             }`}
           >
@@ -459,7 +447,7 @@ const AgingReport: React.FC = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder={formatAgingSearchPlaceholder(outputLanguage)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
           />
         </div>
       </div>
@@ -480,35 +468,35 @@ const AgingReport: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="report-table w-full min-w-[900px]">
               <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+                <tr className="bg-[var(--ds-surface-muted)] border-b border-gray-200">
+                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                     Party Name
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-24">
+                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-24">
                     PAN
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
                     Current
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
                     1–30 Days
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
                     31–60 Days
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
                     61–90 Days
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
                     Over 90
                   </th>
-                  <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-32">
+                  <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-32">
                     Total
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-28">
+                  <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-28">
                     Contact
                   </th>
-                  <th className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-500 uppercase tracking-wide w-20">
+                  <th className="px-3 py-2.5 text-center text-[12px] font-semibold text-gray-500 uppercase tracking-wide w-20">
                     Action
                   </th>
                 </tr>
@@ -540,11 +528,11 @@ const AgingReport: React.FC = () => {
                     <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-gray-800">
                       {money(row.buckets.total)}
                     </td>
-                    <td className="px-3 py-2.5 text-[11px] text-gray-700">
+                    <td className="px-3 py-2.5 text-[12px] text-gray-700">
                       {row.partyPhone ? (
                         <a
                           href={`tel:${row.partyPhone}`}
-                          className="font-mono text-[#1557b0] no-underline hover:text-[#0f4a96]"
+                          className="font-mono text-[var(--ds-action-primary)] no-underline hover:text-[var(--ds-action-primary-hover)]"
                         >
                           {row.partyPhone}
                         </a>
@@ -571,7 +559,7 @@ const AgingReport: React.FC = () => {
                                       : 0,
                             })
                           }
-                          className="h-6 whitespace-nowrap rounded border border-amber-300 bg-amber-50 px-2 text-[10px] font-semibold text-amber-700 hover:bg-amber-100"
+                          className="h-6 whitespace-nowrap rounded border border-amber-300 bg-amber-50 px-2 text-[12px] font-semibold text-amber-700 hover:bg-amber-100"
                         >
                           Remind
                         </button>
@@ -592,7 +580,7 @@ const AgingReport: React.FC = () => {
                                       : undefined,
                             })
                           }
-                          className="h-6 whitespace-nowrap rounded border border-[#c7d2fe] bg-[#eef2ff] px-1.5 text-[10px] font-semibold text-[#1557b0] hover:bg-[#e0e7ff]"
+                          className="h-6 whitespace-nowrap rounded border border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)] px-1.5 text-[12px] font-semibold text-[var(--ds-action-primary)] hover:bg-[var(--ds-surface-hover)]"
                           title="Open SUTRA AI with reminder"
                         >
                           SUTRA
@@ -630,7 +618,7 @@ const AgingReport: React.FC = () => {
                               });
                             }
                           }}
-                          className="h-6 whitespace-nowrap rounded border px-1.5 text-[10px] font-semibold border-[#1557b0] bg-white text-[#1557b0] hover:bg-[#eef2ff]"
+                          className="h-6 whitespace-nowrap rounded border px-1.5 text-[12px] font-semibold border-[var(--ds-action-primary)] bg-white text-[var(--ds-action-primary)] hover:bg-[var(--ds-surface-muted)]"
                           title={
                             row.partyPhone
                               ? "Open SUTRA AI and send via WhatsApp"
@@ -647,7 +635,7 @@ const AgingReport: React.FC = () => {
 
               {filteredRows.length > 0 && (
                 <tfoot>
-                  <tr className="bg-[#eef2ff] border-t-2 border-[#c7d2fe]">
+                  <tr className="bg-[var(--ds-surface-muted)] border-t-2 border-[var(--ds-border-default)]">
                     <td colSpan={2} className="px-3 py-2.5 text-[12px] font-bold text-gray-800">
                       Grand Total ({filteredRows.length} parties)
                     </td>
@@ -666,7 +654,7 @@ const AgingReport: React.FC = () => {
                     <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-red-700">
                       {money(grandTotal.over90)}
                     </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-[#1557b0]">
+                    <td className="px-3 py-2.5 text-right font-mono text-[12px] font-bold text-[var(--ds-action-primary)]">
                       {money(grandTotal.total)}
                     </td>
                     <td colSpan={2} />
@@ -679,14 +667,14 @@ const AgingReport: React.FC = () => {
       </div>
 
       {reminderParty && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[var(--ds-z-dropdown)] bg-black/40 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg border border-gray-200 w-full max-w-md shadow-xl">
             <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between bg-gray-50 rounded-t-lg">
               <div>
                 <h2 className="text-[14px] font-semibold text-gray-800">
                   {formatAgingReminderModalTitle(direction, outputLanguage)}
                 </h2>
-                <p className="text-[11px] text-gray-500 mt-0.5">{reminderParty.name}</p>
+                <p className="text-[12px] text-gray-500 mt-0.5">{reminderParty.name}</p>
               </div>
               <button
                 type="button"
@@ -697,14 +685,14 @@ const AgingReport: React.FC = () => {
               </button>
             </div>
             <div className="p-4">
-              <p className="text-[11px] text-gray-600 whitespace-pre-wrap leading-relaxed border border-gray-200 rounded-md bg-gray-50 p-3">
+              <p className="text-[12px] text-gray-600 whitespace-pre-wrap leading-relaxed border border-gray-200 rounded-md bg-gray-50 p-3">
                 {reminderShareText}
               </p>
               <div className="flex flex-wrap items-center gap-2 mt-3">
                 <button
                   type="button"
                   onClick={() => openWhatsAppShare(reminderShareText, reminderParty.phone)}
-                  className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
+                  className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md"
                 >
                   {formatAgingRemindWaButton(Boolean(reminderParty.phone), outputLanguage)}
                 </button>
@@ -730,7 +718,7 @@ const AgingReport: React.FC = () => {
                     });
                     setReminderParty(null);
                   }}
-                  className="h-8 px-3 bg-[#eef2ff] border border-[#c7d2fe] text-[#1557b0] text-[12px] font-medium rounded-md hover:bg-[#e0e7ff]"
+                  className="h-8 px-3 bg-[var(--ds-surface-muted)] border border-[var(--ds-border-default)] text-[var(--ds-action-primary)] text-[12px] font-medium rounded-md hover:bg-[var(--ds-surface-hover)]"
                   title="Open SUTRA AI with reminder"
                 >
                   SUTRA AI
@@ -754,7 +742,7 @@ const AgingReport: React.FC = () => {
                     }
                     setReminderParty(null);
                   }}
-                  className="h-8 px-3 bg-white border text-[12px] font-medium rounded-md border-[#1557b0] text-[#1557b0] hover:bg-[#eef2ff]"
+                  className="h-8 px-3 bg-white border text-[12px] font-medium rounded-md border-[var(--ds-action-primary)] text-[var(--ds-action-primary)] hover:bg-[var(--ds-surface-muted)]"
                   title={
                     reminderParty.phone
                       ? "Open SUTRA AI and send via WhatsApp"
@@ -768,7 +756,7 @@ const AgingReport: React.FC = () => {
           </div>
         </div>
       )}
-    </div>
+    </ReportWorkspace>
   );
 };
 

@@ -3,7 +3,7 @@ import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
 import { VoucherStatus } from "../lib/types";
-import ReportShell from "../components/reporting/ReportShell";
+import { ReportWorkspace } from "@/features/reports";
 import ReportGrid from "../components/reporting/ReportGrid";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 import { useScreenF12 } from "../hooks/useF12Config";
@@ -190,18 +190,18 @@ const StockTransfers: React.FC = () => {
     }
 
     if (columnKey === "narration") {
-      return <span className="text-[11px] text-gray-500 italic">{value}</span>;
+      return <span className="text-[12px] text-gray-500 italic">{value}</span>;
     }
 
     return value;
   };
 
   return (
-    <ReportShell
-      title="Stock Transfers"
-      subtitle="Inter-warehouse stock movement report"
+    <ReportWorkspace
+      title="Stock transfer"
+      description="Move stock between locations."
       companyName={companySettings?.companyNameEn || companySettings?.name}
-      periodText={`${startDate} to ${endDate}`}
+      periodLabel={`${startDate} to ${endDate}`}
       onPrint={() => window.print()}
       onOptions={() => {
         setPendingStart(startDate);
@@ -210,34 +210,33 @@ const StockTransfers: React.FC = () => {
         setPendingSelectedToWarehouseId(selectedToWarehouseId);
         setPendingSelectedItemId(selectedItemId);
         setOptionsOpen(true);
-      }}
-      actionBarButtons={[{ label: "Print" }, { label: "Export" }]}
-      toolbarLeft={
+      }}, { label: "Export" }]}
+      filterSlot={
         <div className="flex items-center gap-1.5 flex-wrap">
-          <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
+          <label className="text-[12px] font-medium text-gray-600 flex items-center gap-1.5">
             From:
             <input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
-          <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5 ml-1">
+          <label className="text-[12px] font-medium text-gray-600 flex items-center gap-1.5 ml-1">
             To:
             <input
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
           <select
             value={selectedFromWarehouseId}
             onChange={(e) => setSelectedFromWarehouseId(e.target.value)}
-            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] ml-1 w-[130px]"
+            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] ml-1 w-[130px]"
           >
             <option value="" disabled>
               From Whse...
@@ -252,7 +251,7 @@ const StockTransfers: React.FC = () => {
           <select
             value={selectedToWarehouseId}
             onChange={(e) => setSelectedToWarehouseId(e.target.value)}
-            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-[130px]"
+            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[130px]"
           >
             <option value="" disabled>
               To Whse...
@@ -267,7 +266,7 @@ const StockTransfers: React.FC = () => {
           <select
             value={selectedItemId}
             onChange={(e) => setSelectedItemId(e.target.value)}
-            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-[150px]"
+            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[150px]"
           >
             <option value="" disabled>
               Select Item...
@@ -297,7 +296,7 @@ const StockTransfers: React.FC = () => {
           data={transfersData}
           getRowClassName={(row) => {
             if (row.isTotal) {
-              return "bg-[#eef2ff] border-t-2 border-[#c7d2fe]";
+              return "bg-[var(--ds-surface-selected)] border-t-2 border-[var(--ds-border-strong)]";
             }
             // Highlight same warehouse transfers (should not happen)
             if (row.fromWarehouse === row.toWarehouse && row.fromWarehouse !== "Unknown") {
@@ -311,37 +310,37 @@ const StockTransfers: React.FC = () => {
 
       <ReportOptionsModal
         open={optionsOpen}
-        title="Stock Transfers Options"
+        title="Stock transfer Options"
         onClose={() => setOptionsOpen(false)}
         onApply={applyOptions}
       >
         <div className="space-y-4">
-          <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
+          <label className="flex flex-col gap-1 text-[12px] font-medium text-gray-600">
             From Date
             <input
               type="date"
               value={pendingStart}
               onChange={(e) => setPendingStart(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
-          <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
+          <label className="flex flex-col gap-1 text-[12px] font-medium text-gray-600">
             To Date
             <input
               type="date"
               value={pendingEnd}
               onChange={(e) => setPendingEnd(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
-          <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
+          <label className="flex flex-col gap-1 text-[12px] font-medium text-gray-600">
             From Warehouse
             <select
               value={pendingSelectedFromWarehouseId}
               onChange={(e) => setPendingSelectedFromWarehouseId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               {warehouseOptions.map((warehouse) => (
                 <option key={warehouse.id} value={warehouse.id}>
@@ -351,12 +350,12 @@ const StockTransfers: React.FC = () => {
             </select>
           </label>
 
-          <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
+          <label className="flex flex-col gap-1 text-[12px] font-medium text-gray-600">
             To Warehouse
             <select
               value={pendingSelectedToWarehouseId}
               onChange={(e) => setPendingSelectedToWarehouseId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               {warehouseOptions.map((warehouse) => (
                 <option key={warehouse.id} value={warehouse.id}>
@@ -366,12 +365,12 @@ const StockTransfers: React.FC = () => {
             </select>
           </label>
 
-          <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
+          <label className="flex flex-col gap-1 text-[12px] font-medium text-gray-600">
             Item Filter
             <select
               value={pendingSelectedItemId}
               onChange={(e) => setPendingSelectedItemId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               {itemOptions.map((item) => (
                 <option key={item.id} value={item.id}>
@@ -382,7 +381,7 @@ const StockTransfers: React.FC = () => {
           </label>
         </div>
       </ReportOptionsModal>
-    </ReportShell>
+    </ReportWorkspace>
   );
 };
 

@@ -354,16 +354,16 @@ export default function PayrollProcessing() {
         <head>
           <title>Payslip - ${result.employeeName}</title>
           <style>
-            body { font-family: Arial, sans-serif; color: #111; background: #fff; padding: 24px; }
-            .payslip { max-width: 760px; margin: 0 auto; border: 1px solid #111; padding: 18px; }
+            body { font-family: Arial, sans-serif; color: var(--ds-border-default); background: var(--ds-surface); padding: 24px; }
+            .payslip { max-width: 760px; margin: 0 auto; border: 1px solid var(--ds-border-default); padding: 18px; }
             h1, h2, h3 { margin: 0; }
             .center { text-align: center; }
             .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 20px; font-size: 12px; margin: 16px 0; }
             table { width: 100%; border-collapse: collapse; font-size: 12px; }
-            th, td { border: 1px solid #222; padding: 6px 8px; }
-            th { background: #f0f0f0; text-align: left; }
+            th, td { border: 1px solid var(--ds-border-default); padding: 6px 8px; }
+            th { background: var(--ds-border-default); text-align: left; }
             .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-            .net { margin-top: 14px; border: 1px solid #111; padding: 10px; font-size: 14px; font-weight: bold; }
+            .net { margin-top: 14px; border: 1px solid var(--ds-border-default); padding: 10px; font-size: 14px; font-weight: bold; }
             .sign { display: flex; justify-content: space-between; margin-top: 52px; font-size: 12px; }
             @media print { body { padding: 0; } .payslip { border: none; } @page { size: A5 landscape; margin: 10mm; } }
           </style>
@@ -472,11 +472,11 @@ export default function PayrollProcessing() {
   const totalOT = payrollResults.reduce((s, r) => s + r.overtimePay, 0);
 
   return (
-    <div className="p-6 bg-[#f5f6fa] min-h-screen">
+    <div className="p-6 bg-[var(--ds-canvas)] min-h-screen">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Payroll Processing</h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
+          <h1 className="text-[15px] font-semibold text-gray-800">Payroll</h1>
+          <p className="text-[12px] text-gray-500 mt-0.5">
             Process monthly salary with Nepal income tax, SSF, PF deductions
           </p>
         </div>
@@ -503,7 +503,7 @@ export default function PayrollProcessing() {
           <button
             type="button"
             onClick={handleProcessPayroll}
-            className="h-9 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-semibold rounded-md flex items-center gap-1.5"
+            className="h-9 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-semibold rounded-md flex items-center gap-1.5"
           >
             <Calculator className="h-3.5 w-3.5" />
             Process Payroll
@@ -551,7 +551,7 @@ export default function PayrollProcessing() {
             onClick={() => setActiveTab(key as any)}
             className={
               activeTab === key
-                ? "px-4 py-2 border-b-2 border-[#1557b0] text-[#1557b0] text-[12px] font-medium"
+                ? "px-4 py-2 border-b-2 border-[var(--ds-action-primary)] text-[var(--ds-action-primary)] text-[12px] font-medium"
                 : "px-4 py-2 text-gray-500 text-[12px] hover:text-gray-700"
             }
           >
@@ -566,14 +566,14 @@ export default function PayrollProcessing() {
             <button
               type="button"
               onClick={openNewEmployee}
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] rounded-md"
+              className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] rounded-md"
             >
               + Add Employee
             </button>
           </div>
           <table className="data-table w-full">
             <thead>
-              <tr className="bg-[#f5f6fa] border-b border-gray-200">
+              <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
                 {[
                   "Name",
                   "Designation",
@@ -588,7 +588,7 @@ export default function PayrollProcessing() {
                 ].map((h) => (
                   <th
                     key={h}
-                    className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase"
+                    className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase"
                   >
                     {h}
                   </th>
@@ -627,7 +627,7 @@ export default function PayrollProcessing() {
                     </td>
                     <td className="px-3 py-2.5">
                       <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
+                        className={`px-2 py-0.5 rounded text-[12px] font-semibold uppercase ${
                           emp.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"
                         }`}
                       >
@@ -639,7 +639,7 @@ export default function PayrollProcessing() {
                         <button
                           type="button"
                           onClick={() => openEditEmployee(emp)}
-                          className="h-7 w-7 border border-gray-300 rounded text-[#1557b0] bg-white"
+                          className="h-7 w-7 border border-gray-300 rounded text-[var(--ds-action-primary)] bg-white"
                         >
                           <Edit2 className="h-3.5 w-3.5 mx-auto" />
                         </button>
@@ -649,7 +649,7 @@ export default function PayrollProcessing() {
                             saveEmployee({ ...emp, isActive: !emp.isActive }, companyId);
                             refreshEmployees();
                           }}
-                          className="h-7 px-2 border border-gray-300 rounded text-[11px] bg-white"
+                          className="h-7 px-2 border border-gray-300 rounded text-[12px] bg-white"
                         >
                           {emp.isActive ? "Inactive" : "Active"}
                         </button>
@@ -667,7 +667,7 @@ export default function PayrollProcessing() {
         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
           <table className="data-table w-full">
             <thead>
-              <tr className="bg-[#f5f6fa] border-b border-gray-200">
+              <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
                 {[
                   "Employee Name",
                   "Present Days",
@@ -678,7 +678,7 @@ export default function PayrollProcessing() {
                 ].map((h) => (
                   <th
                     key={h}
-                    className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase"
+                    className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase"
                   >
                     {h}
                   </th>
@@ -774,7 +774,7 @@ export default function PayrollProcessing() {
           ) : (
             <table className="data-table w-full">
               <thead>
-                <tr className="bg-[#f5f6fa] border-b border-gray-200">
+                <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
                   {[
                     "Employee",
                     "Gross Earnings",
@@ -787,7 +787,7 @@ export default function PayrollProcessing() {
                   ].map((h) => (
                     <th
                       key={h}
-                      className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase"
+                      className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase"
                     >
                       {h}
                     </th>
@@ -822,7 +822,7 @@ export default function PayrollProcessing() {
                       <td className="number-cell">
                         {money(r.totalDeductions)}
                       </td>
-                      <td className="number-cell-bold text-[#1557b0]">
+                      <td className="number-cell-bold text-[var(--ds-action-primary)]">
                         {money(r.netSalary)}
                       </td>
                       <td className="px-3 py-2.5">
@@ -832,7 +832,7 @@ export default function PayrollProcessing() {
                             e.stopPropagation();
                             handlePrintPayslip(r);
                           }}
-                          className="h-7 px-2 bg-white border border-gray-300 text-gray-700 text-[11px] rounded flex items-center gap-1"
+                          className="h-7 px-2 bg-white border border-gray-300 text-gray-700 text-[12px] rounded flex items-center gap-1"
                         >
                           <Printer className="h-3.5 w-3.5" />
                           Payslip
@@ -886,7 +886,7 @@ export default function PayrollProcessing() {
                   </React.Fragment>
                 ))}
 
-                <tr className="bg-[#eef2ff] font-bold border-t-2 border-[#c7d2fe]">
+                <tr className="bg-[var(--ds-surface-selected)] font-bold border-t-2 border-[var(--ds-border-strong)]">
                   <td className="px-3 py-2.5 text-[12px]">Total</td>
                   <td className="number-cell">
                     {money(payrollSummary.totalGrossEarnings)}
@@ -958,7 +958,7 @@ export default function PayrollProcessing() {
           </div>
 
           <div className="col-span-2 bg-white rounded-lg border border-gray-200 p-5">
-            <div className="text-[13px] font-semibold text-[#1557b0]">
+            <div className="text-[13px] font-semibold text-[var(--ds-action-primary)]">
               Total Net Salary Payable: Rs. {money(payrollSummary.totalNetSalary)}
             </div>
             <div className="text-[12px] text-gray-600 mt-1">
@@ -999,7 +999,7 @@ export default function PayrollProcessing() {
                 ["Joining Date", "joiningDate", "date"],
               ].map(([label, key, type]) => (
                 <div key={key}>
-                  <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                  <label className="block text-[12px] font-medium text-gray-600 mb-1">
                     {label}
                   </label>
                   <input
@@ -1017,7 +1017,7 @@ export default function PayrollProcessing() {
               ))}
 
               <div>
-                <label className="block text-[11px] font-medium text-gray-600 mb-1">
+                <label className="block text-[12px] font-medium text-gray-600 mb-1">
                   Payment Mode
                 </label>
                 <select
@@ -1090,7 +1090,7 @@ export default function PayrollProcessing() {
               <button
                 type="button"
                 onClick={saveEditingEmployee}
-                className="h-8 px-3 bg-[#1557b0] text-white text-[12px] rounded-md"
+                className="h-8 px-3 bg-[var(--ds-action-primary)] text-white text-[12px] rounded-md"
               >
                 Save
               </button>

@@ -265,7 +265,7 @@ export const KB_EXTENDED4: KBEntry[] = [
     category: "general",
     q: "How are toast notifications used?",
     keywords: ["toast notifications UI", "react hot toast"],
-    a: "react-hot-toast. Success (green check), Error (red X), Loading (spinner). Custom invoice toast (with buttons). Top-right, 3-4s duration.",
+    a: "DS ToastProvider via @/lib/appToast. Success / error / loading / custom invoice toast. Top-right, ~5s duration.",
   },
   {
     id: "ext-576",
@@ -608,7 +608,7 @@ export const KB_EXTENDED4: KBEntry[] = [
     category: "general",
     q: "What external libraries does Sutra ERP depend on?",
     keywords: ["external libraries list", "npm dependencies"],
-    a: "React, Zustand, Dexie, Lucide, Recharts, jsPDF, xlsx, react-hot-toast, nepali-date-converter, qrcode, react-hook-form, radix-ui, tailwind.",
+    a: "React, Zustand, Dexie, Lucide, Recharts, jsPDF, xlsx, @/lib/appToast, nepali-date-converter, qrcode, react-hook-form, radix-ui, tailwind.",
   },
   {
     id: "ext-625",

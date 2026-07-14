@@ -1,0 +1,38 @@
+{
+  "generated_at": "2026-07-13T00:00:00.000Z",
+  "table_dependency": "none — semantic hand-built DataTable using design-system tokens; no @tanstack/react-table; no AG Grid",
+  "legacy_tables": [
+    {
+      "path": "src/components/ui/DataTable.tsx",
+      "consumers": ["src/pages/DayBook.tsx"],
+      "consumer_count": 1,
+      "in_barrel": false,
+      "features": ["search", "sort", "loading", "empty", "error", "density compact|comfortable"],
+      "missing_vs_ui2": ["selection", "expansion", "column visibility", "pagination integration", "saved views", "virtualization architecture"]
+    },
+    {
+      "path": "src/components/ui/Table.tsx",
+      "consumers": ["src/pages/CurrencyMaster.tsx", "src/components/ui/SearchableTable.tsx"],
+      "consumer_count": 2,
+      "features": ["presentational columns"]
+    },
+    {
+      "path": "src/components/ui/SearchableTable.tsx",
+      "note": "Search + table composite; page-local pattern"
+    },
+    {
+      "path": "src/components/ReportEmptyState.tsx",
+      "consumer_count_estimate": 50,
+      "note": "Dominant empty-state pattern for reports"
+    }
+  ],
+  "synthetic_lab_datasets": [
+    "sales-invoice-register",
+    "day-book",
+    "general-ledger",
+    "trial-balance",
+    "bank-statement-rows",
+    "inventory-summary",
+    "audit-log"
+  ]
+}

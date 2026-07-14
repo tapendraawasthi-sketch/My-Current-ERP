@@ -1,0 +1,158 @@
+{
+  "generated_at": "2026-07-14T06:59:26+00:00",
+  "enabled": true,
+  "queries": [
+    {
+      "query": "sales report",
+      "enabled": true,
+      "hit_count": 5,
+      "record_ids": [
+        "RO-REPORT-012",
+        "CS-REPORT-0008",
+        "RO-OUTPUT-0000317",
+        "INT-REPORT-000580",
+        "INT-REPORT-000581"
+      ],
+      "source_file_ids": [
+        "0025",
+        "0040",
+        "0046"
+      ],
+      "execution_allowed": false,
+      "retrieval_ms": 51.008
+    },
+    {
+      "query": "bank reconciliation",
+      "enabled": true,
+      "hit_count": 5,
+      "record_ids": [
+        "RO-REPORT-026",
+        "PER-PREREQ-005",
+        "AUD-SOURCE-010",
+        "PER-REASON-006",
+        "Q-GEN-000295"
+      ],
+      "source_file_ids": [
+        "0031",
+        "0046",
+        "0050",
+        "0054"
+      ],
+      "execution_allowed": false,
+      "retrieval_ms": 111.843
+    },
+    {
+      "query": "vat tds",
+      "enabled": true,
+      "hit_count": 5,
+      "record_ids": [
+        "ENT-TAX-026",
+        "LID-TCLASS-019",
+        "CONN-PAIR-0009",
+        "NORM.0060.0005",
+        "GEN-PROTECT-018"
+      ],
+      "source_file_ids": [
+        "0022",
+        "0024",
+        "0039",
+        "0041",
+        "0060"
+      ],
+      "execution_allowed": false,
+      "retrieval_ms": 23.951
+    },
+    {
+      "query": "payroll salary",
+      "enabled": true,
+      "hit_count": 5,
+      "record_ids": [
+        "TIME-ROLE-022",
+        "PAY-LEX-0001",
+        "PAY-LEX-0014",
+        "INT-HR-000001",
+        "INT-HR-000002"
+      ],
+      "source_file_ids": [
+        "0033",
+        "0040",
+        "0057"
+      ],
+      "execution_allowed": false,
+      "retrieval_ms": 41.126
+    },
+    {
+      "query": "period close",
+      "enabled": true,
+      "hit_count": 5,
+      "record_ids": [
+        "AUTH-ACTION-026",
+        "TIME-PERIOD-007",
+        "NORM.0054.0003",
+        "PER-LEX-0001",
+        "INT-FAM-024"
+      ],
+      "source_file_ids": [
+        "0033",
+        "0040",
+        "0049",
+        "0054"
+      ],
+      "execution_allowed": false,
+      "retrieval_ms": 185.468
+    },
+    {
+      "query": "maker checker",
+      "enabled": true,
+      "hit_count": 5,
+      "record_ids": [
+        "AUD-QUERY-016",
+        "AUD-LEX-0015",
+        "AUTH-SOD-001",
+        "ERR-CAT-013",
+        "WF-SOD-003"
+      ],
+      "source_file_ids": [
+        "0048",
+        "0049",
+        "0050",
+        "0067"
+      ],
+      "execution_allowed": false,
+      "retrieval_ms": 41.603
+    },
+    {
+      "query": "legal hold",
+      "enabled": true,
+      "hit_count": 5,
+      "record_ids": [
+        "EVD-HOLD-002",
+        "RET-EXAMPLE-00014",
+        "RET-EXAMPLE-00015",
+        "EVD-EXAMPLE-00020",
+        "RET-HOLDTYPE-001"
+      ],
+      "source_file_ids": [
+        "0071",
+        "0087"
+      ],
+      "execution_allowed": false,
+      "retrieval_ms": 285.305
+    },
+    {
+      "query": "aaja ko bikri report",
+      "enabled": true,
+      "hit_count": 1,
+      "record_ids": [
+        "NORM.0006.0046"
+      ],
+      "source_file_ids": [
+        "0006"
+      ],
+      "execution_allowed": false,
+      "retrieval_ms": 18.585
+    }
+  ],
+  "hits_total": 36,
+  "all_execution_forbidden": true
+}

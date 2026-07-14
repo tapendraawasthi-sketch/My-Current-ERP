@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useStore } from "../store";
 import { generateId } from "../lib/db";
 import { Plus, Edit2, Trash2, X, Save } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 const StockCategoryMaster: React.FC = () => {
   const { stockCategories, addStockCategory, updateStockCategory, deleteStockCategory } =

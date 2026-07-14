@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import { computeGratuity } from "../lib/nepalPayrollEngine";
 import { Calculator, Save } from "lucide-react";
-import toast from "react-hot-toast";
+import toast from "@/lib/appToast";
 
 function money(n: number): string {
   return Number(n || 0).toLocaleString("en-NP", {
@@ -103,14 +103,15 @@ const GratuityCalculation: React.FC = () => {
   };
 
   return (
-    <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
+    <div className="p-4 md:p-6 bg-[var(--ds-canvas)] min-h-screen">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-            <Calculator className="h-4 w-4 text-[#1557b0]" />
-            Gratuity Calculation
+            <Calculator className="h-4 w-4 text-[var(--ds-action-primary)]" />
+            Gratuity
           </h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
+          <p className=\"text-[12px] text-gray-500 mt-0.5\">Gratuity calculation.</p>
+          <p className="text-[12px] text-gray-500 mt-0.5">
             Labour Act 2074 — 8.33% of basic salary per year of service
           </p>
         </div>
@@ -118,7 +119,7 @@ const GratuityCalculation: React.FC = () => {
           type="button"
           onClick={postProvision}
           disabled={saving || totalGratuity <= 0}
-          className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] disabled:opacity-50 text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+          className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-50 text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
         >
           <Save className="h-3.5 w-3.5" />
           Post Provision
@@ -126,7 +127,7 @@ const GratuityCalculation: React.FC = () => {
       </div>
 
       <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4">
-        <label className="text-[11px] font-medium text-gray-600 mb-1 block">
+        <label className="text-[12px] font-medium text-gray-600 mb-1 block">
           Minimum years of service
         </label>
         <input
@@ -136,27 +137,27 @@ const GratuityCalculation: React.FC = () => {
           step={1}
           value={minYears}
           onChange={(e) => setMinYears(parseInt(e.target.value, 10) || 0)}
-          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-32"
+          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-32"
         />
       </div>
 
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="bg-[#f5f6fa] border-b border-gray-200">
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+            <tr className="bg-[var(--ds-canvas)] border-b border-gray-200">
+              <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                 Employee
               </th>
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                 Join Date
               </th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                 Years
               </th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                 Basic Salary
               </th>
-              <th className="px-3 py-2.5 text-right text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              <th className="px-3 py-2.5 text-right text-[12px] font-semibold text-gray-500 uppercase tracking-wide">
                 Gratuity
               </th>
             </tr>
@@ -179,7 +180,7 @@ const GratuityCalculation: React.FC = () => {
             ))}
           </tbody>
           <tfoot>
-            <tr className="bg-[#eef2ff] font-bold text-[12px] border-t-2 border-[#c7d2fe]">
+            <tr className="bg-[var(--ds-surface-selected)] font-bold text-[12px] border-t-2 border-[var(--ds-border-strong)]">
               <td className="px-3 py-2.5" colSpan={4}>
                 Total Gratuity Provision
               </td>
