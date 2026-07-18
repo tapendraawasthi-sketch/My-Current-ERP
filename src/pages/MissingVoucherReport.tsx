@@ -2,20 +2,28 @@ import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import { Search } from "lucide-react";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const inputCls =
-  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const labelCls = "block text-[11px] font-medium text-gray-600 mb-1";
 
 export default function MissingVoucherReport() {
   const { vouchers, currentFiscalYear } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const [search, setSearch] = useState("");
   const [fromDate, setFromDate] = useState(currentFiscalYear?.startDate || "");
   const [toDate, setToDate] = useState(currentFiscalYear?.endDate || "");
 
   const gaps = useMemo(() => {
     const posted = (vouchers || [])
-      .filter((v: any) => v.status === "posted" && v.date >= fromDate && v.date <= toDate)
+      .filter(
+        (v: any) =>
+          v.status === "posted" &&
+          v.date >= fromDate &&
+          v.date <= toDate &&
+          matchBranch(v.branchId),
+      )
       .sort((a: any, b: any) =>
         String(a.voucherNo).localeCompare(String(b.voucherNo), undefined, { numeric: true }),
       );
@@ -46,7 +54,7 @@ export default function MissingVoucherReport() {
         m.after.toLowerCase().includes(q) ||
         m.type.toLowerCase().includes(q),
     );
-  }, [vouchers, fromDate, toDate, search]);
+  }, [vouchers, fromDate, toDate, search, matchBranch, branchFilter]);
 
   return (
     <div className="erp-report flex h-full min-h-0 flex-col bg-[#f5f6fa] overflow-y-auto p-4 md:p-6">
@@ -60,7 +68,7 @@ export default function MissingVoucherReport() {
       </div>
 
       <div className="no-print bg-white border border-gray-200 rounded-md p-3 mb-4">
-        <div className="grid gap-3 md:grid-cols-4">
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-5">
           <div>
             <label className={labelCls}>From date</label>
             <input
@@ -79,6 +87,24 @@ export default function MissingVoucherReport() {
               className={`${inputCls} w-full`}
             />
           </div>
+          {branchOptions.length > 0 && (
+            <div>
+              <label className={labelCls}>Branch</label>
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                className={`${inputCls} w-full`}
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <div className="md:col-span-2">
             <label className={labelCls}>Search</label>
             <div className="relative">
@@ -128,7 +154,7 @@ export default function MissingVoucherReport() {
                   {gaps.map((row, idx) => (
                     <tr
                       key={`${row.type}-${row.expected}-${idx}`}
-                      className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] border-b border-gray-100"
+                      className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)] border-b border-gray-100"
                     >
                       <td className="px-3 py-2.5 text-[12px] text-gray-500">{idx + 1}</td>
                       <td className="px-3 py-2.5 text-[12px] text-gray-700 capitalize">

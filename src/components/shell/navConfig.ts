@@ -34,6 +34,8 @@ import {
   BookOpen,
   ShoppingCart,
   BookMarked,
+  Factory,
+  Printer,
 } from "lucide-react";
 
 /** Shell roles for nav prioritisation (maps from currentUser.role). */
@@ -133,7 +135,9 @@ export const SHELL_NAV: ShellNavGroup[] = [
       { id: "bank-reconciliation", label: "Match bank statement", page: "bank-reconciliation", icon: Scale, roles: ["banking", "accountant", "owner", "manager", "admin"], favouriteEligible: true },
       { id: "bank-statement-import", label: "Import bank statement", page: "bank-statement-import", icon: FileText, roles: ["banking", "accountant", "owner", "manager", "admin"] },
       { id: "cheque-register", label: "Cheque register", page: "cheque-register", icon: CreditCard, roles: ["banking", "accountant", "owner", "manager", "admin"] },
+      { id: "cheque-printing", label: "Cheque printing", page: "cheque-printing", icon: Printer, roles: ["banking", "accountant", "owner", "manager", "admin"] },
       { id: "pdc-register", label: "Post-dated cheques", page: "pdc-register", icon: CreditCard, roles: ["banking", "accountant", "owner", "manager", "admin"] },
+      { id: "pos-billing", label: "POS counter", page: "pos-billing", icon: ShoppingCart, roles: ["cashier", "owner", "manager", "admin"], favouriteEligible: true, mobile: true },
     ],
   },
   {
@@ -149,6 +153,7 @@ export const SHELL_NAV: ShellNavGroup[] = [
       { id: "stock-transfer", label: "Stock transfer", page: "stock-transfer", icon: Repeat, roles: ["inventory", "owner", "manager", "admin"] },
       { id: "stock-journal", label: "Stock journal", page: "stock-journal", icon: FileText, roles: ["inventory", "accountant", "owner", "manager", "admin"] },
       { id: "physical-stock", label: "Physical stock count", page: "physical-stock", icon: Archive, roles: ["inventory", "owner", "manager", "admin"] },
+      { id: "job-work-register", label: "Job work", page: "job-work-register", icon: Factory, roles: ["inventory", "owner", "manager", "admin"] },
       { id: "batch-management", label: "Batches", page: "batch-management", icon: Layers, roles: ["inventory", "owner", "manager", "admin"] },
       { id: "warehouses", label: "Warehouses", page: "warehouses", icon: Building2, roles: ["inventory", "owner", "manager", "admin"] },
     ],
@@ -191,6 +196,7 @@ export const SHELL_NAV: ShellNavGroup[] = [
       { id: "outstanding-payables", label: "Payables", page: "outstanding-payables", icon: TrendingDown, roles: ["accountant", "owner", "manager", "admin"] },
       { id: "aging-report", label: "Aging", page: "aging-report", icon: Calendar, roles: ["accountant", "owner", "manager", "admin"] },
       { id: "budget-vs-actual", label: "Budget vs actual", page: "budget-vs-actual", icon: BarChart3, roles: ["accountant", "owner", "manager", "admin"] },
+      { id: "branch-reports", label: "Branch reports", page: "branch-reports", icon: Building2, roles: ["accountant", "owner", "manager", "admin"] },
       { id: "sales-analysis", label: "Sales analysis", page: "sales-analysis", icon: BarChart3, roles: ["owner", "manager", "accountant", "admin"] },
       { id: "ratio-analysis", label: "Ratios", page: "ratio-analysis", icon: PieChart, roles: ["owner", "manager", "accountant", "auditor", "admin"] },
       { id: "financial-dashboard", label: "Financial Dashboard", page: "financial-dashboard", icon: LayoutDashboard, roles: ["owner", "manager", "accountant", "admin"] },
@@ -204,6 +210,7 @@ export const SHELL_NAV: ShellNavGroup[] = [
     items: [
       { id: "vat-reports", label: "VAT Reports", page: "vat-reports", icon: FileText, roles: ["accountant", "owner", "manager", "auditor", "admin"] },
       { id: "tds-report", label: "TDS Report", page: "tds-report", icon: FileText, roles: ["accountant", "owner", "manager", "auditor", "admin"] },
+      { id: "statutory-compliance", label: "Statutory pack", page: "statutory-compliance", icon: ShieldCheck, roles: ["accountant", "owner", "manager", "auditor", "admin"] },
       { id: "audit-log", label: "Audit log", page: "audit-log", icon: ShieldCheck, roles: ["auditor", "owner", "manager", "admin", "accountant"] },
     ],
   },
@@ -214,7 +221,10 @@ export const SHELL_NAV: ShellNavGroup[] = [
     roles: ["admin", "owner", "manager"],
     items: [
       { id: "settings", label: "Company settings", page: "settings", icon: Settings, roles: ["admin", "owner", "manager"] },
+      { id: "company-features", label: "Company features", page: "company-features", icon: Tags, roles: ["admin", "owner"] },
       { id: "users", label: "Users", page: "users", icon: Users, roles: ["admin", "owner"] },
+      { id: "branch-master", label: "Branches", page: "branch-master", icon: Building2, roles: ["admin", "owner", "manager"] },
+      { id: "print-settings", label: "Print settings", page: "print-settings", icon: Printer, roles: ["admin", "owner", "manager"] },
       { id: "configuration-hub", label: "Configuration Hub", page: "configuration-hub", icon: Settings, roles: ["admin", "owner", "manager"] },
       { id: "accounts-configuration", label: "Accounts Config", page: "accounts-configuration", icon: Settings, roles: ["admin", "owner", "manager"] },
       { id: "inventory-config", label: "Inventory Config", page: "inventory-config", icon: Settings, roles: ["admin", "owner", "manager"] },

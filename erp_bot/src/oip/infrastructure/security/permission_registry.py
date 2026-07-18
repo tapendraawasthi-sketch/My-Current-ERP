@@ -74,6 +74,9 @@ def create_default_permission_registry() -> PermissionRegistry:
         PermissionDefinition("oip:audit:read", "Read audit chains"),
         PermissionDefinition("oip:admin:manage", "Platform administration"),
         PermissionDefinition("oip:read", "Read-only platform access"),
+        PermissionDefinition("khata:confirm", "Confirm khata/Postgres posting"),
+        PermissionDefinition("orbix:draft:mark_posted", "Acknowledge Orbix draft posted"),
+        PermissionDefinition("sync:events:write", "Write accounting sync events"),
     )
     for definition in permission_defs:
         registry.register_permission(definition)
@@ -99,6 +102,10 @@ def create_default_permission_registry() -> PermissionRegistry:
                 "erp:command:execute",
                 "erp:query:execute",
                 "oip:audit:read",
+                "oip:read",
+                "khata:confirm",
+                "orbix:draft:mark_posted",
+                "sync:events:write",
             ),
             "Company-scoped administration",
         ),
@@ -110,6 +117,10 @@ def create_default_permission_registry() -> PermissionRegistry:
                 "erp:command:execute",
                 "erp:query:execute",
                 "oip:connector:read",
+                "oip:read",
+                "khata:confirm",
+                "orbix:draft:mark_posted",
+                "sync:events:write",
             ),
             "Accounting operations",
         ),

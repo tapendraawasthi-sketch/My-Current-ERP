@@ -30,6 +30,7 @@ import {
   Cell,
   CartesianGrid,
 } from "recharts";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 function money(v: number): string {
   const abs = Math.abs(Number(v || 0));
@@ -70,6 +71,7 @@ const FISCAL_MONTH_LABELS = [
 const Budgets: React.FC = () => {
   const { accounts, vouchers, currentFiscalYear, currentUser, costCenters, fiscalYears } =
     useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const [activeTab, setActiveTab] = useState(0);
   const [budgets, setBudgets] = useState<any[]>([]);
   const [showBudgetForm, setShowBudgetForm] = useState(false);
@@ -92,6 +94,11 @@ const Budgets: React.FC = () => {
     description: "",
   });
   const [budgetLines, setBudgetLines] = useState<any[]>([]);
+
+  const scopedVouchers = useMemo(
+    () => (vouchers || []).filter((v) => matchBranch(v.branchId)),
+    [vouchers, matchBranch, branchFilter],
+  );
 
   useEffect(() => {
     const db = getDB();
@@ -300,7 +307,7 @@ const Budgets: React.FC = () => {
     return selectedBudget.lines
       .filter((line) => !showOverBudgetOnly || line.annualAmount > 0)
       .map((line) => {
-        const actual = vouchers
+        const actual = scopedVouchers
           .filter(
             (v) =>
               v.status === "posted" &&
@@ -325,7 +332,7 @@ const Budgets: React.FC = () => {
           variancePct,
         };
       });
-  }, [selectedBudget, periodType, fromDate, toDate, showOverBudgetOnly, vouchers]);
+  }, [selectedBudget, periodType, fromDate, toDate, showOverBudgetOnly, scopedVouchers]);
 
   const summaryData = useMemo(() => {
     if (!budgetVsActualData.length)
@@ -382,7 +389,7 @@ const Budgets: React.FC = () => {
   const departmentBudgetData = useMemo(() => {
     if (!selectedCostCenter) return [];
 
-    const costCenterVouchers = vouchers.filter(
+    const costCenterVouchers = scopedVouchers.filter(
       (v) => v.status === "posted" && v.lines.some((l) => l.costCenterId === selectedCostCenter),
     );
 
@@ -412,7 +419,7 @@ const Budgets: React.FC = () => {
         utilization: budgeted ? (actual / budgeted) * 100 : 0,
       };
     });
-  }, [selectedCostCenter, selectedBudget, vouchers, accounts]);
+  }, [selectedCostCenter, selectedBudget, scopedVouchers, accounts]);
 
   const departmentSummary = useMemo(() => {
     if (!departmentBudgetData.length)
@@ -438,6 +445,21 @@ const Budgets: React.FC = () => {
               Plan, distribute, and track your financial budgets
             </p>
           </div>
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         {/* Tab Navigation */}
@@ -448,7 +470,7 @@ const Budgets: React.FC = () => {
                 key={index}
                 className={`px-4 py-2 text-[12px] font-medium border-b-2 transition-colors whitespace-nowrap ${
                   activeTab === index
-                    ? "border-[#1557b0] text-[#1557b0]"
+                    ? "border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
                 onClick={() => setActiveTab(index)}
@@ -467,7 +489,7 @@ const Budgets: React.FC = () => {
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-[14px] font-bold text-gray-800">Active Budgets</h2>
                   <button
-                    className="h-8 px-3 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96] transition-colors shadow-sm flex items-center gap-1.5"
+                    className="h-8 px-3 bg-[var(--ds-action-primary)] text-white text-[12px] font-medium rounded-md hover:bg-[var(--ds-action-primary-hover)] transition-colors shadow-sm flex items-center gap-1.5"
                     onClick={() => {
                       setEditingBudget(null);
                       setBudgetForm({
@@ -637,7 +659,7 @@ const Budgets: React.FC = () => {
                       type="text"
                       value={budgetForm.name}
                       onChange={(e) => handleFormChange("name", e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                       placeholder="e.g. FY2026 Operations"
                     />
                   </div>
@@ -648,7 +670,7 @@ const Budgets: React.FC = () => {
                     <select
                       value={budgetForm.fiscalYear}
                       onChange={(e) => handleFormChange("fiscalYear", e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                     >
                       {fiscalYears.map((fy) => (
                         <option key={fy.id} value={fy.name}>
@@ -664,7 +686,7 @@ const Budgets: React.FC = () => {
                     <select
                       value={budgetForm.type}
                       onChange={(e) => handleFormChange("type", e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                     >
                       <option value="Income Budget">Income Budget</option>
                       <option value="Expense Budget">Expense Budget</option>
@@ -679,7 +701,7 @@ const Budgets: React.FC = () => {
                     <select
                       value={budgetForm.status}
                       onChange={(e) => handleFormChange("status", e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                     >
                       <option value="Draft">Draft</option>
                       <option value="Submitted">Submitted</option>
@@ -694,7 +716,7 @@ const Budgets: React.FC = () => {
                       type="text"
                       value={budgetForm.description}
                       onChange={(e) => handleFormChange("description", e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                       placeholder="Optional notes about this budget..."
                     />
                   </div>
@@ -704,7 +726,7 @@ const Budgets: React.FC = () => {
                   <h4 className="text-[13px] font-bold text-gray-800">Budget Lines Allocation</h4>
                   <div className="flex gap-2">
                     <button
-                      className="h-7 px-3 bg-white text-[#1557b0] border border-gray-300 text-[11px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center gap-1.5 shadow-sm"
+                      className="h-7 px-3 bg-white text-[var(--ds-action-primary)] border border-gray-300 text-[11px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center gap-1.5 shadow-sm"
                       onClick={() => {
                         if (budgetForm.type === "Income Budget") {
                           const incomeAccounts = accounts.filter(
@@ -757,7 +779,7 @@ const Budgets: React.FC = () => {
                         lastYearEnd.setFullYear(lastYearEnd.getFullYear() - 1);
 
                         const updatedLines = budgetLines.map((line) => {
-                          const actual = vouchers
+                          const actual = scopedVouchers
                             .filter(
                               (v) =>
                                 v.status === "posted" &&
@@ -821,7 +843,7 @@ const Budgets: React.FC = () => {
                               onChange={(e) =>
                                 handleLineChange(index, "annualAmount", e.target.value)
                               }
-                              className="h-7 px-2 text-[12px] text-right font-medium border border-gray-300 rounded bg-white focus:outline-none focus:border-[#1557b0] w-full"
+                              className="h-7 px-2 text-[12px] text-right font-medium border border-gray-300 rounded bg-white focus:outline-none focus:border-[var(--ds-action-primary)] w-full"
                               placeholder="0.00"
                             />
                           </td>
@@ -849,7 +871,7 @@ const Budgets: React.FC = () => {
                         >
                           Total Budget Allocation:
                         </td>
-                        <td className="px-3 py-2.5 text-right font-bold text-[13px] text-[#1557b0]">
+                        <td className="px-3 py-2.5 text-right font-bold text-[13px] text-[var(--ds-action-primary)]">
                           NPR{" "}
                           {money(budgetLines.reduce((sum, l) => sum + (l.annualAmount || 0), 0))}
                         </td>
@@ -870,7 +892,7 @@ const Budgets: React.FC = () => {
                     Cancel
                   </button>
                   <button
-                    className="h-8 px-4 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96] transition-colors shadow-sm flex items-center gap-1.5"
+                    className="h-8 px-4 bg-[var(--ds-action-primary)] text-white text-[12px] font-medium rounded-md hover:bg-[var(--ds-action-primary-hover)] transition-colors shadow-sm flex items-center gap-1.5"
                     onClick={saveBudget}
                   >
                     <Save size={14} />
@@ -903,7 +925,7 @@ const Budgets: React.FC = () => {
                     const budget = budgets.find((b) => b.id === e.target.value);
                     setSelectedBudget(budget || null);
                   }}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] min-w-[200px]"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] min-w-[200px]"
                 >
                   <option value="">-- Select Budget Profile --</option>
                   {budgets.map((budget) => (
@@ -927,7 +949,7 @@ const Budgets: React.FC = () => {
                         <button
                           className={`h-8 px-4 text-[12px] font-medium rounded-md transition-colors border ${
                             distributionMethod === "equal"
-                              ? "bg-[#1557b0] text-white border-[#1557b0]"
+                              ? "bg-[var(--ds-action-primary)] text-white border-[var(--ds-action-primary)]"
                               : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                           }`}
                           onClick={() => setDistributionMethod("equal")}
@@ -937,7 +959,7 @@ const Budgets: React.FC = () => {
                         <button
                           className={`h-8 px-4 text-[12px] font-medium rounded-md transition-colors border ${
                             distributionMethod === "seasonal"
-                              ? "bg-[#1557b0] text-white border-[#1557b0]"
+                              ? "bg-[var(--ds-action-primary)] text-white border-[var(--ds-action-primary)]"
                               : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                           }`}
                           onClick={() => setDistributionMethod("seasonal")}
@@ -947,7 +969,7 @@ const Budgets: React.FC = () => {
                         <button
                           className={`h-8 px-4 text-[12px] font-medium rounded-md transition-colors border ${
                             distributionMethod === "last-year-actuals"
-                              ? "bg-[#1557b0] text-white border-[#1557b0]"
+                              ? "bg-[var(--ds-action-primary)] text-white border-[var(--ds-action-primary)]"
                               : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                           }`}
                           onClick={() => setDistributionMethod("last-year-actuals")}
@@ -997,7 +1019,7 @@ const Budgets: React.FC = () => {
                                 newPcts[idx] = Number(e.target.value) || 0;
                                 setSeasonalPercentages(newPcts);
                               }}
-                              className="w-full h-8 px-1 pr-4 text-center text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:border-[#1557b0]"
+                              className="w-full h-8 px-1 pr-4 text-center text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:border-[var(--ds-action-primary)]"
                             />
                             <span className="absolute right-1 top-1/2 transform -translate-y-1/2 text-[9px] text-gray-400">
                               %
@@ -1080,7 +1102,7 @@ const Budgets: React.FC = () => {
                             >
                               {line.accountName}
                             </td>
-                            <td className="px-3 py-2 text-right font-bold text-[#1557b0] bg-blue-50/30">
+                            <td className="px-3 py-2 text-right font-bold text-[var(--ds-action-primary)] bg-blue-50/30">
                               {money(line.annualAmount)}
                             </td>
                             {monthlyAmounts.map((amt, i) => (
@@ -1140,7 +1162,7 @@ const Budgets: React.FC = () => {
                     const budget = budgets.find((b) => b.id === e.target.value);
                     setSelectedBudget(budget || null);
                   }}
-                  className="h-8 px-2.5 text-[11px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] min-w-[150px]"
+                  className="h-8 px-2.5 text-[11px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] min-w-[150px]"
                 >
                   <option value="">Select Budget</option>
                   {budgets.map((budget) => (
@@ -1155,7 +1177,7 @@ const Budgets: React.FC = () => {
                 <select
                   value={periodType}
                   onChange={(e) => setPeriodType(e.target.value)}
-                  className="h-8 px-2.5 text-[11px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  className="h-8 px-2.5 text-[11px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 >
                   <option value="ytd">Year to Date (YTD)</option>
                   <option value="qtd">Quarter to Date (QTD)</option>
@@ -1168,7 +1190,7 @@ const Budgets: React.FC = () => {
                     <input
                       type="checkbox"
                       id="overBudget"
-                      className="rounded border-gray-300 text-[#1557b0]"
+                      className="rounded border-gray-300 text-[var(--ds-action-primary)]"
                       checked={showOverBudgetOnly}
                       onChange={(e) => setShowOverBudgetOnly(e.target.checked)}
                     />
@@ -1241,7 +1263,7 @@ const Budgets: React.FC = () => {
                     <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
                       Net Performance
                     </div>
-                    <div className="text-2xl font-bold text-[#1557b0] mb-2">
+                    <div className="text-2xl font-bold text-[var(--ds-action-primary)] mb-2">
                       Rs. {money(summaryData.net.actual)}
                     </div>
                     <div className="flex items-center gap-2 text-[12px] bg-gray-50 p-2 rounded">
@@ -1300,7 +1322,7 @@ const Budgets: React.FC = () => {
                         <Bar
                           dataKey="budgeted"
                           name="Budgeted"
-                          fill="#1557b0"
+                          fill="var(--ds-action-primary)"
                           radius={[4, 4, 0, 0]}
                           maxBarSize={40}
                         />
@@ -1402,7 +1424,7 @@ const Budgets: React.FC = () => {
                             <td className="px-3 py-2.5 text-right font-medium text-gray-600 bg-gray-50">
                               {money(item.budgeted)}
                             </td>
-                            <td className="px-3 py-2.5 text-right text-[#1557b0] font-medium">
+                            <td className="px-3 py-2.5 text-right text-[var(--ds-action-primary)] font-medium">
                               {money(item.budgeted)}
                             </td>
                             <td className="px-3 py-2.5 text-right font-bold text-gray-800">
@@ -1464,7 +1486,7 @@ const Budgets: React.FC = () => {
                 <select
                   value={selectedCostCenter}
                   onChange={(e) => setSelectedCostCenter(e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] min-w-[200px]"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] min-w-[200px]"
                 >
                   <option value="">Select Cost Center</option>
                   {costCenters.map((cc) => (
@@ -1489,7 +1511,7 @@ const Budgets: React.FC = () => {
             ) : selectedCostCenter ? (
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                  <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[#1557b0] transition-colors">
+                  <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[var(--ds-action-primary)] transition-colors">
                     <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
                       Total Allocation
                     </div>
@@ -1497,7 +1519,7 @@ const Budgets: React.FC = () => {
                       Rs. {money(departmentSummary.totalBudgeted)}
                     </div>
                   </div>
-                  <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[#1557b0] transition-colors">
+                  <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[var(--ds-action-primary)] transition-colors">
                     <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
                       Actual Spent
                     </div>
@@ -1505,15 +1527,15 @@ const Budgets: React.FC = () => {
                       Rs. {money(departmentSummary.totalActual)}
                     </div>
                   </div>
-                  <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[#1557b0] transition-colors">
+                  <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[var(--ds-action-primary)] transition-colors">
                     <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
                       Utilization Rate
                     </div>
-                    <div className="text-xl font-bold text-[#1557b0]">
+                    <div className="text-xl font-bold text-[var(--ds-action-primary)]">
                       {departmentSummary.utilization.toFixed(1)}%
                     </div>
                   </div>
-                  <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[#1557b0] transition-colors">
+                  <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm hover:border-[var(--ds-action-primary)] transition-colors">
                     <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
                       Status
                     </div>
@@ -1551,7 +1573,7 @@ const Budgets: React.FC = () => {
                     return (
                       <div key={item.accountId} className="mb-5 last:mb-0 group">
                         <div className="flex justify-between items-end text-[12px] mb-1.5">
-                          <span className="font-medium text-gray-800 group-hover:text-[#1557b0] transition-colors">
+                          <span className="font-medium text-gray-800 group-hover:text-[var(--ds-action-primary)] transition-colors">
                             {item.accountName}
                           </span>
                           <div className="text-right">

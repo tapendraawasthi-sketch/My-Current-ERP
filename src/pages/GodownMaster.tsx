@@ -2,6 +2,8 @@ import React, { useMemo, useState } from "react";
 import toast from "@/lib/appToast";
 import { useStore } from "../store/useStore";
 import type { DBWarehouse } from "../lib/db";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const emptyForm = {
   code: "",
@@ -21,13 +23,22 @@ const emptyForm = {
 
 const GodownMaster: React.FC = () => {
   const { warehouses, addWarehouse, updateWarehouse, costCenters } = useStore() as any;
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
-  const [form, setForm] = useState(emptyForm);
+  const [form, setForm] = useState(() => ({
+    ...emptyForm,
+    branchId: readActiveBranchId() || "",
+  }));
   const [editingId, setEditingId] = useState<string | null>(null);
 
+  const visibleWarehouses = useMemo(
+    () => (warehouses || []).filter((w: DBWarehouse) => matchBranch(w.branchId)),
+    [warehouses, matchBranch, branchFilter],
+  );
+
   const mainGodowns = useMemo(
-    () => (warehouses || []).filter((w: DBWarehouse) => !w.parentId),
-    [warehouses],
+    () => visibleWarehouses.filter((w: DBWarehouse) => !w.parentId),
+    [visibleWarehouses],
   );
 
   const save = async () => {
@@ -36,8 +47,12 @@ const GodownMaster: React.FC = () => {
       return;
     }
 
+    const activeBranch = readActiveBranchId();
+    const branchMeta = branchOptions.find((b) => b.id === (form.branchId || activeBranch));
     const payload = {
       ...form,
+      branchId: form.branchId || activeBranch || undefined,
+      branchName: form.branchName || branchMeta?.name || undefined,
       parentId: form.parentId || undefined,
       costCenterId: form.costCenterId || undefined,
       isMainBranch: !!form.isMainBranch,
@@ -55,7 +70,7 @@ const GodownMaster: React.FC = () => {
       toast.success("Godown created.");
     }
 
-    setForm(emptyForm);
+    setForm({ ...emptyForm, branchId: readActiveBranchId() || "" });
     setEditingId(null);
   };
 
@@ -87,6 +102,21 @@ const GodownMaster: React.FC = () => {
             Multi-branch and hierarchical godown setup
           </p>
         </div>
+        {branchOptions.length > 0 && (
+          <select
+            value={branchFilter}
+            onChange={(e) => setBranchFilter(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            aria-label="Branch"
+          >
+            <option value="all">All branches</option>
+            {branchOptions.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name || b.code || b.id}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       <div className="bg-white border border-gray-200 rounded-md p-4 grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -106,11 +136,36 @@ const GodownMaster: React.FC = () => {
           onChange={(v) => setForm({ ...form, branchCompanyCode: v })}
         />
 
-        <Input
-          label="Branch ID"
-          value={form.branchId}
-          onChange={(v) => setForm({ ...form, branchId: v })}
-        />
+        {branchOptions.length > 0 ? (
+          <div>
+            <label className="text-[11px] font-medium text-gray-600">Branch</label>
+            <select
+              value={form.branchId}
+              onChange={(e) => {
+                const b = branchOptions.find((x) => x.id === e.target.value);
+                setForm({
+                  ...form,
+                  branchId: e.target.value,
+                  branchName: b?.name || "",
+                });
+              }}
+              className="mt-1 h-8 px-2.5 text-[12px] border border-gray-300 rounded-md w-full"
+            >
+              <option value="">Active / none</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          </div>
+        ) : (
+          <Input
+            label="Branch ID"
+            value={form.branchId}
+            onChange={(v) => setForm({ ...form, branchId: v })}
+          />
+        )}
         <Input
           label="Branch Name"
           value={form.branchName}
@@ -181,7 +236,7 @@ const GodownMaster: React.FC = () => {
         <div className="md:col-span-3 flex justify-end gap-2">
           <button
             onClick={() => {
-              setForm(emptyForm);
+              setForm({ ...emptyForm, branchId: readActiveBranchId() || "" });
               setEditingId(null);
             }}
             className="h-8 px-3 bg-white border border-gray-300 rounded-md text-[12px]"
@@ -190,7 +245,7 @@ const GodownMaster: React.FC = () => {
           </button>
           <button
             onClick={save}
-            className="h-8 px-3 bg-[#1557b0] text-white rounded-md text-[12px]"
+            className="h-8 px-3 bg-[var(--ds-action-primary)] text-white rounded-md text-[12px]"
           >
             {editingId ? "Update Godown" : "Create Godown"}
           </button>
@@ -210,8 +265,8 @@ const GodownMaster: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {(warehouses || []).map((w: DBWarehouse) => {
-              const parent = warehouses.find((x: DBWarehouse) => x.id === w.parentId);
+            {visibleWarehouses.map((w: DBWarehouse) => {
+              const parent = (warehouses || []).find((x: DBWarehouse) => x.id === w.parentId);
               return (
                 <tr
                   key={w.id}

@@ -5,6 +5,8 @@ import { createPortal } from "react-dom";
 import type { PLReportOptions, PLReportVariant } from "../../lib/plTypes";
 import { BarChart2, TrendingUp, Calendar, Table } from "lucide-react";
 import ReportDateRangePicker from "../ui/ReportDateRangePicker";
+import { useStore } from "../../store/useStore";
+import { readActiveBranchId } from "../../lib/activeBranch";
 
 interface Props {
   defaultOptions: PLReportOptions;
@@ -44,7 +46,7 @@ const VARIANTS: Array<{ id: PLReportVariant; label: string; desc: string; icon: 
 const tog =
   "inline-flex h-8 items-center rounded-md overflow-hidden border border-gray-300 text-[12px] font-medium";
 const togBtn = (active: boolean) =>
-  `h-full px-3 transition-colors ${active ? "bg-[#1557b0] text-white" : "bg-white text-gray-700 hover:bg-gray-50"}`;
+  `h-full px-3 transition-colors ${active ? "bg-[var(--ds-action-primary)] text-white" : "bg-white text-gray-700 hover:bg-gray-50"}`;
 
 export default function PLOptionsDialog({
   defaultOptions,
@@ -53,7 +55,12 @@ export default function PLOptionsDialog({
   companyName,
   fiscalYear,
 }: Props) {
-  const [opts, setOpts] = useState<PLReportOptions>({ ...defaultOptions });
+  const branches = useStore((s) => s.branches || []);
+  const branchList = (branches as any[]).filter((b) => b && b.isActive !== false);
+  const [opts, setOpts] = useState<PLReportOptions>({
+    ...defaultOptions,
+    branchId: defaultOptions.branchId || readActiveBranchId() || "all",
+  });
 
   const set = (key: keyof PLReportOptions, val: any) =>
     setOpts((prev) => ({ ...prev, [key]: val }));
@@ -65,7 +72,7 @@ export default function PLOptionsDialog({
 
   const labelCls = "block text-[11px] font-semibold text-gray-600 uppercase tracking-wide mb-1";
   const inputCls =
-    "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+    "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 
   return createPortal(
     <div
@@ -92,16 +99,16 @@ export default function PLOptionsDialog({
                   onClick={() => set("variant", id)}
                   className={`flex items-start gap-3 p-3 rounded-lg border text-left transition-all ${
                     opts.variant === id
-                      ? "border-[#1557b0] bg-blue-50 ring-2 ring-[#1557b0]/20"
+                      ? "border-[var(--ds-action-primary)] bg-blue-50 ring-2 ring-[var(--ds-action-primary)]/20"
                       : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
                   }`}
                 >
                   <Icon
-                    className={`h-4 w-4 mt-0.5 shrink-0 ${opts.variant === id ? "text-[#1557b0]" : "text-gray-400"}`}
+                    className={`h-4 w-4 mt-0.5 shrink-0 ${opts.variant === id ? "text-[var(--ds-action-primary)]" : "text-gray-400"}`}
                   />
                   <div>
                     <p
-                      className={`text-[12px] font-semibold ${opts.variant === id ? "text-[#1557b0]" : "text-gray-700"}`}
+                      className={`text-[12px] font-semibold ${opts.variant === id ? "text-[var(--ds-action-primary)]" : "text-gray-700"}`}
                     >
                       {label}
                     </p>
@@ -124,6 +131,24 @@ export default function PLOptionsDialog({
             />
           </div>
 
+          {branchList.length > 0 && (
+            <div>
+              <label className={labelCls}>Branch</label>
+              <select
+                className={inputCls}
+                value={opts.branchId || "all"}
+                onChange={(e) => set("branchId", e.target.value)}
+              >
+                <option value="all">All branches</option>
+                {branchList.map((b: any) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           {/* Fiscal year quick presets */}
           {fiscalYear && (
             <div className="flex gap-2">
@@ -136,7 +161,7 @@ export default function PLOptionsDialog({
                     toDate: fiscalYear.endDate || p.toDate,
                   }))
                 }
-                className="text-[11px] text-[#1557b0] hover:underline"
+                className="text-[11px] text-[var(--ds-action-primary)] hover:underline"
               >
                 Full Fiscal Year ({fiscalYear.name})
               </button>
@@ -146,7 +171,7 @@ export default function PLOptionsDialog({
                 onClick={() =>
                   setOpts((p) => ({ ...p, toDate: new Date().toISOString().split("T")[0] }))
                 }
-                className="text-[11px] text-[#1557b0] hover:underline"
+                className="text-[11px] text-[var(--ds-action-primary)] hover:underline"
               >
                 Up to Today
               </button>
@@ -185,7 +210,7 @@ export default function PLOptionsDialog({
                 <div
                   className={`mt-0.5 h-4 w-4 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${
                     opts[key as keyof PLReportOptions]
-                      ? "border-[#1557b0] bg-[#1557b0]"
+                      ? "border-[var(--ds-action-primary)] bg-[var(--ds-action-primary)]"
                       : "border-gray-300"
                   }`}
                 >
@@ -217,7 +242,7 @@ export default function PLOptionsDialog({
             >
               <div
                 className={`mt-0.5 h-4 w-4 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${
-                  opts.showDetailedSummary ? "border-[#1557b0] bg-[#1557b0]" : "border-gray-300"
+                  opts.showDetailedSummary ? "border-[var(--ds-action-primary)] bg-[var(--ds-action-primary)]" : "border-gray-300"
                 }`}
               >
                 {opts.showDetailedSummary && (
@@ -253,7 +278,7 @@ export default function PLOptionsDialog({
             </button>
             <button
               type="submit"
-              className="h-8 px-4 text-[12px] font-medium rounded-md bg-[#1557b0] text-white hover:bg-[#0f4a96]"
+              className="h-8 px-4 text-[12px] font-medium rounded-md bg-[var(--ds-action-primary)] text-white hover:bg-[var(--ds-action-primary-hover)]"
             >
               Generate Report
             </button>

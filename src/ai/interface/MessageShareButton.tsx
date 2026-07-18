@@ -32,7 +32,7 @@ const MessageShareButton: React.FC<MessageShareButtonProps> = ({ text, shareText
         type="button"
         title="Copy for WhatsApp"
         onClick={() => void handleCopy()}
-        className="p-0.5 rounded text-gray-400 hover:text-[#1557b0]"
+        className="p-0.5 rounded text-gray-400 hover:text-[var(--ds-action-primary)]"
       >
         {copied ? <Check className="h-3 w-3 text-green-600" /> : <MessageCircle className="h-3 w-3" />}
       </button>
@@ -40,7 +40,7 @@ const MessageShareButton: React.FC<MessageShareButtonProps> = ({ text, shareText
         type="button"
         title="Open WhatsApp"
         onClick={handleWhatsApp}
-        className="text-[9px] text-[#1557b0] hover:underline"
+        className="text-[9px] text-[var(--ds-action-primary)] hover:underline"
       >
         WhatsApp
       </button>

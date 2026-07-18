@@ -13,6 +13,7 @@ import { useStore } from "../store/useStore";
 import { Card, Badge, Button, SearchableTable } from "../components/ui";
 import { Plus, Truck } from "lucide-react";
 import ChallanForm from "../components/delivery/ChallanForm";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const STATUS_VARIANT: Record<string, string> = {
   draft: "default",
@@ -24,12 +25,15 @@ const STATUS_VARIANT: Record<string, string> = {
 
 const DeliveryChallan: React.FC = () => {
   const { deliveryChallans, parties, setCurrentPage } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const [mode, setMode] = useState<"list" | "new" | "edit">("list");
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const rows = useMemo(() => {
-    return [...deliveryChallans].sort((a, b) => (b.date || "").localeCompare(a.date || ""));
-  }, [deliveryChallans]);
+    return [...deliveryChallans]
+      .filter((r) => matchBranch((r as { branchId?: string }).branchId))
+      .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+  }, [deliveryChallans, matchBranch, branchFilter]);
 
   if (mode !== "list") {
     return (
@@ -87,14 +91,31 @@ const DeliveryChallan: React.FC = () => {
             Outgoing goods before invoicing
           </p>
         </div>
-        <Button
-          variant="primary"
-          size="sm"
-          icon={<Plus className="h-4 w-4" />}
-          onClick={() => setMode("new")}
-        >
-          New Challan
-        </Button>
+        <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+          <Button
+            variant="primary"
+            size="sm"
+            icon={<Plus className="h-4 w-4" />}
+            onClick={() => setMode("new")}
+          >
+            New Challan
+          </Button>
+        </div>
       </div>
 
       <Card border padding="none">

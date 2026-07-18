@@ -7,6 +7,8 @@ import { generateId } from "../lib/db";
 import toast from "@/lib/appToast";
 import { formatADToBS } from "../lib/nepaliDate";
 import { Printer, Settings, Plus, RefreshCw, Eye } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 interface ChequeBookForm {
   id?: string;
@@ -48,6 +50,7 @@ export default function ChequePrinting() {
     saveChequeBook,
     updateChequeBook: updateChequeBookStore,
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [bankFilter, setBankFilter] = useState("");
   const [dateFrom, setDateFrom] = useState("");
@@ -86,23 +89,27 @@ export default function ChequePrinting() {
 
   const filteredCheques = useMemo(() => {
     return cheques.filter((c) => {
+      const voucher = vouchers.find((v) => v.id === c.voucherId);
+      const branchId = c.branchId || voucher?.branchId;
+      if (!matchBranch(branchId)) return false;
       const matchesBank = !bankFilter || c.bankAccountId === bankFilter;
       const matchesDateFrom = !dateFrom || c.chequeDate >= dateFrom;
       const matchesDateTo = !dateTo || c.chequeDate <= dateTo;
       const matchesStatus = showPrinted ? c.isPrinted : !c.isPrinted;
       return matchesBank && matchesDateFrom && matchesDateTo && matchesStatus;
     });
-  }, [cheques, bankFilter, dateFrom, dateTo, showPrinted]);
+  }, [cheques, vouchers, bankFilter, dateFrom, dateTo, showPrinted, matchBranch, branchFilter]);
 
   const unassignedVouchers = useMemo(() => {
     const voucherIdsWithCheques = new Set(cheques.map((c) => c.voucherId));
     return vouchers.filter(
       (v) =>
+        matchBranch(v.branchId) &&
         v.type === "payment" &&
         (v.paymentMode === "cheque" || v.paymentMode === "Cheque") &&
         !voucherIdsWithCheques.has(v.id),
     );
-  }, [vouchers, cheques]);
+  }, [vouchers, cheques, matchBranch, branchFilter]);
 
   const handleChequeSelection = (id: string) => {
     setSelectedCheques((prev) =>
@@ -169,6 +176,7 @@ export default function ChequePrinting() {
           amountInWords: numberToWords(voucher.grandTotal || 0, "Rupees"),
           status: "issued",
           isPrinted: false,
+          branchId: voucher.branchId || readActiveBranchId() || undefined,
           createdAt: new Date().toISOString(),
         });
 
@@ -348,6 +356,23 @@ export default function ChequePrinting() {
       <div className="flex-1 overflow-auto p-4">
         {/* Filter Bar */}
         <div className="mb-4 flex flex-wrap gap-3 items-end">
+          {branchOptions.length > 0 && (
+            <div className="w-44">
+              <label className="block text-[11px] font-medium text-gray-600 mb-1">Branch</label>
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                className="h-8 w-full px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <div className="w-48">
             <Select
               label="Bank Account"

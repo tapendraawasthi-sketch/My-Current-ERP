@@ -14,6 +14,7 @@ import {
   Clock,
   Warehouse,
 } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 function money(v: number): string {
   const abs = Math.abs(Number(v || 0));
@@ -24,20 +25,31 @@ function money(v: number): string {
 const InventoryAnalysis: React.FC = () => {
   const {
     items,
-    vouchers,
-    stockMovements,
+    vouchers: allVouchers,
+    stockMovements: allMovements,
     itemGroups,
     warehouses,
     batches,
     accounts,
     setCurrentPage,
   } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch, matchMovement } =
+    useBranchFilter();
   const [activeTab, setActiveTab] = useState(0);
   const [analysisPeriod, setAnalysisPeriod] = useState(90);
   const [selectedWarehouseId, setSelectedWarehouseId] = useState("");
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
   const [reviewFlags, setReviewFlags] = useState<Set<string>>(new Set());
   const [topFilter, setTopFilter] = useState<"all" | "top10" | "bottom10">("all");
+
+  const vouchers = useMemo(
+    () => (allVouchers || []).filter((v) => matchBranch((v as any).branchId)),
+    [allVouchers, matchBranch, branchFilter],
+  );
+  const stockMovements = useMemo(
+    () => (allMovements || []).filter((m) => matchMovement(m as any)),
+    [allMovements, matchMovement, branchFilter],
+  );
 
   // Helper function to find item by ID
   const getItemById = (id: string) => items.find((item) => item.id === id);
@@ -561,6 +573,21 @@ const InventoryAnalysis: React.FC = () => {
               Comprehensive insights into stock and movement
             </p>
           </div>
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         {/* Tab Navigation */}
@@ -576,7 +603,7 @@ const InventoryAnalysis: React.FC = () => {
               key={index}
               className={`px-4 py-2 text-[12px] font-medium border-b-2 transition-colors ${
                 activeTab === index
-                  ? "border-[#1557b0] text-[#1557b0]"
+                  ? "border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
               onClick={() => setActiveTab(index)}
@@ -593,19 +620,19 @@ const InventoryAnalysis: React.FC = () => {
             <div className="p-3 border-b border-gray-200 flex justify-between items-center bg-white">
               <div className="flex gap-2">
                 <button
-                  className={`h-8 px-3 text-[12px] font-medium rounded-md transition-colors ${topFilter === "all" ? "bg-[#1557b0] text-white" : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"}`}
+                  className={`h-8 px-3 text-[12px] font-medium rounded-md transition-colors ${topFilter === "all" ? "bg-[var(--ds-action-primary)] text-white" : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"}`}
                   onClick={() => setTopFilter("all")}
                 >
                   All Items
                 </button>
                 <button
-                  className={`h-8 px-3 text-[12px] font-medium rounded-md transition-colors ${topFilter === "top10" ? "bg-[#1557b0] text-white" : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"}`}
+                  className={`h-8 px-3 text-[12px] font-medium rounded-md transition-colors ${topFilter === "top10" ? "bg-[var(--ds-action-primary)] text-white" : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"}`}
                   onClick={() => setTopFilter("top10")}
                 >
                   Top 10 Profitable
                 </button>
                 <button
-                  className={`h-8 px-3 text-[12px] font-medium rounded-md transition-colors ${topFilter === "bottom10" ? "bg-[#1557b0] text-white" : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"}`}
+                  className={`h-8 px-3 text-[12px] font-medium rounded-md transition-colors ${topFilter === "bottom10" ? "bg-[var(--ds-action-primary)] text-white" : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"}`}
                   onClick={() => setTopFilter("bottom10")}
                 >
                   Bottom 10 Unprofitable
@@ -715,7 +742,7 @@ const InventoryAnalysis: React.FC = () => {
                 <select
                   value={analysisPeriod}
                   onChange={(e) => setAnalysisPeriod(Number(e.target.value))}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 >
                   <option value={30}>Last 30 days</option>
                   <option value={60}>Last 60 days</option>
@@ -1038,7 +1065,7 @@ const InventoryAnalysis: React.FC = () => {
                       <div className="w-full h-2 bg-gray-100 rounded-full mb-2 overflow-hidden">
                         <div
                           style={{ width: `${pct}%` }}
-                          className="bg-[#1557b0] h-full rounded-full transition-all duration-500"
+                          className="bg-[var(--ds-action-primary)] h-full rounded-full transition-all duration-500"
                         ></div>
                       </div>
                       <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
@@ -1170,7 +1197,7 @@ const InventoryAnalysis: React.FC = () => {
                       key={warehouse.id}
                       className={`w-full text-left px-3 py-2 text-[12px] rounded-md transition-colors ${
                         selectedWarehouseId === warehouse.id
-                          ? "bg-[#1557b0] text-white font-medium shadow-sm"
+                          ? "bg-[var(--ds-action-primary)] text-white font-medium shadow-sm"
                           : "text-gray-700 hover:bg-gray-200 font-medium"
                       }`}
                       onClick={() => setSelectedWarehouseId(warehouse.id)}
@@ -1338,7 +1365,7 @@ const InventoryAnalysis: React.FC = () => {
                         <td className="px-3 py-2.5 text-[12px] font-semibold text-gray-800 text-right">
                           {group.totalQty}
                         </td>
-                        <td className="px-3 py-2.5 text-[12px] font-mono font-bold text-[#1557b0] text-right">
+                        <td className="px-3 py-2.5 text-[12px] font-mono font-bold text-[var(--ds-action-primary)] text-right">
                           {money(group.totalValue)}
                         </td>
                       </tr>

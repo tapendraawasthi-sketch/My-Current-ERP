@@ -332,7 +332,7 @@ function TroubleshootModal({ onClose }: { onClose: () => void }) {
 
             <button
               type="button"
-              className="mt-3 h-8 rounded-md bg-[#1557b0] px-3 text-[12px] font-medium text-white hover:bg-[#0f4a96]"
+              className="mt-3 h-8 rounded-md bg-[var(--ds-action-primary)] px-3 text-[12px] font-medium text-white hover:bg-[var(--ds-action-primary-hover)]"
               onClick={() => runAction(action.title, action.endpoint)}
             >
               Run
@@ -438,7 +438,7 @@ function ApplicationSettingsModal({ onClose }: { onClose: () => void }) {
             type="button"
             onClick={() => setActiveTab(tab)}
             className={`h-8 px-3 text-[12px] font-medium ${
-              activeTab === tab ? "border-b-2 border-[#1557b0] text-[#1557b0]" : "text-gray-600"
+              activeTab === tab ? "border-b-2 border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]" : "text-gray-600"
             }`}
           >
             {tab}
@@ -604,7 +604,7 @@ function ContactSupportModal({ onClose }: { onClose: () => void }) {
         <textarea
           value={description}
           onChange={(event) => setDescription(event.target.value)}
-          className="min-h-28 rounded-md border border-gray-300 p-2 text-[12px] focus:border-[#1557b0] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20"
+          className="min-h-28 rounded-md border border-gray-300 p-2 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
         />
       </label>
 

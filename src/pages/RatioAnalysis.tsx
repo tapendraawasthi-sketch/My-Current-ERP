@@ -2,6 +2,7 @@
 import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import { Download } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 interface FinancialData {
   currentAssets: number;
@@ -100,7 +101,7 @@ const CATEGORIES = [
   {
     key: "liquidity",
     label: "Liquidity Ratios",
-    color: "#1557b0",
+    color: "var(--ds-action-primary)",
     desc: "Ability to meet short-term obligations",
   },
   {
@@ -209,6 +210,8 @@ const RatioCard: React.FC<{ ratio: RatioDef; value: number; color: string }> = (
 
 export default function RatioAnalysis() {
   const { accounts, vouchers, stockMovements, currentFiscalYear } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch, matchMovement } =
+    useBranchFilter();
 
   const fyStart = currentFiscalYear?.startDate || new Date().getFullYear() + "-04-01";
   const fyEnd = currentFiscalYear?.endDate || new Date().getFullYear() + 1 + "-03-31";
@@ -216,9 +219,18 @@ export default function RatioAnalysis() {
   const [fromDate, setFromDate] = useState(fyStart);
   const [toDate, setToDate] = useState(fyEnd);
 
+  const scopedVouchers = useMemo(
+    () => (vouchers || []).filter((v) => matchBranch((v as any).branchId)),
+    [vouchers, matchBranch, branchFilter],
+  );
+  const scopedMovements = useMemo(
+    () => (stockMovements || []).filter((m) => matchMovement(m as any)),
+    [stockMovements, matchMovement, branchFilter],
+  );
+
   const financialData: FinancialData = useMemo(() => {
     const balanceAt: Record<string, number> = {};
-    for (const v of vouchers) {
+    for (const v of scopedVouchers) {
       if (v.status !== "posted") continue;
       if ((v.date || "") > toDate) continue;
       for (const line of v.lines || []) {
@@ -235,7 +247,7 @@ export default function RatioAnalysis() {
     }
 
     const periodMov: Record<string, number> = {};
-    for (const v of vouchers) {
+    for (const v of scopedVouchers) {
       if (v.status !== "posted") continue;
       if ((v.date || "") < fromDate || (v.date || "") > toDate) continue;
       for (const line of v.lines || []) {
@@ -286,7 +298,7 @@ export default function RatioAnalysis() {
 
     const stockValue = Math.max(
       0,
-      (stockMovements || [])
+      (scopedMovements || [])
         .filter((m) => (m.date || "") <= toDate)
         .reduce((s, m) => {
           const q = Math.abs(Number(m.qty || m.quantity || 0));
@@ -370,7 +382,7 @@ export default function RatioAnalysis() {
       ebit,
       interestExpense,
     };
-  }, [accounts, vouchers, stockMovements, fromDate, toDate]);
+  }, [accounts, scopedVouchers, scopedMovements, fromDate, toDate]);
 
   const computedRatios = useMemo(() => {
     const res: Record<string, number> = {};
@@ -387,7 +399,36 @@ export default function RatioAnalysis() {
           <h1 className="text-[15px] font-semibold text-gray-800">Ratios</h1>
           <p className="text-[11px] text-gray-500 mt-0.5">Key financial indicators and metrics</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          <input
+            type="date"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white"
+            aria-label="From date"
+          />
+          <input
+            type="date"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white"
+            aria-label="To date"
+          />
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
           <button className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-2">
             <Download size={14} /> Export
           </button>

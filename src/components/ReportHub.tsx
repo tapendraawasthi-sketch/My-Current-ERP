@@ -29,7 +29,7 @@ const REPORT_CATEGORIES: ReportCategory[] = [
   {
     title: "Account Books",
     icon: BookOpen,
-    color: "#1557b0",
+    color: "var(--ds-action-primary)",
     reports: [
       { label: "Day Book", page: "day-book", desc: "All transactions by date", shortcut: "D" },
       {

@@ -1,0 +1,17 @@
+{
+  "resource_id": "high_confidence_english_accounting",
+  "version": "mai-05.1.0",
+  "language_form": "TECHNICAL_ACCOUNTING_ENGLISH",
+  "review_status": "ENGINEERING_REVIEWED",
+  "entries": [
+    "cash", "bank", "sales", "purchase", "purchases", "vat", "pan",
+    "invoice", "voucher", "ledger", "balance", "debit", "credit", "journal",
+    "receipt", "payment", "discount", "tax", "tds", "trial", "profit", "loss",
+    "asset", "liability", "equity", "inventory", "stock", "expense", "income",
+    "revenue", "capital", "drawing", "advance", "payable", "receivable",
+    "reconciliation", "statement", "cheque", "check", "transfer", "contra",
+    "fiscal", "year", "opening", "closing", "adjustment", "return", "returns",
+    "customer", "supplier", "party", "amount", "quantity", "price", "total",
+    "subtotal", "gross", "due", "paid", "unpaid", "creditnote", "debitnote"
+  ]
+}

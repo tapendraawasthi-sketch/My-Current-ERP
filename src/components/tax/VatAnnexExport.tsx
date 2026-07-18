@@ -5,6 +5,7 @@ import { getDB, generateId } from "../../lib/db";
 import * as XLSX from "xlsx";
 import toast from "@/lib/appToast";
 import { Download, AlertTriangle, CheckCircle, FileSpreadsheet } from "lucide-react";
+import { useBranchFilter } from "../../hooks/useBranchFilter";
 
 function money(v: number): string {
   const abs = Math.abs(Number(v || 0));
@@ -34,6 +35,7 @@ function parseInvoiceNoNumber(no: string) {
 
 export default function VatAnnexExport() {
   const { invoices = [], parties = [], companySettings = {}, currentFiscalYear = {} } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [monthBS, setMonthBS] = useState(defaultPreviousMonth());
   const [fiscalYear, setFiscalYear] = useState(
@@ -47,11 +49,12 @@ export default function VatAnnexExport() {
 
   const periodInvoices = useMemo(() => {
     return (invoices || []).filter((i: any) => {
+      if (!matchBranch(i.branchId)) return false;
       const bs = i.dateNepali || i.invoiceDateBS || "";
       if (bs && isBSDate(bs)) return bs.slice(5, 7) === monthBS;
       return true;
     });
-  }, [invoices, monthBS]);
+  }, [invoices, monthBS, matchBranch, branchFilter]);
 
   const annexA = useMemo(() => {
     return periodInvoices
@@ -268,11 +271,29 @@ export default function VatAnnexExport() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:ml-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:ml-auto">
+          {branchOptions.length > 0 ? (
+            <div>
+              <label className="block text-[11px] font-medium text-gray-600 mb-1">Branch</label>
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
+                aria-label="Branch filter"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : null}
           <div>
             <label className="block text-[11px] font-medium text-gray-600 mb-1">Fiscal Year</label>
             <input
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
               value={fiscalYear}
               onChange={(e) => setFiscalYear(e.target.value)}
             />
@@ -280,7 +301,7 @@ export default function VatAnnexExport() {
           <div>
             <label className="block text-[11px] font-medium text-gray-600 mb-1">Month BS</label>
             <select
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
               value={monthBS}
               onChange={(e) => setMonthBS(e.target.value)}
             >
@@ -324,7 +345,7 @@ export default function VatAnnexExport() {
               <CheckCircle size={14} /> Validate
             </button>
             <button
-              className="h-8 px-3 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96] transition-colors flex items-center gap-1.5 shadow-sm"
+              className="h-8 px-3 bg-[var(--ds-action-primary)] text-white text-[12px] font-medium rounded-md hover:bg-[var(--ds-action-primary-hover)] transition-colors flex items-center gap-1.5 shadow-sm"
               onClick={exportExcel}
             >
               <Download size={14} /> Export To Excel

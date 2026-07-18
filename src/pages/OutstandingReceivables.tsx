@@ -8,6 +8,7 @@ import { ReportWorkspace } from "@/features/reports";
 import ReportDateRangePicker, { DateRange } from "../components/ui/ReportDateRangePicker";
 import * as XLSX from "xlsx";
 import toast from "@/lib/appToast";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -49,23 +50,23 @@ function daysDiff(dateStr: string, asOf: string): number {
 }
 
 function getOverdueClass(days: number): string {
-  if (days === 0) return "text-green-600";
-  if (days <= 30) return "text-amber-600";
-  if (days <= 60) return "text-orange-600";
-  if (days <= 90) return "text-red-500";
-  return "text-red-700 font-bold";
+  if (days === 0) return "text-[var(--ds-status-success)]";
+  if (days <= 30) return "text-[var(--ds-status-warning)]";
+  if (days <= 60) return "text-[var(--ds-status-warning)]";
+  if (days <= 90) return "text-[var(--ds-status-danger)]";
+  return "text-[var(--ds-status-danger)] font-semibold";
 }
 
 function getStatusBadge(status: string): string {
   switch (status) {
     case "paid":
-      return "bg-green-100 text-green-700";
+      return "bg-[var(--ds-status-success-surface)] text-[var(--ds-status-success)]";
     case "partial":
-      return "bg-amber-100 text-amber-700";
+      return "bg-[var(--ds-status-warning-surface)] text-[var(--ds-status-warning)]";
     case "unpaid":
-      return "bg-red-100 text-red-700";
+      return "bg-[var(--ds-status-danger-surface)] text-[var(--ds-status-danger)]";
     default:
-      return "bg-gray-100 text-gray-700";
+      return "bg-[var(--ds-surface-muted)] text-[var(--ds-text-muted)]";
   }
 }
 
@@ -73,6 +74,7 @@ function getStatusBadge(status: string): string {
 
 const OutstandingReceivables: React.FC = () => {
   const { parties, companySettings } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
 
   const [dateRange, setDateRange] = useState<DateRange>({
     fromDate: todayISO(),
@@ -96,10 +98,13 @@ const OutstandingReceivables: React.FC = () => {
 
   const getAgingClass = (daysOverdue: number) => {
     if (daysOverdue <= 0) return "bg-transparent text-[var(--ds-text-default)] border-l-[3px] border-l-transparent";
-    if (daysOverdue <= 30) return "bg-amber-50 text-amber-800 border-l-[3px] border-l-amber-500";
-    if (daysOverdue <= 60) return "bg-orange-50 text-orange-800 border-l-[3px] border-l-orange-500";
-    if (daysOverdue <= 90) return "bg-red-50 text-red-800 border-l-[3px] border-l-red-500";
-    return "bg-red-50 text-red-900 border-l-[3px] border-l-red-800";
+    if (daysOverdue <= 30)
+      return "bg-[var(--ds-status-warning-surface)] text-[var(--ds-status-warning)] border-l-[3px] border-l-[var(--ds-status-warning)]";
+    if (daysOverdue <= 60)
+      return "bg-[var(--ds-status-warning-surface)] text-[var(--ds-status-warning)] border-l-[3px] border-l-[var(--ds-status-warning)]";
+    if (daysOverdue <= 90)
+      return "bg-[var(--ds-status-danger-surface)] text-[var(--ds-status-danger)] border-l-[3px] border-l-[var(--ds-status-danger)]";
+    return "bg-[var(--ds-status-danger-surface)] text-[var(--ds-status-danger)] border-l-[3px] border-l-[var(--ds-status-danger)] font-semibold";
   };
 
   const db = getDB();
@@ -133,6 +138,7 @@ const OutstandingReceivables: React.FC = () => {
 
     for (const inv of invoices as any[]) {
       if (!inv) continue;
+      if (!matchBranch(inv.branchId)) continue;
 
       const originalAmount = Number(inv.grandTotal ?? inv.total ?? 0);
       if (originalAmount <= 0) continue;
@@ -184,7 +190,7 @@ const OutstandingReceivables: React.FC = () => {
 
     // Sort by days overdue descending
     return rows.sort((a, b) => b.daysOverdue - a.daysOverdue);
-  }, [invoices, receipts, asOfDate, parties]);
+  }, [invoices, receipts, asOfDate, parties, matchBranch, branchFilter]);
 
   // ── Unique parties for filter ─────────────────────────────────────────────
   const uniqueParties = useMemo(() => {
@@ -426,6 +432,22 @@ const OutstandingReceivables: React.FC = () => {
             </option>
           ))}
         </select>
+
+        {branchOptions.length > 0 && (
+          <select
+            value={branchFilter}
+            onChange={(e) => setBranchFilter(e.target.value)}
+            aria-label="Branch"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+          >
+            <option value="all">All branches</option>
+            {branchOptions.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name || b.code || b.id}
+              </option>
+            ))}
+          </select>
+        )}
 
         <div className="flex-1 min-w-[180px]">
           <input

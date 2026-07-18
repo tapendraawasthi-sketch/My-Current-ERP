@@ -4,11 +4,13 @@ import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
 import { Download } from "lucide-react";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 type GroupBy = "party" | "item" | "month";
 
 export default function SalesAnalysisReport() {
   const { invoices, parties, items } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const [fromDate, setFromDate] = useState(() => {
     const d = new Date();
     d.setMonth(0);
@@ -33,9 +35,9 @@ export default function SalesAnalysisReport() {
               : inv.type === "purchase-invoice" ||
                 inv.type === "PURCHASE_INVOICE" ||
                 inv.voucherType === "Purchase";
-        return inRange && matchType && inv.status !== "cancelled";
+        return inRange && matchType && inv.status !== "cancelled" && matchBranch(inv.branchId);
       }),
-    [invoices, fromDate, toDate, voucherType],
+    [invoices, fromDate, toDate, voucherType, matchBranch, branchFilter],
   );
 
   const analysisData = useMemo(() => {
@@ -169,6 +171,24 @@ export default function SalesAnalysisReport() {
               <option value="month">Month-wise</option>
             </select>
           </div>
+          {branchOptions.length > 0 && (
+            <div>
+              <label className={labelCls}>Branch</label>
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                className={`${inputCls} w-full`}
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
       </div>
 

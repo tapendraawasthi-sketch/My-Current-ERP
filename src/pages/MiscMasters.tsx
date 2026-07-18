@@ -4,6 +4,8 @@ import toast from "@/lib/appToast";
 import { Plus, Edit2, Trash2, MapPin, Layers, DollarSign, Search, X, Save } from "lucide-react";
 import { getDB } from "../lib/db";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 interface MaterialCentre {
   id: string;
@@ -12,6 +14,7 @@ interface MaterialCentre {
   address?: string;
   isDefault: boolean;
   isActive: boolean;
+  branchId?: string;
 }
 
 interface BOMItem {
@@ -30,6 +33,7 @@ interface PriceListItem {
   category: string;
   description: string;
   isActive: boolean;
+  branchId?: string;
 }
 
 type ActiveTab = "material-centres" | "bom" | "price-lists";
@@ -38,11 +42,11 @@ type FormMode = "mc" | "pl" | null;
 const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 const inputCls =
-  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
 
 const emptyMCForm = (): Omit<MaterialCentre, "id"> => ({
@@ -61,6 +65,7 @@ const emptyPLForm = (): Omit<PriceListItem, "id"> => ({
 });
 
 export default function MiscMasters() {
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [activeTab, setActiveTab] = useState<ActiveTab>("material-centres");
   const [search, setSearch] = useState("");
   const [showForm, setShowForm] = useState<FormMode>(null);
@@ -141,25 +146,29 @@ export default function MiscMasters() {
 
   const filteredMC = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return materialCentres;
-    return materialCentres.filter(
-      (mc) =>
+    return materialCentres.filter((mc) => {
+      if (!matchBranch(mc.branchId)) return false;
+      if (!q) return true;
+      return (
         mc.code.toLowerCase().includes(q) ||
         mc.name.toLowerCase().includes(q) ||
-        (mc.address || "").toLowerCase().includes(q),
-    );
-  }, [materialCentres, search]);
+        (mc.address || "").toLowerCase().includes(q)
+      );
+    });
+  }, [materialCentres, search, matchBranch, branchFilter]);
 
   const filteredPL = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return priceLists;
-    return priceLists.filter(
-      (pl) =>
+    return priceLists.filter((pl) => {
+      if (!matchBranch(pl.branchId)) return false;
+      if (!q) return true;
+      return (
         pl.name.toLowerCase().includes(q) ||
         pl.category.toLowerCase().includes(q) ||
-        pl.description.toLowerCase().includes(q),
-    );
-  }, [priceLists, search]);
+        pl.description.toLowerCase().includes(q)
+      );
+    });
+  }, [priceLists, search, matchBranch, branchFilter]);
 
   const resetForm = () => {
     setShowForm(null);
@@ -209,12 +218,20 @@ export default function MiscMasters() {
     try {
       const db = getDB();
       if (editMC) {
-        const updated = { ...editMC, ...mcForm };
+        const updated = {
+          ...editMC,
+          ...mcForm,
+          branchId: editMC.branchId || readActiveBranchId() || undefined,
+        };
         if (db.warehouses) await db.warehouses.put(updated);
         setMaterialCentres((prev) => prev.map((m) => (m.id === editMC.id ? updated : m)));
         toast.success("Material Centre updated");
       } else {
-        const newItem: MaterialCentre = { ...mcForm, id: `mc-${Date.now()}` };
+        const newItem: MaterialCentre = {
+          ...mcForm,
+          id: `mc-${Date.now()}`,
+          branchId: readActiveBranchId() || undefined,
+        };
         if (db.warehouses) await db.warehouses.put(newItem);
         setMaterialCentres((prev) => [...prev, newItem]);
         toast.success("Material Centre added");
@@ -243,10 +260,14 @@ export default function MiscMasters() {
       toast.error("Name required");
       return;
     }
-    const newItem: PriceListItem = { ...plForm, id: `pl-${Date.now()}` };
+    const branchId =
+      editPL?.branchId || readActiveBranchId() || undefined;
+    const newItem: PriceListItem = { ...plForm, id: `pl-${Date.now()}`, branchId };
     setPriceLists((prev) =>
       editPL
-        ? prev.map((p) => (p.id === editPL.id ? { ...editPL, ...plForm } : p))
+        ? prev.map((p) =>
+            p.id === editPL.id ? { ...editPL, ...plForm, branchId } : p,
+          )
         : [...prev, newItem],
     );
     toast.success(editPL ? "Price List updated" : "Price List added");
@@ -294,12 +315,29 @@ export default function MiscMasters() {
                 Material centres (warehouses), bill of materials, price lists
               </p>
             </div>
-            {tabAddLabel && (
-              <button type="button" className={btnPrimary} onClick={handleTabAdd}>
-                <Plus className="h-3.5 w-3.5" />
-                {tabAddLabel}
-              </button>
-            )}
+            <div className="flex items-center gap-2">
+              {branchOptions.length > 0 && (
+                <select
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>
+              )}
+              {tabAddLabel && (
+                <button type="button" className={btnPrimary} onClick={handleTabAdd}>
+                  <Plus className="h-3.5 w-3.5" />
+                  {tabAddLabel}
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="flex gap-1 mb-3 bg-white border border-gray-200 rounded-md p-1 w-fit">
@@ -310,7 +348,7 @@ export default function MiscMasters() {
                 onClick={() => switchTab(tab.key)}
                 className={`flex items-center gap-1.5 h-8 px-3 text-[12px] font-medium rounded-md transition-colors ${
                   activeTab === tab.key
-                    ? "bg-[#1557b0] text-white"
+                    ? "bg-[var(--ds-action-primary)] text-white"
                     : "text-gray-600 hover:bg-gray-50"
                 }`}
               >
@@ -377,7 +415,7 @@ export default function MiscMasters() {
                       {filteredMC.map((mc) => (
                         <tr
                           key={mc.id}
-                          className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                          className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
                           onClick={() => openEditMC(mc)}
                         >
                           <td className={`${td} font-mono text-gray-600`}>{mc.code}</td>
@@ -480,7 +518,7 @@ export default function MiscMasters() {
                       {filteredPL.map((pl) => (
                         <tr
                           key={pl.id}
-                          className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                          className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
                           onClick={() => openEditPL(pl)}
                         >
                           <td className={`${td} font-medium text-gray-800`}>{pl.name}</td>
@@ -583,7 +621,7 @@ export default function MiscMasters() {
                   type="checkbox"
                   checked={mcForm.isDefault}
                   onChange={(e) => setMCForm((p) => ({ ...p, isDefault: e.target.checked }))}
-                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                 />
                 Set as default
               </label>
@@ -592,7 +630,7 @@ export default function MiscMasters() {
                   type="checkbox"
                   checked={mcForm.isActive}
                   onChange={(e) => setMCForm((p) => ({ ...p, isActive: e.target.checked }))}
-                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                 />
                 Active
               </label>
@@ -660,7 +698,7 @@ export default function MiscMasters() {
                   type="checkbox"
                   checked={plForm.isActive}
                   onChange={(e) => setPLForm((p) => ({ ...p, isActive: e.target.checked }))}
-                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                 />
                 Active
               </label>

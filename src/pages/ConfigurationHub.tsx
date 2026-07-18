@@ -56,10 +56,10 @@ const CONFIG_SECTIONS = [
 ];
 
 const inputCls =
-  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
 const btnPrimary =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md";
 const btnOutline =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50";
 
@@ -280,7 +280,7 @@ export default function ConfigurationHub() {
             <div className="col-span-2 flex items-center gap-2">
               <button
                 type="button"
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
+                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md"
                 onClick={() => {
                   const recipient =
                     draft.email.senderEmail?.trim() || draft.email.smtpUser?.trim() || "";
@@ -856,7 +856,7 @@ export default function ConfigurationHub() {
           <button
             key={s.id}
             type="button"
-            className="text-left bg-white border border-gray-200 rounded-lg p-4 hover:border-[#1557b0]/40 hover:bg-gray-50 transition-colors"
+            className="text-left bg-white border border-gray-200 rounded-lg p-4 hover:border-[var(--ds-action-primary)]/40 hover:bg-gray-50 transition-colors"
             onClick={() => openSection(s.id)}
           >
             <div className="text-[13px] font-semibold text-gray-800 mb-1">{s.label}</div>
@@ -865,25 +865,25 @@ export default function ConfigurationHub() {
         ))}
         <button
           type="button"
-          className="text-left bg-white border border-gray-200 rounded-lg p-4 hover:border-[#1557b0]/40 hover:bg-gray-50 transition-colors"
+          className="text-left bg-white border border-gray-200 rounded-lg p-4 hover:border-[var(--ds-action-primary)]/40 hover:bg-gray-50 transition-colors"
           onClick={() => setCurrentPage("communication-hub")}
         >
           <div className="text-[13px] font-semibold text-gray-800 mb-1">Communication Hub</div>
           <div className="text-[11px] text-gray-500">
             Send invoice emails, payment reminders, and SMS using the settings above.
           </div>
-          <div className="mt-2 text-[11px] text-[#1557b0] font-medium">Open hub →</div>
+          <div className="mt-2 text-[11px] text-[var(--ds-action-primary)] font-medium">Open hub →</div>
         </button>
         <button
           type="button"
-          className="text-left bg-white border border-gray-200 rounded-lg p-4 hover:border-[#1557b0]/40 hover:bg-gray-50 transition-colors"
+          className="text-left bg-white border border-gray-200 rounded-lg p-4 hover:border-[var(--ds-action-primary)]/40 hover:bg-gray-50 transition-colors"
           onClick={() => setActiveSection("holidays")}
         >
           <div className="text-[13px] font-semibold text-gray-800 mb-1">List of Holidays</div>
           <div className="text-[11px] text-gray-500">
             Define company holidays for working-day calculations.
           </div>
-          <div className="mt-2 text-[11px] text-[#1557b0] font-medium">
+          <div className="mt-2 text-[11px] text-[var(--ds-action-primary)] font-medium">
             {(holidays || []).length} holiday(s) configured →
           </div>
         </button>

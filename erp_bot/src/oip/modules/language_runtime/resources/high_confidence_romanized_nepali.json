@@ -1,0 +1,22 @@
+{
+  "resource_id": "high_confidence_romanized_nepali",
+  "version": "mai-05.1.0",
+  "language_form": "ROMANIZED_NEPALI",
+  "review_status": "ENGINEERING_REVIEWED",
+  "entries": [
+    "cha", "chha", "xa", "ho", "haina", "chaina", "xaina", "ani", "ra",
+    "ko", "lai", "le", "bata", "samma", "mero", "hamro", "timro", "tapai",
+    "yo", "tyo", "tesko", "usle", "usko", "garnu", "gareko", "garyo", "garna",
+    "kine", "kineko", "kinyo", "kinye", "beche", "bechyo", "bechye", "bikri",
+    "udharo", "udaro", "udhaar", "tirnu", "tireko", "tiryo", "paisa", "rakam",
+    "hajar", "lakh", "karod", "dekhaau", "dekhau", "kati", "kasari", "kina",
+    "bhayo", "vayo", "bho", "gayo", "aayo", "chhu", "xu", "hunxa", "huncha",
+    "gara", "garidim", "milaaidim", "milau", "kharid", "kharcha", "bhada",
+    "bhaada", "maina", "mahina", "saman", "bech", "dinchu", "linchu", "chhaina",
+    "hoyena", "thiyo", "thyo", "chahiye", "chahiyo", "namaste", "dhanyabad",
+    "kisim", "thaan", "thana", "matra", "pani", "aba", "aile", "hijo", "bholi",
+    "aaja", "aja", "kasto", "ke", "hoina", "garera", "bhaneko", "bujhena",
+    "bujhe", "lekh", "lekha", "dekhaye", "dekhauna", "galat", "mismatch",
+    "garem", "gare", "ta"
+  ]
+}

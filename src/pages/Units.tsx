@@ -5,15 +5,17 @@ import toast from "@/lib/appToast";
 import { DBUnit } from "../lib/db";
 import { Plus, Edit2, Trash2, X, Save, Search } from "lucide-react";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 const inputCls =
-  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
 
 const DECIMAL_OPTIONS = [
@@ -26,6 +28,7 @@ const DECIMAL_OPTIONS = [
 
 export default function Units() {
   const { units, addUnit, updateUnit, deleteUnit } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [showForm, setShowForm] = useState(false);
   const [editingUnit, setEditingUnit] = useState<DBUnit | null>(null);
@@ -44,14 +47,16 @@ export default function Units() {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return units;
-    return units.filter(
-      (u) =>
+    return units.filter((u) => {
+      if (!matchBranch((u as { branchId?: string }).branchId)) return false;
+      if (!q) return true;
+      return (
         u.name?.toLowerCase().includes(q) ||
         u.code?.toLowerCase().includes(q) ||
-        u.symbol?.toLowerCase().includes(q),
-    );
-  }, [units, search]);
+        u.symbol?.toLowerCase().includes(q)
+      );
+    });
+  }, [units, search, matchBranch, branchFilter]);
 
   const resetForm = () => {
     setShowForm(false);
@@ -107,6 +112,10 @@ export default function Units() {
           name: formData.name?.trim(),
           symbol: formData.symbol?.trim(),
           decimalPlaces: Number(formData.decimalPlaces) || 0,
+          branchId:
+            (editingUnit as { branchId?: string }).branchId ||
+            readActiveBranchId() ||
+            undefined,
         });
         toast.success("Unit updated successfully.");
       } else {
@@ -116,6 +125,7 @@ export default function Units() {
           name: formData.name?.trim(),
           symbol: formData.symbol?.trim(),
           decimalPlaces: Number(formData.decimalPlaces) || 0,
+          branchId: readActiveBranchId() || undefined,
         });
         toast.success("Unit added successfully.");
       }
@@ -155,10 +165,27 @@ export default function Units() {
                 Manage measurement units used for stock items (kg, pcs, ltr, etc.)
               </p>
             </div>
-            <button type="button" className={btnPrimary} onClick={handleOpenCreate}>
-              <Plus className="h-3.5 w-3.5" />
-              New unit
-            </button>
+            <div className="flex items-center gap-2">
+              {branchOptions.length > 0 && (
+                <select
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>
+              )}
+              <button type="button" className={btnPrimary} onClick={handleOpenCreate}>
+                <Plus className="h-3.5 w-3.5" />
+                New unit
+              </button>
+            </div>
           </div>
 
           <div className="relative mb-3 max-w-xs">
@@ -201,7 +228,7 @@ export default function Units() {
                   {filtered.map((unit) => (
                     <tr
                       key={unit.id}
-                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
                       onClick={() => handleOpenEdit(unit)}
                     >
                       <td className={`${td} font-mono`}>{unit.code || "—"}</td>
@@ -327,7 +354,7 @@ export default function Units() {
                 type="checkbox"
                 checked={formData.isActive !== false}
                 onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
               />
               <span className="text-[12px] font-medium text-gray-700">Active</span>
             </label>

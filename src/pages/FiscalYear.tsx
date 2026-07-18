@@ -224,7 +224,7 @@ export default function FiscalYearPage() {
           >
             <div className="p-4 border-b border-[var(--ox-border)] flex items-center justify-between bg-[#f5f6fa] rounded-t-lg">
               <h2 className="text-[14px] font-semibold text-[var(--ox-text)] flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-[#1557b0]" /> Create Fiscal Year
+                <Calendar className="w-4 h-4 text-[var(--ds-action-primary)]" /> Create Fiscal Year
               </h2>
               <button
                 type="button"
@@ -248,7 +248,7 @@ export default function FiscalYearPage() {
                       placeholder="2081/82"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full h-8 px-2.5 text-[12px] border border-[var(--ox-border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                      className="w-full h-8 px-2.5 text-[12px] border border-[var(--ox-border)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                     />
                   </div>
 
@@ -260,7 +260,7 @@ export default function FiscalYearPage() {
                       required
                     />
                     {formData.startDateBS && (
-                      <p className="text-[10px] text-[#1557b0] mt-0.5 ml-0.5">
+                      <p className="text-[10px] text-[var(--ds-action-primary)] mt-0.5 ml-0.5">
                         BS: {formData.startDateBS}
                       </p>
                     )}
@@ -274,13 +274,13 @@ export default function FiscalYearPage() {
                       required
                     />
                     {formData.endDateBS && (
-                      <p className="text-[10px] text-[#1557b0] mt-0.5 ml-0.5">
+                      <p className="text-[10px] text-[var(--ds-action-primary)] mt-0.5 ml-0.5">
                         BS: {formData.endDateBS}
                       </p>
                     )}
                   </div>
 
-                  <div className="bg-[#D4EABD] text-[var(--ox-text)] text-[11px] p-3 rounded border border-[var(--ox-border)] flex items-start gap-2">
+                  <div className="bg-[var(--ds-surface-hover)] text-[var(--ox-text)] text-[11px] p-3 rounded border border-[var(--ox-border)] flex items-start gap-2">
                     <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
                     <p>
                       Fiscal year dates should not overlap. The new year will be marked as "future"

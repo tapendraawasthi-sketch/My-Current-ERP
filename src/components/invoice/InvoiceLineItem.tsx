@@ -46,7 +46,10 @@ interface InvoiceLineItemProps {
 const round2 = (n: number) => Math.round((Number(n) || 0) * 100) / 100;
 
 const cellInput =
-  "w-full h-8 px-2 text-xs font-mono bg-transparent border border-transparent focus:border-indigo-400 focus:bg-white rounded-sm outline-none";
+  "w-full h-8 px-2 text-[12px] font-mono bg-[var(--ds-surface)] border border-transparent rounded-md outline-none focus:border-[var(--ds-action-primary)] focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:bg-[var(--ds-surface)] text-[var(--ds-text-default)]";
+
+const cellNumInput =
+  "w-full h-8 px-2 text-[12px] font-mono bg-transparent border-0 border-b border-[var(--ds-border-default)] text-right outline-none focus:border-[var(--ds-action-primary)] text-[var(--ds-text-default)]";
 
 const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
   ({ line, lineNo, onUpdate, onDelete, onTabNext, showWarehouse, type, readOnly }) => {
@@ -78,7 +81,6 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
         const itemRate =
           type === "sales" ? Number(it.salesRate || 0) : Number(it.purchaseRate || 0);
         if (itemRate === 0) {
-          // We still add the item but notify user
           setTimeout(() => {
             const event = new CustomEvent("sutra-warn", {
               detail: `Item "${it.name}" has no ${type === "sales" ? "selling" : "purchase"} price configured.`,
@@ -101,7 +103,6 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
     );
 
     const onKey = (e: React.KeyboardEvent) => {
-      // Only trigger next-row on Tab, not Enter (Enter is for dropdown selection)
       if (e.key === "Tab" && !e.shiftKey) {
         const target = e.target as HTMLElement;
         if (target.tagName === "INPUT") {
@@ -110,16 +111,20 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
       }
     };
 
-    const symbolCell = (n: number, color = "text-[#000000]") => (
-      <span className={`font-mono text-xs font-semibold ${color}`}>{formatNumber(n)}</span>
+    const amountCell = (n: number) => (
+      <span className="font-mono text-[12px] text-[var(--ds-text-default)]">{formatNumber(n)}</span>
     );
 
     return (
-      <tr className="border-b border-[#9DC07A] hover:bg-[#EBF5E2]/50" onKeyDown={onKey}>
-        <td className="px-2 py-1 text-center text-[11px] font-bold text-[#000000] w-8">{lineNo}</td>
+      <tr
+        className="border-b border-[var(--ds-border-default)] hover:bg-[var(--ds-surface-muted)]/80"
+        onKeyDown={onKey}
+      >
+        <td className="px-2 py-1.5 text-center text-[11px] font-medium text-[var(--ds-text-muted)] w-8">
+          {lineNo}
+        </td>
 
-        {/* Item */}
-        <td className="px-1 py-1 min-w-[200px]">
+        <td className="px-1 py-1.5 min-w-[200px]">
           <select
             className={cellInput}
             value={line.itemId}
@@ -138,8 +143,7 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
           </select>
         </td>
 
-        {/* HSN/SAC */}
-        <td className="px-1 py-1 w-20 hidden">
+        <td className="px-1 py-1.5 w-20 hidden">
           <input
             className={cellInput}
             value={line.hsnCode || ""}
@@ -149,8 +153,7 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
           />
         </td>
 
-        {/* Description */}
-        <td className="px-1 py-1 min-w-[140px] hidden">
+        <td className="px-1 py-1.5 min-w-[140px] hidden">
           <input
             className={cellInput}
             value={line.description || ""}
@@ -160,11 +163,10 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
           />
         </td>
 
-        {/* Qty */}
-        <td className="px-1 py-1 w-20">
+        <td className="px-1 py-1.5 w-20">
           <input
             type="number"
-            className="w-full h-7 px-2 text-[12px] border-0 border-b border-[#9DC07A] bg-transparent text-right focus:outline-none focus:border-[#1557b0]"
+            className={cellNumInput}
             value={line.qty || ""}
             onChange={(e) => onUpdate({ qty: Math.max(0, Number(e.target.value) || 0) })}
             disabled={readOnly}
@@ -173,8 +175,7 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
           />
         </td>
 
-        {/* Unit */}
-        <td className="px-1 py-1 w-16">
+        <td className="px-1 py-1.5 w-16">
           <input
             className={cellInput}
             value={line.unit || ""}
@@ -184,11 +185,10 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
           />
         </td>
 
-        {/* Rate */}
-        <td className="px-1 py-1 w-24">
+        <td className="px-1 py-1.5 w-24">
           <input
             type="number"
-            className="w-full h-7 px-2 text-[12px] border-0 border-b border-[#9DC07A] bg-transparent text-right focus:outline-none focus:border-[#1557b0]"
+            className={cellNumInput}
             value={line.rate || ""}
             onChange={(e) => onUpdate({ rate: Math.max(0, Number(e.target.value) || 0) })}
             disabled={readOnly}
@@ -198,8 +198,7 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
           />
         </td>
 
-        {/* Discount % */}
-        <td className="px-1 py-1 w-20">
+        <td className="px-1 py-1.5 w-20">
           <input
             type="number"
             className={cellInput}
@@ -215,14 +214,12 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
           />
         </td>
 
-        {/* Taxable amount (computed) */}
-        <td className="px-2 py-1 text-right w-24">{symbolCell(taxable)}</td>
+        <td className="px-2 py-1.5 text-right w-24">{amountCell(taxable)}</td>
 
-        {/* Is Taxable */}
-        <td className="px-1 py-1 text-center w-14">
+        <td className="px-1 py-1.5 text-center w-14">
           <input
             type="checkbox"
-            className="h-3.5 w-3.5 accent-indigo-600"
+            className="h-3.5 w-3.5 accent-[var(--ds-action-primary)]"
             checked={!!line.isTaxable}
             onChange={(e) =>
               onUpdate({
@@ -234,8 +231,7 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
           />
         </td>
 
-        {/* VAT % */}
-        <td className="px-1 py-1 w-16">
+        <td className="px-1 py-1.5 w-16">
           <input
             type="number"
             className={cellInput}
@@ -249,17 +245,14 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
           />
         </td>
 
-        {/* VAT Amount */}
-        <td className="px-2 py-1 text-right w-24">{symbolCell(vatAmt, "text-[#000000]")}</td>
+        <td className="px-2 py-1.5 text-right w-24">{amountCell(vatAmt)}</td>
 
-        {/* Total */}
-        <td className="text-right text-[12px] font-medium text-[#000000] font-mono px-3 w-24 bg-[#EBF5E2]/80">
+        <td className="px-3 py-1.5 text-right text-[12px] font-medium font-mono text-[var(--ds-text-default)] w-24 bg-[var(--ds-surface-muted)]">
           {formatNumber(total)}
         </td>
 
-        {/* Warehouse */}
         {showWarehouse && (
-          <td className="px-1 py-1 w-32">
+          <td className="px-1 py-1.5 w-32">
             <select
               className={cellInput}
               value={line.warehouseId || ""}
@@ -278,13 +271,12 @@ const InvoiceLineItem: React.FC<InvoiceLineItemProps> = React.memo(
           </td>
         )}
 
-        {/* Delete */}
-        <td className="px-1 py-1 w-10 text-center">
+        <td className="px-1 py-1.5 w-10 text-center">
           <button
             type="button"
             onClick={onDelete}
             disabled={readOnly}
-            className="p-1 text-[#000000] hover:text-red-500 rounded transition-colors disabled:opacity-40"
+            className="p-1 text-[var(--ds-text-muted)] hover:text-[var(--ds-status-danger)] rounded transition-colors disabled:opacity-40"
             title="Remove line"
           >
             <Trash2 className="h-3.5 w-3.5" />

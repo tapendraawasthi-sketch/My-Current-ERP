@@ -8,6 +8,7 @@ import * as XLSX from "xlsx";
 import toast from "@/lib/appToast";
 import { mergeSystemConfiguration, getInterestRateForDays } from "../lib/systemConfiguration";
 import { computeInvoiceOutstanding } from "../lib/accounting";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -56,6 +57,7 @@ function generateLocalSerial(prefix: string, count: number): string {
 
 const InterestCalculation: React.FC = () => {
   const { parties, companySettings } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const interestSlabs = mergeSystemConfiguration(
     companySettings?.systemConfiguration,
   ).interestSlabs;
@@ -88,15 +90,18 @@ const InterestCalculation: React.FC = () => {
   const interestRows = useMemo<InterestRow[]>(() => {
     if (!invoices || !payments) return [];
 
+    const scopedInvoices = (invoices as any[]).filter((inv) => matchBranch(inv?.branchId));
+    const scopedPayments = (payments as any[]).filter((p) => matchBranch(p?.branchId));
+
     const rows: InterestRow[] = [];
 
-    for (const inv of invoices as any[]) {
+    for (const inv of scopedInvoices) {
       if (!inv || inv.status === "cancelled" || inv.status === "draft") continue;
 
       const originalAmount = Number(inv.grandTotal ?? inv.total ?? 0);
       if (originalAmount <= 0) continue;
 
-      const outstanding = computeInvoiceOutstanding(inv, payments as any[]);
+      const outstanding = computeInvoiceOutstanding(inv, scopedPayments);
       if (outstanding <= 0.005) continue;
 
       // Days overdue from due date
@@ -131,7 +136,17 @@ const InterestCalculation: React.FC = () => {
     }
 
     return rows.sort((a, b) => b.daysOverdue - a.daysOverdue);
-  }, [invoices, payments, asOfDate, interestRate, minDaysOverdue, parties, interestSlabs]);
+  }, [
+    invoices,
+    payments,
+    asOfDate,
+    interestRate,
+    minDaysOverdue,
+    parties,
+    interestSlabs,
+    matchBranch,
+    branchFilter,
+  ]);
 
   // ── Filter ────────────────────────────────────────────────────────────────
   const filteredRows = useMemo<InterestRow[]>(() => {
@@ -313,7 +328,25 @@ const InterestCalculation: React.FC = () => {
         <h3 className="text-[12px] font-semibold text-gray-500 uppercase tracking-wide mb-3">
           Interest Parameters
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+          {branchOptions.length > 0 && (
+            <div>
+              <label className="text-[12px] font-medium text-gray-600 mb-1 block">Branch</label>
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <div>
             <label className="text-[12px] font-medium text-gray-600 mb-1 block">Direction</label>
             <select

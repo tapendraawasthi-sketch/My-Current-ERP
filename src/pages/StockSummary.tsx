@@ -8,6 +8,7 @@ import {
 } from "../lib/stockValuation";
 import * as XLSX from "xlsx";
 import toast from "@/lib/appToast";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const th =
   "px-2 py-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wide border border-gray-200 bg-[#f5f6fa] text-right";
@@ -20,6 +21,7 @@ const tdBold =
 
 export default function StockSummary() {
   const { stockMovements, items, currentFiscalYear } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchMovement } = useBranchFilter();
 
   const [method, setMethod] = useState<ValuationMethod>("weighted_average");
   const [fromDate, setFromDate] = useState(currentFiscalYear?.startDate ?? "");
@@ -30,21 +32,23 @@ export default function StockSummary() {
   const [showLedger, setShowLedger] = useState<string | null>(null);
 
   const summary = useMemo(() => {
-    const raw = (stockMovements || []).map((m: any) => ({
-      id: m.id,
-      date: m.date || "",
-      type: m.type || m.movementType || "purchase",
-      itemId: m.itemId || "",
-      itemName: m.itemName || items.find((i: any) => i.id === m.itemId)?.name || m.itemId,
-      warehouseId: m.warehouseId,
-      warehouseName: m.warehouseName,
-      qty: Number(m.qty || m.quantity || 0),
-      rate: Number(m.rate || m.costRate || 0),
-      amount: Number(m.amount || 0),
-    }));
+    const raw = (stockMovements || [])
+      .filter((m: any) => matchMovement(m))
+      .map((m: any) => ({
+        id: m.id,
+        date: m.date || "",
+        type: m.type || m.movementType || "purchase",
+        itemId: m.itemId || "",
+        itemName: m.itemName || items.find((i: any) => i.id === m.itemId)?.name || m.itemId,
+        warehouseId: m.warehouseId,
+        warehouseName: m.warehouseName,
+        qty: Number(m.qty || m.quantity || 0),
+        rate: Number(m.rate || m.costRate || 0),
+        amount: Number(m.amount || 0),
+      }));
 
     return computeStockSummary(raw, method, fromDate || undefined, toDate || undefined);
-  }, [stockMovements, items, method, fromDate, toDate]);
+  }, [stockMovements, items, method, fromDate, toDate, matchMovement, branchFilter]);
 
   const filtered = useMemo(
     () => summary.filter((s) => !search || s.itemName.toLowerCase().includes(search.toLowerCase())),
@@ -140,7 +144,7 @@ export default function StockSummary() {
                 key={v}
                 onClick={() => setMethod(v)}
                 className={`px-3 text-[11px] font-semibold transition-colors
-                  ${method === v ? "bg-[#1557b0] text-white" : "bg-white text-gray-600 hover:bg-gray-50"}`}
+                  ${method === v ? "bg-[var(--ds-action-primary)] text-white" : "bg-white text-gray-600 hover:bg-gray-50"}`}
               >
                 {label}
               </button>
@@ -157,7 +161,7 @@ export default function StockSummary() {
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:border-[var(--ds-action-primary)]"
           />
         </div>
         <div className="flex flex-col gap-1">
@@ -168,9 +172,30 @@ export default function StockSummary() {
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:border-[var(--ds-action-primary)]"
           />
         </div>
+
+        {branchOptions.length > 0 && (
+          <div className="flex flex-col gap-1">
+            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
+              Branch
+            </label>
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:border-[var(--ds-action-primary)]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {/* Search */}
         <div className="flex flex-col gap-1 flex-1 min-w-[160px]">
@@ -182,7 +207,7 @@ export default function StockSummary() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Item name..."
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:border-[var(--ds-action-primary)]"
           />
         </div>
 
@@ -205,7 +230,7 @@ export default function StockSummary() {
                 <th
                   className={th}
                   colSpan={3}
-                  style={{ textAlign: "center", background: "#e8f0fe", color: "#1557b0" }}
+                  style={{ textAlign: "center", background: "#e8f0fe", color: "var(--ds-action-primary)" }}
                 >
                   Opening Stock
                 </th>
@@ -281,7 +306,7 @@ export default function StockSummary() {
                   <tr className="hover:bg-gray-50 border-b border-gray-100">
                     <td className={tdL}>
                       <button
-                        className="text-[#1557b0] hover:underline font-semibold text-[12px]"
+                        className="text-[var(--ds-action-primary)] hover:underline font-semibold text-[12px]"
                         onClick={() => setShowLedger(showLedger === row.itemId ? null : row.itemId)}
                       >
                         {row.itemName}
@@ -328,12 +353,12 @@ export default function StockSummary() {
                     <tr>
                       <td colSpan={13} className="p-0 border-b border-gray-200">
                         <div className="bg-blue-50 p-4">
-                          <div className="text-[11px] font-bold text-[#1557b0] mb-2 uppercase tracking-wide">
+                          <div className="text-[11px] font-bold text-[var(--ds-action-primary)] mb-2 uppercase tracking-wide">
                             Stock Ledger — {row.itemName} ({method.replace("_", " ").toUpperCase()})
                           </div>
                           <table className="w-full text-[11px] border-collapse">
                             <thead>
-                              <tr className="bg-[#1557b0] text-white">
+                              <tr className="bg-[var(--ds-action-primary)] text-white">
                                 <th className="px-2 py-1.5 text-left">Date</th>
                                 <th className="px-2 py-1.5 text-left">Particulars</th>
                                 <th className="px-2 py-1.5 text-right">In Qty</th>
@@ -405,7 +430,7 @@ export default function StockSummary() {
                                 </tr>
                               ))}
                               {/* Closing row */}
-                              <tr className="bg-purple-100 font-bold">
+                              <tr className="bg-[var(--ds-status-info-surface)] font-bold">
                                 <td className="px-2 py-1.5">—</td>
                                 <td className="px-2 py-1.5">Closing Balance</td>
                                 <td colSpan={6} />

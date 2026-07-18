@@ -16,6 +16,8 @@ import {
   Building2,
 } from "lucide-react";
 import * as XLSX from "xlsx";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 type Tab = "master" | "summary" | "ledger" | "matrix";
 type CCType = "cost" | "profit" | "investment";
@@ -47,6 +49,7 @@ export default function CostCentre() {
     addCostCentreAllocation,
     deleteCostCentreAllocation,
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [activeTab, setActiveTab] = useState<Tab>("master");
   const [showModal, setShowModal] = useState(false);
@@ -78,8 +81,13 @@ export default function CostCentre() {
   // ── Filtered centres ──────────────────────────────────────────────────────
   const filteredCCs = useMemo(
     () =>
-      costCentres.filter((cc) => cc.isActive && (filterType === "all" || cc.type === filterType)),
-    [costCentres, filterType],
+      costCentres.filter(
+        (cc) =>
+          cc.isActive &&
+          matchBranch((cc as any).branchId) &&
+          (filterType === "all" || cc.type === filterType),
+      ),
+    [costCentres, filterType, matchBranch],
   );
 
   // ── Build allocation summary per cost centre ───────────────────────────────
@@ -137,10 +145,11 @@ export default function CostCentre() {
   // ── Save CC ───────────────────────────────────────────────────────────────
   const handleSave = async () => {
     const now = new Date().toISOString();
+    const branchId = editCC?.branchId || readActiveBranchId() || undefined;
     if (editCC?.id) {
-      await updateCostCentre(editCC.id, { ...form, updatedAt: now });
+      await updateCostCentre(editCC.id, { ...form, branchId, updatedAt: now });
     } else {
-      await addCostCentre({ ...form, createdAt: now, updatedAt: now });
+      await addCostCentre({ ...form, branchId, createdAt: now, updatedAt: now });
     }
     setShowModal(false);
     setEditCC(null);
@@ -196,10 +205,25 @@ export default function CostCentre() {
           </p>
         </div>
         <div className="flex gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
           {activeTab === "summary" && (
             <button
               onClick={exportSummary}
-              className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium"
+              className="flex items-center gap-2 px-4 py-2 bg-[var(--ds-action-primary)] text-white rounded-lg hover:bg-[var(--ds-action-primary-hover)] text-sm font-medium"
             >
               <Download className="w-4 h-4" /> Export
             </button>

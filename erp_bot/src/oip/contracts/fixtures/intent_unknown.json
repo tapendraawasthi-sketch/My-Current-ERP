@@ -1,0 +1,17 @@
+{
+  "data": {
+    "classifier_version": "none",
+    "domain": "unknown",
+    "evidence_refs": [],
+    "evidence_spans": [],
+    "intent_id": "unknown",
+    "missing_context": [],
+    "out_of_distribution_score": 0.0,
+    "required_capability": null,
+    "schema_version": "1.0.0",
+    "score": 0.0,
+    "status": "NOT_RUN"
+  },
+  "kind": "IntentCandidateV1",
+  "valid": true
+}

@@ -644,6 +644,7 @@ export function computePartyStatement(
   invoices: any[],
   startDate?: string,
   endDate?: string,
+  branchId?: string,
 ): { rows: any[]; openingBalance: number; closingBalance: number } {
   if (!party) return { rows: [], openingBalance: 0, closingBalance: 0 };
   const partyAccount = accounts.find((a) => a.partyId === party.id || a.name === party.name);
@@ -658,6 +659,7 @@ export function computePartyStatement(
         v.status === "posted" &&
         (!startDate || v.date >= startDate) &&
         (!endDate || v.date <= endDate) &&
+        (!branchId || branchId === "all" || !v.branchId || v.branchId === branchId) &&
         v.lines?.some((l: any) => l.accountId === partyAccount?.id),
     )
     .sort((a, b) => a.date.localeCompare(b.date));

@@ -26,12 +26,14 @@ import {
   Cell,
   CartesianGrid,
 } from "recharts";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const BORDER = "1px solid #000";
 const BG = "#E4F1D9";
-const BG_CARD = "#EBF5E2";
-const BG_HEADER = "#D4EABD";
-const BG_DEEP = "#C9DEB5";
+const BG_CARD = "var(--ds-surface-muted)";
+const BG_HEADER = "var(--ds-surface-hover)";
+const BG_DEEP = "var(--ds-surface-muted)";
 
 function money(v) {
   const abs = Math.abs(Number(v || 0));
@@ -58,6 +60,7 @@ const COMMISSION_TYPES = [
 
 export default function SalespersonMaster() {
   const { invoices, employees, fiscalYears, vouchers } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [activeTab, setActiveTab] = useState("master");
   const [salespersons, setSalespersons] = useState([]);
   const [editingId, setEditingId] = useState(null);
@@ -104,11 +107,12 @@ export default function SalespersonMaster() {
   useEffect(() => {
     const filtered = salespersons.filter(
       (sp) =>
-        sp.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        sp.name.toLowerCase().includes(searchTerm.toLowerCase()),
+        matchBranch((sp as any).branchId) &&
+        (sp.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          sp.name.toLowerCase().includes(searchTerm.toLowerCase())),
     );
     setFilteredSalespersons(filtered);
-  }, [salespersons, searchTerm]);
+  }, [salespersons, searchTerm, branchFilter]);
 
   const handleInputChange = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -147,9 +151,11 @@ export default function SalespersonMaster() {
 
     try {
       const db = getDB();
+      const existing = editingId ? salespersons.find((sp) => sp.id === editingId) : null;
       await db.salespersons.put({
         id: editingId || generateId(),
         ...form,
+        branchId: existing?.branchId || readActiveBranchId() || undefined,
         updatedAt: new Date().toISOString(),
       });
       toast.success(editingId ? "Updated successfully" : "Created successfully");
@@ -212,9 +218,12 @@ export default function SalespersonMaster() {
     const endDate =
       selectedPeriod === "Full Year" ? fy.endDate : new Date().toISOString().split("T")[0];
 
-    const reportData = salespersons.map((sp) => {
+    const reportData = salespersons
+      .filter((sp) => matchBranch((sp as any).branchId))
+      .map((sp) => {
       const salesInvoices = invoices.filter(
         (inv) =>
+          matchBranch((inv as any).branchId) &&
           inv.salespersonId === sp.id &&
           inv.type.includes("sales") &&
           inv.status === "posted" &&
@@ -227,6 +236,7 @@ export default function SalespersonMaster() {
 
       const collections = vouchers.filter(
         (v) =>
+          matchBranch((v as any).branchId) &&
           v.salespersonId === sp.id &&
           v.type.includes("receipt") &&
           v.date >= startDate &&
@@ -261,14 +271,14 @@ export default function SalespersonMaster() {
     });
 
     return reportData;
-  }, [salespersons, invoices, vouchers, selectedFiscalYear, selectedPeriod]);
+  }, [salespersons, invoices, vouchers, selectedFiscalYear, selectedPeriod, branchFilter]);
 
   // Area-wise Report Data
   const areaWiseData = useMemo(() => {
     const grouped = {};
 
     invoices
-      .filter((inv) => inv.salespersonId)
+      .filter((inv) => inv.salespersonId && matchBranch((inv as any).branchId))
       .forEach((inv) => {
         const sp = salespersons.find((s) => s.id === inv.salespersonId);
         if (!sp) return;
@@ -301,7 +311,7 @@ export default function SalespersonMaster() {
     });
 
     return grouped;
-  }, [invoices, salespersons]);
+  }, [invoices, salespersons, branchFilter]);
 
   // Top areas chart data
   const topAreasData = useMemo(() => {
@@ -352,8 +362,33 @@ export default function SalespersonMaster() {
 
   return (
     <div style={{ backgroundColor: BG, minHeight: "100vh", padding: "20px" }}>
-      <h1 style={{ fontSize: "24px", fontWeight: "bold", color: "#000000", marginBottom: "20px" }}>
-        Salesperson Master
+      <h1
+        style={{
+          fontSize: "24px",
+          fontWeight: "bold",
+          color: "#000000",
+          marginBottom: "20px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <span>Salesperson Master</span>
+        {branchOptions.length > 0 && (
+          <select
+            value={branchFilter}
+            onChange={(e) => setBranchFilter(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            aria-label="Branch"
+          >
+            <option value="all">All branches</option>
+            {branchOptions.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name || b.code || b.id}
+              </option>
+            ))}
+          </select>
+        )}
       </h1>
 
       {/* Tab Navigation */}
@@ -408,7 +443,7 @@ export default function SalespersonMaster() {
               <button
                 onClick={clearForm}
                 style={{
-                  backgroundColor: "#1557b0",
+                  backgroundColor: "var(--ds-action-primary)",
                   color: "white",
                   border: BORDER,
                   padding: "4px 8px",
@@ -866,7 +901,7 @@ export default function SalespersonMaster() {
               <button
                 onClick={handleSave}
                 style={{
-                  backgroundColor: "#1557b0",
+                  backgroundColor: "var(--ds-action-primary)",
                   color: "white",
                   border: BORDER,
                   padding: "8px 16px",
@@ -986,7 +1021,9 @@ export default function SalespersonMaster() {
                 style={{ padding: "6px", border: BORDER, borderRadius: "4px", fontSize: "12px" }}
               >
                 <option value="ALL">All Salespersons</option>
-                {salespersons.map((sp) => (
+                {salespersons
+                  .filter((sp) => matchBranch((sp as any).branchId))
+                  .map((sp) => (
                   <option key={sp.id} value={sp.id}>
                     {sp.name}
                   </option>
@@ -996,7 +1033,7 @@ export default function SalespersonMaster() {
             <button
               onClick={() => {}}
               style={{
-                backgroundColor: "#1557b0",
+                backgroundColor: "var(--ds-action-primary)",
                 color: "white",
                 border: BORDER,
                 padding: "8px 16px",
@@ -1223,7 +1260,7 @@ export default function SalespersonMaster() {
             <button
               onClick={() => {}}
               style={{
-                backgroundColor: "#1557b0",
+                backgroundColor: "var(--ds-action-primary)",
                 color: "white",
                 border: BORDER,
                 padding: "8px 16px",
@@ -1245,7 +1282,7 @@ export default function SalespersonMaster() {
                 <Tooltip formatter={(value) => [money(value), "Sales"]} />
                 <Bar dataKey="sales" name="Sales">
                   {topAreasData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill="#1557b0" />
+                    <Cell key={`cell-${index}`} fill="var(--ds-action-primary)" />
                   ))}
                 </Bar>
               </BarChart>

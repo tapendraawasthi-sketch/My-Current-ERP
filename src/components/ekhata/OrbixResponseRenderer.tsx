@@ -57,6 +57,23 @@ function renderByType(
   const text = displayText || response.display.text;
 
   switch (response.response_type) {
+    case "unsupported_response":
+      return (
+        <TrustChrome response={response}>
+          <div
+            className="rounded-[var(--ds-radius-md)] border border-[var(--ds-status-warning)]/40 bg-[var(--ds-status-warning-surface)] px-3 py-2.5"
+            data-testid="orbix-unsupported-response"
+            data-received-type={response.payload.received_type}
+          >
+            <p className="text-[13px] font-medium text-[var(--ds-status-warning)]">
+              {response.payload.safe_message || text}
+            </p>
+            <p className="mt-1 text-[12px] text-[var(--ds-text-muted)]">
+              Unsupported response type — not shown as an accounting card.
+            </p>
+          </div>
+        </TrustChrome>
+      );
     case "mode_restriction":
       return (
         <TrustChrome response={response}>
@@ -196,7 +213,10 @@ function renderByType(
     case "confirmation_required":
     case "transaction_preview":
     case "journal_preview":
+    case "transaction_draft":
+    case "posting_started":
     case "posting_progress":
+    case "cancellation_completed":
       // Journal / confirm / posting UI remains in OrbixJournalCard (pendingCard).
       return text ? (
         <TrustChrome response={response}>
@@ -208,7 +228,10 @@ function renderByType(
       return text ? (
         <TrustChrome response={response}>
           <OrbixMessageContent text={text} />
-          {response.response_type === "report_updated" && response.payload.changes?.length ? (
+          {response.response_type === "report_updated" &&
+          "changes" in response.payload &&
+          Array.isArray(response.payload.changes) &&
+          response.payload.changes.length ? (
             <p className="mt-2 text-[12px] text-[var(--ds-text-muted)]">
               Updated · {response.payload.changes.join(" · ")}
             </p>
@@ -220,12 +243,26 @@ function renderByType(
     case "accounting_explanation":
     case "erp_data_result":
     case "unknown":
-    default:
       return text ? (
         <TrustChrome response={response}>
           <OrbixMessageContent text={text} />
         </TrustChrome>
       ) : null;
+    default: {
+      // Exhaustive safeguard — never treat unknown as an accounting card.
+      const _exhaustive: never = response;
+      void _exhaustive;
+      return (
+        <div
+          className="rounded-[var(--ds-radius-md)] border border-amber-200 bg-amber-50 px-3 py-2.5"
+          data-testid="orbix-unsupported-response"
+        >
+          <p className="text-[13px] text-amber-800">
+            {text || "Unsupported response. No accounting action was taken."}
+          </p>
+        </div>
+      );
+    }
   }
 }
 

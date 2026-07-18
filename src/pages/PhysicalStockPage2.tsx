@@ -4,6 +4,8 @@ import { useStore } from "../store/useStore";
 import toast from "@/lib/appToast";
 import { Package, Download, CheckCircle, AlertTriangle } from "lucide-react";
 import { formatNumber } from "../lib/utils";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 interface PhysicalStockLine {
   itemId: string;
@@ -16,7 +18,8 @@ interface PhysicalStockLine {
 }
 
 export default function PhysicalStockPage2() {
-  const { items, stockMovements, addPhysicalStock } = useStore();
+  const { items, stockMovements, addPhysicalStock } = useStore() as any;
+  const { branchFilter, setBranchFilter, matchMovement, branchOptions } = useBranchFilter();
   const [lines, setLines] = useState<PhysicalStockLine[]>([]);
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [materialCentre, setMaterialCentre] = useState("Main Warehouse");
@@ -26,7 +29,11 @@ export default function PhysicalStockPage2() {
 
   const getBookStock = (itemId: string): number => {
     return (stockMovements || [])
-      .filter((m: any) => m.itemId === itemId)
+      .filter(
+        (m: any) =>
+          m.itemId === itemId &&
+          matchMovement({ branchId: m.branchId, warehouseId: m.warehouseId }),
+      )
       .reduce((sum: number, m: any) => {
         const qty = Number(m.quantity || m.qty || 0);
         const t = String(m.type || m.movementType || "").toLowerCase();
@@ -97,6 +104,8 @@ export default function PhysicalStockPage2() {
         date,
         stockNo: `PS-${date.replace(/-/g, "")}`,
         narration,
+        materialCentre,
+        branchId: readActiveBranchId() || undefined,
         lines: variances.map((l) => ({
           itemId: l.itemId,
           itemName: l.itemName,
@@ -147,7 +156,22 @@ export default function PhysicalStockPage2() {
             Record actual physical stock count — system auto-generates Stock journal for variances
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
           {loaded && (
             <button
               onClick={exportCSV}

@@ -17,11 +17,11 @@ const PROVINCES = ["Koshi", "Madhesh", "Bagmati", "Gandaki", "Lumbini", "Karnali
 const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 const inputCls =
-  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
 
 const typeBadge = (type: string) => {
@@ -225,7 +225,7 @@ const PartiesDirectory: React.FC = React.memo(() => {
                     setPage(1);
                   }}
                   className={`h-7 px-2.5 text-[11px] font-medium rounded transition-colors ${
-                    typeFilter === t ? "bg-[#1557b0] text-white" : "text-gray-600 hover:bg-gray-50"
+                    typeFilter === t ? "bg-[var(--ds-action-primary)] text-white" : "text-gray-600 hover:bg-gray-50"
                   }`}
                 >
                   {t === "ALL" ? "All" : t.charAt(0).toUpperCase() + t.slice(1)}
@@ -235,7 +235,7 @@ const PartiesDirectory: React.FC = React.memo(() => {
             <select
               value={provinceFilter}
               onChange={(e) => setProvinceFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               <option value="ALL">All provinces</option>
               {PROVINCES.map((p) => (
@@ -290,7 +290,7 @@ const PartiesDirectory: React.FC = React.memo(() => {
                     {paginatedData.map((party) => (
                       <tr
                         key={party.id}
-                        className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                        className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
                         onClick={() => handleOpenEdit(party)}
                       >
                         <td className={`${td} font-mono text-gray-600`}>{party.code || "—"}</td>
@@ -513,7 +513,7 @@ const PartiesDirectory: React.FC = React.memo(() => {
                     type="checkbox"
                     checked={isActive}
                     onChange={(e) => setIsActive(e.target.checked)}
-                    className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                    className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                   />
                   Active party
                 </label>

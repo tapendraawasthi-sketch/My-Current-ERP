@@ -1,0 +1,14 @@
+{
+  "resource_id": "punctuation_candidates",
+  "version": "mai-06.1.0",
+  "review_status": "ENGINEERING_REVIEWED",
+  "entries": {
+    "“": ["\""],
+    "”": ["\""],
+    "‘": ["'"],
+    "’": ["'"],
+    "–": ["-"],
+    "—": ["-"],
+    "।": ["."]
+  }
+}

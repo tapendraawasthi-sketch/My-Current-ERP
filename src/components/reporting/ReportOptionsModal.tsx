@@ -34,7 +34,7 @@ const ReportOptionsModal: React.FC<ReportOptionsModalProps> = ({
           <button
             type="button"
             onClick={onApply}
-            className="h-8 px-4 text-[12px] font-medium rounded-md bg-[#1557b0] text-white hover:bg-[#0f4a96]"
+            className="h-8 px-4 text-[12px] font-medium rounded-md bg-[var(--ds-action-primary)] text-white hover:bg-[var(--ds-action-primary-hover)]"
           >
             OK (F2)
           </button>

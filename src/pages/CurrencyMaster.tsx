@@ -20,6 +20,8 @@ import Table from "../components/ui/Table";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
 import toast from "@/lib/appToast";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const CurrencyMaster: React.FC = () => {
   const {
@@ -30,7 +32,11 @@ const CurrencyMaster: React.FC = () => {
     addExchangeRate,
     getBaseCurrency,
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const baseCurrency = getBaseCurrency();
+  const filteredCurrencies = (currencies || []).filter((c) =>
+    matchBranch((c as any).branchId),
+  );
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [showRateModal, setShowRateModal] = useState(false);
@@ -58,10 +64,14 @@ const CurrencyMaster: React.FC = () => {
     }
 
     try {
+      const payload = {
+        ...currencyForm,
+        branchId: editingCurrency?.branchId || readActiveBranchId() || undefined,
+      };
       if (editingCurrency) {
-        await updateCurrency(editingCurrency.id, currencyForm);
+        await updateCurrency(editingCurrency.id, payload);
       } else {
-        await addCurrency(currencyForm);
+        await addCurrency(payload);
       }
       setShowAddModal(false);
       setCurrencyForm({ code: "", name: "", symbol: "", isBase: false, isActive: true });
@@ -223,32 +233,49 @@ const CurrencyMaster: React.FC = () => {
           <h1 className="text-2xl font-bold text-[#000000]">Currency Master</h1>
           <p className="text-sm text-[#000000] mt-1">Manage currencies and exchange rates</p>
         </div>
-        <Button
-          size="sm"
-          variant="primary"
-          onClick={() => {
-            setEditingCurrency(null);
-            setCurrencyForm({ code: "", name: "", symbol: "", isBase: false, isActive: true });
-            setShowAddModal(true);
-          }}
-          icon={<Plus className="h-4 w-4" />}
-        >
-          Add Currency
-        </Button>
+        <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+          <Button
+            size="sm"
+            variant="primary"
+            onClick={() => {
+              setEditingCurrency(null);
+              setCurrencyForm({ code: "", name: "", symbol: "", isBase: false, isActive: true });
+              setShowAddModal(true);
+            }}
+            icon={<Plus className="h-4 w-4" />}
+          >
+            Add Currency
+          </Button>
+        </div>
       </div>
 
       {/* Currencies Table */}
       <Card>
         <Table
           columns={currencyColumns}
-          data={currencies}
+          data={filteredCurrencies}
           rowKey="id"
           emptyMessage="No currencies found"
         />
       </Card>
 
       {/* Exchange Rate History & Charts */}
-      {currencies
+      {filteredCurrencies
         .filter((c) => !c.isBase && c.isActive)
         .map((currency) => {
           const history = getRateHistory(currency.code);
@@ -325,7 +352,7 @@ const CurrencyMaster: React.FC = () => {
                   <h4 className="text-sm font-semibold text-[#000000] mb-2">Recent Rate History</h4>
                   <div className="overflow-x-auto">
                     <table className="w-full text-xs">
-                      <thead className="bg-[#EBF5E2] border-y border-[#9DC07A]">
+                      <thead className="bg-[var(--ds-surface-muted)] border-y border-[var(--ds-border-default)]">
                         <tr>
                           <th className="px-3 py-2 text-left">Date</th>
                           <th className="px-3 py-2 text-right">Rate to {baseCurrency?.code}</th>
@@ -338,7 +365,7 @@ const CurrencyMaster: React.FC = () => {
                           .sort((a, b) => b.date.localeCompare(a.date))
                           .slice(0, 10)
                           .map((rate, idx) => (
-                            <tr key={idx} className="hover:bg-[#EBF5E2]">
+                            <tr key={idx} className="hover:bg-[var(--ds-surface-muted)]">
                               <td className="px-3 py-2">
                                 {new Date(rate.date).toLocaleDateString()}
                               </td>

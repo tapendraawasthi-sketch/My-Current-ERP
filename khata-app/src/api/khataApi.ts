@@ -5,9 +5,15 @@ import { createIdempotencyKey, enqueueTransaction, replayQueue } from "../lib/of
 const API_BASE = import.meta.env.VITE_API_BASE ?? "";
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const token = import.meta.env.VITE_KHATA_ACCESS_TOKEN as string | undefined;
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...(init?.headers as Record<string, string> | undefined),
+  };
+  if (token) headers.Authorization = `Bearer ${token}`;
   const response = await fetch(`${API_BASE}${path}`, {
-    headers: { "Content-Type": "application/json", ...(init?.headers ?? {}) },
     ...init,
+    headers,
   });
   const body = await response.json();
   if (!response.ok || body.success === false) {

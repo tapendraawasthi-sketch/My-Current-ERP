@@ -150,15 +150,20 @@ async function ackDraftPostedOnBackend(
 ): Promise<void> {
   if (!ORBIX_QWEN_URL || !draftId || draftId === "legacy-local") return;
   try {
+    const { readAccessToken } = await import("@/platform/identity/session");
+    const token = readAccessToken();
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (token) headers.Authorization = `Bearer ${token}`;
     await fetch(`${ORBIX_QWEN_URL}/orbix/drafts/${encodeURIComponent(draftId)}/mark-posted`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify({
         voucher_number: result.voucher_number,
         posting_id: result.posting_id,
         posted_at: new Date().toISOString(),
         client_verified: true,
         invoice_number: result.invoice_number,
+        orbix_mode: "accountant",
       }),
       signal: AbortSignal.timeout(8000),
     });

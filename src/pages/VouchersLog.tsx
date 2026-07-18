@@ -11,8 +11,10 @@ import Card from "../components/ui/Card";
 import { VoucherStatus, VoucherType, JournalEntry } from "../lib/types";
 import { formatCurrency } from "../lib/utils";
 import NepaliDatePicker from "../components/ui/NepaliDatePicker";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const VouchersLog: React.FC = () => {
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [filters, setFilters] = useState({
     voucherType: "all",
     status: "all",
@@ -23,7 +25,7 @@ const VouchersLog: React.FC = () => {
   const [selectedVouchers, setSelectedVouchers] = useState<string[]>([]);
 
   // Mock data - replace with actual API call
-  const vouchers: (JournalEntry & { actions?: string })[] = [
+  const vouchers: (JournalEntry & { actions?: string; branchId?: string })[] = [
     {
       id: "1",
       voucherNo: "JV-001",
@@ -53,14 +55,16 @@ const VouchersLog: React.FC = () => {
   ];
 
   const stats = useMemo(() => {
-    const posted = vouchers.filter((v) => v.status === VoucherStatus.POSTED).length;
-    const draft = vouchers.filter((v) => v.status === VoucherStatus.DRAFT).length;
-    const cancelled = vouchers.filter((v) => v.status === VoucherStatus.CANCELLED).length;
+    const scoped = vouchers.filter((v) => matchBranch(v.branchId));
+    const posted = scoped.filter((v) => v.status === VoucherStatus.POSTED).length;
+    const draft = scoped.filter((v) => v.status === VoucherStatus.DRAFT).length;
+    const cancelled = scoped.filter((v) => v.status === VoucherStatus.CANCELLED).length;
     return { posted, draft, cancelled };
-  }, [vouchers]);
+  }, [vouchers, matchBranch, branchFilter]);
 
   const filteredVouchers = useMemo(() => {
     return vouchers.filter((voucher) => {
+      if (!matchBranch(voucher.branchId)) return false;
       if (filters.voucherType !== "all" && voucher.type !== filters.voucherType) return false;
       if (filters.status !== "all" && voucher.status !== filters.status) return false;
       if (
@@ -71,7 +75,7 @@ const VouchersLog: React.FC = () => {
         return false;
       return true;
     });
-  }, [vouchers, filters]);
+  }, [vouchers, filters, matchBranch, branchFilter]);
 
   const getStatusBadge = (status: VoucherStatus) => {
     const variants = {
@@ -140,7 +144,7 @@ const VouchersLog: React.FC = () => {
               setSelectedVouchers([]);
             }
           }}
-          className="rounded border-[#9DC07A]"
+          className="rounded border-[var(--ds-border-default)]"
         />
       ),
       render: (voucher: JournalEntry) => (
@@ -154,7 +158,7 @@ const VouchersLog: React.FC = () => {
               setSelectedVouchers(selectedVouchers.filter((id) => id !== voucher.id));
             }
           }}
-          className="rounded border-[#9DC07A]"
+          className="rounded border-[var(--ds-border-default)]"
         />
       ),
       width: "50px",
@@ -271,6 +275,21 @@ const VouchersLog: React.FC = () => {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-[#000000]">Vouchers Log</h1>
         <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
           {selectedVouchers.length > 0 && (
             <>
               <Button

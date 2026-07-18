@@ -5,6 +5,7 @@ import { useStore } from "../store/useStore";
 import { computeLedgerTotals } from "../lib/reportingHierarchy";
 import * as XLSX from "xlsx";
 import { Download, Info } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type CFMethod = "indirect" | "direct";
@@ -85,12 +86,18 @@ const CASH_KEYWORDS = ["cash", "bank", "petty cash", "cash in hand", "cash at ba
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function CashFlowStatement() {
   const { accounts, vouchers, currentFiscalYear, companySettings } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
 
   const [method, setMethod] = useState<CFMethod>("indirect");
   const fyStart = currentFiscalYear?.startDate || new Date().getFullYear() + "-04-01";
   const fyEnd = currentFiscalYear?.endDate || new Date().getFullYear() + 1 + "-03-31";
   const [fromDate, setFromDate] = useState(fyStart);
   const [toDate, setToDate] = useState(fyEnd);
+
+  const scopedVouchers = useMemo(
+    () => (vouchers || []).filter((v) => matchBranch(v.branchId)),
+    [vouchers, matchBranch, branchFilter],
+  );
 
   // ── Classify account by name ───────────────────────────────────────────────
   const classifyAccount = (
@@ -118,7 +125,7 @@ export default function CashFlowStatement() {
   const movements = useMemo(() => {
     const map: Record<string, number> = {}; // net debit for each account
 
-    for (const v of vouchers) {
+    for (const v of scopedVouchers) {
       if (v.status !== "posted") continue;
       const vDate = v.date || "";
       if (vDate < fromDate || vDate > toDate) continue;
@@ -130,13 +137,13 @@ export default function CashFlowStatement() {
       }
     }
     return map;
-  }, [vouchers, fromDate, toDate]);
+  }, [scopedVouchers, fromDate, toDate]);
 
   // ── Compute opening balances (before period) ───────────────────────────────
   const openingBalances = useMemo(() => {
     const map: Record<string, number> = {};
 
-    for (const v of vouchers) {
+    for (const v of scopedVouchers) {
       if (v.status !== "posted") continue;
       const vDate = v.date || "";
       if (vDate >= fromDate) continue;
@@ -156,7 +163,7 @@ export default function CashFlowStatement() {
       }
     }
     return map;
-  }, [vouchers, accounts, fromDate]);
+  }, [scopedVouchers, accounts, fromDate]);
 
   // ── Cash and Bank balances ─────────────────────────────────────────────────
   const cashAccounts = useMemo(
@@ -173,12 +180,12 @@ export default function CashFlowStatement() {
   );
 
   const balanceSheetCash = useMemo(() => {
-    const totals = computeLedgerTotals(accounts, vouchers, { endDate: toDate });
+    const totals = computeLedgerTotals(accounts, scopedVouchers, { endDate: toDate });
     return cashAccounts.reduce((sum, acc) => {
       const entry = totals.get(acc.id);
       return sum + Number(entry?.net || 0);
     }, 0);
-  }, [accounts, vouchers, toDate, cashAccounts]);
+  }, [accounts, scopedVouchers, toDate, cashAccounts]);
 
   const cashReconciliationDiff = useMemo(
     () => Math.abs(closingCash - balanceSheetCash),
@@ -303,7 +310,7 @@ export default function CashFlowStatement() {
     // Direct method: show actual cash receipts and payments
 
     // Cash receipts from customers (credit sales collected = receipts vouchers with party debit)
-    const receiptVouchers = vouchers.filter(
+    const receiptVouchers = scopedVouchers.filter(
       (v) =>
         v.status === "posted" &&
         v.type === "receipt" &&
@@ -316,7 +323,7 @@ export default function CashFlowStatement() {
     );
 
     // Cash paid to suppliers
-    const paymentVouchers = vouchers.filter(
+    const paymentVouchers = scopedVouchers.filter(
       (v) =>
         v.status === "posted" &&
         v.type === "payment" &&
@@ -329,7 +336,7 @@ export default function CashFlowStatement() {
     );
 
     // Cash paid for expenses (expense vouchers)
-    const expenseVouchers = vouchers.filter(
+    const expenseVouchers = scopedVouchers.filter(
       (v) =>
         v.status === "posted" &&
         (v.type === "payment" || v.type === "journal") &&
@@ -418,7 +425,7 @@ export default function CashFlowStatement() {
     };
   }, [
     accounts,
-    vouchers,
+    scopedVouchers,
     movements,
     openingCash,
     closingCash,
@@ -538,7 +545,7 @@ export default function CashFlowStatement() {
             {line.label}
           </td>
           <td
-            className={`px-4 py-2.5 text-[12px] font-bold font-mono text-right border-b border-gray-100 ${line.amount >= 0 ? "text-[#1557b0]" : "text-red-600"}`}
+            className={`px-4 py-2.5 text-[12px] font-bold font-mono text-right border-b border-gray-100 ${line.amount >= 0 ? "text-[var(--ds-action-primary)]" : "text-red-600"}`}
           >
             Rs. {fmt(line.amount)}
           </td>
@@ -664,7 +671,7 @@ export default function CashFlowStatement() {
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           />
         </div>
         <div>
@@ -675,9 +682,28 @@ export default function CashFlowStatement() {
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           />
         </div>
+        {branchOptions.length > 0 && (
+          <div>
+            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+              Branch
+            </label>
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {/* Method toggle */}
         <div>
@@ -691,7 +717,7 @@ export default function CashFlowStatement() {
                 onClick={() => setMethod(m)}
                 className={`h-8 px-4 text-[11px] font-medium capitalize transition-colors ${
                   method === m
-                    ? "bg-[#1557b0] text-white"
+                    ? "bg-[var(--ds-action-primary)] text-white"
                     : "bg-white text-gray-600 hover:bg-gray-50"
                 }`}
               >
@@ -741,7 +767,7 @@ export default function CashFlowStatement() {
           {
             label: "Closing Cash & Bank",
             value: closingCash,
-            color: closingCash >= 0 ? "text-[#1557b0]" : "text-red-600",
+            color: closingCash >= 0 ? "text-[var(--ds-action-primary)]" : "text-red-600",
           },
         ].map((kpi) => (
           <div key={kpi.label} className="bg-white border border-gray-200 rounded-lg p-3">
@@ -812,7 +838,7 @@ export default function CashFlowStatement() {
       <div
         style={{
           margin: "20px 0",
-          border: "2px solid #1557b0",
+          border: "2px solid var(--ds-action-primary)",
           borderRadius: 6,
           padding: "14px 20px",
           background: "#eff6ff",
@@ -828,7 +854,7 @@ export default function CashFlowStatement() {
               fontWeight: 700,
               textTransform: "uppercase",
               letterSpacing: "0.06em",
-              color: "#1557b0",
+              color: "var(--ds-action-primary)",
             }}
           >
             Net Increase / (Decrease) in Cash and Cash Equivalents (A+B+C)

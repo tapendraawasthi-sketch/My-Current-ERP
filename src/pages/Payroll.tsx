@@ -28,6 +28,8 @@ import {
   EXEMPTION_SINGLE,
   EXEMPTION_MARRIED,
 } from "../lib/nepalTax";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 // ─── Tab types ────────────────────────────────────────────────────────────────
 type Tab = "employees" | "salary" | "process" | "register" | "payslip";
@@ -82,6 +84,7 @@ export default function Payroll() {
     currentFiscalYear,
     companySettings,
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [activeTab, setActiveTab] = useState<Tab>("employees");
   const [showEmpModal, setShowEmpModal] = useState(false);
@@ -130,16 +133,21 @@ export default function Payroll() {
     loadPayrollData?.();
   }, []);
 
+  const scopedEmployees = useMemo(
+    () => employees.filter((e: any) => matchBranch(e.branchId)),
+    [employees, matchBranch, branchFilter],
+  );
+
   // ── Filtered employees ────────────────────────────────────────────────────
   const filteredEmps = useMemo(
     () =>
-      employees.filter(
+      scopedEmployees.filter(
         (e: any) =>
           e.name?.toLowerCase().includes(searchEmp.toLowerCase()) ||
           e.employeeCode?.toLowerCase().includes(searchEmp.toLowerCase()) ||
           e.department?.toLowerCase().includes(searchEmp.toLowerCase()),
       ),
-    [employees, searchEmp],
+    [scopedEmployees, searchEmp],
   );
 
   // ── Current payroll run entries ───────────────────────────────────────────
@@ -161,10 +169,11 @@ export default function Payroll() {
   // ── Save employee ─────────────────────────────────────────────────────────
   const handleSaveEmployee = async () => {
     const now = new Date().toISOString();
+    const branchId = empForm.branchId || readActiveBranchId() || undefined;
     if (editEmp?.id) {
-      await updateEmployee(editEmp.id, { ...empForm, updatedAt: now });
+      await updateEmployee(editEmp.id, { ...empForm, branchId, updatedAt: now });
     } else {
-      await addEmployee({ ...empForm, createdAt: now, updatedAt: now });
+      await addEmployee({ ...empForm, branchId, createdAt: now, updatedAt: now });
     }
     setShowEmpModal(false);
     setEditEmp(null);
@@ -252,7 +261,22 @@ export default function Payroll() {
             Pay employees.
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
           {activeTab === "employees" && (
             <button
               onClick={() => {
@@ -288,7 +312,7 @@ export default function Payroll() {
         {[
           {
             label: "Total Employees",
-            value: employees.filter((e: any) => e.isActive).length,
+            value: scopedEmployees.filter((e: any) => e.isActive).length,
             color: "blue",
             icon: Users,
           },
@@ -405,7 +429,7 @@ export default function Payroll() {
                   </td>
                   <td className="px-4 py-3">
                     <span
-                      className={`px-2 py-0.5 rounded-full text-xs ${emp.ssfApplicable ? "bg-purple-100 text-purple-700" : "bg-gray-100 text-gray-500"}`}
+                      className={`px-2 py-0.5 rounded-full text-xs ${emp.ssfApplicable ? "bg-[var(--ds-status-info-surface)] text-[var(--ds-status-info)]" : "bg-[var(--ds-surface-muted)] text-[var(--ds-text-muted)]"}`}
                     >
                       {emp.ssfApplicable ? "Yes" : "No"}
                     </span>
@@ -455,7 +479,7 @@ export default function Payroll() {
       {activeTab === "salary" && (
         <div className="space-y-4">
           {employees
-            .filter((e: any) => e.isActive)
+            .filter((e: any) => e.isActive && matchBranch(e.branchId))
             .map((emp: any) => {
               const structs = salaryStructures
                 .filter((s: any) => s.employeeId === emp.id)
@@ -563,7 +587,7 @@ export default function Payroll() {
             </div>
             <div className="text-sm text-gray-600">
               <span className="font-medium text-gray-800">
-                {employees.filter((e: any) => e.isActive).length}
+                {scopedEmployees.filter((e: any) => e.isActive).length}
               </span>{" "}
               active employees will be processed.
             </div>
@@ -761,7 +785,7 @@ export default function Payroll() {
               className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
             >
               <option value="">Select Employee</option>
-              {employees
+              {scopedEmployees
                 .filter((e: any) => e.isActive)
                 .map((e: any) => (
                   <option key={e.id} value={e.id}>
@@ -1040,7 +1064,7 @@ export default function Payroll() {
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
                 >
                   <option value={0}>Select Employee</option>
-                  {employees
+                  {scopedEmployees
                     .filter((e: any) => e.isActive)
                     .map((e: any) => (
                       <option key={e.id} value={e.id}>

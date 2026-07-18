@@ -2376,7 +2376,7 @@ const ChartOfAccounts: React.FC = () => {
                     : item.accountType === "Cash"
                       ? "bg-green-100 text-green-700"
                       : item.accountType === "Party"
-                        ? "bg-purple-100 text-purple-700"
+                        ? "bg-[var(--ds-status-info-surface)] text-[var(--ds-status-info)]"
                         : "bg-gray-100 text-gray-600"
                 }`}
               >

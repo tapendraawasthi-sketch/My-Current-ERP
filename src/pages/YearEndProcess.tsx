@@ -19,6 +19,8 @@ import {
   Settings,
   ArrowRight,
 } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 function money(v: number): string {
   const abs = Math.abs(Number(v || 0));
@@ -32,11 +34,11 @@ const tableHeadClass =
 const tableCellClass = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 
 const primaryBtn =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed";
 const outlineBtn =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5 shadow-sm";
 const inputClass =
-  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-shadow";
+  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] transition-shadow";
 
 function todayISO() {
   return new Date().toISOString().split("T")[0];
@@ -125,6 +127,22 @@ export default function YearEndProcess() {
     updateFiscalYear,
   } = useStore();
 
+  const { branchFilter, setBranchFilter, matchBranch, matchMovement, branchOptions } =
+    useBranchFilter();
+
+  const scopedVouchers = useMemo(
+    () => (vouchers || []).filter((v) => matchBranch(v.branchId)),
+    [vouchers, matchBranch, branchFilter],
+  );
+
+  const scopedStockMovements = useMemo(
+    () =>
+      (stockMovements || []).filter((m) =>
+        matchMovement({ branchId: m.branchId, warehouseId: m.warehouseId }),
+      ),
+    [stockMovements, matchMovement, branchFilter],
+  );
+
   const [currentStep, setCurrentStep] = useState(1);
   const [checks, setChecks] = useState([]);
   const [manualOverride, setManualOverride] = useState(false);
@@ -167,14 +185,14 @@ export default function YearEndProcess() {
   }, []);
 
   const runChecks = useCallback(() => {
-    const tb = calculateTrialBalance(vouchers);
+    const tb = calculateTrialBalance(scopedVouchers);
 
-    const draftCount = (vouchers || []).filter(
+    const draftCount = scopedVouchers.filter(
       (v) => v.status === "draft" || v.status === "submitted",
     ).length;
 
     const negativeStockItems = (items || []).filter((item) => {
-      const stock = (stockMovements || [])
+      const stock = scopedStockMovements
         .filter((m) => m.itemId === item.id)
         .reduce(
           (a, m) => {
@@ -248,7 +266,7 @@ export default function YearEndProcess() {
     ];
 
     setChecks(checkResults);
-  }, [vouchers, items, stockMovements]);
+  }, [scopedVouchers, scopedStockMovements, items]);
 
   useEffect(() => {
     if (currentStep === 1) runChecks();
@@ -319,7 +337,7 @@ export default function YearEndProcess() {
     const fyEnd = currentFiscalYear?.endDate;
 
     const balances: Record<string, number> = {};
-    for (const v of vouchers || []) {
+    for (const v of scopedVouchers) {
       if (v.status !== "posted") continue;
       if (fyStart && v.date < fyStart) continue;
       if (fyEnd && v.date > fyEnd) continue;
@@ -342,13 +360,13 @@ export default function YearEndProcess() {
       totalExpenses,
       netProfit: totalIncome - totalExpenses,
     };
-  }, [accounts, vouchers, currentFiscalYear]);
+  }, [accounts, scopedVouchers, currentFiscalYear]);
 
   const closingPreview = useMemo(() => {
     const fyStart = currentFiscalYear?.startDate;
     const fyEnd = currentFiscalYear?.endDate;
     const creditBals: Record<string, number> = {};
-    for (const v of vouchers || []) {
+    for (const v of scopedVouchers) {
       if (v.status !== "posted") continue;
       if (fyStart && v.date < fyStart) continue;
       if (fyEnd && v.date > fyEnd) continue;
@@ -379,7 +397,7 @@ export default function YearEndProcess() {
       }));
 
     return { incomeLines, expenseLines };
-  }, [accounts, vouchers, currentFiscalYear]);
+  }, [accounts, scopedVouchers, currentFiscalYear]);
 
   const balanceSheetRollover = useMemo(() => {
     // Derive closing balance from posted vouchers up to fiscal year end.
@@ -387,7 +405,7 @@ export default function YearEndProcess() {
     const fyEnd = currentFiscalYear?.endDate;
 
     const balances: Record<string, number> = {};
-    for (const v of vouchers || []) {
+    for (const v of scopedVouchers) {
       if (v.status !== "posted") continue;
       if (fyEnd && v.date > fyEnd) continue;
       for (const line of v.lines || []) {
@@ -411,7 +429,7 @@ export default function YearEndProcess() {
         };
       })
       .filter((a) => Math.abs(a.closingBalance) > 0.01);
-  }, [accounts, vouchers, currentFiscalYear]);
+  }, [accounts, scopedVouchers, currentFiscalYear]);
 
   if (!isAllowed) {
     return (
@@ -448,6 +466,7 @@ export default function YearEndProcess() {
       narration: manualJournalForm.narration || `Year-end adjustment - ${manualJournalType}`,
       amount,
       grandTotal: amount,
+      branchId: readActiveBranchId() || undefined,
       lines: [
         {
           id: generateId(),
@@ -506,6 +525,7 @@ export default function YearEndProcess() {
       narration: "Gratuity Provision for FY " + (currentFiscalYear?.name || ""),
       amount: gratuityAmount,
       grandTotal: gratuityAmount,
+      branchId: readActiveBranchId() || undefined,
       lines: [
         {
           id: generateId(),
@@ -594,6 +614,7 @@ export default function YearEndProcess() {
       lines: closingLines,
       amount: Math.abs(plSummary.netProfit),
       grandTotal: Math.abs(plSummary.netProfit),
+      branchId: readActiveBranchId() || undefined,
     };
 
     if (!addVoucher) throw new Error("Year-end posting requires store addVoucher.");
@@ -654,6 +675,7 @@ export default function YearEndProcess() {
             lockedByName: currentUser?.name,
             lockReason: `Fiscal year ${currentFiscalYear?.name} closed`,
             isUnlocked: false,
+            branchId: readActiveBranchId() || undefined,
           })
           .catch(() => {});
       }
@@ -722,7 +744,7 @@ export default function YearEndProcess() {
     { n: 5, label: "Open New Year" },
   ];
 
-  const fyVoucherCount = (vouchers || []).filter(
+  const fyVoucherCount = scopedVouchers.filter(
     (v) =>
       v.date >= (currentFiscalYear?.startDate || "1900-01-01") &&
       v.date <= (currentFiscalYear?.endDate || "2999-12-31"),
@@ -733,13 +755,28 @@ export default function YearEndProcess() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-            <Shield size={18} className="text-[#1557b0]" /> Year-End Process
+            <Shield size={18} className="text-[var(--ds-action-primary)]" /> Year-End Process
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Guided fiscal year closing, P&L transfer, locking and new year opening for{" "}
             {currentFiscalYear?.name || "current year"}.
           </p>
         </div>
+        {branchOptions.length > 0 ? (
+          <select
+            value={branchFilter}
+            onChange={(e) => setBranchFilter(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            aria-label="Branch filter"
+          >
+            <option value="all">All branches</option>
+            {branchOptions.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name || b.code || b.id}
+              </option>
+            ))}
+          </select>
+        ) : null}
       </div>
 
       <div className="flex items-center mb-8 overflow-x-auto py-2">
@@ -757,14 +794,14 @@ export default function YearEndProcess() {
                     completed
                       ? "bg-green-500 text-white shadow-sm"
                       : current
-                        ? "bg-[#1557b0] text-white shadow-md ring-4 ring-blue-100"
+                        ? "bg-[var(--ds-action-primary)] text-white shadow-md ring-4 ring-blue-100"
                         : "bg-white border-2 border-gray-200 text-gray-400"
                   }`}
                 >
                   {completed ? <CheckCircle size={16} /> : s.n}
                 </div>
                 <div
-                  className={`text-[11px] font-medium ${current ? "text-[#1557b0]" : completed ? "text-green-700" : "text-gray-400"}`}
+                  className={`text-[11px] font-medium ${current ? "text-[var(--ds-action-primary)]" : completed ? "text-green-700" : "text-gray-400"}`}
                 >
                   {s.label}
                 </div>
@@ -849,7 +886,7 @@ export default function YearEndProcess() {
                 <label className="text-[11px] flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                    className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                     checked={manualOverride}
                     onChange={(e) => setManualOverride(e.target.checked)}
                   />
@@ -878,21 +915,21 @@ export default function YearEndProcess() {
             </p>
           </div>
 
-          <div className="mb-6 p-4 rounded-md border border-indigo-200 bg-indigo-50 flex items-center justify-between">
+          <div className="mb-6 p-4 rounded-md border border-[var(--ds-status-info)]/30 bg-[var(--ds-status-info-surface)] flex items-center justify-between">
             <div>
-              <div className="text-[13px] font-semibold text-indigo-900 flex items-center gap-2">
+              <div className="text-[13px] font-semibold text-[var(--ds-status-info)] flex items-center gap-2">
                 <FileText size={16} /> Computed Gratuity Provision
               </div>
-              <div className="text-[11px] text-indigo-700 mt-1">
+              <div className="text-[11px] text-[var(--ds-status-info)] mt-1">
                 Automatically computed based on basic salary of active employees.
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <div className="text-[18px] font-bold text-indigo-900">
+              <div className="text-[18px] font-bold text-[var(--ds-status-info)]">
                 Rs. {money(gratuityAmount)}
               </div>
               <button
-                className="h-8 px-4 bg-indigo-600 hover:bg-indigo-700 text-white text-[12px] font-medium rounded-md transition-colors shadow-sm whitespace-nowrap"
+                className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm whitespace-nowrap"
                 onClick={postGratuityJournal}
               >
                 Post Journal
@@ -936,7 +973,7 @@ export default function YearEndProcess() {
                       <div className="flex items-center gap-3">
                         {a.type !== "gratuity" && (
                           <button
-                            className="text-[11px] font-medium text-[#1557b0] hover:underline"
+                            className="text-[11px] font-medium text-[var(--ds-action-primary)] hover:underline"
                             onClick={() => {
                               setManualJournalType(a.type);
                               setManualJournalForm({
@@ -969,7 +1006,7 @@ export default function YearEndProcess() {
             <label className="flex items-center gap-2 text-[12px] font-medium text-gray-700 cursor-pointer">
               <input
                 type="checkbox"
-                className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                 checked={allEntriesPosted}
                 onChange={(e) => setAllEntriesPosted(e.target.checked)}
               />
@@ -1080,17 +1117,17 @@ export default function YearEndProcess() {
                   </tr>
                 ))}
 
-                <tr className="bg-indigo-50 border-t-2 border-indigo-100">
-                  <td className={`${tableCellClass} font-bold text-indigo-900 pl-6`}>
-                    <span className="text-indigo-400 mr-1 text-[10px]">
+                <tr className="bg-[var(--ds-status-info-surface)] border-t-2 border-[var(--ds-status-info)]/20">
+                  <td className={`${tableCellClass} font-bold text-[var(--ds-status-info)] pl-6`}>
+                    <span className="text-[var(--ds-action-primary)] mr-1 text-[10px]">
                       {plSummary.netProfit >= 0 ? "Cr" : "Dr"}
                     </span>{" "}
                     Retained Earnings
                   </td>
-                  <td className={`${tableCellClass} text-right font-bold text-indigo-900`}>
+                  <td className={`${tableCellClass} text-right font-bold text-[var(--ds-status-info)]`}>
                     {plSummary.netProfit < 0 ? money(Math.abs(plSummary.netProfit)) : "0.00"}
                   </td>
-                  <td className={`${tableCellClass} text-right font-bold text-indigo-900`}>
+                  <td className={`${tableCellClass} text-right font-bold text-[var(--ds-status-info)]`}>
                     {plSummary.netProfit >= 0 ? money(plSummary.netProfit) : "0.00"}
                   </td>
                 </tr>
@@ -1163,7 +1200,7 @@ export default function YearEndProcess() {
               <div className="font-medium text-gray-900">{fyVoucherCount}</div>
 
               <div className="text-gray-500">Net Profit</div>
-              <div className="font-bold text-[#1557b0]">Rs. {money(plSummary.netProfit)}</div>
+              <div className="font-bold text-[var(--ds-action-primary)]">Rs. {money(plSummary.netProfit)}</div>
             </div>
           </div>
 
@@ -1283,7 +1320,7 @@ export default function YearEndProcess() {
                     <td className={`${tableCellClass} text-right text-gray-500`}>
                       Rs. {money(a.closingBalance)}
                     </td>
-                    <td className={`${tableCellClass} text-right font-medium text-[#1557b0]`}>
+                    <td className={`${tableCellClass} text-right font-medium text-[var(--ds-action-primary)]`}>
                       {a.openingDr > 0
                         ? `Dr Rs. ${money(a.openingDr)}`
                         : `Cr Rs. ${money(a.openingCr)}`}
@@ -1294,7 +1331,7 @@ export default function YearEndProcess() {
             </table>
           </div>
 
-          <div className="flex justify-end p-4 bg-indigo-50 border border-indigo-100 rounded-md">
+          <div className="flex justify-end p-4 bg-[var(--ds-status-info-surface)] border border-[var(--ds-status-info)]/20 rounded-md">
             <button className={primaryBtn} onClick={createNewFiscalYear}>
               <CheckCircle size={14} /> Create New FY & Roll Balances
             </button>

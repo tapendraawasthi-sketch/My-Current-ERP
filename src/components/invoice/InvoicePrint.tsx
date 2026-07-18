@@ -1,5 +1,6 @@
 import React from "react";
 import { X, Printer, Download } from "lucide-react";
+import { loadPrintPrefs } from "../../lib/printPrefs";
 
 interface Invoice {
   id: string;
@@ -70,6 +71,8 @@ export default function InvoicePrint({
   printMode = "A4",
   onClose,
 }: Props) {
+  const printPrefs = loadPrintPrefs();
+
   const handlePrint = () => {
     window.print();
   };
@@ -165,7 +168,7 @@ export default function InvoicePrint({
             {/* Professional Company Header */}
             <div className="flex justify-between items-start border-b-2 border-gray-200 pb-4 mb-4">
               <div className="flex items-start gap-4">
-                {company.logo && (
+                {printPrefs.showLogo && company.logo && (
                   <img
                     src={company.logo}
                     alt="Company Logo"
@@ -176,7 +179,7 @@ export default function InvoicePrint({
                   <h1 className="text-[18px] font-bold text-gray-800 leading-tight uppercase">
                     {company.companyNameEn}
                   </h1>
-                  {company.companyNameNe && (
+                  {printPrefs.showNepali && company.companyNameNe && (
                     <h2 className="text-[14px] text-gray-800 font-semibold mt-0.5 font-nepali">
                       {company.companyNameNe}
                     </h2>
@@ -189,14 +192,16 @@ export default function InvoicePrint({
                   </p>
                 </div>
               </div>
-              <div className="text-right">
-                <div className="bg-[var(--ds-action-primary)]/5 border border-[var(--ds-action-primary)]/20 rounded-md p-2 text-right">
-                  <p className="text-[12px] font-semibold text-gray-800">PAN / VAT NO.</p>
-                  <p className="text-[15px] font-mono font-bold text-[var(--ds-action-primary)]">
-                    {company.panNumber}
-                  </p>
+              {printPrefs.showPan && (
+                <div className="text-right">
+                  <div className="bg-[var(--ds-action-primary)]/5 border border-[var(--ds-action-primary)]/20 rounded-md p-2 text-right">
+                    <p className="text-[12px] font-semibold text-gray-800">PAN / VAT NO.</p>
+                    <p className="text-[15px] font-mono font-bold text-[var(--ds-action-primary)]">
+                      {company.panNumber}
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* TAX INVOICE Title Strip */}
@@ -460,8 +465,6 @@ export default function InvoicePrint({
             </div>
           </div>
         </div>
-      </div>
-
       </div>
     </div>
   );

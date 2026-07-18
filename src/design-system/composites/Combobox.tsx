@@ -1,4 +1,5 @@
 import * as React from "react";
+import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Input } from "../primitives/Input/Input";
 import { FormField } from "../primitives/FormField/FormField";
@@ -21,6 +22,8 @@ export interface ComboboxProps {
   emptyText?: string;
   onCreateNew?: () => void;
   createNewLabel?: string;
+  /** When provided, shows a clear (X) affordance while a value is selected. */
+  onClear?: () => void;
   disabled?: boolean;
   invalid?: boolean;
   "aria-label"?: string;
@@ -38,6 +41,7 @@ export function Combobox({
   emptyText = "No matches",
   onCreateNew,
   createNewLabel = "Create new",
+  onClear,
   disabled,
   invalid,
   "aria-label": ariaLabel,
@@ -180,6 +184,20 @@ export function Combobox({
         <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2">
           <Spinner size="small" label="Loading" />
         </span>
+      ) : null}
+      {!loading && !open && !disabled && onClear && selected ? (
+        <button
+          type="button"
+          aria-label="Clear selection"
+          className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-0.5 text-[var(--ds-text-muted)] hover:bg-[var(--ds-surface-hover)] hover:text-[var(--ds-text-default)]"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={(e) => {
+            e.stopPropagation();
+            onClear();
+          }}
+        >
+          <X className="h-3 w-3" />
+        </button>
       ) : null}
     </div>
   );

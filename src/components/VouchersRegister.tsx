@@ -36,6 +36,7 @@ import { VoucherType, VoucherStatus } from "../lib/types";
 import { generateVoucherPDF } from "../lib/printUtils";
 import { exportVouchersToExcel } from "../lib/exportUtils";
 import toast from "@/lib/appToast";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const HoverActionRow: React.FC<{
   voucher: any;
@@ -68,7 +69,7 @@ const HoverActionRow: React.FC<{
       onMouseLeave={() => setHovered(false)}
       style={{
         borderBottom: "1px solid #f3f4f6",
-        borderLeft: hovered ? "2px solid #1557b0" : "2px solid transparent",
+        borderLeft: hovered ? "2px solid var(--ds-action-primary)" : "2px solid transparent",
         background: hovered ? "#fafeff" : "transparent",
         transition: "all 100ms ease",
         position: "relative",
@@ -178,6 +179,8 @@ const VouchersRegister: React.FC = () => {
     setCurrentPage,
   } = useStore();
 
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<"ALL" | VoucherType>("ALL");
   const [typeFilter, setTypeFilter] = useState("");
@@ -257,6 +260,7 @@ const VouchersRegister: React.FC = () => {
 
   const filteredVouchers = useMemo(() => {
     return vouchers.filter((v) => {
+      if (!matchBranch(v.branchId)) return false;
       const matchesSearch =
         v.voucherNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
         v.narration.toLowerCase().includes(searchTerm.toLowerCase());
@@ -265,7 +269,7 @@ const VouchersRegister: React.FC = () => {
       if (typeFilter && v.type !== typeFilter) return false;
       return matchesSearch && matchesTab;
     });
-  }, [vouchers, searchTerm, activeTab, typeFilter]);
+  }, [vouchers, searchTerm, activeTab, typeFilter, matchBranch, branchFilter]);
 
   const paginatedVouchers = useMemo(() => {
     const start = (page - 1) * pageSize;
@@ -276,7 +280,7 @@ const VouchersRegister: React.FC = () => {
 
   useEffect(() => {
     setPage(1);
-  }, [searchTerm, activeTab, typeFilter]);
+  }, [searchTerm, activeTab, typeFilter, branchFilter]);
 
   const handlePrintVoucherPDF = (v: any) => {
     try {
@@ -295,7 +299,7 @@ const VouchersRegister: React.FC = () => {
   };
 
   const handleExportExcel = () => {
-    exportVouchersToExcel(vouchers, accounts);
+    exportVouchersToExcel(filteredVouchers, accounts);
     toast.success("Spreadsheet exported.");
   };
 
@@ -512,7 +516,7 @@ const VouchersRegister: React.FC = () => {
                             placeholder="Line narration memo..."
                             value={line.narration}
                             onChange={(e) => handleLineChange(idx, "narration", e.target.value)}
-                            className="w-full h-8 px-2 border border-[#d1d5db] rounded focus:outline-none focus:ring-1 focus:ring-[#1557b0] mt-1.5 font-medium"
+                            className="w-full h-8 px-2 border border-[#d1d5db] rounded focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] mt-1.5 font-medium"
                           />
                         </td>
                         <td className="px-3 py-2 text-right">
@@ -593,7 +597,7 @@ const VouchersRegister: React.FC = () => {
                   rows={3}
                   value={vNarration}
                   onChange={(e) => setVNarration(e.target.value)}
-                  className="w-full text-xs font-medium p-3 border border-[#d1d5db] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#d1d5db] bg-white shadow-sm"
+                  className="w-full text-xs font-medium p-3 border border-[#d1d5db] rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[#d1d5db] bg-white shadow-sm"
                 />
               </div>
 
@@ -629,6 +633,21 @@ const VouchersRegister: React.FC = () => {
         </div>
 
         <div className="shrink-0 flex gap-2">
+          {branchOptions.length > 0 ? (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch filter"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          ) : null}
           <Button
             variant="outline"
             size="sm"
@@ -684,7 +703,7 @@ const VouchersRegister: React.FC = () => {
               key={tab}
               type="button"
               onClick={() => setActiveTab(tab as any)}
-              className={`px-3 py-1 text-xs font-bold rounded-md transition-colors select-none uppercase tracking-wide ${activeTab === tab ? "bg-[#1557b0] text-white" : "bg-[#f9fafb] text-[#1f2937] hover:bg-[#f9fafb]"}`}
+              className={`px-3 py-1 text-xs font-bold rounded-md transition-colors select-none uppercase tracking-wide ${activeTab === tab ? "bg-[var(--ds-action-primary)] text-white" : "bg-[#f9fafb] text-[#1f2937] hover:bg-[#f9fafb]"}`}
             >
               {tab === "ALL" ? "Show All" : tab.replace("_", " ")}
             </button>
@@ -706,7 +725,7 @@ const VouchersRegister: React.FC = () => {
                       selectedIds.size === paginatedVouchers.length && paginatedVouchers.length > 0
                     }
                     onChange={toggleSelectAll}
-                    style={{ accentColor: "#1557b0", width: 14, height: 14, cursor: "pointer" }}
+                    style={{ accentColor: "var(--ds-action-primary)", width: 14, height: 14, cursor: "pointer" }}
                     title="Select all on this page"
                   />
                 </th>
@@ -753,7 +772,7 @@ const VouchersRegister: React.FC = () => {
                         type="checkbox"
                         checked={selectedIds.has(v.id)}
                         onChange={() => toggleSelect(v.id)}
-                        style={{ accentColor: "#1557b0", width: 14, height: 14, cursor: "pointer" }}
+                        style={{ accentColor: "var(--ds-action-primary)", width: 14, height: 14, cursor: "pointer" }}
                       />
                     </td>
                     <td>
@@ -853,7 +872,7 @@ const VouchersRegister: React.FC = () => {
           >
             <span
               style={{
-                background: "#1557b0",
+                background: "var(--ds-action-primary)",
                 color: "#ffffff",
                 borderRadius: 9999,
                 padding: "1px 8px",

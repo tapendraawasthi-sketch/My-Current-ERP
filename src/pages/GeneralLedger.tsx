@@ -4,6 +4,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { useStore } from "../store/useStore";
 import { type DrillRow, useDrillDownNav } from "../hooks/useDrillDownNav";
 import LedgerStatementView from "../components/accounts/LedgerStatementView";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 interface Account {
   id: string;
@@ -13,6 +14,7 @@ interface Account {
   isGroup?: boolean;
   balance?: number;
   isActive?: boolean;
+  branchId?: string;
 }
 
 function getPrimaryGroups(accounts: Account[]): Account[] {
@@ -108,10 +110,14 @@ interface TreeSnapshot {
 
 const GeneralLedger: React.FC = () => {
   const { accounts } = useStore() as { accounts: Account[] };
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const accountList = useMemo(
-    () => (accounts || []).filter((a) => a.isActive !== false),
-    [accounts],
+    () =>
+      (accounts || []).filter(
+        (a) => a.isActive !== false && (a.isGroup || matchBranch(a.branchId)),
+      ),
+    [accounts, matchBranch, branchFilter],
   );
 
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
@@ -191,6 +197,21 @@ const GeneralLedger: React.FC = () => {
             History of one account — pick a ledger to open the statement.
           </p>
         </div>
+        {branchOptions.length > 0 && (
+          <select
+            value={branchFilter}
+            onChange={(e) => setBranchFilter(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            aria-label="Branch"
+          >
+            <option value="all">All branches</option>
+            {branchOptions.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name || b.code || b.id}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       <div className="bg-white border border-gray-200 rounded-md flex flex-col flex-1 min-h-0">

@@ -101,12 +101,12 @@ const VoucherHeader: React.FC<VoucherHeaderProps> = ({
   readOnly = false,
 }) => {
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4">
+    <div className="bg-[var(--ds-surface)] border border-[var(--ds-border-default)] rounded-[var(--ds-radius-lg)] p-4 mb-4">
       {/* Top row: voucher number, type badge, status badge */}
       <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
         <div className="flex items-center gap-2 flex-wrap">
           {voucherNo && (
-            <span className="text-[12px] font-mono font-semibold text-gray-800 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">
+            <span className="text-[12px] font-mono font-semibold text-[var(--ds-text-default)] bg-[var(--ds-surface-muted)] px-2 py-0.5 rounded border border-[var(--ds-border-default)]">
               {voucherNo}
             </span>
           )}
@@ -132,7 +132,7 @@ const VoucherHeader: React.FC<VoucherHeaderProps> = ({
               onDateChange(e.target.value);
             }}
             disabled={readOnly}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full disabled:bg-gray-50 disabled:text-gray-400"
+            className="h-8 w-full rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-2.5 text-[12px] text-[var(--ds-text-default)] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 disabled:bg-[var(--ds-surface-muted)] disabled:text-[var(--ds-text-subtle)]"
           />
         </div>
 
@@ -171,7 +171,7 @@ const VoucherHeader: React.FC<VoucherHeaderProps> = ({
               }}
               disabled={readOnly}
               placeholder="e.g. REF-001"
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full disabled:bg-gray-50 disabled:text-gray-400"
+              className="h-8 w-full rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-2.5 text-[12px] text-[var(--ds-text-default)] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 disabled:bg-[var(--ds-surface-muted)] disabled:text-[var(--ds-text-subtle)]"
             />
           </div>
         )}
@@ -191,7 +191,7 @@ const VoucherHeader: React.FC<VoucherHeaderProps> = ({
             disabled={readOnly}
             rows={2}
             placeholder="Enter narration or description…"
-            className="w-full px-2.5 py-1.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] resize-none disabled:bg-gray-50 disabled:text-gray-400"
+            className="w-full resize-none rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-2.5 py-1.5 text-[12px] text-[var(--ds-text-default)] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 disabled:bg-[var(--ds-surface-muted)] disabled:text-[var(--ds-text-subtle)]"
           />
         </div>
       )}

@@ -64,6 +64,14 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
   const [category, setCategory] = useState((item as any)?.category ?? "");
   const [isActive, setIsActive] = useState(item?.isActive ?? true);
 
+  // Land / property
+  const [landKitta, setLandKitta] = useState((item as any)?.landKitta ?? "");
+  const [landArea, setLandArea] = useState<number>((item as any)?.landArea ?? 0);
+  const [landAreaUnit, setLandAreaUnit] = useState((item as any)?.landAreaUnit ?? "ROPANI");
+  const [landWard, setLandWard] = useState((item as any)?.landWard ?? "");
+  const [landDistrict, setLandDistrict] = useState((item as any)?.landDistrict ?? "");
+  const [landLocation, setLandLocation] = useState((item as any)?.landLocation ?? "");
+
   // Pricing
   const [purchaseRate, setPurchaseRate] = useState<number>(item?.purchaseRate ?? 0);
   const [salesRate, setSalesRate] = useState<number>(item?.salesRate ?? 0);
@@ -124,6 +132,8 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
 
   const handleSave = () => {
     if (!validate()) return;
+    const isStocked = type === ItemType.PRODUCT;
+    const isLand = type === ItemType.LAND;
     const payload: Item = {
       id: item?.id ?? "",
       code: code.trim(),
@@ -133,24 +143,34 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
       hsnCode: hsnCode.trim() || undefined,
       barcode: barcode.trim() || undefined,
       description: description.trim() || undefined,
-      unit,
+      unit: isLand ? landAreaUnit || unit : unit,
       alternateUnit: alternateUnit || undefined,
       conversionFactor,
       purchaseRate,
       salesRate,
       mrp: mrp || undefined,
-      isTaxable,
-      vatRate: isTaxable ? vatRate : undefined,
-      minimumStock: type === ItemType.PRODUCT ? minimumStock : undefined,
-      maximumStock: type === ItemType.PRODUCT ? maximumStock : undefined,
-      reorderLevel: type === ItemType.PRODUCT ? reorderLevel : undefined,
-      openingStock: type === ItemType.PRODUCT ? openingStock : undefined,
-      openingStockRate: type === ItemType.PRODUCT ? openingStockRate : undefined,
+      isTaxable: isLand ? false : isTaxable,
+      vatRate: !isLand && isTaxable ? vatRate : undefined,
+      minimumStock: isStocked ? minimumStock : undefined,
+      maximumStock: isStocked ? maximumStock : undefined,
+      reorderLevel: isStocked ? reorderLevel : undefined,
+      openingStock: isStocked ? openingStock : undefined,
+      openingStockRate: isStocked ? openingStockRate : undefined,
       purchaseAccountId: purchaseAccountId || undefined,
       salesAccountId: salesAccountId || undefined,
-      stockAccountId: type === ItemType.PRODUCT ? stockAccountId || undefined : undefined,
+      stockAccountId: isStocked ? stockAccountId || undefined : undefined,
       isActive,
       ...(category ? { category } : {}),
+      ...(isLand
+        ? {
+            landKitta: landKitta.trim() || undefined,
+            landArea: landArea || undefined,
+            landAreaUnit: landAreaUnit || undefined,
+            landWard: landWard.trim() || undefined,
+            landDistrict: landDistrict.trim() || undefined,
+            landLocation: landLocation.trim() || undefined,
+          }
+        : {}),
     } as Item;
     onSave(payload);
   };
@@ -168,10 +188,10 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
   const isEdit = !!item;
 
   return (
-    <div className="flex flex-col h-full bg-white text-xs text-[var(--ox-text)]">
+    <div className="flex flex-col h-full bg-white text-xs text-[var(--ds-text-default)]">
       {/* Form Header */}
-      <div className="px-5 py-3 border-b border-[var(--ox-border)] bg-[var(--ox-surface-muted)] flex items-center justify-between shrink-0 select-none">
-        <h3 className="text-[13px] font-semibold text-[var(--ox-text)]">
+      <div className="px-5 py-3 border-b border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)] flex items-center justify-between shrink-0 select-none">
+        <h3 className="text-[13px] font-semibold text-[var(--ds-text-default)]">
           {isEdit ? "Edit Item" : "New Item"}
         </h3>
       </div>
@@ -185,7 +205,7 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
       >
         {/* Section 1: Item Details */}
         <div>
-          <div className="section-header text-[10px] font-semibold text-[var(--ox-text)] uppercase tracking-wide mb-3">
+          <div className="section-header text-[10px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wide mb-3">
             Item Details
           </div>
 
@@ -205,6 +225,7 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
               options={[
                 { value: ItemType.PRODUCT, label: "Product" },
                 { value: ItemType.SERVICE, label: "Service" },
+                { value: ItemType.LAND, label: "Land / Property" },
               ]}
             />
           </div>
@@ -219,6 +240,38 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
             />
             <Input label="Item Name (Nepali)" value={nameNepali} onChange={setNameNepali} />
           </div>
+
+          {type === ItemType.LAND && (
+            <div className="mt-3 rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)] p-3">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500 mb-2">
+                Land / property identity
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <Input label="Kitta / plot no." value={landKitta} onChange={setLandKitta} />
+                <AmountInput label="Area" value={landArea} onChange={setLandArea} />
+                <Select
+                  label="Area unit"
+                  value={landAreaUnit}
+                  onChange={setLandAreaUnit}
+                  options={[
+                    { value: "ROPANI", label: "Ropani" },
+                    { value: "AANA", label: "Aana" },
+                    { value: "KATHA", label: "Katha" },
+                    { value: "BIGHA", label: "Bigha" },
+                    { value: "SQM", label: "Sq. metre" },
+                    { value: "SQFT", label: "Sq. feet" },
+                  ]}
+                />
+                <Input label="Ward" value={landWard} onChange={setLandWard} />
+                <Input label="District" value={landDistrict} onChange={setLandDistrict} />
+                <Input label="Location / address" value={landLocation} onChange={setLandLocation} />
+              </div>
+              <p className="text-[11px] text-gray-500 mt-2">
+                Land SKUs are non-stocked and VAT-exempt by default. Capital gains / registration
+                stay outside this master.
+              </p>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
             <Input label="HSN / SAC Code" value={hsnCode} onChange={setHsnCode} />
@@ -238,20 +291,20 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
                   type="checkbox"
                   checked={isActive}
                   onChange={(e) => setIsActive(e.target.checked)}
-                  className="rounded text-[var(--ox-text)] focus:ring-[var(--ox-primary)] h-4 w-4"
+                  className="rounded text-[var(--ds-text-default)] focus:ring-[var(--ds-action-primary)] h-4 w-4"
                 />
-                <span className="text-[11px] font-medium text-[var(--ox-text)]">Is Active</span>
+                <span className="text-[11px] font-medium text-[var(--ds-text-default)]">Is Active</span>
               </label>
             </div>
             <div className="md:col-span-2">
-              <label className="block text-[11px] font-medium text-[var(--ox-text)] mb-0.5">
+              <label className="block text-[11px] font-medium text-[var(--ds-text-default)] mb-0.5">
                 Description
               </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={2}
-                className="w-full rounded-md border border-[var(--ox-border)] px-3 py-1.5 text-[12px] text-[var(--ox-text)] focus:border-[#1557b0] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20"
+                className="w-full rounded-md border border-[var(--ds-border-default)] px-3 py-1.5 text-[12px] text-[var(--ds-text-default)] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
               />
             </div>
           </div>
@@ -259,7 +312,7 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
 
         {/* Section 2: Unit & Pricing */}
         <div>
-          <div className="section-header text-[10px] font-semibold text-[var(--ox-text)] uppercase tracking-wide mb-3 border-t pt-4">
+          <div className="section-header text-[10px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wide mb-3 border-t pt-4">
             Unit & Pricing
           </div>
 
@@ -305,17 +358,17 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
 
         {/* Section 3: Tax & Stock */}
         <div>
-          <div className="section-header text-[10px] font-semibold text-[var(--ox-text)] uppercase tracking-wide mb-3 border-t pt-4">
+          <div className="section-header text-[10px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wide mb-3 border-t pt-4">
             Tax & Stock
           </div>
 
-          <div className="mt-2 bg-[var(--ox-surface-muted)] p-4 border rounded-md">
+          <div className="mt-2 bg-[var(--ds-surface-muted)] p-4 border rounded-md">
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
-                <span className="block text-[11px] font-medium text-[var(--ox-text)] mb-0.5">
+                <span className="block text-[11px] font-medium text-[var(--ds-text-default)] mb-0.5">
                   Is Taxable (VAT)
                 </span>
-                <span className="text-[11px] text-[var(--ox-text)]">
+                <span className="text-[11px] text-[var(--ds-text-default)]">
                   Enabling this applies VAT on sales and purchases.
                 </span>
               </div>
@@ -323,7 +376,7 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
                 type="button"
                 onClick={() => setIsTaxable(!isTaxable)}
                 className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none
-                  ${isTaxable ? "bg-[var(--ox-primary)]" : "bg-[var(--ox-surface-muted)]"}
+                  ${isTaxable ? "bg-[var(--ds-action-primary)]" : "bg-[var(--ds-surface-muted)]"}
                 `}
               >
                 <span
@@ -388,10 +441,10 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
                 disabled={isEdit}
               />
               <div>
-                <label className="block text-[11px] font-medium text-[var(--ox-text)] mb-0.5">
+                <label className="block text-[11px] font-medium text-[var(--ds-text-default)] mb-0.5">
                   Opening Stock Value
                 </label>
-                <div className="h-8 rounded-md border border-[var(--ox-border)] bg-[var(--ox-surface-muted)] px-3 flex items-center text-[12px] font-mono text-[var(--ox-text)]">
+                <div className="h-8 rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)] px-3 flex items-center text-[12px] font-mono text-[var(--ds-text-default)]">
                   {formatNumber(openingValue)}
                 </div>
               </div>
@@ -399,8 +452,8 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
           )}
 
           {/* Accounts Integration */}
-          <div className="mt-4 p-4 border border-[var(--ox-border)] rounded-md bg-[var(--ox-surface-muted)]">
-            <label className="block text-[11px] font-medium text-[var(--ox-text)] mb-2">
+          <div className="mt-4 p-4 border border-[var(--ds-border-default)] rounded-md bg-[var(--ds-surface-muted)]">
+            <label className="block text-[11px] font-medium text-[var(--ds-text-default)] mb-2">
               Ledger Accounts Integration
             </label>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -430,7 +483,7 @@ const ItemForm: React.FC<ItemFormProps> = ({ item, onSave, onCancel }) => {
       </form>
 
       {/* Form Footer */}
-      <div className="border-t border-[var(--ox-border)] p-4 flex justify-end gap-2 shrink-0 select-none bg-[var(--ox-surface-muted)]">
+      <div className="border-t border-[var(--ds-border-default)] p-4 flex justify-end gap-2 shrink-0 select-none bg-[var(--ds-surface-muted)]">
         <Button variant="secondary" onClick={onCancel}>
           Cancel
         </Button>

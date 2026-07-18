@@ -33,6 +33,7 @@ import {
   formatVoucherDisplayDate,
 } from "../lib/voucherUtils";
 import toast from "@/lib/appToast";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const MemorandumVoucher: React.FC = () => {
   const { accounts, vouchers, companySettings, currentFiscalYear, addVoucher } = useStore();
@@ -135,6 +136,7 @@ const MemorandumVoucher: React.FC = () => {
         paidAmount: 0,
         paymentStatus: "non-accounting",
         isNonAccounting: true,
+        branchId: readActiveBranchId() || undefined,
         createdAt: new Date().toISOString(),
       };
 

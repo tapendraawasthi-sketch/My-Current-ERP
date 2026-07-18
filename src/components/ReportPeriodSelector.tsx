@@ -175,7 +175,7 @@ export const ReportPeriodSelector: React.FC<ReportPeriodSelectorProps> = ({
   };
 
   return (
-    <div className="space-y-4 p-4 bg-[#EBF5E2] dark:bg-[#EBF5E2] rounded-lg border border-[#9DC07A] dark:border-[#9DC07A]">
+    <div className="space-y-4 p-4 bg-[var(--ds-surface-muted)] dark:bg-[var(--ds-surface-muted)] rounded-lg border border-[var(--ds-border-default)] dark:border-[var(--ds-border-default)]">
       {/* Period Presets */}
       <div className="flex gap-2 flex-wrap">
         {presets.map((preset) => (
@@ -184,8 +184,8 @@ export const ReportPeriodSelector: React.FC<ReportPeriodSelectorProps> = ({
             onClick={() => handlePresetChange(preset.value)}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               value.periodType === preset.value
-                ? "bg-[#D4EABD] text-white"
-                : "bg-white dark:bg-[#EBF5E2] text-[#000000] dark:text-[#000000] hover:bg-[#EBF5E2] dark:hover:bg-[#EBF5E2] border border-[#9DC07A] dark:border-[#9DC07A]"
+                ? "bg-[var(--ds-surface-hover)] text-white"
+                : "bg-white dark:bg-[var(--ds-surface-muted)] text-[#000000] dark:text-[#000000] hover:bg-[var(--ds-surface-muted)] dark:hover:bg-[var(--ds-surface-muted)] border border-[var(--ds-border-default)] dark:border-[var(--ds-border-default)]"
             }`}
           >
             {preset.label}
@@ -219,7 +219,7 @@ export const ReportPeriodSelector: React.FC<ReportPeriodSelectorProps> = ({
 
       {/* Optional Filters */}
       {(showAccountFilter || showPartyFilter || showWarehouseFilter) && (
-        <div className="grid grid-cols-3 gap-4 pt-4 border-t border-[#9DC07A] dark:border-[#9DC07A]">
+        <div className="grid grid-cols-3 gap-4 pt-4 border-t border-[var(--ds-border-default)] dark:border-[var(--ds-border-default)]">
           {showAccountFilter && (
             <div>
               <label className="block text-sm font-medium text-[#000000] dark:text-[#000000] mb-1">
@@ -233,7 +233,7 @@ export const ReportPeriodSelector: React.FC<ReportPeriodSelectorProps> = ({
                     accountId: e.target.value ? parseInt(e.target.value) : undefined,
                   })
                 }
-                className="w-full px-3 py-2 border border-[#9DC07A] dark:border-[#9DC07A] rounded-md bg-white dark:bg-[#EBF5E2] text-[#000000] dark:text-[#000000]"
+                className="w-full px-3 py-2 border border-[var(--ds-border-default)] dark:border-[var(--ds-border-default)] rounded-md bg-white dark:bg-[var(--ds-surface-muted)] text-[#000000] dark:text-[#000000]"
               >
                 <option value="">All Accounts</option>
                 {accounts.map((acc) => (
@@ -258,7 +258,7 @@ export const ReportPeriodSelector: React.FC<ReportPeriodSelectorProps> = ({
                     partyId: e.target.value ? parseInt(e.target.value) : undefined,
                   })
                 }
-                className="w-full px-3 py-2 border border-[#9DC07A] dark:border-[#9DC07A] rounded-md bg-white dark:bg-[#EBF5E2] text-[#000000] dark:text-[#000000]"
+                className="w-full px-3 py-2 border border-[var(--ds-border-default)] dark:border-[var(--ds-border-default)] rounded-md bg-white dark:bg-[var(--ds-surface-muted)] text-[#000000] dark:text-[#000000]"
               >
                 <option value="">All Parties</option>
                 {parties.map((party) => (
@@ -283,7 +283,7 @@ export const ReportPeriodSelector: React.FC<ReportPeriodSelectorProps> = ({
                     warehouseId: e.target.value ? parseInt(e.target.value) : undefined,
                   })
                 }
-                className="w-full px-3 py-2 border border-[#9DC07A] dark:border-[#9DC07A] rounded-md bg-white dark:bg-[#EBF5E2] text-[#000000] dark:text-[#000000]"
+                className="w-full px-3 py-2 border border-[var(--ds-border-default)] dark:border-[var(--ds-border-default)] rounded-md bg-white dark:bg-[var(--ds-surface-muted)] text-[#000000] dark:text-[#000000]"
               >
                 <option value="">All Warehouses</option>
                 {warehouses.map((wh) => (
@@ -298,7 +298,7 @@ export const ReportPeriodSelector: React.FC<ReportPeriodSelectorProps> = ({
       )}
 
       {/* Period Label */}
-      <div className="flex items-center gap-2 text-sm text-[#000000] dark:text-[#000000] pt-2 border-t border-[#9DC07A] dark:border-[#9DC07A]">
+      <div className="flex items-center gap-2 text-sm text-[#000000] dark:text-[#000000] pt-2 border-t border-[var(--ds-border-default)] dark:border-[var(--ds-border-default)]">
         <Calendar className="w-4 h-4" />
         <span className="font-medium">{getPeriodLabel()}</span>
       </div>

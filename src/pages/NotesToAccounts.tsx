@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import { ReportWorkspace } from "@/features/reports";
 import { buildNotesToAccounts } from "../lib/nepalFinancialStatements";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 function money(n: number): string {
   return Number(n || 0).toLocaleString("en-IN", {
@@ -12,19 +13,25 @@ function money(n: number): string {
 
 export default function NotesToAccounts() {
   const { accounts, vouchers, companySettings, currentFiscalYear } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const [asAtDate, setAsAtDate] = useState(
     currentFiscalYear?.endDate || new Date().toISOString().split("T")[0],
   );
   const [threshold, setThreshold] = useState(1000);
 
+  const scopedVouchers = useMemo(
+    () => (vouchers || []).filter((v: any) => matchBranch(v?.branchId)),
+    [vouchers, matchBranch, branchFilter],
+  );
+
   const notes = useMemo(() => {
     return buildNotesToAccounts({
       accounts: accounts as any[],
-      vouchers: vouchers as any[],
+      vouchers: scopedVouchers as any[],
       asAtDate,
       materialityThreshold: threshold,
     });
-  }, [accounts, vouchers, asAtDate, threshold]);
+  }, [accounts, scopedVouchers, asAtDate, threshold]);
 
   return (
     <ReportWorkspace
@@ -34,6 +41,24 @@ export default function NotesToAccounts() {
       periodLabel={`As at ${asAtDate}`}
       filterSlot={
         <>
+          {branchOptions.length > 0 && (
+            <div>
+              <label className="text-[12px] font-medium text-gray-600 mb-1 block">Branch</label>
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full max-w-xs"
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <div>
             <label className="text-[12px] font-medium text-gray-600 mb-1 block">As at Date</label>
             <input

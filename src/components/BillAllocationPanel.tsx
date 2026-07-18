@@ -277,13 +277,13 @@ export function BillAllocationPanel({
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden">
       {/* Header */}
-      <div className="bg-indigo-50 border-b border-indigo-100 px-4 py-2.5 flex items-center justify-between flex-wrap gap-2">
-        <div className="text-[12px] font-semibold text-indigo-800">Bill Allocation</div>
+      <div className="bg-[var(--ds-status-info-surface)] border-b border-[var(--ds-status-info)]/20 px-4 py-2.5 flex items-center justify-between flex-wrap gap-2">
+        <div className="text-[12px] font-semibold text-[var(--ds-status-info)]">Bill Allocation</div>
         <button
           type="button"
           onClick={applyFIFO}
           disabled={outstandingBills.length === 0 || amountReceived <= 0}
-          className="flex items-center gap-1.5 h-7 px-3 text-[11px] bg-indigo-600 text-white rounded hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="flex items-center gap-1.5 h-7 px-3 text-[11px] bg-[var(--ds-action-primary)] text-white rounded hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           <Zap size={12} />
           Auto-fill (FIFO)
@@ -383,7 +383,7 @@ export function BillAllocationPanel({
                             ? "border-red-400 focus:ring-red-300 bg-red-50"
                             : alloc.amount > 0
                               ? "border-green-400 focus:ring-green-300 bg-green-50"
-                              : "border-gray-300 focus:ring-[#1557b0]/20 bg-white"
+                              : "border-gray-300 focus:ring-[var(--ds-action-primary)]/20 bg-white"
                         }`}
                       />
                       {isOverAlloc && (

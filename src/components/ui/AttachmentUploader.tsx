@@ -40,7 +40,7 @@ const AttachmentUploader: React.FC<Props> = ({ attachments, onAdd, onRemove, max
         {attachments.map((att, idx) => (
           <div
             key={idx}
-            className="flex items-center gap-1 bg-[#EBF5E2] rounded-lg px-2 py-1 text-xs"
+            className="flex items-center gap-1 bg-[var(--ds-surface-muted)] rounded-lg px-2 py-1 text-xs"
           >
             {att.startsWith("data:image") ? (
               <Image className="h-3 w-3 text-[#000000]" />

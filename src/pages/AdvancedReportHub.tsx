@@ -29,6 +29,8 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 function money(v: number): string {
   const abs = Math.abs(Number(v || 0));
@@ -50,6 +52,27 @@ const AdvancedReportHub: React.FC = () => {
     fiscalYears,
     setCurrentPage,
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, matchMovement, branchOptions } =
+    useBranchFilter();
+
+  const scopedVouchers = useMemo(
+    () => (vouchers || []).filter((v) => matchBranch(v.branchId)),
+    [vouchers, matchBranch, branchFilter],
+  );
+
+  const scopedInvoices = useMemo(
+    () => (invoices || []).filter((i) => matchBranch(i.branchId)),
+    [invoices, matchBranch, branchFilter],
+  );
+
+  const scopedStockMovements = useMemo(
+    () =>
+      (stockMovements || []).filter((m) =>
+        matchMovement({ branchId: m.branchId, warehouseId: m.warehouseId }),
+      ),
+    [stockMovements, matchMovement, branchFilter],
+  );
+
   const [activeTab, setActiveTab] = useState(0);
   const [drillPath, setDrillPath] = useState<{ label: string; value: string }[]>([
     { label: "Summary", value: "" },
@@ -71,6 +94,11 @@ const AdvancedReportHub: React.FC = () => {
   const [dueSchedules, setDueSchedules] = useState<any[]>([]);
   const [expandedException, setExpandedException] = useState<string | null>(null);
 
+  const filteredSchedules = useMemo(
+    () => schedules.filter((s) => matchBranch(s.branchId)),
+    [schedules, matchBranch, branchFilter],
+  );
+
   useEffect(() => {
     const db = getDB();
     db.table("reportSchedules")
@@ -81,7 +109,7 @@ const AdvancedReportHub: React.FC = () => {
 
   useEffect(() => {
     const now = new Date();
-    const due = schedules.filter((s) => {
+    const due = filteredSchedules.filter((s) => {
       const lastRun = s.lastRun ? new Date(s.lastRun) : new Date(0);
       const nextRun = new Date(lastRun);
 
@@ -97,7 +125,7 @@ const AdvancedReportHub: React.FC = () => {
     });
 
     setDueSchedules(due);
-  }, [schedules]);
+  }, [filteredSchedules]);
 
   const navigateTo = (index: number) => {
     const newPath = drillPath.slice(0, index + 1);
@@ -164,14 +192,14 @@ const AdvancedReportHub: React.FC = () => {
   const transactionList = useMemo(() => {
     if (!selectedAccountId) return [];
 
-    return vouchers.filter(
+    return scopedVouchers.filter(
       (v) => v.lines?.some((l) => l.accountId === selectedAccountId) && v.status === "posted",
     );
-  }, [vouchers, selectedAccountId]);
+  }, [scopedVouchers, selectedAccountId, branchFilter]);
 
   const selectedVoucher = useMemo(() => {
-    return vouchers.find((v) => v.id === selectedVoucherId);
-  }, [vouchers, selectedVoucherId]);
+    return scopedVouchers.find((v) => v.id === selectedVoucherId);
+  }, [scopedVouchers, selectedVoucherId]);
 
   const ratios = useMemo(() => {
     const currentAssets = accounts
@@ -207,10 +235,10 @@ const AdvancedReportHub: React.FC = () => {
     const totalDebt = accounts
       .filter((a) => a.type === "liability")
       .reduce((s, a) => s + (a.balance || 0), 0);
-    const netSales = invoices
+    const netSales = scopedInvoices
       .filter((i) => i.type === "sales-invoice" && i.status === "posted")
       .reduce((s, i) => s + (i.grandTotal || 0), 0);
-    const cogs = invoices
+    const cogs = scopedInvoices
       .filter((i) => i.type === "purchase-invoice" && i.status === "posted")
       .reduce((s, i) => s + (i.grandTotal || 0), 0);
     const grossProfit = netSales - cogs;
@@ -272,7 +300,7 @@ const AdvancedReportHub: React.FC = () => {
       grossProfit,
       netProfit,
     };
-  }, [accounts, invoices]);
+  }, [accounts, scopedInvoices, branchFilter]);
 
   const quarterlyData = useMemo(() => {
     const quarters = [];
@@ -365,6 +393,7 @@ const AdvancedReportHub: React.FC = () => {
     const schedule = {
       id: generateId(),
       ...scheduleForm,
+      branchId: readActiveBranchId() || undefined,
       lastRun: null,
       createdAt: new Date().toISOString(),
     };
@@ -439,14 +468,16 @@ const AdvancedReportHub: React.FC = () => {
       {
         category: "Vouchers",
         exception: "Vouchers without narration",
-        count: vouchers.filter((v) => !v.narration || v.narration.trim() === "").length,
+        count: scopedVouchers.filter((v) => !v.narration || v.narration.trim() === "").length,
         severity: "Warning",
-        records: vouchers.filter((v) => !v.narration || v.narration.trim() === "").slice(0, 20),
+        records: scopedVouchers
+          .filter((v) => !v.narration || v.narration.trim() === "")
+          .slice(0, 20),
       },
       {
         category: "Vouchers",
         exception: "Unbalanced voucher lines (Dr≠Cr)",
-        count: vouchers.filter((v) => {
+        count: scopedVouchers.filter((v) => {
           const dr = (v.lines || []).reduce((s: number, l: any) => s + Number(l.debit || 0), 0);
           const cr = (v.lines || []).reduce((s: number, l: any) => s + Number(l.credit || 0), 0);
           return Math.abs(dr - cr) > 0.01;
@@ -457,7 +488,7 @@ const AdvancedReportHub: React.FC = () => {
       {
         category: "Vouchers",
         exception: "Backdated entries >30 days old",
-        count: vouchers.filter((v) => {
+        count: scopedVouchers.filter((v) => {
           const d = new Date(v.date);
           const diff = (new Date().getTime() - d.getTime()) / 86400000;
           return diff > 30 && v.status === "posted" && d > currentFYStart;
@@ -469,7 +500,7 @@ const AdvancedReportHub: React.FC = () => {
         category: "Stock",
         exception: "Items below reorder level",
         count: items.filter((i) => {
-          const stock = stockMovements
+          const stock = scopedStockMovements
             .filter((m) => m.itemId === i.id)
             .reduce((a: number, m: any) => a + (m.type === "in" ? m.quantity : -m.quantity), 0);
           return i.minimumStock && stock < i.minimumStock;
@@ -480,7 +511,7 @@ const AdvancedReportHub: React.FC = () => {
       {
         category: "Outstanding",
         exception: "Invoices unpaid >90 days",
-        count: invoices.filter((i) => {
+        count: scopedInvoices.filter((i) => {
           const due = new Date(i.dueDate || i.date);
           const diff = (new Date().getTime() - due.getTime()) / 86400000;
           return diff > 90 && (i.paymentStatus === "unpaid" || i.paymentStatus === "partial");
@@ -498,7 +529,15 @@ const AdvancedReportHub: React.FC = () => {
     ];
 
     return exc;
-  }, [vouchers, items, invoices, employees, stockMovements, currentFiscalYear]);
+  }, [
+    scopedVouchers,
+    scopedInvoices,
+    scopedStockMovements,
+    items,
+    employees,
+    currentFiscalYear,
+    branchFilter,
+  ]);
 
   const getSeverityClass = (severity: string) => {
     switch (severity) {
@@ -524,6 +563,21 @@ const AdvancedReportHub: React.FC = () => {
               Explore drill-down financials, ratios, exceptions, and schedule automatic reports
             </p>
           </div>
+          {branchOptions.length > 0 ? (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch filter"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          ) : null}
         </div>
 
         {/* Tab Navigation */}
@@ -538,7 +592,7 @@ const AdvancedReportHub: React.FC = () => {
               key={index}
               className={`px-4 py-2 text-[12px] font-medium border-b-2 transition-colors whitespace-nowrap ${
                 activeTab === index
-                  ? "border-[#1557b0] text-[#1557b0]"
+                  ? "border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
               onClick={() => setActiveTab(index)}
@@ -560,7 +614,7 @@ const AdvancedReportHub: React.FC = () => {
                     onClick={() => navigateTo(i)}
                     className={`transition-colors ${
                       i < drillPath.length - 1
-                        ? "text-[#1557b0] cursor-pointer hover:underline font-medium"
+                        ? "text-[var(--ds-action-primary)] cursor-pointer hover:underline font-medium"
                         : "font-semibold text-gray-800"
                     }`}
                   >
@@ -575,10 +629,10 @@ const AdvancedReportHub: React.FC = () => {
                 {["asset", "liability", "equity", "income", "expense"].map((type) => (
                   <div
                     key={type}
-                    className="bg-white border border-gray-200 rounded-md p-4 cursor-pointer hover:border-[#1557b0] hover:shadow-md transition-all group"
+                    className="bg-white border border-gray-200 rounded-md p-4 cursor-pointer hover:border-[var(--ds-action-primary)] hover:shadow-md transition-all group"
                     onClick={() => handleTypeSelect(type)}
                   >
-                    <div className="text-[11px] text-gray-500 uppercase tracking-wide font-medium mb-2 group-hover:text-[#1557b0] transition-colors">
+                    <div className="text-[11px] text-gray-500 uppercase tracking-wide font-medium mb-2 group-hover:text-[var(--ds-action-primary)] transition-colors">
                       {type}
                     </div>
                     <div className="text-xl font-bold text-gray-800">
@@ -622,7 +676,7 @@ const AdvancedReportHub: React.FC = () => {
                         onClick={() => handleAccountSelect(acc.id, acc.name)}
                       >
                         <td className="px-3 py-2.5 text-gray-600">{acc.code}</td>
-                        <td className="px-3 py-2.5 text-[#1557b0] font-medium hover:underline">
+                        <td className="px-3 py-2.5 text-[var(--ds-action-primary)] font-medium hover:underline">
                           {acc.name}
                         </td>
                         <td className="px-3 py-2.5 text-gray-600">{acc.level}</td>
@@ -694,7 +748,7 @@ const AdvancedReportHub: React.FC = () => {
                           onClick={() => handleVoucherSelect(v.id, v.voucherNo)}
                         >
                           <td className="px-3 py-2.5 text-gray-600">{v.date}</td>
-                          <td className="px-3 py-2.5 text-[#1557b0] font-medium hover:underline">
+                          <td className="px-3 py-2.5 text-[var(--ds-action-primary)] font-medium hover:underline">
                             {v.voucherNo}
                           </td>
                           <td className="px-3 py-2.5 text-gray-600">{v.type}</td>
@@ -754,7 +808,7 @@ const AdvancedReportHub: React.FC = () => {
                     )}
                   </div>
                   <button
-                    className="h-8 px-4 bg-white border border-gray-300 text-[#1557b0] text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
+                    className="h-8 px-4 bg-white border border-gray-300 text-[var(--ds-action-primary)] text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors"
                     onClick={() => setCurrentPage("voucher-entry")}
                   >
                     Open in Entry Mode
@@ -847,10 +901,10 @@ const AdvancedReportHub: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
-              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[#1557b0] transition-colors group">
+              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[var(--ds-action-primary)] transition-colors group">
                 <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   Current Ratio
-                  <TrendingUp size={14} className="text-gray-400 group-hover:text-[#1557b0]" />
+                  <TrendingUp size={14} className="text-gray-400 group-hover:text-[var(--ds-action-primary)]" />
                 </div>
                 <div className="text-2xl font-bold text-gray-800 mb-1">
                   {ratios.currentRatio.toFixed(2)}
@@ -862,10 +916,10 @@ const AdvancedReportHub: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[#1557b0] transition-colors group">
+              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[var(--ds-action-primary)] transition-colors group">
                 <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   Quick Ratio
-                  <Activity size={14} className="text-gray-400 group-hover:text-[#1557b0]" />
+                  <Activity size={14} className="text-gray-400 group-hover:text-[var(--ds-action-primary)]" />
                 </div>
                 <div className="text-2xl font-bold text-gray-800 mb-1">
                   {ratios.quickRatio.toFixed(2)}
@@ -877,10 +931,10 @@ const AdvancedReportHub: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[#1557b0] transition-colors group">
+              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[var(--ds-action-primary)] transition-colors group">
                 <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   Cash Ratio
-                  <TrendingDown size={14} className="text-gray-400 group-hover:text-[#1557b0]" />
+                  <TrendingDown size={14} className="text-gray-400 group-hover:text-[var(--ds-action-primary)]" />
                 </div>
                 <div className="text-2xl font-bold text-gray-800 mb-1">
                   {ratios.cashRatio.toFixed(2)}
@@ -888,10 +942,10 @@ const AdvancedReportHub: React.FC = () => {
                 <div className="text-[11px] font-medium text-green-600">Good</div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[#1557b0] transition-colors group">
+              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[var(--ds-action-primary)] transition-colors group">
                 <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   GP Margin
-                  <TrendingUp size={14} className="text-gray-400 group-hover:text-[#1557b0]" />
+                  <TrendingUp size={14} className="text-gray-400 group-hover:text-[var(--ds-action-primary)]" />
                 </div>
                 <div className="text-2xl font-bold text-gray-800 mb-1">
                   {ratios.gpMargin.toFixed(2)}%
@@ -903,10 +957,10 @@ const AdvancedReportHub: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[#1557b0] transition-colors group">
+              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[var(--ds-action-primary)] transition-colors group">
                 <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   NP Margin
-                  <TrendingUp size={14} className="text-gray-400 group-hover:text-[#1557b0]" />
+                  <TrendingUp size={14} className="text-gray-400 group-hover:text-[var(--ds-action-primary)]" />
                 </div>
                 <div className="text-2xl font-bold text-gray-800 mb-1">
                   {ratios.npMargin.toFixed(2)}%
@@ -918,10 +972,10 @@ const AdvancedReportHub: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[#1557b0] transition-colors group">
+              <div className="bg-white border border-gray-200 rounded-md p-4 hover:border-[var(--ds-action-primary)] transition-colors group">
                 <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center justify-between">
                   ROA
-                  <Activity size={14} className="text-gray-400 group-hover:text-[#1557b0]" />
+                  <Activity size={14} className="text-gray-400 group-hover:text-[var(--ds-action-primary)]" />
                 </div>
                 <div className="text-2xl font-bold text-gray-800 mb-1">
                   {ratios.roa.toFixed(2)}%
@@ -967,9 +1021,9 @@ const AdvancedReportHub: React.FC = () => {
                         type="monotone"
                         dataKey="gpMargin"
                         name="GP Margin %"
-                        stroke="#1557b0"
+                        stroke="var(--ds-action-primary)"
                         strokeWidth={3}
-                        activeDot={{ r: 6, fill: "#1557b0", stroke: "#fff", strokeWidth: 2 }}
+                        activeDot={{ r: 6, fill: "var(--ds-action-primary)", stroke: "#fff", strokeWidth: 2 }}
                       />
                     </LineChart>
                   </ResponsiveContainer>
@@ -1045,7 +1099,7 @@ const AdvancedReportHub: React.FC = () => {
                   {dueSchedules.length} scheduled report(s) are due to be run.
                 </div>
                 <button
-                  className="h-8 px-4 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96] transition-colors flex items-center gap-1.5"
+                  className="h-8 px-4 bg-[var(--ds-action-primary)] text-white text-[12px] font-medium rounded-md hover:bg-[var(--ds-action-primary-hover)] transition-colors flex items-center gap-1.5"
                   onClick={generateDueReports}
                 >
                   <Play size={14} />
@@ -1064,7 +1118,7 @@ const AdvancedReportHub: React.FC = () => {
                   <select
                     value={scheduleForm.reportType}
                     onChange={(e) => handleScheduleFormChange("reportType", e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   >
                     <option value="">Select Report...</option>
                     <option value="trial-balance">Trial Balance</option>
@@ -1082,7 +1136,7 @@ const AdvancedReportHub: React.FC = () => {
                   <select
                     value={scheduleForm.frequency}
                     onChange={(e) => handleScheduleFormChange("frequency", e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   >
                     <option value="">Select Frequency...</option>
                     <option value="daily">Daily</option>
@@ -1098,7 +1152,7 @@ const AdvancedReportHub: React.FC = () => {
                     type="time"
                     value={scheduleForm.time}
                     onChange={(e) => handleScheduleFormChange("time", e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   />
                 </div>
                 <div>
@@ -1108,7 +1162,7 @@ const AdvancedReportHub: React.FC = () => {
                   <select
                     value={scheduleForm.format}
                     onChange={(e) => handleScheduleFormChange("format", e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   >
                     <option value="excel">MS Excel (.xlsx)</option>
                     <option value="pdf">PDF Document (.pdf)</option>
@@ -1123,13 +1177,13 @@ const AdvancedReportHub: React.FC = () => {
                     value={scheduleForm.recipients}
                     onChange={(e) => handleScheduleFormChange("recipients", e.target.value)}
                     placeholder="user@example.com, ..."
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   />
                 </div>
               </div>
               <div className="flex justify-end">
                 <button
-                  className="h-8 px-4 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96] transition-colors flex items-center gap-1.5"
+                  className="h-8 px-4 bg-[var(--ds-action-primary)] text-white text-[12px] font-medium rounded-md hover:bg-[var(--ds-action-primary-hover)] transition-colors flex items-center gap-1.5"
                   onClick={saveSchedule}
                 >
                   <Plus size={14} />
@@ -1164,7 +1218,7 @@ const AdvancedReportHub: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {schedules.map((schedule) => (
+                  {filteredSchedules.map((schedule) => (
                     <tr
                       key={schedule.id}
                       className="bg-white hover:bg-gray-50 border-b border-gray-100 text-[12px] transition-colors"
@@ -1222,7 +1276,7 @@ const AdvancedReportHub: React.FC = () => {
                       </td>
                     </tr>
                   ))}
-                  {schedules.length === 0 && (
+                  {filteredSchedules.length === 0 && (
                     <tr>
                       <td colSpan={6} className="px-3 py-8 text-center text-[12px] text-gray-500">
                         No automated reports scheduled yet.
@@ -1290,7 +1344,7 @@ const AdvancedReportHub: React.FC = () => {
                           </span>
                         </td>
                         <td className="px-3 py-3 text-center">
-                          <button className="text-[#1557b0] hover:underline font-medium text-[11px] flex items-center justify-center gap-1 w-full">
+                          <button className="text-[var(--ds-action-primary)] hover:underline font-medium text-[11px] flex items-center justify-center gap-1 w-full">
                             {expandedException === exc.exception ? "Hide Details" : "View Details"}
                           </button>
                         </td>

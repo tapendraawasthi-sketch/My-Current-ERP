@@ -1,0 +1,29 @@
+{
+  "data": {
+    "citations": [],
+    "conversation_id": "conv-demo-001",
+    "created_at": "2026-07-14T12:00:00Z",
+    "draft_reference": null,
+    "language": "en",
+    "policy_reference": null,
+    "request_id": "req-demo-013",
+    "response_id": "resp-demo-013",
+    "response_type": "CONFLICT",
+    "schema_version": "1.0.0",
+    "status": "FAILED",
+    "structured_payload": {
+      "conflict_code": "SYNC_CONFLICT",
+      "local_ids": [],
+      "payload_type": "CONFLICT",
+      "remote_ids": [],
+      "safe_message": "Local and remote versions differ."
+    },
+    "suggested_safe_actions": [],
+    "trace_reference": null,
+    "uncertainty": null,
+    "user_visible_text": "Sync conflict",
+    "warnings": []
+  },
+  "kind": "AIResponseEnvelopeV1",
+  "valid": true
+}

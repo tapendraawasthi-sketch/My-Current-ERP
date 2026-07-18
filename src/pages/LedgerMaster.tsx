@@ -17,11 +17,13 @@ import toast from "@/lib/appToast";
 import { generateId } from "../lib/db";
 import { useScreenF12 } from "../hooks/useF12Config";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 
@@ -50,6 +52,7 @@ const LedgerMaster: React.FC = () => {
     vatClassifications,
     costCentreClasses,
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [showForm, setShowForm] = useState(false);
   const [selected, setSelected] = useState<any>(null);
@@ -120,9 +123,12 @@ const LedgerMaster: React.FC = () => {
   const filteredAccounts = useMemo(
     () =>
       (accounts || []).filter(
-        (acc) => acc.isGroup === false && acc.name.toLowerCase().includes(searchTerm.toLowerCase()),
+        (acc) =>
+          acc.isGroup === false &&
+          matchBranch((acc as { branchId?: string }).branchId) &&
+          acc.name.toLowerCase().includes(searchTerm.toLowerCase()),
       ),
-    [accounts, searchTerm],
+    [accounts, searchTerm, matchBranch, branchFilter],
   );
 
   const parentGroups = useMemo(
@@ -251,7 +257,11 @@ const LedgerMaster: React.FC = () => {
           openingBalance: basicForm.openingBalance,
           drCr: basicForm.drCr,
           isActive: basicForm.isActive,
-        });
+          branchId:
+            (selected as { branchId?: string }).branchId ||
+            readActiveBranchId() ||
+            undefined,
+        } as any);
         await upsertLedgerExtension(selected.id, extForm);
         toast.success("Ledger updated successfully");
       } else {
@@ -266,7 +276,8 @@ const LedgerMaster: React.FC = () => {
           isActive: basicForm.isActive,
           isGroup: false,
           type: "asset", // Default type for ledgers
-        });
+          branchId: readActiveBranchId() || undefined,
+        } as any);
         await upsertLedgerExtension(newId, extForm);
         toast.success("Ledger created successfully");
       }
@@ -294,7 +305,7 @@ const LedgerMaster: React.FC = () => {
   };
 
   const inputClass =
-    "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full";
+    "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full";
   const labelClass = "text-[11px] font-medium text-gray-600 mb-1 block";
 
   return (
@@ -306,17 +317,34 @@ const LedgerMaster: React.FC = () => {
               <h1 className="text-[15px] font-semibold text-gray-800">Ledger Master</h1>
               <p className="text-[11px] text-gray-500 mt-0.5">Manage accounts and ledgers</p>
             </div>
-            <button
-              type="button"
-              className={btnPrimary}
-              onClick={() => {
-                resetForms();
-                setShowForm(true);
-              }}
-            >
-              <Plus className="h-3.5 w-3.5" />
-              Add ledger
-            </button>
+            <div className="flex items-center gap-2">
+              {branchOptions.length > 0 && (
+                <select
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>
+              )}
+              <button
+                type="button"
+                className={btnPrimary}
+                onClick={() => {
+                  resetForms();
+                  setShowForm(true);
+                }}
+              >
+                <Plus className="h-3.5 w-3.5" />
+                Add ledger
+              </button>
+            </div>
           </div>
 
           <div className="relative mb-3 max-w-xs">
@@ -361,7 +389,7 @@ const LedgerMaster: React.FC = () => {
                     return (
                       <tr
                         key={account.id}
-                        className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                        className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
                         onClick={() => handleEdit(account)}
                       >
                         <td className={td}>{index + 1}</td>
@@ -444,7 +472,7 @@ const LedgerMaster: React.FC = () => {
                   flex items-center gap-1.5 px-4 py-2.5 text-[12px] font-semibold whitespace-nowrap transition-colors
                   ${
                     activeTab === tab.id
-                      ? "bg-white text-[#1557b0] border-b-2 border-[#1557b0]"
+                      ? "bg-white text-[var(--ds-action-primary)] border-b-2 border-[var(--ds-action-primary)]"
                       : "text-gray-600 hover:bg-gray-100 border-b-2 border-transparent"
                   }
                 `}
@@ -528,7 +556,7 @@ const LedgerMaster: React.FC = () => {
                         <input
                           type="radio"
                           name="drCr"
-                          className="text-[#1557b0] focus:ring-[#1557b0] cursor-pointer"
+                          className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] cursor-pointer"
                           checked={basicForm.drCr === "Dr"}
                           onChange={() => setBasicForm({ ...basicForm, drCr: "Dr" })}
                         />
@@ -538,7 +566,7 @@ const LedgerMaster: React.FC = () => {
                         <input
                           type="radio"
                           name="drCr"
-                          className="text-[#1557b0] focus:ring-[#1557b0] cursor-pointer"
+                          className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] cursor-pointer"
                           checked={basicForm.drCr === "Cr"}
                           onChange={() => setBasicForm({ ...basicForm, drCr: "Cr" })}
                         />
@@ -550,7 +578,7 @@ const LedgerMaster: React.FC = () => {
                     <label className="flex items-center gap-2 text-[12px] text-gray-700 cursor-pointer select-none">
                       <input
                         type="checkbox"
-                        className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] h-3.5 w-3.5 cursor-pointer"
+                        className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                         checked={basicForm.isActive}
                         onChange={(e) => setBasicForm({ ...basicForm, isActive: e.target.checked })}
                       />
@@ -687,7 +715,7 @@ const LedgerMaster: React.FC = () => {
                     <label className="flex items-center gap-2 text-[12px] text-gray-700 cursor-pointer select-none">
                       <input
                         type="checkbox"
-                        className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] h-3.5 w-3.5 cursor-pointer"
+                        className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                         checked={extForm.sendDocsByEmail}
                         onChange={(e) =>
                           setExtForm({ ...extForm, sendDocsByEmail: e.target.checked })
@@ -698,7 +726,7 @@ const LedgerMaster: React.FC = () => {
                     <label className="flex items-center gap-2 text-[12px] text-gray-700 cursor-pointer select-none">
                       <input
                         type="checkbox"
-                        className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] h-3.5 w-3.5 cursor-pointer"
+                        className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                         checked={extForm.sendDocsByWhatsapp}
                         onChange={(e) =>
                           setExtForm({ ...extForm, sendDocsByWhatsapp: e.target.checked })
@@ -778,7 +806,7 @@ const LedgerMaster: React.FC = () => {
                     <label className="flex items-center gap-2 text-[12px] text-gray-700 cursor-pointer select-none">
                       <input
                         type="checkbox"
-                        className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] h-3.5 w-3.5 cursor-pointer"
+                        className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                         checked={extForm.vatApplicable}
                         onChange={(e) =>
                           setExtForm({ ...extForm, vatApplicable: e.target.checked })
@@ -789,7 +817,7 @@ const LedgerMaster: React.FC = () => {
                     <label className="flex items-center gap-2 text-[12px] text-gray-700 cursor-pointer select-none">
                       <input
                         type="checkbox"
-                        className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] h-3.5 w-3.5 cursor-pointer"
+                        className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                         checked={extForm.reverseChargeApplicable}
                         onChange={(e) =>
                           setExtForm({ ...extForm, reverseChargeApplicable: e.target.checked })
@@ -800,7 +828,7 @@ const LedgerMaster: React.FC = () => {
                     <label className="flex items-center gap-2 text-[12px] text-gray-700 cursor-pointer select-none">
                       <input
                         type="checkbox"
-                        className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] h-3.5 w-3.5 cursor-pointer"
+                        className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                         checked={extForm.subjectToTDS}
                         onChange={(e) => setExtForm({ ...extForm, subjectToTDS: e.target.checked })}
                       />
@@ -827,7 +855,7 @@ const LedgerMaster: React.FC = () => {
                     <label className="flex items-center gap-2 text-[12px] text-gray-700 cursor-pointer select-none mt-1">
                       <input
                         type="checkbox"
-                        className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] h-3.5 w-3.5 cursor-pointer"
+                        className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                         checked={extForm.eBillingApplicable}
                         onChange={(e) =>
                           setExtForm({ ...extForm, eBillingApplicable: e.target.checked })
@@ -937,7 +965,7 @@ const LedgerMaster: React.FC = () => {
                       <label className="flex items-center gap-2 text-[12px] text-gray-700 cursor-pointer select-none">
                         <input
                           type="checkbox"
-                          className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] h-3.5 w-3.5 cursor-pointer"
+                          className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                           checked={extForm.chequePrintingEnabled}
                           onChange={(e) =>
                             setExtForm({ ...extForm, chequePrintingEnabled: e.target.checked })
@@ -948,7 +976,7 @@ const LedgerMaster: React.FC = () => {
                       <label className="flex items-center gap-2 text-[12px] text-gray-700 cursor-pointer select-none">
                         <input
                           type="checkbox"
-                          className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] h-3.5 w-3.5 cursor-pointer"
+                          className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                           checked={extForm.ePaymentEnabled}
                           onChange={(e) =>
                             setExtForm({ ...extForm, ePaymentEnabled: e.target.checked })
@@ -959,7 +987,7 @@ const LedgerMaster: React.FC = () => {
                       <label className="flex items-center gap-2 text-[12px] text-gray-700 cursor-pointer select-none">
                         <input
                           type="checkbox"
-                          className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] h-3.5 w-3.5 cursor-pointer"
+                          className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                           checked={extForm.bankReconEnabled}
                           onChange={(e) =>
                             setExtForm({ ...extForm, bankReconEnabled: e.target.checked })
@@ -1009,7 +1037,7 @@ const LedgerMaster: React.FC = () => {
                     <label className="flex items-center gap-2 text-[12px] text-gray-700 cursor-pointer select-none">
                       <input
                         type="checkbox"
-                        className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] h-3.5 w-3.5 cursor-pointer"
+                        className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                         checked={extForm.maintainBillByBill}
                         onChange={(e) =>
                           setExtForm({ ...extForm, maintainBillByBill: e.target.checked })
@@ -1020,7 +1048,7 @@ const LedgerMaster: React.FC = () => {
                     <label className="flex items-center gap-2 text-[12px] text-gray-700 cursor-pointer select-none">
                       <input
                         type="checkbox"
-                        className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] h-3.5 w-3.5 cursor-pointer"
+                        className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                         checked={extForm.inventoryValuesAffected}
                         onChange={(e) =>
                           setExtForm({ ...extForm, inventoryValuesAffected: e.target.checked })
@@ -1031,7 +1059,7 @@ const LedgerMaster: React.FC = () => {
                     <label className="flex items-center gap-2 text-[12px] text-gray-700 cursor-pointer select-none">
                       <input
                         type="checkbox"
-                        className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] h-3.5 w-3.5 cursor-pointer"
+                        className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                         checked={extForm.costCentresApplicable}
                         onChange={(e) =>
                           setExtForm({ ...extForm, costCentresApplicable: e.target.checked })
@@ -1063,7 +1091,7 @@ const LedgerMaster: React.FC = () => {
                     <label className="flex items-center gap-2 text-[12px] text-gray-700 cursor-pointer select-none">
                       <input
                         type="checkbox"
-                        className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] h-3.5 w-3.5 cursor-pointer"
+                        className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                         checked={extForm.interestCalculationApplicable}
                         onChange={(e) =>
                           setExtForm({
@@ -1121,7 +1149,7 @@ const LedgerMaster: React.FC = () => {
                           </label>
                           <input
                             type="number"
-                            className="h-7 px-2 text-[11px] border border-gray-300 rounded bg-white w-full focus:outline-none focus:ring-1 focus:ring-[#1557b0]/50"
+                            className="h-7 px-2 text-[11px] border border-gray-300 rounded bg-white w-full focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/50"
                             value={extForm.interestRate}
                             onChange={(e) =>
                               setExtForm({
@@ -1139,7 +1167,7 @@ const LedgerMaster: React.FC = () => {
                             Style
                           </label>
                           <select
-                            className="h-7 px-2 text-[11px] border border-gray-300 rounded bg-white w-full focus:outline-none focus:ring-1 focus:ring-[#1557b0]/50"
+                            className="h-7 px-2 text-[11px] border border-gray-300 rounded bg-white w-full focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/50"
                             value={extForm.interestStyle}
                             onChange={(e) =>
                               setExtForm({ ...extForm, interestStyle: e.target.value })
@@ -1154,7 +1182,7 @@ const LedgerMaster: React.FC = () => {
                             Period
                           </label>
                           <select
-                            className="h-7 px-2 text-[11px] border border-gray-300 rounded bg-white w-full focus:outline-none focus:ring-1 focus:ring-[#1557b0]/50"
+                            className="h-7 px-2 text-[11px] border border-gray-300 rounded bg-white w-full focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/50"
                             value={extForm.interestPeriod}
                             onChange={(e) =>
                               setExtForm({ ...extForm, interestPeriod: e.target.value })
@@ -1170,7 +1198,7 @@ const LedgerMaster: React.FC = () => {
                             Calculate From
                           </label>
                           <select
-                            className="h-7 px-2 text-[11px] border border-gray-300 rounded bg-white w-full focus:outline-none focus:ring-1 focus:ring-[#1557b0]/50"
+                            className="h-7 px-2 text-[11px] border border-gray-300 rounded bg-white w-full focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/50"
                             value={extForm.calculateFrom}
                             onChange={(e) =>
                               setExtForm({ ...extForm, calculateFrom: e.target.value })
@@ -1187,7 +1215,7 @@ const LedgerMaster: React.FC = () => {
                           </label>
                           <input
                             type="number"
-                            className="h-7 px-2 text-[11px] border border-gray-300 rounded bg-white w-full focus:outline-none focus:ring-1 focus:ring-[#1557b0]/50"
+                            className="h-7 px-2 text-[11px] border border-gray-300 rounded bg-white w-full focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/50"
                             value={extForm.gracePeriodDays}
                             onChange={(e) =>
                               setExtForm({

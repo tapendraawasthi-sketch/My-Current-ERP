@@ -39,6 +39,7 @@ import {
   openSessionViaTreasury,
 } from "@/domains/treasury/uiAdapters";
 import { getDB } from "@/lib/db";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -46,9 +47,9 @@ type ActiveTab = "bank" | "digital";
 type DigitalMode = "esewa" | "khalti" | "connectips";
 
 const CONFIDENCE_COLORS: Record<MatchConfidence, string> = {
-  HIGH: "bg-green-100 text-green-700 border-green-300",
-  MEDIUM: "bg-yellow-100 text-yellow-700 border-yellow-300",
-  LOW: "bg-red-100 text-red-600 border-red-300",
+  HIGH: "bg-[var(--ds-status-success-surface)] text-[var(--ds-status-success)] border-[var(--ds-status-success)]/40",
+  MEDIUM: "bg-[var(--ds-status-warning-surface)] text-[var(--ds-status-warning)] border-[var(--ds-status-warning)]/40",
+  LOW: "bg-[var(--ds-status-danger-surface)] text-[var(--ds-status-danger)] border-[var(--ds-status-danger)]/40",
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -155,6 +156,7 @@ export default function BankReconciliation() {
     setCurrentPage,
   } = useStore();
 
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const [activeTab, setActiveTab] = useState<ActiveTab>("bank");
   const [selectedAccountId, setSelectedAccountId] = useState("");
   const [dateFrom, setDateFrom] = useState("");
@@ -218,9 +220,14 @@ export default function BankReconciliation() {
 
   const allAccounts = useMemo(() => accounts.filter((a: any) => !a.isGroup), [accounts]);
 
+  const scopedVouchers = useMemo(
+    () => (vouchers || []).filter((v: any) => matchBranch(v?.branchId)),
+    [vouchers, matchBranch, branchFilter],
+  );
+
   const allBookEntries = useMemo(
-    () => (selectedAccountId ? buildBookEntries(vouchers, selectedAccountId) : []),
-    [vouchers, selectedAccountId],
+    () => (selectedAccountId ? buildBookEntries(scopedVouchers, selectedAccountId) : []),
+    [scopedVouchers, selectedAccountId],
   );
 
   const statementSource = useMemo(() => {
@@ -746,6 +753,22 @@ export default function BankReconciliation() {
 
       {/* ── Filters ──────────────────────────────────────────────────────── */}
       <div className="flex items-end gap-3 px-4 py-3 bg-white border-b border-[var(--ds-border-default)] shrink-0 flex-wrap">
+        {branchOptions.length > 0 && (
+          <div className="w-44">
+            <Select
+              label="Branch"
+              value={branchFilter}
+              onChange={(val) => setBranchFilter(val)}
+              options={[
+                { value: "all", label: "All branches" },
+                ...branchOptions.map((b) => ({
+                  value: b.id,
+                  label: b.name || b.code || b.id,
+                })),
+              ]}
+            />
+          </div>
+        )}
         <div className="w-56">
           <Select
             label="Bank Account"
@@ -1024,6 +1047,7 @@ export default function BankReconciliation() {
                   Voucher Type
                 </label>
                 <select
+                  aria-label="Voucher type"
                   value={voucherModal.type}
                   onChange={(e) =>
                     setVoucherModal((m) => (m ? { ...m, type: e.target.value as any } : m))
@@ -1042,6 +1066,7 @@ export default function BankReconciliation() {
                   Counter Account *
                 </label>
                 <select
+                  aria-label="Counter account"
                   value={voucherModal.counterAccountId}
                   onChange={(e) =>
                     setVoucherModal((m) => (m ? { ...m, counterAccountId: e.target.value } : m))
@@ -1100,7 +1125,7 @@ export default function BankReconciliation() {
 
 const COLOR_MAP: Record<string, string> = {
   blue: "bg-blue-50 border-blue-200 text-blue-700",
-  purple: "bg-purple-50 border-purple-200 text-purple-700",
+  purple: "bg-[var(--ds-status-info-surface)] border-[var(--ds-status-info)]/30 text-[var(--ds-status-info)]",
   red: "bg-red-50 border-red-200 text-red-700",
   green: "bg-green-50 border-green-200 text-green-700",
   gray: "bg-gray-50 border-gray-200 text-gray-700",

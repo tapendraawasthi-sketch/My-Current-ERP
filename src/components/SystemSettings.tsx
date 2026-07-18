@@ -183,7 +183,7 @@ const SystemSettings: React.FC = () => {
                         type="button"
                         onClick={() => setEnableCostCenter(!enableCostCenter)}
                         className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none
-                          ${enableCostCenter ? "bg-[#1557b0]" : "bg-[#f9fafb]"}
+                          ${enableCostCenter ? "bg-[var(--ds-action-primary)]" : "bg-[#f9fafb]"}
                         `}
                       >
                         <span
@@ -209,7 +209,7 @@ const SystemSettings: React.FC = () => {
                         type="button"
                         onClick={() => setEnableBillWiseTracking(!enableBillWiseTracking)}
                         className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none
-                          ${enableBillWiseTracking ? "bg-[#1557b0]" : "bg-[#f9fafb]"}
+                          ${enableBillWiseTracking ? "bg-[var(--ds-action-primary)]" : "bg-[#f9fafb]"}
                         `}
                       >
                         <span
@@ -234,7 +234,7 @@ const SystemSettings: React.FC = () => {
                         type="button"
                         onClick={() => setEnableBatchTracking(!enableBatchTracking)}
                         className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none
-                          ${enableBatchTracking ? "bg-[#1557b0]" : "bg-[#f9fafb]"}
+                          ${enableBatchTracking ? "bg-[var(--ds-action-primary)]" : "bg-[#f9fafb]"}
                         `}
                       >
                         <span
@@ -259,7 +259,7 @@ const SystemSettings: React.FC = () => {
                         type="button"
                         onClick={() => setTdsEnabled(!tdsEnabled)}
                         className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none
-                          ${tdsEnabled ? "bg-[#1557b0]" : "bg-[#f9fafb]"}
+                          ${tdsEnabled ? "bg-[var(--ds-action-primary)]" : "bg-[#f9fafb]"}
                         `}
                       >
                         <span
@@ -284,7 +284,7 @@ const SystemSettings: React.FC = () => {
                         type="button"
                         onClick={() => setEnableMultiCurrency(!enableMultiCurrency)}
                         className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none
-                          ${enableMultiCurrency ? "bg-[#1557b0]" : "bg-[#f9fafb]"}
+                          ${enableMultiCurrency ? "bg-[var(--ds-action-primary)]" : "bg-[#f9fafb]"}
                         `}
                       >
                         <span
@@ -404,7 +404,7 @@ const SystemSettings: React.FC = () => {
               value={resetConfirmText}
               onChange={(e) => setResetConfirmText(e.target.value)}
               placeholder="Type DELETE ALL DATA"
-              className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </div>
         </Modal>

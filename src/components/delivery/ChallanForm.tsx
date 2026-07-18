@@ -13,6 +13,7 @@ import { ArrowLeft, Plus, Save, Truck, CheckCircle2, ClipboardList, FilePlus } f
 import toast from "@/lib/appToast";
 import { getDB } from "@/lib/db";
 import { ChallanStatus, MovementType, PartyType } from "@/lib/types";
+import { stampMovementBranch, readActiveBranchId } from "@/lib/activeBranch";
 
 interface ChallanFormProps {
   type: "challan" | "grn";
@@ -337,6 +338,7 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
       inspectedBy: type === "grn" ? inspectedBy : undefined,
       status,
       inventoryPosted: existing?.inventoryPosted || false,
+      branchId: existing?.branchId || readActiveBranchId() || undefined,
     };
   };
 
@@ -355,25 +357,32 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
           : Number((line as GrnLineState).acceptedQty || 0);
       if (qty <= 0) continue;
 
-      movementItems.push({
-        id: `mov-${recordId}-${line.id}`,
-        date,
-        dateNepali: date,
-        type: type === "challan" ? MovementType.SALES : MovementType.PURCHASE,
-        itemId: line.itemId,
-        itemName: line.itemName,
-        warehouseId: line.warehouseId || activeWarehouse?.id || "",
-        warehouseName:
-          warehouses.find((w) => w.id === line.warehouseId)?.name || activeWarehouse?.name || "",
-        qty,
-        rate,
-        amount: Number((qty || 0) * rate),
-        referenceId: recordId,
-        referenceNo: recordNo,
-        referenceType: type === "challan" ? "delivery-challan" : "goods-receipt-note",
-        narration:
-          type === "challan" ? `Dispatch from challan ${recordNo}` : `GRN receipt ${recordNo}`,
-      });
+      movementItems.push(
+        stampMovementBranch(
+          {
+            id: `mov-${recordId}-${line.id}`,
+            date,
+            dateNepali: date,
+            type: type === "challan" ? MovementType.SALES : MovementType.PURCHASE,
+            itemId: line.itemId,
+            itemName: line.itemName,
+            warehouseId: line.warehouseId || activeWarehouse?.id || "",
+            warehouseName:
+              warehouses.find((w) => w.id === line.warehouseId)?.name ||
+              activeWarehouse?.name ||
+              "",
+            qty,
+            rate,
+            amount: Number((qty || 0) * rate),
+            referenceId: recordId,
+            referenceNo: recordNo,
+            referenceType: type === "challan" ? "delivery-challan" : "goods-receipt-note",
+            narration:
+              type === "challan" ? `Dispatch from challan ${recordNo}` : `GRN receipt ${recordNo}`,
+          },
+          warehouses,
+        ),
+      );
     }
 
     if (!movementItems.length) {
@@ -474,9 +483,9 @@ const ChallanForm: React.FC<ChallanFormProps> = ({
         <div>
           <div className="text-sm font-bold text-gray-700 tracking-tight flex items-center gap-2">
             {type === "challan" ? (
-              <Truck className="h-5 w-5 text-[#1557b0]" />
+              <Truck className="h-5 w-5 text-[var(--ds-action-primary)]" />
             ) : (
-              <ClipboardList className="h-5 w-5 text-[#1557b0]" />
+              <ClipboardList className="h-5 w-5 text-[var(--ds-action-primary)]" />
             )}
             {type === "challan" ? "Delivery Challan" : "Goods Receipt Note"}
           </div>

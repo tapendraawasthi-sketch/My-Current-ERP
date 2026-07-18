@@ -1,0 +1,159 @@
+{
+  "$defs": {
+    "EvidenceClass": {
+      "enum": [
+        "ERP_SNAPSHOT",
+        "DETERMINISTIC_CALCULATION",
+        "AUTHORITATIVE_EXTERNAL",
+        "PROFESSIONAL_EXPLANATORY",
+        "PRODUCT_DOCUMENTATION",
+        "LANGUAGE_EXAMPLE",
+        "USER_PROVIDED",
+        "INTERNAL_DRAFT",
+        "UNKNOWN"
+      ],
+      "title": "EvidenceClass",
+      "type": "string"
+    },
+    "ReviewStatus": {
+      "enum": [
+        "UNREVIEWED",
+        "REVIEWED",
+        "REJECTED"
+      ],
+      "title": "ReviewStatus",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/EvidenceItemV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "acquired_at": {
+      "format": "date-time",
+      "title": "Acquired At",
+      "type": "string"
+    },
+    "allowed_uses": {
+      "default": [
+        "citation"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "title": "Allowed Uses",
+      "type": "array"
+    },
+    "authority_level": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Authority Level"
+    },
+    "content_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Content Hash"
+    },
+    "document_version_or_snapshot": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Document Version Or Snapshot"
+    },
+    "effective_period": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Effective Period"
+    },
+    "evidence_class": {
+      "$ref": "#/$defs/EvidenceClass",
+      "default": "UNKNOWN"
+    },
+    "evidence_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Evidence Id",
+      "type": "string"
+    },
+    "exact_location": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Exact Location"
+    },
+    "extracted_text_or_fact": {
+      "default": "",
+      "title": "Extracted Text Or Fact",
+      "type": "string"
+    },
+    "jurisdiction": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Jurisdiction"
+    },
+    "review_status": {
+      "$ref": "#/$defs/ReviewStatus",
+      "default": "UNREVIEWED"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_id": {
+      "minLength": 1,
+      "title": "Source Id",
+      "type": "string"
+    },
+    "status": {
+      "default": "ready",
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "evidence_id",
+    "source_id"
+  ],
+  "title": "EvidenceItemV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

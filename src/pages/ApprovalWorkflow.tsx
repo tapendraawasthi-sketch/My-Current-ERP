@@ -20,6 +20,8 @@ import {
   Download,
 } from "lucide-react";
 import * as XLSX from "xlsx";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 type Tab = "inbox" | "policies" | "history" | "audit";
 type StatusFilter = "all" | "pending" | "approved" | "rejected" | "cancelled";
@@ -69,6 +71,7 @@ export default function ApprovalWorkflow() {
     takeApprovalAction,
     companySettings,
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [activeTab, setActiveTab] = useState<Tab>("inbox");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("pending");
@@ -107,9 +110,13 @@ export default function ApprovalWorkflow() {
   const filteredRequests = useMemo(
     () =>
       approvalRequests
-        .filter((r) => statusFilter === "all" || r.status === statusFilter)
+        .filter(
+          (r) =>
+            matchBranch((r as { branchId?: string }).branchId) &&
+            (statusFilter === "all" || r.status === statusFilter),
+        )
         .sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
-    [approvalRequests, statusFilter],
+    [approvalRequests, statusFilter, matchBranch, branchFilter],
   );
 
   // ── Stats ─────────────────────────────────────────────────────────────────
@@ -176,6 +183,7 @@ export default function ApprovalWorkflow() {
       makerUserId: currentUser.id,
       makerName: currentUser.name,
       policyId: policy.id!,
+      branchId: readActiveBranchId() || undefined,
     });
     setShowTestModal(false);
     setActiveTab("inbox");
@@ -257,6 +265,21 @@ export default function ApprovalWorkflow() {
           </p>
         </div>
         <div className="flex gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
           <button
             onClick={() => setShowTestModal(true)}
             className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium"
@@ -266,7 +289,7 @@ export default function ApprovalWorkflow() {
           {activeTab === "audit" && (
             <button
               onClick={exportAudit}
-              className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium"
+              className="flex items-center gap-2 px-4 py-2 bg-[var(--ds-action-primary)] text-white rounded-lg hover:bg-[var(--ds-action-primary-hover)] text-sm font-medium"
             >
               <Download className="w-4 h-4" /> Export
             </button>

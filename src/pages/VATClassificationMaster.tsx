@@ -3,15 +3,17 @@ import { useStore } from "../store";
 import { Plus, Edit2, Trash2, X, Save, Search } from "lucide-react";
 import toast from "@/lib/appToast";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 const inputCls =
-  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
 
 const emptyForm = () => ({
@@ -30,6 +32,7 @@ const VATClassificationMaster: React.FC = () => {
     updateVATClassification,
     deleteVATClassification,
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [showForm, setShowForm] = useState(false);
   const [selected, setSelected] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -79,11 +82,12 @@ const VATClassificationMaster: React.FC = () => {
   const filteredClassifications = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
     const list = vatClassifications || [];
-    if (!q) return list;
-    return list.filter(
-      (cls) => cls.name.toLowerCase().includes(q) || cls.taxability.toLowerCase().includes(q),
-    );
-  }, [vatClassifications, searchTerm]);
+    return list.filter((cls) => {
+      if (!matchBranch((cls as { branchId?: string }).branchId)) return false;
+      if (!q) return true;
+      return cls.name.toLowerCase().includes(q) || cls.taxability.toLowerCase().includes(q);
+    });
+  }, [vatClassifications, searchTerm, matchBranch, branchFilter]);
 
   const resetForm = () => {
     setForm(emptyForm());
@@ -131,10 +135,16 @@ const VATClassificationMaster: React.FC = () => {
 
     try {
       if (selected) {
-        await updateVATClassification(selected.id, form);
+        await updateVATClassification(selected.id, {
+          ...form,
+          branchId: selected.branchId || readActiveBranchId() || undefined,
+        } as any);
         toast.success("Updated successfully");
       } else {
-        await addVATClassification(form);
+        await addVATClassification({
+          ...form,
+          branchId: readActiveBranchId() || undefined,
+        } as any);
         toast.success("Saved successfully");
       }
       resetForm();
@@ -200,10 +210,27 @@ const VATClassificationMaster: React.FC = () => {
                 Manage tax classifications and nature of transactions
               </p>
             </div>
-            <button type="button" className={btnPrimary} onClick={openAdd}>
-              <Plus className="h-3.5 w-3.5" />
-              Add classification
-            </button>
+            <div className="flex items-center gap-2">
+              {branchOptions.length > 0 && (
+                <select
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>
+              )}
+              <button type="button" className={btnPrimary} onClick={openAdd}>
+                <Plus className="h-3.5 w-3.5" />
+                Add classification
+              </button>
+            </div>
           </div>
 
           <div className="relative mb-3 max-w-xs">
@@ -251,7 +278,7 @@ const VATClassificationMaster: React.FC = () => {
                   {filteredClassifications.map((classification) => (
                     <tr
                       key={classification.id}
-                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
                       onClick={() => loadFormForEdit(classification)}
                     >
                       <td className={`${td} font-medium text-gray-800`}>{classification.name}</td>
@@ -266,7 +293,7 @@ const VATClassificationMaster: React.FC = () => {
                         <span
                           className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
                             classification.isActive
-                              ? "bg-green-100 text-green-700"
+                              ? "bg-[var(--ds-status-success-surface)] text-[var(--ds-status-success)]"
                               : "bg-gray-100 text-gray-700"
                           }`}
                         >
@@ -386,7 +413,7 @@ const VATClassificationMaster: React.FC = () => {
               <label className="flex items-center gap-2 cursor-pointer text-[12px] text-gray-700">
                 <input
                   type="checkbox"
-                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                   checked={form.isActive}
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
                 />

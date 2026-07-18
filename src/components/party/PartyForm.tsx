@@ -302,8 +302,8 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 flex-shrink-0">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-[#1557b0]/10 rounded-lg">
-              <Building2 className="w-5 h-5 text-[#1557b0]" />
+            <div className="p-2 bg-[var(--ds-action-primary)]/10 rounded-lg">
+              <Building2 className="w-5 h-5 text-[var(--ds-action-primary)]" />
             </div>
             <div>
               <h2 className="text-[15px] font-semibold text-gray-800">
@@ -327,7 +327,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
               onClick={() => setActiveTab(t.key)}
               className={`px-4 py-3 text-[12px] font-semibold border-b-2 transition-colors whitespace-nowrap ${
                 activeTab === t.key
-                  ? "border-[#1557b0] text-[#1557b0]"
+                  ? "border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]"
                   : "border-transparent text-gray-500 hover:text-gray-700"
               }`}
             >
@@ -356,7 +356,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                           value={pt}
                           checked={partyType === pt}
                           onChange={() => setPartyType(pt)}
-                          className="accent-[#1557b0]"
+                          className="accent-[var(--ds-action-primary)]"
                         />
                         <span className="text-[12px] font-medium text-gray-700 capitalize">
                           {pt}
@@ -377,7 +377,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g. Sharma Traders Pvt. Ltd."
-                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                     />
                   </div>
 
@@ -391,7 +391,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                       value={code}
                       onChange={(e) => setCode(e.target.value.toUpperCase())}
                       placeholder="e.g. SHAR001"
-                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] font-mono focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] font-mono focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                     />
                   </div>
 
@@ -405,7 +405,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                       value={alias}
                       onChange={(e) => setAlias(e.target.value)}
                       placeholder="e.g. Sharma T"
-                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                     />
                   </div>
 
@@ -420,7 +420,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                       onChange={(e) => setGstin(e.target.value.toUpperCase())}
                       placeholder="e.g. 07AABCU9603R1ZX"
                       maxLength={15}
-                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] font-mono focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] font-mono focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                     />
                   </div>
 
@@ -433,7 +433,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                       onChange={(e) => setPan(e.target.value.toUpperCase())}
                       placeholder="e.g. AABCU9603R"
                       maxLength={10}
-                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] font-mono focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] font-mono focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                     />
                   </div>
 
@@ -447,7 +447,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                       onChange={(e) => setAddress(e.target.value)}
                       rows={2}
                       placeholder="Street / Area"
-                      className="w-full border border-gray-300 rounded-md px-2.5 py-2 text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] resize-none"
+                      className="w-full border border-gray-300 rounded-md px-2.5 py-2 text-[12px] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] resize-none"
                     />
                   </div>
 
@@ -459,7 +459,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
                       placeholder="e.g. New Delhi"
-                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                     />
                   </div>
 
@@ -473,7 +473,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                       value={state}
                       onChange={(e) => setState(e.target.value)}
                       placeholder="e.g. Delhi"
-                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                     />
                   </div>
 
@@ -488,7 +488,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                       onChange={(e) => setPincode(e.target.value)}
                       placeholder="e.g. 110001"
                       maxLength={6}
-                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                     />
                   </div>
 
@@ -502,7 +502,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                       value={country}
                       onChange={(e) => setCountry(e.target.value)}
                       placeholder="e.g. India"
-                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                     />
                   </div>
                 </div>
@@ -513,7 +513,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                     type="checkbox"
                     checked={isActive}
                     onChange={(e) => setIsActive(e.target.checked)}
-                    className="accent-[#1557b0]"
+                    className="accent-[var(--ds-action-primary)]"
                   />
                   <span className="text-[12px] font-medium text-gray-700">Active</span>
                 </label>
@@ -530,7 +530,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                   <button
                     type="button"
                     onClick={addContactRow}
-                    className="flex items-center gap-1 text-[11px] text-[#1557b0] hover:text-[#0f4a96] font-semibold uppercase tracking-wide"
+                    className="flex items-center gap-1 text-[11px] text-[var(--ds-action-primary)] hover:text-[var(--ds-action-primary-hover)] font-semibold uppercase tracking-wide"
                   >
                     <Plus className="w-3 h-3" />
                     Add Contact
@@ -569,7 +569,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                               value={c.name}
                               onChange={(e) => updateContact(c.id, "name", e.target.value)}
                               placeholder="Contact name"
-                              className="w-full h-8 pl-8 pr-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] bg-white"
+                              className="w-full h-8 pl-8 pr-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] bg-white"
                             />
                           </div>
                         </div>
@@ -583,7 +583,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                             value={c.designation}
                             onChange={(e) => updateContact(c.id, "designation", e.target.value)}
                             placeholder="e.g. Manager"
-                            className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] bg-white"
+                            className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] bg-white"
                           />
                         </div>
 
@@ -598,7 +598,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                               value={c.phone}
                               onChange={(e) => updateContact(c.id, "phone", e.target.value)}
                               placeholder="+91 98XXXXXXXX"
-                              className="w-full h-8 pl-8 pr-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] bg-white"
+                              className="w-full h-8 pl-8 pr-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] bg-white"
                             />
                           </div>
                         </div>
@@ -614,7 +614,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                               value={c.email}
                               onChange={(e) => updateContact(c.id, "email", e.target.value)}
                               placeholder="contact@example.com"
-                              className="w-full h-8 pl-8 pr-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] bg-white"
+                              className="w-full h-8 pl-8 pr-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] bg-white"
                             />
                           </div>
                         </div>
@@ -635,7 +635,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                   <button
                     type="button"
                     onClick={addBankRow}
-                    className="flex items-center gap-1 text-[11px] text-[#1557b0] hover:text-[#0f4a96] font-semibold uppercase tracking-wide"
+                    className="flex items-center gap-1 text-[11px] text-[var(--ds-action-primary)] hover:text-[var(--ds-action-primary-hover)] font-semibold uppercase tracking-wide"
                   >
                     <Plus className="w-3 h-3" />
                     Add Bank Account
@@ -669,7 +669,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                             value={b.bankName}
                             onChange={(e) => updateBank(b.id, "bankName", e.target.value)}
                             placeholder="e.g. State Bank of India"
-                            className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] bg-white"
+                            className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] bg-white"
                           />
                         </div>
 
@@ -680,7 +680,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                           <select
                             value={b.accountType}
                             onChange={(e) => updateBank(b.id, "accountType", e.target.value)}
-                            className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] bg-white"
+                            className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] bg-white"
                           >
                             <option value="savings">Savings</option>
                             <option value="current">Current</option>
@@ -700,7 +700,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                               value={b.accountNo}
                               onChange={(e) => updateBank(b.id, "accountNo", e.target.value)}
                               placeholder="Account number"
-                              className="w-full h-8 pl-8 pr-2.5 border border-gray-300 rounded-md text-[12px] font-mono focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] bg-white"
+                              className="w-full h-8 pl-8 pr-2.5 border border-gray-300 rounded-md text-[12px] font-mono focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] bg-white"
                             />
                           </div>
                         </div>
@@ -715,7 +715,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                             onChange={(e) => updateBank(b.id, "ifsc", e.target.value.toUpperCase())}
                             placeholder="e.g. SBIN0001234"
                             maxLength={11}
-                            className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] font-mono focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] bg-white"
+                            className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] font-mono focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] bg-white"
                           />
                         </div>
 
@@ -730,7 +730,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                               value={b.branch}
                               onChange={(e) => updateBank(b.id, "branch", e.target.value)}
                               placeholder="Branch name / address"
-                              className="w-full h-8 pl-8 pr-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] bg-white"
+                              className="w-full h-8 pl-8 pr-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] bg-white"
                             />
                           </div>
                         </div>
@@ -753,7 +753,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                     <select
                       value={ledgerId}
                       onChange={(e) => setLedgerId(e.target.value)}
-                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] bg-white"
+                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] bg-white"
                     >
                       <option value="">— Select ledger —</option>
                       <optgroup label="Debtors / Receivables">
@@ -783,7 +783,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                       min={0}
                       value={creditLimit}
                       onChange={(e) => setCreditLimit(Number(e.target.value))}
-                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] text-right"
+                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] text-right"
                     />
                   </div>
 
@@ -797,7 +797,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                       min={0}
                       value={creditPeriod}
                       onChange={(e) => setCreditPeriod(Number(e.target.value))}
-                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] text-right"
+                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] text-right"
                     />
                   </div>
 
@@ -809,7 +809,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                     <select
                       value={salesPersonId}
                       onChange={(e) => setSalesPersonId(e.target.value)}
-                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] bg-white"
+                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] bg-white"
                     >
                       <option value="">— None —</option>
                       {(salesPersons ?? []).map((sp: any) => (
@@ -828,7 +828,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                     <select
                       value={priceListId}
                       onChange={(e) => setPriceListId(e.target.value)}
-                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] bg-white"
+                      className="w-full h-8 px-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] bg-white"
                     >
                       <option value="">— Default —</option>
                       {(priceLists ?? []).map((pl: any) => (
@@ -850,7 +850,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                     type="checkbox"
                     checked={tdsApplicable}
                     onChange={(e) => setTdsApplicable(e.target.checked)}
-                    className="accent-[#1557b0]"
+                    className="accent-[var(--ds-action-primary)]"
                   />
                   <span className="text-[12px] font-medium text-gray-700">TDS Applicable</span>
                 </label>
@@ -870,7 +870,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
                           step={0.01}
                           value={tdsRate}
                           onChange={(e) => setTdsRate(Number(e.target.value))}
-                          className="w-full h-8 pl-8 pr-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                          className="w-full h-8 pl-8 pr-2.5 border border-gray-300 rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                         />
                       </div>
                     </div>
@@ -894,7 +894,7 @@ const PartyForm: React.FC<PartyFormProps> = ({ partyId, onClose, prefillPhone, f
             type="submit"
             form=""
             onClick={handleSubmit}
-            className="flex items-center gap-2 h-8 px-4 text-[12px] font-medium text-white bg-[#1557b0] rounded-md hover:bg-[#0f4a96] transition-colors"
+            className="flex items-center gap-2 h-8 px-4 text-[12px] font-medium text-white bg-[var(--ds-action-primary)] rounded-md hover:bg-[var(--ds-action-primary-hover)] transition-colors"
           >
             <Save className="w-4 h-4" />
             {isEdit ? "Update Party" : "Save Party"}

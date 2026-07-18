@@ -107,7 +107,7 @@ const ControlCentre = () => {
             onClick={() => setTab(key as any)}
             className={`px-4 py-2.5 text-[12px] font-medium transition-colors border-b-2 flex-1 flex items-center justify-center gap-1.5 ${
               tab === key
-                ? "bg-white text-[#1557b0] border-[#1557b0]"
+                ? "bg-white text-[var(--ds-action-primary)] border-[var(--ds-action-primary)]"
                 : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 border-transparent"
             }`}
           >
@@ -292,7 +292,7 @@ const ControlCentre = () => {
                       type="radio"
                       name="transfer"
                       defaultChecked
-                      className="text-[#1557b0] focus:ring-[#1557b0]"
+                      className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                     />
                     Deactivate on this machine
                   </label>
@@ -300,7 +300,7 @@ const ControlCentre = () => {
                     <input
                       type="radio"
                       name="transfer"
-                      className="text-[#1557b0] focus:ring-[#1557b0]"
+                      className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                     />
                     Add additional activation
                   </label>
@@ -309,7 +309,7 @@ const ControlCentre = () => {
                 <input
                   type="text"
                   placeholder="Reason for transfer..."
-                  className="w-full h-7 px-2 text-[11px] border border-gray-300 rounded-[3px] bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0] mb-3"
+                  className="w-full h-7 px-2 text-[11px] border border-gray-300 rounded-[3px] bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)] mb-3"
                 />
 
                 <button
@@ -513,7 +513,7 @@ const ControlCentre = () => {
                           <span className="bg-red-50 text-red-600 border border-red-200 text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1">
                             <X size={10} strokeWidth={3} /> Inactive
                           </span>
-                          <button className="h-6 px-2 bg-white border border-gray-300 hover:bg-gray-50 text-[#1557b0] text-[10px] font-semibold rounded shadow-sm transition-colors">
+                          <button className="h-6 px-2 bg-white border border-gray-300 hover:bg-gray-50 text-[var(--ds-action-primary)] text-[10px] font-semibold rounded shadow-sm transition-colors">
                             Set Up
                           </button>
                         </div>
@@ -535,11 +535,11 @@ const ControlCentre = () => {
                   <AlertTriangle size={14} className="shrink-0 mt-0.5 text-amber-600" />
                   <div>
                     <span className="font-semibold">Product Update available:</span> v4.2.1 —
-                    <button className="ml-1 text-[#1557b0] hover:underline font-medium">
+                    <button className="ml-1 text-[var(--ds-action-primary)] hover:underline font-medium">
                       View Release Notes
                     </button>
                     <span className="mx-1.5 text-amber-300">•</span>
-                    <button className="text-[#1557b0] hover:underline font-medium">
+                    <button className="text-[var(--ds-action-primary)] hover:underline font-medium">
                       Update Now
                     </button>
                   </div>
@@ -550,7 +550,7 @@ const ControlCentre = () => {
                   <div>
                     <span className="font-semibold">Compliance Alert:</span> GST API update required
                     by 31st May —
-                    <button className="ml-1 text-[#1557b0] hover:underline font-medium">
+                    <button className="ml-1 text-[var(--ds-action-primary)] hover:underline font-medium">
                       Read More
                     </button>
                   </div>
@@ -607,7 +607,7 @@ const ControlCentre = () => {
                         type="radio"
                         checked={remoteMode === "relay"}
                         onChange={() => setRemoteMode("relay")}
-                        className="mt-0.5 text-[#1557b0] focus:ring-[#1557b0]"
+                        className="mt-0.5 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                       />
                       <div>
                         <div className="text-gray-800">
@@ -627,7 +627,7 @@ const ControlCentre = () => {
                         type="radio"
                         checked={remoteMode === "tunnel"}
                         onChange={() => setRemoteMode("tunnel")}
-                        className="mt-0.5 text-[#1557b0] focus:ring-[#1557b0]"
+                        className="mt-0.5 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                       />
                       <div>
                         <div className="text-gray-800">
@@ -655,7 +655,7 @@ const ControlCentre = () => {
                       type="number"
                       value={odbcPort}
                       onChange={(e) => setOdbcPort(e.target.value)}
-                      className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0]"
+                      className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]"
                     />
                   </div>
                   {/* Max Connections */}
@@ -667,7 +667,7 @@ const ControlCentre = () => {
                       type="number"
                       value={maxRemoteConns}
                       onChange={(e) => setMaxRemoteConns(e.target.value)}
-                      className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0]"
+                      className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]"
                     />
                   </div>
                 </div>
@@ -684,7 +684,7 @@ const ControlCentre = () => {
                           type="radio"
                           name="ssl"
                           defaultChecked
-                          className="text-[#1557b0] focus:ring-[#1557b0]"
+                          className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                         />
                         Auto (Let's Encrypt — auto-renews)
                       </label>
@@ -692,7 +692,7 @@ const ControlCentre = () => {
                         <input
                           type="radio"
                           name="ssl"
-                          className="text-[#1557b0] focus:ring-[#1557b0]"
+                          className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                         />
                         Custom certificate
                       </label>
@@ -710,7 +710,7 @@ const ControlCentre = () => {
                     onChange={(e) => setWhitelistIPs(e.target.value)}
                     placeholder="One IP per line. Leave blank to allow all connections."
                     rows={3}
-                    className="w-full p-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0] font-mono resize-y"
+                    className="w-full p-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)] font-mono resize-y"
                   />
                 </div>
 
@@ -722,13 +722,13 @@ const ControlCentre = () => {
                   >
                     Test Connection
                   </button>
-                  <button className="h-8 px-4 bg-white border border-gray-300 text-[#1557b0] text-[11px] font-medium rounded-md hover:bg-blue-50 transition-colors shadow-sm">
+                  <button className="h-8 px-4 bg-white border border-gray-300 text-[var(--ds-action-primary)] text-[11px] font-medium rounded-md hover:bg-blue-50 transition-colors shadow-sm">
                     Generate Mobile QR Code
                   </button>
                   <div className="flex-1"></div>
                   <button
                     onClick={handleSaveRemoteSettings}
-                    className="h-8 px-5 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[11px] font-medium rounded-md transition-colors shadow-sm"
+                    className="h-8 px-5 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[11px] font-medium rounded-md transition-colors shadow-sm"
                   >
                     Save Settings
                   </button>
@@ -764,7 +764,7 @@ const ControlCentre = () => {
                   </div>
                   <button
                     onClick={handleInstallNow}
-                    className="h-7 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[11px] font-medium rounded-[3px] transition-colors shadow-sm whitespace-nowrap"
+                    className="h-7 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[11px] font-medium rounded-[3px] transition-colors shadow-sm whitespace-nowrap"
                   >
                     Install Now
                   </button>
@@ -790,7 +790,7 @@ const ControlCentre = () => {
                         type="radio"
                         checked={updateChannel === "stable"}
                         onChange={() => setUpdateChannel("stable")}
-                        className="text-[#1557b0] focus:ring-[#1557b0]"
+                        className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                       />
                       Stable (Recommended — Fully tested releases only)
                     </label>
@@ -799,7 +799,7 @@ const ControlCentre = () => {
                         type="radio"
                         checked={updateChannel === "beta"}
                         onChange={() => setUpdateChannel("beta")}
-                        className="text-[#1557b0] focus:ring-[#1557b0]"
+                        className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                       />
                       Beta (Get features early, minor bugs possible)
                     </label>
@@ -808,7 +808,7 @@ const ControlCentre = () => {
                         type="radio"
                         checked={updateChannel === "manual"}
                         onChange={() => setUpdateChannel("manual")}
-                        className="text-[#1557b0] focus:ring-[#1557b0]"
+                        className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                       />
                       Manual Only
                     </label>
@@ -893,7 +893,7 @@ const ControlCentre = () => {
                     <input
                       type="text"
                       defaultValue="02:00 AM to 04:00 AM"
-                      className="w-48 h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0]"
+                      className="w-48 h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]"
                     />
                   </div>
                 </div>

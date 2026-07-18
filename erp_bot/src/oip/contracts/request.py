@@ -1,0 +1,137 @@
+"""Client payload vs trusted server request."""
+
+from __future__ import annotations
+
+from datetime import datetime, timezone
+from enum import Enum
+from typing import Any
+
+from pydantic import Field, field_validator, model_validator
+
+from .common import ContractBase, TimestampV1, default_schema_version
+from .errors import ContractErrorCode, ContractValidationError
+from .language import LanguageFrameV1
+from .registry import get_contract_registry
+
+
+class InteractionModeV1(str, Enum):
+    ASK = "ask"
+    ACCOUNTANT = "accountant"
+
+
+class InputChannelV1(str, Enum):
+    TEXT = "text"
+    VOICE = "voice"
+    UI = "ui"
+    UNKNOWN = "unknown"
+
+
+_FORBIDDEN_CLIENT_IDENTITY_KEYS = frozenset(
+    {
+        "principal_id",
+        "tenant_id",
+        "company_id",
+        "roles",
+        "permissions",
+        "authentication_method",
+        "user_id",
+        "trusted_scope",
+        "execution_allowed",
+    }
+)
+
+
+class ClientTurnPayloadV1(ContractBase):
+    """Untrusted client-controlled fields only."""
+
+    schema_version: str = Field(default_factory=default_schema_version)
+    message: str = Field(min_length=1, max_length=20000)
+    conversation_id: str | None = Field(default=None, min_length=1, max_length=128)
+    session_id: str | None = Field(default=None, min_length=1, max_length=128)  # legacy alias
+    mode: InteractionModeV1 = InteractionModeV1.ASK
+    input_channel: InputChannelV1 = InputChannelV1.TEXT
+    locale_hint: str | None = None
+    client_context: dict[str, Any] = Field(default_factory=dict)
+    active_ui_context: dict[str, Any] = Field(default_factory=dict)
+    active_draft_reference: str | None = None
+    client_message_id: str | None = None
+    idempotency_key: str | None = None
+
+    @field_validator("schema_version")
+    @classmethod
+    def _ver(cls, v: str) -> str:
+        return get_contract_registry().assert_supported(v)
+
+    @model_validator(mode="after")
+    def _no_identity(self) -> ClientTurnPayloadV1:
+        # Top-level forbidden keys already outside model; inspect client_context.
+        for key in _FORBIDDEN_CLIENT_IDENTITY_KEYS:
+            if key in self.client_context:
+                # Allow resource selectors only under namespaced key for adapters.
+                if key in {"tenant_id", "company_id"} and self.client_context.get(
+                    "_resource_selector_only"
+                ):
+                    continue
+                raise ContractValidationError(
+                    ContractErrorCode.CLIENT_TRUSTED_SCOPE_FORBIDDEN,
+                    f"client payload must not establish {key}",
+                    field=key,
+                )
+        if not self.conversation_id and not self.session_id:
+            raise ValueError("conversation_id or session_id is required")
+        return self
+
+    def resolved_conversation_id(self) -> str:
+        return self.conversation_id or self.session_id or ""
+
+
+class TrustedScopeV1(ContractBase):
+    """Built only from MAI-01 authenticated context."""
+
+    schema_version: str = Field(default_factory=default_schema_version)
+    principal_id: str = Field(min_length=1, max_length=128)
+    tenant_id: str = Field(min_length=1, max_length=128)
+    company_id: str | None = None
+    branch_id: str | None = None
+    fiscal_context: dict[str, Any] | None = None
+    roles: tuple[str, ...] = ()
+    permissions: tuple[str, ...] = ()
+    authentication_method: str = Field(min_length=1, max_length=64)
+    policy_version: str = Field(default="mai-01.1.0")
+
+    @field_validator("schema_version")
+    @classmethod
+    def _ver(cls, v: str) -> str:
+        return get_contract_registry().assert_supported(v)
+
+
+class CanonicalAIRequestV1(ContractBase):
+    schema_version: str = Field(default_factory=default_schema_version)
+    request_id: str = Field(min_length=1, max_length=128)
+    correlation_id: str = Field(min_length=1, max_length=128)
+    conversation_id: str = Field(min_length=1, max_length=128)
+    message_id: str = Field(min_length=1, max_length=128)
+    trusted_scope: TrustedScopeV1
+    mode: InteractionModeV1
+    raw_text: str = Field(min_length=1, max_length=20000)
+    input_channel: InputChannelV1 = InputChannelV1.TEXT
+    locale_hint: str | None = None
+    timezone: str = "Asia/Kathmandu"
+    client_capabilities: dict[str, Any] = Field(default_factory=dict)
+    active_ui_context: dict[str, Any] = Field(default_factory=dict)
+    active_draft_reference: str | None = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    # MAI-05: optional typed LanguageFrame (None when analysis not attached).
+    language_frame: LanguageFrameV1 | None = None
+
+    @field_validator("schema_version")
+    @classmethod
+    def _ver(cls, v: str) -> str:
+        return get_contract_registry().assert_supported(v)
+
+    @field_validator("created_at")
+    @classmethod
+    def _aware(cls, v: datetime) -> datetime:
+        if v.tzinfo is None:
+            raise ValueError("created_at must be timezone-aware")
+        return v

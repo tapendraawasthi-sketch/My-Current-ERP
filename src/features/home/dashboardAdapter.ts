@@ -654,7 +654,7 @@ async function buildAgeingChart(
       freshness,
       buckets,
       accessibleSummary: `Receivable ageing total ${formatHomeAmount(total, currency)}; overdue ${formatHomeAmount(overdue, currency)}.`,
-      drillDownRoute: "debtors-aging",
+      drillDownRoute: "aging-report",
     };
   } catch (err) {
     return {
@@ -666,7 +666,7 @@ async function buildAgeingChart(
       freshness: "unavailable",
       buckets: [],
       accessibleSummary: "Receivable ageing unavailable.",
-      drillDownRoute: "debtors-aging",
+      drillDownRoute: "aging-report",
       unavailableReason: err instanceof Error ? err.message : "Unavailable",
     };
   }

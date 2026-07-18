@@ -456,7 +456,7 @@ const OrbixWorkspace: React.FC<OrbixWorkspaceProps> = ({ variant = "page", onClo
                   );
                 })}
 
-                {(pendingCard || pendingCompoundBatch) && (
+                {(pendingCard || pendingCompoundBatch) && orbixMode === "accountant" && (
                   <OrbixJournalCard
                     pendingCard={pendingCard}
                     pendingCompoundBatch={pendingCompoundBatch}

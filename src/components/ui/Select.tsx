@@ -60,7 +60,7 @@ const Select: React.FC<SelectProps> = ({
             padding: "0 8px",
             fontSize: 12,
             border: "1px solid #000000",
-            background: "#EBF5E2",
+            background: "var(--ds-surface-muted)",
             color: "#000000",
             borderRadius: 3,
             width: "100%",
@@ -96,7 +96,7 @@ const Select: React.FC<SelectProps> = ({
           padding: "0 8px",
           fontSize: 12,
           border: "1px solid #000000",
-          background: "#EBF5E2",
+          background: "var(--ds-surface-muted)",
           color: "#000000",
           borderRadius: 3,
           cursor: disabled ? "not-allowed" : "pointer",
@@ -118,7 +118,7 @@ const Select: React.FC<SelectProps> = ({
             top: "100%",
             left: 0,
             right: 0,
-            background: "#EBF5E2",
+            background: "var(--ds-surface-muted)",
             border: "1px solid #000000",
             borderRadius: 3,
             zIndex: 1000,
@@ -138,7 +138,7 @@ const Select: React.FC<SelectProps> = ({
               fontSize: 11,
               border: "none",
               borderBottom: "1px solid #000000",
-              background: "#D4EABD",
+              background: "var(--ds-surface-hover)",
               color: "#000000",
               outline: "none",
             }}
@@ -161,16 +161,16 @@ const Select: React.FC<SelectProps> = ({
                   padding: "6px 10px",
                   fontSize: 12,
                   cursor: "pointer",
-                  background: opt.value === value ? "#C9DEB5" : "transparent",
+                  background: opt.value === value ? "var(--ds-surface-muted)" : "transparent",
                   color: "#000000",
                   borderBottom: "1px solid rgba(0,0,0,0.1)",
                 }}
                 onMouseEnter={(e) =>
-                  ((e.currentTarget as HTMLDivElement).style.background = "#D4EABD")
+                  ((e.currentTarget as HTMLDivElement).style.background = "var(--ds-surface-hover)")
                 }
                 onMouseLeave={(e) =>
                   ((e.currentTarget as HTMLDivElement).style.background =
-                    opt.value === value ? "#C9DEB5" : "transparent")
+                    opt.value === value ? "var(--ds-surface-muted)" : "transparent")
                 }
               >
                 {opt.label}

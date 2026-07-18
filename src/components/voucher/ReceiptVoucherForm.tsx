@@ -646,7 +646,7 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
     return (
       <div className="flex flex-col items-center justify-center gap-5 py-20 animate-fadeIn text-center">
         <div className="h-16 w-16 rounded-full bg-green-50 border border-green-200 flex items-center justify-center">
-          <CheckCircle2 className="h-8 w-8 text-green-600" />
+          <CheckCircle2 className="h-8 w-8 text-[var(--ds-status-success)]" />
         </div>
         <div>
           <h2 className="text-lg font-bold text-[var(--ds-text-default)]">Receive money saved</h2>
@@ -992,7 +992,7 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
                 Receipt: {symbol} {formatNumber(totals.gross)}
               </span>
               {Math.abs(selectedInvoiceTotal - totals.gross) < 0.01 ? (
-                <CheckCircle2 className="h-4 w-4 text-green-600" />
+                <CheckCircle2 className="h-4 w-4 text-[var(--ds-status-success)]" />
               ) : (
                 <X className="h-4 w-4 text-red-600" />
               )}
@@ -1066,7 +1066,7 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
                       onChange={(e) => updateLine(idx, "amount", parseFloat(e.target.value) || 0)}
                       placeholder="0.00"
                       disabled={readOnly}
-                      className="w-full h-9 px-2 text-right font-mono border border-[var(--ds-border-default)] rounded-md focus:outline-none focus:ring-1 focus:ring-green-500 disabled:bg-[var(--ds-surface-muted)]"
+                      className="w-full h-9 px-2 text-right font-mono border border-[var(--ds-border-default)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] disabled:bg-[var(--ds-surface-muted)]"
                     />
                   </td>
                   <td className="px-2 py-2 text-center">
@@ -1123,7 +1123,7 @@ const ReceiptVoucherForm: React.FC<ReceiptVoucherFormProps> = ({ voucherId, onSa
             )}
             <div className="flex justify-between border-t border-[var(--ds-border-default)] pt-2 mt-1">
               <span className="text-[var(--ds-text-default)] font-bold">Net Amount Received</span>
-              <span className="font-mono font-bold text-green-600 text-sm">
+              <span className="font-mono font-bold text-[var(--ds-status-success)] text-sm">
                 {symbol} {formatNumber(totals.net)}
               </span>
             </div>

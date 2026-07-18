@@ -1,0 +1,239 @@
+{
+  "$defs": {
+    "DraftReferenceV1": {
+      "additionalProperties": false,
+      "properties": {
+        "company_scope_reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Company Scope Reference"
+        },
+        "conversation_id": {
+          "minLength": 1,
+          "title": "Conversation Id",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "draft_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Draft Id",
+          "type": "string"
+        },
+        "draft_version": {
+          "default": "1",
+          "title": "Draft Version",
+          "type": "string"
+        },
+        "event_type": {
+          "default": "unknown",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "expires_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expires At"
+        },
+        "owner_principal_reference": {
+          "minLength": 1,
+          "title": "Owner Principal Reference",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/DraftStatus",
+          "default": "OPEN"
+        },
+        "tenant_scope_reference": {
+          "minLength": 1,
+          "title": "Tenant Scope Reference",
+          "type": "string"
+        }
+      },
+      "required": [
+        "draft_id",
+        "tenant_scope_reference",
+        "owner_principal_reference",
+        "conversation_id"
+      ],
+      "title": "DraftReferenceV1",
+      "type": "object"
+    },
+    "DraftStatus": {
+      "enum": [
+        "OPEN",
+        "NEEDS_CLARIFICATION",
+        "READY_FOR_PREVIEW",
+        "PREVIEWED",
+        "CANCELLED",
+        "EXPIRED",
+        "SUPERSEDED"
+      ],
+      "title": "DraftStatus",
+      "type": "string"
+    },
+    "ReceiptStatus": {
+      "enum": [
+        "ACCEPTED",
+        "POSTED_LOCAL",
+        "SYNC_PENDING",
+        "SYNCED",
+        "CONFLICT",
+        "REJECTED",
+        "FAILED"
+      ],
+      "title": "ReceiptStatus",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/ReceiptV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "audit_reference": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Audit Reference"
+    },
+    "authoritative_record_ids": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Authoritative Record Ids",
+      "type": "array"
+    },
+    "authority_source": {
+      "minLength": 1,
+      "title": "Authority Source",
+      "type": "string"
+    },
+    "command_id": {
+      "minLength": 1,
+      "title": "Command Id",
+      "type": "string"
+    },
+    "connector_or_domain_source": {
+      "minLength": 1,
+      "title": "Connector Or Domain Source",
+      "type": "string"
+    },
+    "draft_reference": {
+      "$ref": "#/$defs/DraftReferenceV1"
+    },
+    "idempotency_key": {
+      "minLength": 1,
+      "title": "Idempotency Key",
+      "type": "string"
+    },
+    "observed_at": {
+      "format": "date-time",
+      "title": "Observed At",
+      "type": "string"
+    },
+    "oec_fields": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Oec Fields"
+    },
+    "preview_reference": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Preview Reference"
+    },
+    "receipt_id": {
+      "minLength": 1,
+      "title": "Receipt Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/ReceiptStatus"
+    },
+    "sync_state": {
+      "anyOf": [
+        {
+          "enum": [
+            "local_only",
+            "pending",
+            "synced",
+            "conflict"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Sync State"
+    },
+    "warnings": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "receipt_id",
+    "command_id",
+    "idempotency_key",
+    "draft_reference",
+    "authority_source",
+    "connector_or_domain_source",
+    "status"
+  ],
+  "title": "ReceiptV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

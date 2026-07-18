@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0.0",
+  "ranking_config_version": "mai-07.2.0",
+  "calibration_status": "UNCALIBRATED",
+  "note": "Deterministic ranking weights — not probabilities. Engineering-curated; not linguist-approved.",
+  "base_kind_adjustments": {
+    "IDENTITY": 0.0,
+    "LEXICAL": 0.08,
+    "DOMAIN": 0.1,
+    "MORPHOLOGICAL": 0.04,
+    "GRAPHEME": -0.05,
+    "PHRASE": 0.06,
+    "CONTEXTUAL": 0.05,
+    "ABSTENTION": 0.0
+  },
+  "features": {
+    "exact_romanized_lexicon": 0.55,
+    "curated_variant": 0.35,
+    "domain_lexicon": 0.5,
+    "morphology_supported": 0.4,
+    "phrase_context_supported": 0.35,
+    "neighboring_nepali_evidence": 0.25,
+    "high_language_form_evidence": 0.3,
+    "low_grapheme_cost": 0.08,
+    "exact_english_lexicon": 0.55,
+    "accounting_english_borrowing": 0.45,
+    "acronym_pattern": 0.6,
+    "proper_name_likelihood": 0.5,
+    "identifier_like": 0.7,
+    "ambiguous_latin": 0.35,
+    "weak_grapheme_only": -0.35,
+    "security_sensitive": 0.8,
+    "protected_overlap": 0.8,
+    "english_dev_penalty": -0.55,
+    "name_like_dev_penalty": -0.45,
+    "target_preferred_bonus": 0.9,
+    "identity_required_bonus": 0.75,
+    "identity_preferred_bonus": 0.45,
+    "context_identity_override_bonus": 1.2
+  },
+  "disposition_priority": {
+    "IDENTITY_REQUIRED": 0,
+    "IDENTITY_PREFERRED": 1,
+    "AMBIGUOUS_REVIEW": 2,
+    "TARGET_PREFERRED": 3,
+    "ABSTAIN": 4,
+    "UNSUPPORTED": 5
+  },
+  "provenance_priority": {
+    "lexicon": 0,
+    "domain": 1,
+    "morphology": 2,
+    "grapheme": 3,
+    "identity": 4,
+    "name_like": 5
+  },
+  "acronym_min_upper_ratio": 0.75,
+  "acronym_min_length": 2
+}

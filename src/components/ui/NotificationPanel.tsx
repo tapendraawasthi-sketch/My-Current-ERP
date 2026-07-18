@@ -34,7 +34,7 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose }) => {
 
   const getBg = (read: boolean) => {
     if (read) return "bg-white opacity-85";
-    return "bg-[#D4EABD]/30 hover:bg-[#D4EABD]/50 border-l-[3px] border-l-[#1557b0]";
+    return "bg-[var(--ds-surface-hover)]/30 hover:bg-[var(--ds-surface-hover)]/50 border-l-[3px] border-l-[var(--ds-action-primary)]";
   };
 
   const unreadCount = notifications.filter((n) => !n.read).length;
@@ -49,11 +49,11 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose }) => {
 
   return (
     <div
-      className="absolute right-0 mt-2 w-80 bg-white border border-[#9DC07A] rounded-lg shadow-lg overflow-hidden z-50 animate-fadeIn"
+      className="absolute right-0 mt-2 w-80 bg-white border border-[var(--ds-border-default)] rounded-lg shadow-lg overflow-hidden z-50 animate-fadeIn"
       style={{ borderColor: "var(--border)" }}
     >
       <div
-        className="flex items-center justify-between px-4 py-2.5 border-b bg-[#EBF5E2]/80"
+        className="flex items-center justify-between px-4 py-2.5 border-b bg-[var(--ds-surface-muted)]/80"
         style={{ borderColor: "var(--border)" }}
       >
         <div className="flex items-center gap-1.5">
@@ -69,7 +69,7 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose }) => {
             <button
               type="button"
               onClick={markAllRead}
-              className="text-[10px] font-semibold text-[#1557b0] hover:underline cursor-pointer"
+              className="text-[10px] font-semibold text-[var(--ds-action-primary)] hover:underline cursor-pointer"
             >
               Mark all read
             </button>
@@ -78,7 +78,7 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose }) => {
             <button
               type="button"
               onClick={clearNotifications}
-              className="text-[#000000] hover:text-red-500 transition-colors p-1 rounded hover:bg-[#EBF5E2] cursor-pointer"
+              className="text-[#000000] hover:text-red-500 transition-colors p-1 rounded hover:bg-[var(--ds-surface-muted)] cursor-pointer"
               title="Clear all alerts"
             >
               <Trash2 className="h-3.5 w-3.5" />
@@ -97,7 +97,7 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose }) => {
           notifications.map((n) => (
             <div
               key={n.id}
-              className={`p-3 text-xs border-b border-[#9DC07A] transition-all flex gap-2.5 ${getBg(n.read)}`}
+              className={`p-3 text-xs border-b border-[var(--ds-border-default)] transition-all flex gap-2.5 ${getBg(n.read)}`}
             >
               <div className="shrink-0 mt-0.5">{getIcon(n.message)}</div>
               <div className="flex-1 min-w-0">
@@ -126,7 +126,7 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose }) => {
       </div>
 
       <div
-        className="border-t border-[#9DC07A] px-4 py-2 bg-[#EBF5E2]/50 text-center"
+        className="border-t border-[var(--ds-border-default)] px-4 py-2 bg-[var(--ds-surface-muted)]/50 text-center"
         style={{ borderColor: "var(--border)" }}
       >
         <button

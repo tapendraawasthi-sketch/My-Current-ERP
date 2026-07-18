@@ -4,9 +4,11 @@ import { useStore } from "../store/useStore";
 import { Download } from "lucide-react";
 import { formatNumber } from "../lib/utils";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 export default function StockLedgerReport() {
   const { items, stockMovements } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchMovement } = useBranchFilter();
   const [selectedItem, setSelectedItem] = useState("");
   const [fromDate, setFromDate] = useState(() => {
     const d = new Date();
@@ -21,7 +23,9 @@ export default function StockLedgerReport() {
     const item = (items || []).find((i: any) => i.id === selectedItem);
     if (!item) return null;
 
-    const allMovements = (stockMovements || []).filter((m: any) => m.itemId === selectedItem);
+    const allMovements = (stockMovements || []).filter(
+      (m: any) => m.itemId === selectedItem && matchMovement(m),
+    );
 
     const openingMovements = allMovements.filter((m: any) => m.date < fromDate);
     const openingQty = openingMovements.reduce((s: number, m: any) => {
@@ -82,7 +86,7 @@ export default function StockLedgerReport() {
     });
 
     return { openingQty, openingValue, rows, item };
-  }, [selectedItem, items, stockMovements, fromDate, toDate]);
+  }, [selectedItem, items, stockMovements, fromDate, toDate, matchMovement, branchFilter]);
 
   const inputCls =
     "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
@@ -143,6 +147,23 @@ export default function StockLedgerReport() {
               className={`${inputCls} w-full`}
             />
           </div>
+          {branchOptions.length > 0 && (
+            <div>
+              <label className={labelCls}>Branch</label>
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                className={`${inputCls} w-full`}
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <div className="flex items-end pb-1">
             <label className="flex items-center gap-2 cursor-pointer">
               <input

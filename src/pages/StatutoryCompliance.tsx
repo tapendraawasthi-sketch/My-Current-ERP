@@ -14,6 +14,7 @@ import {
   Calculator,
 } from "lucide-react";
 import * as XLSX from "xlsx";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 type Tab = "vat-annex" | "cbms" | "etds" | "pan-verify";
 type AnnexType = "A" | "B" | "C";
@@ -71,6 +72,7 @@ export default function StatutoryCompliance() {
     currentFiscalYear,
     companySettings,
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [activeTab, setActiveTab] = useState<Tab>("vat-annex");
   const [annexType, setAnnexType] = useState<AnnexType>("B");
@@ -90,8 +92,14 @@ export default function StatutoryCompliance() {
 
   // ── Filter vouchers in date range ──────────────────────────────────────
   const rangeVouchers = useMemo(
-    () => vouchers.filter((v) => v.date >= fromDate && v.date <= toDate),
-    [vouchers, fromDate, toDate],
+    () =>
+      vouchers.filter(
+        (v) =>
+          v.date >= fromDate &&
+          v.date <= toDate &&
+          matchBranch((v as { branchId?: string }).branchId),
+      ),
+    [vouchers, fromDate, toDate, matchBranch, branchFilter],
   );
 
   // ── Build Annex A – Purchase Register ─────────────────────────────────
@@ -302,8 +310,25 @@ export default function StatutoryCompliance() {
             IRD-compliant VAT Annex A/B/C · CBMS sync status · e-TDS register · PAN verification
           </p>
         </div>
-        <div className="flex items-center gap-2 text-xs bg-green-50 border border-green-200 text-green-700 px-3 py-2 rounded-lg">
-          <Shield className="w-4 h-4" /> IRD VAT Act 2052 Compliant
+        <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+          <div className="flex items-center gap-2 text-xs bg-green-50 border border-green-200 text-green-700 px-3 py-2 rounded-lg">
+            <Shield className="w-4 h-4" /> IRD VAT Act 2052 Compliant
+          </div>
         </div>
       </div>
 
@@ -775,13 +800,13 @@ export default function StatutoryCompliance() {
       {activeTab === "etds" && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <div className="bg-purple-50 border border-purple-200 rounded-lg px-4 py-2 text-sm text-purple-700">
+            <div className="bg-[var(--ds-status-info-surface)] border border-[var(--ds-status-info)]/30 rounded-lg px-4 py-2 text-sm text-[var(--ds-status-info)]">
               <span className="font-semibold">TDS under Income Tax Act 2058 – Section 88</span>
               <span className="ml-2">Rate: 1.5% on contracts ≥ Rs. 50,000</span>
             </div>
             <button
               onClick={exportTDS}
-              className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium"
+              className="flex items-center gap-2 px-4 py-2 bg-[var(--ds-action-primary)] text-white rounded-lg hover:bg-[var(--ds-action-primary-hover)] text-sm font-medium"
             >
               <Download className="w-4 h-4" /> Export TDS Register
             </button>
@@ -799,10 +824,10 @@ export default function StatutoryCompliance() {
             ].map((card) => (
               <div
                 key={card.label}
-                className="bg-purple-50 rounded-xl p-4 border border-purple-100"
+                className="bg-[var(--ds-status-info-surface)] rounded-xl p-4 border border-[var(--ds-status-info)]/20"
               >
                 <div className="text-xs text-gray-500 mb-1">{card.label}</div>
-                <div className="text-xl font-bold text-purple-700">{card.value}</div>
+                <div className="text-xl font-bold text-[var(--ds-status-info)]">{card.value}</div>
               </div>
             ))}
           </div>
@@ -848,7 +873,7 @@ export default function StatutoryCompliance() {
                     <td className="px-4 py-2 font-mono text-xs">{r.invoiceDate}</td>
                     <td className="px-4 py-2 font-mono text-xs">{r.invoiceNo}</td>
                     <td className="px-4 py-2 text-right">{fmt(r.grossAmt)}</td>
-                    <td className="px-4 py-2 text-right font-semibold text-purple-700">
+                    <td className="px-4 py-2 text-right font-semibold text-[var(--ds-status-info)]">
                       {fmt(r.tdsAmt)}
                     </td>
                     <td className="px-4 py-2 text-right">{fmt(r.netPayable)}</td>
@@ -856,14 +881,14 @@ export default function StatutoryCompliance() {
                   </tr>
                 ))}
                 {tdsRows.length > 0 && (
-                  <tr className="bg-purple-50 font-bold border-t-2 border-purple-200">
+                  <tr className="bg-[var(--ds-status-info-surface)] font-bold border-t-2 border-[var(--ds-status-info)]/30">
                     <td colSpan={5} className="px-4 py-2 text-right">
                       TOTALS
                     </td>
                     <td className="px-4 py-2 text-right">
                       {fmt(tdsRows.reduce((s, r) => s + r.grossAmt, 0))}
                     </td>
-                    <td className="px-4 py-2 text-right text-purple-700">{fmt(totalTDS)}</td>
+                    <td className="px-4 py-2 text-right text-[var(--ds-status-info)]">{fmt(totalTDS)}</td>
                     <td className="px-4 py-2 text-right">
                       {fmt(tdsRows.reduce((s, r) => s + r.netPayable, 0))}
                     </td>

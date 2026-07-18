@@ -10,6 +10,7 @@ import {
   FileText,
 } from "lucide-react";
 import { useStore } from "@/store/useStore";
+import { useBranchFilter } from "@/hooks/useBranchFilter";
 
 type ApprovalTab = "pending" | "approved" | "rejected";
 
@@ -82,6 +83,7 @@ function getStatusBadge(status: string) {
 export default function MakerCheckerApproval() {
   const store = useStore() as any;
   const vouchers = store.vouchers ?? [];
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
 
   const [activeTab, setActiveTab] = useState<ApprovalTab>("pending");
   const [searchText, setSearchText] = useState("");
@@ -97,6 +99,8 @@ export default function MakerCheckerApproval() {
     const q = searchText.trim().toLowerCase();
 
     return list.filter((voucher) => {
+      if (!matchBranch(voucher?.branchId)) return false;
+
       const no = getVoucherNo(voucher).toLowerCase();
       const narration = String(voucher?.narration ?? "").toLowerCase();
       const type = normalizeType(voucher?.type);
@@ -111,7 +115,7 @@ export default function MakerCheckerApproval() {
   const pendingVouchers = useMemo(
     () =>
       filterVoucherList(vouchers.filter((v: any) => String(v?.status).toLowerCase() === "pending")),
-    [vouchers, searchText, filterType],
+    [vouchers, searchText, filterType, matchBranch, branchFilter],
   );
 
   const approvedVouchers = useMemo(
@@ -119,7 +123,7 @@ export default function MakerCheckerApproval() {
       filterVoucherList(
         vouchers.filter((v: any) => String(v?.status).toLowerCase() === "approved"),
       ),
-    [vouchers, searchText, filterType],
+    [vouchers, searchText, filterType, matchBranch, branchFilter],
   );
 
   const rejectedVouchers = useMemo(
@@ -127,7 +131,7 @@ export default function MakerCheckerApproval() {
       filterVoucherList(
         vouchers.filter((v: any) => String(v?.status).toLowerCase() === "rejected"),
       ),
-    [vouchers, searchText, filterType],
+    [vouchers, searchText, filterType, matchBranch, branchFilter],
   );
 
   const currentList =
@@ -141,10 +145,11 @@ export default function MakerCheckerApproval() {
     const today = new Date().toISOString().split("T")[0];
     return vouchers.filter(
       (voucher: any) =>
+        matchBranch(voucher?.branchId) &&
         String(voucher?.status).toLowerCase() === "approved" &&
         String(voucher?.approvedAt ?? "").startsWith(today),
     ).length;
-  }, [vouchers]);
+  }, [vouchers, matchBranch, branchFilter]);
 
   const handleApprove = async (voucherId: string) => {
     try {
@@ -227,6 +232,21 @@ export default function MakerCheckerApproval() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(event) => setBranchFilter(event.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
           <button
             type="button"
             className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
@@ -240,7 +260,7 @@ export default function MakerCheckerApproval() {
             <select
               value={filterType}
               onChange={(event) => setFilterType(event.target.value)}
-              className="h-8 pl-7 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 pl-7 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               {VOUCHER_TYPES.map((type) => (
                 <option key={type} value={type}>
@@ -254,7 +274,7 @@ export default function MakerCheckerApproval() {
             value={searchText}
             onChange={(event) => setSearchText(event.target.value)}
             placeholder="Search vouchers..."
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-48"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-48"
           />
         </div>
       </div>
@@ -303,7 +323,7 @@ export default function MakerCheckerApproval() {
             onClick={() => setActiveTab(tab)}
             className={
               activeTab === tab
-                ? "px-4 py-2 border-b-2 border-[#1557b0] text-[#1557b0] text-[12px] font-medium"
+                ? "px-4 py-2 border-b-2 border-[var(--ds-action-primary)] text-[var(--ds-action-primary)] text-[12px] font-medium"
                 : "px-4 py-2 text-gray-500 text-[12px] hover:text-gray-700"
             }
           >
@@ -455,7 +475,7 @@ export default function MakerCheckerApproval() {
                 onChange={(event) => setApproveRemark(event.target.value)}
                 placeholder="Add approval remark (optional)"
                 rows={3}
-                className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               />
             </div>
             <div className="px-4 py-3 border-t border-gray-200 flex justify-end gap-2">
@@ -472,7 +492,7 @@ export default function MakerCheckerApproval() {
               <button
                 type="button"
                 onClick={() => handleApprove(selectedVoucher.id)}
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
+                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md"
               >
                 Approve
               </button>
@@ -502,7 +522,7 @@ export default function MakerCheckerApproval() {
                 className={`w-full px-2.5 py-2 text-[12px] border rounded-md bg-white focus:outline-none focus:ring-2 ${
                   rejectAttempted && !rejectReason.trim()
                     ? "border-red-400 focus:ring-red-200 focus:border-red-500"
-                    : "border-gray-300 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                    : "border-gray-300 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 }`}
               />
             </div>

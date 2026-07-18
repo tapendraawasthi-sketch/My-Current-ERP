@@ -11,9 +11,10 @@ import {
   Layers,
   Package,
 } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const BORDER = "1px solid #000";
-const BG_HEADER = "#D4EABD";
+const BG_HEADER = "var(--ds-surface-hover)";
 const BTN = (bg: string): React.CSSProperties => ({
   padding: "6px 14px",
   background: bg,
@@ -81,6 +82,7 @@ const MISC_ENTRIES = [
 
 export default function MiscDataEntry() {
   const { companySettings, vouchers, updateAccount } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [activeEntry, setActiveEntry] = useState<string | null>(null);
   const [dailyMessage, setDailyMessage] = useState(companySettings?.dailyMessage || "");
   const [transportForm, setTransportForm] = useState({
@@ -99,6 +101,7 @@ export default function MiscDataEntry() {
 
   const handleTransportUpdate = () => {
     const matching = vouchers.filter((v: any) => {
+      if (!matchBranch(v.branchId)) return false;
       if (!v.date) return false;
       const after = !transportForm.fromDate || v.date >= transportForm.fromDate;
       const before = !transportForm.toDate || v.date <= transportForm.toDate;
@@ -126,6 +129,21 @@ export default function MiscDataEntry() {
         <span style={{ fontSize: 11, color: "#555", marginLeft: 8 }}>
           Utility data entry functions for bulk corrections
         </span>
+        {branchOptions.length > 0 && (
+          <select
+            value={branchFilter}
+            onChange={(e) => setBranchFilter(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] ml-auto"
+            aria-label="Branch"
+          >
+            <option value="all">All branches</option>
+            {branchOptions.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name || b.code || b.id}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       <div
@@ -151,7 +169,7 @@ export default function MiscDataEntry() {
               placeholder="Enter the message users will see when they log in..."
             />
             <div style={{ display: "flex", gap: 8 }}>
-              <button style={BTN("#3D6B25")} onClick={handleDailyMessageSave}>
+              <button style={BTN("var(--ds-action-primary-hover)")} onClick={handleDailyMessageSave}>
                 Save Message
               </button>
               <button style={BTN("#fff")} onClick={() => setActiveEntry(null)}>
@@ -188,7 +206,7 @@ export default function MiscDataEntry() {
               ))}
             </div>
             <div style={{ display: "flex", gap: 8 }}>
-              <button style={BTN("#3D6B25")} onClick={handleTransportUpdate}>
+              <button style={BTN("var(--ds-action-primary-hover)")} onClick={handleTransportUpdate}>
                 Preview & Update
               </button>
               <button style={BTN("#fff")} onClick={() => setActiveEntry(null)}>
@@ -208,7 +226,7 @@ export default function MiscDataEntry() {
               entry, use the full Opening Balance page.
             </div>
             <button
-              style={BTN("#3D6B25")}
+              style={BTN("var(--ds-action-primary-hover)")}
               onClick={() => {
                 useStore.getState().setCurrentPage("opening-balance");
                 setActiveEntry(null);

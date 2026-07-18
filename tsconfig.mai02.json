@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["vite/client", "vitest/globals"]
+  },
+  "include": [
+    "src/lib/ekhata/mai02CanonicalContracts.ts",
+    "src/lib/ekhata/orbixResponseTypes.ts",
+    "src/lib/ekhata/orbixResponseAdapter.ts",
+    "src/lib/ekhata/orbixHeuristicFallback.ts",
+    "src/lib/ekhata/orbixCardNormalize.ts",
+    "src/lib/ekhata/types.ts",
+    "src/vite-env.d.ts",
+    "src/__tests__/orbix/mai02CanonicalContracts.test.ts"
+  ]
+}

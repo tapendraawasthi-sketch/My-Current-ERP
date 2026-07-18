@@ -145,21 +145,21 @@ export default function VoucherPrint({ voucher, company, onClose }: Props) {
               </p>
             </div>
             <div className="text-right">
-              <div className="border-2 border-[#9DC07A] px-4 py-2">
+              <div className="border-2 border-[var(--ds-border-default)] px-4 py-2">
                 <h3 className="text-lg font-bold">{voucher.voucherType.toUpperCase()}</h3>
                 <p className="text-xs">VOUCHER</p>
               </div>
             </div>
           </div>
 
-          <div className="border-t-2 border-[#9DC07A] mb-4"></div>
+          <div className="border-t-2 border-[var(--ds-border-default)] mb-4"></div>
 
           {/* Voucher Details */}
           <div className="flex justify-between mb-6">
             <div>
               <p className="text-sm">
                 <span className="font-semibold">Voucher No: </span>
-                <span className="text-[15px] font-bold text-[#1557b0]">{voucher.voucherNo}</span>
+                <span className="text-[15px] font-bold text-[var(--ds-action-primary)]">{voucher.voucherNo}</span>
               </p>
             </div>
             <div className="text-right">
@@ -173,19 +173,19 @@ export default function VoucherPrint({ voucher, company, onClose }: Props) {
           </div>
 
           {/* Entries Table */}
-          <table className="w-full mb-6 border border-[#9DC07A]">
-            <thead className="bg-[#f5f6fa] border-b border-[#9DC07A]">
+          <table className="w-full mb-6 border border-[var(--ds-border-default)]">
+            <thead className="bg-[#f5f6fa] border-b border-[var(--ds-border-default)]">
               <tr>
-                <th className="border border-[#9DC07A] px-4 py-2 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+                <th className="border border-[var(--ds-border-default)] px-4 py-2 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
                   S.N.
                 </th>
-                <th className="border border-[#9DC07A] px-4 py-2 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
+                <th className="border border-[var(--ds-border-default)] px-4 py-2 text-left text-[10px] font-semibold text-[#000000] uppercase tracking-wide">
                   Ledger Account
                 </th>
-                <th className="border border-[#9DC07A] px-4 py-2 text-right text-[10px] font-semibold text-[#1557b0] uppercase">
+                <th className="border border-[var(--ds-border-default)] px-4 py-2 text-right text-[10px] font-semibold text-[var(--ds-action-primary)] uppercase">
                   Debit
                 </th>
-                <th className="border border-[#9DC07A] px-4 py-2 text-right text-[10px] font-semibold text-red-600 uppercase">
+                <th className="border border-[var(--ds-border-default)] px-4 py-2 text-right text-[10px] font-semibold text-red-600 uppercase">
                   Credit
                 </th>
               </tr>
@@ -193,12 +193,12 @@ export default function VoucherPrint({ voucher, company, onClose }: Props) {
             <tbody>
               {voucher.entries.map((entry, index) => (
                 <tr key={entry.id}>
-                  <td className="border border-[#9DC07A] px-4 py-2 text-[12px]">{index + 1}</td>
-                  <td className="border border-[#9DC07A] px-4 py-2 text-[12px]">{entry.ledger}</td>
-                  <td className="border border-[#9DC07A] px-4 py-2 text-right font-mono text-[12px]">
+                  <td className="border border-[var(--ds-border-default)] px-4 py-2 text-[12px]">{index + 1}</td>
+                  <td className="border border-[var(--ds-border-default)] px-4 py-2 text-[12px]">{entry.ledger}</td>
+                  <td className="border border-[var(--ds-border-default)] px-4 py-2 text-right font-mono text-[12px]">
                     {entry.debit > 0 ? entry.debit.toFixed(2) : "-"}
                   </td>
-                  <td className="border border-[#9DC07A] px-4 py-2 text-right font-mono text-[12px]">
+                  <td className="border border-[var(--ds-border-default)] px-4 py-2 text-right font-mono text-[12px]">
                     {entry.credit > 0 ? entry.credit.toFixed(2) : "-"}
                   </td>
                 </tr>
@@ -206,14 +206,14 @@ export default function VoucherPrint({ voucher, company, onClose }: Props) {
               <tr className="bg-[#eef2ff] font-bold text-[12px] border-t-2 border-[#c7d2fe]">
                 <td
                   colSpan={2}
-                  className="border border-[#9DC07A] px-4 py-2 text-right text-[12px] font-semibold text-[#000000] uppercase tracking-wide"
+                  className="border border-[var(--ds-border-default)] px-4 py-2 text-right text-[12px] font-semibold text-[#000000] uppercase tracking-wide"
                 >
                   TOTAL:
                 </td>
-                <td className="border border-[#9DC07A] px-4 py-2 text-right font-mono text-[12px]">
+                <td className="border border-[var(--ds-border-default)] px-4 py-2 text-right font-mono text-[12px]">
                   Rs. {voucher.totalDebit.toFixed(2)}
                 </td>
-                <td className="border border-[#9DC07A] px-4 py-2 text-right font-mono text-[12px]">
+                <td className="border border-[var(--ds-border-default)] px-4 py-2 text-right font-mono text-[12px]">
                   Rs. {voucher.totalCredit.toFixed(2)}
                 </td>
               </tr>
@@ -231,7 +231,7 @@ export default function VoucherPrint({ voucher, company, onClose }: Props) {
           </div>
 
           {/* Amount in Words */}
-          <div className="mb-8 p-3 bg-[#EBF5E2] border border-[#9DC07A]">
+          <div className="mb-8 p-3 bg-[var(--ds-surface-muted)] border border-[var(--ds-border-default)]">
             <p className="text-sm">
               <span className="font-semibold">Amount in Words: </span>
               <span className="italic">{numberToWords(Math.floor(voucher.totalDebit))}</span>
@@ -240,7 +240,7 @@ export default function VoucherPrint({ voucher, company, onClose }: Props) {
 
           {/* Stamp Box */}
           <div className="mb-8">
-            <div className="border-2 border-dashed border-[#9DC07A] p-6 text-center">
+            <div className="border-2 border-dashed border-[var(--ds-border-default)] p-6 text-center">
               <p className="text-xs text-[#000000]">STAMP BOX</p>
             </div>
           </div>
@@ -248,17 +248,17 @@ export default function VoucherPrint({ voucher, company, onClose }: Props) {
           {/* Signature Boxes */}
           <div className="grid grid-cols-4 gap-6 mt-16">
             <div className="text-center">
-              <div className="border-t border-[#9DC07A] pt-2">
+              <div className="border-t border-[var(--ds-border-default)] pt-2">
                 <p className="text-sm font-semibold">Prepared By</p>
               </div>
             </div>
             <div className="text-center">
-              <div className="border-t border-[#9DC07A] pt-2">
+              <div className="border-t border-[var(--ds-border-default)] pt-2">
                 <p className="text-sm font-semibold">Checked By</p>
               </div>
             </div>
             <div className="text-center">
-              <div className="border-t border-[#9DC07A] pt-2">
+              <div className="border-t border-[var(--ds-border-default)] pt-2">
                 <p className="text-sm font-semibold">Approved By</p>
                 {company.signatoryName && (
                   <p className="text-xs text-[#000000]">{company.signatoryName}</p>
@@ -266,14 +266,14 @@ export default function VoucherPrint({ voucher, company, onClose }: Props) {
               </div>
             </div>
             <div className="text-center">
-              <div className="border-t border-[#9DC07A] pt-2">
+              <div className="border-t border-[var(--ds-border-default)] pt-2">
                 <p className="text-sm font-semibold">Received By</p>
               </div>
             </div>
           </div>
 
           {/* Footer */}
-          <div className="border-t-2 border-[#9DC07A] pt-4 text-center mt-8">
+          <div className="border-t-2 border-[var(--ds-border-default)] pt-4 text-center mt-8">
             <p className="text-xs text-[#000000]">Fiscal Year: 2083/84</p>
             <p className="text-xs text-[#000000] italic mt-1">
               This is a computer generated voucher

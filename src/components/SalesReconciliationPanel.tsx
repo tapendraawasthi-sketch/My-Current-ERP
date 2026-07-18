@@ -52,7 +52,7 @@ const SalesReconciliationPanel: React.FC<{ companyId?: string }> = ({ companyId 
           type="button"
           onClick={() => void run()}
           disabled={running}
-          className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md disabled:opacity-50"
+          className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md disabled:opacity-50"
         >
           {running ? "Running…" : "Run"}
         </button>

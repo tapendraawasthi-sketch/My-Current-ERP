@@ -42,6 +42,7 @@ import {
 import { generateInvoicePDF } from "../lib/printUtils";
 import { exportInvoicesToExcel } from "../lib/exportUtils";
 import toast from "@/lib/appToast";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const InvoiceHub: React.FC = () => {
   const {
@@ -54,6 +55,8 @@ const InvoiceHub: React.FC = () => {
     currentPage,
     setCurrentPage,
   } = useStore();
+
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<"ALL" | VoucherType>("ALL");
@@ -84,6 +87,7 @@ const InvoiceHub: React.FC = () => {
 
   const filteredInvoices = useMemo(() => {
     return invoices.filter((i) => {
+      if (!matchBranch(i.branchId)) return false;
       const matchesSearch =
         i.invoiceNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
         i.partyName.toLowerCase().includes(searchTerm.toLowerCase());
@@ -91,7 +95,7 @@ const InvoiceHub: React.FC = () => {
       const matchesTab = activeTab === "ALL" || i.type === activeTab;
       return matchesSearch && matchesTab;
     });
-  }, [invoices, searchTerm, activeTab]);
+  }, [invoices, searchTerm, activeTab, matchBranch, branchFilter]);
 
   const handlePrintInvoicePDF = async (i: any) => {
     try {
@@ -126,7 +130,7 @@ const InvoiceHub: React.FC = () => {
   };
 
   const handleExportExcel = () => {
-    exportInvoicesToExcel(invoices);
+    exportInvoicesToExcel(filteredInvoices);
     toast.success("Spreadsheet exported.");
   };
 
@@ -450,7 +454,7 @@ const InvoiceHub: React.FC = () => {
                             type="checkbox"
                             checked={line.isTaxable}
                             onChange={(e) => handleLineChange(idx, "isTaxable", e.target.checked)}
-                            className="h-4 w-4 text-gray-700 border-gray-200 rounded focus:ring-[#1557b0]/20"
+                            className="h-4 w-4 text-gray-700 border-gray-200 rounded focus:ring-[var(--ds-action-primary)]/20"
                           />
                         </td>
                         <td className="px-2.5 py-1.5 text-center">
@@ -477,7 +481,7 @@ const InvoiceHub: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleAddLine}
-                  className="px-3 py-1.5 text-xs text-gray-700 bg-[#1557b0] hover:bg-[#1557b0] border border-gray-200 rounded-md font-bold transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+                  className="px-3 py-1.5 text-xs text-gray-700 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary)] border border-gray-200 rounded-md font-bold transition-colors inline-flex items-center gap-1.5 cursor-pointer"
                 >
                   <PlusCircle className="h-[18px] w-[18px]" />
                   <span>Insert Item Row</span>
@@ -498,7 +502,7 @@ const InvoiceHub: React.FC = () => {
                       id="tdsCheck"
                       checked={enableTds}
                       onChange={(e) => setEnableTds(e.target.checked)}
-                      className="h-4 w-4 text-gray-700 focus:ring-[#1557b0]/20 rounded border-gray-200"
+                      className="h-4 w-4 text-gray-700 focus:ring-[var(--ds-action-primary)]/20 rounded border-gray-200"
                     />
                     <label htmlFor="tdsCheck" className="text-xs font-bold text-gray-700">
                       Apply withholding TDS deduction on base invoice
@@ -545,7 +549,7 @@ const InvoiceHub: React.FC = () => {
                   rows={3}
                   value={narration}
                   onChange={(e) => setNarration(e.target.value)}
-                  className="w-full text-xs font-medium p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1557b0]/20 focus:border-gray-200 bg-white shadow-sm"
+                  className="w-full text-xs font-medium p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/20 focus:border-gray-200 bg-white shadow-sm"
                 />
               </div>
             </div>
@@ -635,6 +639,21 @@ const InvoiceHub: React.FC = () => {
         </div>
 
         <div className="shrink-0 flex gap-2">
+          {branchOptions.length > 0 ? (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch filter"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          ) : null}
           <Button
             variant="outline"
             size="sm"
@@ -674,7 +693,7 @@ const InvoiceHub: React.FC = () => {
               key={tab}
               type="button"
               onClick={() => setActiveTab(tab as any)}
-              className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors border select-none uppercase tracking-wide ${activeTab === tab ? "bg-[#1557b0] text-white border-gray-200" : "bg-[#f5f6fa] text-gray-700 border-gray-200 hover:bg-[#f5f6fa] hover:text-gray-700"}`}
+              className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors border select-none uppercase tracking-wide ${activeTab === tab ? "bg-[var(--ds-action-primary)] text-white border-gray-200" : "bg-[#f5f6fa] text-gray-700 border-gray-200 hover:bg-[#f5f6fa] hover:text-gray-700"}`}
             >
               {tab === "ALL" ? "Show All" : tab.replace("-", " ")}
             </button>

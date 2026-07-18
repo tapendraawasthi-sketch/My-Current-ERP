@@ -95,7 +95,7 @@ const LedgerDrillPanel: React.FC<LedgerDrillPanelProps> = ({
       {/* Panel */}
       <div className="relative w-full max-w-[480px] h-full bg-white shadow-xl flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 bg-[#1557b0] text-white shrink-0">
+        <div className="flex items-center justify-between px-4 py-3 bg-[var(--ds-action-primary)] text-white shrink-0">
           <div>
             <div className="text-[13px] font-semibold">{accountName}</div>
             <div className="text-[10px] text-blue-100 mt-0.5">

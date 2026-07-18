@@ -1,0 +1,48 @@
+{
+  "LINGUIST_APPROVED": false,
+  "PRODUCTION_APPROVED": false,
+  "allowed_use": [
+    "candidate_transliteration",
+    "engineering_eval"
+  ],
+  "content_hash": "e94cc8c7775d9ce77ab854ab478387d950a018ba1b76d96e9749d4aad425e50a",
+  "experimental_overlay_status": "DISABLED_NON_AUTHORITATIVE",
+  "files": [
+    "romanized_lexicon.json",
+    "grapheme_rules.json",
+    "morphology_rules.json",
+    "ambiguity_rules.json",
+    "domain_terms.json",
+    "context_rules.json",
+    "english_identity.json",
+    "name_like_terms.json",
+    "ranking_config.json",
+    "r3d_safety_disposition.json",
+    "r3f_english_identity_guard.json"
+  ],
+  "license_status": "INTERNAL_ENGINEERING",
+  "limits": {
+    "max_beam_width": 32,
+    "max_candidates_per_span": 5,
+    "max_eligible_spans": 128,
+    "max_hypotheses": 5,
+    "max_total_candidates": 400
+  },
+  "prior_content_hash_mai0710": "18628335c0feb74a4f28f65ca70b2683f8b54a54790fd03e9033d8cd08ed4566",
+  "prior_content_hash_mai0711_r3d": "083bce288907c0db882bdf7082bf9093e9086035c653dadcd4964625b61e966f",
+  "prior_content_hash_mai0720_r1_failed": "0f0af894fa282d7134e2ca1cba26a1000f75733fa435588de6a2083abd3d9dc1",
+  "prior_content_hash_mai0730_r2_failed": "c1c5a603627868a2ccf8b4c2ff74b1adafaff7eac6e01bf94e289944268e77af",
+  "prohibited_use": [
+    "training_on_frozen_eval",
+    "accounting_truth",
+    "auto_apply",
+    "ui_render",
+    "prompt_injection"
+  ],
+  "provenance": "MAI-07R3F English Identity Guard pack on sealed R3D lexical/ranking baseline; adds r3f_english_identity_guard. Lexicon/grapheme bodies unchanged from mai-07.1.0. R3D parent hash recorded. Overlay disabled. LINGUIST_APPROVED=false; PRODUCTION_APPROVED=false.",
+  "resource_id": "mai07_transliteration_pack_v1",
+  "resource_pack_version": "mai-07.1.2-r3f",
+  "review_status": "ENGINEERING_CURATED_NOT_LINGUIST_APPROVED",
+  "schema_version": "1.0.0",
+  "update_date": "2026-07-16"
+}

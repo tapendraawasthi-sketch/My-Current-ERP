@@ -112,7 +112,7 @@ export function PrimaryButton({
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className="h-8 rounded-md bg-[#1557b0] px-3 text-[12px] font-medium text-white hover:bg-[#0f4a96] disabled:opacity-50"
+      className="h-8 rounded-md bg-[var(--ds-action-primary)] px-3 text-[12px] font-medium text-white hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-50"
     >
       {children}
     </button>
@@ -169,7 +169,7 @@ export function Field({
         placeholder={placeholder}
         disabled={disabled}
         onChange={(event) => onChange(event.target.value)}
-        className="h-8 rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[#1557b0] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 disabled:bg-gray-100"
+        className="h-8 rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 disabled:bg-gray-100"
       />
     </label>
   );
@@ -195,7 +195,7 @@ export function SelectField({
         value={value}
         disabled={disabled}
         onChange={(event) => onChange(event.target.value)}
-        className="h-8 rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[#1557b0] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 disabled:bg-gray-100"
+        className="h-8 rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 disabled:bg-gray-100"
       >
         {options.map((option) => (
           <option key={option} value={option}>
@@ -228,7 +228,7 @@ export function ToggleRow({
         type="checkbox"
         checked={checked}
         onChange={(event) => onChange(event.target.checked)}
-        className="h-4 w-4 accent-[#1557b0]"
+        className="h-4 w-4 accent-[var(--ds-action-primary)]"
       />
     </div>
   );

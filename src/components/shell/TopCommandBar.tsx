@@ -4,6 +4,7 @@ import { useStore } from "../../store/useStore";
 import { useTheme } from "../../context/ThemeContext";
 import { findNavLabel } from "./navConfig";
 import CompanySwitcher from "./CompanySwitcher";
+import BranchSwitcher from "./BranchSwitcher";
 import SyncStatusControl from "./SyncStatusControl";
 import { NotificationBellButton } from "./NotificationCentre";
 import { DisplayLanguageModal } from "../ui/LanguageModal";
@@ -123,6 +124,7 @@ const TopCommandBar: React.FC<TopCommandBarProps> = ({
         </button>
 
         <CompanySwitcher />
+        <BranchSwitcher />
         <SyncStatusControl />
 
         <button

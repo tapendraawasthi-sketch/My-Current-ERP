@@ -7,12 +7,14 @@ import ReportShell from "../components/reporting/ReportShell";
 import ReportGrid from "../components/reporting/ReportGrid";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 import { useScreenF12 } from "../hooks/useF12Config";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const VouchersRegister: React.FC = () => {
   // Register this screen with F12 system
   const getConfig = useScreenF12("vouchers-register");
 
   const { vouchers, accounts, companySettings, currentFiscalYear } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [startDate, setStartDate] = useState(currentFiscalYear?.startDate || "");
   const [endDate, setEndDate] = useState(currentFiscalYear?.endDate || "");
@@ -28,6 +30,7 @@ const VouchersRegister: React.FC = () => {
   const [pendingTypeFilter, setPendingTypeFilter] = useState(typeFilter);
   const [pendingStatusFilter, setPendingStatusFilter] = useState(statusFilter);
   const [pendingSearchText, setPendingSearchText] = useState(searchText);
+  const [pendingBranchFilter, setPendingBranchFilter] = useState(branchFilter);
 
   const applyOptions = () => {
     setStartDate(pendingStart);
@@ -35,6 +38,7 @@ const VouchersRegister: React.FC = () => {
     setTypeFilter(pendingTypeFilter);
     setStatusFilter(pendingStatusFilter);
     setSearchText(pendingSearchText);
+    setBranchFilter(pendingBranchFilter);
     setPage(1);
     setOptionsOpen(false);
   };
@@ -44,7 +48,9 @@ const VouchersRegister: React.FC = () => {
     if (!vouchers) return { rows: [], totalDebit: 0, totalCredit: 0, filteredCount: 0 };
 
     // Filter vouchers
-    let filteredVouchers = vouchers.filter((v) => v.date >= startDate && v.date <= endDate);
+    let filteredVouchers = vouchers.filter(
+      (v) => v.date >= startDate && v.date <= endDate && matchBranch(v.branchId),
+    );
 
     if (typeFilter !== "all") {
       filteredVouchers = filteredVouchers.filter(
@@ -177,7 +183,17 @@ const VouchersRegister: React.FC = () => {
       totalCredit,
       filteredCount: filteredVouchers.length,
     };
-  }, [vouchers, accounts, startDate, endDate, typeFilter, statusFilter, searchText]);
+  }, [
+    vouchers,
+    accounts,
+    startDate,
+    endDate,
+    typeFilter,
+    statusFilter,
+    searchText,
+    matchBranch,
+    branchFilter,
+  ]);
 
   // Pagination
   const totalPages = Math.max(1, Math.ceil(registerData.filteredCount / pageSize));
@@ -274,6 +290,7 @@ const VouchersRegister: React.FC = () => {
         setPendingTypeFilter(typeFilter);
         setPendingStatusFilter(statusFilter);
         setPendingSearchText(searchText);
+        setPendingBranchFilter(branchFilter);
         setOptionsOpen(true);
       }}
       actionBarButtons={[{ label: "Print" }, { label: "Export" }]}
@@ -285,7 +302,7 @@ const VouchersRegister: React.FC = () => {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -295,16 +312,32 @@ const VouchersRegister: React.FC = () => {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
           <div className="h-4 w-px bg-gray-300 mx-1"></div>
 
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           >
             {typeOptions.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -316,7 +349,7 @@ const VouchersRegister: React.FC = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           >
             {statusOptions.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -346,7 +379,7 @@ const VouchersRegister: React.FC = () => {
               placeholder="Search no, narration..."
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
-              className="h-8 pl-8 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-[180px]"
+              className="h-8 pl-8 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[180px]"
             />
           </div>
         </div>
@@ -427,7 +460,7 @@ const VouchersRegister: React.FC = () => {
               type="date"
               value={pendingStart}
               onChange={(e) => setPendingStart(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -437,16 +470,35 @@ const VouchersRegister: React.FC = () => {
               type="date"
               value={pendingEnd}
               onChange={(e) => setPendingEnd(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
+
+          {branchOptions.length > 0 && (
+            <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
+              Branch
+              <select
+                value={pendingBranchFilter}
+                onChange={(e) => setPendingBranchFilter(e.target.value)}
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
 
           <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
             Voucher Type
             <select
               value={pendingTypeFilter}
               onChange={(e) => setPendingTypeFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               {typeOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -461,7 +513,7 @@ const VouchersRegister: React.FC = () => {
             <select
               value={pendingStatusFilter}
               onChange={(e) => setPendingStatusFilter(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               {statusOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -477,7 +529,7 @@ const VouchersRegister: React.FC = () => {
               type="text"
               value={pendingSearchText}
               onChange={(e) => setPendingSearchText(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               placeholder="Search voucher no, narration..."
             />
           </label>

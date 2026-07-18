@@ -5,6 +5,7 @@ import toast from "@/lib/appToast";
 import { useStore } from "../store/useStore";
 import { cbmsService } from "../lib/cbmsService";
 import CbmsStatusBadge from "../components/CbmsStatusBadge";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 function todayISO() {
   return new Date().toISOString().split("T")[0];
@@ -34,6 +35,7 @@ function downloadCsv(filename: string, rows: unknown[][]) {
 
 const CbmsDashboard: React.FC = () => {
   const { invoices, companySettings, initializeApp } = useStore() as any;
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
@@ -42,8 +44,10 @@ const CbmsDashboard: React.FC = () => {
   const [progress, setProgress] = useState({ done: 0, total: 0 });
 
   const salesInvoices = useMemo(() => {
-    return (invoices || []).filter((i: any) => i.type === "sales-invoice");
-  }, [invoices]);
+    return (invoices || []).filter(
+      (i: any) => i.type === "sales-invoice" && matchBranch(i.branchId),
+    );
+  }, [invoices, matchBranch, branchFilter]);
 
   const today = todayISO();
   const thisMonth = monthPrefix(today);
@@ -136,6 +140,22 @@ const CbmsDashboard: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
+          {branchOptions.length > 0 ? (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch filter"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          ) : null}
+
           <button
             type="button"
             onClick={handleExportIrnList}
@@ -148,7 +168,7 @@ const CbmsDashboard: React.FC = () => {
             type="button"
             disabled={bulkRunning}
             onClick={handleSubmitAllPending}
-            className="h-8 px-3 bg-[#1557b0] text-white text-[12px] font-medium rounded-md disabled:opacity-50"
+            className="h-8 px-3 bg-[var(--ds-action-primary)] text-white text-[12px] font-medium rounded-md disabled:opacity-50"
           >
             {bulkRunning ? `Submitting ${progress.done}/${progress.total}` : "Submit All Pending"}
           </button>

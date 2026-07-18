@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useStore } from "../store";
 import { MaterialIssuedEntry, StockJournalItem } from "../lib/types";
 import SearchableTable from "../components/ui/SearchableTable";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const emptyItem = (): StockJournalItem => ({
   id: crypto.randomUUID(),
@@ -14,6 +16,7 @@ const emptyItem = (): StockJournalItem => ({
 
 export default function MaterialIssuedPage() {
   const { materialIssued, addMaterialIssued } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [showForm, setShowForm] = useState(false);
   const [entry, setEntry] = useState<MaterialIssuedEntry>({
     id: crypto.randomUUID(),
@@ -26,6 +29,11 @@ export default function MaterialIssuedPage() {
     createdAt: new Date().toISOString(),
   });
 
+  const scopedIssued = useMemo(
+    () => (materialIssued || []).filter((m: any) => matchBranch(m.branchId)),
+    [materialIssued, matchBranch, branchFilter],
+  );
+
   const addRow = () => setEntry((e) => ({ ...e, items: [...e.items, emptyItem()] }));
 
   const updateItem = (idx: number, field: keyof StockJournalItem, value: string | number) => {
@@ -37,7 +45,11 @@ export default function MaterialIssuedPage() {
   };
 
   const handleSave = () => {
-    addMaterialIssued({ ...entry, status: "POSTED" });
+    addMaterialIssued({
+      ...entry,
+      status: "POSTED",
+      branchId: readActiveBranchId() || undefined,
+    } as any);
     setShowForm(false);
     setEntry({
       id: crypto.randomUUID(),
@@ -58,21 +70,38 @@ export default function MaterialIssuedPage() {
           <h2 className="text-[15px] font-semibold text-gray-800">Material issued</h2>
           <p className="text-[12px] text-gray-500 mt-0.5">Materials sent out.</p>
           <p className="text-[12px] text-gray-500 mt-0.5">
-            Entries: {materialIssued?.length || 0}
+            Entries: {scopedIssued.length}
           </p>
         </div>
-        <button
-          className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md"
-          onClick={() => setShowForm(true)}
-        >
-          New Entry
-        </button>
+        <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+          <button
+            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md"
+            onClick={() => setShowForm(true)}
+          >
+            New Entry
+          </button>
+        </div>
       </div>
 
       {!showForm && (
         <div className="table-card">
           <SearchableTable
-            data={materialIssued || []}
+            data={scopedIssued}
             searchFields={["date", "partyName", "refNo", "status"]}
             rowKey="id"
             columns={[

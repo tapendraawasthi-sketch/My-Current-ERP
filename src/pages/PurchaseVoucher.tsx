@@ -26,6 +26,8 @@ import {
   getNepalTdsRate,
   type NepalTdsCalculationResult,
 } from "../lib/tdsNepal";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -216,6 +218,7 @@ const PurchaseVoucher: React.FC = () => {
     currentUser,
     vatClassifications,
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   // ── Form State ───────────────────────────────────────────────────────────
   const [voucherDate, setVoucherDate] = useState(today());
@@ -447,7 +450,8 @@ const PurchaseVoucher: React.FC = () => {
           fiscalYearBS: currentFiscalYear?.fiscalYearBS || currentFiscalYear?.name || "",
           tdsSectionId: currentTdsResult.sectionId,
           referenceInvoiceId: purchaseResult.payload.invoice_id,
-        });
+          branchId: readActiveBranchId() || undefined,
+        } as any);
       }
 
       toast.success(
@@ -471,13 +475,14 @@ const PurchaseVoucher: React.FC = () => {
       .filter(
         (inv) =>
           inv.type === "purchase-invoice" &&
+          matchBranch((inv as { branchId?: string }).branchId) &&
           (statusFilter === "all" || inv.status === statusFilter) &&
           (searchTerm === "" ||
             (inv.invoiceNo ?? "").toLowerCase().includes(searchTerm.toLowerCase()) ||
             (inv.partyName ?? "").toLowerCase().includes(searchTerm.toLowerCase())),
       )
       .sort((a, b) => (b.createdAt ?? "").localeCompare(a.createdAt ?? ""));
-  }, [invoices, statusFilter, searchTerm]);
+  }, [invoices, statusFilter, searchTerm, matchBranch, branchFilter]);
 
   // ── TDS section change handler ────────────────────────────────────────────
   const handleTdsSectionChange = (sectionId: string) => {
@@ -500,6 +505,21 @@ const PurchaseVoucher: React.FC = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
           <span className="rounded px-2 py-0.5 text-[12px] font-semibold uppercase bg-gray-100 text-gray-700">
             {companySettings?.name ?? "Company"}
           </span>

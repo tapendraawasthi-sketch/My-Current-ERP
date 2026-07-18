@@ -1,0 +1,17 @@
+{
+  "resource_id": "abbreviation_candidates",
+  "version": "mai-06.1.0",
+  "review_status": "ENGINEERING_REVIEWED",
+  "entries": {
+    "amt": ["amount"],
+    "qty": ["quantity"],
+    "inv": ["invoice"],
+    "bal": ["balance"],
+    "a/c": ["account"],
+    "dr": ["debit", "doctor"],
+    "cr": ["credit"],
+    "p/l": ["profit and loss"],
+    "b/s": ["balance sheet"],
+    "fy": ["fiscal year"]
+  }
+}

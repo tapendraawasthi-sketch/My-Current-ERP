@@ -158,7 +158,7 @@ export const VoucherClassManager: React.FC<ManagerProps> = ({
           )}
         </div>
 
-        <div className="flex justify-end gap-2 p-3 border-t border-[#9DC07A]">
+        <div className="flex justify-end gap-2 p-3 border-t border-[var(--ds-border-default)]">
           <button type="button" className="tally-btn" onClick={onClose}>
             Cancel
           </button>

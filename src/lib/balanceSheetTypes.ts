@@ -48,6 +48,8 @@ export interface BSOptions {
   roundOff: boolean;
   costCentreId?: string;
   comparativeYears?: number;
+  /** When set (and not "all"), only vouchers stamped with this branch are included. */
+  branchId?: string;
 }
 
 export interface BSAccountEntry {

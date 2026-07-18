@@ -19,6 +19,8 @@ import {
   HelpCircle,
   X,
 } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 function money(v: number): string {
   const abs = Math.abs(Number(v || 0));
@@ -254,6 +256,7 @@ export default function UsersManagement() {
     updateUser,
     deleteUser,
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [activeTab, setActiveTab] = useState("Users");
 
@@ -404,6 +407,7 @@ export default function UsersManagement() {
   const filteredUsers = useMemo(() => {
     const q = search.toLowerCase();
     return (users || []).filter((u) => {
+      if (!matchBranch(u.branchId)) return false;
       return (
         String(u.name || "")
           .toLowerCase()
@@ -419,7 +423,7 @@ export default function UsersManagement() {
           .includes(q)
       );
     });
-  }, [users, search]);
+  }, [users, search, matchBranch, branchFilter]);
 
   function openAddUser() {
     setEditingUser(null);
@@ -513,6 +517,7 @@ export default function UsersManagement() {
       phone: userForm.phone.trim(),
       role: userForm.role,
       costCenterId: userForm.costCenterId || "",
+      branchId: editingUser?.branchId || readActiveBranchId() || undefined,
       isActive: Boolean(userForm.isActive),
       permissions: userForm.permissions || [],
       loginRestrictions: {
@@ -696,6 +701,21 @@ export default function UsersManagement() {
             Field-level permissions, branch isolation, login audit and security policies
           </p>
         </div>
+        {branchOptions.length > 0 && (
+          <select
+            value={branchFilter}
+            onChange={(e) => setBranchFilter(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            aria-label="Branch"
+          >
+            <option value="all">All branches</option>
+            {branchOptions.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name || b.code || b.id}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       <div className="flex border-b border-gray-200 mb-4 bg-white px-2 pt-2 rounded-t-md shadow-sm overflow-x-auto hide-scrollbar">
@@ -705,7 +725,7 @@ export default function UsersManagement() {
             onClick={() => setActiveTab(t)}
             className={`px-4 py-2 text-[12px] font-medium border-b-2 transition-colors whitespace-nowrap ${
               activeTab === t
-                ? "border-[#1557b0] text-[#1557b0]"
+                ? "border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
             }`}
           >
@@ -718,13 +738,13 @@ export default function UsersManagement() {
         <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4">
           <div className="flex flex-col md:flex-row gap-3 justify-between mb-4">
             <input
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full md:max-w-sm shadow-sm"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full md:max-w-sm shadow-sm"
               placeholder="Search users by name, username, email, role..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
             <button
-              className="h-8 px-3 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96] transition-colors flex items-center gap-1.5 shadow-sm whitespace-nowrap"
+              className="h-8 px-3 bg-[var(--ds-action-primary)] text-white text-[12px] font-medium rounded-md hover:bg-[var(--ds-action-primary-hover)] transition-colors flex items-center gap-1.5 shadow-sm whitespace-nowrap"
               onClick={openAddUser}
             >
               <Plus size={14} /> Add User
@@ -800,7 +820,7 @@ export default function UsersManagement() {
                               <button
                                 onClick={() => openEditUser(u)}
                                 title="Edit"
-                                className="text-gray-500 hover:text-[#1557b0] transition-colors"
+                                className="text-gray-500 hover:text-[var(--ds-action-primary)] transition-colors"
                               >
                                 <Edit2 size={14} />
                               </button>
@@ -814,7 +834,7 @@ export default function UsersManagement() {
                               <button
                                 onClick={() => resetPassword(u)}
                                 title="Reset Password"
-                                className="text-gray-500 hover:text-[#1557b0] transition-colors"
+                                className="text-gray-500 hover:text-[var(--ds-action-primary)] transition-colors"
                               >
                                 <Lock size={14} />
                               </button>
@@ -836,7 +856,7 @@ export default function UsersManagement() {
           <div className="flex flex-col md:flex-row gap-3 justify-between mb-4">
             <div className="flex gap-2">
               <input
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] max-w-xs shadow-sm"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] max-w-xs shadow-sm"
                 placeholder="New Role Name"
                 value={newRoleName}
                 onChange={(e) => setNewRoleName(e.target.value)}
@@ -849,7 +869,7 @@ export default function UsersManagement() {
               </button>
             </div>
             <button
-              className="h-8 px-4 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96] transition-colors flex items-center gap-1.5 shadow-sm"
+              className="h-8 px-4 bg-[var(--ds-action-primary)] text-white text-[12px] font-medium rounded-md hover:bg-[var(--ds-action-primary-hover)] transition-colors flex items-center gap-1.5 shadow-sm"
               onClick={saveRolePermissions}
             >
               <CheckCircle size={14} /> Save Permissions
@@ -912,7 +932,7 @@ export default function UsersManagement() {
                               >
                                 <input
                                   type="checkbox"
-                                  className="w-4 h-4 text-[#1557b0] border-gray-300 rounded focus:ring-[#1557b0]"
+                                  className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
                                   checked={checked}
                                   disabled={name === "admin"}
                                   onChange={() => toggleRolePermission(name, p)}
@@ -943,7 +963,7 @@ export default function UsersManagement() {
                   Min Password Length
                 </label>
                 <input
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                   type="number"
                   value={securitySettings.minPasswordLength}
                   onChange={(e) =>
@@ -958,7 +978,7 @@ export default function UsersManagement() {
                 <label className="text-[12px] flex items-center gap-2 text-gray-700 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 text-[#1557b0] border-gray-300 rounded focus:ring-[#1557b0]"
+                    className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
                     checked={securitySettings.requireUppercase}
                     onChange={(e) =>
                       setSecuritySettings({
@@ -974,7 +994,7 @@ export default function UsersManagement() {
                 <label className="text-[12px] flex items-center gap-2 text-gray-700 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 text-[#1557b0] border-gray-300 rounded focus:ring-[#1557b0]"
+                    className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
                     checked={securitySettings.requireNumber}
                     onChange={(e) =>
                       setSecuritySettings({ ...securitySettings, requireNumber: e.target.checked })
@@ -987,7 +1007,7 @@ export default function UsersManagement() {
                 <label className="text-[12px] flex items-center gap-2 text-gray-700 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 text-[#1557b0] border-gray-300 rounded focus:ring-[#1557b0]"
+                    className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
                     checked={securitySettings.requireSpecial}
                     onChange={(e) =>
                       setSecuritySettings({ ...securitySettings, requireSpecial: e.target.checked })
@@ -1001,7 +1021,7 @@ export default function UsersManagement() {
                   Password Expires (Days)
                 </label>
                 <input
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                   type="number"
                   value={securitySettings.passwordExpiryDays}
                   onChange={(e) =>
@@ -1025,7 +1045,7 @@ export default function UsersManagement() {
                   Lock After Failed Attempts
                 </label>
                 <input
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                   type="number"
                   value={securitySettings.failedAttempts}
                   onChange={(e) =>
@@ -1041,7 +1061,7 @@ export default function UsersManagement() {
                   Lockout Duration (Mins)
                 </label>
                 <input
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                   type="number"
                   value={securitySettings.lockoutMinutes}
                   onChange={(e) =>
@@ -1057,7 +1077,7 @@ export default function UsersManagement() {
                   Session Timeout (Mins)
                 </label>
                 <input
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                   type="number"
                   value={securitySettings.sessionTimeoutMinutes}
                   onChange={(e) =>
@@ -1072,7 +1092,7 @@ export default function UsersManagement() {
                 <label className="text-[12px] flex items-center gap-2 text-gray-700 cursor-pointer h-8">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 text-[#1557b0] border-gray-300 rounded focus:ring-[#1557b0]"
+                    className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
                     checked={securitySettings.require2FAAdmin}
                     onChange={(e) =>
                       setSecuritySettings({
@@ -1095,7 +1115,7 @@ export default function UsersManagement() {
               Allowed IP Ranges
             </h2>
             <textarea
-              className="px-3 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full min-h-[100px] shadow-sm font-mono"
+              className="px-3 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full min-h-[100px] shadow-sm font-mono"
               placeholder="One CIDR per line, blank = no restriction"
               value={securitySettings.allowedIpRanges}
               onChange={(e) =>
@@ -1112,7 +1132,7 @@ export default function UsersManagement() {
               <label className="text-[12px] flex items-center gap-2 text-gray-700 cursor-pointer">
                 <input
                   type="checkbox"
-                  className="w-4 h-4 text-[#1557b0] border-gray-300 rounded focus:ring-[#1557b0]"
+                  className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
                   checked={securitySettings.maskBankAccounts}
                   onChange={(e) =>
                     setSecuritySettings({ ...securitySettings, maskBankAccounts: e.target.checked })
@@ -1123,7 +1143,7 @@ export default function UsersManagement() {
               <label className="text-[12px] flex items-center gap-2 text-gray-700 cursor-pointer">
                 <input
                   type="checkbox"
-                  className="w-4 h-4 text-[#1557b0] border-gray-300 rounded focus:ring-[#1557b0]"
+                  className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
                   checked={securitySettings.maskPanReports}
                   onChange={(e) =>
                     setSecuritySettings({ ...securitySettings, maskPanReports: e.target.checked })
@@ -1134,7 +1154,7 @@ export default function UsersManagement() {
               <label className="text-[12px] flex items-center gap-2 text-gray-700 cursor-pointer">
                 <input
                   type="checkbox"
-                  className="w-4 h-4 text-[#1557b0] border-gray-300 rounded focus:ring-[#1557b0]"
+                  className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
                   checked={securitySettings.watermarkPrints}
                   onChange={(e) =>
                     setSecuritySettings({ ...securitySettings, watermarkPrints: e.target.checked })
@@ -1145,7 +1165,7 @@ export default function UsersManagement() {
             </div>
             <div className="flex justify-end pt-4 border-t border-gray-100">
               <button
-                className="h-8 px-4 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96] transition-colors shadow-sm flex items-center gap-1.5"
+                className="h-8 px-4 bg-[var(--ds-action-primary)] text-white text-[12px] font-medium rounded-md hover:bg-[var(--ds-action-primary-hover)] transition-colors shadow-sm flex items-center gap-1.5"
                 onClick={saveSecuritySettings}
               >
                 <CheckCircle size={14} /> Save Security Settings
@@ -1185,7 +1205,7 @@ export default function UsersManagement() {
               <div className="text-[11px] text-gray-500 uppercase font-semibold tracking-wide mb-1">
                 Active Sessions
               </div>
-              <div className="text-[28px] font-bold text-[#1557b0]">
+              <div className="text-[28px] font-bold text-[var(--ds-action-primary)]">
                 {auditSummary.activeSessions}
               </div>
             </div>
@@ -1194,7 +1214,7 @@ export default function UsersManagement() {
           <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4">
             <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-4">
               <select
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] shadow-sm"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] shadow-sm"
                 value={auditUser}
                 onChange={(e) => setAuditUser(e.target.value)}
               >
@@ -1206,19 +1226,19 @@ export default function UsersManagement() {
                 ))}
               </select>
               <input
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] shadow-sm"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] shadow-sm"
                 type="date"
                 value={auditFrom}
                 onChange={(e) => setAuditFrom(e.target.value)}
               />
               <input
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] shadow-sm"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] shadow-sm"
                 type="date"
                 value={auditTo}
                 onChange={(e) => setAuditTo(e.target.value)}
               />
               <select
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] shadow-sm"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] shadow-sm"
                 value={auditAction}
                 onChange={(e) => setAuditAction(e.target.value)}
               >
@@ -1316,7 +1336,7 @@ export default function UsersManagement() {
           <div className="bg-white border border-gray-200 rounded-md shadow-xl w-full max-w-5xl max-h-[92vh] flex flex-col">
             <div className="flex items-center justify-between p-4 border-b border-gray-100">
               <h2 className="text-[15px] font-bold text-gray-800 flex items-center gap-2">
-                <User size={16} className="text-[#1557b0]" />
+                <User size={16} className="text-[var(--ds-action-primary)]" />
                 {editingUser ? "Edit User Account" : "Create New User"}
               </h2>
               <button
@@ -1330,7 +1350,7 @@ export default function UsersManagement() {
             <div className="p-4 overflow-y-auto space-y-6">
               <div className="space-y-4">
                 <h3 className="text-[13px] font-bold text-gray-800 border-b border-gray-100 pb-1 flex items-center gap-2">
-                  <span className="bg-[#1557b0] text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px]">
+                  <span className="bg-[var(--ds-action-primary)] text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px]">
                     1
                   </span>{" "}
                   Basic Info
@@ -1341,7 +1361,7 @@ export default function UsersManagement() {
                       Username <span className="text-red-500">*</span>
                     </label>
                     <input
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                       value={userForm.username}
                       onChange={(e) => setUserForm({ ...userForm, username: e.target.value })}
                       disabled={!!editingUser}
@@ -1352,7 +1372,7 @@ export default function UsersManagement() {
                       Full Name <span className="text-red-500">*</span>
                     </label>
                     <input
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                       value={userForm.name}
                       onChange={(e) => setUserForm({ ...userForm, name: e.target.value })}
                     />
@@ -1362,7 +1382,7 @@ export default function UsersManagement() {
                       Email
                     </label>
                     <input
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                       type="email"
                       value={userForm.email}
                       onChange={(e) => setUserForm({ ...userForm, email: e.target.value })}
@@ -1373,7 +1393,7 @@ export default function UsersManagement() {
                       Phone
                     </label>
                     <input
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                       value={userForm.phone}
                       onChange={(e) => setUserForm({ ...userForm, phone: e.target.value })}
                     />
@@ -1383,7 +1403,7 @@ export default function UsersManagement() {
                       Role Type
                     </label>
                     <select
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                       value={userForm.role}
                       onChange={(e) => onRoleChange(e.target.value)}
                     >
@@ -1411,7 +1431,7 @@ export default function UsersManagement() {
                       Branch/Department Assignment
                     </label>
                     <select
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                       value={userForm.costCenterId}
                       onChange={(e) => setUserForm({ ...userForm, costCenterId: e.target.value })}
                     >
@@ -1427,7 +1447,7 @@ export default function UsersManagement() {
                     <label className="text-[12px] flex items-center gap-2 cursor-pointer text-gray-700">
                       <input
                         type="checkbox"
-                        className="w-4 h-4 text-[#1557b0] border-gray-300 rounded focus:ring-[#1557b0]"
+                        className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
                         checked={userForm.isActive}
                         onChange={(e) => setUserForm({ ...userForm, isActive: e.target.checked })}
                       />
@@ -1438,7 +1458,7 @@ export default function UsersManagement() {
                     <label className="text-[12px] flex items-center gap-2 cursor-pointer text-gray-700">
                       <input
                         type="checkbox"
-                        className="w-4 h-4 text-[#1557b0] border-gray-300 rounded focus:ring-[#1557b0]"
+                        className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
                         checked={userForm.forcePasswordChange}
                         onChange={(e) =>
                           setUserForm({ ...userForm, forcePasswordChange: e.target.checked })
@@ -1452,7 +1472,7 @@ export default function UsersManagement() {
 
               <div className="space-y-4">
                 <h3 className="text-[13px] font-bold text-gray-800 border-b border-gray-100 pb-1 flex items-center gap-2">
-                  <span className="bg-[#1557b0] text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px]">
+                  <span className="bg-[var(--ds-action-primary)] text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px]">
                     2
                   </span>{" "}
                   Login Restrictions
@@ -1463,7 +1483,7 @@ export default function UsersManagement() {
                       Allowed Login From Time
                     </label>
                     <input
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                       type="time"
                       value={userForm.fromTime}
                       onChange={(e) => setUserForm({ ...userForm, fromTime: e.target.value })}
@@ -1474,7 +1494,7 @@ export default function UsersManagement() {
                       Allowed Login To Time
                     </label>
                     <input
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                       type="time"
                       value={userForm.toTime}
                       onChange={(e) => setUserForm({ ...userForm, toTime: e.target.value })}
@@ -1485,7 +1505,7 @@ export default function UsersManagement() {
                       Max Concurrent Sessions
                     </label>
                     <input
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full shadow-sm"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full shadow-sm"
                       type="number"
                       min={1}
                       max={5}
@@ -1501,7 +1521,7 @@ export default function UsersManagement() {
                         Allowed IP Addresses
                       </label>
                       <button
-                        className="text-[10px] text-[#1557b0] hover:underline flex items-center gap-1"
+                        className="text-[10px] text-[var(--ds-action-primary)] hover:underline flex items-center gap-1"
                         onClick={() => setShowIpHelp(!showIpHelp)}
                       >
                         <HelpCircle size={12} /> Help
@@ -1514,7 +1534,7 @@ export default function UsersManagement() {
                       </div>
                     )}
                     <textarea
-                      className="px-3 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full min-h-[80px] shadow-sm font-mono"
+                      className="px-3 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full min-h-[80px] shadow-sm font-mono"
                       placeholder="One IP per line, blank = any IP allowed"
                       value={userForm.allowedIPsText}
                       onChange={(e) => setUserForm({ ...userForm, allowedIPsText: e.target.value })}
@@ -1527,7 +1547,7 @@ export default function UsersManagement() {
                 className={`space-y-4 ${userForm.role !== "custom" && userForm.role !== "admin" ? "opacity-75 pointer-events-none" : ""}`}
               >
                 <h3 className="text-[13px] font-bold text-gray-800 border-b border-gray-100 pb-1 flex items-center gap-2">
-                  <span className="bg-[#1557b0] text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px]">
+                  <span className="bg-[var(--ds-action-primary)] text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px]">
                     3
                   </span>{" "}
                   Module Access
@@ -1546,7 +1566,7 @@ export default function UsersManagement() {
                         </div>
                         <div className="flex gap-2">
                           <button
-                            className="text-[10px] text-[#1557b0] hover:underline"
+                            className="text-[10px] text-[var(--ds-action-primary)] hover:underline"
                             onClick={() => setGroupPermissions(group, "all")}
                           >
                             All
@@ -1567,7 +1587,7 @@ export default function UsersManagement() {
                           >
                             <input
                               type="checkbox"
-                              className="w-3.5 h-3.5 text-[#1557b0] border-gray-300 rounded focus:ring-[#1557b0]"
+                              className="w-3.5 h-3.5 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
                               checked={
                                 userForm.role === "admin" ||
                                 (userForm.permissions || []).includes(p)
@@ -1593,7 +1613,7 @@ export default function UsersManagement() {
                 Cancel
               </button>
               <button
-                className="h-8 px-5 bg-[#1557b0] text-white text-[12px] font-medium rounded-md hover:bg-[#0f4a96] transition-colors shadow-sm"
+                className="h-8 px-5 bg-[var(--ds-action-primary)] text-white text-[12px] font-medium rounded-md hover:bg-[var(--ds-action-primary-hover)] transition-colors shadow-sm"
                 onClick={saveUser}
               >
                 {editingUser ? "Save Changes" : "Create User"}

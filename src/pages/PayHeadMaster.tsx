@@ -3,6 +3,8 @@ import { useStore } from "../store";
 import { Plus, Edit2, Trash2, X, Save, Search } from "lucide-react";
 import toast from "@/lib/appToast";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const th = "px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
@@ -35,6 +37,7 @@ const emptyForm = () => ({
 
 const PayHeadMaster: React.FC = () => {
   const { payHeads, addPayHead, updatePayHead, deletePayHead, accounts } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [showForm, setShowForm] = useState(false);
   const [selected, setSelected] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -223,11 +226,12 @@ const PayHeadMaster: React.FC = () => {
   const filteredHeads = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
     const list = payHeads || [];
-    if (!q) return list;
-    return list.filter(
-      (head) => head.name.toLowerCase().includes(q) || head.payHeadType.toLowerCase().includes(q),
-    );
-  }, [payHeads, searchTerm]);
+    return list.filter((head) => {
+      if (!matchBranch((head as { branchId?: string }).branchId)) return false;
+      if (!q) return true;
+      return head.name.toLowerCase().includes(q) || head.payHeadType.toLowerCase().includes(q);
+    });
+  }, [payHeads, searchTerm, matchBranch, branchFilter]);
 
   const resetForm = () => {
     setForm(emptyForm());
@@ -276,10 +280,16 @@ const PayHeadMaster: React.FC = () => {
 
     try {
       if (selected) {
-        await updatePayHead(selected.id, form);
+        await updatePayHead(selected.id, {
+          ...form,
+          branchId: selected.branchId || readActiveBranchId() || undefined,
+        } as any);
         toast.success("Updated successfully");
       } else {
-        await addPayHead(form);
+        await addPayHead({
+          ...form,
+          branchId: readActiveBranchId() || undefined,
+        } as any);
         toast.success("Saved successfully");
       }
       resetForm();
@@ -366,10 +376,27 @@ const PayHeadMaster: React.FC = () => {
                 Manage earnings, deductions, and statutory pay components
               </p>
             </div>
-            <button type="button" className={btnPrimary} onClick={openAdd}>
-              <Plus className="h-3.5 w-3.5" />
-              Add pay head
-            </button>
+            <div className="flex items-center gap-2">
+              {branchOptions.length > 0 && (
+                <select
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>
+              )}
+              <button type="button" className={btnPrimary} onClick={openAdd}>
+                <Plus className="h-3.5 w-3.5" />
+                Add pay head
+              </button>
+            </div>
           </div>
 
           <div className="relative mb-3 max-w-xs">

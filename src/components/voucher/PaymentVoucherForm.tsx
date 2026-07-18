@@ -655,7 +655,7 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
     return (
       <div className="flex flex-col items-center justify-center gap-5 py-20 animate-fadeIn text-center">
         <div className="h-16 w-16 rounded-full bg-green-50 border border-green-200 flex items-center justify-center">
-          <CheckCircle2 className="h-8 w-8 text-green-600" />
+          <CheckCircle2 className="h-8 w-8 text-[var(--ds-status-success)]" />
         </div>
         <div>
           <h2 className="text-lg font-bold text-[var(--ds-text-default)]">Pay money saved</h2>
@@ -1000,7 +1000,7 @@ const PaymentVoucherForm: React.FC<PaymentVoucherFormProps> = ({ voucherId, onSa
                 Payment: {symbol} {formatNumber(totals.gross)}
               </span>
               {Math.abs(selectedInvoiceTotal - totals.gross) < 0.01 ? (
-                <CheckCircle2 className="h-4 w-4 text-green-600" />
+                <CheckCircle2 className="h-4 w-4 text-[var(--ds-status-success)]" />
               ) : (
                 <X className="h-4 w-4 text-red-600" />
               )}

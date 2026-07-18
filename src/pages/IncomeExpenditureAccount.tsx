@@ -8,9 +8,10 @@ import AccountTreeRenderer, {
 import ReportOptionsModal, { ReportOptions } from "../components/reports/ReportOptionsModal";
 import LedgerDrillPanel from "../components/reports/LedgerDrillPanel";
 import RebuildBalancesAction from "../components/reports/RebuildBalancesAction";
-import { getDB } from "../lib/db";
 import { getProfitDecimalPlaces } from "../lib/utils";
 import { formatADToBS } from "../lib/nepaliDate";
+import { matchesBranchFilter } from "../lib/activeBranch";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 function buildPLTree(
   accounts: any[],
@@ -45,6 +46,7 @@ function isIEAccount(a: any): boolean {
 
 const IncomeExpenditureAccount: React.FC = () => {
   const { accounts, vouchers, currentFiscalYear, fiscalYears } = useStore();
+  const { branchOptions } = useBranchFilter();
 
   const [modalOpen, setModalOpen] = useState(true);
   const [reportOptions, setReportOptions] = useState<ReportOptions | null>(null);
@@ -54,21 +56,7 @@ const IncomeExpenditureAccount: React.FC = () => {
     accountId: string | null;
     accountName: string;
   }>({ open: false, accountId: null, accountName: "" });
-  const [branches, setBranches] = useState<{ id: string; name: string }[]>([]);
   const [depth, setDepth] = useState<ReportDepth>("detailed");
-
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const db = getDB();
-        const rows = await (db as any).table("branches").toArray();
-        setBranches(rows.map((r: any) => ({ id: r.id, name: r.name ?? r.id })));
-      } catch {
-        setBranches([]);
-      }
-    };
-    load();
-  }, []);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -92,7 +80,7 @@ const IncomeExpenditureAccount: React.FC = () => {
     const map: Record<string, number> = {};
     for (const v of vouchers) {
       if (!v.date || v.date < fromDate || v.date > toDate) continue;
-      if (branchId !== "all" && v.branchId && v.branchId !== branchId) continue;
+      if (!matchesBranchFilter(v.branchId, branchId)) continue;
       if (v.status !== "posted") continue;
       for (const l of v.lines ?? []) {
         if (!l.accountId) continue;
@@ -190,10 +178,10 @@ const IncomeExpenditureAccount: React.FC = () => {
           setReportOptions(opts);
           setModalOpen(false);
         }}
-        showBranchSelector={branches.length > 0}
+        showBranchSelector={branchOptions.length > 0}
         fiscalYears={fiscalYears}
         currentFiscalYear={currentFiscalYear ?? {}}
-        branches={branches}
+        branches={branchOptions.map((b) => ({ id: b.id, name: b.name || b.code || b.id }))}
       />
 
       <ReportWorkspace

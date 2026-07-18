@@ -375,14 +375,14 @@ const OrderForm: React.FC<OrderFormProps> = ({ type, orderId, onSave, onCancel }
   // ============= RENDER =============
   return (
     <div className="flex flex-col gap-5 animate-fadeIn text-xs">
-      <div className="flex items-center justify-between border-b border-[#9DC07A] pb-4">
+      <div className="flex items-center justify-between border-b border-[var(--ds-border-default)] pb-4">
         <div className="flex items-center gap-3">
-          <button onClick={handleBack} className="p-2 rounded-md hover:bg-[#EBF5E2] text-[#000000]">
+          <button onClick={handleBack} className="p-2 rounded-md hover:bg-[var(--ds-surface-muted)] text-[#000000]">
             <ArrowLeft className="h-4 w-4" />
           </button>
           <div>
             <h2 className="text-lg font-bold text-[#000000] tracking-tight flex items-center gap-2">
-              <ClipboardList className="h-5 w-5 text-[#1557b0]" />
+              <ClipboardList className="h-5 w-5 text-[var(--ds-action-primary)]" />
               {isEdit ? `EDIT ${type.toUpperCase()} ORDER` : `NEW ${type.toUpperCase()} ORDER`}
             </h2>
             <p className="text-[11px] text-[#000000] mt-0.5 uppercase tracking-wider font-bold">
@@ -419,7 +419,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ type, orderId, onSave, onCancel }
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="flex flex-col gap-1">
             <span className="text-[11px] font-semibold text-[#000000]">Order No</span>
-            <span className="inline-flex items-center px-2.5 py-1.5 rounded-md bg-[#EBF5E2] border border-[#9DC07A] font-mono font-bold text-[#000000]">
+            <span className="inline-flex items-center px-2.5 py-1.5 rounded-md bg-[var(--ds-surface-muted)] border border-[var(--ds-border-default)] font-mono font-bold text-[#000000]">
               {orderNoPreview}
             </span>
           </div>
@@ -474,7 +474,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ type, orderId, onSave, onCancel }
 
       {/* Lines */}
       <Card border padding="none">
-        <div className="flex items-center justify-between p-4 border-b border-[#9DC07A]">
+        <div className="flex items-center justify-between p-4 border-b border-[var(--ds-border-default)]">
           <h3 className="text-[11px] font-bold text-[#000000] uppercase tracking-wider">
             Line Items
           </h3>
@@ -491,7 +491,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ type, orderId, onSave, onCancel }
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-[11px]">
-            <thead className="bg-[#EBF5E2]">
+            <thead className="bg-[var(--ds-surface-muted)]">
               <tr className="text-left text-[#000000]">
                 <th className="p-2 w-10">#</th>
                 <th className="p-2 min-w-[220px]">Item</th>
@@ -510,7 +510,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ type, orderId, onSave, onCancel }
                 );
                 const vat = l.isTaxable ? round2((base * (l.vatRate || 0)) / 100) : 0;
                 return (
-                  <tr key={l.id} className="border-t border-[#9DC07A]">
+                  <tr key={l.id} className="border-t border-[var(--ds-border-default)]">
                     <td className="p-2 font-mono text-[#000000]">{idx + 1}</td>
                     <td className="p-2">
                       <ItemSelect
@@ -580,7 +580,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ type, orderId, onSave, onCancel }
           </table>
         </div>
 
-        <div className="flex justify-end p-4 border-t border-[#9DC07A] bg-[#EBF5E2]">
+        <div className="flex justify-end p-4 border-t border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)]">
           <div className="w-full md:w-80 flex flex-col gap-1 text-[11px]">
             <div className="flex justify-between">
               <span className="text-[#000000]">Sub Total</span>
@@ -606,7 +606,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ type, orderId, onSave, onCancel }
                 {symbol} {formatNumber(computation.vatAmount)}
               </span>
             </div>
-            <div className="flex justify-between border-t border-[#9DC07A] pt-2 mt-1 font-bold text-[#000000]">
+            <div className="flex justify-between border-t border-[var(--ds-border-default)] pt-2 mt-1 font-bold text-[#000000]">
               <span>Grand Total</span>
               <span className="font-mono">
                 {symbol} {formatNumber(computation.grandTotal)}
@@ -630,7 +630,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ type, orderId, onSave, onCancel }
       </Card>
 
       {/* Footer actions */}
-      <div className="flex items-center justify-between border-t border-[#9DC07A] pt-4 gap-2 flex-wrap">
+      <div className="flex items-center justify-between border-t border-[var(--ds-border-default)] pt-4 gap-2 flex-wrap">
         <div className="flex items-center gap-2">
           {isEdit && !locked && (
             <Button

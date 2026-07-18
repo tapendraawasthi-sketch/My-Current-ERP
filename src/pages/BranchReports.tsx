@@ -22,12 +22,13 @@ import {
   CartesianGrid,
 } from "recharts";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { matchesBranchFilter } from "../lib/activeBranch";
 
 const inputCls =
-  "h-8 w-full px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "h-8 w-full px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const labelCls = "mb-1 block text-[11px] font-medium text-gray-600";
 const primaryButtonCls =
-  "inline-flex h-8 items-center gap-1.5 rounded-md bg-[#1557b0] px-3 text-[12px] font-medium text-white hover:bg-[#0f4a96]";
+  "inline-flex h-8 items-center gap-1.5 rounded-md bg-[var(--ds-action-primary)] px-3 text-[12px] font-medium text-white hover:bg-[var(--ds-action-primary-hover)]";
 const outlineButtonCls =
   "inline-flex h-8 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 text-[12px] font-medium text-gray-700 hover:bg-gray-50";
 const sectionCls = "overflow-hidden rounded-md border border-gray-200 bg-white";
@@ -49,7 +50,7 @@ function tabCls(active) {
   return [
     "inline-flex items-center border-b-2 px-1 py-2 text-[12px] font-medium transition-colors",
     active
-      ? "border-[#1557b0] text-[#1557b0]"
+      ? "border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]"
       : "border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-800",
   ].join(" ");
 }
@@ -94,7 +95,8 @@ export default function BranchReports() {
   const filteredInvoices = useMemo(() => {
     return invoices.filter((inv) => {
       const inDateRange = (!fromDate || inv.date >= fromDate) && (!toDate || inv.date <= toDate);
-      const matchesBranch = branchFilter === "ALL" || inv.branchId === branchFilter;
+      const filterId = branchFilter === "ALL" ? "all" : branchFilter;
+      const matchesBranch = matchesBranchFilter(inv.branchId, filterId);
       return inDateRange && matchesBranch;
     });
   }, [invoices, fromDate, toDate, branchFilter]);
@@ -102,7 +104,8 @@ export default function BranchReports() {
   const filteredVouchers = useMemo(() => {
     return vouchers.filter((v) => {
       const inDateRange = (!fromDate || v.date >= fromDate) && (!toDate || v.date <= toDate);
-      const matchesBranch = branchFilter === "ALL" || v.branchId === branchFilter;
+      const filterId = branchFilter === "ALL" ? "all" : branchFilter;
+      const matchesBranch = matchesBranchFilter(v.branchId, filterId);
       return inDateRange && matchesBranch;
     });
   }, [vouchers, fromDate, toDate, branchFilter]);
@@ -430,7 +433,7 @@ export default function BranchReports() {
               <p className="mt-2 text-[18px] font-semibold text-gray-800">{branchScopeCount}</p>
               <p className="mt-1 text-[11px] text-gray-500">Includes unallocated totals</p>
             </div>
-            <Building2 className="h-4 w-4 text-[#1557b0]" />
+            <Building2 className="h-4 w-4 text-[var(--ds-action-primary)]" />
           </div>
         </div>
         <div className="rounded-md border border-gray-200 bg-white p-4">
@@ -444,7 +447,7 @@ export default function BranchReports() {
               </p>
               <p className="mt-1 text-[11px] text-gray-500">Revenue in the selected period</p>
             </div>
-            <BarChart2 className="h-4 w-4 text-[#1557b0]" />
+            <BarChart2 className="h-4 w-4 text-[var(--ds-action-primary)]" />
           </div>
         </div>
         <div className="rounded-md border border-gray-200 bg-white p-4">
@@ -510,7 +513,7 @@ export default function BranchReports() {
                       <Tooltip formatter={(value) => [money(value), "Sales"]} />
                       <Bar dataKey="sales" name="Sales">
                         {chartData.map((_, index) => (
-                          <Cell key={`sales-bar-${index}`} fill="#1557b0" />
+                          <Cell key={`sales-bar-${index}`} fill="var(--ds-action-primary)" />
                         ))}
                       </Bar>
                     </BarChart>
@@ -546,7 +549,7 @@ export default function BranchReports() {
                     {salesRows.map((row) => (
                       <tr
                         key={row.branch.id}
-                        className="border-b border-gray-100 hover:border-l-[#1557b0] hover:bg-gray-50"
+                        className="border-b border-gray-100 hover:border-l-[var(--ds-action-primary)] hover:bg-gray-50"
                       >
                         <td className="px-3 py-2.5 text-[12px] text-gray-700">
                           <div className="font-medium text-gray-800">{row.branch.name}</div>

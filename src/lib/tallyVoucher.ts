@@ -151,6 +151,7 @@ export interface VoucherMeta {
   updatedAt: string;
   fiscalYearId?: string;
   companyId?: string;
+  branchId?: string;
   // Sales/Purchase extras ← new
   partyId?: string;
   partyName?: string;

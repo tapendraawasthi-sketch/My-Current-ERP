@@ -23,6 +23,8 @@ import {
   Settings,
   AlertCircle,
 } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 function money(v: number): string {
   const abs = Math.abs(Number(v || 0));
@@ -36,13 +38,13 @@ const tableHeadClass =
 const tableCellClass = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 
 const primaryBtn =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed";
 const outlineBtn =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5 shadow-sm";
 const dangerBtn =
   "h-8 px-3 bg-red-600 hover:bg-red-700 text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm disabled:opacity-50";
 const inputClass =
-  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-shadow w-full";
+  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] transition-shadow w-full";
 
 export function isPeriodLocked(dateString: string, periodLocks: any[]): boolean {
   const date = new Date(dateString);
@@ -132,6 +134,9 @@ export default function PeriodLockPage() {
     employees = [],
     parties = [],
   } = useStore();
+
+  const { branchFilter, setBranchFilter, matchBranch, matchMovement, branchOptions } =
+    useBranchFilter();
 
   const [activeTab, setActiveTab] = useState("Period Lock");
   const [periodLocks, setPeriodLocks] = useState([]);
@@ -233,6 +238,7 @@ export default function PeriodLockPage() {
           lockedByName: "Auto Lock",
           requiresPin: false,
           isUnlocked: false,
+          branchId: readActiveBranchId() || undefined,
         };
         await db
           .table("periodLocks")
@@ -282,6 +288,7 @@ export default function PeriodLockPage() {
         lockedByName: currentUser?.name,
         requiresPin: Boolean(requiredPin),
         isUnlocked: false,
+        branchId: readActiveBranchId() || undefined,
       };
 
       await db
@@ -383,13 +390,19 @@ export default function PeriodLockPage() {
   }
 
   function runHealthCheck() {
-    const unbalanced = (vouchers || []).filter((v) => {
+    const scopedVouchers = (vouchers || []).filter((v: any) => matchBranch(v.branchId));
+    const scopedInvoices = (invoices || []).filter((i: any) => matchBranch(i.branchId));
+    const scopedMovements = (stockMovements || []).filter((m: any) =>
+      matchMovement({ branchId: m.branchId, warehouseId: m.warehouseId }),
+    );
+
+    const unbalanced = scopedVouchers.filter((v) => {
       const dr = (v.lines || []).reduce((s, l) => s + Number(l.debit || 0), 0);
       const cr = (v.lines || []).reduce((s, l) => s + Number(l.credit || 0), 0);
       return Math.abs(dr - cr) > 0.01 && v.status === "posted";
     });
 
-    const noNarration = (vouchers || []).filter((v) => !v.narration && v.status === "posted");
+    const noNarration = scopedVouchers.filter((v) => !v.narration && v.status === "posted");
 
     const noParentAccounts = (accounts || []).filter(
       (a) => !a.isGroup && !a.parentId && a.level !== "group",
@@ -398,14 +411,14 @@ export default function PeriodLockPage() {
     const itemsNoUnit = (items || []).filter((i) => !i.unit && !i.uom);
 
     const invoicePartyIds = Array.from(
-      new Set((invoices || []).map((i) => i.partyId).filter(Boolean)),
+      new Set(scopedInvoices.map((i) => i.partyId).filter(Boolean)),
     );
     const partiesNoPAN = invoicePartyIds
       .map((id) => parties?.find((p: any) => p.id === id))
       .filter((p) => p && !p.panNumber);
 
     const negativeStockItems = (items || []).filter((item) => {
-      const stock = (stockMovements || [])
+      const stock = scopedMovements
         .filter((m) => m.itemId === item.id)
         .reduce(
           (a, m) => {
@@ -555,12 +568,29 @@ export default function PeriodLockPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-            <Shield size={18} className="text-[#1557b0]" /> Period Lock & Data Health
+            <Shield size={18} className="text-[var(--ds-action-primary)]" /> Period Lock & Data Health
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Lock accounting periods, configure lock PINs, and run data integrity checks.
           </p>
         </div>
+        {branchOptions.length > 0 ? (
+          <div className="flex items-center gap-2">
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch filter"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          </div>
+        ) : null}
       </div>
 
       {legacyLocksPending ? (
@@ -590,7 +620,7 @@ export default function PeriodLockPage() {
             onClick={() => setActiveTab(t.id)}
             className={`flex items-center gap-2 px-4 py-2.5 text-[12px] font-medium border-b-2 transition-colors whitespace-nowrap ${
               activeTab === t.id
-                ? "border-[#1557b0] text-[#1557b0]"
+                ? "border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]"
                 : "border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50"
             }`}
           >
@@ -676,7 +706,7 @@ export default function PeriodLockPage() {
                           </button>
                         ) : (
                           <button
-                            className="text-[11px] font-medium text-[#1557b0] hover:text-[#0f4a96] transition-colors flex items-center gap-1"
+                            className="text-[11px] font-medium text-[var(--ds-action-primary)] hover:text-[var(--ds-action-primary-hover)] transition-colors flex items-center gap-1"
                             onClick={() => openLockModal(p)}
                           >
                             <Lock size={14} /> Lock Period
@@ -766,7 +796,7 @@ export default function PeriodLockPage() {
               <label className="flex items-center gap-2 cursor-pointer p-3 border border-gray-200 rounded-md bg-gray-50 hover:bg-gray-100 transition-colors">
                 <input
                   type="checkbox"
-                  className="rounded text-[#1557b0] focus:ring-[#1557b0]"
+                  className="rounded text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                   checked={autoLockEnabled}
                   onChange={(e) => setAutoLockEnabled(e.target.checked)}
                 />
@@ -903,7 +933,7 @@ export default function PeriodLockPage() {
                         <td className={tableCellClass}>
                           <div className="flex items-center gap-2">
                             <button
-                              className="text-[11px] font-medium text-[#1557b0] hover:underline"
+                              className="text-[11px] font-medium text-[var(--ds-action-primary)] hover:underline"
                               onClick={() =>
                                 setExpandedHealthIndex(expandedHealthIndex === idx ? null : idx)
                               }

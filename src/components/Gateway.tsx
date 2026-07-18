@@ -93,7 +93,7 @@ const MENU_SECTIONS: MenuSection[] = [
   {
     title: "Masters",
     icon: BookOpen,
-    color: "#1557b0",
+    color: "var(--ds-action-primary)",
     items: [
       {
         label: "Chart of Accounts",
@@ -364,7 +364,7 @@ const QUICK_ACTIONS: Array<{
     shortcut: "F10",
     color: "#d97706",
   },
-  { label: "New Journal Entry", page: "journal", icon: FileText, shortcut: "F5", color: "#1557b0" },
+  { label: "New Journal Entry", page: "journal", icon: FileText, shortcut: "F5", color: "var(--ds-action-primary)" },
   { label: "New Payment", page: "payment", icon: Banknote, shortcut: "F6", color: "#7c3aed" },
   { label: "New Receipt", page: "receipt", icon: Receipt, shortcut: "F7", color: "#0284c7" },
   { label: "New Contra", page: "contra", icon: ArrowLeftRight, shortcut: "F8", color: "#374151" },
@@ -994,7 +994,7 @@ const Gateway: React.FC = () => {
               outline: "none",
             }}
             onFocus={(e) => {
-              (e.currentTarget as HTMLInputElement).style.borderColor = "#1557b0";
+              (e.currentTarget as HTMLInputElement).style.borderColor = "var(--ds-action-primary)";
             }}
             onBlur={(e) => {
               (e.currentTarget as HTMLInputElement).style.borderColor = "#2d3748";
@@ -1201,7 +1201,7 @@ const Gateway: React.FC = () => {
               label="Receivables"
               value={fmtShort(arOutstanding)}
               sub="Outstanding AR"
-              color="#1557b0"
+              color="var(--ds-action-primary)"
               onClick={() => navigate("Outstanding Receivables", "outstanding-receivables")}
             />
             <MetricCell

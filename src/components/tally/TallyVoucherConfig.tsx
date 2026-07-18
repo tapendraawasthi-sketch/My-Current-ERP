@@ -196,7 +196,7 @@ export const TallyVoucherConfig: React.FC<Props> = ({ voucherType, config, onCha
             ))}
 
           {/* Reset to defaults */}
-          <div className="flex justify-between items-center border-t border-[#9DC07A] pt-3 mt-1">
+          <div className="flex justify-between items-center border-t border-[var(--ds-border-default)] pt-3 mt-1">
             <button
               type="button"
               className="tally-btn text-[11px] py-1 px-3"

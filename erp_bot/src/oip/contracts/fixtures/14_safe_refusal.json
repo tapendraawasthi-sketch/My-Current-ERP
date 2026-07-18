@@ -1,0 +1,28 @@
+{
+  "data": {
+    "citations": [],
+    "conversation_id": "conv-demo-001",
+    "created_at": "2026-07-14T12:00:00Z",
+    "draft_reference": null,
+    "language": "en",
+    "policy_reference": null,
+    "request_id": "req-demo-014",
+    "response_id": "resp-demo-014",
+    "response_type": "SAFE_REFUSAL",
+    "schema_version": "1.0.0",
+    "status": "REFUSED",
+    "structured_payload": {
+      "payload_type": "SAFE_REFUSAL",
+      "reason_code": "ASK_MODE_READONLY",
+      "safe_message": "Ask mode cannot post.",
+      "suggested_safe_actions": []
+    },
+    "suggested_safe_actions": [],
+    "trace_reference": null,
+    "uncertainty": null,
+    "user_visible_text": "Ask mode cannot post.",
+    "warnings": []
+  },
+  "kind": "AIResponseEnvelopeV1",
+  "valid": true
+}

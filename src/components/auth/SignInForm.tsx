@@ -133,7 +133,7 @@ export default function SignInForm() {
                 type="text"
                 value={formData.username}
                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                className="h-8 px-2.5 text-[12px] border border-[#d1d5db] rounded-md bg-[#f9fafb] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                className="h-8 px-2.5 text-[12px] border border-[#d1d5db] rounded-md bg-[#f9fafb] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 required
                 autoFocus
                 placeholder="Enter your username"
@@ -149,7 +149,7 @@ export default function SignInForm() {
                   type={showPassword ? "text" : "password"}
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="h-8 px-2.5 text-[12px] border border-[#d1d5db] rounded-md bg-[#f9fafb] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full pr-10"
+                  className="h-8 px-2.5 text-[12px] border border-[#d1d5db] rounded-md bg-[#f9fafb] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full pr-10"
                   required
                   placeholder="Enter your password"
                 />

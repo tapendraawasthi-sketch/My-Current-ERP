@@ -19,12 +19,14 @@ import {
   Download,
   Printer,
 } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
-const BORDER = "1px solid #000";
-const BG = "#E4F1D9";
-const BG_CARD = "#EBF5E2";
-const BG_HEADER = "#D4EABD";
-const BG_DEEP = "#C9DEB5";
+const BORDER = "1px solid var(--ds-border-default)";
+const BG = "var(--ds-surface-muted)";
+const BG_CARD = "var(--ds-surface-muted)";
+const BG_HEADER = "var(--ds-surface-hover)";
+const BG_DEEP = "var(--ds-surface-muted)";
 const OVERDUE_BG = "#fee2e2";
 const COMPLETE_BG = "#dcfce7";
 const PENDING_BG = "#fef9c3";
@@ -37,6 +39,7 @@ function money(v) {
 
 export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: string }) {
   const { parties, items, accounts, vouchers, companySettings, addVoucher } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
 
   const [activeTab, setActiveTab] = useState(defaultTab);
   const [jobWorkOrders, setJobWorkOrders] = useState([]);
@@ -87,7 +90,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
 
   // Filter job work orders for register
   const filteredOrders = useMemo(() => {
-    let filtered = [...jobWorkOrders];
+    let filtered = jobWorkOrders.filter((o) => matchBranch(o.branchId));
 
     if (dateFrom) {
       filtered = filtered.filter((o) => o.date >= dateFrom);
@@ -103,7 +106,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
     }
 
     return filtered;
-  }, [jobWorkOrders, dateFrom, dateTo, filterJobWorker, filterStatus]);
+  }, [jobWorkOrders, dateFrom, dateTo, filterJobWorker, filterStatus, matchBranch, branchFilter]);
 
   // Summary counts
   const summaryCounts = useMemo(() => {
@@ -248,6 +251,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
         deliveryChallanNo: outForm.deliveryChallanNo,
         status: outForm.status,
         notes: outForm.notes,
+        branchId: editingOrder?.branchId || readActiveBranchId() || undefined,
         createdAt: new Date().toISOString(),
       };
 
@@ -311,6 +315,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
         scrapMaterials: inForm.scrapMaterials,
         netJobWorkCost,
         status: "Completed",
+        branchId: readActiveBranchId() || undefined,
         createdAt: new Date().toISOString(),
       };
 
@@ -413,7 +418,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
         }}
       >
         <h2
-          style={{ fontSize: "18px", fontWeight: "bold", color: "#000000", marginBottom: "15px" }}
+          style={{ fontSize: "18px", fontWeight: "bold", color: "var(--ds-text-default)", marginBottom: "15px" }}
         >
           {editingOrder ? "Edit Job Work Out Order" : "New Job Work Out Order"}
         </h2>
@@ -556,7 +561,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
         </div>
 
         <h3
-          style={{ fontSize: "14px", fontWeight: "bold", color: "#000000", marginBottom: "10px" }}
+          style={{ fontSize: "14px", fontWeight: "bold", color: "var(--ds-text-default)", marginBottom: "10px" }}
         >
           Materials Sent
         </h3>
@@ -684,7 +689,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
         <button
           onClick={addMaterialLine}
           style={{
-            backgroundColor: "#1557b0",
+            backgroundColor: "var(--ds-action-primary)",
             color: "white",
             border: BORDER,
             padding: "4px 10px",
@@ -813,7 +818,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
           <button
             onClick={handleSaveOutOrder}
             style={{
-              backgroundColor: "#1557b0",
+              backgroundColor: "var(--ds-action-primary)",
               color: "white",
               border: BORDER,
               padding: "8px 16px",
@@ -854,7 +859,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
         style={{ backgroundColor: BG_CARD, padding: "20px", borderRadius: "8px", border: BORDER }}
       >
         <h2
-          style={{ fontSize: "18px", fontWeight: "bold", color: "#000000", marginBottom: "15px" }}
+          style={{ fontSize: "18px", fontWeight: "bold", color: "var(--ds-text-default)", marginBottom: "15px" }}
         >
           Existing Orders
         </h2>
@@ -933,7 +938,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
                         <button
                           onClick={() => handleEditOrder(order)}
                           style={{
-                            backgroundColor: "#1557b0",
+                            backgroundColor: "var(--ds-action-primary)",
                             color: "white",
                             border: BORDER,
                             padding: "4px 8px",
@@ -1013,7 +1018,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
         }}
       >
         <h2
-          style={{ fontSize: "18px", fontWeight: "bold", color: "#000000", marginBottom: "15px" }}
+          style={{ fontSize: "18px", fontWeight: "bold", color: "var(--ds-text-default)", marginBottom: "15px" }}
         >
           Job Work In Receipt
         </h2>
@@ -1206,7 +1211,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
         </div>
 
         <h3
-          style={{ fontSize: "14px", fontWeight: "bold", color: "#000000", marginBottom: "10px" }}
+          style={{ fontSize: "14px", fontWeight: "bold", color: "var(--ds-text-default)", marginBottom: "10px" }}
         >
           Finished Goods Received
         </h3>
@@ -1324,7 +1329,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
         <button
           onClick={addFinishedGoodLine}
           style={{
-            backgroundColor: "#1557b0",
+            backgroundColor: "var(--ds-action-primary)",
             color: "white",
             border: BORDER,
             padding: "4px 10px",
@@ -1342,7 +1347,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
         </button>
 
         <h3
-          style={{ fontSize: "14px", fontWeight: "bold", color: "#000000", marginBottom: "10px" }}
+          style={{ fontSize: "14px", fontWeight: "bold", color: "var(--ds-text-default)", marginBottom: "10px" }}
         >
           Scrap Materials
         </h3>
@@ -1460,7 +1465,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
         <button
           onClick={addScrapLine}
           style={{
-            backgroundColor: "#1557b0",
+            backgroundColor: "var(--ds-action-primary)",
             color: "white",
             border: BORDER,
             padding: "4px 10px",
@@ -1568,7 +1573,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
         <button
           onClick={handleSaveInReceipt}
           style={{
-            backgroundColor: "#1557b0",
+            backgroundColor: "var(--ds-action-primary)",
             color: "white",
             border: BORDER,
             padding: "8px 16px",
@@ -1606,8 +1611,8 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
             border: BORDER,
           }}
         >
-          <div style={{ fontSize: "12px", color: "#000000", marginBottom: "5px" }}>Open Orders</div>
-          <div style={{ fontSize: "18px", fontWeight: "bold", color: "#000000" }}>
+          <div style={{ fontSize: "12px", color: "var(--ds-text-default)", marginBottom: "5px" }}>Open Orders</div>
+          <div style={{ fontSize: "18px", fontWeight: "bold", color: "var(--ds-text-default)" }}>
             {summaryCounts.openOrders}
           </div>
         </div>
@@ -1619,7 +1624,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
             border: BORDER,
           }}
         >
-          <div style={{ fontSize: "12px", color: "#000000", marginBottom: "5px" }}>
+          <div style={{ fontSize: "12px", color: "var(--ds-text-default)", marginBottom: "5px" }}>
             Overdue Orders
           </div>
           <div style={{ fontSize: "18px", fontWeight: "bold", color: "#dc2626" }}>
@@ -1634,10 +1639,10 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
             border: BORDER,
           }}
         >
-          <div style={{ fontSize: "12px", color: "#000000", marginBottom: "5px" }}>
+          <div style={{ fontSize: "12px", color: "var(--ds-text-default)", marginBottom: "5px" }}>
             Completed This Month
           </div>
-          <div style={{ fontSize: "18px", fontWeight: "bold", color: "#000000" }}>
+          <div style={{ fontSize: "18px", fontWeight: "bold", color: "var(--ds-text-default)" }}>
             {summaryCounts.completedThisMonth}
           </div>
         </div>
@@ -1652,6 +1657,28 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
           alignItems: "end",
         }}
       >
+        {branchOptions.length > 0 && (
+          <div>
+            <label
+              style={{ display: "block", marginBottom: "5px", fontWeight: "bold", fontSize: "12px" }}
+            >
+              Branch
+            </label>
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              style={{ padding: "6px", border: BORDER, borderRadius: "4px", fontSize: "12px" }}
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
         <div>
           <label
             style={{ display: "block", marginBottom: "5px", fontWeight: "bold", fontSize: "12px" }}
@@ -1740,7 +1767,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
         style={{ backgroundColor: BG_CARD, padding: "20px", borderRadius: "8px", border: BORDER }}
       >
         <h2
-          style={{ fontSize: "18px", fontWeight: "bold", color: "#000000", marginBottom: "15px" }}
+          style={{ fontSize: "18px", fontWeight: "bold", color: "var(--ds-text-default)", marginBottom: "15px" }}
         >
           Job work
         </h2>
@@ -1843,7 +1870,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
         style={{ backgroundColor: BG_CARD, padding: "20px", borderRadius: "8px", border: BORDER }}
       >
         <h2
-          style={{ fontSize: "18px", fontWeight: "bold", color: "#000000", marginBottom: "15px" }}
+          style={{ fontSize: "18px", fontWeight: "bold", color: "var(--ds-text-default)", marginBottom: "15px" }}
         >
           Job Work Bill
         </h2>
@@ -1883,16 +1910,16 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
                 style={{
                   fontSize: "16px",
                   fontWeight: "bold",
-                  color: "#000000",
+                  color: "var(--ds-text-default)",
                   marginBottom: "5px",
                 }}
               >
                 {companySettings?.name || "Your Company"}
               </h3>
-              <div style={{ fontSize: "12px", color: "#000000" }}>
+              <div style={{ fontSize: "12px", color: "var(--ds-text-default)" }}>
                 {companySettings?.address || "Your Address"}
               </div>
-              <div style={{ fontSize: "12px", color: "#000000" }}>
+              <div style={{ fontSize: "12px", color: "var(--ds-text-default)" }}>
                 PAN: {companySettings?.panNumber || "PAN"}
               </div>
             </div>
@@ -1901,32 +1928,32 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
                 style={{
                   fontSize: "16px",
                   fontWeight: "bold",
-                  color: "#000000",
+                  color: "var(--ds-text-default)",
                   marginBottom: "5px",
                 }}
               >
                 Job Worker
               </h3>
-              <div style={{ fontSize: "12px", color: "#000000" }}>Company Name</div>
-              <div style={{ fontSize: "12px", color: "#000000" }}>Address</div>
-              <div style={{ fontSize: "12px", color: "#000000" }}>PAN: XXXXXXXX</div>
+              <div style={{ fontSize: "12px", color: "var(--ds-text-default)" }}>Company Name</div>
+              <div style={{ fontSize: "12px", color: "var(--ds-text-default)" }}>Address</div>
+              <div style={{ fontSize: "12px", color: "var(--ds-text-default)" }}>PAN: XXXXXXXX</div>
             </div>
           </div>
 
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
             <div>
-              <div style={{ fontSize: "12px", color: "#000000" }}>
+              <div style={{ fontSize: "12px", color: "var(--ds-text-default)" }}>
                 <strong>Job Order Reference:</strong> JWO-XXXX
               </div>
-              <div style={{ fontSize: "12px", color: "#000000" }}>
+              <div style={{ fontSize: "12px", color: "var(--ds-text-default)" }}>
                 <strong>Date:</strong> {new Date().toISOString().split("T")[0]}
               </div>
             </div>
             <div>
-              <div style={{ fontSize: "12px", color: "#000000" }}>
+              <div style={{ fontSize: "12px", color: "var(--ds-text-default)" }}>
                 <strong>Bill No:</strong> JWB-XXXX
               </div>
-              <div style={{ fontSize: "12px", color: "#000000" }}>
+              <div style={{ fontSize: "12px", color: "var(--ds-text-default)" }}>
                 <strong>Bill Date:</strong> {new Date().toISOString().split("T")[0]}
               </div>
             </div>
@@ -1937,7 +1964,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
               style={{
                 fontSize: "14px",
                 fontWeight: "bold",
-                color: "#000000",
+                color: "var(--ds-text-default)",
                 marginBottom: "10px",
               }}
             >
@@ -1968,7 +1995,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
               style={{
                 fontSize: "14px",
                 fontWeight: "bold",
-                color: "#000000",
+                color: "var(--ds-text-default)",
                 marginBottom: "10px",
               }}
             >
@@ -1999,7 +2026,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
               style={{
                 fontSize: "14px",
                 fontWeight: "bold",
-                color: "#000000",
+                color: "var(--ds-text-default)",
                 marginBottom: "10px",
               }}
             >
@@ -2030,13 +2057,13 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
               style={{
                 fontSize: "14px",
                 fontWeight: "bold",
-                color: "#000000",
+                color: "var(--ds-text-default)",
                 marginBottom: "10px",
               }}
             >
               Services Rendered
             </h4>
-            <div style={{ fontSize: "12px", color: "#000000", marginBottom: "10px" }}>
+            <div style={{ fontSize: "12px", color: "var(--ds-text-default)", marginBottom: "10px" }}>
               Manufacturing and processing of raw materials into finished goods as per
               specifications provided.
             </div>
@@ -2091,7 +2118,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
           <button
             onClick={() => {}}
             style={{
-              backgroundColor: "#1557b0",
+              backgroundColor: "var(--ds-action-primary)",
               color: "white",
               border: BORDER,
               padding: "8px 16px",
@@ -2118,7 +2145,7 @@ export default function JobWorkRegister({ defaultTab = "out" }: { defaultTab?: s
         style={{
           fontSize: "24px",
           fontWeight: "bold",
-          color: "#000000",
+          color: "var(--ds-text-default)",
           padding: "20px",
           marginBottom: "0",
         }}

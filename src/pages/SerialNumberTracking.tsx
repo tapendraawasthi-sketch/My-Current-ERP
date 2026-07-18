@@ -13,6 +13,8 @@ import {
   X,
 } from "lucide-react";
 import { useStore } from "@/store/useStore";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 interface SerialRecord {
   id: string;
@@ -35,6 +37,7 @@ interface SerialRecord {
   location: string;
   notes: string;
   companyId: string;
+  branchId?: string;
 }
 
 const STORAGE_KEY = "sutra_serials";
@@ -158,6 +161,7 @@ function formatDate(date: string) {
 export default function SerialNumberTracking() {
   const store = useStore() as any;
   const companyId = store.currentCompany?.id ?? "default";
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [serials, setSerials] = useState<SerialRecord[]>([]);
   const [activeTab, setActiveTab] = useState<"all" | "in_stock" | "sold" | "warranty" | "search">(
@@ -205,6 +209,8 @@ export default function SerialNumberTracking() {
     if (activeTab === "sold") list = list.filter((s) => s.status === "sold");
 
     return list.filter((serial) => {
+      if (!matchBranch((serial as any).branchId)) return false;
+
       if (
         q &&
         !serial.serialNo.toLowerCase().includes(q) &&
@@ -218,24 +224,26 @@ export default function SerialNumberTracking() {
 
       return true;
     });
-  }, [serials, activeTab, searchSerial, filterItem, filterStatus]);
+  }, [serials, activeTab, searchSerial, filterItem, filterStatus, matchBranch]);
 
   const warrantyRows = useMemo(() => {
     return serials
-      .filter((s) => s.status === "sold")
+      .filter((s) => s.status === "sold" && matchBranch((s as any).branchId))
       .sort((a, b) => {
         const aDays = Math.floor((new Date(a.warrantyExpiry).getTime() - Date.now()) / 86400000);
         const bDays = Math.floor((new Date(b.warrantyExpiry).getTime() - Date.now()) / 86400000);
         return aDays - bDays;
       });
-  }, [serials]);
+  }, [serials, matchBranch]);
 
   const searchResult = useMemo(() => {
     const q = searchSerial.trim().toLowerCase();
     if (!q) return null;
 
-    return serials.find((s) => s.serialNo.toLowerCase() === q) ?? null;
-  }, [serials, searchSerial]);
+    return serials.find(
+      (s) => s.serialNo.toLowerCase() === q && matchBranch((s as any).branchId),
+    ) ?? null;
+  }, [serials, searchSerial, matchBranch]);
 
   const updateForm = (field: keyof Omit<SerialRecord, "id" | "companyId">, value: any) => {
     const next: any = { ...form, [field]: value };
@@ -314,6 +322,7 @@ export default function SerialNumberTracking() {
       ...form,
       id: editMode && selectedSerial ? selectedSerial.id : crypto.randomUUID(),
       companyId,
+      branchId: selectedSerial?.branchId || readActiveBranchId() || undefined,
       warrantyExpiry: generateWarrantyExpiry(form.saleDate, Number(form.warrantyMonths || 0)),
       purchaseRate: Number(form.purchaseRate || 0),
       saleRate: Number(form.saleRate || 0),
@@ -410,7 +419,7 @@ export default function SerialNumberTracking() {
                       <button
                         type="button"
                         onClick={() => openEditModal(serial)}
-                        className="h-7 px-2 bg-white border border-gray-300 text-[#1557b0] text-[11px] rounded hover:bg-gray-50 flex items-center gap-1"
+                        className="h-7 px-2 bg-white border border-gray-300 text-[var(--ds-action-primary)] text-[11px] rounded hover:bg-gray-50 flex items-center gap-1"
                       >
                         <Edit2 className="h-3.5 w-3.5" />
                         Edit
@@ -431,7 +440,7 @@ export default function SerialNumberTracking() {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-            <Package className="h-4 w-4 text-[#1557b0]" />
+            <Package className="h-4 w-4 text-[var(--ds-action-primary)]" />
             Serial Number Tracking
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
@@ -439,14 +448,31 @@ export default function SerialNumberTracking() {
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={openNewModal}
-          className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
-        >
-          <Plus className="h-3.5 w-3.5" />
-          Register Serial
-        </button>
+        <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+          <button
+            type="button"
+            onClick={openNewModal}
+            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            Register Serial
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-4 gap-3 mb-4">
@@ -482,7 +508,7 @@ export default function SerialNumberTracking() {
             onClick={() => setActiveTab(key as any)}
             className={
               activeTab === key
-                ? "px-4 py-2 border-b-2 border-[#1557b0] text-[#1557b0] text-[12px] font-medium"
+                ? "px-4 py-2 border-b-2 border-[var(--ds-action-primary)] text-[var(--ds-action-primary)] text-[12px] font-medium"
                 : "px-4 py-2 text-gray-500 text-[12px] hover:text-gray-700"
             }
           >
@@ -500,7 +526,7 @@ export default function SerialNumberTracking() {
                 value={searchSerial}
                 onChange={(e) => setSearchSerial(e.target.value)}
                 placeholder="Search serial or item..."
-                className="h-8 pl-8 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-64"
+                className="h-8 pl-8 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
               />
             </div>
 
@@ -616,7 +642,7 @@ export default function SerialNumberTracking() {
               value={searchSerial}
               onChange={(e) => setSearchSerial(e.target.value)}
               placeholder="Enter exact serial number..."
-              className="h-10 px-3 text-[14px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full font-mono"
+              className="h-10 px-3 text-[14px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full font-mono"
             />
           </div>
 
@@ -873,7 +899,7 @@ export default function SerialNumberTracking() {
               <button
                 type="button"
                 onClick={handleSave}
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] rounded-md"
+                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] rounded-md"
               >
                 Save
               </button>
@@ -970,7 +996,7 @@ export default function SerialNumberTracking() {
               </button>
               <button
                 onClick={() => setShowDetailModal(false)}
-                className="h-8 px-3 bg-[#1557b0] text-white text-[12px] rounded-md"
+                className="h-8 px-3 bg-[var(--ds-action-primary)] text-white text-[12px] rounded-md"
               >
                 Close
               </button>

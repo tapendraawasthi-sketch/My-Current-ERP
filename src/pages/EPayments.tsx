@@ -7,6 +7,8 @@ import { generateId } from "../lib/db";
 import toast from "@/lib/appToast";
 import { Send, Plus, Eye, Download, Upload, FileText } from "lucide-react";
 import { formatADToBS } from "../lib/nepaliDate";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 export default function EPayments() {
   const {
@@ -18,6 +20,7 @@ export default function EPayments() {
     saveEPaymentBatch,
     updateEPaymentBatch,
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [view, setView] = useState<"list" | "form">("list");
   const [selectedBatch, setSelectedBatch] = useState<any>(null);
@@ -51,6 +54,7 @@ export default function EPayments() {
 
     return vouchers.filter(
       (v) =>
+        matchBranch(v.branchId) &&
         v.type === "payment" &&
         (v.paymentMode?.toLowerCase() === "neft" ||
           v.paymentMode?.toLowerCase() === "rtgs" ||
@@ -59,7 +63,12 @@ export default function EPayments() {
           v.paymentMode?.toLowerCase() === "e-payment") &&
         !batchedVoucherIds.has(v.id),
     );
-  }, [vouchers, ePaymentBatches]);
+  }, [vouchers, ePaymentBatches, matchBranch, branchFilter]);
+
+  const scopedBatches = useMemo(
+    () => ePaymentBatches.filter((b) => matchBranch(b.branchId)),
+    [ePaymentBatches, matchBranch, branchFilter],
+  );
 
   const selectedVoucherData = useMemo(() => {
     return selectedVouchers
@@ -232,6 +241,7 @@ ${paymentsXml}
         generatedFileContent: fileContent,
         status: "generated",
         narration,
+        branchId: readActiveBranchId() || undefined,
       };
 
       let batchId;
@@ -734,6 +744,21 @@ ${paymentsXml}
   return (
     <div className="flex flex-col h-full">
       <ActionToolbar title="e-Payments" icon={<Send size={16} />}>
+        {branchOptions.length > 0 && (
+          <select
+            value={branchFilter}
+            onChange={(e) => setBranchFilter(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            aria-label="Branch"
+          >
+            <option value="all">All branches</option>
+            {branchOptions.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name || b.code || b.id}
+              </option>
+            ))}
+          </select>
+        )}
         <Button size="sm" onClick={handleNewBatch}>
           <Plus size={14} className="mr-1" />
           New Batch
@@ -761,14 +786,14 @@ ${paymentsXml}
               </tr>
             </thead>
             <tbody>
-              {ePaymentBatches.length === 0 ? (
+              {scopedBatches.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="p-4 text-center text-gray-500">
                     No e-payment batches found
                   </td>
                 </tr>
               ) : (
-                ePaymentBatches.map((batch) => {
+                scopedBatches.map((batch) => {
                   const bankAccount = accounts.find((a) => a.id === batch.bankAccountId);
 
                   return (

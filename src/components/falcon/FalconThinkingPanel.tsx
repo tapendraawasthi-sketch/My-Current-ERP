@@ -66,8 +66,8 @@ function resolveStepIcon(step: StepData): {
       },
       verify: {
         Icon: CheckCircle,
-        circleCls: "bg-purple-100 border-purple-300",
-        iconCls: "text-purple-600",
+        circleCls: "bg-[var(--ds-intelligence-surface)] border-[var(--ds-intelligence-border)]",
+        iconCls: "text-[var(--ds-intelligence)]",
       },
       suggest: {
         Icon: Lightbulb,
@@ -99,8 +99,8 @@ function resolveStepIcon(step: StepData): {
   if (t.includes("verify") || t.includes("check") || t.includes("accur"))
     return {
       Icon: CheckCircle,
-      circleCls: "bg-purple-100 border-purple-300",
-      iconCls: "text-purple-600",
+      circleCls: "bg-[var(--ds-intelligence-surface)] border-[var(--ds-intelligence-border)]",
+      iconCls: "text-[var(--ds-intelligence)]",
     };
   if (t.includes("suggest") || t.includes("follow"))
     return {
@@ -124,8 +124,8 @@ function resolveDomainBadge(domain?: string, category?: string): { text: string;
   if (key.includes("math") || key.includes("calc"))
     return { text: "🧮 Calculator Mode", cls: "bg-teal-50 text-teal-700 border-teal-200" };
   if (key.includes("code") || key.includes("program"))
-    return { text: "💻 Code Mode", cls: "bg-violet-50 text-violet-700 border-violet-200" };
-  return { text: "💡 General Knowledge", cls: "bg-purple-50 text-purple-700 border-purple-200" };
+    return { text: "💻 Code Mode", cls: "bg-[var(--ds-intelligence-surface)] text-[var(--ds-intelligence)] border-violet-200" };
+  return { text: "💡 General Knowledge", cls: "bg-[var(--ds-intelligence-surface)] text-[var(--ds-intelligence)] border-[var(--ds-intelligence-border)]" };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

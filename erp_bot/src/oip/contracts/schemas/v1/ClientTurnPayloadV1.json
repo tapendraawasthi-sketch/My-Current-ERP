@@ -1,0 +1,136 @@
+{
+  "$defs": {
+    "InputChannelV1": {
+      "enum": [
+        "text",
+        "voice",
+        "ui",
+        "unknown"
+      ],
+      "title": "InputChannelV1",
+      "type": "string"
+    },
+    "InteractionModeV1": {
+      "enum": [
+        "ask",
+        "accountant"
+      ],
+      "title": "InteractionModeV1",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/ClientTurnPayloadV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "active_draft_reference": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Active Draft Reference"
+    },
+    "active_ui_context": {
+      "additionalProperties": true,
+      "title": "Active Ui Context",
+      "type": "object"
+    },
+    "client_context": {
+      "additionalProperties": true,
+      "title": "Client Context",
+      "type": "object"
+    },
+    "client_message_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Client Message Id"
+    },
+    "conversation_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Conversation Id"
+    },
+    "idempotency_key": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Idempotency Key"
+    },
+    "input_channel": {
+      "$ref": "#/$defs/InputChannelV1",
+      "default": "text"
+    },
+    "locale_hint": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Locale Hint"
+    },
+    "message": {
+      "maxLength": 20000,
+      "minLength": 1,
+      "title": "Message",
+      "type": "string"
+    },
+    "mode": {
+      "$ref": "#/$defs/InteractionModeV1",
+      "default": "ask"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "session_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Session Id"
+    }
+  },
+  "required": [
+    "message"
+  ],
+  "title": "ClientTurnPayloadV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

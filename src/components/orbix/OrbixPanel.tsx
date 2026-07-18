@@ -190,7 +190,7 @@ const ConfirmationCard = memo(function ConfirmationCard({
         <button
           disabled={isLoading || !balanced}
           onClick={() => confirmAction(message.id, message.confirmationPayload!)}
-          className="h-7 px-3 bg-[#1557b0] hover:bg-[#0f4a96] disabled:opacity-50 text-white text-[12px] font-medium rounded-md"
+          className="h-7 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-50 text-white text-[12px] font-medium rounded-md"
         >
           Confirm &amp; post
         </button>
@@ -212,7 +212,7 @@ const MessageBubble = memo(function MessageBubble({
       <div
         className={`max-w-[85%] rounded-md px-3 py-2 text-[12px] ${
           isUser
-            ? "bg-[#1557b0] text-white"
+            ? "bg-[var(--ds-action-primary)] text-white"
             : "bg-white border border-gray-200 text-gray-800"
         }`}
       >
@@ -330,12 +330,12 @@ export function OrbixPanel({ onClose, debug = false }: OrbixPanelProps) {
             }}
             rows={1}
             placeholder="Ask Orbix…"
-            className="flex-1 resize-none h-8 px-2.5 py-1.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="flex-1 resize-none h-8 px-2.5 py-1.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           />
           <button
             onClick={handleSend}
             disabled={isLoading || !input.trim()}
-            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] disabled:opacity-50 text-white text-[12px] font-medium rounded-md flex items-center gap-1"
+            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-50 text-white text-[12px] font-medium rounded-md flex items-center gap-1"
           >
             {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           </button>

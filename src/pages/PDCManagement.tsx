@@ -20,6 +20,8 @@ import {
   Clock,
   Ban,
 } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const fmt = (n: number) =>
@@ -81,6 +83,7 @@ export default function PDCManagement() {
   const parties = store.parties || [];
   const accounts = store.accounts || [];
   const pdcRegister: any[] = store.pdcRegister || [];
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [activeTab, setActiveTab] = useState<"received" | "issued">("received");
   const [showModal, setShowModal] = useState(false);
@@ -100,10 +103,11 @@ export default function PDCManagement() {
     [accounts],
   );
 
-  // ── Filtered PDCs ─────────────────────────────────────────────────────────
+  // ── Filtered PDCs (branchName = bank branch; org scope uses branchId) ─────
   const filtered = useMemo(() => {
     return pdcRegister
       .filter((p: any) => {
+        if (!matchBranch(p.branchId)) return false;
         if (p.type !== activeTab) return false;
         if (statusFilter !== "ALL" && p.status !== statusFilter) return false;
         const q = searchTerm.toLowerCase();
@@ -120,12 +124,13 @@ export default function PDCManagement() {
         return true;
       })
       .sort((a: any, b: any) => a.chequeDate.localeCompare(b.chequeDate));
-  }, [pdcRegister, activeTab, statusFilter, searchTerm]);
+  }, [pdcRegister, activeTab, statusFilter, searchTerm, matchBranch, branchFilter]);
 
   // ── Summary stats ─────────────────────────────────────────────────────────
   const stats = useMemo(() => {
-    const received = pdcRegister.filter((p: any) => p.type === "received");
-    const issued = pdcRegister.filter((p: any) => p.type === "issued");
+    const scoped = pdcRegister.filter((p: any) => matchBranch(p.branchId));
+    const received = scoped.filter((p: any) => p.type === "received");
+    const issued = scoped.filter((p: any) => p.type === "issued");
     const todayStr = today();
     const in7Days = new Date();
     in7Days.setDate(in7Days.getDate() + 7);
@@ -139,15 +144,15 @@ export default function PDCManagement() {
       pendingReceivedAmt: received
         .filter((p: any) => p.status === "pending")
         .reduce((s: number, p: any) => s + p.amount, 0),
-      dueSoon: pdcRegister.filter(
+      dueSoon: scoped.filter(
         (p: any) =>
           p.status === "pending" && p.chequeDate >= todayStr && p.chequeDate <= in7DaysStr,
       ).length,
-      overdue: pdcRegister.filter((p: any) => p.status === "pending" && p.chequeDate < todayStr)
+      overdue: scoped.filter((p: any) => p.status === "pending" && p.chequeDate < todayStr)
         .length,
-      dishonouredCount: pdcRegister.filter((p: any) => p.status === "dishonoured").length,
+      dishonouredCount: scoped.filter((p: any) => p.status === "dishonoured").length,
     };
-  }, [pdcRegister]);
+  }, [pdcRegister, matchBranch, branchFilter]);
 
   // ── Save PDC ───────────────────────────────────────────────────────────────
   const handleSave = async () => {
@@ -173,11 +178,15 @@ export default function PDCManagement() {
     }
 
     try {
+      const payload = {
+        ...form,
+        branchId: form.branchId || readActiveBranchId() || undefined,
+      };
       if (editingId) {
-        await store.updatePDC(editingId, form);
+        await store.updatePDC(editingId, payload);
         toast.success("PDC updated");
       } else {
-        await store.addPDC(form);
+        await store.addPDC(payload);
         toast.success("PDC recorded");
       }
       setShowModal(false);
@@ -235,7 +244,22 @@ export default function PDCManagement() {
             Track cheques received from customers and issued to suppliers
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
           <button
             onClick={exportToExcel}
             className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"

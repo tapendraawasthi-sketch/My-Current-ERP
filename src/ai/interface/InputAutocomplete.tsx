@@ -27,7 +27,7 @@ const InputAutocomplete: React.FC<InputAutocompleteProps> = ({
               onSelect(s.text);
             }}
             className={`w-full text-left px-2.5 py-1.5 text-[11px] flex items-center justify-between gap-2 ${
-              i === activeIndex ? "bg-[#eef2ff] text-[#1557b0]" : "text-gray-700 hover:bg-gray-50"
+              i === activeIndex ? "bg-[#eef2ff] text-[var(--ds-action-primary)]" : "text-gray-700 hover:bg-gray-50"
             }`}
           >
             <span className="truncate">{s.text}</span>

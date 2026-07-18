@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0.0",
+  "overlay_version": "mai-07-r2.1.0",
+  "safety_policy_version": "mai-07-r2.1.0",
+  "calibration_status": "UNCALIBRATED",
+  "note": "Monotonic target-promotion overlay — does not replace base ranking; not probabilities; not linguist-approved.",
+  "context_window_limit": 2,
+  "minimum_evidence_count": 2,
+  "allowed_candidate_kinds": ["LEXICAL", "DOMAIN", "MORPHOLOGICAL", "PHRASE", "CONTEXTUAL"],
+  "blocked_candidate_kinds": ["GRAPHEME", "ABSTENTION", "IDENTITY"],
+  "required_language_forms": ["ROMANIZED_NEPALI"],
+  "allowed_default_latin_forms": ["ENGLISH", "TECHNICAL_ACCOUNTING_ENGLISH"],
+  "allowed_ambiguous_form": "SHARED_OR_AMBIGUOUS_LATIN",
+  "require_extra_signal_for_ambiguous": false,
+  "require_lexicon_or_domain_for_default_latin": true,
+  "block_language_forms": [
+    "NEPALI_DEVANAGARI",
+    "PROTECTED",
+    "IDENTIFIER_OR_CODE",
+    "NUMERIC",
+    "UNKNOWN"
+  ],
+  "acronym_min_length": 2,
+  "acronym_min_upper_ratio": 0.75,
+  "provenance_priority": {
+    "lexicon": 0,
+    "domain": 1,
+    "morphology": 2,
+    "grapheme": 9
+  },
+  "positive_evidence_codes": [
+    "FORM_ROMANIZED_NEPALI",
+    "EXACT_LEXICON_PROVENANCE",
+    "DOMAIN_PROVENANCE",
+    "MORPHOLOGY_PROVENANCE",
+    "NEIGHBOR_ROMANIZED_OR_DEVANAGARI",
+    "NEIGHBOR_LEXICON_HIT"
+  ],
+  "blocking_evidence_codes": [
+    "BLOCK_PROTECTED",
+    "BLOCK_IDENTIFIER",
+    "BLOCK_SECURITY",
+    "BLOCK_ENGLISH_FORM",
+    "BLOCK_ENGLISH_IDENTITY",
+    "BLOCK_NAME_LIKE",
+    "BLOCK_ACRONYM",
+    "BLOCK_WEAK_GRAPHEME",
+    "BLOCK_AMBIGUOUS_WEAK",
+    "BLOCK_NO_TARGET",
+    "KEEP_BASE_TARGET_ALREADY_FIRST"
+  ]
+}

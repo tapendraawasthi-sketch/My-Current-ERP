@@ -100,7 +100,7 @@ const ReportDateRangePicker: React.FC<Props> = ({
       {/* Header */}
       {label && (
         <div className="flex items-center gap-2 mb-3">
-          <CalendarDays className="h-4 w-4 text-[#1557b0] shrink-0" />
+          <CalendarDays className="h-4 w-4 text-[var(--ds-action-primary)] shrink-0" />
           <span className="text-[12px] font-semibold text-gray-800">{label}</span>
           <span className="text-[10px] text-gray-400 ml-1">(Bikram Sambat calendar)</span>
         </div>
@@ -117,8 +117,8 @@ const ReportDateRangePicker: React.FC<Props> = ({
               className={[
                 "h-6 px-2.5 text-[10px] font-semibold rounded-full border transition-all",
                 activePreset === p.label
-                  ? "bg-[#1557b0] text-white border-[#1557b0] shadow-sm"
-                  : "bg-gray-50 text-gray-600 border-gray-200 hover:border-[#1557b0] hover:text-[#1557b0]",
+                  ? "bg-[var(--ds-action-primary)] text-white border-[var(--ds-action-primary)] shadow-sm"
+                  : "bg-gray-50 text-gray-600 border-gray-200 hover:border-[var(--ds-action-primary)] hover:text-[var(--ds-action-primary)]",
               ].join(" ")}
             >
               {p.label}
@@ -173,7 +173,7 @@ const ReportDateRangePicker: React.FC<Props> = ({
               type="button"
               onClick={onGenerate}
               disabled={generating || !value.fromDate || !value.toDate}
-              className="h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px]
+              className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px]
                 font-medium rounded-md flex items-center gap-1.5
                 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
             >

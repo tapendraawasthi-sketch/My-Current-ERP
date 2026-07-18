@@ -1,0 +1,10 @@
+{
+  "resource_id": "named_entity_candidates",
+  "version": "mai-05.1.0",
+  "language_form": "NAMED_ENTITY_CANDIDATE",
+  "review_status": "ENGINEERING_REVIEWED",
+  "entries": [
+    "kiran", "sita", "gita", "hari", "ram", "shyam", "ramesh", "suresh",
+    "traders", "store", "shop", "pvt", "ltd", "company"
+  ]
+}

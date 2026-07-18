@@ -25,6 +25,7 @@ import {
   profitLossDataToRows,
   shiftDateByYears,
 } from "../lib/nepalFinancialStatements";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const DEFAULT_OPTIONS: PLReportOptions = {
   fromDate: new Date(new Date().getFullYear(), 3, 1).toISOString().split("T")[0], // April 1
@@ -33,6 +34,7 @@ const DEFAULT_OPTIONS: PLReportOptions = {
   updateClosingStock: false,
   showPercentage: false,
   showPreviousYear: false,
+  branchId: "all",
   variant: "horizontal",
 };
 
@@ -71,6 +73,7 @@ const VARIANT_LABELS: Record<PLReportOptions["variant"], string> = {
 
 export default function ProfitLoss() {
   const { companySettings, currentFiscalYear, accounts, vouchers } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions } = useBranchFilter();
 
   // ── State ─────────────────────────────────────────────────────────────────
   const storedPLOpts = loadPLOptions();
@@ -117,10 +120,16 @@ export default function ProfitLoss() {
         if (opts.variant === "vertical") {
           const prevFrom = shiftDateByYears(opts.fromDate, -1);
           const prevTo = shiftDateByYears(opts.toDate, -1);
+          const branchOk = (v: any) =>
+            !opts.branchId ||
+            opts.branchId === "all" ||
+            !v.branchId ||
+            v.branchId === opts.branchId;
+          const scoped = ((vouchers || []) as any[]).filter(branchOk);
           const nas = buildProfitLossData({
             accounts: (accounts || []) as any[],
-            currentVouchers: (vouchers || []) as any[],
-            previousVouchers: (vouchers || []) as any[],
+            currentVouchers: scoped,
+            previousVouchers: scoped,
             fromDate: opts.fromDate,
             toDate: opts.toDate,
             previousFromDate: prevFrom,
@@ -141,19 +150,35 @@ export default function ProfitLoss() {
     [accounts, vouchers],
   );
 
+  const handleBranchChange = useCallback(
+    (branchId: string) => {
+      setBranchFilter(branchId);
+      const newOptions = { ...options, branchId };
+      setOptions(newOptions);
+      savePLOptions(newOptions);
+      setDrillState({ level: 0 });
+      runCompute(newOptions, closingStockOverride);
+    },
+    [options, closingStockOverride, runCompute, setBranchFilter],
+  );
+
   const handleOptionsConfirm = useCallback(
     (newOptions: PLReportOptions) => {
       setOptions(newOptions);
+      if (newOptions.branchId) setBranchFilter(newOptions.branchId);
       savePLOptions(newOptions);
       setShowOptionsDialog(false);
       setDrillState({ level: 0 });
       runCompute(newOptions, closingStockOverride);
     },
-    [runCompute, closingStockOverride],
+    [runCompute, closingStockOverride, setBranchFilter],
   );
 
   useEffect(() => {
     if (storedPLOpts) {
+      if (storedPLOpts.branchId && storedPLOpts.branchId !== branchFilter) {
+        setBranchFilter(storedPLOpts.branchId);
+      }
       runCompute(storedPLOpts);
     }
   }, []);
@@ -288,24 +313,44 @@ export default function ProfitLoss() {
         ) : null
       }
       filterSlot={
-        options.updateClosingStock ? (
-          <label className="flex flex-col gap-1 text-[12px] text-[var(--ds-text-muted)]">
-            Closing stock (Rs.)
-            <input
-              type="number"
-              className="h-8 w-36 rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-2.5 text-[13px] text-[var(--ds-text-default)]"
-              value={closingStockOverride ?? plData?.closingStock ?? ""}
-              onChange={(e) => {
-                const v = Number(e.target.value);
-                if (!Number.isNaN(v)) handleClosingStockUpdate(v);
-              }}
-            />
-          </label>
-        ) : (
-          <span className="text-[12px] text-[var(--ds-text-muted)]">
-            {VARIANT_LABELS[options.variant]}
-          </span>
-        )
+        <div className="flex flex-wrap items-end gap-3">
+          {branchOptions.length > 0 ? (
+            <label className="flex flex-col gap-1 text-[12px] text-[var(--ds-text-muted)]">
+              Branch
+              <select
+                value={options.branchId || branchFilter || "all"}
+                onChange={(e) => handleBranchChange(e.target.value)}
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                aria-label="Branch filter"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : null}
+          {options.updateClosingStock ? (
+            <label className="flex flex-col gap-1 text-[12px] text-[var(--ds-text-muted)]">
+              Closing stock (Rs.)
+              <input
+                type="number"
+                className="h-8 w-36 rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-2.5 text-[13px] text-[var(--ds-text-default)]"
+                value={closingStockOverride ?? plData?.closingStock ?? ""}
+                onChange={(e) => {
+                  const v = Number(e.target.value);
+                  if (!Number.isNaN(v)) handleClosingStockUpdate(v);
+                }}
+              />
+            </label>
+          ) : (
+            <span className="text-[12px] text-[var(--ds-text-muted)]">
+              {VARIANT_LABELS[options.variant]}
+            </span>
+          )}
+        </div>
       }
       kpiSlot={
         !loading && !error && plData && drillState.level === 0 ? (

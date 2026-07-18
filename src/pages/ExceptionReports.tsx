@@ -7,20 +7,41 @@ import ReportShell from "../components/reporting/ReportShell";
 import ReportGrid from "../components/reporting/ReportGrid";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 import { useScreenF12 } from "../hooks/useF12Config";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const ExceptionReports: React.FC = () => {
   // Register this screen with F12 system
   const getConfig = useScreenF12("exception-reports");
 
-  const { vouchers, accounts, stockMovements, items, warehouses, companySettings } = useStore();
+  const {
+    vouchers: allVouchers,
+    accounts,
+    stockMovements: allMovements,
+    items,
+    warehouses,
+    companySettings,
+  } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch, matchMovement } =
+    useBranchFilter();
   const [activeTab, setActiveTab] = useState("negative-stock");
   const [asOnDate, setAsOnDate] = useState(new Date().toISOString().split("T")[0]);
 
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [pendingAsOnDate, setPendingAsOnDate] = useState(asOnDate);
+  const [pendingBranchFilter, setPendingBranchFilter] = useState(branchFilter);
+
+  const vouchers = useMemo(
+    () => (allVouchers || []).filter((v) => matchBranch((v as any).branchId)),
+    [allVouchers, matchBranch, branchFilter],
+  );
+  const stockMovements = useMemo(
+    () => (allMovements || []).filter((m) => matchMovement(m as any)),
+    [allMovements, matchMovement, branchFilter],
+  );
 
   const applyOptions = () => {
     setAsOnDate(pendingAsOnDate);
+    setBranchFilter(pendingBranchFilter);
     setOptionsOpen(false);
   };
 
@@ -260,7 +281,7 @@ const ExceptionReports: React.FC = () => {
       postDated,
       cancelled,
     };
-  }, [vouchers, accounts, stockMovements, items, warehouses, asOnDate]);
+  }, [vouchers, accounts, stockMovements, items, warehouses, asOnDate, branchFilter]);
 
   // Compute summary counts
   const summaryCounts = useMemo(() => {
@@ -400,7 +421,7 @@ const ExceptionReports: React.FC = () => {
 
     if (columnKey === "action") {
       return (
-        <button className="text-[11px] font-medium text-[#1557b0] hover:text-[#0f4a96] hover:underline">
+        <button className="text-[11px] font-medium text-[var(--ds-action-primary)] hover:text-[var(--ds-action-primary-hover)] hover:underline">
           {value}
         </button>
       );
@@ -429,6 +450,7 @@ const ExceptionReports: React.FC = () => {
       onPrint={() => window.print()}
       onOptions={() => {
         setPendingAsOnDate(asOnDate);
+        setPendingBranchFilter(branchFilter);
         setOptionsOpen(true);
       }}
       actionBarButtons={[{ label: "Print Active Tab" }, { label: "Export" }]}
@@ -440,9 +462,24 @@ const ExceptionReports: React.FC = () => {
               type="date"
               value={asOnDate}
               onChange={(e) => setAsOnDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
       }
     >
@@ -482,7 +519,7 @@ const ExceptionReports: React.FC = () => {
           <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Post-Dated
           </span>
-          <span className="text-[14px] font-semibold mt-1 text-[#1557b0]">
+          <span className="text-[14px] font-semibold mt-1 text-[var(--ds-action-primary)]">
             {summaryCounts.postDated}
           </span>
         </div>
@@ -500,7 +537,7 @@ const ExceptionReports: React.FC = () => {
               onClick={() => setActiveTab(tab.id)}
               className={`pb-2 text-[12px] font-medium border-b-2 transition-colors whitespace-nowrap flex items-center ${
                 isActive
-                  ? "border-[#1557b0] text-[#1557b0]"
+                  ? "border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
             >
@@ -508,7 +545,7 @@ const ExceptionReports: React.FC = () => {
               {count > 0 && (
                 <span
                   className={`ml-2 px-1.5 py-0.5 rounded-full text-[9px] font-bold ${
-                    isActive ? "bg-[#1557b0] text-white" : "bg-gray-100 text-gray-600"
+                    isActive ? "bg-[var(--ds-action-primary)] text-white" : "bg-gray-100 text-gray-600"
                   }`}
                 >
                   {count}
@@ -579,9 +616,27 @@ const ExceptionReports: React.FC = () => {
               type="date"
               value={pendingAsOnDate}
               onChange={(e) => setPendingAsOnDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
+          {branchOptions.length > 0 && (
+            <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
+              Branch
+              <select
+                value={pendingBranchFilter}
+                onChange={(e) => setPendingBranchFilter(e.target.value)}
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
         </div>
       </ReportOptionsModal>
     </ReportShell>

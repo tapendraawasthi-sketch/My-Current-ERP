@@ -7,12 +7,14 @@ import { ReportWorkspace } from "@/features/reports";
 import ReportGrid from "../components/reporting/ReportGrid";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 import { useScreenF12 } from "../hooks/useF12Config";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const InventoryReport: React.FC = () => {
   // Register this screen with F12 system
   const getConfig = useScreenF12("inventory-ageing");
 
   const { stockMovements, items, itemGroups, companySettings } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchMovement } = useBranchFilter();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [asOnDate, setAsOnDate] = useState(new Date().toISOString().split("T")[0]);
   const [selectedGroupId, setSelectedGroupId] = useState("");
@@ -22,11 +24,13 @@ const InventoryReport: React.FC = () => {
   const [pendingAsOnDate, setPendingAsOnDate] = useState(asOnDate);
   const [pendingSelectedGroupId, setPendingSelectedGroupId] = useState(selectedGroupId);
   const [pendingShowOnlySlowMoving, setPendingShowOnlySlowMoving] = useState(showOnlySlowMoving);
+  const [pendingBranchFilter, setPendingBranchFilter] = useState(branchFilter);
 
   const applyOptions = () => {
     setAsOnDate(pendingAsOnDate);
     setSelectedGroupId(pendingSelectedGroupId);
     setShowOnlySlowMoving(pendingShowOnlySlowMoving);
+    setBranchFilter(pendingBranchFilter);
     setOptionsOpen(false);
   };
 
@@ -68,6 +72,7 @@ const InventoryReport: React.FC = () => {
     stockMovements.forEach((movement) => {
       if (movement.type !== "in") return; // Only consider inward movements
       if (movement.date > asOnDate) return; // Ignore future movements
+      if (!matchMovement(movement)) return;
 
       const itemData = itemMap.get(movement.itemId);
       if (!itemData) return;
@@ -139,7 +144,15 @@ const InventoryReport: React.FC = () => {
       rows: filteredRows,
       summary: { slowMovingCount, totalSlowValue },
     };
-  }, [stockMovements, items, asOnDate, selectedGroupId, showOnlySlowMoving]);
+  }, [
+    stockMovements,
+    items,
+    asOnDate,
+    selectedGroupId,
+    showOnlySlowMoving,
+    matchMovement,
+    branchFilter,
+  ]);
 
   // Get item groups for filter
   const itemGroupOptions = useMemo(
@@ -202,6 +215,7 @@ const InventoryReport: React.FC = () => {
         setPendingAsOnDate(asOnDate);
         setPendingSelectedGroupId(selectedGroupId);
         setPendingShowOnlySlowMoving(showOnlySlowMoving);
+        setPendingBranchFilter(branchFilter);
         setOptionsOpen(true);
       }}
       filterSlot={
@@ -215,6 +229,22 @@ const InventoryReport: React.FC = () => {
               className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
+
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] ml-1 w-[150px]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
 
           <select
             value={selectedGroupId}
@@ -303,6 +333,25 @@ const InventoryReport: React.FC = () => {
               className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
+
+          {branchOptions.length > 0 && (
+            <label className="flex flex-col gap-1 text-[12px] font-medium text-gray-600">
+              Branch
+              <select
+                value={pendingBranchFilter}
+                onChange={(e) => setPendingBranchFilter(e.target.value)}
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
 
           <label className="flex flex-col gap-1 text-[12px] font-medium text-gray-600">
             Item Group

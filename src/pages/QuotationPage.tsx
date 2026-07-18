@@ -4,6 +4,8 @@ import { useStore } from "../store/useStore";
 import toast from "@/lib/appToast";
 import { Plus, Search, X, Printer, FileText } from "lucide-react";
 import { formatNumber } from "../lib/utils";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 interface QuotationLine {
   id: string;
@@ -28,6 +30,7 @@ interface Quotation {
   totalAmount: number;
   status: "open" | "accepted" | "rejected" | "expired";
   terms?: string;
+  branchId?: string;
 }
 
 interface Props {
@@ -36,6 +39,7 @@ interface Props {
 
 export default function QuotationPage({ type }: Props) {
   const { items, parties } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const isSales = type === "sales_quotation";
   const title = isSales ? "Quotation" : "Quotation";
   const prefix = isSales ? "SQ-" : "PQ-";
@@ -59,22 +63,24 @@ export default function QuotationPage({ type }: Props) {
     { itemId: "", itemName: "", quantity: 1, unit: "Pcs", rate: 0, discountPercent: 0, amount: 0 },
   ]);
 
-  const partyList = (parties || []).filter((p: any) =>
-    isSales
-      ? p.type === "customer" || p.type === "both"
-      : p.type === "supplier" || p.type === "both",
+  const partyList = (parties || []).filter(
+    (p: any) =>
+      (isSales
+        ? p.type === "customer" || p.type === "both"
+        : p.type === "supplier" || p.type === "both") && matchBranch(p.branchId),
   );
 
   const filtered = useMemo(
     () =>
       quotations.filter((q) => {
+        if (!matchBranch(q.branchId)) return false;
         const matchSearch =
           q.quotationNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
           q.partyName.toLowerCase().includes(searchTerm.toLowerCase());
         const matchStatus = statusFilter === "all" || q.status === statusFilter;
         return matchSearch && matchStatus;
       }),
-    [quotations, searchTerm, statusFilter],
+    [quotations, searchTerm, statusFilter, matchBranch, branchFilter],
   );
 
   const handleLineChange = (idx: number, field: string, value: any) => {
@@ -163,6 +169,7 @@ export default function QuotationPage({ type }: Props) {
       totalAmount,
       status: "open",
       terms,
+      branchId: editQuotation?.branchId || readActiveBranchId() || undefined,
     };
     setQuotations((prev) =>
       editQuotation
@@ -423,12 +430,29 @@ export default function QuotationPage({ type }: Props) {
             {isSales ? "sales orders / invoices" : "purchase orders"} via F11
           </p>
         </div>
-        <button
-          onClick={openAdd}
-          className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
-        >
-          <Plus className="h-3.5 w-3.5" /> Add {title}
-        </button>
+        <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+          <button
+            onClick={openAdd}
+            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+          >
+            <Plus className="h-3.5 w-3.5" /> Add {title}
+          </button>
+        </div>
       </div>
 
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">

@@ -26,6 +26,8 @@ import {
   FREQUENCY_OPTIONS,
   TEMPLATE_PRESETS,
 } from "../lib/recurringUtils";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 type Tab = "templates" | "due-today" | "history";
 
@@ -55,6 +57,7 @@ export default function RecurringVouchers() {
     deleteRecurringTemplate,
     postRecurringTemplate,
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [activeTab, setActiveTab] = useState<Tab>("templates");
   const [showModal, setShowModal] = useState(false);
@@ -89,17 +92,27 @@ export default function RecurringVouchers() {
     loadRecurringData?.();
   }, []);
 
+  const scopedTemplates = useMemo(
+    () => recurringTemplates.filter((t) => matchBranch(t.branchId)),
+    [recurringTemplates, matchBranch, branchFilter],
+  );
+
   // ── Due / overdue templates ───────────────────────────────────────────────
   const dueTemplates = useMemo(
     () =>
-      recurringTemplates
+      scopedTemplates
         .filter((t) => {
           if (!t.isActive) return false;
           const days = daysUntilDue(t.nextDueDate);
           return days <= (t.reminderDaysBefore || 3);
         })
         .sort((a, b) => a.nextDueDate.localeCompare(b.nextDueDate)),
-    [recurringTemplates],
+    [scopedTemplates],
+  );
+
+  const scopedPostings = useMemo(
+    () => recurringPostings.filter((p) => matchBranch(p.branchId)),
+    [recurringPostings, matchBranch, branchFilter],
   );
 
   const overdueCount = dueTemplates.filter((t) => daysUntilDue(t.nextDueDate) < 0).length;
@@ -134,6 +147,7 @@ export default function RecurringVouchers() {
       nextDueDate: form.nextDueDate || nextDue,
       totalAmount: totalDebit,
       postingCount: editTemplate?.postingCount || 0,
+      branchId: form.branchId || readActiveBranchId() || undefined,
     };
     if (editTemplate?.id) {
       await updateRecurringTemplate(editTemplate.id, payload);
@@ -166,7 +180,7 @@ export default function RecurringVouchers() {
 
   // ── Export history ────────────────────────────────────────────────────────
   const exportHistory = () => {
-    const data = recurringPostings.map((p) => ({
+    const data = scopedPostings.map((p) => ({
       Template: p.templateName,
       "Posted Date": p.postedDate,
       Status: p.status,
@@ -229,11 +243,26 @@ export default function RecurringVouchers() {
             and more
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
           {activeTab === "history" && (
             <button
               onClick={exportHistory}
-              className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium"
+              className="flex items-center gap-2 px-4 py-2 bg-[var(--ds-action-primary)] text-white rounded-lg hover:bg-[var(--ds-action-primary-hover)] text-sm font-medium"
             >
               <Download className="w-4 h-4" /> Export History
             </button>
@@ -256,7 +285,7 @@ export default function RecurringVouchers() {
         {[
           {
             label: "Active Templates",
-            value: recurringTemplates.filter((t) => t.isActive).length,
+            value: scopedTemplates.filter((t) => t.isActive).length,
             color: "blue",
           },
           {
@@ -264,10 +293,10 @@ export default function RecurringVouchers() {
             value: dueTemplates.length,
             color: overdueCount > 0 ? "red" : "yellow",
           },
-          { label: "Total Postings", value: recurringPostings.length, color: "green" },
+          { label: "Total Postings", value: scopedPostings.length, color: "green" },
           {
             label: "Auto-Post Enabled",
-            value: recurringTemplates.filter((t) => t.autoPost).length,
+            value: scopedTemplates.filter((t) => t.autoPost).length,
             color: "purple",
           },
         ].map((card) => (
@@ -312,7 +341,7 @@ export default function RecurringVouchers() {
       {/* ── ALL TEMPLATES TAB ─────────────────────────────────────────────── */}
       {activeTab === "templates" && (
         <div className="space-y-3">
-          {recurringTemplates.length === 0 && (
+          {scopedTemplates.length === 0 && (
             <div className="text-center py-16 text-gray-400">
               <RefreshCw className="w-12 h-12 mx-auto mb-3 opacity-30" />
               <div className="font-medium">No recurring templates yet</div>
@@ -321,10 +350,10 @@ export default function RecurringVouchers() {
               </div>
             </div>
           )}
-          {recurringTemplates.map((t) => {
+          {scopedTemplates.map((t) => {
             const days = daysUntilDue(t.nextDueDate);
             const isExpanded = expandedId === t.id;
-            const historyCount = recurringPostings.filter((p) => p.templateId === t.id).length;
+            const historyCount = scopedPostings.filter((p) => p.templateId === t.id).length;
 
             return (
               <div
@@ -355,7 +384,7 @@ export default function RecurringVouchers() {
                           <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-xs capitalize">
                             {t.voucherType}
                           </span>
-                          <span className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full text-xs">
+                          <span className="px-2 py-0.5 bg-[var(--ds-status-info-surface)] text-[var(--ds-status-info)] rounded-full text-xs">
                             {frequencyLabel(t.frequency)}
                           </span>
                           {t.autoPost && (
@@ -561,7 +590,7 @@ export default function RecurringVouchers() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {recurringPostings
+              {scopedPostings
                 .slice()
                 .sort((a, b) => b.postedDate.localeCompare(a.postedDate))
                 .map((p) => (
@@ -587,7 +616,7 @@ export default function RecurringVouchers() {
                     </td>
                   </tr>
                 ))}
-              {recurringPostings.length === 0 && (
+              {scopedPostings.length === 0 && (
                 <tr>
                   <td colSpan={5} className="px-4 py-8 text-center text-gray-400">
                     No postings yet. Post a template to see history here.

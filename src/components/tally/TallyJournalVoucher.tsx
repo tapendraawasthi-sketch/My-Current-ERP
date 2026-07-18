@@ -14,6 +14,7 @@ import {
 } from "@/lib/tallyVoucher";
 import { formatMoney, parseMoney } from "@/lib/tallyFormat";
 import { useStore } from "@/store/useStore";
+import { readActiveBranchId } from "@/lib/activeBranch";
 
 export const TallyJournalVoucher: React.FC = () => {
   const [voucher, setVoucher] = useState<Voucher>(() => blankVoucher("Journal"));
@@ -63,7 +64,10 @@ export const TallyJournalVoucher: React.FC = () => {
     if (voucher.id) {
       await updateVoucher(voucher.id, voucher);
     } else {
-      await addVoucher(voucher);
+      await addVoucher({
+        ...voucher,
+        branchId: voucher.branchId || readActiveBranchId() || undefined,
+      });
     }
     toast.success("Journal voucher saved.");
     setVoucher(blankVoucher("Journal"));

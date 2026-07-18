@@ -6,12 +6,14 @@ import { VoucherStatus, VoucherType } from "../lib/types";
 import ReportShell from "../components/reporting/ReportShell";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 import { useScreenF12 } from "../hooks/useF12Config";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const BillWisePending: React.FC = () => {
   // Register this screen with F12 system
   const getConfig = useScreenF12("bill-wise-pending");
 
   const { invoices, parties, companySettings } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [typeFilter, setTypeFilter] = useState<"both" | "receivables" | "payables">("both");
   const [partySearch, setPartySearch] = useState("");
@@ -22,11 +24,13 @@ const BillWisePending: React.FC = () => {
   const [pendingTypeFilter, setPendingTypeFilter] = useState(typeFilter);
   const [pendingAsOnDate, setPendingAsOnDate] = useState(asOnDate);
   const [pendingShowOnlyOverdue, setPendingShowOnlyOverdue] = useState(showOnlyOverdue);
+  const [pendingBranchFilter, setPendingBranchFilter] = useState(branchFilter);
 
   const applyOptions = () => {
     setTypeFilter(pendingTypeFilter);
     setAsOnDate(pendingAsOnDate);
     setShowOnlyOverdue(pendingShowOnlyOverdue);
+    setBranchFilter(pendingBranchFilter);
     setOptionsOpen(false);
   };
 
@@ -44,7 +48,10 @@ const BillWisePending: React.FC = () => {
 
     // Filter invoices
     let filteredInvoices = invoices.filter(
-      (inv) => inv.paymentStatus !== "paid" && inv.status === "posted",
+      (inv) =>
+        inv.paymentStatus !== "paid" &&
+        inv.status === "posted" &&
+        matchBranch(inv.branchId),
     );
 
     // Apply type filter
@@ -187,7 +194,7 @@ const BillWisePending: React.FC = () => {
         net: totalReceivable - totalPayable,
       },
     };
-  }, [invoices, typeFilter, partySearch, asOnDate, showOnlyOverdue]);
+  }, [invoices, typeFilter, partySearch, asOnDate, showOnlyOverdue, matchBranch, branchFilter]);
 
   return (
     <ReportShell
@@ -200,6 +207,7 @@ const BillWisePending: React.FC = () => {
         setPendingTypeFilter(typeFilter);
         setPendingAsOnDate(asOnDate);
         setPendingShowOnlyOverdue(showOnlyOverdue);
+        setPendingBranchFilter(branchFilter);
         setOptionsOpen(true);
       }}
       actionBarButtons={[{ label: "Print" }, { label: "Export" }]}
@@ -211,18 +219,34 @@ const BillWisePending: React.FC = () => {
               type="date"
               value={asOnDate}
               onChange={(e) => setAsOnDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-[130px]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[130px]"
             />
           </label>
 
           <div className="h-4 w-px bg-gray-300 mx-1"></div>
+
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
 
           <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
             Type:
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value as any)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               <option value="both">Both</option>
               <option value="receivables">Receivables (Sales)</option>
@@ -251,7 +275,7 @@ const BillWisePending: React.FC = () => {
               placeholder="Search party..."
               value={partySearch}
               onChange={(e) => setPartySearch(e.target.value)}
-              className="h-8 pl-8 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-[160px]"
+              className="h-8 pl-8 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[160px]"
             />
           </div>
 
@@ -260,7 +284,7 @@ const BillWisePending: React.FC = () => {
               type="checkbox"
               checked={showOnlyOverdue}
               onChange={(e) => setShowOnlyOverdue(e.target.checked)}
-              className="w-4 h-4 text-[#1557b0] border-gray-300 rounded focus:ring-[#1557b0]"
+              className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
             />
             Show only overdue
           </label>
@@ -281,7 +305,7 @@ const BillWisePending: React.FC = () => {
           <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">
             Total Payable
           </span>
-          <span className="text-2xl font-bold mt-1 text-[#1557b0] font-mono">
+          <span className="text-2xl font-bold mt-1 text-[var(--ds-action-primary)] font-mono">
             Rs. {formatNumber(reportData.summary.payable)}
           </span>
         </div>
@@ -339,7 +363,7 @@ const BillWisePending: React.FC = () => {
                       <div className="flex justify-between items-center">
                         <span className="flex items-center gap-2">
                           <svg
-                            className="w-4 h-4 text-[#1557b0]"
+                            className="w-4 h-4 text-[var(--ds-action-primary)]"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -354,7 +378,7 @@ const BillWisePending: React.FC = () => {
                           </svg>
                           {row.partyOrInvoice}
                         </span>
-                        <span className="font-mono text-[#1557b0]">
+                        <span className="font-mono text-[var(--ds-action-primary)]">
                           Total Pending: Rs. {formatNumber(row.totalPending)}
                         </span>
                       </div>
@@ -370,7 +394,7 @@ const BillWisePending: React.FC = () => {
                     >
                       {row.partyOrInvoice}
                     </td>
-                    <td className="px-3 py-2.5 text-right font-mono text-[#1557b0]">
+                    <td className="px-3 py-2.5 text-right font-mono text-[var(--ds-action-primary)]">
                       {formatNumber(row.pendingAmount)}
                     </td>
                     <td className="px-3 py-2.5"></td>
@@ -434,7 +458,7 @@ const BillWisePending: React.FC = () => {
                     <td className="px-3 py-3 text-right font-mono text-gray-900">
                       {row.paidAmount === 0 ? "—" : formatNumber(row.paidAmount)}
                     </td>
-                    <td className="px-3 py-3 text-right font-mono text-[#1557b0] text-[14px]">
+                    <td className="px-3 py-3 text-right font-mono text-[var(--ds-action-primary)] text-[14px]">
                       {formatNumber(row.pendingAmount)}
                     </td>
                     <td className="px-3 py-3"></td>
@@ -468,7 +492,7 @@ const BillWisePending: React.FC = () => {
             <select
               value={pendingTypeFilter}
               onChange={(e) => setPendingTypeFilter(e.target.value as any)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               <option value="both">Both</option>
               <option value="receivables">Receivables (Sales)</option>
@@ -482,16 +506,35 @@ const BillWisePending: React.FC = () => {
               type="date"
               value={pendingAsOnDate}
               onChange={(e) => setPendingAsOnDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
+
+          {branchOptions.length > 0 && (
+            <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
+              Branch
+              <select
+                value={pendingBranchFilter}
+                onChange={(e) => setPendingBranchFilter(e.target.value)}
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
 
           <label className="flex items-center gap-2 text-[12px] font-medium text-gray-700 cursor-pointer pt-2">
             <input
               type="checkbox"
               checked={pendingShowOnlyOverdue}
               onChange={(e) => setPendingShowOnlyOverdue(e.target.checked)}
-              className="w-4 h-4 text-[#1557b0] border-gray-300 rounded focus:ring-[#1557b0]"
+              className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
             />
             Show Only Overdue Bills
           </label>

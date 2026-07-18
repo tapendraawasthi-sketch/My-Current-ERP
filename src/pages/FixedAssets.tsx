@@ -13,6 +13,8 @@ import { useStore } from "../store/useStore";
 import * as XLSX from "xlsx";
 import toast from "@/lib/appToast";
 import { Plus, Download, Edit2, Trash2, Calculator, X, ChevronDown, ChevronUp } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 // ─── Nepal IT Act WDV Rates ───────────────────────────────────────────────────
 const NEPAL_DEPRECIATION_RATES: Record<string, { method: "slm" | "wdv"; rate: number }> = {
@@ -66,7 +68,7 @@ const fmt = (n: number) =>
   });
 
 const inputCls =
-  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full";
+  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full";
 const labelCls = "text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1";
 const thCls =
   "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200 whitespace-nowrap";
@@ -97,6 +99,7 @@ export default function FixedAssets() {
   const depreciationLedger: any[] = store.depreciationLedger || [];
   const currentFiscalYear = store.currentFiscalYear;
   const companySettings = store.companySettings;
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [showModal, setShowModal] = useState(false);
   const [showDeprModal, setShowDeprModal] = useState(false);
@@ -141,11 +144,15 @@ export default function FixedAssets() {
       return;
     }
     try {
+      const payload = {
+        ...form,
+        branchId: form.branchId || readActiveBranchId() || undefined,
+      };
       if (editingId) {
-        await store.updateFixedAsset(editingId, form);
+        await store.updateFixedAsset(editingId, payload);
         toast.success("Asset updated");
       } else {
-        await store.addFixedAsset(form);
+        await store.addFixedAsset(payload);
         toast.success("Asset added");
       }
       setShowModal(false);
@@ -236,8 +243,12 @@ export default function FixedAssets() {
 
   // ── Filtered assets ────────────────────────────────────────────────────────
   const filtered = useMemo(
-    () => fixedAssets.filter((a) => filterCat === "ALL" || a.category === filterCat),
-    [fixedAssets, filterCat],
+    () =>
+      fixedAssets.filter(
+        (a) =>
+          matchBranch(a.branchId) && (filterCat === "ALL" || a.category === filterCat),
+      ),
+    [fixedAssets, filterCat, matchBranch, branchFilter],
   );
 
   // ── Asset schedule (with computed values) ─────────────────────────────────
@@ -305,6 +316,21 @@ export default function FixedAssets() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
           <button
             onClick={exportSchedule}
             className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
@@ -323,7 +349,7 @@ export default function FixedAssets() {
               setEditingId(null);
               setShowModal(true);
             }}
-            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
           >
             <Plus className="h-3.5 w-3.5" /> Add Asset
           </button>
@@ -338,7 +364,7 @@ export default function FixedAssets() {
             onClick={() => setActiveTab(tab)}
             className={`h-8 px-4 text-[12px] font-medium rounded-md capitalize transition-colors ${
               activeTab === tab
-                ? "bg-[#1557b0] text-white"
+                ? "bg-[var(--ds-action-primary)] text-white"
                 : "bg-white border border-gray-300 text-gray-600 hover:bg-gray-50"
             }`}
           >
@@ -360,7 +386,7 @@ export default function FixedAssets() {
             onClick={() => setFilterCat(cat)}
             className={`h-7 px-3 text-[11px] font-medium rounded-md transition-colors ${
               filterCat === cat
-                ? "bg-[#1557b0] text-white"
+                ? "bg-[var(--ds-action-primary)] text-white"
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >
@@ -378,7 +404,7 @@ export default function FixedAssets() {
         {[
           { label: "Gross Block", value: totals.grossBlock, color: "text-gray-800" },
           { label: "Accum. Depreciation", value: totals.accumDepr, color: "text-red-600" },
-          { label: "Net Block (NBV)", value: totals.netBlock, color: "text-[#1557b0]" },
+          { label: "Net Block (NBV)", value: totals.netBlock, color: "text-[var(--ds-action-primary)]" },
           { label: "Depr. This Year", value: totals.deprThisYear, color: "text-amber-700" },
         ].map((kpi) => (
           <div key={kpi.label} className="bg-white border border-gray-200 rounded-lg p-3">
@@ -448,7 +474,7 @@ export default function FixedAssets() {
                         ? row.wdvRate + "%"
                         : Math.round(100 / row.usefulLifeYears) + "%"}
                     </td>
-                    <td className={`${amtCls} font-semibold text-[#1557b0]`}>
+                    <td className={`${amtCls} font-semibold text-[var(--ds-action-primary)]`}>
                       {fmt(row.netBookValue)}
                     </td>
                     <td className={`${amtCls} text-amber-700`}>
@@ -548,7 +574,7 @@ export default function FixedAssets() {
                     <td className="px-3 py-2.5 text-[12px] font-mono text-right border-b border-gray-100 text-amber-700">
                       {row.isFullyDepreciated ? "—" : fmt(row.depreciationForYear)}
                     </td>
-                    <td className="px-3 py-2.5 text-[12px] font-mono text-right border-b border-gray-100 font-semibold text-[#1557b0]">
+                    <td className="px-3 py-2.5 text-[12px] font-mono text-right border-b border-gray-100 font-semibold text-[var(--ds-action-primary)]">
                       {fmt(row.closingNBV)}
                     </td>
                     <td className={amtCls}>{fmt(row.residualValue)}</td>
@@ -581,7 +607,7 @@ export default function FixedAssets() {
                     <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-right border-b border-gray-100 text-amber-700">
                       {fmt(totals.deprThisYear)}
                     </td>
-                    <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-right border-b border-gray-100 text-[#1557b0]">
+                    <td className="px-3 py-2.5 text-[12px] font-bold font-mono text-right border-b border-gray-100 text-[var(--ds-action-primary)]">
                       {fmt(totals.netBlock)}
                     </td>
                     <td className={amtCls}>
@@ -687,7 +713,7 @@ export default function FixedAssets() {
                       <td className="px-3 py-2.5 text-[12px] font-mono text-right border-b border-gray-100 text-red-600 font-semibold">
                         {fmt(entry.depreciationAmount)}
                       </td>
-                      <td className={`${amtCls} text-[#1557b0] font-semibold`}>
+                      <td className={`${amtCls} text-[var(--ds-action-primary)] font-semibold`}>
                         {fmt(entry.closingNBV)}
                       </td>
                     </tr>
@@ -967,7 +993,7 @@ export default function FixedAssets() {
                   type="checkbox"
                   checked={form.isActive}
                   onChange={(e) => setForm((f) => ({ ...f, isActive: e.target.checked }))}
-                  className="h-4 w-4 accent-[#1557b0]"
+                  className="h-4 w-4 accent-[var(--ds-action-primary)]"
                 />
                 <span className="text-[12px] text-gray-700 font-medium">Asset is Active</span>
               </label>
@@ -983,7 +1009,7 @@ export default function FixedAssets() {
               </button>
               <button
                 onClick={handleSave}
-                className="h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
+                className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md"
               >
                 {editingId ? "Update Asset" : "Add Asset"}
               </button>

@@ -6,6 +6,17 @@ type Profile = UserPermission;
 
 const REGISTRY: QuickActionDef[] = [
   {
+    id: "open_pos",
+    label: "Open POS counter",
+    description: "Retail billing",
+    page: "pos-billing",
+    icon: "ShoppingCart",
+    permissionScreen: "salesVoucher",
+    requireCreate: true,
+    rolesPriority: ["cashier", "owner", "manager", "combined"],
+    mobileEligible: true,
+  },
+  {
     id: "new_sale",
     label: "New sales invoice",
     description: "Open billing",

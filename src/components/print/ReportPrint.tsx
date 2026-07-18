@@ -82,7 +82,7 @@ export default function ReportPrint({
             </p>
           </div>
 
-          <div className="border-t-2 border-[#9DC07A] mb-6"></div>
+          <div className="border-t-2 border-[var(--ds-border-default)] mb-6"></div>
 
           {/* Report Title */}
           <div className="text-center mb-6">
@@ -95,7 +95,7 @@ export default function ReportPrint({
           <div className="mb-6">{children}</div>
 
           {/* Report Footer */}
-          <div className="border-t-2 border-[#9DC07A] pt-4 mt-8">
+          <div className="border-t-2 border-[var(--ds-border-default)] pt-4 mt-8">
             <div className="flex justify-between items-center">
               <div className="text-xs text-[#000000]">
                 <p>
@@ -104,7 +104,7 @@ export default function ReportPrint({
                 <p className="mt-1">Fiscal Year: 2083/84</p>
               </div>
               <div className="text-right">
-                <div className="border-t border-[#9DC07A] pt-2 w-48 ml-auto">
+                <div className="border-t border-[var(--ds-border-default)] pt-2 w-48 ml-auto">
                   <p className="text-sm font-semibold">Authorized Signature</p>
                 </div>
               </div>

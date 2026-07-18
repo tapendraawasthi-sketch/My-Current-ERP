@@ -2,6 +2,12 @@ import { Router, type Request, type Response } from "express";
 import { parseKhataTransaction } from "../lib/falconNlu.js";
 import { getPool, query } from "../lib/db.js";
 import { sendError, sendSuccess } from "../middleware/responseEnvelope.js";
+import { requireKhataConfirmAuth } from "../middleware/khataConfirmAuth.js";
+import {
+  attachCorrelationMiddleware,
+  readTraceLocals,
+  safeRouteLog,
+} from "../middleware/correlation.js";
 
 const router = Router();
 
@@ -366,7 +372,13 @@ async function executeKhataConfirm(input: {
   }
 }
 
-router.post("/khata/confirm", async (req: Request, res: Response) => {
+router.post(
+  "/khata/confirm",
+  attachCorrelationMiddleware,
+  requireKhataConfirmAuth,
+  async (req: Request, res: Response) => {
+  const started = Date.now();
+  const trace = readTraceLocals(res);
   const tenantId = str(req.body?.tenant_id);
   const companyId = str(req.body?.company_id);
   const userId = str(req.body?.user_id) || null;
@@ -401,8 +413,37 @@ router.post("/khata/confirm", async (req: Request, res: Response) => {
       rawText,
       idempotencyKey,
     });
-    return sendSuccess(res, result);
+    // correlation headers already set by middleware; echo opaque refs only
+    if (trace) {
+      void safeRouteLog({
+        route: "/khata/confirm",
+        method: "POST",
+        status: 200,
+        duration_ms: Date.now() - started,
+        correlation_id: trace.correlationId,
+        request_id: trace.requestId,
+        trace_reference: trace.traceReference,
+        outcome_code: "OK",
+      });
+    }
+    return sendSuccess(res, {
+      ...result,
+      trace_reference: trace?.traceReference,
+      correlation_id: trace?.correlationId,
+    });
   } catch (error) {
+    if (trace) {
+      void safeRouteLog({
+        route: "/khata/confirm",
+        method: "POST",
+        status: 500,
+        duration_ms: Date.now() - started,
+        correlation_id: trace.correlationId,
+        request_id: trace.requestId,
+        trace_reference: trace.traceReference,
+        safe_error_code: "CONFIRM_FAILED",
+      });
+    }
     const message = error instanceof Error ? error.message : "Confirm failed";
     return sendError(res, message, 500);
   }

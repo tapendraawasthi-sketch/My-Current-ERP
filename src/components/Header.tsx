@@ -164,7 +164,7 @@ const Header: React.FC = () => {
           <kbd
             style={{
               fontSize: 9,
-              background: "#C9DEB5",
+              background: "var(--ds-surface-muted)",
               border: "1px solid #000",
               borderRadius: 2,
               padding: "1px 5px",

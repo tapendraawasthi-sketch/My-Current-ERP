@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["vite/client", "vitest/globals", "node"]
+  },
+  "include": [
+    "src/lib/ekhata/mai03Trace.ts",
+    "src/lib/ekhata/mai03TraceTypes.ts",
+    "src/__tests__/orbix/mai03Trace.test.ts",
+    "src/vite-env.d.ts",
+    "packages/backend/src/middleware/correlation.ts",
+    "packages/backend/src/middleware/correlation.test.ts"
+  ]
+}

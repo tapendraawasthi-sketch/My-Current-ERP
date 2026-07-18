@@ -150,7 +150,7 @@ const CbmsStatusBadge: React.FC<CbmsStatusBadgeProps> = ({ invoice, onUpdated })
                 type="button"
                 disabled={submitting}
                 onClick={handleResubmit}
-                className="h-8 px-3 bg-[#1557b0] text-white text-[12px] rounded-md disabled:opacity-50"
+                className="h-8 px-3 bg-[var(--ds-action-primary)] text-white text-[12px] rounded-md disabled:opacity-50"
               >
                 {submitting ? "Submitting..." : "Resubmit"}
               </button>

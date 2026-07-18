@@ -373,7 +373,7 @@ const RolesManagement = () => {
         onClick={() => onChange("view")}
         className={`px-3 py-1 text-[11px] font-bold border-y border-r transition-colors -ml-px ${
           value === "view"
-            ? "bg-[#1557b0] text-white border-[#1557b0] z-10"
+            ? "bg-[var(--ds-action-primary)] text-white border-[var(--ds-action-primary)] z-10"
             : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
         }`}
       >
@@ -591,7 +591,7 @@ const RolesManagement = () => {
           </div>
           <button
             onClick={handleCreateNewRole}
-            className="flex items-center gap-1.5 h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md shadow-sm transition-colors"
+            className="flex items-center gap-1.5 h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md shadow-sm transition-colors"
           >
             <Plus size={16} />
             Create Custom Role
@@ -631,7 +631,7 @@ const RolesManagement = () => {
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => handleEditRole(role)}
-                        className="p-1.5 text-gray-500 hover:text-[#1557b0] hover:bg-blue-50 rounded transition-colors"
+                        className="p-1.5 text-gray-500 hover:text-[var(--ds-action-primary)] hover:bg-blue-50 rounded transition-colors"
                         title="Edit Role"
                       >
                         <Edit2 size={16} />
@@ -669,7 +669,7 @@ const RolesManagement = () => {
       <div className="flex items-center gap-4 mb-5">
         <button
           onClick={() => setMode("list")}
-          className="flex items-center gap-1 text-[12px] font-medium text-gray-600 hover:text-[#1557b0] transition-colors"
+          className="flex items-center gap-1 text-[12px] font-medium text-gray-600 hover:text-[var(--ds-action-primary)] transition-colors"
         >
           <ArrowLeft size={16} />
           Back to Roles
@@ -696,7 +696,7 @@ const RolesManagement = () => {
                     setEditingRole((prev) => (prev ? { ...prev, name: e.target.value } : null))
                   }
                   disabled={editingRole.isBuiltIn}
-                  className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] disabled:bg-gray-50 disabled:text-gray-500"
+                  className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] disabled:bg-gray-50 disabled:text-gray-500"
                   placeholder="e.g. Senior Cashier"
                 />
               </div>
@@ -713,7 +713,7 @@ const RolesManagement = () => {
                     )
                   }
                   disabled={editingRole.isBuiltIn}
-                  className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] disabled:bg-gray-50 disabled:text-gray-500"
+                  className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] disabled:bg-gray-50 disabled:text-gray-500"
                 />
               </div>
             </div>
@@ -1334,7 +1334,7 @@ const RolesManagement = () => {
             </button>
             <button
               onClick={handleSaveRole}
-              className="h-9 px-6 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
+              className="h-9 px-6 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
             >
               Save Role Permissions
             </button>

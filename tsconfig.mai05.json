@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["vite/client", "vitest/globals"]
+  },
+  "include": [
+    "src/lib/ekhata/mai05CodePointOffsets.ts",
+    "src/__tests__/orbix/mai05CodePointOffsets.test.ts",
+    "src/vite-env.d.ts"
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "data": {
+    "ambiguous_fields": [
+      "ambiguous_number"
+    ],
+    "confidence_by_field": {},
+    "dates_and_periods": [],
+    "document_references": [],
+    "event_type": "unknown",
+    "execution_success": null,
+    "explicit_values": [],
+    "frame_id": "frame-demo-006",
+    "frame_version": "1",
+    "inferred_candidates": [],
+    "inherited_context": {},
+    "items": [],
+    "lifecycle_state": "UNKNOWN",
+    "locations": [],
+    "missing_required_fields": [],
+    "ontology_version": "none",
+    "parties": [],
+    "payment_terms": [],
+    "prohibited_assumptions": [],
+    "receipt_id": null,
+    "schema_version": "1.0.0",
+    "source_evidence": [],
+    "status": "PARTIAL",
+    "tax_clues": [],
+    "values": [
+      {
+        "alternatives": [],
+        "confidence": null,
+        "evidence_reference": null,
+        "field_name": "ambiguous_number",
+        "original_surface": "5",
+        "provenance": "INFERRED_CANDIDATE",
+        "source_span": {
+          "end_offset": 1,
+          "offset_unit": "UNICODE_CODE_POINT",
+          "original_text": "5",
+          "source_message_id": null,
+          "start_offset": 0
+        },
+        "surface_number": "5",
+        "unit_hint": null,
+        "validation_status": "VALID",
+        "value_type": "unknown_number"
+      }
+    ]
+  },
+  "kind": "EventFrameV1",
+  "valid": true
+}

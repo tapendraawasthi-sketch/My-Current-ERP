@@ -7,12 +7,14 @@ import ReportShell from "../components/reporting/ReportShell";
 import ReportGrid from "../components/reporting/ReportGrid";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 import { useScreenF12 } from "../hooks/useF12Config";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const MovementAnalysis: React.FC = () => {
   // Register this screen with F12 system
   const getConfig = useScreenF12("movement-analysis");
 
   const { items, stockMovements, companySettings, currentFiscalYear, itemGroups } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchMovement } = useBranchFilter();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [startDate, setStartDate] = useState(currentFiscalYear?.startDate || "");
   const [endDate, setEndDate] = useState(currentFiscalYear?.endDate || "");
@@ -25,12 +27,14 @@ const MovementAnalysis: React.FC = () => {
   const [pendingSelectedGroupId, setPendingSelectedGroupId] = useState(selectedGroupId);
   const [pendingShowOnlyWithMovement, setPendingShowOnlyWithMovement] =
     useState(showOnlyWithMovement);
+  const [pendingBranchFilter, setPendingBranchFilter] = useState(branchFilter);
 
   const applyOptions = () => {
     setStartDate(pendingStart);
     setEndDate(pendingEnd);
     setSelectedGroupId(pendingSelectedGroupId);
     setShowOnlyWithMovement(pendingShowOnlyWithMovement);
+    setBranchFilter(pendingBranchFilter);
     setOptionsOpen(false);
   };
 
@@ -69,7 +73,7 @@ const MovementAnalysis: React.FC = () => {
 
     // Process movements
     const filteredMovements = (stockMovements || []).filter(
-      (m) => m.date >= startDate && m.date <= endDate,
+      (m) => m.date >= startDate && m.date <= endDate && matchMovement(m),
     );
 
     filteredMovements.forEach((m) => {
@@ -168,7 +172,16 @@ const MovementAnalysis: React.FC = () => {
     }
 
     return { rows: result, totals };
-  }, [items, stockMovements, startDate, endDate, selectedGroupId, showOnlyWithMovement]);
+  }, [
+    items,
+    stockMovements,
+    startDate,
+    endDate,
+    selectedGroupId,
+    showOnlyWithMovement,
+    matchMovement,
+    branchFilter,
+  ]);
 
   const renderCell = (columnKey: string, value: any, row: any) => {
     if (row.isTotal) {
@@ -214,7 +227,7 @@ const MovementAnalysis: React.FC = () => {
       let colorClass = "text-gray-700";
       // Slightly highlight inward/outward columns
       if (["purchaseQty", "purchaseValue", "transferInQty", "productionQty"].includes(columnKey))
-        colorClass = "text-[#1557b0]";
+        colorClass = "text-[var(--ds-action-primary)]";
       if (["salesQty", "salesValue", "transferOutQty", "consumptionQty"].includes(columnKey))
         colorClass = "text-[#d97706]";
 
@@ -241,6 +254,7 @@ const MovementAnalysis: React.FC = () => {
         setPendingEnd(endDate);
         setPendingSelectedGroupId(selectedGroupId);
         setPendingShowOnlyWithMovement(showOnlyWithMovement);
+        setPendingBranchFilter(branchFilter);
         setOptionsOpen(true);
       }}
       actionBarButtons={[{ label: "Print" }, { label: "Export" }]}
@@ -252,7 +266,7 @@ const MovementAnalysis: React.FC = () => {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -262,14 +276,30 @@ const MovementAnalysis: React.FC = () => {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
+
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] ml-1 w-[150px]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
 
           <select
             value={selectedGroupId}
             onChange={(e) => setSelectedGroupId(e.target.value)}
-            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] ml-1 w-[150px]"
+            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] ml-1 w-[150px]"
           >
             {groups.map((group) => (
               <option key={group.id} value={group.id}>
@@ -283,7 +313,7 @@ const MovementAnalysis: React.FC = () => {
               type="checkbox"
               checked={showOnlyWithMovement}
               onChange={(e) => setShowOnlyWithMovement(e.target.checked)}
-              className="w-4 h-4 text-[#1557b0] border-gray-300 rounded focus:ring-[#1557b0]"
+              className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
             />
             Only with movement
           </label>
@@ -324,7 +354,7 @@ const MovementAnalysis: React.FC = () => {
               type="date"
               value={pendingStart}
               onChange={(e) => setPendingStart(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -334,7 +364,7 @@ const MovementAnalysis: React.FC = () => {
               type="date"
               value={pendingEnd}
               onChange={(e) => setPendingEnd(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -343,7 +373,7 @@ const MovementAnalysis: React.FC = () => {
             <select
               value={pendingSelectedGroupId}
               onChange={(e) => setPendingSelectedGroupId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               {groups.map((group) => (
                 <option key={group.id} value={group.id}>
@@ -353,12 +383,31 @@ const MovementAnalysis: React.FC = () => {
             </select>
           </label>
 
+          {branchOptions.length > 0 && (
+            <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
+              Branch
+              <select
+                value={pendingBranchFilter}
+                onChange={(e) => setPendingBranchFilter(e.target.value)}
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+
           <label className="flex items-center gap-2 text-[12px] font-medium text-gray-700 cursor-pointer pt-2">
             <input
               type="checkbox"
               checked={pendingShowOnlyWithMovement}
               onChange={(e) => setPendingShowOnlyWithMovement(e.target.checked)}
-              className="w-4 h-4 text-[#1557b0] border-gray-300 rounded focus:ring-[#1557b0]"
+              className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
             />
             Show only items with movement
           </label>

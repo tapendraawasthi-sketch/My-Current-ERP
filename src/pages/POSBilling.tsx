@@ -47,13 +47,13 @@ const money = (v: any) => {
 };
 
 const btn =
-  "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-[#1557b0] text-white text-[12px] font-medium hover:bg-[#0f4a96] disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
+  "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-[var(--ds-action-primary)] text-white text-[12px] font-medium hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 const btn2 =
   "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-white border border-gray-300 text-gray-700 text-[12px] font-medium hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 const btnDanger =
   "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-red-600 text-white text-[12px] font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 const input =
-  "w-full h-8 px-2.5 rounded-md border border-gray-300 bg-white text-[12px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "w-full h-8 px-2.5 rounded-md border border-gray-300 bg-white text-[12px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const card = "bg-white border border-gray-200 rounded-lg shadow-sm p-4 text-gray-800";
 const th =
   "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200";
@@ -75,6 +75,26 @@ const todayISO = () => {
   return new Date(now.getTime() - offset).toISOString().slice(0, 10);
 };
 const nowISO = () => new Date().toISOString();
+
+const readActiveBranchId = (): string => {
+  try {
+    return localStorage.getItem("erp_default_branch") || "";
+  } catch {
+    return "";
+  }
+};
+
+const lineKey = (l: any, index: number) => String(l?.id || `${l?.itemId || "line"}-${index}`);
+
+const remainingReturnQty = (l: any) =>
+  Math.max(0, Number(l?.qty || 0) - Number(l?.posReturnedQty || 0));
+
+const isPosFullyReturned = (inv: any) => {
+  if (inv?.posReturned) return true;
+  const lines = inv?.lines || inv?.items || [];
+  if (!lines.length) return false;
+  return lines.every((l: any) => remainingReturnQty(l) <= 0);
+};
 
 const tableAll = (db: any, name: string) => {
   try {
@@ -239,6 +259,7 @@ const Modal = ({ open, title, children, onClose, max = "max-w-5xl" }: any) => {
 };
 
 export default function POSBilling() {
+  const setCurrentPage = useStore((s) => s.setCurrentPage);
   const store = useStore();
   const currentUser = store.currentUser || store.user || {};
   const storeItems = store.items || [];
@@ -279,6 +300,8 @@ export default function POSBilling() {
   const [closingCash, setClosingCash] = useState(0);
   const [holdName, setHoldName] = useState("");
   const [saleDate, setSaleDate] = useState(todayISO());
+  const [returnTarget, setReturnTarget] = useState<any>(null);
+  const [returnQtys, setReturnQtys] = useState<Record<string, number>>({});
 
   useEffect(() => {
     loadData();
@@ -426,7 +449,26 @@ export default function POSBilling() {
           String(inv.date || inv.invoiceDate || "").slice(0, 10) === todayISO() &&
           String(inv.sourceType || inv.channel || "")
             .toLowerCase()
-            .includes("pos"),
+            .includes("pos") &&
+          !String(inv.voucherType || inv.type || "")
+            .toLowerCase()
+            .includes("return") &&
+          !inv.posReturned,
+      ),
+    [invoices],
+  );
+
+  const returnableSales = useMemo(
+    () =>
+      invoices.filter(
+        (inv) =>
+          String(inv.sourceType || inv.channel || "")
+            .toLowerCase()
+            .includes("pos") &&
+          !String(inv.voucherType || inv.type || "")
+            .toLowerCase()
+            .includes("return") &&
+          !isPosFullyReturned(inv),
       ),
     [invoices],
   );
@@ -649,6 +691,8 @@ export default function POSBilling() {
       };
     });
 
+    const branchId = readActiveBranchId();
+
     return {
       id: generateId(),
       invoiceNo,
@@ -663,6 +707,7 @@ export default function POSBilling() {
       partyName: party.name || "Walk-in Customer",
       partyPan: normalizePAN(party.pan || party.vatNo || party.taxNo),
       warehouseId,
+      branchId: branchId || undefined,
       lines,
       items: lines,
       grossAmount: cartSummary.gross,
@@ -775,6 +820,7 @@ export default function POSBilling() {
       date: invoice.date,
       narration: `POS sale ${invoice.invoiceNo}`,
       partyId: invoice.partyId,
+      branchId: invoice.branchId || readActiveBranchId() || undefined,
       lines,
       totalDebit: lines.reduce((sum, l) => sum + Number(l.debit || 0), 0),
       totalCredit: lines.reduce((sum, l) => sum + Number(l.credit || 0), 0),
@@ -856,6 +902,373 @@ export default function POSBilling() {
     }
   };
 
+  const openReturnDraft = (original: any) => {
+    if (!currentSession) {
+      toast.error("Open POS session first");
+      return;
+    }
+    if (!original?.id || isPosFullyReturned(original)) {
+      toast.error("This bill cannot be returned");
+      return;
+    }
+    const lines = original.lines || original.items || [];
+    const qtys: Record<string, number> = {};
+    lines.forEach((l: any, i: number) => {
+      qtys[lineKey(l, i)] = remainingReturnQty(l);
+    });
+    setReturnTarget(original);
+    setReturnQtys(qtys);
+  };
+
+  const processReturn = async () => {
+    const original = returnTarget;
+    if (!currentSession) {
+      toast.error("Open POS session first");
+      return;
+    }
+    if (!original?.id || isPosFullyReturned(original)) {
+      toast.error("This bill cannot be returned");
+      return;
+    }
+
+    const sourceLines = original.lines || original.items || [];
+    const returnLines: any[] = [];
+    let taxableAmount = 0;
+    let vatAmount = 0;
+    let grandTotal = 0;
+
+    sourceLines.forEach((l: any, i: number) => {
+      const key = lineKey(l, i);
+      const rem = remainingReturnQty(l);
+      const qty = Math.min(rem, Math.max(0, Number(returnQtys[key] || 0)));
+      if (qty <= 0 || rem <= 0) return;
+      const origQty = Number(l.qty || 0) || 1;
+      const ratio = qty / origQty;
+      const lineTaxable = Number((Number(l.taxableAmount || 0) * ratio).toFixed(2));
+      const lineVat = Number((Number(l.vatAmount || 0) * ratio).toFixed(2));
+      const lineTotal = Number((Number(l.lineTotal || lineTaxable + lineVat) * ratio).toFixed(2));
+      taxableAmount += lineTaxable;
+      vatAmount += lineVat;
+      grandTotal += lineTotal;
+      returnLines.push({
+        ...l,
+        id: generateId(),
+        qty,
+        taxableAmount: lineTaxable,
+        vatAmount: lineVat,
+        lineTotal,
+        posReturnedQty: undefined,
+        sourceLineId: l.id || key,
+      });
+    });
+
+    if (!returnLines.length) {
+      toast.error("Enter at least one return quantity");
+      return;
+    }
+
+    const isFull =
+      sourceLines.every((l: any, i: number) => {
+        const key = lineKey(l, i);
+        const rem = remainingReturnQty(l);
+        const qty = Math.min(rem, Math.max(0, Number(returnQtys[key] || 0)));
+        return qty >= rem;
+      }) && returnLines.length > 0;
+
+    if (
+      !confirm(
+        isFull
+          ? `Return full remaining bill ${original.invoiceNo}? Stock will be restored.`
+          : `Return partial bill ${original.invoiceNo} (${money(grandTotal)})? Stock will be restored.`,
+      )
+    ) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const db = getDB();
+      const branchId = original.branchId || readActiveBranchId();
+      const returnNo = `POSR-${todayISO().split("-").join("")}-${String(Date.now()).slice(-6)}`;
+      const returnInvoice = {
+        ...original,
+        id: generateId(),
+        invoiceNo: returnNo,
+        number: returnNo,
+        type: "sales-return",
+        voucherType: "sales_return",
+        sourceType: "POS",
+        channel: "POS",
+        date: todayISO(),
+        invoiceDate: todayISO(),
+        lines: returnLines,
+        items: returnLines,
+        taxableAmount,
+        vatAmount,
+        grandTotal,
+        total: grandTotal,
+        returnedFromId: original.id,
+        returnedFromNo: original.invoiceNo,
+        status: "returned",
+        posSessionId: currentSession?.id || "",
+        branchId: branchId || undefined,
+        partialReturn: !isFull,
+        createdAt: nowISO(),
+        updatedAt: nowISO(),
+        createdBy: currentUser?.id || "",
+        createdByName: currentUser?.name || currentUser?.username || "Cashier",
+      };
+
+      const stockRows = returnLines.map((l: any) => ({
+        id: generateId(),
+        date: returnInvoice.date,
+        type: "sales-return",
+        itemId: l.itemId,
+        warehouseId: l.warehouseId || warehouseId,
+        qtyIn: Number(l.qty || 0),
+        qtyOut: 0,
+        rate: Number(l.rate || 0),
+        value: Number(l.taxableAmount || 0),
+        sourceType: "POS",
+        sourceId: returnInvoice.id,
+        invoiceId: returnInvoice.id,
+        narration: `POS return ${returnNo} for ${original.invoiceNo}`,
+        createdAt: nowISO(),
+      }));
+
+      const salesAcc = findAccount(accounts, ["sales"]);
+      const vatAcc = findAccount(accounts, ["vat", "tax payable"]);
+      const cashAcc = findAccount(accounts, ["cash"]);
+      const vLines: any[] = [
+        {
+          id: generateId(),
+          accountId: salesAcc.id || "sales",
+          debit: taxableAmount,
+          credit: 0,
+          narration: `POS return ${returnNo}`,
+        },
+      ];
+      if (vatAmount > 0) {
+        vLines.push({
+          id: generateId(),
+          accountId: vatAcc.id || "vat-payable",
+          debit: vatAmount,
+          credit: 0,
+          narration: `VAT reverse ${returnNo}`,
+        });
+      }
+      vLines.push({
+        id: generateId(),
+        accountId: cashAcc.id || "cash",
+        debit: 0,
+        credit: grandTotal,
+        narration: `Refund ${returnNo}`,
+      });
+
+      const voucher = {
+        id: generateId(),
+        voucherNo: returnNo,
+        type: "sales-return",
+        date: returnInvoice.date,
+        narration: `POS return of ${original.invoiceNo}`,
+        partyId: original.partyId,
+        branchId: branchId || undefined,
+        lines: vLines,
+        totalDebit: vLines.reduce((s, l) => s + Number(l.debit || 0), 0),
+        totalCredit: vLines.reduce((s, l) => s + Number(l.credit || 0), 0),
+        status: "posted",
+        sourceType: "POS",
+        sourceId: returnInvoice.id,
+        fiscalYearId: fiscalYear?.id || "",
+        createdBy: currentUser?.id || "",
+        createdAt: nowISO(),
+      };
+
+      const updatedLines = sourceLines.map((l: any, i: number) => {
+        const key = lineKey(l, i);
+        const rem = remainingReturnQty(l);
+        const qty = Math.min(rem, Math.max(0, Number(returnQtys[key] || 0)));
+        return {
+          ...l,
+          posReturnedQty: Number(l.posReturnedQty || 0) + qty,
+        };
+      });
+      const fullyDone = updatedLines.every((l: any) => remainingReturnQty(l) <= 0);
+      const marked = {
+        ...original,
+        lines: updatedLines,
+        items: updatedLines,
+        posReturned: fullyDone,
+        posReturnedAt: fullyDone ? nowISO() : original.posReturnedAt,
+        posReturnId: returnInvoice.id,
+        posLastReturnId: returnInvoice.id,
+        updatedAt: nowISO(),
+      };
+
+      await tablePut(db, "invoices", [returnInvoice, marked]);
+      await tablePut(db, "vouchers", [voucher]);
+      await tablePut(db, "stockMovements", stockRows);
+      await tablePut(db, "auditLogs", [
+        makeAuditRow(
+          currentUser,
+          "POS Return Saved",
+          `${returnNo} reverses ${original.invoiceNo} ${money(grandTotal)}${fullyDone ? "" : " (partial)"}`,
+          "High",
+        ),
+      ]);
+
+      setInvoices((prev) => [
+        returnInvoice,
+        ...prev.map((inv) => (inv.id === original.id ? marked : inv)),
+      ]);
+      setStockMovements((prev) => [...stockRows, ...prev]);
+      setReturnTarget(null);
+      setReturnQtys({});
+      toast.success(`Return ${returnNo} posted · stock restored`);
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not process POS return");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const renderReturns = () => (
+    <div className="space-y-4">
+      <div className={card}>
+        <h3 className="text-[14px] font-semibold flex items-center gap-2 text-[var(--ds-text-default)]">
+          <RotateCcw className="h-4 w-4 text-[var(--ds-action-primary)]" />
+          POS returns
+        </h3>
+        <p className="text-[11px] text-[var(--ds-text-muted)] mt-1">
+          Full or partial returns. Restores stock, posts a sales-return, and keeps the original bill
+          open until all quantities are returned. Session must be open.
+        </p>
+      </div>
+
+      {returnTarget && (
+        <div className={`${card} border-[var(--ds-action-primary)]/30`}>
+          <div className="flex items-center justify-between gap-2 mb-3">
+            <div>
+              <h4 className="text-[13px] font-semibold text-gray-800">
+                Return · {returnTarget.invoiceNo || returnTarget.number}
+              </h4>
+              <p className="text-[11px] text-gray-500 mt-0.5">
+                Set qty per line (0 = skip). Defaults to remaining qty.
+              </p>
+            </div>
+            <button
+              type="button"
+              className={btn2}
+              onClick={() => {
+                setReturnTarget(null);
+                setReturnQtys({});
+              }}
+            >
+              <X className="h-3.5 w-3.5" />
+              Cancel
+            </button>
+          </div>
+          <div className="border border-gray-200 rounded-md overflow-hidden mb-3">
+            <table className="w-full">
+              <thead>
+                <tr>
+                  <th className={th}>Item</th>
+                  <th className={`${th} text-right`}>Sold</th>
+                  <th className={`${th} text-right`}>Already returned</th>
+                  <th className={`${th} text-right`}>Return qty</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(returnTarget.lines || returnTarget.items || []).map((l: any, i: number) => {
+                  const key = lineKey(l, i);
+                  const rem = remainingReturnQty(l);
+                  return (
+                    <tr key={key} className={rem <= 0 ? "opacity-50" : undefined}>
+                      <td className={td}>{l.itemName || l.name || l.itemId}</td>
+                      <td className={`${td} text-right font-mono`}>{Number(l.qty || 0)}</td>
+                      <td className={`${td} text-right font-mono`}>{Number(l.posReturnedQty || 0)}</td>
+                      <td className={`${td} text-right`}>
+                        <input
+                          type="number"
+                          min={0}
+                          max={rem}
+                          step="any"
+                          disabled={rem <= 0}
+                          className={`${input} w-24 ml-auto text-right`}
+                          value={returnQtys[key] ?? 0}
+                          onChange={(e) => {
+                            const next = Math.min(rem, Math.max(0, Number(e.target.value || 0)));
+                            setReturnQtys((prev) => ({ ...prev, [key]: next }));
+                          }}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <div className="flex items-center justify-end gap-2">
+            <button
+              type="button"
+              className={btn}
+              disabled={loading || !currentSession}
+              onClick={() => void processReturn()}
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              Post return
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="border border-[var(--ds-border-default)] rounded-lg overflow-hidden bg-[var(--ds-surface)]">
+        <table className="w-full min-w-[720px]">
+          <thead>
+            <tr>
+              <th className={th}>Date</th>
+              <th className={th}>Invoice</th>
+              <th className={th}>Customer</th>
+              <th className={`${th} text-right`}>Amount</th>
+              <th className={`${th} text-center`}>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {returnableSales.length === 0 ? (
+              <tr>
+                <td colSpan={5} className={`${td} text-center text-[var(--ds-text-muted)]`}>
+                  No returnable POS bills.
+                </td>
+              </tr>
+            ) : (
+              returnableSales.slice(0, 50).map((inv) => (
+                <tr key={inv.id} className="hover:bg-[var(--ds-surface-muted)]">
+                  <td className={td}>{String(inv.date || inv.invoiceDate || "").slice(0, 10)}</td>
+                  <td className={`${td} font-mono font-semibold`}>{inv.invoiceNo || inv.number}</td>
+                  <td className={td}>{inv.partyName || "Walk-in"}</td>
+                  <td className={`${td} text-right font-mono`}>{money(inv.grandTotal || inv.total)}</td>
+                  <td className={`${td} text-center`}>
+                    <button
+                      type="button"
+                      className={btn2}
+                      disabled={loading || !currentSession}
+                      onClick={() => openReturnDraft(inv)}
+                      title={!currentSession ? "Open a POS session first" : "Select return quantities"}
+                    >
+                      <RotateCcw className="h-3.5 w-3.5" />
+                      Return
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
   const openSession = async () => {
     if (currentSession) {
       toast.error("POS session is already open");
@@ -921,6 +1334,7 @@ export default function POSBilling() {
       setSessions((prev) => [row, ...prev.filter((s) => s.id !== row.id)]);
       setModalType("");
       toast.success("POS session closed");
+      setCurrentPage("dashboard");
     } catch (err) {
       console.error(err);
       toast.error("Could not close POS session");
@@ -1308,7 +1722,7 @@ export default function POSBilling() {
                 <button
                   key={i.id}
                   onClick={() => addToCart(i, 1)}
-                  className="bg-white border border-gray-200 rounded-lg p-3 text-left hover:border-[#1557b0] hover:shadow-sm transition-colors"
+                  className="bg-white border border-gray-200 rounded-lg p-3 text-left hover:border-[var(--ds-action-primary)] hover:shadow-sm transition-colors"
                 >
                   <div className="font-semibold text-[13px] text-gray-800 line-clamp-2 min-h-[40px] leading-tight">
                     {i.name}
@@ -1317,7 +1731,7 @@ export default function POSBilling() {
                     {i.code || i.sku || i.barcode || "-"}
                   </div>
                   <div className="flex justify-between items-end mt-2">
-                    <span className="text-[14px] font-bold text-[#1557b0]">{money(price)}</span>
+                    <span className="text-[14px] font-bold text-[var(--ds-action-primary)]">{money(price)}</span>
                     <span
                       className={`text-[10px] font-bold ${
                         stock <= 0 ? "text-red-600" : stock < 5 ? "text-amber-600" : "text-gray-600"
@@ -1342,7 +1756,7 @@ export default function POSBilling() {
           <div className={card}>
             <div className="flex justify-between items-center mb-3">
               <h3 className="text-[14px] font-bold flex items-center gap-2 text-gray-800">
-                <ShoppingCart className="h-5 w-5 text-[#1557b0]" />
+                <ShoppingCart className="h-5 w-5 text-[var(--ds-action-primary)]" />
                 Cart
               </h3>
 
@@ -1438,7 +1852,7 @@ export default function POSBilling() {
                           type="checkbox"
                           checked={l.taxable}
                           onChange={(e) => updateCartLine(l.id, "taxable", e.target.checked)}
-                          className="h-3 w-3 accent-[#1557b0]"
+                          className="h-3 w-3 accent-[var(--ds-action-primary)]"
                         />
                         VAT
                       </label>
@@ -1459,7 +1873,7 @@ export default function POSBilling() {
 
           <div className={card}>
             <h3 className="text-[13px] font-bold mb-3 flex items-center gap-2 text-gray-800">
-              <Calculator className="h-4 w-4 text-[#1557b0]" />
+              <Calculator className="h-4 w-4 text-[var(--ds-action-primary)]" />
               Bill Summary
             </h3>
 
@@ -1514,14 +1928,14 @@ export default function POSBilling() {
 
               <div className="border-t border-gray-200 pt-2 flex justify-between text-[15px]">
                 <span className="font-bold text-gray-800">Grand Total</span>
-                <span className="font-bold text-[#1557b0]">{money(cartSummary.grandTotal)}</span>
+                <span className="font-bold text-[var(--ds-action-primary)]">{money(cartSummary.grandTotal)}</span>
               </div>
             </div>
           </div>
 
           <div className={card}>
             <h3 className="text-[13px] font-bold mb-3 flex items-center gap-2 text-gray-800">
-              <WalletCards className="h-4 w-4 text-[#1557b0]" />
+              <WalletCards className="h-4 w-4 text-[var(--ds-action-primary)]" />
               Payment
             </h3>
 
@@ -1681,7 +2095,7 @@ export default function POSBilling() {
     <div className="space-y-4">
       <div className={card}>
         <h3 className="text-[14px] font-bold flex items-center gap-2 text-gray-800">
-          <PauseCircle className="h-5 w-5 text-[#1557b0]" />
+          <PauseCircle className="h-5 w-5 text-[var(--ds-action-primary)]" />
           Held Bills
         </h3>
         <p className="text-[11px] font-medium text-gray-500 mt-1">
@@ -1756,7 +2170,7 @@ export default function POSBilling() {
 
         <div className={card}>
           <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Sales</p>
-          <p className="text-xl font-bold text-[#1557b0] mt-1">{money(dayStats.totalSales)}</p>
+          <p className="text-xl font-bold text-[var(--ds-action-primary)] mt-1">{money(dayStats.totalSales)}</p>
         </div>
 
         <div className={card}>
@@ -1783,7 +2197,7 @@ export default function POSBilling() {
         <div className="flex flex-wrap justify-between gap-3 items-start">
           <div>
             <h3 className="text-[14px] font-bold flex items-center gap-2 text-gray-800">
-              <CalendarClock className="h-5 w-5 text-[#1557b0]" />
+              <CalendarClock className="h-5 w-5 text-[var(--ds-action-primary)]" />
               Day Close Summary
             </h3>
             <p className="text-[11px] text-gray-500 font-medium mt-1">
@@ -1880,7 +2294,7 @@ export default function POSBilling() {
                 </td>
                 <td className={`${td} text-center`}>
                   <button
-                    className="p-1.5 rounded-md hover:bg-blue-50 text-[#1557b0]"
+                    className="p-1.5 rounded-md hover:bg-blue-50 text-[var(--ds-action-primary)]"
                     onClick={() => printReceipt(inv)}
                   >
                     <Printer className="h-4 w-4" />
@@ -1906,7 +2320,7 @@ export default function POSBilling() {
     <div className="space-y-4">
       <div className={card}>
         <h3 className="text-[14px] font-bold flex items-center gap-2 text-gray-800">
-          <History className="h-5 w-5 text-[#1557b0]" />
+          <History className="h-5 w-5 text-[var(--ds-action-primary)]" />
           Session History
         </h3>
         <p className="text-[11px] font-medium text-gray-500 mt-1">
@@ -2077,20 +2491,36 @@ export default function POSBilling() {
   );
 
   return (
-    <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen text-gray-800">
-      <div className="flex flex-wrap justify-between items-center gap-3 mb-5">
+    <div className="min-h-screen bg-[var(--ds-canvas)] text-[var(--ds-text-default)]">
+      <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
         <div>
-          <h1 className="text-[18px] font-semibold flex items-center gap-2 text-gray-800 tracking-tight">
-            <Receipt className="h-5 w-5 text-[#1557b0]" />
-            POS Mode
+          <h1 className="text-[15px] font-semibold flex items-center gap-2 text-[var(--ds-text-default)]">
+            <Receipt className="h-4 w-4 text-[var(--ds-action-primary)]" />
+            POS counter
           </h1>
-          <p className="text-[12px] text-gray-500 mt-0.5">
-            Fast retail billing with barcode scan, VAT receipt, split payments, hold bills and day
-            close.
+          <p className="text-[11px] text-[var(--ds-text-muted)] mt-0.5">
+            Retail billing — barcode, VAT, split pay, hold, day close.
           </p>
         </div>
 
         <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            className={btn2}
+            onClick={() => {
+              if (currentSession) {
+                toast.error("Close the POS session before leaving");
+                setModalType("closeSession");
+                return;
+              }
+              setCurrentPage("dashboard");
+            }}
+            title={currentSession ? "Close session first" : "Return to ERP home"}
+          >
+            <LogOut className="h-4 w-4" />
+            Exit POS
+          </button>
+
           <button className={btn2} onClick={loadData} disabled={loading}>
             <RefreshCcw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
             Refresh
@@ -2118,6 +2548,7 @@ export default function POSBilling() {
       <div className="flex flex-wrap gap-2 mb-5">
         {[
           ["Billing", ShoppingCart],
+          ["Returns", RotateCcw],
           ["Held Bills", PauseCircle],
           ["Day Close", CalendarClock],
           ["Session History", History],
@@ -2127,7 +2558,7 @@ export default function POSBilling() {
             onClick={() => setActiveTab(name)}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium transition-colors ${
               activeTab === name
-                ? "bg-[#1557b0] text-white"
+                ? "bg-[var(--ds-action-primary)] text-white"
                 : "bg-white text-gray-600 border border-gray-300 hover:bg-gray-50"
             }`}
           >
@@ -2140,13 +2571,14 @@ export default function POSBilling() {
       {loading && (
         <div className={`${card} mb-4`}>
           <div className="flex items-center gap-2 text-[12px] font-medium text-gray-600">
-            <RefreshCcw className="h-4 w-4 animate-spin text-[#1557b0]" />
+            <RefreshCcw className="h-4 w-4 animate-spin text-[var(--ds-action-primary)]" />
             Processing POS operation...
           </div>
         </div>
       )}
 
       {activeTab === "Billing" && renderBilling()}
+      {activeTab === "Returns" && renderReturns()}
       {activeTab === "Held Bills" && renderHeldBills()}
       {activeTab === "Day Close" && renderDayClose()}
       {activeTab === "Session History" && renderSessionHistory()}

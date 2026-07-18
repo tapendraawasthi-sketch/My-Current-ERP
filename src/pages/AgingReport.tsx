@@ -21,6 +21,7 @@ import * as XLSX from "xlsx";
 import toast from "@/lib/appToast";
 import { mergeSystemConfiguration, getAgeingBucketIndex } from "../lib/systemConfiguration";
 import { computeInvoiceOutstanding } from "../lib/accounting";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -99,41 +100,41 @@ const AgingBar: React.FC<{ totals: AgingBucket; direction: "receivable" | "payab
     {
       label: "Current",
       value: totals.current,
-      barClass: "bg-emerald-600",
-      dotClass: "bg-emerald-600",
-      valueClass: "text-emerald-700",
+      barClass: "bg-[var(--ds-status-success)]",
+      dotClass: "bg-[var(--ds-status-success)]",
+      valueClass: "text-[var(--ds-status-success)]",
       pct: (totals.current / totals.total) * 100,
     },
     {
       label: "1-30 days",
       value: totals.days1to30,
-      barClass: "bg-amber-600",
-      dotClass: "bg-amber-600",
-      valueClass: "text-amber-700",
+      barClass: "bg-[var(--ds-status-warning)]",
+      dotClass: "bg-[var(--ds-status-warning)]",
+      valueClass: "text-[var(--ds-status-warning)]",
       pct: (totals.days1to30 / totals.total) * 100,
     },
     {
       label: "31-60 days",
       value: totals.days31to60,
-      barClass: "bg-orange-500",
-      dotClass: "bg-orange-500",
-      valueClass: "text-orange-600",
+      barClass: "bg-[var(--ds-status-warning)]",
+      dotClass: "bg-[var(--ds-status-warning)]",
+      valueClass: "text-[var(--ds-status-warning)]",
       pct: (totals.days31to60 / totals.total) * 100,
     },
     {
       label: "61-90 days",
       value: totals.days61to90,
-      barClass: "bg-red-500",
-      dotClass: "bg-red-500",
-      valueClass: "text-red-600",
+      barClass: "bg-[var(--ds-status-danger)]",
+      dotClass: "bg-[var(--ds-status-danger)]",
+      valueClass: "text-[var(--ds-status-danger)]",
       pct: (totals.days61to90 / totals.total) * 100,
     },
     {
       label: "90+ days",
       value: totals.over90,
-      barClass: "bg-red-900",
-      dotClass: "bg-red-900",
-      valueClass: "text-red-800",
+      barClass: "bg-[var(--ds-status-danger)]",
+      dotClass: "bg-[var(--ds-status-danger)]",
+      valueClass: "text-[var(--ds-status-danger)]",
       pct: (totals.over90 / totals.total) * 100,
     },
   ];
@@ -180,6 +181,7 @@ const AgingBar: React.FC<{ totals: AgingBucket; direction: "receivable" | "payab
 
 const AgingReport: React.FC = () => {
   const { parties, companySettings, currentPage } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const handoffAgingReminder = useSutraAiStore((s) => s.handoffAgingReminder);
   const handoffChatQuery = useSutraAiStore((s) => s.handoffChatQuery);
   const outputLanguage = useSutraAiStore((s) => s.languageConfig.outputLanguage);
@@ -266,6 +268,7 @@ const AgingReport: React.FC = () => {
 
     for (const inv of invoices as any[]) {
       if (!inv || inv.status === "cancelled" || inv.status === "draft") continue;
+      if (!matchBranch(inv.branchId)) continue;
 
       const originalAmount = Number(inv.grandTotal ?? inv.total ?? 0);
       if (originalAmount <= 0) continue;
@@ -306,7 +309,7 @@ const AgingReport: React.FC = () => {
     }
 
     return Array.from(partyMap.values()).sort((a, b) => b.buckets.total - a.buckets.total);
-  }, [invoices, payments, asOfDate, parties, direction, ageingSlabs]);
+  }, [invoices, payments, asOfDate, parties, direction, ageingSlabs, matchBranch, branchFilter]);
 
   // ── Filter ────────────────────────────────────────────────────────────────
   const filteredRows = useMemo<AgingRow[]>(() => {
@@ -430,6 +433,22 @@ const AgingReport: React.FC = () => {
             Payables
           </button>
         </div>
+
+        {branchOptions.length > 0 && (
+          <select
+            value={branchFilter}
+            onChange={(e) => setBranchFilter(e.target.value)}
+            aria-label="Branch"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+          >
+            <option value="all">All branches</option>
+            {branchOptions.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name || b.code || b.id}
+              </option>
+            ))}
+          </select>
+        )}
 
         <div>
           <ReportDateRangePicker
@@ -559,7 +578,7 @@ const AgingReport: React.FC = () => {
                                       : 0,
                             })
                           }
-                          className="h-6 whitespace-nowrap rounded border border-amber-300 bg-amber-50 px-2 text-[12px] font-semibold text-amber-700 hover:bg-amber-100"
+                          className="h-6 whitespace-nowrap rounded border border-[var(--ds-status-warning)]/40 bg-[var(--ds-status-warning-surface)] px-2 text-[12px] font-semibold text-[var(--ds-status-warning)] hover:opacity-90"
                         >
                           Remind
                         </button>
@@ -581,9 +600,9 @@ const AgingReport: React.FC = () => {
                             })
                           }
                           className="h-6 whitespace-nowrap rounded border border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)] px-1.5 text-[12px] font-semibold text-[var(--ds-action-primary)] hover:bg-[var(--ds-surface-hover)]"
-                          title="Open SUTRA AI with reminder"
+                          title="Open Orbix with reminder"
                         >
-                          SUTRA
+                          Orbix
                         </button>
                         <button
                           type="button"
@@ -621,8 +640,8 @@ const AgingReport: React.FC = () => {
                           className="h-6 whitespace-nowrap rounded border px-1.5 text-[12px] font-semibold border-[var(--ds-action-primary)] bg-white text-[var(--ds-action-primary)] hover:bg-[var(--ds-surface-muted)]"
                           title={
                             row.partyPhone
-                              ? "Open SUTRA AI and send via WhatsApp"
-                              : `Set phone in SUTRA AI (${buildSetPhoneHandoffQuery(row.partyName || "Party").trim()})`
+                              ? "Open Orbix and send via WhatsApp"
+                              : `Set phone in Orbix (${buildSetPhoneHandoffQuery(row.partyName || "Party").trim()})`
                           }
                         >
                           {agingWaButtonLabel(Boolean(row.partyPhone), outputLanguage)}
@@ -719,9 +738,9 @@ const AgingReport: React.FC = () => {
                     setReminderParty(null);
                   }}
                   className="h-8 px-3 bg-[var(--ds-surface-muted)] border border-[var(--ds-border-default)] text-[var(--ds-action-primary)] text-[12px] font-medium rounded-md hover:bg-[var(--ds-surface-hover)]"
-                  title="Open SUTRA AI with reminder"
+                  title="Open Orbix with reminder"
                 >
-                  SUTRA AI
+                  Orbix
                 </button>
                 <button
                   type="button"
@@ -745,8 +764,8 @@ const AgingReport: React.FC = () => {
                   className="h-8 px-3 bg-white border text-[12px] font-medium rounded-md border-[var(--ds-action-primary)] text-[var(--ds-action-primary)] hover:bg-[var(--ds-surface-muted)]"
                   title={
                     reminderParty.phone
-                      ? "Open SUTRA AI and send via WhatsApp"
-                      : `Set phone in SUTRA AI (${buildSetPhoneHandoffQuery(reminderParty.name).trim()})`
+                      ? "Open Orbix and send via WhatsApp"
+                      : `Set phone in Orbix (${buildSetPhoneHandoffQuery(reminderParty.name).trim()})`
                   }
                 >
                   {agingWaButtonLabel(Boolean(reminderParty.phone), outputLanguage)}

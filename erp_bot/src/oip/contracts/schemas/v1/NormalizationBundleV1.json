@@ -1,0 +1,527 @@
+{
+  "$defs": {
+    "MappingKind": {
+      "enum": [
+        "IDENTITY",
+        "ONE_TO_ONE",
+        "MANY_TO_ONE",
+        "ONE_TO_MANY",
+        "INSERTION",
+        "DELETION_CANDIDATE_NOT_APPLIED"
+      ],
+      "title": "MappingKind",
+      "type": "string"
+    },
+    "NormalizationEditV1": {
+      "additionalProperties": false,
+      "properties": {
+        "alternatives": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Alternatives",
+          "type": "array"
+        },
+        "applied_views": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ViewType"
+          },
+          "title": "Applied Views",
+          "type": "array"
+        },
+        "candidate_surface": {
+          "title": "Candidate Surface",
+          "type": "string"
+        },
+        "confidence": {
+          "default": 1.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "edit_id": {
+          "title": "Edit Id",
+          "type": "string"
+        },
+        "normalized_span": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourceSpanV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "operation": {
+          "$ref": "#/$defs/NormalizationOperation"
+        },
+        "original_surface": {
+          "title": "Original Surface",
+          "type": "string"
+        },
+        "protected_span_interaction": {
+          "$ref": "#/$defs/ProtectedSpanInteraction",
+          "default": "OUTSIDE_PROTECTED"
+        },
+        "raw_span": {
+          "$ref": "#/$defs/SourceSpanV1"
+        },
+        "reason_code": {
+          "default": "",
+          "title": "Reason Code",
+          "type": "string"
+        },
+        "reversible": {
+          "default": true,
+          "title": "Reversible",
+          "type": "boolean"
+        },
+        "rule_id": {
+          "title": "Rule Id",
+          "type": "string"
+        },
+        "rule_version": {
+          "default": "mai-06.1.0",
+          "title": "Rule Version",
+          "type": "string"
+        },
+        "safety_class": {
+          "$ref": "#/$defs/SafetyClass"
+        }
+      },
+      "required": [
+        "edit_id",
+        "raw_span",
+        "operation",
+        "original_surface",
+        "candidate_surface",
+        "safety_class",
+        "rule_id"
+      ],
+      "title": "NormalizationEditV1",
+      "type": "object"
+    },
+    "NormalizationOperation": {
+      "enum": [
+        "UNICODE_NFC",
+        "WHITESPACE_CODEPOINT_STANDARDIZATION",
+        "WHITESPACE_COLLAPSE",
+        "LINE_ENDING_STANDARDIZATION",
+        "LATIN_CASEFOLD",
+        "ASCII_DEVANAGARI_DIGIT_EQUIVALENCE",
+        "PUNCTUATION_EQUIVALENCE_CANDIDATE",
+        "QUOTE_EQUIVALENCE_CANDIDATE",
+        "DASH_EQUIVALENCE_CANDIDATE",
+        "ABBREVIATION_EXPANSION_CANDIDATE",
+        "REPETITION_REDUCTION_CANDIDATE",
+        "CONTROL_CHARACTER_REVIEW",
+        "ZERO_WIDTH_REVIEW",
+        "BIDI_CONTROL_REVIEW",
+        "UNKNOWN_EDIT"
+      ],
+      "title": "NormalizationOperation",
+      "type": "string"
+    },
+    "NormalizationStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "PARTIAL",
+        "FAILED"
+      ],
+      "title": "NormalizationStatus",
+      "type": "string"
+    },
+    "NormalizationViewV1": {
+      "additionalProperties": false,
+      "properties": {
+        "allowed_uses": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Allowed Uses",
+          "type": "array"
+        },
+        "applied_edit_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Applied Edit Ids",
+          "type": "array"
+        },
+        "integrity": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ReconstructionIntegrityV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "offset_map": {
+          "$ref": "#/$defs/OffsetMapV1"
+        },
+        "status": {
+          "$ref": "#/$defs/NormalizationStatus",
+          "default": "COMPLETE"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "view_id": {
+          "title": "View Id",
+          "type": "string"
+        },
+        "view_type": {
+          "$ref": "#/$defs/ViewType"
+        }
+      },
+      "required": [
+        "view_id",
+        "view_type",
+        "text",
+        "offset_map"
+      ],
+      "title": "NormalizationViewV1",
+      "type": "object"
+    },
+    "OffsetMapSegmentV1": {
+      "additionalProperties": false,
+      "properties": {
+        "edit_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Edit Id"
+        },
+        "mapping_kind": {
+          "$ref": "#/$defs/MappingKind",
+          "default": "IDENTITY"
+        },
+        "normalized_end": {
+          "minimum": 0,
+          "title": "Normalized End",
+          "type": "integer"
+        },
+        "normalized_start": {
+          "minimum": 0,
+          "title": "Normalized Start",
+          "type": "integer"
+        },
+        "raw_end": {
+          "minimum": 0,
+          "title": "Raw End",
+          "type": "integer"
+        },
+        "raw_start": {
+          "minimum": 0,
+          "title": "Raw Start",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "raw_start",
+        "raw_end",
+        "normalized_start",
+        "normalized_end"
+      ],
+      "title": "OffsetMapSegmentV1",
+      "type": "object"
+    },
+    "OffsetMapV1": {
+      "additionalProperties": false,
+      "properties": {
+        "mapping_version": {
+          "default": "mai-06.1.0",
+          "title": "Mapping Version",
+          "type": "string"
+        },
+        "normalized_length": {
+          "minimum": 0,
+          "title": "Normalized Length",
+          "type": "integer"
+        },
+        "offset_unit": {
+          "default": "UNICODE_CODE_POINT",
+          "title": "Offset Unit",
+          "type": "string"
+        },
+        "raw_length": {
+          "minimum": 0,
+          "title": "Raw Length",
+          "type": "integer"
+        },
+        "segments": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/OffsetMapSegmentV1"
+          },
+          "title": "Segments",
+          "type": "array"
+        }
+      },
+      "required": [
+        "raw_length",
+        "normalized_length"
+      ],
+      "title": "OffsetMapV1",
+      "type": "object"
+    },
+    "ProtectedSpanInteraction": {
+      "enum": [
+        "OUTSIDE_PROTECTED",
+        "COPIED_UNCHANGED",
+        "OVERLAP_REJECTED",
+        "CALLER_DECLARED_PROTECTED"
+      ],
+      "title": "ProtectedSpanInteraction",
+      "type": "string"
+    },
+    "ReconstructionIntegrityV1": {
+      "additionalProperties": false,
+      "description": "Trusted artifact binding for structural reconstruction (not a digital signature).",
+      "properties": {
+        "artifact_digest": {
+          "maxLength": 64,
+          "minLength": 64,
+          "title": "Artifact Digest",
+          "type": "string"
+        },
+        "edits_digest": {
+          "maxLength": 64,
+          "minLength": 64,
+          "title": "Edits Digest",
+          "type": "string"
+        },
+        "integrity_algorithm": {
+          "default": "SHA-256",
+          "title": "Integrity Algorithm",
+          "type": "string"
+        },
+        "integrity_domain": {
+          "default": "MOKXYA_NORMALIZATION_RECONSTRUCTION_V1",
+          "title": "Integrity Domain",
+          "type": "string"
+        },
+        "normalizer_version": {
+          "title": "Normalizer Version",
+          "type": "string"
+        },
+        "offset_map_digest": {
+          "maxLength": 64,
+          "minLength": 64,
+          "title": "Offset Map Digest",
+          "type": "string"
+        },
+        "offset_unit": {
+          "default": "UNICODE_CODE_POINT",
+          "title": "Offset Unit",
+          "type": "string"
+        },
+        "schema_version": {
+          "default": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_codepoint_length": {
+          "minimum": 0,
+          "title": "Source Codepoint Length",
+          "type": "integer"
+        },
+        "source_digest": {
+          "maxLength": 64,
+          "minLength": 64,
+          "title": "Source Digest",
+          "type": "string"
+        },
+        "view_codepoint_length": {
+          "minimum": 0,
+          "title": "View Codepoint Length",
+          "type": "integer"
+        },
+        "view_digest": {
+          "maxLength": 64,
+          "minLength": 64,
+          "title": "View Digest",
+          "type": "string"
+        },
+        "view_name": {
+          "title": "View Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "normalizer_version",
+        "view_name",
+        "source_codepoint_length",
+        "view_codepoint_length",
+        "source_digest",
+        "view_digest",
+        "edits_digest",
+        "offset_map_digest",
+        "artifact_digest"
+      ],
+      "title": "ReconstructionIntegrityV1",
+      "type": "object"
+    },
+    "SafetyClass": {
+      "enum": [
+        "SAFE_AUTOMATIC",
+        "RETRIEVAL_ONLY",
+        "CANDIDATE_ONLY",
+        "SECURITY_REVIEW_REQUIRED",
+        "PROHIBITED"
+      ],
+      "title": "SafetyClass",
+      "type": "string"
+    },
+    "SourceSpanV1": {
+      "additionalProperties": false,
+      "description": "Offsets are Unicode code-point indices unless offset_unit says otherwise.",
+      "properties": {
+        "end_offset": {
+          "minimum": 0,
+          "title": "End Offset",
+          "type": "integer"
+        },
+        "offset_unit": {
+          "default": "UNICODE_CODE_POINT",
+          "title": "Offset Unit",
+          "type": "string"
+        },
+        "original_text": {
+          "title": "Original Text",
+          "type": "string"
+        },
+        "source_message_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Message Id"
+        },
+        "start_offset": {
+          "minimum": 0,
+          "title": "Start Offset",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "start_offset",
+        "end_offset",
+        "original_text"
+      ],
+      "title": "SourceSpanV1",
+      "type": "object"
+    },
+    "ViewType": {
+      "enum": [
+        "RAW",
+        "UNICODE_CANONICAL",
+        "SAFE_SEMANTIC",
+        "RETRIEVAL",
+        "DISPLAY_CANDIDATE"
+      ],
+      "title": "ViewType",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/NormalizationBundleV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "edits": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/NormalizationEditV1"
+      },
+      "title": "Edits",
+      "type": "array"
+    },
+    "input_quality_flags": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Input Quality Flags",
+      "type": "array"
+    },
+    "normalizer_version": {
+      "default": "mai-06.1.1",
+      "title": "Normalizer Version",
+      "type": "string"
+    },
+    "offset_unit": {
+      "default": "UNICODE_CODE_POINT",
+      "title": "Offset Unit",
+      "type": "string"
+    },
+    "protected_span_references": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/SourceSpanV1"
+      },
+      "title": "Protected Span References",
+      "type": "array"
+    },
+    "raw_text": {
+      "title": "Raw Text",
+      "type": "string"
+    },
+    "resource_pack_version": {
+      "default": "mai-06.1.0",
+      "title": "Resource Pack Version",
+      "type": "string"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/NormalizationStatus",
+      "default": "NOT_RUN"
+    },
+    "views": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/NormalizationViewV1"
+      },
+      "title": "Views",
+      "type": "array"
+    },
+    "warnings": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "raw_text"
+  ],
+  "title": "NormalizationBundleV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

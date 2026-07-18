@@ -5,12 +5,14 @@ import { getDB, generateId } from "../lib/db";
 import toast from "@/lib/appToast";
 import * as XLSX from "xlsx";
 import { Clock, Mail, Calendar, Plus, Edit2, Trash2, Play, CheckCircle, Send } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const BORDER = "1px solid #000";
 const BG = "#E4F1D9";
-const BG_CARD = "#EBF5E2";
-const BG_HEADER = "#D4EABD";
-const BG_DEEP = "#C9DEB5";
+const BG_CARD = "var(--ds-surface-muted)";
+const BG_HEADER = "var(--ds-surface-hover)";
+const BG_DEEP = "var(--ds-surface-muted)";
 
 function calculateNextRunDate(frequency, dayOfWeek, dayOfMonth, runTime) {
   const now = new Date();
@@ -35,6 +37,7 @@ function calculateNextRunDate(frequency, dayOfWeek, dayOfMonth, runTime) {
 
 export default function ReportScheduler() {
   const { items, stockMovements, invoices, vouchers, companySettings } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [schedules, setSchedules] = useState([]);
   const [selectedSchedule, setSelectedSchedule] = useState(null);
   const [editingSchedule, setEditingSchedule] = useState({
@@ -51,6 +54,8 @@ export default function ReportScheduler() {
     emailBodyNote: "",
     isActive: true,
   });
+
+  const filteredSchedules = schedules.filter((s) => matchBranch((s as any).branchId));
 
   // Load schedules from DB
   useEffect(() => {
@@ -128,6 +133,7 @@ export default function ReportScheduler() {
         lastRunDate: null,
         lastRunStatus: null,
         createdAt: new Date().toISOString(),
+        branchId: selectedSchedule?.branchId || readActiveBranchId() || undefined,
       };
 
       await db.reportSchedules.put(scheduleData);
@@ -180,6 +186,7 @@ export default function ReportScheduler() {
         // Simulate vouchers for today
         const today = new Date().toISOString().split("T")[0];
         data = vouchers
+          .filter((v) => matchBranch((v as any).branchId))
           .filter((v) => v.date === today)
           .map((v) => ({
             VoucherNo: v.voucherNo,
@@ -356,6 +363,22 @@ export default function ReportScheduler() {
           </h2>
         </div>
 
+        {branchOptions.length > 0 && (
+          <select
+            value={branchFilter}
+            onChange={(e) => setBranchFilter(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full mb-3"
+            aria-label="Branch"
+          >
+            <option value="all">All branches</option>
+            {branchOptions.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name || b.code || b.id}
+              </option>
+            ))}
+          </select>
+        )}
+
         <button
           onClick={() => {
             setSelectedSchedule(null);
@@ -375,7 +398,7 @@ export default function ReportScheduler() {
             });
           }}
           style={{
-            backgroundColor: "#1557b0",
+            backgroundColor: "var(--ds-action-primary)",
             color: "white",
             border: BORDER,
             padding: "8px 12px",
@@ -393,7 +416,7 @@ export default function ReportScheduler() {
         </button>
 
         <div style={{ maxHeight: "600px", overflowY: "auto" }}>
-          {schedules.map((schedule) => (
+          {filteredSchedules.map((schedule) => (
             <div
               key={schedule.id}
               onClick={() => handleEditSchedule(schedule)}
@@ -929,7 +952,7 @@ export default function ReportScheduler() {
           <button
             onClick={handleSaveSchedule}
             style={{
-              backgroundColor: "#1557b0",
+              backgroundColor: "var(--ds-action-primary)",
               color: "white",
               border: BORDER,
               padding: "8px 16px",

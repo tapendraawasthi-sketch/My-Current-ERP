@@ -3,9 +3,12 @@ import { useStore } from "../store";
 import { Plus, Edit2, Trash2, X, Save } from "lucide-react";
 import toast from "@/lib/appToast";
 import { generateId } from "../lib/db";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const PayrollUnitMaster: React.FC = () => {
   const { payrollUnits, addPayrollUnit, updatePayrollUnit, deletePayrollUnit } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [showForm, setShowForm] = useState(false);
   const [selected, setSelected] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -47,8 +50,9 @@ const PayrollUnitMaster: React.FC = () => {
 
   const filteredUnits = (payrollUnits || []).filter(
     (unit) =>
-      unit.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      unit.formalName.toLowerCase().includes(searchTerm.toLowerCase()),
+      matchBranch((unit as any).branchId) &&
+      (unit.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        unit.formalName.toLowerCase().includes(searchTerm.toLowerCase())),
   );
 
   const resetForm = () => {
@@ -92,11 +96,15 @@ const PayrollUnitMaster: React.FC = () => {
     }
 
     try {
+      const payload = {
+        ...form,
+        branchId: selected?.branchId || readActiveBranchId() || undefined,
+      };
       if (selected) {
-        await updatePayrollUnit(selected.id, form);
+        await updatePayrollUnit(selected.id, payload);
         toast.success("Updated successfully");
       } else {
-        await addPayrollUnit(form);
+        await addPayrollUnit(payload);
         toast.success("Saved successfully");
       }
       resetForm();
@@ -136,8 +144,23 @@ const PayrollUnitMaster: React.FC = () => {
               </p>
             </div>
             <div className="flex items-center gap-2">
+              {branchOptions.length > 0 && (
+                <select
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>
+              )}
               <button
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
                 onClick={() => {
                   resetForm();
                   setShowForm(true);
@@ -153,7 +176,7 @@ const PayrollUnitMaster: React.FC = () => {
             <input
               type="text"
               placeholder="Search units..."
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-64"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -218,7 +241,7 @@ const PayrollUnitMaster: React.FC = () => {
                         <div className="flex items-center justify-center gap-1.5">
                           <button
                             onClick={() => loadFormForEdit(unit)}
-                            className="p-1 text-gray-500 hover:text-[#1557b0] hover:bg-blue-50 rounded"
+                            className="p-1 text-gray-500 hover:text-[var(--ds-action-primary)] hover:bg-blue-50 rounded"
                             title="Edit"
                           >
                             <Edit2 size={14} />
@@ -263,7 +286,7 @@ const PayrollUnitMaster: React.FC = () => {
               </label>
               <input
                 type="text"
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 value={form.symbol}
                 onChange={(e) => setForm({ ...form, symbol: e.target.value })}
                 placeholder="Enter symbol (e.g. Days, Hrs)"
@@ -277,7 +300,7 @@ const PayrollUnitMaster: React.FC = () => {
               </label>
               <input
                 type="text"
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 value={form.formalName}
                 onChange={(e) => setForm({ ...form, formalName: e.target.value })}
                 placeholder="Enter formal name"
@@ -291,7 +314,7 @@ const PayrollUnitMaster: React.FC = () => {
                   <input
                     type="radio"
                     name="isCompound"
-                    className="text-[#1557b0] focus:ring-[#1557b0] cursor-pointer"
+                    className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] cursor-pointer"
                     checked={!form.isCompound}
                     onChange={() => setForm({ ...form, isCompound: false })}
                   />
@@ -301,7 +324,7 @@ const PayrollUnitMaster: React.FC = () => {
                   <input
                     type="radio"
                     name="isCompound"
-                    className="text-[#1557b0] focus:ring-[#1557b0] cursor-pointer"
+                    className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] cursor-pointer"
                     checked={form.isCompound}
                     onChange={() => setForm({ ...form, isCompound: true })}
                   />
@@ -317,7 +340,7 @@ const PayrollUnitMaster: React.FC = () => {
                 </label>
                 <input
                   type="number"
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   value={form.decimalPlaces}
                   onChange={(e) =>
                     setForm({ ...form, decimalPlaces: parseInt(e.target.value) || 0 })
@@ -335,7 +358,7 @@ const PayrollUnitMaster: React.FC = () => {
                     </label>
                     <input
                       type="text"
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                       value={form.firstUnit}
                       onChange={(e) => setForm({ ...form, firstUnit: e.target.value })}
                       placeholder="e.g. Day"
@@ -347,7 +370,7 @@ const PayrollUnitMaster: React.FC = () => {
                     </label>
                     <input
                       type="text"
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                       value={form.secondUnit}
                       onChange={(e) => setForm({ ...form, secondUnit: e.target.value })}
                       placeholder="e.g. Hours"
@@ -360,7 +383,7 @@ const PayrollUnitMaster: React.FC = () => {
                   </label>
                   <input
                     type="number"
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                     value={form.conversionFactor}
                     onChange={(e) =>
                       setForm({ ...form, conversionFactor: parseFloat(e.target.value) || 0 })
@@ -372,9 +395,9 @@ const PayrollUnitMaster: React.FC = () => {
                 </div>
 
                 <div className="text-center text-[11px] text-gray-600 bg-white border border-gray-200 rounded py-1.5 font-medium">
-                  1 <span className="text-[#1557b0]">{form.firstUnit || "[Unit 1]"}</span> ={" "}
+                  1 <span className="text-[var(--ds-action-primary)]">{form.firstUnit || "[Unit 1]"}</span> ={" "}
                   {form.conversionFactor || 0}{" "}
-                  <span className="text-[#1557b0]">{form.secondUnit || "[Unit 2]"}</span>
+                  <span className="text-[var(--ds-action-primary)]">{form.secondUnit || "[Unit 2]"}</span>
                 </div>
               </div>
             )}
@@ -384,7 +407,7 @@ const PayrollUnitMaster: React.FC = () => {
                 <input
                   type="checkbox"
                   id="isActive"
-                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] h-3.5 w-3.5 cursor-pointer"
+                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                   checked={form.isActive}
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
                 />
@@ -406,7 +429,7 @@ const PayrollUnitMaster: React.FC = () => {
               Cancel
             </button>
             <button
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+              className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
               onClick={handleSubmit}
             >
               <Save size={14} />

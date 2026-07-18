@@ -4,15 +4,17 @@ import toast from "@/lib/appToast";
 import { DBUnitConversion, DBUnit } from "../lib/db";
 import { Plus, Edit2, Trash2, X, Save, Search, RefreshCcw } from "lucide-react";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5 disabled:opacity-60";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5 disabled:opacity-60";
 const btnOutline =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 const inputCls =
-  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
 
 const emptyForm = (): Omit<DBUnitConversion, "id"> => ({
@@ -25,6 +27,7 @@ const emptyForm = (): Omit<DBUnitConversion, "id"> => ({
 export default function UnitConversionMaster() {
   const { unitConversions, units, addUnitConversion, updateUnitConversion, deleteUnitConversion } =
     useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -35,11 +38,12 @@ export default function UnitConversionMaster() {
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase().trim();
-    if (!q) return unitConversions;
-    return unitConversions.filter(
-      (uc) => uc.mainUnit.toLowerCase().includes(q) || uc.subUnit.toLowerCase().includes(q),
-    );
-  }, [unitConversions, search]);
+    return unitConversions.filter((uc) => {
+      if (!matchBranch((uc as { branchId?: string }).branchId)) return false;
+      if (!q) return true;
+      return uc.mainUnit.toLowerCase().includes(q) || uc.subUnit.toLowerCase().includes(q);
+    });
+  }, [unitConversions, search, matchBranch, branchFilter]);
 
   const deleteTarget = useMemo(
     () => unitConversions.find((uc) => uc.id === deleteTargetId) ?? null,
@@ -106,13 +110,20 @@ export default function UnitConversionMaster() {
         subUnit: form.subUnit,
         conversionFactor: Number(form.conversionFactor),
         isActive: form.isActive,
+        branchId:
+          (editingId
+            ? (unitConversions.find((u) => u.id === editingId) as { branchId?: string } | undefined)
+                ?.branchId
+            : undefined) ||
+          readActiveBranchId() ||
+          undefined,
       };
 
       if (editingId) {
-        await updateUnitConversion(editingId, payload);
+        await updateUnitConversion(editingId, payload as any);
         toast.success("Unit conversion updated successfully.");
       } else {
-        await addUnitConversion(payload);
+        await addUnitConversion(payload as any);
         toast.success("Unit conversion added successfully.");
       }
       resetForm();
@@ -151,10 +162,27 @@ export default function UnitConversionMaster() {
                 Manage relationships and conversion factors between units
               </p>
             </div>
-            <button type="button" className={btnPrimary} onClick={handleOpenCreate}>
-              <Plus className="h-3.5 w-3.5" />
-              New conversion
-            </button>
+            <div className="flex items-center gap-2">
+              {branchOptions.length > 0 && (
+                <select
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>
+              )}
+              <button type="button" className={btnPrimary} onClick={handleOpenCreate}>
+                <Plus className="h-3.5 w-3.5" />
+                New conversion
+              </button>
+            </div>
           </div>
 
           <div className="relative mb-3 max-w-xs">
@@ -196,7 +224,7 @@ export default function UnitConversionMaster() {
                   {filtered.map((uc) => (
                     <tr
                       key={uc.id}
-                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
                       onClick={() => handleOpenEdit(uc)}
                     >
                       <td className={`${td} font-medium text-gray-800`}>{uc.mainUnit}</td>
@@ -320,7 +348,7 @@ export default function UnitConversionMaster() {
                 type="checkbox"
                 checked={form.isActive}
                 onChange={(e) => setField("isActive", e.target.checked)}
-                className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
               />
               <span className="text-[12px] font-medium text-gray-700">Active</span>
             </label>

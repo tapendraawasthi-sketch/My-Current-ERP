@@ -17,8 +17,8 @@
   --ox-text-subtle: #94a3b8;
   --ox-text-on-dark: #e2e8f0;
   --ox-text-on-dark-muted: #94a3b8;
-  --ox-primary: #1557b0;
-  --ox-primary-hover: #0f4a96;
+  --ox-primary: var(--ds-action-primary);
+  --ox-primary-hover: var(--ds-action-primary-hover);
   --ox-primary-active: #0c3d7a;
   --ox-primary-soft: #e8f0fb;
   --ox-intelligence: #0891b2;

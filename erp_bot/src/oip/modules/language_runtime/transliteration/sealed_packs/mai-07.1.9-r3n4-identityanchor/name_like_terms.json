@@ -1,0 +1,20 @@
+{
+  "entries": [
+    "anita",
+    "gita",
+    "hari",
+    "john",
+    "krishna",
+    "mary",
+    "preeti",
+    "rajeev",
+    "ram",
+    "shyam",
+    "sita",
+    "susan"
+  ],
+  "provenance": "synthetic proper-name examples for conservative behavior tests — not customer data",
+  "resource_id": "name_like_terms",
+  "review_status": "ENGINEERING_CURATED_NOT_LINGUIST_APPROVED",
+  "version": "mai-07.1.0"
+}

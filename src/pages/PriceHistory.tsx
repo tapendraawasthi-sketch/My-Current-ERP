@@ -2,6 +2,7 @@
 import React, { useState, useMemo } from "react";
 import { TrendingUp, TrendingDown, Search, Package, Users, History } from "lucide-react";
 import { useStore } from "@/store/useStore";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 // Define types
 interface PriceEntry {
@@ -156,11 +157,12 @@ const PriceHistory: React.FC = () => {
   const [selectedParty, setSelectedParty] = useState<string>("");
 
   const { invoices, vouchers } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const allInvoices = [
-    ...(invoices ?? []),
-    ...(vouchers ?? []).filter((v) =>
-      ["SALES", "PURCHASE", "sales", "purchase"].includes(v.type ?? ""),
-    ),
+    ...(invoices ?? []).filter((inv) => matchBranch((inv as any).branchId)),
+    ...(vouchers ?? [])
+      .filter((v) => ["SALES", "PURCHASE", "sales", "purchase"].includes(v.type ?? ""))
+      .filter((v) => matchBranch((v as any).branchId)),
   ];
 
   const priceHistory = useMemo(() => computePriceHistory(allInvoices), [allInvoices]);
@@ -266,11 +268,28 @@ const PriceHistory: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full bg-[#f5f6fa] pb-20">
-      <div className="p-4 bg-white border-b border-gray-200">
-        <h1 className="text-xl font-bold text-gray-800">Price History & Rate Lookup</h1>
-        <p className="text-sm text-gray-600">
-          View item-wise and party-wise sale/purchase rate history
-        </p>
+      <div className="p-4 bg-white border-b border-gray-200 flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-gray-800">Price History & Rate Lookup</h1>
+          <p className="text-sm text-gray-600">
+            View item-wise and party-wise sale/purchase rate history
+          </p>
+        </div>
+        {branchOptions.length > 0 && (
+          <select
+            value={branchFilter}
+            onChange={(e) => setBranchFilter(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            aria-label="Branch"
+          >
+            <option value="all">All branches</option>
+            {branchOptions.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name || b.code || b.id}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       {/* Tabs */}
@@ -278,7 +297,7 @@ const PriceHistory: React.FC = () => {
         <button
           className={`px-4 py-2 text-sm font-medium capitalize ${
             activeTab === "item_view"
-              ? "text-[#1557b0] border-b-2 border-[#1557b0]"
+              ? "text-[var(--ds-action-primary)] border-b-2 border-[var(--ds-action-primary)]"
               : "text-gray-500 hover:text-gray-700"
           }`}
           onClick={() => setActiveTab("item_view")}
@@ -288,7 +307,7 @@ const PriceHistory: React.FC = () => {
         <button
           className={`px-4 py-2 text-sm font-medium capitalize ${
             activeTab === "party_view"
-              ? "text-[#1557b0] border-b-2 border-[#1557b0]"
+              ? "text-[var(--ds-action-primary)] border-b-2 border-[var(--ds-action-primary)]"
               : "text-gray-500 hover:text-gray-700"
           }`}
           onClick={() => setActiveTab("party_view")}
@@ -308,7 +327,7 @@ const PriceHistory: React.FC = () => {
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
                   placeholder="Search item name..."
-                  className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 />
               </div>
             </div>
@@ -447,7 +466,7 @@ const PriceHistory: React.FC = () => {
 
                     <button
                       onClick={() => setSelectedItem("")}
-                      className="text-sm text-[#1557b0] hover:underline"
+                      className="text-sm text-[var(--ds-action-primary)] hover:underline"
                     >
                       Back to list
                     </button>
@@ -560,7 +579,7 @@ const PriceHistory: React.FC = () => {
                 <select
                   value={selectedParty}
                   onChange={(e) => setSelectedParty(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 >
                   <option value="">Select a party...</option>
                   {uniqueParties.map((party) => (

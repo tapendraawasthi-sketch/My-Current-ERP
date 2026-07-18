@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { useStore } from "../store/useStore";
 import { buildSalesOrderOutstandingReport } from "../lib/workflowUtils";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 function money(v: number) {
   return Number(v || 0).toLocaleString("en-NP", { minimumFractionDigits: 2 });
@@ -8,12 +9,41 @@ function money(v: number) {
 
 const SalesOrderOutstanding: React.FC = () => {
   const { vouchers } = useStore() as any;
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
 
-  const rows = useMemo(() => buildSalesOrderOutstandingReport(vouchers || []), [vouchers]);
+  const scopedVouchers = useMemo(
+    () => (vouchers || []).filter((v: any) => matchBranch(v?.branchId)),
+    [vouchers, matchBranch, branchFilter],
+  );
+
+  const rows = useMemo(
+    () => buildSalesOrderOutstandingReport(scopedVouchers),
+    [scopedVouchers],
+  );
 
   return (
     <div className="p-4">
-      <h1 className="text-[15px] font-semibold text-gray-800 mb-4">Sales Order Outstanding</h1>
+      <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
+        <div>
+          <h1 className="text-[15px] font-semibold text-gray-800">Sales Order Outstanding</h1>
+          <p className="text-[11px] text-gray-500 mt-0.5">Pending dispatch and invoice against sales orders</p>
+        </div>
+        {branchOptions.length > 0 && (
+          <select
+            value={branchFilter}
+            onChange={(e) => setBranchFilter(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            aria-label="Branch"
+          >
+            <option value="all">All branches</option>
+            {branchOptions.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name || b.code || b.id}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
 
       <div className="bg-white border rounded-md overflow-auto">
         <table className="w-full text-[12px]">

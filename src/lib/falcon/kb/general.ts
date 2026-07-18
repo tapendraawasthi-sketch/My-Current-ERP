@@ -265,7 +265,7 @@ export const KB_GENERAL: KBEntry[] = [
     category: "general",
     q: "What does the green theme / design system look like?",
     keywords: ["theme colors", "design system", "ui style"],
-    a: "Sutra uses a BUSY/Tally-inspired green theme: page background #E4F1D9, card background #EBF5E2, black borders, and black text for a sharp accounting-software look. The dark sidebar and top menu bar (#1e2433) are intentionally exempt from this theme.",
+    a: "Sutra uses a BUSY/Tally-inspired green theme: page background #E4F1D9, card background var(--ds-surface-muted), black borders, and black text for a sharp accounting-software look. The dark sidebar and top menu bar (#1e2433) are intentionally exempt from this theme.",
   },
   {
     id: "gen-039",

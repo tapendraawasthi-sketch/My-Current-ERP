@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useStore } from "../store";
 import { Party, PartyType } from "../lib/types";
 import PartyForm from "../components/party/PartyForm";
@@ -6,9 +6,12 @@ import { Plus, Edit2, Users, Search } from "lucide-react";
 import { useSutraAiStore } from "@/store/sutraAiStore";
 import { consumeAiPartyDraft, peekAiPartyDraft } from "@/ai/actions/partyDraft";
 import type { AiPartyDraft } from "@/ai/types";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 export default function Parties() {
   const { parties, addParty, updateParty } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const pendingPartyEdit = useSutraAiStore((s) => s.pendingPartyEdit);
   const clearPendingPartyEdit = useSutraAiStore((s) => s.clearPendingPartyEdit);
   const [showForm, setShowForm] = useState(false);
@@ -46,10 +49,14 @@ export default function Parties() {
 
   const handleSave = async (partyData: any) => {
     try {
+      const payload = {
+        ...partyData,
+        branchId: partyData.branchId || readActiveBranchId() || undefined,
+      };
       if (editingParty) {
-        await updateParty(editingParty.id, partyData);
+        await updateParty(editingParty.id, payload);
       } else {
-        await addParty(partyData);
+        await addParty(payload);
       }
       setShowForm(false);
     } catch (err) {
@@ -57,33 +64,53 @@ export default function Parties() {
     }
   };
 
-  const filteredParties = parties.filter((p) => {
-    if (!searchTerm.trim()) return true;
-    const q = searchTerm.toLowerCase();
-    return (
-      p.name?.toLowerCase().includes(q) ||
-      p.code?.toLowerCase().includes(q) ||
-      p.pan?.toLowerCase().includes(q) ||
-      p.phone?.toLowerCase().includes(q)
-    );
-  });
+  const filteredParties = useMemo(() => {
+    return parties.filter((p) => {
+      if (!matchBranch((p as { branchId?: string }).branchId)) return false;
+      if (!searchTerm.trim()) return true;
+      const q = searchTerm.toLowerCase();
+      return (
+        p.name?.toLowerCase().includes(q) ||
+        p.code?.toLowerCase().includes(q) ||
+        p.pan?.toLowerCase().includes(q) ||
+        p.phone?.toLowerCase().includes(q)
+      );
+    });
+  }, [parties, searchTerm, matchBranch, branchFilter]);
 
   return (
     <div className="flex flex-col gap-4 animate-fadeIn select-none pb-8">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800">Customers & suppliers</h1>
-          <p className="text-[12px] text-gray-500 mt-0.5">People you trade with.</p>
+          <h1 className="text-[15px] font-semibold text-[var(--ds-text-default)]">Customers & suppliers</h1>
+          <p className="text-[11px] text-[var(--ds-text-muted)] mt-0.5">People you trade with.</p>
         </div>
-        <button
-          type="button"
-          onClick={handleOpenCreate}
-          className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors"
-        >
-          <Plus className="h-3.5 w-3.5" />
-          New Party
-        </button>
+        <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+          <button
+            type="button"
+            onClick={handleOpenCreate}
+            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            New Party
+          </button>
+        </div>
       </div>
 
       {/* Search */}
@@ -95,7 +122,7 @@ export default function Parties() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by name, code, PAN or phone…"
-            className="h-8 pl-8 pr-3 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
+            className="h-8 pl-8 pr-3 text-[12px] border border-[var(--ds-border-default)] rounded-md bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
           />
         </div>
         <span className="text-[12px] text-gray-500 font-medium">

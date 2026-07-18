@@ -182,7 +182,7 @@ export const NiosShell: React.FC = () => {
             onClick={() => setTab(t.id)}
             className={`flex-1 flex items-center justify-center gap-1 py-2 text-[11px] font-medium ${
               activeTab === t.id
-                ? "text-[#1557b0] border-b-2 border-[#1557b0] bg-white"
+                ? "text-[var(--ds-action-primary)] border-b-2 border-[var(--ds-action-primary)] bg-white"
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >
@@ -251,7 +251,7 @@ export const NiosShell: React.FC = () => {
                 await fetch(`${resolveNiosUrl()}/tasks/monitor`, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
                 refreshTasks();
               }}
-              className="h-7 px-2.5 text-[11px] bg-[#1557b0] text-white rounded-md hover:bg-[#0f4a96]"
+              className="h-7 px-2.5 text-[11px] bg-[var(--ds-action-primary)] text-white rounded-md hover:bg-[var(--ds-action-primary-hover)]"
             >
               Run monitors
             </button>
@@ -282,9 +282,9 @@ export const NiosShell: React.FC = () => {
               value={ocrText}
               onChange={(e) => setOcrText(e.target.value)}
               placeholder="Paste invoice OCR text…"
-              className="w-full h-24 px-2.5 py-2 text-[12px] border border-gray-300 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="w-full h-24 px-2.5 py-2 text-[12px] border border-gray-300 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
-            <button onClick={runOcr} disabled={loading} className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md">
+            <button onClick={runOcr} disabled={loading} className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md">
               Extract draft invoice
             </button>
             {ocrDraft && (
@@ -297,7 +297,7 @@ export const NiosShell: React.FC = () => {
 
         {activeTab === "bench" && (
           <div className="space-y-2">
-            <button onClick={runBenchmark} disabled={loading} className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md">
+            <button onClick={runBenchmark} disabled={loading} className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md">
               Run nightly suites
             </button>
             {benchmarkResult && (
@@ -350,9 +350,9 @@ export const NiosShell: React.FC = () => {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && sendChat()}
             placeholder="Message NIOS…"
-            className="flex-1 h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="flex-1 h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           />
-          <button onClick={sendChat} disabled={loading} className="h-8 w-8 flex items-center justify-center bg-[#1557b0] hover:bg-[#0f4a96] text-white rounded-md">
+          <button onClick={sendChat} disabled={loading} className="h-8 w-8 flex items-center justify-center bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white rounded-md">
             <Send size={14} />
           </button>
         </div>

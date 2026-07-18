@@ -569,7 +569,7 @@ function RolesModal({ onClose }: { onClose: () => void }) {
               <td className="px-3 py-2 font-medium">{module}</td>
               {permissionLevels.map((permission) => (
                 <td key={permission} className="px-3 py-2 text-center">
-                  <input type="radio" name={module} className="accent-[#1557b0]" />
+                  <input type="radio" name={module} className="accent-[var(--ds-action-primary)]" />
                 </td>
               ))}
             </tr>
@@ -721,7 +721,7 @@ function FeaturesModal({ onClose, companyId }: { onClose: () => void; companyId?
             type="button"
             onClick={() => setActiveTab(tab)}
             className={`h-8 px-3 text-[12px] font-medium ${
-              activeTab === tab ? "border-b-2 border-[#1557b0] text-[#1557b0]" : "text-gray-600"
+              activeTab === tab ? "border-b-2 border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]" : "text-gray-600"
             }`}
           >
             {tab}

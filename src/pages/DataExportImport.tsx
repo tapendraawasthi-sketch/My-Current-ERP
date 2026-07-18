@@ -2,9 +2,11 @@
 import React, { useState } from "react";
 import { useStore } from "../store/useStore";
 import { Database, Upload, Download, FileSpreadsheet, CheckSquare } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const BORDER = "1px solid #000";
-const BG_HEADER = "#D4EABD";
+const BG_HEADER = "var(--ds-surface-hover)";
 const BTN = (bg: string): React.CSSProperties => ({
   padding: "6px 14px",
   background: bg,
@@ -45,6 +47,7 @@ const MASTER_TYPES = [
 
 export default function DataExportImport() {
   const { accounts, items, parties, units, invoices, vouchers } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [activeTab, setActiveTab] = useState<
     "import-excel" | "import-vouchers" | "export-masters" | "import-dat"
   >("export-masters");
@@ -59,11 +62,18 @@ export default function DataExportImport() {
   const handleExport = () => {
     const dataToExport: Record<string, any[]> = {};
     if (selectedMasters.includes("Account"))
-      dataToExport["accounts"] = accounts.filter((a: any) => !a.isGroup);
-    if (selectedMasters.includes("Item")) dataToExport["items"] = items;
+      dataToExport["accounts"] = accounts.filter(
+        (a: any) => !a.isGroup && matchBranch(a.branchId),
+      );
+    if (selectedMasters.includes("Item"))
+      dataToExport["items"] = items.filter((i: any) => matchBranch(i.branchId));
+    if (selectedMasters.includes("Warehouse"))
+      dataToExport["warehouses"] = ((useStore.getState() as any).warehouses || []).filter(
+        (w: any) => matchBranch(w.branchId),
+      );
     if (exportBalances) {
       dataToExport["account_balances"] = accounts
-        .filter((a: any) => !a.isGroup)
+        .filter((a: any) => !a.isGroup && matchBranch(a.branchId))
         .map((a: any) => ({
           code: a.code,
           name: a.name,
@@ -85,8 +95,11 @@ export default function DataExportImport() {
 
   const handleImportExcel = () => {
     if (!importFile) return alert("Please select a file first.");
+    const stampNote = readActiveBranchId()
+      ? `\nNew rows will be stamped with branchId: ${readActiveBranchId()}`
+      : "";
     alert(
-      `Import from Excel/Google Sheet:\n\nFile: ${importFile.name}\nType: ${importType}\n\nTo implement:\n1. Parse Excel with 'xlsx' library (already in package.json)\n2. Map columns to Busy/ERP field names\n3. Loop and call add${importType.charAt(0).toUpperCase() + importType.slice(1)}() from store\n\nSee xlsx docs: XLSX.utils.sheet_to_json(workbook.Sheets[sheet])`,
+      `Import from Excel/Google Sheet:\n\nFile: ${importFile.name}\nType: ${importType}${stampNote}\n\nTo implement:\n1. Parse Excel with 'xlsx' library (already in package.json)\n2. Map columns to Busy/ERP field names\n3. Loop and call add${importType.charAt(0).toUpperCase() + importType.slice(1)}() from store\n\nSee xlsx docs: XLSX.utils.sheet_to_json(workbook.Sheets[sheet])`,
     );
   };
 
@@ -103,14 +116,32 @@ export default function DataExportImport() {
         style={{
           display: "flex",
           alignItems: "center",
+          justifyContent: "space-between",
           gap: 8,
           padding: "10px 16px",
           borderBottom: BORDER,
           background: BG_HEADER,
         }}
       >
-        <Database style={{ width: 16, height: 16 }} />
-        <span className="text-[14px] font-bold">Import & export</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <Database style={{ width: 16, height: 16 }} />
+          <span className="text-[14px] font-bold">Import & export</span>
+        </div>
+        {branchOptions.length > 0 ? (
+          <select
+            value={branchFilter}
+            onChange={(e) => setBranchFilter(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            aria-label="Branch filter"
+          >
+            <option value="all">All branches</option>
+            {branchOptions.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name || b.code || b.id}
+              </option>
+            ))}
+          </select>
+        ) : null}
       </div>
 
       {/* Tabs */}
@@ -189,7 +220,7 @@ export default function DataExportImport() {
                 Export Opening/Closing Balances
               </label>
             </div>
-            <button style={BTN("#3D6B25")} onClick={handleExport}>
+            <button style={BTN("var(--ds-action-primary-hover)")} onClick={handleExport}>
               <Download style={{ width: 12, height: 12, display: "inline", marginRight: 6 }} />
               Export Selected Masters ({selectedMasters.length} types)
             </button>
@@ -271,7 +302,7 @@ export default function DataExportImport() {
                   ))}
               </div>
               <div style={{ display: "flex", gap: 8 }}>
-                <button style={BTN("#3D6B25")} onClick={handleImportExcel}>
+                <button style={BTN("var(--ds-action-primary-hover)")} onClick={handleImportExcel}>
                   Import Now
                 </button>
                 <button
@@ -344,10 +375,10 @@ export default function DataExportImport() {
                 </label>
               </div>
               <button
-                style={{ ...BTN("#3D6B25"), marginTop: 12 }}
+                style={{ ...BTN("var(--ds-action-primary-hover)"), marginTop: 12 }}
                 onClick={() =>
                   alert(
-                    "Voucher import from Excel:\n\n1. Parse Excel with xlsx library\n2. Map date, account, debit, credit columns\n3. Call addVoucher() from store for each row\n4. Show import summary (success/error count)",
+                    "Voucher import from Excel:\n\n1. Parse Excel with xlsx library\n2. Map date, account, debit, credit columns\n3. Call addVoucher() from store for each row with branchId: readActiveBranchId()\n4. Show import summary (success/error count)",
                   )
                 }
               >
@@ -405,7 +436,7 @@ export default function DataExportImport() {
                 ))}
               </div>
               <button
-                style={BTN("#3D6B25")}
+                style={BTN("var(--ds-action-primary-hover)")}
                 onClick={() =>
                   alert(
                     "DAT/ZIP Import:\n\nThis requires a custom Busy 21 DAT file parser.\nImplementation steps:\n1. Unzip the file\n2. Parse the proprietary DAT format\n3. Map to ERP schema\n4. Batch import via store actions",

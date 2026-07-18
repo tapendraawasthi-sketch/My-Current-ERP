@@ -9,6 +9,7 @@ import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import * as XLSX from "xlsx";
 import { Download, Info } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const fmt = (n: number) =>
@@ -70,6 +71,7 @@ const FIXED_ASSET_KW = [
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function FundsFlow() {
   const { accounts, vouchers, currentFiscalYear, companySettings } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
 
   const fyStart = currentFiscalYear?.startDate || new Date().getFullYear() + "-04-01";
   const fyEnd = currentFiscalYear?.endDate || new Date().getFullYear() + 1 + "-03-31";
@@ -77,11 +79,16 @@ export default function FundsFlow() {
   const [openingDate, setOpeningDate] = useState(fyStart);
   const [closingDate, setClosingDate] = useState(fyEnd);
 
+  const scopedVouchers = useMemo(
+    () => (vouchers || []).filter((v) => matchBranch(v.branchId)),
+    [vouchers, matchBranch, branchFilter],
+  );
+
   // ── Compute balance at a given date for all accounts ──────────────────────
   const computeBalanceAt = (date: string): Record<string, number> => {
     const map: Record<string, number> = {};
 
-    for (const v of vouchers) {
+    for (const v of scopedVouchers) {
       if (v.status !== "posted") continue;
       if ((v.date || "") > date) continue;
 
@@ -105,11 +112,11 @@ export default function FundsFlow() {
 
   const openingBal = useMemo(
     () => computeBalanceAt(openingDate),
-    [vouchers, accounts, openingDate],
+    [scopedVouchers, accounts, openingDate],
   );
   const closingBal = useMemo(
     () => computeBalanceAt(closingDate),
-    [vouchers, accounts, closingDate],
+    [scopedVouchers, accounts, closingDate],
   );
 
   // ── Classify accounts ──────────────────────────────────────────────────────
@@ -303,12 +310,29 @@ export default function FundsFlow() {
             {companySettings?.name || "Company"} — Changes in Working Capital
           </p>
         </div>
-        <button
-          onClick={exportToExcel}
-          className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
-        >
-          <Download className="h-3.5 w-3.5" /> Export
-        </button>
+        <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+          <button
+            onClick={exportToExcel}
+            className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
+          >
+            <Download className="h-3.5 w-3.5" /> Export
+          </button>
+        </div>
       </div>
 
       {/* Toolbar */}

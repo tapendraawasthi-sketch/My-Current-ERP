@@ -44,7 +44,7 @@ export default function InventoryConfiguration() {
   const toggle = (key: keyof typeof cfg) => setCfg((p) => ({ ...p, [key]: !p[key] }));
 
   const inp =
-    "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+    "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 
   const ToggleRow = ({
     label,
@@ -63,7 +63,7 @@ export default function InventoryConfiguration() {
       <button
         onClick={() => toggle(field)}
         className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-          cfg[field] ? "bg-[#1557b0]" : "bg-gray-300"
+          cfg[field] ? "bg-[var(--ds-action-primary)]" : "bg-gray-300"
         }`}
       >
         <span
@@ -80,7 +80,7 @@ export default function InventoryConfiguration() {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-            <Settings className="h-4 w-4 text-[#1557b0]" />
+            <Settings className="h-4 w-4 text-[var(--ds-action-primary)]" />
             Inventory setup
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
@@ -89,7 +89,7 @@ export default function InventoryConfiguration() {
         </div>
         <button
           onClick={handleSave}
-          className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+          className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
         >
           <Save className="h-3.5 w-3.5" />
           Save Configuration

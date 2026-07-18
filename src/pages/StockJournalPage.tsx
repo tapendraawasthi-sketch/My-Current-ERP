@@ -23,6 +23,8 @@ import { formatNumber } from "../lib/utils";
 import { ADToBSString } from "../lib/nepaliDate";
 import { VoucherStatus, StockJournalLine } from "../lib/types";
 import toast from "@/lib/appToast";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 type Mode = "list" | "new";
 
@@ -38,15 +40,17 @@ const StockJournalPage: React.FC = () => {
     addStockJournal,
     postStockJournal,
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const symbol = companySettings?.currencySymbol || "Rs.";
   const defaultDate = new Date().toISOString().split("T")[0];
+  const scopedWarehouses = warehouses.filter(
+    (w) => w.isActive && matchBranch((w as { branchId?: string }).branchId),
+  );
   const defaultWarehouseId =
-    warehouses.find((w) => w.isDefault && w.isActive)?.id ||
-    warehouses.find((w) => w.isActive)?.id ||
-    "";
+    scopedWarehouses.find((w) => w.isDefault)?.id || scopedWarehouses[0]?.id || "";
   const secondWarehouseId =
-    warehouses.find((w) => w.isActive && w.id !== defaultWarehouseId)?.id || defaultWarehouseId;
+    scopedWarehouses.find((w) => w.id !== defaultWarehouseId)?.id || defaultWarehouseId;
 
   const [mode, setMode] = useState<Mode>("list");
   const [date, setDate] = useState(defaultDate);
@@ -67,16 +71,18 @@ const StockJournalPage: React.FC = () => {
 
   const journalRows = useMemo(() => {
     return stockJournals
+      .filter((sj) => matchBranch((sj as { branchId?: string }).branchId))
       .map((sj) => ({
         ...sj,
         totalQty: sj.lines.reduce((sum, line) => sum + (line.qty || 0), 0),
       }))
       .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
-  }, [stockJournals]);
+  }, [stockJournals, matchBranch, branchFilter]);
 
-  const warehouseOptions = warehouses
-    .filter((w) => w.isActive)
-    .map((w) => ({ value: w.id, label: `${w.code} — ${w.name}` }));
+  const warehouseOptions = scopedWarehouses.map((w) => ({
+    value: w.id,
+    label: `${w.code} — ${w.name}`,
+  }));
 
   const itemOptions = items
     .filter((item) => item.isActive)
@@ -180,6 +186,7 @@ const StockJournalPage: React.FC = () => {
         narration: narration.trim(),
         lines: payloadLines,
         status: VoucherStatus.DRAFT,
+        branchId: readActiveBranchId() || undefined,
       } as any);
       toast.success("Stock transfer journal saved as draft.");
       resetForm();
@@ -431,6 +438,21 @@ const StockJournalPage: React.FC = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
           <Button
             variant="primary"
             size="sm"

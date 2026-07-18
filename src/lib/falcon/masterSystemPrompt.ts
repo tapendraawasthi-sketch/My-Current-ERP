@@ -347,7 +347,7 @@ TECHNOLOGY STACK:
   QR Codes: qrcode (for CBMS/IRD integration)
 
 DESIGN SYSTEM (from AGENTS.md):
-  Primary blue: #1557b0 (hover #0f4a96)
+  Primary blue: var(--ds-action-primary) (hover var(--ds-action-primary-hover))
   Success green: #059669
   Warning amber: #d97706
   Danger red: #dc2626

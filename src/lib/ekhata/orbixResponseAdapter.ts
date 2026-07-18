@@ -5,6 +5,7 @@
 
 import { z } from "zod";
 import { classifyAssistantTextHeuristic } from "./orbixHeuristicFallback";
+import { assertUnsupportedSchemaVersion, isKnownOrbixResponseType } from "./mai02CanonicalContracts";
 import {
   ORBIX_RESPONSE_SCHEMA_VERSION,
   type ClarificationFieldCaptured,
@@ -256,7 +257,13 @@ function confirmationFromCard(
 function deriveResponseType(
   data: z.infer<typeof completeTransportSchema>,
 ): OrbixResponseType {
+  if (data.schema_version && assertUnsupportedSchemaVersion(data.schema_version)) {
+    return "unsupported_response";
+  }
   if (data.response_type && typeof data.response_type === "string") {
+    if (!isKnownOrbixResponseType(data.response_type)) {
+      return "unsupported_response";
+    }
     return data.response_type as OrbixResponseType;
   }
   const errType = data.error && typeof data.error.type === "string" ? data.error.type : null;
@@ -363,6 +370,30 @@ export function parseOrbixResponse(input: unknown): OrbixResponseParseResult {
       !(data.error && typeof data.error.type === "string") &&
       !data.card &&
       !data.report_spec;
+
+    if (responseType === "unsupported_response") {
+      const received =
+        typeof data.response_type === "string" ? data.response_type : "unknown_or_unsupported_schema";
+      return {
+        ok: true,
+        fromFallback: false,
+        response: {
+          ...baseFields(
+            data,
+            "unsupported_response",
+            "failed",
+            text || "This response type is not supported by the current client.",
+          ),
+          response_type: "unsupported_response",
+          payload: {
+            received_type: received,
+            safe_message:
+              text ||
+              "This response type is not supported by the current client. No accounting action was taken.",
+          },
+        },
+      };
+    }
 
     if (responseType === "mode_restriction") {
       const payload = modeRestrictionPayload(data);

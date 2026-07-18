@@ -45,7 +45,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, size = 
     >
       <div
         style={{
-          background: "#EBF5E2",
+          background: "var(--ds-surface-muted)",
           border: "1px solid #000000",
           borderRadius: 4,
           width: "100%",
@@ -63,7 +63,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, size = 
             alignItems: "center",
             justifyContent: "space-between",
             padding: "10px 16px",
-            background: "#C9DEB5",
+            background: "var(--ds-surface-muted)",
             borderBottom: "1px solid #000000",
             flexShrink: 0,
           }}
@@ -97,7 +97,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, size = 
           <div
             style={{
               padding: "10px 16px",
-              background: "#D4EABD",
+              background: "var(--ds-surface-hover)",
               borderTop: "1px solid #000000",
               flexShrink: 0,
             }}

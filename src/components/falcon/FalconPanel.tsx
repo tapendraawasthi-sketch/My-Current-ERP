@@ -74,11 +74,11 @@ function getIntentBadge(falconIntent?: string): { label: string; cls: string } |
   const map: Record<string, { label: string; cls: string }> = {
     action_path: { label: "📍 Path lookup", cls: "bg-sky-50 text-sky-700 border-sky-200" },
     nav: { label: "📍 Navigation", cls: "bg-sky-50 text-sky-700 border-sky-200" },
-    definition: { label: "📖 Definition", cls: "bg-indigo-50 text-indigo-700 border-indigo-200" },
+    definition: { label: "📖 Definition", cls: "bg-[var(--ds-intelligence-surface)] text-[var(--ds-intelligence)] border-[var(--ds-intelligence-border)]" },
     steps: { label: "📋 Steps", cls: "bg-amber-50 text-amber-700 border-amber-200" },
     troubleshoot: { label: "🔧 Fix", cls: "bg-red-50 text-red-700 border-red-200" },
     effect: { label: "⚖️ Accounting", cls: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-    code: { label: "💻 Code", cls: "bg-violet-50 text-violet-700 border-violet-200" },
+    code: { label: "💻 Code", cls: "bg-[var(--ds-intelligence-surface)] text-[var(--ds-intelligence)] border-violet-200" },
     general: { label: "💡 General", cls: "bg-gray-50 text-gray-600 border-gray-200" },
   };
   return map[falconIntent] ?? null;
@@ -95,17 +95,17 @@ function getDomainBadge(domain?: string): { label: string; cls: string } | null 
       cls: "bg-orange-50 text-orange-700 border-orange-200",
     },
     math: { label: "🧮 Calculator Mode", cls: "bg-teal-50 text-teal-700 border-teal-200" },
-    code: { label: "💻 Code Mode", cls: "bg-violet-50 text-violet-700 border-violet-200" },
+    code: { label: "💻 Code Mode", cls: "bg-[var(--ds-intelligence-surface)] text-[var(--ds-intelligence)] border-violet-200" },
     greeting: { label: "👋 Conversation", cls: "bg-gray-50 text-gray-600 border-gray-200" },
     general: {
       label: "💡 General Knowledge",
-      cls: "bg-purple-50 text-purple-700 border-purple-200",
+      cls: "bg-[var(--ds-intelligence-surface)] text-[var(--ds-intelligence)] border-[var(--ds-intelligence-border)]",
     },
   };
   return (
     map[domain] ?? {
       label: "💡 General Knowledge",
-      cls: "bg-purple-50 text-purple-700 border-purple-200",
+      cls: "bg-[var(--ds-intelligence-surface)] text-[var(--ds-intelligence)] border-[var(--ds-intelligence-border)]",
     }
   );
 }

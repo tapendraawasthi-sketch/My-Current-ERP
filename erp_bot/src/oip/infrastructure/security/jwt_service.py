@@ -112,6 +112,7 @@ class JwtService:
         return jwt.encode(payload, self._secret, algorithm="HS256")
 
     async def verify_access_token(self, token: str) -> SecurityPrincipal:
+        payload: dict[str, Any]
         try:
             payload = jwt.decode(
                 token,
@@ -121,10 +122,23 @@ class JwtService:
                 issuer=self._issuer,
                 options={"require": ["exp", "sub", "tenantId"]},
             )
-        except jwt.ExpiredSignatureError as exc:
-            raise JwtAuthError("token_expired") from exc
-        except jwt.InvalidTokenError as exc:
-            raise JwtAuthError("token_invalid") from exc
+        except jwt.InvalidTokenError:
+            # Accept Sutra Node JWT shape (shared secret, no iss/aud) — MAI-01.
+            try:
+                payload = jwt.decode(
+                    token,
+                    self._secret,
+                    algorithms=["HS256"],
+                    options={
+                        "require": ["exp", "sub", "tenantId"],
+                        "verify_aud": False,
+                        "verify_iss": False,
+                    },
+                )
+            except jwt.ExpiredSignatureError as exc:
+                raise JwtAuthError("token_expired") from exc
+            except jwt.InvalidTokenError as exc:
+                raise JwtAuthError("token_invalid") from exc
         if payload.get("type") == "refresh":
             raise JwtAuthError("refresh_token_not_allowed")
         jti = payload.get("jti", "")

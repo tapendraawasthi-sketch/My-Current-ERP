@@ -4,6 +4,8 @@ import toast from "@/lib/appToast";
 import { Plus, Edit2, Trash2, Search, X, Save } from "lucide-react";
 import { getDB } from "../lib/db";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 interface StandardNarration {
   id: string;
@@ -11,6 +13,7 @@ interface StandardNarration {
   category: string;
   voucherTypes: string[];
   isActive: boolean;
+  branchId?: string;
 }
 
 const CATEGORIES = [
@@ -112,14 +115,15 @@ const DEFAULTS: Omit<StandardNarration, "id">[] = [
 const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 const inputCls =
-  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
 
 export default function StandardNarrationMaster() {
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [narrations, setNarrations] = useState<StandardNarration[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
@@ -157,11 +161,12 @@ export default function StandardNarrationMaster() {
   const filtered = useMemo(
     () =>
       narrations.filter((n) => {
+        if (!matchBranch(n.branchId)) return false;
         const matchSearch = n.text.toLowerCase().includes(searchTerm.toLowerCase());
         const matchCat = categoryFilter === "All" || n.category === categoryFilter;
         return matchSearch && matchCat;
       }),
-    [narrations, searchTerm, categoryFilter],
+    [narrations, searchTerm, categoryFilter, matchBranch, branchFilter],
   );
 
   const resetForm = () => {
@@ -191,12 +196,20 @@ export default function StandardNarrationMaster() {
     try {
       const db = getDB();
       if (editItem) {
-        const updated = { ...editItem, ...form };
+        const updated = {
+          ...editItem,
+          ...form,
+          branchId: editItem.branchId || readActiveBranchId() || undefined,
+        };
         if (db.standardNarrations) await db.standardNarrations.put(updated);
         setNarrations((prev) => prev.map((n) => (n.id === editItem.id ? updated : n)));
         toast.success("Narration updated");
       } else {
-        const newItem: StandardNarration = { ...form, id: `sn-${Date.now()}` };
+        const newItem: StandardNarration = {
+          ...form,
+          id: `sn-${Date.now()}`,
+          branchId: readActiveBranchId() || undefined,
+        };
         if (db.standardNarrations) await db.standardNarrations.put(newItem);
         setNarrations((prev) => [...prev, newItem]);
         toast.success("Narration added");
@@ -233,10 +246,27 @@ export default function StandardNarrationMaster() {
                 Pre-defined narrations — press F4 in vouchers to pick from list
               </p>
             </div>
-            <button type="button" className={btnPrimary} onClick={openAdd}>
-              <Plus className="h-3.5 w-3.5" />
-              Add narration
-            </button>
+            <div className="flex items-center gap-2">
+              {branchOptions.length > 0 && (
+                <select
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>
+              )}
+              <button type="button" className={btnPrimary} onClick={openAdd}>
+                <Plus className="h-3.5 w-3.5" />
+                Add narration
+              </button>
+            </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 mb-3">
@@ -292,7 +322,7 @@ export default function StandardNarrationMaster() {
                   {filtered.map((item) => (
                     <tr
                       key={item.id}
-                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
                       onClick={() => openEdit(item)}
                     >
                       <td className={`${td} font-medium text-gray-800`}>{item.text}</td>
@@ -365,7 +395,7 @@ export default function StandardNarrationMaster() {
               <textarea
                 value={form.text}
                 onChange={(e) => setForm((p) => ({ ...p, text: e.target.value }))}
-                className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] resize-none"
+                className="w-full px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] resize-none"
                 rows={3}
                 placeholder="e.g. Being goods sold as per tax invoice"
               />
@@ -401,7 +431,7 @@ export default function StandardNarrationMaster() {
                             voucherTypes: p.voucherTypes.filter((v) => v !== vt),
                           }));
                       }}
-                      className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                      className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                     />
                     <span className="text-[12px] text-gray-700">{vt}</span>
                   </label>
@@ -413,7 +443,7 @@ export default function StandardNarrationMaster() {
                 type="checkbox"
                 checked={form.isActive}
                 onChange={(e) => setForm((p) => ({ ...p, isActive: e.target.checked }))}
-                className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
               />
               <span className="text-[12px] font-medium text-gray-700">Active</span>
             </label>

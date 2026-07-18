@@ -122,7 +122,7 @@ function BackupModal({ onClose }: { onClose: () => void }) {
           <div className="mt-2">
             <div className="mb-1 text-[11px] text-gray-500">Progress: {progress}%</div>
             <div className="h-2 overflow-hidden rounded bg-gray-100">
-              <div className="h-full bg-[#1557b0]" style={{ width: `${progress}%` }} />
+              <div className="h-full bg-[var(--ds-action-primary)]" style={{ width: `${progress}%` }} />
             </div>
           </div>
         )}

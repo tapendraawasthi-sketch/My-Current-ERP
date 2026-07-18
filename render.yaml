@@ -23,13 +23,19 @@ services:
       - key: OIP_DEFAULT_MODEL
         value: "llama-3.3-70b-versatile"
       - key: OIP_AUTH_REQUIRED
-        value: "false"
+        value: "true"
       - key: OIP_PROVIDER_RUNTIME_ENABLED
         value: "true"
       - key: OIP_ORCHESTRATOR_ENABLED
         value: "true"
       - key: OIP_DATABASE_URL
         value: "sqlite+aiosqlite:///./data/oip/oip.db"
+      - key: OIP_DEFAULT_SERVICE_TENANT_ID
+        value: ""
+      - key: OIP_JWT_SECRET
+        sync: false
+      - key: API_SECRET_KEY
+        sync: false
       - key: ORBIX_NP_KB_ENABLED
         value: "true"
       - key: ORBIX_NP_KB_ROOT

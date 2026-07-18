@@ -58,7 +58,7 @@ const ReportShell: React.FC<ReportShellProps> = ({
                 onClick={() => setDepth(d.value)}
                 className={`h-8 px-3 text-[12px] font-medium transition-colors ${
                   depth === d.value
-                    ? "bg-[#1557b0] text-white"
+                    ? "bg-[var(--ds-action-primary)] text-white"
                     : "bg-white text-gray-700 hover:bg-gray-50"
                 }`}
               >
@@ -98,7 +98,7 @@ const ReportShell: React.FC<ReportShellProps> = ({
               onClick={tab.onClick}
               className={`px-4 py-2 text-[12px] font-medium transition-colors cursor-pointer ${
                 tab.active
-                  ? "border-b-2 border-[#1557b0] text-[#1557b0]"
+                  ? "border-b-2 border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]"
                   : "text-gray-500 hover:text-gray-700"
               }`}
             >

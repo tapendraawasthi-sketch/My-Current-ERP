@@ -1,0 +1,1101 @@
+{
+  "$defs": {
+    "ActionProgressPayloadV1": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "default": "",
+          "title": "Label",
+          "type": "string"
+        },
+        "payload_type": {
+          "const": "ACTION_PROGRESS",
+          "default": "ACTION_PROGRESS",
+          "title": "Payload Type",
+          "type": "string"
+        },
+        "percent": {
+          "anyOf": [
+            {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Percent"
+        },
+        "stage": {
+          "title": "Stage",
+          "type": "string"
+        }
+      },
+      "required": [
+        "stage"
+      ],
+      "title": "ActionProgressPayloadV1",
+      "type": "object"
+    },
+    "AnswerPayloadV1": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "payload_type": {
+          "const": "ANSWER",
+          "default": "ANSWER",
+          "title": "Payload Type",
+          "type": "string"
+        },
+        "propositions": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Propositions",
+          "type": "array"
+        }
+      },
+      "title": "AnswerPayloadV1",
+      "type": "object"
+    },
+    "ChoicePayloadV1": {
+      "additionalProperties": false,
+      "properties": {
+        "choices": {
+          "default": [],
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Choices",
+          "type": "array"
+        },
+        "payload_type": {
+          "const": "CHOICE",
+          "default": "CHOICE",
+          "title": "Payload Type",
+          "type": "string"
+        },
+        "prompt": {
+          "default": "",
+          "title": "Prompt",
+          "type": "string"
+        }
+      },
+      "title": "ChoicePayloadV1",
+      "type": "object"
+    },
+    "ClarificationPayloadV1": {
+      "additionalProperties": false,
+      "properties": {
+        "ambiguous_fields": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Ambiguous Fields",
+          "type": "array"
+        },
+        "draft_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Draft Id"
+        },
+        "missing_fields": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Missing Fields",
+          "type": "array"
+        },
+        "payload_type": {
+          "const": "CLARIFICATION",
+          "default": "CLARIFICATION",
+          "title": "Payload Type",
+          "type": "string"
+        },
+        "questions": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Questions",
+          "type": "array"
+        }
+      },
+      "title": "ClarificationPayloadV1",
+      "type": "object"
+    },
+    "ConflictPayloadV1": {
+      "additionalProperties": false,
+      "properties": {
+        "conflict_code": {
+          "title": "Conflict Code",
+          "type": "string"
+        },
+        "local_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Local Ids",
+          "type": "array"
+        },
+        "payload_type": {
+          "const": "CONFLICT",
+          "default": "CONFLICT",
+          "title": "Payload Type",
+          "type": "string"
+        },
+        "remote_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Remote Ids",
+          "type": "array"
+        },
+        "safe_message": {
+          "title": "Safe Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "conflict_code",
+        "safe_message"
+      ],
+      "title": "ConflictPayloadV1",
+      "type": "object"
+    },
+    "DegradedPayloadV1": {
+      "additionalProperties": false,
+      "properties": {
+        "partial_available": {
+          "default": false,
+          "title": "Partial Available",
+          "type": "boolean"
+        },
+        "payload_type": {
+          "const": "DEGRADED",
+          "default": "DEGRADED",
+          "title": "Payload Type",
+          "type": "string"
+        },
+        "reason_code": {
+          "title": "Reason Code",
+          "type": "string"
+        },
+        "safe_message": {
+          "title": "Safe Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason_code",
+        "safe_message"
+      ],
+      "title": "DegradedPayloadV1",
+      "type": "object"
+    },
+    "DraftPayloadV1": {
+      "additionalProperties": false,
+      "properties": {
+        "draft": {
+          "$ref": "#/$defs/DraftReferenceV1"
+        },
+        "payload_type": {
+          "const": "DRAFT",
+          "default": "DRAFT",
+          "title": "Payload Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "draft"
+      ],
+      "title": "DraftPayloadV1",
+      "type": "object"
+    },
+    "DraftReferenceV1": {
+      "additionalProperties": false,
+      "properties": {
+        "company_scope_reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Company Scope Reference"
+        },
+        "conversation_id": {
+          "minLength": 1,
+          "title": "Conversation Id",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "draft_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Draft Id",
+          "type": "string"
+        },
+        "draft_version": {
+          "default": "1",
+          "title": "Draft Version",
+          "type": "string"
+        },
+        "event_type": {
+          "default": "unknown",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "expires_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expires At"
+        },
+        "owner_principal_reference": {
+          "minLength": 1,
+          "title": "Owner Principal Reference",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/DraftStatus",
+          "default": "OPEN"
+        },
+        "tenant_scope_reference": {
+          "minLength": 1,
+          "title": "Tenant Scope Reference",
+          "type": "string"
+        }
+      },
+      "required": [
+        "draft_id",
+        "tenant_scope_reference",
+        "owner_principal_reference",
+        "conversation_id"
+      ],
+      "title": "DraftReferenceV1",
+      "type": "object"
+    },
+    "DraftStatus": {
+      "enum": [
+        "OPEN",
+        "NEEDS_CLARIFICATION",
+        "READY_FOR_PREVIEW",
+        "PREVIEWED",
+        "CANCELLED",
+        "EXPIRED",
+        "SUPERSEDED"
+      ],
+      "title": "DraftStatus",
+      "type": "string"
+    },
+    "ErrorPayloadV1": {
+      "additionalProperties": false,
+      "properties": {
+        "error_code": {
+          "title": "Error Code",
+          "type": "string"
+        },
+        "exception_type": {
+          "default": null,
+          "title": "Exception Type",
+          "type": "null"
+        },
+        "payload_type": {
+          "const": "ERROR",
+          "default": "ERROR",
+          "title": "Payload Type",
+          "type": "string"
+        },
+        "safe_message": {
+          "title": "Safe Message",
+          "type": "string"
+        },
+        "stack_trace": {
+          "default": null,
+          "title": "Stack Trace",
+          "type": "null"
+        }
+      },
+      "required": [
+        "error_code",
+        "safe_message"
+      ],
+      "title": "ErrorPayloadV1",
+      "type": "object"
+    },
+    "JournalEffectV1": {
+      "additionalProperties": false,
+      "properties": {
+        "account_display_name": {
+          "default": "",
+          "title": "Account Display Name",
+          "type": "string"
+        },
+        "account_id": {
+          "minLength": 1,
+          "title": "Account Id",
+          "type": "string"
+        },
+        "amount": {
+          "$ref": "#/$defs/MoneyV1"
+        },
+        "narration": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Narration"
+        },
+        "side": {
+          "$ref": "#/$defs/JournalSide"
+        },
+        "source_reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Reference"
+        }
+      },
+      "required": [
+        "account_id",
+        "side",
+        "amount"
+      ],
+      "title": "JournalEffectV1",
+      "type": "object"
+    },
+    "JournalSide": {
+      "enum": [
+        "DEBIT",
+        "CREDIT"
+      ],
+      "title": "JournalSide",
+      "type": "string"
+    },
+    "MoneyV1": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "title": "Amount",
+          "type": "string"
+        },
+        "currency": {
+          "default": "NPR",
+          "maxLength": 8,
+          "minLength": 3,
+          "title": "Currency",
+          "type": "string"
+        },
+        "scale": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scale"
+        }
+      },
+      "required": [
+        "amount"
+      ],
+      "title": "MoneyV1",
+      "type": "object"
+    },
+    "PreviewPayloadV1": {
+      "additionalProperties": false,
+      "properties": {
+        "payload_type": {
+          "const": "PREVIEW",
+          "default": "PREVIEW",
+          "title": "Payload Type",
+          "type": "string"
+        },
+        "preview": {
+          "$ref": "#/$defs/PreviewV1"
+        }
+      },
+      "required": [
+        "preview"
+      ],
+      "title": "PreviewPayloadV1",
+      "type": "object"
+    },
+    "PreviewStatus": {
+      "enum": [
+        "READY",
+        "STALE",
+        "EXPIRED",
+        "INVALID"
+      ],
+      "title": "PreviewStatus",
+      "type": "string"
+    },
+    "PreviewV1": {
+      "additionalProperties": false,
+      "properties": {
+        "approval_requirements": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Approval Requirements",
+          "type": "array"
+        },
+        "authoritative_record_ids": {
+          "default": null,
+          "title": "Authoritative Record Ids",
+          "type": "null"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "date_and_period": {
+          "additionalProperties": true,
+          "title": "Date And Period",
+          "type": "object"
+        },
+        "document_references": {
+          "default": [],
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Document References",
+          "type": "array"
+        },
+        "draft_reference": {
+          "$ref": "#/$defs/DraftReferenceV1"
+        },
+        "execution_success": {
+          "default": null,
+          "title": "Execution Success",
+          "type": "null"
+        },
+        "expires_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expires At"
+        },
+        "inventory_effects": {
+          "default": [],
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Inventory Effects",
+          "type": "array"
+        },
+        "journal_effects": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/JournalEffectV1"
+          },
+          "title": "Journal Effects",
+          "type": "array"
+        },
+        "party_references": {
+          "default": [],
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Party References",
+          "type": "array"
+        },
+        "preview_hash": {
+          "minLength": 1,
+          "title": "Preview Hash",
+          "type": "string"
+        },
+        "preview_id": {
+          "minLength": 1,
+          "title": "Preview Id",
+          "type": "string"
+        },
+        "preview_version": {
+          "default": "1",
+          "title": "Preview Version",
+          "type": "string"
+        },
+        "receipt_id": {
+          "default": null,
+          "title": "Receipt Id",
+          "type": "null"
+        },
+        "required_permissions": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Required Permissions",
+          "type": "array"
+        },
+        "rule_versions": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Rule Versions",
+          "type": "object"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "snapshot_revisions": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Snapshot Revisions",
+          "type": "object"
+        },
+        "source_references": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Source References",
+          "type": "array"
+        },
+        "status": {
+          "$ref": "#/$defs/PreviewStatus",
+          "default": "READY"
+        },
+        "summary": {
+          "default": "",
+          "title": "Summary",
+          "type": "string"
+        },
+        "tax_effects": {
+          "default": [],
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Tax Effects",
+          "type": "array"
+        },
+        "totals": {
+          "additionalProperties": true,
+          "title": "Totals",
+          "type": "object"
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "preview_id",
+        "draft_reference",
+        "preview_hash"
+      ],
+      "title": "PreviewV1",
+      "type": "object"
+    },
+    "ReceiptPayloadV1": {
+      "additionalProperties": false,
+      "properties": {
+        "payload_type": {
+          "const": "RECEIPT",
+          "default": "RECEIPT",
+          "title": "Payload Type",
+          "type": "string"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptV1"
+        }
+      },
+      "required": [
+        "receipt"
+      ],
+      "title": "ReceiptPayloadV1",
+      "type": "object"
+    },
+    "ReceiptStatus": {
+      "enum": [
+        "ACCEPTED",
+        "POSTED_LOCAL",
+        "SYNC_PENDING",
+        "SYNCED",
+        "CONFLICT",
+        "REJECTED",
+        "FAILED"
+      ],
+      "title": "ReceiptStatus",
+      "type": "string"
+    },
+    "ReceiptV1": {
+      "additionalProperties": false,
+      "properties": {
+        "audit_reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Audit Reference"
+        },
+        "authoritative_record_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Authoritative Record Ids",
+          "type": "array"
+        },
+        "authority_source": {
+          "minLength": 1,
+          "title": "Authority Source",
+          "type": "string"
+        },
+        "command_id": {
+          "minLength": 1,
+          "title": "Command Id",
+          "type": "string"
+        },
+        "connector_or_domain_source": {
+          "minLength": 1,
+          "title": "Connector Or Domain Source",
+          "type": "string"
+        },
+        "draft_reference": {
+          "$ref": "#/$defs/DraftReferenceV1"
+        },
+        "idempotency_key": {
+          "minLength": 1,
+          "title": "Idempotency Key",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "oec_fields": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Oec Fields"
+        },
+        "preview_reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Preview Reference"
+        },
+        "receipt_id": {
+          "minLength": 1,
+          "title": "Receipt Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/ReceiptStatus"
+        },
+        "sync_state": {
+          "anyOf": [
+            {
+              "enum": [
+                "local_only",
+                "pending",
+                "synced",
+                "conflict"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sync State"
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "receipt_id",
+        "command_id",
+        "idempotency_key",
+        "draft_reference",
+        "authority_source",
+        "connector_or_domain_source",
+        "status"
+      ],
+      "title": "ReceiptV1",
+      "type": "object"
+    },
+    "ReportPayloadV1": {
+      "additionalProperties": false,
+      "properties": {
+        "payload_type": {
+          "const": "REPORT",
+          "default": "REPORT",
+          "title": "Payload Type",
+          "type": "string"
+        },
+        "report_spec": {
+          "additionalProperties": true,
+          "title": "Report Spec",
+          "type": "object"
+        },
+        "rows_preview": {
+          "default": [],
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Rows Preview",
+          "type": "array"
+        }
+      },
+      "title": "ReportPayloadV1",
+      "type": "object"
+    },
+    "ResponseStatusV1": {
+      "enum": [
+        "SUCCESS",
+        "PARTIAL",
+        "REQUIRES_INPUT",
+        "FAILED",
+        "REFUSED",
+        "DEGRADED"
+      ],
+      "title": "ResponseStatusV1",
+      "type": "string"
+    },
+    "ResponseTypeV1": {
+      "enum": [
+        "ANSWER",
+        "CLARIFICATION",
+        "CHOICE",
+        "REPORT",
+        "DRAFT",
+        "PREVIEW",
+        "ACTION_PROGRESS",
+        "RECEIPT",
+        "CONFLICT",
+        "SAFE_REFUSAL",
+        "DEGRADED",
+        "ERROR"
+      ],
+      "title": "ResponseTypeV1",
+      "type": "string"
+    },
+    "SafeRefusalPayloadV1": {
+      "additionalProperties": false,
+      "properties": {
+        "payload_type": {
+          "const": "SAFE_REFUSAL",
+          "default": "SAFE_REFUSAL",
+          "title": "Payload Type",
+          "type": "string"
+        },
+        "reason_code": {
+          "title": "Reason Code",
+          "type": "string"
+        },
+        "safe_message": {
+          "title": "Safe Message",
+          "type": "string"
+        },
+        "suggested_safe_actions": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Suggested Safe Actions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "reason_code",
+        "safe_message"
+      ],
+      "title": "SafeRefusalPayloadV1",
+      "type": "object"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/AIResponseEnvelopeV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "citations": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Citations",
+      "type": "array"
+    },
+    "conversation_id": {
+      "minLength": 1,
+      "title": "Conversation Id",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "draft_reference": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/DraftReferenceV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "language": {
+      "default": "en",
+      "title": "Language",
+      "type": "string"
+    },
+    "policy_reference": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Policy Reference"
+    },
+    "request_id": {
+      "minLength": 1,
+      "title": "Request Id",
+      "type": "string"
+    },
+    "response_id": {
+      "minLength": 1,
+      "title": "Response Id",
+      "type": "string"
+    },
+    "response_type": {
+      "$ref": "#/$defs/ResponseTypeV1"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/ResponseStatusV1",
+      "default": "SUCCESS"
+    },
+    "structured_payload": {
+      "discriminator": {
+        "mapping": {
+          "ACTION_PROGRESS": "#/$defs/ActionProgressPayloadV1",
+          "ANSWER": "#/$defs/AnswerPayloadV1",
+          "CHOICE": "#/$defs/ChoicePayloadV1",
+          "CLARIFICATION": "#/$defs/ClarificationPayloadV1",
+          "CONFLICT": "#/$defs/ConflictPayloadV1",
+          "DEGRADED": "#/$defs/DegradedPayloadV1",
+          "DRAFT": "#/$defs/DraftPayloadV1",
+          "ERROR": "#/$defs/ErrorPayloadV1",
+          "PREVIEW": "#/$defs/PreviewPayloadV1",
+          "RECEIPT": "#/$defs/ReceiptPayloadV1",
+          "REPORT": "#/$defs/ReportPayloadV1",
+          "SAFE_REFUSAL": "#/$defs/SafeRefusalPayloadV1"
+        },
+        "propertyName": "payload_type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/AnswerPayloadV1"
+        },
+        {
+          "$ref": "#/$defs/ClarificationPayloadV1"
+        },
+        {
+          "$ref": "#/$defs/ChoicePayloadV1"
+        },
+        {
+          "$ref": "#/$defs/ReportPayloadV1"
+        },
+        {
+          "$ref": "#/$defs/DraftPayloadV1"
+        },
+        {
+          "$ref": "#/$defs/PreviewPayloadV1"
+        },
+        {
+          "$ref": "#/$defs/ActionProgressPayloadV1"
+        },
+        {
+          "$ref": "#/$defs/ReceiptPayloadV1"
+        },
+        {
+          "$ref": "#/$defs/ConflictPayloadV1"
+        },
+        {
+          "$ref": "#/$defs/SafeRefusalPayloadV1"
+        },
+        {
+          "$ref": "#/$defs/DegradedPayloadV1"
+        },
+        {
+          "$ref": "#/$defs/ErrorPayloadV1"
+        }
+      ],
+      "title": "Structured Payload"
+    },
+    "suggested_safe_actions": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Suggested Safe Actions",
+      "type": "array"
+    },
+    "trace_reference": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Trace Reference"
+    },
+    "uncertainty": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Uncertainty"
+    },
+    "user_visible_text": {
+      "default": "",
+      "title": "User Visible Text",
+      "type": "string"
+    },
+    "warnings": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "response_id",
+    "request_id",
+    "conversation_id",
+    "response_type",
+    "structured_payload"
+  ],
+  "title": "AIResponseEnvelopeV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

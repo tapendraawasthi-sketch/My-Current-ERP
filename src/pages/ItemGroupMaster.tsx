@@ -2,6 +2,8 @@ import React, { useState, useMemo } from "react";
 import { useStore } from "../store/useStore";
 import { Plus, Edit2, Trash2, Search, X, Save } from "lucide-react";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const DEFAULT_FORM = {
   name: "",
@@ -18,16 +20,17 @@ const DEFAULT_FORM = {
 const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 const inputCls =
-  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
 
 export default function ItemGroupMaster() {
   const { itemGroups, taxCategories, accounts, addItemGroup, updateItemGroup, deleteItemGroup } =
     useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [showForm, setShowForm] = useState(false);
   const [selected, setSelected] = useState<any>(null);
   const [search, setSearch] = useState("");
@@ -35,8 +38,11 @@ export default function ItemGroupMaster() {
 
   const filtered = useMemo(
     () =>
-      (itemGroups || []).filter((g: any) => g.name.toLowerCase().includes(search.toLowerCase())),
-    [itemGroups, search],
+      (itemGroups || []).filter(
+        (g: any) =>
+          matchBranch(g.branchId) && g.name.toLowerCase().includes(search.toLowerCase()),
+      ),
+    [itemGroups, search, matchBranch, branchFilter],
   );
 
   const ledgerAccounts = useMemo(() => (accounts || []).filter((a: any) => !a.isGroup), [accounts]);
@@ -65,11 +71,15 @@ export default function ItemGroupMaster() {
 
   const handleSubmit = async () => {
     if (!form.name.trim()) return alert("Group Name is required.");
+    const payload = {
+      ...form,
+      branchId: selected?.branchId || readActiveBranchId() || undefined,
+    };
     if (selected) {
-      await updateItemGroup(selected.id, form);
+      await updateItemGroup(selected.id, payload);
       alert("Item Group updated.");
     } else {
-      await addItemGroup(form);
+      await addItemGroup(payload);
       alert("Item Group saved.");
     }
     resetForm();
@@ -98,17 +108,34 @@ export default function ItemGroupMaster() {
                 Group stock items for reporting, defaults, and tax mapping
               </p>
             </div>
-            <button
-              type="button"
-              className={btnPrimary}
-              onClick={() => {
-                resetForm();
-                setShowForm(true);
-              }}
-            >
-              <Plus className="h-3.5 w-3.5" />
-              Add group
-            </button>
+            <div className="flex items-center gap-2">
+              {branchOptions.length > 0 && (
+                <select
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>
+              )}
+              <button
+                type="button"
+                className={btnPrimary}
+                onClick={() => {
+                  resetForm();
+                  setShowForm(true);
+                }}
+              >
+                <Plus className="h-3.5 w-3.5" />
+                Add group
+              </button>
+            </div>
           </div>
 
           <div className="relative mb-3 max-w-xs">
@@ -148,7 +175,7 @@ export default function ItemGroupMaster() {
                   {filtered.map((g: any, i: number) => (
                     <tr
                       key={g.id}
-                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
                       onClick={() => handleEdit(g)}
                     >
                       <td className={td}>{i + 1}</td>

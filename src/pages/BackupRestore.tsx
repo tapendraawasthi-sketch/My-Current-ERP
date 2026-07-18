@@ -1,9 +1,11 @@
 // @ts-nocheck
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useStore } from "../store/useStore";
+import { useStore } from "@/store/useStore";
 import { getDB, generateId } from "../lib/db";
 import * as XLSX from "xlsx";
 import toast from "@/lib/appToast";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { matchesBranchFilter, readActiveBranchId } from "../lib/activeBranch";
 import {
   AlertTriangle,
   Archive,
@@ -39,13 +41,13 @@ const money = (v: any) =>
   })}`;
 
 const btn =
-  "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-[#1557b0] text-white text-[12px] font-medium hover:bg-[#0f4a96] disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
+  "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-[var(--ds-action-primary)] text-white text-[12px] font-medium hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 const btn2 =
   "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-white border border-gray-300 text-gray-700 text-[12px] font-medium hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 const btnDanger =
   "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-red-600 text-white text-[12px] font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 const input =
-  "w-full h-8 px-2.5 rounded-md border border-gray-300 bg-white text-[12px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "w-full h-8 px-2.5 rounded-md border border-gray-300 bg-white text-[12px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const card = "bg-white border border-gray-200 rounded-lg shadow-sm p-4 text-gray-800";
 const th =
   "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200";
@@ -103,6 +105,44 @@ const CRITICAL_TABLES = [
   "stockMovements",
   "users",
 ];
+
+/** Tables whose rows may carry branchId — filtered on branch-scoped backup. */
+const BRANCH_SCOPED_TABLES = new Set([
+  "vouchers",
+  "invoices",
+  "stockMovements",
+  "warehouses",
+  "bankAccounts",
+  "periodLocks",
+  "budgets",
+  "payrollRuns",
+  "tdsPayments",
+  "tdsDeductions",
+  "vatReturns",
+  "openingBalances",
+  "bankStatements",
+  "recurringVouchers",
+  "productionOrders",
+  "jobWorkOrders",
+]);
+
+function filterRowsForBranch(tableName: string, rows: any[], branchFilter: string) {
+  if (!BRANCH_SCOPED_TABLES.has(tableName) || !branchFilter || branchFilter === "all") {
+    return rows || [];
+  }
+  return (rows || []).filter((r) => matchesBranchFilter(r?.branchId, branchFilter));
+}
+
+function stampRowsForBranch(tableName: string, rows: any[]) {
+  if (!BRANCH_SCOPED_TABLES.has(tableName)) return rows || [];
+  const active = readActiveBranchId() || undefined;
+  if (!active) return rows || [];
+  return (rows || []).map((r) =>
+    r && (r.branchId == null || r.branchId === "")
+      ? { ...r, branchId: active }
+      : r,
+  );
+}
 
 const tableAll = (db: any, name: string) => {
   try {
@@ -305,6 +345,7 @@ export default function BackupRestore() {
   const companySettings = store.companySettings || store.company || {};
   const fileInputRef = useRef<HTMLInputElement>(null);
   const excelInputRef = useRef<HTMLInputElement>(null);
+  const { branchFilter, setBranchFilter, branchOptions } = useBranchFilter();
 
   const [activeTab, setActiveTab] = useState("Backup");
   const [loading, setLoading] = useState(false);
@@ -330,7 +371,7 @@ export default function BackupRestore() {
     refreshStats();
     loadHistory();
     loadSettings();
-  }, []);
+  }, [branchFilter]);
 
   const loadSettings = async () => {
     try {
@@ -392,7 +433,7 @@ export default function BackupRestore() {
 
       const rows = await Promise.all(
         tableNames.map(async (name) => {
-          const data = await tableAll(db, name);
+          const data = filterRowsForBranch(name, await tableAll(db, name), branchFilter);
           const json = safeStringify(data);
 
           return {
@@ -480,7 +521,7 @@ export default function BackupRestore() {
 
     for (const name of selectedTables) {
       const rows = await tableAll(db, name);
-      tables[name] = rows;
+      tables[name] = filterRowsForBranch(name, rows, branchFilter);
     }
 
     const backup = {
@@ -500,6 +541,7 @@ export default function BackupRestore() {
         store.fiscalYear?.name ||
         companySettings?.fiscalYear ||
         "",
+      branchFilter: branchFilter || "all",
       tables,
       metadata: {
         tableCount: Object.keys(tables).length,
@@ -509,6 +551,7 @@ export default function BackupRestore() {
         ),
         generatedFrom: window.location.origin,
         userAgent: navigator.userAgent,
+        branchFilter: branchFilter || "all",
       },
     };
 
@@ -772,12 +815,14 @@ export default function BackupRestore() {
     }
   };
 
-  const normalizeRowsForRestore = (rows: any[]) =>
-    (rows || []).map((r) => ({
+  const normalizeRowsForRestore = (rows: any[], tableName?: string) => {
+    const stamped = stampRowsForBranch(tableName || "", rows || []);
+    return stamped.map((r) => ({
       id: r.id || generateId(),
       ...r,
       restoredAt: nowISO(),
     }));
+  };
 
   const restoreBackup = async () => {
     if (!previewBackup) {
@@ -805,7 +850,7 @@ export default function BackupRestore() {
       let rowCount = 0;
 
       for (const name of names) {
-        const rows = normalizeRowsForRestore(tables[name] || []);
+        const rows = normalizeRowsForRestore(tables[name] || [], name);
         rowCount += rows.length;
 
         if (restoreMode === "replace") {
@@ -915,7 +960,7 @@ export default function BackupRestore() {
             </p>
             <p className="text-xl font-semibold mt-1">{totals.tables}</p>
           </div>
-          <Database className="h-5 w-5 text-[#1557b0]" />
+          <Database className="h-5 w-5 text-[var(--ds-action-primary)]" />
         </div>
       </div>
 
@@ -927,7 +972,7 @@ export default function BackupRestore() {
             </p>
             <p className="text-xl font-semibold mt-1">{totals.rows}</p>
           </div>
-          <Archive className="h-5 w-5 text-[#1557b0]" />
+          <Archive className="h-5 w-5 text-[var(--ds-action-primary)]" />
         </div>
       </div>
 
@@ -939,7 +984,7 @@ export default function BackupRestore() {
             </p>
             <p className="text-xl font-semibold mt-1">{bytes(totals.size)}</p>
           </div>
-          <FileArchive className="h-5 w-5 text-[#1557b0]" />
+          <FileArchive className="h-5 w-5 text-[var(--ds-action-primary)]" />
         </div>
       </div>
 
@@ -951,7 +996,7 @@ export default function BackupRestore() {
             </p>
             <p className="text-xl font-semibold mt-1">{totals.allRows}</p>
           </div>
-          <ShieldCheck className="h-5 w-5 text-[#1557b0]" />
+          <ShieldCheck className="h-5 w-5 text-[var(--ds-action-primary)]" />
         </div>
       </div>
     </div>
@@ -1434,6 +1479,21 @@ export default function BackupRestore() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          {branchOptions.length > 0 ? (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch filter"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          ) : null}
           <button className={btn2} onClick={refreshStats} disabled={loading}>
             <RefreshCcw className={`h-3 w-3 ${loading ? "animate-spin" : ""}`} /> Refresh
           </button>
@@ -1456,7 +1516,7 @@ export default function BackupRestore() {
             onClick={() => setActiveTab(name)}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium transition-colors ${
               activeTab === name
-                ? "bg-[#1557b0] text-white"
+                ? "bg-[var(--ds-action-primary)] text-white"
                 : "bg-white border border-gray-300 text-gray-600 hover:bg-gray-50"
             }`}
           >
@@ -1468,7 +1528,7 @@ export default function BackupRestore() {
 
       {loading && (
         <div className={`${card} mb-4 flex items-center gap-2 text-[12px] text-gray-600`}>
-          <RefreshCcw className="h-4 w-4 animate-spin text-[#1557b0]" /> Processing database
+          <RefreshCcw className="h-4 w-4 animate-spin text-[var(--ds-action-primary)]" /> Processing database
           operation...
         </div>
       )}

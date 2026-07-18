@@ -4,6 +4,8 @@ import { Plus, X, Search, Save } from "lucide-react";
 import { useStore } from "../store";
 import toast from "@/lib/appToast";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const BS_MONTHS = [
   "Baisakh",
@@ -23,15 +25,16 @@ const BS_MONTHS = [
 const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 const inputCls =
-  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
 
 export default function BudgetMaster() {
   const { budgets, accounts, costCenters, currentFiscalYear, setBudgetEntries } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [searchTerm, setSearchTerm] = useState("");
   const [showForm, setShowForm] = useState(false);
 
@@ -48,7 +51,11 @@ export default function BudgetMaster() {
     > = {};
 
     budgets
-      .filter((b) => b.fiscalYearBS === currentFiscalYear?.name)
+      .filter(
+        (b) =>
+          b.fiscalYearBS === currentFiscalYear?.name &&
+          matchBranch((b as { branchId?: string }).branchId),
+      )
       .forEach((b) => {
         const key = `${b.accountId}_${b.costCenterId || "none"}`;
         if (!grouped[key]) {
@@ -70,7 +77,7 @@ export default function BudgetMaster() {
         costCenterName: costCenters.find((c) => c.id === g.costCenterId)?.name || "N/A",
       }))
       .filter((g) => g.accountName.toLowerCase().includes(searchTerm.toLowerCase()));
-  }, [budgets, currentFiscalYear, accounts, costCenters, searchTerm]);
+  }, [budgets, currentFiscalYear, accounts, costCenters, searchTerm, matchBranch, branchFilter]);
 
   const resetForm = () => {
     setAccountId("");
@@ -138,6 +145,7 @@ export default function BudgetMaster() {
           fiscalYearBS: currentFiscalYear.name,
           month: String(i).padStart(2, "0"),
           budgetedAmount: split,
+          branchId: readActiveBranchId() || undefined,
         });
       }
     } else if (budgetMode === "MONTHLY") {
@@ -151,6 +159,7 @@ export default function BudgetMaster() {
             fiscalYearBS: currentFiscalYear.name,
             month: monthStr,
             budgetedAmount: amt,
+            branchId: readActiveBranchId() || undefined,
           });
         }
       }
@@ -182,9 +191,24 @@ export default function BudgetMaster() {
               </p>
             </div>
             <div className="flex items-center gap-2">
+              {branchOptions.length > 0 && (
+                <select
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>
+              )}
               <span className="text-[11px] text-gray-500">
                 FY{" "}
-                <span className="font-semibold text-[#1557b0]">
+                <span className="font-semibold text-[var(--ds-action-primary)]">
                   {currentFiscalYear?.name || "N/A"}
                 </span>
               </span>
@@ -318,7 +342,7 @@ export default function BudgetMaster() {
                         setBudgetMode("ANNUAL");
                         setMonthlyAmounts({});
                       }}
-                      className="text-[#1557b0] focus:ring-[#1557b0]"
+                      className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                     />
                     Annual (equally divided into 12 months)
                   </label>
@@ -331,7 +355,7 @@ export default function BudgetMaster() {
                         setBudgetMode("MONTHLY");
                         setAnnualAmount("");
                       }}
-                      className="text-[#1557b0] focus:ring-[#1557b0]"
+                      className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                     />
                     Monthly (specify for each month)
                   </label>

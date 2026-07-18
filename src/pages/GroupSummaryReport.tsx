@@ -12,12 +12,14 @@ import ReportShell from "../components/reporting/ReportShell";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 import { useScreenF12 } from "../hooks/useF12Config";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const GroupSummaryReport: React.FC = () => {
   // Register this screen with F12 system
   const getConfig = useScreenF12("group-summary");
 
   const { vouchers, accounts, companySettings, currentFiscalYear } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [selectedGroupId, setSelectedGroupId] = useState<string>("");
   const [startDate, setStartDate] = useState(currentFiscalYear?.startDate || "");
@@ -28,11 +30,13 @@ const GroupSummaryReport: React.FC = () => {
   const [pendingGroupId, setPendingGroupId] = useState(selectedGroupId);
   const [pendingStart, setPendingStart] = useState(startDate);
   const [pendingEnd, setPendingEnd] = useState(endDate);
+  const [pendingBranchFilter, setPendingBranchFilter] = useState(branchFilter);
 
   const applyOptions = () => {
     setSelectedGroupId(pendingGroupId);
     setStartDate(pendingStart);
     setEndDate(pendingEnd);
+    setBranchFilter(pendingBranchFilter);
     setOptionsOpen(false);
   };
 
@@ -57,7 +61,11 @@ const GroupSummaryReport: React.FC = () => {
     if (!vouchers || !accounts) return new Map();
 
     const relevantVouchers = vouchers.filter(
-      (v) => v.status === "posted" && v.date >= startDate && v.date <= endDate,
+      (v) =>
+        v.status === "posted" &&
+        v.date >= startDate &&
+        v.date <= endDate &&
+        matchBranch(v.branchId),
     );
 
     // Calculate period totals manually since computeLedgerTotals might not be sufficient
@@ -92,7 +100,7 @@ const GroupSummaryReport: React.FC = () => {
     });
 
     return totals;
-  }, [vouchers, accounts, startDate, endDate]);
+  }, [vouchers, accounts, startDate, endDate, matchBranch, branchFilter]);
 
   // Format number with Dr/Cr suffix
   const formatDrCr = (value: number) => {
@@ -268,6 +276,7 @@ const GroupSummaryReport: React.FC = () => {
         setPendingGroupId(selectedGroupId);
         setPendingStart(startDate);
         setPendingEnd(endDate);
+        setPendingBranchFilter(branchFilter);
         setOptionsOpen(true);
       }}
       actionBarButtons={[{ label: "Print" }, { label: "Export" }]}
@@ -278,7 +287,7 @@ const GroupSummaryReport: React.FC = () => {
             <select
               value={selectedGroupId}
               onChange={(e) => setSelectedGroupId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-[220px]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[220px]"
             >
               {groups.map((group) => (
                 <option key={group.id} value={group.id}>
@@ -288,13 +297,29 @@ const GroupSummaryReport: React.FC = () => {
             </select>
           </label>
 
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+
           <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
             From:
             <input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -304,7 +329,7 @@ const GroupSummaryReport: React.FC = () => {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
         </>
@@ -338,7 +363,7 @@ const GroupSummaryReport: React.FC = () => {
               const isExpandable = row.isExpandable;
 
               let rowStyle =
-                "bg-white group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]";
+                "bg-white group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]";
               if (row.type === "group")
                 rowStyle = "bg-[#f5f6fa] font-semibold text-gray-800 border-y border-gray-200";
               if (row.type === "subgroup") rowStyle = "bg-gray-50 font-medium text-gray-800";
@@ -371,7 +396,7 @@ const GroupSummaryReport: React.FC = () => {
                   </td>
                   <td
                     className={`px-3 py-2.5 text-[12px] text-right font-mono ${
-                      row.debit > 0 ? "text-[#1557b0]" : "text-gray-700"
+                      row.debit > 0 ? "text-[var(--ds-action-primary)]" : "text-gray-700"
                     }`}
                   >
                     {row.debit > 0 ? formatNumber(row.debit) : "—"}
@@ -441,7 +466,7 @@ const GroupSummaryReport: React.FC = () => {
             <select
               value={pendingGroupId}
               onChange={(e) => setPendingGroupId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               {groups.map((group) => (
                 <option key={group.id} value={group.id}>
@@ -457,7 +482,7 @@ const GroupSummaryReport: React.FC = () => {
               type="date"
               value={pendingStart}
               onChange={(e) => setPendingStart(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -467,9 +492,28 @@ const GroupSummaryReport: React.FC = () => {
               type="date"
               value={pendingEnd}
               onChange={(e) => setPendingEnd(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
+
+          {branchOptions.length > 0 && (
+            <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
+              Branch
+              <select
+                value={pendingBranchFilter}
+                onChange={(e) => setPendingBranchFilter(e.target.value)}
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
         </div>
       </ReportOptionsModal>
     </ReportShell>

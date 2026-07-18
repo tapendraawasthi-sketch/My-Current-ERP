@@ -16,11 +16,11 @@ import {
   Mail,
 } from "lucide-react";
 
-const BORDER = "1px solid #000";
-const BG = "#E4F1D9";
-const BG_CARD = "#EBF5E2";
-const BG_HEADER = "#D4EABD";
-const BG_DEEP = "#C9DEB5";
+const BORDER = "1px solid var(--ds-border-default)";
+const BG = "var(--ds-surface-muted)";
+const BG_CARD = "var(--ds-surface-muted)";
+const BG_HEADER = "var(--ds-surface-hover)";
+const BG_DEEP = "var(--ds-surface-muted)";
 
 const NEPAL_PROVINCES = [
   "Koshi",
@@ -158,6 +158,8 @@ export default function BranchMaster() {
       const updatedBranches = await db.branches.toArray();
       setBranches(updatedBranches);
       setFilteredBranches(updatedBranches);
+      useStore.setState({ branches: updatedBranches });
+      window.dispatchEvent(new Event("orbix-branch-changed"));
       clearForm();
     } catch (error) {
       console.error("Error saving branch:", error);
@@ -180,6 +182,8 @@ export default function BranchMaster() {
       const updatedBranches = await db.branches.toArray();
       setBranches(updatedBranches);
       setFilteredBranches(updatedBranches);
+      useStore.setState({ branches: updatedBranches });
+      window.dispatchEvent(new Event("orbix-branch-changed"));
       clearForm();
     } catch (error) {
       console.error("Error deleting branch:", error);
@@ -214,6 +218,7 @@ export default function BranchMaster() {
 
   const handleSetAsDefault = (branchId) => {
     localStorage.setItem("erp_default_branch", branchId);
+    window.dispatchEvent(new Event("orbix-branch-changed"));
     toast.success("Default branch set successfully");
   };
 
@@ -239,7 +244,7 @@ export default function BranchMaster() {
   };
 
   return (
-    <div style={{ backgroundColor: BG, minHeight: "100vh", display: "flex" }}>
+    <div style={{ backgroundColor: "var(--ds-canvas)", minHeight: "100vh", display: "flex" }}>
       {/* Left Panel */}
       <div
         style={{
@@ -263,7 +268,7 @@ export default function BranchMaster() {
             style={{
               fontSize: "14px",
               fontWeight: "bold",
-              color: "#000000",
+              color: "var(--ds-text-default)",
               margin: 0,
               display: "flex",
               alignItems: "center",
@@ -281,7 +286,7 @@ export default function BranchMaster() {
             setEditingId(null);
           }}
           style={{
-            backgroundColor: "#1557b0",
+            backgroundColor: "var(--ds-action-primary)",
             color: "white",
             border: BORDER,
             padding: "8px 12px",
@@ -331,10 +336,10 @@ export default function BranchMaster() {
                 style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
               >
                 <div>
-                  <div style={{ fontSize: "12px", fontWeight: "bold", color: "#000000" }}>
+                  <div style={{ fontSize: "12px", fontWeight: "bold", color: "var(--ds-text-default)" }}>
                     {branch.code}
                   </div>
-                  <div style={{ fontSize: "11px", color: "#000000" }}>{branch.name}</div>
+                  <div style={{ fontSize: "11px", color: "var(--ds-text-default)" }}>{branch.name}</div>
                 </div>
                 <div>
                   <span
@@ -362,7 +367,7 @@ export default function BranchMaster() {
           style={{ backgroundColor: BG_CARD, padding: "20px", borderRadius: "8px", border: BORDER }}
         >
           <h2
-            style={{ fontSize: "18px", fontWeight: "bold", color: "#000000", marginBottom: "20px" }}
+            style={{ fontSize: "18px", fontWeight: "bold", color: "var(--ds-text-default)", marginBottom: "20px" }}
           >
             {editingId ? "Edit Branch" : "Add New Branch"}
           </h2>
@@ -851,7 +856,7 @@ export default function BranchMaster() {
               onClick={clearForm}
               style={{
                 backgroundColor: BG_HEADER,
-                color: "#000000",
+                color: "var(--ds-text-default)",
                 border: BORDER,
                 padding: "6px 16px",
                 borderRadius: "4px",
@@ -864,7 +869,7 @@ export default function BranchMaster() {
             <button
               onClick={handleSave}
               style={{
-                backgroundColor: "#1557b0",
+                backgroundColor: "var(--ds-action-primary)",
                 color: "white",
                 border: BORDER,
                 padding: "6px 20px",
@@ -909,7 +914,7 @@ export default function BranchMaster() {
               style={{
                 fontSize: "16px",
                 fontWeight: "bold",
-                color: "#000000",
+                color: "var(--ds-text-default)",
                 marginBottom: "15px",
               }}
             >
@@ -931,10 +936,10 @@ export default function BranchMaster() {
                   border: BORDER,
                 }}
               >
-                <div style={{ fontSize: "12px", color: "#000000", marginBottom: "5px" }}>
+                <div style={{ fontSize: "12px", color: "var(--ds-text-default)", marginBottom: "5px" }}>
                   Total Vouchers
                 </div>
-                <div style={{ fontSize: "20px", fontWeight: "bold", color: "#000000" }}>
+                <div style={{ fontSize: "20px", fontWeight: "bold", color: "var(--ds-text-default)" }}>
                   {getBranchStats(editingId).totalVouchers}
                 </div>
               </div>
@@ -946,10 +951,10 @@ export default function BranchMaster() {
                   border: BORDER,
                 }}
               >
-                <div style={{ fontSize: "12px", color: "#000000", marginBottom: "5px" }}>
+                <div style={{ fontSize: "12px", color: "var(--ds-text-default)", marginBottom: "5px" }}>
                   Total Sales
                 </div>
-                <div style={{ fontSize: "20px", fontWeight: "bold", color: "#000000" }}>
+                <div style={{ fontSize: "20px", fontWeight: "bold", color: "var(--ds-text-default)" }}>
                   {getBranchStats(editingId).totalSales.toLocaleString("en-IN", {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
@@ -964,10 +969,10 @@ export default function BranchMaster() {
                   border: BORDER,
                 }}
               >
-                <div style={{ fontSize: "12px", color: "#000000", marginBottom: "5px" }}>
+                <div style={{ fontSize: "12px", color: "var(--ds-text-default)", marginBottom: "5px" }}>
                   Total Purchase
                 </div>
-                <div style={{ fontSize: "20px", fontWeight: "bold", color: "#000000" }}>
+                <div style={{ fontSize: "20px", fontWeight: "bold", color: "var(--ds-text-default)" }}>
                   {getBranchStats(editingId).totalPurchase.toLocaleString("en-IN", {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
@@ -982,10 +987,10 @@ export default function BranchMaster() {
                   border: BORDER,
                 }}
               >
-                <div style={{ fontSize: "12px", color: "#000000", marginBottom: "5px" }}>
+                <div style={{ fontSize: "12px", color: "var(--ds-text-default)", marginBottom: "5px" }}>
                   Active Employees
                 </div>
-                <div style={{ fontSize: "20px", fontWeight: "bold", color: "#000000" }}>
+                <div style={{ fontSize: "20px", fontWeight: "bold", color: "var(--ds-text-default)" }}>
                   {getBranchStats(editingId).activeEmployees}
                 </div>
               </div>
@@ -996,7 +1001,7 @@ export default function BranchMaster() {
                 style={{
                   fontSize: "12px",
                   fontWeight: "bold",
-                  color: "#000000",
+                  color: "var(--ds-text-default)",
                   marginBottom: "5px",
                 }}
               >

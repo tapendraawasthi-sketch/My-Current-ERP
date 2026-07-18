@@ -1,0 +1,29 @@
+{
+  "data": {
+    "ambiguity_flags": [],
+    "analysis_status": "NOT_RUN",
+    "analyzer_versions": {},
+    "code_mix_pattern": null,
+    "date_candidates": [],
+    "dominant_response_language": null,
+    "entity_surface_candidates": [],
+    "input_quality_flags": [],
+    "language_distribution": {},
+    "linguistic_register": null,
+    "normalization_bundle": null,
+    "normalization_edits": [],
+    "number_candidates": [],
+    "offset_unit": "UNICODE_CODE_POINT",
+    "protected_span_kinds": [],
+    "protected_spans": [],
+    "raw_text": "नेपाली र English mix",
+    "schema_version": "1.0.0",
+    "span_annotations": [],
+    "transliteration_bundle": null,
+    "transliteration_candidates": [],
+    "unicode_normalized_view": null,
+    "warnings": []
+  },
+  "kind": "LanguageFrameV1",
+  "valid": true
+}

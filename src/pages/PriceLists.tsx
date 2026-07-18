@@ -15,15 +15,17 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5 disabled:opacity-60";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5 disabled:opacity-60";
 const btnOutline =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 const inputCls =
-  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
 
 const emptyLine = (): DBPriceListLine & { _id: string } => ({
@@ -36,6 +38,7 @@ const emptyLine = (): DBPriceListLine & { _id: string } => ({
 
 export default function PriceLists() {
   const { priceLists, addPriceList, updatePriceList, deletePriceList, items } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -55,14 +58,16 @@ export default function PriceLists() {
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase().trim();
-    if (!q) return priceLists;
-    return priceLists.filter(
-      (pl) =>
+    return priceLists.filter((pl) => {
+      if (!matchBranch((pl as { branchId?: string }).branchId)) return false;
+      if (!q) return true;
+      return (
         pl.name.toLowerCase().includes(q) ||
         pl.code.toLowerCase().includes(q) ||
-        (pl.description ?? "").toLowerCase().includes(q),
-    );
-  }, [priceLists, search]);
+        (pl.description ?? "").toLowerCase().includes(q)
+      );
+    });
+  }, [priceLists, search, matchBranch, branchFilter]);
 
   const deleteTarget = useMemo(
     () => priceLists.find((pl) => pl.id === deleteTargetId) ?? null,
@@ -174,7 +179,8 @@ export default function PriceLists() {
       currency: formCurrency,
       isActive: formIsActive,
       lines: cleanLines,
-    };
+      branchId: readActiveBranchId() || undefined,
+    } as Omit<DBPriceList, "id">;
 
     setSaving(true);
     try {
@@ -226,10 +232,27 @@ export default function PriceLists() {
                 Define item-specific pricing for customers
               </p>
             </div>
-            <button type="button" className={btnPrimary} onClick={handleOpenCreate}>
-              <Plus className="h-3.5 w-3.5" />
-              New price list
-            </button>
+            <div className="flex items-center gap-2">
+              {branchOptions.length > 0 && (
+                <select
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>
+              )}
+              <button type="button" className={btnPrimary} onClick={handleOpenCreate}>
+                <Plus className="h-3.5 w-3.5" />
+                New price list
+              </button>
+            </div>
           </div>
 
           <div className="relative mb-3 max-w-xs">
@@ -276,7 +299,7 @@ export default function PriceLists() {
                     return (
                       <React.Fragment key={pl.id}>
                         <tr
-                          className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                          className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
                           onClick={() => handleOpenEdit(pl)}
                         >
                           <td className={`${td} text-center`}>
@@ -464,7 +487,7 @@ export default function PriceLists() {
                     type="checkbox"
                     checked={formIsActive}
                     onChange={(e) => setFormIsActive(e.target.checked)}
-                    className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                    className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                   />
                   <span className="text-[12px] font-medium text-gray-700">Active</span>
                 </label>
@@ -479,7 +502,7 @@ export default function PriceLists() {
                 <button
                   type="button"
                   onClick={addLine}
-                  className="inline-flex items-center gap-1 text-[11px] font-medium text-[#1557b0] hover:text-[#0f4a96]"
+                  className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--ds-action-primary)] hover:text-[var(--ds-action-primary-hover)]"
                 >
                   <Plus className="h-3.5 w-3.5" />
                   Add item
@@ -515,7 +538,7 @@ export default function PriceLists() {
                             <select
                               value={line.itemId}
                               onChange={(e) => updateLine(line._id, "itemId", e.target.value)}
-                              className="w-full h-7 px-1.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0]"
+                              className="w-full h-7 px-1.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]"
                             >
                               <option value="">Select item</option>
                               {stockItems.map((i: any) => (
@@ -530,7 +553,7 @@ export default function PriceLists() {
                               value={line.itemName}
                               onChange={(e) => updateLine(line._id, "itemName", e.target.value)}
                               placeholder={`Item ${idx + 1}`}
-                              className="w-full h-7 px-1.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0]"
+                              className="w-full h-7 px-1.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]"
                             />
                           )}
                         </td>
@@ -541,7 +564,7 @@ export default function PriceLists() {
                             step={1}
                             value={line.minQty ?? 1}
                             onChange={(e) => updateLine(line._id, "minQty", Number(e.target.value))}
-                            className="w-full h-7 px-1.5 text-right font-mono text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0]"
+                            className="w-full h-7 px-1.5 text-right font-mono text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]"
                           />
                         </td>
                         <td className="px-3 py-1.5">
@@ -551,7 +574,7 @@ export default function PriceLists() {
                             step={0.01}
                             value={line.rate}
                             onChange={(e) => updateLine(line._id, "rate", Number(e.target.value))}
-                            className="w-full h-7 px-1.5 text-right font-mono text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0]"
+                            className="w-full h-7 px-1.5 text-right font-mono text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]"
                           />
                         </td>
                         <td className="px-3 py-1.5 text-center">

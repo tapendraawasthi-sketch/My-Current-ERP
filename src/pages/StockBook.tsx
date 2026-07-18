@@ -16,6 +16,7 @@ import {
   type ValuationMethod,
   type ValuationRow,
 } from "../lib/inventoryValuation";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 // ── BS date helper ────────────────────────────────────────────────────────────
 function toBSDisplay(dateStr: string): string {
@@ -35,11 +36,11 @@ const td = "px-3 py-2.5 text-[12px] text-gray-700";
 const tdR = `${td} number-cell`;
 const tdRB = `${td} number-cell-bold`;
 const btnPrimary =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md";
 const btnOutline =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50";
 const inputCls =
-  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const labelCls = "text-[11px] font-medium text-gray-600";
 
 function typeBadge(movementType: string, voucherType: string, inQty: number) {
@@ -59,6 +60,7 @@ const Amt = ({ v, cls = "" }: { v: number; cls?: string }) =>
 
 const StockBook: React.FC = () => {
   const { items, warehouses, stockMovements, currentFiscalYear } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchMovement } = useBranchFilter();
 
   const [selectedItemId, setSelectedItemId] = useState("");
   const [selectedWarehouseId, setSelectedWarehouseId] = useState("");
@@ -74,14 +76,19 @@ const StockBook: React.FC = () => {
     [items, selectedItemId],
   );
 
+  const scopedMovements = useMemo(
+    () => (stockMovements ?? []).filter((m) => matchMovement(m)),
+    [stockMovements, matchMovement, branchFilter],
+  );
+
   // ── Valuation computation ─────────────────────────────────────────────────
   const result = useMemo(() => {
     if (!selectedItem) return null;
     const warehouseId = selectedWarehouseId || null;
     return method === "fifo"
-      ? computeFIFO(stockMovements ?? [], selectedItem, warehouseId, toDate || null)
-      : computeWeightedAverage(stockMovements ?? [], selectedItem, warehouseId, toDate || null);
-  }, [selectedItem, selectedWarehouseId, method, stockMovements, toDate]);
+      ? computeFIFO(scopedMovements, selectedItem, warehouseId, toDate || null)
+      : computeWeightedAverage(scopedMovements, selectedItem, warehouseId, toDate || null);
+  }, [selectedItem, selectedWarehouseId, method, scopedMovements, toDate]);
 
   // Filter rows by fromDate
   const filteredRows = useMemo(() => {
@@ -199,6 +206,24 @@ const StockBook: React.FC = () => {
             ))}
           </select>
         </div>
+        {branchOptions.length > 0 && (
+          <div>
+            <label className={labelCls}>Branch</label>
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className={`${inputCls} min-w-[160px]`}
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
         <div>
           <label className={labelCls}>From date</label>
           <input

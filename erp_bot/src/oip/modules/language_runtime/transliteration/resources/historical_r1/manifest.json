@@ -1,0 +1,40 @@
+{
+  "allowed_use": [
+    "candidate_transliteration",
+    "engineering_eval"
+  ],
+  "content_hash": "0f0af894fa282d7134e2ca1cba26a1000f75733fa435588de6a2083abd3d9dc1",
+  "files": [
+    "romanized_lexicon.json",
+    "grapheme_rules.json",
+    "morphology_rules.json",
+    "ambiguity_rules.json",
+    "domain_terms.json",
+    "context_rules.json",
+    "english_identity.json",
+    "name_like_terms.json",
+    "ranking_config.json"
+  ],
+  "license_status": "INTERNAL_ENGINEERING",
+  "limits": {
+    "max_beam_width": 32,
+    "max_candidates_per_span": 5,
+    "max_eligible_spans": 128,
+    "max_hypotheses": 5,
+    "max_total_candidates": 400
+  },
+  "prior_content_hash_mai0710": "18628335c0feb74a4f28f65ca70b2683f8b54a54790fd03e9033d8cd08ed4566",
+  "prohibited_use": [
+    "training_on_frozen_eval",
+    "accounting_truth",
+    "auto_apply",
+    "ui_render",
+    "prompt_injection"
+  ],
+  "provenance": "engineering-curated pack; no customer/tenant/secrets; no frozen-eval labels; MAI-07R1 ranking_config added",
+  "resource_id": "mai07_transliteration_pack_v1",
+  "resource_pack_version": "mai-07.2.0",
+  "review_status": "ENGINEERING_CURATED_NOT_LINGUIST_APPROVED",
+  "schema_version": "1.0.0",
+  "update_date": "2026-07-15"
+}

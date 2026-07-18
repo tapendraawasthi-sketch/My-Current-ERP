@@ -19,6 +19,7 @@ import { formatNumber, dateToAD } from "../lib/utils";
 import { VoucherType, VoucherStatus, PaymentStatus, Party, ReportPeriodPreset } from "../lib/types";
 import toast from "@/lib/appToast";
 import { mergeSystemConfiguration, getAgeingBucketIndex } from "../lib/systemConfiguration";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const PartyLedgerStatement: React.FC = () => {
   const {
@@ -31,6 +32,7 @@ const PartyLedgerStatement: React.FC = () => {
     reportFilters,
     setReportFilters,
   } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
 
   const partyDashboard = mergeSystemConfiguration(
     companySettings?.systemConfiguration,
@@ -80,6 +82,7 @@ const PartyLedgerStatement: React.FC = () => {
     for (const inv of invoices) {
       if (inv.partyId !== selectedPartyId) continue;
       if (inv.status !== "posted") continue;
+      if (!matchBranch((inv as any).branchId)) continue;
       const t = String(inv.type || "").toLowerCase();
       const outstanding = computeInvoiceOutstanding(inv, vouchers);
       if (outstanding <= 0.005) continue;
@@ -94,21 +97,34 @@ const PartyLedgerStatement: React.FC = () => {
     }
 
     return { balance: Math.abs(balance), type: balance >= 0 ? "debtor" : "creditor" };
-  }, [invoices, selectedPartyId, vouchers]);
+  }, [invoices, selectedPartyId, vouchers, matchBranch, branchFilter]);
 
   const statement = useMemo(() => {
     if (!selectedParty) {
       return null;
     }
-    return computePartyStatement(selectedParty, accounts, vouchers, invoices, startDate, endDate);
-  }, [selectedParty, accounts, vouchers, invoices, startDate, endDate]);
+    return computePartyStatement(
+      selectedParty,
+      accounts,
+      vouchers,
+      invoices,
+      startDate,
+      endDate,
+      branchFilter,
+    );
+  }, [selectedParty, accounts, vouchers, invoices, startDate, endDate, branchFilter]);
 
   const lastInvoice = useMemo(() => {
     if (!selectedPartyId) return null;
     return [...invoices]
-      .filter((inv) => inv.partyId === selectedPartyId && inv.status === "posted")
+      .filter(
+        (inv) =>
+          inv.partyId === selectedPartyId &&
+          inv.status === "posted" &&
+          matchBranch((inv as any).branchId),
+      )
       .sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")))[0];
-  }, [invoices, selectedPartyId]);
+  }, [invoices, selectedPartyId, matchBranch, branchFilter]);
 
   const partyAgingBuckets = useMemo(() => {
     if (!selectedPartyId) return [];
@@ -116,6 +132,7 @@ const PartyLedgerStatement: React.FC = () => {
     const buckets = ageingSlabs.map((s) => ({ label: s.label, amount: 0 }));
     for (const inv of invoices) {
       if (inv.partyId !== selectedPartyId || inv.status !== "posted") continue;
+      if (!matchBranch((inv as any).branchId)) continue;
       const outstanding = computeInvoiceOutstanding(inv, vouchers);
       if (outstanding <= 0.005) continue;
       const refDate = inv.dueDate || inv.date;
@@ -129,7 +146,7 @@ const PartyLedgerStatement: React.FC = () => {
       buckets[idx].amount += outstanding;
     }
     return buckets.filter((b) => b.amount > 0);
-  }, [invoices, selectedPartyId, vouchers, ageingSlabs]);
+  }, [invoices, selectedPartyId, vouchers, ageingSlabs, matchBranch, branchFilter]);
 
   const handlePrint = () => {
     if (!selectedParty || !statement) {
@@ -222,6 +239,23 @@ const PartyLedgerStatement: React.FC = () => {
             onChange={handlePartyChange}
             placeholder="Select party"
           />
+          {branchOptions.length > 0 && (
+            <label className="flex flex-col gap-0.5 text-[11px] font-medium text-[var(--ds-text-muted)]">
+              Branch
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                className="h-8 rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-2.5 text-[13px] text-[var(--ds-text-default)] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
           <NepaliDatePicker label="From Date" value={startDate} onChange={setStartDate} />
           <NepaliDatePicker label="To Date" value={endDate} onChange={setEndDate} />
           <button

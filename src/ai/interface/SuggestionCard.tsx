@@ -54,7 +54,7 @@ const SuggestionCard: React.FC<SuggestionCardProps> = ({
         {!isNewProduct && (
           <div className="rounded-md border border-[#c7d2fe] bg-white p-2.5">
             <div className="flex items-center justify-between mb-1">
-              <p className="text-[10px] font-semibold text-[#1557b0] uppercase tracking-wide">
+              <p className="text-[10px] font-semibold text-[var(--ds-action-primary)] uppercase tracking-wide">
                 ✨ Best match
               </p>
               <span
@@ -97,7 +97,7 @@ const SuggestionCard: React.FC<SuggestionCardProps> = ({
               <button
                 type="button"
                 onClick={() => onSelect(best)}
-                className="h-7 px-2.5 flex items-center gap-1 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[11px] font-medium rounded-md"
+                className="h-7 px-2.5 flex items-center gap-1 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[11px] font-medium rounded-md"
               >
                 <Check className="h-3 w-3" /> Use This
               </button>
@@ -149,7 +149,7 @@ const SuggestionCard: React.FC<SuggestionCardProps> = ({
                   setCustomText("");
                 }
               }}
-              className="flex-1 h-7 px-2 text-[11px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="flex-1 h-7 px-2 text-[11px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               placeholder="Type what you meant..."
             />
             <button
@@ -161,7 +161,7 @@ const SuggestionCard: React.FC<SuggestionCardProps> = ({
                   setCustomText("");
                 }
               }}
-              className="h-7 px-2.5 bg-[#1557b0] hover:bg-[#0f4a96] disabled:opacity-40 text-white text-[11px] font-medium rounded-md"
+              className="h-7 px-2.5 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-40 text-white text-[11px] font-medium rounded-md"
             >
               Send
             </button>

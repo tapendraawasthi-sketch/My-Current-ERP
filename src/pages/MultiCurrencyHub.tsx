@@ -14,11 +14,13 @@ import {
   CheckCircle,
   Calendar,
 } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const BORDER = "1px solid #000";
 const BG = "#E4F1D9";
-const BG_CARD = "#EBF5E2";
-const BG_HEADER = "#D4EABD";
+const BG_CARD = "var(--ds-surface-muted)";
+const BG_HEADER = "var(--ds-surface-hover)";
 
 function money(v) {
   const abs = Math.abs(Number(v || 0));
@@ -60,6 +62,15 @@ export default function MultiCurrencyHub() {
   });
 
   const { vouchers, invoices, accounts, addVoucher, companySettings } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
+  const filteredExchangeRates = useMemo(
+    () => exchangeRates.filter((r) => matchBranch((r as any).branchId)),
+    [exchangeRates, branchFilter],
+  );
+  const filteredForeignVouchers = useMemo(
+    () => foreignVouchers.filter((v) => matchBranch((v as any).branchId)),
+    [foreignVouchers, branchFilter],
+  );
 
   // Load exchange rates from DB
   useEffect(() => {
@@ -126,6 +137,7 @@ export default function MultiCurrencyHub() {
                 effectiveDate: today,
                 source: "NRB Auto-Fetch",
                 createdAt: new Date().toISOString(),
+                branchId: readActiveBranchId() || undefined,
               };
 
               await db.exchangeRates.put(newRate);
@@ -172,6 +184,7 @@ export default function MultiCurrencyHub() {
       effectiveDate: manualRate.effectiveDate,
       source: "Manual Entry",
       createdAt: new Date().toISOString(),
+      branchId: readActiveBranchId() || undefined,
     };
 
     const db = getDB();
@@ -241,7 +254,7 @@ export default function MultiCurrencyHub() {
             onClick={fetchNRBRates}
             disabled={isFetching}
             style={{
-              backgroundColor: isFetching ? "#cccccc" : "#1557b0",
+              backgroundColor: isFetching ? "#cccccc" : "var(--ds-action-primary)",
               color: "white",
               border: BORDER,
               padding: "8px 12px",
@@ -288,7 +301,7 @@ export default function MultiCurrencyHub() {
           <button
             onClick={exportToExcel}
             style={{
-              backgroundColor: "#1557b0",
+              backgroundColor: "var(--ds-action-primary)",
               color: "white",
               border: BORDER,
               padding: "8px 12px",
@@ -326,8 +339,8 @@ export default function MultiCurrencyHub() {
             </tr>
           </thead>
           <tbody>
-            {exchangeRates.length > 0 ? (
-              exchangeRates.map((rate) => (
+            {filteredExchangeRates.length > 0 ? (
+              filteredExchangeRates.map((rate) => (
                 <tr
                   key={rate.id}
                   style={{
@@ -405,8 +418,8 @@ export default function MultiCurrencyHub() {
             </tr>
           </thead>
           <tbody>
-            {foreignVouchers.length > 0 ? (
-              foreignVouchers.map((v) => (
+            {filteredForeignVouchers.length > 0 ? (
+              filteredForeignVouchers.map((v) => (
                 <tr key={v.id}>
                   <td style={{ border: BORDER, padding: "8px" }}>{v.voucherNo}</td>
                   <td style={{ border: BORDER, padding: "8px" }}>{v.date}</td>
@@ -593,8 +606,33 @@ export default function MultiCurrencyHub() {
 
   return (
     <div style={{ backgroundColor: BG, minHeight: "100vh", padding: "20px" }}>
-      <h1 style={{ fontSize: "24px", fontWeight: "bold", color: "#000000", marginBottom: "20px" }}>
-        Multi-Currency Hub
+      <h1
+        style={{
+          fontSize: "24px",
+          fontWeight: "bold",
+          color: "#000000",
+          marginBottom: "20px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <span>Multi-Currency Hub</span>
+        {branchOptions.length > 0 && (
+          <select
+            value={branchFilter}
+            onChange={(e) => setBranchFilter(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            aria-label="Branch"
+          >
+            <option value="all">All branches</option>
+            {branchOptions.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name || b.code || b.id}
+              </option>
+            ))}
+          </select>
+        )}
       </h1>
 
       {/* Tab Navigation */}

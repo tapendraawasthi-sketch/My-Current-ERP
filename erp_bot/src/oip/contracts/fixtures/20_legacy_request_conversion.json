@@ -1,0 +1,13 @@
+{
+  "data": {
+    "context": {
+      "company_id": "spoof-company",
+      "tenant_id": "spoof-tenant"
+    },
+    "message": "Show purchase draft for सूर्य ट्रेडर्स",
+    "orbix_mode": "accountant",
+    "session_id": "sess-legacy-020"
+  },
+  "kind": "legacy_request",
+  "valid": true
+}

@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useStore } from "../store";
 import { StockJournalItem } from "../lib/types";
 import SearchableTable from "../components/ui/SearchableTable";
 import ItemSelect from "../components/ui/ItemSelect";
 import toast from "@/lib/appToast";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const emptyItem = (): StockJournalItem => ({
   id: crypto.randomUUID(),
@@ -24,8 +26,15 @@ export default function RejectionVoucherPage({ mode }: RejectionVoucherPageProps
   const help =
     mode === "out" ? "Rejected goods sent back to supplier." : "Rejected goods returned by customer.";
   const { vouchers, addVoucher, postRejectionStock, items } = useStore() as any;
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
-  const entries = (vouchers || []).filter((v: any) => v.type === voucherType);
+  const entries = useMemo(
+    () =>
+      (vouchers || []).filter(
+        (v: any) => v.type === voucherType && matchBranch(v.branchId),
+      ),
+    [vouchers, voucherType, matchBranch, branchFilter],
+  );
   const [showForm, setShowForm] = useState(false);
   const [entry, setEntry] = useState({
     id: crypto.randomUUID(),
@@ -82,6 +91,7 @@ export default function RejectionVoucherPage({ mode }: RejectionVoucherPageProps
         grandTotal,
         lines: [],
         itemLines: validItems,
+        branchId: readActiveBranchId() || undefined,
       });
       await postRejectionStock(voucher?.id || entry.id);
       toast.success(`${title} posted`);
@@ -106,12 +116,29 @@ export default function RejectionVoucherPage({ mode }: RejectionVoucherPageProps
           <h1 className="text-[15px] font-semibold text-gray-800">{title}</h1>
           <p className="text-[12px] text-gray-500 mt-0.5">{help}</p>
         </div>
-        <button
-          className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md"
-          onClick={() => setShowForm(true)}
-        >
-          New Entry
-        </button>
+        <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+          <button
+            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md"
+            onClick={() => setShowForm(true)}
+          >
+            New Entry
+          </button>
+        </div>
       </div>
 
       {!showForm && (

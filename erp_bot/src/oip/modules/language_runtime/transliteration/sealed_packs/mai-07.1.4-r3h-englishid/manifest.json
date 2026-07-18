@@ -1,0 +1,76 @@
+{
+  "LINGUIST_APPROVED": false,
+  "PRODUCTION_APPROVED": false,
+  "SEALED_READ_ONLY": true,
+  "allowed_use": [
+    "candidate_transliteration",
+    "engineering_eval"
+  ],
+  "content_hash": "2a4599fe3fccb83257130407324321b4121e5c01fe6efcdc32406ebdcacded7e",
+  "experimental_overlay_status": "DISABLED_NON_AUTHORITATIVE",
+  "files": [
+    "romanized_lexicon.json",
+    "grapheme_rules.json",
+    "morphology_rules.json",
+    "ambiguity_rules.json",
+    "domain_terms.json",
+    "context_rules.json",
+    "english_identity.json",
+    "name_like_terms.json",
+    "ranking_config.json",
+    "r3d_safety_disposition.json",
+    "r3f_english_identity_guard.json"
+  ],
+  "license_status": "INTERNAL_ENGINEERING",
+  "limits": {
+    "max_beam_width": 32,
+    "max_candidates_per_span": 5,
+    "max_eligible_spans": 128,
+    "max_hypotheses": 5,
+    "max_total_candidates": 400
+  },
+  "parent_invalidated_r3f_content_hash_claim": "e94cc8c7775d9ce77ab854ab478387d950a018ba1b76d96e9749d4aad425e50a",
+  "parent_invalidated_r3f_rc_hash": "37e551f29126fea63f77b9cb6b3bc4e867185b61a620b5686ed8471bf10396dd",
+  "parent_invalidated_r3f_status": "INVALIDATED_BY_SEAL_DRIFT",
+  "prior_content_hash_mai0710": "18628335c0feb74a4f28f65ca70b2683f8b54a54790fd03e9033d8cd08ed4566",
+  "prior_content_hash_mai0711_r3d": "083bce288907c0db882bdf7082bf9093e9086035c653dadcd4964625b61e966f",
+  "prior_content_hash_mai0712_r3f_invalidated_claim": "e94cc8c7775d9ce77ab854ab478387d950a018ba1b76d96e9749d4aad425e50a",
+  "prior_content_hash_mai0720_r1_failed": "0f0af894fa282d7134e2ca1cba26a1000f75733fa435588de6a2083abd3d9dc1",
+  "prior_content_hash_mai0730_r2_failed": "c1c5a603627868a2ccf8b4c2ff74b1adafaff7eac6e01bf94e289944268e77af",
+  "prohibited_use": [
+    "training_on_frozen_eval",
+    "accounting_truth",
+    "auto_apply",
+    "ui_render",
+    "prompt_injection"
+  ],
+  "provenance": "MAI-07R3H: new sealed pack derived from mai-07.1.3-r3f-sealnew; identity-disposition policy generalized for English/shared-term collisions; overlay remains disabled; historical packs unchanged.",
+  "resource_id": "mai07_transliteration_pack_r3h_englishid",
+  "resource_pack_version": "mai-07.1.4-r3h-englishid",
+  "review_status": "ENGINEERING_CURATED_NOT_LINGUIST_APPROVED",
+  "schema_version": "2.0.0",
+  "seal_contract_version": "mai-07-artifact-seal-contract.2.0.0",
+  "seal_v2": {
+    "resource_content_sha256": "2a4599fe3fccb83257130407324321b4121e5c01fe6efcdc32406ebdcacded7e",
+    "resource_file_count": 11,
+    "resource_file_hashes": {
+      "ambiguity_rules.json": "7aa5e7ab90b131231ec36acfd360fc848bd3a0a1f4d779fb5d06fc07f9fc1189",
+      "context_rules.json": "88e34bd0bc15dc460d7e1c056a827afe6f4b229f36db987bc472490454051f19",
+      "domain_terms.json": "7c9df935bc9c893053c923621e5a798d60d686ced01e129c9eadfa8f326aca5f",
+      "english_identity.json": "3a0c52d361fdf4f7291e6ef5f1826b36e5559aa16f14d9a804cf2c613a82db90",
+      "grapheme_rules.json": "b0e86cc653694d29b005c7c4103e8e2f56cbd8d304729b41466463dd5ccbd2db",
+      "morphology_rules.json": "dee47b98a807deca6549b739d19899a79d65aadffd2d92fdf1be3f7049988e4d",
+      "name_like_terms.json": "2db12b34ecada8b35d5f503158b79d5a08d26f54df2348d853e72568dd65d8b3",
+      "r3d_safety_disposition.json": "73a11fd15e87771e00b8d90a88da862e3d4c3214b1f6507d8ee17cb82586cf07",
+      "r3f_english_identity_guard.json": "47c334db70aaf5e162ec7b79ed7970431a4660c9e47f6619eb313ce787d51c32",
+      "ranking_config.json": "10039dfaf9a59bbbb849360682f096b4594ce1b83bbc714d18b87984f2462dd7",
+      "romanized_lexicon.json": "deda8512b32850d3ed2767f31068fbe1411fe383e9edf53a27738a8f91ef9c08"
+    },
+    "resource_hash_algorithm": "SHA-256",
+    "resource_hash_domain": "mai07.resource_pack.v1_files_nul_raw",
+    "resource_manifest_raw_sha256": "6e266c429ea660f02471a007cf6573d016f91edfd30d781911ad8ad869a92c7b",
+    "resource_manifest_semantic_sha256": "1c0986b39450ee0ca16d87d7c21d19248e376acce171ae462260c49ee4409d6a",
+    "seal_contract_version": "mai-07-artifact-seal-contract.2.0.0"
+  },
+  "update_date": "2026-07-16"
+}

@@ -7,6 +7,8 @@ import ReportDateRangePicker from "../components/ui/ReportDateRangePicker";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 import ErpReportModal from "../components/reporting/ErpReportModal";
 import { ReportWorkspace } from "@/features/reports";
+import { readActiveBranchId } from "../lib/activeBranch";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 type TBVariant = "closing-alphabetical" | "closing-groupwise" | "opening";
 
@@ -24,6 +26,7 @@ interface TBOptions {
   showPercentage: boolean;
   showPrevYear: boolean;
   roundOff: boolean;
+  branchId: string;
 }
 
 interface TBRow {
@@ -71,6 +74,7 @@ const money = (n: number, round = false) => {
 
 export default function TrialBalance() {
   const { accounts, vouchers, invoices, currentFiscalYear, companySettings } = useStore();
+  const { branchOptions } = useBranchFilter();
 
   const [showOptions, setShowOptions] = useState(true);
   const [options, setOptions] = useState<TBOptions>({
@@ -84,6 +88,7 @@ export default function TrialBalance() {
     showPercentage: false,
     showPrevYear: false,
     roundOff: false,
+    branchId: readActiveBranchId() || "all",
   });
 
   const [drillStack, setDrillStack] = useState<DrillLevel[]>([{ type: "tb" }]);
@@ -146,7 +151,14 @@ export default function TrialBalance() {
       // vouchers in the loop below — no account-field seeding needed.
     }
 
-    const postedVouchers = vouchers.filter((v) => v.status === "posted");
+    const postedVouchers = vouchers.filter(
+      (v) =>
+        v.status === "posted" &&
+        (!options.branchId ||
+          options.branchId === "all" ||
+          !(v as any).branchId ||
+          (v as any).branchId === options.branchId),
+    );
 
     for (const v of postedVouchers) {
       const vDate = new Date(v.date);
@@ -179,7 +191,14 @@ export default function TrialBalance() {
       }
     }
 
-    const postedInvoices = (invoices || []).filter((i: any) => i.status === "posted");
+    const postedInvoices = (invoices || []).filter(
+      (i: any) =>
+        i.status === "posted" &&
+        (!options.branchId ||
+          options.branchId === "all" ||
+          !i.branchId ||
+          i.branchId === options.branchId),
+    );
     for (const inv of postedInvoices) {
       const iDate = new Date(inv.date);
       const isBeforeFrom = iDate < fromD;
@@ -219,7 +238,15 @@ export default function TrialBalance() {
     }
 
     return { accountBalances: balances, accountTxn: txn, accountOpening: opening };
-  }, [accounts, vouchers, invoices, options.fromDate, options.toDate, currentFiscalYear]);
+  }, [
+    accounts,
+    vouchers,
+    invoices,
+    options.fromDate,
+    options.toDate,
+    options.branchId,
+    currentFiscalYear,
+  ]);
 
   // ─── Build the TB tree ─────────────────────────────────────────────────────
   const buildTree = useCallback((): TBRow[] => {
@@ -613,6 +640,24 @@ export default function TrialBalance() {
           label=""
           compact
         />
+
+        {branchOptions.length > 0 && (
+          <div>
+            <label className="block text-[12px] font-medium text-gray-600 mb-1">Branch</label>
+            <select
+              value={options.branchId}
+              onChange={(e) => setOpt("branchId", e.target.value)}
+              className="h-8 w-full px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <div>
           <label className="block text-[12px] font-medium text-gray-600 mb-1">Group Filter</label>

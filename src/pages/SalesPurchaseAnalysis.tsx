@@ -17,6 +17,7 @@ import {
 } from "recharts";
 import { useStore } from "@/store/useStore";
 import * as XLSX from "xlsx";
+import { useBranchFilter } from "@/hooks/useBranchFilter";
 
 // Types
 interface PartyAnalysis {
@@ -49,7 +50,7 @@ interface MonthlyTrend {
 
 // Constants
 const CHART_COLORS = [
-  "#1557b0",
+  "var(--ds-action-primary)",
   "#059669",
   "#d97706",
   "#dc2626",
@@ -272,10 +273,18 @@ const SalesPurchaseAnalysis: React.FC = () => {
   >("thisYear");
 
   const { invoices, vouchers } = useStore();
-  const allInvoices = [
-    ...(invoices ?? []),
-    ...(vouchers?.filter((v) => v.type === "SALES" || v.type === "PURCHASE") ?? []),
-  ];
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
+  const allInvoices = useMemo(() => {
+    const scopedInvoices = (invoices ?? []).filter((inv) =>
+      matchBranch((inv as { branchId?: string }).branchId),
+    );
+    const scopedVouchers = (vouchers ?? []).filter(
+      (v) =>
+        (v.type === "SALES" || v.type === "PURCHASE") &&
+        matchBranch((v as { branchId?: string }).branchId),
+    );
+    return [...scopedInvoices, ...scopedVouchers];
+  }, [invoices, vouchers, matchBranch, branchFilter]);
 
   const topCustomers = useMemo(
     () => computeTopParties(allInvoices, "customer", topN),
@@ -396,9 +405,24 @@ const SalesPurchaseAnalysis: React.FC = () => {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
+            {branchOptions.length > 0 && (
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                className="h-9 px-3 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            )}
             <button
               onClick={handleExport}
-              className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-white bg-[#1557b0] rounded-md hover:bg-[#0f4a96]"
+              className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-white bg-[var(--ds-action-primary)] rounded-md hover:bg-[var(--ds-action-primary-hover)]"
             >
               <Download className="h-4 w-4" />
               Export Report
@@ -406,7 +430,7 @@ const SalesPurchaseAnalysis: React.FC = () => {
             <select
               value={topN}
               onChange={(e) => setTopN(Number(e.target.value))}
-              className="h-9 px-3 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-9 px-3 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               {[5, 10, 20].map((n) => (
                 <option key={n} value={n}>
@@ -417,7 +441,7 @@ const SalesPurchaseAnalysis: React.FC = () => {
             <select
               value={filterPeriod}
               onChange={(e) => setFilterPeriod(e.target.value as any)}
-              className="h-9 px-3 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-9 px-3 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               <option value="thisYear">This Year</option>
               <option value="thisQuarter">This Quarter</option>
@@ -463,7 +487,7 @@ const SalesPurchaseAnalysis: React.FC = () => {
             key={tab}
             className={`px-4 py-2 text-sm font-medium capitalize ${
               activeTab === tab
-                ? "text-[#1557b0] border-b-2 border-[#1557b0]"
+                ? "text-[var(--ds-action-primary)] border-b-2 border-[var(--ds-action-primary)]"
                 : "text-gray-500 hover:text-gray-700"
             }`}
             onClick={() => setActiveTab(tab)}
@@ -566,7 +590,7 @@ const SalesPurchaseAnalysis: React.FC = () => {
                               "Amount",
                             ]}
                           />
-                          <Bar dataKey="totalAmount" fill="#1557b0" />
+                          <Bar dataKey="totalAmount" fill="var(--ds-action-primary)" />
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
@@ -708,7 +732,7 @@ const SalesPurchaseAnalysis: React.FC = () => {
                               "Amount",
                             ]}
                           />
-                          <Bar dataKey="totalAmount" fill="#1557b0" />
+                          <Bar dataKey="totalAmount" fill="var(--ds-action-primary)" />
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
@@ -774,7 +798,7 @@ const SalesPurchaseAnalysis: React.FC = () => {
                   <button
                     className={`px-4 py-2 text-sm font-medium rounded-md ${
                       itemType === "sales"
-                        ? "bg-[#1557b0] text-white"
+                        ? "bg-[var(--ds-action-primary)] text-white"
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                     onClick={() => setItemType("sales")}
@@ -784,7 +808,7 @@ const SalesPurchaseAnalysis: React.FC = () => {
                   <button
                     className={`px-4 py-2 text-sm font-medium rounded-md ${
                       itemType === "purchase"
-                        ? "bg-[#1557b0] text-white"
+                        ? "bg-[var(--ds-action-primary)] text-white"
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                     onClick={() => setItemType("purchase")}
@@ -865,7 +889,7 @@ const SalesPurchaseAnalysis: React.FC = () => {
                           "Amount",
                         ]}
                       />
-                      <Bar dataKey="totalAmount" fill="#1557b0" />
+                      <Bar dataKey="totalAmount" fill="var(--ds-action-primary)" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -882,7 +906,7 @@ const SalesPurchaseAnalysis: React.FC = () => {
               <select
                 value={trendMonths}
                 onChange={(e) => setTrendMonths(Number(e.target.value))}
-                className="h-9 px-3 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                className="h-9 px-3 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               >
                 {[3, 6, 12].map((n) => (
                   <option key={n} value={n}>
@@ -918,7 +942,7 @@ const SalesPurchaseAnalysis: React.FC = () => {
                       <Line
                         type="monotone"
                         dataKey="salesAmount"
-                        stroke="#1557b0"
+                        stroke="var(--ds-action-primary)"
                         name="Sales"
                         strokeWidth={2}
                       />

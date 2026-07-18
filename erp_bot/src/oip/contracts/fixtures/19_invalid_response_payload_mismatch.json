@@ -1,0 +1,23 @@
+{
+  "data": {
+    "citations": [],
+    "conversation_id": "conv-demo-001",
+    "created_at": "2026-07-14T12:00:00+00:00",
+    "language": "en",
+    "request_id": "req-bad",
+    "response_id": "resp-bad",
+    "response_type": "RECEIPT",
+    "schema_version": "1.0.0",
+    "status": "SUCCESS",
+    "structured_payload": {
+      "payload_type": "ANSWER",
+      "propositions": []
+    },
+    "suggested_safe_actions": [],
+    "user_visible_text": "nope",
+    "warnings": []
+  },
+  "error_code": "RESPONSE_PAYLOAD_MISMATCH",
+  "kind": "AIResponseEnvelopeV1",
+  "valid": false
+}

@@ -5,6 +5,8 @@ import { Plus, Edit2, Trash2, Search, X, Save } from "lucide-react";
 import { ITCEligibility } from "../lib/busyTypes";
 import { getDB } from "../lib/db";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 interface TaxCategory {
   id: string;
@@ -15,6 +17,7 @@ interface TaxCategory {
   hsnSacCode?: string;
   itcEligibility: ITCEligibility;
   isActive: boolean;
+  branchId?: string;
 }
 
 const DEFAULTS: Omit<TaxCategory, "id">[] = [
@@ -79,11 +82,11 @@ const DEFAULTS: Omit<TaxCategory, "id">[] = [
 const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 const inputCls =
-  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
 
 const emptyForm = (): Omit<TaxCategory, "id"> => ({
@@ -97,6 +100,7 @@ const emptyForm = (): Omit<TaxCategory, "id"> => ({
 });
 
 export default function TaxCategoryMaster() {
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [items, setItems] = useState<TaxCategory[]>([]);
   const [search, setSearch] = useState("");
   const [showForm, setShowForm] = useState(false);
@@ -127,14 +131,16 @@ export default function TaxCategoryMaster() {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return items;
-    return items.filter(
-      (item) =>
+    return items.filter((item) => {
+      if (!matchBranch(item.branchId)) return false;
+      if (!q) return true;
+      return (
         item.name.toLowerCase().includes(q) ||
         item.type.toLowerCase().includes(q) ||
-        (item.hsnSacCode || "").toLowerCase().includes(q),
-    );
-  }, [items, search]);
+        (item.hsnSacCode || "").toLowerCase().includes(q)
+      );
+    });
+  }, [items, search, matchBranch, branchFilter]);
 
   const resetForm = () => {
     setShowForm(false);
@@ -163,12 +169,20 @@ export default function TaxCategoryMaster() {
     try {
       const db = getDB();
       if (editItem) {
-        const updated = { ...editItem, ...form };
+        const updated = {
+          ...editItem,
+          ...form,
+          branchId: editItem.branchId || readActiveBranchId() || undefined,
+        };
         if (db.taxCategories) await db.taxCategories.put(updated);
         setItems((prev) => prev.map((i) => (i.id === editItem.id ? updated : i)));
         toast.success("Tax Category updated");
       } else {
-        const newItem: TaxCategory = { ...form, id: `tc-${Date.now()}` };
+        const newItem: TaxCategory = {
+          ...form,
+          id: `tc-${Date.now()}`,
+          branchId: readActiveBranchId() || undefined,
+        };
         if (db.taxCategories) await db.taxCategories.put(newItem);
         setItems((prev) => [...prev, newItem]);
         toast.success("Tax Category added");
@@ -203,10 +217,27 @@ export default function TaxCategoryMaster() {
                 GST 5%, 12%, 18%, 28%, VAT 13%, NIL, exempt tax categories
               </p>
             </div>
-            <button type="button" className={btnPrimary} onClick={openAdd}>
-              <Plus className="h-3.5 w-3.5" />
-              Add tax category
-            </button>
+            <div className="flex items-center gap-2">
+              {branchOptions.length > 0 && (
+                <select
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>
+              )}
+              <button type="button" className={btnPrimary} onClick={openAdd}>
+                <Plus className="h-3.5 w-3.5" />
+                Add tax category
+              </button>
+            </div>
           </div>
 
           <div className="relative mb-3 max-w-xs">
@@ -250,7 +281,7 @@ export default function TaxCategoryMaster() {
                   {filtered.map((item) => (
                     <tr
                       key={item.id}
-                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
                       onClick={() => openEdit(item)}
                     >
                       <td className={`${td} font-medium text-gray-800`}>{item.name}</td>
@@ -388,7 +419,7 @@ export default function TaxCategoryMaster() {
                   onChange={(e) =>
                     setForm((p) => ({ ...p, changeTaxRateOnBasisOfPrice: e.target.checked }))
                   }
-                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                 />
                 Change tax rate on basis of price (slab)
               </label>
@@ -397,7 +428,7 @@ export default function TaxCategoryMaster() {
                   type="checkbox"
                   checked={form.isActive}
                   onChange={(e) => setForm((p) => ({ ...p, isActive: e.target.checked }))}
-                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                 />
                 Active
               </label>

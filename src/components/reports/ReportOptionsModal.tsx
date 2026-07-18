@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import ReportDateRangePicker from "../ui/ReportDateRangePicker";
+import { readActiveBranchId } from "../../lib/activeBranch";
 
 export interface ReportOptions {
   layout: "horizontal" | "vertical";
@@ -27,7 +28,7 @@ export interface ReportOptionsModalProps {
 const today = () => new Date().toISOString().slice(0, 10);
 
 const inputCls =
-  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full";
+  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full";
 
 const ReportOptionsModal: React.FC<ReportOptionsModalProps> = ({
   title,
@@ -44,7 +45,7 @@ const ReportOptionsModal: React.FC<ReportOptionsModalProps> = ({
   const [fromDate, setFromDate] = useState(currentFiscalYear?.startDate ?? "");
   const [toDate, setToDate] = useState(today());
   const [showSecondLevel, setShowSecondLevel] = useState(false);
-  const [branchId, setBranchId] = useState("all");
+  const [branchId, setBranchId] = useState(() => readActiveBranchId() || "all");
   const [fiscalYearId, setFiscalYearId] = useState(currentFiscalYear?.id ?? "");
   const [monthlyVariant, setMonthlyVariant] = useState(false);
 
@@ -55,7 +56,7 @@ const ReportOptionsModal: React.FC<ReportOptionsModalProps> = ({
       setFromDate(currentFiscalYear?.startDate ?? "");
       setToDate(today());
       setShowSecondLevel(false);
-      setBranchId("all");
+      setBranchId(readActiveBranchId() || "all");
       setFiscalYearId(currentFiscalYear?.id ?? "");
       setMonthlyVariant(false);
     }
@@ -78,7 +79,7 @@ const ReportOptionsModal: React.FC<ReportOptionsModalProps> = ({
 
   const cardBase =
     "flex-1 border-2 rounded-md p-3 cursor-pointer text-[12px] font-medium text-center transition-colors";
-  const cardActive = "border-[#1557b0] bg-[#e8f0fe] text-[#1557b0]";
+  const cardActive = "border-[var(--ds-action-primary)] bg-[#e8f0fe] text-[var(--ds-action-primary)]";
   const cardInactive = "border-gray-200 bg-white text-gray-700 hover:border-gray-300";
 
   return createPortal(
@@ -185,7 +186,7 @@ const ReportOptionsModal: React.FC<ReportOptionsModalProps> = ({
               id="secondLevel"
               checked={showSecondLevel}
               onChange={(e) => setShowSecondLevel(e.target.checked)}
-              className="h-4 w-4 accent-[#1557b0]"
+              className="h-4 w-4 accent-[var(--ds-action-primary)]"
             />
             <label htmlFor="secondLevel" className="text-[12px] text-gray-700 cursor-pointer">
               Show Second Level Details (Y/N)
@@ -200,7 +201,7 @@ const ReportOptionsModal: React.FC<ReportOptionsModalProps> = ({
                 id="monthlyVariant"
                 checked={monthlyVariant}
                 onChange={(e) => setMonthlyVariant(e.target.checked)}
-                className="h-4 w-4 accent-[#1557b0]"
+                className="h-4 w-4 accent-[var(--ds-action-primary)]"
               />
               <label htmlFor="monthlyVariant" className="text-[12px] text-gray-700 cursor-pointer">
                 Monthly Summary View
@@ -218,7 +219,7 @@ const ReportOptionsModal: React.FC<ReportOptionsModalProps> = ({
           </button>
           <button
             onClick={handleGenerate}
-            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
+            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md"
           >
             Generate Report
           </button>

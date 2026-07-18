@@ -57,7 +57,7 @@ function FatalErrorScreen({ message }: { message: string }) {
         onClick={() => window.location.reload()}
         style={{
           padding: "8px 16px",
-          background: "#1557b0",
+          background: "var(--ds-action-primary)",
           color: "#fff",
           border: "none",
           borderRadius: 6,
@@ -78,7 +78,7 @@ if (!rootElement) {
     <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;flex-direction:column;gap:16px;background:#f5f6fa">
       <div style="font-size:18px;font-weight:700;color:#1f2937">Sutra ERP</div>
       <div style="font-size:13px;color:#dc2626">Error: Root element not found. Please refresh the page.</div>
-      <button onclick="location.reload()" style="padding:8px 16px;background:#1557b0;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px">
+      <button onclick="location.reload()" style="padding:8px 16px;background:var(--ds-action-primary);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px">
         Refresh
       </button>
     </div>`;
@@ -104,7 +104,7 @@ function renderFatalError(message: string): void {
       <div style="font-size:13px;color:#dc2626;max-width:600px;text-align:left;background:#fee2e2;padding:16px;border-radius:8px;overflow:auto;word-wrap:break-word;">
         ${message.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
       </div>
-      <button onclick="location.reload()" style="padding:8px 16px;background:#1557b0;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px">
+      <button onclick="location.reload()" style="padding:8px 16px;background:var(--ds-action-primary);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px">
         Reload Application
       </button>
     </div>`;

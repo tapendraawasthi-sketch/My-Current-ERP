@@ -24,6 +24,8 @@ import {
   fmtFX,
   COMMON_CURRENCIES,
 } from "../lib/fxUtils";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 type Tab = "currencies" | "rates" | "gainloss" | "revaluation";
 
@@ -47,6 +49,7 @@ export default function MultiCurrency() {
     addFXGainLoss,
     companySettings,
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [activeTab, setActiveTab] = useState<Tab>("currencies");
   const [showCurrModal, setShowCurrModal] = useState(false);
@@ -82,8 +85,8 @@ export default function MultiCurrency() {
 
   // ── Active currencies (non-base) ─────────────────────────────────────────
   const foreignCurrencies = useMemo(
-    () => currencies.filter((c) => !c.isBase && c.isActive),
-    [currencies],
+    () => currencies.filter((c) => !c.isBase && c.isActive && matchBranch((c as any).branchId)),
+    [currencies, matchBranch],
   );
 
   // ── Latest rate per currency ──────────────────────────────────────────────
@@ -99,23 +102,28 @@ export default function MultiCurrency() {
 
   // ── FX gain/loss summary ──────────────────────────────────────────────────
   const gainLossSummary = useMemo(() => {
-    const realized = fxGainLossEntries
+    const entries = fxGainLossEntries.filter((e) => matchBranch((e as any).branchId));
+    const realized = entries
       .filter((e) => e.type === "realized")
       .reduce((s, e) => s + e.gainLossAmount, 0);
-    const unrealized = fxGainLossEntries
+    const unrealized = entries
       .filter((e) => e.type === "unrealized")
       .reduce((s, e) => s + e.gainLossAmount, 0);
-    return { realized, unrealized, net: realized + unrealized };
-  }, [fxGainLossEntries]);
+    return { realized, unrealized, net: realized + unrealized, entries };
+  }, [fxGainLossEntries, matchBranch]);
 
   // ── Filtered rate history ─────────────────────────────────────────────────
   const filteredRates = useMemo(
     () =>
       exchangeRates
-        .filter((r) => filterCurrency === "all" || r.currencyCode === filterCurrency)
+        .filter(
+          (r) =>
+            matchBranch((r as any).branchId) &&
+            (filterCurrency === "all" || r.currencyCode === filterCurrency),
+        )
         .sort((a, b) => b.date.localeCompare(a.date))
         .slice(0, 100),
-    [exchangeRates, filterCurrency],
+    [exchangeRates, filterCurrency, matchBranch],
   );
 
   // ── Unrealized revaluation computation ───────────────────────────────────
@@ -124,6 +132,7 @@ export default function MultiCurrency() {
     const rows: any[] = [];
     vouchers.forEach((v) => {
       if (!v.currencyCode || v.currencyCode === "NPR") return;
+      if (!matchBranch((v as any).branchId)) return;
       const rateAtTxn = v.exchangeRate || 1;
       const foreignAmt = v.foreignAmount || 0;
       if (!foreignAmt) return;
@@ -148,7 +157,7 @@ export default function MultiCurrency() {
       });
     });
     return rows;
-  }, [vouchers, exchangeRates, revalDate]);
+  }, [vouchers, exchangeRates, revalDate, matchBranch]);
 
   const totalUnrealizedGL = useMemo(
     () => revaluationRows.reduce((s, r) => s + r.gainLoss, 0),
@@ -158,10 +167,11 @@ export default function MultiCurrency() {
   // ── Save currency ──────────────────────────────────────────────────────────
   const handleSaveCurrency = async () => {
     const now = new Date().toISOString();
+    const branchId = editCurr?.branchId || readActiveBranchId() || undefined;
     if (editCurr?.id) {
-      await updateCurrency(editCurr.id, { ...currForm, updatedAt: now });
+      await updateCurrency(editCurr.id, { ...currForm, branchId, updatedAt: now });
     } else {
-      await addCurrency({ ...currForm, createdAt: now, updatedAt: now });
+      await addCurrency({ ...currForm, branchId, createdAt: now, updatedAt: now });
     }
     setShowCurrModal(false);
     setEditCurr(null);
@@ -251,6 +261,21 @@ export default function MultiCurrency() {
           </p>
         </div>
         <div className="flex gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
           {activeTab === "currencies" && (
             <button
               onClick={() => {
@@ -266,7 +291,7 @@ export default function MultiCurrency() {
             <>
               <button
                 onClick={exportRates}
-                className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium"
+                className="flex items-center gap-2 px-4 py-2 bg-[var(--ds-action-primary)] text-white rounded-lg hover:bg-[var(--ds-action-primary-hover)] text-sm font-medium"
               >
                 <Download className="w-4 h-4" /> Export
               </button>
@@ -540,17 +565,17 @@ export default function MultiCurrency() {
               {
                 label: "Realized Gain / (Loss)",
                 value: gainLossSummary.realized,
-                entries: fxGainLossEntries.filter((e) => e.type === "realized").length,
+                entries: gainLossSummary.entries.filter((e) => e.type === "realized").length,
               },
               {
                 label: "Unrealized Gain / (Loss)",
                 value: gainLossSummary.unrealized,
-                entries: fxGainLossEntries.filter((e) => e.type === "unrealized").length,
+                entries: gainLossSummary.entries.filter((e) => e.type === "unrealized").length,
               },
               {
                 label: "Net FX Gain / (Loss)",
                 value: gainLossSummary.net,
-                entries: fxGainLossEntries.length,
+                entries: gainLossSummary.entries.length,
               },
             ].map((item) => (
               <div
@@ -594,7 +619,7 @@ export default function MultiCurrency() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {fxGainLossEntries
+                {gainLossSummary.entries
                   .slice()
                   .sort((a, b) => b.date.localeCompare(a.date))
                   .map((e) => (
@@ -622,7 +647,7 @@ export default function MultiCurrency() {
                       </td>
                       <td className="px-3 py-2">
                         <span
-                          className={`px-2 py-0.5 rounded-full text-xs ${e.type === "realized" ? "bg-blue-100 text-blue-700" : "bg-purple-100 text-purple-700"}`}
+                          className={`px-2 py-0.5 rounded-full text-xs ${e.type === "realized" ? "bg-blue-100 text-blue-700" : "bg-[var(--ds-status-info-surface)] text-[var(--ds-status-info)]"}`}
                         >
                           {e.type}
                         </span>
@@ -632,7 +657,7 @@ export default function MultiCurrency() {
                       </td>
                     </tr>
                   ))}
-                {fxGainLossEntries.length === 0 && (
+                {gainLossSummary.entries.length === 0 && (
                   <tr>
                     <td colSpan={10} className="px-4 py-8 text-center text-gray-400">
                       No FX gain/loss entries yet.
@@ -740,7 +765,7 @@ export default function MultiCurrency() {
             <div className="flex justify-end">
               <button
                 onClick={handlePostRevaluation}
-                className="flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700"
+                className="flex items-center gap-2 px-6 py-3 bg-[var(--ds-action-primary)] text-white rounded-lg font-medium hover:bg-[var(--ds-action-primary-hover)]"
               >
                 <RefreshCw className="w-4 h-4" /> Post Revaluation Entries ({revaluationRows.length}
                 )

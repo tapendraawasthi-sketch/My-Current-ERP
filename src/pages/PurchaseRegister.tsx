@@ -9,6 +9,7 @@ import NepaliDatePicker from "../components/ui/NepaliDatePicker";
 import { useStore } from "../store/useStore";
 import Pagination from "../components/ui/Pagination";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 interface ColumnDef {
   key: string;
@@ -60,6 +61,7 @@ const paymentBadgeCls = (status: PaymentStatus) => {
 
 const PurchaseRegister: React.FC = () => {
   const { invoices } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const purchaseInvoices = useMemo(() => {
     return invoices.filter(
       (inv) =>
@@ -101,6 +103,7 @@ const PurchaseRegister: React.FC = () => {
 
   const filteredInvoices = useMemo(() => {
     return purchaseInvoices.filter((invoice) => {
+      if (!matchBranch((invoice as any).branchId)) return false;
       if (filters.paymentStatus !== "all" && invoice.paymentStatus !== filters.paymentStatus)
         return false;
       if (
@@ -111,7 +114,7 @@ const PurchaseRegister: React.FC = () => {
         return false;
       return true;
     });
-  }, [purchaseInvoices, filters]);
+  }, [purchaseInvoices, filters, matchBranch, branchFilter]);
 
   const paginatedInvoices = useMemo(() => {
     const startIndex = (page - 1) * pageSize;
@@ -304,6 +307,23 @@ const PurchaseRegister: React.FC = () => {
                 <option value={PaymentStatus.PARTIAL}>Partial</option>
               </select>
             </div>
+            {branchOptions.length > 0 && (
+              <div>
+                <label className="block text-[12px] font-medium text-gray-600 mb-1">Branch</label>
+                <select
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className={`${inputCls} w-full`}
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
             <div>
               <label className="block text-[12px] font-medium text-gray-600 mb-1">Item</label>
               <input

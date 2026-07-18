@@ -5,6 +5,8 @@ import toast from "@/lib/appToast";
 import { Plus, Search, X } from "lucide-react";
 import { SaleType, PurchaseType } from "../lib/busyTypes";
 import { formatNumber } from "../lib/utils";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 interface OrderLine {
   id: string;
@@ -31,6 +33,7 @@ interface Order {
   totalAmount: number;
   status: "open" | "partial" | "completed" | "cancelled";
   createdAt: string;
+  branchId?: string;
 }
 
 interface Props {
@@ -42,6 +45,7 @@ const PURCHASE_TYPES = Object.values(PurchaseType);
 
 export default function OrderVoucherPage({ type }: Props) {
   const { accounts, items, parties } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const isSalesOrder = type === "sales_order";
   const title = isSalesOrder ? "Sales order" : "Purchase order";
   const prefix = isSalesOrder ? "SO-" : "PO-";
@@ -67,13 +71,14 @@ export default function OrderVoucherPage({ type }: Props) {
   const filtered = useMemo(
     () =>
       orders.filter((o) => {
+        if (!matchBranch(o.branchId)) return false;
         const matchSearch =
           o.orderNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
           o.partyName.toLowerCase().includes(searchTerm.toLowerCase());
         const matchStatus = statusFilter === "all" || o.status === statusFilter;
         return matchSearch && matchStatus;
       }),
-    [orders, searchTerm, statusFilter],
+    [orders, searchTerm, statusFilter, matchBranch, branchFilter],
   );
 
   const partyList = (parties || []).filter((p: any) => {
@@ -155,6 +160,7 @@ export default function OrderVoucherPage({ type }: Props) {
       totalAmount,
       status: "open",
       createdAt: new Date().toISOString(),
+      branchId: readActiveBranchId() || undefined,
     };
     setOrders((prev) =>
       editOrder
@@ -413,12 +419,29 @@ export default function OrderVoucherPage({ type }: Props) {
             {isSalesOrder ? "sales/delivery challans" : "purchase/GRNs"} via F11
           </p>
         </div>
-        <button
-          onClick={openAdd}
-          className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
-        >
-          <Plus className="h-3.5 w-3.5" /> Add {title}
-        </button>
+        <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+          <button
+            onClick={openAdd}
+            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+          >
+            <Plus className="h-3.5 w-3.5" /> Add {title}
+          </button>
+        </div>
       </div>
 
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">

@@ -34,6 +34,7 @@ import {
   formatVoucherDisplayDate,
 } from "../lib/voucherUtils";
 import toast from "@/lib/appToast";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const CreditNoteVoucher: React.FC = () => {
   const {
@@ -45,6 +46,7 @@ const CreditNoteVoucher: React.FC = () => {
     companySettings,
     currentFiscalYear,
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [date, setDate] = useState<string>(() => new Date().toISOString().split("T")[0]);
   const [effectiveDate, setEffectiveDate] = useState<string>(
@@ -91,13 +93,14 @@ const CreditNoteVoucher: React.FC = () => {
         (inv) =>
           (inv.type === VoucherType.SALES_INVOICE || String(inv.type) === "sales-invoice") &&
           String(inv.status || "").toLowerCase() === "posted" &&
-          (inv.partyId === partyId || !partyId),
+          (inv.partyId === partyId || !partyId) &&
+          matchBranch((inv as { branchId?: string }).branchId),
       )
       .map((inv) => ({
         value: inv.id,
         label: `${inv.invoiceNo || inv.voucherNo} — Rs.${formatNumber(inv.grandTotal || 0)}`,
       }));
-  }, [invoices, partyId]);
+  }, [invoices, partyId, matchBranch, branchFilter]);
 
   const itemOptions = useMemo(() => {
     return items
@@ -457,6 +460,21 @@ const CreditNoteVoucher: React.FC = () => {
             onChange={(e) => setReferenceNo(e.target.value)}
             className="w-32"
           />
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         <Button

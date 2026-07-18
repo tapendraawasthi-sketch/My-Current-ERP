@@ -16,6 +16,7 @@ import {
   mergeSystemConfiguration,
   type PrintConfig,
 } from "./systemConfiguration";
+import { loadPrintPrefs } from "./printPrefs";
 
 // ─────────────────────────────────────────────────────────────
 // 1.  TYPE DEFINITIONS
@@ -105,14 +106,23 @@ function resolvePrintConfig(
   kind: "invoice" | "voucher" = "invoice",
 ): PrintConfig {
   if (options.printConfig) return options.printConfig;
-  return kind === "voucher"
-    ? DEFAULT_SYSTEM_CONFIGURATION.voucherPrint
-    : DEFAULT_SYSTEM_CONFIGURATION.invoicePrint;
+  const prefs = loadPrintPrefs();
+  const base =
+    kind === "voucher"
+      ? DEFAULT_SYSTEM_CONFIGURATION.voucherPrint
+      : DEFAULT_SYSTEM_CONFIGURATION.invoicePrint;
+  return {
+    ...base,
+    showLogo: prefs.showLogo,
+  };
 }
 
 function buildPageCss(config: PrintConfig): string {
+  const prefs = loadPrintPrefs();
+  const size = prefs.pageSize || "A4";
+  const orient = (prefs.orientation || "Portrait").toLowerCase();
   return `
-  @page { size: A4 portrait; margin: ${config.marginTopMm}mm ${config.marginRightMm}mm ${config.marginBottomMm}mm ${config.marginLeftMm}mm; }
+  @page { size: ${size} ${orient}; margin: ${config.marginTopMm}mm ${config.marginRightMm}mm ${config.marginBottomMm}mm ${config.marginLeftMm}mm; }
   body { font-size: ${config.fontSize}pt; }`;
 }
 

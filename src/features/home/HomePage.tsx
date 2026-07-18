@@ -25,6 +25,7 @@ import {
   Receipt,
   RefreshCw,
   Scale,
+  ShoppingCart,
   TrendingDown,
   TrendingUp,
   Users,
@@ -55,6 +56,7 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   Users,
   HardDrive,
   MessageSquare,
+  ShoppingCart,
 };
 
 function syncVisual(state: string): SyncVisualState {
@@ -438,7 +440,18 @@ function renderSections(
 }
 
 export function HomePage() {
-  const { model, loading, refreshing, error, refresh, retry, setCurrentPage } = useHomeDashboard();
+  const {
+    model,
+    loading,
+    refreshing,
+    error,
+    refresh,
+    retry,
+    setCurrentPage,
+    branchFilter,
+    setBranchFilter,
+    branchOptions,
+  } = useHomeDashboard();
   const openPanel = useEKhataStore((s) => s.openPanel);
   const maximizePanel = useEKhataStore((s) => s.maximizePanel);
   const isMobile = useIsMobile();
@@ -515,6 +528,24 @@ export function HomePage() {
           </Button>
         }
         secondaryActions={[
+          ...(branchOptions.length > 0
+            ? [
+                <select
+                  key="branch"
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  aria-label="Branch filter"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>,
+              ]
+            : []),
           <Button
             key="refresh"
             variant="secondary"
@@ -527,6 +558,33 @@ export function HomePage() {
           </Button>,
         ]}
       />
+
+      <div
+        className="flex flex-wrap items-center gap-2 rounded-[var(--ds-radius-md)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-3 py-2"
+        data-testid="home-role-strip"
+      >
+        <span className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
+          Workspace
+        </span>
+        <span className="rounded-md bg-[var(--ds-action-primary)]/10 px-2 py-0.5 text-[12px] font-medium text-[var(--ds-action-primary)]">
+          {model.workspaceLabel}
+        </span>
+        {model.workspaceId === "cashier" ? (
+          <Button variant="secondary" size="small" onClick={() => nav("pos-billing")}>
+            Open POS counter
+          </Button>
+        ) : null}
+        {(model.workspaceId === "accountant" || model.workspaceId === "owner") ? (
+          <>
+            <Button variant="quiet" size="small" onClick={() => nav("vat-reports")}>
+              VAT reports
+            </Button>
+            <Button variant="quiet" size="small" onClick={() => nav("bank-reconciliation")}>
+              Bank match
+            </Button>
+          </>
+        ) : null}
+      </div>
 
       {model.trust.offline ? (
         <Banner

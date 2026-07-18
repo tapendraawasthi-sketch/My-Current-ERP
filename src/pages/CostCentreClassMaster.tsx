@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useStore } from "../store";
 import { Plus, Edit2, Trash2, X, Save, Minus } from "lucide-react";
 import toast from "@/lib/appToast";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const CostCentreClassMaster: React.FC = () => {
   const {
@@ -11,6 +13,7 @@ const CostCentreClassMaster: React.FC = () => {
     deleteCostCentreClass,
     costCenters,
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [showForm, setShowForm] = useState(false);
   const [selected, setSelected] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,8 +25,10 @@ const CostCentreClassMaster: React.FC = () => {
     isActive: true,
   });
 
-  const filteredClasses = (costCentreClasses || []).filter((cls) =>
-    cls.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredClasses = (costCentreClasses || []).filter(
+    (cls) =>
+      matchBranch((cls as any).branchId) &&
+      cls.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const resetForm = () => {
@@ -109,11 +114,15 @@ const CostCentreClassMaster: React.FC = () => {
     }
 
     try {
+      const payload = {
+        ...form,
+        branchId: selected?.branchId || readActiveBranchId() || undefined,
+      };
       if (selected) {
-        await updateCostCentreClass(selected.id, form);
+        await updateCostCentreClass(selected.id, payload);
         toast.success("Updated successfully");
       } else {
-        await addCostCentreClass(form);
+        await addCostCentreClass(payload);
         toast.success("Saved successfully");
       }
       resetForm();
@@ -174,8 +183,23 @@ const CostCentreClassMaster: React.FC = () => {
               </p>
             </div>
             <div className="flex items-center gap-2">
+              {branchOptions.length > 0 && (
+                <select
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>
+              )}
               <button
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
                 onClick={() => {
                   resetForm();
                   setShowForm(true);
@@ -191,7 +215,7 @@ const CostCentreClassMaster: React.FC = () => {
             <input
               type="text"
               placeholder="Search classes..."
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-64"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -252,7 +276,7 @@ const CostCentreClassMaster: React.FC = () => {
                         <div className="flex items-center gap-1.5">
                           <button
                             onClick={() => loadFormForEdit(cls)}
-                            className="p-1 text-gray-500 hover:text-[#1557b0] hover:bg-blue-50 rounded"
+                            className="p-1 text-gray-500 hover:text-[var(--ds-action-primary)] hover:bg-blue-50 rounded"
                             title="Edit"
                           >
                             <Edit2 size={14} />
@@ -297,7 +321,7 @@ const CostCentreClassMaster: React.FC = () => {
               </label>
               <input
                 type="text"
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="Enter class name"
@@ -321,7 +345,7 @@ const CostCentreClassMaster: React.FC = () => {
                     <input
                       type="checkbox"
                       id={`vt-${opt.value}`}
-                      className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] h-3.5 w-3.5 cursor-pointer"
+                      className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                       checked={form.applicableVoucherTypes.includes(opt.value)}
                       onChange={() => toggleVoucherType(opt.value)}
                     />
@@ -340,7 +364,7 @@ const CostCentreClassMaster: React.FC = () => {
               <div className="flex justify-between items-center mb-1.5">
                 <label className="text-[11px] font-medium text-gray-600">Allocations</label>
                 <button
-                  className="h-6 px-2 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[10px] font-medium rounded flex items-center gap-1"
+                  className="h-6 px-2 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[10px] font-medium rounded flex items-center gap-1"
                   onClick={addAllocationRow}
                 >
                   <Plus size={10} />
@@ -367,7 +391,7 @@ const CostCentreClassMaster: React.FC = () => {
                         <tr key={idx} className="bg-white hover:bg-gray-50">
                           <td className="px-1.5 py-1">
                             <select
-                              className="w-full h-7 px-1.5 text-[11px] border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0]"
+                              className="w-full h-7 px-1.5 text-[11px] border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]"
                               value={alloc.costCentreId}
                               onChange={(e) =>
                                 updateAllocationRow(idx, "costCentreId", e.target.value)
@@ -384,7 +408,7 @@ const CostCentreClassMaster: React.FC = () => {
                           <td className="px-1.5 py-1">
                             <input
                               type="number"
-                              className="w-full h-7 px-1.5 text-[11px] text-right border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0]"
+                              className="w-full h-7 px-1.5 text-[11px] text-right border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]"
                               value={alloc.percentage}
                               onChange={(e) =>
                                 updateAllocationRow(idx, "percentage", e.target.value)
@@ -428,7 +452,7 @@ const CostCentreClassMaster: React.FC = () => {
                 <input
                   type="checkbox"
                   id="isActive"
-                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] h-3.5 w-3.5 cursor-pointer"
+                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                   checked={form.isActive}
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
                 />
@@ -450,7 +474,7 @@ const CostCentreClassMaster: React.FC = () => {
               Cancel
             </button>
             <button
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+              className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
               onClick={handleSubmit}
             >
               <Save size={14} />

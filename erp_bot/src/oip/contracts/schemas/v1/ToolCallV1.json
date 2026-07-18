@@ -1,0 +1,127 @@
+{
+  "$defs": {
+    "ReadOrMutation": {
+      "enum": [
+        "READ",
+        "MUTATION"
+      ],
+      "title": "ReadOrMutation",
+      "type": "string"
+    },
+    "ToolCallStatus": {
+      "enum": [
+        "PROPOSED",
+        "AUTHORIZED",
+        "DENIED",
+        "EXECUTING",
+        "COMPLETED",
+        "FAILED"
+      ],
+      "title": "ToolCallStatus",
+      "type": "string"
+    },
+    "ToolOrigin": {
+      "enum": [
+        "DETERMINISTIC",
+        "PLANNER",
+        "MODEL_PROPOSED"
+      ],
+      "title": "ToolOrigin",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/ToolCallV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "origin": {
+      "$ref": "#/$defs/ToolOrigin",
+      "default": "DETERMINISTIC"
+    },
+    "policy_decision_reference": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Policy Decision Reference"
+    },
+    "read_or_mutation": {
+      "$ref": "#/$defs/ReadOrMutation",
+      "default": "READ"
+    },
+    "retry_policy": {
+      "default": "none",
+      "title": "Retry Policy",
+      "type": "string"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/ToolCallStatus",
+      "default": "PROPOSED"
+    },
+    "success": {
+      "default": null,
+      "title": "Success",
+      "type": "null"
+    },
+    "tenant_scope_reference": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Tenant Scope Reference"
+    },
+    "timeout_ms": {
+      "default": 30000,
+      "maximum": 600000,
+      "minimum": 1,
+      "title": "Timeout Ms",
+      "type": "integer"
+    },
+    "tool_call_id": {
+      "minLength": 1,
+      "title": "Tool Call Id",
+      "type": "string"
+    },
+    "tool_name": {
+      "minLength": 1,
+      "title": "Tool Name",
+      "type": "string"
+    },
+    "tool_schema_version": {
+      "minLength": 1,
+      "title": "Tool Schema Version",
+      "type": "string"
+    },
+    "typed_arguments": {
+      "additionalProperties": true,
+      "title": "Typed Arguments",
+      "type": "object"
+    },
+    "typed_result": {
+      "default": null,
+      "title": "Typed Result",
+      "type": "null"
+    }
+  },
+  "required": [
+    "tool_call_id",
+    "tool_name",
+    "tool_schema_version"
+  ],
+  "title": "ToolCallV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

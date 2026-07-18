@@ -132,6 +132,18 @@ export const CompanySwitcher: React.FC = () => {
           <button
             type="button"
             role="menuitem"
+            className="flex w-full items-center gap-2 px-3 py-2 text-left text-[12px] text-[var(--ds-text-default)] hover:bg-[var(--ds-surface-muted)]"
+            onClick={() => {
+              setOpen(false);
+              void logout();
+            }}
+          >
+            <Building2 className="h-3.5 w-3.5 text-[var(--ds-text-muted)]" />
+            Switch company…
+          </button>
+          <button
+            type="button"
+            role="menuitem"
             className="flex w-full items-center gap-2 border-t border-[var(--ds-border-default)] px-3 py-2 text-left text-[12px] text-[var(--ds-status-danger)] hover:bg-[var(--ds-status-danger-surface)]"
             onClick={() => {
               setOpen(false);
@@ -139,7 +151,7 @@ export const CompanySwitcher: React.FC = () => {
             }}
           >
             <LogOut className="h-3.5 w-3.5" />
-            Sign out / switch company
+            Sign out
           </button>
         </div>
       )}

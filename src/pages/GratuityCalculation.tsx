@@ -3,6 +3,8 @@ import { useStore } from "../store/useStore";
 import { computeGratuity } from "../lib/nepalPayrollEngine";
 import { Calculator, Save } from "lucide-react";
 import toast from "@/lib/appToast";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 function money(n: number): string {
   return Number(n || 0).toLocaleString("en-NP", {
@@ -22,12 +24,15 @@ function yearsOfService(joinDate?: string): number {
 
 const GratuityCalculation: React.FC = () => {
   const { employees, accounts, addVoucher, currentFiscalYear } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [saving, setSaving] = useState(false);
   const [minYears, setMinYears] = useState(1);
 
   const rows = useMemo(() => {
     return (employees || [])
-      .filter((e) => e.status !== "inactive")
+      .filter(
+        (e) => e.status !== "inactive" && matchBranch((e as { branchId?: string }).branchId),
+      )
       .map((e) => {
         const joinDate = e.dateOfJoining || e.joinDate;
         const years = yearsOfService(joinDate);
@@ -43,7 +48,7 @@ const GratuityCalculation: React.FC = () => {
           gratuity,
         };
       });
-  }, [employees, minYears]);
+  }, [employees, minYears, matchBranch, branchFilter]);
 
   const totalGratuity = useMemo(() => rows.reduce((sum, r) => sum + r.gratuity, 0), [rows]);
 
@@ -77,6 +82,7 @@ const GratuityCalculation: React.FC = () => {
         totalDebit: totalGratuity,
         totalCredit: totalGratuity,
         grandTotal: totalGratuity,
+        branchId: readActiveBranchId() || undefined,
         lines: [
           {
             accountId: expenseAcc.id,
@@ -115,15 +121,32 @@ const GratuityCalculation: React.FC = () => {
             Labour Act 2074 — 8.33% of basic salary per year of service
           </p>
         </div>
-        <button
-          type="button"
-          onClick={postProvision}
-          disabled={saving || totalGratuity <= 0}
-          className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-50 text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
-        >
-          <Save className="h-3.5 w-3.5" />
-          Post Provision
-        </button>
+        <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+          <button
+            type="button"
+            onClick={postProvision}
+            disabled={saving || totalGratuity <= 0}
+            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-50 text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+          >
+            <Save className="h-3.5 w-3.5" />
+            Post Provision
+          </button>
+        </div>
       </div>
 
       <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4">

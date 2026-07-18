@@ -237,7 +237,7 @@ const BackupRestore = () => {
             onClick={() => setTab(key as any)}
             className={`px-4 py-2.5 text-[12px] font-medium transition-colors border-b-2 flex-1 flex items-center justify-center gap-1.5 ${
               tab === key
-                ? "bg-white text-[#1557b0] border-[#1557b0]"
+                ? "bg-white text-[var(--ds-action-primary)] border-[var(--ds-action-primary)]"
                 : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 border-transparent"
             }`}
           >
@@ -269,7 +269,7 @@ const BackupRestore = () => {
                         type="radio"
                         checked={selectedDest === "local"}
                         onChange={() => setSelectedDest("local")}
-                        className="text-[#1557b0] focus:ring-[#1557b0]"
+                        className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                       />
                       <span className="text-[12px] font-medium text-gray-800">Local Path</span>
                     </div>
@@ -278,7 +278,7 @@ const BackupRestore = () => {
                         type="text"
                         value={localPath}
                         onChange={(e) => setLocalPath(e.target.value)}
-                        className="ml-6 w-[calc(100%-24px)] h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0] font-mono"
+                        className="ml-6 w-[calc(100%-24px)] h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)] font-mono"
                       />
                     )}
                   </label>
@@ -289,7 +289,7 @@ const BackupRestore = () => {
                         type="radio"
                         checked={selectedDest === "network"}
                         onChange={() => setSelectedDest("network")}
-                        className="text-[#1557b0] focus:ring-[#1557b0]"
+                        className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                       />
                       <span className="text-[12px] font-medium text-gray-800">Network Path</span>
                     </div>
@@ -298,7 +298,7 @@ const BackupRestore = () => {
                         type="text"
                         value={networkPath}
                         onChange={(e) => setNetworkPath(e.target.value)}
-                        className="ml-6 w-[calc(100%-24px)] h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0] font-mono"
+                        className="ml-6 w-[calc(100%-24px)] h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)] font-mono"
                       />
                     )}
                   </label>
@@ -308,7 +308,7 @@ const BackupRestore = () => {
                       type="radio"
                       checked={selectedDest === "cloud"}
                       onChange={() => setSelectedDest("cloud")}
-                      className="text-[#1557b0] focus:ring-[#1557b0]"
+                      className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                     />
                     <span className="text-[12px] font-medium text-gray-800">
                       Cloud (Google Drive / OneDrive / S3)
@@ -328,7 +328,7 @@ const BackupRestore = () => {
                       type="checkbox"
                       checked={includeAllYears}
                       onChange={(e) => setIncludeAllYears(e.target.checked)}
-                      className="text-[#1557b0] rounded focus:ring-[#1557b0]"
+                      className="text-[var(--ds-action-primary)] rounded focus:ring-[var(--ds-action-primary)]"
                     />
                     All financial years (vs current year only)
                   </label>
@@ -337,7 +337,7 @@ const BackupRestore = () => {
                       type="checkbox"
                       checked={includeConfig}
                       onChange={(e) => setIncludeConfig(e.target.checked)}
-                      className="text-[#1557b0] rounded focus:ring-[#1557b0]"
+                      className="text-[var(--ds-action-primary)] rounded focus:ring-[var(--ds-action-primary)]"
                     />
                     Configuration files (F11 settings, security)
                   </label>
@@ -355,7 +355,7 @@ const BackupRestore = () => {
                       type="checkbox"
                       checked={compressBackup}
                       onChange={(e) => setCompressBackup(e.target.checked)}
-                      className="text-[#1557b0] rounded focus:ring-[#1557b0]"
+                      className="text-[var(--ds-action-primary)] rounded focus:ring-[var(--ds-action-primary)]"
                     />
                     Compress Backup (ZIP format, ~70% size reduction)
                   </label>
@@ -365,7 +365,7 @@ const BackupRestore = () => {
                         type="checkbox"
                         checked={encryptBackup}
                         onChange={(e) => setEncryptBackup(e.target.checked)}
-                        className="text-[#1557b0] rounded focus:ring-[#1557b0]"
+                        className="text-[var(--ds-action-primary)] rounded focus:ring-[var(--ds-action-primary)]"
                       />
                       Encrypt Backup
                     </label>
@@ -383,7 +383,7 @@ const BackupRestore = () => {
                 <button
                   onClick={handleCreateBackup}
                   disabled={isExporting}
-                  className="w-full h-10 bg-[#1557b0] hover:bg-[#0f4a96] disabled:bg-[#1557b0]/50 text-white text-[13px] font-medium rounded-md transition-colors shadow-sm flex items-center justify-center gap-2"
+                  className="w-full h-10 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] disabled:bg-[var(--ds-action-primary)]/50 text-white text-[13px] font-medium rounded-md transition-colors shadow-sm flex items-center justify-center gap-2"
                 >
                   {isExporting ? (
                     <>
@@ -437,7 +437,7 @@ const BackupRestore = () => {
                       type="radio"
                       name="source"
                       defaultChecked
-                      className="text-[#1557b0] focus:ring-[#1557b0]"
+                      className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                     />{" "}
                     Local File
                   </label>
@@ -445,7 +445,7 @@ const BackupRestore = () => {
                     <input
                       type="radio"
                       name="source"
-                      className="text-[#1557b0] focus:ring-[#1557b0]"
+                      className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                     />{" "}
                     Cloud Backup
                   </label>
@@ -453,7 +453,7 @@ const BackupRestore = () => {
                     <input
                       type="radio"
                       name="source"
-                      className="text-[#1557b0] focus:ring-[#1557b0]"
+                      className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                     />{" "}
                     Network Path
                   </label>
@@ -560,7 +560,7 @@ const BackupRestore = () => {
                             <td className="px-3 py-2.5 text-center">
                               <button
                                 onClick={() => handleRestore()}
-                                className="h-6 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[10px] font-medium rounded transition-colors"
+                                className="h-6 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[10px] font-medium rounded transition-colors"
                               >
                                 Restore
                               </button>
@@ -648,7 +648,7 @@ const BackupRestore = () => {
                         type="radio"
                         checked={autoFrequency === "daily"}
                         onChange={() => setAutoFrequency("daily")}
-                        className="text-[#1557b0] focus:ring-[#1557b0]"
+                        className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                       />
                       <span className="text-[12px] font-medium text-gray-800">Daily at:</span>
                       <input
@@ -656,7 +656,7 @@ const BackupRestore = () => {
                         value={autoTime}
                         onChange={(e) => setAutoTime(e.target.value)}
                         disabled={autoFrequency !== "daily"}
-                        className="h-7 px-2 text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0] disabled:bg-gray-50 disabled:text-gray-400"
+                        className="h-7 px-2 text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)] disabled:bg-gray-50 disabled:text-gray-400"
                       />
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer">
@@ -664,7 +664,7 @@ const BackupRestore = () => {
                         type="radio"
                         checked={autoFrequency === "hourly"}
                         onChange={() => setAutoFrequency("hourly")}
-                        className="text-[#1557b0] focus:ring-[#1557b0]"
+                        className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                       />
                       <span className="text-[12px] font-medium text-gray-800">Every Hour</span>
                     </label>
@@ -673,7 +673,7 @@ const BackupRestore = () => {
                         type="radio"
                         checked={autoFrequency === "onClose"}
                         onChange={() => setAutoFrequency("onClose")}
-                        className="text-[#1557b0] focus:ring-[#1557b0]"
+                        className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                       />
                       <span className="text-[12px] font-medium text-gray-800">
                         On Every Company Close
@@ -692,7 +692,7 @@ const BackupRestore = () => {
                       type="number"
                       value={keepLast}
                       onChange={(e) => setKeepLast(e.target.value)}
-                      className="w-16 h-7 px-2 text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0]"
+                      className="w-16 h-7 px-2 text-[12px] border border-gray-300 rounded bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)]"
                     />
                   </div>
                   <div className="text-[10px] text-gray-500 italic">
@@ -734,7 +734,7 @@ const BackupRestore = () => {
                 {/* Save Button */}
                 <button
                   onClick={handleScheduleSave}
-                  className="w-full h-9 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
+                  className="w-full h-9 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
                 >
                   Save Schedule
                 </button>
@@ -758,7 +758,7 @@ const BackupRestore = () => {
                       type="radio"
                       checked={cloudService === "gdrive"}
                       onChange={() => setCloudService("gdrive")}
-                      className="text-[#1557b0] focus:ring-[#1557b0]"
+                      className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                     />
                     Google Drive
                   </label>
@@ -767,7 +767,7 @@ const BackupRestore = () => {
                       type="radio"
                       checked={cloudService === "onedrive"}
                       onChange={() => setCloudService("onedrive")}
-                      className="text-[#1557b0] focus:ring-[#1557b0]"
+                      className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                     />
                     OneDrive
                   </label>
@@ -776,7 +776,7 @@ const BackupRestore = () => {
                       type="radio"
                       checked={cloudService === "s3"}
                       onChange={() => setCloudService("s3")}
-                      className="text-[#1557b0] focus:ring-[#1557b0]"
+                      className="text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                     />
                     Amazon S3
                   </label>
@@ -820,7 +820,7 @@ const BackupRestore = () => {
                         setCloudConnected(true);
                         toast.success("Simulated: Connected to Google Drive. backup@company.com");
                       }}
-                      className="h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[11px] font-medium rounded transition-colors shadow-sm"
+                      className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[11px] font-medium rounded transition-colors shadow-sm"
                     >
                       Connect to{" "}
                       {cloudService === "gdrive"
@@ -851,7 +851,7 @@ const BackupRestore = () => {
           <div className="bg-white border border-gray-200 rounded-md shadow-sm overflow-hidden min-h-[300px]">
             {loadingHistory ? (
               <div className="flex flex-col items-center justify-center h-[300px] text-gray-500">
-                <RefreshCw size={24} className="animate-spin mb-3 text-[#1557b0]" />
+                <RefreshCw size={24} className="animate-spin mb-3 text-[var(--ds-action-primary)]" />
                 <div className="text-[12px] font-medium">Loading backup history...</div>
               </div>
             ) : history.length === 0 ? (

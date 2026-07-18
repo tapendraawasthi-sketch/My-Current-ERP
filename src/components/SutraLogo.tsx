@@ -16,7 +16,7 @@ const SutraLogo: React.FC<SutraLogoProps> = ({ collapsed = false, className = ""
       className={`flex items-center gap-2 select-none ${collapsed ? "justify-center" : ""} ${className}`}
     >
       {/* "S" inside a polished blue square */}
-      <div className="flex items-center justify-center h-7 w-7 bg-[#3D6B25] rounded-lg shrink-0 transition-colors">
+      <div className="flex items-center justify-center h-7 w-7 bg-[var(--ds-action-primary-hover)] rounded-lg shrink-0 transition-colors">
         <span className="text-[#000000] font-bold text-[14px] leading-none">S</span>
       </div>
 

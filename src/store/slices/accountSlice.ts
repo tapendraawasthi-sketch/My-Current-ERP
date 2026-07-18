@@ -18,6 +18,7 @@ import { validateVoucherBalance, assertDateInFiscalYear } from "../store.types";
 import toast from "@/lib/appToast";
 import { migrateWorkflowFields } from "../../lib/workflowMigration";
 import { createWorkflowActions } from "../workflowActions";
+import { readActiveBranchId } from "../../lib/activeBranch";
 
 export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get) => ({
   // ── Accounts ──────────────────────────────────────────────────────────────
@@ -888,7 +889,8 @@ export const createAccountSlice: StateCreator<AppState, [], [], any> = (set, get
   addTdsEntry: async (entry) => {
     const db = getDB();
     const id = entry.id || generateId();
-    const record = { ...entry, id };
+    const branchId = entry.branchId || readActiveBranchId() || undefined;
+    const record = { ...entry, id, ...(branchId ? { branchId } : {}) };
     await db.tdsEntries.add(record as any);
     set((s) => ({ tdsEntries: [record, ...s.tdsEntries] }));
     return record;

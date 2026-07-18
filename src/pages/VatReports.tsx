@@ -7,6 +7,7 @@ import * as XLSX from "xlsx";
 import toast from "@/lib/appToast";
 import ReportDateRangePicker, { DateRange } from "../components/ui/ReportDateRangePicker";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -156,6 +157,7 @@ const DataTable: React.FC<DataTableProps> = ({
 
 const VatReports: React.FC = () => {
   const { invoices, companySettings, currentFiscalYear } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
 
   const [activeAnnex, setActiveAnnex] = useState<"A" | "B" | "C" | "D" | "summary">("summary");
   const [dateRange, setDateRange] = useState<DateRange>({
@@ -165,14 +167,14 @@ const VatReports: React.FC = () => {
 
   const { fromDate, toDate } = dateRange;
 
-  // ── Filter invoices by date range ─────────────────────────────────────────
+  // ── Filter invoices by date range + branch ────────────────────────────────
   const filteredInvoices = useMemo(() => {
     return invoices.filter((inv) => {
       if (!inv.date) return false;
-      // Fix: use toDate() helper to convert string dates to Date objects properly
+      if (!matchBranch((inv as any).branchId)) return false;
       return isDateInRange(inv.date, dateRange.fromDate, dateRange.toDate);
     });
-  }, [invoices, dateRange.fromDate, dateRange.toDate]);
+  }, [invoices, dateRange.fromDate, dateRange.toDate, matchBranch, branchFilter]);
 
   // ── Annex A: Sales to VAT registered parties ──────────────────────────────
   const annexAData = useMemo<AnnexEntry[]>(() => {
@@ -467,6 +469,21 @@ const VatReports: React.FC = () => {
       <div className="no-print bg-white border border-gray-200 rounded-md p-3 mb-4">
         <div className="flex items-center justify-between gap-2 flex-wrap">
           <ReportDateRangePicker value={dateRange} onChange={setDateRange} label="" compact />
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              aria-label="Branch"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
           <div className="flex items-center gap-2">
             <button
               type="button"

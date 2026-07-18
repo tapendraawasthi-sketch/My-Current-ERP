@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import { formatNumber } from "../lib/utils";
 import { VoucherType, VoucherStatus } from "../lib/types";
@@ -7,12 +7,17 @@ import { ReportWorkspace } from "@/features/reports";
 import ReportGrid from "../components/reporting/ReportGrid";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 import { useScreenF12 } from "../hooks/useF12Config";
+import {
+  BRANCH_CHANGED_EVENT,
+  matchesBranchFilter,
+  readActiveBranchId,
+} from "../lib/activeBranch";
 
 const BankBook: React.FC = () => {
   // Register this screen with F12 system
   const getConfig = useScreenF12("bank-book");
 
-  const { vouchers, accounts, companySettings, currentFiscalYear } = useStore();
+  const { vouchers, accounts, companySettings, currentFiscalYear, branches } = useStore();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [selectedAccountId, setSelectedAccountId] = useState<string>("");
   const [startDate, setStartDate] = useState(currentFiscalYear?.startDate || "");
@@ -20,6 +25,7 @@ const BankBook: React.FC = () => {
   const [showNarration, setShowNarration] = useState(false);
   const [showOnlyReceipts, setShowOnlyReceipts] = useState(false);
   const [showOnlyPayments, setShowOnlyPayments] = useState(false);
+  const [branchFilter, setBranchFilter] = useState(() => readActiveBranchId() || "all");
 
   // Pending states for options modal
   const [pendingAccountId, setPendingAccountId] = useState(selectedAccountId);
@@ -28,6 +34,20 @@ const BankBook: React.FC = () => {
   const [pendingShowNarration, setPendingShowNarration] = useState(showNarration);
   const [pendingShowOnlyReceipts, setPendingShowOnlyReceipts] = useState(showOnlyReceipts);
   const [pendingShowOnlyPayments, setPendingShowOnlyPayments] = useState(showOnlyPayments);
+
+  useEffect(() => {
+    const sync = () => {
+      const id = readActiveBranchId();
+      if (id) setBranchFilter(id);
+    };
+    window.addEventListener(BRANCH_CHANGED_EVENT, sync as EventListener);
+    return () => window.removeEventListener(BRANCH_CHANGED_EVENT, sync as EventListener);
+  }, []);
+
+  const branchOptions = useMemo(
+    () => ((branches || []) as any[]).filter((b) => b && b.isActive !== false),
+    [branches],
+  );
 
   const applyOptions = () => {
     setSelectedAccountId(pendingAccountId);
@@ -85,6 +105,7 @@ const BankBook: React.FC = () => {
         v.status === "posted" &&
         v.date >= startDate &&
         v.date <= endDate &&
+        matchesBranchFilter(v.branchId, branchFilter) &&
         v.lines.some((line) => line.accountId === selectedAccountId),
     );
 
@@ -233,6 +254,7 @@ const BankBook: React.FC = () => {
     showNarration,
     showOnlyReceipts,
     showOnlyPayments,
+    branchFilter,
   ]);
 
   // Custom cell rendering
@@ -324,6 +346,24 @@ const BankBook: React.FC = () => {
               className="h-8 px-2.5 text-[13px] font-normal border border-[var(--ds-border-default)] rounded-md bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
+          {branchOptions.length > 0 && (
+            <label className="text-[12px] font-medium text-[var(--ds-text-muted)] flex items-center gap-1.5">
+              Branch
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                aria-label="Branch"
+                className="h-8 px-2.5 text-[13px] font-normal border border-[var(--ds-border-default)] rounded-md bg-[var(--ds-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b: any) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
         </>
       }
     >

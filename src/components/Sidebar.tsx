@@ -271,11 +271,11 @@ const Sidebar: React.FC<{ collapsed: boolean; setCollapsed: (b: boolean) => void
       gap: 8,
       padding: collapsed ? "8px" : "7px 12px",
       justifyContent: collapsed ? "center" : "flex-start",
-      background: isAct ? "#1557b010" : "transparent",
+      background: isAct ? "var(--ds-action-primary)10" : "transparent",
       border: "none",
-      borderLeft: isAct ? "3px solid #1557b0" : "3px solid transparent",
+      borderLeft: isAct ? "3px solid var(--ds-action-primary)" : "3px solid transparent",
       borderRadius: "0 4px 4px 0",
-      color: isAct ? "#1557b0" : "#cbd5e1",
+      color: isAct ? "var(--ds-action-primary)" : "#cbd5e1",
       fontSize: 12,
       fontWeight: isAct ? 700 : 400,
       cursor: "pointer",
@@ -347,7 +347,7 @@ const Sidebar: React.FC<{ collapsed: boolean; setCollapsed: (b: boolean) => void
                       >
                         <item.icon
                           size={collapsed ? 16 : 14}
-                          style={{ color: active ? "#1557b0" : "#94a3b8", flexShrink: 0 }}
+                          style={{ color: active ? "var(--ds-action-primary)" : "#94a3b8", flexShrink: 0 }}
                         />
                         {!collapsed && (
                           <div
@@ -363,7 +363,7 @@ const Sidebar: React.FC<{ collapsed: boolean; setCollapsed: (b: boolean) => void
                               <span
                                 className={`text-[9px] font-bold px-1.5 py-0.5 rounded-sm ${
                                   active
-                                    ? "bg-white/20 text-[#1557b0]"
+                                    ? "bg-white/20 text-[var(--ds-action-primary)]"
                                     : "bg-[#2d3748] text-gray-300"
                                 }`}
                               >

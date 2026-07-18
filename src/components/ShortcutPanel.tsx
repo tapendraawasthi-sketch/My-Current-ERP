@@ -58,7 +58,7 @@ export default function ShortcutPanel() {
     <>
       <button
         onClick={() => setShowHelp(!showHelp)}
-        className="fixed bottom-6 right-6 bg-[#1557b0] text-white rounded-full p-3 shadow-lg hover:bg-[#0f4a96] z-40 cursor-pointer"
+        className="fixed bottom-6 right-6 bg-[var(--ds-action-primary)] text-white rounded-full p-3 shadow-lg hover:bg-[var(--ds-action-primary-hover)] z-40 cursor-pointer"
         title="Keyboard Shortcuts (Press ? to toggle)"
       >
         <Keyboard className="w-6 h-6" />
@@ -69,7 +69,7 @@ export default function ShortcutPanel() {
           <div className="bg-white rounded-lg w-full max-w-3xl max-h-[85vh] overflow-hidden flex flex-col border border-gray-200 shadow-xl">
             <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 bg-[#f5f6fa]">
               <h2 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-                <Keyboard className="w-5 h-5 text-[#1557b0]" /> Keyboard Shortcuts Settings
+                <Keyboard className="w-5 h-5 text-[var(--ds-action-primary)]" /> Keyboard Shortcuts Settings
               </h2>
               <button
                 onClick={() => setShowHelp(false)}
@@ -108,7 +108,7 @@ export default function ShortcutPanel() {
                                   onChange={() => handleToggleActive(shortcut)}
                                 />
                                 <div
-                                  className={`block w-8 h-4 rounded-full transition-colors ${shortcut.is_active ? "bg-[#1557b0]" : "bg-[#f5f6fa]"}`}
+                                  className={`block w-8 h-4 rounded-full transition-colors ${shortcut.is_active ? "bg-[var(--ds-action-primary)]" : "bg-[#f5f6fa]"}`}
                                 ></div>
                                 <div
                                   className={`dot absolute left-1 top-1 bg-white w-2 h-2 rounded-full transition-transform ${shortcut.is_active ? "transform translate-x-4" : ""}`}
@@ -124,13 +124,13 @@ export default function ShortcutPanel() {
                                   type="text"
                                   value={editCombo}
                                   onChange={(e) => setEditCombo(e.target.value)}
-                                  className="flex-1 h-7 px-2 text-[11px] font-mono border border-[#1557b0] rounded focus:outline-none focus:ring-1 focus:ring-[#1557b0]"
+                                  className="flex-1 h-7 px-2 text-[11px] font-mono border border-[var(--ds-action-primary)] rounded focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]"
                                   placeholder="e.g. Ctrl+Shift+N"
                                 />
                                 <button
                                   onClick={() => handleSave(shortcut.id)}
                                   disabled={saving}
-                                  className="h-7 w-7 flex items-center justify-center bg-[#1557b0] text-white rounded hover:bg-[#0f4a96]"
+                                  className="h-7 w-7 flex items-center justify-center bg-[var(--ds-action-primary)] text-white rounded hover:bg-[var(--ds-action-primary-hover)]"
                                 >
                                   <Check className="w-3.5 h-3.5" />
                                 </button>
@@ -148,7 +148,7 @@ export default function ShortcutPanel() {
                                 </kbd>
                                 <button
                                   onClick={() => handleEdit(shortcut)}
-                                  className="text-gray-800 hover:text-[#1557b0] opacity-0 group-hover:opacity-100 transition-opacity"
+                                  className="text-gray-800 hover:text-[var(--ds-action-primary)] opacity-0 group-hover:opacity-100 transition-opacity"
                                 >
                                   <Edit2 className="w-3.5 h-3.5" />
                                 </button>

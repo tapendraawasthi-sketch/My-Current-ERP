@@ -5,14 +5,15 @@ import * as XLSX from "xlsx";
 import toast from "@/lib/appToast";
 import { CalendarDays, Download, Printer, RefreshCcw, ShieldCheck, Users } from "lucide-react";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const inputCls =
-  "h-8 w-full px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "h-8 w-full px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const compactInputCls =
-  "h-7 w-full px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "h-7 w-full px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const labelCls = "mb-1 block text-[11px] font-medium text-gray-600";
 const primaryButtonCls =
-  "inline-flex h-8 items-center gap-1.5 rounded-md bg-[#1557b0] px-3 text-[12px] font-medium text-white hover:bg-[#0f4a96]";
+  "inline-flex h-8 items-center gap-1.5 rounded-md bg-[var(--ds-action-primary)] px-3 text-[12px] font-medium text-white hover:bg-[var(--ds-action-primary-hover)]";
 const outlineButtonCls =
   "inline-flex h-8 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 text-[12px] font-medium text-gray-700 hover:bg-gray-50";
 const smallOutlineButtonCls =
@@ -51,7 +52,7 @@ function tabCls(active) {
   return [
     "inline-flex items-center border-b-2 px-1 py-2 text-[12px] font-medium transition-colors",
     active
-      ? "border-[#1557b0] text-[#1557b0]"
+      ? "border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]"
       : "border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-800",
   ].join(" ");
 }
@@ -65,6 +66,7 @@ function badgeCls(kind) {
 
 export default function PayrollReports() {
   const { employees, companySettings, fiscalYears } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const [activeTab, setActiveTab] = useState("ssf");
   const [selectedFiscalYear, setSelectedFiscalYear] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(calendarMonths[0].name);
@@ -72,7 +74,13 @@ export default function PayrollReports() {
   const [installmentData, setInstallmentData] = useState([]);
   const [complianceStatus, setComplianceStatus] = useState({});
 
-  const activeEmployees = useMemo(() => employees.filter((e) => e.isActive), [employees]);
+  const activeEmployees = useMemo(
+    () =>
+      employees.filter(
+        (e) => e.isActive && matchBranch((e as { branchId?: string }).branchId),
+      ),
+    [employees, matchBranch, branchFilter],
+  );
   const exportYear = selectedFiscalYear.split("/")[1] || "2081";
   const selectedFiscalYearLabel = useMemo(() => {
     return (
@@ -319,7 +327,7 @@ export default function PayrollReports() {
     const borderStyle = "border: 1px solid #d1d5db;";
     const challanHTML = `
       <div style="font-family: Arial, sans-serif; padding: 24px; color: #1f2937;">
-        <h2 style="text-align: center; border-bottom: 2px solid #1557b0; padding-bottom: 10px; margin-bottom: 20px;">PF Deposit Challan</h2>
+        <h2 style="text-align: center; border-bottom: 2px solid var(--ds-action-primary); padding-bottom: 10px; margin-bottom: 20px;">PF Deposit Challan</h2>
         <div style="margin: 20px 0; font-size: 12px; line-height: 1.7;">
           <div><strong>Employer Name:</strong> ${companySettings?.name || "N/A"}</div>
           <div><strong>Employer PAN:</strong> ${companySettings?.panNumber || "N/A"}</div>
@@ -788,7 +796,7 @@ export default function PayrollReports() {
                     <h3 className="text-[12px] font-semibold text-gray-800">{month.name}</h3>
                     <p className="mt-0.5 text-[11px] text-gray-500">{month.days} days</p>
                   </div>
-                  <CalendarDays className="h-4 w-4 text-[#1557b0]" />
+                  <CalendarDays className="h-4 w-4 text-[var(--ds-action-primary)]" />
                 </div>
 
                 <div className="space-y-3">
@@ -857,7 +865,7 @@ export default function PayrollReports() {
       </div>
 
       <div className="no-print mb-4 rounded-md border border-gray-200 bg-white p-3">
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
           <div>
             <label className={labelCls}>Fiscal year</label>
             <select
@@ -887,6 +895,24 @@ export default function PayrollReports() {
               ))}
             </select>
           </div>
+          {branchOptions.length > 0 && (
+            <div>
+              <label className={labelCls}>Branch</label>
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                className={inputCls}
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <div className="xl:col-span-2 flex items-end gap-2">
             <button type="button" onClick={() => {}} className={primaryButtonCls}>
               <RefreshCcw className="h-3.5 w-3.5" />
@@ -914,7 +940,7 @@ export default function PayrollReports() {
                 Included in payroll compliance reports
               </p>
             </div>
-            <Users className="h-4 w-4 text-[#1557b0]" />
+            <Users className="h-4 w-4 text-[var(--ds-action-primary)]" />
           </div>
         </div>
         <div className="rounded-md border border-gray-200 bg-white p-4">
@@ -950,7 +976,7 @@ export default function PayrollReports() {
                 Tracked filing and deposit checkpoints
               </p>
             </div>
-            <ShieldCheck className="h-4 w-4 text-[#1557b0]" />
+            <ShieldCheck className="h-4 w-4 text-[var(--ds-action-primary)]" />
           </div>
         </div>
       </div>

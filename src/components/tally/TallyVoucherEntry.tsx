@@ -26,6 +26,8 @@ import { X, Save, Trash2, Plus, Banknote, FileText, Landmark, Calculator } from 
 import { useStore } from "@/store/useStore";
 import { ADToBSString } from "@/lib/nepaliDate";
 import { formatMoney, parseMoney, amountInWords } from "@/lib/tallyFormat";
+import { readActiveBranchId } from "@/lib/activeBranch";
+import { useBranchFilter } from "@/hooks/useBranchFilter";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 /* Config per voucher type                                                     */
@@ -293,14 +295,16 @@ const BillWiseModal: React.FC<{
   onSave: (rows: any[]) => void;
   onClose: () => void;
 }> = ({ initial, partyId, amount, invoices, onSave, onClose }) => {
+  const { matchBranch } = useBranchFilter();
   const partyInvoices = useMemo(
     () =>
       (invoices || []).filter(
         (i) =>
+          matchBranch(i.branchId) &&
           (i.partyId === partyId || i.accountId === partyId) &&
           (i.balanceDue ?? i.grandTotal ?? 0) !== 0,
       ),
-    [invoices, partyId],
+    [invoices, partyId, matchBranch],
   );
   const [rows, setRows] = useState<any[]>(() =>
     initial && initial.length
@@ -713,6 +717,7 @@ const TallyVoucherEntry: React.FC<Props> = ({ type, onSwitchType }) => {
         status: "posted",
         entryMode: singleEntry ? "single" : "double",
         lines: storeLines,
+        branchId: readActiveBranchId() || undefined,
       });
       toast.success(`${meta.label} saved.`);
       reset();
@@ -1008,7 +1013,7 @@ const TallyVoucherEntry: React.FC<Props> = ({ type, onSwitchType }) => {
               fontSize: 10,
               fontWeight: 700,
               textAlign: "center",
-              background: "#C9DEB5",
+              background: "var(--ds-surface-muted)",
               border: "1px solid #000000",
               padding: "2px 4px",
               color: "#000000",
@@ -1048,7 +1053,7 @@ const TallyVoucherEntry: React.FC<Props> = ({ type, onSwitchType }) => {
               fontSize: 10,
               fontWeight: 700,
               textAlign: "center",
-              background: "#C9DEB5",
+              background: "var(--ds-surface-muted)",
               border: "1px solid #000000",
               padding: "2px 4px",
               color: "#000000",
@@ -1131,7 +1136,7 @@ const TallyVoucherEntry: React.FC<Props> = ({ type, onSwitchType }) => {
               fontSize: 10,
               fontWeight: 700,
               textAlign: "center",
-              background: "#C9DEB5",
+              background: "var(--ds-surface-muted)",
               border: "1px solid #000000",
               padding: "2px 4px",
               color: "#000000",

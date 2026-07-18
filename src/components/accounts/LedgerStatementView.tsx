@@ -9,6 +9,7 @@ import {
   getNepaliFiscalQuarter,
   parseFYLabel,
 } from "../../lib/nepaliDate";
+import { useBranchFilter } from "../../hooks/useBranchFilter";
 
 type PeriodMode = "month" | "quarter" | "year" | "custom";
 
@@ -37,6 +38,7 @@ interface Voucher {
   type: string;
   narration?: string;
   status?: string;
+  branchId?: string;
   lines: VoucherLine[];
 }
 
@@ -114,6 +116,7 @@ const LedgerStatementView: React.FC<LedgerStatementViewProps> = ({ ledgerId, onB
     setCurrentPage,
     setEditingVoucherId,
   } = useStore() as any;
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const fyLabel = currentFiscalYear?.name || currentFiscalYear?.fiscalYearBS || "2083/84";
   const fyRange = useMemo(() => getFiscalYearDateRange(fyLabel), [fyLabel]);
@@ -130,7 +133,10 @@ const LedgerStatementView: React.FC<LedgerStatementViewProps> = ({ ledgerId, onB
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const accountList = (accounts || []) as Account[];
-  const voucherList = (vouchers || []) as Voucher[];
+  const voucherList = useMemo(
+    () => ((vouchers || []) as Voucher[]).filter((v) => matchBranch(v.branchId)),
+    [vouchers, matchBranch, branchFilter],
+  );
 
   const account = useMemo(
     () => accountList.find((a) => a.id === ledgerId),
@@ -291,6 +297,21 @@ const LedgerStatementView: React.FC<LedgerStatementViewProps> = ({ ledgerId, onB
           <p className="text-[11px] text-gray-500 mt-0.5">{account.name} — Ledger Statement</p>
         </div>
         <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
           <button
             type="button"
             onClick={() => window.print()}
@@ -344,7 +365,7 @@ const LedgerStatementView: React.FC<LedgerStatementViewProps> = ({ ledgerId, onB
           <select
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(Number(e.target.value))}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           >
             {fyMonths.map((m) => (
               <option key={m.number} value={m.number}>
@@ -358,7 +379,7 @@ const LedgerStatementView: React.FC<LedgerStatementViewProps> = ({ ledgerId, onB
           <select
             value={selectedQuarter}
             onChange={(e) => setSelectedQuarter(Number(e.target.value) as 1 | 2 | 3 | 4)}
-            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           >
             {quarterOptions.map((q) => (
               <option key={q.quarter} value={q.quarter}>
@@ -375,7 +396,7 @@ const LedgerStatementView: React.FC<LedgerStatementViewProps> = ({ ledgerId, onB
               <input
                 value={fromBS}
                 onChange={(e) => setFromBS(e.target.value)}
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 placeholder="2081-04-01"
               />
             </div>
@@ -384,7 +405,7 @@ const LedgerStatementView: React.FC<LedgerStatementViewProps> = ({ ledgerId, onB
               <input
                 value={toBS}
                 onChange={(e) => setToBS(e.target.value)}
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 placeholder="2082-03-31"
               />
             </div>
@@ -466,7 +487,7 @@ const LedgerStatementView: React.FC<LedgerStatementViewProps> = ({ ledgerId, onB
                       <BsDateCell date={row.adDate} dateNepali={row.bsDate} />
                     </td>
                     <td>{row.voucher.type}</td>
-                    <td className="font-mono text-[#1557b0]">{row.voucher.voucherNo}</td>
+                    <td className="font-mono text-[var(--ds-action-primary)]">{row.voucher.voucherNo}</td>
                     <td className="text-gray-600">{row.voucher.narration || "—"}</td>
                     <td className="number-cell-dr">{row.debit ? money(row.debit) : "—"}</td>
                     <td className="number-cell-cr">{row.credit ? money(row.credit) : "—"}</td>

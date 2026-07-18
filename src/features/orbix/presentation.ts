@@ -175,3 +175,11 @@ export function confirmButtonLabel(intent?: string | null): string {
   if (key.includes("recon") || key.includes("match")) return "Match Bank Transaction";
   return "Confirm and post";
 }
+
+/** MAI-01: UI confirm affordance requires Accountant Mode + presentation allow. */
+export function mayShowConfirmControl(
+  meta: OrbixPresentationMeta,
+  mode: "ask" | "accountant",
+): boolean {
+  return mode === "accountant" && meta.allowsConfirm;
+}

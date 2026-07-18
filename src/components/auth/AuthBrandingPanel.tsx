@@ -15,7 +15,7 @@ const SutraLogotype: React.FC<{ size?: number }> = ({ size = 48 }) => (
     aria-label="Sutra ERP"
   >
     {/* Background rounded square */}
-    <rect width="48" height="48" rx="10" fill="#1557b0" />
+    <rect width="48" height="48" rx="10" fill="var(--ds-action-primary)" />
 
     {/* Geometric S — built from two arcs forming a clean typographic S */}
     {/* Top arc of S */}
@@ -70,7 +70,7 @@ export default function AuthBrandingPanel() {
     <div
       className="flex-1 p-12 flex-col justify-between hidden lg:flex"
       style={{
-        background: "linear-gradient(145deg, #0d1f3c 0%, #1557b0 55%, #1a6bcc 100%)",
+        background: "linear-gradient(145deg, #0d1f3c 0%, var(--ds-action-primary) 55%, #1a6bcc 100%)",
         color: "#ffffff",
       }}
     >

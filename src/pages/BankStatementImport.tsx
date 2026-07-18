@@ -5,6 +5,8 @@ import { getDB, generateId } from "../lib/db";
 import * as XLSX from "xlsx";
 import toast from "@/lib/appToast";
 import { importStatementViaTreasury, postAdjustmentViaTreasury } from "@/domains/treasury/uiAdapters";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 import {
   AlertTriangle,
   ArrowDownCircle,
@@ -347,6 +349,7 @@ export default function BankStatementImport() {
   const storeAccounts = store.accounts || [];
   const storeVouchers = store.vouchers || [];
   const fiscalYear = store.currentFiscalYear || store.fiscalYear || {};
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -463,6 +466,7 @@ export default function BankStatementImport() {
     const q = query.trim().toLowerCase();
 
     return statementRows.filter((r) => {
+      if (!matchBranch(r.branchId)) return false;
       if (selectedBankId && r.bankAccountId !== selectedBankId) return false;
       if (selectedBatchId !== "All" && r.batchId !== selectedBatchId) return false;
       if (statusFilter !== "All" && r.status !== statusFilter) return false;
@@ -474,7 +478,12 @@ export default function BankStatementImport() {
         .toLowerCase()
         .includes(q);
     });
-  }, [statementRows, selectedBankId, selectedBatchId, statusFilter, query]);
+  }, [statementRows, selectedBankId, selectedBatchId, statusFilter, query, matchBranch, branchFilter]);
+
+  const scopedBatches = useMemo(
+    () => batches.filter((b) => matchBranch(b.branchId)),
+    [batches, matchBranch, branchFilter],
+  );
 
   const stats = useMemo(() => {
     const rows = filteredRows;
@@ -576,6 +585,7 @@ export default function BankStatementImport() {
         balance: line.balancePaisa != null ? line.balancePaisa / 100 : 0,
         status: "Unmatched",
         reconciliationVersion: line.reconciliationVersion,
+        branchId: readActiveBranchId() || undefined,
       }));
       const batch = {
         id: batchId,
@@ -588,6 +598,7 @@ export default function BankStatementImport() {
         probableCount: 0,
         totalDebit: uiRows.reduce((sum, r) => sum + Number(r.debit || 0), 0),
         totalCredit: uiRows.reduce((sum, r) => sum + Number(r.credit || 0), 0),
+        branchId: readActiveBranchId() || undefined,
       };
       setStatementRows((prev) => [...uiRows, ...prev]);
       setBatches((prev) => [batch, ...prev]);
@@ -950,7 +961,11 @@ export default function BankStatementImport() {
           >
             <option value="All">All Batches</option>
             {batches
-              .filter((b) => !selectedBankId || b.bankAccountId === selectedBankId)
+              .filter(
+                (b) =>
+                  matchBranch(b.branchId) &&
+                  (!selectedBankId || b.bankAccountId === selectedBankId),
+              )
               .map((b) => (
                 <option key={b.id} value={b.id}>
                   {String(b.importedAt).slice(0, 10)} ({b.rowCount})
@@ -1208,7 +1223,7 @@ export default function BankStatementImport() {
           </thead>
 
           <tbody>
-            {batches.map((b) => (
+            {scopedBatches.map((b) => (
               <tr key={b.id} className="hover:bg-gray-50">
                 <td className={td}>
                   <div className="font-medium">{String(b.importedAt).slice(0, 10)}</div>
@@ -1520,7 +1535,22 @@ export default function BankStatementImport() {
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 items-center">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
           <button className={btn2} onClick={loadData} disabled={loading}>
             <RefreshCcw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
             Refresh

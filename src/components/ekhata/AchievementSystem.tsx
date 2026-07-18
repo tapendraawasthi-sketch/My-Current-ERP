@@ -1,5 +1,5 @@
-﻿/**
- * Gamification — achievements and daily challenges for consistent bookkeeping.
+/**
+ * Gamification � achievements and daily challenges for consistent bookkeeping.
  */
 import { useEffect, useState } from "react";
 import { getDB } from "@/lib/db";
@@ -16,15 +16,15 @@ export interface Achievement {
 const STORAGE_KEY = "ekhata-achievements-v1";
 
 const ACHIEVEMENT_DEFS: Omit<Achievement, "unlocked" | "unlockedAt">[] = [
-  { id: "first_entry", emoji: "🌱", title: "First Entry", description: "Post your first journal entry" },
-  { id: "daily_keeper", emoji: "📅", title: "Daily Keeper", description: "Post entries 3 days in a row" },
-  { id: "weekly_streak", emoji: "🔥", title: "Weekly Streak", description: "Post entries 7 days in a row" },
-  { id: "century", emoji: "💯", title: "Century", description: "100 total entries" },
-  { id: "perfect_balance", emoji: "⚖️", title: "Perfect Balance", description: "50 balanced entries" },
-  { id: "report_reader", emoji: "📊", title: "Report Reader", description: "Generate your first report" },
-  { id: "student", emoji: "🎓", title: "Student", description: "Complete 5 education interactions" },
-  { id: "master", emoji: "🏆", title: "Master Accountant", description: "1000 entries, all balanced" },
-  { id: "nepali_pro", emoji: "🇳🇵", title: "Nepali Pro", description: "Enter 50 entries in Nepali" },
+  { id: "first_entry", emoji: "??", title: "First Entry", description: "Post your first journal entry" },
+  { id: "daily_keeper", emoji: "??", title: "Daily Keeper", description: "Post entries 3 days in a row" },
+  { id: "weekly_streak", emoji: "??", title: "Weekly Streak", description: "Post entries 7 days in a row" },
+  { id: "century", emoji: "??", title: "Century", description: "100 total entries" },
+  { id: "perfect_balance", emoji: "??", title: "Perfect Balance", description: "50 balanced entries" },
+  { id: "report_reader", emoji: "??", title: "Report Reader", description: "Generate your first report" },
+  { id: "student", emoji: "??", title: "Student", description: "Complete 5 education interactions" },
+  { id: "master", emoji: "??", title: "Master Accountant", description: "1000 entries, all balanced" },
+  { id: "nepali_pro", emoji: "????", title: "Nepali Pro", description: "Enter 50 entries in Nepali" },
 ];
 
 function loadUnlocked(): Record<string, string> {
@@ -116,7 +116,7 @@ export default function AchievementSystem({ compact = false }: AchievementSystem
           <div
             key={a.id}
             className={`text-center p-2 rounded-md border ${
-              a.unlocked ? "border-[#1557b0]/30 bg-[#1557b0]/5" : "border-gray-100 opacity-40"
+              a.unlocked ? "border-[var(--ds-action-primary)]/30 bg-[var(--ds-action-primary)]/5" : "border-gray-100 opacity-40"
             }`}
             title={a.description}
           >
@@ -126,7 +126,7 @@ export default function AchievementSystem({ compact = false }: AchievementSystem
         ))}
       </div>
       <p className="text-[12px] text-gray-500 mt-2">
-        Daily challenge: 5 entries today — keep your khata up to date!
+        Daily challenge: 5 entries today � keep your khata up to date!
       </p>
     </div>
   );

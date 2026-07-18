@@ -49,7 +49,7 @@ function VRow({
       className={`
         ${isTotal ? "border-t-2 border-gray-300" : "border-b border-gray-100"}
         ${highlight ? "bg-[#eef2ff]" : ""}
-        ${clickable && !isZero ? "cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]" : ""}
+        ${clickable && !isZero ? "cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]" : ""}
       `}
       onClick={clickable && !isZero ? onClick : undefined}
     >

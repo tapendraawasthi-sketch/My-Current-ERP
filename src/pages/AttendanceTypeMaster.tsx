@@ -3,6 +3,8 @@ import { useStore } from "../store";
 import { Plus, Edit2, Trash2, X, Save } from "lucide-react";
 import toast from "@/lib/appToast";
 import { generateId } from "../lib/db";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const AttendanceTypeMaster: React.FC = () => {
   const {
@@ -12,6 +14,7 @@ const AttendanceTypeMaster: React.FC = () => {
     deleteAttendanceType,
     payrollUnits,
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [showForm, setShowForm] = useState(false);
   const [selected, setSelected] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -67,8 +70,9 @@ const AttendanceTypeMaster: React.FC = () => {
 
   const filteredTypes = (attendanceTypes || []).filter(
     (type) =>
-      type.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      type.attendanceType.toLowerCase().includes(searchTerm.toLowerCase()),
+      matchBranch((type as any).branchId) &&
+      (type.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        type.attendanceType.toLowerCase().includes(searchTerm.toLowerCase())),
   );
 
   const resetForm = () => {
@@ -108,11 +112,15 @@ const AttendanceTypeMaster: React.FC = () => {
     }
 
     try {
+      const payload = {
+        ...form,
+        branchId: selected?.branchId || readActiveBranchId() || undefined,
+      };
       if (selected) {
-        await updateAttendanceType(selected.id, form);
+        await updateAttendanceType(selected.id, payload);
         toast.success("Updated successfully");
       } else {
-        await addAttendanceType(form);
+        await addAttendanceType(payload);
         toast.success("Saved successfully");
       }
       resetForm();
@@ -186,8 +194,23 @@ const AttendanceTypeMaster: React.FC = () => {
               </p>
             </div>
             <div className="flex items-center gap-2">
+              {branchOptions.length > 0 && (
+                <select
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>
+              )}
               <button
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
                 onClick={() => {
                   resetForm();
                   setShowForm(true);
@@ -203,7 +226,7 @@ const AttendanceTypeMaster: React.FC = () => {
             <input
               type="text"
               placeholder="Search types..."
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-64"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -273,7 +296,7 @@ const AttendanceTypeMaster: React.FC = () => {
                           <div className="flex items-center justify-center gap-1.5">
                             <button
                               onClick={() => loadFormForEdit(type)}
-                              className="p-1 text-gray-500 hover:text-[#1557b0] hover:bg-blue-50 rounded"
+                              className="p-1 text-gray-500 hover:text-[var(--ds-action-primary)] hover:bg-blue-50 rounded"
                               title="Edit"
                             >
                               <Edit2 size={14} />
@@ -319,7 +342,7 @@ const AttendanceTypeMaster: React.FC = () => {
               </label>
               <input
                 type="text"
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="Enter name (e.g. Present, Overtime)"
@@ -330,7 +353,7 @@ const AttendanceTypeMaster: React.FC = () => {
             <div>
               <label className="text-[11px] font-medium text-gray-600 mb-1 block">Under Type</label>
               <select
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 value={form.underTypeId}
                 onChange={(e) => setForm({ ...form, underTypeId: e.target.value })}
               >
@@ -350,7 +373,7 @@ const AttendanceTypeMaster: React.FC = () => {
                 Attendance Type <span className="text-red-500">*</span>
               </label>
               <select
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 value={form.attendanceType}
                 onChange={(e) => setForm({ ...form, attendanceType: e.target.value })}
               >
@@ -368,7 +391,7 @@ const AttendanceTypeMaster: React.FC = () => {
                 Period Type
               </label>
               <select
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 value={form.periodType}
                 onChange={(e) => setForm({ ...form, periodType: e.target.value })}
               >
@@ -385,7 +408,7 @@ const AttendanceTypeMaster: React.FC = () => {
                   Payroll Unit
                 </label>
                 <select
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   value={form.payrollUnitId}
                   onChange={(e) => setForm({ ...form, payrollUnitId: e.target.value })}
                 >
@@ -404,7 +427,7 @@ const AttendanceTypeMaster: React.FC = () => {
                 <input
                   type="checkbox"
                   id="isActive"
-                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] h-3.5 w-3.5 cursor-pointer"
+                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                   checked={form.isActive}
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
                 />
@@ -426,7 +449,7 @@ const AttendanceTypeMaster: React.FC = () => {
               Cancel
             </button>
             <button
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+              className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
               onClick={handleSubmit}
             >
               <Save size={14} />

@@ -16,6 +16,8 @@ import {
   BarChart2,
   Package,
 } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 function money(v: number): string {
   const abs = Math.abs(Number(v || 0));
@@ -29,11 +31,11 @@ const tableHeadClass =
 const tableCellClass = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 
 const primaryBtn =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm";
 const outlineBtn =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5 shadow-sm";
 const inputClass =
-  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-shadow";
+  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] transition-shadow";
 
 function todayISO() {
   return new Date().toISOString().split("T")[0];
@@ -72,7 +74,7 @@ function statusBadge(status: string) {
     );
   if (s === "released")
     return (
-      <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded text-[10px] font-semibold uppercase tracking-wide">
+      <span className="px-2 py-0.5 bg-[var(--ds-status-info-surface)] text-[var(--ds-status-info)] border border-[var(--ds-status-info)]/30 rounded text-[10px] font-semibold uppercase tracking-wide">
         Released
       </span>
     );
@@ -137,12 +139,26 @@ export default function BOMProduction() {
     addVoucher,
     currentFiscalYear = {},
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [activeTab, setActiveTab] = useState("BOM Master");
 
   const [boms, setBoms] = useState([]);
   const [productionOrders, setProductionOrders] = useState([]);
   const [jobWorkOrders, setJobWorkOrders] = useState([]);
+
+  const scopedBoms = useMemo(
+    () => boms.filter((b) => matchBranch(b.branchId)),
+    [boms, matchBranch, branchFilter],
+  );
+  const scopedPOs = useMemo(
+    () => productionOrders.filter((p) => matchBranch(p.branchId)),
+    [productionOrders, matchBranch, branchFilter],
+  );
+  const scopedJobs = useMemo(
+    () => jobWorkOrders.filter((j) => matchBranch(j.branchId)),
+    [jobWorkOrders, matchBranch, branchFilter],
+  );
 
   const [bomModal, setBomModal] = useState(false);
   const [editingBom, setEditingBom] = useState(null);
@@ -274,7 +290,7 @@ export default function BOMProduction() {
   }
 
   function calculateRollup() {
-    const activeBoms = boms.filter((b) => b.status === "Active");
+    const activeBoms = scopedBoms.filter((b) => b.status === "Active");
 
     const rows = (bomForm.components || []).map((c) => {
       const childBom = activeBoms.find((b) => b.finishedProductId === c.itemId);
@@ -304,6 +320,7 @@ export default function BOMProduction() {
       id: editingBom?.id || bomForm.id || generateId(),
       name: bomForm.name || `${product?.name || "BOM"} v${bomForm.version}`,
       totalStandardCost,
+      branchId: bomForm.branchId || readActiveBranchId() || undefined,
       createdAt: editingBom?.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -359,6 +376,7 @@ export default function BOMProduction() {
       endDate: poForm.endDate,
       warehouseId: poForm.warehouseId,
       status: "Planned",
+      branchId: readActiveBranchId() || undefined,
       createdAt: new Date().toISOString(),
     };
 
@@ -721,12 +739,27 @@ export default function BOMProduction() {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-            <Package size={18} className="text-[#1557b0]" /> BOM & Production
+            <Package size={18} className="text-[var(--ds-action-primary)]" /> BOM & Production
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Manage Bills of Materials, production orders, job work and cost analysis.
           </p>
         </div>
+        {branchOptions.length > 0 && (
+          <select
+            value={branchFilter}
+            onChange={(e) => setBranchFilter(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            aria-label="Branch"
+          >
+            <option value="all">All branches</option>
+            {branchOptions.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name || b.code || b.id}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       <div className="flex gap-2 mb-4 border-b border-gray-200 pb-2">
@@ -736,7 +769,7 @@ export default function BOMProduction() {
             onClick={() => setActiveTab(t.id)}
             className={`px-4 py-2 text-[12px] rounded-t-md font-medium flex items-center gap-1.5 transition-colors ${
               activeTab === t.id
-                ? "bg-white text-[#1557b0] border-t border-l border-r border-gray-200 shadow-[0_-2px_0_0_#1557b0]"
+                ? "bg-white text-[var(--ds-action-primary)] border-t border-l border-r border-gray-200 shadow-[0_-2px_0_0_var(--ds-action-primary)]"
                 : "text-gray-600 hover:bg-gray-100 hover:text-gray-800"
             }`}
           >
@@ -775,7 +808,7 @@ export default function BOMProduction() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {boms.map((b) => (
+                {scopedBoms.map((b) => (
                   <tr key={b.id} className="bg-white hover:bg-gray-50">
                     <td className={`${tableCellClass} font-medium`}>{b.name}</td>
                     <td className={tableCellClass}>
@@ -796,7 +829,7 @@ export default function BOMProduction() {
                       <div className="flex items-center gap-3">
                         <button
                           onClick={() => openBom(b)}
-                          className="text-gray-500 hover:text-[#1557b0]"
+                          className="text-gray-500 hover:text-[var(--ds-action-primary)]"
                           title="Edit"
                         >
                           <Edit2 size={14} />
@@ -812,7 +845,7 @@ export default function BOMProduction() {
                     </td>
                   </tr>
                 ))}
-                {!boms.length && (
+                {!scopedBoms.length && (
                   <tr>
                     <td
                       colSpan={8}
@@ -950,11 +983,11 @@ export default function BOMProduction() {
             </div>
 
             {poForm.bomId && Number(poForm.plannedQty || 0) > 0 && (
-              <div className="mt-5 border border-indigo-200 rounded-md p-4 bg-indigo-50/30">
-                <div className="font-semibold text-[13px] text-indigo-900 mb-3 flex items-center gap-2">
+              <div className="mt-5 border border-[var(--ds-status-info)]/30 rounded-md p-4 bg-[var(--ds-status-info-surface)]/30">
+                <div className="font-semibold text-[13px] text-[var(--ds-status-info)] mb-3 flex items-center gap-2">
                   <Package size={16} /> Material Availability Check
                 </div>
-                <div className="overflow-x-auto rounded border border-indigo-100 bg-white shadow-sm">
+                <div className="overflow-x-auto rounded border border-[var(--ds-status-info)]/20 bg-white shadow-sm">
                   <table className="w-full border-collapse">
                     <thead>
                       <tr>
@@ -1031,7 +1064,7 @@ export default function BOMProduction() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {productionOrders.map((po) => {
+                  {scopedPOs.map((po) => {
                     const bom = boms.find((b) => b.id === po.bomId);
                     return (
                       <tr key={po.id} className="bg-white hover:bg-gray-50">
@@ -1092,7 +1125,7 @@ export default function BOMProduction() {
                       </tr>
                     );
                   })}
-                  {!productionOrders.length && (
+                  {!scopedPOs.length && (
                     <tr>
                       <td
                         colSpan={10}
@@ -1108,12 +1141,12 @@ export default function BOMProduction() {
           </div>
 
           {selectedPO && selectedPO.status === "Released" && materialPreview.length > 0 && (
-            <div className={`${cardClass} bg-indigo-50/30 border-indigo-100 shadow-md`}>
-              <h2 className="text-[14px] font-semibold text-indigo-900 mb-3 border-b border-indigo-100 pb-2">
+            <div className={`${cardClass} bg-[var(--ds-status-info-surface)]/30 border-[var(--ds-status-info)]/20 shadow-md`}>
+              <h2 className="text-[14px] font-semibold text-[var(--ds-status-info)] mb-3 border-b border-[var(--ds-status-info)]/20 pb-2">
                 Material Issue Preview: {selectedPO.orderNo}
               </h2>
 
-              <div className="overflow-x-auto rounded border border-indigo-100 bg-white shadow-sm mb-4">
+              <div className="overflow-x-auto rounded border border-[var(--ds-status-info)]/20 bg-white shadow-sm mb-4">
                 <table className="w-full border-collapse">
                   <thead>
                     <tr>
@@ -1301,7 +1334,7 @@ export default function BOMProduction() {
                   Materials Sent
                 </h3>
                 <button className={outlineBtn} onClick={addJobMaterial}>
-                  <Plus size={14} className="text-[#1557b0]" /> Add Material
+                  <Plus size={14} className="text-[var(--ds-action-primary)]" /> Add Material
                 </button>
               </div>
 
@@ -1525,7 +1558,7 @@ export default function BOMProduction() {
                           </td>
                           <td className={tableCellClass}>
                             <button
-                              className="text-[11px] font-medium text-[#1557b0] hover:underline flex items-center gap-1"
+                              className="text-[11px] font-medium text-[var(--ds-action-primary)] hover:underline flex items-center gap-1"
                               onClick={() => {
                                 setReturnJobId(j.id);
                                 document
@@ -1539,7 +1572,7 @@ export default function BOMProduction() {
                         </tr>
                       );
                     })}
-                  {!jobWorkOrders.filter((j) => j.status === "open").length && (
+                  {!scopedJobs.filter((j) => j.status === "open").length && (
                     <tr>
                       <td
                         colSpan={6}
@@ -1774,7 +1807,7 @@ export default function BOMProduction() {
           </div>
           <div className="flex gap-2">
             <button className={outlineBtn} onClick={addBomComponent}>
-              <Plus size={14} className="text-[#1557b0]" /> Add Component
+              <Plus size={14} className="text-[var(--ds-action-primary)]" /> Add Component
             </button>
             <button className={outlineBtn} onClick={calculateRollup}>
               <BarChart2 size={14} className="text-emerald-600" /> Cost Roll-up
@@ -1849,7 +1882,7 @@ export default function BOMProduction() {
                         }
                       />
                     </td>
-                    <td className={`${tableCellClass} font-medium text-indigo-700`}>
+                    <td className={`${tableCellClass} font-medium text-[var(--ds-status-info)]`}>
                       {money(netQty)}
                     </td>
                     <td className={tableCellClass}>
@@ -1895,7 +1928,7 @@ export default function BOMProduction() {
                   Total Standard Cost:
                 </td>
                 <td
-                  className={`${tableCellClass} font-bold text-[14px] text-[#1557b0]`}
+                  className={`${tableCellClass} font-bold text-[14px] text-[var(--ds-action-primary)]`}
                   colSpan={2}
                 >
                   Rs. {money(totalStandardCost)}

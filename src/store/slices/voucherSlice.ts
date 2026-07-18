@@ -31,6 +31,7 @@ import { migrateWorkflowFields } from "../../lib/workflowMigration";
 import { createWorkflowActions } from "../workflowActions";
 import { mergeSystemConfiguration } from "../../lib/systemConfiguration";
 import { enforcePostingPeriodLock } from "../../lib/ledger/postingPeriodGuard";
+import { readActiveBranchId } from "../../lib/activeBranch";
 
 /** Enforces Dexie period lock for posting when W1_PERIOD_LOCK_ENFORCE is enabled. */
 async function enforcePeriodLockForPost(
@@ -86,6 +87,9 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
           ? voucher.voucherNo.trim()
           : await generateNextVoucherNo(type, db);
 
+      const branchId =
+        (voucher as { branchId?: string }).branchId || readActiveBranchId() || undefined;
+
       const newVoucher = {
         status: voucher.status || "draft",
         lines: voucher.lines || [],
@@ -95,6 +99,7 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
         totalDebit,
         totalCredit,
         grandTotal: totalDebit,
+        ...(branchId ? { branchId } : {}),
       };
 
       await db.vouchers.add(newVoucher as any);
@@ -300,12 +305,15 @@ export const createVoucherSlice: StateCreator<AppState, [], [], any> = (set, get
       [db.invoices, db.vouchers, db.stockMovements, db.accounts, db.auditLogs, db.syncOutbox],
       async () => {
         const invoiceNo = await generateNextInvoiceNo(type, db);
+        const branchId =
+          (invoice as { branchId?: string }).branchId || readActiveBranchId() || undefined;
         const newInvoice = {
           status: invoice.status || "draft",
           lines: invoice.lines || [],
           ...invoice,
           id,
           invoiceNo,
+          ...(branchId ? { branchId } : {}),
         };
 
         await db.invoices.add(newInvoice as any);

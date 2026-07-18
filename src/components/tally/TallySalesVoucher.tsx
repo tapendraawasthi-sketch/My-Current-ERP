@@ -31,6 +31,8 @@ import {
 import { useStore } from "@/store/useStore";
 import { ADToBSString } from "@/lib/nepaliDate";
 import { formatMoney, parseMoney, amountInWords } from "@/lib/tallyFormat";
+import { readActiveBranchId } from "@/lib/activeBranch";
+import { useBranchFilter } from "@/hooks/useBranchFilter";
 import {
   cryptoRandomId,
   todayAD,
@@ -148,8 +150,10 @@ const BillWiseModal: React.FC<{
   onSave: (rows: BillWiseAllocation[]) => void;
   onClose: () => void;
 }> = ({ initial, amount, partyId, invoices, onSave, onClose }) => {
+  const { matchBranch } = useBranchFilter();
   const partyInvoices = (invoices || []).filter(
     (i) =>
+      matchBranch(i.branchId) &&
       (i.partyId === partyId || i.accountId === partyId) &&
       (i.balanceDue ?? i.grandTotal ?? 0) !== 0,
   );
@@ -446,6 +450,7 @@ const TallySalesVoucher: React.FC<Props> = ({ onSwitchType }) => {
           isOptional,
           placeOfSupply,
           billWise: billWiseData,
+          branchId: readActiveBranchId() || undefined,
         });
         toast.success("Sales invoice saved.");
         resetForm();
@@ -490,6 +495,7 @@ const TallySalesVoucher: React.FC<Props> = ({ onSwitchType }) => {
           isOptional,
           placeOfSupply,
           billWise: billWiseData,
+          branchId: readActiveBranchId() || undefined,
         });
         toast.success("Sales invoice (accounting) saved.");
         resetForm();
@@ -528,6 +534,7 @@ const TallySalesVoucher: React.FC<Props> = ({ onSwitchType }) => {
           status: "posted",
           isPostDated,
           isOptional,
+          branchId: readActiveBranchId() || undefined,
         });
         toast.success("Sales voucher saved.");
         resetForm();

@@ -44,7 +44,7 @@ function LangButton({
       onClick={onClick}
       className={`h-6 px-2 text-[10px] font-medium rounded border transition-colors ${
         active
-          ? "bg-[#1557b0] text-white border-[#1557b0]"
+          ? "bg-[var(--ds-action-primary)] text-white border-[var(--ds-action-primary)]"
           : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
       }`}
     >

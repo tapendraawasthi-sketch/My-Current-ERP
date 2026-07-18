@@ -2,6 +2,7 @@
 import { getDB, generateId } from "../lib/db";
 import { validateVoucherBalance } from "./store.types";
 import { enforcePostingPeriodLock } from "../lib/ledger/postingPeriodGuard";
+import { stampMovementBranch } from "../lib/activeBranch";
 
 function maxSerialFromNumbers(numbers: Array<string | undefined>, pad = 4): string {
   let max = 0;
@@ -352,25 +353,29 @@ export async function postInvoiceStock(
           : Number(line.rate || 0);
     const costAmount =
       line.costAmount != null ? Number(line.costAmount) : (line.qty || 0) * unitCost;
-    const movement = {
-      id: movId,
-      date: invoice.date,
-      dateNepali: invoice.dateNepali || "",
-      type: invoice.type,
-      itemId: line.itemId,
-      itemName: line.itemName || item.name,
-      warehouseId: line.warehouseId || warehouseId,
-      warehouseName,
-      qty,
-      rate: unitCost,
-      amount: costAmount,
-      referenceId: invoice.id,
-      referenceNo: invoice.invoiceNo,
-      referenceType: invoice.type,
-      narration: `Stock movement for ${invoice.invoiceNo}`,
-      valuationMethod: line.valuationMethod || undefined,
-      costAllocationId: line.costAllocationId || undefined,
-    };
+    const movement = stampMovementBranch(
+      {
+        id: movId,
+        date: invoice.date,
+        dateNepali: invoice.dateNepali || "",
+        type: invoice.type,
+        itemId: line.itemId,
+        itemName: line.itemName || item.name,
+        warehouseId: line.warehouseId || warehouseId,
+        warehouseName,
+        qty,
+        rate: unitCost,
+        amount: costAmount,
+        referenceId: invoice.id,
+        referenceNo: invoice.invoiceNo,
+        referenceType: invoice.type,
+        narration: `Stock movement for ${invoice.invoiceNo}`,
+        valuationMethod: line.valuationMethod || undefined,
+        costAllocationId: line.costAllocationId || undefined,
+        branchId: invoice.branchId,
+      },
+      get().warehouses || [],
+    );
     // Use add() not put() so each line creates a separate record.
     await db.stockMovements.add(movement as any).catch(async () => {
       await db.stockMovements.add({ ...movement, id: `mov-${invoice.id}-${generateId()}` } as any);

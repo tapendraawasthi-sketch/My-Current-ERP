@@ -81,7 +81,7 @@ export default function PLDetailedMonthly({ pl, options, onDrillDown }: Props) {
                 {label}
               </th>
             ))}
-            <th className={`${thCls} bg-[#eef2ff] text-[#1557b0] border-l-2 border-[#c7d2fe]`}>
+            <th className={`${thCls} bg-[#eef2ff] text-[var(--ds-action-primary)] border-l-2 border-[#c7d2fe]`}>
               Total
             </th>
           </tr>
@@ -97,14 +97,14 @@ export default function PLDetailedMonthly({ pl, options, onDrillDown }: Props) {
                   <tr className="bg-gray-50 border-y border-gray-200">
                     <td
                       colSpan={pl.monthLabels!.length + 2}
-                      className="px-3 py-1.5 text-[11px] font-semibold text-[#1557b0] uppercase tracking-wide sticky left-0 bg-gray-50 z-10"
+                      className="px-3 py-1.5 text-[11px] font-semibold text-[var(--ds-action-primary)] uppercase tracking-wide sticky left-0 bg-gray-50 z-10"
                     >
                       {acc.group}
                     </td>
                   </tr>
                 )}
                 <tr
-                  className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer"
+                  className="group hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)] cursor-pointer"
                   onClick={() =>
                     onDrillDown({
                       level: 2,

@@ -1,13 +1,13 @@
-"""Correlation and distributed trace context — OpenTelemetry-compatible IDs."""
+"""Bridge legacy OIP correlation bind to MAI-03 validated IDs."""
 
 from __future__ import annotations
 
 import contextvars
-import uuid
 from dataclasses import dataclass
 from typing import Optional
 
 from ...shared.ids import CorrelationId, RequestId, new_correlation_id, new_request_id
+from .mai03_identity import sanitize_or_generate_correlation_id, sanitize_or_generate_request_id
 
 _request_id: contextvars.ContextVar[Optional[RequestId]] = contextvars.ContextVar(
     "oip_request_id", default=None
@@ -23,11 +23,13 @@ _parent_span_id: contextvars.ContextVar[Optional[str]] = contextvars.ContextVar(
 
 
 def _new_trace_id() -> str:
-    return uuid.uuid4().hex
+    return sanitize_or_generate_correlation_id(None)[0].replace("-", "")
 
 
 def _new_span_id() -> str:
-    return uuid.uuid4().hex[:16]
+    from .mai03_identity import new_span_hex
+
+    return new_span_hex()
 
 
 @dataclass(frozen=True)
@@ -47,9 +49,17 @@ def bind_trace(
     span_id: str | None = None,
     parent_span_id: str | None = None,
 ) -> TraceContext:
-    rid = RequestId(request_id) if request_id else new_request_id()
-    cid = CorrelationId(correlation_id) if correlation_id else new_correlation_id()
-    tid = trace_id or _trace_id.get() or _new_trace_id()
+    # MAI-03: never reflect invalid inbound IDs.
+    safe_corr, _ = sanitize_or_generate_correlation_id(correlation_id)
+    safe_req = sanitize_or_generate_request_id(request_id) if request_id else str(new_request_id())
+    if request_id and sanitize_or_generate_correlation_id(request_id)[0] != request_id:
+        safe_req = str(new_request_id())
+    rid = RequestId(safe_req)
+    cid = CorrelationId(safe_corr)
+    tid = trace_id or _trace_id.get() or safe_corr.replace("-", "")
+    # Validate trace_id likewise.
+    if correlation_id and sanitize_or_generate_correlation_id(trace_id or "")[1].value == "GENERATED" and trace_id:
+        tid = safe_corr.replace("-", "")
     sid = span_id or _new_span_id()
     parent = parent_span_id or _span_id.get()
     _request_id.set(rid)

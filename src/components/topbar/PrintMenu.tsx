@@ -56,7 +56,7 @@ function PrintCurrentModal({ onClose }: { onClose: () => void }) {
   const { context } = useTopMenuContext();
   const companySettings = useStore((state) => state.companySettings);
 
-  const companyName = companySettings?.companyNameEn || companySettings?.name || "Sutra ERP";
+  const companyName = companySettings?.companyNameEn || companySettings?.name || "Orbix ERP";
   const pan = companySettings?.panNumber || companySettings?.vatNumber || "—";
   const address = companySettings?.address || "Nepal";
   const phone = companySettings?.phone || "—";
@@ -120,23 +120,36 @@ function ConfigurePrintModal({ onClose }: { onClose: () => void }) {
   const [orientation, setOrientation] = useState("Portrait");
 
   const save = () => {
+    const payload = {
+      activeTab,
+      includeLogo,
+      includeAddress,
+      includePan,
+      signature,
+      terms,
+      narration,
+      voucherNo,
+      pageSize,
+      orientation,
+      showLogo: includeLogo,
+      showNepali: includeAddress,
+      showPan: includePan,
+      copies: 1,
+    };
+    localStorage.setItem("printConfig", JSON.stringify(payload));
     localStorage.setItem(
-      "printConfig",
+      "orbix_print_prefs",
       JSON.stringify({
-        activeTab,
-        includeLogo,
-        includeAddress,
-        includePan,
-        signature,
-        terms,
-        narration,
-        voucherNo,
         pageSize,
         orientation,
+        showLogo: includeLogo,
+        showNepali: includeAddress,
+        showPan: includePan,
+        copies: 1,
       }),
     );
 
-    toast.success("✓ Print configuration saved");
+    toast.success("Print configuration saved");
     onClose();
   };
 
@@ -154,7 +167,7 @@ function ConfigurePrintModal({ onClose }: { onClose: () => void }) {
             type="button"
             onClick={() => setActiveTab(tab)}
             className={`h-8 px-3 text-[12px] font-medium ${
-              activeTab === tab ? "border-b-2 border-[#1557b0] text-[#1557b0]" : "text-gray-600"
+              activeTab === tab ? "border-b-2 border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]" : "text-gray-600"
             }`}
           >
             {tab}
@@ -200,7 +213,7 @@ function ConfigurePrintModal({ onClose }: { onClose: () => void }) {
             {["Standard Tax Invoice", "Simplified Invoice", "Retail Bill", "Thermal 80mm"].map(
               (format) => (
                 <label key={format} className="rounded border border-gray-200 p-2 text-[11px]">
-                  <input type="radio" name="invoiceFormat" className="mr-2 accent-[#1557b0]" />
+                  <input type="radio" name="invoiceFormat" className="mr-2 accent-[var(--ds-action-primary)]" />
                   {format}
                 </label>
               ),

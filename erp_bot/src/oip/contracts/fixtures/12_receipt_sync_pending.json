@@ -1,0 +1,54 @@
+{
+  "data": {
+    "citations": [],
+    "conversation_id": "conv-demo-001",
+    "created_at": "2026-07-14T12:00:00Z",
+    "draft_reference": null,
+    "language": "en",
+    "policy_reference": null,
+    "request_id": "req-demo-012",
+    "response_id": "resp-demo-012",
+    "response_type": "RECEIPT",
+    "schema_version": "1.0.0",
+    "status": "SUCCESS",
+    "structured_payload": {
+      "payload_type": "RECEIPT",
+      "receipt": {
+        "audit_reference": null,
+        "authoritative_record_ids": [],
+        "authority_source": "dexie_domain",
+        "command_id": "cmd-demo-012",
+        "connector_or_domain_source": "khata_confirm",
+        "draft_reference": {
+          "company_scope_reference": "company-demo-001",
+          "conversation_id": "conv-demo-001",
+          "created_at": "2026-07-14T12:00:00Z",
+          "draft_id": "draft-demo-001",
+          "draft_version": "1",
+          "event_type": "unknown",
+          "expires_at": null,
+          "owner_principal_reference": "user-demo-001",
+          "schema_version": "1.0.0",
+          "status": "OPEN",
+          "tenant_scope_reference": "tenant-demo-001"
+        },
+        "idempotency_key": "idem-demo-012",
+        "observed_at": "2026-07-14T12:00:00Z",
+        "oec_fields": null,
+        "preview_reference": null,
+        "receipt_id": "rcpt-demo-012",
+        "schema_version": "1.0.0",
+        "status": "SYNC_PENDING",
+        "sync_state": "pending",
+        "warnings": []
+      }
+    },
+    "suggested_safe_actions": [],
+    "trace_reference": null,
+    "uncertainty": null,
+    "user_visible_text": "Queued for sync",
+    "warnings": []
+  },
+  "kind": "AIResponseEnvelopeV1",
+  "valid": true
+}

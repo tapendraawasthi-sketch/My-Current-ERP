@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { ActionToolbar } from "../components/ui";
 import { Plus, Edit2, Trash2, Building } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 interface BankAccount {
   id: string;
@@ -11,9 +13,11 @@ interface BankAccount {
   accountLedger: string;
   openingBalance: number;
   isActive: boolean;
+  branchId?: string;
 }
 
 export default function BankAccountsPage() {
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([
     {
       id: "1",
@@ -66,7 +70,12 @@ export default function BankAccountsPage() {
       setBankAccounts(
         bankAccounts.map((acc) =>
           acc.id === selectedAccount.id
-            ? { ...acc, ...formData, openingBalance: parseFloat(formData.openingBalance) || 0 }
+            ? {
+                ...acc,
+                ...formData,
+                openingBalance: parseFloat(formData.openingBalance) || 0,
+                branchId: selectedAccount.branchId || readActiveBranchId() || undefined,
+              }
             : acc,
         ),
       );
@@ -78,6 +87,7 @@ export default function BankAccountsPage() {
           id: Date.now().toString(),
           ...formData,
           openingBalance: parseFloat(formData.openingBalance) || 0,
+          branchId: readActiveBranchId() || undefined,
         },
       ]);
       alert("Bank account added successfully");
@@ -123,9 +133,10 @@ export default function BankAccountsPage() {
 
   const filteredAccounts = bankAccounts.filter(
     (acc) =>
-      acc.bankName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      acc.accountNo.includes(searchTerm) ||
-      acc.branch.toLowerCase().includes(searchTerm.toLowerCase()),
+      matchBranch(acc.branchId) &&
+      (acc.bankName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        acc.accountNo.includes(searchTerm) ||
+        acc.branch.toLowerCase().includes(searchTerm.toLowerCase())),
   );
 
   return (
@@ -133,13 +144,30 @@ export default function BankAccountsPage() {
       <ActionToolbar title="Bank Accounts" subtitle="Manage bank and cash accounts" />
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Bank Accounts</h1>
-        <button
-          onClick={() => setShowForm(true)}
-          className="btn-primary flex items-center space-x-2"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Add Bank Account</span>
-        </button>
+        <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+          <button
+            onClick={() => setShowForm(true)}
+            className="btn-primary flex items-center space-x-2"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add Bank Account</span>
+          </button>
+        </div>
       </div>
 
       <div className="bg-white p-4 rounded-lg shadow">
@@ -155,7 +183,7 @@ export default function BankAccountsPage() {
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-[#EBF5E2]">
+            <thead className="bg-[var(--ds-surface-muted)]">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-[#000000] uppercase">
                   Bank Name
@@ -190,7 +218,7 @@ export default function BankAccountsPage() {
                 </tr>
               ) : (
                 filteredAccounts.map((account) => (
-                  <tr key={account.id} className="hover:bg-[#EBF5E2]">
+                  <tr key={account.id} className="hover:bg-[var(--ds-surface-muted)]">
                     <td className="px-6 py-4 text-sm font-medium text-[#000000]">
                       {account.bankName}
                     </td>
@@ -217,7 +245,7 @@ export default function BankAccountsPage() {
                       <div className="flex justify-end space-x-2">
                         <button
                           onClick={() => handleEdit(account)}
-                          className="text-[#1557b0] hover:text-[#000000]"
+                          className="text-[var(--ds-action-primary)] hover:text-[#000000]"
                         >
                           <Edit2 className="w-4 h-4" />
                         </button>
@@ -330,7 +358,7 @@ export default function BankAccountsPage() {
                     type="checkbox"
                     checked={formData.isActive}
                     onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                    className="rounded border-[#9DC07A]"
+                    className="rounded border-[var(--ds-border-default)]"
                   />
                   <label className="text-sm font-medium text-[#000000]">Is Active</label>
                 </div>
@@ -339,7 +367,7 @@ export default function BankAccountsPage() {
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="px-4 py-2 border border-[#9DC07A] rounded-lg hover:bg-[#EBF5E2]"
+                  className="px-4 py-2 border border-[var(--ds-border-default)] rounded-lg hover:bg-[var(--ds-surface-muted)]"
                 >
                   Cancel
                 </button>

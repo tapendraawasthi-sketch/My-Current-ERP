@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import asyncio
 import httpx
-from fastapi import BackgroundTasks, FastAPI
+from fastapi import BackgroundTasks, FastAPI, Header, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -532,8 +532,77 @@ def _sse_json(data: dict) -> str:
 
 
 @app.post("/orbix/chat/stream")
-async def orbix_chat_stream(req: StreamChatRequest):
+async def orbix_chat_stream(
+    req: StreamChatRequest,
+    request: Request,
+    authorization: str | None = Header(default=None),
+):
     """Orbix chat stream — canonical ingress via IntelligenceKernelFacade."""
+    # Bind verified JWT/API principal when present (MAI-01).
+    try:
+        from ..oip.infrastructure.di.container import get_container
+        from ..oip.infrastructure.security.session_context import bind_principal
+        from ..oip.infrastructure.security.jwt_service import JwtAuthError
+        from ..oip.infrastructure.security.api_key_service import ApiKeyAuthError
+
+        container = await get_container()
+        api_key = request.headers.get("x-api-key") or request.headers.get("x-oip-api-key")
+        if api_key:
+            try:
+                principal = await container.api_key_service.validate_api_key(api_key)
+                bind_principal(principal)
+            except ApiKeyAuthError:
+                pass
+        elif authorization and authorization.lower().startswith("bearer "):
+            token = authorization.split(" ", 1)[1].strip()
+            try:
+                principal = await container.jwt_service.verify_access_token(token)
+                bind_principal(principal)
+            except JwtAuthError:
+                from ..oip.config.settings import get_oip_settings
+
+                if get_oip_settings().auth_required:
+                    async def auth_error():
+                        yield _sse_json(
+                            {
+                                "type": "error",
+                                "message": "Authentication required.",
+                                "error": {"type": "AUTHENTICATION_REQUIRED"},
+                            }
+                        )
+
+                    return StreamingResponse(
+                        auth_error(),
+                        media_type="text/event-stream",
+                        headers={
+                            "Cache-Control": "no-cache",
+                            "Connection": "keep-alive",
+                            "X-Accel-Buffering": "no",
+                        },
+                    )
+    except Exception:
+        from ..oip.config.settings import get_oip_settings
+
+        if get_oip_settings().auth_required:
+            async def auth_unavailable():
+                yield _sse_json(
+                    {
+                        "type": "error",
+                        "message": "Authentication required.",
+                        "error": {"type": "AUTHENTICATION_REQUIRED"},
+                    }
+                )
+
+            return StreamingResponse(
+                auth_unavailable(),
+                media_type="text/event-stream",
+                headers={
+                    "Cache-Control": "no-cache",
+                    "Connection": "keep-alive",
+                    "X-Accel-Buffering": "no",
+                },
+            )
+
     if not req.message.strip():
         async def empty_response():
             yield _sse_json({"type": "error", "message": "Message cannot be empty."})
@@ -576,6 +645,14 @@ async def orbix_chat_stream(req: StreamChatRequest):
     if req.context:
         set_session_context(req.session_id, ctx)
 
+    from ..oip.infrastructure.observability import mai03 as mai03_obs
+
+    trace_ctx = mai03_obs.start_request_trace(
+        headers=request.headers,
+        conversation_id=req.session_id,
+        route="/orbix/chat/stream",
+    )
+
     async def generate():
         try:
             if oip_chat_enabled():
@@ -584,6 +661,7 @@ async def orbix_chat_stream(req: StreamChatRequest):
                     req.session_id,
                     context=ctx,
                     orbix_mode=resolved_mode,
+                    headers=request.headers,
                 )
                 async for event in stream_orbix_kernel_events(
                     response, user_message=req.message
@@ -594,6 +672,13 @@ async def orbix_chat_stream(req: StreamChatRequest):
             # Legacy offline/tests path
             history = agent_builder.get_session_history(req.session_id)
             agent_builder.add_to_history(req.session_id, "user", req.message)
+            yield _sse_json(
+                {
+                    "type": "request_accepted",
+                    "trace_reference": trace_ctx.trace_reference,
+                    "request_id": trace_ctx.request_id,
+                }
+            )
             yield _sse_json({"type": "thinking_start"})
             full_message = ""
             card = None
@@ -630,10 +715,33 @@ async def orbix_chat_stream(req: StreamChatRequest):
                     "route": route_info,
                     "action": "confirm" if card else "chat",
                     "orbix_mode": resolved_mode,
+                    "trace_reference": trace_ctx.trace_reference,
                 }
             )
-        except Exception as exc:
-            yield _sse_json({"type": "error", "message": str(exc)})
+            mai03_obs.get_trace_recorder().record_event(
+                mai03_obs.TraceStage.REQUEST_COMPLETED,
+                mai03_obs.TraceStatus.COMPLETED,
+                outcome_code="LEGACY_OK",
+            )
+        except Exception:
+            yield _sse_json(
+                {
+                    "type": "error",
+                    "message": "An unexpected error occurred.",
+                    "error": {"type": "general_error"},
+                    "trace_reference": trace_ctx.trace_reference,
+                }
+            )
+            try:
+                mai03_obs.get_trace_recorder().record_event(
+                    mai03_obs.TraceStage.REQUEST_FAILED,
+                    mai03_obs.TraceStatus.FAILED,
+                    safe_error_code="UNEXPECTED_ERROR",
+                )
+            except Exception:
+                pass
+        finally:
+            mai03_obs.clear_trace_context()
 
     return StreamingResponse(
         generate(),
@@ -642,6 +750,9 @@ async def orbix_chat_stream(req: StreamChatRequest):
             "Cache-Control": "no-cache",
             "Connection": "keep-alive",
             "X-Accel-Buffering": "no",
+            "X-Correlation-ID": trace_ctx.correlation_id,
+            "X-Request-ID": trace_ctx.request_id,
+            "X-Trace-Reference": trace_ctx.trace_reference,
         },
     )
 

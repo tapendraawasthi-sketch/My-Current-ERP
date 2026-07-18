@@ -1,6 +1,7 @@
 // src/hooks/useGlobalSearch.ts
 import { useState, useEffect, useMemo } from "react";
 import { useStore } from "../store/useStore";
+import { useBranchFilter } from "./useBranchFilter";
 
 interface SearchResults {
   accounts: any[];
@@ -47,6 +48,7 @@ export function useGlobalSearch(query: string): {
   isSearching: boolean;
 } {
   const { accounts, parties, vouchers, invoices, items } = useStore();
+  const { matchBranch, branchFilter } = useBranchFilter();
   const [isSearching, setIsSearching] = useState(false);
 
   const results = useMemo<SearchResults>(() => {
@@ -73,16 +75,18 @@ export function useGlobalSearch(query: string): {
     const matchVouchers = vouchers
       .filter(
         (v) =>
-          v.voucherNo.toLowerCase().includes(q) ||
-          (v.narration && v.narration.toLowerCase().includes(q)),
+          matchBranch(v.branchId) &&
+          (v.voucherNo.toLowerCase().includes(q) ||
+            (v.narration && v.narration.toLowerCase().includes(q))),
       )
       .slice(0, 5);
 
     const matchInvoices = invoices
       .filter(
         (inv) =>
-          (inv.invoiceNo && inv.invoiceNo.toLowerCase().includes(q)) ||
-          inv.partyName.toLowerCase().includes(q),
+          matchBranch(inv.branchId) &&
+          ((inv.invoiceNo && inv.invoiceNo.toLowerCase().includes(q)) ||
+            inv.partyName.toLowerCase().includes(q)),
       )
       .slice(0, 5);
 
@@ -102,7 +106,7 @@ export function useGlobalSearch(query: string): {
       items: matchItems,
       pages: matchPages,
     };
-  }, [query, accounts, parties, vouchers, invoices, items]);
+  }, [query, accounts, parties, vouchers, invoices, items, matchBranch, branchFilter]);
 
   useEffect(() => {
     if (query.length >= 2) {

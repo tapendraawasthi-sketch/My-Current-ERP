@@ -1,0 +1,14 @@
+{
+  "data": {
+    "alternatives": [],
+    "classifier_version": "none",
+    "confidence": null,
+    "evidence_spans": [],
+    "referenced_object_ids": [],
+    "relation": "UNKNOWN",
+    "schema_version": "1.0.0",
+    "status": "NOT_RUN"
+  },
+  "kind": "TurnRelationV1",
+  "valid": true
+}

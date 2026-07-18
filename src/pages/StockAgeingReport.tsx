@@ -13,9 +13,10 @@ import {
 } from "lucide-react";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 import { useStore } from "../store/useStore";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const inputCls =
-  "h-8 w-full px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "h-8 w-full px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const labelCls = "mb-1 block text-[11px] font-medium text-gray-600";
 const tableHeaderCls =
   "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
@@ -37,6 +38,7 @@ function money(v) {
 
 export default function StockAgeingReport() {
   const { items, stockMovements, itemGroups, warehouses } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchMovement } = useBranchFilter();
   const [referenceDate, setReferenceDate] = useState(new Date().toISOString().split("T")[0]);
   const [groupFilter, setGroupFilter] = useState("");
   const [warehouseFilter, setWarehouseFilter] = useState("");
@@ -45,9 +47,14 @@ export default function StockAgeingReport() {
   const [sortDirection, setSortDirection] = useState("desc");
   const [searchTerm, setSearchTerm] = useState("");
 
+  const scopedMovements = useMemo(
+    () => (stockMovements || []).filter((m) => matchMovement(m)),
+    [stockMovements, matchMovement, branchFilter],
+  );
+
   // Calculate ageing data
   const ageingData = useMemo(() => {
-    if (!items?.length || !stockMovements?.length) return [];
+    if (!items?.length || !scopedMovements?.length) return [];
 
     const refDate = new Date(referenceDate || new Date().toISOString().split("T")[0]);
 
@@ -56,7 +63,7 @@ export default function StockAgeingReport() {
       .filter((item) => !groupFilter || item.groupId === groupFilter)
       .map((item) => {
         // Get IN movements for this item, sorted oldest first
-        const inMovements = stockMovements
+        const inMovements = scopedMovements
           .filter(
             (m) =>
               m.itemId === item.id &&
@@ -72,7 +79,7 @@ export default function StockAgeingReport() {
           }));
 
         // Get OUT movements sorted oldest first
-        const outMovements = stockMovements
+        const outMovements = scopedMovements
           .filter(
             (m) =>
               m.itemId === item.id &&
@@ -152,7 +159,7 @@ export default function StockAgeingReport() {
       });
   }, [
     items,
-    stockMovements,
+    scopedMovements,
     referenceDate,
     groupFilter,
     warehouseFilter,
@@ -226,7 +233,7 @@ export default function StockAgeingReport() {
 
   const renderSortIndicator = (column) =>
     sortBy === column ? (
-      <span className="text-[11px] text-[#1557b0]">{sortDirection === "asc" ? "↑" : "↓"}</span>
+      <span className="text-[11px] text-[var(--ds-action-primary)]">{sortDirection === "asc" ? "↑" : "↓"}</span>
     ) : null;
 
   const summaryCards = [
@@ -234,8 +241,8 @@ export default function StockAgeingReport() {
       title: "Total Stock Value",
       value: money(summary.totalValue),
       icon: Package,
-      accent: "text-[#1557b0]",
-      border: "border-[#1557b0]/20",
+      accent: "text-[var(--ds-action-primary)]",
+      border: "border-[var(--ds-action-primary)]/20",
       bg: "bg-white",
     },
     {
@@ -278,7 +285,7 @@ export default function StockAgeingReport() {
           <button
             type="button"
             onClick={handleRunReport}
-            className="inline-flex h-8 items-center gap-1.5 rounded-md bg-[#1557b0] px-3 text-[12px] font-medium text-white hover:bg-[#0f4a96]"
+            className="inline-flex h-8 items-center gap-1.5 rounded-md bg-[var(--ds-action-primary)] px-3 text-[12px] font-medium text-white hover:bg-[var(--ds-action-primary-hover)]"
           >
             <RefreshCw className="h-3.5 w-3.5" />
             Run Report
@@ -297,7 +304,7 @@ export default function StockAgeingReport() {
       <div className="no-print mb-4 rounded-md border border-gray-200 bg-white p-3">
         <div className="mb-3 flex items-start gap-2">
           <div className="rounded-md border border-gray-200 bg-[#f5f6fa] p-1.5">
-            <Filter className="h-3.5 w-3.5 text-[#1557b0]" />
+            <Filter className="h-3.5 w-3.5 text-[var(--ds-action-primary)]" />
           </div>
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
@@ -309,7 +316,7 @@ export default function StockAgeingReport() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-6">
           <div>
             <label className={labelCls}>Item Group</label>
             <select
@@ -325,6 +332,25 @@ export default function StockAgeingReport() {
               ))}
             </select>
           </div>
+
+          {branchOptions.length > 0 && (
+            <div>
+              <label className={labelCls}>Branch</label>
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                className={inputCls}
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div>
             <label className={labelCls}>Warehouse</label>
@@ -500,7 +526,7 @@ export default function StockAgeingReport() {
                       key={row.item.id}
                       className="group border-b border-gray-100 hover:bg-gray-50"
                     >
-                      <td className="px-3 py-2.5 text-[12px] font-medium text-[#1557b0]">
+                      <td className="px-3 py-2.5 text-[12px] font-medium text-[var(--ds-action-primary)]">
                         {row.item.code}
                       </td>
                       <td className="px-3 py-2.5 text-[12px] text-gray-700">{row.item.name}</td>
@@ -595,7 +621,7 @@ export default function StockAgeingReport() {
                     key={`dead-${row.item.id}`}
                     className="border-b border-red-100 hover:bg-red-50/40"
                   >
-                    <td className="px-3 py-2.5 text-[12px] font-medium text-[#1557b0]">
+                    <td className="px-3 py-2.5 text-[12px] font-medium text-[var(--ds-action-primary)]">
                       {row.item.code}
                     </td>
                     <td className="px-3 py-2.5 text-[12px] text-gray-700">{row.item.name}</td>

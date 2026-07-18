@@ -1,0 +1,160 @@
+{
+  "$defs": {
+    "ConfidenceV1": {
+      "additionalProperties": false,
+      "description": "Informational only — never authorization.",
+      "properties": {
+        "grants_authority": {
+          "default": false,
+          "title": "Grants Authority",
+          "type": "boolean"
+        },
+        "method": {
+          "default": "unspecified",
+          "title": "Method",
+          "type": "string"
+        },
+        "value": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "ConfidenceV1",
+      "type": "object"
+    },
+    "ContractStatus": {
+      "enum": [
+        "READY",
+        "PARTIAL",
+        "FAILED",
+        "NOT_RUN"
+      ],
+      "title": "ContractStatus",
+      "type": "string"
+    },
+    "SourceSpanV1": {
+      "additionalProperties": false,
+      "description": "Offsets are Unicode code-point indices unless offset_unit says otherwise.",
+      "properties": {
+        "end_offset": {
+          "minimum": 0,
+          "title": "End Offset",
+          "type": "integer"
+        },
+        "offset_unit": {
+          "default": "UNICODE_CODE_POINT",
+          "title": "Offset Unit",
+          "type": "string"
+        },
+        "original_text": {
+          "title": "Original Text",
+          "type": "string"
+        },
+        "source_message_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Message Id"
+        },
+        "start_offset": {
+          "minimum": 0,
+          "title": "Start Offset",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "start_offset",
+        "end_offset",
+        "original_text"
+      ],
+      "title": "SourceSpanV1",
+      "type": "object"
+    },
+    "TurnRelationKind": {
+      "enum": [
+        "NEW_TOPIC",
+        "CONTINUE_EXPLICIT_DRAFT",
+        "CONTINUE_ACTIVE_DRAFT",
+        "ANSWER_CLARIFICATION",
+        "CORRECT_ACTIVE_DRAFT",
+        "CANCEL_ACTIVE_DRAFT",
+        "CONFIRMATION_INTENT",
+        "REFER_TO_PRIOR_ANSWER",
+        "COMPARE_PRIOR_RESULTS",
+        "UNKNOWN"
+      ],
+      "title": "TurnRelationKind",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/TurnRelationV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "alternatives": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/TurnRelationKind"
+      },
+      "title": "Alternatives",
+      "type": "array"
+    },
+    "classifier_version": {
+      "default": "none",
+      "title": "Classifier Version",
+      "type": "string"
+    },
+    "confidence": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ConfidenceV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "evidence_spans": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/SourceSpanV1"
+      },
+      "title": "Evidence Spans",
+      "type": "array"
+    },
+    "referenced_object_ids": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Referenced Object Ids",
+      "type": "array"
+    },
+    "relation": {
+      "$ref": "#/$defs/TurnRelationKind",
+      "default": "UNKNOWN"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/ContractStatus",
+      "default": "NOT_RUN"
+    }
+  },
+  "title": "TurnRelationV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

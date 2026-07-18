@@ -1,4 +1,14 @@
-"""Unified text normalization for all NLU / reasoning paths."""
+"""Legacy NLU text normalization — NOT the MAI-06 canonical normalizer.
+
+MAI-06 authority lives in `oip.modules.language_runtime.normalization` and produces
+named reversible views without overwriting CanonicalAIRequestV1.raw_text.
+
+This module remains an isolated legacy adapter for existing NLU/matching paths.
+It may apply NFKC, spelling-variant rewrites, and digit conversion. Those mutations
+must not be claimed as MAI-06 lossless normalization. Intent/router consumers continue
+to call these helpers explicitly with raw text; MAI-06 views are never auto-routed here.
+Migration/deprecation: MAI-07+ may migrate callers to explicit view selection.
+"""
 
 from __future__ import annotations
 
@@ -6,6 +16,9 @@ import re
 import unicodedata
 
 from ..falcon_trader.normalizer import normalize as _base_normalize, parse_amount_words
+
+LEGACY_NORMALIZER_ID = "nlu.text_normalize.legacy"
+MAI06_CANONICAL = False  # marker for audits — do not treat as MAI-06
 
 # Hardcoded overrides — take precedence over vocabulary JSON maps
 _SPELLING_VARIANTS: dict[str, str] = {

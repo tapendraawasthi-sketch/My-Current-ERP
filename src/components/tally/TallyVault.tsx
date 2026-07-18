@@ -121,7 +121,7 @@ const TallyVault = () => {
           onClick={() => setTab("status")}
           className={`px-4 py-2.5 text-[11px] font-semibold transition-colors border-b-2 flex-1 ${
             tab === "status"
-              ? "bg-white text-[#1557b0] border-[#1557b0]"
+              ? "bg-white text-[var(--ds-action-primary)] border-[var(--ds-action-primary)]"
               : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 border-transparent"
           }`}
         >
@@ -133,7 +133,7 @@ const TallyVault = () => {
             onClick={() => setTab("set")}
             className={`px-4 py-2.5 text-[11px] font-semibold transition-colors border-b-2 flex-1 ${
               tab === "set"
-                ? "bg-white text-[#1557b0] border-[#1557b0]"
+                ? "bg-white text-[var(--ds-action-primary)] border-[var(--ds-action-primary)]"
                 : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 border-transparent"
             }`}
           >
@@ -146,7 +146,7 @@ const TallyVault = () => {
             onClick={() => setTab("change")}
             className={`px-4 py-2.5 text-[11px] font-semibold transition-colors border-b-2 flex-1 ${
               tab === "change"
-                ? "bg-white text-[#1557b0] border-[#1557b0]"
+                ? "bg-white text-[var(--ds-action-primary)] border-[var(--ds-action-primary)]"
                 : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 border-transparent"
             }`}
           >
@@ -159,7 +159,7 @@ const TallyVault = () => {
             onClick={() => setTab("disable")}
             className={`px-4 py-2.5 text-[11px] font-semibold transition-colors border-b-2 flex-1 ${
               tab === "disable"
-                ? "bg-white text-[#1557b0] border-[#1557b0]"
+                ? "bg-white text-[var(--ds-action-primary)] border-[var(--ds-action-primary)]"
                 : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 border-transparent"
             }`}
           >
@@ -272,7 +272,7 @@ const TallyVault = () => {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-8 pl-2.5 pr-8 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-colors"
+                  className="w-full h-8 pl-2.5 pr-8 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] transition-colors"
                 />
                 <button
                   onClick={() => setShowPassword(!showPassword)}
@@ -346,7 +346,7 @@ const TallyVault = () => {
                   type={showConfirm ? "text" : "password"}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full h-8 pl-2.5 pr-8 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-colors"
+                  className="w-full h-8 pl-2.5 pr-8 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] transition-colors"
                 />
                 <button
                   onClick={() => setShowConfirm(!showConfirm)}
@@ -372,7 +372,7 @@ const TallyVault = () => {
               className={`w-full h-9 rounded-md text-[12px] font-medium transition-colors shadow-sm ${
                 strength < 3 || password !== confirmPassword || password.length === 0
                   ? "bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed"
-                  : "bg-[#1557b0] hover:bg-[#0f4a96] text-white"
+                  : "bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white"
               }`}
             >
               Enable TallyVault Encryption
@@ -391,7 +391,7 @@ const TallyVault = () => {
                   type={showOld ? "text" : "password"}
                   value={oldPassword}
                   onChange={(e) => setOldPassword(e.target.value)}
-                  className="w-full h-8 pl-2.5 pr-8 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-colors"
+                  className="w-full h-8 pl-2.5 pr-8 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] transition-colors"
                 />
                 <button
                   onClick={() => setShowOld(!showOld)}
@@ -411,7 +411,7 @@ const TallyVault = () => {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-8 pl-2.5 pr-8 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-colors"
+                  className="w-full h-8 pl-2.5 pr-8 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] transition-colors"
                 />
                 <button
                   onClick={() => setShowPassword(!showPassword)}
@@ -431,7 +431,7 @@ const TallyVault = () => {
                   type={showConfirm ? "text" : "password"}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full h-8 pl-2.5 pr-8 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-colors"
+                  className="w-full h-8 pl-2.5 pr-8 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] transition-colors"
                 />
                 <button
                   onClick={() => setShowConfirm(!showConfirm)}
@@ -448,7 +448,7 @@ const TallyVault = () => {
               className={`w-full h-9 rounded-md text-[12px] font-medium transition-colors shadow-sm ${
                 !oldPassword || !password || password !== confirmPassword
                   ? "bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed"
-                  : "bg-[#1557b0] hover:bg-[#0f4a96] text-white"
+                  : "bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white"
               }`}
             >
               Change TallyVault Password

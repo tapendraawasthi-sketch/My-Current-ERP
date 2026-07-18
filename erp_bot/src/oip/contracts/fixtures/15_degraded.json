@@ -1,0 +1,28 @@
+{
+  "data": {
+    "citations": [],
+    "conversation_id": "conv-demo-001",
+    "created_at": "2026-07-14T12:00:00Z",
+    "draft_reference": null,
+    "language": "en",
+    "policy_reference": null,
+    "request_id": "req-demo-015",
+    "response_id": "resp-demo-015",
+    "response_type": "DEGRADED",
+    "schema_version": "1.0.0",
+    "status": "DEGRADED",
+    "structured_payload": {
+      "partial_available": false,
+      "payload_type": "DEGRADED",
+      "reason_code": "PROVIDER_OFFLINE",
+      "safe_message": "Provider offline"
+    },
+    "suggested_safe_actions": [],
+    "trace_reference": null,
+    "uncertainty": null,
+    "user_visible_text": "Provider offline",
+    "warnings": []
+  },
+  "kind": "AIResponseEnvelopeV1",
+  "valid": true
+}

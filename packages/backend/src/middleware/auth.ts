@@ -19,7 +19,17 @@ declare global {
 }
 
 function getJwtSecret(): string {
-  return process.env.API_SECRET_KEY || process.env.JWT_SECRET || "dev-insecure-secret-change-me";
+  const secret = process.env.API_SECRET_KEY || process.env.JWT_SECRET || "";
+  const isProd =
+    (process.env.NODE_ENV || "").toLowerCase() === "production" ||
+    (process.env.RENDER || "").toLowerCase() === "true";
+  if (isProd) {
+    if (!secret || secret === "dev-insecure-secret-change-me" || secret.length < 16) {
+      throw new Error("INSECURE_PRODUCTION_CONFIGURATION: JWT/API secret missing or insecure");
+    }
+    return secret;
+  }
+  return secret || "dev-insecure-secret-change-me";
 }
 
 export function signAccessToken(payload: AuthTokenPayload, expiresIn: string): string {

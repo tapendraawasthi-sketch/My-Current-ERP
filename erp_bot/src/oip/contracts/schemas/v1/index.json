@@ -1,0 +1,24 @@
+{
+  "contracts": [
+    "ClientTurnPayloadV1",
+    "CanonicalAIRequestV1",
+    "LanguageFrameV1",
+    "NormalizationBundleV1",
+    "TransliterationBundleV1",
+    "TurnRelationV1",
+    "IntentCandidateV1",
+    "EventFrameV1",
+    "PlanV1",
+    "ToolCallV1",
+    "ToolObservationV1",
+    "EvidenceItemV1",
+    "ClaimV1",
+    "DraftReferenceV1",
+    "PreviewV1",
+    "ReceiptV1",
+    "AIResponseEnvelopeV1",
+    "SSEEventEnvelopeV1"
+  ],
+  "regenerate": "python -m src.oip.contracts.export_schemas",
+  "schema_version": "1.0.0"
+}

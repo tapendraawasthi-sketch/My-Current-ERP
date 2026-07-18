@@ -142,7 +142,7 @@ export const AuditHistoryPanel: React.FC<Props> = ({ entityId }) => {
                       event.before && event.after ? computeDiff(event.before, event.after) : [];
                     return (
                       <div key={index} className="relative">
-                        <div className="absolute -left-9 top-1 w-4 h-4 rounded-full bg-[#1557b0] border-4 border-white"></div>
+                        <div className="absolute -left-9 top-1 w-4 h-4 rounded-full bg-[var(--ds-action-primary)] border-4 border-white"></div>
                         <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
@@ -222,7 +222,7 @@ export const AuditHistoryPanel: React.FC<Props> = ({ entityId }) => {
       <div className="flex items-center justify-between p-4 border-t border-gray-200">
         <div></div>
         <button
-          className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[11px] font-medium rounded-md flex items-center gap-1.5"
+          className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[11px] font-medium rounded-md flex items-center gap-1.5"
           onClick={exportToExcel}
           disabled={loading}
         >

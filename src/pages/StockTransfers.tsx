@@ -7,6 +7,7 @@ import { ReportWorkspace } from "@/features/reports";
 import ReportGrid from "../components/reporting/ReportGrid";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 import { useScreenF12 } from "../hooks/useF12Config";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const StockTransfers: React.FC = () => {
   // Register this screen with F12 system
@@ -14,6 +15,8 @@ const StockTransfers: React.FC = () => {
 
   const { stockMovements, vouchers, items, warehouses, companySettings, currentFiscalYear } =
     useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch, matchMovement } =
+    useBranchFilter();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [startDate, setStartDate] = useState(currentFiscalYear?.startDate || "");
   const [endDate, setEndDate] = useState(currentFiscalYear?.endDate || "");
@@ -29,6 +32,7 @@ const StockTransfers: React.FC = () => {
   const [pendingSelectedToWarehouseId, setPendingSelectedToWarehouseId] =
     useState(selectedToWarehouseId);
   const [pendingSelectedItemId, setPendingSelectedItemId] = useState(selectedItemId);
+  const [pendingBranchFilter, setPendingBranchFilter] = useState(branchFilter);
 
   const applyOptions = () => {
     setStartDate(pendingStart);
@@ -36,7 +40,22 @@ const StockTransfers: React.FC = () => {
     setSelectedFromWarehouseId(pendingSelectedFromWarehouseId);
     setSelectedToWarehouseId(pendingSelectedToWarehouseId);
     setSelectedItemId(pendingSelectedItemId);
+    setBranchFilter(pendingBranchFilter);
     setOptionsOpen(false);
+  };
+
+  const matchesTransferBranch = (row: {
+    branchId?: string | null;
+    fromWarehouseId?: string | null;
+    toWarehouseId?: string | null;
+    warehouseId?: string | null;
+  }) => {
+    if (!branchFilter || branchFilter === "all") return true;
+    if (row.branchId) return matchBranch(row.branchId);
+    return (
+      matchMovement({ warehouseId: row.fromWarehouseId || row.warehouseId }) ||
+      matchMovement({ warehouseId: row.toWarehouseId })
+    );
   };
 
   // Compute stock transfers data
@@ -55,6 +74,7 @@ const StockTransfers: React.FC = () => {
     );
 
     movementTransfers.forEach((m) => {
+      if (!matchesTransferBranch(m)) return;
       if (m.date < startDate || m.date > endDate) return;
       if (selectedFromWarehouseId && m.fromWarehouseId !== selectedFromWarehouseId) return;
       if (selectedToWarehouseId && m.toWarehouseId !== selectedToWarehouseId) return;
@@ -81,7 +101,7 @@ const StockTransfers: React.FC = () => {
 
     // Process stock journal vouchers that represent transfers
     const stockJournalVouchers = (vouchers || []).filter(
-      (v) => v.type === "stock-journal" && v.status === "posted",
+      (v) => v.type === "stock-journal" && v.status === "posted" && matchBranch(v.branchId),
     );
 
     stockJournalVouchers.forEach((v) => {
@@ -94,6 +114,15 @@ const StockTransfers: React.FC = () => {
           line.toWarehouseId &&
           line.fromWarehouseId !== line.toWarehouseId
         ) {
+          if (
+            !matchesTransferBranch({
+              branchId: v.branchId,
+              fromWarehouseId: line.fromWarehouseId,
+              toWarehouseId: line.toWarehouseId,
+            })
+          ) {
+            return;
+          }
           if (selectedFromWarehouseId && line.fromWarehouseId !== selectedFromWarehouseId) return;
           if (selectedToWarehouseId && line.toWarehouseId !== selectedToWarehouseId) return;
           if (selectedItemId && line.itemId !== selectedItemId) return;
@@ -162,6 +191,9 @@ const StockTransfers: React.FC = () => {
     selectedFromWarehouseId,
     selectedToWarehouseId,
     selectedItemId,
+    matchBranch,
+    matchMovement,
+    branchFilter,
   ]);
 
   // Get warehouse options
@@ -209,10 +241,29 @@ const StockTransfers: React.FC = () => {
         setPendingSelectedFromWarehouseId(selectedFromWarehouseId);
         setPendingSelectedToWarehouseId(selectedToWarehouseId);
         setPendingSelectedItemId(selectedItemId);
+        setPendingBranchFilter(branchFilter);
         setOptionsOpen(true);
       }}
       filterSlot={
         <div className="flex items-center gap-1.5 flex-wrap">
+          {branchOptions.length > 0 && (
+            <label className="text-[12px] font-medium text-gray-600 flex items-center gap-1.5">
+              Branch:
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
           <label className="text-[12px] font-medium text-gray-600 flex items-center gap-1.5">
             From:
             <input
@@ -379,6 +430,25 @@ const StockTransfers: React.FC = () => {
               ))}
             </select>
           </label>
+
+          {branchOptions.length > 0 && (
+            <label className="flex flex-col gap-1 text-[12px] font-medium text-gray-600">
+              Branch
+              <select
+                value={pendingBranchFilter}
+                onChange={(e) => setPendingBranchFilter(e.target.value)}
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
         </div>
       </ReportOptionsModal>
     </ReportWorkspace>

@@ -1,12 +1,15 @@
 // @ts-nocheck
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useStore } from "../store/useStore";
 import { getDB, generateId } from "../lib/db";
 import toast from "@/lib/appToast";
 import { Calendar, Plus, Edit, Trash2, Check, X, XCircle } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const LeaveManagement: React.FC = () => {
   const { employees } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [activeTab, setActiveTab] = useState(0);
   const [leaveTypes, setLeaveTypes] = useState<any[]>([]);
   const [leaveApplications, setLeaveApplications] = useState<any[]>([]);
@@ -21,6 +24,11 @@ const LeaveManagement: React.FC = () => {
     toDate: new Date().toISOString().split("T")[0],
     reason: "",
   });
+
+  const scopedEmployees = useMemo(
+    () => (employees || []).filter((e) => matchBranch((e as { branchId?: string }).branchId)),
+    [employees, matchBranch, branchFilter],
+  );
 
   // Load data from DB
   useEffect(() => {
@@ -128,12 +136,17 @@ const LeaveManagement: React.FC = () => {
     const days = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
 
     const db = getDB();
+    const emp = (employees || []).find((e) => e.id === leaveForm.employeeId);
     const application = {
       id: generateId(),
       ...leaveForm,
       days,
       status: "pending",
       appliedDate: new Date().toISOString(),
+      branchId:
+        (emp as { branchId?: string } | undefined)?.branchId ||
+        readActiveBranchId() ||
+        undefined,
     };
 
     try {
@@ -194,6 +207,10 @@ const LeaveManagement: React.FC = () => {
 
   // Filter applications based on criteria
   const filteredApplications = leaveApplications.filter((app) => {
+    const emp = (employees || []).find((e) => e.id === app.employeeId);
+    const appBranch =
+      app.branchId || (emp as { branchId?: string } | undefined)?.branchId;
+    if (!matchBranch(appBranch)) return false;
     const matchesMonth =
       !leaveFilter.month || new Date(app.fromDate).getMonth() === Number(leaveFilter.month) - 1;
     const matchesEmployee = !leaveFilter.employee || app.employeeId === leaveFilter.employee;
@@ -212,6 +229,21 @@ const LeaveManagement: React.FC = () => {
               Manage leave policies, applications, and employee balances
             </p>
           </div>
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         {/* Tab Navigation */}
@@ -221,7 +253,7 @@ const LeaveManagement: React.FC = () => {
               key={index}
               className={`px-4 py-2 text-[12px] font-medium border-b-2 transition-colors ${
                 activeTab === index
-                  ? "border-[#1557b0] text-[#1557b0]"
+                  ? "border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
               onClick={() => setActiveTab(index)}
@@ -237,7 +269,7 @@ const LeaveManagement: React.FC = () => {
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-[14px] font-semibold text-gray-800">Leave Policy</h2>
               <button
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors shadow-sm"
+                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors shadow-sm"
                 onClick={() => {
                   setEditingLeaveType(null);
                   setShowLeaveModal(true);
@@ -315,7 +347,7 @@ const LeaveManagement: React.FC = () => {
                       <td className="px-3 py-2.5 text-center">
                         <div className="flex items-center justify-center gap-3">
                           <button
-                            className="text-[#1557b0] hover:text-[#0f4a96] transition-colors"
+                            className="text-[var(--ds-action-primary)] hover:text-[var(--ds-action-primary-hover)] transition-colors"
                             onClick={() => {
                               setEditingLeaveType(type);
                               setShowLeaveModal(true);
@@ -363,10 +395,10 @@ const LeaveManagement: React.FC = () => {
               <select
                 value={selectedEmployee}
                 onChange={(e) => setSelectedEmployee(e.target.value)}
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
               >
                 <option value="">Select Employee</option>
-                {employees
+                {scopedEmployees
                   .filter((e) => e.isActive)
                   .map((emp) => (
                     <option key={emp.id} value={emp.id}>
@@ -448,10 +480,10 @@ const LeaveManagement: React.FC = () => {
                 <select
                   value={leaveForm.employeeId}
                   onChange={(e) => handleFormChange("employeeId", e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 >
                   <option value="">Select Employee</option>
-                  {employees
+                  {scopedEmployees
                     .filter((e) => e.isActive)
                     .map((emp) => (
                       <option key={emp.id} value={emp.id}>
@@ -467,7 +499,7 @@ const LeaveManagement: React.FC = () => {
                 <select
                   value={leaveForm.leaveTypeId}
                   onChange={(e) => handleFormChange("leaveTypeId", e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 >
                   <option value="">Select Leave Type</option>
                   {leaveTypes.map((type) => (
@@ -485,7 +517,7 @@ const LeaveManagement: React.FC = () => {
                   type="date"
                   value={leaveForm.fromDate}
                   onChange={(e) => handleFormChange("fromDate", e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 />
               </div>
               <div>
@@ -496,7 +528,7 @@ const LeaveManagement: React.FC = () => {
                   type="date"
                   value={leaveForm.toDate}
                   onChange={(e) => handleFormChange("toDate", e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 />
               </div>
               <div className="md:col-span-2">
@@ -506,7 +538,7 @@ const LeaveManagement: React.FC = () => {
                 <textarea
                   value={leaveForm.reason}
                   onChange={(e) => handleFormChange("reason", e.target.value)}
-                  className="p-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full h-24 resize-none"
+                  className="p-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full h-24 resize-none"
                   placeholder="Provide detailed reason for the leave application..."
                 />
               </div>
@@ -514,7 +546,7 @@ const LeaveManagement: React.FC = () => {
 
             <div className="flex justify-end pt-4 border-t border-gray-100">
               <button
-                className="h-8 px-6 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
+                className="h-8 px-6 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
                 onClick={handleSubmitLeave}
               >
                 Submit Leave Application
@@ -531,7 +563,7 @@ const LeaveManagement: React.FC = () => {
                 <select
                   value={leaveFilter.month}
                   onChange={(e) => setLeaveFilter((prev) => ({ ...prev, month: e.target.value }))}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 >
                   <option value="">All Months</option>
                   {Array.from({ length: 12 }, (_, i) => (
@@ -548,10 +580,10 @@ const LeaveManagement: React.FC = () => {
                   onChange={(e) =>
                     setLeaveFilter((prev) => ({ ...prev, employee: e.target.value }))
                   }
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 >
                   <option value="">All Employees</option>
-                  {employees
+                  {scopedEmployees
                     .filter((e) => e.isActive)
                     .map((emp) => (
                       <option key={emp.id} value={emp.id}>
@@ -565,7 +597,7 @@ const LeaveManagement: React.FC = () => {
                 <select
                   value={leaveFilter.status}
                   onChange={(e) => setLeaveFilter((prev) => ({ ...prev, status: e.target.value }))}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
                 >
                   <option value="all">All</option>
                   <option value="pending">Pending</option>
@@ -713,7 +745,7 @@ const LeaveManagement: React.FC = () => {
                   onChange={(e) =>
                     setEditingLeaveType((prev) => ({ ...prev, name: e.target.value }))
                   }
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 />
               </div>
               <div>
@@ -729,7 +761,7 @@ const LeaveManagement: React.FC = () => {
                       daysPerYear: Number(e.target.value),
                     }))
                   }
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 />
               </div>
 
@@ -742,7 +774,7 @@ const LeaveManagement: React.FC = () => {
                     onChange={(e) =>
                       setEditingLeaveType((prev) => ({ ...prev, carryForward: e.target.checked }))
                     }
-                    className="mr-2 h-3.5 w-3.5 text-[#1557b0] rounded border-gray-300 focus:ring-[#1557b0]"
+                    className="mr-2 h-3.5 w-3.5 text-[var(--ds-action-primary)] rounded border-gray-300 focus:ring-[var(--ds-action-primary)]"
                   />
                   <label htmlFor="carryForward" className="text-[12px] font-medium text-gray-700">
                     Carry Forward Balance to Next Year
@@ -763,7 +795,7 @@ const LeaveManagement: React.FC = () => {
                           maxCarryForward: Number(e.target.value),
                         }))
                       }
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                     />
                   </div>
                 )}
@@ -778,7 +810,7 @@ const LeaveManagement: React.FC = () => {
                     onChange={(e) =>
                       setEditingLeaveType((prev) => ({ ...prev, isEncashable: e.target.checked }))
                     }
-                    className="mr-2 h-3.5 w-3.5 text-[#1557b0] rounded border-gray-300 focus:ring-[#1557b0]"
+                    className="mr-2 h-3.5 w-3.5 text-[var(--ds-action-primary)] rounded border-gray-300 focus:ring-[var(--ds-action-primary)]"
                   />
                   <label htmlFor="isEncashable" className="text-[12px] font-medium text-gray-700">
                     Is Leave Encashable
@@ -800,7 +832,7 @@ const LeaveManagement: React.FC = () => {
                           encashmentRate: Number(e.target.value),
                         }))
                       }
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                     />
                   </div>
                 )}
@@ -818,7 +850,7 @@ const LeaveManagement: React.FC = () => {
                 Cancel
               </button>
               <button
-                className="h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md transition-colors"
+                className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md transition-colors"
                 onClick={async () => {
                   if (!editingLeaveType?.name || editingLeaveType.daysPerYear < 0) {
                     toast.error("Please provide a valid name and days per year");

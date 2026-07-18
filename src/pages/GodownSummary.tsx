@@ -6,12 +6,15 @@ import { VoucherStatus } from "../lib/types";
 import ReportShell from "../components/reporting/ReportShell";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 import { useScreenF12 } from "../hooks/useF12Config";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { matchesBranchFilter } from "../lib/activeBranch";
 
 const GodownSummary: React.FC = () => {
   // Register this screen with F12 system
   const getConfig = useScreenF12("godown-summary");
 
   const { stockMovements, items, warehouses, companySettings } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchMovement } = useBranchFilter();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [asOnDate, setAsOnDate] = useState(new Date().toISOString().split("T")[0]);
   const [selectedWarehouseId, setSelectedWarehouseId] = useState("");
@@ -24,23 +27,33 @@ const GodownSummary: React.FC = () => {
   const [pendingSelectedWarehouseId, setPendingSelectedWarehouseId] = useState(selectedWarehouseId);
   const [pendingSelectedItemId, setPendingSelectedItemId] = useState(selectedItemId);
   const [pendingShowZeroQty, setPendingShowZeroQty] = useState(showZeroQty);
+  const [pendingBranchFilter, setPendingBranchFilter] = useState(branchFilter);
 
   const applyOptions = () => {
     setAsOnDate(pendingAsOnDate);
     setSelectedWarehouseId(pendingSelectedWarehouseId);
     setSelectedItemId(pendingSelectedItemId);
     setShowZeroQty(pendingShowZeroQty);
+    setBranchFilter(pendingBranchFilter);
     setOptionsOpen(false);
   };
 
+  const scopedWarehouses = useMemo(
+    () =>
+      (warehouses || []).filter((w) =>
+        matchesBranchFilter((w as any).branchId, branchFilter),
+      ),
+    [warehouses, branchFilter],
+  );
+
   // Initialize expanded state for all warehouses
   React.useEffect(() => {
-    if (warehouses) {
+    if (scopedWarehouses) {
       const initialExpanded = new Map<string, boolean>();
-      warehouses.forEach((wh) => initialExpanded.set(wh.id, true));
+      scopedWarehouses.forEach((wh) => initialExpanded.set(wh.id, true));
       setExpandedWarehouses(initialExpanded);
     }
-  }, [warehouses]);
+  }, [scopedWarehouses]);
 
   // Toggle warehouse expansion
   const toggleWarehouse = (warehouseId: string) => {
@@ -53,10 +66,12 @@ const GodownSummary: React.FC = () => {
 
   // Compute godown summary data
   const summaryData = useMemo(() => {
-    if (!warehouses || !items || !stockMovements) return { groupedData: [], grandTotalValue: 0 };
+    if (!scopedWarehouses || !items || !stockMovements) return { groupedData: [], grandTotalValue: 0 };
 
-    // Filter movements up to asOnDate
-    const filteredMovements = stockMovements.filter((m) => m.date <= asOnDate);
+    // Filter movements up to asOnDate + branch
+    const filteredMovements = stockMovements.filter(
+      (m) => m.date <= asOnDate && matchMovement(m),
+    );
 
     // Group movements by warehouse and item
     const warehouseItemMap = new Map<
@@ -120,7 +135,11 @@ const GodownSummary: React.FC = () => {
     for (const [whId, itemMap] of warehouseItemMap.entries()) {
       if (selectedWarehouseId && whId !== selectedWarehouseId) continue;
 
-      const warehouse = warehouses.find((w) => w.id === whId);
+      const warehouse = scopedWarehouses.find((w) => w.id === whId);
+      if (!warehouse && whId !== "default") {
+        // Skip godowns outside the active branch scope (except legacy default bucket)
+        if (branchFilter && branchFilter !== "all") continue;
+      }
       const warehouseName = warehouse?.name || whId;
 
       // Add warehouse header row
@@ -181,7 +200,7 @@ const GodownSummary: React.FC = () => {
 
     return { groupedData, grandTotalValue };
   }, [
-    warehouses,
+    scopedWarehouses,
     items,
     stockMovements,
     asOnDate,
@@ -189,6 +208,8 @@ const GodownSummary: React.FC = () => {
     selectedItemId,
     showZeroQty,
     expandedWarehouses,
+    matchMovement,
+    branchFilter,
   ]);
 
   return (
@@ -203,6 +224,7 @@ const GodownSummary: React.FC = () => {
         setPendingSelectedWarehouseId(selectedWarehouseId);
         setPendingSelectedItemId(selectedItemId);
         setPendingShowZeroQty(showZeroQty);
+        setPendingBranchFilter(branchFilter);
         setOptionsOpen(true);
       }}
       actionBarButtons={[{ label: "Print" }, { label: "Export" }]}
@@ -214,17 +236,33 @@ const GodownSummary: React.FC = () => {
               type="date"
               value={asOnDate}
               onChange={(e) => setAsOnDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
+
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] ml-1 w-[150px]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
 
           <select
             value={selectedWarehouseId}
             onChange={(e) => setSelectedWarehouseId(e.target.value)}
-            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] ml-1 w-[150px]"
+            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] ml-1 w-[150px]"
           >
             <option value="">All Warehouses</option>
-            {(warehouses || []).map((warehouse) => (
+            {scopedWarehouses.map((warehouse) => (
               <option key={warehouse.id} value={warehouse.id}>
                 {warehouse.name}
               </option>
@@ -234,7 +272,7 @@ const GodownSummary: React.FC = () => {
           <select
             value={selectedItemId}
             onChange={(e) => setSelectedItemId(e.target.value)}
-            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-[150px]"
+            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[150px]"
           >
             <option value="">All Items</option>
             {(items || []).map((item) => (
@@ -249,7 +287,7 @@ const GodownSummary: React.FC = () => {
               type="checkbox"
               checked={showZeroQty}
               onChange={(e) => setShowZeroQty(e.target.checked)}
-              className="w-4 h-4 text-[#1557b0] border-gray-300 rounded focus:ring-[#1557b0]"
+              className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
             />
             Show zero qty
           </label>
@@ -292,7 +330,7 @@ const GodownSummary: React.FC = () => {
                           {row.isExpanded ? "▼" : "▶"}
                         </span>
                         <svg
-                          className="w-4 h-4 text-[#1557b0]"
+                          className="w-4 h-4 text-[var(--ds-action-primary)]"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -319,7 +357,7 @@ const GodownSummary: React.FC = () => {
                     <td className="px-3 py-2.5"></td>
                     <td className="px-3 py-2.5"></td>
                     <td className="px-3 py-2.5"></td>
-                    <td className="px-3 py-2.5 text-right font-mono text-[#1557b0]">
+                    <td className="px-3 py-2.5 text-right font-mono text-[var(--ds-action-primary)]">
                       {formatNumber(row.value)}
                     </td>
                   </tr>
@@ -365,7 +403,7 @@ const GodownSummary: React.FC = () => {
                 <td className="px-3 py-3"></td>
                 <td className="px-3 py-3"></td>
                 <td className="px-3 py-3"></td>
-                <td className="px-3 py-3 text-right font-mono text-[#1557b0] text-[14px]">
+                <td className="px-3 py-3 text-right font-mono text-[var(--ds-action-primary)] text-[14px]">
                   {formatNumber(summaryData.grandTotalValue)}
                 </td>
               </tr>
@@ -395,19 +433,38 @@ const GodownSummary: React.FC = () => {
               type="date"
               value={pendingAsOnDate}
               onChange={(e) => setPendingAsOnDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
+
+          {branchOptions.length > 0 && (
+            <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
+              Branch
+              <select
+                value={pendingBranchFilter}
+                onChange={(e) => setPendingBranchFilter(e.target.value)}
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
 
           <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
             Warehouse
             <select
               value={pendingSelectedWarehouseId}
               onChange={(e) => setPendingSelectedWarehouseId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               <option value="">All Warehouses</option>
-              {(warehouses || []).map((warehouse) => (
+              {scopedWarehouses.map((warehouse) => (
                 <option key={warehouse.id} value={warehouse.id}>
                   {warehouse.name}
                 </option>
@@ -420,7 +477,7 @@ const GodownSummary: React.FC = () => {
             <select
               value={pendingSelectedItemId}
               onChange={(e) => setPendingSelectedItemId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               <option value="">All Items</option>
               {(items || []).map((item) => (
@@ -436,7 +493,7 @@ const GodownSummary: React.FC = () => {
               type="checkbox"
               checked={pendingShowZeroQty}
               onChange={(e) => setPendingShowZeroQty(e.target.checked)}
-              className="w-4 h-4 text-[#1557b0] border-gray-300 rounded focus:ring-[#1557b0]"
+              className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
             />
             Show zero quantity items
           </label>

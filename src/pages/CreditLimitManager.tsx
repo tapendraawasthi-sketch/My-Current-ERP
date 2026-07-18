@@ -15,6 +15,7 @@ import {
   ShieldAlert,
   FileText,
 } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 function money(v: number): string {
   const abs = Math.abs(Number(v || 0));
@@ -28,11 +29,11 @@ const tableHeadClass =
 const tableCellClass = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 
 const primaryBtn =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm";
 const outlineBtn =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5 shadow-sm";
 const inputClass =
-  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-shadow";
+  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] transition-shadow";
 
 function todayISO() {
   return new Date().toISOString().split("T")[0];
@@ -207,6 +208,7 @@ export default function CreditLimitManager() {
     addVoucher,
     currentUser = {},
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [creditSettings, setCreditSettings] = useState([]);
   const [search, setSearch] = useState("");
@@ -235,21 +237,32 @@ export default function CreditLimitManager() {
       .then(setCreditSettings);
   }, []);
 
+  const scopedInvoices = useMemo(
+    () => (invoices || []).filter((inv) => matchBranch(inv.branchId)),
+    [invoices, matchBranch, branchFilter],
+  );
+  const scopedVouchers = useMemo(
+    () => (vouchers || []).filter((v) => matchBranch(v.branchId)),
+    [vouchers, matchBranch, branchFilter],
+  );
+
   const rows = useMemo(() => {
-    return (parties || []).map((party) => {
+    return (parties || [])
+      .filter((party) => matchBranch(party.branchId))
+      .map((party) => {
       const settings = creditSettings.find((s) => s.partyId === party.id);
       const billsSales = getPartyBillwiseOutstanding(
         party.id,
         "sales",
-        invoices,
-        vouchers,
+        scopedInvoices,
+        scopedVouchers,
         parties,
       );
       const billsPurchase = getPartyBillwiseOutstanding(
         party.id,
         "purchase",
-        invoices,
-        vouchers,
+        scopedInvoices,
+        scopedVouchers,
         parties,
       );
 
@@ -280,7 +293,7 @@ export default function CreditLimitManager() {
         status,
       };
     });
-  }, [parties, creditSettings, invoices, vouchers]);
+  }, [parties, creditSettings, scopedInvoices, scopedVouchers, matchBranch, branchFilter]);
 
   const filteredRows = useMemo(() => {
     const q = search.toLowerCase();
@@ -432,7 +445,7 @@ export default function CreditLimitManager() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-            <ShieldAlert size={18} className="text-[#1557b0]" /> Credit Limit Manager
+            <ShieldAlert size={18} className="text-[var(--ds-action-primary)]" /> Credit Limit Manager
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Manage party-wise credit limits, credit days, overdue interest and invoice blocking
@@ -440,9 +453,26 @@ export default function CreditLimitManager() {
           </p>
         </div>
 
-        <button className={outlineBtn} onClick={exportExcel}>
-          <Download size={14} /> Export to Excel
-        </button>
+        <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+          <button className={outlineBtn} onClick={exportExcel}>
+            <Download size={14} /> Export to Excel
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -513,13 +543,13 @@ export default function CreditLimitManager() {
         </div>
 
         {bulkOpen && (
-          <div className="mt-4 border border-indigo-200 rounded-md p-4 bg-indigo-50/30">
-            <h2 className="text-[13px] font-semibold text-indigo-900 mb-3 flex items-center gap-2">
+          <div className="mt-4 border border-[var(--ds-status-info)]/30 rounded-md p-4 bg-[var(--ds-status-info-surface)]/30">
+            <h2 className="text-[13px] font-semibold text-[var(--ds-status-info)] mb-3 flex items-center gap-2">
               Set Credit Limit for Party Group
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
               <div>
-                <label className="block text-[11px] font-medium text-indigo-800 mb-1">
+                <label className="block text-[11px] font-medium text-[var(--ds-status-info)] mb-1">
                   Party Type
                 </label>
                 <select
@@ -534,7 +564,7 @@ export default function CreditLimitManager() {
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-indigo-800 mb-1">
+                <label className="block text-[11px] font-medium text-[var(--ds-status-info)] mb-1">
                   Credit Limit (NPR)
                 </label>
                 <input
@@ -547,7 +577,7 @@ export default function CreditLimitManager() {
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-indigo-800 mb-1">
+                <label className="block text-[11px] font-medium text-[var(--ds-status-info)] mb-1">
                   Credit Days
                 </label>
                 <input
@@ -558,7 +588,7 @@ export default function CreditLimitManager() {
                 />
               </div>
 
-              <div className="text-[12px] text-indigo-700 bg-white border border-indigo-100 rounded h-8 flex items-center px-3 font-medium">
+              <div className="text-[12px] text-[var(--ds-status-info)] bg-white border border-[var(--ds-status-info)]/20 rounded h-8 flex items-center px-3 font-medium">
                 Target: {bulkAffected.length} part{bulkAffected.length === 1 ? "y" : "ies"}
               </div>
 
@@ -655,7 +685,7 @@ export default function CreditLimitManager() {
                     <td className={tableCellClass}>{statusBadge(r.status)}</td>
                     <td className={tableCellClass}>
                       <button
-                        className="text-[11px] font-medium text-[#1557b0] hover:underline flex items-center gap-1"
+                        className="text-[11px] font-medium text-[var(--ds-action-primary)] hover:underline flex items-center gap-1"
                         onClick={() => openEdit(r)}
                       >
                         <Edit2 size={12} /> Edit

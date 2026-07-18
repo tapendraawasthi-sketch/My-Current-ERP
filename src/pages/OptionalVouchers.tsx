@@ -4,6 +4,7 @@ import { useStore } from "../store/useStore";
 import { getDB, generateId } from "../lib/db";
 import toast from "@/lib/appToast";
 import { FileText, Plus, Eye, CheckCircle, XCircle, Calendar, Trash2 } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 function money(v: number): string {
   const abs = Math.abs(Number(v || 0));
@@ -13,6 +14,7 @@ function money(v: number): string {
 
 const OptionalVouchers: React.FC = () => {
   const { vouchers, scenarios, addVoucher, updateVoucher, accounts, currentFiscalYear } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const [activeTab, setActiveTab] = useState(0);
   const [showForm, setShowForm] = useState(false);
   const [editingVoucher, setEditingVoucher] = useState<any>(null);
@@ -26,8 +28,14 @@ const OptionalVouchers: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Filter optional vouchers (and converted ones for the register)
-  const optionalVouchers = vouchers.filter(
-    (v) => v.isOptional || v.status === "optional" || v.convertedDate,
+  const optionalVouchers = useMemo(
+    () =>
+      vouchers.filter(
+        (v) =>
+          (v.isOptional || v.status === "optional" || v.convertedDate) &&
+          matchBranch((v as { branchId?: string }).branchId),
+      ),
+    [vouchers, matchBranch, branchFilter],
   );
 
   // Handle form changes
@@ -230,7 +238,7 @@ const OptionalVouchers: React.FC = () => {
               key={index}
               className={`px-4 py-2 text-[12px] font-medium border-b-2 transition-colors ${
                 activeTab === index && !showForm
-                  ? "border-[#1557b0] text-[#1557b0]"
+                  ? "border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
               onClick={() => {
@@ -246,8 +254,23 @@ const OptionalVouchers: React.FC = () => {
         {/* Tab Content */}
         {activeTab === 0 && !showForm && (
           <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 mb-4 max-w-full overflow-auto">
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-center mb-4 gap-3 flex-wrap">
               <h2 className="text-[14px] font-semibold text-gray-800">Optional Voucher Register</h2>
+              {branchOptions.length > 0 && (
+                <select
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
 
             <div className="border border-gray-200 rounded-md overflow-hidden">
@@ -325,7 +348,7 @@ const OptionalVouchers: React.FC = () => {
                               </button>
                             )}
                             <button
-                              className="text-[#1557b0] hover:text-[#0f4a96] transition-colors"
+                              className="text-[var(--ds-action-primary)] hover:text-[var(--ds-action-primary-hover)] transition-colors"
                               onClick={() => {
                                 setEditingVoucher(voucher);
                                 setForm({
@@ -381,7 +404,7 @@ const OptionalVouchers: React.FC = () => {
                 id="isOptional"
                 checked={true}
                 readOnly
-                className="mr-2 h-4 w-4 text-[#1557b0] rounded border-gray-300 focus:ring-[#1557b0]"
+                className="mr-2 h-4 w-4 text-[var(--ds-action-primary)] rounded border-gray-300 focus:ring-[var(--ds-action-primary)]"
               />
               <label htmlFor="isOptional" className="text-[12px] text-blue-800 font-medium">
                 This is an Optional Voucher (will not affect regular accounting books)
@@ -396,7 +419,7 @@ const OptionalVouchers: React.FC = () => {
                 <select
                   value={form.scenarioId}
                   onChange={(e) => handleFormChange("scenarioId", e.target.value)}
-                  className={`h-8 px-2.5 text-[12px] border ${errors.scenarioId ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"} rounded-md bg-white focus:outline-none focus:ring-2 w-full`}
+                  className={`h-8 px-2.5 text-[12px] border ${errors.scenarioId ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"} rounded-md bg-white focus:outline-none focus:ring-2 w-full`}
                 >
                   <option value="">Select Scenario</option>
                   {scenarios.map((scenario) => (
@@ -417,7 +440,7 @@ const OptionalVouchers: React.FC = () => {
                   type="text"
                   value={form.referenceNo}
                   onChange={(e) => handleFormChange("referenceNo", e.target.value)}
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 />
               </div>
               <div>
@@ -428,7 +451,7 @@ const OptionalVouchers: React.FC = () => {
                   type="date"
                   value={form.date}
                   onChange={(e) => handleFormChange("date", e.target.value)}
-                  className={`h-8 px-2.5 text-[12px] border ${errors.date ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"} rounded-md bg-white focus:outline-none focus:ring-2 w-full`}
+                  className={`h-8 px-2.5 text-[12px] border ${errors.date ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"} rounded-md bg-white focus:outline-none focus:ring-2 w-full`}
                 />
                 {errors.date && <div className="text-[10px] text-red-500 mt-1">{errors.date}</div>}
               </div>
@@ -441,7 +464,7 @@ const OptionalVouchers: React.FC = () => {
               <textarea
                 value={form.narration}
                 onChange={(e) => handleFormChange("narration", e.target.value)}
-                className={`p-2 text-[12px] border ${errors.narration ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"} rounded-md bg-white focus:outline-none focus:ring-2 w-full h-16 resize-none`}
+                className={`p-2 text-[12px] border ${errors.narration ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"} rounded-md bg-white focus:outline-none focus:ring-2 w-full h-16 resize-none`}
               />
               {errors.narration && (
                 <div className="text-[10px] text-red-500 mt-1">{errors.narration}</div>
@@ -491,7 +514,7 @@ const OptionalVouchers: React.FC = () => {
                           <select
                             value={line.accountId}
                             onChange={(e) => handleLineChange(index, "accountId", e.target.value)}
-                            className={`h-8 px-2.5 text-[12px] border ${errors[`account-${index}`] ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"} rounded-md bg-white focus:outline-none focus:ring-2 w-full`}
+                            className={`h-8 px-2.5 text-[12px] border ${errors[`account-${index}`] ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"} rounded-md bg-white focus:outline-none focus:ring-2 w-full`}
                           >
                             <option value="">Select Account</option>
                             {accounts
@@ -514,7 +537,7 @@ const OptionalVouchers: React.FC = () => {
                             step="0.01"
                             value={line.debit}
                             onChange={(e) => handleLineChange(index, "debit", e.target.value)}
-                            className={`h-8 px-2.5 text-[12px] border ${errors[`debit-${index}`] ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"} rounded-md bg-white text-right focus:outline-none focus:ring-2 w-full`}
+                            className={`h-8 px-2.5 text-[12px] border ${errors[`debit-${index}`] ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"} rounded-md bg-white text-right focus:outline-none focus:ring-2 w-full`}
                           />
                         </td>
                         <td className="px-3 py-2 align-top">
@@ -523,7 +546,7 @@ const OptionalVouchers: React.FC = () => {
                             step="0.01"
                             value={line.credit}
                             onChange={(e) => handleLineChange(index, "credit", e.target.value)}
-                            className={`h-8 px-2.5 text-[12px] border ${errors[`credit-${index}`] ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"} rounded-md bg-white text-right focus:outline-none focus:ring-2 w-full`}
+                            className={`h-8 px-2.5 text-[12px] border ${errors[`credit-${index}`] ? "border-red-500 focus:ring-red-500/20" : "border-gray-300 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"} rounded-md bg-white text-right focus:outline-none focus:ring-2 w-full`}
                           />
                         </td>
                         <td className="px-3 py-2 align-top text-center">
@@ -576,7 +599,7 @@ const OptionalVouchers: React.FC = () => {
                 Cancel
               </button>
               <button
-                className="h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
+                className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
                 onClick={handleSave}
               >
                 Save Optional Voucher

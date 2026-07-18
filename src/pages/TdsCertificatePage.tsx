@@ -2,9 +2,11 @@ import React, { useMemo, useState } from "react";
 import { useStore } from "../store/useStore";
 import TdsCertificate from "../components/TdsCertificate";
 import { FileCheck } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const TdsCertificatePage: React.FC = () => {
   const { parties, tdsEntries, companySettings, currentFiscalYear } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [partyId, setPartyId] = useState("");
   const [fiscalYearBS, setFiscalYearBS] = useState(
     currentFiscalYear?.fiscalYearBS || currentFiscalYear?.name || "2081/2082",
@@ -17,13 +19,19 @@ const TdsCertificatePage: React.FC = () => {
   );
   const [certificateDateBS, setCertificateDateBS] = useState("");
 
-  const party = useMemo(() => parties.find((p) => p.id === partyId), [parties, partyId]);
+  const scopedParties = useMemo(
+    () => parties.filter((p) => matchBranch((p as { branchId?: string }).branchId)),
+    [parties, matchBranch, branchFilter],
+  );
+
+  const party = useMemo(() => scopedParties.find((p) => p.id === partyId), [scopedParties, partyId]);
 
   const payments = useMemo(() => {
     return tdsEntries
       .filter(
         (e) =>
           e.partyId === partyId &&
+          matchBranch((e as { branchId?: string }).branchId) &&
           (e.fiscalYearBS === fiscalYearBS || !fiscalYearBS) &&
           Number(e.tdsAmount || 0) > 0,
       )
@@ -37,20 +45,35 @@ const TdsCertificatePage: React.FC = () => {
         tdsRate: Number(e.tdsRate || 0),
         tdsAmount: Number(e.tdsAmount || 0),
       }));
-  }, [tdsEntries, partyId, fiscalYearBS]);
+  }, [tdsEntries, partyId, fiscalYearBS, matchBranch, branchFilter]);
 
   return (
     <div className="p-4 md:p-6 bg-[#f5f6fa] min-h-screen">
       <div className="flex items-center justify-between mb-4 no-print">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-            <FileCheck className="h-4 w-4 text-[#1557b0]" />
+            <FileCheck className="h-4 w-4 text-[var(--ds-action-primary)]" />
             TDS Certificate
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Generate certificate of tax deduction at source for deductees
           </p>
         </div>
+        {branchOptions.length > 0 && (
+          <select
+            value={branchFilter}
+            onChange={(e) => setBranchFilter(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            aria-label="Branch"
+          >
+            <option value="all">All branches</option>
+            {branchOptions.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name || b.code || b.id}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4 no-print">
@@ -60,10 +83,10 @@ const TdsCertificatePage: React.FC = () => {
             <select
               value={partyId}
               onChange={(e) => setPartyId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
             >
               <option value="">— Select Party —</option>
-              {parties.map((p) => (
+              {scopedParties.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name}
                 </option>
@@ -78,7 +101,7 @@ const TdsCertificatePage: React.FC = () => {
               type="text"
               value={fiscalYearBS}
               onChange={(e) => setFiscalYearBS(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
             />
           </div>
           <div>
@@ -90,7 +113,7 @@ const TdsCertificatePage: React.FC = () => {
               value={certificateDateBS}
               onChange={(e) => setCertificateDateBS(e.target.value)}
               placeholder="2081-09-15"
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
             />
           </div>
           <div>
@@ -101,7 +124,7 @@ const TdsCertificatePage: React.FC = () => {
               type="text"
               value={authorizedPersonName}
               onChange={(e) => setAuthorizedPersonName(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
             />
           </div>
           <div>
@@ -110,7 +133,7 @@ const TdsCertificatePage: React.FC = () => {
               type="text"
               value={authorizedPersonDesignation}
               onChange={(e) => setAuthorizedPersonDesignation(e.target.value)}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
             />
           </div>
         </div>

@@ -4,6 +4,8 @@ import { useStore } from "../store/useStore";
 import { generateId } from "../lib/db";
 import toast from "@/lib/appToast";
 import { Play, CheckCircle, RefreshCw, Plus } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 function money(v: number): string {
   const abs = Math.abs(Number(v || 0));
@@ -13,6 +15,7 @@ function money(v: number): string {
 
 const BatchVoucherEntry: React.FC = () => {
   const { accounts, addVoucher, currentFiscalYear } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions } = useBranchFilter();
 
   interface BatchRow {
     id: string;
@@ -157,6 +160,7 @@ const BatchVoucherEntry: React.FC = () => {
           status: "posted",
           date: row.date,
           narration: row.narration,
+          branchId: readActiveBranchId() || undefined,
           lines: [
             {
               id: generateId(),
@@ -223,13 +227,28 @@ const BatchVoucherEntry: React.FC = () => {
               Rapid data entry for multiple journal vouchers
             </p>
           </div>
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 mb-6">
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center gap-2">
               <button
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors shadow-sm disabled:opacity-50"
+                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors shadow-sm disabled:opacity-50"
                 onClick={handlePostAll}
                 disabled={postingProgress !== null}
               >
@@ -327,14 +346,14 @@ const BatchVoucherEntry: React.FC = () => {
                           type="date"
                           value={row.date}
                           onChange={(e) => handleCellChange(index, "date", e.target.value)}
-                          className={`h-8 px-2.5 text-[12px] border ${row.isValid === false ? "border-red-300" : "border-gray-300"} rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full`}
+                          className={`h-8 px-2.5 text-[12px] border ${row.isValid === false ? "border-red-300" : "border-gray-300"} rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full`}
                         />
                       </td>
                       <td className="px-3 py-2 align-top">
                         <select
                           value={row.drAccountId}
                           onChange={(e) => handleCellChange(index, "drAccountId", e.target.value)}
-                          className={`h-8 px-2.5 text-[12px] border ${row.isValid === false && !row.drAccountId ? "border-red-500" : row.isValid === false ? "border-red-300" : "border-gray-300"} rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full`}
+                          className={`h-8 px-2.5 text-[12px] border ${row.isValid === false && !row.drAccountId ? "border-red-500" : row.isValid === false ? "border-red-300" : "border-gray-300"} rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full`}
                         >
                           <option value="">Select Account</option>
                           {accountOptions.map((acc) => (
@@ -348,7 +367,7 @@ const BatchVoucherEntry: React.FC = () => {
                         <select
                           value={row.crAccountId}
                           onChange={(e) => handleCellChange(index, "crAccountId", e.target.value)}
-                          className={`h-8 px-2.5 text-[12px] border ${row.isValid === false && (!row.crAccountId || row.drAccountId === row.crAccountId) ? "border-red-500" : row.isValid === false ? "border-red-300" : "border-gray-300"} rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full`}
+                          className={`h-8 px-2.5 text-[12px] border ${row.isValid === false && (!row.crAccountId || row.drAccountId === row.crAccountId) ? "border-red-500" : row.isValid === false ? "border-red-300" : "border-gray-300"} rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full`}
                         >
                           <option value="">Select Account</option>
                           {accountOptions.map((acc) => (
@@ -367,7 +386,7 @@ const BatchVoucherEntry: React.FC = () => {
                           onChange={(e) =>
                             handleCellChange(index, "amount", Number(e.target.value) || 0)
                           }
-                          className={`h-8 px-2.5 text-[12px] border ${row.isValid === false && row.amount <= 0 ? "border-red-500" : row.isValid === false ? "border-red-300" : "border-gray-300"} rounded-md bg-white text-right focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full`}
+                          className={`h-8 px-2.5 text-[12px] border ${row.isValid === false && row.amount <= 0 ? "border-red-500" : row.isValid === false ? "border-red-300" : "border-gray-300"} rounded-md bg-white text-right focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full`}
                         />
                       </td>
                       <td className="px-3 py-2 align-top">
@@ -375,7 +394,7 @@ const BatchVoucherEntry: React.FC = () => {
                           type="text"
                           value={row.narration}
                           onChange={(e) => handleCellChange(index, "narration", e.target.value)}
-                          className={`h-8 px-2.5 text-[12px] border ${row.isValid === false ? "border-red-300" : "border-gray-300"} rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full`}
+                          className={`h-8 px-2.5 text-[12px] border ${row.isValid === false ? "border-red-300" : "border-gray-300"} rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full`}
                         />
                       </td>
                       <td className="px-3 py-2 align-top pt-3.5">

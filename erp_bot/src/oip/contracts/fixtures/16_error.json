@@ -1,0 +1,29 @@
+{
+  "data": {
+    "citations": [],
+    "conversation_id": "conv-demo-001",
+    "created_at": "2026-07-14T12:00:00Z",
+    "draft_reference": null,
+    "language": "en",
+    "policy_reference": null,
+    "request_id": "req-demo-016",
+    "response_id": "resp-demo-016",
+    "response_type": "ERROR",
+    "schema_version": "1.0.0",
+    "status": "FAILED",
+    "structured_payload": {
+      "error_code": "GENERAL_ERROR",
+      "exception_type": null,
+      "payload_type": "ERROR",
+      "safe_message": "Something went wrong.",
+      "stack_trace": null
+    },
+    "suggested_safe_actions": [],
+    "trace_reference": null,
+    "uncertainty": null,
+    "user_visible_text": "Something went wrong.",
+    "warnings": []
+  },
+  "kind": "AIResponseEnvelopeV1",
+  "valid": true
+}

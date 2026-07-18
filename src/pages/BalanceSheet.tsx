@@ -41,6 +41,8 @@ import {
   shiftDateByYears,
   type BalanceSheetData,
 } from "../lib/nepalFinancialStatements";
+import { readActiveBranchId } from "../lib/activeBranch";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 // ─── Default Options ──────────────────────────────────────────────────────────
 
@@ -56,6 +58,7 @@ const makeDefaultOptions = (fy: any): BSOptions => ({
   stockUpdation: "automatic",
   roundOff: false,
   comparativeYears: 1,
+  branchId: readActiveBranchId() || "all",
 });
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -83,6 +86,7 @@ function OptionsDialog({
   companyName: string;
   fiscalYear?: any;
 }) {
+  const { branchOptions } = useBranchFilter();
   const [opts, setOpts] = useState<BSOptions>({ ...options });
   const set = (k: keyof BSOptions, v: any) => setOpts((p) => ({ ...p, [k]: v }));
 
@@ -161,6 +165,24 @@ function OptionsDialog({
               label="Report Period"
             />
           </div>
+
+          {branchOptions.length > 0 && (
+            <div>
+              <label className={lbl}>Branch</label>
+              <select
+                className={inp}
+                value={opts.branchId || "all"}
+                onChange={(e) => set("branchId", e.target.value)}
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {/* FY presets */}
           {fiscalYear && (
@@ -932,10 +954,16 @@ export default function BalanceSheet() {
       try {
         if (opts.formatId === "schedule-iii") {
           const prevTo = shiftDateByYears(opts.toDate, -1);
+          const branchOk = (v: any) =>
+            !opts.branchId ||
+            opts.branchId === "all" ||
+            !v.branchId ||
+            v.branchId === opts.branchId;
+          const scoped = ((vouchers || []) as any[]).filter(branchOk);
           const nas = buildBalanceSheetData({
             accounts: (accounts || []) as any[],
-            currentVouchers: (vouchers || []) as any[],
-            previousVouchers: (vouchers || []) as any[],
+            currentVouchers: scoped,
+            previousVouchers: scoped,
             asAtDate: opts.toDate,
             previousAsAtDate: prevTo,
           });

@@ -11,6 +11,8 @@ import toast from "@/lib/appToast";
 import { ConfirmDialog } from "../components/ui";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 import { Employee } from "../lib/types";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const th = "px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
@@ -55,6 +57,7 @@ const emptyForm = (): Omit<Employee, "id"> => ({
 
 export default function EmployeeMaster() {
   const { employees, addEmployee, updateEmployee, deleteEmployee } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [showForm, setShowForm] = useState(false);
   const [selectedEmp, setSelectedEmp] = useState<Employee | null>(null);
@@ -66,14 +69,16 @@ export default function EmployeeMaster() {
 
   const filteredEmployees = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
-    if (!q) return employees;
-    return employees.filter(
-      (e) =>
+    return employees.filter((e) => {
+      if (!matchBranch((e as { branchId?: string }).branchId)) return false;
+      if (!q) return true;
+      return (
         e.name.toLowerCase().includes(q) ||
         e.designation.toLowerCase().includes(q) ||
-        (e.department || "").toLowerCase().includes(q),
-    );
-  }, [employees, searchTerm]);
+        (e.department || "").toLowerCase().includes(q)
+      );
+    });
+  }, [employees, searchTerm, matchBranch, branchFilter]);
 
   const resetForm = () => {
     setFormData(emptyForm());
@@ -118,11 +123,16 @@ export default function EmployeeMaster() {
     }
 
     try {
+      const payload = {
+        ...formData,
+        branchId:
+          (formData as { branchId?: string }).branchId || readActiveBranchId() || undefined,
+      } as any;
       if (selectedEmp) {
-        await updateEmployee(selectedEmp.id, formData);
+        await updateEmployee(selectedEmp.id, payload);
         toast.success("Employee updated successfully");
       } else {
-        await addEmployee(formData);
+        await addEmployee(payload);
         toast.success("Employee added successfully");
       }
       resetForm();
@@ -144,10 +154,27 @@ export default function EmployeeMaster() {
                 Manage staff, designations, and payroll details
               </p>
             </div>
-            <button type="button" className={btnPrimary} onClick={handleOpenAdd}>
-              <Plus className="h-3.5 w-3.5" />
-              Add employee
-            </button>
+            <div className="flex items-center gap-2">
+              {branchOptions.length > 0 && (
+                <select
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>
+              )}
+              <button type="button" className={btnPrimary} onClick={handleOpenAdd}>
+                <Plus className="h-3.5 w-3.5" />
+                Add employee
+              </button>
+            </div>
           </div>
 
           <div className="relative mb-3 max-w-xs">

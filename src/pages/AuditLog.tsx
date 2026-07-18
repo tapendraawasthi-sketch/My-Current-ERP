@@ -38,6 +38,7 @@ import {
   Unlock,
   Printer,
 } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 import { format, parseISO } from "date-fns";
 import { logAuditEvent } from "../lib/auditLog";
 import { exportToExcel } from "../lib/exportUtils";
@@ -110,6 +111,7 @@ const AuditLog = () => {
   const config = getConfig();
 
   const { auditLogs, users, companySettings } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [loading, setLoading] = useState(true);
   const [auditPage, setAuditPage] = useState(1);
   const [auditPageSize, setAuditPageSize] = useState(50);
@@ -248,6 +250,7 @@ const AuditLog = () => {
   // Filtered rows
   const filteredRows = useMemo(() => {
     return processedLogs.filter((r) => {
+      if (!matchBranch((r as { branchId?: string }).branchId)) return false;
       if (filters.fromDate && r.timestamp < filters.fromDate) return false;
       if (filters.toDate && r.timestamp > filters.toDate) return false;
       if (
@@ -264,7 +267,7 @@ const AuditLog = () => {
       if (filters.source !== "All" && r.source !== filters.source) return false;
       return true;
     });
-  }, [auditLogs, filters]);
+  }, [processedLogs, filters, matchBranch, branchFilter]);
 
   // Load audit data
   const loadAuditData = async () => {
@@ -711,7 +714,7 @@ const AuditLog = () => {
       <div className="flex flex-col md:flex-row gap-4 mb-4">
         {renderBarChart("Activity by Module", stats.moduleCounts, "bg-blue-400")}
         {renderBarChart("Events by Risk Level", stats.riskCounts, "bg-amber-400")}
-        {renderBarChart("Top Actions", stats.actionCounts, "bg-emerald-400")}
+        {renderBarChart("Top Actions", stats.actionCounts, "bg-[var(--ds-status-success)]")}
       </div>
     );
   };
@@ -829,7 +832,7 @@ const AuditLog = () => {
                       </td>
                       <td className={td}>{u.loginCount}</td>
                       <td className={td}>
-                        <span className="text-emerald-700">{u.createCount}</span>
+                        <span className="text-[var(--ds-status-success)]">{u.createCount}</span>
                       </td>
                       <td className={td}>
                         <span className="text-amber-700">{u.editCount}</span>
@@ -949,12 +952,12 @@ const AuditLog = () => {
             {Object.entries(periodMap).map(([key, info]) => (
               <div
                 key={key}
-                className={`${card} border-l-4 ${info.locked ? "border-l-purple-500" : "border-l-emerald-400"}`}
+                className={`${card} border-l-4 ${info.locked ? "border-l-[var(--ds-status-info)]" : "border-l-[var(--ds-status-success)]"}`}
               >
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-[12px] font-semibold text-gray-800">{key}</span>
                   <span
-                    className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-[12px] font-medium ${info.locked ? "bg-purple-50 text-purple-700 border-purple-200" : "bg-emerald-50 text-emerald-700 border-emerald-200"}`}
+                    className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-[12px] font-medium ${info.locked ? "bg-[var(--ds-status-info-surface)] text-[var(--ds-status-info)] border-[var(--ds-status-info)]/30" : "bg-[var(--ds-status-success-surface)] text-[var(--ds-status-success)] border-[var(--ds-status-success)]/30"}`}
                   >
                     {info.locked ? <Lock className="h-3 w-3" /> : <Unlock className="h-3 w-3" />}
                     {info.locked ? "Locked" : "Open"}
@@ -969,9 +972,9 @@ const AuditLog = () => {
                     {info.history.slice(0, 5).map((h, i) => (
                       <div key={i} className="text-[12px] text-gray-500 flex items-center gap-1">
                         {String(h.action).toLowerCase().includes("unlock") ? (
-                          <Unlock className="h-2.5 w-2.5 text-emerald-500 shrink-0" />
+                          <Unlock className="h-2.5 w-2.5 text-[var(--ds-status-success)] shrink-0" />
                         ) : (
-                          <Lock className="h-2.5 w-2.5 text-purple-500 shrink-0" />
+                          <Lock className="h-2.5 w-2.5 text-[var(--ds-status-info)] shrink-0" />
                         )}
                         {h.action} by {h.user} — {String(h.timestamp).slice(0, 10)}
                       </div>
@@ -1003,7 +1006,7 @@ const AuditLog = () => {
               return (
                 <div
                   key={month}
-                  className={`rounded p-2 text-center border text-[12px] font-medium ${hasLock ? "bg-purple-50 border-purple-200 text-purple-700" : "bg-gray-50 border-gray-200 text-gray-600"}`}
+                  className={`rounded p-2 text-center border text-[12px] font-medium ${hasLock ? "bg-[var(--ds-status-info-surface)] border-[var(--ds-status-info)]/30 text-[var(--ds-status-info)]" : "bg-gray-50 border-gray-200 text-gray-600"}`}
                 >
                   <div>{month.slice(0, 3)}</div>
                   <div className="text-[12px] opacity-60">M{i + 1}</div>
@@ -1046,7 +1049,7 @@ const AuditLog = () => {
       if (risk === "Critical") return "bg-red-100 text-red-800 border-red-300";
       if (risk === "High") return "bg-orange-100 text-orange-800 border-orange-300";
       if (risk === "Medium") return "bg-yellow-100 text-yellow-800 border-yellow-300";
-      return "bg-green-100 text-green-800 border-green-300";
+      return "bg-[var(--ds-status-success-surface)] text-[var(--ds-status-success)] border-[var(--ds-status-success)]/30";
     };
 
     const card = "bg-white border border-gray-200 rounded-md p-4";
@@ -1100,7 +1103,7 @@ const AuditLog = () => {
                       <td className={`${td} max-w-[240px] truncate`}>{r.description}</td>
                       <td className={td}>
                         <span
-                          className={`inline-flex px-1.5 py-0.5 rounded border text-[12px] font-medium ${String(r.status).toLowerCase().includes("fail") ? "bg-red-50 text-red-700 border-red-200" : "bg-emerald-50 text-emerald-700 border-emerald-200"}`}
+                          className={`inline-flex px-1.5 py-0.5 rounded border text-[12px] font-medium ${String(r.status).toLowerCase().includes("fail") ? "bg-[var(--ds-status-danger-surface)] text-[var(--ds-status-danger)] border-[var(--ds-status-danger)]/30" : "bg-[var(--ds-status-success-surface)] text-[var(--ds-status-success)] border-[var(--ds-status-success)]/30"}`}
                         >
                           {r.status}
                         </span>
@@ -1321,6 +1324,21 @@ const AuditLog = () => {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            {branchOptions.length > 0 && (
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            )}
             <button
               className="h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 flex items-center gap-1.5"
               onClick={loadAuditData}
@@ -1515,7 +1533,7 @@ const AuditLog = () => {
                                   <th className="text-left px-3 py-1.5 text-[12px] font-semibold text-red-500 uppercase w-[37.5%]">
                                     Before
                                   </th>
-                                  <th className="text-left px-3 py-1.5 text-[12px] font-semibold text-emerald-600 uppercase w-[37.5%]">
+                                  <th className="text-left px-3 py-1.5 text-[12px] font-semibold text-[var(--ds-status-success)] uppercase w-[37.5%]">
                                     After
                                   </th>
                                 </tr>
@@ -1539,7 +1557,7 @@ const AuditLog = () => {
                                       {d.changeType === "removed" ? (
                                         <span className="text-gray-400 italic">—</span>
                                       ) : (
-                                        <span className="text-emerald-700 font-medium">
+                                        <span className="text-[var(--ds-status-success)] font-medium">
                                           {formatDiffValue(d.newValue)}
                                         </span>
                                       )}

@@ -1,6 +1,7 @@
 // @ts-nocheck
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useStore } from "../store";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 import {
   FolderOpen,
   Layers,
@@ -58,7 +59,19 @@ const MasterControlCentre: React.FC = () => {
     salaryDetails,
   } = useStore();
 
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
+
   const [activeTab, setActiveTab] = useState("accounting");
+
+  const filteredWarehouses = useMemo(
+    () => (warehouses || []).filter((w) => matchBranch(w.branchId)),
+    [warehouses, matchBranch, branchFilter],
+  );
+
+  const filteredBudgets = useMemo(
+    () => (budgets || []).filter((b) => matchBranch(b.branchId)),
+    [budgets, matchBranch, branchFilter],
+  );
 
   const totalLedgers = (accounts || []).filter((a) => !a.isGroup).length;
 
@@ -94,7 +107,7 @@ const MasterControlCentre: React.FC = () => {
       count: (costCentreClasses || []).length,
       icon: Layers,
     },
-    { label: "Budget Master", page: "budget", count: (budgets || []).length, icon: TrendingUp },
+    { label: "Budget Master", page: "budget", count: filteredBudgets.length, icon: TrendingUp },
     {
       label: "Scenario Master",
       page: "scenarios",
@@ -128,7 +141,7 @@ const MasterControlCentre: React.FC = () => {
     {
       label: "Warehouses / Godowns",
       page: "warehouses",
-      count: (warehouses || []).length,
+      count: filteredWarehouses.length,
       icon: Archive,
     },
     {
@@ -240,11 +253,28 @@ const MasterControlCentre: React.FC = () => {
 
   return (
     <div className="h-[calc(100vh-80px)] flex flex-col bg-[var(--ds-surface-muted)] overflow-hidden">
-      <div className="p-4 bg-white border-b border-gray-200">
-        <h2 className="text-[18px] font-bold text-[var(--ds-text-default)]">Setup centre</h2>
-        <p className="text-[12px] text-[var(--ds-text-default)] mt-1">
-          All setup in one place.
-        </p>
+      <div className="p-4 bg-white border-b border-gray-200 flex items-center justify-between">
+        <div>
+          <h2 className="text-[18px] font-bold text-[var(--ds-text-default)]">Setup centre</h2>
+          <p className="text-[12px] text-[var(--ds-text-default)] mt-1">
+            All setup in one place.
+          </p>
+        </div>
+        {branchOptions.length > 0 ? (
+          <select
+            value={branchFilter}
+            onChange={(e) => setBranchFilter(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            aria-label="Branch filter"
+          >
+            <option value="all">All branches</option>
+            {branchOptions.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name || b.code || b.id}
+              </option>
+            ))}
+          </select>
+        ) : null}
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 lg:p-6">
@@ -268,7 +298,7 @@ const MasterControlCentre: React.FC = () => {
             </div>
             <div className="text-2xl font-bold mt-1 text-[var(--ds-text-default)]">{(employees || []).length}</div>
           </div>
-          <div className="bg-white border-l-4 border-purple-500 rounded-md p-4 shadow-sm">
+          <div className="bg-white border-l-4 border-[var(--ds-status-info)] rounded-md p-4 shadow-sm">
             <div className="text-[12px] font-semibold text-[var(--ds-text-default)] uppercase tracking-wide">
               Pay Heads
             </div>

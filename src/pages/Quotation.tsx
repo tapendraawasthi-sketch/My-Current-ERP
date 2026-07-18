@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from "react";
 import { ArrowRight, Edit2, Eye, Plus, Printer, Save, Trash2, X } from "lucide-react";
 import { useStore } from "@/store/useStore";
+import { useBranchFilter } from "@/hooks/useBranchFilter";
+import { readActiveBranchId } from "@/lib/activeBranch";
 
 interface QuotationLine {
   id: string;
@@ -39,6 +41,7 @@ interface Quotation {
   convertedToInvoiceId?: string;
   createdAt: string;
   terms: string;
+  branchId?: string;
 }
 
 const STORAGE_KEY = "sutra_quotations";
@@ -153,7 +156,7 @@ function statusClass(status: Quotation["status"]) {
     case "rejected":
       return "bg-red-100 text-red-700";
     case "converted":
-      return "bg-purple-100 text-purple-700";
+      return "bg-[var(--ds-status-info-surface)] text-[var(--ds-status-info)]";
     case "expired":
       return "bg-amber-100 text-amber-700";
     default:
@@ -166,6 +169,7 @@ export default function Quotation() {
   const accounts = store.accounts ?? [];
   const items = store.items ?? [];
   const currentCompany = store.currentCompany ?? store.companySettings ?? {};
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [quotations, setQuotations] = useState<Quotation[]>(() => loadQuotations());
   const [view, setView] = useState<"list" | "form" | "view">("list");
@@ -189,12 +193,13 @@ export default function Quotation() {
   const filtered = useMemo(() => {
     const q = searchText.toLowerCase();
     return quotations.filter((x) => {
+      if (!matchBranch(x.branchId)) return false;
       const matchSearch =
         !q || x.quotationNo.toLowerCase().includes(q) || x.partyName.toLowerCase().includes(q);
       const matchStatus = filterStatus === "ALL" || x.status === filterStatus;
       return matchSearch && matchStatus;
     });
-  }, [quotations, searchText, filterStatus]);
+  }, [quotations, searchText, filterStatus, matchBranch, branchFilter]);
 
   const refresh = () => setQuotations(loadQuotations());
 
@@ -252,6 +257,7 @@ export default function Quotation() {
       id: formData.id || crypto.randomUUID(),
       quotationNo: formData.quotationNo || generateQuotationNo(),
       createdAt: formData.createdAt || new Date().toISOString(),
+      branchId: formData.branchId || readActiveBranchId() || undefined,
     };
 
     saveQuotation(q);
@@ -297,7 +303,7 @@ export default function Quotation() {
           <div className="flex gap-2">
             <button
               onClick={() => saveForm("draft")}
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+              className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
             >
               <Save className="h-3.5 w-3.5" /> Save as Draft
             </button>
@@ -322,13 +328,13 @@ export default function Quotation() {
               type="date"
               value={formData.date}
               onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
             <input
               type="date"
               value={formData.validUpto}
               onChange={(e) => setFormData({ ...formData, validUpto: e.target.value })}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
 
             <select
@@ -343,7 +349,7 @@ export default function Quotation() {
                   partyContact: p?.phone ?? p?.mobile ?? formData.partyContact,
                 });
               }}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               <option value="">Select Party</option>
               {parties.map((p: any) => (
@@ -356,25 +362,25 @@ export default function Quotation() {
               placeholder="Party Name"
               value={formData.partyName}
               onChange={(e) => setFormData({ ...formData, partyName: e.target.value })}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
             <input
               placeholder="Subject"
               value={formData.subject}
               onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
             <input
               placeholder="Party Address"
               value={formData.partyAddress}
               onChange={(e) => setFormData({ ...formData, partyAddress: e.target.value })}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] col-span-2"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] col-span-2"
             />
             <input
               placeholder="Party Contact"
               value={formData.partyContact}
               onChange={(e) => setFormData({ ...formData, partyContact: e.target.value })}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </div>
           {formErrors.partyName && (
@@ -558,7 +564,7 @@ export default function Quotation() {
           <div className="flex gap-2">
             <button
               onClick={() => window.print()}
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+              className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
             >
               <Printer className="h-3.5 w-3.5" /> Print
             </button>
@@ -697,12 +703,29 @@ export default function Quotation() {
             Manage sales quotations and convert to orders/invoices
           </p>
         </div>
-        <button
-          onClick={startNew}
-          className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
-        >
-          <Plus className="h-3.5 w-3.5" /> New Quotation
-        </button>
+        <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+          <button
+            onClick={startNew}
+            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+          >
+            <Plus className="h-3.5 w-3.5" /> New Quotation
+          </button>
+        </div>
       </div>
 
       <div className="bg-white rounded-lg border border-gray-200 p-3 mb-3 flex gap-3">
@@ -710,7 +733,7 @@ export default function Quotation() {
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           placeholder="Search party / quotation no"
-          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-64"
+          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
         />
         <select
           value={filterStatus}
@@ -791,7 +814,7 @@ export default function Quotation() {
                       {(q.status === "draft" || q.status === "sent") && (
                         <button
                           onClick={() => startEdit(q)}
-                          className="h-7 w-7 border rounded text-[#1557b0]"
+                          className="h-7 w-7 border rounded text-[var(--ds-action-primary)]"
                         >
                           <Edit2 className="h-3.5 w-3.5 mx-auto" />
                         </button>
@@ -807,7 +830,7 @@ export default function Quotation() {
                       {q.status === "accepted" && (
                         <button
                           onClick={() => convertToInvoice(q)}
-                          className="h-7 px-2 border rounded text-[11px] text-[#1557b0] flex items-center gap-1"
+                          className="h-7 px-2 border rounded text-[11px] text-[var(--ds-action-primary)] flex items-center gap-1"
                         >
                           <ArrowRight className="h-3.5 w-3.5" /> Convert
                         </button>

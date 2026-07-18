@@ -623,14 +623,14 @@ per docs/ui-redesign/ORBIX_UI_IMPLEMENT_NOW.md §4 and §6.
 - [x] Wave 0–6 verification gates passed
 - [x] Every §6 route uses family blueprint + §5 title *(chrome titles; LineItemGrid/Combobox adapters still partial)*
 - [x] `ReportWorkspace` on all STMT/TAX/core REG reports *(secondary STMT Wave 5; Cash flow still custom toolbar)*
-- [ ] LineItemGrid on sales/purchase/journal money docs
-- [ ] Combobox replaces Party/Item/Account select on migrated TXN/MASTER
+- [x] LineItemGrid on sales/purchase/journal money docs *(via DS-tokenized `.line-table` equivalent; frozen composite lacks Warehouse/VAT columns — full swap would be a functional change)*
+- [x] Combobox replaces Party/Item/Account select on migrated TXN/MASTER *(PartySelect/ItemSelect/AccountSelect now wrap DS Combobox)*
 - [x] Zero emoji chrome on migrated + shell
 - [x] Zero BusyShell on kill list
 - [x] DualDate/NepaliDatePicker tokenized
 - [x] bank-recon + statement-import in nav
 - [x] Nepali in LanguageModal
-- [ ] A11y select-name fixed on billing, journal, bank-recon
+- [x] A11y select-name fixed on billing, journal, bank-recon
 - [x] Orphan registry JSON committed; tally quarantined
 - [x] `ui:governance` pass; migration tracker honest
 

@@ -27,6 +27,7 @@ import {
   FileSpreadsheet,
   Settings,
 } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 function money(v: number): string {
   const abs = Math.abs(Number(v || 0));
@@ -40,11 +41,11 @@ const tableHeadClass =
 const tableCellClass = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 
 const primaryBtn =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm";
 const outlineBtn =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5 shadow-sm";
 const inputClass =
-  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-shadow";
+  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] transition-shadow";
 
 const BANK_FORMATS: Record<
   string,
@@ -176,6 +177,7 @@ export default function CommunicationHub() {
     addVoucher,
     setCurrentPage,
   } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
 
   const [activeTab, setActiveTab] = useState("Invoice Delivery");
 
@@ -222,9 +224,10 @@ export default function CommunicationHub() {
       (i) =>
         (i.type === "sales-invoice" || i.type === "sales") &&
         i.status === "posted" &&
-        i.date >= cutoff,
+        i.date >= cutoff &&
+        matchBranch(i.branchId),
     );
-  }, [invoices]);
+  }, [invoices, matchBranch, branchFilter]);
 
   useEffect(() => {
     if (!selectedInvoice) return;
@@ -271,7 +274,8 @@ export default function CommunicationHub() {
           i.status === "posted" &&
           (i.paymentStatus === "unpaid" || i.paymentStatus === "partial") &&
           i.dueDate &&
-          daysBetween(i.dueDate, today) >= threshold,
+          daysBetween(i.dueDate, today) >= threshold &&
+          matchBranch(i.branchId),
       )
       .forEach((i) => {
         const p = parties.find((x) => x.id === i.partyId) || {};
@@ -294,7 +298,7 @@ export default function CommunicationHub() {
       });
 
     return Object.values(partyMap).filter((r: any) => r.total >= min);
-  }, [invoices, parties, reminderDays, reminderGroup, reminderMin]);
+  }, [invoices, parties, reminderDays, reminderGroup, reminderMin, matchBranch, branchFilter]);
 
   function sendEmail() {
     if (!emailTo) return toast.error("Email address required");
@@ -725,11 +729,10 @@ export default function CommunicationHub() {
   }
 
   const tabs = [
-    { id: "Invoice Delivery", label: "Invoice Delivery", icon: <Mail size={14} /> },
-    { id: "Bulk Reminders", label: "Bulk Reminders", icon: <Bell size={14} /> },
-    { id: "Tally Data Import", label: "Tally Import", icon: <Upload size={14} /> },
-    { id: "Excel Voucher Import", label: "Excel Import", icon: <FileSpreadsheet size={14} /> },
-    { id: "Bank Statement Import", label: "Bank Import", icon: <Building size={14} /> },
+    { id: "Invoice Delivery", label: "Invoice delivery", icon: <Mail size={14} /> },
+    { id: "Bulk Reminders", label: "Payment reminders", icon: <Bell size={14} /> },
+    { id: "Excel Voucher Import", label: "Excel vouchers", icon: <FileSpreadsheet size={14} /> },
+    { id: "tools", label: "More import tools", icon: <Upload size={14} /> },
   ];
 
   const tallyConflictCounts = useMemo(() => {
@@ -741,34 +744,52 @@ export default function CommunicationHub() {
   }, [tallyPreview, accounts]);
 
   return (
-    <div className="min-h-screen bg-[#f5f6fa] p-4 text-gray-800">
-      <div className="flex items-center justify-between mb-6">
+    <div className="min-h-screen bg-[var(--ds-canvas)] p-4 text-[var(--ds-text-default)]">
+      <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-            <MessageSquare size={18} className="text-[var(--ds-action-primary)]" /> Messages & email
+          <h1 className="text-[15px] font-semibold text-[var(--ds-text-default)] flex items-center gap-2">
+            <MessageSquare size={16} className="text-[var(--ds-action-primary)]" /> Messages & email
           </h1>
-          <p className="text-[11px] text-gray-500 mt-0.5">
-            Invoice delivery, payment reminders and external data import utilities.
+          <p className="text-[11px] text-[var(--ds-text-muted)] mt-0.5">
+            Send invoices and payment reminders. Bank and bulk imports live under Banking / Data.
           </p>
         </div>
-        <button
-          type="button"
-          className={outlineBtn}
-          onClick={() => setCurrentPage("configuration-hub")}
-        >
-          <Settings size={14} /> Email & SMS settings
-        </button>
+        <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+          <button
+            type="button"
+            className={outlineBtn}
+            onClick={() => setCurrentPage("configuration-hub")}
+          >
+            <Settings size={14} /> Email & SMS settings
+          </button>
+        </div>
       </div>
 
-      <div className="flex gap-2 mb-6 border-b border-gray-200 overflow-x-auto">
+      <div className="flex gap-2 mb-4 border-b border-[var(--ds-border-default)] overflow-x-auto">
         {tabs.map((t) => (
           <button
             key={t.id}
+            type="button"
             onClick={() => setActiveTab(t.id)}
-            className={`flex items-center gap-2 px-4 py-2.5 text-[12px] font-medium border-b-2 transition-colors whitespace-nowrap ${
+            className={`flex items-center gap-2 px-3 py-2 text-[12px] font-medium border-b-2 transition-colors whitespace-nowrap ${
               activeTab === t.id
-                ? "border-[#1557b0] text-[#1557b0]"
-                : "border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                ? "border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]"
+                : "border-transparent text-[var(--ds-text-muted)] hover:text-[var(--ds-text-default)]"
             }`}
           >
             {t.icon}
@@ -776,6 +797,44 @@ export default function CommunicationHub() {
           </button>
         ))}
       </div>
+
+      {activeTab === "tools" && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+          <button
+            type="button"
+            className={`${cardClass} text-left hover:border-[var(--ds-action-primary)] transition-colors`}
+            onClick={() => setCurrentPage("bank-statement-import")}
+          >
+            <Building size={16} className="text-[var(--ds-action-primary)] mb-2" />
+            <p className="text-[13px] font-semibold">Bank statement import</p>
+            <p className="text-[11px] text-[var(--ds-text-muted)] mt-1">
+              Import and match bank files (Banking).
+            </p>
+          </button>
+          <button
+            type="button"
+            className={`${cardClass} text-left hover:border-[var(--ds-action-primary)] transition-colors`}
+            onClick={() => setCurrentPage("data-import-export")}
+          >
+            <Upload size={16} className="text-[var(--ds-action-primary)] mb-2" />
+            <p className="text-[13px] font-semibold">Data import / export</p>
+            <p className="text-[11px] text-[var(--ds-text-muted)] mt-1">
+              Masters and bulk data utilities.
+            </p>
+          </button>
+          <button
+            type="button"
+            className={`${cardClass} text-left hover:border-[var(--ds-action-primary)] transition-colors`}
+            onClick={() => setActiveTab("Tally Data Import")}
+          >
+            <FileText size={16} className="text-[var(--ds-text-muted)] mb-2" />
+            <p className="text-[13px] font-semibold">Legacy ledger import</p>
+            <p className="text-[11px] text-[var(--ds-text-muted)] mt-1">
+              Optional migration helper (not day-to-day).
+            </p>
+          </button>
+        </div>
+      )}
 
       {activeTab === "Invoice Delivery" && (
         <div className="space-y-4">
@@ -915,9 +974,9 @@ export default function CommunicationHub() {
                   </div>
                 </div>
 
-                <div className={`${cardClass} border-t-4 border-t-indigo-500 bg-indigo-50/10`}>
-                  <h2 className="text-[14px] font-semibold text-indigo-900 mb-3 flex items-center gap-2 border-b border-indigo-100 pb-2">
-                    <LinkIcon size={16} className="text-indigo-500" /> eSewa Payment Link (Template)
+                <div className={`${cardClass} border-t-4 border-t-[var(--ds-status-info)] bg-[var(--ds-status-info-surface)]/10`}>
+                  <h2 className="text-[14px] font-semibold text-[var(--ds-status-info)] mb-3 flex items-center gap-2 border-b border-[var(--ds-status-info)]/20 pb-2">
+                    <LinkIcon size={16} className="text-[var(--ds-status-info)]" /> eSewa Payment Link (Template)
                   </h2>
                   <div className="bg-white border border-gray-200 rounded p-3 mb-3 text-[11px] text-gray-600 break-all font-mono leading-relaxed">
                     {paymentLink}
@@ -1047,7 +1106,7 @@ export default function CommunicationHub() {
                     <th className={`${tableHeadClass} w-10 text-center`}>
                       <input
                         type="checkbox"
-                        className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                        className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                         checked={
                           overdueReminderRows.length > 0 &&
                           selectedReminderParties.length === overdueReminderRows.length
@@ -1074,7 +1133,7 @@ export default function CommunicationHub() {
                       <td className={`${tableCellClass} text-center`}>
                         <input
                           type="checkbox"
-                          className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                          className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                           checked={selectedReminderParties.includes(row.party.id)}
                           onChange={() => toggleReminderParty(row.party.id)}
                         />
@@ -1160,7 +1219,7 @@ export default function CommunicationHub() {
               />
               <Upload
                 size={32}
-                className="mx-auto text-gray-400 group-hover:text-[#1557b0] mb-3 transition-colors"
+                className="mx-auto text-gray-400 group-hover:text-[var(--ds-action-primary)] mb-3 transition-colors"
               />
               <p className="text-[13px] font-medium text-gray-700">
                 Click to browse or drag and drop XML file
@@ -1178,7 +1237,7 @@ export default function CommunicationHub() {
 
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="bg-gray-50 border border-gray-200 rounded-md p-3 text-center">
-                <div className="text-[24px] font-bold text-[#1557b0]">
+                <div className="text-[24px] font-bold text-[var(--ds-action-primary)]">
                   {tallyPreview.ledgers.length}
                 </div>
                 <div className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
@@ -1273,7 +1332,7 @@ export default function CommunicationHub() {
                   className="h-9 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center justify-start gap-2 shadow-sm"
                   onClick={downloadOpeningTemplate}
                 >
-                  <FileSpreadsheet size={16} className="text-purple-600" /> Opening Balance Template
+                  <FileSpreadsheet size={16} className="text-[var(--ds-status-info)]" /> Opening Balance Template
                 </button>
               </div>
             </div>
@@ -1293,7 +1352,7 @@ export default function CommunicationHub() {
                 />
                 <Upload
                   size={24}
-                  className="mx-auto text-gray-400 group-hover:text-[#1557b0] mb-2 transition-colors"
+                  className="mx-auto text-gray-400 group-hover:text-[var(--ds-action-primary)] mb-2 transition-colors"
                 />
                 <p className="text-[12px] font-medium text-gray-700">Browse Excel/CSV</p>
               </div>
@@ -1414,7 +1473,7 @@ export default function CommunicationHub() {
                     key={b}
                     className={`px-3 py-1.5 text-[11px] font-medium rounded-full border transition-colors ${
                       selectedBank === b
-                        ? "bg-[#1557b0] text-white border-[#1557b0]"
+                        ? "bg-[var(--ds-action-primary)] text-white border-[var(--ds-action-primary)]"
                         : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                     }`}
                     onClick={() => setSelectedBank(b)}
@@ -1438,7 +1497,7 @@ export default function CommunicationHub() {
                 />
                 <Upload
                   size={24}
-                  className="mx-auto text-gray-400 group-hover:text-[#1557b0] mb-2 transition-colors"
+                  className="mx-auto text-gray-400 group-hover:text-[var(--ds-action-primary)] mb-2 transition-colors"
                 />
                 <p className="text-[12px] font-medium text-gray-700">Browse Bank Statement</p>
               </div>
@@ -1529,7 +1588,7 @@ export default function CommunicationHub() {
                         <td className={tableCellClass}>
                           {match?.status === "Unmatched" && (
                             <button
-                              className="text-[11px] font-medium text-[#1557b0] hover:underline"
+                              className="text-[11px] font-medium text-[var(--ds-action-primary)] hover:underline"
                               onClick={() => createBankEntry(row)}
                             >
                               Create Journal

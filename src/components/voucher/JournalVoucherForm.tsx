@@ -749,7 +749,7 @@ const JournalVoucherForm: React.FC<JournalVoucherFormProps> = ({ voucherId, onSa
                     Difference
                   </p>
                   <p
-                    className={`text-base font-bold font-mono ${totals.balanced ? "text-green-600" : "text-red-600"}`}
+                    className={`text-base font-bold font-mono ${totals.balanced ? "text-[var(--ds-status-success)]" : "text-[var(--ds-status-danger)]"}`}
                   >
                     {symbol} {formatNumber(Math.abs(totals.diff))}
                   </p>

@@ -152,7 +152,7 @@ function EmailModal({ onClose }: { onClose: () => void }) {
           <textarea
             value={message}
             onChange={(event) => setMessage(event.target.value)}
-            className="min-h-28 rounded-md border border-gray-300 bg-white p-2.5 text-[12px] focus:border-[#1557b0] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20"
+            className="min-h-28 rounded-md border border-gray-300 bg-white p-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
           />
         </label>
 
@@ -238,7 +238,7 @@ function WhatsAppModal({ onClose }: { onClose: () => void }) {
           <textarea
             value={message}
             onChange={(event) => setMessage(event.target.value)}
-            className="min-h-24 rounded-md border border-gray-300 bg-white p-2.5 text-[12px] focus:border-[#1557b0] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20"
+            className="min-h-24 rounded-md border border-gray-300 bg-white p-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
           />
         </label>
       </div>

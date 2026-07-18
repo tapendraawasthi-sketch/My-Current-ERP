@@ -89,20 +89,20 @@ export default function PLMonthlySummary({ pl, options, onDrillDown }: Props) {
                 {label}
               </th>
             ))}
-            <th className={`${thCls} bg-[#eef2ff] text-[#1557b0] border-l-2 border-[#c7d2fe]`}>
+            <th className={`${thCls} bg-[#eef2ff] text-[var(--ds-action-primary)] border-l-2 border-[#c7d2fe]`}>
               Total
             </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100">
-          <tr className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]">
+          <tr className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]">
             <td className="px-3 py-2 text-[12px] font-medium text-gray-700 sticky left-0 bg-white z-10 border-r border-gray-100">
               Sales (Revenue)
             </td>
             <td className="px-2 py-1 text-center w-20">
               <Sparkline
                 values={pl.monthlyData.map((m) => m.sales)}
-                color="#1557b0"
+                color="var(--ds-action-primary)"
                 width={64}
                 height={18}
               />
@@ -117,14 +117,14 @@ export default function PLMonthlySummary({ pl, options, onDrillDown }: Props) {
             </td>
           </tr>
 
-          <tr className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]">
+          <tr className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]">
             <td className="px-3 py-2 text-[12px] font-medium text-gray-700 sticky left-0 bg-white z-10 border-r border-gray-100">
               Direct Income
             </td>
             <td className="px-2 py-1 text-center w-20">
               <Sparkline
                 values={pl.monthlyData.map((m) => m.directIncome)}
-                color="#1557b0"
+                color="var(--ds-action-primary)"
                 width={64}
                 height={18}
               />
@@ -139,7 +139,7 @@ export default function PLMonthlySummary({ pl, options, onDrillDown }: Props) {
             </td>
           </tr>
 
-          <tr className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]">
+          <tr className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]">
             <td className="px-3 py-2 text-[12px] font-medium text-gray-700 sticky left-0 bg-white z-10 border-r border-gray-100">
               Purchases
             </td>
@@ -161,7 +161,7 @@ export default function PLMonthlySummary({ pl, options, onDrillDown }: Props) {
             </td>
           </tr>
 
-          <tr className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]">
+          <tr className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]">
             <td className="px-3 py-2 text-[12px] font-medium text-gray-700 sticky left-0 bg-white z-10 border-r border-gray-100">
               Direct Expenses
             </td>
@@ -212,14 +212,14 @@ export default function PLMonthlySummary({ pl, options, onDrillDown }: Props) {
                 </td>
               </tr>
 
-              <tr className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]">
+              <tr className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]">
                 <td className="px-3 py-2 text-[12px] font-medium text-gray-700 sticky left-0 bg-white z-10 border-r border-gray-100">
                   Indirect Income
                 </td>
                 <td className="px-2 py-1 text-center w-20">
                   <Sparkline
                     values={pl.monthlyData.map((m) => m.indirectIncome)}
-                    color="#1557b0"
+                    color="var(--ds-action-primary)"
                     width={64}
                     height={18}
                   />
@@ -234,7 +234,7 @@ export default function PLMonthlySummary({ pl, options, onDrillDown }: Props) {
                 </td>
               </tr>
 
-              <tr className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]">
+              <tr className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]">
                 <td className="px-3 py-2 text-[12px] font-medium text-gray-700 sticky left-0 bg-white z-10 border-r border-gray-100">
                   Indirect Expenses
                 </td>
@@ -258,11 +258,11 @@ export default function PLMonthlySummary({ pl, options, onDrillDown }: Props) {
             </>
           )}
 
-          <tr className="bg-[#1557b0] text-white">
-            <td className="px-3 py-2 text-[12px] font-bold sticky left-0 bg-[#1557b0] z-10 border-r border-[#0f4a96]">
+          <tr className="bg-[var(--ds-action-primary)] text-white">
+            <td className="px-3 py-2 text-[12px] font-bold sticky left-0 bg-[var(--ds-action-primary)] z-10 border-r border-[var(--ds-action-primary-hover)]">
               Net Profit
             </td>
-            <td className="px-2 py-1 text-center w-20 bg-[#1557b0] border-r border-[#0f4a96]">
+            <td className="px-2 py-1 text-center w-20 bg-[var(--ds-action-primary)] border-r border-[var(--ds-action-primary-hover)]">
               <Sparkline
                 values={pl.monthlyData.map((m) => Math.abs(m.netProfit))}
                 color="#ffffff"
@@ -273,12 +273,12 @@ export default function PLMonthlySummary({ pl, options, onDrillDown }: Props) {
             {pl.monthlyData.map((m, i) => (
               <td
                 key={i}
-                className="px-3 py-2 text-right font-mono text-[12px] font-bold border-l border-[#0f4a96]"
+                className="px-3 py-2 text-right font-mono text-[12px] font-bold border-l border-[var(--ds-action-primary-hover)]"
               >
                 {fmt(m.netProfit)}
               </td>
             ))}
-            <td className="px-3 py-2 text-right font-mono text-[12px] font-bold border-l-2 border-[#0f4a96] bg-[#0f4a96]">
+            <td className="px-3 py-2 text-right font-mono text-[12px] font-bold border-l-2 border-[var(--ds-action-primary-hover)] bg-[var(--ds-action-primary-hover)]">
               {fmt(pl.netProfit)}
             </td>
           </tr>

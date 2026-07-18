@@ -269,7 +269,7 @@ export default function PLHorizontal({
 
                 {/* Opening Stock */}
                 <tr
-                  className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
+                  className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)] cursor-pointer transition-colors"
                   onClick={() =>
                     onDrillDown({
                       level: 1,
@@ -297,7 +297,7 @@ export default function PLHorizontal({
                   />
                 ) : (
                   <tr
-                    className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
+                    className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)] cursor-pointer transition-colors"
                     onClick={() =>
                       onDrillDown({
                         level: 1,
@@ -329,7 +329,7 @@ export default function PLHorizontal({
                   />
                 ) : (
                   <tr
-                    className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
+                    className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)] cursor-pointer transition-colors"
                     onClick={() =>
                       onDrillDown({
                         level: 1,
@@ -375,7 +375,7 @@ export default function PLHorizontal({
                   />
                 ) : (
                   <tr
-                    className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
+                    className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)] cursor-pointer transition-colors"
                     onClick={() =>
                       onDrillDown({
                         level: 1,
@@ -425,7 +425,7 @@ export default function PLHorizontal({
                   />
                 ) : (
                   <tr
-                    className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
+                    className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)] cursor-pointer transition-colors"
                     onClick={() =>
                       onDrillDown({
                         level: 1,
@@ -457,7 +457,7 @@ export default function PLHorizontal({
                   />
                 ) : (
                   <tr
-                    className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
+                    className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)] cursor-pointer transition-colors"
                     onClick={() =>
                       onDrillDown({
                         level: 1,
@@ -481,7 +481,7 @@ export default function PLHorizontal({
 
                 {/* Closing Stock */}
                 <tr
-                  className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
+                  className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)] cursor-pointer transition-colors"
                   onClick={() => {
                     if (onClosingStockUpdate) setEditingClosingStock(true);
                   }}
@@ -527,7 +527,7 @@ export default function PLHorizontal({
                   />
                 ) : (
                   <tr
-                    className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] cursor-pointer transition-colors"
+                    className="hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)] cursor-pointer transition-colors"
                     onClick={() =>
                       onDrillDown({
                         level: 1,
@@ -583,7 +583,7 @@ export default function PLHorizontal({
             </p>
             <input
               type="number"
-              className="w-full h-10 px-3 text-[13px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="w-full h-10 px-3 text-[13px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               value={closingStockInput}
               onChange={(e) => setClosingStockInput(Number(e.target.value) || 0)}
               autoFocus
@@ -596,7 +596,7 @@ export default function PLHorizontal({
                 Cancel
               </button>
               <button
-                className="h-8 px-4 text-[12px] bg-[#1557b0] text-white rounded-md hover:bg-[#0f4a96]"
+                className="h-8 px-4 text-[12px] bg-[var(--ds-action-primary)] text-white rounded-md hover:bg-[var(--ds-action-primary-hover)]"
                 onClick={() => {
                   onClosingStockUpdate(closingStockInput);
                   setEditingClosingStock(false);

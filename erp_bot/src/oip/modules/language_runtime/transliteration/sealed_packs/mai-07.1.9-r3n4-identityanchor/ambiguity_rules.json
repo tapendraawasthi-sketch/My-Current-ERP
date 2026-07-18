@@ -1,0 +1,76 @@
+{
+  "entries": {
+    "b/v": [
+      "ब",
+      "व"
+    ],
+    "baaki": [
+      "बाँकी"
+    ],
+    "balance": [
+      "ब्यालेन्स",
+      "हिसाब"
+    ],
+    "bank": [
+      "बैंक",
+      "बैङ्क"
+    ],
+    "bill": [
+      "बिल"
+    ],
+    "cash": [
+      "क्यास"
+    ],
+    "cha": [
+      "छ",
+      "च"
+    ],
+    "chha": [
+      "छ",
+      "च्छा"
+    ],
+    "cr": [
+      "सीआर"
+    ],
+    "dr": [
+      "डॉ",
+      "डीआर"
+    ],
+    "kar": [
+      "कर",
+      "कार"
+    ],
+    "net": [
+      "नेट"
+    ],
+    "party": [
+      "पार्टी"
+    ],
+    "ram": [
+      "राम"
+    ],
+    "s/sh": [
+      "स",
+      "श"
+    ],
+    "sale": [
+      "सेल",
+      "बिक्री"
+    ],
+    "tax": [
+      "ट्याक्स",
+      "कर"
+    ],
+    "voucher": [
+      "भाउचर"
+    ],
+    "xa": [
+      "छ",
+      "क्ष"
+    ]
+  },
+  "provenance": "explicit ambiguity classes — not unconditional replacements",
+  "resource_id": "ambiguity_rules",
+  "review_status": "ENGINEERING_CURATED_NOT_LINGUIST_APPROVED",
+  "version": "mai-07.1.0"
+}

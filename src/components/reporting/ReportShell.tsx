@@ -73,12 +73,12 @@ const ToolbarBtn: React.FC<{
         fontWeight: 600,
         background: primary
           ? hovered && !disabled
-            ? "#0f4a96"
-            : "#1557b0"
+            ? "var(--ds-action-primary-hover)"
+            : "var(--ds-action-primary)"
           : hovered && !disabled
             ? "#f0f6ff"
             : "#ffffff",
-        color: primary ? "#ffffff" : disabled ? "#9ca3af" : hovered ? "#1557b0" : "#374151",
+        color: primary ? "#ffffff" : disabled ? "#9ca3af" : hovered ? "var(--ds-action-primary)" : "#374151",
         border: primary
           ? "none"
           : `1px solid ${disabled ? "#e5e7eb" : hovered ? "#bfdbfe" : "#d1d5db"}`,
@@ -213,7 +213,7 @@ const ReportShell: React.FC<ReportShellProps> = ({
                 onClick={() => onTabChange?.(tab.key)}
                 className={`h-9 px-4 bg-transparent border-0 border-b-2 -mb-0.5 text-[12px] whitespace-nowrap transition-colors ${
                   isActive
-                    ? "border-[#1557b0] text-[#1557b0] font-bold"
+                    ? "border-[var(--ds-action-primary)] text-[var(--ds-action-primary)] font-bold"
                     : "border-transparent text-gray-500 hover:text-gray-700 font-medium"
                 }`}
               >

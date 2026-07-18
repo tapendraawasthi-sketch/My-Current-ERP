@@ -27,6 +27,8 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
   const currentPage = useStore((s) => s.currentPage);
   const currentUser = useStore((s) => s.currentUser);
   const isOrbixPage = currentPage === "orbix";
+  const isPosPage =
+    currentPage === "pos-billing" || currentPage === "pos" || currentPage === "pos-mode";
   const loadPermissions = usePermissionsStore((s) => s.loadPermissions);
   const clearPermissions = usePermissionsStore((s) => s.clearPermissions);
 
@@ -131,23 +133,27 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
         onOpenNotifications={() => setNotificationsOpen(true)}
         density={density}
         onDensityChange={setDensity}
-        showMenuButton
+        showMenuButton={!isPosPage}
       />
       <DataLoadWarningBanner />
       <div className="flex min-h-0 flex-1 overflow-hidden">
-        <PrimarySideNav
-          collapsed={navCollapsed}
-          onCollapsedChange={setNavCollapsed}
-          mobileOpen={mobileNavOpen}
-          onMobileClose={() => setMobileNavOpen(false)}
-        />
+        {!isPosPage ? (
+          <PrimarySideNav
+            collapsed={navCollapsed}
+            onCollapsedChange={setNavCollapsed}
+            mobileOpen={mobileNavOpen}
+            onMobileClose={() => setMobileNavOpen(false)}
+          />
+        ) : null}
         <main
           className={`min-w-0 flex-1 bg-[var(--ds-canvas)] ${
             isOrbixPage
               ? "flex h-full min-h-0 flex-col overflow-hidden p-2 sm:p-3"
-              : isMobile
-                ? "overflow-y-auto p-3 pb-20"
-                : "overflow-y-auto p-4 md:p-5"
+              : isPosPage
+                ? "overflow-y-auto p-3 md:p-4"
+                : isMobile
+                  ? "overflow-y-auto p-3 pb-20"
+                  : "overflow-y-auto p-4 md:p-5"
           }`}
           id="app-main"
           aria-label="Main content"
@@ -157,14 +163,16 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
           </PageContentFrame>
         </main>
       </div>
-      {isMobile ? <MobileBottomNav onOpenNotifications={() => setNotificationsOpen(true)} /> : null}
+      {isMobile && !isPosPage ? (
+        <MobileBottomNav onOpenNotifications={() => setNotificationsOpen(true)} />
+      ) : null}
       <CommandPalette isOpen={paletteOpen} onClose={() => setPaletteOpen(false)} />
       <NotificationCentre open={notificationsOpen} onOpenChange={setNotificationsOpen} />
-      {/* Internal providers retained off Orbix page; Orbix is the sole user-facing assistant identity on /orbix */}
-      {!isOrbixPage ? <FalconProvider /> : null}
+      {/* Orbix is the sole user-facing assistant; FalconProvider only remaps shortcuts */}
+      {!isOrbixPage && !isPosPage ? <FalconProvider /> : null}
       <NiosProvider />
-      <EKhataProvider />
-      {isMobile && !isOrbixPage ? <SutraAiProvider /> : null}
+      {!isPosPage ? <EKhataProvider /> : null}
+      {isMobile && !isOrbixPage && !isPosPage ? <SutraAiProvider /> : null}
     </div>
   );
 };

@@ -89,7 +89,7 @@ const MultiModePayment: React.FC<MultiModePaymentProps> = ({ totalAmount, onChan
                   <select
                     value={mode.mode}
                     onChange={(e) => handleChangeMode(index, "mode", e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   >
                     <option value="cash">Cash</option>
                     <option value="bank_transfer">Bank Transfer</option>
@@ -104,7 +104,7 @@ const MultiModePayment: React.FC<MultiModePaymentProps> = ({ totalAmount, onChan
                   <select
                     value={mode.accountId}
                     onChange={(e) => handleChangeMode(index, "accountId", e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   >
                     <option value="">Select Account</option>
                     {cashBankAccounts.map((acc) => (
@@ -120,7 +120,7 @@ const MultiModePayment: React.FC<MultiModePaymentProps> = ({ totalAmount, onChan
                     step="0.01"
                     value={mode.amount}
                     onChange={(e) => handleChangeMode(index, "amount", e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white text-right focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white text-right focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   />
                 </td>
                 <td className="px-3 py-2 align-top">
@@ -129,7 +129,7 @@ const MultiModePayment: React.FC<MultiModePaymentProps> = ({ totalAmount, onChan
                     value={mode.reference}
                     placeholder="Cheque/Txn ID"
                     onChange={(e) => handleChangeMode(index, "reference", e.target.value)}
-                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                    className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   />
                 </td>
                 <td className="px-3 py-2 align-top text-center">

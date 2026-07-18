@@ -1,0 +1,37 @@
+{
+  "data": {
+    "active_draft_reference": null,
+    "active_ui_context": {},
+    "client_capabilities": {},
+    "conversation_id": "conv-demo-001",
+    "correlation_id": "corr-demo-005",
+    "created_at": "2026-07-14T12:00:00Z",
+    "input_channel": "text",
+    "language_frame": null,
+    "locale_hint": null,
+    "message_id": "msg-demo-005",
+    "mode": "accountant",
+    "raw_text": "Purchase 10 kg rice from ABC Suppliers for 5000 NPR",
+    "request_id": "req-demo-005",
+    "schema_version": "1.0.0",
+    "timezone": "Asia/Kathmandu",
+    "trusted_scope": {
+      "authentication_method": "jwt",
+      "branch_id": null,
+      "company_id": "company-demo-001",
+      "fiscal_context": null,
+      "permissions": [
+        "oip:read"
+      ],
+      "policy_version": "mai-01.1.0",
+      "principal_id": "user-demo-001",
+      "roles": [
+        "accountant"
+      ],
+      "schema_version": "1.0.0",
+      "tenant_id": "tenant-demo-001"
+    }
+  },
+  "kind": "CanonicalAIRequestV1",
+  "valid": true
+}

@@ -51,6 +51,8 @@ export interface OrbixStreamCompleteResult {
   response_type?: string | null;
   /** Optional language-KB interpretation hints (never posting authority). */
   npKb?: OrbixNpKbHint | null;
+  /** MAI-03 opaque support reference */
+  traceReference?: string | null;
 }
 
 export interface OrbixQwenStatus {
@@ -67,6 +69,7 @@ export interface OrbixQwenStatus {
 export interface OrbixQwenCallbacks {
   onThinkingStart?: () => void;
   onThinkingDone?: () => void;
+  onRequestAccepted?: (traceReference: string | null) => void;
   onRoute?: (route: OrbixRouteInfo) => void;
   onToken: (token: string) => void;
   onComplete: (result: OrbixStreamCompleteResult) => void;
@@ -152,9 +155,18 @@ export async function askOrbixQwen(
     throw new Error("Orbix Qwen backend URL not configured");
   }
 
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  try {
+    const { readAccessToken } = await import("@/platform/identity/session");
+    const token = readAccessToken();
+    if (token) headers.Authorization = `Bearer ${token}`;
+  } catch {
+    /* optional */
+  }
+
   const resp = await fetch(`${ORBIX_QWEN_URL}/chat`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers,
     body: JSON.stringify({
       message,
       session_id: sessionId,
@@ -207,12 +219,29 @@ export async function streamOrbixQwen(
     return;
   }
 
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    Accept: "text/event-stream",
+  };
+  try {
+    const { readAccessToken } = await import("@/platform/identity/session");
+    const token = readAccessToken();
+    if (token) headers.Authorization = `Bearer ${token}`;
+  } catch {
+    /* session optional for local-first */
+  }
+  try {
+    const { makeOutboundTraceHeaders, rememberTraceReference } = await import("./mai03Trace");
+    Object.assign(headers, makeOutboundTraceHeaders());
+    // conversation-scoped remember happens on request_accepted / complete
+    void rememberTraceReference;
+  } catch {
+    /* optional */
+  }
+
   const resp = await fetch(`${ORBIX_QWEN_URL}/orbix/chat/stream`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "text/event-stream",
-    },
+    headers,
     body: JSON.stringify({
       message,
       session_id: sessionId,
@@ -249,6 +278,17 @@ export async function streamOrbixQwen(
       try {
         const data = JSON.parse(line.slice(6)) as Record<string, unknown>;
         switch (data.type) {
+          case "request_accepted": {
+            const ref = typeof data.trace_reference === "string" ? data.trace_reference : null;
+            try {
+              const { rememberTraceReference } = await import("./mai03Trace");
+              rememberTraceReference(sessionId, ref);
+            } catch {
+              /* optional */
+            }
+            callbacks.onRequestAccepted?.(ref);
+            break;
+          }
           case "thinking_start":
             callbacks.onThinkingStart?.();
             break;
@@ -272,6 +312,18 @@ export async function streamOrbixQwen(
               npRaw && typeof npRaw === "object"
                 ? (npRaw as OrbixNpKbHint)
                 : null;
+            const traceReference =
+              typeof data.trace_reference === "string"
+                ? data.trace_reference
+                : typeof meta?.trace_reference === "string"
+                  ? (meta.trace_reference as string)
+                  : null;
+            try {
+              const { rememberTraceReference } = await import("./mai03Trace");
+              rememberTraceReference(sessionId, traceReference);
+            } catch {
+              /* optional */
+            }
             callbacks.onComplete({
               message: String(data.message || ""),
               card,
@@ -287,12 +339,26 @@ export async function streamOrbixQwen(
                 response?.response_type ??
                 null,
               npKb,
+              traceReference,
             });
             return;
           }
-          case "error":
-            callbacks.onError(new Error(String(data.message || "Stream error")));
+          case "error": {
+            const ref = typeof data.trace_reference === "string" ? data.trace_reference : null;
+            try {
+              const { rememberTraceReference } = await import("./mai03Trace");
+              rememberTraceReference(sessionId, ref);
+            } catch {
+              /* optional */
+            }
+            const err = new Error(
+              ref
+                ? `${String(data.message || "Stream error")} (Support reference: ${ref})`
+                : String(data.message || "Stream error"),
+            );
+            callbacks.onError(err);
             return;
+          }
           default:
             break;
         }

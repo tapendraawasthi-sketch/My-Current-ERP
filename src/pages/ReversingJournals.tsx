@@ -14,6 +14,8 @@ import {
   BookOpen,
   FileText,
 } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 function money(v: number): string {
   const abs = Math.abs(Number(v || 0));
@@ -23,6 +25,7 @@ function money(v: number): string {
 
 const ReversingJournals: React.FC = () => {
   const { vouchers, addVoucher, currentFiscalYear, accounts } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const [reversingSchedules, setReversingSchedules] = useState<any[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingVoucher, setEditingVoucher] = useState<any>(null);
@@ -75,6 +78,7 @@ const ReversingJournals: React.FC = () => {
               date: schedule.reversalDate,
               narration: "Auto-reversal of " + (original.voucherNo || original.id),
               lines: reversalLines,
+              branchId: original.branchId || readActiveBranchId() || undefined,
             });
 
             // Mark schedule as processed
@@ -97,8 +101,10 @@ const ReversingJournals: React.FC = () => {
 
   // Filter reversing journals
   const reversingJournals = useMemo(() => {
-    return vouchers.filter((v) => v.type === "reversing-journal");
-  }, [vouchers]);
+    return vouchers.filter(
+      (v) => v.type === "reversing-journal" && matchBranch(v.branchId),
+    );
+  }, [vouchers, matchBranch, branchFilter]);
 
   // Get status info for a schedule
   const getStatusInfo = (schedule: any) => {
@@ -224,6 +230,7 @@ const ReversingJournals: React.FC = () => {
         lines: form.lines,
         totalDebit: form.lines.reduce((sum, line) => sum + (Number(line.debit) || 0), 0),
         totalCredit: form.lines.reduce((sum, line) => sum + (Number(line.credit) || 0), 0),
+        branchId: editingVoucher?.branchId || readActiveBranchId() || undefined,
       });
 
       // Save schedule
@@ -296,6 +303,21 @@ const ReversingJournals: React.FC = () => {
               Manage and automate reversing journal entries
             </p>
           </div>
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         {/* List Section */}

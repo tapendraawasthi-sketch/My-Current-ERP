@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { X, Search, Printer, FileEdit, Trash2 } from "lucide-react";
 import { VoucherMeta } from "@/lib/tallyVoucher";
 import { formatMoney, formatDate } from "@/lib/tallyFormat";
+import { useBranchFilter } from "@/hooks/useBranchFilter";
 
 interface Props {
   isOpen: boolean;
@@ -21,18 +22,20 @@ export const TallyVoucherList: React.FC<Props> = ({
   onDelete,
 }) => {
   const [query, setQuery] = useState("");
+  const { matchBranch, branchFilter } = useBranchFilter();
 
   const filtered = useMemo(() => {
-    if (!query.trim()) return vouchers;
+    const scoped = vouchers.filter((v) => matchBranch(v.branchId));
+    if (!query.trim()) return scoped;
     const q = query.toLowerCase();
-    return vouchers.filter(
+    return scoped.filter(
       (v) =>
         v.voucherNumber.toLowerCase().includes(q) ||
         v.voucherType.toLowerCase().includes(q) ||
         v.reference?.toLowerCase().includes(q) ||
         formatDate(v.date).includes(q),
     );
-  }, [vouchers, query]);
+  }, [vouchers, query, matchBranch, branchFilter]);
 
   if (!isOpen) return null;
 

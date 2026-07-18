@@ -1,0 +1,28 @@
+{
+  "fixtures": [
+    "01_ask_english",
+    "02_ask_devanagari",
+    "03_ask_romanized",
+    "04_ask_codemix",
+    "05_accountant_draft",
+    "06_ambiguous_number",
+    "07_duration_vs_money",
+    "08_clarification",
+    "09_draft",
+    "10_preview",
+    "11_receipt",
+    "12_receipt_sync_pending",
+    "13_conflict",
+    "14_safe_refusal",
+    "15_degraded",
+    "16_error",
+    "17_evidence_answer",
+    "18_unsupported_schema_version",
+    "19_invalid_response_payload_mismatch",
+    "20_legacy_request_conversion",
+    "intent_unknown",
+    "language_frame_not_run",
+    "turn_relation_unknown"
+  ],
+  "schema_version": "1.0.0"
+}

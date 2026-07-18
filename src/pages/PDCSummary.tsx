@@ -15,6 +15,8 @@ import {
   Calendar,
 } from "lucide-react";
 import { formatADToBS } from "../lib/nepaliDate";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 export default function PDCSummary() {
   const {
@@ -28,6 +30,7 @@ export default function PDCSummary() {
     updatePDCheque,
     convertPDCToBank,
   } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
 
   const [activeTab, setActiveTab] = useState<"received" | "issued">("received");
   const [bucketView, setBucketView] = useState(false);
@@ -91,6 +94,8 @@ export default function PDCSummary() {
   // Apply filters
   const filteredPDCs = useMemo(() => {
     return pdCheques.filter((pdc) => {
+      const relatedVoucher = vouchers.find((v) => v.id === pdc.voucherId);
+      const matchesBranch = matchBranch(pdc.branchId || relatedVoucher?.branchId);
       const matchesType = filters.types.length === 0 || filters.types.includes(pdc.type);
       const matchesParty = !filters.partyId || pdc.partyId === filters.partyId;
       const matchesBank =
@@ -100,6 +105,7 @@ export default function PDCSummary() {
       const matchesStatus = filters.statuses.length === 0 || filters.statuses.includes(pdc.status);
 
       return (
+        matchesBranch &&
         matchesType &&
         matchesParty &&
         matchesBank &&
@@ -108,7 +114,7 @@ export default function PDCSummary() {
         matchesStatus
       );
     });
-  }, [pdCheques, filters]);
+  }, [pdCheques, vouchers, filters, matchBranch, branchFilter]);
 
   // Separate into received and issued
   const receivedPDCs = useMemo(
@@ -126,7 +132,7 @@ export default function PDCSummary() {
     const thisWeekEnd = new Date(today);
     thisWeekEnd.setDate(thisWeekEnd.getDate() + 7);
 
-    const dueThisWeek = pdCheques.filter((p) => {
+    const dueThisWeek = filteredPDCs.filter((p) => {
       const chequeDate = new Date(p.chequeDate);
       return (
         chequeDate >= today &&
@@ -135,7 +141,7 @@ export default function PDCSummary() {
       );
     });
 
-    const overdue = pdCheques.filter((p) => {
+    const overdue = filteredPDCs.filter((p) => {
       const chequeDate = new Date(p.chequeDate);
       return chequeDate < today && p.status === "overdue";
     });
@@ -152,7 +158,7 @@ export default function PDCSummary() {
         amount: overdue.reduce((sum, p) => sum + p.amount, 0),
       },
     };
-  }, [receivedPDCs, issuedPDCs, pdCheques]);
+  }, [receivedPDCs, issuedPDCs, filteredPDCs]);
 
   // Group PDCs by maturity bucket
   const bucketGroups = useMemo(() => {
@@ -277,6 +283,7 @@ export default function PDCSummary() {
         holdingAccountId: formState.holdingAccountId || undefined,
         status: "pending",
         narration: formState.narration,
+        branchId: readActiveBranchId() || undefined,
         createdAt: new Date().toISOString(),
       };
 
@@ -533,7 +540,21 @@ export default function PDCSummary() {
         </div>
 
         {/* Filters */}
-        <div className="mb-4 grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div className="mb-4 grid grid-cols-1 md:grid-cols-5 gap-3">
+          {branchOptions.length > 0 && (
+            <Select
+              label="Branch"
+              options={[
+                { value: "all", label: "All branches" },
+                ...branchOptions.map((b) => ({
+                  value: b.id,
+                  label: b.name || b.code || b.id,
+                })),
+              ]}
+              value={branchFilter}
+              onChange={(val) => setBranchFilter(val)}
+            />
+          )}
           <Select
             label="Party"
             options={[

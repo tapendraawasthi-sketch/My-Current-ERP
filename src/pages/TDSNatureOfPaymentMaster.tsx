@@ -4,6 +4,8 @@ import { Plus, Edit2, Trash2, X, Save } from "lucide-react";
 import toast from "@/lib/appToast";
 import { generateId } from "../lib/db";
 import { NEPAL_TDS_RATES_2081_82 } from "../lib/tdsNepal";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const TDSNatureOfPaymentMaster: React.FC = () => {
   const {
@@ -12,6 +14,7 @@ const TDSNatureOfPaymentMaster: React.FC = () => {
     updateTDSNatureOfPayment,
     deleteTDSNatureOfPayment,
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [showForm, setShowForm] = useState(false);
   const [selected, setSelected] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -41,7 +44,10 @@ const TDSNatureOfPaymentMaster: React.FC = () => {
       }));
 
       seedData.forEach(async (item) => {
-        await addTDSNatureOfPayment(item);
+        await addTDSNatureOfPayment({
+          ...item,
+          branchId: readActiveBranchId() || undefined,
+        });
       });
       // toast.success("Default TDS Nature of Payment entries seeded.");
     }
@@ -49,8 +55,9 @@ const TDSNatureOfPaymentMaster: React.FC = () => {
 
   const filteredPayments = (tdsNatureOfPayment || []).filter(
     (payment) =>
-      payment.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      payment.sectionCode.toLowerCase().includes(searchTerm.toLowerCase()),
+      matchBranch((payment as any).branchId) &&
+      (payment.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        payment.sectionCode.toLowerCase().includes(searchTerm.toLowerCase())),
   );
 
   const resetForm = () => {
@@ -92,11 +99,15 @@ const TDSNatureOfPaymentMaster: React.FC = () => {
     }
 
     try {
+      const payload = {
+        ...form,
+        branchId: selected?.branchId || readActiveBranchId() || undefined,
+      };
       if (selected) {
-        await updateTDSNatureOfPayment(selected.id, form);
+        await updateTDSNatureOfPayment(selected.id, payload);
         toast.success("Updated successfully");
       } else {
-        await addTDSNatureOfPayment(form);
+        await addTDSNatureOfPayment(payload);
         toast.success("Saved successfully");
       }
       resetForm();
@@ -138,8 +149,23 @@ const TDSNatureOfPaymentMaster: React.FC = () => {
               </p>
             </div>
             <div className="flex items-center gap-2">
+              {branchOptions.length > 0 && (
+                <select
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>
+              )}
               <button
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
                 onClick={() => {
                   resetForm();
                   setShowForm(true);
@@ -163,7 +189,7 @@ const TDSNatureOfPaymentMaster: React.FC = () => {
             <input
               type="text"
               placeholder="Search natures..."
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-64"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -236,7 +262,7 @@ const TDSNatureOfPaymentMaster: React.FC = () => {
                         <div className="flex items-center justify-center gap-1.5">
                           <button
                             onClick={() => loadFormForEdit(payment)}
-                            className="p-1 text-gray-500 hover:text-[#1557b0] hover:bg-blue-50 rounded"
+                            className="p-1 text-gray-500 hover:text-[var(--ds-action-primary)] hover:bg-blue-50 rounded"
                             title="Edit"
                           >
                             <Edit2 size={14} />
@@ -281,7 +307,7 @@ const TDSNatureOfPaymentMaster: React.FC = () => {
               </label>
               <input
                 type="text"
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="Enter name (e.g. Contract/Consultancy)"
@@ -295,7 +321,7 @@ const TDSNatureOfPaymentMaster: React.FC = () => {
               </label>
               <input
                 type="text"
-                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 value={form.sectionCode}
                 onChange={(e) => setForm({ ...form, sectionCode: e.target.value })}
                 placeholder="Enter section (e.g. 88, 88K)"
@@ -309,7 +335,7 @@ const TDSNatureOfPaymentMaster: React.FC = () => {
                 </label>
                 <input
                   type="number"
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   value={form.tdsRate}
                   onChange={(e) => setForm({ ...form, tdsRate: parseFloat(e.target.value) || 0 })}
                   min="0"
@@ -323,7 +349,7 @@ const TDSNatureOfPaymentMaster: React.FC = () => {
                 </label>
                 <input
                   type="number"
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   value={form.panNotAvailableRate}
                   onChange={(e) =>
                     setForm({ ...form, panNotAvailableRate: parseFloat(e.target.value) || 0 })
@@ -342,7 +368,7 @@ const TDSNatureOfPaymentMaster: React.FC = () => {
                 </label>
                 <input
                   type="number"
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   value={form.thresholdAmount}
                   onChange={(e) =>
                     setForm({ ...form, thresholdAmount: parseFloat(e.target.value) || 0 })
@@ -358,7 +384,7 @@ const TDSNatureOfPaymentMaster: React.FC = () => {
                 </label>
                 <input
                   type="date"
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   value={form.effectiveDate}
                   onChange={(e) => setForm({ ...form, effectiveDate: e.target.value })}
                 />
@@ -370,7 +396,7 @@ const TDSNatureOfPaymentMaster: React.FC = () => {
                 <input
                   type="checkbox"
                   id="isActive"
-                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] h-3.5 w-3.5 cursor-pointer"
+                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                   checked={form.isActive}
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
                 />
@@ -392,7 +418,7 @@ const TDSNatureOfPaymentMaster: React.FC = () => {
               Cancel
             </button>
             <button
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+              className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
               onClick={handleSubmit}
             >
               <Save size={14} />

@@ -5,19 +5,22 @@ import toast from "@/lib/appToast";
 import { DBWarehouse } from "../lib/db";
 import { Plus, Edit2, Trash2, X, Save, CheckCircle, XCircle, Star, Search } from "lucide-react";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 const inputCls =
-  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
 
 export default function Warehouses() {
   const { warehouses, addWarehouse, updateWarehouse, deleteWarehouse, loadWarehouses } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [showForm, setShowForm] = useState(false);
   const [editingWarehouse, setEditingWarehouse] = useState<DBWarehouse | null>(null);
@@ -44,14 +47,16 @@ export default function Warehouses() {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return warehouses;
-    return warehouses.filter(
-      (w) =>
+    return warehouses.filter((w) => {
+      if (!matchBranch((w as { branchId?: string }).branchId)) return false;
+      if (!q) return true;
+      return (
         w.code?.toLowerCase().includes(q) ||
         w.name?.toLowerCase().includes(q) ||
-        w.address?.toLowerCase().includes(q),
-    );
-  }, [warehouses, search]);
+        w.address?.toLowerCase().includes(q)
+      );
+    });
+  }, [warehouses, search, matchBranch, branchFilter]);
 
   const resetForm = () => {
     setShowForm(false);
@@ -100,11 +105,15 @@ export default function Warehouses() {
       return;
     }
     try {
+      const payload = {
+        ...formData,
+        branchId: formData.branchId || readActiveBranchId() || undefined,
+      };
       if (editingWarehouse) {
-        await updateWarehouse(editingWarehouse.id, formData);
+        await updateWarehouse(editingWarehouse.id, payload);
         toast.success("Warehouse updated successfully.");
       } else {
-        await addWarehouse(formData);
+        await addWarehouse(payload);
         toast.success("Warehouse added successfully.");
       }
       resetForm();
@@ -162,10 +171,27 @@ export default function Warehouses() {
                 Manage stock locations and go-downs for inventory tracking
               </p>
             </div>
-            <button type="button" className={btnPrimary} onClick={handleOpenCreate}>
-              <Plus className="h-3.5 w-3.5" />
-              New warehouse
-            </button>
+            <div className="flex items-center gap-2">
+              {branchOptions.length > 0 && (
+                <select
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>
+              )}
+              <button type="button" className={btnPrimary} onClick={handleOpenCreate}>
+                <Plus className="h-3.5 w-3.5" />
+                New warehouse
+              </button>
+            </div>
           </div>
 
           <div className="relative mb-3 max-w-xs">
@@ -209,7 +235,7 @@ export default function Warehouses() {
                   {filtered.map((warehouse) => (
                     <tr
                       key={warehouse.id}
-                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
                       onClick={() => handleOpenEdit(warehouse)}
                     >
                       <td className={`${td} font-mono`}>{warehouse.code || "—"}</td>
@@ -237,7 +263,7 @@ export default function Warehouses() {
                             type="button"
                             onClick={(e) => handleSetDefault(warehouse, e)}
                             title="Set as default"
-                            className="text-gray-400 hover:text-[#1557b0] transition-colors mx-auto block"
+                            className="text-gray-400 hover:text-[var(--ds-action-primary)] transition-colors mx-auto block"
                           >
                             <Star className="h-4 w-4" />
                           </button>
@@ -345,7 +371,7 @@ export default function Warehouses() {
                   type="checkbox"
                   checked={!!formData.isDefault}
                   onChange={(e) => setFormData({ ...formData, isDefault: e.target.checked })}
-                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                 />
                 <span className="text-[12px] font-medium text-gray-700">Set as default</span>
               </label>
@@ -354,7 +380,7 @@ export default function Warehouses() {
                   type="checkbox"
                   checked={formData.isActive !== false}
                   onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                 />
                 <span className="text-[12px] font-medium text-gray-700">Active</span>
               </label>
@@ -363,7 +389,7 @@ export default function Warehouses() {
                   type="checkbox"
                   checked={!!formData.isMainBranch}
                   onChange={(e) => setFormData({ ...formData, isMainBranch: e.target.checked })}
-                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                 />
                 <span className="text-[12px] font-medium text-gray-700">Main branch</span>
               </label>
@@ -374,7 +400,7 @@ export default function Warehouses() {
                   onChange={(e) =>
                     setFormData({ ...formData, allowNegativeStock: e.target.checked })
                   }
-                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                 />
                 <span className="text-[12px] font-medium text-gray-700">Allow negative stock</span>
               </label>

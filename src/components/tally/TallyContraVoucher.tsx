@@ -16,6 +16,7 @@ import {
 } from "@/lib/tallyVoucher";
 import { formatMoney, parseMoney } from "@/lib/tallyFormat";
 import { useStore } from "@/store/useStore";
+import { readActiveBranchId } from "@/lib/activeBranch";
 
 export const TallyContraVoucher: React.FC = () => {
   const [voucher, setVoucher] = useState<Voucher>(() => blankVoucher("Contra"));
@@ -64,7 +65,10 @@ export const TallyContraVoucher: React.FC = () => {
     if (voucher.id) {
       await updateVoucher(voucher.id, voucher);
     } else {
-      await addVoucher(voucher);
+      await addVoucher({
+        ...voucher,
+        branchId: voucher.branchId || readActiveBranchId() || undefined,
+      });
     }
     toast.success("Contra voucher saved.");
     setVoucher(blankVoucher("Contra"));

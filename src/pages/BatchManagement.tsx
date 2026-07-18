@@ -21,6 +21,8 @@ import {
   Save,
 } from "lucide-react";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { stampMovementBranch } from "../lib/activeBranch";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const fmt = (n: number) =>
@@ -31,11 +33,11 @@ const fmt = (n: number) =>
 
 const inputCls =
   "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white " +
-  "focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full";
+  "focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full";
 const labelCls = "text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1";
 const formLabelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
 const btnPrimary =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 const thCls =
@@ -88,6 +90,7 @@ export default function BatchManagement() {
   const warehouses = store.warehouses || [];
   const batches = store.batches || [];
   const serialNumbers = store.serialNumbers || [];
+  const { branchFilter, setBranchFilter, branchOptions, matchMovement } = useBranchFilter();
 
   const [activeTab, setActiveTab] = useState<"batch" | "serial">("batch");
 
@@ -147,10 +150,13 @@ export default function BatchManagement() {
       return;
     }
     try {
-      const payload = {
-        ...batchForm,
-        openingQty: batchForm.openingQty || batchForm.currentQty,
-      };
+      const payload = stampMovementBranch(
+        {
+          ...batchForm,
+          openingQty: batchForm.openingQty || batchForm.currentQty,
+        },
+        warehouses,
+      );
       if (editingBatchId) {
         await store.updateBatch(editingBatchId, payload);
         toast.success("Batch updated");
@@ -186,10 +192,10 @@ export default function BatchManagement() {
     }
     try {
       if (editingSNId) {
-        await store.updateSerialNumber(editingSNId, snForm);
+        await store.updateSerialNumber(editingSNId, stampMovementBranch(snForm, warehouses));
         toast.success("Serial number updated");
       } else {
-        await store.addSerialNumber(snForm);
+        await store.addSerialNumber(stampMovementBranch(snForm, warehouses));
         toast.success("Serial number added");
       }
       setShowSNModal(false);
@@ -221,6 +227,8 @@ export default function BatchManagement() {
   const filteredBatches = useMemo(() => {
     const today = new Date().toISOString().split("T")[0];
     return batches.filter((b: any) => {
+      if (!matchMovement({ branchId: b.branchId, warehouseId: b.warehouseId })) return false;
+
       const q = batchSearch.toLowerCase();
       const matchSearch =
         !q ||
@@ -238,11 +246,13 @@ export default function BatchManagement() {
 
       return matchSearch && matchExpiry;
     });
-  }, [batches, batchSearch, filterExpiry]);
+  }, [batches, batchSearch, filterExpiry, matchMovement, branchFilter]);
 
   // ── Filtered serial numbers ────────────────────────────────────────────────
   const filteredSNs = useMemo(() => {
     return serialNumbers.filter((sn: any) => {
+      if (!matchMovement({ branchId: sn.branchId, warehouseId: sn.warehouseId })) return false;
+
       const q = snSearch.toLowerCase();
       const matchSearch =
         !q ||
@@ -252,7 +262,7 @@ export default function BatchManagement() {
       const matchStatus = snStatusFilter === "ALL" || sn.status === snStatusFilter;
       return matchSearch && matchStatus;
     });
-  }, [serialNumbers, snSearch, snStatusFilter]);
+  }, [serialNumbers, snSearch, snStatusFilter, matchMovement, branchFilter]);
 
   // ── Export ─────────────────────────────────────────────────────────────────
   const exportBatches = () => {
@@ -377,6 +387,21 @@ export default function BatchManagement() {
             </p>
           </div>
           <div className="flex gap-2">
+            {branchOptions.length > 0 && (
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            )}
             {activeTab === "batch" ? (
               <>
                 <button type="button" onClick={exportBatches} className={btnOutline}>
@@ -421,7 +446,7 @@ export default function BatchManagement() {
             onClick={() => setActiveTab("batch")}
             className={`h-8 px-4 text-[12px] font-medium rounded-md inline-flex items-center gap-1.5 transition-colors ${
               activeTab === "batch"
-                ? "bg-[#1557b0] text-white"
+                ? "bg-[var(--ds-action-primary)] text-white"
                 : "bg-white border border-gray-300 text-gray-600 hover:bg-gray-50"
             }`}
           >
@@ -432,7 +457,7 @@ export default function BatchManagement() {
             onClick={() => setActiveTab("serial")}
             className={`h-8 px-4 text-[12px] font-medium rounded-md inline-flex items-center gap-1.5 transition-colors ${
               activeTab === "serial"
-                ? "bg-[#1557b0] text-white"
+                ? "bg-[var(--ds-action-primary)] text-white"
                 : "bg-white border border-gray-300 text-gray-600 hover:bg-gray-50"
             }`}
           >
@@ -471,7 +496,7 @@ export default function BatchManagement() {
                     {
                       label: "Total value",
                       value: batchStats.totalValue,
-                      color: "text-[#1557b0]",
+                      color: "text-[var(--ds-action-primary)]",
                       isAmt: true,
                     },
                   ].map((k) => (
@@ -564,7 +589,7 @@ export default function BatchManagement() {
                             return (
                               <tr
                                 key={batch.id}
-                                className={`group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0] ${isExpired ? "bg-red-50" : isNearExpiry ? "bg-amber-50" : ""}`}
+                                className={`group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)] ${isExpired ? "bg-red-50" : isNearExpiry ? "bg-amber-50" : ""}`}
                                 onClick={() => openBatchEdit(batch)}
                               >
                                 <td className="px-3 py-2.5 text-[12px] font-mono font-medium text-gray-800 border-b border-gray-100">
@@ -600,7 +625,7 @@ export default function BatchManagement() {
                                 >
                                   {fmt(batch.currentQty)}
                                 </td>
-                                <td className={`${amtCls} text-[#1557b0] font-medium`}>
+                                <td className={`${amtCls} text-[var(--ds-action-primary)] font-medium`}>
                                   {fmt(value)}
                                 </td>
                                 <td className="px-3 py-2.5 border-b border-gray-100">
@@ -692,7 +717,7 @@ export default function BatchManagement() {
                           key={s}
                           type="button"
                           onClick={() => setSnStatusFilter(s)}
-                          className={`h-8 px-2.5 text-[11px] font-medium capitalize transition-colors ${snStatusFilter === s ? "bg-[#1557b0] text-white" : "bg-white text-gray-600 hover:bg-gray-50"}`}
+                          className={`h-8 px-2.5 text-[11px] font-medium capitalize transition-colors ${snStatusFilter === s ? "bg-[var(--ds-action-primary)] text-white" : "bg-white text-gray-600 hover:bg-gray-50"}`}
                         >
                           {s === "ALL" ? "All" : s}
                         </button>
@@ -730,7 +755,7 @@ export default function BatchManagement() {
                           {filteredSNs.map((sn: any) => (
                             <tr
                               key={sn.id}
-                              className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                              className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
                               onClick={() => openSNEdit(sn)}
                             >
                               <td className="px-3 py-2.5 text-[12px] font-mono font-medium text-gray-800 border-b border-gray-100">

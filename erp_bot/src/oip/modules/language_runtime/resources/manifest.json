@@ -1,0 +1,19 @@
+{
+  "allowed_use": "classification_only",
+  "content_hash": "6d72204f681ae89aba25dcab5902760398aa5ac51b5c426abaea972a7a960c6b",
+  "files": [
+    "high_confidence_romanized_nepali.json",
+    "high_confidence_english_accounting.json",
+    "ambiguous_latin.json",
+    "named_entity_candidates.json",
+    "protected_prefixes.json"
+  ],
+  "license_status": "internal_engineering",
+  "notes": "Does not include MAI-04/MAI-05 gold expected labels. Not accounting/legal authority.",
+  "provenance": "engineering_curated_compact_lexicon",
+  "resource_id": "mai05_language_pack_v1",
+  "resource_pack_version": "mai-05.1.0",
+  "review_status": "ENGINEERING_REVIEWED",
+  "schema_version": "1.0.0",
+  "update_date": "2026-07-14"
+}

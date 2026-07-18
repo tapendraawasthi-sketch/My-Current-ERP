@@ -1,0 +1,72 @@
+{
+  "claim": {
+    "canonical_proposition": "Cash balance is NPR 12000.00",
+    "claim_id": "claim-demo-017",
+    "claim_type": "OTHER",
+    "confidence": {
+      "grants_authority": false,
+      "method": "erp_snapshot",
+      "value": 0.9
+    },
+    "derivation_reference": null,
+    "evidence_ids": [
+      "ev-demo-017"
+    ],
+    "materiality": "unknown",
+    "schema_version": "1.0.0",
+    "status": "ready",
+    "temporal_scope": null,
+    "verification_status": "UNVERIFIED",
+    "verifier_findings": {}
+  },
+  "data": {
+    "citations": [
+      "ev-demo-017"
+    ],
+    "conversation_id": "conv-demo-001",
+    "created_at": "2026-07-14T12:00:00Z",
+    "draft_reference": null,
+    "language": "en",
+    "policy_reference": null,
+    "request_id": "req-demo-017",
+    "response_id": "resp-demo-017",
+    "response_type": "ANSWER",
+    "schema_version": "1.0.0",
+    "status": "SUCCESS",
+    "structured_payload": {
+      "evidence_ids": [
+        "ev-demo-017"
+      ],
+      "payload_type": "ANSWER",
+      "propositions": [
+        "Cash balance is NPR 12000.00"
+      ]
+    },
+    "suggested_safe_actions": [],
+    "trace_reference": null,
+    "uncertainty": null,
+    "user_visible_text": "Cash balance is NPR 12000.00",
+    "warnings": []
+  },
+  "evidence": {
+    "acquired_at": "2026-07-14T12:00:00Z",
+    "allowed_uses": [
+      "citation"
+    ],
+    "authority_level": null,
+    "content_hash": null,
+    "document_version_or_snapshot": "snap-1",
+    "effective_period": null,
+    "evidence_class": "ERP_SNAPSHOT",
+    "evidence_id": "ev-demo-017",
+    "exact_location": null,
+    "extracted_text_or_fact": "Cash balance NPR 12000.00",
+    "jurisdiction": null,
+    "review_status": "UNREVIEWED",
+    "schema_version": "1.0.0",
+    "source_id": "ledger-cash",
+    "status": "ready"
+  },
+  "kind": "AIResponseEnvelopeV1",
+  "valid": true
+}

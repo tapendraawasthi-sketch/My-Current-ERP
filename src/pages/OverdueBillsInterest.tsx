@@ -4,6 +4,7 @@ import { useStore } from "../store/useStore";
 import { VoucherType, VoucherStatus, PaymentStatus } from "../lib/types";
 import { formatNumber } from "../lib/utils";
 import { ArrowLeft, ChevronDown, ChevronRight, Calendar, Percent, ShieldAlert } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 interface OverdueInvoiceDetail {
   id: string;
@@ -26,6 +27,7 @@ interface PartyOverdueSummary {
 
 const OverdueBillsInterest: React.FC = () => {
   const { invoices, parties, companySettings, setCurrentPage } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
 
   const [asOfDate, setAsOfDate] = useState<string>(new Date().toISOString().split("T")[0]);
   const [interestRate, setInterestRate] = useState<number>(18);
@@ -55,7 +57,8 @@ const OverdueBillsInterest: React.FC = () => {
       if (
         inv.type === VoucherType.SALES_INVOICE &&
         inv.status === VoucherStatus.POSTED &&
-        inv.paymentStatus !== PaymentStatus.PAID
+        inv.paymentStatus !== PaymentStatus.PAID &&
+        matchBranch((inv as { branchId?: string }).branchId)
       ) {
         if (!inv.dueDate) return;
 
@@ -105,7 +108,7 @@ const OverdueBillsInterest: React.FC = () => {
         };
       })
       .sort((a, b) => b.totalInterest - a.totalInterest);
-  }, [invoices, parties, asOfDate, interestRate, minDays]);
+  }, [invoices, parties, asOfDate, interestRate, minDays, matchBranch, branchFilter]);
 
   const grandTotals = useMemo(() => {
     return overdueSummary.reduce(
@@ -128,10 +131,10 @@ const OverdueBillsInterest: React.FC = () => {
         subtitle="Interest calculation on overdue receivables and payables"
       />
       {/* Header */}
-      <div className="flex items-center gap-3 border-b border-[#9DC07A] pb-5">
+      <div className="flex items-center gap-3 border-b border-[var(--ds-border-default)] pb-5">
         <button
           onClick={() => setCurrentPage("reports")}
-          className="p-2 rounded-lg hover:bg-[#EBF5E2] text-[#000000] transition-colors"
+          className="p-2 rounded-lg hover:bg-[var(--ds-surface-muted)] text-[#000000] transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
         </button>
@@ -146,7 +149,7 @@ const OverdueBillsInterest: React.FC = () => {
       </div>
 
       {/* Control panel filters */}
-      <div className="bg-white border border-[#9DC07A] rounded-xl p-5 shadow-sm grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="bg-white border border-[var(--ds-border-default)] rounded-xl p-5 shadow-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="flex flex-col gap-1">
           <span className="text-[10px] uppercase font-bold text-[#000000] flex items-center gap-1">
             <Calendar className="h-3 w-3" /> As Of Date
@@ -155,9 +158,28 @@ const OverdueBillsInterest: React.FC = () => {
             type="date"
             value={asOfDate}
             onChange={(e) => setAsOfDate(e.target.value)}
-            className="border border-[#9DC07A] rounded-lg p-2 text-xs font-bold text-[#000000] focus:outline-none focus:border-indigo-500"
+            className="border border-[var(--ds-border-default)] rounded-lg p-2 text-xs font-bold text-[#000000] focus:outline-none focus:border-[var(--ds-status-info)]"
           />
         </div>
+
+        {branchOptions.length > 0 && (
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] uppercase font-bold text-[#000000]">Branch</span>
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="border border-[var(--ds-border-default)] rounded-lg p-2 text-xs font-bold text-[#000000] focus:outline-none focus:border-[var(--ds-status-info)]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <div className="flex flex-col gap-1">
           <span className="text-[10px] uppercase font-bold text-[#000000] flex items-center gap-1">
@@ -169,7 +191,7 @@ const OverdueBillsInterest: React.FC = () => {
             max="100"
             value={interestRate}
             onChange={(e) => setInterestRate(parseFloat(e.target.value) || 0)}
-            className="border border-[#9DC07A] rounded-lg p-2 text-xs font-bold text-[#000000] focus:outline-none focus:border-indigo-500"
+            className="border border-[var(--ds-border-default)] rounded-lg p-2 text-xs font-bold text-[#000000] focus:outline-none focus:border-[var(--ds-status-info)]"
           />
         </div>
 
@@ -182,20 +204,20 @@ const OverdueBillsInterest: React.FC = () => {
             min="0"
             value={minDays}
             onChange={(e) => setMinDays(parseInt(e.target.value) || 0)}
-            className="border border-[#9DC07A] rounded-lg p-2 text-xs font-bold text-[#000000] focus:outline-none focus:border-indigo-500"
+            className="border border-[var(--ds-border-default)] rounded-lg p-2 text-xs font-bold text-[#000000] focus:outline-none focus:border-[var(--ds-status-info)]"
           />
         </div>
       </div>
 
       {/* Summary KPI stats */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="bg-[#EBF5E2] border border-[#9DC07A] rounded-xl p-4 flex flex-col gap-1">
+        <div className="bg-[var(--ds-surface-muted)] border border-[var(--ds-border-default)] rounded-xl p-4 flex flex-col gap-1">
           <span className="text-[10px] uppercase font-bold text-[#000000]">
             Total Overdue Invoices
           </span>
           <span className="text-base font-bold text-[#000000]">{grandTotals.count} Bills</span>
         </div>
-        <div className="bg-[#EBF5E2] border border-[#9DC07A] rounded-xl p-4 flex flex-col gap-1">
+        <div className="bg-[var(--ds-surface-muted)] border border-[var(--ds-border-default)] rounded-xl p-4 flex flex-col gap-1">
           <span className="text-[10px] uppercase font-bold text-[#000000]">
             Overdue Outstanding
           </span>
@@ -203,7 +225,7 @@ const OverdueBillsInterest: React.FC = () => {
             {symbol} {formatNumber(grandTotals.outstanding)}
           </span>
         </div>
-        <div className="bg-[#EBF5E2] border border-[#9DC07A] rounded-xl p-4 flex flex-col gap-1 text-right">
+        <div className="bg-[var(--ds-surface-muted)] border border-[var(--ds-border-default)] rounded-xl p-4 flex flex-col gap-1 text-right">
           <span className="text-[10px] uppercase font-bold text-[#000000]">
             Total Accumulated Interest
           </span>
@@ -214,7 +236,7 @@ const OverdueBillsInterest: React.FC = () => {
       </div>
 
       {/* Main Aggregated Table */}
-      <div className="bg-white border border-[#9DC07A] rounded-xl p-5 shadow-sm">
+      <div className="bg-white border border-[var(--ds-border-default)] rounded-xl p-5 shadow-sm">
         {overdueSummary.length === 0 ? (
           <div className="text-center py-10 text-[#000000] font-medium">
             No overdue accounts matching search parameters.
@@ -224,9 +246,9 @@ const OverdueBillsInterest: React.FC = () => {
             <h3 className="text-sm font-bold text-[#000000] uppercase tracking-wider mb-2">
               Customer Receivables Interest
             </h3>
-            <div className="overflow-x-auto border border-[#9DC07A] rounded-lg">
+            <div className="overflow-x-auto border border-[var(--ds-border-default)] rounded-lg">
               <table className="w-full text-xs">
-                <thead className="bg-[#EBF5E2] text-[10px] font-bold text-[#000000] uppercase tracking-wider border-b border-[#9DC07A]">
+                <thead className="bg-[var(--ds-surface-muted)] text-[10px] font-bold text-[#000000] uppercase tracking-wider border-b border-[var(--ds-border-default)]">
                   <tr>
                     <th className="py-2 px-3 w-10"></th>
                     <th className="py-2 px-2 text-left">Customer / Party Name</th>
@@ -243,7 +265,7 @@ const OverdueBillsInterest: React.FC = () => {
                         {/* Parent Party Row */}
                         <tr
                           onClick={() => toggleExpand(party.partyId)}
-                          className="hover:bg-[#EBF5E2]/50 cursor-pointer font-bold"
+                          className="hover:bg-[var(--ds-surface-muted)]/50 cursor-pointer font-bold"
                         >
                           <td className="py-3 px-3 text-center">
                             {isExpanded ? (
@@ -267,10 +289,10 @@ const OverdueBillsInterest: React.FC = () => {
                         {/* Expanded Invoices list */}
                         {isExpanded && (
                           <tr>
-                            <td colSpan={5} className="bg-[#EBF5E2]/50 p-4">
-                              <div className="border border-[#9DC07A] rounded-lg overflow-hidden bg-white">
+                            <td colSpan={5} className="bg-[var(--ds-surface-muted)]/50 p-4">
+                              <div className="border border-[var(--ds-border-default)] rounded-lg overflow-hidden bg-white">
                                 <table className="w-full text-xs">
-                                  <thead className="bg-[#EBF5E2]/70 text-[10px] font-bold text-[#000000] uppercase border-b border-[#9DC07A]">
+                                  <thead className="bg-[var(--ds-surface-muted)]/70 text-[10px] font-bold text-[#000000] uppercase border-b border-[var(--ds-border-default)]">
                                     <tr>
                                       <th className="py-1.5 px-3 text-left">Invoice No</th>
                                       <th className="py-1.5 px-2 text-left">Bill Date</th>
@@ -282,7 +304,7 @@ const OverdueBillsInterest: React.FC = () => {
                                   </thead>
                                   <tbody className="divide-y divide-slate-100 text-[11px] font-medium">
                                     {party.invoices.map((inv) => (
-                                      <tr key={inv.id} className="hover:bg-[#EBF5E2]/40">
+                                      <tr key={inv.id} className="hover:bg-[var(--ds-surface-muted)]/40">
                                         <td className="py-2 px-3 font-semibold text-[#000000]">
                                           {inv.invoiceNo}
                                         </td>
@@ -294,7 +316,7 @@ const OverdueBillsInterest: React.FC = () => {
                                         <td className="py-2 px-2 text-right font-mono text-[#000000]">
                                           {symbol} {formatNumber(inv.outstanding)}
                                         </td>
-                                        <td className="py-2 px-3 text-right font-mono text-[#1557b0] font-bold">
+                                        <td className="py-2 px-3 text-right font-mono text-[var(--ds-action-primary)] font-bold">
                                           {symbol} {formatNumber(inv.interest)}
                                         </td>
                                       </tr>

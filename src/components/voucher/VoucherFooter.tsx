@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Input } from "../ui";
+import { Button } from "../ui";
 import { Save, X, Copy, Printer, AlertTriangle, CheckCircle } from "lucide-react";
 import { formatNumber } from "../../lib/utils";
 
@@ -44,95 +44,98 @@ const VoucherFooter: React.FC<VoucherFooterProps> = ({
   currencySymbol = "Rs.",
   voucherType,
 }) => {
-  const [showNarrationInput, setShowNarrationInput] = useState(true);
+  const [showNarrationInput] = useState(true);
 
   const canSave = isBalanced || totalDebit === 0;
   const effectiveDisabled = disabled || !canSave || saving;
 
   return (
-    <div className="border-t border-gray-200 bg-gray-50 p-4">
-      {/* Narration Section */}
-      {showNarration && (
+    <div className="border-t border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)] p-4">
+      {showNarration && showNarrationInput && (
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Narration:</label>
-          <div className="flex">
-            <textarea
-              value={narration}
-              onChange={(e) => onNarrationChange(e.target.value)}
-              rows={3}
-              className="flex-1 mr-4 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
-              placeholder="Enter narration..."
-            />
-          </div>
-          <div className="text-xs text-gray-500 mt-1">Ctrl+R: Retrieve last narration</div>
+          <label className="mb-1 block text-[11px] font-medium text-[var(--ds-text-muted)]">
+            Narration
+          </label>
+          <textarea
+            value={narration}
+            onChange={(e) => onNarrationChange(e.target.value)}
+            rows={2}
+            className="w-full resize-none rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-2.5 py-1.5 text-[12px] text-[var(--ds-text-default)] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
+            placeholder="Enter narration…"
+          />
+          <p className="mt-1 text-[11px] text-[var(--ds-text-subtle)]">
+            Ctrl+R: Retrieve last narration
+          </p>
         </div>
       )}
 
-      {/* Warning Banner if not balanced */}
       {!isBalanced && totalDebit > 0 && (
-        <div className="bg-yellow-50 border border-yellow-200 p-2 rounded-md mb-4 flex items-center">
-          <AlertTriangle className="w-4 h-4 text-yellow-600 mr-2" />
-          <span className="text-sm text-yellow-700">
-            ⚠ Voucher cannot be saved — Debit and Credit totals do not match.
-          </span>
+        <div className="mb-4 flex items-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[12px] font-medium text-red-700">
+          <AlertTriangle className="h-3.5 w-3.5 flex-shrink-0" />
+          Cannot save — Debit and Credit totals do not match.
         </div>
       )}
 
-      {/* Totals Bar */}
-      <div className="flex flex-wrap items-center justify-between mb-4">
-        {/* Balance Status Indicator */}
-        <div className="flex items-center mb-2 sm:mb-0">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div
+          className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-[12px] font-medium ${
+            isBalanced
+              ? "border-green-200 bg-green-50 text-green-700"
+              : "border-red-200 bg-red-50 text-red-700"
+          }`}
+        >
           {isBalanced ? (
-            <div className="flex items-center text-green-600">
-              <CheckCircle className="w-4 h-4 mr-1" />
-              <span className="text-sm font-medium">Balanced</span>
-            </div>
+            <>
+              <CheckCircle className="h-3.5 w-3.5" /> Balanced
+            </>
           ) : (
-            <div className="flex items-center text-red-600">
-              <AlertTriangle className="w-4 h-4 mr-1" />
-              <span className="text-sm font-medium">
-                Difference: {currencySymbol}
-                {formatNumber(difference || 0)}
-              </span>
-            </div>
+            <>
+              <AlertTriangle className="h-3.5 w-3.5" />
+              Difference: {currencySymbol}
+              {formatNumber(difference || 0)}
+            </>
           )}
         </div>
 
-        {/* Totals Grid */}
-        <div className="grid grid-cols-3 gap-6 mb-2 sm:mb-0">
+        <div className="grid grid-cols-3 gap-6">
           <div className="text-center">
-            <div className="text-xs text-gray-500">Dr Total</div>
-            <div className="font-bold text-green-600">
+            <div className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
+              Dr Total
+            </div>
+            <div className="font-mono text-[12px] font-semibold text-[var(--ds-text-default)]">
               {currencySymbol}
               {formatNumber(totalDebit)}
             </div>
           </div>
           <div className="text-center">
-            <div className="text-xs text-gray-500">Cr Total</div>
-            <div className="font-bold text-green-600">
+            <div className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
+              Cr Total
+            </div>
+            <div className="font-mono text-[12px] font-semibold text-[var(--ds-text-default)]">
               {currencySymbol}
               {formatNumber(totalCredit)}
             </div>
           </div>
           <div className="text-center">
-            <div className="text-xs text-gray-500">Amount</div>
-            <div className="font-bold text-lg text-green-600">
+            <div className="text-[10px] font-semibold uppercase tracking-wide text-[var(--ds-text-muted)]">
+              Amount
+            </div>
+            <div className="font-mono text-[13px] font-semibold text-[var(--ds-text-default)]">
               {currencySymbol}
               {formatNumber(totalAmount)}
             </div>
           </div>
         </div>
 
-        {/* Additional Amounts */}
-        <div className="text-right">
+        <div className="text-right text-[12px] text-[var(--ds-text-muted)]">
           {taxAmount && taxAmount > 0 && (
-            <div className="text-sm text-gray-600">
+            <div>
               + Tax: {currencySymbol}
               {formatNumber(taxAmount)}
             </div>
           )}
           {roundOffAmount && roundOffAmount !== 0 && (
-            <div className="text-sm text-gray-600">
+            <div>
               Round Off: {currencySymbol}
               {formatNumber(roundOffAmount)}
             </div>
@@ -140,18 +143,21 @@ const VoucherFooter: React.FC<VoucherFooterProps> = ({
         </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex justify-end space-x-2">
+      <div className="flex justify-end gap-2">
         {onPrint && (
-          <Button variant="outline" onClick={onPrint} className="flex items-center gap-1">
-            <Printer className="w-4 h-4" />
+          <Button variant="outline" onClick={onPrint} className="inline-flex h-8 items-center gap-1.5">
+            <Printer className="h-3.5 w-3.5" />
             Print
           </Button>
         )}
 
         {onDuplicate && (
-          <Button variant="outline" onClick={onDuplicate} className="flex items-center gap-1">
-            <Copy className="w-4 h-4" />
+          <Button
+            variant="outline"
+            onClick={onDuplicate}
+            className="inline-flex h-8 items-center gap-1.5"
+          >
+            <Copy className="h-3.5 w-3.5" />
             Duplicate
           </Button>
         )}
@@ -159,9 +165,9 @@ const VoucherFooter: React.FC<VoucherFooterProps> = ({
         <Button
           variant="outline"
           onClick={onCancel}
-          className="flex items-center gap-1 text-red-600 border-red-600 hover:bg-red-50"
+          className="inline-flex h-8 items-center gap-1.5 text-[var(--ds-status-danger)] border-[var(--ds-status-danger)]/40 hover:bg-[var(--ds-status-danger-surface)]"
         >
-          <X className="w-4 h-4" />
+          <X className="h-3.5 w-3.5" />
           Cancel
         </Button>
 
@@ -169,32 +175,10 @@ const VoucherFooter: React.FC<VoucherFooterProps> = ({
           variant="primary"
           onClick={onSave}
           disabled={effectiveDisabled}
-          className="flex items-center gap-1"
+          className="inline-flex h-8 items-center gap-1.5"
         >
-          {saving && (
-            <svg
-              className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-          )}
-          <Save className="w-4 h-4" />
-          Save (Ctrl+A)
+          <Save className="h-3.5 w-3.5" />
+          {saving ? "Saving…" : voucherType ? `Save ${voucherType}` : "Save"}
         </Button>
       </div>
     </div>

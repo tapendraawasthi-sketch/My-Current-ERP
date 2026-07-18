@@ -1,0 +1,175 @@
+{
+  "$defs": {
+    "PlanStatus": {
+      "enum": [
+        "DRAFT",
+        "READY",
+        "RUNNING",
+        "COMPLETE",
+        "FAILED",
+        "CANCELLED"
+      ],
+      "title": "PlanStatus",
+      "type": "string"
+    },
+    "PlanStepV1": {
+      "additionalProperties": false,
+      "properties": {
+        "depends_on": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Depends On",
+          "type": "array"
+        },
+        "expected_output_type": {
+          "default": "unknown",
+          "title": "Expected Output Type",
+          "type": "string"
+        },
+        "operation_class": {
+          "minLength": 1,
+          "title": "Operation Class",
+          "type": "string"
+        },
+        "read_or_mutation": {
+          "$ref": "#/$defs/ReadOrMutation",
+          "default": "READ"
+        },
+        "status": {
+          "$ref": "#/$defs/StepStatus",
+          "default": "PENDING"
+        },
+        "step_id": {
+          "minLength": 1,
+          "title": "Step Id",
+          "type": "string"
+        },
+        "tool_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Name"
+        }
+      },
+      "required": [
+        "step_id",
+        "operation_class"
+      ],
+      "title": "PlanStepV1",
+      "type": "object"
+    },
+    "ReadOrMutation": {
+      "enum": [
+        "READ",
+        "MUTATION"
+      ],
+      "title": "ReadOrMutation",
+      "type": "string"
+    },
+    "StepStatus": {
+      "enum": [
+        "PENDING",
+        "RUNNING",
+        "DONE",
+        "FAILED",
+        "SKIPPED"
+      ],
+      "title": "StepStatus",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/PlanV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "allowed_tools": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Allowed Tools",
+      "type": "array"
+    },
+    "max_steps": {
+      "default": 8,
+      "maximum": 64,
+      "minimum": 1,
+      "title": "Max Steps",
+      "type": "integer"
+    },
+    "mode": {
+      "default": "ask",
+      "title": "Mode",
+      "type": "string"
+    },
+    "objective": {
+      "minLength": 1,
+      "title": "Objective",
+      "type": "string"
+    },
+    "ordered_steps": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/PlanStepV1"
+      },
+      "title": "Ordered Steps",
+      "type": "array"
+    },
+    "plan_id": {
+      "minLength": 1,
+      "title": "Plan Id",
+      "type": "string"
+    },
+    "planner_version": {
+      "default": "none",
+      "title": "Planner Version",
+      "type": "string"
+    },
+    "prohibited_tools": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Prohibited Tools",
+      "type": "array"
+    },
+    "required_evidence": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Required Evidence",
+      "type": "array"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/PlanStatus",
+      "default": "DRAFT"
+    },
+    "stop_conditions": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Stop Conditions",
+      "type": "array"
+    }
+  },
+  "required": [
+    "plan_id",
+    "objective"
+  ],
+  "title": "PlanV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

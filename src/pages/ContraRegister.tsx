@@ -7,12 +7,14 @@ import ReportShell from "../components/reporting/ReportShell";
 import ReportGrid from "../components/reporting/ReportGrid";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 import { useScreenF12 } from "../hooks/useF12Config";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const ContraRegister: React.FC = () => {
   // Register this screen with F12 system
   const getConfig = useScreenF12("contra-register");
 
   const { vouchers, accounts, companySettings, currentFiscalYear } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [startDate, setStartDate] = useState(currentFiscalYear?.startDate || "");
   const [endDate, setEndDate] = useState(currentFiscalYear?.endDate || "");
@@ -22,11 +24,13 @@ const ContraRegister: React.FC = () => {
   const [pendingStart, setPendingStart] = useState(startDate);
   const [pendingEnd, setPendingEnd] = useState(endDate);
   const [pendingSearchText, setPendingSearchText] = useState(searchText);
+  const [pendingBranchFilter, setPendingBranchFilter] = useState(branchFilter);
 
   const applyOptions = () => {
     setStartDate(pendingStart);
     setEndDate(pendingEnd);
     setSearchText(pendingSearchText);
+    setBranchFilter(pendingBranchFilter);
     setOptionsOpen(false);
   };
 
@@ -36,7 +40,11 @@ const ContraRegister: React.FC = () => {
 
     let filteredVouchers = vouchers.filter(
       (v) =>
-        v.type === "contra" && v.status === "posted" && v.date >= startDate && v.date <= endDate,
+        v.type === "contra" &&
+        v.status === "posted" &&
+        v.date >= startDate &&
+        v.date <= endDate &&
+        matchBranch(v.branchId),
     );
 
     // Apply search filter
@@ -87,7 +95,7 @@ const ContraRegister: React.FC = () => {
     }
 
     return processed;
-  }, [vouchers, accounts, startDate, endDate, searchText]);
+  }, [vouchers, accounts, startDate, endDate, searchText, matchBranch, branchFilter]);
 
   // Calculate summary stats
   const summaryStats = useMemo(() => {
@@ -95,7 +103,11 @@ const ContraRegister: React.FC = () => {
 
     const filteredVouchers = vouchers.filter(
       (v) =>
-        v.type === "contra" && v.status === "posted" && v.date >= startDate && v.date <= endDate,
+        v.type === "contra" &&
+        v.status === "posted" &&
+        v.date >= startDate &&
+        v.date <= endDate &&
+        matchBranch(v.branchId),
     );
 
     let cashToBank = 0;
@@ -124,7 +136,7 @@ const ContraRegister: React.FC = () => {
     });
 
     return { cashToBank, bankToCash, bankToBank };
-  }, [vouchers, accounts, startDate, endDate]);
+  }, [vouchers, accounts, startDate, endDate, matchBranch, branchFilter]);
 
   const columns = [
     { key: "date", label: "Date" },
@@ -173,6 +185,7 @@ const ContraRegister: React.FC = () => {
         setPendingStart(startDate);
         setPendingEnd(endDate);
         setPendingSearchText(searchText);
+        setPendingBranchFilter(branchFilter);
         setOptionsOpen(true);
       }}
       actionBarButtons={[{ label: "Print" }, { label: "Export" }]}
@@ -184,7 +197,7 @@ const ContraRegister: React.FC = () => {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -194,16 +207,32 @@ const ContraRegister: React.FC = () => {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
+
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
 
           <input
             type="text"
             placeholder="Search voucher no, narration..."
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-64"
+            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
           />
         </>
       }
@@ -258,7 +287,7 @@ const ContraRegister: React.FC = () => {
               type="date"
               value={pendingStart}
               onChange={(e) => setPendingStart(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -268,9 +297,28 @@ const ContraRegister: React.FC = () => {
               type="date"
               value={pendingEnd}
               onChange={(e) => setPendingEnd(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
+
+          {branchOptions.length > 0 && (
+            <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
+              Branch
+              <select
+                value={pendingBranchFilter}
+                onChange={(e) => setPendingBranchFilter(e.target.value)}
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
 
           <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
             Search
@@ -278,8 +326,8 @@ const ContraRegister: React.FC = () => {
               type="text"
               value={pendingSearchText}
               onChange={(e) => setPendingSearchText(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-              placeholder="Search voucher no, narration..."
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              placeholder="Voucher no or narration"
             />
           </label>
         </div>

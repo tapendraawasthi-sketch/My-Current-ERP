@@ -1,11 +1,16 @@
 import React, { useMemo } from "react";
 import { useStore } from "../store/useStore";
 import { computePendingAlerts } from "../lib/workflowUtils";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const WorkflowAlertsWidget: React.FC = () => {
   const { vouchers, setCurrentPage, setReportFilters } = useStore() as any;
+  const { matchBranch, branchFilter } = useBranchFilter();
 
-  const alerts = useMemo(() => computePendingAlerts(vouchers || []), [vouchers]);
+  const alerts = useMemo(() => {
+    const scoped = (vouchers || []).filter((v: any) => matchBranch(v.branchId));
+    return computePendingAlerts(scoped);
+  }, [vouchers, matchBranch, branchFilter]);
 
   const go = (page: string, filter?: any) => {
     setReportFilters?.(filter || {});

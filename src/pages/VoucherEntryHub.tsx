@@ -18,6 +18,7 @@ import {
   getVoucherTypeShortcut,
 } from "../lib/voucherUtils";
 import toast from "@/lib/appToast";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 // Lazy-load all voucher pages
 const ContraVoucher = lazy(() => import("./ContraVoucher"));
@@ -69,6 +70,7 @@ const VoucherEntryHub: React.FC = () => {
   const [activeVoucherType, setActiveVoucherType] = useState<string>("sales-invoice");
   const [showVoucherPicker, setShowVoucherPicker] = useState<boolean>(false);
   const { voucherTypeMasters } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions } = useBranchFilter();
 
   // Get active voucher types from store
   const activeVoucherTypes = voucherTypeMasters
@@ -281,7 +283,8 @@ const VoucherEntryHub: React.FC = () => {
     <div className="flex flex-col h-screen">
       {/* Top Navigation Bar */}
       <div className="bg-white border-b border-gray-200 p-2 sticky top-0 z-30">
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap gap-1">
           <button
             className={`flex flex-col items-center p-2 rounded-md text-sm ${
               activeVoucherType === "contra" ? "bg-green-600 text-white" : "hover:bg-gray-100"
@@ -349,6 +352,22 @@ const VoucherEntryHub: React.FC = () => {
             <span>F10</span>
             <span>More...</span>
           </button>
+          </div>
+          {branchOptions.length > 0 ? (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch filter"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          ) : null}
         </div>
       </div>
 

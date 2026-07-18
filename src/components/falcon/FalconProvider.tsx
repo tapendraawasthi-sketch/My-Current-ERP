@@ -1,87 +1,39 @@
-import React, { useEffect, useState } from "react";
+/**
+ * Falcon user-facing chrome — retired (Wave F).
+ * Orbix is the sole assistant (EKhataLauncher → /orbix).
+ * Shortcuts that used to open Falcon now open Orbix.
+ */
+import React, { useEffect } from "react";
 import { useStore } from "../../store/useStore";
 import { useFalconStore } from "../../store/falconStore";
-import { FalconPanel } from "./FalconPanel";
-import FalconLauncher from "./FalconLauncher";
-import { AlertCircle } from "lucide-react";
-import { findPageByRoute } from "../../lib/falcon/pageIndexSearch";
 import { isNiosPlatformEnabled } from "../../nios/session";
 
-class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
-  constructor(props: { children: React.ReactNode }) {
-    super(props);
-    this.state = { hasError: false };
-  }
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-  render() {
-    if (this.state.hasError) {
-      return (
-        <button
-          onClick={() => this.setState({ hasError: false })}
-          className="fixed bottom-4 right-4 bg-red-600 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 text-[12px] z-[9999]"
-        >
-          <AlertCircle size={14} /> Falcon Error - Click to reload
-        </button>
-      );
-    }
-    return this.props.children;
-  }
-}
-
 export const FalconProvider: React.FC = () => {
-  const currentPage = useStore((state) => state.currentPage);
-  const isAuthenticated = useStore((state) => state.isAuthenticated);
-  const isDbReady = useStore((state) => state.isDbReady);
-  const companySettings = useStore((state) => state.companySettings);
+  const setCurrentPage = useStore((s) => s.setCurrentPage);
+  const isAuthenticated = useStore((s) => s.isAuthenticated);
+  const isDbReady = useStore((s) => s.isDbReady);
+  const closePanel = useFalconStore((s) => s.closePanel);
 
-  const setContext = useFalconStore((state) => state.setContext);
-  const togglePanel = useFalconStore((state) => state.togglePanel);
-
-  // Keyboard shortcut Ctrl+/ or Ctrl+Shift+F
   useEffect(() => {
+    closePanel();
+  }, [closePanel]);
+
+  useEffect(() => {
+    if (!isAuthenticated || !isDbReady || isNiosPlatformEnabled()) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (
         (e.ctrlKey || e.metaKey) &&
         (e.key === "/" || (e.shiftKey && e.key.toLowerCase() === "f"))
       ) {
         e.preventDefault();
-        togglePanel();
+        setCurrentPage("orbix");
       }
     };
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [togglePanel]);
+  }, [isAuthenticated, isDbReady, setCurrentPage]);
 
-  // Context auto-injection on route change (title from indexed page headers)
-  useEffect(() => {
-    if (currentPage) {
-      const page = findPageByRoute(currentPage);
-      setContext({
-        route: currentPage,
-        screenTitle: page?.title || currentPage.replace(/-/g, " "),
-        companyName: companySettings?.name || companySettings?.companyName || "Sutra ERP User",
-      });
-    }
-  }, [currentPage, companySettings, setContext]);
-
-  // When NIOS v3 is enabled, Falcon defers to NiosShell (unified AI stack)
-  if (isNiosPlatformEnabled()) {
-    return null;
-  }
-
-  // Hide entirely if not authenticated or DB not ready
-  if (!isAuthenticated || !isDbReady) {
-    return null;
-  }
-
-  return (
-    <ErrorBoundary>
-      <FalconLauncher />
-      <FalconPanel />
-    </ErrorBoundary>
-  );
+  return null;
 };
 
 export default FalconProvider;

@@ -1,0 +1,87 @@
+{
+  "resource_id": "r3h_english_identity_policy",
+  "version": "mai-07-r3h.1.0.0",
+  "guard_id": "mai-07-r3h.1.0.0",
+  "LINGUIST_APPROVED": false,
+  "PRODUCTION_APPROVED": false,
+  "enable_promotion_overlay": false,
+  "reorder_only": true,
+  "identity_always_retained": true,
+  "candidate_set_stable": true,
+  "dispositions": [
+    "PROTECTED_IDENTITY_REQUIRED",
+    "NAME_IDENTITY_REQUIRED",
+    "ACRONYM_IDENTITY_REQUIRED",
+    "ENGLISH_IDENTITY_REQUIRED",
+    "ROMANIZED_TARGET_PREFERRED",
+    "SHARED_CONTEXT_IDENTITY_PREFERRED",
+    "SHARED_CONTEXT_TARGET_PREFERRED",
+    "AMBIGUOUS_IDENTITY_FIRST_REVIEW",
+    "KEEP_BASE_ORDER",
+    "UNSUPPORTED"
+  ],
+  "weights": {
+    "english_context_ratio_high": 0.5,
+    "english_context_ratio_borrow": 0.4,
+    "neighbor_english_function_min": 1,
+    "nepali_particle_block_english": 1,
+    "min_signals_for_high_confidence_english": 2,
+    "shared_term_target_min": 2
+  },
+  "english_function_words": [
+    "the", "a", "an", "and", "or", "for", "from", "with", "to", "of", "in", "on",
+    "is", "are", "was", "were", "be", "been", "please", "show", "review", "confirm",
+    "update", "export", "print", "check", "verify", "approve", "submit", "total",
+    "amount", "status", "today", "tomorrow", "yesterday", "report", "list", "entry"
+  ],
+  "technical_english_terms": [
+    "invoice", "voucher", "ledger", "debit", "credit", "balance", "payment", "supplier",
+    "customer", "discount", "commission", "statement", "closing", "opening", "reconcile"
+  ],
+  "english_phrases": [
+    "payment status",
+    "sales report",
+    "customer ledger",
+    "opening balance",
+    "closing balance",
+    "invoice entry",
+    "supplier statement"
+  ],
+  "romanized_nepali_phrases": [
+    "aaja hernu",
+    "mero pathau",
+    "bata aayo",
+    "lai dinu",
+    "ma cha"
+  ],
+  "nepali_context_particles": [
+    "bata", "lai", "ko", "ma", "cha", "chha", "garnu", "hernu", "pathau", "aaja",
+    "mero", "hamro", "timro", "hola", "garera", "gareko", "bhayo", "hunchha",
+    "hunu", "chahi", "pani", "ta", "ni", "ra"
+  ],
+  "reason_code_families": {
+    "english": [
+      "english_identity_lexicon",
+      "english_context_ratio",
+      "neighbor_english_function",
+      "technical_english_context",
+      "english_phrase",
+      "capitalization_or_acronym"
+    ],
+    "romanized": [
+      "romanized_lexicon",
+      "romanized_morphology",
+      "nepali_particles",
+      "devanagari_neighbor",
+      "romanized_phrase"
+    ],
+    "shared": [
+      "shared_surface",
+      "shared_english_context",
+      "shared_nepali_context",
+      "shared_ambiguous_review"
+    ]
+  },
+  "provenance": "MAI-07R3H canonical identity-disposition policy; engineering-curated; frozen-data firewalled",
+  "review_status": "ENGINEERING_CURATED_NOT_LINGUIST_APPROVED"
+}

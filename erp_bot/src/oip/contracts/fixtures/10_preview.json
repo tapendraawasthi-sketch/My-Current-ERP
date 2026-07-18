@@ -1,0 +1,92 @@
+{
+  "data": {
+    "citations": [],
+    "conversation_id": "conv-demo-001",
+    "created_at": "2026-07-14T12:00:00Z",
+    "draft_reference": null,
+    "language": "en",
+    "policy_reference": null,
+    "request_id": "req-demo-010",
+    "response_id": "resp-demo-010",
+    "response_type": "PREVIEW",
+    "schema_version": "1.0.0",
+    "status": "REQUIRES_INPUT",
+    "structured_payload": {
+      "payload_type": "PREVIEW",
+      "preview": {
+        "approval_requirements": [],
+        "authoritative_record_ids": null,
+        "created_at": "2026-07-14T12:00:00Z",
+        "date_and_period": {},
+        "document_references": [],
+        "draft_reference": {
+          "company_scope_reference": "company-demo-001",
+          "conversation_id": "conv-demo-001",
+          "created_at": "2026-07-14T12:00:00Z",
+          "draft_id": "draft-demo-001",
+          "draft_version": "1",
+          "event_type": "unknown",
+          "expires_at": null,
+          "owner_principal_reference": "user-demo-001",
+          "schema_version": "1.0.0",
+          "status": "OPEN",
+          "tenant_scope_reference": "tenant-demo-001"
+        },
+        "execution_success": null,
+        "expires_at": null,
+        "inventory_effects": [],
+        "journal_effects": [
+          {
+            "account_display_name": "Inventory",
+            "account_id": "acc-inventory",
+            "amount": {
+              "amount": "5000.00",
+              "currency": "NPR",
+              "scale": null
+            },
+            "narration": null,
+            "side": "DEBIT",
+            "source_reference": null
+          },
+          {
+            "account_display_name": "Accounts Payable",
+            "account_id": "acc-payable",
+            "amount": {
+              "amount": "5000.00",
+              "currency": "NPR",
+              "scale": null
+            },
+            "narration": null,
+            "side": "CREDIT",
+            "source_reference": null
+          }
+        ],
+        "party_references": [],
+        "preview_hash": "hash-demo-010",
+        "preview_id": "prev-demo-010",
+        "preview_version": "1",
+        "receipt_id": null,
+        "required_permissions": [],
+        "rule_versions": {},
+        "schema_version": "1.0.0",
+        "snapshot_revisions": {},
+        "source_references": [],
+        "status": "READY",
+        "summary": "Purchase preview",
+        "tax_effects": [],
+        "totals": {
+          "currency": "NPR",
+          "grand_total": "5000.00"
+        },
+        "warnings": []
+      }
+    },
+    "suggested_safe_actions": [],
+    "trace_reference": null,
+    "uncertainty": null,
+    "user_visible_text": "Confirm purchase?",
+    "warnings": []
+  },
+  "kind": "AIResponseEnvelopeV1",
+  "valid": true
+}

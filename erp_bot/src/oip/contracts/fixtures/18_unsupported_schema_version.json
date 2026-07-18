@@ -1,0 +1,10 @@
+{
+  "data": {
+    "conversation_id": "conv-demo-001",
+    "message": "hello",
+    "schema_version": "99.0.0"
+  },
+  "error_code": "UNSUPPORTED_SCHEMA_VERSION",
+  "kind": "ClientTurnPayloadV1",
+  "valid": false
+}

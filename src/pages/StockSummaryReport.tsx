@@ -9,6 +9,7 @@ import {
   mapConfigMethodToValuation,
   movementsToStockRaw,
 } from "../lib/stockValuation";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 type ViewMode = "alphabetical" | "group_wise" | "critical_level";
 
@@ -32,6 +33,7 @@ interface StockRow {
 
 export default function StockSummaryReport() {
   const { items, stockMovements, inventoryConfig } = useStore() as any;
+  const { branchFilter, setBranchFilter, branchOptions, matchMovement } = useBranchFilter();
   const [viewMode, setViewMode] = useState<ViewMode>("alphabetical");
   const [asOnDate, setAsOnDate] = useState(new Date().toISOString().split("T")[0]);
   const [showZeroBalance, setShowZeroBalance] = useState(true);
@@ -39,10 +41,15 @@ export default function StockSummaryReport() {
 
   const valuationMethod = mapConfigMethodToValuation(inventoryConfig?.stockValuationMethod);
 
+  const scopedMovements = useMemo(
+    () => (stockMovements || []).filter((m: any) => matchMovement(m)),
+    [stockMovements, matchMovement, branchFilter],
+  );
+
   const stockSummaries = useMemo(() => {
-    const raw = movementsToStockRaw(stockMovements || []);
+    const raw = movementsToStockRaw(scopedMovements);
     return computeStockSummary(raw, valuationMethod, undefined, asOnDate);
-  }, [stockMovements, valuationMethod, asOnDate]);
+  }, [scopedMovements, valuationMethod, asOnDate]);
 
   const summaryByItemId = useMemo(() => {
     const map = new Map<string, (typeof stockSummaries)[number]>();
@@ -201,6 +208,21 @@ export default function StockSummaryReport() {
             className={inputCls}
           />
         </div>
+        {branchOptions.length > 0 && (
+          <select
+            value={branchFilter}
+            onChange={(e) => setBranchFilter(e.target.value)}
+            aria-label="Branch"
+            className={inputCls}
+          >
+            <option value="all">All branches</option>
+            {branchOptions.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name || b.code || b.id}
+              </option>
+            ))}
+          </select>
+        )}
         <input
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}

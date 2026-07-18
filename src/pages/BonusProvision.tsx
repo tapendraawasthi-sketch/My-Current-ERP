@@ -3,6 +3,8 @@ import { useStore } from "../store/useStore";
 import { computeProfitLoss } from "../lib/accounting";
 import { Gift, Save } from "lucide-react";
 import toast from "@/lib/appToast";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 function money(n: number): string {
   return Number(n || 0).toLocaleString("en-NP", {
@@ -13,21 +15,32 @@ function money(n: number): string {
 
 const BonusProvision: React.FC = () => {
   const { employees, accounts, vouchers, addVoucher, currentFiscalYear } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [saving, setSaving] = useState(false);
   const [profitSharePercent, setProfitSharePercent] = useState(10);
+
+  const scopedVouchers = useMemo(
+    () => (vouchers || []).filter((v) => matchBranch((v as { branchId?: string }).branchId)),
+    [vouchers, matchBranch, branchFilter],
+  );
 
   const pl = useMemo(() => {
     return computeProfitLoss(
       accounts || [],
-      vouchers || [],
+      scopedVouchers,
       currentFiscalYear?.startDate,
       currentFiscalYear?.endDate,
     );
-  }, [accounts, vouchers, currentFiscalYear]);
+  }, [accounts, scopedVouchers, currentFiscalYear]);
 
   const eligibleEmployees = useMemo(() => {
-    return (employees || []).filter((e) => e.status !== "inactive" && e.bonusEligible !== false);
-  }, [employees]);
+    return (employees || []).filter(
+      (e) =>
+        e.status !== "inactive" &&
+        e.bonusEligible !== false &&
+        matchBranch((e as { branchId?: string }).branchId),
+    );
+  }, [employees, matchBranch, branchFilter]);
 
   const rows = useMemo(() => {
     const oneMonthTotal = eligibleEmployees.reduce((sum, e) => sum + Number(e.basicSalary || 0), 0);
@@ -86,6 +99,7 @@ const BonusProvision: React.FC = () => {
         totalDebit: totalProvision,
         totalCredit: totalProvision,
         grandTotal: totalProvision,
+        branchId: readActiveBranchId() || undefined,
         lines: [
           {
             accountId: expenseAcc.id,
@@ -124,15 +138,32 @@ const BonusProvision: React.FC = () => {
             Compute bonus provision from net profit and eligible employees
           </p>
         </div>
-        <button
-          type="button"
-          onClick={postProvision}
-          disabled={saving || totalProvision <= 0}
-          className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-50 text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
-        >
-          <Save className="h-3.5 w-3.5" />
-          Post Provision
-        </button>
+        <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+          <button
+            type="button"
+            onClick={postProvision}
+            disabled={saving || totalProvision <= 0}
+            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-50 text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+          >
+            <Save className="h-3.5 w-3.5" />
+            Post Provision
+          </button>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3 mb-4">

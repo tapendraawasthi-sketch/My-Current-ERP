@@ -275,7 +275,7 @@ const SecurityControl = () => {
           <div className="ml-6 mt-5 max-w-lg">
             <button
               onClick={handleActivateSecurity}
-              className="w-full h-9 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
+              className="w-full h-9 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
             >
               Activate Security
             </button>
@@ -290,7 +290,7 @@ const SecurityControl = () => {
             onClick={() => setTab("overview")}
             className={`px-5 py-2.5 text-[12px] font-medium transition-colors border-b-2 flex-1 ${
               tab === "overview"
-                ? "bg-white text-[#1557b0] border-[#1557b0]"
+                ? "bg-white text-[var(--ds-action-primary)] border-[var(--ds-action-primary)]"
                 : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 border-transparent"
             }`}
           >
@@ -300,7 +300,7 @@ const SecurityControl = () => {
             onClick={() => setTab("admin")}
             className={`px-5 py-2.5 text-[12px] font-medium transition-colors border-b-2 flex-1 ${
               tab === "admin"
-                ? "bg-white text-[#1557b0] border-[#1557b0]"
+                ? "bg-white text-[var(--ds-action-primary)] border-[var(--ds-action-primary)]"
                 : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 border-transparent"
             }`}
           >
@@ -310,7 +310,7 @@ const SecurityControl = () => {
             onClick={() => setTab("audit")}
             className={`px-5 py-2.5 text-[12px] font-medium transition-colors border-b-2 flex-1 ${
               tab === "audit"
-                ? "bg-white text-[#1557b0] border-[#1557b0]"
+                ? "bg-white text-[var(--ds-action-primary)] border-[var(--ds-action-primary)]"
                 : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 border-transparent"
             }`}
           >
@@ -459,7 +459,7 @@ const SecurityControl = () => {
               </label>
               <input
                 type="password"
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-colors"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] transition-colors"
               />
             </div>
 
@@ -469,7 +469,7 @@ const SecurityControl = () => {
               </label>
               <input
                 type="password"
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-colors"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] transition-colors"
               />
               <div className="flex gap-1 h-1.5 mt-2">
                 <div className="flex-1 rounded-full bg-amber-500" />
@@ -488,7 +488,7 @@ const SecurityControl = () => {
               </label>
               <input
                 type="password"
-                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-colors"
+                className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] transition-colors"
               />
             </div>
 
@@ -498,7 +498,7 @@ const SecurityControl = () => {
                   "Admin password changed successfully. Keep it safe — there is no recovery option.",
                 )
               }
-              className="w-full h-8 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
+              className="w-full h-8 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
             >
               Change Admin Password
             </button>
@@ -569,12 +569,12 @@ const SecurityControl = () => {
                     placeholder="Filter by user..."
                     value={auditFilter.user}
                     onChange={(e) => setAuditFilter({ ...auditFilter, user: e.target.value })}
-                    className="h-8 px-2.5 text-[11px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0] w-36"
+                    className="h-8 px-2.5 text-[11px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)] w-36"
                   />
                   <select
                     value={auditFilter.action}
                     onChange={(e) => setAuditFilter({ ...auditFilter, action: e.target.value })}
-                    className="h-8 px-2.5 text-[11px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0] w-32"
+                    className="h-8 px-2.5 text-[11px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)] w-32"
                   >
                     <option>All Actions</option>
                     <option>CREATE</option>
@@ -588,13 +588,13 @@ const SecurityControl = () => {
                     type="date"
                     value={auditFilter.dateFrom}
                     onChange={(e) => setAuditFilter({ ...auditFilter, dateFrom: e.target.value })}
-                    className="h-8 px-2.5 text-[11px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0] w-32"
+                    className="h-8 px-2.5 text-[11px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)] w-32"
                   />
                   <input
                     type="date"
                     value={auditFilter.dateTo}
                     onChange={(e) => setAuditFilter({ ...auditFilter, dateTo: e.target.value })}
-                    className="h-8 px-2.5 text-[11px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0] w-32"
+                    className="h-8 px-2.5 text-[11px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)] w-32"
                   />
                   <button
                     onClick={() =>

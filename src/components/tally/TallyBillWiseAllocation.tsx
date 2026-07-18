@@ -3,6 +3,7 @@ import { X, Plus, Save, Trash2, FileText } from "lucide-react";
 import { BillWiseAllocation, cryptoRandomId, todayAD } from "@/lib/tallyVoucher";
 import { formatMoney, parseMoney } from "@/lib/tallyFormat";
 import { round2 } from "@/lib/tallyVoucher";
+import { useBranchFilter } from "@/hooks/useBranchFilter";
 
 interface Props {
   isOpen: boolean;
@@ -23,8 +24,10 @@ export const TallyBillWiseAllocation: React.FC<Props> = ({
   onClose,
   onSave,
 }) => {
+  const { matchBranch } = useBranchFilter();
   const partyInvoices = invoices.filter(
     (i) =>
+      matchBranch(i.branchId) &&
       (i.partyId === partyId || i.accountId === partyId) &&
       (i.balanceDue ?? i.grandTotal ?? 0) !== 0,
   );
@@ -64,25 +67,25 @@ export const TallyBillWiseAllocation: React.FC<Props> = ({
           <table className="w-full border-collapse">
             <thead>
               <tr>
-                <th className="border border-[#9DC07A] bg-[var(--t-muted)] text-[11px] uppercase p-1">
+                <th className="border border-[var(--ds-border-default)] bg-[var(--t-muted)] text-[11px] uppercase p-1">
                   Method
                 </th>
-                <th className="border border-[#9DC07A] bg-[var(--t-muted)] text-[11px] uppercase p-1">
+                <th className="border border-[var(--ds-border-default)] bg-[var(--t-muted)] text-[11px] uppercase p-1">
                   Reference
                 </th>
-                <th className="border border-[#9DC07A] bg-[var(--t-muted)] text-[11px] uppercase p-1">
+                <th className="border border-[var(--ds-border-default)] bg-[var(--t-muted)] text-[11px] uppercase p-1">
                   Date
                 </th>
-                <th className="border border-[#9DC07A] bg-[var(--t-muted)] text-[11px] uppercase p-1 text-right">
+                <th className="border border-[var(--ds-border-default)] bg-[var(--t-muted)] text-[11px] uppercase p-1 text-right">
                   Amount
                 </th>
-                <th className="border border-[#9DC07A] bg-[var(--t-muted)] text-[11px] uppercase p-1"></th>
+                <th className="border border-[var(--ds-border-default)] bg-[var(--t-muted)] text-[11px] uppercase p-1"></th>
               </tr>
             </thead>
             <tbody>
               {rows.map((r, i) => (
                 <tr key={r.id}>
-                  <td className="border border-[#9DC07A] p-1">
+                  <td className="border border-[var(--ds-border-default)] p-1">
                     <select
                       className="tally-input w-full p-1"
                       value={r.method}
@@ -94,7 +97,7 @@ export const TallyBillWiseAllocation: React.FC<Props> = ({
                       <option>On Account</option>
                     </select>
                   </td>
-                  <td className="border border-[#9DC07A] p-1">
+                  <td className="border border-[var(--ds-border-default)] p-1">
                     {r.method === "Against Reference" && partyInvoices.length ? (
                       <select
                         className="tally-input w-full p-1"
@@ -116,7 +119,7 @@ export const TallyBillWiseAllocation: React.FC<Props> = ({
                       />
                     )}
                   </td>
-                  <td className="border border-[#9DC07A] p-1">
+                  <td className="border border-[var(--ds-border-default)] p-1">
                     <input
                       type="date"
                       className="tally-input w-full p-1"
@@ -124,7 +127,7 @@ export const TallyBillWiseAllocation: React.FC<Props> = ({
                       onChange={(e) => set(i, "refDate", e.target.value)}
                     />
                   </td>
-                  <td className="border border-[#9DC07A] p-1">
+                  <td className="border border-[var(--ds-border-default)] p-1">
                     <input
                       type="number"
                       className="tally-input w-full p-1 text-right"
@@ -132,7 +135,7 @@ export const TallyBillWiseAllocation: React.FC<Props> = ({
                       onChange={(e) => set(i, "amount", parseMoney(e.target.value))}
                     />
                   </td>
-                  <td className="border border-[#9DC07A] p-1 text-center">
+                  <td className="border border-[var(--ds-border-default)] p-1 text-center">
                     <button
                       className="tally-btn py-0.5 px-1"
                       onClick={() => setRows((p) => p.filter((_, idx) => idx !== i))}

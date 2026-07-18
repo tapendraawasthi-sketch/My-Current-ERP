@@ -1,0 +1,30 @@
+{
+  "allowed_use": [
+    "normalization_views_only"
+  ],
+  "content_hash": "7542ec927437f611552c2953141d6f36fef08c902c97955a6f0893f4e41ceaf3",
+  "files": [
+    "whitespace_equivalence.json",
+    "digit_equivalence.json",
+    "punctuation_candidates.json",
+    "abbreviation_candidates.json",
+    "repetition_thresholds.json",
+    "security_categories.json"
+  ],
+  "generation_command": "python -m src.oip.modules.language_runtime.normalization.infrastructure.norm_resource_repository --seal",
+  "license_status": "internal_engineering",
+  "prohibited_use": [
+    "transliteration",
+    "semantic_synonym",
+    "accounting_authority",
+    "intent_input_automatic",
+    "training"
+  ],
+  "provenance": "engineering_curated_mai06",
+  "resource_id": "mai06_normalization_pack_v1",
+  "resource_pack_version": "mai-06.1.0",
+  "review_status": "ENGINEERING_REVIEWED",
+  "schema_version": "1.0.0",
+  "update_date": "2026-07-14",
+  "validation_command": "python -m src.oip.modules.language_runtime.normalization.infrastructure.norm_resource_repository --check-twice"
+}

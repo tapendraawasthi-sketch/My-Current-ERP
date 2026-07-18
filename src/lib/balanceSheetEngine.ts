@@ -218,7 +218,13 @@ export async function computeBalanceSheet(options: BSOptions): Promise<BSComputa
   ]);
 
   const vouchers = allVouchers.filter(
-    (v: any) => v.status === "posted" && v.date <= options.toDate,
+    (v: any) =>
+      v.status === "posted" &&
+      v.date <= options.toDate &&
+      (!options.branchId ||
+        options.branchId === "all" ||
+        !v.branchId ||
+        v.branchId === options.branchId),
   );
 
   const balanceMap = new Map<string, { debit: number; credit: number }>();

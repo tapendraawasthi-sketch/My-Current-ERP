@@ -1,0 +1,18 @@
+{
+  "data": {
+    "active_draft_reference": null,
+    "active_ui_context": {},
+    "client_context": {},
+    "client_message_id": null,
+    "conversation_id": "conv-demo-001",
+    "idempotency_key": null,
+    "input_channel": "text",
+    "locale_hint": "ne",
+    "message": "मेरो नगद मौज्दात कति छ?",
+    "mode": "ask",
+    "schema_version": "1.0.0",
+    "session_id": null
+  },
+  "kind": "ClientTurnPayloadV1",
+  "valid": true
+}

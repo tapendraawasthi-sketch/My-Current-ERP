@@ -17,6 +17,8 @@ import {
   UserCheck,
   Clock,
 } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 function money(v: number): string {
   const abs = Math.abs(Number(v || 0));
@@ -27,6 +29,7 @@ function money(v: number): string {
 const PayrollRun: React.FC = () => {
   const { employees, payHeads, companySettings, currentFiscalYear, addVoucher, accounts } =
     useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [step, setStep] = useState(1);
   const [selectedYear, setSelectedYear] = useState(currentFiscalYear?.name || "");
   const [selectedMonth, setSelectedMonth] = useState(4); // April (Baisakh) as default
@@ -56,7 +59,7 @@ const PayrollRun: React.FC = () => {
   const handleLoadEmployees = () => {
     const initialAttendance = {};
     employees
-      .filter((emp) => emp.isActive)
+      .filter((emp) => emp.isActive && matchBranch((emp as { branchId?: string }).branchId))
       .forEach((emp) => {
         initialAttendance[emp.id] = {
           empId: emp.id,
@@ -271,6 +274,7 @@ const PayrollRun: React.FC = () => {
         dateNepali: "",
         narration: `Salary for ${nepaliMonths[selectedMonth - 1]} ${selectedYear}`,
         status: "posted",
+        branchId: readActiveBranchId() || undefined,
         lines: [
           // ── Debit lines ──────────────────────────────────────────────────
           {
@@ -374,6 +378,7 @@ const PayrollRun: React.FC = () => {
           month: selectedMonth,
           year: selectedYear,
           processedDate: payrollDate,
+          branchId: readActiveBranchId() || undefined,
         })),
       );
 
@@ -590,6 +595,21 @@ const PayrollRun: React.FC = () => {
           <p className="text-[12px] text-gray-500 mt-0.5">Attendance entries.</p>
             <p className="text-[12px] text-gray-500 mt-0.5">Process and manage employee payroll</p>
           </div>
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         {/* Step Indicator */}
@@ -1182,8 +1202,8 @@ const PayrollRun: React.FC = () => {
                 className="bg-white border border-gray-200 hover:border-[var(--ds-action-primary)] hover:bg-blue-50 hover:shadow-sm text-gray-700 px-4 py-5 rounded-md flex flex-col items-center gap-3 transition-all"
                 onClick={handleExportPF}
               >
-                <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
-                  <FileText size={18} className="text-purple-600" />
+                <div className="w-10 h-10 rounded-full bg-[var(--ds-status-info-surface)] flex items-center justify-center">
+                  <FileText size={18} className="text-[var(--ds-status-info)]" />
                 </div>
                 <div className="text-center">
                   <div className="text-[12px] font-semibold">PF Report</div>

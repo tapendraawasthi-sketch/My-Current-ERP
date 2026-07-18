@@ -116,7 +116,7 @@ const BatchSerialSelector: React.FC<BatchSerialSelectorProps> = ({
             <select
               value={selectedBatch}
               onChange={handleBatchChange}
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
             >
               {itemBatches.map((batch) => {
                 const daysToExpiry = calculateDaysToExpiry(batch.expiryDate);
@@ -169,7 +169,7 @@ const BatchSerialSelector: React.FC<BatchSerialSelectorProps> = ({
               {selectedSerials.map((serial) => (
                 <div
                   key={serial}
-                  className="bg-[#1557b0] text-white px-2 py-0.5 rounded-md text-[11px] flex items-center gap-1 font-medium shadow-sm"
+                  className="bg-[var(--ds-action-primary)] text-white px-2 py-0.5 rounded-md text-[11px] flex items-center gap-1 font-medium shadow-sm"
                 >
                   {serial}
                   <button
@@ -197,7 +197,7 @@ const BatchSerialSelector: React.FC<BatchSerialSelectorProps> = ({
                     disabled={isDisabled}
                     className={`border px-2 py-1.5 text-[11px] rounded-md font-medium transition-all ${
                       isSelected
-                        ? "bg-[#1557b0] border-[#1557b0] text-white shadow-sm"
+                        ? "bg-[var(--ds-action-primary)] border-[var(--ds-action-primary)] text-white shadow-sm"
                         : isDisabled
                           ? "bg-gray-50 border-gray-200 text-gray-400 cursor-not-allowed"
                           : "bg-white border-gray-300 text-gray-700 hover:bg-blue-50 hover:border-blue-200"

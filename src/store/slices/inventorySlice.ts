@@ -17,6 +17,7 @@ import { validateVoucherBalance, assertDateInFiscalYear } from "../store.types";
 import toast from "@/lib/appToast";
 import { migrateWorkflowFields } from "../../lib/workflowMigration";
 import { createWorkflowActions } from "../workflowActions";
+import { readActiveBranchId, stampMovementBranch } from "../../lib/activeBranch";
 
 export const createInventorySlice: StateCreator<AppState, [], [], any> = (set, get) => ({
   // ── Items ─────────────────────────────────────────────────────────────────
@@ -27,21 +28,24 @@ export const createInventorySlice: StateCreator<AppState, [], [], any> = (set, g
     await db.items.add(newItem as any);
     if (((newItem as any).openingStock || 0) > 0) {
       const movId = `mov-opening-${id}`;
-      const movement = {
-        id: movId,
-        date: get().currentFiscalYear?.startDate || new Date().toISOString().split("T")[0],
-        dateNepali: get().currentFiscalYear?.name || "",
-        type: "opening",
-        itemId: id,
-        itemName: (newItem as any).name,
-        warehouseId: get().warehouses.find((w: any) => w.isDefault)?.id || "wh-main",
-        warehouseName: get().warehouses.find((w: any) => w.isDefault)?.name || "Main Warehouse",
-        qty: (newItem as any).openingStock,
-        rate: (newItem as any).openingStockRate || 0,
-        amount: ((newItem as any).openingStock || 0) * ((newItem as any).openingStockRate || 0),
-        referenceType: "opening-balance",
-        narration: "Opening stock",
-      };
+      const movement = stampMovementBranch(
+        {
+          id: movId,
+          date: get().currentFiscalYear?.startDate || new Date().toISOString().split("T")[0],
+          dateNepali: get().currentFiscalYear?.name || "",
+          type: "opening",
+          itemId: id,
+          itemName: (newItem as any).name,
+          warehouseId: get().warehouses.find((w: any) => w.isDefault)?.id || "wh-main",
+          warehouseName: get().warehouses.find((w: any) => w.isDefault)?.name || "Main Warehouse",
+          qty: (newItem as any).openingStock,
+          rate: (newItem as any).openingStockRate || 0,
+          amount: ((newItem as any).openingStock || 0) * ((newItem as any).openingStockRate || 0),
+          referenceType: "opening-balance",
+          narration: "Opening stock",
+        },
+        get().warehouses,
+      );
       await db.stockMovements.add(movement as any);
       set((s) => ({ stockMovements: [...s.stockMovements, movement] }));
     }
@@ -96,39 +100,49 @@ export const createInventorySlice: StateCreator<AppState, [], [], any> = (set, g
 
     if (newTransfer.status === "completed" && newTransfer.lines) {
       for (const line of newTransfer.lines) {
-        await db.stockMovements.add({
-          id: `mov-${id}-out-${line.itemId}`,
-          date: newTransfer.date,
-          dateNepali: newTransfer.dateNepali,
-          type: "transfer-out",
-          itemId: line.itemId,
-          itemName: line.itemName,
-          warehouseId: newTransfer.fromWarehouseId,
-          warehouseName: newTransfer.fromWarehouseName,
-          qty: -Number(line.qty || 0),
-          rate: line.rate,
-          amount: Number(line.amount || 0),
-          referenceId: id,
-          referenceNo: newTransfer.transferNo,
-          referenceType: "stock-transfer",
-        } as any);
+        await db.stockMovements.add(
+          stampMovementBranch(
+            {
+              id: `mov-${id}-out-${line.itemId}`,
+              date: newTransfer.date,
+              dateNepali: newTransfer.dateNepali,
+              type: "transfer-out",
+              itemId: line.itemId,
+              itemName: line.itemName,
+              warehouseId: newTransfer.fromWarehouseId,
+              warehouseName: newTransfer.fromWarehouseName,
+              qty: -Number(line.qty || 0),
+              rate: line.rate,
+              amount: Number(line.amount || 0),
+              referenceId: id,
+              referenceNo: newTransfer.transferNo,
+              referenceType: "stock-transfer",
+            },
+            get().warehouses,
+          ) as any,
+        );
 
-        await db.stockMovements.add({
-          id: `mov-${id}-in-${line.itemId}`,
-          date: newTransfer.date,
-          dateNepali: newTransfer.dateNepali,
-          type: "transfer-in",
-          itemId: line.itemId,
-          itemName: line.itemName,
-          warehouseId: newTransfer.toWarehouseId,
-          warehouseName: newTransfer.toWarehouseName,
-          qty: Number(line.qty || 0),
-          rate: line.rate,
-          amount: Number(line.amount || 0),
-          referenceId: id,
-          referenceNo: newTransfer.transferNo,
-          referenceType: "stock-transfer",
-        } as any);
+        await db.stockMovements.add(
+          stampMovementBranch(
+            {
+              id: `mov-${id}-in-${line.itemId}`,
+              date: newTransfer.date,
+              dateNepali: newTransfer.dateNepali,
+              type: "transfer-in",
+              itemId: line.itemId,
+              itemName: line.itemName,
+              warehouseId: newTransfer.toWarehouseId,
+              warehouseName: newTransfer.toWarehouseName,
+              qty: Number(line.qty || 0),
+              rate: line.rate,
+              amount: Number(line.amount || 0),
+              referenceId: id,
+              referenceNo: newTransfer.transferNo,
+              referenceType: "stock-transfer",
+            },
+            get().warehouses,
+          ) as any,
+        );
       }
     }
 
@@ -204,41 +218,47 @@ export const createInventorySlice: StateCreator<AppState, [], [], any> = (set, g
         }
       }
 
-      const outMov = {
-        id: `mov-sj-${id}-out-${line.itemId}-${line.fromWarehouseId}`,
-        date: journal.date,
-        dateNepali: journal.dateNepali,
-        type: "transfer-out",
-        itemId: line.itemId,
-        itemName: line.itemName,
-        warehouseId: line.fromWarehouseId,
-        warehouseName: fromWh?.name,
-        qty,
-        rate,
-        amount: qty * rate,
-        referenceId: id,
-        referenceNo: journal.journalNo,
-        referenceType: "stock-journal",
-        narration: journal.narration,
-      };
+      const outMov = stampMovementBranch(
+        {
+          id: `mov-sj-${id}-out-${line.itemId}-${line.fromWarehouseId}`,
+          date: journal.date,
+          dateNepali: journal.dateNepali,
+          type: "transfer-out",
+          itemId: line.itemId,
+          itemName: line.itemName,
+          warehouseId: line.fromWarehouseId,
+          warehouseName: fromWh?.name,
+          qty,
+          rate,
+          amount: qty * rate,
+          referenceId: id,
+          referenceNo: journal.journalNo,
+          referenceType: "stock-journal",
+          narration: journal.narration,
+        },
+        warehouses,
+      );
 
-      const inMov = {
-        id: `mov-sj-${id}-in-${line.itemId}-${line.toWarehouseId}`,
-        date: journal.date,
-        dateNepali: journal.dateNepali,
-        type: "transfer-in",
-        itemId: line.itemId,
-        itemName: line.itemName,
-        warehouseId: line.toWarehouseId,
-        warehouseName: toWh?.name,
-        qty,
-        rate,
-        amount: qty * rate,
-        referenceId: id,
-        referenceNo: journal.journalNo,
-        referenceType: "stock-journal",
-        narration: journal.narration,
-      };
+      const inMov = stampMovementBranch(
+        {
+          id: `mov-sj-${id}-in-${line.itemId}-${line.toWarehouseId}`,
+          date: journal.date,
+          dateNepali: journal.dateNepali,
+          type: "transfer-in",
+          itemId: line.itemId,
+          itemName: line.itemName,
+          warehouseId: line.toWarehouseId,
+          warehouseName: toWh?.name,
+          qty,
+          rate,
+          amount: qty * rate,
+          referenceId: id,
+          referenceNo: journal.journalNo,
+          referenceType: "stock-journal",
+          narration: journal.narration,
+        },
+        warehouses,
+      );
 
       await db.stockMovements.put(outMov);
       await db.stockMovements.put(inMov);
@@ -686,6 +706,7 @@ function buildInMovement(args: {
     referenceNo: args.referenceNo,
     referenceType: args.referenceType,
     narration: args.narration,
+    branchId: readActiveBranchId() || undefined,
   };
 }
 

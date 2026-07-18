@@ -414,7 +414,7 @@ const TopMenuBar: React.FC = () => {
     >
       {/* Logo pill */}
       <div className="flex items-center gap-1.5 px-3 border-r border-[#2d3748] h-full shrink-0">
-        <div className="w-6 h-6 rounded bg-[#1557b0] flex items-center justify-center font-bold text-[13px] text-white shrink-0">
+        <div className="w-6 h-6 rounded bg-[var(--ds-action-primary)] flex items-center justify-center font-bold text-[13px] text-white shrink-0">
           S
         </div>
         <div className="hidden sm:block">
@@ -441,7 +441,7 @@ const TopMenuBar: React.FC = () => {
                   "h-full px-3 flex items-center gap-1 text-[11px] font-medium",
                   "transition-colors whitespace-nowrap",
                   isOpen
-                    ? "bg-[#1557b0] text-white"
+                    ? "bg-[var(--ds-action-primary)] text-white"
                     : "text-gray-300 hover:text-white hover:bg-[#273148]",
                 ].join(" ")}
                 title={`Alt+${menu.altKey}`}

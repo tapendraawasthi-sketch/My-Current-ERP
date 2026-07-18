@@ -1,0 +1,145 @@
+{
+  "$defs": {
+    "ClaimType": {
+      "enum": [
+        "ERP_FACT",
+        "ACCOUNTING_RULE",
+        "LEGAL_TAX",
+        "PRODUCT_CAPABILITY",
+        "LANGUAGE_EXAMPLE",
+        "USER_ASSERTION",
+        "OTHER"
+      ],
+      "title": "ClaimType",
+      "type": "string"
+    },
+    "ConfidenceV1": {
+      "additionalProperties": false,
+      "description": "Informational only — never authorization.",
+      "properties": {
+        "grants_authority": {
+          "default": false,
+          "title": "Grants Authority",
+          "type": "boolean"
+        },
+        "method": {
+          "default": "unspecified",
+          "title": "Method",
+          "type": "string"
+        },
+        "value": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "ConfidenceV1",
+      "type": "object"
+    },
+    "VerificationStatus": {
+      "enum": [
+        "UNVERIFIED",
+        "VERIFIED",
+        "CONFLICTING",
+        "INSUFFICIENT"
+      ],
+      "title": "VerificationStatus",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/ClaimV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "canonical_proposition": {
+      "minLength": 1,
+      "title": "Canonical Proposition",
+      "type": "string"
+    },
+    "claim_id": {
+      "minLength": 1,
+      "title": "Claim Id",
+      "type": "string"
+    },
+    "claim_type": {
+      "$ref": "#/$defs/ClaimType",
+      "default": "OTHER"
+    },
+    "confidence": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ConfidenceV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "derivation_reference": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Derivation Reference"
+    },
+    "evidence_ids": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidence Ids",
+      "type": "array"
+    },
+    "materiality": {
+      "default": "unknown",
+      "title": "Materiality",
+      "type": "string"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "default": "ready",
+      "title": "Status",
+      "type": "string"
+    },
+    "temporal_scope": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Temporal Scope"
+    },
+    "verification_status": {
+      "$ref": "#/$defs/VerificationStatus",
+      "default": "UNVERIFIED"
+    },
+    "verifier_findings": {
+      "additionalProperties": true,
+      "title": "Verifier Findings",
+      "type": "object"
+    }
+  },
+  "required": [
+    "claim_id",
+    "canonical_proposition"
+  ],
+  "title": "ClaimV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

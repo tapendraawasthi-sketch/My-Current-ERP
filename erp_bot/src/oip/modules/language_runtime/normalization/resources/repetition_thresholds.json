@@ -1,0 +1,8 @@
+{
+  "resource_id": "repetition_thresholds",
+  "version": "mai-06.1.0",
+  "review_status": "ENGINEERING_REVIEWED",
+  "thresholds": {
+    "min_run": 3
+  }
+}

@@ -7,6 +7,8 @@ import { generateId } from "../lib/db";
 import toast from "@/lib/appToast";
 import { Building2, Plus, Eye, Check, RotateCcw } from "lucide-react";
 import { formatADToBS } from "../lib/nepaliDate";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 interface Instrument {
   voucherId: string;
@@ -30,6 +32,7 @@ export default function DepositSlip() {
     updateDepositSlip,
     markDepositConfirmed,
   } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
 
   const [view, setView] = useState<"list" | "form">("list");
   const [selectedSlip, setSelectedSlip] = useState<any>(null);
@@ -69,18 +72,20 @@ export default function DepositSlip() {
       (v) =>
         v.type === "receipt" &&
         (v.paymentMode === "cheque" || v.paymentMode === "Cheque") &&
-        !depositedVoucherIds.has(v.id),
+        !depositedVoucherIds.has(v.id) &&
+        matchBranch(v.branchId),
     );
-  }, [vouchers, depositSlips]);
+  }, [vouchers, depositSlips, matchBranch, branchFilter]);
 
   const filteredSlips = useMemo(() => {
     return depositSlips.filter((s) => {
+      const matchesBranch = matchBranch(s.branchId);
       const matchesBank = !bankFilter || s.bankAccountId === bankFilter;
       const matchesDateFrom = !dateFrom || s.depositDate >= dateFrom;
       const matchesDateTo = !dateTo || s.depositDate <= dateTo;
-      return matchesBank && matchesDateFrom && matchesDateTo;
+      return matchesBranch && matchesBank && matchesDateFrom && matchesDateTo;
     });
-  }, [depositSlips, bankFilter, dateFrom, dateTo]);
+  }, [depositSlips, bankFilter, dateFrom, dateTo, matchBranch, branchFilter]);
 
   const totalAmount = useMemo(() => {
     return selectedInstruments.reduce((sum, inst) => sum + inst.amount, 0) + cashAmount;
@@ -143,6 +148,7 @@ export default function DepositSlip() {
         chequeAmount,
         status: "draft",
         narration,
+        branchId: readActiveBranchId() || undefined,
       };
 
       if (editingId) {
@@ -178,6 +184,7 @@ export default function DepositSlip() {
         chequeAmount,
         status: "draft", // Will be changed to deposited by markDepositConfirmed
         narration,
+        branchId: readActiveBranchId() || undefined,
       };
 
       let slipId;
@@ -573,6 +580,22 @@ export default function DepositSlip() {
       <div className="flex-1 overflow-auto p-4">
         {/* Filter Bar */}
         <div className="mb-4 flex flex-wrap gap-3 items-end">
+          {branchOptions.length > 0 && (
+            <div className="w-44">
+              <Select
+                label="Branch"
+                options={[
+                  { value: "all", label: "All branches" },
+                  ...branchOptions.map((b) => ({
+                    value: b.id,
+                    label: b.name || b.code || b.id,
+                  })),
+                ]}
+                value={branchFilter}
+                onChange={setBranchFilter}
+              />
+            </div>
+          )}
           <div className="w-48">
             <Select
               label="Bank Account"

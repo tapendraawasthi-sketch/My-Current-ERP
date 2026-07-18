@@ -191,7 +191,7 @@ class OipSettings(BaseModel):
     )
     api_keys: str = Field(default_factory=lambda: os.getenv("OIP_API_KEYS", ""))
     default_service_tenant_id: str = Field(
-        default_factory=lambda: os.getenv("OIP_DEFAULT_SERVICE_TENANT_ID", "tenant-a")
+        default_factory=lambda: os.getenv("OIP_DEFAULT_SERVICE_TENANT_ID", "")
     )
     default_service_company_id: str = Field(
         default_factory=lambda: os.getenv("OIP_DEFAULT_SERVICE_COMPANY_ID", "")
@@ -247,7 +247,28 @@ def get_oip_settings() -> OipSettings:
         mode = DeploymentMode(mode_raw)
     except ValueError:
         mode = DeploymentMode.CLOUD_SAAS
-    return OipSettings(edition=edition, deployment_mode=mode)
+    settings = OipSettings(edition=edition, deployment_mode=mode)
+    # Fail closed for production insecurity (MAI-01). Secrets are never printed.
+    from ..domain.constitution.config_guard import (
+        ConfigValidationError,
+        validate_production_security_config,
+    )
+
+    try:
+        validate_production_security_config(
+            auth_required=settings.auth_required,
+            jwt_secret=settings.jwt_secret,
+            default_tenant_id=settings.default_service_tenant_id,
+            default_company_id=settings.default_service_company_id,
+        )
+    except ConfigValidationError as exc:
+        # Clear cache would not help; raise so process cannot start insecurely.
+        raise RuntimeError(str(exc)) from exc
+    return settings
+
+
+def clear_oip_settings_cache() -> None:
+    get_oip_settings.cache_clear()
 
 
 class FeatureFlags:

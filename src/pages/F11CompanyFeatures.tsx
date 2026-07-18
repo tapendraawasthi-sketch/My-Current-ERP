@@ -232,7 +232,7 @@ const F11CompanyFeatures = () => {
             onClick={!disabled ? () => onToggle(field, true) : undefined}
             style={{
               padding: "2px 8px",
-              background: value ? "#4A7A30" : "#C9DEB5",
+              background: value ? "var(--ds-action-primary)" : "var(--ds-surface-muted)",
               color: value ? "#fff" : "#000",
               border: value ? "none" : "1px solid #888",
               cursor: disabled ? "not-allowed" : "pointer",
@@ -246,7 +246,7 @@ const F11CompanyFeatures = () => {
             onClick={!disabled ? () => onToggle(field, false) : undefined}
             style={{
               padding: "2px 8px",
-              background: !value ? "#4A7A30" : "#C9DEB5",
+              background: !value ? "var(--ds-action-primary)" : "var(--ds-surface-muted)",
               color: !value ? "#fff" : "#000",
               border: !value ? "none" : "1px solid #888",
               cursor: disabled ? "not-allowed" : "pointer",
@@ -269,7 +269,7 @@ const F11CompanyFeatures = () => {
           alignItems: "center",
           justifyContent: "center",
           height: "100vh",
-          background: "#C9DEB5",
+          background: "var(--ds-surface-muted)",
           fontFamily: "monospace",
         }}
       >
@@ -281,13 +281,86 @@ const F11CompanyFeatures = () => {
   const TaxationSection = () => (
     <>
       <div
-        style={{ background: "#4A7A30", color: "#fff", padding: "4px 12px", fontWeight: "bold" }}
+        style={{ background: "var(--ds-action-primary)", color: "#fff", padding: "4px 12px", fontWeight: "bold" }}
       >
-        Taxation Features
+        Taxation Features — Nepal first
+      </div>
+      <FeatureRow
+        label="Enable Value Added Tax (VAT)"
+        description="Nepal VAT — invoices, input/output tax, returns and exception reports"
+        field="enable_vat"
+        value={features.enable_vat}
+        onToggle={handleToggle}
+        disabled={!features.maintain_accounts}
+        disabledReason="Requires Maintain Accounts"
+        visible={true}
+      />
+      {features.enable_vat && (
+        <>
+          <div
+            style={{
+              padding: "4px 12px 4px 28px",
+              borderBottom: "1px solid #e0e0e0",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+            }}
+          >
+            <label>VAT Registration No.:</label>
+            <input
+              type="text"
+              value={features.vat_registration_number}
+              onChange={(e) => handleTextChange("vat_registration_number", e.target.value)}
+              style={{
+                border: "1px solid #000",
+                background: "#fff",
+                padding: "2px 6px",
+                fontFamily: "monospace",
+                fontSize: 13,
+                width: 200,
+              }}
+            />
+          </div>
+          <div
+            style={{
+              padding: "4px 12px 4px 28px",
+              borderBottom: "1px solid #e0e0e0",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+            }}
+          >
+            <label>VAT Applicable From:</label>
+            <input
+              type="date"
+              value={features.vat_applicable_from}
+              onChange={(e) => handleTextChange("vat_applicable_from", e.target.value)}
+              style={{
+                border: "1px solid #000",
+                background: "#fff",
+                padding: "2px 6px",
+                fontFamily: "monospace",
+                fontSize: 13,
+                width: 200,
+              }}
+            />
+          </div>
+        </>
+      )}
+      <div
+        style={{
+          background: "var(--ds-surface-muted)",
+          color: "var(--ds-text-muted)",
+          padding: "4px 12px",
+          fontWeight: "bold",
+          fontSize: 12,
+        }}
+      >
+        India tax (optional — not used for Nepal companies)
       </div>
       <FeatureRow
         label="Enable Goods and Services Tax (GST)"
-        description="GST invoices, GSTR-1, GSTR-3B, HSN/SAC, e-way bill, e-invoice, ITC tracking"
+        description="India GST only — GSTR, HSN/SAC, e-way bill. Prefer VAT for Nepal."
         field="enable_gst"
         value={features.enable_gst}
         onToggle={handleToggle}
@@ -480,68 +553,6 @@ const F11CompanyFeatures = () => {
         </div>
       )}
       <FeatureRow
-        label="Enable Value Added Tax (VAT)"
-        description="VAT invoices, VAT input/output tax, VAT returns and exception reports"
-        field="enable_vat"
-        value={features.enable_vat}
-        onToggle={handleToggle}
-        disabled={!features.maintain_accounts}
-        disabledReason="Requires Maintain Accounts"
-        visible={features.show_all_features}
-      />
-      {features.enable_vat && (
-        <>
-          <div
-            style={{
-              padding: "4px 12px 4px 28px",
-              borderBottom: "1px solid #e0e0e0",
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-            }}
-          >
-            <label>VAT Registration No.:</label>
-            <input
-              type="text"
-              value={features.vat_registration_number}
-              onChange={(e) => handleTextChange("vat_registration_number", e.target.value)}
-              style={{
-                border: "1px solid #000",
-                background: "#fff",
-                padding: "2px 6px",
-                fontFamily: "monospace",
-                fontSize: 13,
-                width: 200,
-              }}
-            />
-          </div>
-          <div
-            style={{
-              padding: "4px 12px 4px 28px",
-              borderBottom: "1px solid #e0e0e0",
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-            }}
-          >
-            <label>Applicable From:</label>
-            <input
-              type="date"
-              value={features.vat_applicable_from}
-              onChange={(e) => handleTextChange("vat_applicable_from", e.target.value)}
-              style={{
-                border: "1px solid #000",
-                background: "#fff",
-                padding: "2px 6px",
-                fontFamily: "monospace",
-                fontSize: 13,
-                width: 200,
-              }}
-            />
-          </div>
-        </>
-      )}
-      <FeatureRow
         label="Enable Excise"
         description="Excise invoices, excise duty, tariff classification, excise registers and statutory reports"
         field="enable_excise"
@@ -620,7 +631,7 @@ const F11CompanyFeatures = () => {
   const OnlineAccessSection = () => (
     <>
       <div
-        style={{ background: "#4A7A30", color: "#fff", padding: "4px 12px", fontWeight: "bold" }}
+        style={{ background: "var(--ds-action-primary)", color: "#fff", padding: "4px 12px", fontWeight: "bold" }}
       >
         Online Access Features
       </div>
@@ -655,7 +666,7 @@ const F11CompanyFeatures = () => {
   const PayrollSection = () => (
     <>
       <div
-        style={{ background: "#4A7A30", color: "#fff", padding: "4px 12px", fontWeight: "bold" }}
+        style={{ background: "var(--ds-action-primary)", color: "#fff", padding: "4px 12px", fontWeight: "bold" }}
       >
         Payroll Features
       </div>
@@ -749,7 +760,7 @@ const F11CompanyFeatures = () => {
   const OthersSection = () => (
     <>
       <div
-        style={{ background: "#4A7A30", color: "#fff", padding: "4px 12px", fontWeight: "bold" }}
+        style={{ background: "var(--ds-action-primary)", color: "#fff", padding: "4px 12px", fontWeight: "bold" }}
       >
         Other Features
       </div>
@@ -794,7 +805,7 @@ const F11CompanyFeatures = () => {
         display: "flex",
         flexDirection: "column",
         height: "100vh",
-        background: "#C9DEB5",
+        background: "var(--ds-surface-muted)",
         fontFamily: "monospace",
         fontSize: 13,
         color: "#000",
@@ -803,7 +814,7 @@ const F11CompanyFeatures = () => {
       {/* Header */}
       <div
         style={{
-          background: "#4A7A30",
+          background: "var(--ds-action-primary)",
           color: "#fff",
           padding: "6px 12px",
           display: "flex",
@@ -817,7 +828,7 @@ const F11CompanyFeatures = () => {
       {/* Show More/All Toggles */}
       <div
         style={{
-          background: "#D4EABD",
+          background: "var(--ds-surface-hover)",
           padding: "4px 12px",
           borderBottom: "1px solid #000",
           display: "flex",
@@ -830,7 +841,7 @@ const F11CompanyFeatures = () => {
             onClick={() => handleToggle("show_more_features", true)}
             style={{
               padding: "2px 8px",
-              background: features.show_more_features ? "#4A7A30" : "#C9DEB5",
+              background: features.show_more_features ? "var(--ds-action-primary)" : "var(--ds-surface-muted)",
               color: features.show_more_features ? "#fff" : "#000",
               border: features.show_more_features ? "none" : "1px solid #888",
               cursor: "pointer",
@@ -842,7 +853,7 @@ const F11CompanyFeatures = () => {
             onClick={() => handleToggle("show_more_features", false)}
             style={{
               padding: "2px 8px",
-              background: !features.show_more_features ? "#4A7A30" : "#C9DEB5",
+              background: !features.show_more_features ? "var(--ds-action-primary)" : "var(--ds-surface-muted)",
               color: !features.show_more_features ? "#fff" : "#000",
               border: !features.show_more_features ? "none" : "1px solid #888",
               cursor: "pointer",
@@ -857,7 +868,7 @@ const F11CompanyFeatures = () => {
             onClick={() => handleToggle("show_all_features", true)}
             style={{
               padding: "2px 8px",
-              background: features.show_all_features ? "#4A7A30" : "#C9DEB5",
+              background: features.show_all_features ? "var(--ds-action-primary)" : "var(--ds-surface-muted)",
               color: features.show_all_features ? "#fff" : "#000",
               border: features.show_all_features ? "none" : "1px solid #888",
               cursor: "pointer",
@@ -869,7 +880,7 @@ const F11CompanyFeatures = () => {
             onClick={() => handleToggle("show_all_features", false)}
             style={{
               padding: "2px 8px",
-              background: !features.show_all_features ? "#4A7A30" : "#C9DEB5",
+              background: !features.show_all_features ? "var(--ds-action-primary)" : "var(--ds-surface-muted)",
               color: !features.show_all_features ? "#fff" : "#000",
               border: !features.show_all_features ? "none" : "1px solid #888",
               cursor: "pointer",
@@ -881,7 +892,7 @@ const F11CompanyFeatures = () => {
       </div>
 
       {/* Tabs */}
-      <div style={{ background: "#D4EABD", borderBottom: "1px solid #000", display: "flex" }}>
+      <div style={{ background: "var(--ds-surface-hover)", borderBottom: "1px solid #000", display: "flex" }}>
         {["accounting", "inventory", "taxation", "online", "payroll", "others"].map((tab) => (
           <div
             key={tab}
@@ -890,11 +901,11 @@ const F11CompanyFeatures = () => {
               padding: "4px 16px",
               cursor: "pointer",
               borderRight: "1px solid #888",
-              background: activeSection === tab ? "#4A7A30" : "transparent",
+              background: activeSection === tab ? "var(--ds-action-primary)" : "transparent",
               color: activeSection === tab ? "#fff" : "#000",
             }}
             onMouseEnter={(e) => {
-              if (activeSection !== tab) e.currentTarget.style.background = "#C0D8A8";
+              if (activeSection !== tab) e.currentTarget.style.background = "var(--ds-surface-hover)";
             }}
             onMouseLeave={(e) => {
               if (activeSection !== tab) e.currentTarget.style.background = "transparent";
@@ -911,7 +922,7 @@ const F11CompanyFeatures = () => {
           <>
             <div
               style={{
-                background: "#4A7A30",
+                background: "var(--ds-action-primary)",
                 color: "#fff",
                 padding: "4px 12px",
                 fontWeight: "bold",
@@ -964,7 +975,7 @@ const F11CompanyFeatures = () => {
           <>
             <div
               style={{
-                background: "#4A7A30",
+                background: "var(--ds-action-primary)",
                 color: "#fff",
                 padding: "4px 12px",
                 fontWeight: "bold",
@@ -1072,8 +1083,8 @@ const F11CompanyFeatures = () => {
       {/* Bottom Action Bar */}
       <div
         style={{
-          borderTop: "2px solid #4A7A30",
-          background: "#D4EABD",
+          borderTop: "2px solid var(--ds-action-primary)",
+          background: "var(--ds-surface-hover)",
           padding: "6px 12px",
           display: "flex",
           alignItems: "center",
@@ -1085,7 +1096,7 @@ const F11CompanyFeatures = () => {
           onClick={handleSave}
           disabled={!isDirty || isSaving}
           style={{
-            background: isDirty ? "#4A7A30" : "#aaa",
+            background: isDirty ? "var(--ds-action-primary)" : "#aaa",
             color: "#fff",
             border: "none",
             padding: "4px 16px",

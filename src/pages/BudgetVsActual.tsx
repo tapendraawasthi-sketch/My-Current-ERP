@@ -11,6 +11,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import * as XLSX from "xlsx";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 type ViewMode = "summary" | "ledger" | "monthly";
 type BudgetType = "all" | "income" | "expense";
@@ -31,6 +32,7 @@ export default function BudgetVsActual() {
     currentFiscalYear,
     companySettings,
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [viewMode, setViewMode] = useState<ViewMode>("summary");
   const [budgetType, setBudgetType] = useState<BudgetType>("all");
@@ -82,8 +84,12 @@ export default function BudgetVsActual() {
 
   // ── Filter vouchers in range ──────────────────────────────────────────────
   const rangeVouchers = useMemo(
-    () => vouchers.filter((v: any) => v.date >= fromDate && v.date <= toDate),
-    [vouchers, fromDate, toDate],
+    () =>
+      vouchers.filter(
+        (v: any) =>
+          matchBranch(v.branchId) && v.date >= fromDate && v.date <= toDate,
+      ),
+    [vouchers, fromDate, toDate, matchBranch, branchFilter],
   );
 
   // ── Compute actual amounts per account ────────────────────────────────────
@@ -103,32 +109,32 @@ export default function BudgetVsActual() {
   // ── Compute actual amounts per account per month ──────────────────────────
   const monthlyActualMap = useMemo(() => {
     const map: Record<string, Record<string, number>> = {};
-    vouchers
-      .filter((v: any) => v.date >= fromDate && v.date <= toDate)
-      .forEach((v: any) => {
-        const month = v.date?.slice(0, 7); // "YYYY-MM"
-        (v.entries || v.lineItems || []).forEach((entry: any) => {
-          const accId = entry.accountId || entry.ledgerId;
-          if (!accId || !month) return;
-          if (!map[accId]) map[accId] = {};
-          const amt = Math.abs(entry.amount || entry.debit || entry.credit || 0);
-          map[accId][month] = (map[accId][month] || 0) + amt;
-        });
+    rangeVouchers.forEach((v: any) => {
+      const month = v.date?.slice(0, 7); // "YYYY-MM"
+      (v.entries || v.lineItems || []).forEach((entry: any) => {
+        const accId = entry.accountId || entry.ledgerId;
+        if (!accId || !month) return;
+        if (!map[accId]) map[accId] = {};
+        const amt = Math.abs(entry.amount || entry.debit || entry.credit || 0);
+        map[accId][month] = (map[accId][month] || 0) + amt;
       });
+    });
     return map;
-  }, [vouchers, fromDate, toDate]);
+  }, [rangeVouchers]);
 
   // ── Build budget map ──────────────────────────────────────────────────────
   const budgetMap = useMemo(() => {
     const map: Record<string, number> = {};
-    budgets.forEach((b: any) => {
-      const accId = b.accountId || b.ledgerId;
-      if (!accId) return;
-      const amt = b.amount || b.budgetAmount || 0;
-      map[accId] = (map[accId] || 0) + amt;
-    });
+    budgets
+      .filter((b: any) => matchBranch(b.branchId))
+      .forEach((b: any) => {
+        const accId = b.accountId || b.ledgerId;
+        if (!accId) return;
+        const amt = b.amount || b.budgetAmount || 0;
+        map[accId] = (map[accId] || 0) + amt;
+      });
     return map;
-  }, [budgets]);
+  }, [budgets, matchBranch, branchFilter]);
 
   // ── Build rows ────────────────────────────────────────────────────────────
   const rows = useMemo(() => {
@@ -258,12 +264,29 @@ export default function BudgetVsActual() {
             Plan vs real figures.
           </p>
         </div>
-        <button
-          onClick={exportExcel}
-          className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
-        >
-          <Download className="w-3.5 h-3.5" /> Export Excel
-        </button>
+        <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+          <button
+            onClick={exportExcel}
+            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+          >
+            <Download className="w-3.5 h-3.5" /> Export Excel
+          </button>
+        </div>
       </div>
 
       {/* Filters */}

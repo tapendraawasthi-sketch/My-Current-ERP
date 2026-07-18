@@ -75,7 +75,7 @@ const VoucherApprovalWorkflow: React.FC<VoucherApprovalProps> = ({
     if (index < currentIndex) {
       return "bg-green-600 text-white shadow-sm ring-2 ring-green-100";
     } else if (index === currentIndex) {
-      return "bg-[#1557b0] text-white shadow-sm ring-4 ring-[#1557b0]/20";
+      return "bg-[var(--ds-action-primary)] text-white shadow-sm ring-4 ring-[var(--ds-action-primary)]/20";
     } else {
       return "bg-gray-100 border-2 border-gray-200 text-gray-500";
     }
@@ -130,7 +130,7 @@ const VoucherApprovalWorkflow: React.FC<VoucherApprovalProps> = ({
         <div className="flex gap-3 justify-center">
           {permissions.canAdvance && (
             <button
-              className="h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors shadow-sm"
+              className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors shadow-sm"
               onClick={() => {
                 setConfirmAction("advance");
                 setShowConfirm(true);
@@ -162,7 +162,7 @@ const VoucherApprovalWorkflow: React.FC<VoucherApprovalProps> = ({
           <div className="bg-white rounded-md shadow-xl border border-gray-200 w-full max-w-sm flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <div className="p-4 border-b border-gray-100 bg-[#f5f6fa] flex items-center gap-2">
               {confirmAction === "advance" ? (
-                <CheckCircle className="w-5 h-5 text-[#1557b0]" />
+                <CheckCircle className="w-5 h-5 text-[var(--ds-action-primary)]" />
               ) : (
                 <XCircle className="w-5 h-5 text-red-500" />
               )}
@@ -198,7 +198,7 @@ const VoucherApprovalWorkflow: React.FC<VoucherApprovalProps> = ({
               <button
                 className={`h-8 px-4 text-white text-[12px] font-medium rounded-md transition-colors shadow-sm ${
                   confirmAction === "advance"
-                    ? "bg-[#1557b0] hover:bg-[#0f4a96]"
+                    ? "bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)]"
                     : "bg-red-600 hover:bg-red-700"
                 }`}
                 onClick={() => handleAction(confirmAction!)}

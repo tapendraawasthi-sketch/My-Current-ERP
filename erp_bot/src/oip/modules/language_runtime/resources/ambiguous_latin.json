@@ -1,0 +1,9 @@
+{
+  "resource_id": "ambiguous_latin",
+  "version": "mai-05.1.0",
+  "language_form": "SHARED_OR_AMBIGUOUS_LATIN",
+  "review_status": "ENGINEERING_REVIEWED",
+  "entries": [
+    "ma", "ram", "hari", "bill", "may", "net", "sale", "ok", "hi"
+  ]
+}

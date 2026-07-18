@@ -1,0 +1,142 @@
+{
+  "entries": {
+    "advance": [
+      "एडभान्स"
+    ],
+    "baaki": [
+      "बाँकी"
+    ],
+    "bakaya": [
+      "बाँकी",
+      "बाँकी"
+    ],
+    "balance": [
+      "ब्यालेन्स"
+    ],
+    "bank": [
+      "बैंक",
+      "बैङ्क"
+    ],
+    "bhada": [
+      "भाडा"
+    ],
+    "bikri": [
+      "बिक्री"
+    ],
+    "byaj": [
+      "ब्याज"
+    ],
+    "cash": [
+      "क्यास"
+    ],
+    "closing": [
+      "क्लोजिङ"
+    ],
+    "commission": [
+      "कमिसन"
+    ],
+    "credit": [
+      "क्रेडिट"
+    ],
+    "customer": [
+      "कस्टमर"
+    ],
+    "debit": [
+      "डेबिट"
+    ],
+    "discount": [
+      "डिस्काउन्ट"
+    ],
+    "hisaab": [
+      "हिसाब"
+    ],
+    "hisab": [
+      "हिसाब"
+    ],
+    "invoice": [
+      "इनभ्वाइस"
+    ],
+    "kar": [
+      "कर"
+    ],
+    "kharcha": [
+      "खर्च"
+    ],
+    "kharid": [
+      "खरिद"
+    ],
+    "khata": [
+      "खाता"
+    ],
+    "khatta": [
+      "खाता"
+    ],
+    "labh": [
+      "लाभ"
+    ],
+    "ledger": [
+      "लेजर"
+    ],
+    "mal": [
+      "माल"
+    ],
+    "nagad": [
+      "नगद"
+    ],
+    "noksan": [
+      "नोक्सान"
+    ],
+    "opening": [
+      "ओपनिङ"
+    ],
+    "paisa": [
+      "पैसा"
+    ],
+    "pan": [
+      "प्यान"
+    ],
+    "party": [
+      "पार्टी"
+    ],
+    "payment": [
+      "पेमेन्ट"
+    ],
+    "purchase": [
+      "पर्चेज"
+    ],
+    "receipt": [
+      "रसिद"
+    ],
+    "report": [
+      "रिपोर्ट"
+    ],
+    "sale": [
+      "सेल"
+    ],
+    "stock": [
+      "स्टक"
+    ],
+    "supplier": [
+      "सप्लायर"
+    ],
+    "talab": [
+      "तलब"
+    ],
+    "tax": [
+      "ट्याक्स"
+    ],
+    "udharo": [
+      "उधारो"
+    ],
+    "vat": [
+      "भ्याट"
+    ],
+    "voucher": [
+      "भाउचर"
+    ]
+  },
+  "provenance": "accounting/business domain vocabulary",
+  "resource_id": "domain_terms",
+  "review_status": "ENGINEERING_CURATED_NOT_LINGUIST_APPROVED",
+  "version": "mai-07.1.0"
+}

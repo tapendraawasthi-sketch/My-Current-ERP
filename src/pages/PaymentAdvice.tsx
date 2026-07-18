@@ -7,6 +7,8 @@ import { generateId } from "../lib/db";
 import toast from "@/lib/appToast";
 import { FileCheck, Send, Mail, Printer, Plus, Eye } from "lucide-react";
 import { formatADToBS } from "../lib/nepaliDate";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 export default function PaymentAdvice() {
   const {
@@ -18,6 +20,7 @@ export default function PaymentAdvice() {
     savePaymentAdvice,
     updatePaymentAdvice,
   } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
 
   const [view, setView] = useState<"list" | "detail">("list");
   const [selectedAdvice, setSelectedAdvice] = useState<any>(null);
@@ -40,20 +43,26 @@ export default function PaymentAdvice() {
     return accounts.filter((a) => a.group === "Bank Accounts" || a.group === "Bank OD Accounts");
   }, [accounts]);
 
+  const scopedVouchers = useMemo(
+    () => vouchers.filter((v) => matchBranch(v.branchId)),
+    [vouchers, matchBranch, branchFilter],
+  );
+
   const filteredAdvices = useMemo(() => {
     return paymentAdvices.filter((a) => {
-      const matchesBank =
-        !bankFilter || vouchers.find((v) => v.id === a.voucherId)?.bankAccountId === bankFilter;
+      const linked = vouchers.find((v) => v.id === a.voucherId);
+      const matchesBranch = matchBranch(a.branchId || linked?.branchId);
+      const matchesBank = !bankFilter || linked?.bankAccountId === bankFilter;
       const matchesDateFrom = !dateFrom || a.paymentDate >= dateFrom;
       const matchesDateTo = !dateTo || a.paymentDate <= dateTo;
       const matchesStatus = statusFilter === "ALL" || a.status === statusFilter.toLowerCase();
-      return matchesBank && matchesDateFrom && matchesDateTo && matchesStatus;
+      return matchesBranch && matchesBank && matchesDateFrom && matchesDateTo && matchesStatus;
     });
-  }, [paymentAdvices, vouchers, bankFilter, dateFrom, dateTo, statusFilter]);
+  }, [paymentAdvices, vouchers, bankFilter, dateFrom, dateTo, statusFilter, matchBranch, branchFilter]);
 
   const unadvisedVouchers = useMemo(() => {
     const advisedVoucherIds = new Set(paymentAdvices.map((pa) => pa.voucherId));
-    return vouchers.filter(
+    return scopedVouchers.filter(
       (v) =>
         v.type === "payment" &&
         !advisedVoucherIds.has(v.id) &&
@@ -61,7 +70,7 @@ export default function PaymentAdvice() {
         (!selectedDateRange.from || v.date >= selectedDateRange.from) &&
         (!selectedDateRange.to || v.date <= selectedDateRange.to),
     );
-  }, [vouchers, paymentAdvices, selectedBank, selectedDateRange]);
+  }, [scopedVouchers, paymentAdvices, selectedBank, selectedDateRange]);
 
   const handleGenerateAdvice = () => {
     setGenerateModalOpen(true);
@@ -74,7 +83,7 @@ export default function PaymentAdvice() {
     setSelectedVouchers([]);
     // For bulk, show all unadvised vouchers regardless of bank
     const advisedVoucherIds = new Set(paymentAdvices.map((pa) => pa.voucherId));
-    const allUnadvised = vouchers.filter(
+    const allUnadvised = scopedVouchers.filter(
       (v) =>
         v.type === "payment" &&
         !advisedVoucherIds.has(v.id) &&
@@ -127,6 +136,7 @@ export default function PaymentAdvice() {
           totalAmount: voucher.grandTotal || 0,
           billDetails: JSON.stringify(billDetails),
           status: "draft",
+          branchId: voucher.branchId || readActiveBranchId() || undefined,
           createdAt: new Date().toISOString(),
         });
       }
@@ -350,6 +360,22 @@ ${companySettings?.addressEn || "Your Address"}`;
       <div className="flex-1 overflow-auto p-4">
         {/* Filter Bar */}
         <div className="mb-4 flex flex-wrap gap-3 items-end">
+          {branchOptions.length > 0 && (
+            <div className="w-44">
+              <Select
+                label="Branch"
+                options={[
+                  { value: "all", label: "All branches" },
+                  ...branchOptions.map((b) => ({
+                    value: b.id,
+                    label: b.name || b.code || b.id,
+                  })),
+                ]}
+                value={branchFilter}
+                onChange={setBranchFilter}
+              />
+            </div>
+          )}
           <div className="w-48">
             <Select
               label="Bank Account"

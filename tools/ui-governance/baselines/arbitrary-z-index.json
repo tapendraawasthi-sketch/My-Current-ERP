@@ -1,56 +1,43 @@
 {
   "rule": "no-arbitrary-z-index",
-  "generated_at": "2026-07-13T17:06:07.011Z",
-  "count": 48,
+  "generated_at": "2026-07-18T12:02:59.963Z",
+  "count": 35,
   "ids": [
-    "00a162afebfbdf49",
-    "03521bbc522f9e08",
+    "04cc47d818d83a70",
     "07c5cbbec15bdd48",
     "07da71e2f830bb5f",
-    "08b8917c3ddcdb22",
+    "0bd6bf9f57fef185",
     "11f9020a942f50d7",
-    "225467dcbcd030cf",
-    "2933f2a94eeb667f",
+    "2007b0da573074d9",
     "2a0ce4b77c022930",
-    "3546e6bbe0a07f95",
     "39ce783102d45a12",
-    "45c967e6cb8ce65e",
-    "4772bfebccecb574",
-    "4c6e769bc2341588",
-    "4f41bda8c4cf1e1c",
-    "550b5c79fb1d3bd4",
-    "5844f6288ea4d79b",
-    "6aab3361345a77a0",
-    "6fa3e34be37d7773",
-    "7cc4018a62ed7cd3",
+    "5d7ac5b5637ffe80",
+    "61e3b68e92c7fa5c",
     "7e89da93830d1924",
-    "82ba9136f662c80b",
+    "7fdc3121764c90e4",
     "9a9e7db71cf3f13d",
     "9d97588c21bbf8fc",
     "9eeb16d3c6b8f9ad",
     "a15a50e2b1753923",
-    "a53143b48d972527",
-    "a7427288de94a8f5",
     "aac7cfc3ae6e19b4",
     "ada94bc96ee53894",
     "b029fd356111064c",
+    "b1526f2a7930f913",
+    "b3409fdc4d8bdc86",
     "b6f46dabbc05942f",
     "b9c9a7e21c059a9f",
     "c298bca350b84dee",
-    "c3fbe48e32e0946d",
-    "c63a0571ef5b8d18",
-    "c9c3c29712bff647",
+    "ca84ec0d6aed66ba",
     "d2283de84dd2be78",
     "d665d999c1071374",
     "d76eb0768a538f7a",
     "d791d06a7e52e42f",
-    "dcb537d0cd0d4f38",
     "de5d8ec9a4d01d1e",
     "e16630c952aece89",
+    "e281842bc8d55140",
     "e60c6c5522b123e0",
     "e8cddf4a2258d754",
-    "f0fbe891247a1242",
-    "f6f20c3ee55454d1"
+    "f66dfbc28c2c32d1"
   ],
   "samples": [
     {
@@ -60,46 +47,10 @@
       "snippet": "className=\"fixed bottom-4 left-4 z-[9998] w-[440px] flex flex-col bg-white rounded-xl shadow-2xl border border-gray-200 "
     },
     {
-      "id": "03521bbc522f9e08",
-      "file": "src/components/BusyMenuBar.tsx",
-      "line": 404,
-      "snippet": "zIndex: 50,"
-    },
-    {
-      "id": "a53143b48d972527",
-      "file": "src/components/BusyMenuBar.tsx",
-      "line": 433,
-      "snippet": "zIndex: 2,"
-    },
-    {
-      "id": "c9c3c29712bff647",
-      "file": "src/components/BusyMenuBar.tsx",
-      "line": 450,
-      "snippet": "zIndex: 2,"
-    },
-    {
       "id": "a15a50e2b1753923",
       "file": "src/components/CbmsStatusBadge.tsx",
       "line": 85,
       "snippet": "<div className=\"fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center p-4\">"
-    },
-    {
-      "id": "82ba9136f662c80b",
-      "file": "src/components/falcon/FalconLauncher.tsx",
-      "line": 19,
-      "snippet": "className=\"fixed bottom-5 right-5 z-[9998] h-12 w-12 rounded-full bg-[#1557b0] hover:bg-[#0f4a96] text-white shadow-lg f"
-    },
-    {
-      "id": "f0fbe891247a1242",
-      "file": "src/components/falcon/FalconPanel.tsx",
-      "line": 386,
-      "snippet": "className=\"fixed bottom-4 right-4 z-[9999] w-[420px] flex flex-col bg-white rounded-xl shadow-2xl border border-gray-200"
-    },
-    {
-      "id": "08b8917c3ddcdb22",
-      "file": "src/components/falcon/FalconProvider.tsx",
-      "line": 23,
-      "snippet": "className=\"fixed bottom-4 right-4 bg-red-600 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 text-[1"
     },
     {
       "id": "11f9020a942f50d7",
@@ -144,21 +95,15 @@
       "snippet": "zIndex: 100,"
     },
     {
-      "id": "45c967e6cb8ce65e",
-      "file": "src/components/sutra-ai/SutraAiProvider.tsx",
-      "line": 20,
-      "snippet": "className=\"fixed bottom-4 left-4 z-[40] flex h-10 w-10 items-center justify-center rounded-full bg-[var(--ox-primary)] t"
-    },
-    {
       "id": "ada94bc96ee53894",
       "file": "src/components/tally/TallyBankAllocation.tsx",
       "line": 48,
       "snippet": "<div className=\"fixed inset-0 z-[100] flex items-center justify-center bg-black/30\">"
     },
     {
-      "id": "6aab3361345a77a0",
+      "id": "61e3b68e92c7fa5c",
       "file": "src/components/tally/TallyBillWiseAllocation.tsx",
-      "line": 48,
+      "line": 51,
       "snippet": "className=\"tally-modal-overlay fixed inset-0 z-[100] flex items-center justify-center bg-black/30\""
     },
     {
@@ -168,9 +113,9 @@
       "snippet": "<div className=\"fixed inset-0 z-[100] flex items-center justify-center bg-black/30\">"
     },
     {
-      "id": "4772bfebccecb574",
+      "id": "b3409fdc4d8bdc86",
       "file": "src/components/tally/TallyVoucherList.tsx",
-      "line": 40,
+      "line": 43,
       "snippet": "<div className=\"fixed inset-0 z-[100] flex items-center justify-center bg-black/30\">"
     },
     {
@@ -228,28 +173,10 @@
       "snippet": "<thead className=\"sticky top-0 z-[1]\">"
     },
     {
-      "id": "225467dcbcd030cf",
-      "file": "src/components/ui/LanguageModal.tsx",
-      "line": 55,
-      "snippet": "className=\"fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center font-sans\""
-    },
-    {
-      "id": "00a162afebfbdf49",
-      "file": "src/components/ui/LanguageModal.tsx",
-      "line": 306,
-      "snippet": "className=\"fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center font-sans\""
-    },
-    {
       "id": "e60c6c5522b123e0",
       "file": "src/components/ui/Modal.tsx",
       "line": 36,
       "snippet": "zIndex: 9999,"
-    },
-    {
-      "id": "3546e6bbe0a07f95",
-      "file": "src/components/ui/NepaliDatePicker.tsx",
-      "line": 366,
-      "snippet": "className=\"absolute top-full mt-1 left-0 z-[9999] bg-white rounded-xl shadow-2xl border border-gray-200\""
     },
     {
       "id": "d665d999c1071374",
@@ -258,16 +185,10 @@
       "snippet": "zIndex: 1000,"
     },
     {
-      "id": "c63a0571ef5b8d18",
+      "id": "b1526f2a7930f913",
       "file": "src/components/VouchersRegister.tsx",
-      "line": 830,
+      "line": 849,
       "snippet": "zIndex: 100,"
-    },
-    {
-      "id": "4c6e769bc2341588",
-      "file": "src/pages/ChequeRegister.tsx",
-      "line": 358,
-      "snippet": "zIndex: 1000,"
     },
     {
       "id": "07da71e2f830bb5f",
@@ -282,63 +203,51 @@
       "snippet": "<div className=\"fixed inset-0 z-[200] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4\">"
     },
     {
-      "id": "f6f20c3ee55454d1",
+      "id": "0bd6bf9f57fef185",
       "file": "src/pages/MakerCheckerApproval.tsx",
-      "line": 431,
+      "line": 451,
       "snippet": "<div className=\"fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4\">"
     },
     {
-      "id": "6fa3e34be37d7773",
+      "id": "7fdc3121764c90e4",
       "file": "src/pages/MakerCheckerApproval.tsx",
-      "line": 485,
+      "line": 505,
       "snippet": "<div className=\"fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4\">"
     },
     {
-      "id": "2933f2a94eeb667f",
+      "id": "5d7ac5b5637ffe80",
       "file": "src/pages/MultiCurrencyHub.tsx",
-      "line": 645,
+      "line": 683,
       "snippet": "zIndex: 1000,"
     },
     {
-      "id": "a7427288de94a8f5",
-      "file": "src/pages/Parties.tsx",
-      "line": 188,
-      "snippet": "<div className=\"fixed inset-0 z-[200] bg-black/40 flex items-center justify-center p-4\">"
-    },
-    {
-      "id": "7cc4018a62ed7cd3",
-      "file": "src/pages/PayrollProcessing.tsx",
-      "line": 972,
-      "snippet": "<div className=\"fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4\">"
-    },
-    {
-      "id": "550b5c79fb1d3bd4",
+      "id": "04cc47d818d83a70",
       "file": "src/pages/PricePolicyManager.tsx",
-      "line": 967,
+      "line": 1000,
       "snippet": "zIndex: 1000,"
     },
     {
-      "id": "4f41bda8c4cf1e1c",
+      "id": "2007b0da573074d9",
       "file": "src/pages/Quotation.tsx",
-      "line": 825,
+      "line": 848,
       "snippet": "<div className=\"fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]\">"
     },
     {
-      "id": "5844f6288ea4d79b",
+      "id": "f66dfbc28c2c32d1",
       "file": "src/pages/ReportScheduler.tsx",
-      "line": 1090,
+      "line": 1113,
       "snippet": "zIndex: 1000,"
     },
     {
-      "id": "c3fbe48e32e0946d",
+      "id": "e281842bc8d55140",
       "file": "src/pages/SerialNumberTracking.tsx",
-      "line": 710,
+      "line": 736,
       "snippet": "<div className=\"fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4\">"
     },
     {
-      "id": "dcb537d0cd0d4f38",
+      "id": "ca84ec0d6aed66ba",
       "file": "src/pages/SerialNumberTracking.tsx",
-      "line": 886,
+      "line": 912,
       "snippet": "<div className=\"fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4\">"
     }
   ]

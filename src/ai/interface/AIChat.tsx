@@ -271,7 +271,7 @@ const SutraAIChat: React.FC = () => {
       data-component="sutra-ai-chat"
     >
       {/* Header */}
-      <div className="flex items-center gap-2 px-3 py-2.5 bg-[#1557b0] text-white flex-shrink-0">
+      <div className="flex items-center gap-2 px-3 py-2.5 bg-[var(--ds-action-primary)] text-white flex-shrink-0">
         <Brain className="h-4 w-4 flex-shrink-0" />
         <div className="flex-1 min-w-0">
           <span className="font-semibold text-[13px]">SUTRA AI</span>
@@ -402,7 +402,7 @@ const SutraAIChat: React.FC = () => {
           <button
             type="button"
             onClick={() => restoreDailyDigest()}
-            className="text-[10px] font-semibold text-[#1557b0] hover:text-[#0f4a96]"
+            className="text-[10px] font-semibold text-[var(--ds-action-primary)] hover:text-[var(--ds-action-primary-hover)]"
           >
             {digestShowAgainLabel}
           </button>
@@ -447,7 +447,7 @@ const SutraAIChat: React.FC = () => {
             }`}
           >
             <div className="flex items-center justify-between gap-2 mb-1">
-              <p className="text-[10px] font-semibold text-[#1557b0] uppercase tracking-wide">
+              <p className="text-[10px] font-semibold text-[var(--ds-action-primary)] uppercase tracking-wide">
                 {formatDailyDigestHeader(languageConfig.outputLanguage)}
               </p>
               <div className="flex items-center gap-1.5">
@@ -459,7 +459,7 @@ const SutraAIChat: React.FC = () => {
                     return next;
                   })}
                   className={`text-[10px] font-medium px-1 ${
-                    digestPinned ? "text-[#1557b0]" : "text-gray-500 hover:text-gray-700"
+                    digestPinned ? "text-[var(--ds-action-primary)]" : "text-gray-500 hover:text-gray-700"
                   }`}
                   title={digestPinUi.title}
                 >
@@ -502,7 +502,7 @@ const SutraAIChat: React.FC = () => {
             <div
               className={`max-w-[85%] px-2.5 py-1.5 rounded-lg text-[12px] leading-relaxed whitespace-pre-wrap ${
                 msg.role === "user"
-                  ? "bg-[#1557b0] text-white rounded-br-sm"
+                  ? "bg-[var(--ds-action-primary)] text-white rounded-br-sm"
                   : "bg-[#f5f6fa] text-gray-800 border border-gray-200 rounded-bl-sm"
               }`}
             >
@@ -567,7 +567,7 @@ const SutraAIChat: React.FC = () => {
                       key={action.id}
                       type="button"
                       onClick={() => executeAction(action)}
-                      className="h-7 px-2.5 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[10px] font-medium rounded-md"
+                      className="h-7 px-2.5 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[10px] font-medium rounded-md"
                     >
                       {languageConfig.outputLanguage === "english"
                         ? action.label
@@ -751,14 +751,14 @@ const SutraAIChat: React.FC = () => {
               }}
               placeholder="Type in Nepali, English, or Roman Nepali..."
               disabled={isLoading}
-              className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] disabled:opacity-50"
+              className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] disabled:opacity-50"
             />
           </div>
           <button
             type="button"
             onClick={handleSend}
             disabled={!input.trim() || isLoading}
-            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] disabled:opacity-40 text-white text-[12px] font-medium rounded-md flex items-center gap-1"
+            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-40 text-white text-[12px] font-medium rounded-md flex items-center gap-1"
           >
             <Send className="h-3.5 w-3.5" />
           </button>

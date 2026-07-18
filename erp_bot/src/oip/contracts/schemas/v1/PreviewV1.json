@@ -1,0 +1,380 @@
+{
+  "$defs": {
+    "DraftReferenceV1": {
+      "additionalProperties": false,
+      "properties": {
+        "company_scope_reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Company Scope Reference"
+        },
+        "conversation_id": {
+          "minLength": 1,
+          "title": "Conversation Id",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "draft_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Draft Id",
+          "type": "string"
+        },
+        "draft_version": {
+          "default": "1",
+          "title": "Draft Version",
+          "type": "string"
+        },
+        "event_type": {
+          "default": "unknown",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "expires_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expires At"
+        },
+        "owner_principal_reference": {
+          "minLength": 1,
+          "title": "Owner Principal Reference",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/DraftStatus",
+          "default": "OPEN"
+        },
+        "tenant_scope_reference": {
+          "minLength": 1,
+          "title": "Tenant Scope Reference",
+          "type": "string"
+        }
+      },
+      "required": [
+        "draft_id",
+        "tenant_scope_reference",
+        "owner_principal_reference",
+        "conversation_id"
+      ],
+      "title": "DraftReferenceV1",
+      "type": "object"
+    },
+    "DraftStatus": {
+      "enum": [
+        "OPEN",
+        "NEEDS_CLARIFICATION",
+        "READY_FOR_PREVIEW",
+        "PREVIEWED",
+        "CANCELLED",
+        "EXPIRED",
+        "SUPERSEDED"
+      ],
+      "title": "DraftStatus",
+      "type": "string"
+    },
+    "JournalEffectV1": {
+      "additionalProperties": false,
+      "properties": {
+        "account_display_name": {
+          "default": "",
+          "title": "Account Display Name",
+          "type": "string"
+        },
+        "account_id": {
+          "minLength": 1,
+          "title": "Account Id",
+          "type": "string"
+        },
+        "amount": {
+          "$ref": "#/$defs/MoneyV1"
+        },
+        "narration": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Narration"
+        },
+        "side": {
+          "$ref": "#/$defs/JournalSide"
+        },
+        "source_reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Reference"
+        }
+      },
+      "required": [
+        "account_id",
+        "side",
+        "amount"
+      ],
+      "title": "JournalEffectV1",
+      "type": "object"
+    },
+    "JournalSide": {
+      "enum": [
+        "DEBIT",
+        "CREDIT"
+      ],
+      "title": "JournalSide",
+      "type": "string"
+    },
+    "MoneyV1": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "title": "Amount",
+          "type": "string"
+        },
+        "currency": {
+          "default": "NPR",
+          "maxLength": 8,
+          "minLength": 3,
+          "title": "Currency",
+          "type": "string"
+        },
+        "scale": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scale"
+        }
+      },
+      "required": [
+        "amount"
+      ],
+      "title": "MoneyV1",
+      "type": "object"
+    },
+    "PreviewStatus": {
+      "enum": [
+        "READY",
+        "STALE",
+        "EXPIRED",
+        "INVALID"
+      ],
+      "title": "PreviewStatus",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/PreviewV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "approval_requirements": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Approval Requirements",
+      "type": "array"
+    },
+    "authoritative_record_ids": {
+      "default": null,
+      "title": "Authoritative Record Ids",
+      "type": "null"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "date_and_period": {
+      "additionalProperties": true,
+      "title": "Date And Period",
+      "type": "object"
+    },
+    "document_references": {
+      "default": [],
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Document References",
+      "type": "array"
+    },
+    "draft_reference": {
+      "$ref": "#/$defs/DraftReferenceV1"
+    },
+    "execution_success": {
+      "default": null,
+      "title": "Execution Success",
+      "type": "null"
+    },
+    "expires_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Expires At"
+    },
+    "inventory_effects": {
+      "default": [],
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Inventory Effects",
+      "type": "array"
+    },
+    "journal_effects": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/JournalEffectV1"
+      },
+      "title": "Journal Effects",
+      "type": "array"
+    },
+    "party_references": {
+      "default": [],
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Party References",
+      "type": "array"
+    },
+    "preview_hash": {
+      "minLength": 1,
+      "title": "Preview Hash",
+      "type": "string"
+    },
+    "preview_id": {
+      "minLength": 1,
+      "title": "Preview Id",
+      "type": "string"
+    },
+    "preview_version": {
+      "default": "1",
+      "title": "Preview Version",
+      "type": "string"
+    },
+    "receipt_id": {
+      "default": null,
+      "title": "Receipt Id",
+      "type": "null"
+    },
+    "required_permissions": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Required Permissions",
+      "type": "array"
+    },
+    "rule_versions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Rule Versions",
+      "type": "object"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "snapshot_revisions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Snapshot Revisions",
+      "type": "object"
+    },
+    "source_references": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Source References",
+      "type": "array"
+    },
+    "status": {
+      "$ref": "#/$defs/PreviewStatus",
+      "default": "READY"
+    },
+    "summary": {
+      "default": "",
+      "title": "Summary",
+      "type": "string"
+    },
+    "tax_effects": {
+      "default": [],
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Tax Effects",
+      "type": "array"
+    },
+    "totals": {
+      "additionalProperties": true,
+      "title": "Totals",
+      "type": "object"
+    },
+    "warnings": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "preview_id",
+    "draft_reference",
+    "preview_hash"
+  ],
+  "title": "PreviewV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

@@ -10,7 +10,7 @@ interface ReasoningTraceProps {
 }
 
 function stepAccent(name: string): string {
-  if (/ERP|HANDLER/i.test(name)) return "text-[#1557b0]";
+  if (/ERP|HANDLER/i.test(name)) return "text-[var(--ds-action-primary)]";
   if (/LLM/i.test(name)) return "text-[#0284c7]";
   if (/GUARD/i.test(name)) return "text-[#d97706]";
   if (/CONFIDENCE/i.test(name)) return "text-[#059669]";
@@ -34,7 +34,7 @@ const ReasoningTrace: React.FC<ReasoningTraceProps> = ({ steps, confidence }) =>
         ) : (
           <ChevronRight className="h-3 w-3 text-gray-500 flex-shrink-0" />
         )}
-        <Brain className="h-3 w-3 text-[#1557b0] flex-shrink-0" />
+        <Brain className="h-3 w-3 text-[var(--ds-action-primary)] flex-shrink-0" />
         <span className="text-[10px] font-medium text-gray-600">
           Reasoning ({steps.length} steps
           {confidence !== undefined ? ` · ${Math.round(confidence * 100)}%` : ""})

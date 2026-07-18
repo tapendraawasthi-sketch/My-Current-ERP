@@ -1,158 +1,95 @@
-// @ts-nocheck
-import React, { useState, useEffect, useRef } from "react";
+import React, { useMemo } from "react";
 import { useStore } from "../../store/useStore";
-import { Search } from "lucide-react";
 import toast from "@/lib/appToast";
+import { Combobox, type ComboboxOption } from "@/design-system";
 
 interface AccountSelectProps {
   value: string;
   onChange: (id: string, account?: any) => void;
+  label?: string;
+  required?: boolean;
   placeholder?: string;
+  /** Single account type filter (legacy consumer prop). */
+  filterType?: string;
+  /** Multiple account type filter (legacy consumer prop). */
+  filterTypes?: string[];
   allowedTypes?: string[];
   allowedLevels?: string[];
   disabled?: boolean;
   className?: string;
 }
 
+/** Account picker on the design-system Combobox (IMPLEMENT_NOW §3.1 preset). */
 const AccountSelect: React.FC<AccountSelectProps> = ({
   value,
   onChange,
+  label,
+  required = false,
   placeholder = "Select an account...",
+  filterType,
+  filterTypes,
   allowedTypes,
   allowedLevels,
   disabled = false,
   className = "",
 }) => {
-  const { accounts } = useStore();
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [highlightedIndex, setHighlightedIndex] = useState(-1);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const accounts = useStore((s) => s.accounts) as any[];
 
-  // Filter accounts based on allowedTypes and allowedLevels
-  const filteredAccounts = accounts.filter((acc) => {
-    const matchesType = !allowedTypes || allowedTypes.includes(acc.type);
-    const matchesLevel = !allowedLevels || allowedLevels.includes(acc.level);
-    const matchesSearch =
-      acc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      acc.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (acc.alias && acc.alias.toLowerCase().includes(searchTerm.toLowerCase()));
-    return matchesType && matchesLevel && matchesSearch;
-  });
+  const typeFilter = useMemo(() => {
+    const set = new Set<string>();
+    if (filterType) set.add(filterType);
+    (filterTypes || []).forEach((t) => set.add(t));
+    (allowedTypes || []).forEach((t) => set.add(t));
+    return set;
+  }, [filterType, filterTypes, allowedTypes]);
 
-  // Find the currently selected account
-  const selectedAccount = accounts.find((acc) => acc.id === value);
+  const filtered = useMemo(
+    () =>
+      (accounts || []).filter((acc) => {
+        const matchesType = typeFilter.size === 0 || typeFilter.has(acc.type);
+        const matchesLevel = !allowedLevels || allowedLevels.includes(acc.level);
+        return matchesType && matchesLevel;
+      }),
+    [accounts, typeFilter, allowedLevels],
+  );
 
-  // Handle outside clicks
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
+  const options = useMemo<ComboboxOption[]>(
+    () =>
+      filtered.map((acc) => ({
+        value: acc.id,
+        label: acc.code ? `${acc.code} | ${acc.name}` : acc.name,
+        description: acc.alias ? `Alias: ${acc.alias}` : undefined,
+      })),
+    [filtered],
+  );
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  const control = (
+    <Combobox
+      className={className}
+      aria-label={label || placeholder}
+      options={options}
+      value={value}
+      disabled={disabled}
+      placeholder={placeholder}
+      emptyText="No accounts found"
+      createNewLabel="+ Create New Account..."
+      onCreateNew={() => toast.success("Please open Account Master to create a new account.")}
+      onChange={(id) => {
+        const account = filtered.find((a) => a.id === id);
+        onChange(id, account);
+      }}
+    />
+  );
 
-  // Handle keyboard navigation
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isOpen) return;
-
-      if (e.key === "ArrowDown") {
-        e.preventDefault();
-        setHighlightedIndex((prev) => Math.min(prev + 1, filteredAccounts.length - 1));
-      } else if (e.key === "ArrowUp") {
-        e.preventDefault();
-        setHighlightedIndex((prev) => Math.max(prev - 1, -1));
-      } else if (e.key === "Enter") {
-        e.preventDefault();
-        if (highlightedIndex >= 0) {
-          const account = filteredAccounts[highlightedIndex];
-          onChange(account.id, account);
-          setIsOpen(false);
-        }
-      } else if (e.key === "Escape") {
-        e.preventDefault();
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, highlightedIndex, filteredAccounts, onChange]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-    if (!isOpen) setIsOpen(true);
-    setHighlightedIndex(-1);
-  };
-
-  const handleInputFocus = () => {
-    setIsOpen(true);
-  };
-
-  const handleOptionClick = (account: any) => {
-    onChange(account.id, account);
-    setIsOpen(false);
-    setSearchTerm("");
-  };
-
-  const handleQuickCreate = () => {
-    toast.info("Please open Account Master to create a new account.");
-    setIsOpen(false);
-  };
+  if (!label) return control;
 
   return (
-    <div className={`relative ${className}`} ref={containerRef}>
-      <div className="relative">
-        <input
-          ref={inputRef}
-          type="text"
-          value={searchTerm || (selectedAccount ? selectedAccount.name : "")}
-          onChange={handleInputChange}
-          onFocus={handleInputFocus}
-          placeholder={placeholder}
-          disabled={disabled}
-          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white w-full focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
-        />
-        <Search className="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 w-3.5 h-3.5 pointer-events-none" />
-      </div>
-
-      {isOpen && (
-        <div className="absolute bg-white border border-gray-200 rounded-md shadow-lg max-h-48 overflow-y-auto z-50 w-full mt-1">
-          {filteredAccounts.length > 0 ? (
-            <>
-              {filteredAccounts.map((account, index) => (
-                <div
-                  key={account.id}
-                  className={`px-3 py-2 text-[12px] cursor-pointer text-gray-700 hover:bg-gray-50 ${
-                    index === highlightedIndex ? "bg-gray-50" : ""
-                  }`}
-                  onClick={() => handleOptionClick(account)}
-                >
-                  <div className="font-medium">
-                    {account.code} | {account.name}
-                  </div>
-                  {account.alias && (
-                    <div className="text-[10px] text-gray-500 mt-0.5">Alias: {account.alias}</div>
-                  )}
-                </div>
-              ))}
-              <div
-                className="px-3 py-2 text-[12px] font-medium text-[#1557b0] cursor-pointer hover:bg-gray-50 border-t border-gray-100"
-                onClick={handleQuickCreate}
-              >
-                + Create New Account...
-              </div>
-            </>
-          ) : (
-            <div className="px-3 py-3 text-[12px] text-gray-500 text-center">No accounts found</div>
-          )}
-        </div>
-      )}
+    <div className="flex w-full flex-col gap-1">
+      <label className="text-[11px] font-medium text-[var(--ds-text-muted)]">
+        {label}
+        {required ? <span className="ml-0.5 text-[var(--ds-status-danger)]">*</span> : null}
+      </label>
+      {control}
     </div>
   );
 };

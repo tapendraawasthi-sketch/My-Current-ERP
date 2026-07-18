@@ -7,7 +7,7 @@
  */
 
 import { DualDate } from "../components/ui/DualDate";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useStore } from "../store/useStore";
 import { Select, NepaliDatePicker } from "../components/ui";
 import JournalVoucherForm from "../components/voucher/JournalVoucherForm";
@@ -15,6 +15,11 @@ import { Plus, Eye, Search, Download } from "lucide-react";
 import { formatNumber } from "../lib/utils";
 import { VoucherType, VoucherStatus } from "../lib/types";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import {
+  BRANCH_CHANGED_EVENT,
+  matchesBranchFilter,
+  readActiveBranchId,
+} from "../lib/activeBranch";
 
 const th = "px-3 py-2.5 text-left text-[12px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
@@ -32,17 +37,27 @@ const statusBadge = (status: string) => {
 };
 
 const JournalEntries: React.FC = () => {
-  const { vouchers, companySettings } = useStore();
+  const { vouchers, companySettings, branches } = useStore();
   const symbol = companySettings?.currencySymbol || "Rs.";
 
   const [mode, setMode] = useState<"list" | "new" | "edit">("list");
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
+  const [branchFilter, setBranchFilter] = useState(() => readActiveBranchId() || "all");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [pageSize, setPageSize] = useState(50);
+
+  useEffect(() => {
+    const sync = () => {
+      const id = readActiveBranchId();
+      if (id) setBranchFilter(id);
+    };
+    window.addEventListener(BRANCH_CHANGED_EVENT, sync as EventListener);
+    return () => window.removeEventListener(BRANCH_CHANGED_EVENT, sync as EventListener);
+  }, []);
 
   const journals = useMemo(
     () => vouchers.filter((v) => v.type === VoucherType.JOURNAL),
@@ -52,10 +67,16 @@ const JournalEntries: React.FC = () => {
   const filtered = useMemo(() => {
     return journals
       .filter((v) => statusFilter === "ALL" || v.status === statusFilter)
+      .filter((v) => matchesBranchFilter((v as any).branchId, branchFilter))
       .filter((v) => !fromDate || v.date >= fromDate)
       .filter((v) => !toDate || v.date <= toDate)
       .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
-  }, [journals, statusFilter, fromDate, toDate]);
+  }, [journals, statusFilter, branchFilter, fromDate, toDate]);
+
+  const branchOptions = useMemo(
+    () => ((branches || []) as any[]).filter((b) => b && b.isActive !== false),
+    [branches],
+  );
 
   const searched = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
@@ -149,6 +170,24 @@ const JournalEntries: React.FC = () => {
               onChange={setStatusFilter}
             />
           </div>
+          {branchOptions.length > 0 && (
+            <>
+              <span className="text-[12px] text-gray-500">Branch</span>
+              <div className="w-40">
+                <Select
+                  options={[
+                    { value: "all", label: "All branches" },
+                    ...branchOptions.map((b: any) => ({
+                      value: b.id,
+                      label: b.name || b.code || b.id,
+                    })),
+                  ]}
+                  value={branchFilter}
+                  onChange={setBranchFilter}
+                />
+              </div>
+            </>
+          )}
         </div>
 
         <div className="flex flex-wrap items-center gap-2 mb-3 no-print">
@@ -163,6 +202,7 @@ const JournalEntries: React.FC = () => {
             />
           </div>
           <select
+            aria-label="Rows per page"
             value={pageSize}
             onChange={(e) => setPageSize(Number(e.target.value))}
             className={inputCls}

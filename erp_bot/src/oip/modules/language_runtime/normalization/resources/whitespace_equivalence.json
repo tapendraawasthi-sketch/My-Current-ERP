@@ -1,0 +1,13 @@
+{
+  "resource_id": "whitespace_equivalence",
+  "version": "mai-06.1.0",
+  "review_status": "ENGINEERING_REVIEWED",
+  "map": {
+    "\u00a0": " ",
+    "\u2007": " ",
+    "\u202f": " ",
+    "\u2009": " ",
+    "\u2008": " ",
+    "\t": " "
+  }
+}

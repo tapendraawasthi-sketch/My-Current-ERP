@@ -136,6 +136,49 @@ def handle_mode_aware_erp(
     can_post = user_may_post_purchase(role=user_role, permissions=permissions)
     caps = resolve_capabilities(mode, can_post=can_post)
 
+    # MAI-01 — deny-by-default constitution before any draft merge/persist.
+    try:
+        from ...config.settings import get_oip_settings
+        from ...domain.constitution import OperationClass
+        from ...domain.constitution.enforcement import enforce_draft_operation
+        from ...domain.constitution.config_guard import insecure_dev_identity_allowed
+        from ...infrastructure.security.session_context import current_principal
+
+        settings = get_oip_settings()
+        if mode == "accountant" and (
+            settings.auth_required or not insecure_dev_identity_allowed()
+        ):
+            if current_principal() is None and not insecure_dev_identity_allowed():
+                if settings.auth_required:
+                    _, decision = enforce_draft_operation(
+                        orbix_mode=mode,
+                        operation=OperationClass.CREATE_PERSISTED_DRAFT,
+                        requested_tenant_id=tenant_id or None,
+                        requested_company_id=company_id or None,
+                    )
+                    if not decision.allowed:
+                        return ModeAwareResult(
+                            skip_llm=True,
+                            text=decision.safe_user_message
+                            or "Authentication is required before preparing accounting drafts.",
+                            card=None,
+                            intent="policy_denied",
+                            method="mai01_constitution",
+                            orbix_mode=mode,
+                            error={
+                                "type": "permission_denied",
+                                "code": decision.decision_code.value,
+                                "policy_version": decision.policy_version,
+                            },
+                        )
+        if mode == "ask":
+            # Defense in depth: Ask never persists drafts even if later regex matches.
+            caps = resolve_capabilities("ask", can_post=False)
+    except Exception:
+        # Fail closed for mutation capabilities if policy stack errors.
+        if mode == "ask":
+            caps = resolve_capabilities("ask", can_post=False)
+
     pending_purchase = load_pending_purchase(
         session_id=session_id,
         tenant_id=tenant_id,

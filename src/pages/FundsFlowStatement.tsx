@@ -10,9 +10,11 @@ import {
 } from "../lib/reportingHierarchy";
 import { ReportWorkspace } from "@/features/reports";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const FundsFlowStatement: React.FC = () => {
   const { vouchers, accounts, companySettings, currentFiscalYear } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [startDate, setStartDate] = useState(currentFiscalYear?.startDate || "");
   const [endDate, setEndDate] = useState(currentFiscalYear?.endDate || "");
@@ -27,9 +29,14 @@ const FundsFlowStatement: React.FC = () => {
     setOptionsOpen(false);
   };
 
+  const scopedVouchers = useMemo(
+    () => (vouchers || []).filter((v) => matchBranch(v.branchId)),
+    [vouchers, matchBranch, branchFilter],
+  );
+
   // Compute funds flow data
   const fundsFlowData = useMemo(() => {
-    if (!vouchers || !accounts)
+    if (!scopedVouchers || !accounts)
       return {
         sources: [],
         applications: [],
@@ -72,7 +79,7 @@ const FundsFlowStatement: React.FC = () => {
     };
 
     // Compute ledger totals for the period
-    const ledgerTotals = computeLedgerTotals(vouchers, startDate, endDate);
+    const ledgerTotals = computeLedgerTotals(scopedVouchers, startDate, endDate);
 
     // Calculate opening and closing balances for working capital items
     const scheduleOfWorkingCapital = [];
@@ -180,7 +187,7 @@ const FundsFlowStatement: React.FC = () => {
     );
 
     // Compute sources and applications
-    const relevantVouchers = vouchers.filter(
+    const relevantVouchers = scopedVouchers.filter(
       (v) => v.status === "posted" && v.date >= startDate && v.date <= endDate,
     );
 
@@ -311,7 +318,7 @@ const FundsFlowStatement: React.FC = () => {
       totalSources: finalTotalSources,
       totalApplications: finalTotalApplications,
     };
-  }, [vouchers, accounts, startDate, endDate]);
+  }, [scopedVouchers, accounts, startDate, endDate]);
 
   return (
     <ReportWorkspace
@@ -346,6 +353,23 @@ const FundsFlowStatement: React.FC = () => {
               className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
+          {branchOptions.length > 0 && (
+            <label className="text-[12px] font-medium text-gray-600 flex items-center gap-1.5">
+              Branch:
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
         </>
       }
     >

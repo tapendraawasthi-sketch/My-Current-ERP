@@ -22,9 +22,11 @@ import {
 } from "../lib/voucherUtils";
 import { VoucherType } from "../lib/types";
 import toast from "@/lib/appToast";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const VouchersRegisterFull: React.FC = () => {
   const { vouchers, invoices, companySettings, currentFiscalYear, parties } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
 
   const [dateFrom, setDateFrom] = useState<string>(() => {
     const date = new Date();
@@ -41,7 +43,9 @@ const VouchersRegisterFull: React.FC = () => {
   const [pageSize] = useState<number>(25);
 
   const allTransactions = useMemo(() => {
-    const voucherRows = (vouchers || []).map((v) => ({
+    const voucherRows = (vouchers || [])
+      .filter((v) => matchBranch(v.branchId))
+      .map((v) => ({
       id: v.id,
       voucherNo: v.voucherNo,
       date: v.date,
@@ -57,9 +61,12 @@ const VouchersRegisterFull: React.FC = () => {
       isOptional: v.isOptional || false,
       narration: v.narration || "",
       group: getVoucherGroupForType(v.type),
+      branchId: v.branchId,
     }));
 
-    const invoiceRows = (invoices || []).map((inv) => ({
+    const invoiceRows = (invoices || [])
+      .filter((inv) => matchBranch(inv.branchId))
+      .map((inv) => ({
       id: inv.id,
       voucherNo: inv.invoiceNo || inv.voucherNo,
       date: inv.date,
@@ -75,10 +82,11 @@ const VouchersRegisterFull: React.FC = () => {
       isOptional: false,
       narration: inv.narration || "",
       group: getVoucherGroupForType(inv.type),
+      branchId: inv.branchId,
     }));
 
     return [...voucherRows, ...invoiceRows].sort((a, b) => b.date.localeCompare(a.date));
-  }, [vouchers, invoices]);
+  }, [vouchers, invoices, matchBranch, branchFilter]);
 
   const filteredDataBeforePagination = useMemo(() => {
     return allTransactions.filter((transaction) => {
@@ -189,6 +197,7 @@ const VouchersRegisterFull: React.FC = () => {
     setStatusFilter("all");
     setPartyFilter("");
     setSearchText("");
+    setBranchFilter("all");
     setPage(1);
   };
 
@@ -196,7 +205,7 @@ const VouchersRegisterFull: React.FC = () => {
     accounting: "bg-blue-100 text-blue-700",
     inventory: "bg-green-100 text-green-700",
     order: "bg-orange-100 text-orange-700",
-    payroll: "bg-purple-100 text-purple-700",
+    payroll: "bg-[var(--ds-status-info-surface)] text-[var(--ds-status-info)]",
     other: "bg-gray-100 text-gray-700",
   };
 
@@ -227,7 +236,7 @@ const VouchersRegisterFull: React.FC = () => {
 
       {/* Filter Row */}
       <Card className="mb-4 p-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-4">
           <Select
             value={voucherTypeFilter}
             onChange={setVoucherTypeFilter}
@@ -259,6 +268,20 @@ const VouchersRegisterFull: React.FC = () => {
             ]}
             placeholder="Select Status"
           />
+          {branchOptions.length > 0 && (
+            <Select
+              value={branchFilter}
+              onChange={setBranchFilter}
+              options={[
+                { value: "all", label: "All branches" },
+                ...branchOptions.map((b) => ({
+                  value: b.id,
+                  label: b.name || b.code || b.id,
+                })),
+              ]}
+              placeholder="Branch"
+            />
+          )}
           <Input
             placeholder="Search Party..."
             value={partyFilter}

@@ -1,0 +1,1581 @@
+{
+  "$defs": {
+    "AlignmentKind": {
+      "enum": [
+        "ONE_TO_ONE",
+        "ONE_TO_MANY",
+        "MANY_TO_ONE",
+        "MANY_TO_MANY",
+        "IDENTITY",
+        "IDENTITY_GAP"
+      ],
+      "title": "AlignmentKind",
+      "type": "string"
+    },
+    "AlignmentMapV1": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate_length": {
+          "minimum": 0,
+          "title": "Candidate Length",
+          "type": "integer"
+        },
+        "mapping_version": {
+          "default": "mai-07.1.0",
+          "title": "Mapping Version",
+          "type": "string"
+        },
+        "offset_unit": {
+          "default": "UNICODE_CODE_POINT",
+          "title": "Offset Unit",
+          "type": "string"
+        },
+        "raw_length": {
+          "minimum": 0,
+          "title": "Raw Length",
+          "type": "integer"
+        },
+        "segments": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/AlignmentSegmentV1"
+          },
+          "title": "Segments",
+          "type": "array"
+        }
+      },
+      "required": [
+        "raw_length",
+        "candidate_length"
+      ],
+      "title": "AlignmentMapV1",
+      "type": "object"
+    },
+    "AlignmentSegmentV1": {
+      "additionalProperties": false,
+      "properties": {
+        "alignment_kind": {
+          "$ref": "#/$defs/AlignmentKind",
+          "default": "IDENTITY"
+        },
+        "candidate_end": {
+          "minimum": 0,
+          "title": "Candidate End",
+          "type": "integer"
+        },
+        "candidate_start": {
+          "minimum": 0,
+          "title": "Candidate Start",
+          "type": "integer"
+        },
+        "raw_end": {
+          "minimum": 0,
+          "title": "Raw End",
+          "type": "integer"
+        },
+        "raw_start": {
+          "minimum": 0,
+          "title": "Raw Start",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "raw_start",
+        "raw_end",
+        "candidate_start",
+        "candidate_end"
+      ],
+      "title": "AlignmentSegmentV1",
+      "type": "object"
+    },
+    "AnalysisStatus": {
+      "enum": [
+        "NOT_RUN",
+        "PARTIAL",
+        "COMPLETE",
+        "FAILED"
+      ],
+      "title": "AnalysisStatus",
+      "type": "string"
+    },
+    "CalibrationStatus": {
+      "enum": [
+        "UNCALIBRATED",
+        "ENGINEERING_CALIBRATED",
+        "HUMAN_REVIEW_REQUIRED"
+      ],
+      "title": "CalibrationStatus",
+      "type": "string"
+    },
+    "CandidateKind": {
+      "enum": [
+        "IDENTITY",
+        "LEXICAL",
+        "GRAPHEME",
+        "MORPHOLOGICAL",
+        "PHRASE",
+        "DOMAIN",
+        "CONTEXTUAL",
+        "ABSTENTION"
+      ],
+      "title": "CandidateKind",
+      "type": "string"
+    },
+    "CandidateScript": {
+      "enum": [
+        "LATIN",
+        "DEVANAGARI",
+        "MIXED",
+        "OTHER"
+      ],
+      "title": "CandidateScript",
+      "type": "string"
+    },
+    "ConfidenceV1": {
+      "additionalProperties": false,
+      "description": "Informational only — never authorization.",
+      "properties": {
+        "grants_authority": {
+          "default": false,
+          "title": "Grants Authority",
+          "type": "boolean"
+        },
+        "method": {
+          "default": "unspecified",
+          "title": "Method",
+          "type": "string"
+        },
+        "value": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "ConfidenceV1",
+      "type": "object"
+    },
+    "EligibilityDecision": {
+      "enum": [
+        "GENERATE",
+        "IDENTITY_ONLY",
+        "ABSTAIN",
+        "SKIPPED_PROTECTED",
+        "SKIPPED_UNSUPPORTED",
+        "SKIPPED_SECURITY",
+        "SKIPPED_TOO_LONG"
+      ],
+      "title": "EligibilityDecision",
+      "type": "string"
+    },
+    "InputChannelV1": {
+      "enum": [
+        "text",
+        "voice",
+        "ui",
+        "unknown"
+      ],
+      "title": "InputChannelV1",
+      "type": "string"
+    },
+    "InteractionModeV1": {
+      "enum": [
+        "ask",
+        "accountant"
+      ],
+      "title": "InteractionModeV1",
+      "type": "string"
+    },
+    "LanguageFrameV1": {
+      "additionalProperties": false,
+      "properties": {
+        "ambiguity_flags": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Ambiguity Flags",
+          "type": "array"
+        },
+        "analysis_status": {
+          "$ref": "#/$defs/AnalysisStatus",
+          "default": "NOT_RUN"
+        },
+        "analyzer_versions": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Analyzer Versions",
+          "type": "object"
+        },
+        "code_mix_pattern": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Code Mix Pattern"
+        },
+        "date_candidates": {
+          "default": [],
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Date Candidates",
+          "type": "array"
+        },
+        "dominant_response_language": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dominant Response Language"
+        },
+        "entity_surface_candidates": {
+          "default": [],
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Entity Surface Candidates",
+          "type": "array"
+        },
+        "input_quality_flags": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Quality Flags",
+          "type": "array"
+        },
+        "language_distribution": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Language Distribution",
+          "type": "object"
+        },
+        "linguistic_register": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Linguistic Register"
+        },
+        "normalization_bundle": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NormalizationBundleV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "normalization_edits": {
+          "default": [],
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Normalization Edits",
+          "type": "array"
+        },
+        "number_candidates": {
+          "default": [],
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Number Candidates",
+          "type": "array"
+        },
+        "offset_unit": {
+          "default": "UNICODE_CODE_POINT",
+          "title": "Offset Unit",
+          "type": "string"
+        },
+        "protected_span_kinds": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Protected Span Kinds",
+          "type": "array"
+        },
+        "protected_spans": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/SourceSpanV1"
+          },
+          "title": "Protected Spans",
+          "type": "array"
+        },
+        "raw_text": {
+          "minLength": 1,
+          "title": "Raw Text",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "span_annotations": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/SpanAnnotationV1"
+          },
+          "title": "Span Annotations",
+          "type": "array"
+        },
+        "transliteration_bundle": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TransliterationBundleV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "transliteration_candidates": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Transliteration Candidates",
+          "type": "array"
+        },
+        "unicode_normalized_view": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unicode Normalized View"
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "raw_text"
+      ],
+      "title": "LanguageFrameV1",
+      "type": "object"
+    },
+    "MappingKind": {
+      "enum": [
+        "IDENTITY",
+        "ONE_TO_ONE",
+        "MANY_TO_ONE",
+        "ONE_TO_MANY",
+        "INSERTION",
+        "DELETION_CANDIDATE_NOT_APPLIED"
+      ],
+      "title": "MappingKind",
+      "type": "string"
+    },
+    "NormalizationBundleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "edits": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/NormalizationEditV1"
+          },
+          "title": "Edits",
+          "type": "array"
+        },
+        "input_quality_flags": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Input Quality Flags",
+          "type": "array"
+        },
+        "normalizer_version": {
+          "default": "mai-06.1.1",
+          "title": "Normalizer Version",
+          "type": "string"
+        },
+        "offset_unit": {
+          "default": "UNICODE_CODE_POINT",
+          "title": "Offset Unit",
+          "type": "string"
+        },
+        "protected_span_references": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/SourceSpanV1"
+          },
+          "title": "Protected Span References",
+          "type": "array"
+        },
+        "raw_text": {
+          "title": "Raw Text",
+          "type": "string"
+        },
+        "resource_pack_version": {
+          "default": "mai-06.1.0",
+          "title": "Resource Pack Version",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/NormalizationStatus",
+          "default": "NOT_RUN"
+        },
+        "views": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/NormalizationViewV1"
+          },
+          "title": "Views",
+          "type": "array"
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "raw_text"
+      ],
+      "title": "NormalizationBundleV1",
+      "type": "object"
+    },
+    "NormalizationEditV1": {
+      "additionalProperties": false,
+      "properties": {
+        "alternatives": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Alternatives",
+          "type": "array"
+        },
+        "applied_views": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ViewType"
+          },
+          "title": "Applied Views",
+          "type": "array"
+        },
+        "candidate_surface": {
+          "title": "Candidate Surface",
+          "type": "string"
+        },
+        "confidence": {
+          "default": 1.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "edit_id": {
+          "title": "Edit Id",
+          "type": "string"
+        },
+        "normalized_span": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourceSpanV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "operation": {
+          "$ref": "#/$defs/NormalizationOperation"
+        },
+        "original_surface": {
+          "title": "Original Surface",
+          "type": "string"
+        },
+        "protected_span_interaction": {
+          "$ref": "#/$defs/ProtectedSpanInteraction",
+          "default": "OUTSIDE_PROTECTED"
+        },
+        "raw_span": {
+          "$ref": "#/$defs/SourceSpanV1"
+        },
+        "reason_code": {
+          "default": "",
+          "title": "Reason Code",
+          "type": "string"
+        },
+        "reversible": {
+          "default": true,
+          "title": "Reversible",
+          "type": "boolean"
+        },
+        "rule_id": {
+          "title": "Rule Id",
+          "type": "string"
+        },
+        "rule_version": {
+          "default": "mai-06.1.0",
+          "title": "Rule Version",
+          "type": "string"
+        },
+        "safety_class": {
+          "$ref": "#/$defs/SafetyClass"
+        }
+      },
+      "required": [
+        "edit_id",
+        "raw_span",
+        "operation",
+        "original_surface",
+        "candidate_surface",
+        "safety_class",
+        "rule_id"
+      ],
+      "title": "NormalizationEditV1",
+      "type": "object"
+    },
+    "NormalizationOperation": {
+      "enum": [
+        "UNICODE_NFC",
+        "WHITESPACE_CODEPOINT_STANDARDIZATION",
+        "WHITESPACE_COLLAPSE",
+        "LINE_ENDING_STANDARDIZATION",
+        "LATIN_CASEFOLD",
+        "ASCII_DEVANAGARI_DIGIT_EQUIVALENCE",
+        "PUNCTUATION_EQUIVALENCE_CANDIDATE",
+        "QUOTE_EQUIVALENCE_CANDIDATE",
+        "DASH_EQUIVALENCE_CANDIDATE",
+        "ABBREVIATION_EXPANSION_CANDIDATE",
+        "REPETITION_REDUCTION_CANDIDATE",
+        "CONTROL_CHARACTER_REVIEW",
+        "ZERO_WIDTH_REVIEW",
+        "BIDI_CONTROL_REVIEW",
+        "UNKNOWN_EDIT"
+      ],
+      "title": "NormalizationOperation",
+      "type": "string"
+    },
+    "NormalizationStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "PARTIAL",
+        "FAILED"
+      ],
+      "title": "NormalizationStatus",
+      "type": "string"
+    },
+    "NormalizationViewV1": {
+      "additionalProperties": false,
+      "properties": {
+        "allowed_uses": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Allowed Uses",
+          "type": "array"
+        },
+        "applied_edit_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Applied Edit Ids",
+          "type": "array"
+        },
+        "integrity": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ReconstructionIntegrityV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "offset_map": {
+          "$ref": "#/$defs/OffsetMapV1"
+        },
+        "status": {
+          "$ref": "#/$defs/NormalizationStatus",
+          "default": "COMPLETE"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "view_id": {
+          "title": "View Id",
+          "type": "string"
+        },
+        "view_type": {
+          "$ref": "#/$defs/ViewType"
+        }
+      },
+      "required": [
+        "view_id",
+        "view_type",
+        "text",
+        "offset_map"
+      ],
+      "title": "NormalizationViewV1",
+      "type": "object"
+    },
+    "OffsetMapSegmentV1": {
+      "additionalProperties": false,
+      "properties": {
+        "edit_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Edit Id"
+        },
+        "mapping_kind": {
+          "$ref": "#/$defs/MappingKind",
+          "default": "IDENTITY"
+        },
+        "normalized_end": {
+          "minimum": 0,
+          "title": "Normalized End",
+          "type": "integer"
+        },
+        "normalized_start": {
+          "minimum": 0,
+          "title": "Normalized Start",
+          "type": "integer"
+        },
+        "raw_end": {
+          "minimum": 0,
+          "title": "Raw End",
+          "type": "integer"
+        },
+        "raw_start": {
+          "minimum": 0,
+          "title": "Raw Start",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "raw_start",
+        "raw_end",
+        "normalized_start",
+        "normalized_end"
+      ],
+      "title": "OffsetMapSegmentV1",
+      "type": "object"
+    },
+    "OffsetMapV1": {
+      "additionalProperties": false,
+      "properties": {
+        "mapping_version": {
+          "default": "mai-06.1.0",
+          "title": "Mapping Version",
+          "type": "string"
+        },
+        "normalized_length": {
+          "minimum": 0,
+          "title": "Normalized Length",
+          "type": "integer"
+        },
+        "offset_unit": {
+          "default": "UNICODE_CODE_POINT",
+          "title": "Offset Unit",
+          "type": "string"
+        },
+        "raw_length": {
+          "minimum": 0,
+          "title": "Raw Length",
+          "type": "integer"
+        },
+        "segments": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/OffsetMapSegmentV1"
+          },
+          "title": "Segments",
+          "type": "array"
+        }
+      },
+      "required": [
+        "raw_length",
+        "normalized_length"
+      ],
+      "title": "OffsetMapV1",
+      "type": "object"
+    },
+    "ProtectedSpanInteraction": {
+      "enum": [
+        "OUTSIDE_PROTECTED",
+        "COPIED_UNCHANGED",
+        "OVERLAP_REJECTED",
+        "CALLER_DECLARED_PROTECTED"
+      ],
+      "title": "ProtectedSpanInteraction",
+      "type": "string"
+    },
+    "ReconstructionIntegrityV1": {
+      "additionalProperties": false,
+      "description": "Trusted artifact binding for structural reconstruction (not a digital signature).",
+      "properties": {
+        "artifact_digest": {
+          "maxLength": 64,
+          "minLength": 64,
+          "title": "Artifact Digest",
+          "type": "string"
+        },
+        "edits_digest": {
+          "maxLength": 64,
+          "minLength": 64,
+          "title": "Edits Digest",
+          "type": "string"
+        },
+        "integrity_algorithm": {
+          "default": "SHA-256",
+          "title": "Integrity Algorithm",
+          "type": "string"
+        },
+        "integrity_domain": {
+          "default": "MOKXYA_NORMALIZATION_RECONSTRUCTION_V1",
+          "title": "Integrity Domain",
+          "type": "string"
+        },
+        "normalizer_version": {
+          "title": "Normalizer Version",
+          "type": "string"
+        },
+        "offset_map_digest": {
+          "maxLength": 64,
+          "minLength": 64,
+          "title": "Offset Map Digest",
+          "type": "string"
+        },
+        "offset_unit": {
+          "default": "UNICODE_CODE_POINT",
+          "title": "Offset Unit",
+          "type": "string"
+        },
+        "schema_version": {
+          "default": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_codepoint_length": {
+          "minimum": 0,
+          "title": "Source Codepoint Length",
+          "type": "integer"
+        },
+        "source_digest": {
+          "maxLength": 64,
+          "minLength": 64,
+          "title": "Source Digest",
+          "type": "string"
+        },
+        "view_codepoint_length": {
+          "minimum": 0,
+          "title": "View Codepoint Length",
+          "type": "integer"
+        },
+        "view_digest": {
+          "maxLength": 64,
+          "minLength": 64,
+          "title": "View Digest",
+          "type": "string"
+        },
+        "view_name": {
+          "title": "View Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "normalizer_version",
+        "view_name",
+        "source_codepoint_length",
+        "view_codepoint_length",
+        "source_digest",
+        "view_digest",
+        "edits_digest",
+        "offset_map_digest",
+        "artifact_digest"
+      ],
+      "title": "ReconstructionIntegrityV1",
+      "type": "object"
+    },
+    "SafetyClass": {
+      "enum": [
+        "SAFE_AUTOMATIC",
+        "RETRIEVAL_ONLY",
+        "CANDIDATE_ONLY",
+        "SECURITY_REVIEW_REQUIRED",
+        "PROHIBITED"
+      ],
+      "title": "SafetyClass",
+      "type": "string"
+    },
+    "SourceSpanV1": {
+      "additionalProperties": false,
+      "description": "Offsets are Unicode code-point indices unless offset_unit says otherwise.",
+      "properties": {
+        "end_offset": {
+          "minimum": 0,
+          "title": "End Offset",
+          "type": "integer"
+        },
+        "offset_unit": {
+          "default": "UNICODE_CODE_POINT",
+          "title": "Offset Unit",
+          "type": "string"
+        },
+        "original_text": {
+          "title": "Original Text",
+          "type": "string"
+        },
+        "source_message_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Message Id"
+        },
+        "start_offset": {
+          "minimum": 0,
+          "title": "Start Offset",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "start_offset",
+        "end_offset",
+        "original_text"
+      ],
+      "title": "SourceSpanV1",
+      "type": "object"
+    },
+    "SpanAnnotationV1": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConfidenceV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "end_offset": {
+          "minimum": 0,
+          "title": "End Offset",
+          "type": "integer"
+        },
+        "language_form": {
+          "default": "UNKNOWN",
+          "title": "Language Form",
+          "type": "string"
+        },
+        "normalized_candidates": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Normalized Candidates",
+          "type": "array"
+        },
+        "offset_unit": {
+          "default": "UNICODE_CODE_POINT",
+          "title": "Offset Unit",
+          "type": "string"
+        },
+        "original_text": {
+          "title": "Original Text",
+          "type": "string"
+        },
+        "protected_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Protected Reason"
+        },
+        "script": {
+          "default": "UNKNOWN",
+          "title": "Script",
+          "type": "string"
+        },
+        "start_offset": {
+          "minimum": 0,
+          "title": "Start Offset",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "start_offset",
+        "end_offset",
+        "original_text"
+      ],
+      "title": "SpanAnnotationV1",
+      "type": "object"
+    },
+    "TransliterationBundleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "abstention_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Abstention Count",
+          "type": "integer"
+        },
+        "analysis_status": {
+          "$ref": "#/$defs/TransliterationStatus",
+          "default": "NOT_RUN"
+        },
+        "candidate_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Candidate Count",
+          "type": "integer"
+        },
+        "eligible_span_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Eligible Span Count",
+          "type": "integer"
+        },
+        "error_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Error Codes",
+          "type": "array"
+        },
+        "hypotheses": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/TransliterationHypothesisV1"
+          },
+          "title": "Hypotheses",
+          "type": "array"
+        },
+        "identity_only_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Identity Only Count",
+          "type": "integer"
+        },
+        "matching_view": {
+          "default": "RAW",
+          "title": "Matching View",
+          "type": "string"
+        },
+        "max_candidates_per_span": {
+          "default": 5,
+          "title": "Max Candidates Per Span",
+          "type": "integer"
+        },
+        "max_hypotheses": {
+          "default": 5,
+          "title": "Max Hypotheses",
+          "type": "integer"
+        },
+        "offset_unit": {
+          "default": "UNICODE_CODE_POINT",
+          "title": "Offset Unit",
+          "type": "string"
+        },
+        "resource_hash": {
+          "default": "",
+          "title": "Resource Hash",
+          "type": "string"
+        },
+        "resource_version": {
+          "default": "mai-07.1.0",
+          "title": "Resource Version",
+          "type": "string"
+        },
+        "runtime_version": {
+          "default": "mai-07.1.0",
+          "title": "Runtime Version",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_authority": {
+          "default": "RAW",
+          "title": "Source Authority",
+          "type": "string"
+        },
+        "span_results": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/TransliterationSpanV1"
+          },
+          "title": "Span Results",
+          "type": "array"
+        },
+        "truncated_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Truncated Count",
+          "type": "integer"
+        },
+        "warnings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "title": "TransliterationBundleV1",
+      "type": "object"
+    },
+    "TransliterationCandidateV1": {
+      "additionalProperties": false,
+      "properties": {
+        "alignment": {
+          "$ref": "#/$defs/AlignmentMapV1"
+        },
+        "calibration_status": {
+          "$ref": "#/$defs/CalibrationStatus",
+          "default": "UNCALIBRATED"
+        },
+        "candidate_id": {
+          "title": "Candidate Id",
+          "type": "string"
+        },
+        "is_identity": {
+          "default": false,
+          "title": "Is Identity",
+          "type": "boolean"
+        },
+        "kind": {
+          "$ref": "#/$defs/CandidateKind"
+        },
+        "provenance": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Provenance",
+          "type": "array"
+        },
+        "rank": {
+          "minimum": 1,
+          "title": "Rank",
+          "type": "integer"
+        },
+        "ranking_score": {
+          "title": "Ranking Score",
+          "type": "number"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "requires_review": {
+          "default": false,
+          "title": "Requires Review",
+          "type": "boolean"
+        },
+        "script": {
+          "$ref": "#/$defs/CandidateScript"
+        },
+        "surface": {
+          "title": "Surface",
+          "type": "string"
+        },
+        "uncertainty_class": {
+          "$ref": "#/$defs/UncertaintyClass",
+          "default": "MODERATE"
+        }
+      },
+      "required": [
+        "candidate_id",
+        "surface",
+        "script",
+        "kind",
+        "rank",
+        "ranking_score",
+        "alignment"
+      ],
+      "title": "TransliterationCandidateV1",
+      "type": "object"
+    },
+    "TransliterationHypothesisV1": {
+      "additionalProperties": false,
+      "properties": {
+        "aggregate_ranking_score": {
+          "default": 0.0,
+          "title": "Aggregate Ranking Score",
+          "type": "number"
+        },
+        "alignment": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AlignmentMapV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "authoritative": {
+          "default": false,
+          "title": "Authoritative",
+          "type": "boolean"
+        },
+        "candidate_refs": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Candidate Refs",
+          "type": "array"
+        },
+        "hypothesis_id": {
+          "title": "Hypothesis Id",
+          "type": "string"
+        },
+        "preview_surface": {
+          "default": "",
+          "title": "Preview Surface",
+          "type": "string"
+        },
+        "status": {
+          "default": "CANDIDATE_ONLY",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "hypothesis_id"
+      ],
+      "title": "TransliterationHypothesisV1",
+      "type": "object"
+    },
+    "TransliterationSpanV1": {
+      "additionalProperties": false,
+      "properties": {
+        "candidates": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/TransliterationCandidateV1"
+          },
+          "title": "Candidates",
+          "type": "array"
+        },
+        "decision_reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Decision Reason Codes",
+          "type": "array"
+        },
+        "disposition": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Disposition"
+        },
+        "eligibility": {
+          "$ref": "#/$defs/EligibilityDecision"
+        },
+        "identity_candidate_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Identity Candidate Id"
+        },
+        "is_ambiguous": {
+          "default": false,
+          "title": "Is Ambiguous",
+          "type": "boolean"
+        },
+        "is_name_like": {
+          "default": false,
+          "title": "Is Name Like",
+          "type": "boolean"
+        },
+        "is_protected": {
+          "default": false,
+          "title": "Is Protected",
+          "type": "boolean"
+        },
+        "policy_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Policy Version"
+        },
+        "raw_span": {
+          "$ref": "#/$defs/SourceSpanV1"
+        },
+        "review_reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Review Reason Codes",
+          "type": "array"
+        },
+        "review_required": {
+          "default": false,
+          "title": "Review Required",
+          "type": "boolean"
+        },
+        "source_language_form": {
+          "title": "Source Language Form",
+          "type": "string"
+        },
+        "span_id": {
+          "title": "Span Id",
+          "type": "string"
+        },
+        "truncated": {
+          "default": false,
+          "title": "Truncated",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "span_id",
+        "raw_span",
+        "source_language_form",
+        "eligibility"
+      ],
+      "title": "TransliterationSpanV1",
+      "type": "object"
+    },
+    "TransliterationStatus": {
+      "enum": [
+        "NOT_RUN",
+        "COMPLETE",
+        "PARTIAL",
+        "DEGRADED",
+        "FAILED",
+        "SKIPPED"
+      ],
+      "title": "TransliterationStatus",
+      "type": "string"
+    },
+    "TrustedScopeV1": {
+      "additionalProperties": false,
+      "description": "Built only from MAI-01 authenticated context.",
+      "properties": {
+        "authentication_method": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Authentication Method",
+          "type": "string"
+        },
+        "branch_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Branch Id"
+        },
+        "company_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Company Id"
+        },
+        "fiscal_context": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fiscal Context"
+        },
+        "permissions": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Permissions",
+          "type": "array"
+        },
+        "policy_version": {
+          "default": "mai-01.1.0",
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "principal_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Principal Id",
+          "type": "string"
+        },
+        "roles": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Roles",
+          "type": "array"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "tenant_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Tenant Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "principal_id",
+        "tenant_id",
+        "authentication_method"
+      ],
+      "title": "TrustedScopeV1",
+      "type": "object"
+    },
+    "UncertaintyClass": {
+      "enum": [
+        "HIGH_EVIDENCE",
+        "MODERATE",
+        "LOW_EVIDENCE",
+        "AMBIGUOUS",
+        "ABSTAIN"
+      ],
+      "title": "UncertaintyClass",
+      "type": "string"
+    },
+    "ViewType": {
+      "enum": [
+        "RAW",
+        "UNICODE_CANONICAL",
+        "SAFE_SEMANTIC",
+        "RETRIEVAL",
+        "DISPLAY_CANDIDATE"
+      ],
+      "title": "ViewType",
+      "type": "string"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/CanonicalAIRequestV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "active_draft_reference": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Active Draft Reference"
+    },
+    "active_ui_context": {
+      "additionalProperties": true,
+      "title": "Active Ui Context",
+      "type": "object"
+    },
+    "client_capabilities": {
+      "additionalProperties": true,
+      "title": "Client Capabilities",
+      "type": "object"
+    },
+    "conversation_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Conversation Id",
+      "type": "string"
+    },
+    "correlation_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Correlation Id",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "input_channel": {
+      "$ref": "#/$defs/InputChannelV1",
+      "default": "text"
+    },
+    "language_frame": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LanguageFrameV1"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "locale_hint": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Locale Hint"
+    },
+    "message_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Message Id",
+      "type": "string"
+    },
+    "mode": {
+      "$ref": "#/$defs/InteractionModeV1"
+    },
+    "raw_text": {
+      "maxLength": 20000,
+      "minLength": 1,
+      "title": "Raw Text",
+      "type": "string"
+    },
+    "request_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Request Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "timezone": {
+      "default": "Asia/Kathmandu",
+      "title": "Timezone",
+      "type": "string"
+    },
+    "trusted_scope": {
+      "$ref": "#/$defs/TrustedScopeV1"
+    }
+  },
+  "required": [
+    "request_id",
+    "correlation_id",
+    "conversation_id",
+    "message_id",
+    "trusted_scope",
+    "mode",
+    "raw_text"
+  ],
+  "title": "CanonicalAIRequestV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

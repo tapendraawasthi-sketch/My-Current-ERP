@@ -8,6 +8,8 @@ import { formatADToBS } from "../lib/nepaliDate";
 import toast from "@/lib/appToast";
 import { VoucherType, VoucherStatus, JournalEntryLine } from "../lib/types";
 import { computeWithholdingTDS } from "../lib/taxUtils";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const PAYMENT_NATURES = [
   "Contractor",
@@ -23,6 +25,7 @@ const PAYMENT_NATURES = [
 
 export default function TdsPayment() {
   const { parties, tdsRates, addTdsEntry, addVoucher, currentFiscalYear, accounts } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const defaultAd = dateToAD(new Date());
 
   const [date, setDate] = useState(defaultAd);
@@ -65,8 +68,11 @@ export default function TdsPayment() {
   }, [grossNum, tdsRate, threshold]);
 
   const partyOptions = useMemo(
-    () => parties.map((p) => ({ value: p.id, label: p.name })),
-    [parties],
+    () =>
+      parties
+        .filter((p) => matchBranch((p as { branchId?: string }).branchId))
+        .map((p) => ({ value: p.id, label: p.name })),
+    [parties, matchBranch, branchFilter],
   );
   const natureOptions = useMemo(() => PAYMENT_NATURES.map((n) => ({ value: n, label: n })), []);
 
@@ -92,6 +98,7 @@ export default function TdsPayment() {
 
     try {
       // 1. Create TDS Entry
+      const branchId = readActiveBranchId() || undefined;
       const tdsEntry = {
         id: crypto.randomUUID(),
         date: date,
@@ -107,6 +114,7 @@ export default function TdsPayment() {
         netAmount: netAmount,
         status: "pending" as const,
         fiscalYearBS: currentFiscalYear?.bsYear || formatADToBS(date).substring(0, 4),
+        branchId,
       };
 
       await addTdsEntry(tdsEntry);
@@ -153,6 +161,7 @@ export default function TdsPayment() {
         lines: lines,
         totalDebit: lines.reduce((sum, l) => sum + (l.debit || 0), 0),
         totalCredit: lines.reduce((sum, l) => sum + (l.credit || 0), 0),
+        branchId,
       } as any);
 
       toast.success("TDS payment recorded successfully!");
@@ -177,6 +186,21 @@ export default function TdsPayment() {
               </p>
             </div>
             <div className="flex items-center gap-2">
+              {branchOptions.length > 0 && (
+                <select
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>
+              )}
               <button
                 type="submit"
                 className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary)] text-white text-[12px] font-medium rounded-md flex items-center gap-1 cursor-pointer"

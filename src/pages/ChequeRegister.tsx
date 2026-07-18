@@ -16,6 +16,7 @@ import {
   Edit,
   Trash2,
 } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const BORDER = "1px solid var(--ds-action-primary)";
 const BG_HEADER = "var(--ds-action-primary)";
@@ -40,6 +41,7 @@ export default function ChequeRegister() {
     saveAuditLog,
   } = useStore();
 
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const [activeTab, setActiveTab] = useState("cheques");
   const [bounceModal, setBounceModal] = useState({ show: false, cheque: null });
   const [bounceForm, setBounceForm] = useState({
@@ -77,6 +79,17 @@ export default function ChequeRegister() {
       (acc) => acc.type === "expense" && acc.name.toLowerCase().includes("bank charges"),
     );
   }, [accounts]);
+
+  const resolveChequeBranch = (cheque) => {
+    if (cheque?.branchId) return cheque.branchId;
+    const related = vouchers.find((v) => v.id === cheque?.voucherId);
+    return related?.branchId;
+  };
+
+  const filteredCheques = useMemo(
+    () => cheques.filter((c) => matchBranch(resolveChequeBranch(c))),
+    [cheques, vouchers, matchBranch, branchFilter],
+  );
 
   // Handle bounce modal open
   const openBounceModal = (cheque) => {
@@ -277,7 +290,7 @@ export default function ChequeRegister() {
 
   // Calculate bounce tracker data
   const bounceTrackerData = useMemo(() => {
-    const bouncedCheques = cheques.filter((c) => c.status === "bounced");
+    const bouncedCheques = filteredCheques.filter((c) => c.status === "bounced");
     const bounceLogs = [];
 
     for (const cheque of bouncedCheques) {
@@ -297,7 +310,7 @@ export default function ChequeRegister() {
     }
 
     return bounceLogs;
-  }, [cheques, vouchers, parties]);
+  }, [filteredCheques, vouchers, parties]);
 
   // Calculate summary
   const bounceSummary = useMemo(() => {
@@ -755,7 +768,7 @@ export default function ChequeRegister() {
             </tr>
           </thead>
           <tbody>
-            {cheques.map((cheque, idx) => {
+            {filteredCheques.map((cheque, idx) => {
               const relatedVoucher = vouchers.find((v) => v.id === cheque.voucherId);
               const party = parties.find((p) => p.id === relatedVoucher?.partyId);
 
@@ -809,7 +822,24 @@ export default function ChequeRegister() {
 
   return (
     <div>
-      <h1 className="mb-4 text-[16px] font-semibold text-[var(--ds-text-strong)]">Cheque register</h1>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-[16px] font-semibold text-[var(--ds-text-strong)]">Cheque register</h1>
+        {branchOptions.length > 0 && (
+          <select
+            value={branchFilter}
+            onChange={(e) => setBranchFilter(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            aria-label="Branch"
+          >
+            <option value="all">All branches</option>
+            {branchOptions.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name || b.code || b.id}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
 
       {/* Tab Navigation */}
       <div className="mb-5 flex gap-1 border-b border-[var(--ds-border-default)]">

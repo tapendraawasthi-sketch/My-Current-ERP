@@ -1,0 +1,169 @@
+{
+  "$defs": {
+    "ContractStatus": {
+      "enum": [
+        "READY",
+        "PARTIAL",
+        "FAILED",
+        "NOT_RUN"
+      ],
+      "title": "ContractStatus",
+      "type": "string"
+    },
+    "EvidenceReferenceV1": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "source_span": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourceSpanV1"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "evidence_id"
+      ],
+      "title": "EvidenceReferenceV1",
+      "type": "object"
+    },
+    "SourceSpanV1": {
+      "additionalProperties": false,
+      "description": "Offsets are Unicode code-point indices unless offset_unit says otherwise.",
+      "properties": {
+        "end_offset": {
+          "minimum": 0,
+          "title": "End Offset",
+          "type": "integer"
+        },
+        "offset_unit": {
+          "default": "UNICODE_CODE_POINT",
+          "title": "Offset Unit",
+          "type": "string"
+        },
+        "original_text": {
+          "title": "Original Text",
+          "type": "string"
+        },
+        "source_message_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Message Id"
+        },
+        "start_offset": {
+          "minimum": 0,
+          "title": "Start Offset",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "start_offset",
+        "end_offset",
+        "original_text"
+      ],
+      "title": "SourceSpanV1",
+      "type": "object"
+    }
+  },
+  "$id": "https://mokxya.local/contracts/v1/IntentCandidateV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "classifier_version": {
+      "default": "none",
+      "title": "Classifier Version",
+      "type": "string"
+    },
+    "domain": {
+      "default": "unknown",
+      "title": "Domain",
+      "type": "string"
+    },
+    "evidence_refs": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/EvidenceReferenceV1"
+      },
+      "title": "Evidence Refs",
+      "type": "array"
+    },
+    "evidence_spans": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/SourceSpanV1"
+      },
+      "title": "Evidence Spans",
+      "type": "array"
+    },
+    "intent_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Intent Id",
+      "type": "string"
+    },
+    "missing_context": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Missing Context",
+      "type": "array"
+    },
+    "out_of_distribution_score": {
+      "default": 0.0,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Out Of Distribution Score",
+      "type": "number"
+    },
+    "required_capability": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Required Capability"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "score": {
+      "default": 0.0,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Score",
+      "type": "number"
+    },
+    "status": {
+      "$ref": "#/$defs/ContractStatus",
+      "default": "NOT_RUN"
+    }
+  },
+  "required": [
+    "intent_id"
+  ],
+  "title": "IntentCandidateV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

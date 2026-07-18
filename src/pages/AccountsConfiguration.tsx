@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 const inputCls =
-  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full";
+  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full";
 const labelCls = "text-[11px] font-medium text-gray-600 block mb-1";
 
 const AccountsConfiguration: React.FC = () => {
@@ -96,7 +96,7 @@ const AccountsConfiguration: React.FC = () => {
           <div className="flex items-center gap-3 pt-2">
             <button
               onClick={handleSave}
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
+              className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md"
             >
               Save Settings
             </button>

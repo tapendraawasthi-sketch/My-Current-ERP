@@ -17,6 +17,8 @@ import {
   CheckCircle,
   Tag,
 } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 function money(v: number): string {
   const abs = Math.abs(Number(v || 0));
@@ -49,11 +51,11 @@ const tableHeadClass =
 const tableCellClass = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 
 const primaryBtn =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-sm";
 const outlineBtn =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5";
 const inputClass =
-  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-shadow";
+  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] transition-shadow";
 
 export function getPriceForItemAndParty(
   itemId: string,
@@ -188,6 +190,7 @@ export default function PriceListMaster() {
     currentFiscalYear = {},
     currentUser = {},
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [activeTab, setActiveTab] = useState("Price Levels");
   const [priceLevels, setPriceLevels] = useState([]);
@@ -249,6 +252,23 @@ export default function PriceListMaster() {
       .then(setPartyPriceLevels);
   }, []);
 
+  const filteredPriceLevels = useMemo(
+    () => priceLevels.filter((l) => matchBranch((l as any).branchId)),
+    [priceLevels, branchFilter],
+  );
+  const filteredPriceLists = useMemo(
+    () => priceLists.filter((pl) => matchBranch((pl as any).branchId)),
+    [priceLists, branchFilter],
+  );
+  const filteredPartyPriceLevels = useMemo(
+    () => partyPriceLevels.filter((p) => matchBranch((p as any).branchId)),
+    [partyPriceLevels, branchFilter],
+  );
+  const filteredParties = useMemo(
+    () => (parties || []).filter((p) => matchBranch((p as any).branchId)),
+    [parties, branchFilter],
+  );
+
   function openLevel(level?: any) {
     setEditingLevel(level || null);
     setLevelForm(
@@ -271,7 +291,12 @@ export default function PriceListMaster() {
     const db = getDB();
     const id = editingLevel?.id || generateId();
     let next = priceLevels.map((l) => (levelForm.isDefault ? { ...l, isDefault: false } : l));
-    const row = { id, ...levelForm, code: levelForm.code.toUpperCase() };
+    const row = {
+      id,
+      ...levelForm,
+      code: levelForm.code.toUpperCase(),
+      branchId: editingLevel?.branchId || readActiveBranchId() || undefined,
+    };
     await db
       .table("priceLevels")
       .put(row)
@@ -405,6 +430,7 @@ export default function PriceListMaster() {
       id,
       updatedBy: currentUser?.name || "",
       updatedAt: new Date().toISOString(),
+      branchId: editingList?.branchId || selectedList?.branchId || readActiveBranchId() || undefined,
     };
     await getDB()
       .table("priceLists")
@@ -434,6 +460,7 @@ export default function PriceListMaster() {
       effectiveFrom: todayISO(),
       effectiveTo: "",
       status: "Inactive",
+      branchId: pl.branchId || readActiveBranchId() || undefined,
     };
     getDB()
       .table("priceLists")
@@ -445,11 +472,13 @@ export default function PriceListMaster() {
 
   async function assignPartyLevel() {
     if (!assignPartyId) return toast.error("Select party");
+    const existing = partyPriceLevels.find((x) => x.partyId === assignPartyId);
     const row = {
-      id: generateId(),
+      id: existing?.id || generateId(),
       partyId: assignPartyId,
       priceLevelId: assignLevelId,
       assignedAt: new Date().toISOString(),
+      branchId: existing?.branchId || readActiveBranchId() || undefined,
     };
     await getDB()
       .table("partyPriceLevel")
@@ -461,7 +490,9 @@ export default function PriceListMaster() {
 
   async function assignGroup() {
     const affected = parties.filter(
-      (p) => String(p.type || "").toLowerCase() === assignType.toLowerCase(),
+      (p) =>
+        matchBranch((p as any).branchId) &&
+        String(p.type || "").toLowerCase() === assignType.toLowerCase(),
     );
     if (!affected.length) return toast.error("No parties found for selected type");
     if (!confirm(`Assign price level to ${affected.length} parties?`)) return;
@@ -471,6 +502,7 @@ export default function PriceListMaster() {
       partyId: p.id,
       priceLevelId: assignLevelId,
       assignedAt: new Date().toISOString(),
+      branchId: (p as any).branchId || readActiveBranchId() || undefined,
     }));
     for (const row of rows)
       await db
@@ -486,6 +518,7 @@ export default function PriceListMaster() {
   const selectedItemHistory = useMemo(() => {
     if (!selectedItemId) return [];
     return priceLists
+      .filter((pl) => matchBranch((pl as any).branchId))
       .flatMap((pl) =>
         (pl.items || [])
           .filter((i) => i.itemId === selectedItemId)
@@ -501,19 +534,20 @@ export default function PriceListMaster() {
           })),
       )
       .sort((a, b) => new Date(b.effectiveDate).getTime() - new Date(a.effectiveDate).getTime());
-  }, [selectedItemId, priceLists, priceLevels]);
+  }, [selectedItemId, priceLists, priceLevels, branchFilter]);
 
   const activePrices = useMemo(() => {
     if (!selectedItemId) return [];
-    return priceLevels.map((level) => {
+    return filteredPriceLevels.map((level) => {
       const active = priceLists
+        .filter((pl) => matchBranch((pl as any).branchId))
         .filter((pl) => pl.priceLevelId === level.id && getStatus(pl) === "Active")
         .sort((a, b) => new Date(b.effectiveFrom).getTime() - new Date(a.effectiveFrom).getTime())
         .find((pl) => (pl.items || []).some((i) => i.itemId === selectedItemId));
       const line = active?.items?.find((i) => i.itemId === selectedItemId);
       return { level, list: active, line };
     });
-  }, [selectedItemId, priceLevels, priceLists]);
+  }, [selectedItemId, filteredPriceLevels, priceLists, branchFilter]);
 
   const tabs = [
     { id: "Price Levels", icon: <Settings size={14} /> },
@@ -527,12 +561,27 @@ export default function PriceListMaster() {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-            <Tag size={18} className="text-[#1557b0]" /> Price List Master
+            <Tag size={18} className="text-[var(--ds-action-primary)]" /> Price List Master
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Manage price levels, effective lists, and customer assignments
           </p>
         </div>
+        {branchOptions.length > 0 && (
+          <select
+            value={branchFilter}
+            onChange={(e) => setBranchFilter(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            aria-label="Branch"
+          >
+            <option value="all">All branches</option>
+            {branchOptions.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name || b.code || b.id}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       <div className="flex gap-2 mb-4 border-b border-gray-200 pb-2">
@@ -542,7 +591,7 @@ export default function PriceListMaster() {
             onClick={() => setActiveTab(t.id)}
             className={`px-4 py-2 text-[12px] rounded-t-md font-medium flex items-center gap-1.5 transition-colors ${
               activeTab === t.id
-                ? "bg-white text-[#1557b0] border-t border-l border-r border-gray-200 shadow-[0_-2px_0_0_#1557b0]"
+                ? "bg-white text-[var(--ds-action-primary)] border-t border-l border-r border-gray-200 shadow-[0_-2px_0_0_var(--ds-action-primary)]"
                 : "text-gray-600 hover:bg-gray-100 hover:text-gray-800"
             }`}
           >
@@ -571,7 +620,7 @@ export default function PriceListMaster() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {priceLevels.map((l) => (
+                {filteredPriceLevels.map((l) => (
                   <tr key={l.id} className="bg-white hover:bg-gray-50">
                     <td className={`${tableCellClass} font-medium`}>{l.name}</td>
                     <td className={`${tableCellClass} font-mono text-gray-500`}>{l.code}</td>
@@ -589,7 +638,7 @@ export default function PriceListMaster() {
                       <div className="flex items-center gap-3">
                         <button
                           onClick={() => openLevel(l)}
-                          className="text-gray-500 hover:text-[#1557b0]"
+                          className="text-gray-500 hover:text-[var(--ds-action-primary)]"
                           title="Edit"
                         >
                           <Edit2 size={14} />
@@ -639,7 +688,7 @@ export default function PriceListMaster() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {priceLists.map((pl) => (
+                {filteredPriceLists.map((pl) => (
                   <tr key={pl.id} className="bg-white hover:bg-gray-50">
                     <td className={`${tableCellClass} font-medium`}>{pl.name}</td>
                     <td className={tableCellClass}>
@@ -660,13 +709,13 @@ export default function PriceListMaster() {
                     <td className={tableCellClass}>
                       <div className="flex items-center gap-3">
                         <button
-                          className="text-[11px] font-medium text-[#1557b0] hover:underline"
+                          className="text-[11px] font-medium text-[var(--ds-action-primary)] hover:underline"
                           onClick={() => openPriceList(pl)}
                         >
                           View / Edit
                         </button>
                         <button
-                          className="text-gray-500 hover:text-[#1557b0]"
+                          className="text-gray-500 hover:text-[var(--ds-action-primary)]"
                           onClick={() => clonePriceList(pl)}
                           title="Clone"
                         >
@@ -683,7 +732,7 @@ export default function PriceListMaster() {
                     </td>
                   </tr>
                 ))}
-                {!priceLists.length && (
+                {!filteredPriceLists.length && (
                   <tr>
                     <td
                       className="text-center p-8 text-gray-500 text-[12px] bg-gray-50/50"
@@ -716,7 +765,7 @@ export default function PriceListMaster() {
                   onChange={(e) => setAssignPartyId(e.target.value)}
                 >
                   <option value="">-- Choose Party --</option>
-                  {parties.map((p) => (
+                  {filteredParties.map((p) => (
                     <option key={p.id} value={p.id}>
                       {p.name}
                     </option>
@@ -813,8 +862,8 @@ export default function PriceListMaster() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {parties.map((p) => {
-                    const row = partyPriceLevels.find((x) => x.partyId === p.id);
+                  {filteredParties.map((p) => {
+                    const row = filteredPartyPriceLevels.find((x) => x.partyId === p.id);
                     return (
                       <tr key={p.id} className="bg-white hover:bg-gray-50">
                         <td className={`${tableCellClass} font-medium`}>{p.name}</td>
@@ -827,7 +876,7 @@ export default function PriceListMaster() {
                           </span>
                         </td>
                         <td className={tableCellClass}>
-                          <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded text-[10px] font-semibold uppercase">
+                          <span className="px-2 py-0.5 bg-[var(--ds-status-info-surface)] text-[var(--ds-status-info)] border border-[var(--ds-status-info)]/30 rounded text-[10px] font-semibold uppercase">
                             {priceLevels.find((l) => l.id === row?.priceLevelId)?.name ||
                               "Retail / MRP"}
                           </span>
@@ -841,7 +890,7 @@ export default function PriceListMaster() {
                         </td>
                         <td className={tableCellClass}>
                           <button
-                            className="text-[11px] text-[#1557b0] hover:underline"
+                            className="text-[11px] text-[var(--ds-action-primary)] hover:underline"
                             onClick={() => {
                               setAssignPartyId(p.id);
                               setAssignLevelId(row?.priceLevelId || "pl-1");
@@ -853,7 +902,7 @@ export default function PriceListMaster() {
                       </tr>
                     );
                   })}
-                  {!parties.length && (
+                  {!filteredParties.length && (
                     <tr>
                       <td
                         colSpan={6}
@@ -1045,7 +1094,7 @@ export default function PriceListMaster() {
               id="isDefaultLevel"
               checked={levelForm.isDefault}
               onChange={(e) => setLevelForm({ ...levelForm, isDefault: e.target.checked })}
-              className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+              className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
             />
             <label
               htmlFor="isDefaultLevel"
@@ -1158,7 +1207,7 @@ export default function PriceListMaster() {
                 onChange={(e) => setCopySourceId(e.target.value)}
               >
                 <option value="">-- Copy From List --</option>
-                {priceLists
+                {filteredPriceLists
                   .filter((p) => p.id !== listForm.id)
                   .map((p) => (
                     <option key={p.id} value={p.id}>
@@ -1224,7 +1273,7 @@ export default function PriceListMaster() {
                         <label className="flex gap-1.5 items-center cursor-pointer">
                           <input
                             type="checkbox"
-                            className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                            className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                             checked={line.hasSlabs}
                             onChange={(e) =>
                               updateItemLine(idx, {
@@ -1237,7 +1286,7 @@ export default function PriceListMaster() {
                         </label>
                         {line.hasSlabs && (
                           <button
-                            className="text-[10px] text-[#1557b0] hover:underline font-medium ml-5"
+                            className="text-[10px] text-[var(--ds-action-primary)] hover:underline font-medium ml-5"
                             onClick={() => addSlab(idx)}
                           >
                             + Add Slab
@@ -1248,7 +1297,7 @@ export default function PriceListMaster() {
                   </tr>
                   {line.hasSlabs &&
                     (line.slabs || []).map((s, si) => (
-                      <tr key={si} className="bg-blue-50/40 border-l-2 border-l-[#1557b0]">
+                      <tr key={si} className="bg-blue-50/40 border-l-2 border-l-[var(--ds-action-primary)]">
                         <td className={tableCellClass} colSpan={2}>
                           <div className="flex justify-end pr-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
                             Slab {si + 1}

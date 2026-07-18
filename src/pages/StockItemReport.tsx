@@ -7,12 +7,14 @@ import ReportShell from "../components/reporting/ReportShell";
 import ReportGrid from "../components/reporting/ReportGrid";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 import { useScreenF12 } from "../hooks/useF12Config";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const StockItemReport: React.FC = () => {
   // Register this screen with F12 system
   const getConfig = useScreenF12("stock-item-report");
 
   const { items, stockMovements, warehouses, companySettings, currentFiscalYear } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchMovement } = useBranchFilter();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState("");
   const [startDate, setStartDate] = useState(currentFiscalYear?.startDate || "");
@@ -28,6 +30,7 @@ const StockItemReport: React.FC = () => {
   const [pendingEnd, setPendingEnd] = useState(endDate);
   const [pendingSelectedWarehouseId, setPendingSelectedWarehouseId] = useState(selectedWarehouseId);
   const [pendingValuationMethod, setPendingValuationMethod] = useState(valuationMethod);
+  const [pendingBranchFilter, setPendingBranchFilter] = useState(branchFilter);
 
   const applyOptions = () => {
     setSelectedItemId(pendingSelectedItemId);
@@ -35,6 +38,7 @@ const StockItemReport: React.FC = () => {
     setEndDate(pendingEnd);
     setSelectedWarehouseId(pendingSelectedWarehouseId);
     setValuationMethod(pendingValuationMethod);
+    setBranchFilter(pendingBranchFilter);
     setOptionsOpen(false);
   };
 
@@ -76,7 +80,11 @@ const StockItemReport: React.FC = () => {
 
     // Filter movements for this item and date range
     let filteredMovements = (stockMovements || []).filter(
-      (m) => m.itemId === selectedItemId && m.date >= startDate && m.date <= endDate,
+      (m) =>
+        m.itemId === selectedItemId &&
+        m.date >= startDate &&
+        m.date <= endDate &&
+        matchMovement(m),
     );
 
     // Apply warehouse filter if specified
@@ -151,7 +159,16 @@ const StockItemReport: React.FC = () => {
       rows: result,
       summary,
     };
-  }, [selectedItemId, stockMovements, items, startDate, endDate, selectedWarehouseId]);
+  }, [
+    selectedItemId,
+    stockMovements,
+    items,
+    startDate,
+    endDate,
+    selectedWarehouseId,
+    matchMovement,
+    branchFilter,
+  ]);
 
   // Determine if negative stock warning is needed
   const hasNegativeStock = reportData.summary.closingQty < 0;
@@ -214,17 +231,18 @@ const StockItemReport: React.FC = () => {
         setPendingEnd(endDate);
         setPendingSelectedWarehouseId(selectedWarehouseId);
         setPendingValuationMethod(valuationMethod);
+        setPendingBranchFilter(branchFilter);
         setOptionsOpen(true);
       }}
       actionBarButtons={[{ label: "Print" }, { label: "Export" }]}
       toolbarLeft={
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
             Item:
             <select
               value={selectedItemId}
               onChange={(e) => setSelectedItemId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-[180px]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[180px]"
             >
               {(items || []).map((item) => (
                 <option key={item.id} value={item.id}>
@@ -240,7 +258,7 @@ const StockItemReport: React.FC = () => {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -250,16 +268,32 @@ const StockItemReport: React.FC = () => {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
+
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[150px]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
 
           <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5 ml-1">
             Whouse:
             <select
               value={selectedWarehouseId}
               onChange={(e) => setSelectedWarehouseId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-[150px]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[150px]"
             >
               {allWarehouses.map((warehouse) => (
                 <option key={warehouse.id} value={warehouse.id}>
@@ -298,7 +332,7 @@ const StockItemReport: React.FC = () => {
           <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
             Total Inward Qty
           </div>
-          <div className="text-[14px] font-mono font-semibold text-[#1557b0]">
+          <div className="text-[14px] font-mono font-semibold text-[var(--ds-action-primary)]">
             {formatNumber(reportData.summary.totalInwardQty)}
           </div>
         </div>
@@ -364,7 +398,7 @@ const StockItemReport: React.FC = () => {
             <select
               value={pendingSelectedItemId}
               onChange={(e) => setPendingSelectedItemId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               {(items || []).map((item) => (
                 <option key={item.id} value={item.id}>
@@ -380,7 +414,7 @@ const StockItemReport: React.FC = () => {
               type="date"
               value={pendingStart}
               onChange={(e) => setPendingStart(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -390,16 +424,35 @@ const StockItemReport: React.FC = () => {
               type="date"
               value={pendingEnd}
               onChange={(e) => setPendingEnd(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
+
+          {branchOptions.length > 0 && (
+            <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
+              Branch
+              <select
+                value={pendingBranchFilter}
+                onChange={(e) => setPendingBranchFilter(e.target.value)}
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
 
           <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
             Warehouse
             <select
               value={pendingSelectedWarehouseId}
               onChange={(e) => setPendingSelectedWarehouseId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               {allWarehouses.map((warehouse) => (
                 <option key={warehouse.id} value={warehouse.id}>
@@ -416,7 +469,7 @@ const StockItemReport: React.FC = () => {
               onChange={(e) =>
                 setPendingValuationMethod(e.target.value as "weighted-average" | "fifo")
               }
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               <option value="weighted-average">Weighted Average</option>
               <option value="fifo">FIFO</option>

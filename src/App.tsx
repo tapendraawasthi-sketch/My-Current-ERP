@@ -11,6 +11,8 @@ import Units from "./pages/Units";
 import CostCenters from "./pages/CostCenters";
 import Parties from "./pages/Parties";
 import StockBook from "./pages/StockBook";
+import ItemMaster from "./pages/ItemMaster";
+import POSBilling from "./pages/POSBilling";
 import LedgerMaster from "./pages/LedgerMaster";
 import PurchaseVoucher from "./pages/PurchaseVoucher";
 import PaymentVoucher from "./pages/PaymentVoucher";
@@ -20,8 +22,6 @@ import DeliveryChallan from "./pages/DeliveryChallan";
 import GoodsReceiptNote from "./pages/GoodsReceiptNote";
 import StockTransfer from "./pages/StockTransfer";
 import Quotation from "./pages/Quotation";
-import SalesOrder from "./pages/SalesOrder";
-import PurchaseOrder from "./pages/PurchaseOrder";
 import BalanceSheet from "./pages/BalanceSheet";
 import ProfitLoss from "./pages/ProfitLoss";
 import TrialBalance from "./pages/TrialBalance";
@@ -42,10 +42,8 @@ import UnitConversionMaster from "./pages/UnitConversionMaster";
 import JournalEntries from "./pages/JournalEntries";
 import DebitNoteVoucher from "./pages/DebitNoteVoucher";
 import CreditNoteVoucher from "./pages/CreditNoteVoucher";
-import PhysicalStockPage from "./pages/PhysicalStockPage";
 import CashFlowStatement from "./pages/CashFlowStatement";
 import RatioAnalysis from "./pages/RatioAnalysis";
-import FixedAssetRegister from "./pages/FixedAssetRegister";
 import PDCRegister from "./pages/PDCRegister";
 import EmployeeLoans from "./pages/EmployeeLoans";
 import NotesToAccounts from "./pages/NotesToAccounts";
@@ -56,6 +54,7 @@ import BatchManagement from "./pages/BatchManagement";
 import PDCManagement from "./pages/PDCManagement";
 import Payroll from "./pages/Payroll";
 import PayrollRun from "./pages/PayrollRun";
+import F11CompanyFeatures from "./pages/F11CompanyFeatures";
 import BudgetVsActual from "./pages/BudgetVsActual";
 import RecurringVouchers from "./pages/RecurringVouchers";
 import FinancialDashboard from "./pages/FinancialDashboard";
@@ -117,12 +116,18 @@ import CommunicationHub from "./pages/CommunicationHub";
 import ChequeRegister from "./pages/ChequeRegister";
 import BankStatementImport from "./pages/BankStatementImport";
 import ChequePrinting from "./pages/ChequePrinting";
+import PrintSettings from "./pages/PrintSettings";
 import MaterialIssuedPage from "./pages/MaterialIssuedPage";
 import MaterialReceivedPage from "./pages/MaterialReceivedPage";
 import UnassemblePage from "./pages/UnassemblePage";
 import ReversingJournals from "./pages/ReversingJournals";
 import RejectionVoucherPage from "./pages/RejectionVoucherPage";
 import JobWorkRegister from "./pages/JobWorkRegister";
+import BranchMaster from "./pages/BranchMaster";
+import BranchReports from "./pages/BranchReports";
+import StatutoryCompliance from "./pages/StatutoryCompliance";
+import AdvancedTaxCompliance from "./pages/AdvancedTaxCompliance";
+import ScenarioMaster from "./pages/ScenarioMaster";
 
 type AppProps = {
   onMounted?: () => void;
@@ -241,6 +246,7 @@ const App: React.FC<AppProps> = ({ onMounted }) => {
         return <Parties />;
       case "item-master":
       case "items":
+        return <ItemMaster />;
       case "stock-book":
         return <StockBook />;
       case "item-groups":
@@ -519,6 +525,10 @@ const App: React.FC<AppProps> = ({ onMounted }) => {
         return <BankStatementImport />;
       case "cheque-printing":
         return <ChequePrinting />;
+      case "print-settings":
+      case "print-config":
+      case "print-configuration":
+        return <PrintSettings />;
       case "reversing-journals":
       case "reversing-journal":
         return <ReversingJournals />;
@@ -530,6 +540,20 @@ const App: React.FC<AppProps> = ({ onMounted }) => {
       case "job-work-out-order":
       case "job-work-in-order":
         return <JobWorkRegister defaultTab={currentPage === "job-work-in-order" ? "in" : "out"} />;
+      case "branch-master":
+      case "branches":
+        return <BranchMaster />;
+      case "branch-reports":
+      case "branch-report":
+        return <BranchReports />;
+      case "statutory-compliance":
+        return <StatutoryCompliance />;
+      case "advanced-tax":
+      case "advanced-tax-compliance":
+        return <AdvancedTaxCompliance />;
+      case "scenario-master":
+      case "scenarios":
+        return <ScenarioMaster />;
       case "attendance-voucher":
       case "attendance-entry":
         return <PayrollRun />;
@@ -544,10 +568,15 @@ const App: React.FC<AppProps> = ({ onMounted }) => {
       case "day-book":
         return <DayBook />;
       case "outstanding-receivables":
+      case "outstanding-management":
+      case "debtors":
         return <OutstandingReceivables />;
       case "outstanding-payables":
+      case "creditors":
         return <OutstandingPayables />;
       case "aging-report":
+      case "debtors-aging":
+      case "creditors-aging":
         return <AgingReport />;
       case "interest-calculation":
         return <InterestCalculation />;
@@ -599,7 +628,11 @@ const App: React.FC<AppProps> = ({ onMounted }) => {
         return <InventoryConfiguration />;
       case "payroll":
       case "salary-process":
+      case "payroll-processing":
         return <Payroll />;
+      case "f11-company-features":
+      case "company-features":
+        return <F11CompanyFeatures />;
       case "tds-report":
       case "tds-reports":
         return <TdsReport />;
@@ -634,7 +667,14 @@ const App: React.FC<AppProps> = ({ onMounted }) => {
       case "data-export-import":
         return <DataExportImport />;
       case "bank-reconciliation":
+      case "smart-bank-reconciliation":
+      case "auto-bank-reconciliation":
+      case "banking-hub":
         return <BankReconciliation />;
+      case "pos":
+      case "pos-mode":
+      case "pos-billing":
+        return <POSBilling />;
       case "employees":
       case "employee-master":
         return <EmployeeMaster />;

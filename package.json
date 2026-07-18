@@ -48,6 +48,7 @@
     "build:ca-knowledge": "node scripts/build-conceptual-framework-knowledge.mjs",
     "test:accounting": "vitest run src/__tests__/accounting/",
     "test:orbix-contract": "vitest run src/__tests__/orbix/",
+    "test:mai04-eval": "cd erp_bot && python -m pytest tests/oip/evaluation -q && python -m src.oip.evaluation.cli validate --manifest ../evals/mai04/manifests/MAI_04_FROZEN_V1.manifest.json",
     "test:e2e:orbix-connected": "playwright test e2e/orbix-connected.spec.ts",
     "check:no-emitted-js": "node scripts/check-no-emitted-js.mjs",
     "ui:audit": "node scripts/ui-audit.mjs",

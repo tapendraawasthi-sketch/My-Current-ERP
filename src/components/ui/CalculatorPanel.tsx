@@ -255,10 +255,10 @@ export const CalculatorPanel: React.FC<{
                 const isClear = ["C", "AC", "CE"].includes(btn);
 
                 let btnClass =
-                  "h-7 rounded-[3px] text-[13px] font-semibold flex items-center justify-center transition-colors border outline-none focus:ring-2 focus:ring-[#1557b0]/20 ";
+                  "h-7 rounded-[3px] text-[13px] font-semibold flex items-center justify-center transition-colors border outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 ";
 
                 if (btn === "=") {
-                  btnClass += "bg-[#1557b0] text-white hover:bg-[#0f4a96] border-[#0f4a96]";
+                  btnClass += "bg-[var(--ds-action-primary)] text-white hover:bg-[var(--ds-action-primary-hover)] border-[var(--ds-action-primary-hover)]";
                 } else if (isOperator) {
                   btnClass += "bg-gray-100 border-gray-200 text-gray-800 hover:bg-gray-200";
                 } else if (isMemory) {
@@ -306,7 +306,7 @@ export const CalculatorPanel: React.FC<{
               <div
                 key={index}
                 onClick={() => handleHistoryItemClick(item)}
-                className="text-[11px] text-gray-700 py-1.5 border-b border-gray-50 cursor-pointer hover:bg-gray-50 hover:text-[#1557b0] truncate transition-colors"
+                className="text-[11px] text-gray-700 py-1.5 border-b border-gray-50 cursor-pointer hover:bg-gray-50 hover:text-[var(--ds-action-primary)] truncate transition-colors"
                 title={item}
               >
                 {item}
@@ -337,7 +337,7 @@ export const CalculatorPanel: React.FC<{
               type="text"
               value={odbcPort}
               onChange={(e) => setOdbcPort(e.target.value)}
-              className="h-7 px-2 text-[12px] border border-gray-300 rounded-[3px] bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0] w-[60px]"
+              className="h-7 px-2 text-[12px] border border-gray-300 rounded-[3px] bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)] w-[60px]"
             />
           </div>
         </div>
@@ -384,7 +384,7 @@ export const CalculatorPanel: React.FC<{
             if (e.key === "Enter") handleExecuteCommand();
           }}
           placeholder="e.g. goto ledger 'ABC Traders' or calc 50000 * 0.18"
-          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] focus:border-[#1557b0] w-full"
+          className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] focus:border-[var(--ds-action-primary)] w-full"
         />
         <div className="text-[10px] text-gray-500 bg-gray-50 p-1.5 rounded border border-gray-100 font-mono">
           goto ledger 'Name' | goto voucher SI-001 | calc expr | report balance-sheet
@@ -392,7 +392,7 @@ export const CalculatorPanel: React.FC<{
         <div className="flex justify-end mt-1">
           <button
             onClick={handleExecuteCommand}
-            className="h-7 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[11px] font-medium rounded-[3px] transition-colors shadow-sm"
+            className="h-7 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[11px] font-medium rounded-[3px] transition-colors shadow-sm"
           >
             Execute Command
           </button>
@@ -418,7 +418,7 @@ export const CalculatorPanel: React.FC<{
             onClick={() => setActiveTab("calculator")}
             className={`px-3 py-1 rounded-t-[4px] text-[11px] font-medium transition-colors border-b-2 ${
               activeTab === "calculator"
-                ? "bg-white text-gray-800 border-[#1557b0]"
+                ? "bg-white text-gray-800 border-[var(--ds-action-primary)]"
                 : "text-gray-300 hover:text-white hover:bg-[#273148] border-transparent"
             }`}
           >
@@ -428,7 +428,7 @@ export const CalculatorPanel: React.FC<{
             onClick={() => setActiveTab("odbc")}
             className={`px-3 py-1 rounded-t-[4px] text-[11px] font-medium transition-colors border-b-2 ${
               activeTab === "odbc"
-                ? "bg-white text-gray-800 border-[#1557b0]"
+                ? "bg-white text-gray-800 border-[var(--ds-action-primary)]"
                 : "text-gray-300 hover:text-white hover:bg-[#273148] border-transparent"
             }`}
           >

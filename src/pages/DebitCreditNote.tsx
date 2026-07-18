@@ -38,6 +38,8 @@ import { formatNumber } from "../lib/utils";
 import { ADToBSString } from "../lib/nepaliDate";
 import { VoucherType, VoucherStatus, PartyType } from "../lib/types";
 import toast from "@/lib/appToast";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 type NoteKind = "debit" | "credit";
 type Mode = "list" | "new" | "view";
@@ -47,6 +49,7 @@ const round2 = (n: number) => Math.round((Number(n) || 0) * 100) / 100;
 const DebitCreditNote: React.FC = () => {
   const { vouchers, parties, accounts, companySettings, currentFiscalYear, addVoucher } =
     useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const symbol = companySettings?.currencySymbol || "Rs.";
 
   const [kind, setKind] = useState<NoteKind>("credit");
@@ -84,9 +87,9 @@ const DebitCreditNote: React.FC = () => {
   const list = useMemo(
     () =>
       vouchers
-        .filter((v: any) => v.type === targetType)
+        .filter((v: any) => v.type === targetType && matchBranch(v.branchId))
         .sort((a: any, b: any) => (b.date || "").localeCompare(a.date || "")),
-    [vouchers, targetType],
+    [vouchers, targetType, matchBranch, branchFilter],
   );
 
   const reset = () => {
@@ -142,6 +145,7 @@ const DebitCreditNote: React.FC = () => {
         status: VoucherStatus.POSTED,
         referenceNo: "",
         partyId,
+        branchId: readActiveBranchId() || undefined,
       } as any);
       toast.success(`${kind === "debit" ? "Debit" : "Credit"} note posted.`);
       reset();
@@ -177,17 +181,17 @@ const DebitCreditNote: React.FC = () => {
           title="Debit / Credit Notes"
           subtitle="Adjustments to customer and vendor balances"
         />
-        <div className="flex items-center justify-between border-b border-[#9DC07A] pb-4">
+        <div className="flex items-center justify-between border-b border-[var(--ds-border-default)] pb-4">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMode("list")}
-              className="p-2 rounded-md hover:bg-[#EBF5E2] text-[#000000]"
+              className="p-2 rounded-md hover:bg-[var(--ds-surface-muted)] text-[#000000]"
             >
               <ArrowLeft className="h-4 w-4" />
             </button>
             <div>
               <h2 className="text-lg font-bold text-[#000000] tracking-tight flex items-center gap-2">
-                <FileText className="h-5 w-5 text-[#1557b0]" />
+                <FileText className="h-5 w-5 text-[var(--ds-action-primary)]" />
                 NEW {kind === "debit" ? "DEBIT" : "CREDIT"} NOTE
               </h2>
               <p className="text-[11px] text-[#000000] mt-0.5 uppercase tracking-wider font-bold">
@@ -246,7 +250,7 @@ const DebitCreditNote: React.FC = () => {
 
           {/* Journal preview */}
           {amount > 0 && partyAccountId && adjAccountId && (
-            <div className="mt-4 rounded-md border border-[#9DC07A] bg-[#EBF5E2] p-3">
+            <div className="mt-4 rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface-muted)] p-3">
               <p className="text-[10px] font-bold uppercase tracking-wider text-[#000000] mb-2">
                 Journal preview
               </p>
@@ -287,7 +291,7 @@ const DebitCreditNote: React.FC = () => {
           )}
         </Card>
 
-        <div className="flex items-center justify-end gap-2 border-t border-[#9DC07A] pt-4">
+        <div className="flex items-center justify-end gap-2 border-t border-[var(--ds-border-default)] pt-4">
           <Button variant="outline" size="sm" onClick={() => setMode("list")}>
             Cancel (Esc)
           </Button>
@@ -351,22 +355,37 @@ const DebitCreditNote: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-5 animate-fadeIn text-xs">
-      <div className="flex items-center justify-between border-b border-[#9DC07A] pb-4">
+      <div className="flex items-center justify-between border-b border-[var(--ds-border-default)] pb-4">
         <div>
           <h2 className="text-lg font-bold text-[#000000] tracking-tight flex items-center gap-2">
-            <Receipt className="h-5 w-5 text-[#1557b0]" /> Debit / Credit Notes
+            <Receipt className="h-5 w-5 text-[var(--ds-action-primary)]" /> Debit / Credit Notes
           </h2>
           <p className="text-[11px] text-[#000000] mt-0.5 uppercase tracking-wider font-bold">
             Non-inventory price adjustments
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <div className="inline-flex rounded-md border border-[#9DC07A] overflow-hidden">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+          <div className="inline-flex rounded-md border border-[var(--ds-border-default)] overflow-hidden">
             {(["credit", "debit"] as NoteKind[]).map((k) => (
               <button
                 key={k}
                 onClick={() => setKind(k)}
-                className={`px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider ${kind === k ? "bg-[#3D6B25] text-white" : "bg-white text-[#000000] hover:bg-[#EBF5E2]"}`}
+                className={`px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider ${kind === k ? "bg-[var(--ds-action-primary-hover)] text-white" : "bg-white text-[#000000] hover:bg-[var(--ds-surface-muted)]"}`}
               >
                 {k === "credit" ? "Credit Notes" : "Debit Notes"}
               </button>

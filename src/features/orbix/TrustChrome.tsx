@@ -19,6 +19,20 @@ const TRUST_COPY: Record<OrbixTrustLabel, string> = {
   unavailable: "Unavailable — ERP remains usable",
 };
 
+/** Left accent: visual trust state without inventing money/sync facts. */
+const TRUST_ACCENT: Record<OrbixTrustLabel, string> = {
+  explanation: "border-l-[var(--ds-intelligence)]",
+  clarification: "border-l-[var(--ds-status-info)]",
+  preview: "border-l-[var(--ds-action-primary)]",
+  posted_local: "border-l-[var(--ds-status-success)]",
+  pending_sync: "border-l-[var(--ds-status-warning)]",
+  synced: "border-l-[var(--ds-status-success)]",
+  conflict: "border-l-[var(--ds-status-danger)]",
+  failed: "border-l-[var(--ds-status-danger)]",
+  restricted: "border-l-[var(--ds-status-neutral)]",
+  unavailable: "border-l-[var(--ds-status-warning)]",
+};
+
 export function TrustChrome({
   response,
   children,
@@ -29,7 +43,7 @@ export function TrustChrome({
   const meta = getPresentationMeta(response);
   return (
     <section
-      className="rounded-[var(--ds-radius-lg)] border border-[var(--ds-border-default)] bg-[var(--ds-surface)]"
+      className={`rounded-[var(--ds-radius-lg)] border border-[var(--ds-border-default)] border-l-4 bg-[var(--ds-surface)] ${TRUST_ACCENT[meta.trust]}`}
       data-testid={`orbix-presentation-${meta.responseType}`}
       data-trust={meta.trust}
       data-allows-confirm={meta.allowsConfirm ? "true" : "false"}

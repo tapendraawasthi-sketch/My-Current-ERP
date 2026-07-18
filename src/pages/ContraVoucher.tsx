@@ -28,6 +28,8 @@ import toast from "@/lib/appToast";
 import { postContraTransaction } from "@/domains/settlement/postContraTransaction";
 import { generateId } from "@/lib/db";
 import type { ContraType } from "@/domains/settlement/types";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const round2 = (n: number) => Math.round((Number(n) || 0) * 100) / 100;
 
@@ -79,6 +81,7 @@ const KindBadge = ({ kind }: { kind: "Cash" | "Bank" | "" }) => {
 const ContraVoucher: React.FC = () => {
   const { accounts, vouchers, companySettings, currentFiscalYear, currentUser, addVoucher } =
     useStore();
+  const { branchFilter, setBranchFilter, branchOptions } = useBranchFilter();
 
   const symbol = companySettings?.currencySymbol || "Rs.";
 
@@ -199,6 +202,7 @@ const ContraVoucher: React.FC = () => {
       status,
       totalDebit: amt,
       totalCredit: amt,
+      branchId: readActiveBranchId() || undefined,
     };
   };
 
@@ -370,6 +374,21 @@ const ContraVoucher: React.FC = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {branchOptions.length > 0 && (
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            )}
             <span className="rounded px-2 py-0.5 text-[12px] font-semibold uppercase bg-blue-100 text-blue-700">
               Contra
             </span>

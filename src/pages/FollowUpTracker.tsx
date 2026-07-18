@@ -20,12 +20,14 @@ import {
   Home,
 } from "lucide-react";
 import { formatADToBS } from "../lib/nepaliDate";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const BORDER = "1px solid #000";
 const BG = "#E4F1D9";
-const BG_CARD = "#EBF5E2";
-const BG_HEADER = "#D4EABD";
-const BG_DEEP = "#C9DEB5";
+const BG_CARD = "var(--ds-surface-muted)";
+const BG_HEADER = "var(--ds-surface-hover)";
+const BG_DEEP = "var(--ds-surface-muted)";
 const OVERDUE_BG = "#fee2e2";
 const DUE_TODAY_BG = "#fef9c3";
 const RESOLVED_BG = "#dcfce7";
@@ -38,6 +40,7 @@ function money(v) {
 
 export default function FollowUpTracker() {
   const { parties, invoices, vouchers, companySettings, currentUser } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
 
   const [activeTab, setActiveTab] = useState("tasks");
   const [followUpNotes, setFollowUpNotes] = useState([]);
@@ -70,9 +73,19 @@ export default function FollowUpTracker() {
   // Get today's date
   const today = new Date().toISOString().split("T")[0];
 
+  const scopedNotes = useMemo(
+    () => followUpNotes.filter((note) => matchBranch(note.branchId)),
+    [followUpNotes, matchBranch, branchFilter],
+  );
+
+  const scopedInvoices = useMemo(
+    () => invoices.filter((inv) => matchBranch(inv.branchId)),
+    [invoices, matchBranch, branchFilter],
+  );
+
   // Compute today's tasks
   const todayTasks = useMemo(() => {
-    const notes = followUpNotes.filter((note) => !note.isResolved);
+    const notes = scopedNotes.filter((note) => !note.isResolved);
     const overdue = notes.filter((note) => note.followUpDate < today);
     const dueToday = notes.filter((note) => note.followUpDate === today);
     const upcoming = notes.filter(
@@ -82,13 +95,13 @@ export default function FollowUpTracker() {
     );
 
     return { overdue, dueToday, upcoming };
-  }, [followUpNotes, today]);
+  }, [scopedNotes, today]);
 
   // Compute outstanding parties
   const outstandingParties = useMemo(() => {
     const partyOutstandings = {};
 
-    invoices.forEach((inv) => {
+    scopedInvoices.forEach((inv) => {
       if (inv.paymentStatus === "unpaid" || inv.paymentStatus === "partial") {
         if (!partyOutstandings[inv.partyId]) {
           partyOutstandings[inv.partyId] = {
@@ -109,7 +122,7 @@ export default function FollowUpTracker() {
     });
 
     // Find last follow-up for each party
-    followUpNotes.forEach((note) => {
+    scopedNotes.forEach((note) => {
       const existing = partyOutstandings[note.partyId];
       if (
         existing &&
@@ -138,10 +151,10 @@ export default function FollowUpTracker() {
           p.party.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           p.party.code.toLowerCase().includes(searchTerm.toLowerCase()),
       );
-  }, [parties, invoices, followUpNotes, searchTerm]);
+  }, [parties, scopedInvoices, scopedNotes, searchTerm]);
 
   const performanceData = useMemo(() => {
-    let filteredNotes = followUpNotes;
+    let filteredNotes = scopedNotes;
     if (fromDate) {
       filteredNotes = filteredNotes.filter((n) => n.createdAt >= fromDate);
     }
@@ -166,7 +179,7 @@ export default function FollowUpTracker() {
       amountsCollected,
       collectionEfficiency,
     };
-  }, [followUpNotes, outstandingParties, fromDate, toDate, userFilter]);
+  }, [scopedNotes, outstandingParties, fromDate, toDate, userFilter]);
 
   // Handle adding a follow-up note
   const handleAddNote = async () => {
@@ -196,6 +209,7 @@ export default function FollowUpTracker() {
         isResolved: false,
         createdBy: currentUser?.name || "System",
         createdAt: new Date().toISOString(),
+        branchId: readActiveBranchId() || undefined,
       };
 
       await db.followUpNotes.put(noteData);
@@ -328,7 +342,7 @@ export default function FollowUpTracker() {
                     <button
                       onClick={() => handleFollowUpDone(note.id)}
                       style={{
-                        backgroundColor: "#1557b0",
+                        backgroundColor: "var(--ds-action-primary)",
                         color: "white",
                         border: BORDER,
                         padding: "4px 8px",
@@ -433,7 +447,7 @@ export default function FollowUpTracker() {
                     <button
                       onClick={() => handleFollowUpDone(note.id)}
                       style={{
-                        backgroundColor: "#1557b0",
+                        backgroundColor: "var(--ds-action-primary)",
                         color: "white",
                         border: BORDER,
                         padding: "4px 8px",
@@ -537,7 +551,7 @@ export default function FollowUpTracker() {
                     <button
                       onClick={() => handleFollowUpDone(note.id)}
                       style={{
-                        backgroundColor: "#1557b0",
+                        backgroundColor: "var(--ds-action-primary)",
                         color: "white",
                         border: BORDER,
                         padding: "4px 8px",
@@ -597,7 +611,7 @@ export default function FollowUpTracker() {
           <button
             onClick={() => {}}
             style={{
-              backgroundColor: "#1557b0",
+              backgroundColor: "var(--ds-action-primary)",
               color: "white",
               border: BORDER,
               padding: "4px 8px",
@@ -713,7 +727,7 @@ export default function FollowUpTracker() {
             </h3>
 
             <div style={{ maxHeight: "400px", overflowY: "auto", marginBottom: "20px" }}>
-              {followUpNotes
+              {scopedNotes
                 .filter((note) => note.partyId === selectedParty.id)
                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                 .map((note) => (
@@ -1025,7 +1039,7 @@ export default function FollowUpTracker() {
                 <button
                   onClick={handleAddNote}
                   style={{
-                    backgroundColor: "#1557b0",
+                    backgroundColor: "var(--ds-action-primary)",
                     color: "white",
                     border: BORDER,
                     padding: "8px 16px",
@@ -1146,7 +1160,7 @@ export default function FollowUpTracker() {
             </thead>
             <tbody>
               {outstandingParties.map((p) => {
-                const partyNotes = followUpNotes.filter((n) => n.partyId === p.party.id);
+                const partyNotes = scopedNotes.filter((n) => n.partyId === p.party.id);
                 const lastNote = partyNotes.length > 0 ? partyNotes[partyNotes.length - 1] : null;
 
                 // Determine status
@@ -1225,17 +1239,42 @@ export default function FollowUpTracker() {
 
   return (
     <div style={{ backgroundColor: BG, minHeight: "100vh" }}>
-      <h1
+      <div
         style={{
-          fontSize: "24px",
-          fontWeight: "bold",
-          color: "#000000",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
           padding: "20px",
-          marginBottom: "0",
+          gap: "12px",
+          flexWrap: "wrap",
         }}
       >
-        Follow-Up Tracker
-      </h1>
+        <h1
+          style={{
+            fontSize: "24px",
+            fontWeight: "bold",
+            color: "#000000",
+            marginBottom: "0",
+          }}
+        >
+          Follow-Up Tracker
+        </h1>
+        {branchOptions.length > 0 && (
+          <select
+            value={branchFilter}
+            onChange={(e) => setBranchFilter(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white"
+            aria-label="Branch"
+          >
+            <option value="all">All branches</option>
+            {branchOptions.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name || b.code || b.id}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
 
       {/* Tab Navigation */}
       <div

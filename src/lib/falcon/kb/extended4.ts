@@ -391,7 +391,7 @@ export const KB_EXTENDED4: KBEntry[] = [
     category: "general",
     q: "How does sidebar active item highlighting work?",
     keywords: ["sidebar active item css", "menu highlight"],
-    a: "Blue background (#1557b0), white text, left 3px accent bar via .sidebar-active-item::before. Smooth transition.",
+    a: "Blue background (var(--ds-action-primary)), white text, left 3px accent bar via .sidebar-active-item::before. Smooth transition.",
   },
   {
     id: "ext-594",

@@ -35,6 +35,8 @@ import {
   formatVoucherDisplayDate,
 } from "../lib/voucherUtils";
 import toast from "@/lib/appToast";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const DebitNoteVoucher: React.FC = () => {
   const {
@@ -47,6 +49,7 @@ const DebitNoteVoucher: React.FC = () => {
     currentFiscalYear,
     addVoucher,
   } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [date, setDate] = useState<string>(() => new Date().toISOString().split("T")[0]);
   const [effectiveDate, setEffectiveDate] = useState<string>(
@@ -90,13 +93,16 @@ const DebitNoteVoucher: React.FC = () => {
   const originalInvoiceOptions = useMemo(() => {
     return invoices
       .filter(
-        (inv) => inv.type === VoucherType.PURCHASE_INVOICE && (inv.partyId === partyId || !partyId),
+        (inv) =>
+          inv.type === VoucherType.PURCHASE_INVOICE &&
+          (inv.partyId === partyId || !partyId) &&
+          matchBranch((inv as { branchId?: string }).branchId),
       )
       .map((inv) => ({
         value: inv.id,
         label: `${inv.invoiceNo || inv.voucherNo} — Rs.${formatNumber(inv.grandTotal || 0)}`,
       }));
-  }, [invoices, partyId]);
+  }, [invoices, partyId, matchBranch, branchFilter]);
 
   const itemOptions = useMemo(() => {
     return items
@@ -383,6 +389,7 @@ const DebitNoteVoucher: React.FC = () => {
         grandTotal: grandTotal,
         paidAmount: 0,
         paymentStatus: "debited",
+        branchId: readActiveBranchId() || undefined,
         createdAt: new Date().toISOString(),
       };
 
@@ -452,6 +459,21 @@ const DebitNoteVoucher: React.FC = () => {
             onChange={(e) => setReferenceNo(e.target.value)}
             className="w-32"
           />
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         <Button

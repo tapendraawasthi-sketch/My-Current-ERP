@@ -1,0 +1,9 @@
+{
+  "resource_id": "protected_prefixes",
+  "version": "mai-05.1.0",
+  "review_status": "ENGINEERING_REVIEWED",
+  "entries": [
+    "pan", "vat", "invoice", "bill", "voucher", "account code", "fy",
+    "मिति", "बिल नं", "बिल नं.", "भौचर नं", "भौचर नं.", "प्यान", "भ्याट"
+  ]
+}

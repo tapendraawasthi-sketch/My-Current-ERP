@@ -36,7 +36,9 @@ export type OrbixResponseType =
   | "provider_offline"
   | "backend_unavailable"
   | "general_error"
-  | "unknown";
+  | "unknown"
+  /** MAI-02: future/unknown response_type — never render as accounting card */
+  | "unsupported_response";
 
 export type OrbixActionType =
   | "switch_mode"
@@ -267,6 +269,10 @@ export type OrbixResponse =
       payload: ClarificationPayload;
     })
   | (OrbixResponseBase & {
+      response_type: "transaction_draft";
+      payload: Record<string, unknown>;
+    })
+  | (OrbixResponseBase & {
       response_type: "transaction_preview";
       payload: TransactionPreviewPayload;
     })
@@ -277,15 +283,27 @@ export type OrbixResponse =
   | (OrbixResponseBase & { response_type: "journal_preview"; payload: JournalPreviewPayload })
   | (OrbixResponseBase & { response_type: "report_result"; payload: ReportResultPayload })
   | (OrbixResponseBase & { response_type: "report_updated"; payload: ReportResultPayload })
+  | (OrbixResponseBase & {
+      response_type: "posting_started";
+      payload: PostingProgressPayload;
+    })
   | (OrbixResponseBase & { response_type: "posting_progress"; payload: PostingProgressPayload })
   | (OrbixResponseBase & { response_type: "posting_completed"; payload: PostingCompletedPayload })
   | (OrbixResponseBase & { response_type: "posting_failed"; payload: PostingFailedPayload })
+  | (OrbixResponseBase & {
+      response_type: "cancellation_completed";
+      payload: NormalAnswerPayload;
+    })
   | (OrbixResponseBase & { response_type: "provider_offline"; payload: ProviderOfflinePayload })
   | (OrbixResponseBase & { response_type: "backend_unavailable"; payload: ProviderOfflinePayload })
   | (OrbixResponseBase & { response_type: "permission_denied"; payload: GeneralErrorPayload })
   | (OrbixResponseBase & { response_type: "validation_error"; payload: GeneralErrorPayload })
   | (OrbixResponseBase & { response_type: "general_error"; payload: GeneralErrorPayload })
-  | (OrbixResponseBase & { response_type: "unknown"; payload: Record<string, unknown> });
+  | (OrbixResponseBase & { response_type: "unknown"; payload: Record<string, unknown> })
+  | (OrbixResponseBase & {
+      response_type: "unsupported_response";
+      payload: { received_type: string; safe_message: string };
+    });
 
 export type OrbixResponseParseResult =
   | { ok: true; response: OrbixResponse; fromFallback?: boolean }

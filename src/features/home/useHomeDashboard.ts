@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useStore } from "@/store/useStore";
 import { usePermissionsStore } from "@/store/permissionsStore";
+import { useBranchFilter } from "@/hooks/useBranchFilter";
 import { buildHomeViewModel, type HomeAdapterInput } from "./dashboardAdapter";
 import type { HomeViewModel } from "./types";
 
@@ -19,6 +20,7 @@ export function useHomeDashboard() {
   const vouchers = useStore((s) => s.vouchers) ?? [];
   const setCurrentPage = useStore((s) => s.setCurrentPage);
   const permissions = usePermissionsStore((s) => s.permissions);
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [model, setModel] = useState<HomeViewModel | null>(null);
   const [loading, setLoading] = useState(true);
@@ -34,6 +36,12 @@ export function useHomeDashboard() {
       setError(null);
       try {
         const online = typeof navigator !== "undefined" ? navigator.onLine : true;
+        const scopedInvoices = ((invoices as HomeAdapterInput["invoices"]) || []).filter((i) =>
+          matchBranch((i as { branchId?: string | null }).branchId),
+        );
+        const scopedVouchers = ((vouchers as HomeAdapterInput["vouchers"]) || []).filter((v) =>
+          matchBranch((v as { branchId?: string | null }).branchId),
+        );
         const vm = await buildHomeViewModel({
           companyId: companyIdFromSettings(companySettings as HomeAdapterInput["companySettings"]),
           companySettings: companySettings as HomeAdapterInput["companySettings"],
@@ -43,8 +51,8 @@ export function useHomeDashboard() {
           accounts: (accounts as HomeAdapterInput["accounts"]) || [],
           parties: (parties as unknown[]) || [],
           items: (items as HomeAdapterInput["items"]) || [],
-          invoices: (invoices as HomeAdapterInput["invoices"]) || [],
-          vouchers: (vouchers as HomeAdapterInput["vouchers"]) || [],
+          invoices: scopedInvoices,
+          vouchers: scopedVouchers,
           online,
           refreshing: Boolean(opts?.soft),
         });
@@ -71,6 +79,8 @@ export function useHomeDashboard() {
       items,
       invoices,
       vouchers,
+      matchBranch,
+      branchFilter,
     ],
   );
 
@@ -83,7 +93,7 @@ export function useHomeDashboard() {
 
   useEffect(() => {
     void load();
-  }, [load, role, userId, companyId, fyId]);
+  }, [load, role, userId, companyId, fyId, branchFilter]);
 
   return {
     model,
@@ -93,5 +103,8 @@ export function useHomeDashboard() {
     refresh: () => load({ soft: true }),
     retry: () => load(),
     setCurrentPage,
+    branchFilter,
+    setBranchFilter,
+    branchOptions,
   };
 }

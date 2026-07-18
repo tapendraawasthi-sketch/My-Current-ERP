@@ -6,12 +6,14 @@ import { VoucherStatus } from "../lib/types";
 import ReportShell from "../components/reporting/ReportShell";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 import { useScreenF12 } from "../hooks/useF12Config";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const JournalRegister: React.FC = () => {
   // Register this screen with F12 system
   const getConfig = useScreenF12("journal-register");
 
   const { vouchers, accounts, companySettings, currentFiscalYear } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [startDate, setStartDate] = useState(currentFiscalYear?.startDate || "");
   const [endDate, setEndDate] = useState(currentFiscalYear?.endDate || "");
@@ -24,12 +26,14 @@ const JournalRegister: React.FC = () => {
   const [pendingEnd, setPendingEnd] = useState(endDate);
   const [pendingShowNarration, setPendingShowNarration] = useState(showNarration);
   const [pendingShowCancelled, setPendingShowCancelled] = useState(showCancelled);
+  const [pendingBranchFilter, setPendingBranchFilter] = useState(branchFilter);
 
   const applyOptions = () => {
     setStartDate(pendingStart);
     setEndDate(pendingEnd);
     setShowNarration(pendingShowNarration);
     setShowCancelled(pendingShowCancelled);
+    setBranchFilter(pendingBranchFilter);
     setOptionsOpen(false);
   };
 
@@ -43,7 +47,8 @@ const JournalRegister: React.FC = () => {
         (v.type === "journal" || v.type === "journal-voucher") &&
         (showCancelled ? true : v.status !== "cancelled") &&
         v.date >= startDate &&
-        v.date <= endDate,
+        v.date <= endDate &&
+        matchBranch(v.branchId),
     );
 
     // Apply search filter
@@ -146,7 +151,17 @@ const JournalRegister: React.FC = () => {
       grandTotalDebit,
       grandTotalCredit,
     };
-  }, [vouchers, accounts, startDate, endDate, showCancelled, showNarration, searchText]);
+  }, [
+    vouchers,
+    accounts,
+    startDate,
+    endDate,
+    showCancelled,
+    showNarration,
+    searchText,
+    matchBranch,
+    branchFilter,
+  ]);
 
   return (
     <ReportShell
@@ -160,6 +175,7 @@ const JournalRegister: React.FC = () => {
         setPendingEnd(endDate);
         setPendingShowNarration(showNarration);
         setPendingShowCancelled(showCancelled);
+        setPendingBranchFilter(branchFilter);
         setOptionsOpen(true);
       }}
       actionBarButtons={[{ label: "Print" }, { label: "Export" }]}
@@ -171,7 +187,7 @@ const JournalRegister: React.FC = () => {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -181,16 +197,32 @@ const JournalRegister: React.FC = () => {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
+
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
 
           <input
             type="text"
             placeholder="Search voucher no, narration, account..."
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-64"
+            className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
           />
         </>
       }
@@ -270,7 +302,7 @@ const JournalRegister: React.FC = () => {
                   </td>
                   <td
                     className="px-3 py-1.5 text-[12px] text-right font-mono"
-                    style={{ color: !isCancelled && row.debit > 0 ? "#1557b0" : "inherit" }}
+                    style={{ color: !isCancelled && row.debit > 0 ? "var(--ds-action-primary)" : "inherit" }}
                   >
                     {row.debit > 0 ? formatNumber(row.debit) : ""}
                   </td>
@@ -331,7 +363,7 @@ const JournalRegister: React.FC = () => {
               type="date"
               value={pendingStart}
               onChange={(e) => setPendingStart(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -341,16 +373,35 @@ const JournalRegister: React.FC = () => {
               type="date"
               value={pendingEnd}
               onChange={(e) => setPendingEnd(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
+
+          {branchOptions.length > 0 && (
+            <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
+              Branch
+              <select
+                value={pendingBranchFilter}
+                onChange={(e) => setPendingBranchFilter(e.target.value)}
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
 
           <label className="flex items-center gap-2 text-[11px] font-medium text-gray-600 cursor-pointer mt-2">
             <input
               type="checkbox"
               checked={pendingShowNarration}
               onChange={(e) => setPendingShowNarration(e.target.checked)}
-              className="w-4 h-4 text-[#1557b0] rounded border-gray-300 focus:ring-[#1557b0]"
+              className="w-4 h-4 text-[var(--ds-action-primary)] rounded border-gray-300 focus:ring-[var(--ds-action-primary)]"
             />
             Show Narration
           </label>
@@ -360,7 +411,7 @@ const JournalRegister: React.FC = () => {
               type="checkbox"
               checked={pendingShowCancelled}
               onChange={(e) => setPendingShowCancelled(e.target.checked)}
-              className="w-4 h-4 text-[#1557b0] rounded border-gray-300 focus:ring-[#1557b0]"
+              className="w-4 h-4 text-[var(--ds-action-primary)] rounded border-gray-300 focus:ring-[var(--ds-action-primary)]"
             />
             Show Cancelled Vouchers
           </label>

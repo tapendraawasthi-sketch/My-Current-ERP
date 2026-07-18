@@ -19,6 +19,7 @@ import toast from "@/lib/appToast";
 import { ReportEmptyState } from "../components/ReportEmptyState";
 import { peekAiInvoiceDraft } from "@/ai/actions/invoiceDraft";
 import { useSutraAiStore } from "@/store/sutraAiStore";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 type TabKey = "sales" | "purchase" | "sales-return" | "purchase-return";
 
@@ -53,6 +54,7 @@ const statusBadge = (status: string) => {
 
 const BillingInvoice: React.FC = () => {
   const { invoices, accounts, parties, companySettings, currentPage, setCurrentPage } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const pendingInvoiceOpen = useSutraAiStore((s) => s.pendingInvoiceOpen);
   const clearPendingInvoiceOpen = useSutraAiStore((s) => s.clearPendingInvoiceOpen);
   const symbol = companySettings?.currencySymbol || "Rs.";
@@ -107,12 +109,13 @@ const BillingInvoice: React.FC = () => {
   const filtered = useMemo(() => {
     return invoices
       .filter((i) => i.type === meta.vt)
+      .filter((i) => matchBranch((i as { branchId?: string }).branchId))
       .filter((i) => !fromDate || i.date >= fromDate)
       .filter((i) => !toDate || i.date <= toDate)
       .filter((i) => !partyId || i.partyId === partyId)
       .filter((i) => paymentFilter === "ALL" || i.paymentStatus === paymentFilter)
       .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
-  }, [invoices, meta.vt, fromDate, toDate, partyId, paymentFilter]);
+  }, [invoices, meta.vt, fromDate, toDate, partyId, paymentFilter, matchBranch, branchFilter]);
 
   const searched = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
@@ -207,10 +210,27 @@ const BillingInvoice: React.FC = () => {
               Manage sales and purchase invoices and returns
             </p>
           </div>
-          <button type="button" className={btnPrimary} onClick={openNew}>
-            <Plus className="h-3.5 w-3.5" />
-            New {meta.label.replace(/s$/, "")}
-          </button>
+          <div className="flex items-center gap-2">
+            {branchOptions.length > 0 && (
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                className={`${inputCls}`}
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            )}
+            <button type="button" className={btnPrimary} onClick={openNew}>
+              <Plus className="h-3.5 w-3.5" />
+              New {meta.label.replace(/s$/, "")}
+            </button>
+          </div>
         </div>
 
         <div className="flex gap-1 mb-3 bg-white border border-gray-200 rounded-md p-1 w-fit flex-wrap">

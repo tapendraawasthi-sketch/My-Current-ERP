@@ -1,0 +1,94 @@
+{
+  "$id": "https://mokxya.local/contracts/v1/ToolObservationV1.json",
+  "additionalProperties": false,
+  "properties": {
+    "error_code": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Error Code"
+    },
+    "observed_at": {
+      "format": "date-time",
+      "title": "Observed At",
+      "type": "string"
+    },
+    "safe_user_message": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Safe User Message"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "snapshot_revision": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Snapshot Revision"
+    },
+    "source_references": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Source References",
+      "type": "array"
+    },
+    "status": {
+      "default": "observed",
+      "enum": [
+        "observed",
+        "failed"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "success": {
+      "title": "Success",
+      "type": "boolean"
+    },
+    "tool_call_id": {
+      "minLength": 1,
+      "title": "Tool Call Id",
+      "type": "string"
+    },
+    "tool_version": {
+      "default": "1.0.0",
+      "title": "Tool Version",
+      "type": "string"
+    },
+    "typed_result": {
+      "additionalProperties": true,
+      "title": "Typed Result",
+      "type": "object"
+    }
+  },
+  "required": [
+    "tool_call_id",
+    "success"
+  ],
+  "title": "ToolObservationV1",
+  "type": "object",
+  "x-mai-schema-version": "1.0.0"
+}

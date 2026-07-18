@@ -90,7 +90,7 @@ function JournalTable({
         <div
           className={`mx-2.5 mb-2.5 mt-2 flex items-center gap-1.5 rounded-[var(--ds-radius-md)] border px-2.5 py-1.5 text-[12px] font-medium ${
             balance.balanced
-              ? "border-green-200 bg-[var(--ds-status-success-surface)] text-[var(--ds-status-success)]"
+              ? "border-[var(--ds-status-success)]/30 bg-[var(--ds-status-success-surface)] text-[var(--ds-status-success)]"
               : "border-amber-200 bg-[var(--ds-status-warning-surface)] text-[var(--ds-status-warning)]"
           }`}
         >

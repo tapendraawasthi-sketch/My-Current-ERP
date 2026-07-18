@@ -3,6 +3,8 @@ import toast from "@/lib/appToast";
 import { useStore } from "../store/useStore";
 import type { DBWarehouse, DBStockTransferLine } from "../lib/db";
 import { computeStockPosition } from "../lib/godownStockUtils";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 function money(value: number) {
   return Number(value || 0).toLocaleString("en-NP", {
@@ -14,6 +16,7 @@ function money(value: number) {
 const StockTransfer: React.FC = () => {
   const { warehouses, items, stockMovements, saveStockTransfer, getNextTransferNo, currentUser } =
     useStore() as any;
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [transferNo, setTransferNo] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
@@ -39,8 +42,14 @@ const StockTransfer: React.FC = () => {
     getNextTransferNo?.().then(setTransferNo);
   }, [getNextTransferNo]);
 
-  const fromWarehouse = warehouses?.find((w: DBWarehouse) => w.id === fromWarehouseId);
-  const toWarehouse = warehouses?.find((w: DBWarehouse) => w.id === toWarehouseId);
+  const fromWarehouses = useMemo(
+    () => (warehouses || []).filter((w: DBWarehouse) => matchBranch((w as any).branchId)),
+    [warehouses, matchBranch, branchFilter],
+  );
+  const toWarehouses = warehouses || [];
+
+  const fromWarehouse = fromWarehouses.find((w: DBWarehouse) => w.id === fromWarehouseId);
+  const toWarehouse = toWarehouses.find((w: DBWarehouse) => w.id === toWarehouseId);
 
   const isInterBranch =
     fromWarehouse &&
@@ -155,6 +164,7 @@ const StockTransfer: React.FC = () => {
       toBranchId: toWarehouse.branchId,
       toBranchName: toWarehouse.branchName,
       isInterBranch: !!isInterBranch,
+      branchId: fromWarehouse.branchId || readActiveBranchId() || undefined,
       lines,
       totalQty,
       totalAmount,
@@ -177,7 +187,22 @@ const StockTransfer: React.FC = () => {
           <p className="text-[12px] text-gray-500">Inter-godown / inter-branch material transfer</p>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
           <button onClick={print} className="h-8 px-3 border rounded-md text-[12px]">
             Print
           </button>
@@ -210,14 +235,14 @@ const StockTransfer: React.FC = () => {
           label="From Godown"
           value={fromWarehouseId}
           onChange={setFromWarehouseId}
-          warehouses={warehouses || []}
+          warehouses={fromWarehouses}
         />
 
         <SelectWarehouse
           label="To Godown"
           value={toWarehouseId}
           onChange={setToWarehouseId}
-          warehouses={warehouses || []}
+          warehouses={toWarehouses}
         />
 
         <div className="md:col-span-2">

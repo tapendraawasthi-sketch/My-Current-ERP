@@ -6,12 +6,13 @@ import toast from "@/lib/appToast";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const BORDER = "1px solid #000";
 const BG = "#E4F1D9";
-const BG_CARD = "#EBF5E2";
-const BG_HEADER = "#D4EABD";
-const BG_DEEP = "#C9DEB5";
+const BG_CARD = "var(--ds-surface-muted)";
+const BG_HEADER = "var(--ds-surface-hover)";
+const BG_DEEP = "var(--ds-surface-muted)";
 
 function money(v) {
   const abs = Math.abs(Number(v || 0));
@@ -45,11 +46,17 @@ const TAX_SLABS = [
 
 export default function Form25B() {
   const { fiscalYears, employees, companySettings } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [selectedFiscalYear, setSelectedFiscalYear] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [certificates, setCertificates] = useState([]);
   const [payrollRuns, setPayrollRuns] = useState([]);
   const [status, setStatus] = useState("");
+
+  const scopedEmployees = useMemo(
+    () => (employees || []).filter((e) => matchBranch((e as { branchId?: string }).branchId)),
+    [employees, matchBranch, branchFilter],
+  );
 
   // Load payroll runs
   useEffect(() => {
@@ -628,6 +635,30 @@ export default function Form25B() {
           <label
             style={{ display: "block", marginBottom: "5px", fontWeight: "bold", fontSize: "12px" }}
           >
+            Branch
+          </label>
+          {branchOptions.length > 0 ? (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              style={{ width: "100%", padding: "8px", border: BORDER, borderRadius: "4px" }}
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <div style={{ fontSize: "12px", color: "#666" }}>No branches configured</div>
+          )}
+        </div>
+
+        <div>
+          <label
+            style={{ display: "block", marginBottom: "5px", fontWeight: "bold", fontSize: "12px" }}
+          >
             Employee
           </label>
           <select
@@ -636,7 +667,7 @@ export default function Form25B() {
             style={{ width: "100%", padding: "8px", border: BORDER, borderRadius: "4px" }}
           >
             <option value="">Select Employee</option>
-            {employees
+            {scopedEmployees
               .filter((e) => e.isActive)
               .map((emp) => (
                 <option key={emp.id} value={emp.id}>
@@ -649,7 +680,7 @@ export default function Form25B() {
         <button
           onClick={handleGenerate}
           style={{
-            backgroundColor: "#1557b0",
+            backgroundColor: "var(--ds-action-primary)",
             color: "white",
             border: BORDER,
             padding: "10px",

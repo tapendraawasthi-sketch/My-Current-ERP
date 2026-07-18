@@ -59,7 +59,7 @@ export default function PLToolbar({
   const btn =
     "inline-flex items-center gap-1.5 h-8 px-3 rounded-md text-[12px] font-medium transition-colors";
   const btnSec = `${btn} bg-white border border-gray-300 text-gray-700 hover:bg-gray-50`;
-  const btnPri = `${btn} bg-[#1557b0] text-white hover:bg-[#0f4a96]`;
+  const btnPri = `${btn} bg-[var(--ds-action-primary)] text-white hover:bg-[var(--ds-action-primary-hover)]`;
 
   return (
     <div className="erp-report-toolbar flex items-center justify-between px-4 py-2 bg-white border-b border-gray-300 no-print shrink-0 flex-wrap gap-2">
@@ -72,7 +72,7 @@ export default function PLToolbar({
           </button>
         )}
         <div className="flex items-center gap-2">
-          <BarChart2 className="h-4 w-4 text-[#1557b0]" />
+          <BarChart2 className="h-4 w-4 text-[var(--ds-action-primary)]" />
           <div>
             <p className="text-[13px] font-semibold text-gray-800">Profit & Loss Account</p>
             <p className="text-[10px] text-gray-500">

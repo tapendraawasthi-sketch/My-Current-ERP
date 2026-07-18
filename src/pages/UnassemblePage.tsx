@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useStore } from "../store";
 import { UnassembleEntry, StockJournalItem } from "../lib/types";
 import SearchableTable from "../components/ui/SearchableTable";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const emptyItem = (): StockJournalItem => ({
   id: crypto.randomUUID(),
@@ -14,6 +16,7 @@ const emptyItem = (): StockJournalItem => ({
 
 export default function UnassemblePage() {
   const { unassembles, addUnassemble } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [showForm, setShowForm] = useState(false);
   const [entry, setEntry] = useState<UnassembleEntry>({
     id: crypto.randomUUID(),
@@ -25,6 +28,11 @@ export default function UnassemblePage() {
     status: "DRAFT",
     createdAt: new Date().toISOString(),
   });
+
+  const scopedUnassembles = useMemo(
+    () => (unassembles || []).filter((u: any) => matchBranch(u.branchId)),
+    [unassembles, matchBranch, branchFilter],
+  );
 
   const addRow = (key: "finishedGoods" | "components") => {
     setEntry((e) => ({ ...e, [key]: [...e[key], emptyItem()] }));
@@ -44,7 +52,11 @@ export default function UnassemblePage() {
   };
 
   const handleSave = () => {
-    addUnassemble({ ...entry, status: "POSTED" });
+    addUnassemble({
+      ...entry,
+      status: "POSTED",
+      branchId: readActiveBranchId() || undefined,
+    } as any);
     setShowForm(false);
     setEntry({
       id: crypto.randomUUID(),
@@ -65,18 +77,35 @@ export default function UnassemblePage() {
           <h2 className="text-[15px] font-semibold text-gray-800">Unassemble</h2>
           <p className="text-[12px] text-gray-500 mt-0.5">Break finished item into parts.</p>
         </div>
-        <button
-          className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md"
-          onClick={() => setShowForm(true)}
-        >
-          New Entry
-        </button>
+        <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+          <button
+            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md"
+            onClick={() => setShowForm(true)}
+          >
+            New Entry
+          </button>
+        </div>
       </div>
 
       {!showForm && (
         <div className="table-card">
           <SearchableTable
-            data={unassembles || []}
+            data={scopedUnassembles}
             searchFields={["date", "refNo", "status"]}
             rowKey="id"
             columns={[

@@ -11,7 +11,7 @@ const NiosLauncher: React.FC = () => {
     <button
       onClick={togglePanel}
       className={`fixed bottom-4 right-4 z-[9997] h-10 px-3 flex items-center gap-2 rounded-md shadow-md text-[12px] font-medium ${
-        isOpen ? "bg-[#0f4a96] text-white" : "bg-[#1557b0] hover:bg-[#0f4a96] text-white"
+        isOpen ? "bg-[var(--ds-action-primary-hover)] text-white" : "bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white"
       }`}
       title="NIOS Intelligence Platform"
       aria-label="Open NIOS"

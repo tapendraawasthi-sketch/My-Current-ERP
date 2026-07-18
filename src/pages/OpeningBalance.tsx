@@ -26,6 +26,8 @@ import {
   XCircle,
   X,
 } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId, stampMovementBranch } from "../lib/activeBranch";
 
 const money = (v: any) =>
   `Rs. ${Number(v || 0).toLocaleString("en-IN", {
@@ -34,13 +36,13 @@ const money = (v: any) =>
   })}`;
 
 const btn =
-  "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-[#1557b0] text-white text-[12px] font-medium hover:bg-[#0f4a96] disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
+  "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-[var(--ds-action-primary)] text-white text-[12px] font-medium hover:bg-[var(--ds-action-primary-hover)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 const btn2 =
   "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-white border border-gray-300 text-gray-700 text-[12px] font-medium hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 const btnDanger =
   "inline-flex items-center justify-center gap-2 h-8 px-3 rounded-md bg-red-600 text-white text-[12px] font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors";
 const input =
-  "w-full h-8 px-2.5 rounded-md border border-gray-300 bg-white text-[12px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "w-full h-8 px-2.5 rounded-md border border-gray-300 bg-white text-[12px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const card = "bg-white border border-gray-200 rounded-lg shadow-sm p-4 text-gray-800";
 const th =
   "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide bg-[#f5f6fa] border-b border-gray-200";
@@ -179,6 +181,8 @@ const Modal = ({ open, title, children, onClose }: any) => {
 
 export default function OpeningBalance() {
   const store = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, matchMovement, branchOptions } =
+    useBranchFilter();
   const currentUser = store.currentUser || store.user || {};
   const storeAccounts = store.accounts || [];
   const storeItems = store.items || [];
@@ -298,6 +302,22 @@ export default function OpeningBalance() {
     [accounts],
   );
 
+  const scopedLedgerRows = useMemo(
+    () => ledgerRows.filter((r) => matchBranch(r.branchId)),
+    [ledgerRows, matchBranch, branchFilter],
+  );
+  const scopedStockRows = useMemo(
+    () =>
+      stockRows.filter((r) =>
+        matchMovement({ branchId: r.branchId, warehouseId: r.warehouseId }),
+      ),
+    [stockRows, matchMovement, branchFilter],
+  );
+  const scopedBillRows = useMemo(
+    () => billRows.filter((r) => matchBranch(r.branchId)),
+    [billRows, matchBranch, branchFilter],
+  );
+
   const filteredAccounts = useMemo(() => {
     const q = query.trim().toLowerCase();
 
@@ -310,7 +330,7 @@ export default function OpeningBalance() {
   }, [accounts, query, groupFilter]);
 
   const ledgerGridRows = useMemo(() => {
-    const map = Object.fromEntries(ledgerRows.map((r) => [r.accountId, r]));
+    const map = Object.fromEntries(scopedLedgerRows.map((r) => [r.accountId, r]));
 
     return filteredAccounts.map((a) => {
       const r = map[a.id] || {};
@@ -330,20 +350,20 @@ export default function OpeningBalance() {
         source: r.id ? "Entered" : "Blank",
       };
     });
-  }, [filteredAccounts, ledgerRows]);
+  }, [filteredAccounts, scopedLedgerRows]);
 
   const summary = useMemo(() => {
-    const ledgerDr = ledgerRows
+    const ledgerDr = scopedLedgerRows
       .filter((r) => r.drCr === "Dr")
       .reduce((sum, r) => sum + Number(r.value || 0), 0);
-    const ledgerCr = ledgerRows
+    const ledgerCr = scopedLedgerRows
       .filter((r) => r.drCr === "Cr")
       .reduce((sum, r) => sum + Number(r.value || 0), 0);
-    const stockValue = stockRows.reduce((sum, r) => sum + Number(r.value || 0), 0);
-    const billDr = billRows
+    const stockValue = scopedStockRows.reduce((sum, r) => sum + Number(r.value || 0), 0);
+    const billDr = scopedBillRows
       .filter((r) => r.drCr === "Dr")
       .reduce((sum, r) => sum + Number(r.value || 0), 0);
-    const billCr = billRows
+    const billCr = scopedBillRows
       .filter((r) => r.drCr === "Cr")
       .reduce((sum, r) => sum + Number(r.value || 0), 0);
 
@@ -355,11 +375,11 @@ export default function OpeningBalance() {
       billDr,
       billCr,
       billDiff: billDr - billCr,
-      ledgerCount: ledgerRows.length,
-      stockCount: stockRows.length,
-      billCount: billRows.length,
+      ledgerCount: scopedLedgerRows.length,
+      stockCount: scopedStockRows.length,
+      billCount: scopedBillRows.length,
     };
-  }, [ledgerRows, stockRows, billRows]);
+  }, [scopedLedgerRows, scopedStockRows, scopedBillRows]);
 
   const validationIssues = useMemo(() => {
     const issues: any[] = [];
@@ -520,6 +540,7 @@ export default function OpeningBalance() {
         narration: ledgerForm.narration,
         fiscalYearId: storeFiscalYear?.id || "",
         createdAt: selectedRow?.createdAt || nowISO(),
+        branchId: selectedRow?.branchId || readActiveBranchId() || undefined,
       },
       "ledger",
     );
@@ -570,6 +591,7 @@ export default function OpeningBalance() {
         narration: stockForm.narration,
         fiscalYearId: storeFiscalYear?.id || "",
         createdAt: selectedRow?.createdAt || nowISO(),
+        branchId: selectedRow?.branchId || readActiveBranchId() || undefined,
       },
       "stock",
     );
@@ -579,22 +601,26 @@ export default function OpeningBalance() {
       await tablePut(db, "openingStock", [row]);
       await tablePut(db, "openingBalances", [row]);
 
-      const stockMovement = {
-        id: `ob-stock-${row.id}`,
-        date: storeFiscalYear?.startDate || todayISO(),
-        type: "opening",
-        itemId: row.itemId,
-        warehouseId: row.warehouseId,
-        qtyIn: row.qty,
-        qtyOut: 0,
-        qty: row.qty,
-        rate: row.rate,
-        value: row.value,
-        narration: `Opening stock ${row.batchNo ? `Batch ${row.batchNo}` : ""}`,
-        sourceType: "openingBalance",
-        sourceId: row.id,
-        createdAt: nowISO(),
-      };
+      const stockMovement = stampMovementBranch(
+        {
+          id: `ob-stock-${row.id}`,
+          date: storeFiscalYear?.startDate || todayISO(),
+          type: "opening",
+          itemId: row.itemId,
+          warehouseId: row.warehouseId,
+          qtyIn: row.qty,
+          qtyOut: 0,
+          qty: row.qty,
+          rate: row.rate,
+          value: row.value,
+          narration: `Opening stock ${row.batchNo ? `Batch ${row.batchNo}` : ""}`,
+          sourceType: "openingBalance",
+          sourceId: row.id,
+          createdAt: nowISO(),
+          branchId: row.branchId,
+        },
+        warehouses,
+      );
 
       await tablePut(db, "stockMovements", [stockMovement]);
       await tablePut(db, "auditLogs", [
@@ -634,6 +660,7 @@ export default function OpeningBalance() {
         narration: billForm.narration,
         fiscalYearId: storeFiscalYear?.id || "",
         createdAt: selectedRow?.createdAt || nowISO(),
+        branchId: selectedRow?.branchId || readActiveBranchId() || undefined,
       },
       "bill",
     );
@@ -1114,7 +1141,7 @@ export default function OpeningBalance() {
             </p>
             <p className="text-xl font-semibold mt-1">{money(summary.ledgerDr)}</p>
           </div>
-          <ArrowDownToLine className="h-5 w-5 text-[#1557b0]" />
+          <ArrowDownToLine className="h-5 w-5 text-[var(--ds-action-primary)]" />
         </div>
       </div>
 
@@ -1126,7 +1153,7 @@ export default function OpeningBalance() {
             </p>
             <p className="text-xl font-semibold mt-1">{money(summary.ledgerCr)}</p>
           </div>
-          <ArrowUpDown className="h-5 w-5 text-[#1557b0]" />
+          <ArrowUpDown className="h-5 w-5 text-[var(--ds-action-primary)]" />
         </div>
       </div>
 
@@ -1158,7 +1185,7 @@ export default function OpeningBalance() {
             </p>
             <p className="text-xl font-semibold mt-1">{money(summary.stockValue)}</p>
           </div>
-          <Package className="h-5 w-5 text-[#1557b0]" />
+          <Package className="h-5 w-5 text-[var(--ds-action-primary)]" />
         </div>
       </div>
     </div>
@@ -1266,7 +1293,7 @@ export default function OpeningBalance() {
                   <td className={`${td} text-center p-1`}>
                     <div className="inline-flex gap-1 items-center justify-center">
                       <button
-                        className="p-1 rounded text-gray-400 hover:text-[#1557b0] hover:bg-gray-100 transition-colors"
+                        className="p-1 rounded text-gray-400 hover:text-[var(--ds-action-primary)] hover:bg-gray-100 transition-colors"
                         onClick={() => openLedgerModal(r)}
                       >
                         <Calculator className="h-4 w-4" />
@@ -1343,7 +1370,7 @@ export default function OpeningBalance() {
               </tr>
             </thead>
             <tbody>
-              {stockRows.map((r) => (
+              {scopedStockRows.map((r) => (
                 <tr key={r.id} className="border-b border-gray-100 hover:bg-gray-50/50">
                   <td className={`${td} font-medium text-gray-800`}>{itemName(items, r.itemId)}</td>
                   <td className={td}>{warehouseName(warehouses, r.warehouseId)}</td>
@@ -1357,7 +1384,7 @@ export default function OpeningBalance() {
                   <td className={`${td} text-center p-1`}>
                     <div className="inline-flex gap-1 items-center justify-center">
                       <button
-                        className="p-1 rounded text-gray-400 hover:text-[#1557b0] hover:bg-gray-100 transition-colors"
+                        className="p-1 rounded text-gray-400 hover:text-[var(--ds-action-primary)] hover:bg-gray-100 transition-colors"
                         onClick={() => openStockModal(r)}
                       >
                         <Calculator className="h-4 w-4" />
@@ -1429,7 +1456,7 @@ export default function OpeningBalance() {
               </tr>
             </thead>
             <tbody>
-              {billRows.map((r) => (
+              {scopedBillRows.map((r) => (
                 <tr key={r.id} className="border-b border-gray-100 hover:bg-gray-50/50">
                   <td className={`${td} font-medium text-gray-800`}>
                     {accountName(accounts, r.accountId)}
@@ -1453,7 +1480,7 @@ export default function OpeningBalance() {
                   <td className={`${td} text-center p-1`}>
                     <div className="inline-flex gap-1 items-center justify-center">
                       <button
-                        className="p-1 rounded text-gray-400 hover:text-[#1557b0] hover:bg-gray-100 transition-colors"
+                        className="p-1 rounded text-gray-400 hover:text-[var(--ds-action-primary)] hover:bg-gray-100 transition-colors"
                         onClick={() => openBillModal(r)}
                       >
                         <Calculator className="h-4 w-4" />
@@ -1583,13 +1610,30 @@ export default function OpeningBalance() {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-            <BookOpen className="h-4 w-4 text-[#1557b0]" /> Opening Balances
+            <BookOpen className="h-4 w-4 text-[var(--ds-action-primary)]" /> Opening Balances
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Manage ledger, stock, and bill-wise opening balances for the fiscal year.
           </p>
         </div>
-        <div className="flex items-center gap-2">{renderToolbar()}</div>
+        <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+          {renderToolbar()}
+        </div>
       </div>
 
       <div className="flex flex-wrap gap-2 mb-4 border-b border-gray-200 pb-2">
@@ -1604,7 +1648,7 @@ export default function OpeningBalance() {
             onClick={() => setActiveTab(name)}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium transition-colors ${
               activeTab === name
-                ? "bg-[#1557b0] text-white"
+                ? "bg-[var(--ds-action-primary)] text-white"
                 : "bg-white border border-gray-300 text-gray-600 hover:bg-gray-50"
             }`}
           >
@@ -1616,7 +1660,7 @@ export default function OpeningBalance() {
 
       {loading && (
         <div className={`${card} mb-4 flex items-center gap-2 text-[12px] text-gray-600`}>
-          <RefreshCcw className="h-4 w-4 animate-spin text-[#1557b0]" /> Loading opening balances...
+          <RefreshCcw className="h-4 w-4 animate-spin text-[var(--ds-action-primary)]" /> Loading opening balances...
         </div>
       )}
 

@@ -7,12 +7,14 @@ import ReportShell from "../components/reporting/ReportShell";
 import ReportGrid from "../components/reporting/ReportGrid";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 import { useScreenF12 } from "../hooks/useF12Config";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const BatchSummary: React.FC = () => {
   // Register this screen with F12 system
   const getConfig = useScreenF12("batch-summary");
 
-  const { batches, stockMovements, items, companySettings } = useStore();
+  const { batches, items, companySettings } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchMovement } = useBranchFilter();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState("");
   const [showExpired, setShowExpired] = useState(false);
@@ -22,11 +24,13 @@ const BatchSummary: React.FC = () => {
   const [pendingSelectedItemId, setPendingSelectedItemId] = useState(selectedItemId);
   const [pendingShowExpired, setPendingShowExpired] = useState(showExpired);
   const [pendingExpiringWithinDays, setPendingExpiringWithinDays] = useState(expiringWithinDays);
+  const [pendingBranchFilter, setPendingBranchFilter] = useState(branchFilter);
 
   const applyOptions = () => {
     setSelectedItemId(pendingSelectedItemId);
     setShowExpired(pendingShowExpired);
     setExpiringWithinDays(pendingExpiringWithinDays);
+    setBranchFilter(pendingBranchFilter);
     setOptionsOpen(false);
   };
 
@@ -42,7 +46,9 @@ const BatchSummary: React.FC = () => {
   const summaryData = useMemo(() => {
     if (!batches) return { rows: [], hasExpiringSoon: false };
 
-    let filteredBatches = [...batches];
+    let filteredBatches = [...batches].filter((b) =>
+      matchMovement({ warehouseId: b.warehouseId, branchId: (b as any).branchId }),
+    );
 
     if (selectedItemId) {
       filteredBatches = filteredBatches.filter((b) => b.itemId === selectedItemId);
@@ -110,7 +116,7 @@ const BatchSummary: React.FC = () => {
     }
 
     return { rows: result, hasExpiringSoon };
-  }, [batches, items, selectedItemId, showExpired, expiringWithinDays]);
+  }, [batches, items, selectedItemId, showExpired, expiringWithinDays, matchMovement, branchFilter]);
 
   // Get unique items for filter
   const uniqueItems = useMemo(() => {
@@ -172,6 +178,7 @@ const BatchSummary: React.FC = () => {
         setPendingSelectedItemId(selectedItemId);
         setPendingShowExpired(showExpired);
         setPendingExpiringWithinDays(expiringWithinDays);
+        setPendingBranchFilter(branchFilter);
         setOptionsOpen(true);
       }}
       actionBarButtons={[{ label: "Print" }, { label: "Export" }]}
@@ -182,7 +189,7 @@ const BatchSummary: React.FC = () => {
             <select
               value={selectedItemId}
               onChange={(e) => setSelectedItemId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-[180px]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[180px]"
             >
               <option value="">All Items</option>
               {uniqueItems.map((item) => (
@@ -193,6 +200,22 @@ const BatchSummary: React.FC = () => {
             </select>
           </label>
 
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[150px]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
+
           <div className="h-4 w-px bg-gray-300 mx-1"></div>
 
           <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
@@ -202,7 +225,7 @@ const BatchSummary: React.FC = () => {
                 type="number"
                 value={expiringWithinDays}
                 onChange={(e) => setExpiringWithinDays(parseInt(e.target.value) || 30)}
-                className="h-8 pl-2.5 pr-8 text-[12px] font-mono font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-[70px]"
+                className="h-8 pl-2.5 pr-8 text-[12px] font-mono font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-[70px]"
                 min="0"
               />
               <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-gray-400">
@@ -216,7 +239,7 @@ const BatchSummary: React.FC = () => {
               type="checkbox"
               checked={showExpired}
               onChange={(e) => setShowExpired(e.target.checked)}
-              className="w-4 h-4 text-[#1557b0] border-gray-300 rounded focus:ring-[#1557b0]"
+              className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
             />
             Show Expired
           </label>
@@ -283,7 +306,7 @@ const BatchSummary: React.FC = () => {
             <select
               value={pendingSelectedItemId}
               onChange={(e) => setPendingSelectedItemId(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             >
               <option value="">All Items</option>
               {uniqueItems.map((item) => (
@@ -294,13 +317,32 @@ const BatchSummary: React.FC = () => {
             </select>
           </label>
 
+          {branchOptions.length > 0 && (
+            <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
+              Branch
+              <select
+                value={pendingBranchFilter}
+                onChange={(e) => setPendingBranchFilter(e.target.value)}
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+
           <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
             Expiring Within (days)
             <input
               type="number"
               value={pendingExpiringWithinDays}
               onChange={(e) => setPendingExpiringWithinDays(parseInt(e.target.value) || 30)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
               min="0"
             />
           </label>
@@ -310,7 +352,7 @@ const BatchSummary: React.FC = () => {
               type="checkbox"
               checked={pendingShowExpired}
               onChange={(e) => setPendingShowExpired(e.target.checked)}
-              className="w-4 h-4 text-[#1557b0] border-gray-300 rounded focus:ring-[#1557b0]"
+              className="w-4 h-4 text-[var(--ds-action-primary)] border-gray-300 rounded focus:ring-[var(--ds-action-primary)]"
             />
             Show Expired Batches
           </label>

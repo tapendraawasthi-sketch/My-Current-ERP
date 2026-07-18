@@ -127,7 +127,14 @@ export async function computeProfitLoss(options: PLReportOptions): Promise<PLCom
 
   // Filter vouchers to date range & posted status
   const vouchers = allVouchers.filter(
-    (v: any) => v.status === "posted" && v.date >= options.fromDate && v.date <= options.toDate,
+    (v: any) =>
+      v.status === "posted" &&
+      v.date >= options.fromDate &&
+      v.date <= options.toDate &&
+      (!options.branchId ||
+        options.branchId === "all" ||
+        !v.branchId ||
+        v.branchId === options.branchId),
   );
 
   // Also load invoices for sales/purchase data
@@ -137,7 +144,13 @@ export async function computeProfitLoss(options: PLReportOptions): Promise<PLCom
     .catch(() => []);
   const invoices = allInvoices.filter(
     (inv: any) =>
-      inv.status === "posted" && inv.date >= options.fromDate && inv.date <= options.toDate,
+      inv.status === "posted" &&
+      inv.date >= options.fromDate &&
+      inv.date <= options.toDate &&
+      (!options.branchId ||
+        options.branchId === "all" ||
+        !inv.branchId ||
+        inv.branchId === options.branchId),
   );
 
   // 2. Build account balance map from voucher lines

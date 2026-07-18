@@ -17,8 +17,8 @@ import {
 } from "lucide-react";
 
 const BORDER = "1px solid #000";
-const BG_HEADER = "#D4EABD";
-const BG_CARD = "#EBF5E2";
+const BG_HEADER = "var(--ds-surface-hover)";
+const BG_CARD = "var(--ds-surface-muted)";
 
 export default function DataExportImport() {
   const [activeTab, setActiveTab] = useState("export-masters");
@@ -371,7 +371,7 @@ export default function DataExportImport() {
             onClick={handleNextStep}
             disabled={!tallyFile}
             style={{
-              backgroundColor: tallyFile ? "#1557b0" : "#ccc",
+              backgroundColor: tallyFile ? "var(--ds-action-primary)" : "#ccc",
               color: "white",
               border: BORDER,
               padding: "8px 16px",
@@ -565,7 +565,7 @@ export default function DataExportImport() {
           <button
             onClick={handleNextStep}
             style={{
-              backgroundColor: "#1557b0",
+              backgroundColor: "var(--ds-action-primary)",
               color: "white",
               border: BORDER,
               padding: "8px 16px",
@@ -668,7 +668,7 @@ export default function DataExportImport() {
           <button
             onClick={handleNextStep}
             style={{
-              backgroundColor: "#1557b0",
+              backgroundColor: "var(--ds-action-primary)",
               color: "white",
               border: BORDER,
               padding: "8px 16px",
@@ -843,7 +843,7 @@ export default function DataExportImport() {
           <button
             onClick={() => window.location.reload()}
             style={{
-              backgroundColor: "#1557b0",
+              backgroundColor: "var(--ds-action-primary)",
               color: "white",
               border: BORDER,
               padding: "8px 16px",
@@ -899,7 +899,7 @@ export default function DataExportImport() {
           toast.success("Export started...");
         }}
         style={{
-          backgroundColor: "#1557b0",
+          backgroundColor: "var(--ds-action-primary)",
           color: "white",
           border: BORDER,
           padding: "8px 16px",
@@ -946,7 +946,7 @@ export default function DataExportImport() {
           toast.success("Import started...");
         }}
         style={{
-          backgroundColor: "#1557b0",
+          backgroundColor: "var(--ds-action-primary)",
           color: "white",
           border: BORDER,
           padding: "8px 16px",
@@ -981,7 +981,7 @@ export default function DataExportImport() {
           toast.success("Voucher import started...");
         }}
         style={{
-          backgroundColor: "#1557b0",
+          backgroundColor: "var(--ds-action-primary)",
           color: "white",
           border: BORDER,
           padding: "8px 16px",
@@ -1018,7 +1018,7 @@ export default function DataExportImport() {
               style={{
                 padding: "12px 16px",
                 border: "none",
-                borderBottom: activeTab === tab.id ? `3px solid #1557b0` : "none",
+                borderBottom: activeTab === tab.id ? `3px solid var(--ds-action-primary)` : "none",
                 backgroundColor: activeTab === tab.id ? BG_HEADER : "transparent",
                 color: activeTab === tab.id ? "#000000" : "#666",
                 fontWeight: activeTab === tab.id ? "bold" : "normal",

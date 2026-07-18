@@ -101,7 +101,7 @@ const AccountTreeRenderer: React.FC<AccountTreeRendererProps> = ({
             <div className="flex items-center gap-1" style={{ paddingLeft: `${indentPx}px` }}>
               {hasChildren && (
                 <button
-                  className="text-gray-500 hover:text-[#1557b0] text-[10px] w-4 shrink-0 text-center"
+                  className="text-gray-500 hover:text-[var(--ds-action-primary)] text-[10px] w-4 shrink-0 text-center"
                   onClick={chevronClick}
                   aria-label={isExpanded ? "Collapse" : "Expand"}
                 >

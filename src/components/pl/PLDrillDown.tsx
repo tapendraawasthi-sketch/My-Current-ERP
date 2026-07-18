@@ -119,7 +119,7 @@ function GroupAccountList({
                     })
                   }
                 >
-                  <td className="px-3 py-2.5 text-[12px] font-medium text-[#1557b0] hover:underline">
+                  <td className="px-3 py-2.5 text-[12px] font-medium text-[var(--ds-action-primary)] hover:underline">
                     {line.accountName}
                   </td>
                   <td className="px-3 py-2.5 text-right font-mono text-[12px] text-gray-700">
@@ -188,7 +188,7 @@ function AccountLedgerView({
   if (loading) {
     return (
       <div className="flex items-center justify-center h-48">
-        <RefreshCw className="h-6 w-6 animate-spin text-[#1557b0]" />
+        <RefreshCw className="h-6 w-6 animate-spin text-[var(--ds-action-primary)]" />
         <span className="ml-2 text-[12px] text-gray-600">Loading ledger…</span>
       </div>
     );
@@ -320,7 +320,7 @@ function AccountLedgerView({
                     style={{
                       background: "none",
                       border: "none",
-                      color: "#1557b0",
+                      color: "var(--ds-action-primary)",
                       fontSize: 12,
                       fontFamily: "'Courier New', monospace",
                       fontWeight: 600,
@@ -407,7 +407,7 @@ function VoucherView({
   if (loading) {
     return (
       <div className="flex items-center justify-center h-48">
-        <RefreshCw className="h-6 w-6 animate-spin text-[#1557b0]" />
+        <RefreshCw className="h-6 w-6 animate-spin text-[var(--ds-action-primary)]" />
       </div>
     );
   }
@@ -535,7 +535,7 @@ export default function PLDrillDown({
       <div className="flex items-center gap-2 text-[12px] text-gray-500">
         <button
           onClick={() => onDrillDown({ level: 0 })}
-          className="text-[#1557b0] hover:underline"
+          className="text-[var(--ds-action-primary)] hover:underline"
         >
           P&L Report
         </button>
@@ -554,7 +554,7 @@ export default function PLDrillDown({
               }
               className={
                 drillState.level > 1
-                  ? "text-[#1557b0] hover:underline"
+                  ? "text-[var(--ds-action-primary)] hover:underline"
                   : "text-gray-700 font-semibold"
               }
             >
@@ -572,7 +572,7 @@ export default function PLDrillDown({
               }
               className={
                 drillState.level > 2
-                  ? "text-[#1557b0] hover:underline"
+                  ? "text-[var(--ds-action-primary)] hover:underline"
                   : "text-gray-700 font-semibold"
               }
             >

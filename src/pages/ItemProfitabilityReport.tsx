@@ -15,6 +15,7 @@ import * as XLSX from "xlsx";
 import ReportEmptyState from "../components/ReportEmptyState";
 import { getDB } from "../lib/db";
 import { useStore } from "../store/useStore";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const CHART_MARGIN = { top: 12, right: 24, left: 120, bottom: 16 };
 const AXIS_TICK = { fill: "#6b7280", fontSize: 11 };
@@ -77,6 +78,7 @@ function ProfitabilityTooltip({ active, payload, label }) {
 
 export default function ItemProfitabilityReport() {
   const { invoices, items, itemGroups, currentFiscalYear } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const [fromDate, setFromDate] = useState(currentFiscalYear?.startDate || "");
   const [toDate, setToDate] = useState(currentFiscalYear?.endDate || "");
   const [groupFilter, setGroupFilter] = useState("");
@@ -106,6 +108,7 @@ export default function ItemProfitabilityReport() {
       .filter((inv) => inv.status === "posted")
       .filter((inv) => (!fromDate || inv.date >= fromDate) && (!toDate || inv.date <= toDate))
       .filter((inv) => !salespersonFilter || inv.salespersonId === salespersonFilter)
+      .filter((inv) => matchBranch(inv.branchId))
       .forEach((inv) => {
         (inv.lines || inv.items || []).forEach((line) => {
           if (!line.itemId) return;
@@ -124,6 +127,7 @@ export default function ItemProfitabilityReport() {
       .filter((inv) => inv.type === "purchase-invoice" || inv.type === "PURCHASE_INVOICE")
       .filter((inv) => inv.status === "posted")
       .filter((inv) => (!fromDate || inv.date >= fromDate) && (!toDate || inv.date <= toDate))
+      .filter((inv) => matchBranch(inv.branchId))
       .forEach((inv) => {
         (inv.lines || inv.items || []).forEach((line) => {
           if (!line.itemId) return;
@@ -186,6 +190,8 @@ export default function ItemProfitabilityReport() {
     viewMode,
     searchTerm,
     itemGroups,
+    matchBranch,
+    branchFilter,
   ]);
 
   // Calculate summary
@@ -264,7 +270,7 @@ export default function ItemProfitabilityReport() {
         <div className="no-print flex items-center gap-2">
           <button
             onClick={handleExportExcel}
-            className="inline-flex h-8 items-center gap-1.5 rounded-md bg-[#1557b0] px-3 text-[12px] font-medium text-white hover:bg-[#0f4a96]"
+            className="inline-flex h-8 items-center gap-1.5 rounded-md bg-[var(--ds-action-primary)] px-3 text-[12px] font-medium text-white hover:bg-[var(--ds-action-primary-hover)]"
           >
             <Download className="h-3.5 w-3.5" />
             <span>Export Excel</span>
@@ -273,14 +279,14 @@ export default function ItemProfitabilityReport() {
       </div>
 
       <div className="no-print mb-4 rounded-md border border-gray-200 bg-white p-4">
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-6">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-7">
           <div>
             <label className="mb-1 block text-[11px] font-medium text-gray-600">From Date</label>
             <input
               type="date"
               value={fromDate}
               onChange={(e) => setFromDate(e.target.value)}
-              className="h-8 w-full rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[#1557b0] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20"
+              className="h-8 w-full rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
             />
           </div>
 
@@ -290,16 +296,35 @@ export default function ItemProfitabilityReport() {
               type="date"
               value={toDate}
               onChange={(e) => setToDate(e.target.value)}
-              className="h-8 w-full rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[#1557b0] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20"
+              className="h-8 w-full rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
             />
           </div>
+
+          {branchOptions.length > 0 && (
+            <div>
+              <label className="mb-1 block text-[11px] font-medium text-gray-600">Branch</label>
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                className="h-8 w-full rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div>
             <label className="mb-1 block text-[11px] font-medium text-gray-600">Item Group</label>
             <select
               value={groupFilter}
               onChange={(e) => setGroupFilter(e.target.value)}
-              className="h-8 w-full rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[#1557b0] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20"
+              className="h-8 w-full rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
             >
               <option value="">All Groups</option>
               {itemGroups.map((g) => (
@@ -315,7 +340,7 @@ export default function ItemProfitabilityReport() {
             <select
               value={salespersonFilter}
               onChange={(e) => setSalespersonFilter(e.target.value)}
-              className="h-8 w-full rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[#1557b0] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20"
+              className="h-8 w-full rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
             >
               <option value="">All Salespersons</option>
               {salespersons.map((sp) => (
@@ -331,7 +356,7 @@ export default function ItemProfitabilityReport() {
             <select
               value={viewMode}
               onChange={(e) => setViewMode(e.target.value)}
-              className="h-8 w-full rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[#1557b0] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20"
+              className="h-8 w-full rounded-md border border-gray-300 bg-white px-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
             >
               <option value="top20">Top 20 Profitable</option>
               <option value="bottom20">Bottom 20 Profitable</option>
@@ -357,7 +382,7 @@ export default function ItemProfitabilityReport() {
                 placeholder="Search items by code or name"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="h-8 w-full rounded-md border border-gray-300 bg-white pl-8 pr-2.5 text-[12px] focus:border-[#1557b0] focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20"
+                className="h-8 w-full rounded-md border border-gray-300 bg-white pl-8 pr-2.5 text-[12px] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
               />
             </div>
           </div>
@@ -486,7 +511,7 @@ export default function ItemProfitabilityReport() {
 
                   return (
                     <tr key={item.item.id} className={rowClassName}>
-                      <td className="border-l-2 border-l-transparent px-3 py-2.5 text-[12px] text-gray-700 group-hover:border-l-[#1557b0]">
+                      <td className="border-l-2 border-l-transparent px-3 py-2.5 text-[12px] text-gray-700 group-hover:border-l-[var(--ds-action-primary)]">
                         {idx + 1}
                       </td>
                       <td className="px-3 py-2.5 text-[12px] text-gray-700">{item.item.code}</td>
@@ -600,7 +625,7 @@ export default function ItemProfitabilityReport() {
                       key={`loss-${item.item.id}`}
                       className="border-b border-red-100 transition-colors hover:bg-red-50"
                     >
-                      <td className="border-l-2 border-l-transparent px-3 py-2.5 text-[12px] text-gray-700 hover:border-l-[#1557b0]">
+                      <td className="border-l-2 border-l-transparent px-3 py-2.5 text-[12px] text-gray-700 hover:border-l-[var(--ds-action-primary)]">
                         {item.item.code}
                       </td>
                       <td className="px-3 py-2.5 text-[12px] text-gray-700">{item.item.name}</td>

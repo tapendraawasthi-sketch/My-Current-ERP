@@ -103,13 +103,17 @@ Phase UI-0 creates this tracker. **Nothing is marked migrated** unless genuinely
 |------|--------|
 | 0 Foundation | done |
 | 1 Shell / auth / home / AI | done |
-| 2 Core books | done (polish remnants: select-name a11y) |
-| 3 Invoices / tax / registers | chrome done (LineItemGrid adapter pending) |
+| 2 Core books | done |
+| 3 Invoices / tax / registers | done — line-table is the DS-token grid for invoice lines (full LineItemGrid composite swap deferred: would drop Warehouse/VAT columns, a functional change) |
 | 4 Masters + banking | done |
 | 5 Inventory / payroll / secondary STMT-REG | done |
 | 6 CFG + orphans + hot-toast cutover | done — see `UI_ORPHAN_PAGE_REGISTRY.json` |
 
-**Still pending product looks debts:** LineItemGrid live adapter; Combobox on TXN/MASTER; select-name a11y on billing/journal/bank-recon.
+**Looks debts closed (2026-07-18):**
+
+- Combobox on TXN/MASTER — `PartySelect`, `ItemSelect`, `AccountSelect` now wrap the design-system `Combobox` (all consumers inherit it); `Combobox` gained an optional `onClear` affordance for parity with the old ItemSelect clear button.
+- select-name a11y — `aria-label` added to unnamed selects in `SalesInvoiceForm` (bill sundry type, bank account), `JournalEntries` (rows per page), `BankReconciliation` (voucher type, counter account).
+- LineItemGrid — invoice/journal line grids stay on the DS-tokenized `.line-table` styles; swapping to the frozen `LineItemGrid` composite would remove Warehouse/VAT/per-line-tax columns (functional change, out of looks-only scope), so the composite remains available for simpler money docs.
 
 ## Field template
 

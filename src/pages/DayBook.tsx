@@ -15,6 +15,11 @@ import {
   BookOpen,
   Search,
 } from "lucide-react";
+import {
+  BRANCH_CHANGED_EVENT,
+  matchesBranchFilter,
+  readActiveBranchId,
+} from "../lib/activeBranch";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -33,6 +38,7 @@ interface DayBookEntry {
   lines?: DayBookLine[];
   status?: string;
   createdByName?: string;
+  branchId?: string;
 }
 
 interface DayBookLine {
@@ -83,13 +89,14 @@ function getTypeColor(_type: string): { bg: string; text: string; border: string
 // ─── Main Component ────────────────────────────────────────────────────────────
 
 const DayBook: React.FC = () => {
-  const { vouchers, invoices, accounts, companySettings, currentFiscalYear } = useStore();
+  const { vouchers, invoices, accounts, companySettings, currentFiscalYear, branches } = useStore();
 
   const [dateRange, setDateRange] = useState<DateRange>({
     fromDate: todayISO(),
     toDate: todayISO(),
   });
   const [typeFilter, setTypeFilter] = useState("all");
+  const [branchFilter, setBranchFilter] = useState(() => readActiveBranchId() || "all");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedEntry, setSelectedEntry] = useState<DayBookEntry | null>(null);
   const [viewMode, setViewMode] = useState<"condensed" | "detailed">("condensed");
@@ -97,6 +104,19 @@ const DayBook: React.FC = () => {
   const [jumpQuery, setJumpQuery] = useState("");
   const jumpInputRef = useRef<HTMLInputElement>(null);
   const tableRef = useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const sync = () => {
+      const id = readActiveBranchId();
+      if (id) setBranchFilter(id);
+    };
+    window.addEventListener(BRANCH_CHANGED_EVENT, sync as EventListener);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener(BRANCH_CHANGED_EVENT, sync as EventListener);
+      window.removeEventListener("storage", sync);
+    };
+  }, []);
 
   const handleJump = (e: React.KeyboardEvent<HTMLInputElement> | { key: string }) => {
     if (e.key !== "Enter") return;
@@ -161,6 +181,7 @@ const DayBook: React.FC = () => {
         })) as DayBookLine[],
         status: v.status as string | undefined,
         createdByName: v.createdByName as string | undefined,
+        branchId: v.branchId as string | undefined,
       });
     }
 
@@ -190,6 +211,7 @@ const DayBook: React.FC = () => {
         lines: [],
         status: inv.status as string | undefined,
         createdByName: inv.createdByName as string | undefined,
+        branchId: inv.branchId as string | undefined,
       });
     }
 
@@ -203,14 +225,20 @@ const DayBook: React.FC = () => {
   const filteredEntries = useMemo<DayBookEntry[]>(() => {
     return dayBookEntries.filter((entry) => {
       const matchType = typeFilter === "all" || entry.type === typeFilter;
+      const matchBranch = matchesBranchFilter(entry.branchId, branchFilter);
       const matchSearch =
         searchTerm === "" ||
         entry.voucherNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (entry.narration ?? "").toLowerCase().includes(searchTerm.toLowerCase()) ||
         (entry.partyName ?? "").toLowerCase().includes(searchTerm.toLowerCase());
-      return matchType && matchSearch;
+      return matchType && matchBranch && matchSearch;
     });
-  }, [dayBookEntries, typeFilter, searchTerm]);
+  }, [dayBookEntries, typeFilter, branchFilter, searchTerm]);
+
+  const branchOptions = useMemo(() => {
+    const list = (branches || []).filter((b: any) => b && b.isActive !== false);
+    return list as { id: string; name?: string; code?: string }[];
+  }, [branches]);
 
   // ── Summary ──────────────────────────────────────────────────────────────
   const summary = useMemo<DaySummary>(() => {
@@ -467,6 +495,21 @@ const DayBook: React.FC = () => {
                 </option>
               ))}
             </select>
+            {branchOptions.length > 0 && (
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                aria-label="Branch"
+                className="h-8 rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)] px-2.5 text-[13px] text-[var(--ds-text-default)] focus:border-[var(--ds-action-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            )}
             <div className="flex items-center overflow-hidden rounded-md border border-[var(--ds-border-default)] bg-[var(--ds-surface)]">
               <button
                 type="button"

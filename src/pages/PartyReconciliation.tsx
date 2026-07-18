@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import * as XLSX from "xlsx";
+import { useBranchFilter } from "@/hooks/useBranchFilter";
 
 interface PartyOutstanding {
   partyId: string;
@@ -341,6 +342,7 @@ export default function PartyReconciliation() {
   const accounts = store.accounts ?? [];
   const vouchers = store.vouchers ?? [];
   const invoices = store.invoices ?? [];
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
 
   const [selectedParty, setSelectedParty] = useState("");
   const [partyType, setPartyType] = useState<"ALL" | "customer" | "vendor">("ALL");
@@ -357,9 +359,18 @@ export default function PartyReconciliation() {
   const [statementFrom, setStatementFrom] = useState("");
   const [statementTo, setStatementTo] = useState("");
 
+  const scopedVouchers = useMemo(
+    () => vouchers.filter((v: any) => matchBranch(v?.branchId)),
+    [vouchers, matchBranch, branchFilter],
+  );
+  const scopedInvoices = useMemo(
+    () => invoices.filter((inv: any) => matchBranch(inv?.branchId)),
+    [invoices, matchBranch, branchFilter],
+  );
+
   const outstanding = useMemo(
-    () => computeOutstanding(accounts, vouchers, invoices),
-    [accounts, vouchers, invoices],
+    () => computeOutstanding(accounts, scopedVouchers, scopedInvoices),
+    [accounts, scopedVouchers, scopedInvoices],
   );
 
   const filteredOutstanding = useMemo(() => {
@@ -468,7 +479,7 @@ export default function PartyReconciliation() {
       });
     }
 
-    for (const voucher of vouchers ?? []) {
+    for (const voucher of scopedVouchers ?? []) {
       const lines = Array.isArray(voucher?.lines) ? voucher.lines : [];
 
       for (const line of lines) {
@@ -508,7 +519,7 @@ export default function PartyReconciliation() {
       running += row.debit - row.credit;
       return { ...row, balance: running };
     });
-  }, [selectedPartyRow, vouchers, statementFrom, statementTo]);
+  }, [selectedPartyRow, scopedVouchers, statementFrom, statementTo]);
 
   return (
     <div className="p-6 bg-[#f5f6fa] min-h-screen">
@@ -523,10 +534,25 @@ export default function PartyReconciliation() {
         </div>
 
         <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
           <button
             type="button"
             onClick={exportOutstanding}
-            className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+            className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
           >
             <Download className="h-3.5 w-3.5" />
             Export
@@ -554,7 +580,7 @@ export default function PartyReconciliation() {
             onClick={() => setActiveTab(key as any)}
             className={
               activeTab === key
-                ? "px-4 py-2 border-b-2 border-[#1557b0] text-[#1557b0] text-[12px] font-medium"
+                ? "px-4 py-2 border-b-2 border-[var(--ds-action-primary)] text-[var(--ds-action-primary)] text-[12px] font-medium"
                 : "px-4 py-2 text-gray-500 text-[12px] hover:text-gray-700"
             }
           >
@@ -572,7 +598,7 @@ export default function PartyReconciliation() {
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
                 placeholder="Search party / PAN..."
-                className="h-8 pl-8 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-64"
+                className="h-8 pl-8 pr-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
               />
             </div>
 
@@ -584,7 +610,7 @@ export default function PartyReconciliation() {
                   onClick={() => setPartyType(t)}
                   className={
                     partyType === t
-                      ? "h-8 px-3 bg-[#1557b0] text-white text-[12px] rounded-md"
+                      ? "h-8 px-3 bg-[var(--ds-action-primary)] text-white text-[12px] rounded-md"
                       : "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] rounded-md hover:bg-gray-50"
                   }
                 >
@@ -597,7 +623,7 @@ export default function PartyReconciliation() {
           <div className="grid grid-cols-4 gap-3 mb-4">
             <div className="bg-white rounded-lg border border-gray-200 p-4">
               <p className="text-[11px] text-gray-500">Total Customers Outstanding</p>
-              <p className="text-[20px] font-semibold text-[#1557b0] mt-1">
+              <p className="text-[20px] font-semibold text-[var(--ds-action-primary)] mt-1">
                 {money(summary.customersOutstanding)}
               </p>
             </div>
@@ -678,7 +704,7 @@ export default function PartyReconciliation() {
                         </td>
                         <td
                           className={`px-3 py-2.5 text-[12px] font-mono text-right font-semibold ${
-                            party.netBalance >= 0 ? "text-[#1557b0]" : "text-orange-700"
+                            party.netBalance >= 0 ? "text-[var(--ds-action-primary)]" : "text-orange-700"
                           }`}
                         >
                           {money(Math.abs(party.netBalance))} {party.netBalance >= 0 ? "Dr" : "Cr"}
@@ -804,7 +830,7 @@ export default function PartyReconciliation() {
               <button
                 type="button"
                 onClick={() => setShowAddEntry(!showAddEntry)}
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md"
+                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md"
               >
                 Add Entry
               </button>
@@ -886,7 +912,7 @@ export default function PartyReconciliation() {
                   <button
                     type="button"
                     onClick={saveReconEntry}
-                    className="h-8 px-3 bg-[#1557b0] text-white text-[12px] rounded-md"
+                    className="h-8 px-3 bg-[var(--ds-action-primary)] text-white text-[12px] rounded-md"
                   >
                     Save
                   </button>

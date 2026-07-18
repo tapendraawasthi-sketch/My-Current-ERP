@@ -9,6 +9,7 @@ import NepaliDatePicker from "../components/ui/NepaliDatePicker";
 import { useStore } from "../store/useStore";
 import Pagination from "../components/ui/Pagination";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 interface ColumnDef {
   key: string;
@@ -60,6 +61,7 @@ const paymentBadgeCls = (status: PaymentStatus) => {
 
 const SalesRegister: React.FC = () => {
   const { invoices } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const salesInvoices = useMemo(() => {
     return invoices.filter(
       (inv) => inv.type === VoucherType.SALES_INVOICE || inv.type === VoucherType.SALES_RETURN,
@@ -100,6 +102,7 @@ const SalesRegister: React.FC = () => {
 
   const filteredInvoices = useMemo(() => {
     return salesInvoices.filter((invoice) => {
+      if (!matchBranch((invoice as any).branchId)) return false;
       if (filters.paymentStatus !== "all" && invoice.paymentStatus !== filters.paymentStatus)
         return false;
       if (
@@ -110,7 +113,7 @@ const SalesRegister: React.FC = () => {
         return false;
       return true;
     });
-  }, [salesInvoices, filters]);
+  }, [salesInvoices, filters, matchBranch, branchFilter]);
 
   const paginatedInvoices = useMemo(() => {
     const startIndex = (page - 1) * pageSize;
@@ -303,6 +306,23 @@ const SalesRegister: React.FC = () => {
                 <option value={PaymentStatus.PARTIAL}>Partial</option>
               </select>
             </div>
+            {branchOptions.length > 0 && (
+              <div>
+                <label className="block text-[12px] font-medium text-gray-600 mb-1">Branch</label>
+                <select
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className={`${inputCls} w-full`}
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
             <div>
               <label className="block text-[12px] font-medium text-gray-600 mb-1">Item</label>
               <input

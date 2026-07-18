@@ -3,6 +3,8 @@ import React, { useState, useMemo } from "react";
 import toast from "@/lib/appToast";
 import { Plus, Edit2, Trash2, Search, X, Save } from "lucide-react";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 interface Scheme {
   id: string;
@@ -17,6 +19,7 @@ interface Scheme {
   applicableItems: "all" | "specific";
   applicableParties: "all" | "specific";
   isActive: boolean;
+  branchId?: string;
 }
 
 const DEFAULTS: Omit<Scheme, "id">[] = [
@@ -46,11 +49,11 @@ const DEFAULTS: Omit<Scheme, "id">[] = [
 const th = "px-3 py-2.5 text-left text-[10px] font-semibold text-gray-500 uppercase tracking-wide";
 const td = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 const btnPrimary =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md inline-flex items-center gap-1.5";
 const btnOutline =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 const inputCls =
-  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]";
+  "w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]";
 const labelCls = "text-[11px] font-medium text-gray-600 mb-1 block";
 
 const today = () => new Date().toISOString().split("T")[0];
@@ -77,6 +80,7 @@ const schemeValue = (scheme: Scheme) => {
 };
 
 export default function SchemeMaster() {
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [schemes, setSchemes] = useState<Scheme[]>(
     DEFAULTS.map((d, i) => ({ ...d, id: `sch-${i}` })),
   );
@@ -87,15 +91,17 @@ export default function SchemeMaster() {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return schemes;
-    return schemes.filter(
-      (scheme) =>
+    return schemes.filter((scheme) => {
+      if (!matchBranch(scheme.branchId)) return false;
+      if (!q) return true;
+      return (
         scheme.name.toLowerCase().includes(q) ||
         scheme.type.toLowerCase().includes(q) ||
         scheme.applicableItems.toLowerCase().includes(q) ||
-        scheme.applicableParties.toLowerCase().includes(q),
-    );
-  }, [schemes, search]);
+        scheme.applicableParties.toLowerCase().includes(q)
+      );
+    });
+  }, [schemes, search, matchBranch, branchFilter]);
 
   const resetForm = () => {
     setShowForm(false);
@@ -122,10 +128,23 @@ export default function SchemeMaster() {
       return;
     }
     if (editItem) {
-      setSchemes((prev) => prev.map((s) => (s.id === editItem.id ? { ...editItem, ...form } : s)));
+      setSchemes((prev) =>
+        prev.map((s) =>
+          s.id === editItem.id
+            ? {
+                ...editItem,
+                ...form,
+                branchId: editItem.branchId || readActiveBranchId() || undefined,
+              }
+            : s,
+        ),
+      );
       toast.success("Scheme updated");
     } else {
-      setSchemes((prev) => [...prev, { ...form, id: `sch-${Date.now()}` }]);
+      setSchemes((prev) => [
+        ...prev,
+        { ...form, id: `sch-${Date.now()}`, branchId: readActiveBranchId() || undefined },
+      ]);
       toast.success("Scheme added");
     }
     resetForm();
@@ -149,10 +168,27 @@ export default function SchemeMaster() {
                 Configure promotional schemes, discounts, and offers for items and parties
               </p>
             </div>
-            <button type="button" className={btnPrimary} onClick={openAdd}>
-              <Plus className="h-3.5 w-3.5" />
-              Add scheme
-            </button>
+            <div className="flex items-center gap-2">
+              {branchOptions.length > 0 && (
+                <select
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>
+              )}
+              <button type="button" className={btnPrimary} onClick={openAdd}>
+                <Plus className="h-3.5 w-3.5" />
+                Add scheme
+              </button>
+            </div>
           </div>
 
           <div className="relative mb-3 max-w-xs">
@@ -197,7 +233,7 @@ export default function SchemeMaster() {
                   {filtered.map((scheme) => (
                     <tr
                       key={scheme.id}
-                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[#1557b0]"
+                      className="group cursor-pointer hover:bg-gray-50 border-l-[3px] border-l-transparent hover:border-l-[var(--ds-action-primary)]"
                       onClick={() => openEdit(scheme)}
                     >
                       <td className={`${td} font-medium text-gray-800`}>{scheme.name}</td>
@@ -401,7 +437,7 @@ export default function SchemeMaster() {
                   type="checkbox"
                   checked={form.isActive}
                   onChange={(e) => setForm((p) => ({ ...p, isActive: e.target.checked }))}
-                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0]"
+                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)]"
                 />
                 Active
               </label>

@@ -8,6 +8,8 @@ import { exportTdsReturnToExcel } from "../lib/exportUtils";
 import { VoucherType, VoucherStatus } from "../lib/types";
 import toast from "@/lib/appToast";
 import { ReportEmptyState } from "../components/ReportEmptyState";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { matchesBranchFilter } from "../lib/activeBranch";
 
 const inputCls =
   "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full";
@@ -18,8 +20,9 @@ const btnOutline =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 inline-flex items-center gap-1.5";
 
 const statusBadgeCls = (status?: string) => {
-  if (status === "challanGenerated") return "bg-green-100 text-green-700";
-  return "bg-amber-100 text-amber-700";
+  if (status === "challanGenerated")
+    return "bg-[var(--ds-status-success-surface)] text-[var(--ds-status-success)]";
+  return "bg-[var(--ds-status-warning-surface)] text-[var(--ds-status-warning)]";
 };
 
 export default function TdsReport() {
@@ -32,7 +35,9 @@ export default function TdsReport() {
     accounts,
     addVoucher,
     setCurrentPage,
+    invoices,
   } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions } = useBranchFilter();
 
   const [fiscalYearBS, setFiscalYearBS] = useState(currentFiscalYear?.fiscalYearBS || "2081/2082");
   const [sectionFilter, setSectionFilter] = useState("All");
@@ -48,6 +53,21 @@ export default function TdsReport() {
   const [toBS, setToBS] = useState("");
   const [bankAccountId, setBankAccountId] = useState("");
 
+  const invoiceBranchById = useMemo(() => {
+    const map = new Map<string, string | undefined>();
+    for (const inv of invoices || []) {
+      if (inv?.id) map.set(inv.id, inv.branchId);
+    }
+    return map;
+  }, [invoices]);
+
+  const resolveEntryBranchId = (entry: any): string | undefined => {
+    if (entry?.branchId) return entry.branchId;
+    const invId = entry?.referenceInvoiceId;
+    if (invId) return invoiceBranchById.get(invId);
+    return undefined;
+  };
+
   const filteredEntries = useMemo(() => {
     return tdsEntries.filter((entry) => {
       const matchFY = entry.fiscalYearBS === fiscalYearBS;
@@ -56,9 +76,10 @@ export default function TdsReport() {
         statusFilter === "All" ||
         entry.status === statusFilter ||
         (!entry.status && statusFilter === "pending");
-      return matchFY && matchSection && matchStatus;
+      const matchBranch = matchesBranchFilter(resolveEntryBranchId(entry), branchFilter);
+      return matchFY && matchSection && matchStatus && matchBranch;
     });
-  }, [tdsEntries, fiscalYearBS, sectionFilter, statusFilter]);
+  }, [tdsEntries, fiscalYearBS, sectionFilter, statusFilter, branchFilter, invoiceBranchById]);
 
   const groupedBySection = useMemo(() => {
     const groups: Record<string, typeof filteredEntries> = {};
@@ -201,7 +222,7 @@ export default function TdsReport() {
         </div>
 
       <div className="no-print bg-white border border-gray-200 rounded-md p-3 mb-4">
-        <div className="grid gap-3 md:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <label className={labelCls}>Fiscal year (BS)</label>
             <input
@@ -237,6 +258,24 @@ export default function TdsReport() {
               <option value="challanGenerated">Challan generated</option>
             </select>
           </div>
+          {branchOptions.length > 0 && (
+            <div>
+              <label className={labelCls}>Branch</label>
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                className={inputCls}
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
         <p className="text-[12px] text-gray-500 mt-2">
           {filteredEntries.length} TDS entr{filteredEntries.length === 1 ? "y" : "ies"}

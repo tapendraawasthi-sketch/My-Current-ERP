@@ -1,0 +1,23 @@
+{
+  "entries": [
+    "anita",
+    "gita",
+    "hari",
+    "john",
+    "kathmandu",
+    "krishna",
+    "mary",
+    "nepal",
+    "pokhara",
+    "preeti",
+    "rajeev",
+    "ram",
+    "shyam",
+    "sita",
+    "susan"
+  ],
+  "provenance": "synthetic proper-name / place-name examples for conservative behavior tests — not customer data; MAI-07R1 expanded place names",
+  "resource_id": "name_like_terms",
+  "review_status": "ENGINEERING_CURATED_NOT_LINGUIST_APPROVED",
+  "version": "mai-07.2.0"
+}

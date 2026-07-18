@@ -15,6 +15,7 @@ import {
   PieChart,
   FileText,
 } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 function money(v: number): string {
   const abs = Math.abs(Number(v || 0));
@@ -28,11 +29,11 @@ const tableHeadClass =
 const tableCellClass = "px-3 py-2.5 text-[12px] text-gray-700 border-b border-gray-100";
 
 const primaryBtn =
-  "h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors";
+  "h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors";
 const outlineBtn =
   "h-8 px-3 bg-white border border-gray-300 text-gray-700 text-[12px] font-medium rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5";
 const inputClass =
-  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] transition-shadow";
+  "h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] transition-shadow";
 
 function todayISO() {
   return new Date().toISOString().split("T")[0];
@@ -179,6 +180,7 @@ export default function CostCenterReport() {
     addVoucher,
     employees = [],
   } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
 
   const [activeTab, setActiveTab] = useState("Cost Center P&L");
   const [fromDate, setFromDate] = useState(currentFiscalYear?.startDate || monthStartISO());
@@ -212,6 +214,11 @@ export default function CostCenterReport() {
   const [budgetCC, setBudgetCC] = useState("");
   const [selectedBudgetFY, setSelectedBudgetFY] = useState(currentFiscalYear?.name || "");
 
+  const scopedVouchers = useMemo(
+    () => (vouchers || []).filter((v) => matchBranch(v.branchId)),
+    [vouchers, matchBranch, branchFilter],
+  );
+
   const visibleCostCenters = useMemo(() => {
     if (currentUser?.costCenterId && currentUser.role !== "admin") {
       return costCenters.filter((c) => c.id === currentUser.costCenterId);
@@ -244,12 +251,12 @@ export default function CostCenterReport() {
 
   const selectedPL = useMemo(() => {
     if (selectedCC === "all") return null;
-    return computeCCPL(vouchers, accounts, selectedCC, fromDate, toDate);
-  }, [vouchers, accounts, selectedCC, fromDate, toDate]);
+    return computeCCPL(scopedVouchers, accounts, selectedCC, fromDate, toDate);
+  }, [scopedVouchers, accounts, selectedCC, fromDate, toDate]);
 
   const matrix = useMemo(() => {
-    return computeAccountCCMatrix(vouchers, accounts, visibleCostCenters, fromDate, toDate);
-  }, [vouchers, accounts, visibleCostCenters, fromDate, toDate]);
+    return computeAccountCCMatrix(scopedVouchers, accounts, visibleCostCenters, fromDate, toDate);
+  }, [scopedVouchers, accounts, visibleCostCenters, fromDate, toDate]);
 
   const matrixTotals = useMemo(() => {
     const totals: any = {};
@@ -343,7 +350,7 @@ export default function CostCenterReport() {
     const periodStart = month + "-01";
     const periodEnd = month + "-31";
 
-    const amount = (vouchers || [])
+    const amount = (scopedVouchers || [])
       .filter((v) => v.status === "posted" && v.date >= periodStart && v.date <= periodEnd)
       .flatMap((v) => v.lines || [])
       .filter((l) => l.accountId === rule.expenseAccountId || l.accountName === account?.name)
@@ -373,7 +380,7 @@ export default function CostCenterReport() {
       const revenueByCC: any = {};
       visibleCostCenters.forEach((cc) => {
         revenueByCC[cc.id] = computeCCPL(
-          vouchers,
+          scopedVouchers,
           accounts,
           cc.id,
           periodStart,
@@ -574,7 +581,7 @@ export default function CostCenterReport() {
         (b.type === "Department Budget" && b.costCenter === ccId),
     );
 
-    const actual = computeCCPL(vouchers, accounts, ccId, fyStart, fyEnd);
+    const actual = computeCCPL(scopedVouchers, accounts, ccId, fyStart, fyEnd);
     const actualMap: any = {};
     [...actual.income, ...actual.expenses].forEach((r: any) => {
       actualMap[r.accountId || r.accountName] = r.amount;
@@ -596,7 +603,7 @@ export default function CostCenterReport() {
         Math.abs(pctVariance) <= 10 ? "On Track" : variance < 0 ? "Over Budget" : "Under Budget";
       return { account, annualBudget, budgetYTD, actualYTD, variance, pctVariance, status };
     });
-  }, [budgetCC, budgets, visibleCostCenters, currentFiscalYear, vouchers, accounts]);
+  }, [budgetCC, budgets, visibleCostCenters, currentFiscalYear, scopedVouchers, accounts]);
 
   const maxBudgetActual = useMemo(() => {
     return Math.max(...budgetRows.map((r) => Math.max(r.annualBudget, r.actualYTD)), 1);
@@ -644,7 +651,7 @@ export default function CostCenterReport() {
       <div className="min-h-screen bg-[#f5f6fa] p-4 text-gray-800">
         <div className={cardClass}>
           <h1 className="text-[15px] font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            <Building size={18} className="text-[#1557b0]" /> Cost Center Report
+            <Building size={18} className="text-[var(--ds-action-primary)]" /> Cost Center Report
           </h1>
           <div className="bg-amber-50 border border-amber-200 text-amber-800 rounded-md p-4 text-[12px]">
             <div className="font-semibold mb-1">No cost centers configured.</div>
@@ -681,7 +688,7 @@ export default function CostCenterReport() {
       <div className="flex items-center justify-between mb-6 no-print">
         <div>
           <h1 className="text-[15px] font-semibold text-gray-800 flex items-center gap-2">
-            <Building size={18} className="text-[#1557b0]" /> Cost Center Report
+            <Building size={18} className="text-[var(--ds-action-primary)]" /> Cost Center Report
           </h1>
           <p className="text-[11px] text-gray-500 mt-0.5">
             Department-wise profit and loss, allocation, transfers and budgets.
@@ -705,7 +712,7 @@ export default function CostCenterReport() {
             onClick={() => setActiveTab(t.id)}
             className={`flex items-center gap-2 px-4 py-2.5 text-[12px] font-medium border-b-2 transition-colors whitespace-nowrap ${
               activeTab === t.id
-                ? "border-[#1557b0] text-[#1557b0]"
+                ? "border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]"
                 : "border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50"
             }`}
           >
@@ -718,7 +725,7 @@ export default function CostCenterReport() {
       {activeTab === "Cost Center P&L" && (
         <div className="space-y-6">
           <div className={`${cardClass} no-print`}>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
               <div>
                 <label className="block text-[11px] font-medium text-gray-600 mb-1">
                   Cost Center
@@ -760,6 +767,25 @@ export default function CostCenterReport() {
                   onChange={(e) => setToDate(e.target.value)}
                 />
               </div>
+
+              {branchOptions.length > 0 && (
+                <div>
+                  <label className="block text-[11px] font-medium text-gray-600 mb-1">Branch</label>
+                  <select
+                    className={inputClass}
+                    value={branchFilter}
+                    onChange={(e) => setBranchFilter(e.target.value)}
+                    aria-label="Branch"
+                  >
+                    <option value="all">All branches</option>
+                    {branchOptions.map((b) => (
+                      <option key={b.id} value={b.id}>
+                        {b.name || b.code || b.id}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
           </div>
 
@@ -767,7 +793,7 @@ export default function CostCenterReport() {
             <div className={cardClass}>
               <h2 className="text-[14px] font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">
                 P&L for{" "}
-                <span className="text-[#1557b0]">
+                <span className="text-[var(--ds-action-primary)]">
                   {costCenters.find((c) => c.id === selectedCC)?.name}
                 </span>
               </h2>
@@ -951,7 +977,7 @@ export default function CostCenterReport() {
 
                         <tr className="bg-blue-50/50 border-t-2 border-[#c7d2fe]">
                           <td
-                            className={`${tableCellClass} font-bold text-[#1557b0] uppercase tracking-wide`}
+                            className={`${tableCellClass} font-bold text-[var(--ds-action-primary)] uppercase tracking-wide`}
                           >
                             Net Profit
                           </td>
@@ -1037,7 +1063,7 @@ export default function CostCenterReport() {
                       <td className={tableCellClass}>
                         <div className="flex items-center gap-2">
                           <button
-                            className="text-[11px] font-medium text-[#1557b0] hover:underline"
+                            className="text-[11px] font-medium text-[var(--ds-action-primary)] hover:underline"
                             onClick={() => buildAllocationPreview(r)}
                           >
                             Apply
@@ -1085,7 +1111,7 @@ export default function CostCenterReport() {
 
             {allocationPreview ? (
               <div className="border border-[#c7d2fe] rounded-md p-4 bg-[#eef2ff]">
-                <div className="font-semibold text-[13px] text-[#1557b0] mb-1">
+                <div className="font-semibold text-[13px] text-[var(--ds-action-primary)] mb-1">
                   {allocationPreview.account?.name}
                 </div>
                 <div className="text-[12px] text-gray-600 mb-3 pb-3 border-b border-[#c7d2fe]">
@@ -1110,13 +1136,13 @@ export default function CostCenterReport() {
                   <tbody className="divide-y divide-gray-100">
                     {allocationPreview.allocations.map((a) => (
                       <tr key={a.costCenterId}>
-                        <td className="py-1.5 text-[11px] text-[#1557b0]">
+                        <td className="py-1.5 text-[11px] text-[var(--ds-action-primary)]">
                           {costCenters.find((c) => c.id === a.costCenterId)?.name}
                         </td>
                         <td className="py-1.5 text-[11px] text-gray-700 text-right">
                           {money(a.percentage)}%
                         </td>
-                        <td className="py-1.5 text-[11px] text-[#1557b0] font-medium text-right">
+                        <td className="py-1.5 text-[11px] text-[var(--ds-action-primary)] font-medium text-right">
                           Rs. {money(a.amount)}
                         </td>
                       </tr>
@@ -1125,7 +1151,7 @@ export default function CostCenterReport() {
                 </table>
 
                 <button
-                  className="w-full h-8 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md transition-colors"
+                  className="w-full h-8 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md transition-colors"
                   onClick={postAllocationJournal}
                 >
                   Confirm & Post Journal
@@ -1236,7 +1262,7 @@ export default function CostCenterReport() {
                   Receiving Cost Centers (Debit)
                 </h3>
                 <button
-                  className="text-[11px] font-medium text-[#1557b0] hover:underline flex items-center gap-1"
+                  className="text-[11px] font-medium text-[var(--ds-action-primary)] hover:underline flex items-center gap-1"
                   onClick={addReceiver}
                 >
                   <Plus size={12} /> Add Receiver
@@ -1293,26 +1319,26 @@ export default function CostCenterReport() {
               transferForm.fromCostCenterId &&
               transferForm.expenseAccountId && (
                 <div className="mt-4 border border-[#c7d2fe] rounded-md p-4 bg-[#eef2ff]">
-                  <div className="font-semibold text-[13px] text-[#1557b0] mb-2">
+                  <div className="font-semibold text-[13px] text-[var(--ds-action-primary)] mb-2">
                     Journal Preview
                   </div>
                   <table className="w-full border-collapse mt-2 text-[11px]">
                     <tbody className="divide-y divide-gray-100">
                       {transferPreview.receivers.map((r, idx) => (
                         <tr key={idx}>
-                          <td className="py-1 text-[#1557b0]">
+                          <td className="py-1 text-[var(--ds-action-primary)]">
                             Dr {r.costCenter?.name} ({transferPreview.account?.name})
                           </td>
-                          <td className="py-1 text-right font-medium text-[#1557b0]">
+                          <td className="py-1 text-right font-medium text-[var(--ds-action-primary)]">
                             Rs. {money(r.amount)}
                           </td>
                         </tr>
                       ))}
                       <tr className="bg-[#eef2ff]">
-                        <td className="py-1 text-[#1557b0]">
+                        <td className="py-1 text-[var(--ds-action-primary)]">
                           Cr {transferPreview.fromCC?.name} ({transferPreview.account?.name})
                         </td>
-                        <td className="py-1 text-right font-bold text-[#1557b0]">
+                        <td className="py-1 text-right font-bold text-[var(--ds-action-primary)]">
                           Rs. {money(transferPreview.receiverTotal)}
                         </td>
                       </tr>
@@ -1464,7 +1490,7 @@ export default function CostCenterReport() {
                           style={{
                             width: Math.min(100, (r.actualYTD / maxBudgetActual) * 100) + "%",
                           }}
-                          className={`h-full rounded-full ${r.actualYTD > r.budgetYTD ? "bg-red-500" : "bg-[#1557b0]"}`}
+                          className={`h-full rounded-full ${r.actualYTD > r.budgetYTD ? "bg-red-500" : "bg-[var(--ds-action-primary)]"}`}
                         />
                       </div>
                     </td>
@@ -1638,7 +1664,7 @@ export default function CostCenterReport() {
               ))}
 
               <button
-                className="text-[11px] font-medium text-[#1557b0] hover:underline flex items-center gap-1 mt-2"
+                className="text-[11px] font-medium text-[var(--ds-action-primary)] hover:underline flex items-center gap-1 mt-2"
                 onClick={addRuleAllocation}
               >
                 <Plus size={12} /> Add Cost Center

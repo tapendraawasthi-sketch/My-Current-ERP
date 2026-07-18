@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { useStore } from "../store";
 import { Plus, Edit2, Trash2, X, Save } from "lucide-react";
 import toast from "@/lib/appToast";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const HSCodeMaster: React.FC = () => {
   const { hsCodes, addHSCode, updateHSCode, deleteHSCode } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [showForm, setShowForm] = useState(false);
   const [selected, setSelected] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,8 +24,9 @@ const HSCodeMaster: React.FC = () => {
 
   const filteredCodes = (hsCodes || []).filter(
     (code) =>
-      code.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      code.description?.toLowerCase().includes(searchTerm.toLowerCase()),
+      matchBranch((code as any).branchId) &&
+      (code.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        code.description?.toLowerCase().includes(searchTerm.toLowerCase())),
   );
 
   const resetForm = () => {
@@ -77,11 +81,15 @@ const HSCodeMaster: React.FC = () => {
     }
 
     try {
+      const payload = {
+        ...form,
+        branchId: selected?.branchId || readActiveBranchId() || undefined,
+      };
       if (selected) {
-        await updateHSCode(selected.id, form);
+        await updateHSCode(selected.id, payload);
         toast.success("Updated successfully");
       } else {
-        await addHSCode(form);
+        await addHSCode(payload);
         toast.success("Saved successfully");
       }
       resetForm();
@@ -127,8 +135,23 @@ const HSCodeMaster: React.FC = () => {
               </p>
             </div>
             <div className="flex items-center gap-2">
+              {branchOptions.length > 0 && (
+                <select
+                  value={branchFilter}
+                  onChange={(e) => setBranchFilter(e.target.value)}
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+                  aria-label="Branch"
+                >
+                  <option value="all">All branches</option>
+                  {branchOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name || b.code || b.id}
+                    </option>
+                  ))}
+                </select>
+              )}
               <button
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
                 onClick={() => {
                   resetForm();
                   setShowForm(true);
@@ -151,7 +174,7 @@ const HSCodeMaster: React.FC = () => {
             <input
               type="text"
               placeholder="Search HS codes..."
-              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-64"
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-64"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -216,7 +239,7 @@ const HSCodeMaster: React.FC = () => {
                         <div className="flex items-center gap-1.5">
                           <button
                             onClick={() => loadFormForEdit(code)}
-                            className="p-1 text-gray-500 hover:text-[#1557b0] hover:bg-blue-50 rounded"
+                            className="p-1 text-gray-500 hover:text-[var(--ds-action-primary)] hover:bg-blue-50 rounded"
                             title="Edit"
                           >
                             <Edit2 size={14} />
@@ -261,7 +284,7 @@ const HSCodeMaster: React.FC = () => {
               </label>
               <input
                 type="text"
-                className="h-8 px-2.5 text-[12px] font-mono border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                className="h-8 px-2.5 text-[12px] font-mono border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                 value={form.code}
                 onChange={(e) => setForm({ ...form, code: e.target.value.replace(/\D/g, "") })}
                 placeholder="Enter 6-8 digit code"
@@ -274,7 +297,7 @@ const HSCodeMaster: React.FC = () => {
                 Description <span className="text-red-500">*</span>
               </label>
               <textarea
-                className="px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full min-h-[60px] resize-y"
+                className="px-2.5 py-2 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full min-h-[60px] resize-y"
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
                 placeholder="Enter description"
@@ -285,7 +308,7 @@ const HSCodeMaster: React.FC = () => {
               <div>
                 <label className="text-[11px] font-medium text-gray-600 mb-1 block">VAT Rate</label>
                 <select
-                  className={`h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full ${form.exempted ? "bg-gray-100 text-gray-500" : "bg-white"}`}
+                  className={`h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full ${form.exempted ? "bg-gray-100 text-gray-500" : "bg-white"}`}
                   value={form.vatRate}
                   onChange={(e) => setForm({ ...form, vatRate: e.target.value })}
                   disabled={form.exempted}
@@ -300,7 +323,7 @@ const HSCodeMaster: React.FC = () => {
                 </label>
                 <input
                   type="number"
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   value={form.customsDutyRate}
                   onChange={(e) => setForm({ ...form, customsDutyRate: e.target.value })}
                   min="0"
@@ -317,7 +340,7 @@ const HSCodeMaster: React.FC = () => {
                 </label>
                 <input
                   type="date"
-                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                  className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                   value={form.effectiveDate}
                   onChange={(e) => setForm({ ...form, effectiveDate: e.target.value })}
                 />
@@ -329,7 +352,7 @@ const HSCodeMaster: React.FC = () => {
                 <input
                   type="checkbox"
                   id="exempted"
-                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] h-3.5 w-3.5 cursor-pointer"
+                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                   checked={form.exempted}
                   onChange={handleExemptedChange}
                 />
@@ -344,7 +367,7 @@ const HSCodeMaster: React.FC = () => {
                 <input
                   type="checkbox"
                   id="isActive"
-                  className="rounded border-gray-300 text-[#1557b0] focus:ring-[#1557b0] h-3.5 w-3.5 cursor-pointer"
+                  className="rounded border-gray-300 text-[var(--ds-action-primary)] focus:ring-[var(--ds-action-primary)] h-3.5 w-3.5 cursor-pointer"
                   checked={form.isActive}
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
                 />
@@ -366,7 +389,7 @@ const HSCodeMaster: React.FC = () => {
               Cancel
             </button>
             <button
-              className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
+              className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5"
               onClick={handleSubmit}
             >
               <Save size={14} />

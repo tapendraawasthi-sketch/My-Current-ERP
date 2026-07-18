@@ -4,9 +4,12 @@ import { useStore } from "../store/useStore";
 import { DBWarehouse, getDB } from "../lib/db";
 import { computeStockPosition } from "../lib/godownStockUtils";
 import { Save, Plus, Trash2 } from "lucide-react";
+import { stampMovementBranch } from "../lib/activeBranch";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 export default function StockAdjustment() {
   const { warehouses, items, stockMovements, currentUser } = useStore() as any;
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
 
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [warehouseId, setWarehouseId] = useState("");
@@ -22,7 +25,15 @@ export default function StockAdjustment() {
     },
   ]);
 
-  const warehouse = warehouses?.find((w: DBWarehouse) => w.id === warehouseId);
+  const scopedWarehouses = useMemo(
+    () =>
+      (warehouses || []).filter((w: DBWarehouse & { branchId?: string }) =>
+        matchBranch(w.branchId),
+      ),
+    [warehouses, matchBranch, branchFilter],
+  );
+
+  const warehouse = scopedWarehouses.find((w: DBWarehouse) => w.id === warehouseId);
 
   const getSystemQty = (itemId: string, wid: string) => {
     const movements = (stockMovements || []).filter(
@@ -97,24 +108,27 @@ export default function StockAdjustment() {
 
         const item = items?.find((i: any) => i.id === line.itemId);
 
-        return {
-          id: crypto.randomUUID(),
-          date,
-          dateNepali: "", // Assuming standard handling elsewhere
-          itemId: line.itemId,
-          itemName: item?.name || "",
-          warehouseId: warehouse.id,
-          warehouseName: warehouse.name,
-          type: difference > 0 ? "in" : "out",
-          qty: Math.abs(difference),
-          rate: line.rate,
-          value: Math.abs(difference) * line.rate,
-          referenceType: "adjustment",
-          referenceId: adjustmentId,
-          voucherNo: "ADJ-" + Date.now().toString().slice(-6),
-          narration: reason,
-          createdAt: ts,
-        };
+        return stampMovementBranch(
+          {
+            id: crypto.randomUUID(),
+            date,
+            dateNepali: "", // Assuming standard handling elsewhere
+            itemId: line.itemId,
+            itemName: item?.name || "",
+            warehouseId: warehouse.id,
+            warehouseName: warehouse.name,
+            type: difference > 0 ? "in" : "out",
+            qty: Math.abs(difference),
+            rate: line.rate,
+            value: Math.abs(difference) * line.rate,
+            referenceType: "adjustment",
+            referenceId: adjustmentId,
+            voucherNo: "ADJ-" + Date.now().toString().slice(-6),
+            narration: reason,
+            createdAt: ts,
+          },
+          warehouses || [],
+        );
       })
       .filter(Boolean);
 
@@ -152,6 +166,21 @@ export default function StockAdjustment() {
           <p className="text-[11px] text-gray-500 mt-0.5">Adjust physical stock quantities</p>
         </div>
         <div className="flex items-center gap-2">
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
           <button onClick={handleSave} className="btn-primary">
             <Save size={14} /> Save Adjustment
           </button>
@@ -165,7 +194,7 @@ export default function StockAdjustment() {
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           />
         </div>
         <div>
@@ -179,10 +208,10 @@ export default function StockAdjustment() {
               // reset lines qty when warehouse changes
               setLines(lines.map((l) => ({ ...l, systemQty: 0, adjustedQty: 0 })));
             }}
-            className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           >
             <option value="">-- Select Godown --</option>
-            {warehouses?.map((w: DBWarehouse) => (
+            {scopedWarehouses.map((w: DBWarehouse) => (
               <option key={w.id} value={w.id}>
                 {w.name}
               </option>
@@ -198,7 +227,7 @@ export default function StockAdjustment() {
             value={reason}
             onChange={(e) => setReason(e.target.value)}
             placeholder="e.g. Damage, Physical Verification"
-            className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            className="w-full h-8 px-2.5 text-[12px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
           />
         </div>
       </div>
@@ -237,7 +266,7 @@ export default function StockAdjustment() {
                     <select
                       value={line.itemId}
                       onChange={(e) => updateLine(line.id, { itemId: e.target.value })}
-                      className="w-full h-7 px-2 text-[12px] border border-gray-300 rounded focus:outline-none focus:border-[#1557b0]"
+                      className="w-full h-7 px-2 text-[12px] border border-gray-300 rounded focus:outline-none focus:border-[var(--ds-action-primary)]"
                     >
                       <option value="">-- Select Item --</option>
                       {items?.map((i: any) => (
@@ -255,7 +284,7 @@ export default function StockAdjustment() {
                       type="number"
                       value={line.adjustedQty}
                       onChange={(e) => updateLine(line.id, { adjustedQty: e.target.value })}
-                      className="w-full h-7 px-2 text-[12px] text-right font-mono border border-gray-300 rounded focus:outline-none focus:border-[#1557b0]"
+                      className="w-full h-7 px-2 text-[12px] text-right font-mono border border-gray-300 rounded focus:outline-none focus:border-[var(--ds-action-primary)]"
                     />
                   </td>
                   <td
@@ -280,7 +309,7 @@ export default function StockAdjustment() {
         <div className="p-2 bg-gray-50 border-t border-gray-200">
           <button
             onClick={addLine}
-            className="flex items-center gap-1 text-[12px] text-[#1557b0] hover:underline px-2 py-1"
+            className="flex items-center gap-1 text-[12px] text-[var(--ds-action-primary)] hover:underline px-2 py-1"
           >
             <Plus size={14} /> Add Row
           </button>

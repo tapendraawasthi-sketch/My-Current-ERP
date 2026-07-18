@@ -4,6 +4,8 @@ import { useStore } from "../store/useStore";
 import { getDB, generateId } from "../lib/db";
 import toast from "@/lib/appToast";
 import { Plus, Edit, Trash2, CheckCircle, Star, CheckSquare, XCircle } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 function money(v: number): string {
   const abs = Math.abs(Number(v || 0));
@@ -13,6 +15,7 @@ function money(v: number): string {
 
 const PurchaseManagement: React.FC = () => {
   const { parties, items, purchaseOrders, vouchers, addPurchaseOrder } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [activeTab, setActiveTab] = useState(0);
   const [rfqs, setRfqs] = useState<any[]>([]);
   const [requisitions, setRequisitions] = useState<any[]>([]);
@@ -57,8 +60,22 @@ const PurchaseManagement: React.FC = () => {
 
   // Suppliers
   const suppliers = useMemo(() => {
-    return parties.filter((p) => p.type === "supplier" || p.type === "both");
-  }, [parties]);
+    return parties.filter(
+      (p) =>
+        (p.type === "supplier" || p.type === "both") &&
+        matchBranch((p as { branchId?: string }).branchId),
+    );
+  }, [parties, matchBranch, branchFilter]);
+
+  const scopedRfqs = useMemo(
+    () => rfqs.filter((r) => matchBranch(r.branchId)),
+    [rfqs, matchBranch, branchFilter],
+  );
+
+  const scopedPurchaseOrders = useMemo(
+    () => (purchaseOrders || []).filter((po: any) => matchBranch(po.branchId)),
+    [purchaseOrders, matchBranch, branchFilter],
+  );
 
   // Items
   const itemOptions = useMemo(() => {
@@ -138,6 +155,7 @@ const PurchaseManagement: React.FC = () => {
     const rfqRecord = {
       id: editingRfq?.id || generateId(),
       ...rfqForm,
+      branchId: editingRfq?.branchId || readActiveBranchId() || undefined,
       status: "open",
       responses: editingRfq?.responses || [],
       createdAt: editingRfq?.createdAt || new Date().toISOString(),
@@ -263,6 +281,7 @@ const PurchaseManagement: React.FC = () => {
       status: "pending",
       rfqId: rfq.id,
       deliveryDate: rfq.requiredByDate,
+      branchId: rfq.branchId || readActiveBranchId() || undefined,
     };
 
     if (addPurchaseOrder) {
@@ -285,14 +304,16 @@ const PurchaseManagement: React.FC = () => {
   };
 
   const threeWayMatches = useMemo(() => {
-    const purchaseInvoices = vouchers.filter((v) => v.type === "purchase-invoice");
+    const purchaseInvoices = vouchers.filter(
+      (v) => v.type === "purchase-invoice" && matchBranch((v as { branchId?: string }).branchId),
+    );
     return purchaseInvoices.map((invoice) => {
-      const po = purchaseOrders.find((po) => po.id === invoice.purchaseOrderId);
+      const po = scopedPurchaseOrders.find((po) => po.id === invoice.purchaseOrderId);
       const grn = vouchers.find((v) => v.id === invoice.grnId);
       const status = getMatchingStatus(invoice, po, grn);
       return { invoice, po, grn, status };
     });
-  }, [vouchers, purchaseOrders]);
+  }, [vouchers, scopedPurchaseOrders, matchBranch, branchFilter]);
 
   function getMatchingStatus(invoice: any, po: any, grn: any) {
     if (!grn) return "Missing GRN";
@@ -313,11 +334,13 @@ const PurchaseManagement: React.FC = () => {
   }
 
   const vendorScores = useMemo(() => {
-    const supplierList = parties.filter((p) => p.type === "supplier");
+    const supplierList = parties.filter(
+      (p) => p.type === "supplier" && matchBranch((p as { branchId?: string }).branchId),
+    );
 
     return supplierList
       .map((supplier) => {
-        const supplierOrders = purchaseOrders.filter((po) => po.partyId === supplier.id);
+        const supplierOrders = scopedPurchaseOrders.filter((po) => po.partyId === supplier.id);
         const totalOrders = supplierOrders.length;
 
         let onTimeDeliveries = 0;
@@ -365,7 +388,7 @@ const PurchaseManagement: React.FC = () => {
       })
       .filter((s) => s.totalOrders > 0)
       .sort((a, b) => b.overallScore - a.overallScore);
-  }, [parties, purchaseOrders, vouchers]);
+  }, [parties, scopedPurchaseOrders, vouchers, matchBranch, branchFilter]);
 
   const getStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
@@ -412,6 +435,21 @@ const PurchaseManagement: React.FC = () => {
               Manage RFQs, Requisitions, Three-Way Matching, and Vendor Scoring
             </p>
           </div>
+          {branchOptions.length > 0 && (
+            <select
+              value={branchFilter}
+              onChange={(e) => setBranchFilter(e.target.value)}
+              className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              aria-label="Branch"
+            >
+              <option value="all">All branches</option>
+              {branchOptions.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name || b.code || b.id}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         {/* Tab Navigation */}
@@ -422,7 +460,7 @@ const PurchaseManagement: React.FC = () => {
                 key={index}
                 className={`px-4 py-2 text-[12px] font-medium border-b-2 transition-colors ${
                   activeTab === index
-                    ? "border-[#1557b0] text-[#1557b0]"
+                    ? "border-[var(--ds-action-primary)] text-[var(--ds-action-primary)]"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
                 onClick={() => setActiveTab(index)}
@@ -441,7 +479,7 @@ const PurchaseManagement: React.FC = () => {
                 Request for Quotation (RFQ)
               </h2>
               <button
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors shadow-sm"
+                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors shadow-sm"
                 onClick={() => {
                   setEditingRfq(null);
                   setRfqForm({
@@ -492,7 +530,7 @@ const PurchaseManagement: React.FC = () => {
                       type="date"
                       value={rfqForm.date}
                       onChange={(e) => handleRfqFormChange("date", e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                     />
                   </div>
                   <div>
@@ -503,7 +541,7 @@ const PurchaseManagement: React.FC = () => {
                       type="date"
                       value={rfqForm.requiredByDate}
                       onChange={(e) => handleRfqFormChange("requiredByDate", e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                     />
                   </div>
                 </div>
@@ -531,7 +569,7 @@ const PurchaseManagement: React.FC = () => {
                               );
                             }
                           }}
-                          className="h-3.5 w-3.5 text-[#1557b0] rounded border-gray-300 focus:ring-[#1557b0]"
+                          className="h-3.5 w-3.5 text-[var(--ds-action-primary)] rounded border-gray-300 focus:ring-[var(--ds-action-primary)]"
                         />
                         <span className="text-[12px] text-gray-700">{supplier.name}</span>
                       </label>
@@ -587,7 +625,7 @@ const PurchaseManagement: React.FC = () => {
                                 onChange={(e) =>
                                   handleRfqItemChange(index, "itemId", e.target.value)
                                 }
-                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                               >
                                 <option value="">Select Item</option>
                                 {itemOptions.map((opt) => (
@@ -604,7 +642,7 @@ const PurchaseManagement: React.FC = () => {
                                 onChange={(e) =>
                                   handleRfqItemChange(index, "description", e.target.value)
                                 }
-                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                               />
                             </td>
                             <td className="px-3 py-2 align-top">
@@ -618,7 +656,7 @@ const PurchaseManagement: React.FC = () => {
                                     Number(e.target.value) || 0,
                                   )
                                 }
-                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white text-right focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white text-right focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                               />
                             </td>
                             <td className="px-3 py-2 align-top">
@@ -636,7 +674,7 @@ const PurchaseManagement: React.FC = () => {
                                 onChange={(e) =>
                                   handleRfqItemChange(index, "remarks", e.target.value)
                                 }
-                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                               />
                             </td>
                             <td className="px-3 py-2 align-top text-center">
@@ -664,7 +702,7 @@ const PurchaseManagement: React.FC = () => {
                     Cancel
                   </button>
                   <button
-                    className="h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
+                    className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
                     onClick={saveRfq}
                   >
                     Save RFQ
@@ -701,7 +739,7 @@ const PurchaseManagement: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {rfqs.map((rfq) => (
+                  {scopedRfqs.map((rfq) => (
                     <React.Fragment key={rfq.id}>
                       <tr
                         className="bg-white hover:bg-gray-50 border-b border-gray-100 text-[12px] cursor-pointer transition-colors"
@@ -720,7 +758,7 @@ const PurchaseManagement: React.FC = () => {
                         <td className="px-3 py-2.5 text-center">
                           <div className="flex items-center justify-center gap-2">
                             <button
-                              className="text-[#1557b0] hover:text-[#0f4a96] transition-colors p-1"
+                              className="text-[var(--ds-action-primary)] hover:text-[var(--ds-action-primary-hover)] transition-colors p-1"
                               title="Edit"
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -804,7 +842,7 @@ const PurchaseManagement: React.FC = () => {
                                               type="number"
                                               step="0.01"
                                               placeholder="Quote"
-                                              className="h-7 px-2 text-[11px] border border-gray-300 rounded bg-white text-right focus:outline-none focus:ring-1 focus:ring-[#1557b0] w-full"
+                                              className="h-7 px-2 text-[11px] border border-gray-300 rounded bg-white text-right focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] w-full"
                                             />
                                           </td>
                                         );
@@ -813,7 +851,7 @@ const PurchaseManagement: React.FC = () => {
                                         —
                                       </td>
                                       <td className="px-3 py-2 align-top">
-                                        <select className="h-7 px-2 text-[11px] border border-gray-300 rounded bg-white focus:outline-none focus:ring-1 focus:ring-[#1557b0] w-full">
+                                        <select className="h-7 px-2 text-[11px] border border-gray-300 rounded bg-white focus:outline-none focus:ring-1 focus:ring-[var(--ds-action-primary)] w-full">
                                           <option value="">Select</option>
                                           {rfq.suppliers.map((supplierId: string) => {
                                             const supplier = suppliers.find(
@@ -837,7 +875,7 @@ const PurchaseManagement: React.FC = () => {
                       )}
                     </React.Fragment>
                   ))}
-                  {rfqs.length === 0 && (
+                  {scopedRfqs.length === 0 && (
                     <tr>
                       <td colSpan={7} className="px-3 py-8 text-center text-[12px] text-gray-500">
                         No RFQs found.
@@ -855,7 +893,7 @@ const PurchaseManagement: React.FC = () => {
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-[14px] font-semibold text-gray-800">Purchase Requisitions</h2>
               <button
-                className="h-8 px-3 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors shadow-sm"
+                className="h-8 px-3 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md flex items-center gap-1.5 transition-colors shadow-sm"
                 onClick={() => {
                   setEditingReq(null);
                   setReqForm({
@@ -888,7 +926,7 @@ const PurchaseManagement: React.FC = () => {
                       type="text"
                       value={reqForm.requesterName}
                       onChange={(e) => handleReqFormChange("requesterName", e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                     />
                   </div>
                   <div>
@@ -899,7 +937,7 @@ const PurchaseManagement: React.FC = () => {
                       type="text"
                       value={reqForm.department}
                       onChange={(e) => handleReqFormChange("department", e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                     />
                   </div>
                   <div>
@@ -910,7 +948,7 @@ const PurchaseManagement: React.FC = () => {
                       type="date"
                       value={reqForm.dateRequired}
                       onChange={(e) => handleReqFormChange("dateRequired", e.target.value)}
-                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                      className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                     />
                   </div>
                 </div>
@@ -954,7 +992,7 @@ const PurchaseManagement: React.FC = () => {
                                 onChange={(e) =>
                                   handleReqItemChange(index, "itemId", e.target.value)
                                 }
-                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                               >
                                 <option value="">Select Item</option>
                                 {itemOptions.map((opt) => (
@@ -975,7 +1013,7 @@ const PurchaseManagement: React.FC = () => {
                                     Number(e.target.value) || 0,
                                   )
                                 }
-                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white text-right focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white text-right focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                               />
                             </td>
                             <td className="px-3 py-2 align-top">
@@ -985,7 +1023,7 @@ const PurchaseManagement: React.FC = () => {
                                 onChange={(e) =>
                                   handleReqItemChange(index, "purpose", e.target.value)
                                 }
-                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0] w-full"
+                                className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)] w-full"
                               />
                             </td>
                             <td className="px-3 py-2 align-top text-center">
@@ -1013,7 +1051,7 @@ const PurchaseManagement: React.FC = () => {
                     Cancel
                   </button>
                   <button
-                    className="h-8 px-4 bg-[#1557b0] hover:bg-[#0f4a96] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
+                    className="h-8 px-4 bg-[var(--ds-action-primary)] hover:bg-[var(--ds-action-primary-hover)] text-white text-[12px] font-medium rounded-md transition-colors shadow-sm"
                     onClick={saveRequisition}
                   >
                     Save Requisition
@@ -1068,7 +1106,7 @@ const PurchaseManagement: React.FC = () => {
                       <td className="px-3 py-2.5 text-center">
                         <div className="flex items-center justify-center gap-2">
                           <button
-                            className="text-[#1557b0] hover:text-[#0f4a96] transition-colors p-1"
+                            className="text-[var(--ds-action-primary)] hover:text-[var(--ds-action-primary-hover)] transition-colors p-1"
                             title="Edit"
                             onClick={() => {
                               setEditingReq(req);
@@ -1369,7 +1407,7 @@ const PurchaseManagement: React.FC = () => {
                       <td className="px-3 py-2.5 text-gray-700 text-right">
                         {score.priceCompetitiveness.toFixed(1)}
                       </td>
-                      <td className="px-3 py-2.5 text-[#1557b0] font-semibold text-right">
+                      <td className="px-3 py-2.5 text-[var(--ds-action-primary)] font-semibold text-right">
                         {score.overallScore.toFixed(1)}
                       </td>
                       <td className="px-3 py-2.5">

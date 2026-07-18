@@ -59,6 +59,55 @@ def _execution_intent_snapshot(intent: ExecutionIntent | None) -> dict[str, Any]
     return intent.model_dump(mode="json") if intent else None
 
 
+def _mai03_safe_stage(start: str, *, complete: bool = False, fail: bool = False, **attrs: Any) -> str | None:
+    """Best-effort MAI-03 stage emit — never logs message/prompt content."""
+    try:
+        from src.oip.infrastructure.observability import mai03 as mai03_obs
+
+        if mai03_obs.get_trace_context() is None:
+            return None
+        rec = mai03_obs.get_trace_recorder()
+        if fail:
+            rec.record_event(
+                start,
+                mai03_obs.TraceStatus.FAILED,
+                safe_error_code=str(attrs.get("safe_error_code") or "STAGE_FAILED"),
+                safe_attributes={k: v for k, v in attrs.items() if k != "safe_error_code"},
+            )
+            return None
+        if complete:
+            rec.record_event(
+                start,
+                mai03_obs.TraceStatus.COMPLETED,
+                outcome_code=str(attrs.get("outcome_code") or "OK"),
+                component_versions=attrs.get("component_versions") or {},
+                safe_attributes={
+                    k: v
+                    for k, v in attrs.items()
+                    if k not in {"outcome_code", "component_versions"}
+                },
+            )
+            return None
+        return rec.start_stage(start, safe_attributes=dict(attrs) if attrs else None)
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _mai03_finish(event_id: str | None, *, ok: bool = True, safe_error_code: str | None = None) -> None:
+    if not event_id:
+        return
+    try:
+        from src.oip.infrastructure.observability import mai03 as mai03_obs
+
+        rec = mai03_obs.get_trace_recorder()
+        if ok:
+            rec.complete_stage(event_id, outcome_code="OK")
+        else:
+            rec.fail_stage(event_id, safe_error_code=safe_error_code or "STAGE_FAILED")
+    except Exception:  # noqa: BLE001
+        return
+
+
 class ValidationStageAdapter(WorkflowStagePort):
     name = WorkflowStageName.VALIDATION.value
 
@@ -407,6 +456,7 @@ class ExecutionStageAdapter(WorkflowStagePort):
         )
         recent_raw = client_ctx.get("recent_parties") or client_ctx.get("lastParties") or []
         recent_parties = [str(p) for p in recent_raw if p] if isinstance(recent_raw, list) else []
+        pre_ev = _mai03_safe_stage("DETERMINISTIC_PREPROCESS_STARTED", path="erp_preprocess")
         erp_result = preprocess_erp_message(
             context.message,
             orbix_mode=orbix_mode,
@@ -423,6 +473,14 @@ class ExecutionStageAdapter(WorkflowStagePort):
             recent_parties=recent_parties,
         )
         if erp_result and erp_result.skip_llm:
+            _mai03_finish(pre_ev, ok=True)
+            _mai03_safe_stage(
+                "DETERMINISTIC_PREPROCESS_COMPLETED",
+                complete=True,
+                outcome_code="SKIP_LLM",
+                method=str(erp_result.method or ""),
+                intent=str(erp_result.intent or ""),
+            )
             snapshot = {
                 "source": "erp_preprocess",
                 "method": erp_result.method,
@@ -448,6 +506,12 @@ class ExecutionStageAdapter(WorkflowStagePort):
                 context.model_copy(update={"response_ref": response_ref, "execution_ref": snapshot}),
                 _ok(self.name, snapshot, erp_deterministic=True),
             )
+        _mai03_finish(pre_ev, ok=True)
+        _mai03_safe_stage(
+            "DETERMINISTIC_PREPROCESS_COMPLETED",
+            complete=True,
+            outcome_code="CONTINUE_PROVIDER",
+        )
 
         route = await self._ports.route_repository.get_by_id(  # type: ignore[union-attr]
             tenant_id=context.tenant_id, route_id=context.route_ref["route_id"]
@@ -486,10 +550,29 @@ class ExecutionStageAdapter(WorkflowStagePort):
             # Soft-fail: ungrounded execution is better than blocking chat.
             pass
 
+        model_ev = _mai03_safe_stage("MODEL_REQUEST_STARTED")
         try:
             execution = await self._ports.provider_runtime.start_execution(route=route)  # type: ignore[union-attr]
         except Exception as exc:  # noqa: BLE001
+            _mai03_finish(model_ev, ok=False, safe_error_code="MODEL_REQUEST_FAILED")
             return context, _fail(self.name, str(exc), retryable=True)
+        _mai03_finish(model_ev, ok=True)
+        model_name = "unavailable"
+        model_provider = "unavailable"
+        try:
+            model_provider = str(getattr(route, "provider", None) or "unavailable")
+            model_name = str(getattr(route, "model", None) or getattr(route, "model_name", None) or "unavailable")
+        except Exception:  # noqa: BLE001
+            pass
+        _mai03_safe_stage(
+            "MODEL_REQUEST_COMPLETED",
+            complete=True,
+            outcome_code="MODEL_OK",
+            component_versions={
+                "model_provider": model_provider,
+                "model_name": model_name,
+            },
+        )
         snapshot = {"execution_id": execution.execution_id}
         updates: dict[str, Any] = {"execution_ref": snapshot}
         output_text = ""

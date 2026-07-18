@@ -264,6 +264,8 @@ export enum PaymentStatus {
 export enum ItemType {
   PRODUCT = "product",
   SERVICE = "service",
+  /** Nepal land / immovable property SKU (kitta, area, location). */
+  LAND = "land",
 }
 
 export enum TdsType {
@@ -446,6 +448,13 @@ export interface Item {
   warehouseId?: string;
   isActive: boolean;
   baseUnit?: string;
+  /** Land / property identity (ItemType.LAND). */
+  landKitta?: string;
+  landArea?: number;
+  landAreaUnit?: string;
+  landWard?: string;
+  landDistrict?: string;
+  landLocation?: string;
 }
 
 export interface Voucher {

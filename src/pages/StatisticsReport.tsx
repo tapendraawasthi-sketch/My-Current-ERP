@@ -7,6 +7,7 @@ import ReportShell from "../components/reporting/ReportShell";
 import ReportGrid from "../components/reporting/ReportGrid";
 import ReportOptionsModal from "../components/reporting/ReportOptionsModal";
 import { useScreenF12 } from "../hooks/useF12Config";
+import { useBranchFilter } from "../hooks/useBranchFilter";
 
 const StatisticsReport: React.FC = () => {
   // Register this screen with F12 system
@@ -23,6 +24,7 @@ const StatisticsReport: React.FC = () => {
     companySettings,
     currentFiscalYear,
   } = useStore();
+  const { branchFilter, setBranchFilter, branchOptions, matchBranch } = useBranchFilter();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [startDate, setStartDate] = useState(currentFiscalYear?.startDate || "");
   const [endDate, setEndDate] = useState(currentFiscalYear?.endDate || "");
@@ -30,10 +32,12 @@ const StatisticsReport: React.FC = () => {
   // Pending states for options modal
   const [pendingStart, setPendingStart] = useState(startDate);
   const [pendingEnd, setPendingEnd] = useState(endDate);
+  const [pendingBranchFilter, setPendingBranchFilter] = useState(branchFilter);
 
   const applyOptions = () => {
     setStartDate(pendingStart);
     setEndDate(pendingEnd);
+    setBranchFilter(pendingBranchFilter);
     setOptionsOpen(false);
   };
 
@@ -63,7 +67,7 @@ const StatisticsReport: React.FC = () => {
     };
 
     const filteredVouchers = (vouchers || []).filter(
-      (v) => v.date >= startDate && v.date <= endDate,
+      (v) => v.date >= startDate && v.date <= endDate && matchBranch(v.branchId),
     );
 
     filteredVouchers.forEach((v) => {
@@ -194,7 +198,7 @@ const StatisticsReport: React.FC = () => {
       masterStats,
       transactionSummary,
     };
-  }, [vouchers, accounts, items, parties, costCenters, employees, warehouses, startDate, endDate]);
+  }, [vouchers, accounts, items, parties, costCenters, employees, warehouses, startDate, endDate, matchBranch, branchFilter]);
 
   const renderCell = (columnKey: string, value: any, row: any) => {
     if (row.isTotal) {
@@ -212,7 +216,7 @@ const StatisticsReport: React.FC = () => {
     }
 
     if (columnKey === "amount") {
-      return <span className="font-mono text-[#1557b0]">{formatNumber(value)}</span>;
+      return <span className="font-mono text-[var(--ds-action-primary)]">{formatNumber(value)}</span>;
     }
 
     return value;
@@ -228,18 +232,37 @@ const StatisticsReport: React.FC = () => {
       onOptions={() => {
         setPendingStart(startDate);
         setPendingEnd(endDate);
+        setPendingBranchFilter(branchFilter);
         setOptionsOpen(true);
       }}
       actionBarButtons={[{ label: "Print" }, { label: "Refresh" }]}
       toolbarLeft={
         <div className="flex items-center gap-1.5">
+          {branchOptions.length > 0 && (
+            <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
+              Branch:
+              <select
+                value={branchFilter}
+                onChange={(e) => setBranchFilter(e.target.value)}
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
           <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5">
             From:
             <input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
           <label className="text-[11px] font-medium text-gray-600 flex items-center gap-1.5 ml-2">
@@ -248,7 +271,7 @@ const StatisticsReport: React.FC = () => {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
         </div>
@@ -266,7 +289,7 @@ const StatisticsReport: React.FC = () => {
                 key={index}
                 className="bg-white border border-gray-200 rounded-md p-3 flex flex-col justify-center text-center"
               >
-                <span className="text-[14px] font-mono font-semibold text-[#1557b0] mb-1">
+                <span className="text-[14px] font-mono font-semibold text-[var(--ds-action-primary)] mb-1">
                   {stat.count}
                 </span>
                 <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide leading-tight">
@@ -345,7 +368,7 @@ const StatisticsReport: React.FC = () => {
               type="date"
               value={pendingStart}
               onChange={(e) => setPendingStart(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
 
@@ -355,9 +378,28 @@ const StatisticsReport: React.FC = () => {
               type="date"
               value={pendingEnd}
               onChange={(e) => setPendingEnd(e.target.value)}
-              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+              className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
             />
           </label>
+
+          {branchOptions.length > 0 && (
+            <label className="flex flex-col gap-1 text-[11px] font-medium text-gray-600">
+              Branch
+              <select
+                value={pendingBranchFilter}
+                onChange={(e) => setPendingBranchFilter(e.target.value)}
+                className="h-8 px-2.5 text-[12px] font-normal border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[var(--ds-action-primary)]/20 focus:border-[var(--ds-action-primary)]"
+                aria-label="Branch"
+              >
+                <option value="all">All branches</option>
+                {branchOptions.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.code || b.id}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
         </div>
       </ReportOptionsModal>
     </ReportShell>

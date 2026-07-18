@@ -18,12 +18,14 @@ import {
   Search,
   Filter,
 } from "lucide-react";
+import { useBranchFilter } from "../hooks/useBranchFilter";
+import { readActiveBranchId } from "../lib/activeBranch";
 
 const BORDER = "1px solid #000";
 const BG = "#E4F1D9";
-const BG_CARD = "#EBF5E2";
-const BG_HEADER = "#D4EABD";
-const BG_DEEP = "#C9DEB5";
+const BG_CARD = "var(--ds-surface-muted)";
+const BG_HEADER = "var(--ds-surface-hover)";
+const BG_DEEP = "var(--ds-surface-muted)";
 const BLOCKED_BG = "#fee2e2";
 const WARNING_BG = "#fef9c3";
 const OK_BG = "#dcfce7";
@@ -56,6 +58,7 @@ export function checkPriceCompliance(itemId, sellingRate, discountPct, policies)
 
 export default function PricePolicyManager() {
   const { items, itemGroups, invoices, vouchers, companySettings, currentUser } = useStore();
+  const { branchFilter, setBranchFilter, matchBranch, branchOptions } = useBranchFilter();
   const [activeTab, setActiveTab] = useState("floor");
   const [pricePolicies, setPricePolicies] = useState([]);
   const [bulkModalOpen, setBulkModalOpen] = useState(false);
@@ -80,9 +83,14 @@ export default function PricePolicyManager() {
       .then(setPricePolicies);
   }, []);
 
+  const filteredPolicies = useMemo(
+    () => pricePolicies.filter((p) => matchBranch((p as any).branchId)),
+    [pricePolicies, branchFilter],
+  );
+
   // Filter items for floor master
   const filteredItems = useMemo(() => {
-    let filtered = [...items];
+    let filtered = items.filter((item) => matchBranch((item as any).branchId));
 
     if (searchTerm) {
       filtered = filtered.filter(
@@ -97,18 +105,19 @@ export default function PricePolicyManager() {
     }
 
     if (onlyActive) {
-      const activePolicyIds = new Set(pricePolicies.filter((p) => p.isActive).map((p) => p.itemId));
+      const activePolicyIds = new Set(filteredPolicies.filter((p) => p.isActive).map((p) => p.itemId));
       filtered = filtered.filter((item) => activePolicyIds.has(item.id));
     }
 
     return filtered;
-  }, [items, pricePolicies, searchTerm, itemGroupFilter, onlyActive]);
+  }, [items, filteredPolicies, searchTerm, itemGroupFilter, onlyActive, branchFilter]);
 
   // Compute exceptions
   const exceptions = useMemo(() => {
     const allExceptions = [];
 
     invoices.forEach((inv) => {
+      if (!matchBranch((inv as any).branchId)) return;
       if (dateFrom && inv.date < dateFrom) return;
       if (dateTo && inv.date > dateTo) return;
       if (partyFilter && inv.partyId !== partyFilter) return;
@@ -149,7 +158,7 @@ export default function PricePolicyManager() {
     return showOnlyUnapproved
       ? allExceptions.filter((exc) => exc.status === "Pending")
       : allExceptions;
-  }, [invoices, pricePolicies, dateFrom, dateTo, partyFilter, showOnlyUnapproved, items]);
+  }, [invoices, pricePolicies, dateFrom, dateTo, partyFilter, showOnlyUnapproved, items, branchFilter]);
 
   // Compute margin dashboard
   const marginDashboard = useMemo(() => {
@@ -157,6 +166,7 @@ export default function PricePolicyManager() {
     let totalBelowFloorRevenue = 0;
 
     invoices.forEach((inv) => {
+      if (!matchBranch((inv as any).branchId)) return;
       if (dateFrom && inv.date < dateFrom) return;
       if (dateTo && inv.date > dateTo) return;
 
@@ -207,7 +217,7 @@ export default function PricePolicyManager() {
       totalBelowFloorRevenue,
       topViolators,
     };
-  }, [invoices, pricePolicies, dateFrom, dateTo, items]);
+  }, [invoices, pricePolicies, dateFrom, dateTo, items, branchFilter]);
 
   // Handle saving a policy
   const handleSavePolicy = async (item, policyData) => {
@@ -215,6 +225,7 @@ export default function PricePolicyManager() {
       const db = getDB();
       const policyId = pricePolicies.find((p) => p.itemId === item.id)?.id || generateId();
 
+      const existingPolicy = pricePolicies.find((p) => p.itemId === item.id);
       const policy = {
         id: policyId,
         itemId: item.id,
@@ -225,6 +236,7 @@ export default function PricePolicyManager() {
         isActive: policyData.isActive !== undefined ? policyData.isActive : true,
         updatedBy: currentUser?.name || "System",
         updatedAt: new Date().toISOString(),
+        branchId: existingPolicy?.branchId || readActiveBranchId() || undefined,
       };
 
       await db.priceFloorPolicies.put(policy);
@@ -248,7 +260,9 @@ export default function PricePolicyManager() {
 
     try {
       const db = getDB();
-      const itemsToProcess = items.filter((i) => i.groupId === bulkForm.groupId);
+      const itemsToProcess = items.filter(
+        (i) => i.groupId === bulkForm.groupId && matchBranch((i as any).branchId),
+      );
 
       for (const item of itemsToProcess) {
         const purchaseRate = item.lastPurchaseRate || item.purchaseRate || 0;
@@ -267,6 +281,7 @@ export default function PricePolicyManager() {
           isActive: existingPolicy?.isActive !== false,
           updatedBy: currentUser?.name || "System",
           updatedAt: new Date().toISOString(),
+          branchId: existingPolicy?.branchId || readActiveBranchId() || undefined,
         };
 
         await db.priceFloorPolicies.put(policy);
@@ -376,7 +391,7 @@ export default function PricePolicyManager() {
         <button
           onClick={() => setBulkModalOpen(true)}
           style={{
-            backgroundColor: "#1557b0",
+            backgroundColor: "var(--ds-action-primary)",
             color: "white",
             border: BORDER,
             padding: "8px 16px",
@@ -419,7 +434,7 @@ export default function PricePolicyManager() {
             </thead>
             <tbody>
               {filteredItems.map((item) => {
-                const policy = pricePolicies.find((p) => p.itemId === item.id);
+                const policy = filteredPolicies.find((p) => p.itemId === item.id);
                 const purchaseRate = item.lastPurchaseRate || item.purchaseRate || 0;
 
                 return (
@@ -506,7 +521,7 @@ export default function PricePolicyManager() {
                       <button
                         onClick={() => handleSavePolicy(item, policy || {})}
                         style={{
-                          backgroundColor: "#1557b0",
+                          backgroundColor: "var(--ds-action-primary)",
                           color: "white",
                           border: BORDER,
                           padding: "4px 8px",
@@ -901,9 +916,27 @@ export default function PricePolicyManager() {
           color: "#000000",
           padding: "20px",
           marginBottom: "0",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
         }}
       >
-        Price Policy Manager
+        <span>Price Policy Manager</span>
+        {branchOptions.length > 0 && (
+          <select
+            value={branchFilter}
+            onChange={(e) => setBranchFilter(e.target.value)}
+            className="h-8 px-2.5 text-[12px] border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#1557b0]/20 focus:border-[#1557b0]"
+            aria-label="Branch"
+          >
+            <option value="all">All branches</option>
+            {branchOptions.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name || b.code || b.id}
+              </option>
+            ))}
+          </select>
+        )}
       </h1>
 
       {/* Tab Navigation */}
@@ -1064,7 +1097,7 @@ export default function PricePolicyManager() {
               <button
                 onClick={handleBulkSet}
                 style={{
-                  backgroundColor: "#1557b0",
+                  backgroundColor: "var(--ds-action-primary)",
                   color: "white",
                   border: BORDER,
                   padding: "6px 12px",
